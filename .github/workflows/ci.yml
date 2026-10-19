@@ -33,6 +33,11 @@ jobs:
         run: cargo fmt --all -- --check
       - name: Internal dependency boundary
         run: python3 tests/workspace_dependencies.py
+      - name: Shared-crate drift ratchet
+        # Visibly skipped when the private submodules are not checked out;
+        # enforces everywhere they are (self-hosted, credentialed runners).
+        if: hashFiles('apps/api/crates/**/Cargo.toml') != '' && hashFiles('apps/cloud/crates/**/Cargo.toml') != ''
+        run: python3 tests/crate_drift_report.py --baseline tests/crate_drift_baseline.json
       - name: Compile workspace and tests
         run: cargo check --locked --workspace --all-targets
       - name: Check optional harness contracts

@@ -1,0 +1,25 @@
+{
+  "counts": {
+    "crates": {
+      "api": 14,
+      "aster": 180,
+      "cloud": 64
+    },
+    "drifted": 11,
+    "shared": 62,
+    "unique": 125
+  },
+  "drift": {
+    "a3s-auth": "CONTENT-DRIFT",
+    "a3s-code-core": "CONTENT-DRIFT",
+    "a3s-effect": "CONTENT-DRIFT",
+    "a3s-flow": "CONTENT-DRIFT",
+    "a3s-form-core": "CONTENT-DRIFT",
+    "a3s-libkrun-sys": "DUPLICATE-cloud",
+    "a3s-oci-sdk": "DUPLICATE-aster",
+    "a3s-orm": "CONTENT-DRIFT",
+    "devices": "CONTENT-DRIFT",
+    "libkrunfw-windows": "DUPLICATE-cloud",
+    "vm-memory": "CONTENT-DRIFT"
+  }
+}
