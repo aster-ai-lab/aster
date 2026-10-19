@@ -8,7 +8,8 @@
 use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
 use a3s_code_core::{AgentStyle, SystemPromptSlots};
 
-const GUIDELINES_LIMIT: usize = 8000;
+// Keep the host's 8000-character user allowance plus bounded delivery requirements.
+const GUIDELINES_LIMIT: usize = 12000;
 const ROLE_LIMIT: usize = 500;
 const DIRECTIVE_LIMIT: usize = 500;
 const DIRECTIVE_COUNT_LIMIT: usize = 8;
@@ -20,6 +21,8 @@ const REVIEW_SUBAGENT: &str = "代码审查：在独立子会话中审查本次�
 pub struct StudioHost {
     /// Explicit experiment input; rendered only by Core's policy path.
     pub work_policy: Option<a3s_code_core::WorkPolicyV1>,
+    /// Explicit desktop opt-in; the model cannot install an attestor.
+    pub completion_attestation: Option<CompletionAttestation>,
     /// Replaces the default "You are A3S Code" line when non-empty.
     pub role: String,
     pub guidelines: String,
@@ -31,10 +34,31 @@ pub struct StudioHost {
     pub assets: Option<crate::local_assets::AssetRoots>,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CompletionAttestation {
+    DiskContent,
+}
+
+impl CompletionAttestation {
+    pub fn parse(value: &str) -> Result<Self, String> {
+        match value {
+            "disk_content" => Ok(Self::DiskContent),
+            _ => Err("invalid CompletionAttestation; expected disk_content".into()),
+        }
+    }
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::DiskContent => "disk_content",
+        }
+    }
+}
+
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct TurnContext {
     pub directives: Vec<String>,
     pub research: bool,
+    /// This turn writes steps only. It does not change the stored permission mode.
+    pub plan_first: bool,
 }
 
 pub fn studio_host_from_meta(
@@ -50,6 +74,17 @@ pub fn studio_host_from_meta(
             ..Default::default()
         });
     };
+    let completion_attestation = host
+        .get("completionAttestation")
+        .map(|value| {
+            value
+                .as_str()
+                .ok_or_else(|| {
+                    "a3sHost.completionAttestation must name a CompletionAttestation".to_owned()
+                })
+                .and_then(CompletionAttestation::parse)
+        })
+        .transpose()?;
     let role = host
         .get("role")
         .and_then(|value| value.as_str())
@@ -72,6 +107,7 @@ pub fn studio_host_from_meta(
         .and_then(normalize_output_language);
     Ok(StudioHost {
         work_policy,
+        completion_attestation,
         role,
         guidelines,
         review_subagent,
@@ -106,6 +142,10 @@ pub fn turn_context_from_meta(
         directives,
         research: turn
             .get("research")
+            .and_then(|value| value.as_bool())
+            .unwrap_or(false),
+        plan_first: turn
+            .get("planFirst")
             .and_then(|value| value.as_bool())
             .unwrap_or(false),
     }
@@ -178,6 +218,7 @@ pub fn research_policy(denies: &[String]) -> PermissionPolicy {
                 "write",
                 "edit",
                 "download",
+                "office_file",
                 "bash",
                 "task",
                 "parallel_task",
@@ -236,6 +277,33 @@ mod tests {
     }
 
     #[test]
+    fn completion_attestation_requires_a_known_explicit_host_mode() {
+        assert!(
+            studio_host_from_meta(None)
+                .unwrap()
+                .completion_attestation
+                .is_none()
+        );
+        let parsed = meta(serde_json::json!({"a3sHost":{"completionAttestation":"disk_content"}}));
+        assert_eq!(
+            studio_host_from_meta(Some(&parsed))
+                .unwrap()
+                .completion_attestation
+                .unwrap()
+                .as_str(),
+            "disk_content"
+        );
+        for invalid in [
+            serde_json::json!("automatic"),
+            serde_json::json!(true),
+            serde_json::Value::Null,
+        ] {
+            let parsed = meta(serde_json::json!({"a3sHost":{"completionAttestation":invalid}}));
+            assert!(studio_host_from_meta(Some(&parsed)).is_err());
+        }
+    }
+
+    #[test]
     fn source_review_is_an_explicit_boolean_restriction() {
         for enabled in [false, true] {
             let parsed = meta(serde_json::json!({"a3sHost":{"sourceReview":enabled}}));
@@ -259,15 +327,19 @@ mod tests {
 
     #[test]
     fn host_text_lands_in_extra_and_keeps_the_budget_line() {
+        let delivery_contract =
+            include_str!("../../../../apps/work/src-tauri/src/agent_plane/delivery_contract.md")
+                .trim();
+        let caller = format!("每次都带上{}", "字".repeat(7995));
         let parsed = meta(serde_json::json!({
             "a3sHost": {
-                "guidelines": "每次都带上\u{0000}",
+                "guidelines": format!("{caller}\u{0000}\n\n{delivery_contract}"),
                 "review": "subagent",
                 "outputLanguage": "zh-CN"
             }
         }));
         let host = studio_host_from_meta(Some(&parsed)).unwrap();
-        assert_eq!(host.guidelines, "每次都带上");
+        assert_eq!(host.guidelines, format!("{caller}\n\n{delivery_contract}"));
         assert!(host.review_subagent);
         let slots = merge_studio_host(
             SystemPromptSlots::default()
@@ -275,12 +347,29 @@ mod tests {
                 .with_extra("kept"),
             &host,
         );
+        let built = slots.build();
+        assert_eq!(built.matches(delivery_contract).count(), 1);
+        for required in [
+            "Do not turn goals, targets or plans into completed events or actual periods",
+            "Label assumptions “待核实” as unverified hypotheses",
+            "do not imply supporting source evidence or confirmed causes",
+            "Verify every derived numerical conclusion with available tools",
+            "Compare the same periods, coverage, units and exclusions",
+            "Format derived numbers without thousands grouping separators",
+            "unless explicitly required by the user or source",
+        ] {
+            assert!(
+                built.contains(required),
+                "missing transported rule: {required}"
+            );
+        }
         let guidelines = slots.guidelines.unwrap();
         assert!(guidelines.contains("thinking_budget=8"));
         assert!(!guidelines.contains("每次都带上"));
         let extra = slots.extra.unwrap();
         assert!(extra.starts_with("kept\n\nHost instructions:\n"));
         assert!(extra.contains("每次都带上"));
+        assert!(extra.contains(delivery_contract));
         assert!(extra.contains(REVIEW_SUBAGENT));
         assert_eq!(slots.output_language.as_deref(), Some("zh-CN"));
         assert!(slots.role.is_none());
@@ -313,11 +402,11 @@ mod tests {
     }
 
     #[test]
-    fn guidelines_stop_at_eight_thousand_characters() {
-        let long = "测".repeat(8001);
+    fn guidelines_are_bounded_without_truncating_host_delivery_requirements() {
+        let long = "测".repeat(GUIDELINES_LIMIT + 1);
         let parsed = meta(serde_json::json!({ "a3sHost": { "guidelines": long } }));
         let host = studio_host_from_meta(Some(&parsed)).unwrap();
-        assert_eq!(host.guidelines.chars().count(), 8000);
+        assert_eq!(host.guidelines.chars().count(), GUIDELINES_LIMIT);
     }
 
     #[test]
@@ -337,8 +426,24 @@ mod tests {
         let quiet = TurnContext {
             directives: Vec::new(),
             research: true,
+            plan_first: false,
         };
+        assert!(!turn.plan_first);
         assert_eq!(apply_turn_directives("只看这一句", &quiet), "只看这一句");
+    }
+
+    #[test]
+    fn plan_first_is_its_own_flag() {
+        let parsed = meta(serde_json::json!({
+            "a3sTurn": { "planFirst": true, "research": false }
+        }));
+        let turn = turn_context_from_meta(Some(&parsed));
+        assert!(turn.plan_first);
+        assert!(!turn.research);
+        let refused = meta(serde_json::json!({
+            "a3sTurn": { "planFirst": "plan" }
+        }));
+        assert!(!turn_context_from_meta(Some(&refused)).plan_first);
     }
 
     #[test]
@@ -346,6 +451,13 @@ mod tests {
         let policy = research_policy(&["Bash(cat:*)".to_string()]);
         assert_eq!(
             policy.check("write", &serde_json::json!({})),
+            PermissionDecision::Deny
+        );
+        assert_eq!(
+            policy.check(
+                "office_file",
+                &serde_json::json!({"file_path":"report.xlsx"})
+            ),
             PermissionDecision::Deny
         );
         assert_eq!(

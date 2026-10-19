@@ -96,17 +96,44 @@ impl A3sCodeAgent {
         )
     }
 
+    #[cfg(test)]
     pub(super) fn host_session_options(
         session_id: &str,
         setup: &SessionSetup<'_>,
         config: &a3s_code_core::CodeConfig,
         session_store_dir: &std::path::Path,
     ) -> acp::Result<SessionOptions> {
+        Self::host_session_options_with_embedding(
+            session_id,
+            setup,
+            config,
+            session_store_dir,
+            None,
+        )
+    }
+
+    fn host_session_options_with_embedding(
+        session_id: &str,
+        setup: &SessionSetup<'_>,
+        config: &a3s_code_core::CodeConfig,
+        session_store_dir: &std::path::Path,
+        embedding: Option<Arc<dyn a3s_code_core::EmbeddingProvider>>,
+    ) -> acp::Result<SessionOptions> {
         let options = Self::core_session_options(session_id, setup.model_id, setup.effort);
         let mut slots = crate::host_context::merge_studio_host(
             options.prompt_slots.clone().unwrap_or_default(),
             &setup.host,
         );
+        let options = match setup.host.completion_attestation {
+            Some(crate::host_context::CompletionAttestation::DiskContent)
+                if !setup.host.source_review =>
+            {
+                options.with_completion_attestor(std::sync::Arc::new(
+                    a3s_code_core::completion_attestor::DiskContentAttestor::new(&setup.workspace),
+                ))
+            }
+            _ => options,
+        };
         let home = a3s_code_core::hooks::command_hook_home();
         let trust = match a3s_code_core::hooks::command_hook_trust_path(&setup.workspace) {
             Ok(path) => Some(path),
@@ -123,11 +150,11 @@ impl A3sCodeAgent {
             session_store_dir,
             home.as_deref(),
             trust.as_deref(),
-            session_embedding_provider(),
+            embedding,
         )
     }
 
-    pub(super) fn session_options_for(
+    pub(super) async fn session_options_for(
         &self,
         session_id: &str,
         setup: &SessionSetup<'_>,
@@ -141,13 +168,18 @@ impl A3sCodeAgent {
                     interactive_skill_dirs(&setup.workspace, &self.launch.config.skill_dirs),
                 )
                 .map_err(|error| acp::Error::internal_error().data(error)),
-            None => Self::host_session_options(
+            None => Self::host_session_options_with_embedding(
                 session_id,
                 setup,
                 &self.launch.config,
                 session_store_dir,
+                None,
             ),
         }?;
+        let options = match &self.launch.config.tool_presentation_profile {
+            Some(profile) => options.with_tool_presentation_profile(profile.clone()),
+            None => options,
+        };
         let options = self.with_client_reads(options, session_id, &setup.workspace);
         if setup.host.source_review {
             // A fixed checker keeps the capability ceiling empty even after a mode change.
@@ -166,13 +198,15 @@ impl A3sCodeAgent {
         restore: bool,
     ) -> acp::Result<LiveSession> {
         self.ensure_core_agent().await?;
+        let store_dir =
+            Self::interactive_session_store_dir(self.launch.config.sessions_dir.as_deref());
+        let options = self
+            .session_options_for(session_id, &setup, &store_dir)
+            .await?;
         let agent_guard = self.core_agent.lock().await;
         let agent = agent_guard
             .as_ref()
             .ok_or_else(|| acp::Error::internal_error().data("core agent missing"))?;
-        let store_dir =
-            Self::interactive_session_store_dir(self.launch.config.sessions_dir.as_deref());
-        let options = self.session_options_for(session_id, &setup, &store_dir)?;
         let options = match &self.plugin_selection {
             Some(selection) => selection.session_options(options),
             None => options,
@@ -280,13 +314,15 @@ impl A3sCodeAgent {
         setup: SessionSetup<'_>,
     ) -> acp::Result<LiveSession> {
         self.ensure_core_agent().await?;
+        let store_dir =
+            Self::interactive_session_store_dir(self.launch.config.sessions_dir.as_deref());
+        let mut options = self
+            .session_options_for(current.session_id(), &setup, &store_dir)
+            .await?;
         let agent_guard = self.core_agent.lock().await;
         let agent = agent_guard
             .as_ref()
             .ok_or_else(|| acp::Error::internal_error().data("core agent missing"))?;
-        let store_dir =
-            Self::interactive_session_store_dir(self.launch.config.sessions_dir.as_deref());
-        let mut options = self.session_options_for(current.session_id(), &setup, &store_dir)?;
         if let Some(selection) = &self.plugin_selection {
             options = selection.session_options(options);
         }

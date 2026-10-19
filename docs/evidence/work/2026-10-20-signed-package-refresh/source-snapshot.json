@@ -1,0 +1,18 @@
+{
+  "created_at": "2026-10-20T04:14:05.620024+08:00",
+  "root_head": "39832b698c544632c7580d9e3a67af4496e36cb9",
+  "work_head": "e95e97a89021447673cad2477619b219084bee37",
+  "files": {
+    "Cargo.lock": "66b5513f12803ea4e651fda88b47456f9bf8c07cd9db35f162fe6eacd45a80ef",
+    "Cargo.toml": "ebffee14b804bb952e2781c87780ceb50face6c808a0f061867ab80c05d8f807",
+    "apps/work/rsbuild.config.ts": "481e0a1db63cba9aa2b98eb56c376c30169ba5eccbbe62f497b700b05fdcb899",
+    "apps/work/pnpm-lock.yaml": "e533e1142c1bae9f7e43cb0eb0577ea97480a974525719294572113c120f59eb",
+    "apps/work/pnpm-workspace.yaml": "8f8ac199ff9987ab87a9a2642073b91af0377e6b12538d4df17b48257ef5916a",
+    "apps/work/patches/monaco-editor@0.56.0.patch": "37b8d17591eb174fbb6965525589cfd8cfcf89c567ee1195d1a9a84d2d036231",
+    "apps/work/src-tauri/tauri.conf.json": "55a166fdda8914b31a2a82b0551860ef2a0245b4a7ee7a1d1ca1da8b4507af2d",
+    "apps/work/src-tauri/src/providers.rs": "af3129495456e313d46019d152d445c9d69a5f7c7b61f53bfee322edea928c60",
+    "apps/work/src-tauri/src/agent_plane/turns.rs": "9abf5e044f05250774f16f9d6f2cd8d7ced55e0785845d55676df46e840acf03",
+    "crates/code/core/src/harness_loop.rs": "fc9de5f88e9c996d033d9e15c11b8c31b366fff2cff328d47203461f574dcde5",
+    "crates/code/core/src/completion_attestor.rs": "b6cb8f6e9d512b25f350630eb35ec5588e127f76852516e9552704f18694a56f"
+  }
+}

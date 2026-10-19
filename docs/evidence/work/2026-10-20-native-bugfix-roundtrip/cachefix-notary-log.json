@@ -1,0 +1,42 @@
+{
+  "logFormatVersion": 1,
+  "jobId": "2fe2cd71-abd8-403c-9770-9ff0b35aebbc",
+  "status": "Accepted",
+  "statusSummary": "Ready for distribution",
+  "statusCode": 0,
+  "archiveFilename": "aster_0.1.1_aarch64.dmg",
+  "uploadDate": "2026-10-19T20:02:30.482Z",
+  "sha256": "3e5fb85b01d7121fa5fe83c525cfb31f9c4ecc67db4e135fcffde06165fe6053",
+  "ticketContents": [
+    {
+      "path": "aster_0.1.1_aarch64.dmg/AsterDream.app",
+      "digestAlgorithm": "SHA-256",
+      "cdhash": "839087e5562f5220ad8fad2a99dd4ac12d4ac085",
+      "arch": "arm64"
+    },
+    {
+      "path": "aster_0.1.1_aarch64.dmg/AsterDream.app/Contents/MacOS/aster-dream",
+      "digestAlgorithm": "SHA-256",
+      "cdhash": "839087e5562f5220ad8fad2a99dd4ac12d4ac085",
+      "arch": "arm64"
+    },
+    {
+      "path": "aster_0.1.1_aarch64.dmg/AsterDream.app/Contents/Resources/agent/a3s-code-acp",
+      "digestAlgorithm": "SHA-256",
+      "cdhash": "a5a1588ddfe4140fe795dc345896ca792bff4c5d",
+      "arch": "arm64"
+    },
+    {
+      "path": "aster_0.1.1_aarch64.dmg/AsterDream.app/Contents/Resources/agent/a3s-office",
+      "digestAlgorithm": "SHA-256",
+      "cdhash": "669fde4f011f2a171302cec670a2e3339d5dc365",
+      "arch": "arm64"
+    },
+    {
+      "path": "aster_0.1.1_aarch64.dmg",
+      "digestAlgorithm": "SHA-256",
+      "cdhash": "d374d34de53d66300d9c13832d65074e830d963e"
+    }
+  ],
+  "issues": null
+}

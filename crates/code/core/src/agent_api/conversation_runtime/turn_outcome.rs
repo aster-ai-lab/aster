@@ -208,7 +208,7 @@ pub(crate) fn gate_surface_result(
             // The run closed accountable: mark the log position so the next
             // send's ledger replay starts here instead of inheriting this
             // run's already-verified mutations.
-            crate::fact_control::append_turn_complete_fact(surface, &terminal)?;
+            crate::fact_control::append_turn_complete_fact(surface, &terminal, result.forced_stop)?;
             result.completion = terminal;
             Ok(result)
         }

@@ -40,6 +40,18 @@ pub enum ToolPresentationModeV1 {
 }
 
 impl ToolPresentationModeV1 {
+    pub fn parse(value: &str) -> Result<Self, ToolPresentationError> {
+        match value {
+            "adaptive" => Ok(Self::Adaptive),
+            "direct" => Ok(Self::Direct),
+            "code" => Ok(Self::Code),
+            "disabled" => Ok(Self::Disabled),
+            _ => Err(ToolPresentationError::UnknownMode {
+                mode: value.to_owned(),
+            }),
+        }
+    }
+
     pub const fn as_str(self) -> &'static str {
         match self {
             Self::Adaptive => "adaptive",
@@ -61,22 +73,22 @@ pub struct ToolPresentationProfileV1 {
 
 impl ToolPresentationProfileV1 {
     pub fn adaptive() -> Self {
-        Self::new(ToolPresentationModeV1::Adaptive)
+        Self::for_mode(ToolPresentationModeV1::Adaptive)
     }
 
     pub fn direct() -> Self {
-        Self::new(ToolPresentationModeV1::Direct)
+        Self::for_mode(ToolPresentationModeV1::Direct)
     }
 
     pub fn code() -> Self {
-        Self::new(ToolPresentationModeV1::Code)
+        Self::for_mode(ToolPresentationModeV1::Code)
     }
 
     pub fn disabled() -> Self {
-        Self::new(ToolPresentationModeV1::Disabled)
+        Self::for_mode(ToolPresentationModeV1::Disabled)
     }
 
-    fn new(mode: ToolPresentationModeV1) -> Self {
+    pub fn for_mode(mode: ToolPresentationModeV1) -> Self {
         Self {
             schema: TOOL_PRESENTATION_PROFILE_V1_SCHEMA.to_owned(),
             mode,
@@ -162,6 +174,10 @@ impl Default for ToolPresentationProfileV1 {
 
 #[derive(Clone, Debug, Eq, Error, PartialEq)]
 pub enum ToolPresentationError {
+    #[error(
+        "Unknown tool presentation mode '{mode}'; expected one of [adaptive, direct, code, disabled]"
+    )]
+    UnknownMode { mode: String },
     #[error("Tool presentation profile uses an unsupported schema")]
     UnsupportedSchema,
     #[error("Tool presentation source exceeds the {max} definition limit")]
@@ -182,6 +198,10 @@ pub enum ToolPresentationError {
         child: &'static str,
     },
 }
+
+#[cfg(test)]
+#[path = "presentation_tests.rs"]
+mod projection_tests;
 
 pub(crate) fn estimated_definition_tokens(tools: &[ToolDefinition]) -> usize {
     estimate_prompt_tokens(&[], None, tools)

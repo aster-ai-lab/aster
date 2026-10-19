@@ -1,0 +1,10 @@
+
+running 5 tests
+test completion_attestor::failure_tests::expected_read_failure_and_successful_compound_output_do_not_create_failed_effects ... ok
+test completion_attestor::failure_tests::failed_complete_effects_change_the_digest_and_refuse_automatic_byte_certification ... ok
+test completion_attestor::failure_tests::failed_deletion_stays_negative_but_current_digest_formal_verification_can_recover ... ok
+test completion_attestor::failure_tests::serialization_original_replay_and_cache_restore_cannot_erase_failed_effects ... ok
+test completion_attestor::failure_tests::successful_recovery_requires_each_exact_path_to_have_a_new_after_state ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 5148 filtered out; finished in 0.01s
+

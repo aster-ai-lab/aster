@@ -13,6 +13,7 @@
 mod account_import;
 mod acl_render;
 mod editor;
+mod execution_capabilities;
 mod goal_control;
 mod loader;
 #[cfg(test)]
@@ -192,6 +193,9 @@ pub struct CodeConfig {
     /// Parsed `workspace_retrieval` block, when declared.
     #[serde(default)]
     pub workspace_retrieval: Option<WorkspaceRetrievalConfig>,
+    /// Host-selected model-facing tool presentation; absence keeps adaptive mode.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tool_presentation_profile: Option<crate::tools::ToolPresentationProfileV1>,
     /// Parsed `notifications` block, when declared; absent = off.
     #[serde(default)]
     pub notifications: Option<NotificationsConfig>,

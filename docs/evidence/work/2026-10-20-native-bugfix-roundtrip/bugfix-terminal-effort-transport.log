@@ -1,0 +1,293 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling web_atoms v0.2.3
+   Compiling ahash v0.8.12
+   Compiling chromiumoxide_pdl v0.7.0
+   Compiling cssparser v0.37.0
+   Compiling which v6.0.3
+   Compiling tempfile v3.27.0
+   Compiling lopdf v0.42.0
+   Compiling rand_chacha v0.9.0
+   Compiling which v7.0.3
+   Compiling console v0.15.11
+   Compiling spm_precompiled v0.1.4
+   Compiling compact_str v0.9.0
+   Compiling monostate v0.1.18
+   Compiling ndarray v0.16.1
+   Compiling dary_heap v0.3.9
+   Compiling unicode-normalization-alignments v0.1.12
+   Compiling a3s-vec v0.1.8 (/Users/roylin/code/aster/crates/vec)
+   Compiling rand v0.9.5
+   Compiling referencing v0.48.5
+   Compiling jsonschema-value v0.48.5
+   Compiling markup5ever v0.38.0
+   Compiling markup5ever v0.39.0
+   Compiling referencing v0.47.0
+   Compiling a3s-sandbox v0.2.3 (/Users/roylin/code/aster/crates/sandbox)
+   Compiling a3s-office v0.45.0 (/Users/roylin/code/aster/crates/office/crates/core)
+   Compiling indicatif v0.17.11
+   Compiling selectors v0.38.0
+   Compiling a3s-code-mermaid v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-mermaid)
+   Compiling chromiumoxide_cdp v0.7.0
+   Compiling ort v2.0.0-rc.10
+   Compiling pdf-inspector v1.17.0
+   Compiling html5ever v0.38.0
+   Compiling xml5ever v0.38.0
+   Compiling html5ever v0.39.0
+   Compiling jsonschema v0.48.5
+   Compiling jsonschema v0.47.0
+   Compiling tokenizers v0.21.4
+   Compiling markup5ever_rcdom v0.38.0+unofficial
+   Compiling html2text v0.16.7
+   Compiling dom_query v0.28.0
+   Compiling a3s-oci-sdk v0.3.2 (/Users/roylin/code/aster/crates/oci-runtime/crates/sdk)
+   Compiling htmd v0.5.4
+   Compiling a3s-use-bge v0.1.0 (/Users/roylin/code/aster/crates/bge)
+   Compiling dom_smoothie v0.18.2
+warning: function `sigmoid` is never used
+  --> crates/bge/src/math.rs:18:15
+   |
+18 | pub(crate) fn sigmoid(logit: f32) -> f32 {
+   |               ^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `encode_pairs` is never used
+  --> crates/bge/src/tokenizer.rs:91:19
+   |
+28 | impl PairTokenizer {
+   | ------------------ method in this implementation
+...
+91 |     pub(crate) fn encode_pairs(
+   |                   ^^^^^^^^^^^^
+
+warning: `a3s-use-bge` (lib) generated 2 warnings
+   Compiling a3s-okf v0.1.0 (/Users/roylin/code/aster/crates/okf)
+   Compiling chromiumoxide v0.7.0
+   Compiling a3s-use-browser v0.3.2 (/Users/roylin/code/aster/crates/browser)
+   Compiling a3s-search v3.4.0 (/Users/roylin/code/aster/crates/search)
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+warning: unused imports: `guest_agent_hello` and `host_runtime_version`
+  --> crates/code/core/src/sandbox/oci.rs:25:26
+   |
+25 | pub(crate) use version::{guest_agent_hello, host_runtime_version};
+   |                          ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `HOST_MISMATCH` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:10:7
+   |
+10 | const HOST_MISMATCH: &[u8] = b"guest agent version does not match the host runtime version";
+   |       ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `host_runtime_version` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:13:15
+   |
+13 | pub(crate) fn host_runtime_version(host: &[u8]) -> Option<&str> {
+   |               ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `guest_agent_hello` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:18:15
+   |
+18 | pub(crate) fn guest_agent_hello<'a>(agent: &'a [u8], architecture: &str) -> Option<&'a str> {
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: function `version_immediately_before` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:26:4
+   |
+26 | fn version_immediately_before<'a>(bytes: &'a [u8], marker: &[u8]) -> Option<&'a str> {
+   |    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `semver_ending_at` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:44:4
+   |
+44 | fn semver_ending_at(bytes: &[u8], end: usize) -> Option<&str> {
+   |    ^^^^^^^^^^^^^^^^
+
+   Compiling a3s-code-acp v9.1.4 (/Users/roylin/code/aster/crates/code/acp)
+warning: method `as_str` is never used
+  --> crates/code/acp/src/host_context.rs:49:12
+   |
+42 | impl CompletionAttestation {
+   | -------------------------- method in this implementation
+...
+49 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-core` (lib) generated 6 warnings (run `cargo fix --lib -p a3s-code-core` to apply 1 suggestion)
+warning: `a3s-code-acp` (lib) generated 1 warning
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-acp` (test "perf_probe") generated 1 warning
+warning: `a3s-code-acp` (test "approval_learning_probe") generated 1 warning (1 duplicate)
+warning: `a3s-code-acp` (bin "a3s-code-acp") generated 1 warning (1 duplicate)
+warning: `a3s-code-acp` (test "goal_flow_probe") generated 1 warning (1 duplicate)
+warning: `a3s-code-acp` (test "live_tui_prompt") generated 1 warning (1 duplicate)
+warning: `a3s-code-acp` (test "cursor_account_tui_e2e") generated 1 warning (1 duplicate)
+warning: `a3s-code-acp` (lib test) generated 1 warning (1 duplicate)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 44s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_acp-2b28f4e6a05bb2da)
+
+running 1 test
+test agent::reasoning_transport_tests::terminal_initial_effort_reaches_new_session_and_allows_later_selection ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 335 filtered out; finished in 0.09s
+
+     Running unittests src/bin/a3s-code-acp.rs (target/debug/deps/a3s_code_acp-67c68edddcd352e1)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s
+
+     Running tests/account_import_opt_in_stdio.rs (target/debug/deps/account_import_opt_in_stdio-cb0a9a636ded7f1a)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/acp_conformance_stdio.rs (target/debug/deps/acp_conformance_stdio-32879fa1b2e6832a)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/approval_learning_probe.rs (target/debug/deps/approval_learning_probe-a21a3e08c225c39e)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/approval_rules_stdio.rs (target/debug/deps/approval_rules_stdio-9bfb026a8fc7bcfc)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/boundary_e2e.rs (target/debug/deps/boundary_e2e-d226bb9a1e893d00)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+     Running tests/client_fs_stdio.rs (target/debug/deps/client_fs_stdio-2cf326d1716b1b0c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/consumer_deny.rs (target/debug/deps/consumer_deny-bd0a7d8b9b78edee)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/cursor_account_tui_e2e.rs (target/debug/deps/cursor_account_tui_e2e-d54d329d861fabd9)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/goal_flow_probe.rs (target/debug/deps/goal_flow_probe-7f3e641252e79773)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/live_interactive_dialogue_real_llm.rs (target/debug/deps/live_interactive_dialogue_real_llm-0ae5753a53513b61)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s
+
+     Running tests/live_tui_prompt.rs (target/debug/deps/live_tui_prompt-bc0cc7036454071d)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/perf_probe.rs (target/debug/deps/perf_probe-eca808dac6deddad)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/plugin_workspace_stdio.rs (target/debug/deps/plugin_workspace_stdio-64df9b1bebcc4941)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/protocol_commands_stdio.rs (target/debug/deps/protocol_commands_stdio-dc4e09d758ff5506)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/release_smoke.rs (target/debug/deps/release_smoke-b7746ab8f434a018)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/shell_bypass_learning.rs (target/debug/deps/shell_bypass_learning-13fb45025c339fc3)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/shipped_tui_e2e.rs (target/debug/deps/shipped_tui_e2e-b9e4249db3c5e060)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 9 filtered out; finished in 0.00s
+
+     Running tests/startup_error.rs (target/debug/deps/startup_error-9a6e17d7f66f947e)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/tui_913_hermetic.rs (target/debug/deps/tui_913_hermetic-88ae3ae24dd9fd61)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s
+
+     Running tests/tui_913_real_llm.rs (target/debug/deps/tui_913_real_llm-3d203355cc800a2f)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 23 filtered out; finished in 0.00s
+
+     Running tests/unattended_e2e.rs (target/debug/deps/unattended_e2e-a05892f7851a3a57)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+     Running tests/v912_seam.rs (target/debug/deps/v912_seam-467528245939795f)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s
+
+     Running tests/workspace_layer_trust_stdio.rs (target/debug/deps/workspace_layer_trust_stdio-c838a60762428711)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+

@@ -232,6 +232,29 @@ pub(super) fn effort_limits_from_meta(meta: Option<&acp::Meta>) -> Option<Effort
     effort_limits(effort)
 }
 
+/// Omission/null preserves the running selection. The desktop `default` sentinel
+/// explicitly removes overrides; unsupported values must not silently retain
+/// a previous (possibly expensive) selection.
+pub(super) fn selected_effort(
+    meta: Option<&acp::Meta>,
+    current: Option<EffortLimits>,
+) -> acp::Result<Option<EffortLimits>> {
+    let Some(value) = meta.and_then(|meta| meta.get("reasoningEffort")) else {
+        return Ok(current);
+    };
+    if value.is_null() {
+        return Ok(current);
+    }
+    if value.as_str() == Some("default") {
+        return Ok(None);
+    }
+    effort_limits_from_meta(meta).map(Some).ok_or_else(|| {
+        acp::Error::invalid_params().data(
+            "Unsupported reasoning effort; expected default, none, minimal, low, medium, high, xhigh, max or ultracode.",
+        )
+    })
+}
+
 /// Map pager `/effort` `_meta.reasoningEffort` onto the provider effort token.
 /// The pager effort surface lands with its slice; kept linked.
 #[allow(dead_code)]

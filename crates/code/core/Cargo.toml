@@ -56,6 +56,7 @@ path = "tests/typed_decision_perf.rs"
 required-features = ["apofasi"]
 
 [dependencies]
+a3s-form-core = { workspace = true }
 # Internal crates
 # Pin the Search release so the browser-engine and Moli adapter APIs cannot
 # drift underneath the Code runtime manager.

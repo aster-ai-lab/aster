@@ -1,0 +1,45 @@
+{
+  "status": "accepted",
+  "scope": "T0 and all eight reported issues; terminal effort policy; final macOS ARM64 package",
+  "local_time": "2026-10-20T04:08:43.395698+08:00",
+  "screen_locked": false,
+  "notary_profile": "available",
+  "artifact": "target/packages/asterdream-bugfix-20261020-cachefix/aster_0.1.1_aarch64.dmg",
+  "artifact_sha256": "b3ee4427fa21666dbaa4185e914836c60598d245ea3ed6b4ac76e8e108d4bad3",
+  "codesign": "passed",
+  "dmg_integrity": "passed",
+  "native_json_acceptance": "passed",
+  "notarization": {
+    "id": "2fe2cd71-abd8-403c-9770-9ff0b35aebbc",
+    "status": "Accepted",
+    "submitted_sha256": "3e5fb85b01d7121fa5fe83c525cfb31f9c4ecc67db4e135fcffde06165fe6053"
+  },
+  "stapling": "validated for app and DMG",
+  "gatekeeper": "accepted / Notarized Developer ID for DMG and both built/mounted app",
+  "mounted_binary_identity": "passed: application and ACP match tested package manifest",
+  "includes_structured_stop_conflict_fix": true,
+  "budget_policy": {
+    "medium_default_tool_rounds": 48,
+    "independent_evidence_cap": null
+  },
+  "failed_read_budget_regression": "passed",
+  "successful_read_receipts": "16 verified",
+  "forced_stop_persistence": "passed",
+  "core_lib_test_compile": "passed",
+  "renderer_cache_root_cause": "compiled chunk omitted installed Monaco nonce patch; lockfile/workspace/patch now invalidate the persistent build cache",
+  "cleanup": {
+    "native_app_exit": 0,
+    "native_fixture_server_exit": 0,
+    "owned_acp_children_remaining": [],
+    "owned_disk_image_mounts_remaining": [],
+    "unmount_exit": 0
+  },
+  "required_external_changes": [],
+  "remaining_acceptance": [],
+  "completion_audit": "COMPLETION_AUDIT.md",
+  "limits": [
+    "Deterministic loopback model, not external model quality",
+    "Unrelated full renderer lint/typecheck/docs and broader core test failures remain recorded",
+    "No installation, publication, commit or submodule landing"
+  ]
+}

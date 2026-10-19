@@ -17,7 +17,7 @@ fn malformed_components_are_rejected_before_waiting_for_an_answer() {
     let widget = check_form_shape("root = Widget(\"unsupported component\")")
         .expect_err("widget is outside the catalog");
     assert!(
-        widget.contains("unsupported terminal form component: Widget"),
+        widget.contains("unsupported OpenUI form component: Widget"),
         "{widget}"
     );
 }
@@ -35,6 +35,15 @@ fn accepts_openui_and_refuses_mdx_or_json() {
     ] {
         assert!(check_form_shape(source).is_err());
     }
+}
+
+#[test]
+fn tool_description_uses_the_shared_component_parameter_order() {
+    // Catches missing Grid support or models being given an incomplete Select signature.
+    let description = AskUserFormTool.description();
+    assert!(description.contains(&a3s_form_core::openui_parameter_table()));
+    assert!(description.contains("Select(name, label, initial, options, required, placeholder)"));
+    assert!(description.contains("Grid(columns, children)"));
 }
 
 #[test]

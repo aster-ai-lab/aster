@@ -52,7 +52,9 @@ fn the_reasoning_effort_defaults_to_max_and_takes_only_host_levels() {
         Some(base())
     );
     assert!(parse(&["--unattended", "--reasoning-effort", "extreme"]).is_err());
-    assert!(parse(&["--reasoning-effort", "high"]).is_err());
+    let interactive = parse(&["--reasoning-effort", "medium"]).expect("interactive budget");
+    assert!(interactive.unattended.is_none());
+    assert_eq!(interactive.reasoning_effort.as_deref(), Some("medium"));
 }
 
 #[test]

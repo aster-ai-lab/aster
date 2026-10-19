@@ -6,11 +6,6 @@ use std::time::Instant;
 
 const RECENT_TOOL_SIGNATURE_LIMIT: usize = 8;
 
-/// Consecutive tool rounds that leave the workspace unchanged.
-/// Independent of `max_tool_rounds`. A recorded mutation clears the count
-/// and later rounds stay clear so verification can still run.
-pub(crate) const READ_ONLY_EVIDENCE_LIMIT: u32 = 12;
-
 pub(super) struct ExecutionLoopState {
     pub(super) messages: Vec<Message>,
     pub(super) total_usage: TokenUsage,
@@ -23,7 +18,6 @@ pub(super) struct ExecutionLoopState {
     recent_tool_signatures: Vec<String>,
     guarded_duplicate_signature: Option<String>,
     guarded_duplicate_count: u32,
-    read_only_evidence_rounds: u32,
     duplicate_finalization_pending: bool,
     last_incomplete_response_hash: Option<String>,
     incomplete_response_stalled: bool,
@@ -92,7 +86,6 @@ impl ExecutionLoopState {
             recent_tool_signatures: convergence.recent_tool_signatures,
             guarded_duplicate_signature: convergence.guarded_duplicate_signature,
             guarded_duplicate_count: convergence.guarded_duplicate_count,
-            read_only_evidence_rounds: convergence.read_only_evidence_rounds,
             duplicate_finalization_pending: convergence.duplicate_finalization_pending,
             last_incomplete_response_hash: convergence.last_incomplete_response_hash,
             incomplete_response_stalled: convergence.incomplete_response_stalled,
@@ -206,7 +199,7 @@ impl ExecutionLoopState {
             recent_tool_signatures: self.recent_tool_signatures.clone(),
             guarded_duplicate_signature: self.guarded_duplicate_signature.clone(),
             guarded_duplicate_count: self.guarded_duplicate_count,
-            read_only_evidence_rounds: self.read_only_evidence_rounds,
+            read_only_evidence_rounds: 0,
             duplicate_finalization_pending: self.duplicate_finalization_pending,
             last_incomplete_response_hash: self.last_incomplete_response_hash.clone(),
             incomplete_response_stalled: self.incomplete_response_stalled,
@@ -271,25 +264,6 @@ impl ExecutionLoopState {
 
     pub(super) fn take_duplicate_finalization(&mut self) -> bool {
         std::mem::take(&mut self.duplicate_finalization_pending)
-    }
-
-    /// Count one tool round that did not change the workspace.
-    /// A ledger that already records an effect stays at zero.
-    pub(super) fn note_read_only_evidence_round(&mut self) {
-        if !self.mutations.is_empty() || self.mutations.has_open_children() {
-            self.read_only_evidence_rounds = 0;
-            return;
-        }
-        self.read_only_evidence_rounds = self
-            .read_only_evidence_rounds
-            .saturating_add(1)
-            .min(READ_ONLY_EVIDENCE_LIMIT);
-    }
-
-    pub(super) fn read_only_evidence_exhausted(&self) -> bool {
-        self.mutations.is_empty()
-            && !self.mutations.has_open_children()
-            && self.read_only_evidence_rounds >= READ_ONLY_EVIDENCE_LIMIT
     }
 
     pub(super) fn record_duplicate_guard(&mut self, tool_name: &str, args: &Value) -> u32 {
@@ -932,19 +906,9 @@ mod tests {
     }
 
     #[test]
-    fn read_only_evidence_stops_at_limit_and_a_mutation_clears_it() {
-        let mut state = ExecutionLoopState::new(&[]);
-        for _ in 0..READ_ONLY_EVIDENCE_LIMIT - 1 {
-            state.note_read_only_evidence_round();
-            assert!(!state.read_only_evidence_exhausted());
-        }
-        state.note_read_only_evidence_round();
-        assert!(state.read_only_evidence_exhausted());
-
-        let saved = state.convergence_checkpoint();
-        let encoded = serde_json::to_string(&saved).unwrap();
+    fn old_read_only_ceiling_does_not_disarm_resumed_tools() {
         let restored: crate::loop_checkpoint::LoopConvergenceState =
-            serde_json::from_str(&encoded).unwrap();
+            serde_json::from_str(r#"{"read_only_evidence_rounds":12}"#).unwrap();
         let mut resumed = ExecutionLoopState::new_seeded(
             &[],
             Some(ExecutionSeed {
@@ -952,26 +916,10 @@ mod tests {
                 ..ExecutionSeed::default()
             }),
         );
-        assert!(resumed.read_only_evidence_exhausted());
-
-        let older: crate::loop_checkpoint::LoopConvergenceState =
-            serde_json::from_str("{}").unwrap();
-        let from_older = ExecutionLoopState::new_seeded(
-            &[],
-            Some(ExecutionSeed {
-                convergence: older,
-                ..ExecutionSeed::default()
-            }),
+        assert_eq!(
+            resumed.convergence_checkpoint().read_only_evidence_rounds,
+            0
         );
-        assert!(!from_older.read_only_evidence_exhausted());
-
-        resumed.mutations.observe_tool(
-            "recorded_call",
-            0,
-            Some(&json!({ "changed_paths": ["note.txt"] })),
-        );
-        resumed.note_read_only_evidence_round();
-        assert!(!resumed.read_only_evidence_exhausted());
         resumed.schedule_duplicate_finalization();
         let pending = resumed.convergence_checkpoint();
         let mut resumed_pending = ExecutionLoopState::new_seeded(
@@ -983,6 +931,5 @@ mod tests {
         );
         assert!(resumed_pending.take_duplicate_finalization());
         assert!(!resumed_pending.take_duplicate_finalization());
-        let _ = from_older;
     }
 }

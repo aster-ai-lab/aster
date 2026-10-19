@@ -305,21 +305,15 @@ version = "9.1.4"
 dependencies = [
  "a3s-acl 0.3.0",
  "a3s-code-core",
- "a3s-code-mermaid",
- "a3s-office",
  "a3s-okf",
  "a3s-use-reconcile",
  "agent-client-protocol",
  "anyhow",
  "async-trait",
- "cap-fs-ext",
- "cap-std",
  "portable-pty",
- "quick-xml 0.38.4",
  "rusqlite",
  "serde",
  "serde_json",
- "sha2 0.10.9",
  "tempfile",
  "tokio",
  "tokio-util",
@@ -484,6 +478,7 @@ dependencies = [
  "a3s-common",
  "a3s-effect",
  "a3s-flow",
+ "a3s-form-core",
  "a3s-lane",
  "a3s-memory",
  "a3s-oci-sdk",
@@ -2326,6 +2321,7 @@ dependencies = [
 name = "a3s-form-core"
 version = "0.1.0"
 dependencies = [
+ "a3s-acl 0.3.0",
  "regress 0.10.5",
  "ryu-js",
  "serde",
@@ -2793,6 +2789,7 @@ name = "a3s-search"
 version = "3.4.0"
 dependencies = [
  "a3s-acl 0.3.0",
+ "a3s-updater 0.3.0",
  "a3s-use-browser",
  "anyhow",
  "async-trait",
@@ -3992,6 +3989,27 @@ dependencies = [
  "tokio-util",
  "tracing",
  "tracing-subscriber",
+]
+
+[[package]]
+name = "aster-flow-legacy"
+version = "1.1.0"
+dependencies = [
+ "a3s-boot",
+ "a3s-event",
+ "a3s-orm",
+ "async-trait",
+ "chrono",
+ "semver",
+ "serde",
+ "serde_json",
+ "serde_yaml_ng",
+ "sha2 0.10.9",
+ "tempfile",
+ "thiserror 1.0.69",
+ "tokio",
+ "tracing",
+ "uuid",
 ]
 
 [[package]]

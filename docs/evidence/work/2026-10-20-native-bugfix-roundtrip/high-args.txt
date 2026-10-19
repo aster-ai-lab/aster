@@ -1,0 +1,8 @@
+--reasoning-effort
+high
+--cwd
+/Users/roylin/code/aster/target/bugfix-terminal-e2e/workspace
+--model
+openai/gpt-4.1-mini
+--config
+/Users/roylin/code/aster/target/bugfix-model-e2e/agent-plane/runtime/01a154f6-df9c-7701-b146-994b2ec6609e.acl

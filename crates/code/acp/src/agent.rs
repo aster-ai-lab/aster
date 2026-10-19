@@ -38,9 +38,9 @@ use extensions::{answer_wiki_search, product_prompt_turns};
 #[cfg(test)]
 use extensions::{parse_interject_params, recorded_session_homes, remove_recorded_session_under};
 use host_methods::HostMethod;
-use models::{effort_guideline, effort_limits, effort_limits_from_meta, EffortLimits};
+use models::{effort_guideline, effort_limits, EffortLimits};
 #[cfg(test)]
-use models::{reasoning_effort_catalog_meta, reasoning_effort_token};
+use models::{effort_limits_from_meta, reasoning_effort_catalog_meta, reasoning_effort_token};
 #[cfg(test)]
 use permission_ask::tool_permission_request;
 use permission_ask::{
@@ -289,12 +289,6 @@ fn session_capability_note(
     )
 }
 
-/// Production embedding seam. Nothing is wired, so semantic retrieval stays off.
-/// shortcut: no HTTP, ONNX, or local model; return a provider here when one exists.
-fn session_embedding_provider() -> Option<Arc<dyn a3s_code_core::EmbeddingProvider>> {
-    None
-}
-
 fn session_memory_dir(workspace: &std::path::Path, config: &a3s_code_core::CodeConfig) -> PathBuf {
     config
         .memory_dir
@@ -475,7 +469,7 @@ fn remember_denies(live: &mut LiveSession) {
     *gate = live.denies.clone();
 }
 
-/// Restores the session posture if a research turn returns early.
+/// Restores the session posture if a read-only turn returns early.
 struct ResearchGate<'a> {
     session: &'a AgentSession,
     posture: &'a str,
@@ -601,6 +595,14 @@ impl A3sCodeAgent {
             client_reads_files: std::cell::Cell::new(false),
             first_run_config: false,
         }
+    }
+
+    /// Set the host's initial budget; later session model selections still win.
+    pub fn with_default_reasoning_effort(mut self, token: &str) -> anyhow::Result<Self> {
+        let effort = effort_limits(token)
+            .ok_or_else(|| anyhow::anyhow!("unsupported reasoning effort: {token}"))?;
+        self.effort = Mutex::new(Some(effort));
+        Ok(self)
     }
 
     /// The pager should open the model config page for this launch.
@@ -787,6 +789,9 @@ impl A3sCodeAgent {
         if let Some(policy) = &setup.host.work_policy {
             options = options.with_work_policy(policy.clone());
         }
+        if let Some(profile) = &config.tool_presentation_profile {
+            options = options.with_tool_presentation_profile(profile.clone());
+        }
         let skill_dirs = interactive_skill_dirs(&setup.workspace, &config.skill_dirs);
         if !skill_dirs.is_empty() {
             options = options.with_skill_dirs(skill_dirs);
@@ -872,6 +877,7 @@ struct TurnState {
     /// the client as an `x.ai/turn/outcome` notification just before the
     /// prompt response resolves (so it precedes the terminal marker).
     end_outcome: Option<serde_json::Value>,
+    stop_reason: Option<acp::StopReason>,
     achieved_goal: Option<(String, usize, i64)>,
     subagent_started_ms: HashMap<String, u64>,
     child_progress: HashMap<String, ChildProgress>,
@@ -1150,12 +1156,7 @@ impl acp::Agent for A3sCodeAgent {
             return Err(acp::Error::invalid_params().data(format!("unknown model id: {model_id}")));
         }
 
-        let effort = match args.meta.as_ref() {
-            Some(meta) if meta.contains_key("reasoningEffort") => {
-                effort_limits_from_meta(Some(meta)).or(*self.effort.lock().await)
-            }
-            _ => *self.effort.lock().await,
-        };
+        let effort = models::selected_effort(args.meta.as_ref(), *self.effort.lock().await)?;
 
         let session_key = args.session_id.0.to_string();
         let existing = {
@@ -1283,7 +1284,7 @@ impl acp::Agent for A3sCodeAgent {
                 return Err(acp::Error::invalid_params().data(format!(
                     "prompt queue is full ({MAX_QUEUED_PROMPTS} waiting behind the active \
                      turn); the session is still working through queued prompts"
-                )))
+                )));
             }
         };
         let generation = {
@@ -1363,7 +1364,8 @@ impl acp::Agent for A3sCodeAgent {
                 denies: &denies,
                 armed: false,
             };
-            let mut response = if turn.research {
+            // Steps-first uses the same one-turn read-only policy. The stored mode stays.
+            let mut response = if turn.research || turn.plan_first {
                 match session.set_permission_policy(crate::host_context::research_policy(&denies)) {
                     Ok(()) => {
                         gate.armed = true;
@@ -1464,6 +1466,13 @@ const QUESTION_META_KEY: &str = "question";
 #[cfg(test)]
 #[path = "agent_tests.rs"]
 mod tests;
+
+#[cfg(test)]
+mod reasoning_transport_tests;
+
+#[cfg(test)]
+#[path = "agent/turn_terminal_tests.rs"]
+mod turn_terminal_tests;
 
 #[cfg(test)]
 pub(crate) use tests::test_launch;

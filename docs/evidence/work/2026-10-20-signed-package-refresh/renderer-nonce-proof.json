@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "assets": [
+    {
+      "file": "target/asterdream-signed-20261020-0413-renderer/static/js/async/yc.2303ab1a8e.js",
+      "sha256": "fa1b643c9cffc9a49b3ce43ddc4b8b976b452dd47b81659989bc7195fe0bf075"
+    }
+  ],
+  "source_inputs_unchanged_so_far": true
+}

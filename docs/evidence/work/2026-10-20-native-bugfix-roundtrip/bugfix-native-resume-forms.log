@@ -1,0 +1,40 @@
+
+running 35 tests
+test agent_plane::document_read::run_tests::malformed_or_injected_pin_and_release_requests_cannot_admit_resources ... ok
+test agent_plane::forms::tests::a_host_identity_collision_is_refused_without_overwriting_the_waiter ... ok
+test agent_plane::forms::tests::a_repeated_source_does_not_close_another_waiter ... ok
+test agent_plane::forms::tests::altered_owners_and_content_versions_cannot_answer_or_withdraw_a_form ... ok
+test agent_plane::forms::tests::cancellation_closes_the_request_and_frees_only_that_sessions_capacity ... ok
+test agent_plane::forms::tests::invalid_question_answers_do_not_consume_the_pending_request ... ok
+test agent_plane::forms::tests::malformed_or_oversized_answers_do_not_consume_the_pending_request ... ok
+test agent_plane::forms::tests::racing_submissions_resolve_exactly_once ... ok
+test agent_plane::forms::tests::render_failure_and_decline_settle_only_the_bound_form ... ok
+test agent_plane::forms::tests::stale_lease_cleanup_cannot_delete_a_replacement_or_another_plane ... ok
+test agent_plane::forms::tests::submit_dto_refuses_unknown_fields_and_missing_ownership ... ok
+test agent_plane::forms_http_tests::pending_form_http_route_authenticates_and_refuses_unbound_submissions ... ok
+test agent_plane::launcher::tests::path_lookup_uses_the_platform_executable_and_path_order ... ok
+test agent_plane::review_prompt::tests::explicit_empty_is_distinct_from_missing_malformed_or_incomplete_review ... ok
+test agent_plane::stream::form_tests::owned_form_remains_bound_through_stream_checkpoint_and_answer ... ok
+test agent_plane::turns::form_route_tests::form_reply_error_and_cancellation_finish_the_native_turn_without_a_waiter ... ok
+test agent_plane::turns::form_route_tests::invalid_form_returns_an_acp_error_before_publishing_a_waiting_card ... ok
+test agent_plane::turns::turns_form_tests::a_form_is_bound_to_the_live_execution_and_is_revoked_synchronously_on_abort ... ok
+test agent_plane::turns::turns_form_tests::native_owned_form_contract_built_for_sdk_and_renderer ... ignored, requires explicit A3S_CLOUD_TEST_AGENT_FORM_OUTPUT for the native/renderer campaign
+test agent_plane::turns::turns_form_tests::old_submission_and_cleanup_do_not_affect_the_new_execution ... ok
+test agent_plane::turns::turns_form_tests::only_native_prompt_correlated_observations_are_included_in_form_ownership ... ok
+test agent_plane::turns::turns_form_tests::render_failure_requires_the_current_live_turn_and_does_not_answer_the_form ... ok
+test agent_plane::turns::turns_form_tests::waiting_on_a_form_retains_the_active_execution_in_status_and_reconnect ... ok
+test aix_applet_window::tests::identities_stay_in_the_catalogue_forms ... ok
+test app_updater::tests::an_empty_platforms_object_fails ... ok
+test app_updater::tests::one_missing_platform_is_not_published ... ok
+test authority::local_skill_case_tests::ls_form_01_ask_form_links_once_and_again_succeeds ... ok
+test capabilities::tests::desired_keeps_only_installed_well_formed_entries ... ok
+test crab_user::tests::a_platform_login_keeps_the_authorization_token ... ok
+test crab_user::tests::login_forwards_the_form_and_keeps_the_maas_token ... ok
+test local_documents::tests::decode_query_component_preserves_form_encoded_file_names ... ok
+test maas_platform::tests::rejects_paths_and_keeps_defaults_on_bad_save ... ok
+test maas_platform::tests::round_trips_through_a_file ... ok
+test maas_platform::tests::saves_valid_origins_in_memory ... ok
+test providers::tests::a_filled_openai_form_becomes_one_custom_provider_with_its_model ... ok
+
+test result: ok. 34 passed; 0 failed; 1 ignored; 0 measured; 803 filtered out; finished in 2.57s
+

@@ -1,0 +1,38 @@
+{
+  "version": "0.1.1",
+  "created_at": "2026-10-20T04:00:17.006749+08:00",
+  "codesign": "passed",
+  "dmg_integrity": "passed",
+  "native_json_acceptance": "passed: original issue JSON; 10,000 records / 40,002 lines; scroll, bottom/top, maximize and restore",
+  "notarization": {
+    "id": "2fe2cd71-abd8-403c-9770-9ff0b35aebbc",
+    "status": "Accepted",
+    "submitted_sha256": "3e5fb85b01d7121fa5fe83c525cfb31f9c4ecc67db4e135fcffde06165fe6053"
+  },
+  "files": {
+    "target/packages/asterdream-bugfix-20261020-cachefix/aster_0.1.1_aarch64.dmg": {
+      "bytes": 75345535,
+      "sha256": "b3ee4427fa21666dbaa4185e914836c60598d245ea3ed6b4ac76e8e108d4bad3"
+    },
+    "target/release/bundle/macos/AsterDream.app/Contents/MacOS/aster-dream": {
+      "bytes": 68043200,
+      "sha256": "d9bf42c8ddd44403c5b38bb6c969cdb62ad73c60c202bacb1af378ec9ae92762"
+    },
+    "target/release/bundle/macos/AsterDream.app/Contents/Resources/agent/a3s-code-acp": {
+      "bytes": 61260288,
+      "sha256": "225979f6deeeb0e0a36f6f0e9e59b23529227f5bfcf0f2d6ef5af194284ac3d3"
+    },
+    "apps/work/patches/monaco-editor@0.56.0.patch": {
+      "bytes": 806,
+      "sha256": "37b8d17591eb174fbb6965525589cfd8cfcf89c567ee1195d1a9a84d2d036231"
+    },
+    "apps/work/rsbuild.config.ts": {
+      "bytes": 15737,
+      "sha256": "481e0a1db63cba9aa2b98eb56c376c30169ba5eccbbe62f497b700b05fdcb899"
+    }
+  },
+  "native_json_checked_at": "2026-10-20T04:02:13.357490+08:00",
+  "stapling": "validated for app and DMG",
+  "gatekeeper": "accepted / Notarized Developer ID for DMG and both built/mounted app",
+  "verified_at": "2026-10-20T04:05:17.040110+08:00"
+}

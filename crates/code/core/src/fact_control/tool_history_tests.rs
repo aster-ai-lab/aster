@@ -12,17 +12,29 @@ pub(super) fn surface_with_budget(
     client: Arc<dyn LlmClient>,
     budget_guard: Option<Arc<dyn crate::budget::BudgetGuard>>,
 ) -> SessionSurface {
+    surface_with_config(
+        workspace,
+        client,
+        crate::agent::AgentConfig {
+            planning_mode: crate::prompts::PlanningMode::Disabled,
+            budget_guard,
+            ..Default::default()
+        },
+    )
+}
+
+pub(super) fn surface_with_config(
+    workspace: &Path,
+    client: Arc<dyn LlmClient>,
+    config: crate::agent::AgentConfig,
+) -> SessionSurface {
     let executor = Arc::new(ToolExecutor::new(workspace.to_string_lossy().into_owned()));
     SessionSurface {
         agent: crate::agent::AgentLoop::new(
             client,
             executor,
             crate::tools::ToolContext::new(workspace.to_path_buf()),
-            crate::agent::AgentConfig {
-                planning_mode: crate::prompts::PlanningMode::Disabled,
-                budget_guard,
-                ..Default::default()
-            },
+            config,
         ),
         fact_log: Default::default(),
         session_id: THREAD.into(),

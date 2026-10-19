@@ -1,0 +1,33 @@
+{
+  "cleanup_error": null,
+  "protocol_revision": 15,
+  "report": {
+    "allowed_origins": [
+      "http://127.0.0.1:4607"
+    ],
+    "artifacts_dir": "/Users/roylin/code/aster/.a3s-test/agent-sessions/bugfix-native-flows-retry-20261020/artifacts",
+    "auto_resolve_repairs": false,
+    "browser_allowed_domains": [],
+    "browser_allowed_origins": [
+      "http://127.0.0.1:4607"
+    ],
+    "browser_containment": "exact_origin_v1",
+    "event_count": 52,
+    "events_path": "/Users/roylin/code/aster/.a3s-test/agent-sessions/bugfix-native-flows-retry-20261020/events.jsonl",
+    "finished_at_ms": 1792426977803,
+    "goal": "验证真实原生知识库、ACP 文件与表单流程",
+    "schema_version": 1,
+    "session": "bugfix-native-flows-retry-20261020",
+    "started_at_ms": 1792426233425,
+    "status": "passed",
+    "success_criteria": [
+      "新建笔记和文件夹成功",
+      "ACP 写文件及表单提交正常收尾"
+    ],
+    "summary": "Real native authority created file and folder and persisted the edited note; real ACP write produced terminal verified; real ask_user_form rendered, submitted a changed answer, resumed the tool and unlocked the composer.",
+    "surface": "web"
+  },
+  "report_path": "/Users/roylin/code/aster/.a3s-test/agent-sessions/bugfix-native-flows-retry-20261020/report.json",
+  "session": "bugfix-native-flows-retry-20261020",
+  "status": "passed"
+}

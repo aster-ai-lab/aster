@@ -72,15 +72,14 @@ use model_wait::{
     model_idle_sleep, AbortOnDrop,
 };
 pub use tool_results::admit_tool_call;
+#[cfg(test)]
+use tool_results::execution_permission;
 pub(crate) use tool_results::exposed_tool_specs;
 use tool_results::{
     confirmation_parked, decision_from_response, decode_fact_tool_result, definitions_for,
-    fact_tool_runner_value, latest_user_text, message_from_folded_tool,
-    read_only_evidence_exhausted_with_calls, run_permission, skill_denial, split_folded_message,
-    verified_turn_text, FACT_TOOL_RESULT_KIND,
+    fact_tool_runner_value, latest_user_text, message_from_folded_tool, run_permission,
+    skill_denial, split_folded_message, verified_turn_text, FACT_TOOL_RESULT_KIND,
 };
-#[cfg(test)]
-use tool_results::{execution_permission, read_only_evidence_exhausted};
 #[cfg(test)]
 use turn_facts::append_steer_input;
 pub use turn_facts::TURN_COMPLETE_FACT_KIND;
@@ -641,7 +640,7 @@ impl Completion for LiveCompletion {
                 })
                 .transpose()?
                 .unwrap_or_default();
-            let mut recorded = recorded_calls.clone().into_iter();
+            let mut recorded = recorded_calls.into_iter();
             let tool_records = scheduler_tool_record_indexes(&folded);
             let mut messages = Vec::new();
             for (index, text) in folded.iter().enumerate() {
@@ -688,30 +687,6 @@ impl Completion for LiveCompletion {
                     });
                 }
             }
-            let read_only_final = surface.as_ref().is_some_and(|surface| {
-                let ledger = surface
-                    .ledger
-                    .lock()
-                    .unwrap_or_else(std::sync::PoisonError::into_inner);
-                // A second iterator pairs tool lines with recorded call
-                // names in the same wire order the conversion above uses.
-                let mut recorded = recorded_calls.into_iter();
-                read_only_evidence_exhausted_with_calls(&ledger, &request.messages, &mut recorded)
-            });
-            if read_only_final {
-                if let Some(surface) = surface.as_ref() {
-                    *surface
-                        .forced_stop
-                        .lock()
-                        .unwrap_or_else(std::sync::PoisonError::into_inner) =
-                        Some(crate::harness_loop::ForcedStop::ReadOnlyEvidence);
-                }
-                let line = crate::agent::READ_ONLY_EVIDENCE_FINALIZATION;
-                system = Some(match system.take() {
-                    Some(existing) if !existing.is_empty() => format!("{existing}\n\n{line}"),
-                    _ => line.to_string(),
-                });
-            }
             // The standing system prompt is cached on the first call. Restate
             // the latest user script on every call, and do not write it back
             // into the cache.
@@ -732,14 +707,10 @@ impl Completion for LiveCompletion {
                     .tool_context_handle()
                     .set_reply_language(Some(language));
             }
-            let tools = if read_only_final {
-                Vec::new()
-            } else {
-                definitions_for(&catalog, &request.tools)
-                    .into_iter()
-                    .filter(|tool| visibility.expose_to_model(&tool.name))
-                    .collect()
-            };
+            let tools = definitions_for(&catalog, &request.tools)
+                .into_iter()
+                .filter(|tool| visibility.expose_to_model(&tool.name))
+                .collect::<Vec<_>>();
             let execution_limit = surface
                 .as_ref()
                 .and_then(|surface| surface.agent.max_execution_time());
@@ -847,28 +818,7 @@ impl Completion for LiveCompletion {
                 }
             }
             prompt_tokens.store(response.usage.prompt_tokens as u64, Ordering::SeqCst);
-            let decision = decision_from_response(&response, &policy, surface.as_ref()).await;
-            // An empty tool list is advisory. A provider that still returns a
-            // call must not open another evidence round.
-            if read_only_final {
-                if let Some(surface) = surface.as_ref() {
-                    *surface
-                        .forced_stop
-                        .lock()
-                        .unwrap_or_else(std::sync::PoisonError::into_inner) =
-                        Some(crate::harness_loop::ForcedStop::ReadOnlyEvidence);
-                }
-                if let ModelDecision::Tool { call, .. } = decision {
-                    let text = call
-                        .text
-                        .filter(|text| !text.trim().is_empty())
-                        .unwrap_or_else(|| {
-                            crate::agent::READ_ONLY_EVIDENCE_FINALIZATION.to_string()
-                        });
-                    return Ok(ModelDecision::Text { text });
-                }
-            }
-            Ok(decision)
+            Ok(decision_from_response(&response, &policy, surface.as_ref()).await)
         })
     }
 

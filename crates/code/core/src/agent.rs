@@ -35,8 +35,6 @@ mod execution_entry;
 mod execution_mode;
 mod execution_state;
 pub(crate) use execution_state::ExecutionSeed;
-pub(crate) use execution_state::READ_ONLY_EVIDENCE_LIMIT;
-pub(crate) use loop_runtime::READ_ONLY_EVIDENCE_FINALIZATION;
 mod hook_runtime;
 mod invocation_context;
 pub(crate) use invocation_context::InvocationContext;

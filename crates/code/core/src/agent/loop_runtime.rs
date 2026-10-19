@@ -10,7 +10,6 @@ use tokio::sync::mpsc;
 
 const TOOL_BUDGET_FINALIZATION: &str = "Tool-use budget reached. Stop gathering evidence and return the best complete final answer now using only the tool results already present. Do not call any tool.";
 const REPEATED_TOOL_FINALIZATION: &str = "Repeated identical tool calls have no new evidence. Stop gathering evidence and return the best complete final answer now using only the tool results already present. Do not call any tool.";
-pub(crate) const READ_ONLY_EVIDENCE_FINALIZATION: &str = "Read-only evidence gathering has no further effect on the task. Stop gathering evidence and return the best complete final answer now using only the tool results already present. Do not call any tool.";
 
 impl crate::agent::TurnEngine {
     /// Core execution loop (without planning routing).
@@ -184,19 +183,16 @@ impl crate::agent::TurnEngine {
         loop {
             // `max_tool_rounds` bounds evidence gathering, not the agent's
             // ability to return the evidence it already collected. The same
-            // reserved turn also stops repeated identical calls and a run of
-            // read-only rounds that never change the workspace.
+            // reserved turn also stops repeated identical calls. Reading
+            // distinct sources need not change the workspace to make progress.
             let budget_hit = state.current_turn() >= self.config.max_tool_rounds;
             let repeated_tool = state.take_duplicate_finalization();
-            let read_only_exhausted = state.read_only_evidence_exhausted();
-            let force_finalization = budget_hit || repeated_tool || read_only_exhausted;
+            let force_finalization = budget_hit || repeated_tool;
             if force_finalization {
                 let message = if budget_hit {
                     TOOL_BUDGET_FINALIZATION
-                } else if repeated_tool {
-                    REPEATED_TOOL_FINALIZATION
                 } else {
-                    READ_ONLY_EVIDENCE_FINALIZATION
+                    REPEATED_TOOL_FINALIZATION
                 };
                 state.messages.push(Message::user_wire(message));
             }
@@ -407,7 +403,6 @@ impl crate::agent::TurnEngine {
                 self.persist_loop_checkpoint(turn, &state, session_id).await;
                 return Ok(state.finish(String::new()));
             }
-            state.note_read_only_evidence_round();
             state.next_turn_is_verifier = false;
             // Quiescent boundary: all tools and capability-owned effects have
             // settled, and `state.messages` is consistent. The runtime sink

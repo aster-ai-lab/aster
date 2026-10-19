@@ -41,8 +41,8 @@ pub struct LoopConvergenceState {
     pub guarded_duplicate_signature: Option<String>,
     #[serde(default)]
     pub guarded_duplicate_count: u32,
-    /// Consecutive tool rounds that left the workspace unchanged.
-    /// Older checkpoints omit the field and resume at zero.
+    /// Legacy read-only ceiling counter; accepted from older checkpoints
+    /// but ignored on resume and written as zero.
     #[serde(default, skip_serializing_if = "is_zero")]
     pub read_only_evidence_rounds: u32,
     /// The next provider turn must answer without tools.

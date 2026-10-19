@@ -37,6 +37,7 @@ pub(super) fn surface_fact_log(surface: &SessionSurface) -> Result<Arc<FileLog>,
 pub(crate) fn append_turn_complete_fact(
     surface: &SessionSurface,
     terminal: &crate::harness_loop::CompletionTerminal,
+    forced_stop: Option<crate::harness_loop::ForcedStop>,
 ) -> Result<(), ActorError> {
     let log = surface_fact_log(surface)?;
     let facts = log.read(&thread_for_session(&surface.session_id))?;
@@ -67,6 +68,7 @@ pub(crate) fn append_turn_complete_fact(
     let payload = serde_json::json!({
         "terminal": label,
         "effect_digest": digest,
+        "forced_stop": forced_stop.map(crate::harness_loop::ForcedStop::as_str),
         "receipt_keys": receipt_keys,
         "background_receipt_keys": facts.iter().filter(|fact| fact.kind == "background.output" && fact.payload["event"] == "exited")
             .map(|fact| fact.key.clone()).collect::<Vec<_>>(),

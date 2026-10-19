@@ -222,6 +222,15 @@ impl A3sCodeAgent {
                     &verification_summary,
                     forced_stop.as_ref(),
                 ));
+                state.stop_reason = forced_stop.map(|reason| match reason {
+                    a3s_code_core::harness_loop::ForcedStop::ResponseTruncated => {
+                        acp::StopReason::MaxTokens
+                    }
+                    a3s_code_core::harness_loop::ForcedStop::ToolBudget
+                    | a3s_code_core::harness_loop::ForcedStop::ReadOnlyEvidence => {
+                        acp::StopReason::MaxTurnRequests
+                    }
+                });
                 if should_emit_end_text(state.saw_text, &text) {
                     self.emit_text(session_id, &text).await;
                 }
@@ -407,7 +416,7 @@ impl A3sCodeAgent {
         self.emit_run_observation(observer.as_mut().and_then(|observer| observer.opened()))
             .await;
         let mut rx = stream.events;
-        let join = stream.worker;
+        let mut join = stream.worker;
 
         let mut state = TurnState {
             observer,
@@ -416,6 +425,7 @@ impl A3sCodeAgent {
             delta_text: String::new(),
             end_text: None,
             end_outcome: None,
+            stop_reason: None,
             achieved_goal: None,
             subagent_started_ms: HashMap::new(),
             child_progress: HashMap::new(),
@@ -445,8 +455,11 @@ impl A3sCodeAgent {
                 event = rx.recv() => {
                     match event {
                         Some(event) => {
-                            self.handle_event(session_id, session, &mut state, event)
-                                .await;
+                            tokio::select! {
+                                biased;
+                                _ = self.wait_for_turn_cancel(&session_key, generation) => {},
+                                _ = self.handle_event(session_id, session, &mut state, event) => {},
+                            }
                         }
                         None => break,
                     }
@@ -465,7 +478,27 @@ impl A3sCodeAgent {
         // channel above; the join result is the only remaining evidence.
         // Swallowing it reported a panicked or aborted worker as a clean
         // EndTurn — indistinguishable from real completion.
-        let join_failure = match join.await {
+        let joined = loop {
+            let notified = self.turn_cancel.notified();
+            if self.turn_was_cancelled(&session_key, generation).await {
+                return self
+                    .leave_cancelled_turn(
+                        session_id,
+                        session,
+                        &mut state,
+                        &mut rx,
+                        join,
+                        turn_permit,
+                    )
+                    .await;
+            }
+            tokio::select! {
+                biased;
+                _ = notified => continue,
+                result = &mut join => break result,
+            }
+        };
+        let join_failure = match joined {
             Ok(()) => None,
             Err(join_error) => Some(worker_join_failure(join_error)),
         };
@@ -476,6 +509,9 @@ impl A3sCodeAgent {
                 "turn worker died without a terminal event"
             );
             state.turn_failure = Some(message.clone());
+        }
+        if state.turn_failure.is_none() && state.end_text.is_none() {
+            state.turn_failure = Some("turn worker exited without a terminal event".into());
         }
         if state.turn_failure.is_none()
             && !self
@@ -512,7 +548,9 @@ impl A3sCodeAgent {
         if let Some(message) = state.turn_failure {
             return Err(agent_failure_error(&message));
         }
-        Ok(acp::PromptResponse::new(acp::StopReason::EndTurn))
+        Ok(acp::PromptResponse::new(
+            state.stop_reason.unwrap_or(acp::StopReason::EndTurn),
+        ))
     }
 
     pub(super) async fn turn_was_cancelled(&self, session_key: &str, generation: u64) -> bool {
@@ -523,6 +561,16 @@ impl A3sCodeAgent {
             .get(session_key)
             .copied();
         crate::turn_cancel::generation_was_cancelled(recorded, generation)
+    }
+
+    async fn wait_for_turn_cancel(&self, session_key: &str, generation: u64) {
+        loop {
+            let notified = self.turn_cancel.notified();
+            if self.turn_was_cancelled(session_key, generation).await {
+                return;
+            }
+            notified.await;
+        }
     }
 
     /// Return `Cancelled` without awaiting a stuck public join.
@@ -551,14 +599,25 @@ impl A3sCodeAgent {
                 event = rx.recv() => {
                     match event {
                         Some(event) => {
-                            self.handle_event(session_id, session, state, event).await;
+                            if matches!(
+                                event,
+                                AgentEvent::ConfirmationRequired { .. } | AgentEvent::UserQuestion { .. }
+                            ) {
+                                continue;
+                            }
+                            // A slow client must not outlive the cancelled
+                            // turn's drain deadline.
+                            if tokio::time::timeout_at(
+                                deadline,
+                                self.handle_event(session_id, session, state, event),
+                            )
+                            .await
+                            .is_err()
+                            {
+                                break;
+                            }
                         }
-                        None => {
-                            self.settle_public_join(join, turn_permit).await;
-                            self.close_run_observation(state).await;
-                            tracing::info!(target: "perf_probe", "turn_cancel_return");
-                            return Ok(acp::PromptResponse::new(acp::StopReason::Cancelled));
-                        }
+                        None => break,
                     }
                 }
             }

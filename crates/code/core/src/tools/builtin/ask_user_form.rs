@@ -9,7 +9,7 @@ use anyhow::Result;
 use async_trait::async_trait;
 
 pub const USER_FORM_SCHEMA: &str = "a3s.code.user-form.v1";
-const MAX_FORM_BYTES: usize = 65_536;
+const MAX_FORM_BYTES: usize = a3s_form_core::MAX_OPENUI_BYTES;
 
 pub struct AskUserFormTool;
 
@@ -20,19 +20,24 @@ impl Tool for AskUserFormTool {
     }
 
     fn description(&self) -> &str {
-        "Pause for structured user input rendered as a form. Use whenever a tool result needs \
+        static DESCRIPTION: std::sync::LazyLock<String> = std::sync::LazyLock::new(|| {
+            let mut description = "Pause for structured user input rendered as a form. Use whenever a tool result needs \
          more information from the user (a platform card asking for missing fields, a plain-text \
          follow-up question, or a confirmation before an action) instead of asking in prose. \
          Build OpenUI Lang: one statement per line, `root = Component(...)`, arguments in \
          catalog prop order. Example: `root = Card(\"Details\", [notes, go])` followed by \
          `notes = Textarea(\"notes\", \"Notes\", \"\", true, \"Enter details\")` and \
          `go = Button(\"submit\", \"Continue\")`, each on its own line. Container children \
-         are lists of node identifiers. Use Card, Stack, Text, Input, Textarea, Select, Checkbox, \
-         Slider, Metric, BarChart and one Button(\"submit\", \"label\"). No Markdown fence, \
+         are lists of node identifiers. Use the component parameter table below and one submit button. No Markdown fence, \
          imports, DOM tags or JavaScript calls. Write the card title, field labels, \
          placeholders, options and button label in the language the user writes in; keep \
          field names as ASCII identifiers. The submitted named field values arrive \
-         as the tool result JSON and the turn continues with them."
+         as the tool result JSON and the turn continues with them.".to_owned();
+            description.push_str(" Component parameter table: ");
+            description.push_str(&a3s_form_core::openui_parameter_table());
+            description
+        });
+        DESCRIPTION.as_str()
     }
 
     fn parameters(&self) -> serde_json::Value {
@@ -42,6 +47,7 @@ impl Tool for AskUserFormTool {
             "properties": {
                 "form": {
                     "type": "string",
+                    "maxLength": MAX_FORM_BYTES,
                     "description": "OpenUI Lang source. The first statement is root = Component(...). No Markdown fence."
                 },
                 "prompt": {
@@ -155,90 +161,7 @@ fn submitted_values(answer: &str) -> Result<serde_json::Value, String> {
 /// terminal renderer returns, so one unsupported call ends the form instead of
 /// being offered again.
 fn check_form_shape(form: &str) -> Result<(), String> {
-    let form = form.trim();
-    if form.is_empty() {
-        return Err("form must not be empty".to_string());
-    }
-    if form.len() > MAX_FORM_BYTES {
-        return Err("form exceeds its size bound".to_string());
-    }
-    if !form
-        .lines()
-        .any(|line| line.trim_start().starts_with("root = "))
-    {
-        return Err("form must be OpenUI Lang and assign root".to_string());
-    }
-    let document = a3s_acl::parse_with_limits(
-        form,
-        a3s_acl::ParseLimits {
-            max_document_bytes: MAX_FORM_BYTES,
-            max_nesting_depth: 16,
-            max_collection_items: 160,
-            max_token_bytes: 4096,
-            ..Default::default()
-        },
-    )
-    .map_err(|_| "form must contain valid OpenUI statements".to_string())?;
-    let mut names = std::collections::HashSet::new();
-    for node in document.blocks {
-        if !names.insert(node.name.clone())
-            || !node.labels.is_empty()
-            || !node.blocks.is_empty()
-            || node.attributes.len() != 1
-        {
-            return Err("form must assign each node once, without nested statements".to_string());
-        }
-        let Some(a3s_acl::Value::Call(kind, arguments)) = node.attributes.get(&node.name) else {
-            return Err("form nodes must be component assignments".to_string());
-        };
-        if !matches!(
-            kind.as_str(),
-            "Card"
-                | "Stack"
-                | "Grid"
-                | "Text"
-                | "Input"
-                | "Textarea"
-                | "Select"
-                | "Checkbox"
-                | "Slider"
-                | "Metric"
-                | "BarChart"
-                | "Button"
-        ) {
-            return Err(format!("unsupported terminal form component: {kind}"));
-        }
-        if !arguments.iter().all(form_argument) {
-            return Err("form arguments must be literals or node references; assign child components on separate lines".to_string());
-        }
-        let children = match kind.as_str() {
-            "Card" | "Grid" => Some(1),
-            "Stack" => Some(0),
-            _ => None,
-        };
-        if let Some(index) = children {
-            if !matches!(arguments.get(index), Some(a3s_acl::Value::List(_)))
-                || arguments.len() != index + 1
-            {
-                return Err(
-                    "Card, Stack and Grid require a list of child node identifiers".to_string(),
-                );
-            }
-        }
-    }
-    if !names.contains("root") {
-        return Err("form must assign root".to_string());
-    }
-    Ok(())
-}
-
-fn form_argument(value: &a3s_acl::Value) -> bool {
-    match value {
-        a3s_acl::Value::String(_) | a3s_acl::Value::Bool(_) | a3s_acl::Value::Null => true,
-        a3s_acl::Value::Number(number) => number.is_finite(),
-        a3s_acl::Value::List(values) => values.iter().all(form_argument),
-        _ => false,
-    }
+    a3s_form_core::validate_openui(form).map_err(|error| error.to_string())
 }
 
 #[cfg(test)]

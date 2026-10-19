@@ -1,0 +1,32 @@
+{
+  "cleanup_error": null,
+  "protocol_revision": 15,
+  "report": {
+    "allowed_origins": [
+      "http://127.0.0.1:4607"
+    ],
+    "artifacts_dir": "/Users/roylin/code/aster/.a3s-test/agent-sessions/bugfix-invalid-form-20261020/artifacts",
+    "auto_resolve_repairs": false,
+    "browser_allowed_domains": [],
+    "browser_allowed_origins": [
+      "http://127.0.0.1:4607"
+    ],
+    "browser_containment": "exact_origin_v1",
+    "event_count": 12,
+    "events_path": "/Users/roylin/code/aster/.a3s-test/agent-sessions/bugfix-invalid-form-20261020/events.jsonl",
+    "finished_at_ms": 1792429041386,
+    "goal": "Reject malformed form source through actual core and native host without parking the composer",
+    "schema_version": 1,
+    "session": "bugfix-invalid-form-20261020",
+    "started_at_ms": 1792428932633,
+    "status": "passed",
+    "success_criteria": [
+      "The invalid form tool returns an error, the model continues and a subsequent message can be sent"
+    ],
+    "summary": "Actual core rejected an unknown OpenUI component and retained a failed tool receipt; the model continued, composer unlocked and a subsequent user turn completed successfully.",
+    "surface": "web"
+  },
+  "report_path": "/Users/roylin/code/aster/.a3s-test/agent-sessions/bugfix-invalid-form-20261020/report.json",
+  "session": "bugfix-invalid-form-20261020",
+  "status": "passed"
+}

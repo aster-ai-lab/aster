@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'agent_api::tests::long_horizon_capabilities::distinct_read_only_sources_do_not_force_an_incomplete_answer' (49291231) panicked at crates/code/core/src/agent_api/tests/long_horizon_capabilities.rs:285:10:
+called `Result::unwrap()` on an `Err` value: Session("Tool presentation projected unknown Tool 'Skill'")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agent_api::tests::long_horizon_capabilities::distinct_read_only_sources_do_not_force_an_incomplete_answer ... FAILED
+
+failures:
+
+failures:
+    agent_api::tests::long_horizon_capabilities::distinct_read_only_sources_do_not_force_an_incomplete_answer
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5146 filtered out; finished in 0.06s
+

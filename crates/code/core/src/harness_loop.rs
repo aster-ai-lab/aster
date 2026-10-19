@@ -22,7 +22,7 @@ pub(crate) const MUTATING_FILE_TOOLS: &[&str] = &["write", "edit", "patch", "dow
 pub enum ForcedStop {
     /// The tool-round budget was exhausted; the next call was denied.
     ToolBudget,
-    /// The read-only evidence ceiling fired; the turn was forced to answer.
+    /// Legacy read-only evidence ceiling; retained for stored outcomes.
     ReadOnlyEvidence,
     /// The provider cut the final response at its length limit (stop_reason
     /// `length`/`max_tokens` with no tool call): the settled answer is
@@ -188,6 +188,10 @@ pub struct MutationLedger {
     records: Vec<MutationRecord>,
     #[serde(default)]
     digest: String,
+    /// A complete failed invocation changed these exact after-states. A
+    /// byte-only host attestation cannot prove that failed work succeeded.
+    #[serde(default, skip_serializing_if = "std::collections::BTreeMap::is_empty")]
+    failed_effect_paths: std::collections::BTreeMap<String, a3s_effect::ToolFileIdentityV1>,
     /// Background writers still sharing the workspace. Empty means none.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     open_children: Vec<OpenWorkspaceChild>,
@@ -207,6 +211,12 @@ pub struct MutationLedger {
     /// cannot manufacture verification authority after recovery.
     #[serde(skip)]
     native_artifact_verifications: std::collections::BTreeMap<String, NativeArtifactVerification>,
+    #[serde(skip)]
+    nested_shell_verifications: std::collections::BTreeMap<String, NestedShellVerification>,
+    #[serde(skip)]
+    nested_mutation_epoch: u64,
+    #[serde(skip)]
+    active_nested_mutations: u32,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -214,6 +224,14 @@ struct NativeArtifactVerification {
     tool: String,
     identity: a3s_effect::ToolFileIdentityV1,
     check: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct NestedShellVerification {
+    identity: a3s_effect::ToolFileIdentityV1,
+    command: String,
+    scope_digest: String,
+    epoch: u64,
 }
 
 /// Normalize a mutation path to its workspace-relative form: a model may
@@ -246,6 +264,10 @@ impl MutationLedger {
 
     pub fn digest(&self) -> &str {
         &self.digest
+    }
+
+    pub(crate) fn has_failed_effects(&self) -> bool {
+        !self.failed_effect_paths.is_empty()
     }
 
     pub fn paths(&self) -> impl Iterator<Item = &str> {
@@ -412,6 +434,7 @@ impl MutationLedger {
         // snapshot fields have no exact typed receipt projection here.
         if !self.open_children.is_empty()
             || self.observation_incomplete
+            || self.failed_effect_paths != original.failed_effect_paths
             || !self
                 .unresolved_tool_effects
                 .is_subset(&original.unresolved_tool_effects)
@@ -453,7 +476,9 @@ impl MutationLedger {
                     observed.after_identity == record.after_identity
                         && observed.content_digest == record.content_digest
                 })
-        }) && (self.records.is_empty() || self.digest == effect_digest(&self.records))
+        }) && (self.records.is_empty()
+            || self.digest
+                == effect_digest_with_failed_effects(&self.records, &self.failed_effect_paths))
     }
 
     pub(crate) fn checkpoint_receipt_keys(
@@ -485,6 +510,7 @@ impl MutationLedger {
             && self.applied_tool_receipts.is_empty()
             && self.applied_background_receipts.is_empty()
             && self.open_children.is_empty()
+            && self.failed_effect_paths.is_empty()
             && !self.observation_incomplete
             && !self.unresolved_tool_effects.is_empty()
             && self
@@ -522,6 +548,12 @@ impl MutationLedger {
             }
         }
         self.observation_incomplete |= cached.observation_incomplete;
+        let failed_before = self.failed_effect_paths.len();
+        for (path, after) in &cached.failed_effect_paths {
+            self.failed_effect_paths
+                .entry(path.clone())
+                .or_insert_with(|| after.clone());
+        }
         self.unresolved_tool_effects
             .extend(cached.unresolved_tool_effects.iter().cloned());
         if cached_has_evidence && !original_cache_coverage_complete {
@@ -529,13 +561,14 @@ impl MutationLedger {
                 .insert("tool_effect_cache_evidence_missing".into());
         }
         self.begin_receipt_replay();
-        if records_changed {
+        if records_changed || self.failed_effect_paths.len() != failed_before {
             self.rehash();
         }
     }
 
     pub(crate) fn has_checkpoint_evidence(&self) -> bool {
         !self.records.is_empty()
+            || !self.failed_effect_paths.is_empty()
             || !self.open_children.is_empty()
             || !self.unresolved_tool_effects.is_empty()
             || self.observation_incomplete
@@ -578,8 +611,35 @@ impl MutationLedger {
         if !self.applied_tool_receipts.insert(key.clone()) {
             return;
         }
+        let mut failed_changed = false;
         for change in &result.effects.changes {
+            if !crate::porcelain::is_harness_path(&change.path)
+                && result.effects.completeness == a3s_effect::ToolObservationCompleteness::Complete
+            {
+                match result.outcome {
+                    a3s_effect::ToolExecutionOutcome::Failed => {
+                        failed_changed |= self
+                            .failed_effect_paths
+                            .insert(change.path.clone(), change.after.clone())
+                            .as_ref()
+                            != Some(&change.after);
+                    }
+                    a3s_effect::ToolExecutionOutcome::Succeeded
+                        if self
+                            .failed_effect_paths
+                            .get(&change.path)
+                            .is_some_and(|after| after != &change.after) =>
+                    {
+                        self.failed_effect_paths.remove(&change.path);
+                        failed_changed = true;
+                    }
+                    _ => {}
+                }
+            }
             self.observe_receipt_path(tool, &change.path, &change.after);
+        }
+        if failed_changed {
+            self.rehash();
         }
         if result.outcome == a3s_effect::ToolExecutionOutcome::Unknown
             || result.effects.completeness == a3s_effect::ToolObservationCompleteness::Incomplete
@@ -836,10 +896,259 @@ impl MutationLedger {
         }
     }
 
+    pub(crate) fn observe_nested_artifact_effects(
+        &mut self,
+        tool: &str,
+        effects: &a3s_effect::ToolEffectObservationV1,
+    ) {
+        if effects.validate().is_err()
+            || effects.completeness != a3s_effect::ToolObservationCompleteness::Complete
+            || !effects.unresolved_external_operations.is_empty()
+            || self.records.len().saturating_add(effects.changes.len())
+                > a3s_effect::MAX_TOOL_EFFECT_PATHS
+        {
+            self.observation_incomplete = true;
+            return;
+        }
+        for change in &effects.changes {
+            self.observe_receipt_path(tool, &change.path, &change.after);
+        }
+    }
+
+    pub(crate) fn begin_nested_mutation(&mut self) -> Option<u64> {
+        let Some(active) = self.active_nested_mutations.checked_add(1) else {
+            self.observation_incomplete = true;
+            self.nested_shell_verifications.clear();
+            return None;
+        };
+        let epoch = self.advance_nested_mutation_epoch()?;
+        self.active_nested_mutations = active;
+        Some(epoch)
+    }
+
+    pub(crate) fn finish_nested_mutation(&mut self, started: u64) -> Option<u64> {
+        let exclusive = self.nested_mutation_epoch == started && self.active_nested_mutations == 1;
+        let Some(active) = self.active_nested_mutations.checked_sub(1) else {
+            self.observation_incomplete = true;
+            self.nested_shell_verifications.clear();
+            return None;
+        };
+        self.active_nested_mutations = active;
+        let epoch = self.advance_nested_mutation_epoch()?;
+        exclusive.then_some(epoch)
+    }
+
+    fn advance_nested_mutation_epoch(&mut self) -> Option<u64> {
+        self.nested_shell_verifications.clear();
+        let Some(epoch) = self.nested_mutation_epoch.checked_add(1) else {
+            self.observation_incomplete = true;
+            return None;
+        };
+        self.nested_mutation_epoch = epoch;
+        Some(epoch)
+    }
+
+    pub(crate) fn nested_mutation_window_is_current(&self, epoch: u64) -> bool {
+        epoch == self.nested_mutation_epoch && self.active_nested_mutations == 0
+    }
+
+    /// Only the governed native Bash lifecycle calls this with its actual
+    /// result metadata. Script results and checkpoint metadata never do.
+    pub(crate) fn record_nested_shell_verification(
+        &mut self,
+        command: &str,
+        epoch: u64,
+        workspace: &std::path::Path,
+    ) {
+        if !self.nested_mutation_window_is_current(epoch)
+            || self.observation_incomplete
+            || !self.unresolved_tool_effects.is_empty()
+            || command.len() > a3s_effect::MAX_TOOL_EFFECT_CANONICAL_BYTES
+        {
+            return;
+        }
+        let checks = crate::verification::existence_checks(command);
+        if checks.len() > a3s_effect::MAX_TOOL_EFFECT_PATHS {
+            return;
+        }
+        let checks = checks
+            .into_iter()
+            .filter_map(|check| {
+                let path = std::path::Path::new(&check.path);
+                let relative = if path.is_absolute() {
+                    path.strip_prefix(workspace).ok()?
+                } else {
+                    path
+                };
+                let mut normalized = std::path::PathBuf::new();
+                for component in relative.components() {
+                    match component {
+                        std::path::Component::Normal(part) => normalized.push(part),
+                        std::path::Component::CurDir => {}
+                        _ => return None,
+                    }
+                }
+                let path = normalized.to_str()?.to_owned();
+                (!path.is_empty()).then_some((path, check.segment))
+            })
+            .collect::<Vec<_>>();
+        let observed = crate::porcelain::observe_path_effects(
+            workspace,
+            crate::porcelain::PathDelta {
+                paths: checks.iter().map(|(path, _)| path.clone()).collect(),
+                incomplete: false,
+            },
+        );
+        if observed.completeness != a3s_effect::ToolObservationCompleteness::Complete {
+            return;
+        }
+        let mut bytes = 0usize;
+        for (path, command) in checks {
+            let Some(change) = observed.changes.iter().find(|change| change.path == path) else {
+                continue;
+            };
+            if change.after.kind != a3s_effect::ToolFileKind::File
+                || change
+                    .after
+                    .content_digest
+                    .as_ref()
+                    .is_none_or(String::is_empty)
+            {
+                continue;
+            }
+            bytes = bytes
+                .saturating_add(path.len())
+                .saturating_add(command.len())
+                .saturating_add(256);
+            if bytes > a3s_effect::MAX_TOOL_EFFECT_CANONICAL_BYTES {
+                self.nested_shell_verifications.clear();
+                return;
+            }
+            self.nested_shell_verifications.insert(
+                path,
+                NestedShellVerification {
+                    identity: change.after.clone(),
+                    command,
+                    scope_digest: self.digest.clone(),
+                    epoch,
+                },
+            );
+        }
+    }
+
+    pub(crate) fn nested_shell_verification_report(
+        &self,
+        workspace: &std::path::Path,
+    ) -> Option<crate::verification::VerificationReport> {
+        if self.is_empty()
+            || self.observation_incomplete
+            || self.has_open_children()
+            || !self.unresolved_tool_effects.is_empty()
+            || self.active_nested_mutations != 0
+            || self.nested_shell_verifications.is_empty()
+            || !self.observes_current_workspace(workspace)
+        {
+            return None;
+        }
+        for (path, proof) in &self.nested_shell_verifications {
+            if proof.epoch != self.nested_mutation_epoch
+                || proof.scope_digest != self.digest
+                || !self.records.iter().any(|record| {
+                    record.path == *path && record.after_identity.as_ref() == Some(&proof.identity)
+                })
+            {
+                continue;
+            }
+            let digest = proof
+                .identity
+                .content_digest
+                .as_deref()?
+                .strip_prefix("sha256:")?;
+            if let Some(report) =
+                crate::verification::host_report_for_verified_mutation_path_with_content(
+                    &proof.command,
+                    0,
+                    &self.paths().map(str::to_owned).collect::<Vec<_>>(),
+                    self.digest(),
+                    Some((digest, digest)),
+                )
+            {
+                return Some(report);
+            }
+        }
+        None
+    }
+
+    /// Transfer live child checks only onto this caller's observed final bytes.
+    pub(crate) fn absorb_nested_artifact_verifications(
+        &mut self,
+        child: &Self,
+        tool: &str,
+        effects: &a3s_effect::ToolEffectObservationV1,
+        allow_shell: bool,
+    ) {
+        if child.observation_incomplete || !child.unresolved_tool_effects.is_empty() {
+            return;
+        }
+        for change in &effects.changes {
+            let Some(proof) = child.native_artifact_verifications.get(&change.path) else {
+                continue;
+            };
+            if proof.identity == change.after
+                && self.records.iter().any(|record| {
+                    record.path == change.path
+                        && record.tool == tool
+                        && record.after_identity.as_ref() == Some(&proof.identity)
+                })
+            {
+                self.native_artifact_verifications.insert(
+                    change.path.clone(),
+                    NativeArtifactVerification {
+                        tool: tool.to_owned(),
+                        ..proof.clone()
+                    },
+                );
+            }
+        }
+        // A checker covers this exact settled child boundary, including no
+        // new changes. Rebinding after a later or concurrent writer is refused.
+        if !allow_shell
+            || child.has_open_children()
+            || child.active_nested_mutations != 0
+            || effects.validate().is_err()
+            || effects.completeness != a3s_effect::ToolObservationCompleteness::Complete
+            || !effects.unresolved_external_operations.is_empty()
+            || effects
+                .changes
+                .iter()
+                .filter(|change| !crate::porcelain::is_harness_path(&change.path))
+                .any(|change| {
+                    !child.records.iter().any(|record| {
+                        record.path == change.path
+                            && record.after_identity.as_ref() == Some(&change.after)
+                    })
+                })
+        {
+            return;
+        }
+        for (path, proof) in &child.nested_shell_verifications {
+            if proof.epoch == child.nested_mutation_epoch && proof.scope_digest == child.digest {
+                self.nested_shell_verifications.insert(
+                    path.clone(),
+                    NestedShellVerification {
+                        scope_digest: self.digest.clone(),
+                        epoch: self.nested_mutation_epoch,
+                        ..proof.clone()
+                    },
+                );
+            }
+        }
+    }
+
     fn rehash(&mut self) {
         self.records
             .sort_by(|left, right| left.path.cmp(&right.path).then(left.tool.cmp(&right.tool)));
-        self.digest = effect_digest(&self.records);
+        self.digest = effect_digest_with_failed_effects(&self.records, &self.failed_effect_paths);
     }
 }
 
@@ -993,6 +1302,37 @@ fn effect_digest(records: &[MutationRecord]) -> String {
     sha256::digest(canonical.as_bytes())
 }
 
+fn effect_digest_with_failed_effects(
+    records: &[MutationRecord],
+    failed: &std::collections::BTreeMap<String, a3s_effect::ToolFileIdentityV1>,
+) -> String {
+    let current = effect_digest(records);
+    if failed.is_empty() {
+        return current;
+    }
+    let mut canonical = b"a3s.code.failed-effect-state.v1\0".to_vec();
+    append_effect_field(&mut canonical, current.as_bytes());
+    for (path, after) in failed {
+        append_effect_field(&mut canonical, path.as_bytes());
+        append_effect_field(&mut canonical, after.kind.as_str().as_bytes());
+        match after.mode {
+            Some(mode) => {
+                canonical.push(1);
+                canonical.extend_from_slice(&mode.to_be_bytes());
+            }
+            None => canonical.push(0),
+        }
+        match &after.content_digest {
+            Some(digest) => {
+                canonical.push(1);
+                append_effect_field(&mut canonical, digest.as_bytes());
+            }
+            None => canonical.push(0),
+        }
+    }
+    sha256::digest(canonical)
+}
+
 fn append_effect_field(canonical: &mut Vec<u8>, field: &[u8]) {
     canonical.extend_from_slice(field.len().to_string().as_bytes());
     canonical.push(b':');
@@ -1126,8 +1466,16 @@ pub fn unbound_mutation_digest(message: &str) -> Option<&str> {
 /// recorded. Without such a file only a declared suite or a host waiver binds.
 fn unbound_mutation_next_step(ledger: &MutationLedger) -> String {
     let Some(path) = ledger
-        .paths()
-        .filter(|path| ledger.has_content_digest(path))
+        .records
+        .iter()
+        .filter(|record| {
+            !record.content_digest.is_empty()
+                && record
+                    .after_identity
+                    .as_ref()
+                    .is_none_or(|after| after.kind == a3s_effect::ToolFileKind::File)
+        })
+        .map(|record| record.path.as_str())
         .min()
     else {
         return String::new();

@@ -4,6 +4,67 @@ use super::{A3sCodeAgent, SessionSetup};
 use a3s_code_core::{sandbox::SandboxNetworkMode, CodeConfig};
 
 #[test]
+fn trusted_acl_presentation_reaches_the_host_session_without_changing_default() {
+    let root = tempfile::tempdir().unwrap();
+    let setup = SessionSetup {
+        workspace: root.path().to_owned(),
+        model_id: "fixture/model",
+        effort: None,
+        host: Default::default(),
+        components: &[],
+        mcp_servers: Vec::new(),
+    };
+    for source in [
+        "",
+        "tool_presentation { mode = \"code\" }",
+        "tool_presentation { mode = \"disabled\" }",
+    ] {
+        let config = CodeConfig::from_acl(source).unwrap();
+        let options = A3sCodeAgent::host_session_options(
+            "presentation",
+            &setup,
+            &config,
+            &root.path().join("store"),
+        )
+        .unwrap();
+        assert_eq!(
+            options.tool_presentation_profile,
+            config.tool_presentation_profile
+        );
+        assert!(options.permission_checker.is_some());
+        assert!(options.confirmation_policy.unwrap().enabled);
+    }
+}
+
+#[test]
+fn disk_attestor_is_installed_only_for_opted_in_non_review_sessions() {
+    let root = tempfile::tempdir().unwrap();
+    for (enabled, review) in [(false, false), (true, false), (true, true)] {
+        let setup = SessionSetup {
+            workspace: root.path().to_owned(),
+            model_id: "fixture/model",
+            effort: None,
+            host: crate::host_context::StudioHost {
+                completion_attestation: enabled
+                    .then_some(crate::host_context::CompletionAttestation::DiskContent),
+                source_review: review,
+                ..Default::default()
+            },
+            components: &[],
+            mcp_servers: Vec::new(),
+        };
+        let options = A3sCodeAgent::host_session_options(
+            "attestation",
+            &setup,
+            &CodeConfig::default(),
+            &root.path().join("store"),
+        )
+        .unwrap();
+        assert_eq!(options.completion_attestor.is_some(), enabled && !review);
+    }
+}
+
+#[test]
 fn typed_setup_preserves_host_safety_and_context_without_activation() {
     let root = tempfile::tempdir().expect("workspace");
     let skills = root.path().join("configured-skills");

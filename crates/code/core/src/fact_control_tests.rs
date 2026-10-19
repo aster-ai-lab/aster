@@ -970,29 +970,6 @@ async fn configured_duplicate_guard_refuses_the_second_identical_call() {
     assert_eq!(nudged, 1);
 }
 
-#[test]
-fn read_only_evidence_stops_at_the_configured_limit() {
-    let ledger = crate::harness_loop::MutationLedger::default();
-    let mut messages = vec!["user\ninstall the skill".to_string()];
-    for index in 0..crate::agent::READ_ONLY_EVIDENCE_LIMIT - 1 {
-        messages.push(format!("tool\nresult-{index}"));
-    }
-    assert!(!read_only_evidence_exhausted(&ledger, &messages));
-    messages.push("tool-error\nresult-7".into());
-    assert!(read_only_evidence_exhausted(&ledger, &messages));
-    messages.push("assistant\ntool bash\n{}".into());
-    assert!(read_only_evidence_exhausted(&ledger, &messages));
-    let mut mutated = crate::harness_loop::MutationLedger::default();
-    mutated.observe_tool(
-        "write",
-        0,
-        Some(&serde_json::json!({"file_path": "notes.md", "content_digest": "abc"})),
-    );
-    assert!(!read_only_evidence_exhausted(&mutated, &messages));
-    messages.push("user\nrun the command".into());
-    assert!(!read_only_evidence_exhausted(&ledger, &messages));
-}
-
 fn tool_response(calls: Vec<(&str, &str, serde_json::Value)>) -> LlmResponse {
     LlmResponse {
         message: Message {
@@ -1892,13 +1869,18 @@ fn open_live(
         seen: Mutex::new(Vec::new()),
         responses: Mutex::new(responses.into_iter().rev().collect()),
     });
-    let (completion, _) = LiveCompletion::new(client.clone(), policy, Vec::new());
+    let (completion, _) = LiveCompletion::new(client.clone(), policy.clone(), Vec::new());
     // Bare single-step fixtures exercise Ask without a session confirmation
     // manager. A follow-up needs the original log to restore tool identities.
     let completion = if mount_original_log {
-        completion.with_surface(super::tool_history_tests::surface(
+        completion.with_surface(super::tool_history_tests::surface_with_config(
             dir.path(),
             client.clone(),
+            crate::agent::AgentConfig {
+                planning_mode: crate::prompts::PlanningMode::Disabled,
+                permission_checker: Some(Arc::new(policy)),
+                ..Default::default()
+            },
         ))
     } else {
         completion

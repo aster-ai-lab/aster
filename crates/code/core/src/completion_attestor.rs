@@ -56,7 +56,7 @@ pub fn merge_attested_report(
     let Some(attestor) = attestor else {
         return;
     };
-    if ledger.is_empty() {
+    if ledger.is_empty() || ledger.has_failed_effects() {
         return;
     }
     let digest = ledger.digest();
@@ -98,16 +98,34 @@ impl DiskContentAttestor {
     }
 
     fn on_disk_digest(&self, relative: &str) -> Option<String> {
-        let relative = relative.trim_start_matches("./");
-        if relative.is_empty() || relative.contains('\0') || relative.contains("..") {
+        let path = std::path::Path::new(relative);
+        if relative.is_empty()
+            || path.is_absolute()
+            || path.components().any(|part| {
+                !matches!(
+                    part,
+                    std::path::Component::Normal(_) | std::path::Component::CurDir
+                )
+            })
+        {
             return None;
         }
         let root = self.workspace.canonicalize().ok()?;
-        let file = root.join(relative).canonicalize().ok()?;
-        if !file.starts_with(&root) {
+        let canonical = root.join(path).canonicalize().ok()?;
+        if !canonical.starts_with(&root) {
             return None;
         }
-        Some(sha256::digest(std::fs::read(file).ok()?))
+        // The existing observer streams through a 64 KiB buffer and rejects
+        // links, special files and identity changes around the descriptor read.
+        let mut byte_budget = u64::MAX;
+        let observed = crate::porcelain::observe_file_identity(&root, relative, &mut byte_budget)?;
+        if !observed.present
+            || observed.kind != 0
+            || root.join(path).canonicalize().ok()? != canonical
+        {
+            return None;
+        }
+        observed.content_digest
     }
 }
 
@@ -117,15 +135,12 @@ impl CompletionAttestor for DiskContentAttestor {
         effect_digest: &str,
         paths: &[MutatedPathRecord],
     ) -> Option<VerificationReport> {
-        let required: Vec<_> = paths
-            .iter()
-            .filter(|path| !path.content_digest.is_empty())
-            .collect();
-        if required.is_empty() {
+        if paths.is_empty() || effect_digest.is_empty() {
             return None;
         }
-        if required.iter().any(|path| {
-            self.on_disk_digest(&path.path).as_deref() != Some(path.content_digest.as_str())
+        if paths.iter().any(|path| {
+            path.content_digest.is_empty()
+                || self.on_disk_digest(&path.path).as_deref() != Some(path.content_digest.as_str())
         }) {
             return None;
         }
@@ -319,3 +334,11 @@ mod tests {
         ));
     }
 }
+
+#[cfg(test)]
+#[path = "completion_attestor_failure_tests.rs"]
+mod failure_tests;
+
+#[cfg(test)]
+#[path = "completion_attestor_disk_tests.rs"]
+mod disk_tests;

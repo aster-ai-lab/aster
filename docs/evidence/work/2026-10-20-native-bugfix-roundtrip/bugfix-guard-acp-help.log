@@ -1,0 +1,5 @@
+Usage: a3s-code-acp [--cwd DIR] [--config FILE] [--model provider/model] [--reasoning-effort LEVEL] [--import-accounts cc-switch,grok,cursor] [--plugin-store DIR]
+       a3s-code-acp --list-workspace-mcp | --trust-workspace-mcp <ID|all> [--cwd DIR]
+       a3s-code-acp --unattended [--max-execution-ms MS] [--reasoning-effort LEVEL] [--engineering-policy engineering-v1|none] [--goal-continuation|--no-goal-continuation] [--result-file FILE] [--cwd DIR] [--config FILE] [--model provider/model]
+New sessions use engineering-v1 by default. Explicit goals use bounded continuation.
+Speaks Agent Client Protocol on stdio over a3s-code-core 9.1.4.

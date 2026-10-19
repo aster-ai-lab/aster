@@ -20,6 +20,7 @@ struct Args {
     import_accounts: Vec<AccountImport>,
     plugin_store: Option<PathBuf>,
     studio_documents: bool,
+    reasoning_effort: Option<String>,
     unattended: Option<Unattended>,
     workspace_mcp: Option<WorkspaceMcpCommand>,
 }
@@ -126,7 +127,7 @@ fn parse_args_from(mut args: impl Iterator<Item = String>) -> Result<Args> {
             }
             "--help" | "-h" => {
                 eprintln!(
-                    "Usage: a3s-code-acp [--cwd DIR] [--config FILE] [--model provider/model] [--import-accounts cc-switch,grok,cursor] [--plugin-store DIR]\n\
+                    "Usage: a3s-code-acp [--cwd DIR] [--config FILE] [--model provider/model] [--reasoning-effort LEVEL] [--import-accounts cc-switch,grok,cursor] [--plugin-store DIR]\n\
                      \x20      a3s-code-acp --list-workspace-mcp | --trust-workspace-mcp <ID|all> [--cwd DIR]\n\
                      \x20      a3s-code-acp --unattended [--max-execution-ms MS] [--reasoning-effort LEVEL] [--engineering-policy engineering-v1|none] [--goal-continuation|--no-goal-continuation] [--result-file FILE] [--cwd DIR] [--config FILE] [--model provider/model]\n\
                      New sessions use engineering-v1 by default. Explicit goals use bounded continuation.\n\
@@ -154,8 +155,8 @@ fn parse_args_from(mut args: impl Iterator<Item = String>) -> Result<Args> {
             max_execution_ms.unwrap_or(DEFAULT_EXECUTION_BUDGET_MS),
             result_file,
         )?;
-        let profile = match reasoning_effort {
-            Some(level) => profile.with_reasoning_effort(&level)?,
+        let profile = match reasoning_effort.as_deref() {
+            Some(level) => profile.with_reasoning_effort(level)?,
             None => profile,
         };
         let profile = match engineering_policy {
@@ -170,12 +171,11 @@ fn parse_args_from(mut args: impl Iterator<Item = String>) -> Result<Args> {
     } else {
         if max_execution_ms.is_some()
             || result_file.is_some()
-            || reasoning_effort.is_some()
             || engineering_policy.is_some()
             || goal_continuation.is_some()
         {
             anyhow::bail!(
-                "--max-execution-ms, --reasoning-effort, --engineering-policy, --goal-continuation, --no-goal-continuation and --result-file require --unattended"
+                "--max-execution-ms, --engineering-policy, --goal-continuation, --no-goal-continuation and --result-file require --unattended"
             );
         }
         None
@@ -187,6 +187,7 @@ fn parse_args_from(mut args: impl Iterator<Item = String>) -> Result<Args> {
         import_accounts,
         plugin_store,
         studio_documents,
+        reasoning_effort,
         unattended,
         workspace_mcp,
     })
@@ -311,6 +312,9 @@ async fn run() -> Result<()> {
     }
     let workspace = launch.workspace.clone();
     let mut agent = A3sCodeAgent::new(launch).with_workspace_admission(admission);
+    if let Some(effort) = args.reasoning_effort.as_deref() {
+        agent = agent.with_default_reasoning_effort(effort)?;
+    }
     if created_user_acl {
         agent = agent.with_first_run_config();
     }

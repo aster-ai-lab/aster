@@ -1,0 +1,9 @@
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/work/packages/intelligent-ui
+
+
+ Test Files  2 passed (2)
+      Tests  42 passed (42)
+   Start at  23:22:53
+   Duration  111ms (transform 66%, import 20%, tests 11%, worker 3%)
+

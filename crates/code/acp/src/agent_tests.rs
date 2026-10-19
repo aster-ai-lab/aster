@@ -175,7 +175,9 @@ fn empty_registry_still_states_the_product_boundary() {
         version: None,
     }));
     let catalog = registry.to_system_prompt();
-    assert!(catalog.contains("search_skills"));
+    assert!(catalog.contains("live-report"));
+    assert!(catalog.contains("`Skill`"));
+    assert!(!catalog.contains("search_skills"));
     assert!(!catalog.contains("skills add"));
     let high = effort_limits("high").expect("high");
     let options = A3sCodeAgent::core_session_options("sid", "boyue/deepseek-v4-flash", Some(high));
@@ -192,6 +194,7 @@ fn empty_registry_still_states_the_product_boundary() {
 fn studio_host_keeps_the_budget_line_in_the_session_options() {
     let high = effort_limits("high").expect("high");
     let host = crate::host_context::StudioHost {
+        completion_attestation: None,
         work_policy: None,
         role: String::new(),
         guidelines: "每次都带上".to_string(),
@@ -816,12 +819,16 @@ async fn unanswered_asks_fail_closed_at_the_deadline() {
 fn question_options_are_not_permission_grants() {
     let options = question_permission_options(&[" left ".into(), "  ".into(), "right".into()]);
     assert_eq!(options.len(), 2);
-    assert!(options
-        .iter()
-        .all(|option| option.kind == acp::PermissionOptionKind::RejectOnce));
-    assert!(options
-        .iter()
-        .all(|option| option.kind != acp::PermissionOptionKind::AllowOnce));
+    assert!(
+        options
+            .iter()
+            .all(|option| option.kind == acp::PermissionOptionKind::RejectOnce)
+    );
+    assert!(
+        options
+            .iter()
+            .all(|option| option.kind != acp::PermissionOptionKind::AllowOnce)
+    );
     assert_eq!(options[0].name, "left");
     assert_eq!(options[1].name, "right");
 }
@@ -998,6 +1005,13 @@ fn tool_cards_use_pager_kind_and_raw_input() {
     assert_eq!(tool_kind_for("bash"), acp::ToolKind::Execute);
     assert_eq!(tool_kind_for("read"), acp::ToolKind::Read);
     assert_eq!(tool_kind_for("edit"), acp::ToolKind::Edit);
+    assert_eq!(tool_kind_for("office_file"), acp::ToolKind::Edit);
+    let office = prepared_raw_input(
+        "office_file",
+        &serde_json::json!({"file_path": "report.xlsx", "kind": "xlsx"}),
+    )
+    .unwrap();
+    assert_eq!(office["file_path"], "report.xlsx");
     assert_eq!(tool_kind_for("grep"), acp::ToolKind::Search);
     assert_eq!(tool_kind_for("web_fetch"), acp::ToolKind::Fetch);
     assert_eq!(tool_kind_for("web_search"), acp::ToolKind::Search);
@@ -1622,11 +1636,13 @@ fn tui_mappings_cover_cards_catalog_and_questions() {
     let long = "x".repeat(4_001);
     assert_eq!(tool_call_content("read", None, &long).len(), 1);
     assert!(edit_diff("read", Some(&edit)).is_none());
-    assert!(edit_diff(
-        "write",
-        Some(&serde_json::json!({"path": "a", "content": "z"}))
-    )
-    .is_some());
+    assert!(
+        edit_diff(
+            "write",
+            Some(&serde_json::json!({"path": "a", "content": "z"}))
+        )
+        .is_some()
+    );
     assert!(tool_raw_output("read", None, "out", 0).is_none());
     assert!(tool_raw_output("shell", None, "out", 1).is_some());
 
@@ -1696,20 +1712,24 @@ fn tui_mappings_cover_cards_catalog_and_questions() {
         answer_from_permission_outcome(&acp::RequestPermissionOutcome::Cancelled, &options)
             .is_none()
     );
-    assert!(answer_from_permission_outcome(
-        &acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(
-            acp::PermissionOptionId::new("allow-once")
-        )),
-        &options
-    )
-    .is_none());
-    assert!(answer_from_permission_outcome(
-        &acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(
-            acp::PermissionOptionId::new("question-0")
-        )),
-        &options
-    )
-    .is_none());
+    assert!(
+        answer_from_permission_outcome(
+            &acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(
+                acp::PermissionOptionId::new("allow-once")
+            )),
+            &options
+        )
+        .is_none()
+    );
+    assert!(
+        answer_from_permission_outcome(
+            &acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(
+                acp::PermissionOptionId::new("question-0")
+            )),
+            &options
+        )
+        .is_none()
+    );
     assert_eq!(
         answer_from_permission_outcome(
             &acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(
@@ -1752,9 +1772,9 @@ fn tui_mappings_cover_cards_catalog_and_questions() {
 
 #[tokio::test]
 async fn tui_turn_renders_every_pager_event() {
+    use a3s_code_core::TokenUsage;
     use a3s_code_core::planning::{Complexity, ExecutionPlan, Task, TaskStatus};
     use a3s_code_core::verification::VerificationSummary;
-    use a3s_code_core::TokenUsage;
 
     let root = std::env::temp_dir().join(format!("a3s-acp-events-{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(&root).expect("workspace");
@@ -1828,6 +1848,7 @@ async fn tui_turn_renders_every_pager_event() {
         delta_text: String::new(),
         end_text: None,
         end_outcome: None,
+        stop_reason: None,
         achieved_goal: None,
         subagent_started_ms: HashMap::new(),
         child_progress: HashMap::new(),
@@ -2186,9 +2207,10 @@ fn watched_skill_dirs_include_home_agent_roots_before_they_exist() {
     let workspace = std::path::Path::new("/tmp/a3s-watch-skills-workspace");
     let dirs = watched_skill_dirs(workspace);
     assert!(dirs.iter().any(|dir| dir == &workspace.join("skills")));
-    assert!(dirs
-        .iter()
-        .any(|dir| dir == &workspace.join(".a3s").join("skills")));
+    assert!(
+        dirs.iter()
+            .any(|dir| dir == &workspace.join(".a3s").join("skills"))
+    );
     let home = std::env::var_os("HOME").or_else(|| std::env::var_os("USERPROFILE"));
     let Some(home) = home.filter(|value| !value.is_empty()) else {
         return;
@@ -2202,9 +2224,10 @@ fn watched_skill_dirs_include_home_agent_roots_before_they_exist() {
             personal.display()
         );
     }
-    assert!(dirs
-        .iter()
-        .all(|dir| !dir.components().any(|part| part.as_os_str() == ".grok")));
+    assert!(
+        dirs.iter()
+            .all(|dir| !dir.components().any(|part| part.as_os_str() == ".grok"))
+    );
 }
 
 #[test]
@@ -2336,6 +2359,7 @@ async fn user_question_with_form_round_trips_the_submitted_values() {
                 delta_text: String::new(),
                 end_text: None,
                 end_outcome: None,
+                stop_reason: None,
         achieved_goal: None,
                 subagent_started_ms: HashMap::new(),
                 child_progress: HashMap::new(),
@@ -2454,6 +2478,7 @@ async fn user_question_choices_round_trip_typed_and_selected_answers() {
                 delta_text: String::new(),
                 end_text: None,
                 end_outcome: None,
+                stop_reason: None,
                 achieved_goal: None,
                 subagent_started_ms: HashMap::new(),
                 child_progress: HashMap::new(),

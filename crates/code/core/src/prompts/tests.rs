@@ -16,11 +16,14 @@ fn test_all_prompts_loaded() {
     assert!(!LLM_GOAL_EXTRACT_SYSTEM.is_empty());
     assert!(!LLM_GOAL_CHECK_SYSTEM.is_empty());
     assert!(!SKILLS_CATALOG_HEADER.is_empty());
-    assert!(SKILLS_CATALOG_HEADER.contains("search_skills"));
+    assert!(!SKILLS_CATALOG_HEADER.contains("search_skills"));
     assert!(SKILLS_CATALOG_HEADER.contains("`Skill`"));
     assert!(SKILLS_CATALOG_HEADER.contains("ask_user_form"));
     assert!(SKILLS_CATALOG_HEADER.contains("`openui`"));
     assert!(SKILLS_CATALOG_HEADER.contains("`ask-form`"));
+    assert!(SKILLS_CATALOG_HEADER.contains("only if it appears in the catalog"));
+    assert!(SKILLS_CATALOG_HEADER
+        .contains("If that skill is absent, use the component parameter table"));
     let first_load = SKILLS_CATALOG_HEADER
         .find("load the `ask-form` skill")
         .expect("load before the form");

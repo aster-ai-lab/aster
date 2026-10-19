@@ -5214,8 +5214,8 @@ async fn same_response_identical_tool_runs_once() {
 }
 
 #[tokio::test]
-async fn read_only_evidence_forces_finalization() {
-    let evidence_limit = execution_state::READ_ONLY_EVIDENCE_LIMIT as usize;
+async fn distinct_read_only_evidence_reaches_the_final_answer() {
+    let evidence_count = 16;
     let calls = Arc::new(std::sync::Mutex::new(Vec::new()));
     let workspace = tempfile::tempdir().unwrap();
     let executor = Arc::new(ToolExecutor::new(workspace.path().display().to_string()));
@@ -5223,7 +5223,7 @@ async fn read_only_evidence_forces_finalization() {
         calls: Arc::clone(&calls),
     }));
     let mut responses = Vec::new();
-    for index in 0..evidence_limit {
+    for index in 0..evidence_count {
         responses.push(MockLlmClient::tool_call_response(
             &format!("read-{index}"),
             "recorded_call",
@@ -5231,7 +5231,7 @@ async fn read_only_evidence_forces_finalization() {
         ));
     }
     responses.push(MockLlmClient::text_response(
-        "partial answer from the evidence",
+        "complete answer from all sixteen sources",
     ));
     responses.push(MockLlmClient::tool_call_response(
         "must-not-run",
@@ -5254,20 +5254,20 @@ async fn read_only_evidence_forces_finalization() {
         config,
     );
     let result = agent.execute(&[], "inspect only", None).await.unwrap();
-    assert_eq!(result.text, "partial answer from the evidence");
-    assert_eq!(calls.lock().unwrap().len(), evidence_limit);
+    assert_eq!(result.text, "complete answer from all sixteen sources");
+    assert_eq!(calls.lock().unwrap().len(), evidence_count);
     assert!(!calls
         .lock()
         .unwrap()
         .iter()
         .any(|call| call == "must-not-run"));
-    assert!(result.messages.iter().any(|message| {
+    assert!(!result.messages.iter().any(|message| {
         message
             .text()
             .contains("Read-only evidence gathering has no further effect on the task")
     }));
     let presented = client.request_tools.lock().unwrap();
-    assert!(presented.last().is_some_and(|tools| tools.is_empty()));
+    assert!(presented.last().is_some_and(|tools| !tools.is_empty()));
 }
 
 #[tokio::test]

@@ -9,6 +9,7 @@ description = "Portable semantic core for A3S Form"
 repository = "https://github.com/A3S-Lab/UI"
 
 [dependencies]
+a3s-acl = { workspace = true }
 ryu-js = "1.0.3"
 regress = "0.10.4"
 serde = { version = "1.0.228", features = ["derive"] }

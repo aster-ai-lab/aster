@@ -1,0 +1,39 @@
+{
+  "session_id": "01a15517-4ab8-7137-b176-2269b8f759a9",
+  "results": [
+    {
+      "seq": 8,
+      "type": "tool.result",
+      "key": "tool-result:1:0:bugfix-invalid-form",
+      "cause": "tool:1:0:bugfix-invalid-form",
+      "payload": {
+        "toolCallId": "bugfix-invalid-form",
+        "ok": false,
+        "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"unsupported OpenUI form component: Unknown\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":42,\"projected_bytes\":42,\"original_estimated_tokens\":11,\"projected_estimated_tokens\":11,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:dbdc69776ebea63866edcec70c5034f9f253f3c144694b7ac0139bd7deb7232d\",\"projected_digest\":\"sha256:dbdc69776ebea63866edcec70c5034f9f253f3c144694b7ac0139bd7deb7232d\",\"repeat_key\":\"sha256:dbdc69776ebea63866edcec70c5034f9f253f3c144694b7ac0139bd7deb7232d\",\"content_ref\":\"inline:sha256:dbdc69776ebea63866edcec70c5034f9f253f3c144694b7ac0139bd7deb7232d\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}}}",
+        "countRun": true,
+        "receipt": {
+          "schema": "a3s.code.tool-result.v1",
+          "identity": {
+            "turn": 1,
+            "cycle": 0,
+            "tool_call_id": "bugfix-invalid-form",
+            "batch_index": 0,
+            "admission": {
+              "run_id": "run-7cd593a8-5bcf-4652-94ce-3eab89213ddf",
+              "thread_id": "fcaf4ffc-570b-4c5b-a43a-005109b49e50",
+              "capability_binding_digest": "sha256:6811cb6acca25baef68e9c69a47792c19c8bdb5b79f6fe68708fb43f6e76074a"
+            }
+          },
+          "prepared_digest": "sha256:33b253eccaffd99a7e909e56ee24b219fd0678ae53a0769047c4a5e6ba135537",
+          "outcome": "failed",
+          "exit_code": 1,
+          "output": "{\"kind\":\"a3s.fact_tool_result\",\"text\":\"unsupported OpenUI form component: Unknown\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"a3s_tool_result_evidence\":{\"schema\":\"a3s.code.tool-result-evidence.v1\",\"original_bytes\":42,\"projected_bytes\":42,\"original_estimated_tokens\":11,\"projected_estimated_tokens\":11,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"content_digest\":\"sha256:dbdc69776ebea63866edcec70c5034f9f253f3c144694b7ac0139bd7deb7232d\",\"projected_digest\":\"sha256:dbdc69776ebea63866edcec70c5034f9f253f3c144694b7ac0139bd7deb7232d\",\"repeat_key\":\"sha256:dbdc69776ebea63866edcec70c5034f9f253f3c144694b7ac0139bd7deb7232d\",\"content_ref\":\"inline:sha256:dbdc69776ebea63866edcec70c5034f9f253f3c144694b7ac0139bd7deb7232d\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"a3s_tool_result_transform_binding\":{\"schema\":\"a3s.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"a3s.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3\",\"binding_digest\":\"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67\"}}}",
+          "effects": {
+            "changes": [],
+            "completeness": "complete"
+          }
+        }
+      }
+    }
+  ]
+}

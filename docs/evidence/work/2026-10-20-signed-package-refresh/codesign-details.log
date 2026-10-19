@@ -1,0 +1,28 @@
+Executable=/Users/roylin/code/aster/target/release/bundle/macos/AsterDream.app/Contents/MacOS/aster-dream
+Identifier=dev.a3s.studio
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20500 size=132826 flags=0x10000(runtime) hashes=4144+3 location=embedded
+VersionPlatform=1
+VersionMin=720896
+VersionSDK=1705216
+Hash type=sha256 size=32
+CandidateCDHash sha256=ef73f04e4ccfd30625dc462f215916bd7c72955e
+CandidateCDHashFull sha256=ef73f04e4ccfd30625dc462f215916bd7c72955e80d94219cafdd94e57f26d16
+Hash choices=sha256
+CMSDigest=ef73f04e4ccfd30625dc462f215916bd7c72955e80d94219cafdd94e57f26d16
+CMSDigestType=2
+Executable Segment base=0
+Executable Segment limit=65994752
+Executable Segment flags=0x1
+Page size=16384
+CDHash=ef73f04e4ccfd30625dc462f215916bd7c72955e
+Signature size=8968
+Authority=Developer ID Application: Lijin Zhu (5L9P7TS6DM)
+Authority=Developer ID Certification Authority
+Authority=Apple Root CA
+Timestamp=Oct 20, 2026 at 04:16:44
+Info.plist entries=14
+TeamIdentifier=5L9P7TS6DM
+Runtime Version=26.5.0
+Sealed Resources version=2 rules=13 files=4
+Internal requirements count=1 size=176

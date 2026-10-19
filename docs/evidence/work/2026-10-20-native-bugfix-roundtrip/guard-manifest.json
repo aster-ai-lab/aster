@@ -1,0 +1,33 @@
+{
+  "version": "0.1.1",
+  "bundle_id": "dev.a3s.studio",
+  "platform": "macos-arm64",
+  "created_at": "2026-10-20T01:12:43.001565+08:00",
+  "notarization": "pending: locked screen and unavailable saved keychain profile",
+  "native_json_acceptance": "pending",
+  "includes_structured_stop_conflict_fix": true,
+  "files": {
+    "target/packages/asterdream-bugfix-20261020-guard/aster_0.1.1_aarch64.dmg": {
+      "bytes": 133943266,
+      "sha256": "2dff55034fb43884028de4ec1eb2b04d45f4078e7aaca24026c8c2da1eff5e48"
+    },
+    "target/release/bundle/macos/AsterDream.app/Contents/MacOS/aster-dream": {
+      "bytes": 68043200,
+      "sha256": "5f7454e3c3050afbce1cfbe33411f893e4a1facfc70718c5d99dc4b7f32ea417"
+    },
+    "target/release/bundle/macos/AsterDream.app/Contents/Resources/agent/a3s-code-acp": {
+      "bytes": 321247520,
+      "sha256": "0169dc0e5cb56e4425e0197ed2c6f4d18f82fc6965985ece509ab2091a6ce70c"
+    },
+    "apps/work/patches/monaco-editor@0.56.0.patch": {
+      "bytes": 806,
+      "sha256": "37b8d17591eb174fbb6965525589cfd8cfcf89c567ee1195d1a9a84d2d036231"
+    },
+    "apps/work/src-tauri/src/agent_plane/turns.rs": {
+      "bytes": 296020,
+      "sha256": "9abf5e044f05250774f16f9d6f2cd8d7ced55e0785845d55676df46e840acf03"
+    }
+  },
+  "superseded": true,
+  "superseded_reason": "Rebuilt to include the concurrently added failed-effect attestation boundary."
+}

@@ -567,6 +567,7 @@ const KNOWN_CONFIG_BLOCKS: &[&str] = &[
     "storage_url",
     "task_scheduler",
     "thinking_budget",
+    "tool_presentation",
     "user_instructions_dir",
     "workspace_retrieval",
     "notifications",
@@ -610,6 +611,8 @@ pub const HOST_AUTHORITATIVE_BLOCKS: &[&str] = &[
     "storage_url",
     "os",
     "import_accounts",
+    "workspace_retrieval",
+    "tool_presentation",
 ];
 
 /// The first host-authoritative top-level block an ACL document declares,
@@ -689,6 +692,8 @@ pub fn withhold_untrusted_host_authoritative_blocks(
     config.storage_url = trusted.storage_url;
     config.os = trusted.os;
     config.import_accounts = trusted.import_accounts;
+    config.workspace_retrieval = trusted.workspace_retrieval;
+    config.tool_presentation_profile = trusted.tool_presentation_profile;
     withheld.sort_unstable();
     withheld.dedup();
     withheld
@@ -746,15 +751,16 @@ impl CodeConfig {
         for content in layers {
             let parsed = a3s_acl::parse_acl(content)
                 .map_err(|error| CodeError::Config(format!("Failed to parse ACL: {error}")))?;
+            super::execution_capabilities::apply_layer(content, &parsed, &mut config)?;
             if let Some(policy) = super::goal_control::parse_layer(content, &parsed)? {
                 config.goal_control = Some(policy);
             }
-            doc.blocks.extend(
-                parsed
-                    .blocks
-                    .into_iter()
-                    .filter(|block| block.name != "goal_control"),
-            );
+            doc.blocks.extend(parsed.blocks.into_iter().filter(|block| {
+                !matches!(
+                    block.name.as_str(),
+                    "goal_control" | "workspace_retrieval" | "tool_presentation"
+                )
+            }));
         }
 
         for block in doc.blocks {
@@ -908,61 +914,6 @@ impl CodeConfig {
                         // The long-run floor; absent means one minute.
                         min_seconds: min_seconds.unwrap_or(60),
                     });
-                }
-                "workspace_retrieval" => {
-                    // Accepted shape: `enabled` (required bool) plus an
-                    // optional empty `local_cpu {}` marker. The feature is
-                    // host-injected today (`WorkspaceRetrievalOptions` needs
-                    // an embedding provider no ACL can construct), so the
-                    // block parses and is exposed for hosts — sessions do
-                    // NOT silently enable semantic retrieval, and an
-                    // enabled block says so loudly.
-                    let mut enabled: Option<bool> = None;
-                    let mut local_cpu = false;
-                    for (name, value) in &block.attributes {
-                        match name.as_str() {
-                            "enabled" => match value {
-                                a3s_acl::Value::Bool(on) => enabled = Some(*on),
-                                _ => {
-                                    return Err(CodeError::Config(
-                                        "workspace_retrieval enabled must be a bool".to_string(),
-                                    ))
-                                }
-                            },
-                            other => {
-                                return Err(CodeError::Config(format!(
-                                    "workspace_retrieval attribute `{other}` is not in the \
-                                     closed set enabled"
-                                )))
-                            }
-                        }
-                    }
-                    if !block.blocks.is_empty() {
-                        for child in &block.blocks {
-                            match child.name.as_str() {
-                                "local_cpu" if child.attributes.is_empty() => local_cpu = true,
-                                other => {
-                                    return Err(CodeError::Config(format!(
-                                        "workspace_retrieval block `{other}` is not in the \
-                                         closed set local_cpu"
-                                    )))
-                                }
-                            }
-                        }
-                    }
-                    let enabled = enabled.ok_or_else(|| {
-                        CodeError::Config(
-                            "workspace_retrieval requires enabled = <bool>".to_string(),
-                        )
-                    })?;
-                    if enabled {
-                        tracing::warn!(
-                            "workspace_retrieval parsed; semantic retrieval needs a \
-                             host-injected embedding provider and stays off for sessions"
-                        );
-                    }
-                    config.workspace_retrieval =
-                        Some(super::WorkspaceRetrievalConfig { enabled, local_cpu });
                 }
                 "skill_dirs" | "skills" => {
                     if let Some(paths) = acl_path_list_attr(&block, &["skill_dirs", "skills"]) {
