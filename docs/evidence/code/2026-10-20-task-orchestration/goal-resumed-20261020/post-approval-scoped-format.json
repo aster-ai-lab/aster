@@ -1,0 +1,77 @@
+{
+  "source_count": 52,
+  "all_sources_still_match_build": true,
+  "checks": [
+    {
+      "edition": "2021",
+      "files": [
+        "crates/code/acp/src/agent.rs",
+        "crates/code/acp/src/agent/approval_deadline_tests.rs",
+        "crates/code/acp/src/agent_tests.rs",
+        "crates/code/core/src/agent/turn_context.rs",
+        "crates/code/core/src/agent/turn_context/execution_target_tests.rs",
+        "crates/code/core/src/agent/turn_context/tests.rs",
+        "crates/code/core/src/agent_api/conversation_runtime/owned_fact.rs",
+        "crates/code/core/src/agent_api/conversation_runtime/turn_outcome.rs",
+        "crates/code/core/src/agent_api/governance_facade.rs",
+        "crates/code/core/src/agent_api/tests/fact_log.rs",
+        "crates/code/core/src/agent_api/tests/fact_log/confirmation_snapshot.rs",
+        "crates/code/core/src/agent_api/tests/fact_log/execution_target.rs",
+        "crates/code/core/src/agent_api/tests/fact_log/revalidation.rs",
+        "crates/code/core/src/agent_api/tests/fact_log/work_policy.rs",
+        "crates/code/core/src/agent_api/tests/fact_log/work_policy/confirmation.rs",
+        "crates/code/core/src/fact_control/model_call.rs",
+        "crates/code/core/src/fact_control/receipts.rs",
+        "crates/code/core/src/porcelain.rs",
+        "crates/code/core/src/porcelain/receipt_tests.rs",
+        "crates/code/core/src/sandbox.rs",
+        "crates/code/core/src/sandbox/guest.rs",
+        "crates/code/core/src/sandbox/native.rs",
+        "crates/code/core/src/sandbox/oci.rs",
+        "crates/code/core/src/sandbox/process_host.rs",
+        "crates/code/core/src/tools/builtin/bash.rs",
+        "crates/code/core/src/tools/builtin/bash/windows_shell.rs",
+        "crates/code/core/src/workspace/local.rs",
+        "crates/code/core/src/workspace/manifest.rs",
+        "crates/code/core/src/workspace/mod.rs",
+        "crates/effect/src/coding.rs",
+        "crates/effect/src/coding/revalidation_tests.rs",
+        "crates/effect/tests/tool_effects.rs",
+        "crates/effect/tests/tool_effects/revalidation.rs",
+        "crates/oci-runtime/crates/sdk/src/attachment.rs",
+        "crates/oci-runtime/crates/sdk/src/attachment/tests.rs"
+      ],
+      "exit_code": 1,
+      "output": "Diff in /Users/roylin/code/aster/crates/code/acp/src/agent_tests.rs:822:\n fn question_options_are_not_permission_grants() {\n     let options = question_permission_options(&[\" left \".into(), \"  \".into(), \"right\".into()]);\n     assert_eq!(options.len(), 2);\n\u001b[31m-    assert!(\n\u001b(B\u001b[m\u001b[31m-        options\n\u001b(B\u001b[m\u001b[31m-            .iter()\n\u001b(B\u001b[m\u001b[31m-            .all(|option| option.kind == acp::PermissionOptionKind::RejectOnce)\n\u001b(B\u001b[m\u001b[31m-    );\n\u001b(B\u001b[m\u001b[31m-    assert!(\n\u001b(B\u001b[m\u001b[31m-        options\n\u001b(B\u001b[m\u001b[31m-            .iter()\n\u001b(B\u001b[m\u001b[31m-            .all(|option| option.kind != acp::PermissionOptionKind::AllowOnce)\n\u001b(B\u001b[m\u001b[31m-    );\n\u001b(B\u001b[m\u001b[32m+    assert!(options\n\u001b(B\u001b[m\u001b[32m+        .iter()\n\u001b(B\u001b[m\u001b[32m+        .all(|option| option.kind == acp::PermissionOptionKind::RejectOnce));\n\u001b(B\u001b[m\u001b[32m+    assert!(options\n\u001b(B\u001b[m\u001b[32m+        .iter()\n\u001b(B\u001b[m\u001b[32m+        .all(|option| option.kind != acp::PermissionOptionKind::AllowOnce));\n\u001b(B\u001b[m     assert_eq!(options[0].name, \"left\");\n     assert_eq!(options[1].name, \"right\");\n }\nDiff in /Users/roylin/code/aster/crates/code/acp/src/agent_tests.rs:1639:\n     let long = \"x\".repeat(4_001);\n     assert_eq!(tool_call_content(\"read\", None, &long).len(), 1);\n     assert!(edit_diff(\"read\", Some(&edit)).is_none());\n\u001b[31m-    assert!(\n\u001b(B\u001b[m\u001b[31m-        edit_diff(\n\u001b(B\u001b[m\u001b[31m-            \"write\",\n\u001b(B\u001b[m\u001b[31m-            Some(&serde_json::json!({\"path\": \"a\", \"content\": \"z\"}))\n\u001b(B\u001b[m\u001b[31m-        )\n\u001b(B\u001b[m\u001b[31m-        .is_some()\n\u001b(B\u001b[m\u001b[31m-    );\n\u001b(B\u001b[m\u001b[32m+    assert!(edit_diff(\n\u001b(B\u001b[m\u001b[32m+        \"write\",\n\u001b(B\u001b[m\u001b[32m+        Some(&serde_json::json!({\"path\": \"a\", \"content\": \"z\"}))\n\u001b(B\u001b[m\u001b[32m+    )\n\u001b(B\u001b[m\u001b[32m+    .is_some());\n\u001b(B\u001b[m     assert!(tool_raw_output(\"read\", None, \"out\", 0).is_none());\n     assert!(tool_raw_output(\"shell\", None, \"out\", 1).is_some());\n \nDiff in /Users/roylin/code/aster/crates/code/acp/src/agent_tests.rs:1715:\n         answer_from_permission_outcome(&acp::RequestPermissionOutcome::Cancelled, &options)\n             .is_none()\n     );\n\u001b[31m-    assert!(\n\u001b(B\u001b[m\u001b[31m-        answer_from_permission_outcome(\n\u001b(B\u001b[m\u001b[31m-            &acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(\n\u001b(B\u001b[m\u001b[31m-                acp::PermissionOptionId::new(\"allow-once\")\n\u001b(B\u001b[m\u001b[31m-            )),\n\u001b(B\u001b[m\u001b[31m-            &options\n\u001b(B\u001b[m\u001b[31m-        )\n\u001b(B\u001b[m\u001b[31m-        .is_none()\n\u001b(B\u001b[m\u001b[31m-    );\n\u001b(B\u001b[m\u001b[31m-    assert!(\n\u001b(B\u001b[m\u001b[31m-        answer_from_permission_outcome(\n\u001b(B\u001b[m\u001b[31m-            &acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(\n\u001b(B\u001b[m\u001b[31m-                acp::PermissionOptionId::new(\"question-0\")\n\u001b(B\u001b[m\u001b[31m-            )),\n\u001b(B\u001b[m\u001b[31m-            &options\n\u001b(B\u001b[m\u001b[31m-        )\n\u001b(B\u001b[m\u001b[31m-        .is_none()\n\u001b(B\u001b[m\u001b[31m-    );\n\u001b(B\u001b[m\u001b[32m+    assert!(answer_from_permission_outcome(\n\u001b(B\u001b[m\u001b[32m+        &acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(\n\u001b(B\u001b[m\u001b[32m+            acp::PermissionOptionId::new(\"allow-once\")\n\u001b(B\u001b[m\u001b[32m+        )),\n\u001b(B\u001b[m\u001b[32m+        &options\n\u001b(B\u001b[m\u001b[32m+    )\n\u001b(B\u001b[m\u001b[32m+    .is_none());\n\u001b(B\u001b[m\u001b[32m+    assert!(answer_from_permission_outcome(\n\u001b(B\u001b[m\u001b[32m+        &acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(\n\u001b(B\u001b[m\u001b[32m+            acp::PermissionOptionId::new(\"question-0\")\n\u001b(B\u001b[m\u001b[32m+        )),\n\u001b(B\u001b[m\u001b[32m+        &options\n\u001b(B\u001b[m\u001b[32m+    )\n\u001b(B\u001b[m\u001b[32m+    .is_none());\n\u001b(B\u001b[m     assert_eq!(\n         answer_from_permission_outcome(\n             &acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(\nDiff in /Users/roylin/code/aster/crates/code/acp/src/agent_tests.rs:1775:\n \n #[tokio::test]\n async fn tui_turn_renders_every_pager_event() {\n\u001b[31m-    use a3s_code_core::TokenUsage;\n\u001b(B\u001b[m     use a3s_code_core::planning::{Complexity, ExecutionPlan, Task, TaskStatus};\n     use a3s_code_core::verification::VerificationSummary;\n\u001b[32m+    use a3s_code_core::TokenUsage;\n\u001b(B\u001b[m \n     let root = std::env::temp_dir().join(format!(\"a3s-acp-events-{}\", uuid::Uuid::new_v4()));\n     std::fs::create_dir_all(&root).expect(\"workspace\");\nDiff in /Users/roylin/code/aster/crates/code/acp/src/agent_tests.rs:2210:\n     let workspace = std::path::Path::new(\"/tmp/a3s-watch-skills-workspace\");\n     let dirs = watched_skill_dirs(workspace);\n     assert!(dirs.iter().any(|dir| dir == &workspace.join(\"skills\")));\n\u001b[31m-    assert!(\n\u001b(B\u001b[m\u001b[31m-        dirs.iter()\n\u001b(B\u001b[m\u001b[31m-            .any(|dir| dir == &workspace.join(\".a3s\").join(\"skills\"))\n\u001b(B\u001b[m\u001b[31m-    );\n\u001b(B\u001b[m\u001b[32m+    assert!(dirs\n\u001b(B\u001b[m\u001b[32m+        .iter()\n\u001b(B\u001b[m\u001b[32m+        .any(|dir| dir == &workspace.join(\".a3s\").join(\"skills\")));\n\u001b(B\u001b[m     let home = std::env::var_os(\"HOME\").or_else(|| std::env::var_os(\"USERPROFILE\"));\n     let Some(home) = home.filter(|value| !value.is_empty()) else {\n         return;\nDiff in /Users/roylin/code/aster/crates/code/acp/src/agent_tests.rs:2227:\n             personal.display()\n         );\n     }\n\u001b[31m-    assert!(\n\u001b(B\u001b[m\u001b[31m-        dirs.iter()\n\u001b(B\u001b[m\u001b[31m-            .all(|dir| !dir.components().any(|part| part.as_os_str() == \".grok\"))\n\u001b(B\u001b[m\u001b[31m-    );\n\u001b(B\u001b[m\u001b[32m+    assert!(dirs\n\u001b(B\u001b[m\u001b[32m+        .iter()\n\u001b(B\u001b[m\u001b[32m+        .all(|dir| !dir.components().any(|part| part.as_os_str() == \".grok\")));\n\u001b(B\u001b[m }\n \n #[test]\n"
+    },
+    {
+      "edition": "2024",
+      "files": [
+        "apps/work/src-tauri/src/agent_plane/approval_recovery_tests.rs",
+        "apps/work/src-tauri/src/agent_plane/approval_response_tests.rs",
+        "apps/work/src-tauri/src/agent_plane/controllers.rs",
+        "apps/work/src-tauri/src/agent_plane/events.rs",
+        "apps/work/src-tauri/src/agent_plane/events_tests.rs",
+        "apps/work/src-tauri/src/agent_plane/execution_status_tests.rs",
+        "apps/work/src-tauri/src/agent_plane/local_acp_delivery_tests.rs",
+        "apps/work/src-tauri/src/agent_plane/local_acp_program_tests.rs",
+        "apps/work/src-tauri/src/agent_plane/local_acp_provider_tests.rs",
+        "apps/work/src-tauri/src/agent_plane/local_acp_sandbox_tests.rs",
+        "apps/work/src-tauri/src/agent_plane/local_acp_search_tests.rs",
+        "apps/work/src-tauri/src/agent_plane/message_delete_tests.rs",
+        "apps/work/src-tauri/src/agent_plane/scheduled_recovery_tests.rs",
+        "apps/work/src-tauri/src/agent_plane/turns.rs",
+        "apps/work/src-tauri/src/agent_plane/turns_form_tests.rs",
+        "apps/work/src-tauri/src/agent_plane/workbench_turns.rs",
+        "apps/work/src-tauri/src/agent_plane/workbench_turns_tests.rs"
+      ],
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "name": "scoped git diff check",
+      "exit_code": 0,
+      "output": ""
+    }
+  ]
+}

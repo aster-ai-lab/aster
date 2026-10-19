@@ -1,0 +1,43 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "aster-dream",
+    "--lib",
+    "--no-run",
+    "--message-format=json-render-diagnostics"
+  ],
+  "exit_code": 0,
+  "wall_seconds": 10.108784416999999,
+  "artifacts": [
+    {
+      "package_id": "path+file:///Users/roylin/code/aster/apps/work/src-tauri#aster-dream@0.1.1",
+      "target": {
+        "kind": [
+          "staticlib",
+          "cdylib",
+          "rlib"
+        ],
+        "crate_types": [
+          "staticlib",
+          "cdylib",
+          "rlib"
+        ],
+        "name": "a3s_studio_lib",
+        "src_path": "/Users/roylin/code/aster/apps/work/src-tauri/src/lib.rs",
+        "edition": "2024",
+        "doc": true,
+        "doctest": true,
+        "test": true
+      },
+      "filenames": [
+        "/Users/roylin/code/aster/target/debug/deps/a3s_studio_lib-9c7d06d5a17857ce"
+      ],
+      "executable": "/Users/roylin/code/aster/target/debug/deps/a3s_studio_lib-9c7d06d5a17857ce",
+      "fresh": false
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+Executable=/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/AsterDream-TaskOptimization-R4.app/Contents/MacOS/a3s-office
+Identifier=dev.a3s.studio.aster.task-optimization-r4.office
+Format=Mach-O thin (arm64)
+CodeDirectory v=20400 size=266601 flags=0x2(adhoc) hashes=8325+2 location=embedded
+VersionPlatform=1
+VersionMin=720896
+VersionSDK=1705216
+Hash type=sha256 size=32
+CandidateCDHash sha256=0480da683a728bad3ffd4a022c1d401e0f54b0ea
+CandidateCDHashFull sha256=0480da683a728bad3ffd4a022c1d401e0f54b0ea46bfc6b3cd7f061041f83efe
+Hash choices=sha256
+CMSDigest=0480da683a728bad3ffd4a022c1d401e0f54b0ea46bfc6b3cd7f061041f83efe
+CMSDigestType=2
+Executable Segment base=0
+Executable Segment limit=54427648
+Executable Segment flags=0x1
+Page size=16384
+CDHash=0480da683a728bad3ffd4a022c1d401e0f54b0ea
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Sealed Resources=none
+Internal requirements count=0 size=12

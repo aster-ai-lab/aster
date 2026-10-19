@@ -1,0 +1,85 @@
+{
+  "recorded_at_utc": "2026-10-19T22:44:22.937481+00:00",
+  "distinct_green_count": 10,
+  "passing_logs": [
+    {
+      "log": "core-green-final.log",
+      "passed": [
+        "agent_api::tests::fact_log::work_policy::confirmation::missing_or_withdrawn_confirmation_with_bound_policy_is_a_non_execution",
+        "agent_api::tests::fact_log::work_policy::confirmation::unbound_legacy_fact_confirmation_survives_a_missing_manager_receiver"
+      ]
+    },
+    {
+      "log": "core-owner-green.log",
+      "passed": [
+        "agent_api::tests::fact_log::work_policy::two_actual_policy_sessions_share_original_owner_exclusion_and_legacy_refusal"
+      ]
+    },
+    {
+      "log": "core-connected-1.log",
+      "passed": [
+        "agent_api::tests::queue::test_session_confirmation_api_resolves_pending_request",
+        "agent_api::tests::queue::test_session_confirmation_api_without_manager_is_noop"
+      ]
+    },
+    {
+      "log": "core-connected-3.log",
+      "passed": [
+        "fact_control::tests::fact_log_confirm_is_true_only_for_the_pending_tool"
+      ]
+    },
+    {
+      "log": "acp-green.log",
+      "passed": [
+        "agent::tests::approval_deadline::host_tool_confirmation_policy_uses_the_existing_human_ask_deadline",
+        "agent::tests::approval_deadline::human_approval_deadline_preserves_default_disable_and_large_value_semantics"
+      ]
+    },
+    {
+      "log": "acp-connected-1.log",
+      "passed": [
+        "agent::tests::unanswered_asks_fail_closed_at_the_deadline"
+      ]
+    },
+    {
+      "log": "acp-connected-2.log",
+      "passed": [
+        "unattended::tests::auto_approval_never_parks_a_tool"
+      ]
+    }
+  ],
+  "source_freeze_matches": [
+    {
+      "path": "crates/code/core/src/agent_api/governance_facade.rs",
+      "sha256": "9554a8ab5cdfe4a55ab77e12e66ea9e2c3327d9c14193d819f22e94f871e8119",
+      "matches": true
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log/work_policy.rs",
+      "sha256": "464ad6099a6cb338178f8c2564c773961b456c992b8d6851cf0ddbf385239fd5",
+      "matches": true
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log/work_policy/confirmation.rs",
+      "sha256": "b1a3eac7971b9b59c94653be011274aeda556906935f2f6423b9610697b0d30e",
+      "matches": true
+    },
+    {
+      "path": "crates/code/acp/src/agent.rs",
+      "sha256": "482d0b18add0f506feffdeea3a791d3d82ca4e32889636328f4a547db9e07b1c",
+      "matches": true
+    },
+    {
+      "path": "crates/code/acp/src/agent_tests.rs",
+      "sha256": "723cc414df2788637803b2054794f9b72194157605e12dc426e86bfa136697a2",
+      "matches": true
+    },
+    {
+      "path": "crates/code/acp/src/agent/approval_deadline_tests.rs",
+      "sha256": "fda409cea71fce412ac71e210bfd540af7cdd50690c5b8bdd5c24b96e41f748f",
+      "matches": true
+    }
+  ],
+  "outcome_relative_links_missing": [],
+  "notes": "Repeated initial core-green module run is not counted. Existing API/exact-pending tests use earlier frozen artifact; final owner+newmodule use final artifact. See OUTCOME.md for provenance and preserved failures."
+}
