@@ -1,0 +1,10 @@
+
+/Users/roylin/code/aster/apps/work/src/renderer/components/composer/useToolApprovalComposerOverrides.ts
+  145:6  warning  React Hook useMemo has an unnecessary dependency: 'dismissedApprovalIds'. Either exclude it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/roylin/code/aster/apps/work/src/renderer/pages/agents/useAgentChatRuntimeState.ts
+   31:34  warning  Unexpected path "@renderer/pages/settings/aligned/worktreeStore" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7  import-x/no-restricted-paths
+  221:15  warning  ⚠️ Avoid template literals in t() — they make rendering output unpredictable                                                                                                          i18n/no-template-in-t
+
+✖ 3 problems (0 errors, 3 warnings)
+

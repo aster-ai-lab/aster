@@ -1,0 +1,43 @@
+{
+  "architecture": "aarch64",
+  "compatibility_level": "a3s-oci-runtime-0.2.0-agent-protocol-v10",
+  "image": {
+    "archive_name": "a3s-oci-system.ext4.xz",
+    "archive_sha256": "cb0e95aeba902462a83916d59da45f5c34cceb90b80ee9ed2f3894f4e46ae6a8",
+    "archive_size": 5863988,
+    "directory_hash_seed": "a3a30c1a-2026-4000-8000-000000000002",
+    "filesystem": "ext4",
+    "filesystem_label": "a3s-oci-system",
+    "filesystem_uuid": "a3a30c1a-2026-4000-8000-000000000001",
+    "name": "a3s-oci-system.ext4",
+    "sha256": "70700841d6cd75872fca1cacf0e0767a9f2c6bb26363a91d6138ae044c980bcb",
+    "size": 67108864
+  },
+  "runtime": {
+    "archive_sha256": "5486f38e91eb4da0e58888b543c93fe669c918ad4b84dd495f0d1dfdffc43b56",
+    "firmware_sha256": "841bc9d5eecbc2aeeb6098fbc75d484427680d7503f5ed9bcdfe9d072a9420d4",
+    "kernel_bundle_sha256": "b1180b50148ed14f5fbeadf17288ce8abcf245daa468255b7ff41113bbf01199",
+    "kernel_bundle_size": 22740992,
+    "kernel_entry_address": "0x0000000080000000",
+    "kernel_guest_load_address": "0x0000000080000000",
+    "libkrun_sha256": "c5353f9cbd91564ce26eceaf1bdc33341097b43280fe029203ccca02807c082d"
+  },
+  "schema_version": "a3s.oci.macos-system-image.v1",
+  "sources": {
+    "agent": {
+      "sha256": "e728723163722ae73fbbaeb9488e1a7df7e0fbe420f2502de03cf007a3034264",
+      "size": 9886176,
+      "version": "0.3.6"
+    },
+    "alpine": {
+      "archive_sha256": "3fbc6285032ed46821b511292633d7b2a6306a2e254f590e92bdafff56cf2f70",
+      "archive_size": 3966256,
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/aarch64/alpine-minirootfs-3.22.5-aarch64.tar.gz",
+      "version": "3.22.5"
+    },
+    "builder": {
+      "e2fsprogs_version": "1.47.4 (6-Mar-2025)",
+      "source_date_epoch": 1735689600
+    }
+  }
+}

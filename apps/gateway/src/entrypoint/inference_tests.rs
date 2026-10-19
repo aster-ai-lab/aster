@@ -3055,23 +3055,10 @@ async fn spawn_openai_stream_backend() -> (SocketAddr, tokio::sync::oneshot::Rec
 }
 
 #[tokio::test]
-async fn reverse_cross_protocol_streaming_translates_to_anthropic_events() {
+async fn reserved_anthropic_messages_are_not_admitted() {
     let key = inference_key('r');
     let (backend, captured_request) = spawn_openai_stream_backend().await;
-    let mut config = inference_config(backend, &key, Utc::now() + ChronoDuration::hours(1));
-    // Anthropic-dialect endpoint (/v1/messages) served by a default
-    // OpenAI-protocol target that opted into translation.
-    let inference = config.inference.as_mut().expect("inference policy");
-    for route in inference.routes.values_mut() {
-        for model in route.models.values_mut() {
-            for target in &mut model.targets {
-                target.translate = true;
-            }
-        }
-        for grant in route.grants.values_mut() {
-            grant.endpoints.push(InferenceEndpoint::Messages);
-        }
-    }
+    let config = inference_config(backend, &key, Utc::now() + ChronoDuration::hours(1));
     config.validate().unwrap();
     let (address, shutdown_tx, handle) = start_test_entrypoint(gateway_state(&config)).await;
     let client = reqwest::Client::new();
@@ -3080,60 +3067,19 @@ async fn reverse_cross_protocol_streaming_translates_to_anthropic_events() {
         .post(format!("http://{address}/v1/messages"))
         .bearer_auth(&key)
         .header("content-type", "application/json")
-        .header("anthropic-version", "2023-06-01")
-        .body(r#"{"model":"allowed-model","max_tokens":16,"stream":true,"messages":[{"role":"user","content":"Summarize the plan."}]}"#)
+        .body(r#"{"model":"allowed-model","max_tokens":16,"messages":[]}"#)
         .send()
         .await
         .unwrap();
-    use futures_util::StreamExt;
-    let status = response.status();
-    let mut raw = Vec::new();
-    let mut stream = response.bytes_stream();
-    while let Some(chunk) = stream.next().await {
-        raw.extend_from_slice(&chunk.unwrap());
-    }
-    let text = String::from_utf8(raw).unwrap();
+    assert_eq!(response.status(), 404);
+    let body: serde_json::Value = response.json().await.unwrap();
+    assert_eq!(body["error"], "standard_not_admitted");
     assert!(
-        status.is_success(),
-        "reverse streaming failed: {status} {text}"
+        tokio::time::timeout(Duration::from_millis(200), captured_request)
+            .await
+            .is_err(),
+        "a reserved messages path must not reach the upstream"
     );
-    assert!(text.contains("event: message_start"), "start event: {text}");
-    assert!(text.contains("event: message_stop"), "stop event: {text}");
-    let text_events = text
-        .lines()
-        .filter_map(|line| line.strip_prefix("data: "))
-        .filter_map(|data| serde_json::from_str::<serde_json::Value>(data).ok())
-        .collect::<Vec<_>>();
-    let start = text_events
-        .iter()
-        .find(|event| event["type"] == "message_start")
-        .expect("start");
-    assert_eq!(start["message"]["id"], "resp_9");
-    let text_deltas = text_events
-        .iter()
-        .filter(|event| event["type"] == "content_block_delta")
-        .filter_map(|event| event["delta"]["text"].as_str())
-        .collect::<String>();
-    assert_eq!(text_deltas, "Ship the money loop.");
-    let terminal = text_events
-        .iter()
-        .find(|event| event["type"] == "message_delta")
-        .expect("delta");
-    assert_eq!(terminal["delta"]["stop_reason"], "end_turn");
-    assert_eq!(terminal["usage"]["output_tokens"], 6);
-
-    let request = tokio::time::timeout(Duration::from_secs(2), captured_request)
-        .await
-        .unwrap()
-        .unwrap();
-    let request_text = String::from_utf8(request).unwrap();
-    let body_offset = request_text.find("\r\n\r\n").unwrap() + 4;
-    let routed_body: serde_json::Value =
-        serde_json::from_str(&request_text[body_offset..]).unwrap();
-    assert_eq!(routed_body["stream"], true);
-    assert_eq!(routed_body["messages"][0]["role"], "user");
-    assert_eq!(routed_body["messages"][0]["content"], "Summarize the plan.");
-    assert_eq!(routed_body["max_tokens"], 16);
 
     stop_test_entrypoint(shutdown_tx, handle).await;
 }
@@ -3242,7 +3188,7 @@ async fn cross_protocol_streaming_translates_sse_frames() {
 }
 
 #[tokio::test]
-async fn responses_endpoint_passes_through_natively() {
+async fn reserved_responses_are_not_admitted() {
     let key = inference_key('n');
     let (backend, captured_request) = spawn_capturing_backend().await;
     let config = inference_config(backend, &key, Utc::now() + ChronoDuration::hours(1));
@@ -3254,194 +3200,19 @@ async fn responses_endpoint_passes_through_natively() {
         .post(format!("http://{address}/v1/responses"))
         .bearer_auth(&key)
         .header("content-type", "application/json")
-        .body(r#"{"model":"allowed-model","input":"Where is order 5001?","max_output_tokens":64}"#)
+        .body(r#"{"model":"allowed-model","input":"hi"}"#)
         .send()
         .await
         .unwrap();
-    assert_eq!(response.status(), 200);
+    assert_eq!(response.status(), 404);
     let body: serde_json::Value = response.json().await.unwrap();
-    assert_eq!(body["success"], true);
-
-    let request = tokio::time::timeout(Duration::from_secs(2), captured_request)
-        .await
-        .unwrap()
-        .unwrap();
-    let request_text = String::from_utf8(request).unwrap();
-    let body_offset = request_text.find("\r\n\r\n").unwrap() + 4;
-    let routed_body: serde_json::Value =
-        serde_json::from_str(&request_text[body_offset..]).unwrap();
-    // Native passthrough keeps the responses dialect, rewriting only model.
-    assert_eq!(routed_body["model"], "internal-allowed-model");
-    assert_eq!(routed_body["input"], "Where is order 5001?");
-    assert_eq!(routed_body["max_output_tokens"], 64);
-
-    stop_test_entrypoint(shutdown_tx, handle).await;
-}
-
-#[tokio::test]
-async fn responses_endpoint_translates_statelessly_onto_chat_targets() {
-    let key = inference_key('m');
-    let (backend, captured_request) = spawn_anthropic_backend(
-        r#"{"id":"resp_5","object":"chat.completion","created":1770000000,"model":"internal-allowed-model","choices":[{"index":0,"message":{"role":"assistant","content":"Order 5001 is in transit."},"finish_reason":"stop"}],"usage":{"prompt_tokens":12,"completion_tokens":6,"total_tokens":18}}"#,
-    )
-    .await;
-    let mut config = inference_config(backend, &key, Utc::now() + ChronoDuration::hours(1));
-    // A plain chat-completions target (OpenAI protocol) opting into
-    // translation serves the responses dialect statelessly.
-    let inference = config.inference.as_mut().expect("inference policy");
-    for route in inference.routes.values_mut() {
-        for model in route.models.values_mut() {
-            for target in &mut model.targets {
-                target.protocol = crate::config::InferenceProtocol::Openai;
-                target.translate = true;
-            }
-        }
-    }
-    config.validate().unwrap();
-    let (address, shutdown_tx, handle) = start_test_entrypoint(gateway_state(&config)).await;
-    let client = reqwest::Client::new();
-
-    let response = client
-        .post(format!("http://{address}/v1/responses"))
-        .bearer_auth(&key)
-        .header("content-type", "application/json")
-        .body(r#"{"model":"allowed-model","instructions":"You manage shipments.","input":"Where is order 5001?","max_output_tokens":64}"#)
-        .send()
-        .await
-        .unwrap();
-    let raw_status = response.status();
-    let raw: serde_json::Value = response.json().await.unwrap();
-    assert_eq!(raw_status, 200, "translated responses failed: {raw}");
-    let body = raw;
-    // The client sees the responses dialect inside the envelope.
-    assert_eq!(body["data"]["object"], "response");
-    assert_eq!(body["data"]["status"], "completed");
-    assert_eq!(
-        body["data"]["output"][0]["content"][0]["text"],
-        "Order 5001 is in transit."
-    );
-    assert_eq!(body["data"]["usage"]["input_tokens"], 12);
-
-    let request = tokio::time::timeout(Duration::from_secs(2), captured_request)
-        .await
-        .unwrap()
-        .unwrap();
-    let request_text = String::from_utf8(request).unwrap();
-    let body_offset = request_text.find("\r\n\r\n").unwrap() + 4;
-    let routed_body: serde_json::Value =
-        serde_json::from_str(&request_text[body_offset..]).unwrap();
-    // The upstream received the chat dialect with instructions hoisted.
-    assert_eq!(routed_body["messages"][0]["role"], "system");
-    assert_eq!(
-        routed_body["messages"][0]["content"],
-        "You manage shipments."
-    );
-    assert_eq!(routed_body["messages"][1]["role"], "user");
-    assert_eq!(routed_body["max_tokens"], 64);
-
-    stop_test_entrypoint(shutdown_tx, handle).await;
-}
-
-#[tokio::test]
-async fn responses_streaming_refuses_until_the_sse_lane_ships() {
-    let key = inference_key('q');
-    let (backend, _captured) = spawn_capturing_backend().await;
-    let config = inference_config(backend, &key, Utc::now() + ChronoDuration::hours(1));
-    config.validate().unwrap();
-    let (address, shutdown_tx, handle) = start_test_entrypoint(gateway_state(&config)).await;
-    let client = reqwest::Client::new();
-
-    let response = client
-        .post(format!("http://{address}/v1/responses"))
-        .bearer_auth(&key)
-        .header("content-type", "application/json")
-        .body(r#"{"model":"allowed-model","input":"hi","stream":true}"#)
-        .send()
-        .await
-        .unwrap();
-    assert_eq!(response.status(), 400);
-    let body: serde_json::Value = response.json().await.unwrap();
-    assert_eq!(body["error_code"], "translation.streaming_unsupported");
-
-    stop_test_entrypoint(shutdown_tx, handle).await;
-}
-
-#[tokio::test]
-async fn responses_streaming_translates_chat_chunks_to_response_events() {
-    let key = inference_key('v');
-    let (backend, captured_request) = spawn_openai_stream_backend().await;
-    let mut config = inference_config(backend, &key, Utc::now() + ChronoDuration::hours(1));
-    let inference = config.inference.as_mut().expect("inference policy");
-    for route in inference.routes.values_mut() {
-        for model in route.models.values_mut() {
-            for target in &mut model.targets {
-                target.protocol = crate::config::InferenceProtocol::Openai;
-                target.translate = true;
-            }
-        }
-    }
-    config.validate().unwrap();
-    let (address, shutdown_tx, handle) = start_test_entrypoint(gateway_state(&config)).await;
-    let client = reqwest::Client::new();
-
-    let response = client
-        .post(format!("http://{address}/v1/responses"))
-        .bearer_auth(&key)
-        .header("content-type", "application/json")
-        .body(r#"{"model":"allowed-model","input":"Summarize the plan.","stream":true,"max_output_tokens":64}"#)
-        .send()
-        .await
-        .unwrap();
-    use futures_util::StreamExt;
-    let status = response.status();
-    let mut raw = Vec::new();
-    let mut stream = response.bytes_stream();
-    while let Some(chunk) = stream.next().await {
-        raw.extend_from_slice(&chunk.unwrap());
-    }
-    let text = String::from_utf8(raw).unwrap();
+    assert_eq!(body["error"], "standard_not_admitted");
     assert!(
-        status.is_success(),
-        "responses streaming failed: {status} {text}"
+        tokio::time::timeout(Duration::from_millis(200), captured_request)
+            .await
+            .is_err(),
+        "a reserved responses path must not reach the upstream"
     );
-    assert!(text.contains("event: response.created"), "created: {text}");
-    assert!(
-        text.contains("event: response.completed"),
-        "completed: {text}"
-    );
-    let events = text
-        .lines()
-        .filter_map(|line| line.strip_prefix("data: "))
-        .filter_map(|data| serde_json::from_str::<serde_json::Value>(data).ok())
-        .collect::<Vec<_>>();
-    let deltas = events
-        .iter()
-        .filter(|event| event["type"] == "response.output_text.delta")
-        .filter_map(|event| event["delta"].as_str())
-        .collect::<String>();
-    assert_eq!(deltas, "Ship the money loop.");
-    let completed = events
-        .iter()
-        .find(|event| event["type"] == "response.completed")
-        .expect("completed");
-    assert_eq!(completed["response"]["status"], "completed");
-    assert_eq!(completed["response"]["usage"]["input_tokens"], 12);
-    assert_eq!(
-        completed["response"]["output"][0]["content"][0]["text"],
-        "Ship the money loop."
-    );
-
-    let request = tokio::time::timeout(Duration::from_secs(2), captured_request)
-        .await
-        .unwrap()
-        .unwrap();
-    let request_text = String::from_utf8(request).unwrap();
-    let body_offset = request_text.find("\r\n\r\n").unwrap() + 4;
-    let routed_body: serde_json::Value =
-        serde_json::from_str(&request_text[body_offset..]).unwrap();
-    // The upstream received the chat dialect with the stream flag.
-    assert_eq!(routed_body["stream"], true);
-    assert_eq!(routed_body["messages"][0]["role"], "user");
 
     stop_test_entrypoint(shutdown_tx, handle).await;
 }

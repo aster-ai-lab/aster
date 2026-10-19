@@ -1,6 +1,7 @@
 [package]
+publish = false
 name = "a3s-oci-agent"
-version = "0.1.0"
+version = "0.3.6"
 edition = "2021"
 license = "MIT"
 description = "Linux guest agent for A3S OCI Runtime"

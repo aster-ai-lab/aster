@@ -1,0 +1,419 @@
+{
+  "client_to_server": [
+    {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "initialize",
+      "params": {
+        "capabilities": {
+          "general": {
+            "positionEncodings": [
+              "utf-16"
+            ]
+          },
+          "textDocument": {
+            "declaration": {
+              "dynamicRegistration": false,
+              "linkSupport": true
+            },
+            "definition": {
+              "dynamicRegistration": false,
+              "linkSupport": true
+            },
+            "diagnostic": {
+              "dynamicRegistration": false,
+              "relatedDocumentSupport": false
+            },
+            "documentSymbol": {
+              "dynamicRegistration": false,
+              "hierarchicalDocumentSymbolSupport": true
+            },
+            "implementation": {
+              "dynamicRegistration": false,
+              "linkSupport": true
+            },
+            "publishDiagnostics": {
+              "codeDescriptionSupport": true,
+              "dataSupport": false,
+              "relatedInformation": true,
+              "versionSupport": true
+            },
+            "references": {
+              "dynamicRegistration": false
+            },
+            "synchronization": {
+              "didSave": true,
+              "dynamicRegistration": false,
+              "willSave": false,
+              "willSaveWaitUntil": false
+            }
+          },
+          "workspace": {
+            "applyEdit": false,
+            "configuration": true,
+            "symbol": {
+              "dynamicRegistration": false
+            },
+            "workspaceFolders": true
+          }
+        },
+        "clientInfo": {
+          "name": "a3s-code-core",
+          "version": "9.1.4"
+        },
+        "initializationOptions": {
+          "cargo": {
+            "buildScripts": {
+              "enable": false
+            }
+          },
+          "checkOnSave": false,
+          "linkedProjects": [
+            "/private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpN6ZsAh/Cargo.toml"
+          ],
+          "procMacro": {
+            "enable": false
+          }
+        },
+        "processId": 11676,
+        "rootUri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpN6ZsAh/",
+        "workspaceFolders": [
+          {
+            "name": ".tmpN6ZsAh",
+            "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpN6ZsAh/"
+          }
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "method": "textDocument/definition",
+      "params": {
+        "position": {
+          "character": 31,
+          "line": 1
+        },
+        "textDocument": {
+          "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpN6ZsAh/src/lib.rs"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "method": "textDocument/definition",
+      "params": {
+        "position": {
+          "character": 31,
+          "line": 1
+        },
+        "textDocument": {
+          "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpN6ZsAh/src/lib.rs"
+        }
+      }
+    }
+  ],
+  "scope": "only this self-authored temporary Rust fixture; no user workspace or model",
+  "server_to_client": [
+    {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": true,
+          "codeLensProvider": {
+            "resolveProvider": true
+          },
+          "completionProvider": {
+            "completionItem": {
+              "labelDetailsSupport": false
+            },
+            "resolveProvider": false,
+            "triggerCharacters": [
+              ":",
+              ".",
+              "'",
+              "("
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "diagnosticProvider": {
+            "identifier": "rust-analyzer",
+            "interFileDependencies": true,
+            "workspaceDiagnostics": false
+          },
+          "documentFormattingProvider": true,
+          "documentHighlightProvider": true,
+          "documentOnTypeFormattingProvider": {
+            "firstTriggerCharacter": ".",
+            "moreTriggerCharacter": [
+              "=",
+              "<",
+              ">",
+              "{",
+              "(",
+              "|",
+              "+"
+            ]
+          },
+          "documentRangeFormattingProvider": false,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "childModules": true,
+            "externalDocs": true,
+            "hoverRange": true,
+            "joinLines": true,
+            "matchingBrace": true,
+            "moveItem": true,
+            "onEnter": true,
+            "openCargoToml": true,
+            "parentModule": true,
+            "runnables": {
+              "kinds": [
+                "cargo"
+              ]
+            },
+            "ssr": true,
+            "workspaceSymbolScopeKindFiltering": true
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "implementationProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false
+          },
+          "positionEncoding": "utf-16",
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "selectionRangeProvider": true,
+          "semanticTokensProvider": {
+            "full": {
+              "delta": true
+            },
+            "legend": {
+              "tokenModifiers": [
+                "async",
+                "documentation",
+                "declaration",
+                "static",
+                "defaultLibrary",
+                "deprecated",
+                "associated",
+                "attribute",
+                "callable",
+                "constant",
+                "consuming",
+                "controlFlow",
+                "crateRoot",
+                "injected",
+                "intraDocLink",
+                "library",
+                "macro",
+                "mutable",
+                "procMacro",
+                "public",
+                "reference",
+                "trait",
+                "unsafe"
+              ],
+              "tokenTypes": [
+                "comment",
+                "decorator",
+                "enumMember",
+                "enum",
+                "function",
+                "interface",
+                "keyword",
+                "macro",
+                "method",
+                "namespace",
+                "number",
+                "operator",
+                "parameter",
+                "property",
+                "string",
+                "struct",
+                "typeParameter",
+                "variable",
+                "type",
+                "angle",
+                "arithmetic",
+                "attributeBracket",
+                "attribute",
+                "bitwise",
+                "boolean",
+                "brace",
+                "bracket",
+                "builtinAttribute",
+                "builtinType",
+                "character",
+                "colon",
+                "comma",
+                "comparison",
+                "constParameter",
+                "const",
+                "deriveHelper",
+                "derive",
+                "dot",
+                "escapeSequence",
+                "formatSpecifier",
+                "generic",
+                "invalidEscapeSequence",
+                "label",
+                "lifetime",
+                "logical",
+                "macroBang",
+                "negation",
+                "parenthesis",
+                "procMacro",
+                "punctuation",
+                "selfKeyword",
+                "selfTypeKeyword",
+                "semicolon",
+                "static",
+                "toolModule",
+                "typeAlias",
+                "union",
+                "unresolvedReference"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              "(",
+              ",",
+              "<"
+            ]
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {}
+          },
+          "typeDefinitionProvider": true,
+          "workspace": {
+            "fileOperations": {
+              "willRename": {
+                "filters": [
+                  {
+                    "pattern": {
+                      "glob": "**/*.rs",
+                      "matches": "file"
+                    },
+                    "scheme": "file"
+                  },
+                  {
+                    "pattern": {
+                      "glob": "**",
+                      "matches": "folder"
+                    },
+                    "scheme": "file"
+                  }
+                ]
+              }
+            },
+            "workspaceFolders": {
+              "changeNotifications": true,
+              "supported": true
+            }
+          },
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "rust-analyzer",
+          "version": "1.97.1 (8bab26f4 2026-07-14)"
+        }
+      }
+    },
+    {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": []
+    },
+    {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "result": [
+        {
+          "originSelectionRange": {
+            "end": {
+              "character": 35,
+              "line": 1
+            },
+            "start": {
+              "character": 29,
+              "line": 1
+            }
+          },
+          "targetRange": {
+            "end": {
+              "character": 29,
+              "line": 0
+            },
+            "start": {
+              "character": 0,
+              "line": 0
+            }
+          },
+          "targetSelectionRange": {
+            "end": {
+              "character": 13,
+              "line": 0
+            },
+            "start": {
+              "character": 7,
+              "line": 0
+            }
+          },
+          "targetUri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpN6ZsAh/src/lib.rs"
+        }
+      ]
+    }
+  ],
+  "stream_limit_bytes": 65536,
+  "stream_order": [
+    "stdin",
+    "stdout",
+    "stderr"
+  ],
+  "streams": [
+    {
+      "retained_bytes": 3179,
+      "total_bytes": 3179,
+      "truncated": false
+    },
+    {
+      "retained_bytes": 4099,
+      "total_bytes": 4099,
+      "truncated": false
+    },
+    {
+      "retained_bytes": 65536,
+      "total_bytes": 58826127,
+      "truncated": true
+    }
+  ],
+  "temp_root": "/private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpN6ZsAh",
+  "stderr_startup_excerpt": [
+    "2026-10-20T01:02:23.181336+08:00  INFO will fetch workspaces cause=startup",
+    "2026-10-20T01:02:23.327899+08:00  INFO Loaded sysroot src_root=Some(AbsPath(\"/Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/lib/rustlib/src/rust/library\")) root=workspace /Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/lib/rustlib/src/rust/library",
+    "2026-10-20T01:02:23.327912+08:00  INFO did fetch workspaces workspaces=[Ok(Cargo { root: Some(\".tmpN6ZsAh\"), n_packages: 1, n_sysroot_crates: 26, n_rustc_compiler_crates: 0, n_rustc_cfg: 65, n_cfg_overrides: 2, n_extra_includes: 0, toolchain: Some(Version { major: 1, minor: 97, patch: 1 }), data_layout: Ok(TargetData { data_layout: \"e-m:o-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-n32:64-S128-Fn32\", arch: Other }), set_test: true, build_scripts: \"ok\" })]",
+    "2026-10-20T01:02:23.327936+08:00  INFO GlobalState::handle_event{event=Event::Task}:GlobalState::switch_workspaces: will switch workspaces cause=fetched workspace",
+    "2026-10-20T01:02:23.337294+08:00  INFO GlobalState::handle_event{event=Event::Task}:GlobalState::switch_workspaces: did switch workspaces",
+    "2026-10-20T01:02:23.397713+08:00  WARN notify error: No path was found. about [\"/Users/roylin/Library/Application Support/rust-analyzer/rust-analyzer.toml\"]",
+    "2026-10-20T01:02:23.897902+08:00  INFO GlobalState::handle_event{event=Event::FetchWorkspaces}: will fetch workspaces cause=project structure change",
+    "2026-10-20T01:02:24.064378+08:00  INFO Loaded sysroot src_root=Some(AbsPath(\"/Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/lib/rustlib/src/rust/library\")) root=workspace /Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/lib/rustlib/src/rust/library",
+    "2026-10-20T01:02:24.064392+08:00  INFO did fetch workspaces workspaces=[Ok(Cargo { root: Some(\".tmpN6ZsAh\"), n_packages: 1, n_sysroot_crates: 26, n_rustc_compiler_crates: 0, n_rustc_cfg: 65, n_cfg_overrides: 2, n_extra_includes: 0, toolchain: Some(Version { major: 1, minor: 97, patch: 1 }), data_layout: Ok(TargetData { data_layout: \"e-m:o-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-n32:64-S128-Fn32\", arch: Other }), set_test: true, build_scripts: \"ok\" })]",
+    "2026-10-20T01:02:24.064436+08:00  INFO GlobalState::handle_event{event=Event::Task}:GlobalState::switch_workspaces: will switch workspaces cause=fetched workspace"
+  ],
+  "captured_stderr_prefix_sha256": "af9670809912633caadd8d347826f5c2434d4de133650155de89c991c6ae0ddf",
+  "stderr_prefix_retained_in_final_evidence": false,
+  "stderr_excerpt_policy": "Only timestamped native project-loading and watcher-warning lines from the first bounded 64 KiB are retained; verbose config/stdlib query traces omitted.",
+  "performance_sample": false
+}

@@ -1,0 +1,129 @@
+--- delivery-before.rs
++++ apps/work/src-tauri/src/agent_plane/local_acp_delivery_tests.rs
+@@ -7,6 +7,8 @@
+ 
+ #[path = "local_acp_program_tests.rs"]
+ mod program;
++#[path = "local_acp_provider_tests.rs"]
++mod provider_socket;
+ 
+ /// Only the provider is scripted; Work launches this checkout's real ACP/Core.
+ struct Provider {
+@@ -43,37 +45,7 @@
+                     }
+                     Err(error) => return Err(error.to_string()),
+                 };
+-                socket
+-                    .set_read_timeout(Some(Duration::from_secs(5)))
+-                    .map_err(|error| error.to_string())?;
+-                let mut bytes = Vec::new();
+-                let mut chunk = [0; 8192];
+-                let body: Value = loop {
+-                    let count = socket.read(&mut chunk).map_err(|error| error.to_string())?;
+-                    if count == 0 || bytes.len() + count > 2 * 1024 * 1024 {
+-                        return Err("provider request missing or exceeds 2 MiB".into());
+-                    }
+-                    bytes.extend_from_slice(&chunk[..count]);
+-                    let Some(end) = bytes.windows(4).position(|part| part == b"\r\n\r\n") else {
+-                        continue;
+-                    };
+-                    let header = String::from_utf8_lossy(&bytes[..end]);
+-                    if !header.starts_with("POST /v1/chat/completions ") {
+-                        return Err(format!("unexpected provider request: {header}"));
+-                    }
+-                    let length = header
+-                        .lines()
+-                        .find_map(|line| {
+-                            line.to_ascii_lowercase()
+-                                .strip_prefix("content-length:")
+-                                .and_then(|length| length.trim().parse::<usize>().ok())
+-                        })
+-                        .ok_or("provider request has no Content-Length")?;
+-                    if bytes.len() >= end + 4 + length {
+-                        break serde_json::from_slice(&bytes[end + 4..end + 4 + length])
+-                            .map_err(|error| error.to_string())?;
+-                    }
+-                };
++                let body = Self::read_request(&mut socket)?;
+                 let streaming = body["stream"] == true;
+                 let mut requests = observed.lock().unwrap();
+                 let index = if separate_memory {
+@@ -112,7 +84,7 @@
+                     "application/json"
+                 };
+                 write!(socket, "HTTP/1.1 {status} Fixture\r\nContent-Type: {content_type}\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{response}", response.len())
+-                    .map_err(|error| error.to_string())?;
++                    .map_err(|error| format!("provider response write: {:?}: {error}", error.kind()))?;
+                 requests.push(body);
+             }
+             Ok(())
+@@ -128,6 +100,57 @@
+     fn requests(&self) -> Vec<Value> {
+         self.requests.lock().unwrap().clone()
+     }
++
++    fn read_request(socket: &mut std::net::TcpStream) -> Result<Value, String> {
++        // Darwin's accept inherits O_NONBLOCK from the listener. The listener
++        // polls for shutdown, but each HTTP connection uses bounded blocking I/O.
++        socket
++            .set_nonblocking(false)
++            .map_err(|error| format!("provider socket blocking mode: {error}"))?;
++        socket
++            .set_read_timeout(Some(Duration::from_secs(5)))
++            .map_err(|error| format!("provider socket read timeout: {error}"))?;
++        socket
++            .set_write_timeout(Some(Duration::from_secs(5)))
++            .map_err(|error| format!("provider socket write timeout: {error}"))?;
++        let mut bytes = Vec::new();
++        let mut chunk = [0; 8192];
++        loop {
++            let count = socket.read(&mut chunk).map_err(|error| {
++                format!(
++                    "provider request read: {:?}, received {} bytes: {error}",
++                    error.kind(),
++                    bytes.len()
++                )
++            })?;
++            if count == 0 {
++                return Err(format!("provider request EOF after {} bytes", bytes.len()));
++            }
++            if bytes.len() + count > 2 * 1024 * 1024 {
++                return Err("provider request exceeds 2 MiB".into());
++            }
++            bytes.extend_from_slice(&chunk[..count]);
++            let Some(end) = bytes.windows(4).position(|part| part == b"\r\n\r\n") else {
++                continue;
++            };
++            let header = String::from_utf8_lossy(&bytes[..end]);
++            if !header.starts_with("POST /v1/chat/completions ") {
++                return Err("unexpected provider HTTP request line".into());
++            }
++            let length = header
++                .lines()
++                .find_map(|line| {
++                    line.to_ascii_lowercase()
++                        .strip_prefix("content-length:")
++                        .and_then(|length| length.trim().parse::<usize>().ok())
++                })
++                .ok_or("provider request has no Content-Length")?;
++            if bytes.len() >= end + 4 + length {
++                return serde_json::from_slice(&bytes[end + 4..end + 4 + length])
++                    .map_err(|error| error.to_string());
++            }
++        }
++    }
+ }
+ 
+ impl Drop for Provider {
+@@ -135,6 +158,11 @@
+         self.stop.store(true, Ordering::SeqCst);
+         if let Some(server) = self.server.take() {
+             let result = server.join();
++            if !matches!(&result, Ok(Ok(()))) {
++                // Preserve the earliest server failure even if another test
++                // assertion already started unwinding (for example drain).
++                eprintln!("WORK_REAL_ACP_PROVIDER_SERVER_ERROR {result:?}");
++            }
+             if !std::thread::panicking() {
+                 assert!(matches!(result, Ok(Ok(()))), "provider fixture: {result:?}");
+             }

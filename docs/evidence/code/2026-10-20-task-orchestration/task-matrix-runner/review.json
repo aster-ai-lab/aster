@@ -1,0 +1,16 @@
+{
+  "schema": "aster.task-matrix-runner-review.v1",
+  "reviewer": "/root/runtime_speed",
+  "method": "independent read-only source review; no ignored fixture, model or VM execution",
+  "scope": [
+    "manifest and executable identity",
+    "explicit close and partial runtime evidence",
+    "OCI span and phase completeness",
+    "original typed receipt identity to metrics",
+    "measurement qualification gates"
+  ],
+  "finding": "A streamed Run has no AgentResult transcript fallback; empty parent IDs could previously turn parent ToolEnd records into unknown origins while runner gates passed.",
+  "resolution": "Parent IDs now come from validated original top-level tool.result receipts bound to the exact admission.run_id; missing or repeated identities and incomplete observable metrics refuse qualification. Program-local intervals remain separate from the unavailable global child union.",
+  "recheck": "The reviewer followed receipt_parent_ids through summarize, measured_tool_metrics and the saved-report/assert gates and reported no remaining required correction in that chain.",
+  "limits": "This is a scoped source review, not live model, VM, task, GUI, cross-platform or performance qualification."
+}

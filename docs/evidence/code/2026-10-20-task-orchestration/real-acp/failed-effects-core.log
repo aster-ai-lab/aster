@@ -1,0 +1,35 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on build directory
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 21s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 13 tests
+test completion_attestor::tests::empty_ledger_skips_attestor ... ok
+test completion_attestor::tests::attestor_binding_report_closes_gate ... ok
+test completion_attestor::tests::silent_attestor_leaves_gate_incomplete ... ok
+test completion_attestor::tests::mismatched_digest_report_cannot_bypass_gate ... ok
+test completion_attestor::failure_tests::serialization_original_replay_and_cache_restore_cannot_erase_failed_effects ... ok
+test completion_attestor::failure_tests::failed_deletion_stays_negative_but_current_digest_formal_verification_can_recover ... ok
+test completion_attestor::failure_tests::expected_read_failure_and_successful_compound_output_do_not_create_failed_effects ... ok
+test completion_attestor::failure_tests::failed_complete_effects_change_the_digest_and_refuse_automatic_byte_certification ... ok
+test completion_attestor::tests::disk_attestor_passes_only_when_bytes_match ... ok
+test completion_attestor::disk_tests::every_mutation_must_have_matching_content_evidence ... ok
+test completion_attestor::disk_tests::path_boundaries_reject_absolute_parent_symlink_and_special_files ... ok
+test completion_attestor::failure_tests::successful_recovery_requires_each_exact_path_to_have_a_new_after_state ... ok
+test completion_attestor::disk_tests::large_file_is_hashed_with_the_shared_streaming_observer ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 5140 filtered out; finished in 2.91s
+

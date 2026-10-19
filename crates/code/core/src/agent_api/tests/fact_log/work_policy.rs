@@ -3,6 +3,8 @@
 use super::*;
 use crate::store::{FileSessionStore, MemorySessionStore, SessionStore};
 
+mod confirmation;
+
 fn options(id: &str) -> crate::SessionOptions {
     crate::SessionOptions::new()
         .with_session_id(id)
@@ -297,18 +299,49 @@ async fn corrupt_policy_source_refuses_before_provider_entry() {
     agent.close().await;
 }
 
+struct PolicyOwnerClient {
+    calls: AtomicUsize,
+    entered: tokio::sync::Semaphore,
+    release: tokio::sync::Semaphore,
+}
+
+#[async_trait]
+impl LlmClient for PolicyOwnerClient {
+    async fn complete(
+        &self,
+        _: &[Message],
+        _: Option<&str>,
+        _: &[ToolDefinition],
+    ) -> anyhow::Result<LlmResponse> {
+        self.calls.fetch_add(1, Ordering::SeqCst);
+        self.entered.add_permits(1);
+        self.release.acquire().await?.forget();
+        Ok(text_response("session-hello"))
+    }
+
+    async fn complete_streaming(
+        &self,
+        messages: &[Message],
+        system: Option<&str>,
+        tools: &[ToolDefinition],
+        _: CancellationToken,
+    ) -> anyhow::Result<mpsc::Receiver<StreamEvent>> {
+        let response = self.complete(messages, system, tools).await?;
+        let (sender, receiver) = mpsc::channel(1);
+        sender.send(StreamEvent::Done(response)).await?;
+        Ok(receiver)
+    }
+}
+
 #[tokio::test]
 async fn two_actual_policy_sessions_share_original_owner_exclusion_and_legacy_refusal() {
     let workspace = tempfile::tempdir().unwrap();
     let first_agent = agent().await;
     let second_agent = agent().await;
-    let first_client = Arc::new(AttachmentSteerClient {
-        text: CountingText {
-            calls: Arc::new(AtomicUsize::new(0)),
-        },
+    let first_client = Arc::new(PolicyOwnerClient {
+        calls: AtomicUsize::new(0),
         entered: tokio::sync::Semaphore::new(0),
         release: tokio::sync::Semaphore::new(0),
-        seen: Default::default(),
     });
     let systems = Arc::new(std::sync::Mutex::new(Vec::new()));
     let second_client = Arc::new(SkillCapturingClient {
@@ -332,18 +365,35 @@ async fn two_actual_policy_sessions_share_original_owner_exclusion_and_legacy_re
             &options,
         )
         .unwrap();
-    let worker = {
+    let mut worker = {
         let first = first.clone();
         tokio::spawn(async move { first.send("hold original provider call", None).await })
     };
-    tokio::time::timeout(
-        std::time::Duration::from_secs(5),
-        first_client.entered.acquire(),
-    )
-    .await
-    .unwrap()
-    .unwrap()
-    .forget();
+    let mut worker_joined = false;
+    let entered = tokio::select! {
+        permit = first_client.entered.acquire() => permit.map(|permit| permit.forget())
+            .map_err(|error| format!("provider entry semaphore closed: {error}")),
+        result = &mut worker => {
+            worker_joined = true;
+            Err(format!("original send ended before provider entry: {result:?}"))
+        },
+        _ = tokio::time::sleep(std::time::Duration::from_secs(5)) => {
+            Err("original send did not enter the provider within 5 seconds".into())
+        },
+    };
+    if let Err(error) = entered {
+        let calls = first_client.calls.load(Ordering::SeqCst);
+        first_client.release.add_permits(1);
+        if !worker_joined {
+            worker.abort();
+            let _ = worker.await;
+        }
+        first.close().await;
+        second.close().await;
+        first_agent.close().await;
+        second_agent.close().await;
+        panic!("{error}; provider entries={calls}");
+    }
     let before = read_workspace_facts(workspace.path(), "shared-policy-owner").unwrap();
     assert!(matches!(
         second.send("must refuse overlap", None).await,

@@ -10,6 +10,7 @@ use rquickjs::function::{Async, Func};
 use rquickjs::{async_with, AsyncContext, AsyncRuntime, CatchResultExt, Error as JsError, Promise};
 use serde::Deserialize;
 use std::collections::HashSet;
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::time::Instant;
 use tokio::sync::Mutex;
@@ -111,10 +112,10 @@ impl Tool for ProgramTool {
 
     async fn execute(&self, args: &serde_json::Value, ctx: &ToolContext) -> Result<ToolOutput> {
         let Some(kind) = args.get("type").and_then(|value| value.as_str()) else {
-            return Ok(ToolOutput::error("type parameter is required"));
+            return Ok(script_preflight_error("type parameter is required"));
         };
         if kind != "script" {
-            return Ok(ToolOutput::error(format!(
+            return Ok(script_preflight_error(format!(
                 "Unsupported program type: {kind}. Only \"script\" is supported."
             )));
         }
@@ -144,6 +145,10 @@ struct ScriptCallRecord {
     success: bool,
     exit_code: i32,
     output_bytes: usize,
+    original_output_bytes: usize,
+    truncated: bool,
+    start_offset_ms: u64,
+    duration_ms: u64,
     metadata: Option<serde_json::Value>,
 }
 
@@ -158,31 +163,32 @@ pub(crate) async fn execute_script_program(
         .and_then(|value| value.as_str())
         .unwrap_or("javascript");
     if language != "javascript" {
-        return Ok(ToolOutput::error(format!(
+        return Ok(script_preflight_error(format!(
             "Unsupported script language: {language}"
         )));
     }
 
     let source = match load_script_source(args, ctx).await {
         Ok(source) => source,
-        Err(message) => return Ok(ToolOutput::error(message)),
+        Err(message) => return Ok(script_preflight_error(message)),
     };
     if source.len() > MAX_PROGRAM_SCRIPT_SOURCE_BYTES {
-        return Ok(ToolOutput::error(format!(
+        return Ok(script_preflight_error(format!(
             "script source is too large: {} bytes exceeds {} bytes",
             source.len(),
             MAX_PROGRAM_SCRIPT_SOURCE_BYTES
         )));
     }
     if let Err(message) = validate_script_source(&source) {
-        return Ok(ToolOutput::error(message));
+        return Ok(script_preflight_error(message));
     }
 
     let allowed_tools = script_allowed_tools(args, invoker.available_tools());
     let limits = script_limits(args);
     match run_quickjs_script(&source, inputs, invoker, ctx.clone(), allowed_tools, limits).await {
         Ok(output) => Ok(output),
-        Err(err) => Ok(ToolOutput::error(format!("program script failed: {err}"))),
+        Err(err) => Ok(ToolOutput::error(format!("program script failed: {err}"))
+            .with_metadata(script_receipt_metadata(false, &[], false))),
     }
 }
 
@@ -298,9 +304,17 @@ async fn run_quickjs_script(
     let max_output_bytes = limits
         .max_output_bytes
         .unwrap_or(DEFAULT_SCRIPT_MAX_OUTPUT_BYTES);
-    let executable_source = script_source_with_host_entrypoint(source)?;
+    let executable_source = match script_source_with_host_entrypoint(source) {
+        Ok(source) => source,
+        Err(err) => {
+            return Ok(script_preflight_error(format!(
+                "program script failed: {err}"
+            )))
+        }
+    };
     let parent_cancellation = ctx.cancellation_token();
     let program_cancellation = parent_cancellation.child_token();
+    let _cancel_on_drop = program_cancellation.clone().drop_guard();
     // Captured on the outer multi-threaded runtime (we're async here, before the
     // VM's nested single-thread runtime is built) so host tools run on the
     // session runtime instead of being trapped inside the QuickJS VM runtime.
@@ -312,7 +326,9 @@ async fn run_quickjs_script(
         max_tool_calls,
         max_output_bytes,
         tool_calls: 0,
+        dispatched_tool_calls: 0,
         records: Vec::new(),
+        started: Instant::now(),
         outer,
     }));
 
@@ -356,51 +372,83 @@ async fn run_quickjs_script(
         // internal deadline, cancel it explicitly so every nested invocation
         // receives the same terminal signal as the VM.
         state.lock().await.ctx.cancellation_token().cancel();
-        if timeout(PROGRAM_CANCELLATION_SETTLE_GRACE, &mut vm)
-            .await
-            .is_err()
-        {
-            vm.abort();
-            let _ = vm.await;
-        }
-        return Ok(ToolOutput::error(match stop {
+        let vm_settled = match timeout(PROGRAM_CANCELLATION_SETTLE_GRACE, &mut vm).await {
+            Ok(result) => result.is_ok(),
+            Err(_) => {
+                // A running blocking worker cannot be aborted. Keep ownership
+                // until its native calls settle, even beyond the grace period.
+                vm.await.is_ok()
+            }
+        };
+        let output = ToolOutput::error(match stop {
             Stop::Cancelled => "program script cancelled by caller".to_string(),
             Stop::TimedOut => format!("program script timed out after {timeout_ms} ms"),
-        }));
+        });
+        return Ok(with_script_receipts(output, &state, vm_settled).await);
     }
 
     let result = result.expect("completed VM result is present");
 
-    match result {
+    let vm_settled = result.is_ok();
+    let mut script_result = None;
+    let output = match result {
         Ok(Ok(result)) => {
             let records = state.lock().await.records.clone();
             let rendered = render_script_output(&result, &records, "");
             let truncated = rendered.len() > max_output_bytes;
             let output = bound_program_output(rendered, max_output_bytes);
-            let script_result = if truncated {
+            script_result = Some(if truncated {
                 serde_json::json!({ "truncated": true })
             } else {
                 result
-            };
-            Ok(ToolOutput::success(output).with_metadata(serde_json::json!({
-                "program": {
-                    "name": "script",
-                    "language": "javascript",
-                    "runtime": "embedded-quickjs",
-                    "success": true,
-                    "tool_calls": records.iter().map(script_record_to_value).collect::<Vec<_>>(),
-                },
-                "script_result": script_result,
-            })))
+            });
+            ToolOutput::success(output)
         }
-        Ok(Err(err)) if is_quickjs_timeout(&err) => Ok(ToolOutput::error(format!(
-            "program script timed out after {timeout_ms} ms"
-        ))),
-        Ok(Err(err)) => Ok(ToolOutput::error(format!("program script error:\n{err}"))),
-        Err(err) => Ok(ToolOutput::error(format!(
-            "program VM thread failed: {err}"
-        ))),
+        Ok(Err(err)) if is_quickjs_timeout(&err) => {
+            ToolOutput::error(format!("program script timed out after {timeout_ms} ms"))
+        }
+        Ok(Err(err)) => ToolOutput::error(format!("program script error:\n{err}")),
+        Err(err) => ToolOutput::error(format!("program VM thread failed: {err}")),
+    };
+    let mut output = with_script_receipts(output, &state, vm_settled).await;
+    if let Some(result) = script_result {
+        output.metadata.as_mut().expect("native script metadata")["script_result"] = result;
     }
+    Ok(output)
+}
+
+fn script_preflight_error(message: impl Into<String>) -> ToolOutput {
+    // Every caller is before worker creation, so no nested dispatch is possible.
+    ToolOutput::error(message).with_metadata(script_receipt_metadata(false, &[], true))
+}
+
+fn script_receipt_metadata(
+    success: bool,
+    records: &[ScriptCallRecord],
+    tool_calls_complete: bool,
+) -> serde_json::Value {
+    serde_json::json!({"program": {
+        "name": "script",
+        "language": "javascript",
+        "runtime": "embedded-quickjs",
+        "tool_call_clock": "monotonic-ms-since-program-start",
+        "success": success,
+        "tool_calls_complete": tool_calls_complete,
+        "tool_calls": records.iter().map(script_record_to_value).collect::<Vec<_>>(),
+    }})
+}
+
+async fn with_script_receipts(
+    output: ToolOutput,
+    state: &Mutex<ScriptVmState>,
+    vm_settled: bool,
+) -> ToolOutput {
+    let state = state.lock().await;
+    // A dropped VM future or panicking child can leave a dispatch without a
+    // terminal receipt. Retain what was observed without certifying a zero.
+    let complete = vm_settled && state.dispatched_tool_calls == state.records.len();
+    let metadata = script_receipt_metadata(output.success, &state.records, complete);
+    output.with_metadata(metadata)
 }
 
 fn script_source_with_host_entrypoint(source: &str) -> Result<String> {
@@ -433,9 +481,12 @@ async fn run_embedded_script(
 ) -> Result<serde_json::Value> {
     let runtime = AsyncRuntime::new()?;
     let started = Instant::now();
+    let deadline = tokio::time::Instant::from_std(started) + Duration::from_millis(timeout_ms);
+    let interrupt_cancellation = cancellation.clone();
     runtime
         .set_interrupt_handler(Some(Box::new(move || {
-            cancellation.is_cancelled() || started.elapsed() >= Duration::from_millis(timeout_ms)
+            interrupt_cancellation.is_cancelled()
+                || started.elapsed() >= Duration::from_millis(timeout_ms)
         })))
         .await;
     runtime.set_memory_limit(64 * 1024 * 1024).await;
@@ -444,11 +495,21 @@ async fn run_embedded_script(
     let context = AsyncContext::full(&runtime).await?;
     let inputs_json = serde_json::to_string(&inputs)?;
     let script = format!("{}\n{}", embedded_script_bootstrap(&inputs_json), source);
+    let stop_cancellation = cancellation.clone();
+    let host_calls = Arc::new(ScriptHostCalls::default());
+    let queued_host_calls = Arc::clone(&host_calls);
     let result_json = async_with!(context => |ctx| {
         let state = Arc::clone(&state);
         let host_tool = move |tool: String, args_json: String| {
             let state = Arc::clone(&state);
-            async move { execute_host_tool_json(state, tool, args_json).await }
+            // Count admission synchronously: a JS call may queue this future
+            // and return or throw before the scheduler first polls it.
+            queued_host_calls.pending.fetch_add(1, Ordering::SeqCst);
+            let host_call = ScriptHostCall(Arc::clone(&queued_host_calls));
+            async move {
+                let _host_call = host_call;
+                execute_host_tool_json(state, tool, args_json).await
+            }
         };
         if let Err(err) = ctx.globals().set("__a3sHostTool", Func::from(Async(host_tool))) {
             return Err(format!("failed to install program host tool: {err}"));
@@ -460,14 +521,37 @@ async fn run_embedded_script(
             Ok(promise) => promise,
             Err(err) => return Err(format!("failed to evaluate program script: {err}")),
         };
-        promise
-            .into_future::<String>()
-            .await
-            .catch(&ctx)
-            .map_err(|err| err.to_string())
+        // An uncatchable interrupt in a post-await JS job need not reject the
+        // root Promise. Observe the native stop independently of that Promise.
+        tokio::select! {
+            biased;
+            result = promise.into_future::<String>() => result.catch(&ctx).map_err(|err| err.to_string()),
+            _ = stop_cancellation.cancelled() => Err("program VM interrupted by cancellation".to_string()),
+            _ = tokio::time::sleep_until(deadline) => {
+                stop_cancellation.cancel();
+                Err("program VM interrupted by deadline".to_string())
+            }
+        }
     })
-    .await
-    .map_err(anyhow::Error::msg)?;
+    .await;
+    // Drive every admitted native future through its outer JoinHandle before
+    // dropping the context, including calls the script did not await. Use the
+    // context driver: rquickjs 0.11's idle job-error path owns a borrowed ctx.
+    async_with!(context => |_ctx| {
+        let mut stopped = cancellation.is_cancelled();
+        while host_calls.pending.load(Ordering::SeqCst) != 0 {
+            tokio::select! {
+                _ = host_calls.settled.notified() => {},
+                _ = cancellation.cancelled(), if !stopped => stopped = true,
+                _ = tokio::time::sleep_until(deadline), if !stopped => {
+                    cancellation.cancel();
+                    stopped = true;
+                }
+            }
+        }
+    })
+    .await;
+    let result_json = result_json.map_err(anyhow::Error::msg)?;
 
     serde_json::from_str(&result_json)
         .map_err(|err| anyhow!("program script returned invalid JSON: {err}"))
@@ -480,11 +564,29 @@ struct ScriptVmState {
     max_tool_calls: usize,
     max_output_bytes: usize,
     tool_calls: usize,
+    dispatched_tool_calls: usize,
     records: Vec<ScriptCallRecord>,
+    started: Instant,
     /// Handle to the OUTER multi-threaded session runtime. The script VM runs on
     /// a nested single-thread runtime; host tool calls are dispatched here so
     /// delegated `task` runs are not trapped inside the VM runtime.
     outer: tokio::runtime::Handle,
+}
+
+#[derive(Default)]
+struct ScriptHostCalls {
+    pending: AtomicUsize,
+    settled: tokio::sync::Notify,
+}
+
+// Also release admission if JS promise allocation fails before future polling.
+struct ScriptHostCall(Arc<ScriptHostCalls>);
+
+impl Drop for ScriptHostCall {
+    fn drop(&mut self) {
+        self.0.pending.fetch_sub(1, Ordering::SeqCst);
+        self.0.settled.notify_one();
+    }
 }
 
 fn embedded_script_bootstrap(inputs_json: &str) -> String {
@@ -551,7 +653,7 @@ async fn execute_host_tool_json(
     let args = serde_json::from_str(&args_json).map_err(|err| {
         JsError::new_from_js_message("string", "object", format!("invalid tool args JSON: {err}"))
     })?;
-    let (invoker, ctx, max_output_bytes, outer) = {
+    let (invoker, ctx, max_output_bytes, outer, start_offset_ms) = {
         let mut script = state.lock().await;
         if !script_tool_is_allowed(&script.allowed_tools, &tool, &args) {
             return Err(JsError::new_from_js_message(
@@ -568,11 +670,13 @@ async fn execute_host_tool_json(
                 format!("PTC script exceeded maxToolCalls={}", script.max_tool_calls),
             ));
         }
+        script.dispatched_tool_calls += 1;
         (
             Arc::clone(&script.invoker),
             script.ctx.clone(),
             script.max_output_bytes,
             script.outer.clone(),
+            script.started.elapsed().as_millis().min(u64::MAX as u128) as u64,
         )
     };
 
@@ -580,6 +684,7 @@ async fn execute_host_tool_json(
     // single-thread VM runtime) so host tools can use the session runtime
     // normally. `parallel_task` is intentionally filtered before this point.
     let tool_for_spawn = tool.clone();
+    let started = Instant::now();
     let result = outer
         .spawn(async move {
             invoker
@@ -589,6 +694,8 @@ async fn execute_host_tool_json(
         .await
         .map_err(|err| JsError::new_from_js_message("tool", "spawn", err.to_string()))?;
     let mut output = result.output;
+    let original_output_bytes = output.len();
+    let truncated = original_output_bytes > max_output_bytes;
     if output.len() > max_output_bytes {
         output = truncate_utf8(&output, max_output_bytes).to_string();
     }
@@ -607,6 +714,10 @@ async fn execute_host_tool_json(
             success,
             exit_code,
             output_bytes: output.len(),
+            original_output_bytes,
+            truncated,
+            start_offset_ms,
+            duration_ms: started.elapsed().as_millis().min(u64::MAX as u128) as u64,
             metadata: metadata.clone(),
         });
     }
@@ -616,6 +727,8 @@ async fn execute_host_tool_json(
         "output": output,
         "text": text,
         "exitCode": exit_code,
+        "truncated": truncated,
+        "originalOutputBytes": original_output_bytes,
         "metadata": metadata,
     }))
     .map_err(|err| JsError::new_from_js_message("tool result", "json", err.to_string()))
@@ -682,6 +795,10 @@ fn script_record_to_value(record: &ScriptCallRecord) -> serde_json::Value {
         "success": record.success,
         "exit_code": record.exit_code,
         "output_bytes": record.output_bytes,
+        "original_output_bytes": record.original_output_bytes,
+        "truncated": record.truncated,
+        "start_offset_ms": record.start_offset_ms,
+        "duration_ms": record.duration_ms,
         "metadata": record.metadata,
     })
 }
@@ -690,6 +807,9 @@ fn bound_program_output(output: String, max_output_bytes: usize) -> String {
     const MARKER: &str = "\n[output truncated]";
     if output.len() <= max_output_bytes {
         return output;
+    }
+    if max_output_bytes < MARKER.len() {
+        return truncate_utf8(MARKER, max_output_bytes).to_owned();
     }
     let budget = max_output_bytes.saturating_sub(MARKER.len());
     format!("{}{MARKER}", truncate_utf8(&output, budget))
@@ -732,3 +852,11 @@ fn render_script_output(
 #[cfg(test)]
 #[path = "program_tool/tests.rs"]
 mod tests;
+
+#[cfg(test)]
+#[path = "program_tool/failure_receipt_tests.rs"]
+mod failure_receipt_tests;
+
+#[cfg(test)]
+#[path = "program_tool/worker_deadline_tests.rs"]
+mod worker_deadline_tests;

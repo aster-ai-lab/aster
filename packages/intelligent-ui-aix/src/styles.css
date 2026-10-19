@@ -1,0 +1,22 @@
+@import "../../intelligent-ui/node_modules/tailwindcss/index.css";
+@source "../../intelligent-ui/src/IntelligentUI.tsx";
+@source "../../ui/src/components/primitives/{button,input,slider,select,checkbox}.tsx";
+@theme {
+  --color-foreground: #171717;
+  --color-background: #ffffff;
+  --color-muted-foreground: #737373;
+  --color-destructive: #b91c1c;
+  --color-border: #e5e5e5;
+}
+:root {
+  color-scheme: light;
+  font:
+    13px/1.5 Ubuntu,
+    system-ui,
+    sans-serif;
+  color: #171717;
+  background: white;
+}
+body {
+  margin: 0;
+}

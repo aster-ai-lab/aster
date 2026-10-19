@@ -5,6 +5,7 @@
 
 mod agent;
 pub mod approval_learning;
+mod artifact_image;
 mod cc_switch;
 mod config;
 mod cursor_account;
@@ -17,6 +18,8 @@ mod harness_assemble;
 mod host_context;
 mod local_assets;
 pub mod log_file;
+mod office_file;
+mod output_check;
 mod plugin_mcp;
 mod plugin_selection;
 mod plugin_tools;

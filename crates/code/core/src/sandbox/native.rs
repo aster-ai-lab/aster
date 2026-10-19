@@ -159,6 +159,10 @@ fn execution_output(output: a3s_sandbox::CommandOutput) -> SandboxExecutionOutpu
 
 #[async_trait]
 impl BashSandbox for NativeBashSandbox {
+    fn execution_target(&self) -> super::ShellExecutionTarget {
+        super::ShellExecutionTarget::local_host_shell()
+    }
+
     fn validate_execution_available(&self) -> Result<()> {
         self.ensure_process_lifetime_qualified()
     }

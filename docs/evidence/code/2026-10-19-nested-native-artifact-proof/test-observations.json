@@ -1,0 +1,44 @@
+{
+  "validRed": {
+    "command": "cargo test --locked --offline -p a3s-code-acp --lib office_file::tests::nested_verification::native_png_proofs_survive_program_boundaries_in_the_real_harness -- --exact --nocapture",
+    "passed": 0,
+    "failed": 1,
+    "testSeconds": 0.51,
+    "log": "before-fix-exact.log"
+  },
+  "newAcpCases": {
+    "command": "cargo test --locked --offline -p a3s-code-acp --lib office_file::tests::nested_verification -- --nocapture",
+    "passed": 3,
+    "failed": 0,
+    "scenarios": 7,
+    "testSeconds": 2.28,
+    "observedModelCalls": {
+      "fourPngSequence": 5,
+      "programBatchAndParallel": 4,
+      "forgedMetadata": 3,
+      "failedWrite": 3,
+      "sameBytes": 3,
+      "tamper": 3,
+      "failedWrapper": 3
+    },
+    "log": "after-fix.log"
+  },
+  "relatedAcpGroup": {
+    "command": "target/debug/deps/a3s_code_acp-438acccd4b3e4409 office_file --nocapture",
+    "passed": 19,
+    "failed": 0,
+    "testSeconds": 2.49,
+    "log": "acp-office-file-tests.log"
+  },
+  "coreNativeProof": {
+    "command": "cargo test --locked --offline -p a3s-code-core --lib native_artifact -- --nocapture",
+    "passed": 5,
+    "failed": 0,
+    "testSeconds": 0.02,
+    "log": "core-native-proof-tests.log"
+  },
+  "scopedFormattingAndDiffCheck": {
+    "files": 10,
+    "exitCode": 0
+  }
+}

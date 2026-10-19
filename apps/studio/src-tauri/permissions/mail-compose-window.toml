@@ -1,0 +1,9 @@
+[[permission]]
+identifier = "allow-open-mail-compose-window"
+description = "Opens the reused mail compose window."
+commands.allow = ["open_mail_compose_window"]
+
+[[permission]]
+identifier = "allow-publish-mail-compose-result"
+description = "Tells the main window that a mail message was saved."
+commands.allow = ["publish_mail_compose_result"]

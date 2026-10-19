@@ -526,6 +526,15 @@ pub(crate) fn resolve_local_session_for_repo_in_root(
     }
     None
 }
+/// A `--fork-session` copy records `parent_session_id` too, but it is a new local
+/// session. Resuming a deleted parent must not open that fork.
+fn local_fork_summary(partial: &serde_json::Value) -> bool {
+    partial
+        .get("forked_at")
+        .is_some_and(|value| !value.is_null())
+        || partial.get("session_kind").and_then(|value| value.as_str()) == Some("fork")
+}
+
 fn find_local_child_for_remote_in_root(
     remote_session_id: &str,
     cwd: &str,
@@ -556,6 +565,7 @@ fn find_local_child_for_remote_in_root(
         if let Ok(raw) = std::fs::read_to_string(&summary_path)
             && let Ok(partial) = serde_json::from_str::<serde_json::Value>(&raw)
             && partial.get("parent_session_id").and_then(|v| v.as_str()) == Some(remote_session_id)
+            && !local_fork_summary(&partial)
             && let Some(session_id) = path.file_name().and_then(|n| n.to_str())
         {
             let updated_at = partial

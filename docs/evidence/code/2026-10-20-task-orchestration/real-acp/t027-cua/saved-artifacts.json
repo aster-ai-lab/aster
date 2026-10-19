@@ -1,0 +1,67 @@
+{
+  "schema": "aster.t027.saved-artifacts.v1",
+  "state": "interrupted_by_normal_stage_app_exit_after_unrecoverable_approval_ui",
+  "frozen_at_utc": "2026-10-19T20:44:08.860283+00:00",
+  "frozen_monotonic_ns": 907054518715750,
+  "submission_request_to_freeze_seconds": 1659.334746667,
+  "scope": "Observed wall upper bound includes model, tools, all approvals and operator diagnostics; not pure inference or a Core matrix repeat. No normal model completion was observed.",
+  "workspace": "/Users/roylin/code/tasks/T01-t027-cua-01",
+  "files": {
+    "pipeline.py": {
+      "bytes": 23208,
+      "sha256": "ad1be2d94cc2b9987e0c1ac4ff2c0483fe56765d7dc1493c1b5e241b800a9581",
+      "frozen_path": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/t027-cua/saved-artifacts/pipeline.py"
+    },
+    "output/results.json": {
+      "bytes": 1439900,
+      "sha256": "1410d96bf12818691780e94e03e6c58001060c9af862d092736f255b58c097e8",
+      "frozen_path": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/t027-cua/saved-artifacts/output/results.json"
+    },
+    "verify_tmp.py": {
+      "bytes": 5514,
+      "sha256": "c6572ffc83a4037f0c01c613e9893da7e9e769a5cfda6660bc2c089a6f6ea9c2",
+      "frozen_path": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/t027-cua/saved-artifacts/verify_tmp.py"
+    },
+    "verify_tmp2.py": {
+      "bytes": 1835,
+      "sha256": "7738f1511f5d852da07352cb4b71f6fcf1f2be8c67af6fdfaed8251bb6f2bd2e",
+      "frozen_path": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/t027-cua/saved-artifacts/verify_tmp2.py"
+    },
+    "verify_tmp3.py": {
+      "bytes": 1056,
+      "sha256": "076f2abfe4c85520610e239500da200f000944e48a388aa680ec00df91d1e379",
+      "frozen_path": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/t027-cua/saved-artifacts/verify_tmp3.py"
+    },
+    "verify_tmp4.py": {
+      "bytes": 2516,
+      "sha256": "2f8273c6d36c9f162fa16e015f4c45feac28fa2898b035a3012ac09c44caa520",
+      "frozen_path": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/t027-cua/saved-artifacts/verify_tmp4.py"
+    }
+  },
+  "input_files": 12,
+  "input_hashes_match_preparation_and_original": true,
+  "input_sha256": {
+    "instruction.md": "0cd971564a0655ae78bdba0ed472b1255ce323db6a19feb6b26b6d4dcd67c22c",
+    "input/Africa_orders.csv": "7c0b74268c52b75a9dc0d892e343855775ff2d1bdfe6ea544d77e343699db5bc",
+    "input/Asia_Pacific_orders.csv": "8c9aaeae2e3f340247f5c0472a5912cbe6d0d74e5c88e0b1d5efab4b5bfb8d5b",
+    "input/Europe_orders.csv": "b132f6dc46fe5894818bf4a85243a122b508a64e0e76b06f8e0834556070fc02",
+    "input/LATAM_orders.csv": "546ca18eff9190355307c935f95016bb21f94a07f13ded07b8bf8f4115c62a36",
+    "input/USCA_orders.csv": "a0931573a257d766a122bdbb0ad9007fb49bdec18ca25931ec43a5852faa775c",
+    "input/adjustments.jsonl": "f6f9c1a604c8531efa63ebf90904a3a90b9f9cbefefdd17dd9254b67b6f654d8",
+    "input/policy.json": "471f6e3a27d29b432454deae7223f1927740bdc67a6cb885a55bc90c42ef17c5",
+    "input/priority_codebook.txt": "5033d8d25338cd67fd93c72e13b7b036cdaab9bc102325534d6de90e65548e2d",
+    "input/product_info.csv": "a508c5c50582a72e741bfed176be8a1dcdf3cbd8914391c57110585c1e5cf8a7",
+    "input/segment_performance.csv": "f20fce60c51dc2bdfef77f7bf0b25dee4107c6f4e31cdd8f5e79fa3d01cf1dd2",
+    "input/shipping_by_mode.csv": "1922a7d1f651bf42c1ab05275b364a6669d9dd08c6f6c2adf106982d031336eb"
+  },
+  "model_answer_repaired_by_evaluator": false,
+  "new_prompt_sent": false,
+  "normal_model_final_observed": false,
+  "original_pids_observed_gone": [
+    3167,
+    4033,
+    7097,
+    7116
+  ],
+  "pre_exit_checkpoint": "approval-recovery-checkpoint.json"
+}

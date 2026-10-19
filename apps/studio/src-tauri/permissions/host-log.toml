@@ -1,0 +1,4 @@
+[[permission]]
+identifier = "allow-log-to-host"
+description = "Accepts one renderer log line on the Tauri command channel."
+commands.allow = ["log_to_host"]

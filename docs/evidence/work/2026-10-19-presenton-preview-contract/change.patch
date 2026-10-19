@@ -1,0 +1,136 @@
+--- a/apps/work/src-tauri/src/agent_plane/presenton_mcp.rs
++++ b/apps/work/src-tauri/src/agent_plane/presenton_mcp.rs
+@@ -1,6 +1,5 @@
+-//! Built-in MCP tools a3s-code calls for the current task's 演示文稿.
+-//! The view stores the deck. This process checks the closed sets, returns
+-//! the last snapshot the renderer posted, and tells the model to stop.
++//! Built-in MCP validation and reads of the last renderer-posted deck snapshot.
++//! Request validation does not dispatch generation or save a presentation file.
+ 
+ use std::sync::Mutex;
+ 
+@@ -67,7 +66,7 @@
+     json!([
+         {
+             "name": "generate_deck",
+-            "description": "启动当前任务右侧的演示文稿预览，content 写入文稿依据的正文。工具接受请求后，大纲和每一页由右侧继续生成；这不代表已经生成或保存 PPTX 文件。成员要求交付 .pptx 时，还须用原生 Office 工具保存并读回校验文件。不要让成员填写上传页、选择模板或点击生成。",
++            "description": "只校验演示文稿预览请求参数，当前工具不会启动后台生成，也不会生成或保存 PPTX 文件。成员要求交付 .pptx 时，直接使用 office_file 保存并读回校验文件，无需先调用本工具或等待右侧预览。",
+             "inputSchema": {
+                 "type": "object",
+                 "properties": {
+@@ -84,7 +83,7 @@
+         },
+         {
+             "name": "read_deck",
+-            "description": "读取当前任务右侧演示文稿的大纲、每一页的可见文字和备注。不要另写文件。",
++            "description": "读取已有演示文稿预览快照中的大纲、每一页的可见文字和备注。没有正文快照时停止重复轮询；这不是后台生成进度查询。成员要求交付 .pptx 时，直接使用 office_file 保存并读回校验文件，无需先读取预览。",
+             "inputSchema": { "type": "object", "properties": {} }
+         },
+         {
+@@ -123,12 +122,12 @@
+         .unwrap_or_else(|| json!({}));
+     let outcome = match name {
+         "generate_deck" => accept_deck(&arguments).map(|_| {
+-            "已接受演示文稿预览请求，大纲和每一页仍在右侧生成。这不是 PPTX 文件交付凭据；若成员要求 .pptx，请继续用原生 Office 工具保存并读回校验文件。".to_owned()
++            "预览请求参数已校验；当前工具不会启动后台生成，也不会创建或保存 PPTX。这不是 PPTX 文件交付凭据。成员要求 .pptx 时，请直接使用 office_file 保存并读回校验文件，无需等待或重复读取预览。".to_owned()
+         }),
+         "read_deck" => {
+             let text = current_snapshot();
+             if text.is_empty() {
+-                Err("当前任务还没有演示文稿正文。".to_owned())
++                Err("未生成可读取的演示文稿正文快照。当前工具未提供后台生成状态；请停止重复调用 read_deck。成员要求 .pptx 时，请直接使用 office_file 保存并读回校验文件。".to_owned())
+             } else {
+                 Ok(text)
+             }
+--- a/apps/work/src-tauri/src/agent_plane/presenton_mcp_tests.rs
++++ b/apps/work/src-tauri/src/agent_plane/presenton_mcp_tests.rs
+@@ -43,7 +43,7 @@
+ }
+ 
+ #[test]
+-fn tools_call_acknowledges_preview_without_claiming_a_saved_file() {
++fn tools_call_checks_preview_without_claiming_generation_or_a_saved_file() {
+     let response = handle_rpc(&json!({
+         "jsonrpc": "2.0",
+         "id": 1,
+@@ -51,9 +51,25 @@
+         "params": { "name": "generate_deck", "arguments": { "content": "项目总结" } }
+     }));
+     let text = response["result"]["content"][0]["text"].as_str().unwrap();
++    assert!(text.contains("不会启动后台生成"));
+     assert!(text.contains("这不是 PPTX 文件交付凭据"));
++    assert!(text.contains("直接使用 office_file"));
++    assert!(!text.contains("仍在右侧生成"));
+     assert!(!text.contains("不要再写文件"));
+     assert_eq!(response["result"]["isError"], false);
++}
++
++#[test]
++fn tool_descriptions_prioritize_native_pptx_and_stop_empty_preview_polling() {
++    let tools = super::tools();
++    let generate = tools[0]["description"].as_str().unwrap();
++    assert!(generate.contains("不会启动后台生成"));
++    assert!(generate.contains("直接使用 office_file"));
++    assert!(generate.contains("无需先调用本工具"));
++    let read = tools[1]["description"].as_str().unwrap();
++    assert!(read.contains("停止重复轮询"));
++    assert!(read.contains("office_file"));
++    assert!(!read.contains("不要另写文件"));
+ }
+ 
+ #[test]
+@@ -66,12 +82,10 @@
+         "params": { "name": "read_deck", "arguments": {} }
+     }));
+     assert_eq!(empty["result"]["isError"], true);
+-    assert!(
+-        empty["result"]["content"][0]["text"]
+-            .as_str()
+-            .unwrap()
+-            .contains("还没有")
+-    );
++    let empty_text = empty["result"]["content"][0]["text"].as_str().unwrap();
++    assert!(empty_text.contains("未生成可读取的演示文稿正文快照"));
++    assert!(empty_text.contains("停止重复调用 read_deck"));
++    assert!(empty_text.contains("直接使用 office_file"));
+ 
+     let listed = handle_rpc(&json!({
+         "jsonrpc": "2.0",
+--- a/apps/work/src/renderer/services/plugins/presentonHomepage.ts
++++ b/apps/work/src/renderer/services/plugins/presentonHomepage.ts
+@@ -173,10 +173,10 @@
+     title: PRESENTON_TITLE,
+     editor: mode.editor ?? fallback?.editor,
+     keptNotice: mode.keptNotice ?? fallback?.keptNotice,
+-    // The outline stream in the right-hand editor is the only model author.
++    // File delivery must not wait on the renderer's optional preview.
+     task: true,
+     taskPrompt:
+-      '调用 mcp__presenton__generate_deck，把上面的正文作为 content。要读当前文稿调用 mcp__presenton__read_deck。要改一节大纲调用 mcp__presenton__edit_outline。要改一页正文和备注调用 mcp__presenton__edit_slide。此工具只生成预览；若成员要求交付 .pptx，还须用原生 Office 工具保存并读回校验文件。'
++      '成员要求交付 .pptx 时，直接使用 office_file 保存并读回校验文件，不需要先调用 mcp__presenton__generate_deck 或等待右侧预览。mcp__presenton__generate_deck 当前只校验预览请求参数，不会启动后台生成。已有预览正文才调用 mcp__presenton__read_deck；没有正文时停止重复轮询。预览编辑可调用 mcp__presenton__edit_outline 或 mcp__presenton__edit_slide；预览读取和编辑不替代 .pptx 文件交付。'
+   }
+ }
+ 
+--- a/apps/work/src/renderer/pages/agents/__tests__/presentonHomepage.test.tsx
++++ b/apps/work/src/renderer/pages/agents/__tests__/presentonHomepage.test.tsx
+@@ -128,8 +128,7 @@
+       editor: 'workbench',
+       keptNotice: 'draft',
+       task: true,
+-      taskPrompt:
+-        '调用 mcp__presenton__generate_deck，把上面的正文作为 content。要读当前文稿调用 mcp__presenton__read_deck。要改一节大纲调用 mcp__presenton__edit_outline。要改一页正文和备注调用 mcp__presenton__edit_slide。此工具只生成预览；若成员要求交付 .pptx，还须用原生 Office 工具保存并读回校验文件。'
++      taskPrompt: expect.stringContaining('直接使用 office_file')
+     })
+     let fact = {
+       delivery: 0,
+@@ -166,6 +165,10 @@
+     expect(sent.cleared).toBe(false)
+     expect(sent.text).toContain('季度业务回顾')
+     expect(sent.text).toContain('页数：自动')
++    expect(sent.text).toContain('要求交付 .pptx 时，直接使用 office_file')
++    expect(sent.text).toContain('不需要先调用 mcp__presenton__generate_deck')
++    expect(sent.text).toContain('停止重复轮询')
++    expect(sent.text).not.toContain('此工具只生成预览')
+     expect(sent.deck).toMatchObject({ title: PRESENTON_TITLE, topic: '季度业务回顾' })
+     expect(readHomeComposerSendEffect()).toMatchObject({
+       kind: 'chat',

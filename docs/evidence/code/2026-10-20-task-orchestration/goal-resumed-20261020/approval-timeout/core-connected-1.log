@@ -1,0 +1,7 @@
+
+running 2 tests
+test agent_api::tests::queue::test_session_confirmation_api_resolves_pending_request ... ok
+test agent_api::tests::queue::test_session_confirmation_api_without_manager_is_noop ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 5202 filtered out; finished in 0.03s
+

@@ -1,0 +1,41 @@
+extension "proof/view-commands" {
+  schema_version = 3
+  version = "1.0.0"
+  requires_use = ">=0.3.0, <0.4.0"
+  route = "proof-view-commands"
+  actions = ["read"]
+  repository { url = "https://example.org/proof/view-commands" }
+  skill "workbench" { path = "skills/workbench/SKILL.md" }
+  view_container "resources" { title = "Command Resources" icon = "database" location = "activitybar" }
+  ui "left" {
+    contract_version = 1 mode = "append"
+    title = "Left commands" entry = "ui/left/index.html" root = "ui/left" container = "resources"
+    command "refresh" { title = "Reload left" enablement { theme = "light" } }
+    command "clear" { title = "Clear left" }
+    menu "view.title" { command = "refresh" order = 10 }
+    menu "view.context" { command = "refresh" order = 10 }
+    menu "view.context" { command = "clear" order = 20 when { locale = "en-US" } }
+  }
+  ui "right" {
+    contract_version = 1 mode = "append"
+    title = "Right commands" entry = "ui/right/index.html" root = "ui/right" container = "resources"
+    command "refresh" { title = "Reload right" enablement { theme = "light" } }
+    menu "view.title" { command = "refresh" order = 10 }
+    menu "view.context" { command = "refresh" order = 10 }
+  }
+  ui "tasks" {
+    contract_version = 1 mode = "append"
+    title = "Command tasks" entry = "ui/tasks/index.html" root = "ui/tasks" container = "resources" presentation = "tree"
+    command "refresh" { title = "Reload tasks" }
+    menu "view.title" { command = "refresh" order = 10 }
+    menu "view.context" { command = "refresh" order = 10 }
+  }
+  ui "app" {
+    contract_version = 1 mode = "append"
+    title = "Command Lab" description = "Execute view-local commands" icon = "database"
+    entry = "ui/app/index.html" root = "ui/app" point = "studio.applets"
+    command "refresh" { title = "Reload app" enablement { theme = "light" } }
+    menu "view.title" { command = "refresh" order = 10 when { locale = "en-US" } }
+    menu "view.context" { command = "refresh" order = 10 }
+  }
+}

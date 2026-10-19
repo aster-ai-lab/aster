@@ -1,0 +1,229 @@
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/work
+
+ ❯ |renderer| src/renderer/components/composer/__tests__/ComposerSurface.test.tsx (166 tests | 18 failed) 859ms
+   ❯ ComposerSurface (166)
+     × commits IME composition to a selected prompt variable once composition ends 7ms
+     × lets composer token shortcuts handle Backspace before removing attachments 3ms
+     × never reads a as the send shortcut 2ms
+     × never reads   as the send shortcut 2ms
+     × never reads Backspace as the send shortcut 2ms
+     × never reads ArrowLeft as the send shortcut 2ms
+     × does not swallow composing Enter while the QuickPanel is visible 2ms
+     × does not swallow composing NumpadEnter while the QuickPanel is visible 2ms
+     ❯ input history navigation (14)
+       × keeps ArrowUp in the editor when a soft-wrapped line remains above the cursor 2ms
+       × keeps ArrowUp in the editor when the cursor is in a later top-level text block 2ms
+       × does not treat the cursor one position before the document end as history-eligible 3ms
+       × does not handle history direction keys with the Control modifier 2ms
+       × does not handle history direction keys with the Meta modifier 2ms
+       × does not handle history direction keys with the Alt modifier 2ms
+       × does not handle history direction keys with the Shift modifier 1ms
+       × does NOT preventDefault or call onInputHistoryNavigate when the guard rejects (non-empty, cursor in the middle) 2ms
+       × does not prevent default when input history navigation returns false 2ms
+       × skips input history navigation while the QuickPanel is visible 3ms
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  18 failed | 163 passed (181)
+   Start at  15:39:45
+   Duration  1.76s (import 29%, tests 28%, transform 28%, environment 11%, setup 3%)
+
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:64015) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/local-product-scope.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-local-product-scope.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 18 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.test.tsx > ComposerSurface > commits IME composition to a selected prompt variable once composition ends
+TypeError: Cannot read properties of null (reading 'composing')
+ ❯ Object.handleTextInput src/renderer/components/composer/ComposerSurfaceRuntime.tsx:1663:19
+    1661|         sawComposerKeyDownRef.current = false
+    1662|         const editor = editorRef.current
+    1663|         if (!view.composing && containsMacFunctionKey(insertedText)) {
+       |                   ^
+    1664|           if (!followedKeyDown && editor && !editor.isDestroyed) {
+    1665|             applyComposerFunctionKeyText(
+ ❯ src/renderer/components/composer/__tests__/ComposerSurface.test.tsx:1807:44
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/18]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.test.tsx > ComposerSurface > lets composer token shortcuts handle Backspace before removing attachments
+TypeError: Cannot read properties of null (reading 'dom')
+ ❯ Object.handleKeyDown src/renderer/components/composer/ComposerSurfaceRuntime.tsx:1650:18
+    1648|             editorForKeys,
+    1649|             event,
+    1650|             view.dom.clientHeight,
+       |                  ^
+    1651|             Number.parseFloat(getComputedStyle(view.dom).lineHeight)
+    1652|           )
+ ❯ src/renderer/components/composer/__tests__/ComposerSurface.test.tsx:3528:53
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/18]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.test.tsx > ComposerSurface > never reads a as the send shortcut
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.test.tsx > ComposerSurface > never reads   as the send shortcut
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.test.tsx > ComposerSurface > never reads Backspace as the send shortcut
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.test.tsx > ComposerSurface > never reads ArrowLeft as the send shortcut
+TypeError: Cannot read properties of null (reading 'dom')
+ ❯ Object.handleKeyDown src/renderer/components/composer/ComposerSurfaceRuntime.tsx:1650:18
+    1648|             editorForKeys,
+    1649|             event,
+    1650|             view.dom.clientHeight,
+       |                  ^
+    1651|             Number.parseFloat(getComputedStyle(view.dom).lineHeight)
+    1652|           )
+ ❯ src/renderer/components/composer/__tests__/ComposerSurface.test.tsx:5048:37
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/18]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.test.tsx > ComposerSurface > does not swallow composing Enter while the QuickPanel is visible
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.test.tsx > ComposerSurface > does not swallow composing NumpadEnter while the QuickPanel is visible
+TypeError: Cannot read properties of null (reading 'dom')
+ ❯ Object.handleKeyDown src/renderer/components/composer/ComposerSurfaceRuntime.tsx:1650:18
+    1648|             editorForKeys,
+    1649|             event,
+    1650|             view.dom.clientHeight,
+       |                  ^
+    1651|             Number.parseFloat(getComputedStyle(view.dom).lineHeight)
+    1652|           )
+ ❯ src/renderer/components/composer/__tests__/ComposerSurface.test.tsx:5064:44
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/18]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.test.tsx > ComposerSurface > input history navigation > keeps ArrowUp in the editor when a soft-wrapped line remains above the cursor
+TypeError: Cannot read properties of undefined (reading 'clientHeight')
+ ❯ Object.handleKeyDown src/renderer/components/composer/ComposerSurfaceRuntime.tsx:1650:22
+    1648|             editorForKeys,
+    1649|             event,
+    1650|             view.dom.clientHeight,
+       |                      ^
+    1651|             Number.parseFloat(getComputedStyle(view.dom).lineHeight)
+    1652|           )
+ ❯ src/renderer/components/composer/__tests__/ComposerSurface.test.tsx:5416:55
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/18]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.test.tsx > ComposerSurface > input history navigation > keeps ArrowUp in the editor when the cursor is in a later top-level text block
+TypeError: Cannot read properties of undefined (reading 'clientHeight')
+ ❯ Object.handleKeyDown src/renderer/components/composer/ComposerSurfaceRuntime.tsx:1650:22
+    1648|             editorForKeys,
+    1649|             event,
+    1650|             view.dom.clientHeight,
+       |                      ^
+    1651|             Number.parseFloat(getComputedStyle(view.dom).lineHeight)
+    1652|           )
+ ❯ src/renderer/components/composer/__tests__/ComposerSurface.test.tsx:5467:55
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/18]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.test.tsx > ComposerSurface > input history navigation > does not treat the cursor one position before the document end as history-eligible
+TypeError: Cannot read properties of undefined (reading 'clientHeight')
+ ❯ Object.handleKeyDown src/renderer/components/composer/ComposerSurfaceRuntime.tsx:1650:22
+    1648|             editorForKeys,
+    1649|             event,
+    1650|             view.dom.clientHeight,
+       |                      ^
+    1651|             Number.parseFloat(getComputedStyle(view.dom).lineHeight)
+    1652|           )
+ ❯ src/renderer/components/composer/__tests__/ComposerSurface.test.tsx:5484:55
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/18]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.test.tsx > ComposerSurface > input history navigation > does not handle history direction keys with the Control modifier
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.test.tsx > ComposerSurface > input history navigation > does not handle history direction keys with the Meta modifier
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.test.tsx > ComposerSurface > input history navigation > does not handle history direction keys with the Alt modifier
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.test.tsx > ComposerSurface > input history navigation > does not handle history direction keys with the Shift modifier
+TypeError: Cannot read properties of undefined (reading 'clientHeight')
+ ❯ Object.handleKeyDown src/renderer/components/composer/ComposerSurfaceRuntime.tsx:1650:22
+    1648|             editorForKeys,
+    1649|             event,
+    1650|             view.dom.clientHeight,
+       |                      ^
+    1651|             Number.parseFloat(getComputedStyle(view.dom).lineHeight)
+    1652|           )
+ ❯ src/renderer/components/composer/__tests__/ComposerSurface.test.tsx:5525:57
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/18]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.test.tsx > ComposerSurface > input history navigation > does NOT preventDefault or call onInputHistoryNavigate when the guard rejects (non-empty, cursor in the middle)
+TypeError: Cannot read properties of undefined (reading 'clientHeight')
+ ❯ Object.handleKeyDown src/renderer/components/composer/ComposerSurfaceRuntime.tsx:1650:22
+    1648|             editorForKeys,
+    1649|             event,
+    1650|             view.dom.clientHeight,
+       |                      ^
+    1651|             Number.parseFloat(getComputedStyle(view.dom).lineHeight)
+    1652|           )
+ ❯ src/renderer/components/composer/__tests__/ComposerSurface.test.tsx:5540:55
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/18]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.test.tsx > ComposerSurface > input history navigation > does not prevent default when input history navigation returns false
+TypeError: Cannot read properties of undefined (reading 'clientHeight')
+ ❯ Object.handleKeyDown src/renderer/components/composer/ComposerSurfaceRuntime.tsx:1650:22
+    1648|             editorForKeys,
+    1649|             event,
+    1650|             view.dom.clientHeight,
+       |                      ^
+    1651|             Number.parseFloat(getComputedStyle(view.dom).lineHeight)
+    1652|           )
+ ❯ src/renderer/components/composer/__tests__/ComposerSurface.test.tsx:5554:55
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/18]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.test.tsx > ComposerSurface > input history navigation > skips input history navigation while the QuickPanel is visible
+TypeError: Cannot read properties of undefined (reading 'clientHeight')
+ ❯ Object.handleKeyDown src/renderer/components/composer/ComposerSurfaceRuntime.tsx:1650:22
+    1648|             editorForKeys,
+    1649|             event,
+    1650|             view.dom.clientHeight,
+       |                      ^
+    1651|             Number.parseFloat(getComputedStyle(view.dom).lineHeight)
+    1652|           )
+ ❯ src/renderer/components/composer/__tests__/ComposerSurface.test.tsx:5571:55
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/18]⎯
+

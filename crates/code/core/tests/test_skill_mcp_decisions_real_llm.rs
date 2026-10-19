@@ -61,7 +61,6 @@ fn governed_options(session_id: &str) -> SessionOptions {
         "ls(*)",
         "search(*)",
         "Skill(**)",
-        "search_skills(*)",
         "mcp__probe__*",
     ]);
     policy.default_decision = PermissionDecision::Deny;
@@ -403,7 +402,7 @@ async fn a_matching_skill_is_loaded_and_its_ritual_reaches_the_answer() {
                     .with_skill_registry(skill_registry(&[release_skill()]))
                     .with_prompt_slots(SystemPromptSlots::default().with_guidelines(
                         "Start every task by checking the registered skills with \
-                         search_skills — before inspecting the workspace. If a skill \
+                         the names in the skill catalog — before inspecting the workspace. If a skill \
                          matches the request, load it with the Skill tool and follow its \
                          instructions before doing anything else.",
                     )),
@@ -470,7 +469,7 @@ async fn an_unrelated_registry_does_not_invite_a_skill_invocation() {
                     .with_skill_registry(skill_registry(&[gardening_skill()]))
                     .with_prompt_slots(SystemPromptSlots::default().with_guidelines(
                         "Start every task by checking the registered skills with \
-                         search_skills — before inspecting the workspace. If a skill \
+                         the names in the skill catalog — before inspecting the workspace. If a skill \
                          matches the request, load it with the Skill tool and follow its \
                          instructions before doing anything else.",
                     )),
@@ -654,8 +653,8 @@ async fn probe_naming_and_skill_tools_admit_offline() {
         session
             .tool_names()
             .iter()
-            .any(|name| name == "search_skills"),
-        "a non-empty registry admits search_skills"
+            .all(|name| name != "search_skills"),
+        "search_skills is not a session tool"
     );
 
     let secret = "offlinesecret";

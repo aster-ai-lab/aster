@@ -1,0 +1,30 @@
+{
+  "qualified": true,
+  "testsPassed": 3,
+  "testsFailed": 0,
+  "receipts": [
+    {
+      "cancelled": true,
+      "closed": true,
+      "error": "Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"native plugin workspace is unavailable\")) }",
+      "failure": "workspace_unavailable",
+      "resources_settled": 1
+    },
+    {
+      "cancelled": true,
+      "closed": true,
+      "error": "Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"Capability runtime error: Session runtime tool name 'office_file' conflicts with a compatibility value\")) }",
+      "failure": "office_file",
+      "resources_settled": 1
+    },
+    {
+      "cancelled": true,
+      "closed": true,
+      "error": "Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"Capability runtime error: Session runtime tool name 'output_check' conflicts with a compatibility value\")) }",
+      "failure": "output_check",
+      "resources_settled": 1
+    }
+  ],
+  "sourceHashesStillMatch": true,
+  "focusedDiffCheckExit": 0
+}

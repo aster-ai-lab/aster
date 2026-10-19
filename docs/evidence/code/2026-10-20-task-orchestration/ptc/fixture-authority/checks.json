@@ -1,0 +1,39 @@
+[
+  {
+    "name": "yolo-exact",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-code-core",
+      "--lib",
+      "fact_control::tests::fact_log_live_completion_yolo_lane_runs_the_tool",
+      "--",
+      "--exact",
+      "--nocapture"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 23.783147041,
+    "log": "docs/evidence/code/2026-10-20-task-orchestration/ptc/fixture-authority/yolo-exact.log"
+  },
+  {
+    "name": "fact-control",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-code-core",
+      "--lib",
+      "fact_control::",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 2.2424913340000003,
+    "log": "docs/evidence/code/2026-10-20-task-orchestration/ptc/fixture-authority/fact-control.log"
+  }
+]

@@ -1,0 +1,8 @@
+The following is a diff from the previous accessibility tree for Window: "ToWork" with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 42, 44-47, 57
++				57 text entry area (settable) 为一场线上产品演示整理筹备清单。示例：周五14:00开始，时长30分钟。按会前、会中、会后三阶段列出事项，每阶段两条，使用清晰的小标题。
++					58 text (settable) 为一场线上产品演示整理筹备清单。示例：周五14:00开始，时长30分钟。按会前、会中、会后三阶段列出事项，每阶段两条，使用清晰的小标题。
++				59 pop up button 更多选项
++				60 pop up button 授权模式: 逐次确认
++				61 pop up button 自动
++				62 button 发送

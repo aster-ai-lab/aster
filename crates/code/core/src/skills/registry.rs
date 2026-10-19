@@ -807,9 +807,9 @@ impl SkillRegistry {
     /// Persona-kind skills are excluded — they are bound per-session, not globally.
     /// Generate the system prompt fragment for this registry.
     ///
-    /// Emits only the catalog header telling the model to use `search_skills`
-    /// then `Skill`. Full skill bodies are never auto-injected into the main
-    /// prompt; they load only when the model invokes `Skill`.
+    /// Emits the catalog header and one line per discoverable skill. Full skill
+    /// bodies stay out of the main prompt; they load only when the model
+    /// invokes `Skill`.
     ///
     /// `match_skills` remains a helper for hosts that want keyword injection,
     /// but the default agent loop does not call it.
@@ -822,7 +822,23 @@ impl SkillRegistry {
             return String::new();
         }
 
-        String::from(crate::prompts::SKILLS_CATALOG_HEADER)
+        let mut listed: Vec<_> = skills
+            .values()
+            .filter(|skill| Self::is_discoverable_skill(skill))
+            .cloned()
+            .collect();
+        listed.sort_by(|left, right| left.name.cmp(&right.name));
+        let mut out = String::from(crate::prompts::SKILLS_CATALOG_HEADER);
+        out.push_str("\n\n");
+        for skill in listed {
+            let description = skill
+                .description
+                .split_whitespace()
+                .collect::<Vec<_>>()
+                .join(" ");
+            out.push_str(&format!("- {}: {description}\n", skill.name));
+        }
+        out
     }
 
     /// Return the full content of skills relevant to the given user input.

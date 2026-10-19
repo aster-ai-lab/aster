@@ -1,0 +1,139 @@
+{
+  "artifacts": [
+    {
+      "artifact_key": "source_pdf",
+      "checksum": "sha256:dc845eecf21e2f2b78ce64d3e7a3a37b485bd74f80fcd47936d5716422ab5752",
+      "file_name": "复杂论文.pdf"
+    },
+    {
+      "artifact_key": "markdown_raw",
+      "checksum": "sha256:6af76e63d003338c2d4e4a9a5c2d170451728f4f692afa0d9a4f22a040784d5f",
+      "file_name": "paper.md"
+    }
+  ],
+  "asks": {
+    "图1说明戊": {
+      "answer": "页眉丙\n图1说明戊",
+      "citations": [
+        {
+          "block_id": "p6",
+          "page_idx": 5,
+          "ref": 1,
+          "snippet": "页眉丙\n图1说明戊"
+        }
+      ],
+      "persisted": false
+    },
+    "这句话不在论文里": {
+      "answer": "正文中没有这句话。",
+      "citations": [],
+      "persisted": false
+    },
+    "页眉丙": {
+      "answer": "页眉丙\n摘要句乙\nAlphaToken\n重复词辛\n\n页眉丙\n1 方法\n方法句癸\n\n页眉丙\n左栏子句\n右栏子句\n\n页眉丙\n表1列名\n表1甲 12\n表1乙 34\n\n页眉丙\n图1说明戊\n\n页眉丙\n重复词辛\n参考文献己",
+      "citations": [
+        {
+          "block_id": "p2",
+          "page_idx": 1,
+          "ref": 1,
+          "snippet": "页眉丙\n摘要句乙\nAlphaToken\n重复词辛"
+        },
+        {
+          "block_id": "p3",
+          "page_idx": 2,
+          "ref": 2,
+          "snippet": "页眉丙\n1 方法\n方法句癸"
+        },
+        {
+          "block_id": "p4",
+          "page_idx": 3,
+          "ref": 3,
+          "snippet": "页眉丙\n左栏子句\n右栏子句"
+        },
+        {
+          "block_id": "p5",
+          "page_idx": 4,
+          "ref": 4,
+          "snippet": "页眉丙\n表1列名\n表1甲 12\n表1乙 34"
+        },
+        {
+          "block_id": "p6",
+          "page_idx": 5,
+          "ref": 5,
+          "snippet": "页眉丙\n图1说明戊"
+        },
+        {
+          "block_id": "p8",
+          "page_idx": 7,
+          "ref": 6,
+          "snippet": "页眉丙\n重复词辛\n参考文献己"
+        }
+      ],
+      "persisted": false
+    }
+  },
+  "document_id": "dc845eecf21e2f2b78ce64d3e7a3a37b485bd74f80fcd47936d5716422ab5752",
+  "markdown": "复杂论文标题甲\n作者壬\n\n页眉丙\n摘要句乙\nAlphaToken\n重复词辛\n\n页眉丙\n1 方法\n方法句癸\n\n页眉丙\n左栏子句\n右栏子句\n\n页眉丙\n表1列名\n表1甲 12\n表1乙 34\n\n页眉丙\n图1说明戊\n\n页眉丙\n重复词辛\n参考文献己",
+  "page_count": 8,
+  "pages": [
+    "复杂论文标题甲\n作者壬",
+    "页眉丙\n摘要句乙\nAlphaToken\n重复词辛",
+    "页眉丙\n1 方法\n方法句癸",
+    "页眉丙\n左栏子句\n右栏子句",
+    "页眉丙\n表1列名\n表1甲 12\n表1乙 34",
+    "页眉丙\n图1说明戊",
+    "",
+    "页眉丙\n重复词辛\n参考文献己"
+  ],
+  "searches": {
+    "AlphaToken": [
+      {
+        "page_idx": 1,
+        "source_snippet": "页眉丙\n摘要句乙\nAlphaToken\n重复词辛"
+      }
+    ],
+    "alphatoken": [],
+    "图1说明戊": [
+      {
+        "page_idx": 5,
+        "source_snippet": "页眉丙\n图1说明戊"
+      }
+    ],
+    "重复词辛": [
+      {
+        "page_idx": 1,
+        "source_snippet": "页眉丙\n摘要句乙\nAlphaToken\n重复词辛"
+      },
+      {
+        "page_idx": 7,
+        "source_snippet": "页眉丙\n重复词辛\n参考文献己"
+      }
+    ],
+    "页眉丙": [
+      {
+        "page_idx": 1,
+        "source_snippet": "页眉丙\n摘要句乙\nAlphaToken\n重复词辛"
+      },
+      {
+        "page_idx": 2,
+        "source_snippet": "页眉丙\n1 方法\n方法句癸"
+      },
+      {
+        "page_idx": 3,
+        "source_snippet": "页眉丙\n左栏子句\n右栏子句"
+      },
+      {
+        "page_idx": 4,
+        "source_snippet": "页眉丙\n表1列名\n表1甲 12\n表1乙 34"
+      },
+      {
+        "page_idx": 5,
+        "source_snippet": "页眉丙\n图1说明戊"
+      },
+      {
+        "page_idx": 7,
+        "source_snippet": "页眉丙\n重复词辛\n参考文献己"
+      }
+    ]
+  }
+}

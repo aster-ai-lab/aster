@@ -1,0 +1,9 @@
+[[permission]]
+identifier = "allow-open-aix-applet-window"
+description = "Opens a system window for one installed AIX mini app."
+commands.allow = ["open_aix_applet_window"]
+
+[[permission]]
+identifier = "allow-aix-applet-recovery"
+description = "Protects recovery and closes only the invoking AIX system window."
+commands.allow = ["protect_aix_applet_window", "close_aix_applet_window"]

@@ -10,6 +10,7 @@ mod ast;
 pub mod compiler;
 pub mod decode;
 pub mod drivers;
+pub mod engine;
 pub mod error;
 pub mod executor;
 pub mod expression;
@@ -32,8 +33,13 @@ pub use drivers::postgres::{
 };
 #[cfg(feature = "sqlite")]
 pub use drivers::sqlite::{
-    SqliteError, SqliteExecutor, SqliteJournalMode, SqliteMigrationError, SqliteOptions, SqliteRow,
-    SqliteSavepoint, SqliteSavepointError, SqliteTransaction, SqliteTransactionError,
+    SqliteError, SqliteExecutor, SqliteGrid, SqliteJournalMode, SqliteMigrationError,
+    SqliteOptions, SqliteRow, SqliteSavepoint, SqliteSavepointError, SqliteTransaction,
+    SqliteTransactionError,
+};
+pub use drivers::StatementGrid;
+pub use engine::{
+    Engine, EngineCapabilities, EngineFamily, EngineParseError, EngineProfile, EngineTransport,
 };
 pub use error::{Error, Result};
 pub use executor::{

@@ -1,0 +1,31 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.33s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 10 tests
+test agent::llm_invoker::fact_governance::tests::accounting_closed_set_round_trips_and_refuses_unknown ... ok
+test agent::llm_invoker::fact_governance::tests::compatibility_loop_new_gate_refuses_managed_binding_but_raw_preparation_stays_available ... ok
+test agent::llm_invoker::fact_governance::tests::unsupported_frozen_profile_is_a_permanent_refusal_before_provider ... ok
+test agent::llm_invoker::fact_governance::tests::nonretryable_setup_keeps_actual_error_and_has_no_fallback_or_success_record ... ok
+test agent::llm_invoker::fact_governance::tests::main_turn_rejects_foreign_definitions_before_provider_but_auxiliary_keeps_its_surface ... ok
+test agent::llm_invoker::fact_governance::tests::actual_done_without_eof_records_once_even_when_parent_cancels_partial_callback ... ok
+test agent::llm_invoker::fact_governance::tests::actual_full64_pipe_does_not_defer_already_observed_done_accounting ... ok
+test agent::llm_invoker::fact_governance::tests::consuming_actual_framework_binding_accepts_same_original_and_refuses_cached_foreign ... ok
+test agent::llm_invoker::fact_governance::tests::fallback_uses_distinct_actual_sequence_and_same_policy_deny_or_allow ... ok
+test agent::llm_invoker::fact_governance::tests::same_source_frozen_environment_survives_actual_status_close_without_live_strong_graph ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 5125 filtered out; finished in 0.01s
+

@@ -1,0 +1,75 @@
+{
+  "schema": "aster.t01.frontend-validation.v1",
+  "observedAt": "2026-10-19T15:00:11.504994+00:00",
+  "scope": [
+    "apps/work/src/renderer/pages/agents/AgentPage.tsx",
+    "apps/work/src/renderer/pages/agents/__tests__/AgentPage.test.tsx"
+  ],
+  "change": "Stop task creation when private project binding fails. Bind a reused session that still points at the shared project root before adoption. Reuse existing error feedback and translations.",
+  "regressions": [
+    {
+      "case": "Fresh shared project session with rejected binding",
+      "before": "Home creation returned a task id from the shared project root",
+      "after": "Home creation returns null; unbound task cannot be adopted",
+      "result": "passed"
+    },
+    {
+      "case": "Reused shared project session with rejected binding",
+      "before": "Reuse skipped private binding and returned the shared-root task id",
+      "after": "Home creation returns null; unbound task cannot be adopted",
+      "result": "passed"
+    },
+    {
+      "case": "Reused shared project session with successful binding",
+      "before": "Adoption used the shared project root",
+      "after": "Adoption uses the bound private task workspace",
+      "result": "passed"
+    }
+  ],
+  "commands": [
+    {
+      "requested": "pnpm test:renderer src/renderer/pages/agents/__tests__/AgentPage.test.tsx -t \"shared project session\"",
+      "actual": "./node_modules/.bin/vitest run --project renderer src/renderer/pages/agents/__tests__/AgentPage.test.tsx -t \"shared project session\"",
+      "result": "3 passed; tests failed on the original behavior before the production fix"
+    },
+    {
+      "actual": "./node_modules/.bin/vitest run --project renderer src/renderer/pages/agents/__tests__/AgentPage.test.tsx",
+      "result": "78 passed, 6 failed (84 total); all 3 new regressions passed"
+    },
+    {
+      "actual": "./node_modules/.bin/vitest run --project renderer src/renderer/pages/agents/__tests__/AgentPage.test.tsx -t \"shows both agent and session panes by default\"",
+      "result": "The existing sidebar case also fails in isolation at its initial render, before resolveEmptySession is called. This excludes state pollution from the new tests."
+    },
+    {
+      "actual": "./node_modules/.bin/eslint src/renderer/pages/agents/AgentPage.tsx src/renderer/pages/agents/__tests__/AgentPage.test.tsx",
+      "result": "exit 0; 0 errors; one existing restricted cross-page import warning at AgentPage.tsx:48"
+    },
+    {
+      "actual": "./node_modules/.bin/oxfmt --check src/renderer/pages/agents/AgentPage.tsx src/renderer/pages/agents/__tests__/AgentPage.test.tsx",
+      "result": "exit 0; both files match formatting"
+    },
+    {
+      "actual": "git -C apps/work diff --check -- src/renderer/pages/agents/AgentPage.tsx src/renderer/pages/agents/__tests__/AgentPage.test.tsx",
+      "result": "exit 0"
+    },
+    {
+      "actual": "./node_modules/.bin/tsc --noEmit -p tsconfig.web.json --composite false",
+      "result": "exit 134: default approximately 4 GiB Node heap exhausted"
+    },
+    {
+      "requested": "NODE_OPTIONS=--max-old-space-size=8192 pnpm typecheck:web",
+      "actual": "NODE_OPTIONS=--max-old-space-size=8192 ./node_modules/.bin/tsc --noEmit -p tsconfig.web.json --composite false",
+      "result": "exit 2; 556 lines of repository-wide diagnostics. The only diagnostics in the two touched files are unchanged HEAD lines: unused getWorkspaceSourceFromSession and pre-existing toast.error.mock assertion. No diagnostic points to newly changed code."
+    }
+  ],
+  "existingSidebarFailures": [
+    "shows both agent and session panes by default when sessions are on the right",
+    "keeps a sidebar toggle beside agent resource search so a collapsed pane can be reopened",
+    "collapses the agent sidebar when the shared shell requests it",
+    "temporarily hides and restores the agent sidebar for responsive auto-collapse without changing the user preference",
+    "keeps the agent sidebar open after selecting a session from the sidebar",
+    "keeps detached session sidebar state local, default-closed, and fixed on the left"
+  ],
+  "environment": "pnpm is absent from this shell. The installed local binaries were used without installing dependencies or changing configuration.",
+  "limits": "No full-tree write-mode lint/format, UI actions, or unrelated sidebar fixes. This report stores only non-sensitive result summaries; no full source or model reasoning is included."
+}

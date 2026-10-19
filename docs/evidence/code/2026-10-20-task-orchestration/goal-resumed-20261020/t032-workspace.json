@@ -1,0 +1,75 @@
+{
+  "created_utc": "2026-10-19T21:44:17.877218+00:00",
+  "source": "/Users/roylin/code/tasks/T01",
+  "workspace": "/Users/roylin/code/tasks/T01-t032-cua-01",
+  "files": [
+    {
+      "path": "instruction.md",
+      "bytes": 10620,
+      "sha256": "0cd971564a0655ae78bdba0ed472b1255ce323db6a19feb6b26b6d4dcd67c22c"
+    },
+    {
+      "path": "input/Africa_orders.csv",
+      "bytes": 8394,
+      "sha256": "7c0b74268c52b75a9dc0d892e343855775ff2d1bdfe6ea544d77e343699db5bc"
+    },
+    {
+      "path": "input/Asia_Pacific_orders.csv",
+      "bytes": 53799,
+      "sha256": "8c9aaeae2e3f340247f5c0472a5912cbe6d0d74e5c88e0b1d5efab4b5bfb8d5b"
+    },
+    {
+      "path": "input/Europe_orders.csv",
+      "bytes": 37415,
+      "sha256": "b132f6dc46fe5894818bf4a85243a122b508a64e0e76b06f8e0834556070fc02"
+    },
+    {
+      "path": "input/LATAM_orders.csv",
+      "bytes": 20044,
+      "sha256": "546ca18eff9190355307c935f95016bb21f94a07f13ded07b8bf8f4115c62a36"
+    },
+    {
+      "path": "input/USCA_orders.csv",
+      "bytes": 30180,
+      "sha256": "a0931573a257d766a122bdbb0ad9007fb49bdec18ca25931ec43a5852faa775c"
+    },
+    {
+      "path": "input/adjustments.jsonl",
+      "bytes": 6808,
+      "sha256": "f6f9c1a604c8531efa63ebf90904a3a90b9f9cbefefdd17dd9254b67b6f654d8"
+    },
+    {
+      "path": "input/policy.json",
+      "bytes": 486,
+      "sha256": "471f6e3a27d29b432454deae7223f1927740bdc67a6cb885a55bc90c42ef17c5"
+    },
+    {
+      "path": "input/priority_codebook.txt",
+      "bytes": 736,
+      "sha256": "5033d8d25338cd67fd93c72e13b7b036cdaab9bc102325534d6de90e65548e2d"
+    },
+    {
+      "path": "input/product_info.csv",
+      "bytes": 35979,
+      "sha256": "a508c5c50582a72e741bfed176be8a1dcdf3cbd8914391c57110585c1e5cf8a7"
+    },
+    {
+      "path": "input/segment_performance.csv",
+      "bytes": 213,
+      "sha256": "f20fce60c51dc2bdfef77f7bf0b25dee4107c6f4e31cdd8f5e79fa3d01cf1dd2"
+    },
+    {
+      "path": "input/shipping_by_mode.csv",
+      "bytes": 228,
+      "sha256": "1922a7d1f651bf42c1ab05275b364a6669d9dd08c6f6c2adf106982d031336eb"
+    }
+  ],
+  "initial_entries": [
+    "input",
+    "instruction.md"
+  ],
+  "previous_attempts_retained": 9,
+  "new_goal_authorized_attempt": 1,
+  "paid_submission_started": false,
+  "git_repository_created": false
+}

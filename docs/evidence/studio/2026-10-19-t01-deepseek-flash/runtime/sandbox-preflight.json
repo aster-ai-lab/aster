@@ -1,0 +1,77 @@
+{
+  "schema": "aster.t01.sandbox-preflight.v1",
+  "observedAt": "2026-10-19T14:50:00.613439+00:00",
+  "assets": "/Users/roylin/Library/Caches/aster/sandbox/dev-20261018-core-bash",
+  "files": {
+    "a3s-oci": {
+      "exists": true,
+      "size": 70461752,
+      "symlinkTarget": null
+    },
+    "a3s-oci-krun-shim": {
+      "exists": true,
+      "size": 28415824,
+      "symlinkTarget": null
+    },
+    "system-image.json": {
+      "exists": true,
+      "size": 1775,
+      "symlinkTarget": null
+    },
+    "bundle/config.json": {
+      "exists": true,
+      "size": 2500,
+      "symlinkTarget": null
+    },
+    "bundle/rootfs/bin/bash": {
+      "exists": true,
+      "size": 866000,
+      "symlinkTarget": null
+    },
+    "bundle/rootfs/usr/bin/python": {
+      "exists": true,
+      "size": 67328,
+      "symlinkTarget": "python3"
+    },
+    "bundle/rootfs/usr/bin/python3": {
+      "exists": true,
+      "size": 67328,
+      "symlinkTarget": "python3.12"
+    },
+    "bundle/rootfs/usr/bin/python3.12": {
+      "exists": true,
+      "size": 67328,
+      "symlinkTarget": null
+    },
+    "bundle/rootfs/usr/lib/python3.12/decimal.py": {
+      "exists": true,
+      "size": 2805,
+      "symlinkTarget": null
+    },
+    "bundle/rootfs/usr/lib/python3.12/argparse.py": {
+      "exists": true,
+      "size": 101155,
+      "symlinkTarget": null
+    },
+    "bundle/rootfs/usr/lib/python3.12/json/__init__.py": {
+      "exists": true,
+      "size": 14020,
+      "symlinkTarget": null
+    }
+  },
+  "systemImageHash": "842590e3619d267a09d877b53abf7e2c1cdb5bae587cc7477d95ff736302f8ce",
+  "systemImageHashMatchesManifest": true,
+  "hvf": "kern.hv_support: 1",
+  "shimSignature": "codesign --verify --strict exit 0; com.apple.security.hypervisor entitlement true",
+  "siblingDirectoriesPresent": {
+    "target/debug/sandbox": false,
+    "app/Contents/Resources/agent/sandbox": false
+  },
+  "rootCause": "Neither inherited explicit companion path nor an executable sibling sandbox was available to first-run discovery. Builds compile companions but do not provision sandbox image assets. Discovery intentionally does not guess a cache path.",
+  "restoration": "Start the desktop process with ASTER_SANDBOX_DIR pointing to the existing trusted asset directory. ACP inherits it. This selects existing OCI Host isolation without a native host fallback or persistent setting change.",
+  "priorLiveEvidence": [
+    "docs/evidence/sandbox/2026-10-19-sandbox-e2e/OUTCOME.md",
+    "docs/evidence/sandbox/2026-10-19-default-oci-session/OUTCOME.md"
+  ],
+  "verificationLimit": "This preflight only read filesystem metadata and verified signatures/hash/HVF support. It did not boot a VM or execute the user task."
+}

@@ -73,6 +73,13 @@ pub(super) async fn complete_detached(
 }
 
 pub(crate) fn model_error(error: anyhow::Error) -> ActorError {
+    // Frozen presentation and evidence invariants cannot recover by asking
+    // the same provider again with the same request.
+    if error.is::<crate::tools::ToolPresentationError>()
+        || error.is::<crate::harness_evidence::HarnessEvidenceError>()
+    {
+        return ActorError::Defect(error.to_string());
+    }
     // Host admission refusal is terminal for this attempt. Preserve the
     // existing fold policy: only the typed denial uses its non-retryable lane.
     if let Some(denial @ crate::error::CodeError::BudgetExhausted { .. }) =
@@ -98,6 +105,13 @@ pub(super) async fn model_response(
     host_cancel: tokio_util::sync::CancellationToken,
     original_model: Option<crate::agent_api::OriginalModelCallPort>,
 ) -> Result<crate::llm::LlmResponse, ActorError> {
+    let tools = match surface.as_ref() {
+        Some(surface) => surface
+            .agent
+            .present_fact_turn_tools(&tools, &messages)
+            .map_err(model_error)?,
+        None => tools,
+    };
     if let Some(original) = original_model {
         let surface = surface.as_ref().ok_or_else(|| {
             ActorError::Defect("original model requires its original parent surface".into())
@@ -165,8 +179,8 @@ pub(super) async fn governed_model_response(
     // before the existing child is spawned. No fallback owner is constructed.
     let prepared = surface
         .agent
-        .prepare_fact_model_call(&surface.session_id, client, messages, system, tools)
-        .map_err(model_error)?;
+        .prepare_profiled_fact_model_call(&surface.session_id, client, messages, system, tools)
+        .map_err(|error| ActorError::Defect(error.to_string()))?;
     let runtime = tokio::runtime::Handle::try_current()
         .map_err(|error| ActorError::Defect(error.to_string()))?;
     let reservation = original
@@ -403,8 +417,9 @@ pub(super) async fn read_model_response(
     surface.streamed_text.store(false, Ordering::Relaxed);
     let (evidence_events, usage_binding) = surface
         .agent
-        .fact_model_evidence(messages, system, tools)
-        .await;
+        .fact_profiled_model_evidence(messages, system, tools)
+        .await
+        .map_err(model_error)?;
     for event in evidence_events {
         record_run_event(surface, event).await;
     }
@@ -568,7 +583,10 @@ pub(super) async fn model_context(
                 Ok(Ok(value)) => value,
                 Ok(Err(error)) => return Err(ActorError::Defect(error.to_string())),
                 Err(_) => {
-                    return Ok((prompt.to_string(), None));
+                    return Ok((
+                        prompt.to_string(),
+                        Some(surface.agent.required_environment_context()),
+                    ));
                 }
             }
         }

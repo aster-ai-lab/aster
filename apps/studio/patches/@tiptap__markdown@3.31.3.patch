@@ -1,0 +1,148 @@
+diff --git a/dist/index.cjs b/dist/index.cjs
+index e4a07ed..160468b 100644
+--- a/dist/index.cjs
++++ b/dist/index.cjs
+@@ -420,7 +420,8 @@ var MarkdownManager = class {
+ 	createTokenizerHelpers(lexer) {
+ 		return {
+ 			inlineTokens: (src) => lexer.inlineTokens(src),
+-			blockTokens: (src) => lexer.blockTokens(src)
++			blockTokens: (src) => lexer.blockTokens(src),
++			lexer
+ 		};
+ 	}
+ 	tokenizeInline(src) {
+@@ -891,7 +892,7 @@ var MarkdownManager = class {
+ 		if (this.isUnrecognizedHtml(html)) return this.htmlAsLiteralText(html, !!token.block);
+ 		if (typeof window === "undefined" || typeof window.DOMParser === "undefined") return this.htmlAsLiteralText(html, !!token.block);
+ 		try {
+-			const parsed = (0, _tiptap_core.generateJSON)(html, this.baseExtensions);
++			const parsed = (0, _tiptap_core.createNodeFromContent)(html, (0, _tiptap_core.getSchema)(this.baseExtensions), { slice: false, parseOptions: { preserveWhitespace: token.block ? false : "full" } }).toJSON();
+ 			if (parsed.type === "doc" && parsed.content) {
+ 				if (token.block) return parsed.content;
+ 				const inlineContent = this.toInlineContent(parsed.content);
+@@ -1088,6 +1089,18 @@ var MarkdownManager = class {
+ 	* This handles cases where marks span across multiple text nodes.
+ 	*/
+ 	renderNodesWithMarkBoundaries(nodes, parentNode, separator = "", level = 0) {
++		const needsHtml = nodes.some((node, index) => {
++			if (node.type !== "text") return false;
++			return (node.marks || []).some((mark) => {
++				const opening = this.getMarkOpening(mark.type, mark);
++				if (!/^(?:\*{1,2}|_{1,2})$/.test(opening) || this.getMarkClosing(mark.type, mark) !== opening) return false;
++				const hasMark = (adjacent) => (adjacent === null || adjacent === void 0 ? void 0 : adjacent.marks) === null || (adjacent === null || adjacent === void 0 ? void 0 : adjacent.marks) === void 0 ? void 0 : adjacent.marks.some((other) => other.type === mark.type);
++				const previous = nodes[index - 1];
++				const next = nodes[index + 1];
++				return (!hasMark(previous) && /^[\p{P}\p{S}]/u.test(node.text || "") && /[^\s\p{P}\p{S}]$/u.test(previous === null || previous === void 0 ? void 0 : previous.text || "")) || (!hasMark(next) && /[\p{P}\p{S}]$/u.test(node.text || "") && /^[^\s\p{P}\p{S}]/u.test(next === null || next === void 0 ? void 0 : next.text || ""));
++			});
++		});
++		if (needsHtml) return `<span>${_tiptap_core.generateHTML({ type: "doc", content: nodes }, this.baseExtensions)}</span>`;
+ 		const result = [];
+ 		const activeMarks = /* @__PURE__ */ new Map();
+ 		const reopenWithHtmlOnNextOpen = /* @__PURE__ */ new Set();
+diff --git a/dist/index.js b/dist/index.js
+index 76a9e77..2b67c09 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -1,4 +1,4 @@
+-import { Extension, attrsEqual, callOrReturn, commands, decodeHtmlEntities, encodeHtmlEntities, flattenExtensions, generateJSON, getExtensionField, getSchema, marksEqual, sortExtensions } from "@tiptap/core";
++import { Extension, attrsEqual, callOrReturn, commands, decodeHtmlEntities, encodeHtmlEntities, flattenExtensions, createNodeFromContent, generateHTML, getExtensionField, getSchema, marksEqual, sortExtensions } from "@tiptap/core";
+ import { marked } from "marked";
+ //#region src/utils.ts
+ /**
+@@ -419,7 +419,8 @@ var MarkdownManager = class {
+ 	createTokenizerHelpers(lexer) {
+ 		return {
+ 			inlineTokens: (src) => lexer.inlineTokens(src),
+-			blockTokens: (src) => lexer.blockTokens(src)
++			blockTokens: (src) => lexer.blockTokens(src),
++			lexer
+ 		};
+ 	}
+ 	tokenizeInline(src) {
+@@ -890,7 +891,7 @@ var MarkdownManager = class {
+ 		if (this.isUnrecognizedHtml(html)) return this.htmlAsLiteralText(html, !!token.block);
+ 		if (typeof window === "undefined" || typeof window.DOMParser === "undefined") return this.htmlAsLiteralText(html, !!token.block);
+ 		try {
+-			const parsed = generateJSON(html, this.baseExtensions);
++			const parsed = createNodeFromContent(html, getSchema(this.baseExtensions), { slice: false, parseOptions: { preserveWhitespace: token.block ? false : "full" } }).toJSON();
+ 			if (parsed.type === "doc" && parsed.content) {
+ 				if (token.block) return parsed.content;
+ 				const inlineContent = this.toInlineContent(parsed.content);
+@@ -1087,6 +1088,18 @@ var MarkdownManager = class {
+ 	* This handles cases where marks span across multiple text nodes.
+ 	*/
+ 	renderNodesWithMarkBoundaries(nodes, parentNode, separator = "", level = 0) {
++		const needsHtml = nodes.some((node, index) => {
++			if (node.type !== "text") return false;
++			return (node.marks || []).some((mark) => {
++				const opening = this.getMarkOpening(mark.type, mark);
++				if (!/^(?:\*{1,2}|_{1,2})$/.test(opening) || this.getMarkClosing(mark.type, mark) !== opening) return false;
++				const hasMark = (adjacent) => (adjacent === null || adjacent === void 0 ? void 0 : adjacent.marks) === null || (adjacent === null || adjacent === void 0 ? void 0 : adjacent.marks) === void 0 ? void 0 : adjacent.marks.some((other) => other.type === mark.type);
++				const previous = nodes[index - 1];
++				const next = nodes[index + 1];
++				return (!hasMark(previous) && /^[\p{P}\p{S}]/u.test(node.text || "") && /[^\s\p{P}\p{S}]$/u.test(previous === null || previous === void 0 ? void 0 : previous.text || "")) || (!hasMark(next) && /[\p{P}\p{S}]$/u.test(node.text || "") && /^[^\s\p{P}\p{S}]/u.test(next === null || next === void 0 ? void 0 : next.text || ""));
++			});
++		});
++		if (needsHtml) return `<span>${generateHTML({ type: "doc", content: nodes }, this.baseExtensions)}</span>`;
+ 		const result = [];
+ 		const activeMarks = /* @__PURE__ */ new Map();
+ 		const reopenWithHtmlOnNextOpen = /* @__PURE__ */ new Set();
+diff --git a/src/MarkdownManager.ts b/src/MarkdownManager.ts
+index 7a28740..ae80a1e 100644
+--- a/src/MarkdownManager.ts
++++ b/src/MarkdownManager.ts
+@@ -15,7 +15,8 @@ import {
+   decodeHtmlEntities,
+   encodeHtmlEntities,
+   flattenExtensions,
+-  generateJSON,
++  generateHTML,
++  createNodeFromContent,
+   getExtensionField,
+   getSchema,
+   marksEqual,
+@@ -201,6 +202,7 @@ export class MarkdownManager {
+     return {
+       inlineTokens: (src: string) => lexer.inlineTokens(src),
+       blockTokens: (src: string) => lexer.blockTokens(src),
++      lexer,
+     }
+   }
+ 
+@@ -964,7 +966,10 @@ export class MarkdownManager {
+ 
+     // Use generateJSON to parse the HTML using extensions' parseHTML rules
+     try {
+-      const parsed = generateJSON(html, this.baseExtensions)
++      const parsed = createNodeFromContent(html, getSchema(this.baseExtensions), {
++        slice: false,
++        parseOptions: { preserveWhitespace: token.block ? false : 'full' },
++      }).toJSON()
+ 
+       // If the result is a doc node, extract its content
+       if (parsed.type === 'doc' && parsed.content) {
+@@ -1267,6 +1272,23 @@ export class MarkdownManager {
+     separator = '',
+     level = 0,
+   ): string {
++    const needsHtml = nodes.some((node, index) => {
++      if (node.type !== 'text') return false
++      return (node.marks || []).some(mark => {
++        const opening = this.getMarkOpening(mark.type, mark)
++        if (!/^(?:\*{1,2}|_{1,2})$/.test(opening) || this.getMarkClosing(mark.type, mark) !== opening) return false
++        const hasMark = (adjacent?: JSONContent) => adjacent?.marks?.some(other => other.type === mark.type)
++        const previous = nodes[index - 1]
++        const next = nodes[index + 1]
++        return (
++          (!hasMark(previous) && /^[\p{P}\p{S}]/u.test(node.text || '') && /[^\s\p{P}\p{S}]$/u.test(previous?.text || '')) ||
++          (!hasMark(next) && /[\p{P}\p{S}]$/u.test(node.text || '') && /^[^\s\p{P}\p{S}]/u.test(next?.text || ''))
++        )
++      })
++    })
++    if (needsHtml) {
++      return `<span>${generateHTML({ type: 'doc', content: nodes }, this.baseExtensions)}</span>`
++    }
+     const result: string[] = []
+     const activeMarks: Map<string, any> = new Map()
+     const reopenWithHtmlOnNextOpen = new Set<string>()

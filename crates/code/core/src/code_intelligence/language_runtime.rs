@@ -5,6 +5,9 @@ mod diagnostic_runtime;
 mod integration_tests;
 mod paths;
 mod protocol;
+mod readiness;
+#[cfg(test)]
+mod readiness_integration_tests;
 #[cfg(test)]
 mod tests;
 
@@ -77,6 +80,9 @@ pub(crate) enum LanguageRuntimeError {
     #[error("diagnostics for saved document {path:?} have not been received yet")]
     PendingDiagnostics { path: WorkspacePath },
 
+    #[error("language server is not semantically ready: {reason}")]
+    Readiness { reason: &'static str },
+
     #[error("language runtime operation was cancelled")]
     Cancelled,
 
@@ -134,6 +140,7 @@ pub(crate) struct LanguageRuntime {
     navigation_revisions: Mutex<HashMap<WorkspacePath, DocumentRevision>>,
     navigation_stabilization: Mutex<()>,
     notification_task: Mutex<Option<JoinHandle<()>>>,
+    readiness: Option<watch::Receiver<readiness::ReadinessState>>,
     timeout: Duration,
 }
 
@@ -160,6 +167,7 @@ impl LanguageRuntime {
         cancellation: CancellationToken,
         timeout: Duration,
     ) -> Result<Self, LanguageRuntimeError> {
+        let startup_deadline = tokio::time::Instant::now() + timeout;
         validate_canonical_root(&canonical_root).await?;
         let root_url = directory_url(&canonical_root)?;
         let workspace_folders = workspace_folders(&profile, &canonical_root, &layout).await?;
@@ -187,6 +195,12 @@ impl LanguageRuntime {
                 })?;
         let diagnostic_state = Arc::new(Mutex::new(DiagnosticRuntimeState::default()));
         let diagnostic_updates = Arc::new(Mutex::new(()));
+        let (readiness_tx, readiness) = if profile.requires_server_status() {
+            let (tx, rx) = watch::channel(readiness::ReadinessState::Loading);
+            (Some(tx), Some(rx))
+        } else {
+            (None, None)
+        };
         let notification_task = tokio::spawn(consume_notifications(
             notifications,
             canonical_root.clone(),
@@ -194,6 +208,7 @@ impl LanguageRuntime {
             Arc::clone(&diagnostics),
             Arc::clone(&diagnostic_state),
             Arc::clone(&diagnostic_updates),
+            readiness_tx,
         ));
 
         let initialization_options =
@@ -204,8 +219,30 @@ impl LanguageRuntime {
             initialization_options,
             env!("CARGO_PKG_NAME"),
             env!("CARGO_PKG_VERSION"),
-        );
-        let initialized = match initialize(&client, &config, cancellation.clone(), timeout).await {
+        )
+        .with_server_status_notification(profile.requires_server_status());
+        let initialize_timeout = if profile.requires_server_status() {
+            startup_deadline.saturating_duration_since(tokio::time::Instant::now())
+        } else {
+            timeout
+        };
+        let initialize = initialize(&client, &config, cancellation.clone(), initialize_timeout);
+        let initialize_result = if profile.requires_server_status() {
+            let expired = || LspClientError::Timeout {
+                method: "initialize".to_owned(),
+                duration: timeout,
+            };
+            if initialize_timeout.is_zero() {
+                Err(expired())
+            } else {
+                tokio::time::timeout_at(startup_deadline, initialize)
+                    .await
+                    .unwrap_or_else(|_| Err(expired()))
+            }
+        } else {
+            initialize.await
+        };
+        let initialized = match initialize_result {
             Ok(initialized) => initialized,
             Err(source) => {
                 let cancelled = cancellation.is_cancelled();
@@ -241,12 +278,24 @@ impl LanguageRuntime {
             navigation_revisions: Mutex::new(HashMap::new()),
             navigation_stabilization: Mutex::new(()),
             notification_task: Mutex::new(Some(notification_task)),
+            readiness,
             timeout,
         };
-        if let Err(error) = runtime
-            .wait_for_settle(runtime.profile.initialization_settle_delay(), &cancellation)
+        let settled = if let Some(status) = &runtime.readiness {
+            readiness::wait(
+                status,
+                &runtime.process,
+                &cancellation,
+                startup_deadline,
+                timeout,
+            )
             .await
-        {
+        } else {
+            runtime
+                .wait_for_settle(runtime.profile.initialization_settle_delay(), &cancellation)
+                .await
+        };
+        if let Err(error) = settled {
             if matches!(&error, LanguageRuntimeError::Cancelled) {
                 runtime.force_kill();
             }
@@ -382,9 +431,10 @@ impl LanguageRuntime {
         let (uri, snapshot) = self
             .sync_saved_document(path, saved_content, &cancellation)
             .await?;
-        let items = if self
-            .navigation_revision_is_settled(path, snapshot.revision)
-            .await
+        let items = if self.readiness.is_some()
+            || self
+                .navigation_revision_is_settled(path, snapshot.revision)
+                .await
         {
             self.navigation_items(kind, &uri, position, &cancellation)
                 .await?

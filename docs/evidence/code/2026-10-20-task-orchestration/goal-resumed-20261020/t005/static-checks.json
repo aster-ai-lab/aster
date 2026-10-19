@@ -1,0 +1,57 @@
+{
+  "at": "2026-10-19T21:38:10.335078+00:00",
+  "checks": [
+    {
+      "command": [
+        "rustup",
+        "run",
+        "1.97.1",
+        "rustfmt",
+        "--edition",
+        "2021",
+        "--check",
+        "--config",
+        "skip_children=true",
+        "crates/code/core/src/agent_api/conversation_runtime/owned_fact.rs",
+        "crates/code/core/src/agent_api/conversation_runtime/turn_outcome.rs",
+        "crates/code/core/src/agent_api/tests/fact_log.rs",
+        "crates/code/core/src/agent_api/tests/fact_log/confirmation_snapshot.rs",
+        "crates/code/core/src/agent_api/tests/fact_log/revalidation.rs",
+        "crates/code/core/src/fact_control/receipts.rs",
+        "crates/code/core/src/porcelain.rs",
+        "crates/code/core/src/porcelain/receipt_tests.rs",
+        "crates/effect/src/coding.rs",
+        "crates/effect/src/coding/revalidation_tests.rs",
+        "crates/effect/tests/tool_effects.rs",
+        "crates/effect/tests/tool_effects/revalidation.rs"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "crates/code/core/src/agent_api/conversation_runtime/owned_fact.rs",
+        "crates/code/core/src/agent_api/conversation_runtime/turn_outcome.rs",
+        "crates/code/core/src/agent_api/tests/fact_log.rs",
+        "crates/code/core/src/agent_api/tests/fact_log/confirmation_snapshot.rs",
+        "crates/code/core/src/agent_api/tests/fact_log/revalidation.rs",
+        "crates/code/core/src/fact_control/receipts.rs",
+        "crates/code/core/src/porcelain.rs",
+        "crates/code/core/src/porcelain/receipt_tests.rs",
+        "crates/effect/src/coding.rs",
+        "crates/effect/src/coding/revalidation_tests.rs",
+        "crates/effect/tests/tool_effects.rs",
+        "crates/effect/tests/tool_effects/revalidation.rs"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "cargo_run_by_this_agent": false
+}

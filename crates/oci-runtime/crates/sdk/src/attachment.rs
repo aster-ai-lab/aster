@@ -1215,7 +1215,9 @@ fn decode_configuration(bundle: &OciBundle) -> Result<Value> {
 }
 
 fn digest_json(value: &Value) -> Result<String> {
-    let bytes = serde_json::to_vec(value).map_err(|error| {
+    // Attachment peers may use different serde_json map representations.
+    // Retain the original sorted-object bytes regardless of preserve_order.
+    let bytes = crate::canonical_json_bytes(value).map_err(|error| {
         Error::new(
             ErrorCode::Internal,
             format!("failed to encode attachment configuration: {error}"),

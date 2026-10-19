@@ -1,0 +1,4 @@
+[[permission]]
+identifier = "allow-open-file-editor-window"
+description = "Opens a system window for one workspace file editor."
+commands.allow = ["open_file_editor_window", "prepare_message_file_preview"]

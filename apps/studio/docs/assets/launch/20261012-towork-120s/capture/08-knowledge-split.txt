@@ -1,0 +1,121 @@
+Window: "ToWork", App: ToWork.
+0 standard window ToWork, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content Description: ToWork, URL: 127.0.0.1:4318/windows/main/index.html
+			3 pop up button 林书豪
+			4 button 知识
+			5 button 工作
+			6 button 消息
+			7 button 插件
+			8 button (collapsed) 任务, Secondary Actions: Expand
+			9 button 设置
+			10 container
+				11 heading 知识, Value: 1
+					12 text 知识
+				13 text 编写本地工作区里的笔记
+				14 search text field (settable) 搜索笔记, Value: 清单
+					15 text (settable) 清单
+				16 button 刷新
+				17 container 笔记
+					18 container
+						19 button 笔记
+						20 button 新建文件
+						21 button 新建文件夹
+						22 button (expanded) 测试样本, Secondary Actions: Collapse
+						23 button (expanded) 阅读, Secondary Actions: Collapse
+						24 button 清单
+				25 heading 清单, Value: 2
+					26 text 清单
+				27 toolbar Markdown 功能区
+					28 toggle button (disabled) 撤销, Help: 撤销（Cmd/Ctrl+Z）, Value: off
+					29 toggle button (disabled) 重做, Help: 重做（Cmd/Ctrl+Shift+Z 或 Cmd/Ctrl+Y）, Value: off
+					30 combo box (collapsed, settable) 段落样式, Secondary Actions: Expand, Value: 标题 1
+
+						31 text 标题 1
+					32 toggle button 加粗, Help: 加粗（Cmd/Ctrl+B）, Value: off
+					33 toggle button 斜体, Help: 斜体（Cmd/Ctrl+I）, Value: off
+					34 toggle button 删除线, Help: 删除线（Cmd/Ctrl+Shift+S）, Value: off
+					35 toggle button 行内代码, Help: 行内代码（Cmd/Ctrl+E）, Value: off
+					36 toggle button 项目列表, Help: 项目列表（Cmd/Ctrl+Shift+8）, Value: off
+					37 toggle button 编号列表, Help: 编号列表（Cmd/Ctrl+Shift+7）, Value: off
+					38 toggle button 任务列表, Help: 任务列表（Cmd/Ctrl+Shift+9）, Value: off
+					39 toggle button 引用, Help: 引用（Cmd/Ctrl+Shift+B）, Value: off
+					40 (settable, unknown) 对齐
+						41 radio button 左对齐, Value: 1
+						42 radio button 居中, Value: 0
+						43 radio button 右对齐, Value: 0
+						44 radio button 两端对齐, Value: 0
+					45 toggle button 添加链接, Help: 添加链接（Cmd/Ctrl+K）, Value: off
+					46 toggle button (disabled) 移除链接, Value: off
+					47 toggle button 插入图片, Value: off
+					48 toggle button 代码块, Help: 代码块（Cmd/Ctrl+Alt+C）, Value: off
+					49 toggle button 分隔线, Value: off
+					50 toggle button 表格, Value: off
+				51 container 编辑方式
+					52 toggle button 可视化编辑, Value: off
+					53 toggle button 分屏编辑, Value: on
+					54 toggle button 源码编辑, Value: off
+				55 container Markdown 源码窗格
+					56 text 源码
+					57 text entry area (settable) Markdown 源码, Placeholder: 从这里写起, Value: # 清单
+
+出发前：
+
+- 买桂花蜜，顺手看藕新不新鲜
+- 打印杭州行程，酒店确认号 HZ-2048
+- 给笔记页加一条可搜索的句子
+- 充电器、转接头、演示用的那台笔记本
+
+回来再做：
+
+- 把会议里提到的检索问题补进 [[阅读/设计笔记]]
+- 若糖醋排骨试做成功，更新 [[糖醋排骨]] 的火候
+
+检索口令：打印行程只写在测试笔记2b44。
+
+						58 container (settable)
+							59 text (settable) # 清单
+							60 text (settable) 出发前：
+							61 text (settable) - 买桂花蜜，顺手看藕新不新鲜
+							62 text (settable) - 打印杭州行程，酒店确认号 HZ-2048
+							63 text (settable) - 给笔记页加一条可搜索的句子
+							64 text (settable) - 充电器、转接头、演示用的那台笔记本
+							65 text (settable) 回来再做：
+							66 text (settable) - 把会议里提到的检索问题补进 [[阅读/设计笔记]]
+							67 text (settable) - 若糖醋排骨试做成功，更新 [[糖醋排骨]] 的火候
+							68 text (settable) 检索口令：打印行程只写在测试笔记2b44。
+				69 splitter 调整编辑与预览宽度, Help: 拖动调整分栏宽度，双击恢复均分, Value: 50, Details: 编辑窗格 50%
+				70 container Markdown 预览窗格
+					71 text 预览
+					72 container Markdown 预览
+						73 heading 清单, Value: 1
+							74 text 清单
+						75 text 出发前：
+						76 content list
+							77 container 买桂花蜜，顺手看藕新不新鲜
+								78 list marker •
+								79 text 买桂花蜜，顺手看藕新不新鲜
+							80 container 打印杭州行程，酒店确认号 HZ-2048
+								81 list marker •
+								82 text 打印杭州行程，酒店确认号 HZ-2048
+							83 container 给笔记页加一条可搜索的句子
+								84 list marker •
+								85 text 给笔记页加一条可搜索的句子
+							86 container 充电器、转接头、演示用的那台笔记本
+								87 list marker •
+								88 text 充电器、转接头、演示用的那台笔记本
+						89 text 回来再做：
+						90 content list
+							91 container 把会议里提到的检索问题补进 [[阅读/设计笔记]]
+								92 list marker •
+								93 text 把会议里提到的检索问题补进 [[阅读/设计笔记]]
+							94 container 若糖醋排骨试做成功，更新 [[糖醋排骨]] 的火候
+								95 list marker •
+								96 text 若糖醋排骨试做成功，更新 [[糖醋排骨]] 的火候
+						97 text 检索口令：打印行程只写在测试笔记2b44。
+	98 close button
+	99 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	100 minimize button
+101 menu bar
+	102 ToWork
+	103 Edit

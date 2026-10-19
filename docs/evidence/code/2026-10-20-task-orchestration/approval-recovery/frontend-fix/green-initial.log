@@ -1,0 +1,489 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:15646) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/local-product-scope.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-local-product-scope.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/work
+
+ ❯ |renderer| src/renderer/components/composer/__tests__/ComposerCore.test.tsx (4 tests | 3 failed) 189ms
+   ❯ ComposerCore (4)
+     × keeps a scoped Stop reachable through missing approval card 44ms
+     × keeps a scoped Stop reachable through permission card 7ms
+     × keeps a scoped Stop reachable through question card 7ms
+ ❯ |renderer| src/renderer/data/__tests__/studioAgentPlane.test.ts (19 tests | 4 failed | 1 skipped) 306ms
+   ❯ studioAgentPlane (19)
+     × routes agent IPC to the plane and leaves other routes alone 4ms
+     × fans plane events out to stream listeners, the status cache, and data-change listeners 51ms
+     × withdraws observations on disconnect and requires a fresh snapshot before accepting deltas 53ms
+     × restores a live topic status from the execution snapshot 51ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/data/__tests__/studioAgentPlane.test.ts > studioAgentPlane > routes agent IPC to the plane and leaves other routes alone
+AssertionError: expected { ok: true, data: { ok: false } } to deeply equal { ok: true, data: { ok: true } }
+
+- Expected
++ Received
+
+  {
+    "data": {
+-     "ok": true,
++     "ok": false,
+    },
+    "ok": true,
+  }
+
+ ❯ src/renderer/data/__tests__/studioAgentPlane.test.ts:380:100
+    378|       bridge.request('ai.stream.open', { topicId: 'agent-session:s1', …
+    379|     ).resolves.toEqual({ ok: true, data: { mode: 'started' } })
+    380|     await expect(bridge.request('ai.tool.respond_approval', { approval…
+       |                                                                                                    ^
+    381|       ok: true,
+    382|       data: { ok: true }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  |renderer| src/renderer/data/__tests__/studioAgentPlane.test.ts > studioAgentPlane > fans plane events out to stream listeners, the status cache, and data-change listeners
+AssertionError: expected { status: 'pending', …(2) } to deeply equal { status: 'pending', …(1) }
+
+- Expected
++ Received
+
+  {
+    "activeExecutions": [],
++   "pendingApprovals": [],
+    "status": "pending",
+  }
+
+ ❯ src/renderer/data/__tests__/studioAgentPlane.test.ts:494:78
+    492|
+    493|     expect(chunks).toEqual([{ topicId: 'agent-session:s1', chunk: {} }…
+    494|     expect(cacheService.getShared('topic.stream.statuses.agent-session…
+       |                                                                              ^
+    495|       status: 'pending',
+    496|       activeExecutions: []
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  |renderer| src/renderer/data/__tests__/studioAgentPlane.test.ts > studioAgentPlane > withdraws observations on disconnect and requires a fresh snapshot before accepting deltas
+AssertionError: expected { status: 'streaming', …(1) } to deeply equal { status: 'streaming' }
+
+- Expected
++ Received
+
+  {
++   "pendingApprovals": [],
+    "status": "streaming",
+  }
+
+ ❯ src/renderer/data/__tests__/studioAgentPlane.test.ts:535:78
+    533|     })
+    534|     expect(cacheService.get(executionCache)?.['agent-session:s1']?.mod…
+    535|     expect(cacheService.getShared('topic.stream.statuses.agent-session…
+       |                                                                              ^
+    536|
+    537|     source.disconnect()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  |renderer| src/renderer/data/__tests__/studioAgentPlane.test.ts > studioAgentPlane > restores a live topic status from the execution snapshot
+AssertionError: expected { status: 'streaming', …(2) } to deeply equal { status: 'streaming', …(1) }
+
+- Expected
++ Received
+
+@@ -2,7 +2,8 @@
+    "activeExecutions": [
+      {
+        "executionId": "m",
+      },
+    ],
++   "pendingApprovals": [],
+    "status": "streaming",
+  }
+
+ ❯ src/renderer/data/__tests__/studioAgentPlane.test.ts:589:78
+    587|       }
+    588|     })
+    589|     expect(cacheService.getShared('topic.stream.statuses.agent-session…
+       |                                                                              ^
+    590|       status: 'streaming',
+    591|       activeExecutions: [{ executionId: 'm' }]
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerCore.test.tsx > ComposerCore > keeps a scoped Stop reachable through missing approval card
+TestingLibraryElementError: Unable to find an accessible element with the role "button" and name "chat.input.pause"
+
+Here are the accessible roles:
+
+  button:
+
+  Name "暂停":
+  [36m<button[39m
+    [33maria-label[39m=[32m"暂停"[39m
+    [33mclass[39m=[32m"flex size-7.5 items-center justify-center rounded-full text-error hover:bg-accent"[39m
+    [33mdata-ui[39m=[32m"chat.composer.action.stop-wait"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  textbox:
+
+  Name "waiting input":
+  [36m<textarea[39m
+    [33maria-label[39m=[32m"waiting input"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"relative w-full"[39m
+      [33mdata-composer-core[39m=[32m""[39m
+      [33mdata-ui[39m=[32m"chat.composer-core"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"pointer-events-auto flex justify-end pb-1"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33maria-label[39m=[32m"暂停"[39m
+          [33mclass[39m=[32m"flex size-7.5 items-center justify-center rounded-full text-error hover:bg-accent"[39m
+          [33mdata-ui[39m=[32m"chat.composer.action.stop-wait"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"lucide lucide-circle-pause"[39m
+            [33mfill[39m=[32m"none"[39m
+            [33mheight[39m=[32m"20"[39m
+            [33mstroke[39m=[32m"currentColor"[39m
+            [33mstroke-linecap[39m=[32m"round"[39m
+            [33mstroke-linejoin[39m=[32m"round"[39m
+            [33mstroke-width[39m=[32m"2"[39m
+            [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [33mwidth[39m=[32m"20"[39m
+            [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+          [36m>[39m
+            [36m<circle[39m
+              [33mcx[39m=[32m"12"[39m
+              [33mcy[39m=[32m"12"[39m
+              [33mr[39m=[32m"10"[39m
+            [36m/>[39m
+            [36m<line[39m
+              [33mx1[39m=[32m"10"[39m
+              [33mx2[39m=[32m"10"[39m
+              [33my1[39m=[32m"15"[39m
+              [33my2[39m=[32m"9"[39m
+            [36m/>[39m
+            [36m<line[39m
+              [33mx1[39m=[32m"14"[39m
+              [33mx2[39m=[32m"14"[39m
+              [33my1[39m=[32m"15"[39m
+              [33my2[39m=[32m"9"[39m
+            [36m/>[39m
+          [36m</svg>[39m
+        [36m</button>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"relative w-full"[39m
+        [33mdata-composer-active-layer[39m=[32m""[39m
+        [33mdata-composer-primary-layer[39m=[32m""[39m
+      [36m>[39m
+        [36m<textarea[39m
+          [33maria-label[39m=[32m"waiting input"[39m
+        [36m/>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/renderer/components/composer/__tests__/ComposerCore.test.tsx:65:27
+     63|       </ComposerContextProvider>
+     64|     )
+     65|     const button = screen.getByRole('button', { name: 'chat.input.paus…
+       |                           ^
+     66|     expect(button.closest('[inert]')).toBeNull()
+     67|     fireEvent.click(button)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerCore.test.tsx > ComposerCore > keeps a scoped Stop reachable through permission card
+TestingLibraryElementError: Unable to find an accessible element with the role "button" and name "chat.input.pause"
+
+Here are the accessible roles:
+
+  button:
+
+  Name "暂停":
+  [36m<button[39m
+    [33maria-label[39m=[32m"暂停"[39m
+    [33mclass[39m=[32m"flex size-7.5 items-center justify-center rounded-full text-error hover:bg-accent"[39m
+    [33mdata-ui[39m=[32m"chat.composer.action.stop-wait"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "permission override":
+  [36m<button[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"relative w-full"[39m
+      [33mdata-composer-active-override[39m=[32m"tool-permission:approval-1"[39m
+      [33mdata-composer-core[39m=[32m""[39m
+      [33mdata-ui[39m=[32m"chat.composer-core"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"pointer-events-auto flex justify-end pb-1"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33maria-label[39m=[32m"暂停"[39m
+          [33mclass[39m=[32m"flex size-7.5 items-center justify-center rounded-full text-error hover:bg-accent"[39m
+          [33mdata-ui[39m=[32m"chat.composer.action.stop-wait"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"lucide lucide-circle-pause"[39m
+            [33mfill[39m=[32m"none"[39m
+            [33mheight[39m=[32m"20"[39m
+            [33mstroke[39m=[32m"currentColor"[39m
+            [33mstroke-linecap[39m=[32m"round"[39m
+            [33mstroke-linejoin[39m=[32m"round"[39m
+            [33mstroke-width[39m=[32m"2"[39m
+            [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [33mwidth[39m=[32m"20"[39m
+            [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+          [36m>[39m
+            [36m<circle[39m
+              [33mcx[39m=[32m"12"[39m
+              [33mcy[39m=[32m"12"[39m
+              [33mr[39m=[32m"10"[39m
+            [36m/>[39m
+            [36m<line[39m
+              [33mx1[39m=[32m"10"[39m
+              [33mx2[39m=[32m"10"[39m
+              [33my1[39m=[32m"15"[39m
+              [33my2[39m=[32m"9"[39m
+            [36m/>[39m
+            [36m<line[39m
+              [33mx1[39m=[32m"14"[39m
+              [33mx2[39m=[32m"14"[39m
+              [33my1[39m=[32m"15"[39m
+              [33my2[39m=[32m"9"[39m
+            [36m/>[39m
+          [36m</svg>[39m
+        [36m</button>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33maria-hidden[39m=[32m"true"[39m
+        [33mclass[39m=[32m"pointer-events-none invisible absolute inset-x-0 bottom-0 w-full"[39m
+        [33mdata-composer-primary-layer[39m=[32m""[39m
+        [33minert[39m=[32m""[39m
+      [36m>[39m
+        [36m<textarea[39m
+          [33maria-label[39m=[32m"waiting input"[39m
+        [36m/>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"relative w-full"[39m
+        [33mdata-composer-active-layer[39m=[32m""[39m
+        [33mdata-composer-override-layer[39m=[32m""[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0mpermission override[0m
+        [36m</button>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/renderer/components/composer/__tests__/ComposerCore.test.tsx:65:27
+     63|       </ComposerContextProvider>
+     64|     )
+     65|     const button = screen.getByRole('button', { name: 'chat.input.paus…
+       |                           ^
+     66|     expect(button.closest('[inert]')).toBeNull()
+     67|     fireEvent.click(button)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerCore.test.tsx > ComposerCore > keeps a scoped Stop reachable through question card
+TestingLibraryElementError: Unable to find an accessible element with the role "button" and name "chat.input.pause"
+
+Here are the accessible roles:
+
+  button:
+
+  Name "暂停":
+  [36m<button[39m
+    [33maria-label[39m=[32m"暂停"[39m
+    [33mclass[39m=[32m"flex size-7.5 items-center justify-center rounded-full text-error hover:bg-accent"[39m
+    [33mdata-ui[39m=[32m"chat.composer.action.stop-wait"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "ask user question override":
+  [36m<button[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"relative w-full"[39m
+      [33mdata-composer-active-override[39m=[32m"ask-user-question:approval-2"[39m
+      [33mdata-composer-core[39m=[32m""[39m
+      [33mdata-ui[39m=[32m"chat.composer-core"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"pointer-events-auto flex justify-end pb-1"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33maria-label[39m=[32m"暂停"[39m
+          [33mclass[39m=[32m"flex size-7.5 items-center justify-center rounded-full text-error hover:bg-accent"[39m
+          [33mdata-ui[39m=[32m"chat.composer.action.stop-wait"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"lucide lucide-circle-pause"[39m
+            [33mfill[39m=[32m"none"[39m
+            [33mheight[39m=[32m"20"[39m
+            [33mstroke[39m=[32m"currentColor"[39m
+            [33mstroke-linecap[39m=[32m"round"[39m
+            [33mstroke-linejoin[39m=[32m"round"[39m
+            [33mstroke-width[39m=[32m"2"[39m
+            [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [33mwidth[39m=[32m"20"[39m
+            [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+          [36m>[39m
+            [36m<circle[39m
+              [33mcx[39m=[32m"12"[39m
+              [33mcy[39m=[32m"12"[39m
+              [33mr[39m=[32m"10"[39m
+            [36m/>[39m
+            [36m<line[39m
+              [33mx1[39m=[32m"10"[39m
+              [33mx2[39m=[32m"10"[39m
+              [33my1[39m=[32m"15"[39m
+              [33my2[39m=[32m"9"[39m
+            [36m/>[39m
+            [36m<line[39m
+              [33mx1[39m=[32m"14"[39m
+              [33mx2[39m=[32m"14"[39m
+              [33my1[39m=[32m"15"[39m
+              [33my2[39m=[32m"9"[39m
+            [36m/>[39m
+          [36m</svg>[39m
+        [36m</button>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33maria-hidden[39m=[32m"true"[39m
+        [33mclass[39m=[32m"pointer-events-none invisible absolute inset-x-0 bottom-0 w-full"[39m
+        [33mdata-composer-primary-layer[39m=[32m""[39m
+        [33minert[39m=[32m""[39m
+      [36m>[39m
+        [36m<textarea[39m
+          [33maria-label[39m=[32m"waiting input"[39m
+        [36m/>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"relative w-full"[39m
+        [33mdata-composer-active-layer[39m=[32m""[39m
+        [33mdata-composer-override-layer[39m=[32m""[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0mask user question override[0m
+        [36m</button>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/renderer/components/composer/__tests__/ComposerCore.test.tsx:65:27
+     63|       </ComposerContextProvider>
+     64|     )
+     65|     const button = screen.getByRole('button', { name: 'chat.input.paus…
+       |                           ^
+     66|     expect(button.closest('[inert]')).toBeNull()
+     67|     fireEvent.click(button)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  2 failed | 3 passed (5)
+      Tests  7 failed | 60 passed | 1 skipped (68)
+   Start at  20:57:23
+   Duration  3.08s (import 51%, transform 26%, environment 12%, tests 8%, setup 3%)
+
+  Transform  |renderer| transforming modules took 2.17s · 26% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+

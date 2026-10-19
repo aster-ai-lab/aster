@@ -16,6 +16,11 @@ pub trait Dialect: Send + Sync {
     fn supports_table_locking(&self) -> bool {
         false
     }
+
+    /// Whether a table list can be read from `information_schema.tables`.
+    fn supports_information_schema(&self) -> bool {
+        false
+    }
 }
 
 #[derive(Clone, Copy, Debug, Default)]
@@ -51,6 +56,10 @@ impl Dialect for PostgresDialect {
     }
 
     fn supports_table_locking(&self) -> bool {
+        true
+    }
+
+    fn supports_information_schema(&self) -> bool {
         true
     }
 }
@@ -106,5 +115,9 @@ impl Dialect for MysqlDialect {
 
     fn supports_on_conflict(&self) -> bool {
         false
+    }
+
+    fn supports_information_schema(&self) -> bool {
+        true
     }
 }

@@ -5,17 +5,17 @@ use std::path::{Path, PathBuf};
 use std::process::Stdio;
 use std::thread;
 
-use anyhow::{Context, Result, anyhow};
+use anyhow::{anyhow, Context, Result};
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::process::Command;
 use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
 use tokio_util::sync::CancellationToken;
 
-use a3s_acp_lib::{AcpGatewayReceiver, AcpGatewaySender, LineBufferedRead, acp_channels};
+use a3s_acp_lib::{acp_channels, AcpGatewayReceiver, AcpGatewaySender, LineBufferedRead};
 use a3s_code_shell::util::grok_home::grok_home;
 use agent_client_protocol as acp;
 
-use super::spawn::{SpawnedAgent, boot_auth_manager};
+use super::spawn::{boot_auth_manager, SpawnedAgent};
 use a3s_code_shell::agent::config::Config as AgentConfig;
 
 const MAX_BUF: usize = 8 * 1024 * 1024;
@@ -42,6 +42,10 @@ pub async fn spawn_a3s_acp(
         .or_else(|| std::env::current_dir().ok())
         .unwrap_or_default();
     let model = model.map(str::to_owned);
+    let effort = agent_config
+        .reasoning_effort_override
+        .or(agent_config.models.default_reasoning_effort)
+        .unwrap_or(a3s_code_shell::sampling::types::ReasoningEffort::Medium);
     let bridge_cancel = agent_cancel.clone();
 
     let thread_handle = thread::Builder::new()
@@ -54,6 +58,8 @@ pub async fn spawn_a3s_acp(
             local.block_on(&rt, async move {
                 let mut command = Command::new(&bin);
                 command
+                    .arg("--reasoning-effort")
+                    .arg(effort.to_string())
                     .arg("--cwd")
                     .arg(&cwd)
                     .stdin(Stdio::piped())

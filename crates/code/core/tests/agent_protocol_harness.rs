@@ -222,6 +222,7 @@ fn start(release_identity: &str, session_id: &str, run_id: &str) -> AgentProtoco
                 run_id: run_id.into(),
             },
             prompt: format!("execute {run_id}"),
+            models: None,
         },
     }
 }

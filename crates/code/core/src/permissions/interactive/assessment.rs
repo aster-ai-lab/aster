@@ -273,7 +273,7 @@ pub(super) fn critical_assessment(
 pub(super) fn tool_risk_type(tool_name: &str) -> ToolRiskType {
     match tool_name.to_ascii_lowercase().as_str() {
         "read" | "search" | "ls" | "code_symbols" | "code_navigation" | "code_diagnostics"
-        | "search_skills" | "generate_object" | "output_check" => ToolRiskType::ReadOnly,
+        | "generate_object" | "output_check" => ToolRiskType::ReadOnly,
         "write" | "edit" | "patch" | "download" | "office_file" => ToolRiskType::WorkspaceMutation,
         "bash" => ToolRiskType::CommandExecution,
         "git" => ToolRiskType::VersionControl,

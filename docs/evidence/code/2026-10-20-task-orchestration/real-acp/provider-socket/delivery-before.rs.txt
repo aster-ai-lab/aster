@@ -1,0 +1,585 @@
+#![cfg(test)]
+
+use super::*;
+use std::io::{Cursor, Read, Write};
+use std::sync::Mutex;
+use std::sync::atomic::{AtomicBool, Ordering};
+
+#[path = "local_acp_program_tests.rs"]
+mod program;
+
+/// Only the provider is scripted; Work launches this checkout's real ACP/Core.
+struct Provider {
+    base_url: String,
+    requests: Arc<Mutex<Vec<Value>>>,
+    stop: Arc<AtomicBool>,
+    server: Option<std::thread::JoinHandle<Result<(), String>>>,
+}
+
+impl Provider {
+    fn scripted(responses: Vec<(u16, String)>) -> Self {
+        Self::serve(responses, false)
+    }
+
+    fn scripted_main(responses: Vec<(u16, String)>) -> Self {
+        Self::serve(responses, true)
+    }
+
+    fn serve(responses: Vec<(u16, String)>, separate_memory: bool) -> Self {
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        listener.set_nonblocking(true).unwrap();
+        let base_url = format!("http://{}/v1", listener.local_addr().unwrap());
+        let requests = Arc::new(Mutex::new(Vec::<Value>::new()));
+        let observed = Arc::clone(&requests);
+        let stop = Arc::new(AtomicBool::new(false));
+        let stopped = Arc::clone(&stop);
+        let server = std::thread::spawn(move || {
+            while !stopped.load(Ordering::SeqCst) {
+                let (mut socket, _) = match listener.accept() {
+                    Ok(socket) => socket,
+                    Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => {
+                        std::thread::sleep(Duration::from_millis(5));
+                        continue;
+                    }
+                    Err(error) => return Err(error.to_string()),
+                };
+                socket
+                    .set_read_timeout(Some(Duration::from_secs(5)))
+                    .map_err(|error| error.to_string())?;
+                let mut bytes = Vec::new();
+                let mut chunk = [0; 8192];
+                let body: Value = loop {
+                    let count = socket.read(&mut chunk).map_err(|error| error.to_string())?;
+                    if count == 0 || bytes.len() + count > 2 * 1024 * 1024 {
+                        return Err("provider request missing or exceeds 2 MiB".into());
+                    }
+                    bytes.extend_from_slice(&chunk[..count]);
+                    let Some(end) = bytes.windows(4).position(|part| part == b"\r\n\r\n") else {
+                        continue;
+                    };
+                    let header = String::from_utf8_lossy(&bytes[..end]);
+                    if !header.starts_with("POST /v1/chat/completions ") {
+                        return Err(format!("unexpected provider request: {header}"));
+                    }
+                    let length = header
+                        .lines()
+                        .find_map(|line| {
+                            line.to_ascii_lowercase()
+                                .strip_prefix("content-length:")
+                                .and_then(|length| length.trim().parse::<usize>().ok())
+                        })
+                        .ok_or("provider request has no Content-Length")?;
+                    if bytes.len() >= end + 4 + length {
+                        break serde_json::from_slice(&bytes[end + 4..end + 4 + length])
+                            .map_err(|error| error.to_string())?;
+                    }
+                };
+                let streaming = body["stream"] == true;
+                let mut requests = observed.lock().unwrap();
+                let index = if separate_memory {
+                    requests
+                        .iter()
+                        .filter(|request| request["stream"] == true)
+                        .count()
+                } else {
+                    requests.len()
+                };
+                let (status, response) = if separate_memory && !streaming {
+                    if body.get("tools").is_some()
+                        || body["messages"][0]["role"] != "system"
+                        || !body["messages"][0]["content"].as_str().is_some_and(|text| {
+                            text.starts_with(
+                                "You extract durable, reusable memory for a coding agent.\n",
+                            )
+                        })
+                    {
+                        eprintln!(
+                            "WORK_REAL_ACP_PROVIDER_AUX_REJECT {}",
+                            json!({"stream":body["stream"],"has_tools":body.get("tools").is_some(),"roles":body["messages"].as_array().map(|messages|messages.iter().map(|message|message["role"].clone()).collect::<Vec<_>>()),"system_first_line":body["messages"][0]["content"].as_str().and_then(|text|text.lines().next())})
+                        );
+                        return Err("unexpected auxiliary provider request".into());
+                    }
+                    (200,json!({"choices":[{"finish_reason":"stop","message":{"role":"assistant","content":"{\"items\":[]}"}}],"usage":{}}).to_string())
+                } else {
+                    responses
+                        .get(index)
+                        .cloned()
+                        .ok_or_else(|| format!("unexpected provider request #{}", index + 1))?
+                };
+                let content_type = if status == 200 && streaming {
+                    "text/event-stream"
+                } else {
+                    "application/json"
+                };
+                write!(socket, "HTTP/1.1 {status} Fixture\r\nContent-Type: {content_type}\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{response}", response.len())
+                    .map_err(|error| error.to_string())?;
+                requests.push(body);
+            }
+            Ok(())
+        });
+        Self {
+            base_url,
+            requests,
+            stop,
+            server: Some(server),
+        }
+    }
+
+    fn requests(&self) -> Vec<Value> {
+        self.requests.lock().unwrap().clone()
+    }
+}
+
+impl Drop for Provider {
+    fn drop(&mut self) {
+        self.stop.store(true, Ordering::SeqCst);
+        if let Some(server) = self.server.take() {
+            let result = server.join();
+            if !std::thread::panicking() {
+                assert!(matches!(result, Ok(Ok(()))), "provider fixture: {result:?}");
+            }
+        }
+    }
+}
+
+fn call(id: &str, name: &str, arguments: Value) -> (u16, String) {
+    let chunk = json!({"choices":[{"index":0,"delta":{"tool_calls":[{
+        "index":0,"id":id,"type":"function",
+        "function":{"name":name,"arguments":arguments.to_string()}
+    }]},"finish_reason":"tool_calls"}]});
+    (200, format!("data: {chunk}\n\ndata: [DONE]\n\n"))
+}
+
+fn final_text(text: &str) -> (u16, String) {
+    let chunk = json!({"choices":[{"index":0,"delta":{"content":text},"finish_reason":"stop"}]});
+    (200, format!("data: {chunk}\n\ndata: [DONE]\n\n"))
+}
+
+async fn settle(harness: &LocalHarness, prompt: &str) -> Vec<Value> {
+    let mut events = harness.hub.subscribe();
+    harness
+        .turns
+        .open(
+            &harness.session_id,
+            &json!({
+                "userMessageParts":[{"type":"text","text":prompt}],
+                "turnContext":{"workbench":{"reviewMode":false,"artifactTrace":true}}
+            }),
+        )
+        .unwrap();
+    tokio::time::timeout(Duration::from_secs(40), async {
+        let mut seen = Vec::new();
+        loop {
+            let event = events.recv().await.unwrap();
+            if event["payload"]["chunk"]["type"] == "tool-approval-request" {
+                let data = latest_assistant(harness);
+                let call_id = event["payload"]["chunk"]["toolCallId"].as_str().unwrap();
+                let name = tool_parts(&data)
+                    .into_iter()
+                    .find(|tool| tool["toolCallId"] == call_id)
+                    .unwrap()["toolName"]
+                    .as_str()
+                    .unwrap();
+                assert!(matches!(name, "office_file" | "output_check"), "{name}");
+                let id = event["payload"]["chunk"]["approvalId"].as_str().unwrap();
+                assert!(harness.turns.respond_approval(id, true));
+            }
+            let terminal = matches!(
+                event["channel"].as_str(),
+                Some("ai.stream.done" | "ai.stream.error")
+            );
+            seen.push(event);
+            if terminal {
+                assert!(!harness.turns.is_live(&harness.session_id));
+                return seen;
+            }
+        }
+    })
+    .await
+    .expect("real ACP delivery did not settle")
+}
+
+async fn stop_agent(harness: &LocalHarness) {
+    for runtime in harness.turns.runtimes.lock().await.values() {
+        runtime.client.kill().await;
+    }
+}
+
+fn zip_text(bytes: &[u8], entry: &str) -> String {
+    let mut archive = zip::ZipArchive::new(Cursor::new(bytes)).expect("real OOXML ZIP");
+    let mut text = String::new();
+    archive
+        .by_name(entry)
+        .unwrap()
+        .read_to_string(&mut text)
+        .unwrap();
+    text
+}
+
+#[tokio::test(flavor = "multi_thread")]
+#[ignore = "requires freshly built workspace a3s-code-acp; uses only a loopback provider"]
+async fn real_acp_discovers_tools_delivers_native_files_and_final_text() {
+    let final_answer = "已生成 report.docx、report.xlsx、slides.pptx、trend.png；同比 +10%、-10%。";
+    let chart = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"240\" height=\"120\"><rect width=\"240\" height=\"120\" fill=\"white\"/><path d=\"M20 100 L100 30 L220 90\" stroke=\"blue\" fill=\"none\"/></svg>";
+    let provider = Provider::scripted(vec![
+        call(
+            "check",
+            "output_check",
+            json!({"action":"percentage_change","pairs":[{"current":110,"previous":100},{"current":90,"previous":100}]}),
+        ),
+        call(
+            "workbook",
+            "office_file",
+            json!({"file_path":"report.xlsx","kind":"xlsx","sheets":[{"name":"同比","rows":[["项目","同比","上期","本期"],["A","+10%",100,110],["B","-10%",100,90],["合计",{"formula":"SUM(C2:D3)","number_format":"0.00"}]]}]}),
+        ),
+        call(
+            "document",
+            "office_file",
+            json!({"file_path":"report.docx","kind":"docx","blocks":[{"type":"paragraph","text":"报表系统升级：同比分析"},{"type":"table","rows":[["项目","同比"],["A","+10%"],["B","-10%"]]}]}),
+        ),
+        call(
+            "deck",
+            "office_file",
+            json!({"file_path":"slides.pptx","kind":"pptx","slides":[{"title":"同比分析","body":["A：+10%","B：-10%"]},{"title":"趋势图","body":[],"chart":{"svg":chart,"alt_text":"同比趋势图"}}]}),
+        ),
+        call(
+            "chart",
+            "office_file",
+            json!({"file_path":"trend.png","kind":"png","svg":chart}),
+        ),
+        final_text(final_answer),
+        (200, json!({"choices":[{"finish_reason":"stop","message":{"role":"assistant","content":"{\"items\":[]}"}}],"usage":{}}).to_string()),
+    ]);
+    let binary = workspace_acp();
+    let harness = local_harness(
+        "native-delivery",
+        Some(&binary),
+        Creds::Loopback(provider.base_url.clone()),
+    );
+    set_mode(&harness, "auto");
+    let started = Instant::now();
+    let events = settle(
+        &harness,
+        "生成含段落表格的 DOCX、含公式的 XLSX、含图表的 PPTX 和 PNG 文件，并核对同比百分比。完成后说明文件名称和结果。",
+    )
+    .await;
+    let host_turn_ms = started.elapsed().as_millis();
+    tokio::time::timeout(Duration::from_secs(3), async {
+        while provider.requests().len() < 7 {
+            tokio::time::sleep(Duration::from_millis(5)).await;
+        }
+    })
+    .await
+    .expect("background memory extraction did not reach the loopback provider");
+    stop_agent(&harness).await;
+    assert_eq!(
+        events.last().unwrap()["channel"],
+        "ai.stream.done",
+        "{events:?}"
+    );
+    assert_eq!(events.last().unwrap()["payload"]["status"], "success");
+    let streamed: String = events
+        .iter()
+        .filter(|event| event["payload"]["chunk"]["type"] == "text-delta")
+        .filter_map(|event| event["payload"]["chunk"]["delta"].as_str())
+        .collect();
+    assert_eq!(streamed, final_answer);
+    let assistant = latest_assistant(&harness);
+    assert_eq!(text_parts(&assistant), final_answer);
+    let row = harness
+        .store
+        .messages(&harness.session_id)
+        .into_iter()
+        .find(|row| row.role == "assistant")
+        .unwrap();
+    assert_eq!(row.status, "success");
+    assert_eq!(row.searchable_text, final_answer);
+    let tools = tool_parts(&assistant);
+    assert_eq!(tools.len(), 5, "{assistant}");
+    assert!(tools.iter().all(|tool| tool["state"] == "output-available"));
+    let requests = provider.requests();
+    assert_eq!(requests.len(), 7);
+    let system_text = requests[0]["messages"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter(|message| message["role"] == "system")
+        .filter_map(|message| message["content"].as_str())
+        .collect::<Vec<_>>()
+        .join("\n");
+    for required in [
+        "Use “事实” only for direct source observations",
+        "Put explanations and missing-value lists in the reply unless requested as worksheets",
+        "Do not create unrequested probe files",
+        "Keep the answer concise; omit unrequested analysis and tool details",
+        "Check each in the reply and files before finishing",
+        "infer missing components or causes from totals alone",
+    ] {
+        assert!(
+            system_text.contains(required),
+            "delivery rule lost before provider: {required}"
+        );
+    }
+    assert_ne!(requests[6]["stream"], true);
+    assert!(requests[6].get("tools").is_none());
+    assert_eq!(requests[6]["messages"][0]["role"], "system");
+    assert!(
+        requests[6]["messages"][0]["content"]
+            .as_str()
+            .unwrap()
+            .starts_with("You extract durable, reusable memory for a coding agent.\n")
+    );
+    for name in ["office_file", "output_check"] {
+        assert!(
+            requests[0]["tools"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|tool| tool["function"]["name"] == name),
+            "{name} was not discoverable"
+        );
+    }
+    let check = requests[1]["messages"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|message| message["role"] == "tool" && message["tool_call_id"] == "check")
+        .unwrap();
+    let check: Value = serde_json::from_str(check["content"].as_str().unwrap()).unwrap();
+    assert_eq!(check["results"][0]["display"], "+10%");
+    assert_eq!(check["results"][1]["display"], "-10%");
+    let proofs = harness.turns.workbench_proofs(&harness.session_id).unwrap();
+    assert_eq!(proofs[0]["producerStatus"], "completed");
+    assert!(proofs[0]["traceError"].is_null(), "{proofs}");
+    let artifacts = proofs[0]["artifacts"].as_array().unwrap();
+    assert_eq!(artifacts.len(), 4, "{proofs}");
+    let mut artifact_sizes = Vec::new();
+    let mut artifact_bytes = 0usize;
+    for artifact in artifacts {
+        assert_eq!(artifact["status"], "traced");
+        assert_eq!(artifact["toolName"], "office_file");
+        let captured = harness
+            .turns
+            .workbench_artifact(&harness.session_id, artifact["id"].as_str().unwrap())
+            .unwrap();
+        let bytes = base64::Engine::decode(
+            &base64::engine::general_purpose::STANDARD,
+            captured["data"].as_str().unwrap(),
+        )
+        .unwrap();
+        assert_eq!(
+            bytes,
+            std::fs::read(artifact["path"].as_str().unwrap()).unwrap()
+        );
+        artifact_bytes += bytes.len();
+        artifact_sizes.push(format!(
+            "{}:{}",
+            artifact["name"].as_str().unwrap(),
+            bytes.len()
+        ));
+        match artifact["name"].as_str().unwrap() {
+            "report.xlsx" => {
+                let sheet = zip_text(&bytes, "xl/worksheets/sheet1.xml");
+                assert!(sheet.contains("+10%") && sheet.contains("-10%"), "{sheet}");
+                assert!(
+                    sheet.contains("SUM(C2:D3)") && sheet.contains("<v>400</v>"),
+                    "{sheet}"
+                );
+            }
+            "report.docx" => {
+                let document = zip_text(&bytes, "word/document.xml");
+                assert!(
+                    document.contains("报表系统升级")
+                        && document.contains("+10%")
+                        && document.contains("-10%"),
+                    "{document}"
+                );
+            }
+            "slides.pptx" => {
+                assert!(zip_text(&bytes, "ppt/slides/slide1.xml").contains("同比分析"));
+                let slide = zip_text(&bytes, "ppt/slides/slide2.xml");
+                assert!(
+                    slide.contains("同比趋势图") && slide.contains(":blip"),
+                    "{slide}"
+                );
+                let mut archive = zip::ZipArchive::new(Cursor::new(&bytes)).unwrap();
+                let picture = archive
+                    .file_names()
+                    .find(|name| name.starts_with("ppt/media/") && name.ends_with(".png"))
+                    .unwrap()
+                    .to_owned();
+                let mut signature = [0; 8];
+                archive
+                    .by_name(&picture)
+                    .unwrap()
+                    .read_exact(&mut signature)
+                    .unwrap();
+                assert_eq!(&signature, b"\x89PNG\r\n\x1a\n");
+            }
+            "trend.png" => assert!(bytes.starts_with(b"\x89PNG\r\n\x1a\n")),
+            other => panic!("unexpected artifact {other}"),
+        }
+    }
+    eprintln!(
+        "WORK_REAL_ACP_DELIVERY_PASS host_turn_ms={host_turn_ms} provider_requests={} streaming_requests={} background_requests={} tool_calls={} artifacts={} bytes={artifact_bytes} sizes={}",
+        requests.len(),
+        requests
+            .iter()
+            .filter(|request| request["stream"] == true)
+            .count(),
+        requests
+            .iter()
+            .filter(|request| request["stream"] != true)
+            .count(),
+        tools.len(),
+        artifacts.len(),
+        artifact_sizes.join(",")
+    );
+}
+
+#[tokio::test(flavor = "multi_thread")]
+#[ignore = "requires freshly built workspace a3s-code-acp; uses only a loopback provider"]
+async fn real_acp_preserves_tool_refusal_and_provider_failure_without_success() {
+    let provider = Provider::scripted(vec![
+        call("invalid", "office_file", json!({"file_path":"report.csv","kind":"xlsx","sheets":[{"name":"数据","rows":[["保留原文件"]]}]})),
+        (400, json!({"error":{"message":"fixture provider refused continuation","type":"invalid_request_error"}}).to_string()),
+    ]);
+    let binary = workspace_acp();
+    let harness = local_harness(
+        "native-refusal",
+        Some(&binary),
+        Creds::Loopback(provider.base_url.clone()),
+    );
+    set_mode(&harness, "auto");
+    let workspace = harness
+        .sessions
+        .get(&harness.session_id)
+        .unwrap()
+        .workspace
+        .path;
+    std::fs::write(Path::new(&workspace).join("source.csv"), "原始数据\n100\n").unwrap();
+    let started = Instant::now();
+    let events = settle(
+        &harness,
+        "读取原文件并生成 report.xlsx；如果生成失败，明确报告错误。",
+    )
+    .await;
+    let host_turn_ms = started.elapsed().as_millis();
+    stop_agent(&harness).await;
+    assert_eq!(
+        events.last().unwrap()["channel"],
+        "ai.stream.error",
+        "{events:?}"
+    );
+    assert!(!events.iter().any(
+        |event| event["channel"] == "ai.stream.done" && event["payload"]["status"] == "success"
+    ));
+    let requests = provider.requests();
+    assert_eq!(requests.len(), 2);
+    assert!(
+        requests[1]["messages"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|message| message["role"] == "tool"
+                && message["tool_call_id"] == "invalid"
+                && message["content"]
+                    .as_str()
+                    .unwrap()
+                    .contains("extension must match kind"))
+    );
+    assert!(
+        events.last().unwrap()["payload"]["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("fixture provider refused continuation")
+    );
+    let assistant = latest_assistant(&harness);
+    let row = harness
+        .store
+        .messages(&harness.session_id)
+        .into_iter()
+        .find(|row| row.role == "assistant")
+        .unwrap();
+    assert_eq!(row.status, "error");
+    let tools = tool_parts(&assistant);
+    assert_eq!(tools.len(), 1, "{assistant}");
+    assert_eq!(tools[0]["state"], "output-error");
+    assert!(
+        tools[0]["errorText"]
+            .as_str()
+            .unwrap()
+            .contains("extension must match kind")
+    );
+    assert!(!Path::new(&workspace).join("report.csv").exists());
+    assert!(!Path::new(&workspace).join("report.xlsx").exists());
+    assert_eq!(
+        std::fs::read_to_string(Path::new(&workspace).join("source.csv")).unwrap(),
+        "原始数据\n100\n"
+    );
+    let proofs = harness.turns.workbench_proofs(&harness.session_id).unwrap();
+    assert_eq!(proofs[0]["producerStatus"], "failed");
+    assert!(proofs[0]["artifacts"].as_array().unwrap().is_empty());
+    eprintln!(
+        "WORK_REAL_ACP_INVALID_EXTENSION_PROVIDER_FAILURE_PASS host_turn_ms={host_turn_ms} provider_requests={} tool_calls={} artifacts={}",
+        requests.len(),
+        tools.len(),
+        proofs[0]["artifacts"].as_array().unwrap().len()
+    );
+}
+
+#[tokio::test(flavor = "multi_thread")]
+#[ignore = "requires freshly built workspace a3s-code-acp; uses only a loopback provider"]
+async fn real_acp_truncation_keeps_partial_text_and_fails_without_a_delivery() {
+    let partial = "部分分析：第1周为100，第2周为";
+    let chunk =
+        json!({"choices":[{"index":0,"delta":{"content":partial},"finish_reason":"length"}]});
+    let provider = Provider::scripted(vec![(200, format!("data: {chunk}\n\ndata: [DONE]\n\n"))]);
+    let binary = workspace_acp();
+    let harness = local_harness(
+        "native-truncated",
+        Some(&binary),
+        Creds::Loopback(provider.base_url.clone()),
+    );
+    let started = Instant::now();
+    let events = settle(&harness, "汇总两周数据并给出完整分析。").await;
+    let host_turn_ms = started.elapsed().as_millis();
+    stop_agent(&harness).await;
+    assert_eq!(
+        events.last().unwrap()["channel"],
+        "ai.stream.error",
+        "{events:?}"
+    );
+    assert!(!events.iter().any(
+        |event| event["channel"] == "ai.stream.done" && event["payload"]["status"] == "success"
+    ));
+    let streamed: String = events
+        .iter()
+        .filter(|event| event["payload"]["chunk"]["type"] == "text-delta")
+        .filter_map(|event| event["payload"]["chunk"]["delta"].as_str())
+        .collect();
+    assert_eq!(streamed, partial);
+    let row = harness
+        .store
+        .messages(&harness.session_id)
+        .into_iter()
+        .find(|row| row.role == "assistant")
+        .unwrap();
+    assert_eq!(row.status, "error");
+    assert_eq!(row.searchable_text, partial);
+    assert_eq!(text_parts(&row.data), partial);
+    let tools = tool_parts(&row.data);
+    assert!(tools.is_empty());
+    let requests = provider.requests();
+    assert_eq!(requests.len(), 1);
+    let proofs = harness.turns.workbench_proofs(&harness.session_id).unwrap();
+    assert_eq!(proofs[0]["producerStatus"], "failed");
+    let artifacts = proofs[0]["artifacts"].as_array().unwrap();
+    assert!(artifacts.is_empty());
+    eprintln!(
+        "WORK_REAL_ACP_TRUNCATION_FAILURE_PASS host_turn_ms={host_turn_ms} provider_requests={} tool_calls={} artifacts={}",
+        requests.len(),
+        tools.len(),
+        artifacts.len()
+    );
+}

@@ -106,7 +106,7 @@ fn parse_single_hunk(lines: &[&str], i: &mut usize) -> Result<Hunk, String> {
                     return Err(format!(
                         "No-newline marker has no preceding hunk line at diff line {}",
                         *i + 1
-                    ))
+                    ));
                 }
             }
             *i += 1;
@@ -431,7 +431,7 @@ impl Tool for PatchTool {
                 return Ok(ToolOutput::error(format!(
                     "Failed to read file {}: {}",
                     display_path, e
-                )))
+                )));
             }
         };
 
@@ -577,7 +577,7 @@ impl PatchTool {
                         return PatchFetch::ResolveErr {
                             file_path: file_path.to_string(),
                             error: e.to_string(),
-                        }
+                        };
                     }
                 };
                 let display_path = ctx.workspace_services.display_path(&workspace_path);
@@ -588,7 +588,7 @@ impl PatchTool {
                             return PatchFetch::ReadErr {
                                 display_path,
                                 error: e.to_string(),
-                            }
+                            };
                         }
                     };
                 let hunks = match parse_hunks(diff) {
@@ -597,7 +597,7 @@ impl PatchTool {
                         return PatchFetch::ParseErr {
                             display_path,
                             error: e.to_string(),
-                        }
+                        };
                     }
                 };
                 let after = match apply_hunks(&before, &hunks) {
@@ -606,7 +606,7 @@ impl PatchTool {
                         return PatchFetch::ApplyErr {
                             display_path,
                             error: e.to_string(),
-                        }
+                        };
                     }
                 };
                 PatchFetch::Ready {

@@ -1,0 +1,2063 @@
+{
+  "schema": "aster.sandbox.t013.comparison.v1",
+  "qualified": true,
+  "scope": "Same-source software versus hardware SHA features; isolated OCI printf calls only.",
+  "method": "p50 is the median; p95 uses nearest rank. Small serial samples do not establish reliable tail latency.",
+  "order": [
+    "software-1",
+    "hardware-1",
+    "hardware-2",
+    "software-2"
+  ],
+  "rounds": [
+    {
+      "name": "software-1",
+      "variant": "software",
+      "command": [
+        "/Users/roylin/code/aster/target/t013-probe/core-command-timing-probe",
+        "--exact",
+        "sandbox::oci::tests::real_command_phase_timing",
+        "--ignored",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "environmentOverride": {
+        "ASTER_TEST_OCI_ASSETS": "/Users/roylin/code/aster/target/t013-assets-software"
+      },
+      "startUtc": "2026-10-19T16:28:58.373974+00:00",
+      "loadAverageStart": [
+        5.44677734375,
+        6.94970703125,
+        6.236328125
+      ],
+      "expectedSamples": 19,
+      "roundDeadlineSeconds": 1800,
+      "exitCode": 0,
+      "wallSeconds": 191.1199403339997,
+      "endUtc": "2026-10-19T16:32:09.520455+00:00",
+      "loadAverageEnd": [
+        5.82763671875,
+        7.24365234375,
+        6.54638671875
+      ],
+      "samples": [
+        {
+          "sample": 0,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1559.860708,
+            "bundle_prepare": 327.22645900000003,
+            "vm_create": 7385.15225,
+            "process_start": 63.11725,
+            "collect_wait": 69.564166,
+            "vm_delete": 155.390583,
+            "host_shutdown": 0.914791,
+            "scratch_remove": 1.427209
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 9564.902875,
+          "valid": true,
+          "unattributedMs": 2.24945900000057
+        },
+        {
+          "sample": 1,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1559.747208,
+            "bundle_prepare": 291.956416,
+            "vm_create": 7435.03825,
+            "process_start": 76.68112500000001,
+            "collect_wait": 94.455,
+            "vm_delete": 172.01316699999998,
+            "host_shutdown": 1.054917,
+            "scratch_remove": 1.845916
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 9634.355082999999,
+          "valid": true,
+          "unattributedMs": 1.563083999999435
+        },
+        {
+          "sample": 2,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1583.3905829999999,
+            "bundle_prepare": 290.280292,
+            "vm_create": 7553.618417,
+            "process_start": 63.16287499999999,
+            "collect_wait": 70.415375,
+            "vm_delete": 158.240542,
+            "host_shutdown": 1.0037500000000001,
+            "scratch_remove": 1.558875
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 9723.215458,
+          "valid": true,
+          "unattributedMs": 1.5447490000005928
+        },
+        {
+          "sample": 3,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1558.1444169999997,
+            "bundle_prepare": 287.403083,
+            "vm_create": 7744.197834,
+            "process_start": 61.969,
+            "collect_wait": 73.72358299999999,
+            "vm_delete": 164.159333,
+            "host_shutdown": 1.1381670000000002,
+            "scratch_remove": 1.543875
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 9893.876667,
+          "valid": true,
+          "unattributedMs": 1.5973750000011933
+        },
+        {
+          "sample": 4,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1615.5530840000001,
+            "bundle_prepare": 326.996042,
+            "vm_create": 8960.574209,
+            "process_start": 74.916625,
+            "collect_wait": 129.668167,
+            "vm_delete": 249.713667,
+            "host_shutdown": 2.025125,
+            "scratch_remove": 2.654791
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 11364.142333,
+          "valid": true,
+          "unattributedMs": 2.040622999998959
+        },
+        {
+          "sample": 5,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1824.360917,
+            "bundle_prepare": 379.743916,
+            "vm_create": 8309.887084,
+            "process_start": 64.987791,
+            "collect_wait": 77.43816600000001,
+            "vm_delete": 183.83025,
+            "host_shutdown": 1.2825,
+            "scratch_remove": 2.0192919999999996
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 10847.905499999999,
+          "valid": true,
+          "unattributedMs": 4.3555839999989985
+        },
+        {
+          "sample": 6,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1760.726083,
+            "bundle_prepare": 385.82483299999996,
+            "vm_create": 8393.414084,
+            "process_start": 163.102959,
+            "collect_wait": 93.750625,
+            "vm_delete": 176.799,
+            "host_shutdown": 1.17425,
+            "scratch_remove": 2.047
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 10979.664917,
+          "valid": true,
+          "unattributedMs": 2.826082999999926
+        },
+        {
+          "sample": 7,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1739.129375,
+            "bundle_prepare": 338.26800000000003,
+            "vm_create": 7764.387584,
+            "process_start": 63.00625,
+            "collect_wait": 72.64008299999999,
+            "vm_delete": 168.867083,
+            "host_shutdown": 1.19175,
+            "scratch_remove": 1.521334
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 10150.794791999999,
+          "valid": true,
+          "unattributedMs": 1.783332999999402
+        },
+        {
+          "sample": 8,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1597.403167,
+            "bundle_prepare": 296.039791,
+            "vm_create": 7865.9025839999995,
+            "process_start": 66.71775000000001,
+            "collect_wait": 76.74187500000001,
+            "vm_delete": 168.77025,
+            "host_shutdown": 1.247584,
+            "scratch_remove": 2.16125
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 10076.639917,
+          "valid": true,
+          "unattributedMs": 1.655666000000565
+        },
+        {
+          "sample": 9,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 2037.3657079999998,
+            "bundle_prepare": 398.42170799999997,
+            "vm_create": 9556.3465,
+            "process_start": 64.88237500000001,
+            "collect_wait": 77.687083,
+            "vm_delete": 181.641167,
+            "host_shutdown": 1.1496250000000001,
+            "scratch_remove": 2.218208
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 12321.610666999999,
+          "valid": true,
+          "unattributedMs": 1.8982930000001943
+        },
+        {
+          "sample": 10,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1704.329917,
+            "bundle_prepare": 517.5078749999999,
+            "vm_create": 7410.381917,
+            "process_start": 61.575666,
+            "collect_wait": 70.709125,
+            "vm_delete": 163.26816599999998,
+            "host_shutdown": 1.081792,
+            "scratch_remove": 1.623833
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 9933.3545,
+          "valid": true,
+          "unattributedMs": 2.876209000000017
+        },
+        {
+          "sample": 11,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1548.643875,
+            "bundle_prepare": 350.374458,
+            "vm_create": 7369.422375,
+            "process_start": 61.747459,
+            "collect_wait": 69.80083300000001,
+            "vm_delete": 154.956042,
+            "host_shutdown": 0.8975409999999999,
+            "scratch_remove": 2.320959
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 9559.694,
+          "valid": true,
+          "unattributedMs": 1.5304579999992711
+        },
+        {
+          "sample": 12,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1556.4364170000001,
+            "bundle_prepare": 578.402833,
+            "vm_create": 7376.49775,
+            "process_start": 61.849250000000005,
+            "collect_wait": 62.770624999999995,
+            "vm_delete": 149.0255,
+            "host_shutdown": 0.8979170000000001,
+            "scratch_remove": 1.4175419999999999
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 9788.742875,
+          "valid": true,
+          "unattributedMs": 1.445040999999037
+        },
+        {
+          "sample": 13,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1555.219709,
+            "bundle_prepare": 281.757917,
+            "vm_create": 7390.837375,
+            "process_start": 61.898208000000004,
+            "collect_wait": 70.68695899999999,
+            "vm_delete": 151.906167,
+            "host_shutdown": 0.935583,
+            "scratch_remove": 1.553
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 9516.244625000001,
+          "valid": true,
+          "unattributedMs": 1.449707000001581
+        },
+        {
+          "sample": 14,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1565.219167,
+            "bundle_prepare": 282.250667,
+            "vm_create": 7393.779958,
+            "process_start": 63.065208,
+            "collect_wait": 76.572,
+            "vm_delete": 152.86879100000002,
+            "host_shutdown": 0.975042,
+            "scratch_remove": 1.432625
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 9537.673832999999,
+          "valid": true,
+          "unattributedMs": 1.510374999998021
+        },
+        {
+          "sample": 15,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1555.601833,
+            "bundle_prepare": 303.31266600000004,
+            "vm_create": 7379.691917,
+            "process_start": 61.884083,
+            "collect_wait": 70.759708,
+            "vm_delete": 137.531958,
+            "host_shutdown": 0.993292,
+            "scratch_remove": 1.49275
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 9512.744583,
+          "valid": true,
+          "unattributedMs": 1.4763759999987087
+        },
+        {
+          "sample": 16,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1546.302708,
+            "bundle_prepare": 290.272875,
+            "vm_create": 7402.318375,
+            "process_start": 61.041790999999996,
+            "collect_wait": 69.49454200000001,
+            "vm_delete": 157.055625,
+            "host_shutdown": 0.943333,
+            "scratch_remove": 1.67775
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 9530.550459,
+          "valid": true,
+          "unattributedMs": 1.4434600000004139
+        },
+        {
+          "sample": 17,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1549.31375,
+            "bundle_prepare": 286.57237499999997,
+            "vm_create": 7394.932625,
+            "process_start": 61.873667,
+            "collect_wait": 71.73375,
+            "vm_delete": 164.36904199999998,
+            "host_shutdown": 0.9914170000000001,
+            "scratch_remove": 1.535125
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 9532.774458,
+          "valid": true,
+          "unattributedMs": 1.4527070000003732
+        },
+        {
+          "sample": 18,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1593.778458,
+            "bundle_prepare": 340.04004199999997,
+            "vm_create": 7388.679917,
+            "process_start": 60.825833,
+            "collect_wait": 70.790583,
+            "vm_delete": 139.686417,
+            "host_shutdown": 0.980584,
+            "scratch_remove": 1.480667
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 9597.701625,
+          "valid": true,
+          "unattributedMs": 1.4391239999986283
+        }
+      ]
+    },
+    {
+      "name": "hardware-1",
+      "variant": "hardware",
+      "command": [
+        "/Users/roylin/code/aster/target/t013-probe/core-command-timing-probe",
+        "--exact",
+        "sandbox::oci::tests::real_command_phase_timing",
+        "--ignored",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "environmentOverride": {
+        "ASTER_TEST_OCI_ASSETS": "/Users/roylin/code/aster/target/t013-assets-hardware"
+      },
+      "startUtc": "2026-10-19T16:32:09.644330+00:00",
+      "loadAverageStart": [
+        5.82763671875,
+        7.24365234375,
+        6.54638671875
+      ],
+      "expectedSamples": 19,
+      "roundDeadlineSeconds": 1800,
+      "exitCode": 0,
+      "wallSeconds": 65.83096454199404,
+      "endUtc": "2026-10-19T16:33:15.481509+00:00",
+      "loadAverageEnd": [
+        9.05517578125,
+        8.00341796875,
+        6.88525390625
+      ],
+      "samples": [
+        {
+          "sample": 0,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 407.03216599999996,
+            "bundle_prepare": 317.844292,
+            "vm_create": 2127.835083,
+            "process_start": 59.988375,
+            "collect_wait": 70.69191599999999,
+            "vm_delete": 150.31245900000002,
+            "host_shutdown": 0.9291250000000001,
+            "scratch_remove": 1.454167
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3137.513125,
+          "valid": true,
+          "unattributedMs": 1.4255419999999503
+        },
+        {
+          "sample": 1,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 406.73966700000005,
+            "bundle_prepare": 291.71529200000003,
+            "vm_create": 2124.5159999999996,
+            "process_start": 75.917834,
+            "collect_wait": 136.60775,
+            "vm_delete": 187.500834,
+            "host_shutdown": 1.660625,
+            "scratch_remove": 1.5697910000000002
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3227.794833,
+          "valid": true,
+          "unattributedMs": 1.567040000000361
+        },
+        {
+          "sample": 2,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 510.923291,
+            "bundle_prepare": 350.96879199999995,
+            "vm_create": 2222.969417,
+            "process_start": 60.981791,
+            "collect_wait": 70.55116699999999,
+            "vm_delete": 153.052625,
+            "host_shutdown": 1.0529160000000002,
+            "scratch_remove": 1.478667
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3373.624667,
+          "valid": true,
+          "unattributedMs": 1.6460010000000693
+        },
+        {
+          "sample": 3,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 413.008542,
+            "bundle_prepare": 284.111375,
+            "vm_create": 2199.880375,
+            "process_start": 63.00625,
+            "collect_wait": 73.55725000000001,
+            "vm_delete": 172.81750000000002,
+            "host_shutdown": 1.013458,
+            "scratch_remove": 1.575334
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3210.3864999999996,
+          "valid": true,
+          "unattributedMs": 1.4164159999995718
+        },
+        {
+          "sample": 4,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 425.703917,
+            "bundle_prepare": 329.85170800000003,
+            "vm_create": 2459.785875,
+            "process_start": 69.91225,
+            "collect_wait": 76.520292,
+            "vm_delete": 162.076625,
+            "host_shutdown": 1.8694169999999999,
+            "scratch_remove": 1.634042
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3540.278584,
+          "valid": true,
+          "unattributedMs": 12.924457999999959
+        },
+        {
+          "sample": 5,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 491.971958,
+            "bundle_prepare": 448.696041,
+            "vm_create": 2300.7222079999997,
+            "process_start": 64.79670899999999,
+            "collect_wait": 74.46770799999999,
+            "vm_delete": 169.70333300000001,
+            "host_shutdown": 1.411625,
+            "scratch_remove": 1.970083
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3555.1183330000003,
+          "valid": true,
+          "unattributedMs": 1.3786680000007436
+        },
+        {
+          "sample": 6,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 453.62904199999997,
+            "bundle_prepare": 370.767209,
+            "vm_create": 2448.103917,
+            "process_start": 65.877333,
+            "collect_wait": 73.451583,
+            "vm_delete": 177.25225,
+            "host_shutdown": 1.2299579999999999,
+            "scratch_remove": 1.903208
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3593.725458,
+          "valid": true,
+          "unattributedMs": 1.510957999999846
+        },
+        {
+          "sample": 7,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 468.849542,
+            "bundle_prepare": 369.47724999999997,
+            "vm_create": 2399.750375,
+            "process_start": 65.946333,
+            "collect_wait": 75.658417,
+            "vm_delete": 184.94387500000002,
+            "host_shutdown": 1.194,
+            "scratch_remove": 2.097917
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3569.562625,
+          "valid": true,
+          "unattributedMs": 1.644916000000194
+        },
+        {
+          "sample": 8,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 472.89300000000003,
+            "bundle_prepare": 396.861792,
+            "vm_create": 2412.837875,
+            "process_start": 63.86283399999999,
+            "collect_wait": 75.72758400000001,
+            "vm_delete": 395.94487499999997,
+            "host_shutdown": 1.170917,
+            "scratch_remove": 2.134708
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3822.9849590000003,
+          "valid": true,
+          "unattributedMs": 1.5513740000001235
+        },
+        {
+          "sample": 9,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 475.12741600000004,
+            "bundle_prepare": 391.290709,
+            "vm_create": 2450.27075,
+            "process_start": 66.76383399999999,
+            "collect_wait": 74.5985,
+            "vm_delete": 183.072917,
+            "host_shutdown": 1.180333,
+            "scratch_remove": 1.659167
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3645.5429160000003,
+          "valid": true,
+          "unattributedMs": 1.5792900000001282
+        },
+        {
+          "sample": 10,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 470.442792,
+            "bundle_prepare": 370.77125,
+            "vm_create": 2427.949875,
+            "process_start": 63.927834000000004,
+            "collect_wait": 76.581,
+            "vm_delete": 181.64749999999998,
+            "host_shutdown": 1.285083,
+            "scratch_remove": 2.50025
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3596.793792,
+          "valid": true,
+          "unattributedMs": 1.6882080000000315
+        },
+        {
+          "sample": 11,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 468.19475,
+            "bundle_prepare": 377.60541600000005,
+            "vm_create": 2415.709708,
+            "process_start": 65.632792,
+            "collect_wait": 74.543584,
+            "vm_delete": 162.024834,
+            "host_shutdown": 1.278125,
+            "scratch_remove": 2.0655
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3568.7054169999997,
+          "valid": true,
+          "unattributedMs": 1.6507079999996677
+        },
+        {
+          "sample": 12,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 470.310041,
+            "bundle_prepare": 387.831792,
+            "vm_create": 2381.5201660000002,
+            "process_start": 62.932874999999996,
+            "collect_wait": 74.729208,
+            "vm_delete": 165.96800000000002,
+            "host_shutdown": 1.108875,
+            "scratch_remove": 1.725333
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3547.601708,
+          "valid": true,
+          "unattributedMs": 1.4754179999999906
+        },
+        {
+          "sample": 13,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 458.523416,
+            "bundle_prepare": 348.895584,
+            "vm_create": 2347.196333,
+            "process_start": 63.8605,
+            "collect_wait": 72.70475,
+            "vm_delete": 175.611625,
+            "host_shutdown": 1.053375,
+            "scratch_remove": 1.664916
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3471.0731250000003,
+          "valid": true,
+          "unattributedMs": 1.562626000000364
+        },
+        {
+          "sample": 14,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 451.301209,
+            "bundle_prepare": 334.10087500000003,
+            "vm_create": 2302.48525,
+            "process_start": 63.709666999999996,
+            "collect_wait": 73.837375,
+            "vm_delete": 154.051167,
+            "host_shutdown": 1.127917,
+            "scratch_remove": 1.5310840000000001
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3383.700958,
+          "valid": true,
+          "unattributedMs": 1.556413999999677
+        },
+        {
+          "sample": 15,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 482.569833,
+            "bundle_prepare": 354.690458,
+            "vm_create": 2326.736458,
+            "process_start": 63.834625,
+            "collect_wait": 73.78283400000001,
+            "vm_delete": 174.904583,
+            "host_shutdown": 1.0466250000000001,
+            "scratch_remove": 1.5074999999999998
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3480.534666,
+          "valid": true,
+          "unattributedMs": 1.4617499999999382
+        },
+        {
+          "sample": 16,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 457.60925000000003,
+            "bundle_prepare": 324.964292,
+            "vm_create": 2308.412666,
+            "process_start": 62.664750000000005,
+            "collect_wait": 74.58225,
+            "vm_delete": 170.09275,
+            "host_shutdown": 1.095459,
+            "scratch_remove": 1.815791
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3402.6960000000004,
+          "valid": true,
+          "unattributedMs": 1.4587920000003578
+        },
+        {
+          "sample": 17,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 438.80775,
+            "bundle_prepare": 401.934208,
+            "vm_create": 2235.427959,
+            "process_start": 61.920542000000005,
+            "collect_wait": 72.55191699999999,
+            "vm_delete": 160.00120800000002,
+            "host_shutdown": 0.9784579999999999,
+            "scratch_remove": 1.6447079999999998
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3374.728583,
+          "valid": true,
+          "unattributedMs": 1.4618329999998423
+        },
+        {
+          "sample": 18,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 430.2065,
+            "bundle_prepare": 324.39829199999997,
+            "vm_create": 2242.6557080000002,
+            "process_start": 64.857833,
+            "collect_wait": 74.227708,
+            "vm_delete": 162.363958,
+            "host_shutdown": 0.95875,
+            "scratch_remove": 1.838625
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3302.997542,
+          "valid": true,
+          "unattributedMs": 1.4901679999998123
+        }
+      ]
+    },
+    {
+      "name": "hardware-2",
+      "variant": "hardware",
+      "command": [
+        "/Users/roylin/code/aster/target/t013-probe/core-command-timing-probe",
+        "--exact",
+        "sandbox::oci::tests::real_command_phase_timing",
+        "--ignored",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "environmentOverride": {
+        "ASTER_TEST_OCI_ASSETS": "/Users/roylin/code/aster/target/t013-assets-hardware"
+      },
+      "startUtc": "2026-10-19T16:33:15.604226+00:00",
+      "loadAverageStart": [
+        9.05517578125,
+        8.00341796875,
+        6.88525390625
+      ],
+      "expectedSamples": 19,
+      "roundDeadlineSeconds": 1800,
+      "exitCode": 0,
+      "wallSeconds": 64.89555491600186,
+      "endUtc": "2026-10-19T16:34:20.500120+00:00",
+      "loadAverageEnd": [
+        9.24658203125,
+        8.4248046875,
+        7.134765625
+      ],
+      "samples": [
+        {
+          "sample": 0,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 450.59358399999996,
+            "bundle_prepare": 361.655167,
+            "vm_create": 2300.156583,
+            "process_start": 62.553084,
+            "collect_wait": 74.762917,
+            "vm_delete": 183.96183299999998,
+            "host_shutdown": 1.169542,
+            "scratch_remove": 2.013791
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3438.5706250000003,
+          "valid": true,
+          "unattributedMs": 1.70412400000032
+        },
+        {
+          "sample": 1,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 445.42474999999996,
+            "bundle_prepare": 335.948292,
+            "vm_create": 2289.4982499999996,
+            "process_start": 63.090167,
+            "collect_wait": 73.64337499999999,
+            "vm_delete": 165.85412499999998,
+            "host_shutdown": 1.179708,
+            "scratch_remove": 1.536084
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3377.896292,
+          "valid": true,
+          "unattributedMs": 1.721541000000343
+        },
+        {
+          "sample": 2,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 442.28033300000004,
+            "bundle_prepare": 342.359667,
+            "vm_create": 2255.636167,
+            "process_start": 63.88208300000001,
+            "collect_wait": 73.595833,
+            "vm_delete": 250.804959,
+            "host_shutdown": 0.994041,
+            "scratch_remove": 1.458708
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3432.382792,
+          "valid": true,
+          "unattributedMs": 1.3710009999995236
+        },
+        {
+          "sample": 3,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 426.829,
+            "bundle_prepare": 314.05366699999996,
+            "vm_create": 3106.959667,
+            "process_start": 63.9255,
+            "collect_wait": 74.48579199999999,
+            "vm_delete": 187.959584,
+            "host_shutdown": 1.2209160000000001,
+            "scratch_remove": 1.9592910000000001
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 4178.84325,
+          "valid": true,
+          "unattributedMs": 1.4498329999996713
+        },
+        {
+          "sample": 4,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 641.378291,
+            "bundle_prepare": 562.168416,
+            "vm_create": 2409.2165,
+            "process_start": 63.955333,
+            "collect_wait": 74.579916,
+            "vm_delete": 168.65508300000002,
+            "host_shutdown": 1.2075,
+            "scratch_remove": 1.836416
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3925.770125,
+          "valid": true,
+          "unattributedMs": 2.7726699999998345
+        },
+        {
+          "sample": 5,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 460.66762500000004,
+            "bundle_prepare": 348.249417,
+            "vm_create": 2322.875916,
+            "process_start": 64.86808300000001,
+            "collect_wait": 72.619959,
+            "vm_delete": 166.950375,
+            "host_shutdown": 1.177916,
+            "scratch_remove": 1.87775
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3440.843209,
+          "valid": true,
+          "unattributedMs": 1.5561680000000706
+        },
+        {
+          "sample": 6,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 454.015416,
+            "bundle_prepare": 385.00275,
+            "vm_create": 2461.397834,
+            "process_start": 67.9825,
+            "collect_wait": 79.429416,
+            "vm_delete": 167.99379100000002,
+            "host_shutdown": 1.240917,
+            "scratch_remove": 2.1636670000000002
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3620.8316250000003,
+          "valid": true,
+          "unattributedMs": 1.6053340000003118
+        },
+        {
+          "sample": 7,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 472.099334,
+            "bundle_prepare": 371.14945900000004,
+            "vm_create": 2459.638333,
+            "process_start": 63.040125,
+            "collect_wait": 77.568833,
+            "vm_delete": 153.88825,
+            "host_shutdown": 1.1848340000000002,
+            "scratch_remove": 1.943334
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3602.138541,
+          "valid": true,
+          "unattributedMs": 1.6260389999997642
+        },
+        {
+          "sample": 8,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 451.033167,
+            "bundle_prepare": 354.867541,
+            "vm_create": 2336.0648340000002,
+            "process_start": 62.773542,
+            "collect_wait": 73.573,
+            "vm_delete": 170.5045,
+            "host_shutdown": 0.956583,
+            "scratch_remove": 1.4715
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3452.581833,
+          "valid": true,
+          "unattributedMs": 1.3371659999997974
+        },
+        {
+          "sample": 9,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 445.490542,
+            "bundle_prepare": 336.59662499999996,
+            "vm_create": 2287.18625,
+            "process_start": 63.64341699999999,
+            "collect_wait": 73.562375,
+            "vm_delete": 151.727042,
+            "host_shutdown": 1.063167,
+            "scratch_remove": 1.523667
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3362.251459,
+          "valid": true,
+          "unattributedMs": 1.4583739999998215
+        },
+        {
+          "sample": 10,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 446.841084,
+            "bundle_prepare": 339.329041,
+            "vm_create": 2333.153541,
+            "process_start": 63.847500000000004,
+            "collect_wait": 75.592334,
+            "vm_delete": 155.957292,
+            "host_shutdown": 1.0640420000000002,
+            "scratch_remove": 1.613209
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3418.8627079999997,
+          "valid": true,
+          "unattributedMs": 1.4646649999995134
+        },
+        {
+          "sample": 11,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 444.229708,
+            "bundle_prepare": 336.930375,
+            "vm_create": 2254.790084,
+            "process_start": 61.861417,
+            "collect_wait": 70.736292,
+            "vm_delete": 162.79975,
+            "host_shutdown": 0.967625,
+            "scratch_remove": 1.5085000000000002
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3335.3170840000002,
+          "valid": true,
+          "unattributedMs": 1.4933329999998932
+        },
+        {
+          "sample": 12,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 413.714166,
+            "bundle_prepare": 302.910458,
+            "vm_create": 2178.9410829999997,
+            "process_start": 63.47,
+            "collect_wait": 72.54287500000001,
+            "vm_delete": 166.835791,
+            "host_shutdown": 0.945833,
+            "scratch_remove": 1.692209
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3202.30675,
+          "valid": true,
+          "unattributedMs": 1.2543350000005375
+        },
+        {
+          "sample": 13,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 415.540958,
+            "bundle_prepare": 324.297625,
+            "vm_create": 2148.599291,
+            "process_start": 62.922875000000005,
+            "collect_wait": 71.573375,
+            "vm_delete": 163.26629200000002,
+            "host_shutdown": 0.931292,
+            "scratch_remove": 1.461792
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3189.83025,
+          "valid": true,
+          "unattributedMs": 1.236750000000029
+        },
+        {
+          "sample": 14,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 413.15979200000004,
+            "bundle_prepare": 304.68458300000003,
+            "vm_create": 2153.205417,
+            "process_start": 61.960291,
+            "collect_wait": 71.582833,
+            "vm_delete": 164.916666,
+            "host_shutdown": 1.003625,
+            "scratch_remove": 1.481125
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3173.334041,
+          "valid": true,
+          "unattributedMs": 1.339708999999857
+        },
+        {
+          "sample": 15,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 413.059709,
+            "bundle_prepare": 304.351917,
+            "vm_create": 2164.878667,
+            "process_start": 62.96375,
+            "collect_wait": 71.51616700000001,
+            "vm_delete": 169.886875,
+            "host_shutdown": 0.9989169999999999,
+            "scratch_remove": 1.578958
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3190.5117920000002,
+          "valid": true,
+          "unattributedMs": 1.2768320000004678
+        },
+        {
+          "sample": 16,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 413.847833,
+            "bundle_prepare": 306.412291,
+            "vm_create": 2149.85325,
+            "process_start": 62.962958,
+            "collect_wait": 73.640459,
+            "vm_delete": 156.09875,
+            "host_shutdown": 0.9905,
+            "scratch_remove": 1.5351659999999998
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3166.6216249999998,
+          "valid": true,
+          "unattributedMs": 1.2804179999998269
+        },
+        {
+          "sample": 17,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 415.89941699999997,
+            "bundle_prepare": 305.02995799999997,
+            "vm_create": 2159.039666,
+            "process_start": 62.007416,
+            "collect_wait": 71.53824999999999,
+            "vm_delete": 145.007,
+            "host_shutdown": 0.980458,
+            "scratch_remove": 12.934332999999999
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3176.6509159999996,
+          "valid": true,
+          "unattributedMs": 4.214417999999569
+        },
+        {
+          "sample": 18,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 445.709125,
+            "bundle_prepare": 301.533583,
+            "vm_create": 2131.283833,
+            "process_start": 63.02049999999999,
+            "collect_wait": 71.381125,
+            "vm_delete": 144.540875,
+            "host_shutdown": 0.985,
+            "scratch_remove": 1.740458
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 3161.623875,
+          "valid": true,
+          "unattributedMs": 1.4293760000005022
+        }
+      ]
+    },
+    {
+      "name": "software-2",
+      "variant": "software",
+      "command": [
+        "/Users/roylin/code/aster/target/t013-probe/core-command-timing-probe",
+        "--exact",
+        "sandbox::oci::tests::real_command_phase_timing",
+        "--ignored",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "environmentOverride": {
+        "ASTER_TEST_OCI_ASSETS": "/Users/roylin/code/aster/target/t013-assets-software"
+      },
+      "startUtc": "2026-10-19T16:34:20.717387+00:00",
+      "loadAverageStart": [
+        9.24658203125,
+        8.4248046875,
+        7.134765625
+      ],
+      "expectedSamples": 19,
+      "roundDeadlineSeconds": 1800,
+      "exitCode": 0,
+      "wallSeconds": 195.8203889579745,
+      "endUtc": "2026-10-19T16:37:36.538422+00:00",
+      "loadAverageEnd": [
+        9.64111328125,
+        9.3642578125,
+        7.8154296875
+      ],
+      "samples": [
+        {
+          "sample": 0,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1576.346,
+            "bundle_prepare": 319.77804199999997,
+            "vm_create": 7460.255667,
+            "process_start": 64.621291,
+            "collect_wait": 71.741125,
+            "vm_delete": 162.920041,
+            "host_shutdown": 1.117458,
+            "scratch_remove": 1.543792
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 9660.172375,
+          "valid": true,
+          "unattributedMs": 1.848958999999013
+        },
+        {
+          "sample": 1,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1584.2523339999998,
+            "bundle_prepare": 297.99512500000003,
+            "vm_create": 7405.228333,
+            "process_start": 61.893209,
+            "collect_wait": 75.692167,
+            "vm_delete": 181.99358299999997,
+            "host_shutdown": 0.9970000000000001,
+            "scratch_remove": 2.0345
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 9611.524625,
+          "valid": true,
+          "unattributedMs": 1.438373999999385
+        },
+        {
+          "sample": 2,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1630.042333,
+            "bundle_prepare": 296.613708,
+            "vm_create": 7456.117,
+            "process_start": 62.943957999999995,
+            "collect_wait": 72.477375,
+            "vm_delete": 159.030416,
+            "host_shutdown": 0.968166,
+            "scratch_remove": 1.5545419999999999
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 9681.165042,
+          "valid": true,
+          "unattributedMs": 1.417543999999907
+        },
+        {
+          "sample": 3,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1569.695917,
+            "bundle_prepare": 300.11425,
+            "vm_create": 7440.15225,
+            "process_start": 62.751833000000005,
+            "collect_wait": 71.603083,
+            "vm_delete": 164.991833,
+            "host_shutdown": 1.01675,
+            "scratch_remove": 1.511875
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 9613.221125,
+          "valid": true,
+          "unattributedMs": 1.3833340000001044
+        },
+        {
+          "sample": 4,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1571.119666,
+            "bundle_prepare": 299.817458,
+            "vm_create": 7448.505125,
+            "process_start": 63.880167,
+            "collect_wait": 72.67966700000001,
+            "vm_delete": 145.923792,
+            "host_shutdown": 1.074333,
+            "scratch_remove": 1.502
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 9606.03875,
+          "valid": true,
+          "unattributedMs": 1.5365419999998267
+        },
+        {
+          "sample": 5,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1567.1626669999998,
+            "bundle_prepare": 301.094209,
+            "vm_create": 10872.370667000001,
+            "process_start": 66.674959,
+            "collect_wait": 73.500708,
+            "vm_delete": 156.861667,
+            "host_shutdown": 1.27925,
+            "scratch_remove": 2.022792
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 13042.650166,
+          "valid": true,
+          "unattributedMs": 1.683246999999028
+        },
+        {
+          "sample": 6,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 2610.033,
+            "bundle_prepare": 405.875292,
+            "vm_create": 8312.204,
+            "process_start": 62.793291,
+            "collect_wait": 74.568708,
+            "vm_delete": 160.234834,
+            "host_shutdown": 1.117458,
+            "scratch_remove": 1.856417
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 11630.710374999999,
+          "valid": true,
+          "unattributedMs": 2.0273749999996653
+        },
+        {
+          "sample": 7,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1678.730792,
+            "bundle_prepare": 313.71758300000005,
+            "vm_create": 7648.00725,
+            "process_start": 62.987,
+            "collect_wait": 69.56400000000001,
+            "vm_delete": 142.419084,
+            "host_shutdown": 1.022583,
+            "scratch_remove": 1.587042
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 9919.546333999999,
+          "valid": true,
+          "unattributedMs": 1.510999999998603
+        },
+        {
+          "sample": 8,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1551.721583,
+            "bundle_prepare": 323.725417,
+            "vm_create": 7361.277958,
+            "process_start": 61.899584,
+            "collect_wait": 71.650041,
+            "vm_delete": 163.56145899999999,
+            "host_shutdown": 1.035208,
+            "scratch_remove": 1.422042
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 9537.657458,
+          "valid": true,
+          "unattributedMs": 1.3641659999993863
+        },
+        {
+          "sample": 9,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1568.5919579999997,
+            "bundle_prepare": 303.064208,
+            "vm_create": 7436.361707999999,
+            "process_start": 63.018041999999994,
+            "collect_wait": 71.898083,
+            "vm_delete": 143.625916,
+            "host_shutdown": 1.012459,
+            "scratch_remove": 1.4465000000000001
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 9590.36575,
+          "valid": true,
+          "unattributedMs": 1.34687600000143
+        },
+        {
+          "sample": 10,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1570.266625,
+            "bundle_prepare": 295.225542,
+            "vm_create": 7415.379,
+            "process_start": 60.8635,
+            "collect_wait": 71.572708,
+            "vm_delete": 143.946875,
+            "host_shutdown": 1.10625,
+            "scratch_remove": 1.444042
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 9561.197124999999,
+          "valid": true,
+          "unattributedMs": 1.3925829999989219
+        },
+        {
+          "sample": 11,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1560.604083,
+            "bundle_prepare": 296.20487499999996,
+            "vm_create": 7429.274625,
+            "process_start": 61.686875,
+            "collect_wait": 71.607083,
+            "vm_delete": 149.987458,
+            "host_shutdown": 0.98125,
+            "scratch_remove": 1.529583
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 9573.401625,
+          "valid": true,
+          "unattributedMs": 1.5257930000007036
+        },
+        {
+          "sample": 12,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1597.244125,
+            "bundle_prepare": 324.073125,
+            "vm_create": 7474.089583,
+            "process_start": 61.968833000000004,
+            "collect_wait": 71.708667,
+            "vm_delete": 156.037958,
+            "host_shutdown": 1.0425,
+            "scratch_remove": 1.620792
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 9689.220958,
+          "valid": true,
+          "unattributedMs": 1.4353749999991123
+        },
+        {
+          "sample": 13,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1956.0193749999999,
+            "bundle_prepare": 420.73816600000004,
+            "vm_create": 10698.302542000001,
+            "process_start": 78.70366700000001,
+            "collect_wait": 78.357042,
+            "vm_delete": 195.053042,
+            "host_shutdown": 1.3545,
+            "scratch_remove": 2.770125
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 13432.907292,
+          "valid": true,
+          "unattributedMs": 1.6088329999984126
+        },
+        {
+          "sample": 14,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 2131.0429160000003,
+            "bundle_prepare": 718.0037080000001,
+            "vm_create": 8209.960125,
+            "process_start": 63.841166,
+            "collect_wait": 75.84079100000001,
+            "vm_delete": 180.819792,
+            "host_shutdown": 1.198042,
+            "scratch_remove": 2.002417
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 11384.63775,
+          "valid": true,
+          "unattributedMs": 1.928792999999132
+        },
+        {
+          "sample": 15,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1737.6733749999999,
+            "bundle_prepare": 315.665125,
+            "vm_create": 8002.262957999999,
+            "process_start": 61.875,
+            "collect_wait": 125.62104199999999,
+            "vm_delete": 232.99075,
+            "host_shutdown": 1.118875,
+            "scratch_remove": 1.5728330000000001
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 10480.2825,
+          "valid": true,
+          "unattributedMs": 1.502542000000176
+        },
+        {
+          "sample": 16,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1643.611208,
+            "bundle_prepare": 313.001708,
+            "vm_create": 7789.655625,
+            "process_start": 62.518375,
+            "collect_wait": 72.879458,
+            "vm_delete": 169.848917,
+            "host_shutdown": 1.0911250000000001,
+            "scratch_remove": 1.540833
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 10055.671125,
+          "valid": true,
+          "unattributedMs": 1.5238760000011098
+        },
+        {
+          "sample": 17,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1606.198459,
+            "bundle_prepare": 309.37125,
+            "vm_create": 7614.826667,
+            "process_start": 64.590542,
+            "collect_wait": 74.68862499999999,
+            "vm_delete": 153.926791,
+            "host_shutdown": 1.0403339999999999,
+            "scratch_remove": 1.7903339999999999
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 9828.305,
+          "valid": true,
+          "unattributedMs": 1.8719980000005307
+        },
+        {
+          "sample": 18,
+          "timeoutMs": 5000,
+          "phasesMs": {
+            "host_connect": 1608.4510409999998,
+            "bundle_prepare": 389.144875,
+            "vm_create": 7586.362375000001,
+            "process_start": 62.777457999999996,
+            "collect_wait": 73.584208,
+            "vm_delete": 150.014667,
+            "host_shutdown": 1.006208,
+            "scratch_remove": 1.827917
+          },
+          "error": null,
+          "exit_code": 0,
+          "stderr": "",
+          "stdout": "phase-probe",
+          "timed_out": false,
+          "total_ms": 9874.7275,
+          "valid": true,
+          "unattributedMs": 1.558751000000484
+        }
+      ]
+    }
+  ],
+  "failures": [],
+  "explicitlyNotClaimed": [
+    "No end-to-end T01, model latency or product deployment improvement.",
+    "No filesystem-cache flush or cold-machine result; first means first in that round.",
+    "No Windows/Linux qualification or VM reuse."
+  ],
+  "variants": {
+    "software": {
+      "allSamples": {
+        "count": 38,
+        "meanMs": 10179.999790578948,
+        "p50Ms": 9706.218208,
+        "p95Ms": 13042.650166,
+        "minMs": 9512.744583,
+        "maxMs": 13432.907292,
+        "populationStdDevMs": 988.0383308484784
+      },
+      "subsequentSamples": {
+        "count": 36,
+        "meanMs": 10211.525466444444,
+        "p50Ms": 9755.979166500001,
+        "p95Ms": 13042.650166,
+        "minMs": 9512.744583,
+        "maxMs": 13432.907292,
+        "populationStdDevMs": 1005.7060293429579
+      },
+      "firstSamplesMs": [
+        9564.902875,
+        9660.172375
+      ],
+      "roundDistributions": {
+        "software-1": {
+          "count": 19,
+          "meanMs": 10056.13627194737,
+          "p50Ms": 9723.215458,
+          "p95Ms": 12321.610666999999,
+          "minMs": 9512.744583,
+          "maxMs": 12321.610666999999,
+          "populationStdDevMs": 755.2522466126965
+        },
+        "software-2": {
+          "count": 19,
+          "meanMs": 10303.863309210526,
+          "p50Ms": 9689.220958,
+          "p95Ms": 13432.907292,
+          "minMs": 9537.657458,
+          "maxMs": 13432.907292,
+          "populationStdDevMs": 1162.4754569205227
+        }
+      },
+      "phases": {
+        "host_connect": {
+          "count": 38,
+          "meanMs": 1666.5614352894736,
+          "p50Ms": 1583.8214584999998,
+          "p95Ms": 2131.0429160000003,
+          "minMs": 1546.302708,
+          "maxMs": 2610.033,
+          "populationStdDevMs": 206.24809651026098
+        },
+        "bundle_prepare": {
+          "count": 38,
+          "meanMs": 344.6283135263158,
+          "p50Ms": 313.35964550000006,
+          "p95Ms": 578.402833,
+          "minMs": 281.757917,
+          "maxMs": 718.0037080000001,
+          "populationStdDevMs": 87.60506777832165
+        },
+        "vm_create": {
+          "count": 38,
+          "meanMs": 7856.201433236843,
+          "p50Ms": 7458.1863335,
+          "p95Ms": 10698.302542000001,
+          "minMs": 7361.277958,
+          "maxMs": 10872.370667000001,
+          "populationStdDevMs": 836.4794096056506
+        },
+        "process_start": {
+          "count": 38,
+          "meanMs": 66.59457671052631,
+          "p50Ms": 62.868624499999996,
+          "p95Ms": 78.70366700000001,
+          "minMs": 60.825833,
+          "maxMs": 163.102959,
+          "populationStdDevMs": 16.364767716267263
+        },
+        "collect_wait": {
+          "count": 38,
+          "meanMs": 76.5957060263158,
+          "p50Ms": 72.558729,
+          "p95Ms": 125.62104199999999,
+          "minMs": 62.770624999999995,
+          "maxMs": 129.668167,
+          "populationStdDevMs": 13.269493363409605
+        },
+        "vm_delete": {
+          "count": 38,
+          "meanMs": 164.84951644736842,
+          "p50Ms": 159.63262500000002,
+          "p95Ms": 232.99075,
+          "minMs": 137.531958,
+          "maxMs": 249.713667,
+          "populationStdDevMs": 22.328902100594753
+        },
+        "host_shutdown": {
+          "count": 38,
+          "meanMs": 1.0910186578947367,
+          "p50Ms": 1.041417,
+          "p95Ms": 1.3545,
+          "minMs": 0.8975409999999999,
+          "maxMs": 2.025125,
+          "populationStdDevMs": 0.18840817484656697
+        },
+        "scratch_remove": {
+          "count": 38,
+          "meanMs": 1.739799447368421,
+          "p50Ms": 1.565854,
+          "p95Ms": 2.654791,
+          "minMs": 1.4175419999999999,
+          "maxMs": 2.770125,
+          "populationStdDevMs": 0.3375017174732673
+        }
+      }
+    },
+    "hardware": {
+      "allSamples": {
+        "count": 38,
+        "meanMs": 3438.224541657895,
+        "p50Ms": 3425.6227499999995,
+        "p95Ms": 3925.770125,
+        "minMs": 3137.513125,
+        "maxMs": 4178.84325,
+        "populationStdDevMs": 221.56816382504246
+      },
+      "subsequentSamples": {
+        "count": 36,
+        "meanMs": 3446.5680231388887,
+        "p50Ms": 3425.6227499999995,
+        "p95Ms": 3925.770125,
+        "minMs": 3161.623875,
+        "maxMs": 4178.84325,
+        "populationStdDevMs": 221.8970968910478
+      },
+      "firstSamplesMs": [
+        3137.513125,
+        3438.5706250000003
+      ],
+      "roundDistributions": {
+        "hardware-1": {
+          "count": 19,
+          "meanMs": 3463.4401995263156,
+          "p50Ms": 3480.534666,
+          "p95Ms": 3822.9849590000003,
+          "minMs": 3137.513125,
+          "maxMs": 3822.9849590000003,
+          "populationStdDevMs": 165.24251081345207
+        },
+        "hardware-2": {
+          "count": 19,
+          "meanMs": 3413.0088837894737,
+          "p50Ms": 3377.896292,
+          "p95Ms": 4178.84325,
+          "minMs": 3161.623875,
+          "maxMs": 4178.84325,
+          "populationStdDevMs": 263.83357682105844
+        }
+      },
+      "phases": {
+        "host_connect": {
+          "count": 38,
+          "meanMs": 451.72783989473686,
+          "p50Ms": 448.717334,
+          "p95Ms": 510.923291,
+          "minMs": 406.73966700000005,
+          "maxMs": 641.378291,
+          "populationStdDevMs": 40.089444296730875
+        },
+        "bundle_prepare": {
+          "count": 38,
+          "meanMs": 350.37651207894737,
+          "p50Ms": 340.844354,
+          "p95Ms": 448.696041,
+          "minMs": 284.111375,
+          "maxMs": 562.168416,
+          "populationStdDevMs": 49.379263978309055
+        },
+        "vm_create": {
+          "count": 38,
+          "meanMs": 2316.7668727368423,
+          "p50Ms": 2301.603729,
+          "p95Ms": 2461.397834,
+          "minMs": 2124.5159999999996,
+          "maxMs": 3106.959667,
+          "populationStdDevMs": 168.22931250200185
+        },
+        "process_start": {
+          "count": 38,
+          "meanMs": 64.08225005263158,
+          "p50Ms": 63.676542,
+          "p95Ms": 69.91225,
+          "minMs": 59.988375,
+          "maxMs": 75.917834,
+          "populationStdDevMs": 2.659136969498057
+        },
+        "collect_wait": {
+          "count": 38,
+          "meanMs": 75.45520839473684,
+          "p50Ms": 73.7131045,
+          "p95Ms": 79.429416,
+          "minMs": 70.55116699999999,
+          "maxMs": 136.60775,
+          "populationStdDevMs": 10.233052905420738
+        },
+        "vm_delete": {
+          "count": 38,
+          "meanMs": 174.76188818421053,
+          "p50Ms": 166.893083,
+          "p95Ms": 250.804959,
+          "minMs": 144.540875,
+          "maxMs": 395.94487499999997,
+          "populationStdDevMs": 40.34103151377643
+        },
+        "host_shutdown": {
+          "count": 38,
+          "meanMs": 1.1291436052631578,
+          "p50Ms": 1.0797505,
+          "p95Ms": 1.660625,
+          "minMs": 0.9291250000000001,
+          "maxMs": 1.8694169999999999,
+          "populationStdDevMs": 0.19108839622700102
+        },
+        "scratch_remove": {
+          "count": 38,
+          "meanMs": 2.0289670789473684,
+          "p50Ms": 1.6620415,
+          "p95Ms": 2.50025,
+          "minMs": 1.454167,
+          "maxMs": 12.934332999999999,
+          "populationStdDevMs": 1.8095898662379182
+        }
+      }
+    }
+  },
+  "meanReductionPercent": 66.22569143036927
+}

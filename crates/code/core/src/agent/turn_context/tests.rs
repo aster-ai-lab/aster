@@ -1,20 +1,23 @@
 use super::memory::{distinctive_usage_token, record_memory_usage};
 use super::render_env_block;
 
+#[path = "execution_target_tests.rs"]
+mod execution_target;
+
 #[test]
 fn env_block_contains_grounding_facts() {
-    let block = render_env_block(std::path::Path::new("/tmp/demo-ws"));
+    let block = render_env_block(&crate::tools::ToolContext::new("/tmp/demo-ws".into()));
     assert!(block.starts_with("<env>"), "block: {block}");
     assert!(block.trim_end().ends_with("</env>"));
     assert!(block.contains("Working directory: /tmp/demo-ws"));
-    assert!(block.contains("Platform:"));
+    assert!(block.contains("Host platform:"));
     assert!(block.contains(std::env::consts::OS));
     assert!(block.contains("Today's date:"));
 }
 
 #[test]
 fn env_block_date_is_iso_yyyy_mm_dd() {
-    let block = render_env_block(std::path::Path::new("/tmp"));
+    let block = render_env_block(&crate::tools::ToolContext::new("/tmp".into()));
     let line = block
         .lines()
         .find(|l| l.starts_with("Today's date:"))

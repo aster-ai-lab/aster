@@ -1,0 +1,176 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on build directory
+warning: function `upsert_instance_map` is never used
+   --> crates/boot/src/service_discovery/mod.rs:203:15
+    |
+203 | pub(crate) fn upsert_instance_map(
+    |               ^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `remove_instance_map` is never used
+   --> crates/boot/src/service_discovery/mod.rs:215:15
+    |
+215 | pub(crate) fn remove_instance_map(
+    |               ^^^^^^^^^^^^^^^^^^^
+
+   Compiling aster-dream v0.1.1 (/Users/roylin/code/aster/apps/work/src-tauri)
+warning: `a3s-boot` (lib) generated 2 warnings
+warning: aster-dream@0.1.1: no DOUBAO_/DOCHUB_* in /Users/roylin/code/aster/apps/work/src-tauri/../.env; packaged host will not embed search/document-parse defaults
+warning: unused import: `Ordering`
+ --> apps/work/src-tauri/src/desktop_settings.rs:8:36
+  |
+8 | use std::sync::atomic::{AtomicU32, Ordering};
+  |                                    ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unnecessary `unsafe` block
+    --> apps/work/src-tauri/src/workspace_browser.rs:1080:32
+     |
+1080 |                 let absolute = unsafe { request.URL() }.and_then(|url| {
+     |                                ^^^^^^ unnecessary `unsafe` block
+     |
+     = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default
+
+warning: unnecessary `unsafe` block
+    --> apps/work/src-tauri/src/workspace_browser.rs:1114:32
+     |
+1114 |                 let absolute = unsafe { request.URL() }.and_then(|url| {
+     |                                ^^^^^^ unnecessary `unsafe` block
+
+warning: field `tool_call_id` is never read
+   --> apps/work/src-tauri/src/agent_plane/local_acp_tests.rs:858:5
+    |
+856 | struct Approval {
+    |        -------- field in this struct
+857 |     id: String,
+858 |     tool_call_id: String,
+    |     ^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `boot` is never used
+  --> apps/work/src-tauri/src/channel_gateway.rs:22:8
+   |
+22 | pub fn boot(token: &str, plane_url: &str) {
+   |        ^^^^
+
+warning: field `username` is never read
+  --> apps/work/src-tauri/src/crab_user.rs:66:9
+   |
+62 | pub struct IssuedSession {
+   |            ------------- field in this struct
+...
+66 |     pub username: String,
+   |         ^^^^^^^^
+   |
+   = note: `IssuedSession` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+
+warning: function `curl` is never used
+   --> apps/work/src-tauri/src/crab_user.rs:938:4
+    |
+938 | fn curl(
+    |    ^^^^
+
+warning: function `allow_test_upstream` is never used
+    --> apps/work/src-tauri/src/crab_user.rs:1088:15
+     |
+1088 | pub(crate) fn allow_test_upstream(origin: &str) {
+     |               ^^^^^^^^^^^^^^^^^^^
+
+warning: static `SLEEP_ASSERTION` is never used
+  --> apps/work/src-tauri/src/desktop_settings.rs:72:8
+   |
+72 | static SLEEP_ASSERTION: AtomicU32 = AtomicU32::new(0);
+   |        ^^^^^^^^^^^^^^^
+
+warning: function `boot` is never used
+   --> apps/work/src-tauri/src/desktop_settings.rs:411:8
+    |
+411 | pub fn boot(slug: &str, product: &str, logo: &Path) {
+    |        ^^^^
+
+warning: constant `CREATE_NO_WINDOW` is never used
+  --> apps/work/src-tauri/src/no_window.rs:29:7
+   |
+29 | const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+   |       ^^^^^^^^^^^^^^^^
+
+warning: function `verified_picker` is never used
+   --> apps/work/src-tauri/src/review_plugin.rs:462:8
+    |
+462 | pub fn verified_picker() -> Option<(PathBuf, String)> {
+    |        ^^^^^^^^^^^^^^^
+
+warning: `aster-dream` (lib test) generated 12 warnings (run `cargo fix --lib -p aster-dream --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 16.46s
+     Running unittests src/lib.rs (target/debug/deps/a3s_studio_lib-9c7d06d5a17857ce)
+
+running 5 tests
+test agent_plane::turns::local_acp_tests::delivery::program::real_acp_program_cancel_after_nested_read_preserves_cancelled_terminal ... a3s-code-acp: 2026-10-19T17:41:19.754270Z  WARN a3s_code_core::skills::registry: Duplicate skill name encountered during directory load — overriding previous definition skill=a3s-test path=/Users/roylin/.claude/skills/a3s-test/SKILL.md
+a3s-code-acp: 2026-10-19T17:41:19.756846Z  WARN a3s_code_core::skills::registry: Duplicate skill name encountered during directory load — overriding previous definition skill=skill-creator path=/Users/roylin/.codex/skills/.system/skill-creator/SKILL.md
+a3s-code-acp: 2026-10-19T17:41:19.756964Z  WARN a3s_code_core::skills::registry: Duplicate skill name encountered during directory load — overriding previous definition skill=a3s-test path=/Users/roylin/.codex/skills/a3s-test/SKILL.md
+a3s-code-acp: 2026-10-19T17:41:19.757364Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /Users/roylin/.claude/agents
+a3s-code-acp: 2026-10-19T17:41:19.757397Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /Users/roylin/.a3s/agents
+a3s-code-acp: 2026-10-19T17:41:19.757425Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/a3s-studio-task-program-cancel-27137/state/workspace/01a15540-c3e5-7476-a82f-6aa8bcaa212a/.claude/agents
+a3s-code-acp: 2026-10-19T17:41:19.757459Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/a3s-studio-task-program-cancel-27137/state/workspace/01a15540-c3e5-7476-a82f-6aa8bcaa212a/.a3s/agents
+WORK_REAL_ACP_PROGRAM_PHASE {"approval_cards_handled":2,"cancel_requested":true,"events":28,"provider_aux_requests":0,"provider_main_requests":1,"terminal":{"channel":"ai.stream.done","error":null,"status":"paused"},"terminal_received":true,"tools":"program:output-error:allowed_tools,language,limits,source,type read:output-available:file_path,limit office_file:output-error:blocks,file_path,kind"}
+WORK_REAL_ACP_PROGRAM_IDENTITY {"binary":"/Users/roylin/code/aster/target/debug/a3s-code-acp","clock":"Work turn open through terminal; includes launch preparation and early process identity lookup, excludes cleanup/hash/background drain","host_turn_ms":2487,"pid":28176,"sha256":"8e4d312fb2dc6b4e634e472ea87f48e8a8f749050d5a34f774ef8ee36f1ffdaf"}
+WORK_REAL_ACP_PROGRAM_CANCEL_RECEIPT {"effect_completeness":"incomplete","exit_code":null,"outcome":"cancelled"}
+ok
+test agent_plane::turns::local_acp_tests::delivery::program::real_acp_program_code_profile_delivers_nested_native_artifact_and_saved_bytes ... a3s-code-acp: 2026-10-19T17:41:34.564086Z  WARN a3s_code_core::skills::registry: Duplicate skill name encountered during directory load — overriding previous definition skill=a3s-test path=/Users/roylin/.claude/skills/a3s-test/SKILL.md
+a3s-code-acp: 2026-10-19T17:41:34.566685Z  WARN a3s_code_core::skills::registry: Duplicate skill name encountered during directory load — overriding previous definition skill=skill-creator path=/Users/roylin/.codex/skills/.system/skill-creator/SKILL.md
+a3s-code-acp: 2026-10-19T17:41:34.566869Z  WARN a3s_code_core::skills::registry: Duplicate skill name encountered during directory load — overriding previous definition skill=a3s-test path=/Users/roylin/.codex/skills/a3s-test/SKILL.md
+a3s-code-acp: 2026-10-19T17:41:34.567279Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /Users/roylin/.claude/agents
+a3s-code-acp: 2026-10-19T17:41:34.567303Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /Users/roylin/.a3s/agents
+a3s-code-acp: 2026-10-19T17:41:34.567330Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/a3s-studio-task-program-native-27137/state/workspace/01a15541-065f-7609-baec-3cf852a5bc8d/.claude/agents
+a3s-code-acp: 2026-10-19T17:41:34.567359Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/a3s-studio-task-program-native-27137/state/workspace/01a15541-065f-7609-baec-3cf852a5bc8d/.a3s/agents
+WORK_REAL_ACP_PROGRAM_PHASE {"approval_cards_handled":2,"cancel_requested":false,"events":40,"provider_aux_requests":0,"provider_main_requests":2,"terminal":{"channel":"ai.stream.done","error":null,"status":"success"},"terminal_received":true,"tools":"program:output-available:allowed_tools,language,limits,source,type read:output-available:file_path,limit read:output-available:file_path,limit output_check:output-available:action,pairs office_file:output-available:blocks,file_path,kind"}
+WORK_REAL_ACP_PROGRAM_IDENTITY {"binary":"/Users/roylin/code/aster/target/debug/a3s-code-acp","clock":"Work turn open through terminal; includes launch preparation and early process identity lookup, excludes cleanup/hash/background drain","host_turn_ms":345,"pid":28391,"sha256":"8e4d312fb2dc6b4e634e472ea87f48e8a8f749050d5a34f774ef8ee36f1ffdaf"}
+WORK_REAL_ACP_PROGRAM_PASS {"artifact_bytes":2466,"child_calls":4,"child_receipts":[{"duration_ms":1,"exit_code":0,"metadata":{"a3s_tool_result_evidence":{"byte_delta":0,"content_digest":"sha256:4baaa72f72345b5f3b88f425756a17b33c655cef04d95be80e4e3d5aaf8c40a4","content_ref":"inline:sha256:4baaa72f72345b5f3b88f425756a17b33c655cef04d95be80e4e3d5aaf8c40a4","estimated_token_delta":0,"loss_mode":"none","original_bytes":11,"original_estimated_tokens":3,"projected_bytes":11,"projected_digest":"sha256:4baaa72f72345b5f3b88f425756a17b33c655cef04d95be80e4e3d5aaf8c40a4","projected_estimated_tokens":3,"repeat_key":"sha256:4baaa72f72345b5f3b88f425756a17b33c655cef04d95be80e4e3d5aaf8c40a4","schema":"a3s.code.tool-result-evidence.v1","token_estimator":"utf8-bytes-ceil-div-4/v1","transform_algorithm":"a3s.code.tool-result-transform.v1"},"a3s_tool_result_transform_binding":{"binding_digest":"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67","policy_digest":"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3","schema":"a3s.code.tool-result-transform-binding.v1","transform_algorithm":"a3s.code.tool-result-transform.v1"},"range":{"applied_limit":1,"budget_clamped":false,"eof":true,"limit_clamped":false,"next_offset":null,"offset":0,"output_bytes":11,"requested_limit":1,"returned_lines":1,"total_lines":1},"source_anchors":["left.txt"]},"original_output_bytes":11,"output_bytes":11,"start_offset_ms":0,"success":true,"tool_name":"read","truncated":false},{"duration_ms":1,"exit_code":0,"metadata":{"a3s_tool_result_evidence":{"byte_delta":0,"content_digest":"sha256:a39479f43d8efc76cd0462bf782397d579d4d05e5c859dbf2b08cccd9f87fdcd","content_ref":"inline:sha256:a39479f43d8efc76cd0462bf782397d579d4d05e5c859dbf2b08cccd9f87fdcd","estimated_token_delta":0,"loss_mode":"none","original_bytes":11,"original_estimated_tokens":3,"projected_bytes":11,"projected_digest":"sha256:a39479f43d8efc76cd0462bf782397d579d4d05e5c859dbf2b08cccd9f87fdcd","projected_estimated_tokens":3,"repeat_key":"sha256:a39479f43d8efc76cd0462bf782397d579d4d05e5c859dbf2b08cccd9f87fdcd","schema":"a3s.code.tool-result-evidence.v1","token_estimator":"utf8-bytes-ceil-div-4/v1","transform_algorithm":"a3s.code.tool-result-transform.v1"},"a3s_tool_result_transform_binding":{"binding_digest":"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67","policy_digest":"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3","schema":"a3s.code.tool-result-transform-binding.v1","transform_algorithm":"a3s.code.tool-result-transform.v1"},"range":{"applied_limit":1,"budget_clamped":false,"eof":true,"limit_clamped":false,"next_offset":null,"offset":0,"output_bytes":11,"requested_limit":1,"returned_lines":1,"total_lines":1},"source_anchors":["right.txt"]},"original_output_bytes":11,"output_bytes":11,"start_offset_ms":0,"success":true,"tool_name":"read","truncated":false},{"duration_ms":0,"exit_code":0,"metadata":{"a3s_tool_result_evidence":{"byte_delta":0,"content_digest":"sha256:07c6edfbec55deb3faa7de40b4dfa7a33f1fb32d42c161296cc444b3661df6ec","content_ref":"inline:sha256:07c6edfbec55deb3faa7de40b4dfa7a33f1fb32d42c161296cc444b3661df6ec","estimated_token_delta":0,"loss_mode":"none","original_bytes":45,"original_estimated_tokens":12,"projected_bytes":45,"projected_digest":"sha256:07c6edfbec55deb3faa7de40b4dfa7a33f1fb32d42c161296cc444b3661df6ec","projected_estimated_tokens":12,"repeat_key":"sha256:07c6edfbec55deb3faa7de40b4dfa7a33f1fb32d42c161296cc444b3661df6ec","schema":"a3s.code.tool-result-evidence.v1","token_estimator":"utf8-bytes-ceil-div-4/v1","transform_algorithm":"a3s.code.tool-result-transform.v1"},"a3s_tool_result_transform_binding":{"binding_digest":"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67","policy_digest":"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3","schema":"a3s.code.tool-result-transform-binding.v1","transform_algorithm":"a3s.code.tool-result-transform.v1"}},"original_output_bytes":45,"output_bytes":45,"start_offset_ms":2,"success":true,"tool_name":"output_check","truncated":false},{"duration_ms":90,"exit_code":0,"metadata":{"a3s_tool_result_evidence":{"byte_delta":0,"content_digest":"sha256:2f806ee017a67d0e09e9c336ee866774119977f43e0f307b5c8221bdb6b63a6d","content_ref":"inline:sha256:2f806ee017a67d0e09e9c336ee866774119977f43e0f307b5c8221bdb6b63a6d","estimated_token_delta":0,"loss_mode":"none","original_bytes":626,"original_estimated_tokens":157,"projected_bytes":626,"projected_digest":"sha256:2f806ee017a67d0e09e9c336ee866774119977f43e0f307b5c8221bdb6b63a6d","projected_estimated_tokens":157,"repeat_key":"sha256:2f806ee017a67d0e09e9c336ee866774119977f43e0f307b5c8221bdb6b63a6d","schema":"a3s.code.tool-result-evidence.v1","token_estimator":"utf8-bytes-ceil-div-4/v1","transform_algorithm":"a3s.code.tool-result-transform.v1"},"a3s_tool_result_transform_binding":{"binding_digest":"sha256:bfe42d7fac9f7ad933b87733d4e88b17dd0cbdbbfc798678f1266c088bc8df67","policy_digest":"sha256:8827c82c51ff282ae955335f3071ba071ba9d9b29f15bf50f8f190a3923051d3","schema":"a3s.code.tool-result-transform-binding.v1","transform_algorithm":"a3s.code.tool-result-transform.v1"},"artifact_content_digest":"207f4b957020e262a597dcb3190984807f14e250679b0e18c37ac867fa6dfe48","artifact_relative_path":"checked.docx","artifact_requested_path":"checked.docx","bytes":2466,"file_path":"/private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/a3s-studio-task-program-native-27137/state/workspace/01a15541-065f-7609-baec-3cf852a5bc8d/checked.docx","files":["/private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/a3s-studio-task-program-native-27137/state/workspace/01a15541-065f-7609-baec-3cf852a5bc8d/checked.docx"],"kind":"docx","readback":"Verified change +20%","readback_truncated":false,"validated":true},"original_output_bytes":626,"output_bytes":626,"start_offset_ms":2,"success":true,"tool_name":"office_file","truncated":false}],"fixture":"forced-mechanism","parent_calls":1,"reported_tokens":null,"vm_count":null}
+ok
+test agent_plane::turns::local_acp_tests::delivery::program::real_acp_program_refused_approval_preserves_original_refusal_without_nested_write ... a3s-code-acp: 2026-10-19T17:41:52.816249Z  WARN a3s_code_core::skills::registry: Duplicate skill name encountered during directory load — overriding previous definition skill=a3s-test path=/Users/roylin/.claude/skills/a3s-test/SKILL.md
+a3s-code-acp: 2026-10-19T17:41:52.821248Z  WARN a3s_code_core::skills::registry: Duplicate skill name encountered during directory load — overriding previous definition skill=skill-creator path=/Users/roylin/.codex/skills/.system/skill-creator/SKILL.md
+a3s-code-acp: 2026-10-19T17:41:52.821418Z  WARN a3s_code_core::skills::registry: Duplicate skill name encountered during directory load — overriding previous definition skill=a3s-test path=/Users/roylin/.codex/skills/a3s-test/SKILL.md
+a3s-code-acp: 2026-10-19T17:41:52.822223Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /Users/roylin/.claude/agents
+a3s-code-acp: 2026-10-19T17:41:52.822284Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /Users/roylin/.a3s/agents
+a3s-code-acp: 2026-10-19T17:41:52.822373Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/a3s-studio-task-program-refused-27137/state/workspace/01a15541-40c3-7446-817d-fcaac77cc4d2/.claude/agents
+a3s-code-acp: 2026-10-19T17:41:52.822413Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/a3s-studio-task-program-refused-27137/state/workspace/01a15541-40c3-7446-817d-fcaac77cc4d2/.a3s/agents
+WORK_REAL_ACP_PROGRAM_PHASE {"approval_cards_handled":1,"cancel_requested":false,"events":22,"provider_aux_requests":0,"provider_main_requests":1,"terminal":{"channel":"ai.stream.done","error":null,"status":"success"},"terminal_received":true,"tools":"program:approval-responded:allowed_tools,language,limits,source,type"}
+WORK_REAL_ACP_PROGRAM_IDENTITY {"binary":"/Users/roylin/code/aster/target/debug/a3s-code-acp","clock":"Work turn open through terminal; includes launch preparation and early process identity lookup, excludes cleanup/hash/background drain","host_turn_ms":173,"pid":28657,"sha256":"8e4d312fb2dc6b4e634e472ea87f48e8a8f749050d5a34f774ef8ee36f1ffdaf"}
+WORK_REAL_ACP_PROGRAM_REFUSAL_PASS {"artifacts":0,"executed_parent_receipts":0,"final_text":"denied","original_refusals":1}
+ok
+test agent_plane::turns::local_acp_tests::delivery::program::real_acp_program_required_check_failure_never_certifies_native_write ... a3s-code-acp: 2026-10-19T17:42:15.642113Z  WARN a3s_code_core::skills::registry: Duplicate skill name encountered during directory load — overriding previous definition skill=a3s-test path=/Users/roylin/.claude/skills/a3s-test/SKILL.md
+a3s-code-acp: 2026-10-19T17:42:15.647459Z  WARN a3s_code_core::skills::registry: Duplicate skill name encountered during directory load — overriding previous definition skill=skill-creator path=/Users/roylin/.codex/skills/.system/skill-creator/SKILL.md
+a3s-code-acp: 2026-10-19T17:42:15.647700Z  WARN a3s_code_core::skills::registry: Duplicate skill name encountered during directory load — overriding previous definition skill=a3s-test path=/Users/roylin/.codex/skills/a3s-test/SKILL.md
+a3s-code-acp: 2026-10-19T17:42:15.648535Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /Users/roylin/.claude/agents
+a3s-code-acp: 2026-10-19T17:42:15.648597Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /Users/roylin/.a3s/agents
+a3s-code-acp: 2026-10-19T17:42:15.648725Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/a3s-studio-task-program-required-failure-27137/state/workspace/01a15541-9702-74ab-92d0-7d03e0d74dfd/.claude/agents
+a3s-code-acp: 2026-10-19T17:42:15.648873Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/a3s-studio-task-program-required-failure-27137/state/workspace/01a15541-9702-74ab-92d0-7d03e0d74dfd/.a3s/agents
+WORK_REAL_ACP_PROGRAM_PHASE {"approval_cards_handled":2,"cancel_requested":false,"events":33,"provider_aux_requests":0,"provider_main_requests":2,"terminal":{"channel":"ai.stream.error","error":{"message":"completion gate: workspace mutation 3b55594ceb0211038728f896b855c706c7453564d113970aab4b03edec2f30d0 (unverified.docx) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or obtain a host waiver for this digest. Next step: run one `bash` command that exits 0 and includes `test -f unverified.docx` with the check that proves the change, for example `test -f unverified.docx && <test command>`.","name":"Error","stack":null},"status":null},"terminal_received":true,"tools":"program:output-error:allowed_tools,language,limits,source,type office_file:output-available:blocks,file_path,kind output_check:output-error:action"}
+WORK_REAL_ACP_PROGRAM_IDENTITY {"binary":"/Users/roylin/code/aster/target/debug/a3s-code-acp","clock":"Work turn open through terminal; includes launch preparation and early process identity lookup, excludes cleanup/hash/background drain","host_turn_ms":539,"pid":28771,"sha256":"8e4d312fb2dc6b4e634e472ea87f48e8a8f749050d5a34f774ef8ee36f1ffdaf"}
+WORK_REAL_ACP_PROGRAM_REQUIRED_FAILURE_PASS {"artifacts":1,"producer_status":"failed","receipt_outcome":"failed"}
+ok
+test agent_plane::turns::local_acp_tests::delivery::program::real_acp_program_successful_repair_preserves_failed_receipt_and_certifies_new_bytes ... a3s-code-acp: 2026-10-19T17:42:35.313179Z  WARN a3s_code_core::skills::registry: Duplicate skill name encountered during directory load — overriding previous definition skill=a3s-test path=/Users/roylin/.claude/skills/a3s-test/SKILL.md
+a3s-code-acp: 2026-10-19T17:42:35.315529Z  WARN a3s_code_core::skills::registry: Duplicate skill name encountered during directory load — overriding previous definition skill=skill-creator path=/Users/roylin/.codex/skills/.system/skill-creator/SKILL.md
+a3s-code-acp: 2026-10-19T17:42:35.315642Z  WARN a3s_code_core::skills::registry: Duplicate skill name encountered during directory load — overriding previous definition skill=a3s-test path=/Users/roylin/.codex/skills/a3s-test/SKILL.md
+a3s-code-acp: 2026-10-19T17:42:35.315955Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /Users/roylin/.claude/agents
+a3s-code-acp: 2026-10-19T17:42:35.315975Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /Users/roylin/.a3s/agents
+a3s-code-acp: 2026-10-19T17:42:35.315999Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/a3s-studio-task-program-repair-27137/state/workspace/01a15541-f184-7008-a34e-19f3e62bbf06/.claude/agents
+a3s-code-acp: 2026-10-19T17:42:35.316025Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/a3s-studio-task-program-repair-27137/state/workspace/01a15541-f184-7008-a34e-19f3e62bbf06/.a3s/agents
+WORK_REAL_ACP_PROGRAM_PHASE {"approval_cards_handled":4,"cancel_requested":false,"events":56,"provider_aux_requests":0,"provider_main_requests":3,"terminal":{"channel":"ai.stream.done","error":null,"status":"success"},"terminal_received":true,"tools":"program:output-error:allowed_tools,language,limits,source,type write:output-available:content,file_path,variant output_check:output-error:action program:output-available:allowed_tools,language,limits,source,type write:output-available:content,file_path,variant read:output-available:file_path,limit output_check:output-available:action,text"}
+WORK_REAL_ACP_PROGRAM_IDENTITY {"binary":"/Users/roylin/code/aster/target/debug/a3s-code-acp","clock":"Work turn open through terminal; includes launch preparation and early process identity lookup, excludes cleanup/hash/background drain","host_turn_ms":495,"pid":29034,"sha256":"8e4d312fb2dc6b4e634e472ea87f48e8a8f749050d5a34f774ef8ee36f1ffdaf"}
+WORK_REAL_ACP_PROGRAM_RECOVERY_PASS {"after_state_changed":true,"artifact_bytes":16,"new_outcome":"succeeded","old_outcome":"failed","original_receipts_preserved":2}
+ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 831 filtered out; finished in 92.80s
+

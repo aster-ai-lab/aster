@@ -1,0 +1,37 @@
+{
+  "observedAt": "2026-10-19T15:12:58.982088+00:00",
+  "sessionId": "01a154b3-fd4c-70c3-ad72-48c14a36e920",
+  "failures": [
+    {
+      "seq": 34,
+      "toolCallId": "call_00_T4vNZeW8c52n9XJOVSRP8448",
+      "exit_code": 1,
+      "outcome": "failed",
+      "observation_incomplete": false,
+      "sandboxed": true,
+      "timed_out": false,
+      "diagnosticTail": "KeyError: 'active'"
+    },
+    {
+      "seq": 55,
+      "toolCallId": "call_00_phC26MEbnImwclulplCx4304",
+      "exit_code": 1,
+      "outcome": "failed",
+      "observation_incomplete": false,
+      "sandboxed": true,
+      "timed_out": false,
+      "diagnosticTail": "AssertionError: ({'a': 'duplicate_event', 'b': 'applied', 'c': 'invalid_amount', 'd': 'invalid_amount', 'e': 'unknown_row', 'f': 'unknown_type', 'g': 'applied', 'h': 'order_cancelled', 'i': 'invalid_amount', 'j': 'invalid_amount', 'k': 'applied', 'l': 'invalid_amount'}, {'a': 'applied', 'b': 'applied', 'c': 'invalid_amount', 'd': 'invalid_amount', 'e': 'unknown_row', 'f': 'unknown_type', 'g': 'applied', 'h': 'order_cancelled', 'i': 'invalid_amount', 'j': 'invalid_amount', 'k': 'applied', 'l': 'invalid_amount'})"
+    },
+    {
+      "seq": 58,
+      "toolCallId": "call_00_NiFY9USq0BxPC7uiSAXj7898",
+      "exit_code": 1,
+      "outcome": "failed",
+      "observation_incomplete": false,
+      "sandboxed": true,
+      "timed_out": false,
+      "diagnosticTail": "AssertionError"
+    }
+  ],
+  "policy": "Only explicit result exit/outcome/sandbox flags and the last diagnostic line. Full commands, source/inputs, stack traces, reasoning and headers excluded."
+}

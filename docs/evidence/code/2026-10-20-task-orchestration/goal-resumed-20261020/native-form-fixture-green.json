@@ -1,0 +1,16 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "aster-dream",
+    "--lib",
+    "turns_form_tests",
+    "--",
+    "--test-threads=1"
+  ],
+  "exit_code": 0,
+  "wall_seconds": 70.872499459
+}

@@ -8,6 +8,7 @@ use async_trait::async_trait;
 use deadpool_postgres::{Manager, ManagerConfig, Pool, RecyclingMethod, Runtime, Timeouts};
 use tokio_postgres::NoTls;
 
+use crate::drivers::StatementGrid;
 use crate::{CompiledQuery, ExecuteResult, Executor, QueryResult, Transaction, TransactionManager};
 
 use super::metrics::PostgresPoolMetrics;
@@ -108,6 +109,53 @@ impl PostgresExecutor {
 
     pub const fn migration_options(&self) -> PostgresMigrationOptions {
         self.migration_options
+    }
+
+    /// Run one statement and return its result grid.
+    ///
+    /// A statement with no columns, such as `CREATE` or `INSERT`, returns an
+    /// empty grid after it runs. Application values still go through typed
+    /// queries.
+    pub async fn query_statement(
+        &self,
+        sql: impl Into<String>,
+    ) -> Result<StatementGrid, PostgresError> {
+        let sql = sql.into();
+        if sql.trim().is_empty() {
+            return Err(PostgresError::EmptyStatement);
+        }
+        let client = self.acquire().await?;
+        let statement = client.prepare(&sql).await.map_err(|source| {
+            let error = PostgresError::Database(source);
+            self.record_error(&error);
+            error
+        })?;
+        let columns: Vec<String> = statement
+            .columns()
+            .iter()
+            .map(|column| column.name().to_owned())
+            .collect();
+        if columns.is_empty() {
+            client.execute(&statement, &[]).await.map_err(|source| {
+                let error = PostgresError::Database(source);
+                self.record_error(&error);
+                error
+            })?;
+            return Ok(StatementGrid {
+                columns,
+                rows: Vec::new(),
+            });
+        }
+        let fetched = client.query(&statement, &[]).await.map_err(|source| {
+            let error = PostgresError::Database(source);
+            self.record_error(&error);
+            error
+        })?;
+        let mut rows = Vec::with_capacity(fetched.len());
+        for row in fetched {
+            rows.push(PostgresRow::decode(row)?.into_values());
+        }
+        Ok(StatementGrid { columns, rows })
     }
 
     /// Acquire a measured connection from the active pool generation.

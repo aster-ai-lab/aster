@@ -1,0 +1,110 @@
+{
+  "schema": "aster.development-stage-signing.v3",
+  "started_at_utc": "2026-10-19T20:09:56.704667+00:00",
+  "app": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app",
+  "state": "stopped_source_binary_hash_drift",
+  "launched": false,
+  "preparation_sha256": "e154daf666fd4fcf730a6a29fba13621c0cdf6145d4cbfb14ba3cc635793b268",
+  "build_report_sha256": "90af528bf0a37acf2e3b22556475bfd2301e4a0795869feac60cef6b70174598",
+  "script_sha256": "0837dc3bc91e1f5d8f43d29f03668ba0552bcbfc26e77386d23a30370f156fa3",
+  "commands": [],
+  "binaries": {
+    "aster-dream": {
+      "source_before": {
+        "path": "/Users/roylin/code/aster/target/debug/aster-dream",
+        "sha256": "70accee55841c85c309ff3564c4cdcd09402864973817c87c4205df391b27bdb",
+        "bytes": 178620672,
+        "mode": "0o755"
+      },
+      "copied_unsigned": {
+        "path": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/MacOS/AsterDream",
+        "sha256": "70accee55841c85c309ff3564c4cdcd09402864973817c87c4205df391b27bdb",
+        "bytes": 178620672,
+        "mode": "0o755"
+      },
+      "copy_operation": "shutil.copyfile(source,destination); chmod(0755)"
+    }
+  },
+  "old_app_before": [
+    {
+      "path": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/AsterDream.app/Contents/MacOS/AsterDream",
+      "sha256": "5ef74076bfee2c6a762dbfb910f5e08f2dae62739f63155a0b4a060f30472161",
+      "bytes": 176606864,
+      "mode": "0o755"
+    },
+    {
+      "path": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/AsterDream.app/Contents/Info.plist",
+      "sha256": "f6807149b8df2ac3a3892df4eb30c79fd36b5adddc5287b83ffd24ac77f6a4df",
+      "bytes": 1033,
+      "mode": "0o644"
+    }
+  ],
+  "host_capabilities_before": {
+    "path": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/host-capabilities.acl",
+    "sha256": "213428fb5061c855144ef5a551512eab0112ac6196ceef14abc5b35337161418",
+    "bytes": 80,
+    "mode": "0o600"
+  },
+  "plist_before": {
+    "path": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/Info.plist",
+    "sha256": "db82e336573c6de07c3a6813944b11c4a612e85d15bb1e4a0f0159805fbe7ba0",
+    "bytes": 1080,
+    "mode": "0o644"
+  },
+  "plist_values_before": {
+    "CFBundleDisplayName": "AsterDream",
+    "CFBundleExecutable": "AsterDream",
+    "CFBundleIconFile": "AsterDream",
+    "CFBundleIdentifier": "dev.a3s.studio.aster.task-orchestration-dev",
+    "CFBundleName": "AsterDream",
+    "CFBundlePackageType": "APPL",
+    "CFBundleShortVersionString": "0.1.1",
+    "CFBundleVersion": "0.1.1",
+    "LSEnvironment": {
+      "A3S_CONFIG": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/host-capabilities.acl",
+      "A3S_STUDIO_RENDERER_PORT": "4318",
+      "ASTER_SANDBOX_DIR": "/Users/roylin/code/aster/target/t013-assets-hardware"
+    },
+    "NSHighResolutionCapable": true
+  },
+  "template_source": {
+    "path": "/Users/roylin/code/aster/apps/work/src-tauri/src/macos_app.rs",
+    "sha256": "1ca03d13cfbe06e4f671c3146241f1a09d44b239146df96c0d1c6a6581670a3d",
+    "bytes": 18242,
+    "mode": "0o644"
+  },
+  "icon_before": {
+    "path": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/Resources/AsterDream.icns",
+    "sha256": "8bb605d6b8e785abf502ba42f7357246812404c2b50830f6dbfb760324a5902c",
+    "bytes": 540535,
+    "mode": "0o644"
+  },
+  "attempt_exit_code": 1,
+  "stopped_at_utc": "2026-10-19T20:10:07.370769+00:00",
+  "source_hash_drift": {
+    "aster-dream": {
+      "path": "/Users/roylin/code/aster/target/debug/aster-dream",
+      "actual_sha256": "70accee55841c85c309ff3564c4cdcd09402864973817c87c4205df391b27bdb",
+      "expected_sha256": "70accee55841c85c309ff3564c4cdcd09402864973817c87c4205df391b27bdb",
+      "bytes": 178620672
+    },
+    "a3s-code-acp": {
+      "path": "/Users/roylin/code/aster/target/debug/a3s-code-acp",
+      "actual_sha256": "21ddc2c18b58e9bdbf96fb469e29db841a9fd2b7ced38b66361ff738829f2dbe",
+      "expected_sha256": "b5a88347d4e6770d8ef2dc8f348ff6903674aeb30bc7726a38616d99670d72e0",
+      "bytes": 325315760
+    },
+    "a3s-office": {
+      "path": "/Users/roylin/code/aster/target/debug/a3s-office",
+      "actual_sha256": "652d0f04943e4c0c0c0c42dc8c3ffb855bb7fdc0e7740b492733a1a0157af1af",
+      "expected_sha256": "652d0f04943e4c0c0c0c42dc8c3ffb855bb7fdc0e7740b492733a1a0157af1af",
+      "bytes": 135876984
+    }
+  },
+  "binaries_copied": true,
+  "signed": false,
+  "copied_targets": [
+    "aster-dream"
+  ],
+  "note": "Stopped before ACP copy; only the hash-matching Work executable was copied. No plist completion or signing command ran."
+}

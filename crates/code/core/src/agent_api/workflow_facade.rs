@@ -38,9 +38,8 @@ impl AgentSession {
         );
     }
 
-    /// Re-register the model-calling skill tool with the effective runtime
-    /// budget. SearchSkills is refreshed as part of the same registration so
-    /// both tools continue to share the session's effective registry.
+    /// Re-register the model-calling Skill tool with the effective runtime
+    /// budget. The tool reads the session's effective registry.
     pub(super) fn refresh_skill_tools(&self) {
         let Some(skill_registry) = self.config.skill_registry.clone() else {
             tracing::warn!(

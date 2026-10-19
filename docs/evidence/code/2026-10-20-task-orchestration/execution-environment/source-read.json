@@ -1,0 +1,22 @@
+{
+  "schema": "aster.execution-environment-readonly.v1",
+  "method": "source and frozen asset symlink metadata only",
+  "source_sha256": {
+    "crates/code/core/src/agent/turn_context.rs": "9e9d79697f0131fb04a5b90da919dbf77b7040e76288705d0dd59538203e4a01",
+    "crates/code/core/src/fact_control.rs": "9a2d675d6d9839be8c70c15378b9558f1b113d723cd15eb6591bbeba43670520",
+    "crates/code/core/src/fact_control/model_call.rs": "dc984e1b0c71fd16dc5fb8053fe59ecb40068cf174e82de7371a03c97f685c9e",
+    "crates/code/core/src/tools/builtin/bash.rs": "3527e27364cfb09ebf5efe393f4dacae21018c301554285533c713216f2fd603",
+    "crates/code/core/src/sandbox.rs": "ada5851d157ba3e33240d6c9bcc9249d0160a6e310ccc8e5fbdcb14f2e57a71e",
+    "crates/code/core/src/sandbox/oci/bundle.rs": "3fc45fe09f056974e9931bd95cdc51552db3c0fd785a3991224a9fe5a7beb45c",
+    "crates/code/core/src/tools/presentation.rs": "44f7bba4eb0d3093aa4850b716a64335d235dd90ab7195de0f8af8d9d9677565",
+    "crates/code/core/src/tools/task.rs": "0eb10d2fbc1a7ac97d803065666875eed428a0483fd3cb9bddc13b2d3d426753",
+    "crates/code/core/src/agent_api/conversation_runtime/child_run.rs": "081b4b7f489071bec6b450f533ddbaa773cbd25143018f6cd5e10fcba6636970"
+  },
+  "independent_readonly_call_chain_review": "/root/runtime_evidence via collaboration message",
+  "source_modified": false,
+  "model_calls": 0,
+  "tests_run": 0,
+  "vm_starts": 0,
+  "provider_wire_capture": false,
+  "current_syntax_choice_causality_established": false
+}

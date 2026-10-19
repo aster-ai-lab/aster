@@ -1,0 +1,103 @@
+{
+  "sampled_frames": 3601,
+  "seek_errors": [],
+  "framing_errors": [],
+  "repeated_seek_pixels_identical": true,
+  "pixel_hashes": [
+    "e4068703daece259ea52190b32a3dde87f9bc68955f3a5efcb4d21b116de7fa5",
+    "861b83d41cb9430e277e948358f6f24615e1f31373db503fb12909d136ad80f5",
+    "e4068703daece259ea52190b32a3dde87f9bc68955f3a5efcb4d21b116de7fa5"
+  ],
+  "used_captures": [
+    {
+      "name": "30-home-final",
+      "sha256": "7c695c0c298df95e8c9c491e97651edbbc00afd72c1d39208aead5ff20192fd5"
+    },
+    {
+      "name": "02-task-prompt-clean",
+      "sha256": "9dcbdbf3ef1885cc242ea532a3888fe3636fcc35c35093253c0fb40e9be68ccb"
+    },
+    {
+      "name": "14-skill-detail",
+      "sha256": "2da59dd1144c86488987b435279fb1321d777fa0c98fc68543886e654ff0da60"
+    },
+    {
+      "name": "15-skill-installed",
+      "sha256": "45d1d005aaf0c5296e543f71433bab5f6c56db2ac7c65942410b24daf06066d7"
+    },
+    {
+      "name": "16-skill-call",
+      "sha256": "810b2ee2532b7df2f30d680e4fceab2f19d6b48b47b69bb1fad6518ba480905c"
+    },
+    {
+      "name": "27-data-verification",
+      "sha256": "b366036b971d2ef775b2d712c5f1cafb8f1f587cc8a381e7066c3731aadb526b"
+    },
+    {
+      "name": "04-html-preview",
+      "sha256": "e07ecd653f73b377314a208a443dda94115d2a4221d76fb4b879457f68559a41"
+    },
+    {
+      "name": "05-html-funnel",
+      "sha256": "273a3e80d64904d8d94c4017c24513a9fc62720b58386e188a98fb394d0e07e8"
+    },
+    {
+      "name": "06-markdown-preview",
+      "sha256": "ad32363b7c31e53036998aaff95d8fdcbb5ce873728d11934acd9bfcdf264eca"
+    },
+    {
+      "name": "26-csv-source",
+      "sha256": "619f8acd93bf310d1e1bf302d1978e78d5d30a755e83516728764f95181fc98f"
+    },
+    {
+      "name": "07-agent-market",
+      "sha256": "d33058a166a8cda2a48f93d1b37f6fa170ba38f85d96df04bcb9e487ccbbedff"
+    },
+    {
+      "name": "08-agent-installed",
+      "sha256": "faa98777727e36a3c235a9e96c079aa7dc4551dc5a959bf9498f17dada86bb6d"
+    },
+    {
+      "name": "09-agent-select",
+      "sha256": "5a8bcb1cd0ce2d8f6b82ef602c1e0d409a94d93c66d70208f6aa7d630357e799"
+    },
+    {
+      "name": "28-agent-use-prompt",
+      "sha256": "ceba090ad318f94509d9e7a0dc72331f68c6304055916322fd38246ce5d9d2e4"
+    },
+    {
+      "name": "10-connector-detail",
+      "sha256": "bd8762b0298f37fd5f75cc15edb02c926c4d133bcda36e48c9f7b6176d3d2973"
+    },
+    {
+      "name": "11-connector-installed",
+      "sha256": "0851c8e8a86571167864844aa027b42be29b15044304a986839385cf3a62210c"
+    },
+    {
+      "name": "12-connector-task",
+      "sha256": "7031898ea22eee911ce08f18fa0cb8a177a18e4baa0ef12ba22aa80c6f9b2be1"
+    },
+    {
+      "name": "18-automation-config",
+      "sha256": "42c1cae9d8b393ce221123fa68c0d7f7f814f1ad04deb8262b74a520d9e698ec"
+    },
+    {
+      "name": "19-automation-result",
+      "sha256": "ae4d886c32259fb9f34169f26cbf9c37da7b2db0a8bd39278106e54939e99a5b"
+    },
+    {
+      "name": "21-messages",
+      "sha256": "eacfa2eebbd48dccad7b843da0680600012871219ae0c9c89aca3ea22e181304"
+    },
+    {
+      "name": "22-team",
+      "sha256": "443045ba560e0d251e47b9f229aa0af1e180d3d8209fc4d082e97d1b728aed29"
+    },
+    {
+      "name": "24-team-roles",
+      "sha256": "dc78f1a32dec5287ba3b641f1f4c439187bc2e5917e30ccecfa90536a0e6328d"
+    }
+  ],
+  "plugin_pages": 0,
+  "logo_matches_source": true
+}

@@ -110,6 +110,7 @@ fn base_agent_config(config: &CodeConfig) -> AgentConfig {
             .unwrap_or(AgentConfig::default().max_parallel_tasks)
             .max(1),
         llm_api_timeout_ms: config.llm_api_timeout_ms,
+        tool_presentation_profile: config.tool_presentation_profile.clone().unwrap_or_default(),
         auto_delegation,
         ..AgentConfig::default()
     }
@@ -187,24 +188,5 @@ async fn connect_global_mcp(
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn expand_home_leaves_non_home_sources_unchanged() {
-        assert_eq!(expand_home("provider \"x\" {}"), "provider \"x\" {}");
-    }
-
-    #[test]
-    fn load_code_config_rejects_json_inline_config() {
-        let err = load_code_config("{\"default_model\":\"x\"}".to_string()).unwrap_err();
-        assert!(err.to_string().contains("JSON config is not supported"));
-    }
-
-    #[tokio::test]
-    async fn agent_bootstrap_allows_a_host_supplied_session_client() {
-        build_agent_from_config(CodeConfig::default())
-            .await
-            .expect("bootstrap should defer model validation to the session");
-    }
-}
+#[path = "agent_bootstrap_tests.rs"]
+mod tests;

@@ -1,0 +1,11 @@
+{
+  "command": [
+    "cargo",
+    "fmt",
+    "--all",
+    "--",
+    "--check"
+  ],
+  "exit_code": 1,
+  "elapsed_ms": 16347.424
+}

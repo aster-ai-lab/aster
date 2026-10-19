@@ -1,0 +1,7 @@
+{
+  "source": "async function run(ctx) { await ctx.readFile('before.txt',{limit:1}); while (true) {} }",
+  "allowed_tools": ["read"],
+  "limits": {"timeoutMs": 30000, "maxToolCalls": 8, "maxOutputBytes": 4096},
+  "observed": "Two isolated attempts timed out at 40s with cancel_requested=false, one main provider request and stored program approval-requested. This does not prove active-child cancellation or VM settlement. ACP uses a multi-thread runtime with a LocalSet; QuickJS runs in spawn_blocking. The next fixture uses observable nested validation approval after the completed read instead of waiting for an unobservable busy loop.",
+  "qualification": "Not passed; no assertion that the busy loop executed or that its interrupt handler was exercised."
+}

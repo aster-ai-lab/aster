@@ -1,0 +1,17 @@
+{
+  "work-tests": {
+    "source": "/Users/roylin/code/aster/target/debug/deps/a3s_studio_lib-9c7d06d5a17857ce",
+    "frozen": "/Users/roylin/code/aster/target/qualification/t030-cua-20261020/work-tests",
+    "sha256": "5221893e6ab6d951e477720518ebe0bb8fb6ccbc18b9da661c38e7bb86c3ab22"
+  },
+  "a3s-code-acp": {
+    "source": "/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/AsterDream-TaskOptimization-R2.app/Contents/MacOS/a3s-code-acp",
+    "frozen": "/Users/roylin/code/aster/target/qualification/t030-cua-20261020/a3s-code-acp",
+    "sha256": "61a06ab66f5f43ea89b2d1a909da5ef146bef2802b9526e75e8792a61d9e09f7"
+  },
+  "a3s-office": {
+    "source": "/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/AsterDream-TaskOptimization-R2.app/Contents/MacOS/a3s-office",
+    "frozen": "/Users/roylin/code/aster/target/qualification/t030-cua-20261020/a3s-office",
+    "sha256": "31c6caec6406e0aa1039cabff0651583784b642b493d6f1f8d8cfa082fac0a25"
+  }
+}

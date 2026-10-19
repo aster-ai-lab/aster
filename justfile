@@ -19,6 +19,11 @@ code *args: build
 build-companions:
     cargo build --locked -p a3s-code-acp -p a3s-office-cli
 
+# Build Work and the two companion executables from this workspace.
+build-work:
+    cargo build --locked -p a3s-code-acp -p a3s-office-cli
+    cargo build --locked -p aster-dream
+
 # Build Studio with its ACP and Office companions in the shared target directory.
 build-studio:
     cargo build --locked -p a3s-code-acp -p a3s-office-cli
@@ -46,7 +51,13 @@ studio $slug='':
 build-studio-release:
     cd apps/studio && pnpm package:host
 
+# Start AsterDream with renderer hot reload on 127.0.0.1:4320.
+dev:
+    cd apps/work && just dev
 
+# Rebuild Work, then start that debug AsterDream in place of an older primary instance.
+[macos]
+work: build-work
     #!/usr/bin/env python3
     import ctypes
     import json
@@ -56,7 +67,7 @@ build-studio-release:
     import subprocess
     import time
 
-    names = {}
+    names = {"aster-dream", "aster-dream.exe", "AsterDream"}
     # Primary instance only. Other tenants under dev.a3s.studio stay up.
     support = Path(os.environ.get(
         "ASTER_WORK_SUPPORT",
@@ -123,7 +134,9 @@ build-studio-release:
         ["cargo", "metadata", "--locked", "--offline", "--no-deps", "--format-version", "1"],
     ))
     # cargo leaves an unchanged binary's mtime behind, so a newer .app must not win.
-            raise SystemExit(f"Build did not produce {executable}")
+    executable = (Path(metadata["target_directory"]) / "debug" / "aster-dream").resolve()
+    if not executable.is_file():
+        raise SystemExit(f"Build did not produce {executable}")
     if os.environ.get("ASTER_WORK_DRY_RUN") == "1":
         text = str(executable)
         log = os.environ.get("ASTER_OPEN_LOG")
@@ -133,7 +146,7 @@ build-studio-release:
             print(text, flush=True)
         raise SystemExit(0)
 
-    roots = [Path(metadata["target_directory"])]
+    roots = [Path(metadata["target_directory"]), Path("apps/work/src-tauri/target")]
     areas = []
     for root in [*roots, support]:
         try:
@@ -152,10 +165,6 @@ build-studio-release:
     devnull = os.open(os.devnull, os.O_RDWR)
     for fd in (0, 1, 2):
         os.dup2(devnull, fd)
-    # AsterDream's page. Studio keeps 4318.
-    port = os.environ.get("STUDIO_RENDERER_PORT") or os.environ.get("A3S_STUDIO_RENDERER_PORT") or "4320"
-    os.environ["STUDIO_RENDERER_PORT"] = port
-    os.environ["A3S_STUDIO_RENDERER_PORT"] = port
     os.execv(str(executable), [str(executable)])
 
 # Middleware plus the host processes that exist in this tree.

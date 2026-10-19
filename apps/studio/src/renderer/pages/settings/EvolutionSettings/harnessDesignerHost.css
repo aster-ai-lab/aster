@@ -1,0 +1,263 @@
+/* The console canvas rule locks the document while this page is open. Keep Studio's own panes in charge. */
+body:has(.a3s-harness-designer) {
+  overflow: hidden;
+}
+
+body:has(.a3s-harness-designer) :where(#root, #app) {
+  min-height: 0;
+}
+
+/* The authoring header is not mounted. The stage offset must not keep a 48px gap. */
+.a3s-harness-designer .a3s-workflow-playground {
+  --workflow-header-height: 0px;
+}
+
+.a3s-harness-designer .a3s-workflow-playground.is-view-only .react-flow__handle {
+  pointer-events: none;
+}
+
+.a3s-harness-designer .is-view-only .react-flow__node .a3s-workflow-node {
+  cursor: grab;
+}
+
+.a3s-harness-designer .is-view-only .react-flow__node.dragging .a3s-workflow-node {
+  cursor: grabbing;
+}
+
+.a3s-harness-designer .a3s-workflow-canvas > .a3s-workflow-arrange {
+  position: absolute;
+  z-index: 5;
+  top: 12px;
+  right: 12px;
+}
+
+.harness-version-select {
+  border-color: var(--color-border);
+  background-color: #fff;
+  color: var(--color-ink);
+  font-size: 12px;
+}
+
+.harness-bar {
+  display: flex;
+  shrink: 0;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid var(--color-border);
+  background: #fff;
+}
+
+.harness-bar__lead {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.harness-bar__kicker,
+.harness-bar__note,
+.harness-bar__meta,
+.harness-bar__hint,
+.harness-bar [data-ui='settings.evolution.role'] {
+  margin: 0;
+  color: var(--color-ink-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.harness-bar__scene {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.harness-bar__scene > span {
+  color: var(--color-ink-muted);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+}
+
+.harness-scenario {
+  width: 100%;
+  min-height: 72px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--color-ink);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.harness-scenario:focus {
+  border-color: #c9d7ff;
+  outline: 2px solid rgb(36 79 206 / 16%);
+  outline-offset: 1px;
+}
+
+.harness-bar__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+}
+
+.harness-bar__tools {
+  display: flex;
+  shrink: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 18px;
+}
+
+@media (max-width: 760px) {
+  .harness-bar {
+    flex-direction: column;
+  }
+
+  .harness-bar__tools {
+    justify-content: flex-start;
+    padding-top: 0;
+  }
+}
+
+.harness-diff {
+  position: absolute;
+  z-index: 7;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  width: min(360px, calc(100% - 24px));
+  max-height: calc(100% - 108px);
+  flex-direction: column;
+  gap: 8px;
+  overflow: auto;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 10px 28px rgb(23 23 23 / 8%);
+}
+
+.harness-diff h2,
+.harness-diff h3,
+.harness-diff p,
+.harness-diff ol {
+  margin: 0;
+}
+
+.harness-diff h3 {
+  color: var(--color-ink-muted);
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.harness-diff h2 {
+  color: var(--color-ink);
+  font-size: 14px;
+}
+
+.harness-diff__pair,
+.harness-diff__kernel,
+.harness-diff li span {
+  color: var(--color-ink-muted);
+  font-size: 12px;
+}
+
+.harness-diff ol {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0;
+  list-style: none;
+}
+
+.harness-diff li {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  padding: 4px 8px;
+  border-radius: 8px;
+  color: var(--color-ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+}
+
+.harness-diff li[data-diff='added'] {
+  background: #eef8f2;
+}
+
+.harness-diff li[data-diff='removed'] {
+  background: #fdeeee;
+}
+
+.harness-diff li[data-diff='same'] {
+  background: #f6f7f9;
+}
+
+.harness-diff li[data-diff='optimized'] {
+  background: #eef3ff;
+}
+
+@media (max-width: 720px) {
+  .harness-diff {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: auto;
+    max-height: 42vh;
+    margin: 8px 8px 0;
+  }
+}
+
+.a3s-harness-designer .a3s-workflow-arrange {
+  display: inline-flex;
+  height: 34px;
+  max-width: calc(100% - 24px);
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 9px;
+  background: var(--color-bg-elevated);
+  box-shadow: var(--shadow-card);
+  align-items: center;
+  gap: 6px;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.a3s-harness-designer .a3s-workflow-arrange svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.a3s-harness-designer .a3s-workflow-arrange:hover:not(:disabled) {
+  background: var(--color-surface);
+}
+
+.a3s-harness-designer .a3s-workflow-arrange:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+@media (max-width: 760px) {
+  .a3s-harness-designer .a3s-workflow-canvas .react-flow__minimap {
+    display: block;
+  }
+
+  .a3s-harness-designer .a3s-workflow-canvas .react-flow__controls {
+    right: 12px;
+    bottom: 12px;
+  }
+}

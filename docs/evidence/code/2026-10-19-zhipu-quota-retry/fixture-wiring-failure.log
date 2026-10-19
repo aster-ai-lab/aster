@@ -1,0 +1,58 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/event/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on build directory
+   Compiling lopdf v0.42.0
+   Compiling a3s-vec v0.1.8 (/Users/roylin/code/aster/crates/vec)
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2m 13s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-c0d272b9e3c2afca)
+
+running 3 tests
+zhipu quota fixture: provider=glm status=429 streaming=false calls=0
+
+thread 'llm::openai::tests::zhipu_quota::zhipu_1113_stops_both_transports_without_waiting' (47007559) panicked at crates/code/core/src/llm/openai/tests/zhipu_quota.rs:89:13:
+assertion `left == right` failed: glm streaming=false: LLM API request failed after 3 attempts. Last status: 503 Service Unavailable Body: network error: HTTP request transport failed: timed out: error sending request for url (https://open.bigmodel.cn/api/paas/v4/chat/completions): client error (Connect): tcp connect error: deadline has elapsed
+  left: 0
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+zhipu quota fixture: provider=openai status=429 streaming=false calls=0
+
+thread 'llm::openai::tests::zhipu_quota::zhipu_code_does_not_change_other_providers_or_other_statuses' (47007560) panicked at crates/code/core/src/llm/openai/tests/zhipu_quota.rs:139:13:
+assertion `left == right` failed: openai streaming=false: LLM API request failed after 3 attempts. Last status: 503 Service Unavailable Body: network error: HTTP request transport failed: timed out: error sending request for url (https://api.openai.com/v1/chat/completions): client error (Connect): operation timed out
+  left: 0
+ right: 3
+zhipu quota fixture: provider=glm status=429 streaming=false calls=0
+
+thread 'llm::openai::tests::zhipu_quota::zhipu_transient_unknown_and_malformed_429_keep_existing_retries' (47007561) panicked at crates/code/core/src/llm/openai/tests/zhipu_quota.rs:117:13:
+assertion `left == right` failed: streaming=false body={"error":{"code":"1302","message":"rate limited"}}: LLM API request failed after 3 attempts. Last status: 503 Service Unavailable Body: network error: HTTP request transport failed: timed out: error sending request for url (https://open.bigmodel.cn/api/paas/v4/chat/completions): client error (Connect): tcp connect error: deadline has elapsed
+  left: 0
+ right: 3
+test llm::openai::tests::zhipu_quota::zhipu_transient_unknown_and_malformed_429_keep_existing_retries ... FAILED
+test llm::openai::tests::zhipu_quota::zhipu_code_does_not_change_other_providers_or_other_statuses ... FAILED
+test llm::openai::tests::zhipu_quota::zhipu_1113_stops_both_transports_without_waiting ... FAILED
+
+failures:
+
+failures:
+    llm::openai::tests::zhipu_quota::zhipu_1113_stops_both_transports_without_waiting
+    llm::openai::tests::zhipu_quota::zhipu_code_does_not_change_other_providers_or_other_statuses
+    llm::openai::tests::zhipu_quota::zhipu_transient_unknown_and_malformed_429_keep_existing_retries
+
+test result: FAILED. 0 passed; 3 failed; 0 ignored; 0 measured; 5110 filtered out; finished in 0.05s
+
+error: test failed, to rerun pass `-p a3s-code-core --lib`

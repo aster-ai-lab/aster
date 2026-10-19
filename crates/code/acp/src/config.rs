@@ -635,6 +635,7 @@ fn apply_default_model_env(config: &mut CodeConfig) -> Result<()> {
 
 #[cfg(test)]
 mod tests {
+    mod execution_capabilities;
     mod goal_control;
     use super::*;
     use std::io::Write;

@@ -1,0 +1,189 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:15365) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/local-product-scope.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-local-product-scope.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/work
+
+ ❯ |renderer| src/renderer/components/composer/__tests__/ComposerCore.test.tsx (4 tests | 3 failed) 160ms
+   ❯ ComposerCore (4)
+     × keeps a scoped Stop reachable through waiting composer layers (undefined) 40ms
+     × keeps a scoped Stop reachable through waiting composer layers ({"id":"tool-permission:approval-1","priority":90}) 5ms
+     × keeps a scoped Stop reachable through waiting composer layers ({"id":"ask-user-question:approval-2","priority":100}) 4ms
+ ❯ |renderer| src/renderer/components/composer/__tests__/useToolApprovalComposerOverrides.test.ts (15 tests | 3 failed) 42ms
+   ❯ useToolApprovalComposerOverrides (9)
+     × recovers only the current native approval when an older same-anchor overlay hides its persisted part 3ms
+     × does not revive a persisted pending approval without a current native receiver 1ms
+     × does not recover a pending approval from another message or tool call 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerCore.test.tsx > ComposerCore > keeps a scoped Stop reachable through waiting composer layers (undefined)
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerCore.test.tsx > ComposerCore > keeps a scoped Stop reachable through waiting composer layers ({"id":"tool-permission:approval-1","priority":90})
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerCore.test.tsx > ComposerCore > keeps a scoped Stop reachable through waiting composer layers ({"id":"ask-user-question:approval-2","priority":100})
+TestingLibraryElementError: Unable to find an accessible element with the role "button" and name "chat.input.pause"
+
+Here are the accessible roles:
+
+  textbox:
+
+  Name "waiting input":
+  [36m<textarea[39m
+    [33maria-label[39m=[32m"waiting input"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"relative w-full"[39m
+      [33mdata-composer-core[39m=[32m""[39m
+      [33mdata-ui[39m=[32m"chat.composer-core"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"relative w-full"[39m
+        [33mdata-composer-active-layer[39m=[32m""[39m
+        [33mdata-composer-primary-layer[39m=[32m""[39m
+      [36m>[39m
+        [36m<textarea[39m
+          [33maria-label[39m=[32m"waiting input"[39m
+        [36m/>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/renderer/components/composer/__tests__/ComposerCore.test.tsx:61:27
+     59|       </ComposerContextProvider>
+     60|     )
+     61|     const button = screen.getByRole('button', { name: 'chat.input.paus…
+       |                           ^
+     62|     expect(button.closest('[inert]')).toBeNull()
+     63|     fireEvent.click(button)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/useToolApprovalComposerOverrides.test.ts > useToolApprovalComposerOverrides > recovers only the current native approval when an older same-anchor overlay hides its persisted part
+AssertionError: expected [] to deeply equal [ 'tool-permission:approval-next' ]
+
+- Expected
++ Received
+
+- [
+-   "tool-permission:approval-next",
+- ]
++ []
+
+ ❯ src/renderer/components/composer/__tests__/useToolApprovalComposerOverrides.test.ts:137:59
+    135|     )
+    136|
+    137|     expect(result.current.map((override) => override.id)).toEqual(['to…
+       |                                                           ^
+    138|   })
+    139|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/useToolApprovalComposerOverrides.test.ts > useToolApprovalComposerOverrides > does not revive a persisted pending approval without a current native receiver
+AssertionError: expected [ { …(3) } ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "id": "tool-permission:approval-read",
++     "priority": 90,
++     "render": [Function render],
++   },
++ ]
+
+ ❯ src/renderer/components/composer/__tests__/useToolApprovalComposerOverrides.test.ts:149:28
+    147|       })
+    148|     )
+    149|     expect(result.current).toEqual([])
+       |                            ^
+    150|   })
+    151|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/useToolApprovalComposerOverrides.test.ts > useToolApprovalComposerOverrides > does not recover a pending approval from another message or tool call
+AssertionError: expected [ { …(3) } ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "id": "tool-permission:approval-read",
++     "priority": 90,
++     "render": [Function render],
++   },
++ ]
+
+ ❯ src/renderer/components/composer/__tests__/useToolApprovalComposerOverrides.test.ts:162:28
+    160|       })
+    161|     )
+    162|     expect(result.current).toEqual([])
+       |                            ^
+    163|   })
+    164|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  6 failed | 13 passed (19)
+   Start at  20:55:57
+   Duration  3.25s (import 50%, transform 26%, environment 15%, tests 5%, setup 4%)
+

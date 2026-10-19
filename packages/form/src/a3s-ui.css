@@ -1,0 +1,5 @@
+/* Convenience aggregate (no in-tree consumers; kept for external use).
+ * The legacy design layer (@a3s-lab/ui-legacy/cdn.css) was deleted with its
+ * tree — the consolidated design system's generated theme replaces it. */
+@import "@a3s-lab/ui/styles/theme.css";
+@import "./styles.css";

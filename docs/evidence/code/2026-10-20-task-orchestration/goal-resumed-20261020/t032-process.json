@@ -1,0 +1,11 @@
+{
+  "utc": "2026-10-19T22:03:41.322407+00:00",
+  "host_pid": 45095,
+  "acp_pid": 49288,
+  "actual_mapped_acp": "/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/AsterDream-TaskOptimization-R2.app/Contents/MacOS/a3s-code-acp",
+  "acp_sha256": "61a06ab66f5f43ea89b2d1a909da5ef146bef2802b9526e75e8792a61d9e09f7",
+  "matches_stage_and_controlled_fixture": true,
+  "working_directory": [
+    "/Users/roylin/code/tasks/T01-t032-cua-01"
+  ]
+}

@@ -76,7 +76,7 @@ impl Tool for LsTool {
                     "Failed to read directory {}: {}",
                     ctx.workspace_services.display_path(&workspace_path),
                     e
-                )))
+                )));
             }
         };
 

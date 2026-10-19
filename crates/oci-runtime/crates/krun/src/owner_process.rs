@@ -62,6 +62,23 @@ pub(crate) fn start(
     Ok(OwnerMonitor { vm_completion })
 }
 
+#[cfg(all(target_os = "macos", target_arch = "aarch64"))]
+pub(crate) fn start_guest_command(owner_pid: NonZeroU32) -> io::Result<()> {
+    let owner = open(owner_pid)?;
+    thread::Builder::new()
+        .name("a3s-oci-guest-owner".into())
+        .spawn(move || {
+            wait_for_owner_exit(&owner);
+            terminate_current_shim();
+        })?;
+    Ok(())
+}
+
+#[cfg(all(target_os = "macos", target_arch = "aarch64"))]
+pub(crate) fn start_guest_worker(owner_pid: NonZeroU32) -> io::Result<()> {
+    start_guest_command(owner_pid)
+}
+
 #[cfg(all(target_os = "windows", target_arch = "x86_64"))]
 type ExactOwner = OwnedHandle;
 
@@ -456,3 +473,7 @@ mod tests {
         assert!(completion.wait(Duration::ZERO));
     }
 }
+
+#[cfg(all(test, target_os = "macos", target_arch = "aarch64"))]
+#[path = "owner_process_macos_tests.rs"]
+mod macos_tests;

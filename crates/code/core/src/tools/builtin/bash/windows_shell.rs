@@ -23,6 +23,7 @@ pub(crate) fn host_powershell_candidates(
 }
 
 /// Model-facing note on the host shell. `None` means no PowerShell was found.
+#[cfg(test)]
 pub(crate) fn windows_shell_guidance(shell: Option<&std::path::Path>) -> String {
     let Some(shell) = shell else {
         return "Shell: no PowerShell was found, so the `bash` tool cannot run commands on this machine.".to_string();

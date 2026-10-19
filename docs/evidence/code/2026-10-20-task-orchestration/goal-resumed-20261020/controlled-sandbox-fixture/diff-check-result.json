@@ -1,0 +1,14 @@
+{
+  "cwd": "/Users/roylin/code/aster",
+  "argv": [
+    "git",
+    "-C",
+    "apps/work",
+    "diff",
+    "--check",
+    "--",
+    "src-tauri/src/agent_plane/local_acp_delivery_tests.rs",
+    "src-tauri/src/agent_plane/local_acp_sandbox_tests.rs"
+  ],
+  "exit_code": 0
+}

@@ -1,0 +1,8 @@
+
+running 3 tests
+test agent_plane::turns::question_recovery_tests::an_expired_question_closes_its_persisted_card_and_refuses_a_late_answer ... ok
+test agent_plane::turns::question_recovery_tests::process_recovery_closes_only_unanswered_cards_and_preserves_their_source ... ok
+test agent_plane::turns::question_recovery_tests::reattaching_a_waiting_question_keeps_its_owner_and_accepts_one_explicit_answer ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 840 filtered out; finished in 0.64s
+

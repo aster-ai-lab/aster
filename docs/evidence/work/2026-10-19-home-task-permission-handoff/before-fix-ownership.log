@@ -1,0 +1,120 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:38448) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/local-product-scope.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-local-product-scope.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/work
+
+ ❯ |renderer| src/renderer/pages/agents/__tests__/workbenchPermissionPostures.test.ts (3 tests | 3 failed) 117ms
+   ❯ permission ownership (3)
+     × isolates an explicit draft and task choice by exact member and session 4ms
+     × does not import a local or legacy elevated choice into a signed-in member 1ms
+     × does not apply a remembered home choice to an unrelated task with no explicit record 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/workbenchPermissionPostures.test.ts > permission ownership > isolates an explicit draft and task choice by exact member and session
+AssertionError: expected { mode: 'bypassPermissions', …(1) } to be null
+
+- Expected:
+null
+
++ Received:
+{
+  "mode": "bypassPermissions",
+  "planFirst": true,
+}
+
+ ❯ src/renderer/pages/agents/__tests__/workbenchPermissionPostures.test.ts:27:62
+     25|     writeTaskPermission('task-a', { mode: 'auto', planFirst: false }, …
+     26|     expect(readTaskPermission('draft', storage, 'member-a')).toEqual({…
+     27|     expect(readTaskPermission('draft', storage, 'member-b')).toBeNull()
+       |                                                              ^
+     28|     expect(readTaskPermission('task-a', storage, 'member-b')).toBeNull…
+     29|     expect(readTaskPermission('task-b', storage, 'member-a')).toBeNull…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/workbenchPermissionPostures.test.ts > permission ownership > does not import a local or legacy elevated choice into a signed-in member
+AssertionError: expected 'bypassPermissions' to be null
+
+- Expected:
+null
+
++ Received:
+"bypassPermissions"
+
+ ❯ src/renderer/pages/agents/__tests__/workbenchPermissionPostures.test.ts:43:60
+     41|       JSON.stringify({ draft: { mode: 'bypassPermissions', planFirst: …
+     42|     )
+     43|     expect(readPendingPermissionMode(storage, 'member-b')).toBeNull()
+       |                                                            ^
+     44|     expect(readTaskPermission('draft', storage, 'member-b')).toBeNull()
+     45|     expect(displayedTaskPermissionMode('draft', 'member-b', storage)).…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/workbenchPermissionPostures.test.ts > permission ownership > does not apply a remembered home choice to an unrelated task with no explicit record
+AssertionError: expected 'bypassPermissions' to be 'default' // Object.is equality
+
+Expected: "default"
+Received: "bypassPermissions"
+
+ ❯ src/renderer/pages/agents/__tests__/workbenchPermissionPostures.test.ts:52:81
+     50|     writePendingPermissionMode('bypassPermissions', storage, 'member-a…
+     51|     expect(displayedTaskPermissionMode('draft', 'member-a', storage)).…
+     52|     expect(displayedTaskPermissionMode('unselected-task', 'member-a', …
+       |                                                                                 ^
+     53|     expect(displayedTaskPermissionMode('draft', 'member-b', storage)).…
+     54|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed (3)
+   Start at  23:37:20
+   Duration  565ms (environment 48%, tests 24%, transform 17%, setup 9%, worker 1%, import 1%)
+

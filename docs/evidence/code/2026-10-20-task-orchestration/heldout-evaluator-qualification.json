@@ -1,0 +1,41 @@
+{
+  "schema": "aster.heldout-evaluator-qualification.v1",
+  "scope": "tool self-check only; no model, VM, Cargo or matrix Run",
+  "source": "docs/evidence/code/2026-10-20-task-orchestration/evaluate_heldout.py",
+  "source_sha256": "926611c802516679c39fe48cec4a856166c2b4798e4e74ade7c74c449a480b90",
+  "selfcheck": "heldout-evaluator-selfcheck-final.json",
+  "selfcheck_sha256": "0fd65bb4bbf88de63d39d2c3d9aba96d8a72cf34b972eb8bf220ef1ff2157f1a",
+  "passed": true,
+  "correct_reference_passed": 5,
+  "original_bug_passed": 1,
+  "incomplete_forged_payload_passed": 0,
+  "development_failures": [
+    {
+      "attempt": "v4",
+      "exit_code": 1,
+      "error": "AttributeError: __enter__ for Python 3.9 kqueue context manager",
+      "report_written": false,
+      "elapsed_seconds": null
+    },
+    {
+      "attempt": "v5",
+      "report": "heldout-evaluator-selfcheck-v5.json",
+      "passed": false,
+      "error": "PermissionError: [Errno 1] Operation not permitted"
+    },
+    {
+      "attempt": "v6",
+      "report": "heldout-evaluator-selfcheck-v6.json",
+      "passed": false,
+      "error": "PermissionError: [Errno 1] Operation not permitted"
+    }
+  ],
+  "resolution": "Trusted stdlib supervisor keeps private group leader alive until cleanup and reports actual worker status over an FD unavailable to tested worker. Group cleanup precedes reaping supervisor.",
+  "limits": [
+    "Functional evaluation, not an adversarial Python sandbox or authenticated result attestation; tested module shares driver interpreter.",
+    "Strict case-specific payloads reject incomplete success stubs, not all deliberate same-interpreter forgery.",
+    "Private-group kill and direct supervisor reap do not qualify detached descendants.",
+    "No live held-out model results or non-macOS execution qualification.",
+    "Static import audit does not prove absence of dynamic third-party imports."
+  ]
+}

@@ -16,7 +16,8 @@ mod wire;
 pub use assets::{bge_status, BgeInstallSource, BgeRuntimeStatus, Family};
 pub use install::{install_family, uninstall_family, InstallManifest, ManifestFile};
 pub use wire::{
-    EmbeddingRequest, EmbeddingResponse, RerankRequest, RerankResponse, RerankResult, Usage,
+    EmbeddingItem, EmbeddingRequest, EmbeddingResponse, RerankRequest, RerankResponse,
+    RerankResult, Usage,
 };
 
 #[cfg(any(feature = "bge-m3", feature = "bge-reranker-v2-m3"))]
@@ -29,7 +30,7 @@ mod embedding;
 mod rerank;
 
 #[cfg(feature = "bge-m3")]
-pub use embedding::EmbeddingClient;
+pub use embedding::{EmbeddingClient, EmbeddingOperation, EmbeddingOutput};
 
 #[cfg(feature = "bge-reranker-v2-m3")]
 pub use rerank::RerankClient;

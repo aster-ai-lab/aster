@@ -153,7 +153,7 @@ impl Tool for BatchTool {
                 _ => {
                     return Ok(ToolOutput::error(
                         "max_concurrency must be a positive integer",
-                    ))
+                    ));
                 }
             },
             None => DEFAULT_BATCH_CONCURRENCY,

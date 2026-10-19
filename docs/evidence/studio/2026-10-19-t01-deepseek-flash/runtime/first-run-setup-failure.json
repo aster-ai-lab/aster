@@ -1,0 +1,190 @@
+{
+  "schema": "aster.t01.runtime-evidence.v1",
+  "observedAt": "2026-10-19T14:46:54.862791+00:00",
+  "sessionId": "01a1549e-3e04-7085-9a52-483bc97e92fe",
+  "executionId": "01a1549e-3f13-723c-bc56-76866caa39a5",
+  "coreSessionId": "16ff0268-973c-4400-984a-5f7f2f1f0ce3",
+  "workspace": "/Users/roylin/.a3s/projects/T01/01a1549e-3e04-7085-9a52-483bc97e92fe",
+  "start": "2026-10-19T14:43:39.411Z",
+  "end": "2026-10-19T14:43:53.137Z",
+  "durationSeconds": 13.726,
+  "hostExecution": {
+    "status": "error",
+    "executionId": "01a1549e-3f13-723c-bc56-76866caa39a5",
+    "anchorMessageId": "01a1549e-3f13-723c-bc56-76866caa39a5",
+    "observedAt": "2026-10-19T14:43:53.137Z"
+  },
+  "modelId": "deepseek::deepseek-flash",
+  "provider": "deepseek",
+  "actualConfiguredModelIdentifier": "deepseek-flash",
+  "endpointEvidence": {
+    "runtimeConfigPath": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/agent-plane/runtime/01a1549e-3e04-7085-9a52-483bc97e92fe.acl",
+    "mtimeUtc": "2026-10-19T14:43:39.415199+00:00",
+    "safeSelectedFields": [
+      "default_model = \"deepseek/deepseek-flash\"",
+      "providers \"deepseek\" {",
+      "base_url = \"https://api.deepseek.com\"",
+      "models \"deepseek-flash\" {}"
+    ],
+    "assessment": "This exact session launch config uses https://api.deepseek.com, not a loopback fixture. This audit did not capture provider HTTP response headers or a network trace."
+  },
+  "toolCounts": {
+    "ls": 6,
+    "search": 4,
+    "read": 2
+  },
+  "toolResultCount": 12,
+  "toolSuccessCount": 11,
+  "toolFailureCount": 1,
+  "tools": [
+    {
+      "id": "call_00_ET_aaLIqOR8xlDaPD48HoZu4697",
+      "name": "ls",
+      "input": "{\"path\":\".\",\"target_directory\":\".\"}",
+      "output": "Directory: /Users/roylin/.a3s/projects/T01/01a1549e-3e04-7085-9a52-483bc97e92fe\n\ndir         96B  .a3s/\ndir         96B  meta/\n\n2 of 2 entries\n",
+      "state": "success"
+    },
+    {
+      "id": "call_01_ET_p96AONoRJoAqUiCnJ4GH1684",
+      "name": "search",
+      "input": "{\"mode\":\"glob\",\"pattern\":\"**/*\",\"query\":\"**/*\",\"sort\":\"path\"}",
+      "output": "meta/a3s-session.json\n\n1 of 1 file(s) shown",
+      "state": "success"
+    },
+    {
+      "id": "call_00_UIqRtjHwZXGxZwTJfkFH6765",
+      "name": "ls",
+      "input": "{\"path\":\".a3s\",\"target_directory\":\".a3s\"}",
+      "output": "Directory: /Users/roylin/.a3s/projects/T01/01a1549e-3e04-7085-9a52-483bc97e92fe/.a3s\n\ndir         96B  sessions/\n\n1 of 1 entries\n",
+      "state": "success"
+    },
+    {
+      "id": "call_00_ET_YwUR1WPbxhZJBJCFOuCY7462",
+      "name": "read",
+      "input": "{\"file_path\":\"meta/a3s-session.json\"}",
+      "output": "Read completed successfully; session metadata body omitted from evaluation evidence.",
+      "state": "success"
+    },
+    {
+      "id": "call_00_KgeWnTOnJPtMYJJgb1Y39587",
+      "name": "ls",
+      "input": "{\"path\":\"..\",\"target_directory\":\"..\"}",
+      "output": "Workspace boundary check failed for tool 'ls' path '..': Workspace boundary violation: path escapes workspace",
+      "state": "error"
+    },
+    {
+      "id": "call_00_BhBTx0WDOJGiMXR5KhvL2892",
+      "name": "ls",
+      "input": "{\"limit\":100,\"path\":\".a3s/sessions\",\"target_directory\":\".a3s/sessions\"}",
+      "output": "Directory: /Users/roylin/.a3s/projects/T01/01a1549e-3e04-7085-9a52-483bc97e92fe/.a3s/sessions\n\ndir         96B  2026-10-19/\n\n1 of 1 entries\n",
+      "state": "success"
+    },
+    {
+      "id": "call_00_ET_7E4C2rypGuabczoRbUrg3584",
+      "name": "ls",
+      "input": "{\"path\":\".a3s/sessions/2026-10-19\",\"target_directory\":\".a3s/sessions/2026-10-19\"}",
+      "output": "Directory: /Users/roylin/.a3s/projects/T01/01a1549e-3e04-7085-9a52-483bc97e92fe/.a3s/sessions/2026-10-19\n\ndir        192B  16ff0268-973c-4400-984a-5f7f2f1f0ce3/\n\n1 of 1 entries\n",
+      "state": "success"
+    },
+    {
+      "id": "call_01_iwx42TODeUeWUKwDMi5M2777",
+      "name": "search",
+      "input": "{\"mode\":\"glob\",\"pattern\":\"**/input/**\",\"query\":\"**/input/**\"}",
+      "output": "No files found matching pattern: **/input/**",
+      "state": "success"
+    },
+    {
+      "id": "call_00_ftlPv9P29YVbq5FTDakP8363",
+      "name": "search",
+      "input": "{\"mode\":\"glob\",\"pattern\":\"**/instruction.md\",\"query\":\"**/instruction.md\"}",
+      "output": "No files found matching pattern: **/instruction.md",
+      "state": "success"
+    },
+    {
+      "id": "call_00_CWE7LBD4tgaoLTNFgimk0204",
+      "name": "search",
+      "input": "{\"mode\":\"glob\",\"pattern\":\".a3s/sessions/2026-10-19/**/*\",\"query\":\".a3s/sessions/2026-10-19/**/*\"}",
+      "output": "No files found matching pattern: .a3s/sessions/2026-10-19/**/*",
+      "state": "success"
+    },
+    {
+      "id": "call_00_ET_AOd2V9avBgOjQW5yHTFa2319",
+      "name": "ls",
+      "input": "{\"path\":\".a3s/sessions/2026-10-19/16ff0268-973c-4400-984a-5f7f2f1f0ce3\",\"target_directory\":\".a3s/sessions/2026-10-19/16ff0268-973c-4400-984a-5f7f2f1f0ce3\"}",
+      "output": "Directory: /Users/roylin/.a3s/projects/T01/01a1549e-3e04-7085-9a52-483bc97e92fe/.a3s/sessions/2026-10-19/16ff0268-973c-4400-984a-5f7f2f1f0ce3\n\nfile     53.5KB  16ff0268-973c-4400-984a-5f7f2f1f0ce3.jsonl\nfile         0B  run-owner-16ff0268-973c-4400-984a-5f7f2f1f0ce3.lock\nfile       293B  session.json\nfile         0B  writer.lock\n\n4 of 4 entries\n",
+      "state": "success"
+    },
+    {
+      "id": "call_00_ET_GKxmCONiZhOfqAOT9gYJ8011",
+      "name": "read",
+      "input": "{\"file_path\":\".a3s/sessions/2026-10-19/16ff0268-973c-4400-984a-5f7f2f1f0ce3/session.json\"}",
+      "output": "Read completed successfully; session metadata body omitted from evaluation evidence.",
+      "state": "success"
+    }
+  ],
+  "effectLog": {
+    "path": "/Users/roylin/.a3s/projects/T01/01a1549e-3e04-7085-9a52-483bc97e92fe/.a3s/sessions/2026-10-19/16ff0268-973c-4400-984a-5f7f2f1f0ce3/16ff0268-973c-4400-984a-5f7f2f1f0ce3.jsonl",
+    "eventCount": 41,
+    "eventTypes": {
+      "a3s.standing-context": 2,
+      "a3s.work-policy.admitted": 1,
+      "user.message": 1,
+      "context.sections": 1,
+      "model.turn": 11,
+      "tool.prepared": 12,
+      "tool.result": 12,
+      "turn.complete": 1
+    },
+    "terminal": "narrative"
+  },
+  "stopEvidence": {
+    "hostError": {
+      "message": "Agent stopped before completion: max_turn_requests",
+      "name": "Error"
+    },
+    "forcedStopPersisted": false,
+    "inferredForcedStop": "read_only_evidence",
+    "inferenceBasis": "Core effect seq40 terminal model decision text is exactly the 200-character READ_ONLY_EVIDENCE_FINALIZATION fallback emitted by the read_only_final + provider-returned-tool branch (fact_control.rs). The raw forced enum itself is not persisted. This branch match plus 12 distinct read-only results, no mutation and no child distinguishes it from tool_budget."
+  },
+  "classification": "Invalid setup for model coding evaluation: instruction.md and input are outside the effective session workspace. No pipeline.py/results.json was produced; no execution capability was exercised.",
+  "sandboxEvidence": {
+    "time": "2026-10-19T14:43:39.611915Z",
+    "message": "macOS OCI Host sandbox is unavailable; native execution remains refused",
+    "error": "sandbox companion directory is unavailable: No such file or directory (os error 2)",
+    "bashCalled": false
+  },
+  "app": {
+    "path": "/Applications/AsterDream.app",
+    "identifier": "dev.a3s.studio",
+    "version": "0.1.0",
+    "build": "0.1.0",
+    "hostSha256": "383c036a5f8ae2667879733ead9ccfc6712c7f4eab817c51269e1dd8e2ca3487",
+    "bundledAcpSha256": "ec9e37cc3682191eda2e49ecc97b8b6975ea79b839c821a0058ec6e9b5558fd1",
+    "actualAcpExecutablePath": "Not captured. Current launcher source prioritizes workspace target/debug/a3s-code-acp over bundled ACP; do not attribute the bundled hash to the actual child without process evidence.",
+    "processObservation": {
+      "observedAt": "2026-10-19T14:48:51.437412+00:00",
+      "hostPid": 64516,
+      "hostExecutable": "/Applications/AsterDream.app/Contents/MacOS/aster-dream",
+      "liveChildProcesses": [],
+      "liveAcpProcessFound": false,
+      "inspection": "ps pid,ppid,comm only; no full arguments or environment read"
+    }
+  },
+  "sources": {
+    "hostMessages": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/agent-plane/messages/01a1549e-3e04-7085-9a52-483bc97e92fe.json",
+    "hostExecutions": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/agent-plane/session-executions.json",
+    "hostLog": "/Users/roylin/Library/Logs/AsterDream/aster-dream-20261019-224246-64516.log",
+    "acpLog": "/Users/roylin/.a3s/logs/a3s-code-acp.20745.log"
+  },
+  "privacy": "Whitelisted metadata and tool evidence only. Credentials, authorization headers, model reasoning, message snapshots and resume tokens are excluded.",
+  "streamFinalMismatch": {
+    "effectSequence": 40,
+    "effectDecisionKind": "text",
+    "effectFinalText": "Read-only evidence gathering has no further effect on the task. Stop gathering evidence and return the best complete final answer now using only the tool results already present. Do not call any tool.",
+    "effectFinalTextCharacters": 200,
+    "hostStreamTextCharacters": 489,
+    "hostStreamTextShape": "One DSML-only search invocation; no human-readable prose. Tool arguments are not recopied here.",
+    "hostContainsFinalizationFallback": false,
+    "sourceMechanism": "ACP handles raw TextDelta by setting saw_text=true. AgentEvent::End emits settled text only when should_emit_end_text(saw_text, text), currently !saw_text && !text.is_empty(). The raw stream therefore prevents delivery of the changed settled fallback. Renderer parses DSML into a tool row and strips the protocol from prose."
+  }
+}

@@ -1,0 +1,2092 @@
+Diff in /Users/roylin/code/aster/apps/billing/src/architecture.rs:369:
+                 let source = production_source(&source);
+                 for token in tokens {
+                     if source.contains(token) {
+[31m-                        hits.push(format!(
+(B[m[31m-                            "{} references {}",
+(B[m[31m-                            relative.display(),
+(B[m[31m-                            token
+(B[m[31m-                        ));
+(B[m[32m+                        hits.push(format!("{} references {}", relative.display(), token));
+(B[m                     }
+                 }
+             }
+Diff in /Users/roylin/code/aster/apps/runtime/src/auth.rs:4:
+ 
+ pub const DEV_CAPABILITY_KEY: &str = "a3s_sk_devlocalgateway00000000000001";
+ 
+[31m-const ALLOWED: &[&str] = &[
+(B[m[31m-    DEV_CAPABILITY_KEY,
+(B[m[31m-    "a3s_sk_devlocalgateway00000000000002",
+(B[m[31m-];
+(B[m[32m+const ALLOWED: &[&str] = &[DEV_CAPABILITY_KEY, "a3s_sk_devlocalgateway00000000000002"];
+(B[m 
+ #[derive(Debug, Clone)]
+ pub struct AuthOk {
+Diff in /Users/roylin/code/aster/apps/runtime/src/envelope.rs:29:
+     ok_envelope_msg(data, request_id, "OK")
+ }
+ 
+[31m-pub fn ok_envelope_msg<T: Serialize>(
+(B[m[31m-    data: T,
+(B[m[31m-    request_id: &str,
+(B[m[31m-    message: &str,
+(B[m[31m-) -> ApiEnvelope<T> {
+(B[m[32m+pub fn ok_envelope_msg<T: Serialize>(data: T, request_id: &str, message: &str) -> ApiEnvelope<T> {
+(B[m     ApiEnvelope {
+         success: true,
+         code: 0,
+Diff in /Users/roylin/code/aster/apps/runtime/src/http/router.rs:115:
+             "/v1/api/services/{kind}/invoke/{*sku}",
+             post(service_invoke),
+         )
+[31m-        .route(
+(B[m[31m-            "/v1/api/__local/vault/materialize",
+(B[m[31m-            post(vault_materialize),
+(B[m[31m-        )
+(B[m[32m+        .route("/v1/api/__local/vault/materialize", post(vault_materialize))
+(B[m         .route("/v1/api/__local/vault/status", get(vault_status))
+         .route("/v1/api/__local/vault/receipts", get(vault_receipts))
+[31m-        .route(
+(B[m[31m-            "/v1/api/__local/queue/vault-apply",
+(B[m[31m-            post(vault_apply),
+(B[m[31m-        )
+(B[m[31m-        .route(
+(B[m[31m-            "/v1/api/__local/upstream-secrets",
+(B[m[31m-            put(upstream_secrets),
+(B[m[31m-        )
+(B[m[32m+        .route("/v1/api/__local/queue/vault-apply", post(vault_apply))
+(B[m[32m+        .route("/v1/api/__local/upstream-secrets", put(upstream_secrets))
+(B[m         // aliases without /v1 prefix (Console loopback)
+         .route("/__local/vault/materialize", post(vault_materialize))
+         .route("/__local/vault/status", get(vault_status))
+Diff in /Users/roylin/code/aster/apps/runtime/src/http/router.rs:140:
+         .with_state(state)
+ }
+ 
+[31m-fn json_ok<T: serde::Serialize>(status: StatusCode, body: ApiEnvelope<T>, request_id: &str) -> Response {
+(B[m[32m+fn json_ok<T: serde::Serialize>(
+(B[m[32m+    status: StatusCode,
+(B[m[32m+    body: ApiEnvelope<T>,
+(B[m[32m+    request_id: &str,
+(B[m[32m+) -> Response {
+(B[m     let mut res = (status, Json(body)).into_response();
+     if let Ok(v) = HeaderValue::from_str(request_id) {
+         res.headers_mut().insert("x-request-id", v);
+Diff in /Users/roylin/code/aster/apps/runtime/src/http/router.rs:155:
+ }
+ 
+ fn require_auth(headers: &HeaderMap, request_id: &str) -> Result<crate::auth::AuthOk, Response> {
+[31m-    authenticate(headers).map_err(|e| {
+(B[m[31m-        json_err(err_envelope(
+(B[m[31m-            request_id,
+(B[m[31m-            401,
+(B[m[31m-            e.message,
+(B[m[31m-            e.code,
+(B[m[31m-        ))
+(B[m[31m-    })
+(B[m[32m+    authenticate(headers).map_err(|e| json_err(err_envelope(request_id, 401, e.message, e.code)))
+(B[m }
+ 
+ fn is_loopback(headers: &HeaderMap) -> bool {
+Diff in /Users/roylin/code/aster/apps/runtime/src/http/router.rs:501:
+             .filter(|value| !value.is_empty())
+             .map(str::to_string)
+             .unwrap_or_else(|| request_id.clone());
+[31m-        match deliver_platform_model(&state.http, &auth.key, &model, &transaction_id, &body).await
+(B[m[31m-        {
+(B[m[32m+        match deliver_platform_model(&state.http, &auth.key, &model, &transaction_id, &body).await {
+(B[m             Ok(delivery) if delivery.listed && delivery.available => {
+                 record_ok_once(
+                     &state,
+Diff in /Users/roylin/code/aster/apps/runtime/src/http/router.rs:517:
+                 .await;
+                 return json_ok(
+                     StatusCode::OK,
+[31m-                    ok_envelope(json!({ "body": delivery.body, "available": true }), &request_id),
+(B[m[32m+                    ok_envelope(
+(B[m[32m+                        json!({ "body": delivery.body, "available": true }),
+(B[m[32m+                        &request_id,
+(B[m[32m+                    ),
+(B[m                     &request_id,
+                 );
+             }
+Diff in /Users/roylin/code/aster/apps/runtime/src/http/router.rs:539:
+                             "reason": reason,
+                         })),
+                         request_id: request_id.clone(),
+[31m-                        timestamp: chrono::Utc::now().to_rfc3339_opts(
+(B[m[31m-                            chrono::SecondsFormat::Millis,
+(B[m[31m-                            true,
+(B[m[31m-                        ),
+(B[m[32m+                        timestamp: chrono::Utc::now()
+(B[m[32m+                            .to_rfc3339_opts(chrono::SecondsFormat::Millis, true),
+(B[m                         errors: None,
+                         error_code: Some("inference.unavailable".into()),
+                     },
+Diff in /Users/roylin/code/aster/apps/runtime/src/http/router.rs:640:
+             .unwrap_or("env_local")
+             .to_string(),
+     };
+[31m-    let secret_ref = row
+(B[m[31m-        .get("secret_ref")
+(B[m[31m-        .and_then(|v| v.as_str())
+(B[m[31m-        .unwrap_or("");
+(B[m[32m+    let secret_ref = row.get("secret_ref").and_then(|v| v.as_str()).unwrap_or("");
+(B[m     let version = row.get("version").and_then(|v| v.as_i64()).unwrap_or(0);
+     let api_key = row.get("apiKey").and_then(|v| v.as_str()).unwrap_or("");
+     let base_url = row.get("baseUrl").and_then(|v| v.as_str());
+Diff in /Users/roylin/code/aster/apps/runtime/src/http/router.rs:997:
+ 
+     async fn fake_deliver(Json(body): Json<Value>) -> Json<Value> {
+         let sku = body.get("sku").and_then(|item| item.as_str()).unwrap_or("");
+[31m-        let echoed = body.get("body").and_then(|item| item.as_str()).unwrap_or("");
+(B[m[32m+        let echoed = body
+(B[m[32m+            .get("body")
+(B[m[32m+            .and_then(|item| item.as_str())
+(B[m[32m+            .unwrap_or("");
+(B[m         let (listed, available, reason, response_body) = if sku.contains("idle") {
+             (true, false, "no worker", "")
+         } else if sku.contains("ready") {
+Diff in /Users/roylin/code/aster/apps/runtime/src/http/router.rs:1050:
+     }
+ 
+     fn accepted_units(usage: &Value) -> (usize, f64) {
+[31m-        let items = usage["data"]["items"].as_array().cloned().unwrap_or_default();
+(B[m[32m+        let items = usage["data"]["items"]
+(B[m[32m+            .as_array()
+(B[m[32m+            .cloned()
+(B[m[32m+            .unwrap_or_default();
+(B[m         let ok: Vec<_> = items
+             .iter()
+             .filter(|item| item["status"] == "ok")
+Diff in /Users/roylin/code/aster/apps/runtime/src/http/router.rs:1057:
+             .cloned()
+             .collect();
+[31m-        let units = ok.iter().map(|item| item["units"].as_f64().unwrap_or(0.0)).sum();
+(B[m[32m+        let units = ok
+(B[m[32m+            .iter()
+(B[m[32m+            .map(|item| item["units"].as_f64().unwrap_or(0.0))
+(B[m[32m+            .sum();
+(B[m         (ok.len(), units)
+     }
+ 
+Diff in /Users/roylin/code/aster/apps/runtime/src/http/router.rs:1221:
+         .await;
+         assert_eq!(status, StatusCode::NOT_FOUND);
+         assert_eq!(agent["error_code"], "route.not_ready");
+[31m-        assert!(
+(B[m[31m-            agent["message"]
+(B[m[31m-                .as_str()
+(B[m[31m-                .unwrap_or("")
+(B[m[31m-                .contains("support-triage")
+(B[m[31m-        );
+(B[m[32m+        assert!(agent["message"]
+(B[m[32m+            .as_str()
+(B[m[32m+            .unwrap_or("")
+(B[m[32m+            .contains("support-triage"));
+(B[m 
+         server.abort();
+         let _ = std::fs::remove_dir_all(dir);
+Diff in /Users/roylin/code/aster/apps/runtime/src/http/router.rs:1233:
+     }
+ }
+[32m+
+(B[mDiff in /Users/roylin/code/aster/apps/runtime/src/input_contract.rs:7:
+ }
+ 
+ pub fn find_illegal_work_field(input: &serde_json::Map<String, Value>) -> Option<String> {
+[31m-    input
+(B[m[31m-        .keys()
+(B[m[31m-        .find(|k| is_illegal_work_field_key(k))
+(B[m[31m-        .cloned()
+(B[m[32m+    input.keys().find(|k| is_illegal_work_field_key(k)).cloned()
+(B[m }
+ 
+ pub fn str_field(input: &serde_json::Map<String, Value>, key: &str) -> Option<String> {
+Diff in /Users/roylin/code/aster/apps/runtime/src/input_contract.rs:21:
+     }
+ }
+ 
+[31m-pub fn require_str(
+(B[m[31m-    input: &serde_json::Map<String, Value>,
+(B[m[31m-    key: &str,
+(B[m[31m-) -> Result<String, String> {
+(B[m[32m+pub fn require_str(input: &serde_json::Map<String, Value>, key: &str) -> Result<String, String> {
+(B[m     str_field(input, key).ok_or_else(|| format!("{key} is required"))
+ }
+ 
+Diff in /Users/roylin/code/aster/apps/runtime/src/providers/platform.rs:59:
+     }
+     let data = value.get("data").unwrap_or(&value);
+     Ok(PlatformDelivery {
+[31m-        listed: data.get("listed").and_then(|item| item.as_bool()).unwrap_or(false),
+(B[m[32m+        listed: data
+(B[m[32m+            .get("listed")
+(B[m[32m+            .and_then(|item| item.as_bool())
+(B[m[32m+            .unwrap_or(false),
+(B[m         available: data
+             .get("available")
+             .and_then(|item| item.as_bool())
+Diff in /Users/roylin/code/aster/apps/runtime/src/usage.rs:92:
+     }
+ 
+     pub fn record(&mut self, input: UsageInput) -> UsageRecord {
+[31m-        let amount_usd =
+(B[m[31m-            ((input.units * input.unit_price_usd) * 1_000_000.0).round() / 1_000_000.0;
+(B[m[32m+        let amount_usd = ((input.units * input.unit_price_usd) * 1_000_000.0).round() / 1_000_000.0;
+(B[m         let row = UsageRecord {
+             id: format!(
+                 "usage_{}_{}",
+Diff in /Users/roylin/code/aster/apps/runtime/src/vault.rs:240:
+         }
+ 
+         let secret_ref = secret_ref.unwrap();
+[31m-        let material = self.sealed.iter().find(|r| {
+(B[m[31m-            r.secret_ref == secret_ref && r.version == version && r.provider == provider
+(B[m[31m-        });
+(B[m[32m+        let material = self
+(B[m[32m+            .sealed
+(B[m[32m+            .iter()
+(B[m[32m+            .find(|r| r.secret_ref == secret_ref && r.version == version && r.provider == provider);
+(B[m         if material.is_none() {
+             let receipt = VaultApplyReceipt {
+                 receipt_id,
+Diff in /Users/roylin/code/aster/apps/runtime/src/vault.rs:362:
+                 self.apply_job(scope.clone(), provider, None, 0, None);
+                 return Ok(());
+             }
+[31m-            let entry = value
+(B[m[31m-                .as_object()
+(B[m[31m-                .ok_or_else(|| format!("{} must be {{ apiKey, baseUrl }} or null", provider.as_str()))?;
+(B[m[32m+            let entry = value.as_object().ok_or_else(|| {
+(B[m[32m+                format!(
+(B[m[32m+                    "{} must be {{ apiKey, baseUrl }} or null",
+(B[m[32m+                    provider.as_str()
+(B[m[32m+                )
+(B[m[32m+            })?;
+(B[m             let api_key = entry
+                 .get("apiKey")
+                 .and_then(|v| v.as_str())
+Diff in /Users/roylin/code/aster/apps/runtime/src/vault.rs:377:
+             let secret_ref = format!("inline://{}/{now}", provider.as_str());
+             let version = 1i64;
+             let base = entry.get("baseUrl").and_then(|v| v.as_str());
+[31m-            self.materialize(
+(B[m[31m-                scope.clone(),
+(B[m[31m-                provider,
+(B[m[31m-                &secret_ref,
+(B[m[31m-                version,
+(B[m[31m-                api_key,
+(B[m[31m-                base,
+(B[m[31m-            )?;
+(B[m[32m+            self.materialize(scope.clone(), provider, &secret_ref, version, api_key, base)?;
+(B[m             self.apply_job(scope.clone(), provider, Some(&secret_ref), version, base);
+             Ok(())
+         };
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent_tests.rs:819:
+ fn question_options_are_not_permission_grants() {
+     let options = question_permission_options(&[" left ".into(), "  ".into(), "right".into()]);
+     assert_eq!(options.len(), 2);
+[31m-    assert!(
+(B[m[31m-        options
+(B[m[31m-            .iter()
+(B[m[31m-            .all(|option| option.kind == acp::PermissionOptionKind::RejectOnce)
+(B[m[31m-    );
+(B[m[31m-    assert!(
+(B[m[31m-        options
+(B[m[31m-            .iter()
+(B[m[31m-            .all(|option| option.kind != acp::PermissionOptionKind::AllowOnce)
+(B[m[31m-    );
+(B[m[32m+    assert!(options
+(B[m[32m+        .iter()
+(B[m[32m+        .all(|option| option.kind == acp::PermissionOptionKind::RejectOnce));
+(B[m[32m+    assert!(options
+(B[m[32m+        .iter()
+(B[m[32m+        .all(|option| option.kind != acp::PermissionOptionKind::AllowOnce));
+(B[m     assert_eq!(options[0].name, "left");
+     assert_eq!(options[1].name, "right");
+ }
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent_tests.rs:1636:
+     let long = "x".repeat(4_001);
+     assert_eq!(tool_call_content("read", None, &long).len(), 1);
+     assert!(edit_diff("read", Some(&edit)).is_none());
+[31m-    assert!(
+(B[m[31m-        edit_diff(
+(B[m[31m-            "write",
+(B[m[31m-            Some(&serde_json::json!({"path": "a", "content": "z"}))
+(B[m[31m-        )
+(B[m[31m-        .is_some()
+(B[m[31m-    );
+(B[m[32m+    assert!(edit_diff(
+(B[m[32m+        "write",
+(B[m[32m+        Some(&serde_json::json!({"path": "a", "content": "z"}))
+(B[m[32m+    )
+(B[m[32m+    .is_some());
+(B[m     assert!(tool_raw_output("read", None, "out", 0).is_none());
+     assert!(tool_raw_output("shell", None, "out", 1).is_some());
+ 
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent_tests.rs:1712:
+         answer_from_permission_outcome(&acp::RequestPermissionOutcome::Cancelled, &options)
+             .is_none()
+     );
+[31m-    assert!(
+(B[m[31m-        answer_from_permission_outcome(
+(B[m[31m-            &acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(
+(B[m[31m-                acp::PermissionOptionId::new("allow-once")
+(B[m[31m-            )),
+(B[m[31m-            &options
+(B[m[31m-        )
+(B[m[31m-        .is_none()
+(B[m[31m-    );
+(B[m[31m-    assert!(
+(B[m[31m-        answer_from_permission_outcome(
+(B[m[31m-            &acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(
+(B[m[31m-                acp::PermissionOptionId::new("question-0")
+(B[m[31m-            )),
+(B[m[31m-            &options
+(B[m[31m-        )
+(B[m[31m-        .is_none()
+(B[m[31m-    );
+(B[m[32m+    assert!(answer_from_permission_outcome(
+(B[m[32m+        &acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(
+(B[m[32m+            acp::PermissionOptionId::new("allow-once")
+(B[m[32m+        )),
+(B[m[32m+        &options
+(B[m[32m+    )
+(B[m[32m+    .is_none());
+(B[m[32m+    assert!(answer_from_permission_outcome(
+(B[m[32m+        &acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(
+(B[m[32m+            acp::PermissionOptionId::new("question-0")
+(B[m[32m+        )),
+(B[m[32m+        &options
+(B[m[32m+    )
+(B[m[32m+    .is_none());
+(B[m     assert_eq!(
+         answer_from_permission_outcome(
+             &acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent_tests.rs:1772:
+ 
+ #[tokio::test]
+ async fn tui_turn_renders_every_pager_event() {
+[31m-    use a3s_code_core::TokenUsage;
+(B[m     use a3s_code_core::planning::{Complexity, ExecutionPlan, Task, TaskStatus};
+     use a3s_code_core::verification::VerificationSummary;
+[32m+    use a3s_code_core::TokenUsage;
+(B[m 
+     let root = std::env::temp_dir().join(format!("a3s-acp-events-{}", uuid::Uuid::new_v4()));
+     std::fs::create_dir_all(&root).expect("workspace");
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent_tests.rs:2207:
+     let workspace = std::path::Path::new("/tmp/a3s-watch-skills-workspace");
+     let dirs = watched_skill_dirs(workspace);
+     assert!(dirs.iter().any(|dir| dir == &workspace.join("skills")));
+[31m-    assert!(
+(B[m[31m-        dirs.iter()
+(B[m[31m-            .any(|dir| dir == &workspace.join(".a3s").join("skills"))
+(B[m[31m-    );
+(B[m[32m+    assert!(dirs
+(B[m[32m+        .iter()
+(B[m[32m+        .any(|dir| dir == &workspace.join(".a3s").join("skills")));
+(B[m     let home = std::env::var_os("HOME").or_else(|| std::env::var_os("USERPROFILE"));
+     let Some(home) = home.filter(|value| !value.is_empty()) else {
+         return;
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent_tests.rs:2224:
+             personal.display()
+         );
+     }
+[31m-    assert!(
+(B[m[31m-        dirs.iter()
+(B[m[31m-            .all(|dir| !dir.components().any(|part| part.as_os_str() == ".grok"))
+(B[m[31m-    );
+(B[m[32m+    assert!(dirs
+(B[m[32m+        .iter()
+(B[m[32m+        .all(|dir| !dir.components().any(|part| part.as_os_str() == ".grok")));
+(B[m }
+ 
+ #[test]
+Diff in /Users/roylin/code/aster/crates/code/acp/src/host_context.rs:278:
+ 
+     #[test]
+     fn completion_attestation_requires_a_known_explicit_host_mode() {
+[31m-        assert!(
+(B[m[31m-            studio_host_from_meta(None)
+(B[m[31m-                .unwrap()
+(B[m[31m-                .completion_attestation
+(B[m[31m-                .is_none()
+(B[m[31m-        );
+(B[m[32m+        assert!(studio_host_from_meta(None)
+(B[m[32m+            .unwrap()
+(B[m[32m+            .completion_attestation
+(B[m[32m+            .is_none());
+(B[m         let parsed = meta(serde_json::json!({"a3sHost":{"completionAttestation":"disk_content"}}));
+         assert_eq!(
+             studio_host_from_meta(Some(&parsed))
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/agent_loop_runtime/owned_preparation_tests.rs:13:
+ use async_trait::async_trait;
+ use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
+ use std::sync::{Mutex, Weak};
+[31m-use tokio::sync::{Semaphore, mpsc};
+(B[m[32m+use tokio::sync::{mpsc, Semaphore};
+(B[m use tokio_util::sync::CancellationToken;
+ 
+ #[derive(Default)]
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/agent_loop_runtime/owned_preparation_tests.rs:298:
+         &first
+     ));
+     assert!(owned.fact.ceiling.governance().budget_guard_required());
+[31m-    assert!(
+(B[m[31m-        owned
+(B[m[31m-            .command
+(B[m[31m-            .as_ref()
+(B[m[31m-            .unwrap()
+(B[m[31m-            .ceiling
+(B[m[31m-            .governance()
+(B[m[31m-            .budget_guard_required()
+(B[m[31m-    );
+(B[m[32m+    assert!(owned
+(B[m[32m+        .command
+(B[m[32m+        .as_ref()
+(B[m[32m+        .unwrap()
+(B[m[32m+        .ceiling
+(B[m[32m+        .governance()
+(B[m[32m+        .budget_guard_required());
+(B[m     assert_eq!(client.0.load(Ordering::SeqCst), 0);
+     assert_eq!(observed_guard.0.load(Ordering::SeqCst), 0);
+     let base: Arc<dyn crate::budget::BudgetGuard> = Arc::new(Guard::default());
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/agent_loop_runtime/owned_preparation_tests.rs:383:
+     session
+         .set_permission_policy(crate::permissions::PermissionPolicy::new().allow("owned_probe"))
+         .unwrap();
+[31m-    assert!(
+(B[m[31m-        owned
+(B[m[31m-            .construction
+(B[m[31m-            .inputs
+(B[m[31m-            .config
+(B[m[31m-            .prompt_slots
+(B[m[31m-            .style
+(B[m[31m-            .is_none()
+(B[m[31m-    );
+(B[m[31m-    assert!(
+(B[m[31m-        owned
+(B[m[31m-            .construction
+(B[m[31m-            .inputs
+(B[m[31m-            .config
+(B[m[31m-            .prompt_slots
+(B[m[31m-            .output_language
+(B[m[31m-            .is_none()
+(B[m[31m-    );
+(B[m[32m+    assert!(owned
+(B[m[32m+        .construction
+(B[m[32m+        .inputs
+(B[m[32m+        .config
+(B[m[32m+        .prompt_slots
+(B[m[32m+        .style
+(B[m[32m+        .is_none());
+(B[m[32m+    assert!(owned
+(B[m[32m+        .construction
+(B[m[32m+        .inputs
+(B[m[32m+        .config
+(B[m[32m+        .prompt_slots
+(B[m[32m+        .output_language
+(B[m[32m+        .is_none());
+(B[m     assert_eq!(
+         owned.construction.inputs.config.planning_mode,
+         crate::prompts::PlanningMode::Disabled
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/agent_loop_runtime/owned_preparation_tests.rs:485:
+     assert_eq!(command_pin.projection.stamp(), &before);
+     // A direct compatibility mutation after capture cannot change either map.
+     session.command_registry().unregister("help");
+[31m-    assert!(
+(B[m[31m-        owned
+(B[m[31m-            .fact
+(B[m[31m-            .runtime
+(B[m[31m-            .command_registry()
+(B[m[31m-            .list()
+(B[m[31m-            .iter()
+(B[m[31m-            .any(|(n, _)| *n == "help")
+(B[m[31m-    );
+(B[m[31m-    assert!(
+(B[m[31m-        command_pin
+(B[m[31m-            .runtime
+(B[m[31m-            .command_registry()
+(B[m[31m-            .list()
+(B[m[31m-            .iter()
+(B[m[31m-            .any(|(n, _)| *n == "help")
+(B[m[31m-    );
+(B[m[32m+    assert!(owned
+(B[m[32m+        .fact
+(B[m[32m+        .runtime
+(B[m[32m+        .command_registry()
+(B[m[32m+        .list()
+(B[m[32m+        .iter()
+(B[m[32m+        .any(|(n, _)| *n == "help"));
+(B[m[32m+    assert!(command_pin
+(B[m[32m+        .runtime
+(B[m[32m+        .command_registry()
+(B[m[32m+        .list()
+(B[m[32m+        .iter()
+(B[m[32m+        .any(|(n, _)| *n == "help"));
+(B[m     // Both unique lease values remain independently consumable by original admit.
+     let OwnedPreparationCapture {
+         fact,
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/agent_loop_runtime/owned_preparation_tests.rs:544:
+         fixture("owned-poison", super::super::SessionOptions::new()).await;
+     let boundary = session.close_handle.execution_admission_boundary();
+     let original = session.close_handle.clone();
+[31m-    assert!(
+(B[m[31m-        std::thread::spawn(move || {
+(B[m[31m-            let _held = original.immediate_extension_mutation.lock().unwrap();
+(B[m[31m-            panic!("poison original boundary");
+(B[m[31m-        })
+(B[m[31m-        .join()
+(B[m[31m-        .is_err()
+(B[m[31m-    );
+(B[m[32m+    assert!(std::thread::spawn(move || {
+(B[m[32m+        let _held = original.immediate_extension_mutation.lock().unwrap();
+(B[m[32m+        panic!("poison original boundary");
+(B[m[32m+    })
+(B[m[32m+    .join()
+(B[m[32m+    .is_err());
+(B[m     assert!(boundary.closed_under_original_boundary());
+     assert!(capture_owned_preparation(&session, CancellationToken::new(), false).is_err());
+ }
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/agent_loop_runtime/owned_preparation_tests.rs:815:
+         mcp_servers: vec![],
+         context_report: None,
+     };
+[31m-    assert!(
+(B[m[31m-        owned
+(B[m[31m-            .command
+(B[m[31m-            .as_ref()
+(B[m[31m-            .unwrap()
+(B[m[31m-            .runtime
+(B[m[31m-            .command_registry()
+(B[m[31m-            .dispatch("ordinary input", &ctx)
+(B[m[31m-            .is_none()
+(B[m[31m-    );
+(B[m[32m+    assert!(owned
+(B[m[32m+        .command
+(B[m[32m+        .as_ref()
+(B[m[32m+        .unwrap()
+(B[m[32m+        .runtime
+(B[m[32m+        .command_registry()
+(B[m[32m+        .dispatch("ordinary input", &ctx)
+(B[m[32m+        .is_none());
+(B[m     assert_eq!(provider.returned.load(Ordering::SeqCst), 0);
+     let OwnedPreparationCapture {
+         command,
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/agent_loop_runtime/owned_preparation_tests.rs:1060:
+     receiver.commit(boundary).await;
+     actual.await.unwrap();
+     assert_eq!(refusing.0.load(Ordering::SeqCst), 1);
+[31m-    assert!(
+(B[m[31m-        refusing
+(B[m[31m-            .load("owned-write-failure")
+(B[m[31m-            .await
+(B[m[31m-            .unwrap()
+(B[m[31m-            .is_none()
+(B[m[31m-    );
+(B[m[32m+    assert!(refusing
+(B[m[32m+        .load("owned-write-failure")
+(B[m[32m+        .await
+(B[m[32m+        .unwrap()
+(B[m[32m+        .is_none());
+(B[m }
+ 
+ #[tokio::test]
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/capability_runtime_tests/access_projection.rs:52:
+     let turn = runtime.begin_turn(1).unwrap();
+     let ctx =
+         ToolContext::new(session.workspace.clone()).with_capability_context(turn.tool_context());
+[31m-    assert!(
+(B[m[31m-        tool.execute(
+(B[m[32m+    assert!(tool
+(B[m[32m+        .execute(
+(B[m             &serde_json::json!({}),
+             &ToolContext::new(session.workspace.clone())
+         )
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/capability_runtime_tests/access_projection.rs:60:
+         .await
+[31m-        .is_err()
+(B[m[31m-    );
+(B[m[32m+        .is_err());
+(B[m     assert!(executions.lock().unwrap().is_empty());
+     assert!(tool.execute(&serde_json::json!({}), &ctx).await.is_ok());
+ 
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/capability_runtime_tests/access_projection.rs:68:
+         super::super::agent_loop_runtime::pin_and_admit_runtime_projection(&session)
+             .await
+             .unwrap();
+[31m-    assert!(
+(B[m[31m-        new_runtime
+(B[m[31m-            .tool_executor()
+(B[m[31m-            .registry()
+(B[m[31m-            .get("projected")
+(B[m[31m-            .is_none()
+(B[m[31m-    );
+(B[m[32m+    assert!(new_runtime
+(B[m[32m+        .tool_executor()
+(B[m[32m+        .registry()
+(B[m[32m+        .get("projected")
+(B[m[32m+        .is_none());
+(B[m     let denied_turn = crate::capability::AgentCapabilityRuntime::from_run(new_run.run_scope())
+         .begin_turn(1)
+         .unwrap();
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/capability_runtime_tests/access_projection.rs:81:
+     let denied_ctx = ToolContext::new(session.workspace.clone())
+         .with_capability_context(denied_turn.tool_context());
+[32m+    assert!(tool
+(B[m[32m+        .execute(&serde_json::json!({}), &denied_ctx)
+(B[m[32m+        .await
+(B[m[32m+        .is_err());
+(B[m     assert!(
+[31m-        tool.execute(&serde_json::json!({}), &denied_ctx)
+(B[m[31m-            .await
+(B[m[31m-            .is_err()
+(B[m[31m-    );
+(B[m[31m-    assert!(
+(B[m         tool.execute(&serde_json::json!({}), &ctx).await.is_ok(),
+         "old admitted Run retains its authority"
+     );
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/capability_runtime_tests/access_projection.rs:110:
+             .is_err(),
+         "an allowed name in another catalog cannot authorize old code"
+     );
+[31m-    assert!(
+(B[m[31m-        third_tool
+(B[m[31m-            .execute(&serde_json::json!({}), &ctx)
+(B[m[31m-            .await
+(B[m[31m-            .is_err()
+(B[m[31m-    );
+(B[m[32m+    assert!(third_tool
+(B[m[32m+        .execute(&serde_json::json!({}), &ctx)
+(B[m[32m+        .await
+(B[m[32m+        .is_err());
+(B[m     let background = turn
+         .tool_context()
+         .admit_subtask("promoted-proof", true)
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/capability_runtime_tests/access_projection.rs:133:
+     let child_turn = child_runtime.begin_turn(1).unwrap();
+     let child_ctx = ToolContext::new(session.workspace.clone())
+         .with_capability_context(child_turn.tool_context());
+[31m-    assert!(
+(B[m[31m-        tool.execute(&serde_json::json!({}), &child_ctx)
+(B[m[31m-            .await
+(B[m[31m-            .is_ok()
+(B[m[31m-    );
+(B[m[32m+    assert!(tool
+(B[m[32m+        .execute(&serde_json::json!({}), &child_ctx)
+(B[m[32m+        .await
+(B[m[32m+        .is_ok());
+(B[m     assert_eq!(
+         &*executions.lock().unwrap(),
+         &["accepted", "accepted", "accepted"]
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/capability_runtime_tests/command_projection.rs:124:
+     projected_session
+         .command_registry()
+         .register(command("legacy-guard", &executions));
+[31m-    assert!(
+(B[m[31m-        !projected_session
+(B[m[31m-            .command_registry()
+(B[m[31m-            .list_full()
+(B[m[31m-            .iter()
+(B[m[31m-            .any(|(name, _, _)| name == "projected-command")
+(B[m[31m-    );
+(B[m[32m+    assert!(!projected_session
+(B[m[32m+        .command_registry()
+(B[m[32m+        .list_full()
+(B[m[32m+        .iter()
+(B[m[32m+        .any(|(name, _, _)| name == "projected-command"));
+(B[m     assert_eq!(projected_session.capability_catalog_stamp(), stamp);
+ }
+ 
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/capability_runtime_tests/flow_projection.rs:255:
+     assert_eq!(acquired.load(Ordering::SeqCst), 0);
+     assert_eq!(dropped.load(Ordering::SeqCst), 0);
+ 
+[31m-    assert!(
+(B[m[31m-        session
+(B[m[31m-            .projected_flow("missing-flow")
+(B[m[31m-            .await
+(B[m[31m-            .unwrap()
+(B[m[31m-            .is_none()
+(B[m[31m-    );
+(B[m[32m+    assert!(session
+(B[m[32m+        .projected_flow("missing-flow")
+(B[m[32m+        .await
+(B[m[32m+        .unwrap()
+(B[m[32m+        .is_none());
+(B[m     assert_eq!(acquired.load(Ordering::SeqCst), 0);
+ }
+ 
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/capability_runtime_tests/hook_projection.rs:784:
+ 
+     let error = session.send("must be checked", None).await.unwrap_err();
+     assert!(error.to_string().contains("projected-policy"));
+[31m-    assert!(
+(B[m[31m-        external
+(B[m[31m-            .events
+(B[m[31m-            .lock()
+(B[m[31m-            .unwrap()
+(B[m[31m-            .contains(&crate::hooks::HookEventType::PrePrompt)
+(B[m[31m-    );
+(B[m[32m+    assert!(external
+(B[m[32m+        .events
+(B[m[32m+        .lock()
+(B[m[32m+        .unwrap()
+(B[m[32m+        .contains(&crate::hooks::HookEventType::PrePrompt));
+(B[m     assert_eq!(&*executions.lock().unwrap(), &["projected-policy"]);
+     assert_eq!(acquired.load(Ordering::SeqCst), 1);
+     assert_eq!(dropped.load(Ordering::SeqCst), 1);
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/capability_runtime_tests/knowledge_surface_projection.rs:103:
+     assert_eq!(waves.len(), 2);
+     assert_eq!(waves[0], [domain_id]);
+     assert_eq!(waves[1], [runbook_id]);
+[31m-    assert!(
+(B[m[31m-        run.projection()
+(B[m[31m-            .iter()
+(B[m[31m-            .all(|(id, _)| id.kind() != CapabilityKind::Knowledge)
+(B[m[31m-    );
+(B[m[32m+    assert!(run
+(B[m[32m+        .projection()
+(B[m[32m+        .iter()
+(B[m[32m+        .all(|(id, _)| id.kind() != CapabilityKind::Knowledge));
+(B[m 
+     run.close().await.unwrap();
+     drop(run);
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/capability_runtime_tests/mcp_projection.rs:3:
+ use super::*;
+ 
+ #[cfg(unix)]
+[31m-use crate::mcp::McpProjectionAdapter;
+(B[m[31m-#[cfg(unix)]
+(B[m use crate::mcp::test_support::{compile_fake_server, fixture_started_pids, process_exists};
+ use crate::mcp::test_support::{mcp_tool, ready_binding};
+[32m+#[cfg(unix)]
+(B[m[32m+use crate::mcp::McpProjectionAdapter;
+(B[m use crate::mcp::{McpClient, McpServerConfig, McpTransportConfig};
+ 
+ struct DeniedChildMcpClient {
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/capability_runtime_tests/mcp_projection.rs:170:
+         super::super::agent_loop_runtime::pin_and_admit_runtime_projection(&session)
+             .await
+             .unwrap();
+[31m-    assert!(
+(B[m[31m-        denied_runtime
+(B[m[31m-            .tool_executor()
+(B[m[31m-            .registry()
+(B[m[31m-            .get("mcp__catalog__lookup")
+(B[m[31m-            .is_none()
+(B[m[31m-    );
+(B[m[32m+    assert!(denied_runtime
+(B[m[32m+        .tool_executor()
+(B[m[32m+        .registry()
+(B[m[32m+        .get("mcp__catalog__lookup")
+(B[m[32m+        .is_none());
+(B[m     let turn = crate::capability::AgentCapabilityRuntime::from_run(denied_run.run_scope())
+         .begin_turn(1)
+         .unwrap();
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/capability_runtime_tests/mcp_projection.rs:183:
+     let context =
+         ToolContext::new(session.workspace.clone()).with_capability_context(turn.tool_context());
+[31m-    assert!(
+(B[m[31m-        captured
+(B[m[31m-            .execute(&serde_json::json!({}), &context)
+(B[m[31m-            .await
+(B[m[31m-            .is_err()
+(B[m[31m-    );
+(B[m[32m+    assert!(captured
+(B[m[32m+        .execute(&serde_json::json!({}), &context)
+(B[m[32m+        .await
+(B[m[32m+        .is_err());
+(B[m     assert!(transport.calls().is_empty());
+     turn.close().await.unwrap();
+     denied_run.close().await.unwrap();
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/capability_runtime_tests/run_resource_settlement.rs:266:
+     };
+     closing(&resource).await;
+     assert_not_completed(&session).await;
+[32m+    assert!(!seen
+(B[m[32m+        .lock()
+(B[m[32m+        .unwrap()
+(B[m[32m+        .iter()
+(B[m[32m+        .any(|event| matches!(event, crate::AgentEvent::End { .. })));
+(B[m     assert!(
+[31m-        !seen
+(B[m[31m-            .lock()
+(B[m[31m-            .unwrap()
+(B[m[31m-            .iter()
+(B[m[31m-            .any(|event| matches!(event, crate::AgentEvent::End { .. }))
+(B[m[31m-    );
+(B[m[31m-    assert!(
+(B[m         !collect.is_finished(),
+         "host channel closed before resource acknowledgement"
+     );
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/capability_runtime_tests/run_resource_settlement.rs:509:
+         }
+         {
+             let events = observed.lock().unwrap();
+[31m-            assert!(
+(B[m[31m-                !events
+(B[m[31m-                    .iter()
+(B[m[31m-                    .any(|event| matches!(event, crate::AgentEvent::End { .. }))
+(B[m[31m-            );
+(B[m[32m+            assert!(!events
+(B[m[32m+                .iter()
+(B[m[32m+                .any(|event| matches!(event, crate::AgentEvent::End { .. })));
+(B[m             if stream {
+[31m-                assert!(
+(B[m[31m-                    events
+(B[m[31m-                        .iter()
+(B[m[31m-                        .any(|event| matches!(event, crate::AgentEvent::Error { .. }))
+(B[m[31m-                );
+(B[m[32m+                assert!(events
+(B[m[32m+                    .iter()
+(B[m[32m+                    .any(|event| matches!(event, crate::AgentEvent::Error { .. })));
+(B[m             }
+         }
+         assert_eq!(
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/capability_runtime_tests/ui_projection.rs:154:
+         .apply_capability_batch(batch, CancellationToken::new())
+         .await
+         .unwrap();
+[31m-    assert!(
+(B[m[31m-        session
+(B[m[31m-            .projected_ui("projected-ui")
+(B[m[31m-            .await
+(B[m[31m-            .unwrap()
+(B[m[31m-            .is_none()
+(B[m[31m-    );
+(B[m[32m+    assert!(session
+(B[m[32m+        .projected_ui("projected-ui")
+(B[m[32m+        .await
+(B[m[32m+        .unwrap()
+(B[m[32m+        .is_none());
+(B[m     assert!(session.projected_ui("absent-ui").await.unwrap().is_none());
+     assert_eq!(acquired.load(Ordering::SeqCst), 0);
+ }
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/capability_runtime_tests/workspace_access.rs:154:
+         let replaced = ctx
+             .clone()
+             .with_workspace_services(WorkspaceServices::local(&ctx.workspace));
+[31m-        anyhow::ensure!(
+(B[m[31m-            replaced
+(B[m[31m-                .workspace_operation(WorkspaceOperation::Execute)
+(B[m[31m-                .is_err()
+(B[m[31m-        );
+(B[m[32m+        anyhow::ensure!(replaced
+(B[m[32m+            .workspace_operation(WorkspaceOperation::Execute)
+(B[m[32m+            .is_err());
+(B[m         ctx.register_capability_effect(ResourceEffect(self.closed.clone()))?;
+         *self.access.lock().unwrap() = Some(access);
+         Ok(ToolOutput::success("owned read"))
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/capability_runtime_tests.rs:18:
+ use std::sync::atomic::{AtomicUsize, Ordering};
+ use std::sync::{Arc, Mutex};
+ use std::time::Duration;
+[31m-use tokio::sync::{Semaphore, mpsc};
+(B[m[32m+use tokio::sync::{mpsc, Semaphore};
+(B[m use tokio_util::sync::CancellationToken;
+ 
+ mod access_projection;
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/capability_runtime_tests.rs:660:
+     let dropped = Arc::new(AtomicUsize::new(0));
+     let agent_generation = use_generation(1, 'a');
+     let (agent_set, _) = use_agent_set(1, agent_generation.clone(), &[("projected-agent", 'b')]);
+[31m-    assert!(
+(B[m[31m-        SessionCapabilityBatch::from_use_projection(
+(B[m[31m-            agent_set,
+(B[m[31m-            provider(agent_generation, &acquired, &dropped),
+(B[m[31m-        )
+(B[m[31m-        .is_ok()
+(B[m[31m-    );
+(B[m[32m+    assert!(SessionCapabilityBatch::from_use_projection(
+(B[m[32m+        agent_set,
+(B[m[32m+        provider(agent_generation, &acquired, &dropped),
+(B[m[32m+    )
+(B[m[32m+    .is_ok());
+(B[m 
+     let command_generation = use_generation(2, 'c');
+     let (command_set, _) = use_kind_set(
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/capability_runtime_tests.rs:675:
+         CapabilityKind::Command,
+         &[("projected-command", 'd')],
+     );
+[31m-    assert!(
+(B[m[31m-        SessionCapabilityBatch::from_use_projection(
+(B[m[31m-            command_set,
+(B[m[31m-            provider(command_generation, &acquired, &dropped),
+(B[m[31m-        )
+(B[m[31m-        .is_ok()
+(B[m[31m-    );
+(B[m[32m+    assert!(SessionCapabilityBatch::from_use_projection(
+(B[m[32m+        command_set,
+(B[m[32m+        provider(command_generation, &acquired, &dropped),
+(B[m[32m+    )
+(B[m[32m+    .is_ok());
+(B[m 
+     let hook_generation = use_generation(3, 'e');
+     let (hook_set, _) = use_kind_set(
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/capability_runtime_tests.rs:690:
+         CapabilityKind::Hook,
+         &[("projected-hook", 'f')],
+     );
+[31m-    assert!(
+(B[m[31m-        SessionCapabilityBatch::from_use_projection(
+(B[m[31m-            hook_set,
+(B[m[31m-            provider(hook_generation, &acquired, &dropped),
+(B[m[31m-        )
+(B[m[31m-        .is_ok()
+(B[m[31m-    );
+(B[m[32m+    assert!(SessionCapabilityBatch::from_use_projection(
+(B[m[32m+        hook_set,
+(B[m[32m+        provider(hook_generation, &acquired, &dropped),
+(B[m[32m+    )
+(B[m[32m+    .is_ok());
+(B[m 
+     let mcp_generation = use_generation(4, 'a');
+     let (mcp_set, _) = use_kind_set(
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/capability_runtime_tests.rs:705:
+         CapabilityKind::Mcp,
+         &[("projected-mcp", 'b')],
+     );
+[31m-    assert!(
+(B[m[31m-        SessionCapabilityBatch::from_use_projection(
+(B[m[31m-            mcp_set,
+(B[m[31m-            provider(mcp_generation, &acquired, &dropped),
+(B[m[31m-        )
+(B[m[31m-        .is_ok()
+(B[m[31m-    );
+(B[m[32m+    assert!(SessionCapabilityBatch::from_use_projection(
+(B[m[32m+        mcp_set,
+(B[m[32m+        provider(mcp_generation, &acquired, &dropped),
+(B[m[32m+    )
+(B[m[32m+    .is_ok());
+(B[m 
+     let context_generation = use_generation(5, 'c');
+     let (context_set, _) = use_kind_set(
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/capability_runtime_tests.rs:720:
+         CapabilityKind::Context,
+         &[("projected-context", 'd')],
+     );
+[31m-    assert!(
+(B[m[31m-        SessionCapabilityBatch::from_use_projection(
+(B[m[31m-            context_set,
+(B[m[31m-            provider(context_generation, &acquired, &dropped),
+(B[m[31m-        )
+(B[m[31m-        .is_ok()
+(B[m[31m-    );
+(B[m[32m+    assert!(SessionCapabilityBatch::from_use_projection(
+(B[m[32m+        context_set,
+(B[m[32m+        provider(context_generation, &acquired, &dropped),
+(B[m[32m+    )
+(B[m[32m+    .is_ok());
+(B[m 
+     #[cfg(feature = "dynamic-workflow")]
+     {
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/capability_runtime_tests.rs:737:
+             CapabilityKind::Flow,
+             &[("projected-flow", 'f')],
+         );
+[31m-        assert!(
+(B[m[31m-            SessionCapabilityBatch::from_use_projection(
+(B[m[31m-                flow_set,
+(B[m[31m-                provider(flow_generation, &acquired, &dropped),
+(B[m[31m-            )
+(B[m[31m-            .is_ok()
+(B[m[31m-        );
+(B[m[32m+        assert!(SessionCapabilityBatch::from_use_projection(
+(B[m[32m+            flow_set,
+(B[m[32m+            provider(flow_generation, &acquired, &dropped),
+(B[m[32m+        )
+(B[m[32m+        .is_ok());
+(B[m     }
+ 
+     let knowledge_generation = use_generation(7, 'a');
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/capability_runtime_tests.rs:753:
+         CapabilityKind::Knowledge,
+         &[("projected-knowledge", 'b')],
+     );
+[31m-    assert!(
+(B[m[31m-        SessionCapabilityBatch::from_use_projection(
+(B[m[31m-            knowledge_set,
+(B[m[31m-            provider(knowledge_generation, &acquired, &dropped),
+(B[m[31m-        )
+(B[m[31m-        .is_ok()
+(B[m[31m-    );
+(B[m[32m+    assert!(SessionCapabilityBatch::from_use_projection(
+(B[m[32m+        knowledge_set,
+(B[m[32m+        provider(knowledge_generation, &acquired, &dropped),
+(B[m[32m+    )
+(B[m[32m+    .is_ok());
+(B[m }
+ 
+ #[tokio::test]
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/tests/long_horizon_capabilities.rs:299:
+     assert_eq!(results.len(), 16);
+     assert!(results.iter().all(|fact| fact.payload["ok"] == true));
+     for (index, result) in results.iter().enumerate() {
+[31m-        assert!(
+(B[m[31m-            result.payload["output"]
+(B[m[31m-                .as_str()
+(B[m[31m-                .unwrap()
+(B[m[31m-                .contains(&format!("evidence-{index}"))
+(B[m[31m-        );
+(B[m[32m+        assert!(result.payload["output"]
+(B[m[32m+            .as_str()
+(B[m[32m+            .unwrap()
+(B[m[32m+            .contains(&format!("evidence-{index}")));
+(B[m     }
+     session.close().await;
+ }
+Diff in /Users/roylin/code/aster/crates/code/core/src/completion_attestor_disk_tests.rs:23:
+         path: "two".into(),
+         content_digest: String::new(),
+     };
+[31m-    assert!(
+(B[m[31m-        attestor
+(B[m[31m-            .attest("effect", &[paths[0].clone(), missing])
+(B[m[31m-            .is_none()
+(B[m[31m-    );
+(B[m[32m+    assert!(attestor
+(B[m[32m+        .attest("effect", &[paths[0].clone(), missing])
+(B[m[32m+        .is_none());
+(B[m     std::fs::write(root.path().join("two"), "tampered after verification").unwrap();
+     assert!(attestor.attest("effect", &paths).is_none());
+     assert!(attestor.attest("", &paths).is_none());
+Diff in /Users/roylin/code/aster/crates/code/core/src/completion_attestor_disk_tests.rs:59:
+             "accepted {path}"
+         );
+     }
+[31m-    assert!(
+(B[m[31m-        attestor
+(B[m[31m-            .attest("effect", &[record("./safe..name", "safe")])
+(B[m[31m-            .is_some()
+(B[m[31m-    );
+(B[m[32m+    assert!(attestor
+(B[m[32m+        .attest("effect", &[record("./safe..name", "safe")])
+(B[m[32m+        .is_some());
+(B[m }
+ 
+ #[test]
+Diff in /Users/roylin/code/aster/crates/code/core/src/completion_attestor_disk_tests.rs:82:
+         path: "large".into(),
+         content_digest: format!("{:x}", hash.finalize()),
+     }];
+[31m-    assert!(
+(B[m[31m-        DiskContentAttestor::new(root.path())
+(B[m[31m-            .attest("effect", &paths)
+(B[m[31m-            .is_some()
+(B[m[31m-    );
+(B[m[32m+    assert!(DiskContentAttestor::new(root.path())
+(B[m[32m+        .attest("effect", &paths)
+(B[m[32m+        .is_some());
+(B[m }
+ 
+Diff in /Users/roylin/code/aster/crates/code/core/src/permissions/interactive.rs:10:
+ use serde::{Deserialize, Serialize};
+ 
+ use super::{
+[31m-    EnvironmentSensitivity, ImpactScope, OperationTarget, PermissionChecker, PermissionDecision,
+(B[m[31m-    Reversibility, ToolRiskAction, ToolRiskAssessment, ToolRiskLevel, ToolRiskReason, shell,
+(B[m[32m+    shell, EnvironmentSensitivity, ImpactScope, OperationTarget, PermissionChecker,
+(B[m[32m+    PermissionDecision, Reversibility, ToolRiskAction, ToolRiskAssessment, ToolRiskLevel,
+(B[m[32m+    ToolRiskReason,
+(B[m };
+ use assessment::{assess_tool, assessment_permission, critical_assessment, tool_risk_type};
+ 
+Diff in /Users/roylin/code/aster/crates/code/core/src/skills/registry/tests.rs:520:
+         Some("Read, Grep, Bash(cargo test -p a3s-code-core:*)")
+     );
+     let permissions = skill.parse_allowed_tools();
+[31m-    assert!(
+(B[m[31m-        permissions
+(B[m[31m-            .iter()
+(B[m[31m-            .any(|perm| perm.tool == "Read" && perm.pattern == "*")
+(B[m[31m-    );
+(B[m[31m-    assert!(
+(B[m[31m-        permissions
+(B[m[31m-            .iter()
+(B[m[31m-            .any(|perm| { perm.tool == "Bash" && perm.pattern == "cargo test -p a3s-code-core:*" })
+(B[m[31m-    );
+(B[m[32m+    assert!(permissions
+(B[m[32m+        .iter()
+(B[m[32m+        .any(|perm| perm.tool == "Read" && perm.pattern == "*"));
+(B[m[32m+    assert!(permissions
+(B[m[32m+        .iter()
+(B[m[32m+        .any(|perm| { perm.tool == "Bash" && perm.pattern == "cargo test -p a3s-code-core:*" }));
+(B[m     Ok(())
+ }
+ 
+Diff in /Users/roylin/code/aster/crates/code/core/src/skills/registry/tests.rs:836:
+     let by_description = registry.match_skills("help me plan the release");
+     assert!(by_description.contains("Planner instructions"));
+ 
+[31m-    assert!(
+(B[m[31m-        registry
+(B[m[31m-            .match_skills("totally unrelated request")
+(B[m[31m-            .is_empty()
+(B[m[31m-    );
+(B[m[32m+    assert!(registry
+(B[m[32m+        .match_skills("totally unrelated request")
+(B[m[32m+        .is_empty());
+(B[m }
+ 
+ #[test]
+Diff in /Users/roylin/code/aster/crates/code/core/src/skills/registry/tests.rs:972:
+         "refresh reintroduced projected bytes"
+     );
+     let projected = Arc::new(Skill::from_file(managed.join("SKILL.md")).unwrap());
+[31m-    assert!(
+(B[m[31m-        fork.snapshot_with_external_skills([projected.clone()])
+(B[m[31m-            .is_ok()
+(B[m[31m-    );
+(B[m[32m+    assert!(fork
+(B[m[32m+        .snapshot_with_external_skills([projected.clone()])
+(B[m[32m+        .is_ok());
+(B[m     std::fs::remove_file(local.join("review")).unwrap();
+     std::fs::create_dir(local.join("review")).unwrap();
+     std::fs::write(local.join("review/SKILL.md"), content).unwrap();
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/background/tests/escape/foreground.rs:74:
+             Ok(Err(error)) => error,
+             _ => panic!("unqualified native foreground must refuse before execution"),
+         };
+[31m-        assert!(
+(B[m[31m-            error
+(B[m[31m-                .to_string()
+(B[m[31m-                .contains("native_process_lifetime_unqualified")
+(B[m[31m-        );
+(B[m[32m+        assert!(error
+(B[m[32m+            .to_string()
+(B[m[32m+            .contains("native_process_lifetime_unqualified"));
+(B[m         assert!(identity.is_none());
+[31m-        assert!(
+(B[m[31m-            !workspace
+(B[m[31m-                .path()
+(B[m[31m-                .join("foreground-escape-ready.tmp")
+(B[m[31m-                .exists()
+(B[m[31m-        );
+(B[m[32m+        assert!(!workspace
+(B[m[32m+            .path()
+(B[m[32m+            .join("foreground-escape-ready.tmp")
+(B[m[32m+            .exists());
+(B[m         assert!(!workspace.path().join("foreground-escape-late.txt").exists());
+         cleanup.terminate().unwrap();
+         eprintln!("native_lifetime=refused_unqualified; no native containment-support claim");
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/background/tests.rs:143:
+         output.error_kind,
+         Some(ToolErrorKind::Unsupported { .. })
+     ));
+[32m+    assert!(!owned
+(B[m[32m+        .ctx
+(B[m[32m+        .sandbox
+(B[m[32m+        .as_ref()
+(B[m[32m+        .unwrap()
+(B[m[32m+        .supports_background_execution());
+(B[m[32m+    assert!(output
+(B[m[32m+        .metadata
+(B[m[32m+        .as_ref()
+(B[m[32m+        .is_none_or(|metadata| metadata.get("workspace_child").is_none()));
+(B[m[32m+    assert!(tool
+(B[m[32m+        .runs
+(B[m[32m+        .names_for(owned.ctx.capability_run_instance_id().unwrap())
+(B[m[32m+        .is_empty());
+(B[m     assert!(
+[31m-        !owned
+(B[m[31m-            .ctx
+(B[m[31m-            .sandbox
+(B[m[31m-            .as_ref()
+(B[m[31m-            .unwrap()
+(B[m[31m-            .supports_background_execution()
+(B[m[31m-    );
+(B[m[31m-    assert!(
+(B[m[31m-        output
+(B[m[31m-            .metadata
+(B[m[31m-            .as_ref()
+(B[m[31m-            .is_none_or(|metadata| metadata.get("workspace_child").is_none())
+(B[m[31m-    );
+(B[m[31m-    assert!(
+(B[m[31m-        tool.runs
+(B[m[31m-            .names_for(owned.ctx.capability_run_instance_id().unwrap())
+(B[m[31m-            .is_empty()
+(B[m[31m-    );
+(B[m[31m-    assert!(
+(B[m         owned.facts().is_empty(),
+         "unsupported admission must emit no background facts"
+     );
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/background/tests.rs:198:
+     let ctx = ToolContext::new(workspace.path().to_path_buf()).with_session_id("background-plain");
+     let output = start(&BackgroundTool::default(), &ctx, "watch", "echo hi").await;
+     assert!(!output.success);
+[31m-    assert!(
+(B[m[31m-        output
+(B[m[31m-            .content
+(B[m[31m-            .contains("requires a Run-owned capability context")
+(B[m[31m-    );
+(B[m[32m+    assert!(output
+(B[m[32m+        .content
+(B[m[32m+        .contains("requires a Run-owned capability context"));
+(B[m }
+ 
+ #[tokio::test]
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/background/tests.rs:216:
+         )
+         .await
+         .unwrap();
+[31m-    assert!(
+(B[m[31m-        output
+(B[m[31m-            .content
+(B[m[31m-            .contains("the closed set is start, tail, stop")
+(B[m[31m-    );
+(B[m[32m+    assert!(output
+(B[m[32m+        .content
+(B[m[32m+        .contains("the closed set is start, tail, stop"));
+(B[m }
+ 
+ #[test]
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/background/tests.rs:239:
+             value
+         );
+     }
+[31m-    assert!(
+(B[m[31m-        BackgroundDisposition::parse("done")
+(B[m[31m-            .unwrap_err()
+(B[m[31m-            .to_string()
+(B[m[31m-            .contains("background disposition")
+(B[m[31m-    );
+(B[m[31m-    assert!(
+(B[m[31m-        ProcessSettlementBasis::parse("terminated")
+(B[m[31m-            .unwrap_err()
+(B[m[31m-            .to_string()
+(B[m[31m-            .contains("background process settlement basis")
+(B[m[31m-    );
+(B[m[32m+    assert!(BackgroundDisposition::parse("done")
+(B[m[32m+        .unwrap_err()
+(B[m[32m+        .to_string()
+(B[m[32m+        .contains("background disposition"));
+(B[m[32m+    assert!(ProcessSettlementBasis::parse("terminated")
+(B[m[32m+        .unwrap_err()
+(B[m[32m+        .to_string()
+(B[m[32m+        .contains("background process settlement basis"));
+(B[m }
+ 
+ #[tokio::test]
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/background/tests.rs:775:
+     );
+     #[cfg(unix)]
+     assert_eq!(changed.after.mode.unwrap() & 0o777, 0o600);
+[31m-    assert!(
+(B[m[31m-        terminal.payload["changed_paths"]
+(B[m[31m-            .as_array()
+(B[m[31m-            .unwrap()
+(B[m[31m-            .iter()
+(B[m[31m-            .any(|path| path == "changed.txt")
+(B[m[31m-    );
+(B[m[32m+    assert!(terminal.payload["changed_paths"]
+(B[m[32m+        .as_array()
+(B[m[32m+        .unwrap()
+(B[m[32m+        .iter()
+(B[m[32m+        .any(|path| path == "changed.txt"));
+(B[m     assert!(terminal.payload["output"]["total_bytes"].as_u64().unwrap() > 0);
+     assert!(
+         !crate::harness_loop::absorb_open_workspace_children(
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/background/tests.rs:827:
+         "the sandboxed shell must run before its denial counts as evidence"
+     );
+     assert!(!owned.workspace.path().join(".a3s/host-leak").exists());
+[31m-    assert!(
+(B[m[31m-        owned
+(B[m[31m-            .facts()
+(B[m[31m-            .iter()
+(B[m[31m-            .any(|fact| fact.payload["event"] == "exited" && fact.payload["exit_code"] != 0)
+(B[m[31m-    );
+(B[m[32m+    assert!(owned
+(B[m[32m+        .facts()
+(B[m[32m+        .iter()
+(B[m[32m+        .any(|fact| fact.payload["event"] == "exited" && fact.payload["exit_code"] != 0));
+(B[m     owned.close().await;
+ }
+ 
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/background/tests.rs:864:
+     let task = task(&tool, &owned.ctx, "network-denied");
+     wait_settled(&task).await;
+     assert!(task.failure().is_none(), "{:?}", task.failure());
+[31m-    assert!(
+(B[m[31m-        owned
+(B[m[31m-            .facts()
+(B[m[31m-            .iter()
+(B[m[31m-            .any(|fact| fact.payload["line"] == "sandbox-ready")
+(B[m[31m-    );
+(B[m[32m+    assert!(owned
+(B[m[32m+        .facts()
+(B[m[32m+        .iter()
+(B[m[32m+        .any(|fact| fact.payload["line"] == "sandbox-ready"));
+(B[m     assert!(
+         tokio::time::timeout(Duration::from_millis(100), listener.accept())
+             .await
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/background.rs:20:
+ use std::sync::Arc;
+ use std::time::Duration;
+ 
+[31m-use a3s_effect::{FileLog, LogStore, background_output_fact};
+(B[m[32m+use a3s_effect::{background_output_fact, FileLog, LogStore};
+(B[m use async_trait::async_trait;
+ 
+ use crate::tools::types::{Tool, ToolContext, ToolErrorKind, ToolOutput};
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/bash/sandbox_soak.rs:4:
+ use super::super::*;
+ use crate::sandbox::{BashSandbox, SandboxOutput};
+ use async_trait::async_trait;
+[31m-use std::sync::Arc;
+(B[m use std::sync::atomic::{AtomicUsize, Ordering};
+[32m+use std::sync::Arc;
+(B[m 
+ const ECHOES: usize = 100;
+ const INIT_FAILURES: usize = 20;
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/bash/tests.rs:1108:
+ 
+     assert!(result.success);
+     let canonical = temp.path().canonicalize().unwrap();
+[31m-    assert!(
+(B[m[31m-        result
+(B[m[31m-            .content
+(B[m[31m-            .contains(&canonical.to_string_lossy().to_string())
+(B[m[31m-    );
+(B[m[32m+    assert!(result
+(B[m[32m+        .content
+(B[m[32m+        .contains(&canonical.to_string_lossy().to_string()));
+(B[m }
+ 
+ #[tokio::test]
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/bash/tests.rs:1473:
+ #[tokio::test]
+ async fn bash_existence_check_metadata_enables_verified_completion() {
+     use crate::harness_loop::{
+[31m-        CompletionGate, CompletionTerminal, MutationLedger, decide_completion,
+(B[m[32m+        decide_completion, CompletionGate, CompletionTerminal, MutationLedger,
+(B[m     };
+     use crate::verification::host_report_for_verified_mutation_path_with_content;
+ 
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/bash/tests.rs:1556:
+         .unwrap();
+ 
+     assert!(!result.success);
+[31m-    assert!(
+(B[m[31m-        result
+(B[m[31m-            .content
+(B[m[31m-            .contains("unsupported sandbox_permissions value")
+(B[m[31m-    );
+(B[m[32m+    assert!(result
+(B[m[32m+        .content
+(B[m[32m+        .contains("unsupported sandbox_permissions value"));
+(B[m }
+ 
+ #[tokio::test]
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/bash/tests.rs:1691:
+         .await
+         .unwrap();
+     assert!(!result.success);
+[31m-    assert!(
+(B[m[31m-        result
+(B[m[31m-            .content
+(B[m[31m-            .contains("justification is required when sandbox_permissions is require_escalated")
+(B[m[31m-    );
+(B[m[32m+    assert!(result
+(B[m[32m+        .content
+(B[m[32m+        .contains("justification is required when sandbox_permissions is require_escalated"));
+(B[m }
+ 
+ #[tokio::test]
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/bash/tests.rs:2760:
+         .map(|path| path.file_name().unwrap().to_string_lossy().into_owned())
+         .collect();
+     assert_eq!(names, ["pwsh.exe", "powershell.exe"]);
+[31m-    assert!(
+(B[m[31m-        candidates[1].ends_with(
+(B[m[31m-            std::path::Path::new("System32")
+(B[m[31m-                .join("WindowsPowerShell")
+(B[m[31m-                .join("v1.0")
+(B[m[31m-                .join("powershell.exe")
+(B[m[31m-        )
+(B[m[31m-    );
+(B[m[32m+    assert!(candidates[1].ends_with(
+(B[m[32m+        std::path::Path::new("System32")
+(B[m[32m+            .join("WindowsPowerShell")
+(B[m[32m+            .join("v1.0")
+(B[m[32m+            .join("powershell.exe")
+(B[m[32m+    ));
+(B[m     assert_eq!(
+         windows_shell::host_powershell_candidates(None, Some(std::path::Path::new(r"C:\Windows")))
+             .len(),
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/bash/windows.rs:1:
+ //! Windows-specific shell compatibility support.
+ use crate::tools::types::ToolOutput;
+[31m-use base64::{Engine as _, engine::general_purpose::STANDARD as BASE64_STANDARD};
+(B[m[32m+use base64::{engine::general_purpose::STANDARD as BASE64_STANDARD, Engine as _};
+(B[m 
+ #[cfg(windows)]
+ pub(crate) const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/bash/windows.rs:865:
+     let mut parser = JsonLikeParser::new(input);
+     let value = parser.parse_value()?;
+     parser.skip_ws();
+[31m-    if parser.is_eof() { Some(value) } else { None }
+(B[m[32m+    if parser.is_eof() {
+(B[m[32m+        Some(value)
+(B[m[32m+    } else {
+(B[m[32m+        None
+(B[m[32m+    }
+(B[m }
+ 
+ #[cfg(windows)]
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/batch.rs:6:
+ #[cfg(test)]
+ use crate::tools::registry_tool_invoker;
+ use crate::tools::types::{Tool, ToolContext, ToolOutput};
+[31m-use crate::tools::{ToolInvoker, ToolRegistry, ToolResult, registry_bound_tool_invoker};
+(B[m[32m+use crate::tools::{registry_bound_tool_invoker, ToolInvoker, ToolRegistry, ToolResult};
+(B[m use anyhow::Result;
+ use async_trait::async_trait;
+ use futures::stream::{self, StreamExt};
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/bm25/mod.rs:4:
+ #[cfg(test)]
+ mod tests;
+ 
+[31m-use self::ranking::{LexicalIndex, build_lexical_index, query_terms, tokenize};
+(B[m[32m+use self::ranking::{build_lexical_index, query_terms, tokenize, LexicalIndex};
+(B[m use crate::text::truncate_utf8;
+ use crate::tools::types::{Tool, ToolContext, ToolOutput};
+ use crate::workspace::{
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/bm25/mod.rs:11:
+[31m-    LexicalSearchRequest, LexicalSearchResult, WorkspaceGlobRequest, WorkspaceGrepRequest,
+(B[m[31m-    WorkspacePath, escape_control_chars_for_display,
+(B[m[32m+    escape_control_chars_for_display, LexicalSearchRequest, LexicalSearchResult,
+(B[m[32m+    WorkspaceGlobRequest, WorkspaceGrepRequest, WorkspacePath,
+(B[m };
+ use anyhow::Result;
+ use async_trait::async_trait;
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/bm25/ranking.rs:1:
+ pub(super) use crate::workspace::retrieval::lexical::{
+[31m-    LexicalIndex, build_lexical_index, query_terms, tokenize,
+(B[m[32m+    build_lexical_index, query_terms, tokenize, LexicalIndex,
+(B[m };
+ 
+ #[cfg(test)]
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/code_intelligence/format.rs:1:
+ use std::sync::Arc;
+ 
+[31m-use serde_json::{Value, json};
+(B[m[32m+use serde_json::{json, Value};
+(B[m 
+ use crate::code_intelligence::{
+     CodeDiagnostic, CodeDiagnosticSeverity, CodeLocation, CodePosition, CodeQueryResult, CodeRange,
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/download/mod.rs:3:
+ mod path;
+ mod transfer;
+ 
+[31m-use self::path::{Destination, infer_filename, prepare_destination};
+(B[m[32m+use self::path::{infer_filename, prepare_destination, Destination};
+(B[m use self::transfer::{
+[31m-    DownloadFailure, FailureKind, MAX_CONNECTIONS, ParallelDownloadOptions, ProbeMode,
+(B[m[31m-    connection_count, download_parallel, download_sequential, probe_server,
+(B[m[32m+    connection_count, download_parallel, download_sequential, probe_server, DownloadFailure,
+(B[m[32m+    FailureKind, ParallelDownloadOptions, ProbeMode, MAX_CONNECTIONS,
+(B[m };
+ use super::safe_http::{explicit_web_proxy_from_env, parse_http_url, system_web_proxy};
+ use crate::tools::types::{
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/download/tests.rs:110:
+         output.error_kind,
+         Some(ToolErrorKind::InvalidArgument { .. })
+     ));
+[31m-    assert!(
+(B[m[31m-        std::fs::read_dir(workspace.path())
+(B[m[31m-            .unwrap()
+(B[m[31m-            .next()
+(B[m[31m-            .is_none()
+(B[m[31m-    );
+(B[m[32m+    assert!(std::fs::read_dir(workspace.path())
+(B[m[32m+        .unwrap()
+(B[m[32m+        .next()
+(B[m[32m+        .is_none());
+(B[m }
+ 
+ #[tokio::test]
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/download/tests.rs:222:
+             .and_then(|value| value.to_str().ok())
+             == Some("identity")
+     }));
+[31m-    assert!(
+(B[m[31m-        requests
+(B[m[31m-            .iter()
+(B[m[31m-            .filter(|request| request_range(request).is_some_and(|(_, end)| end > 0))
+(B[m[31m-            .all(|request| request.headers.get("if-range").is_some())
+(B[m[31m-    );
+(B[m[32m+    assert!(requests
+(B[m[32m+        .iter()
+(B[m[32m+        .filter(|request| request_range(request).is_some_and(|(_, end)| end > 0))
+(B[m[32m+        .all(|request| request.headers.get("if-range").is_some()));
+(B[m     assert_no_download_temps(workspace.path());
+ }
+ 
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/download/transfer.rs:1:
+ use super::super::safe_http::{
+[31m-    MAX_REDIRECTS, RedirectQueryPolicy, SafeHttpResponse, get_with_redirects, same_origin,
+(B[m[32m+    get_with_redirects, same_origin, RedirectQueryPolicy, SafeHttpResponse, MAX_REDIRECTS,
+(B[m };
+ use futures::StreamExt;
+ use reqwest::header::{
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/download/transfer.rs:6:
+[31m-    ACCEPT, ACCEPT_ENCODING, CONTENT_DISPOSITION, CONTENT_LENGTH, CONTENT_RANGE, CONTENT_TYPE,
+(B[m[31m-    ETAG, HeaderMap, HeaderValue, IF_RANGE, LAST_MODIFIED, RANGE, RETRY_AFTER,
+(B[m[32m+    HeaderMap, HeaderValue, ACCEPT, ACCEPT_ENCODING, CONTENT_DISPOSITION, CONTENT_LENGTH,
+(B[m[32m+    CONTENT_RANGE, CONTENT_TYPE, ETAG, IF_RANGE, LAST_MODIFIED, RANGE, RETRY_AFTER,
+(B[m };
+ use reqwest::{Response, StatusCode, Url};
+ use std::sync::Arc;
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/edit.rs:498:
+             .unwrap();
+ 
+         assert!(!result.success);
+[31m-        assert!(
+(B[m[31m-            result
+(B[m[31m-                .content
+(B[m[31m-                .contains("expected 3 replacement(s), found 2")
+(B[m[31m-        );
+(B[m[32m+        assert!(result
+(B[m[32m+            .content
+(B[m[32m+            .contains("expected 3 replacement(s), found 2"));
+(B[m         assert_eq!(std::fs::read_to_string(path).unwrap(), "alpha alpha");
+     }
+ 
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/generate_object.rs:597:
+     use crate::llm::{ContentBlock, LlmResponse, Message, StreamEvent, TokenUsage, ToolDefinition};
+     use crate::tools::ToolExecutor;
+     use async_trait::async_trait;
+[31m-    use std::sync::Mutex;
+(B[m     use std::sync::atomic::{AtomicU64, AtomicUsize, Ordering};
+[32m+    use std::sync::Mutex;
+(B[m     use std::time::Duration;
+[31m-    use tokio::sync::{Notify, mpsc};
+(B[m[32m+    use tokio::sync::{mpsc, Notify};
+(B[m     use tokio_util::sync::CancellationToken;
+ 
+     #[test]
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/generate_object_contract_tests.rs:3:
+ use crate::llm::{ContentBlock, LlmResponse, Message, StreamEvent, TokenUsage, ToolDefinition};
+ use crate::tools::ToolExecutor;
+ use async_trait::async_trait;
+[31m-use std::sync::Mutex;
+(B[m use std::sync::atomic::{AtomicU64, Ordering};
+[32m+use std::sync::Mutex;
+(B[m use tokio::sync::mpsc;
+ use tokio_util::sync::CancellationToken;
+ 
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/git.rs:3:
+ //! The tool keeps the model-facing contract stable while the concrete Git
+ //! implementation can be local, remote, browser-backed, or DFS-backed.
+ 
+[31m-use crate::tools::MAX_OUTPUT_SIZE;
+(B[m use crate::tools::pagination::PageRequest;
+ use crate::tools::types::{Tool, ToolContext, ToolOutput};
+[32m+use crate::tools::MAX_OUTPUT_SIZE;
+(B[m use crate::workspace::{
+     WorkspaceGit, WorkspaceGitCheckoutRequest, WorkspaceGitCreateBranchRequest,
+     WorkspaceGitCreateWorktreeRequest, WorkspaceGitDiffRequest, WorkspaceGitRemote,
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/glob_tool.rs:1:
+ //! Glob tool - Find files matching a glob pattern
+ 
+[31m-use crate::tools::pagination::{DEFAULT_PAGE_LIMIT, MAX_PAGE_LIMIT, PageRequest};
+(B[m[32m+use crate::tools::pagination::{PageRequest, DEFAULT_PAGE_LIMIT, MAX_PAGE_LIMIT};
+(B[m use crate::tools::types::{Tool, ToolContext, ToolOutput};
+ use crate::workspace::WorkspaceGlobRequest;
+ use anyhow::Result;
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/grep.rs:1:
+ //! Grep tool - Search file contents with regex
+ 
+[31m-use crate::tools::MAX_OUTPUT_SIZE;
+(B[m[31m-use crate::tools::pagination::{DEFAULT_PAGE_LIMIT, MAX_PAGE_LIMIT, PageRequest};
+(B[m[32m+use crate::tools::pagination::{PageRequest, DEFAULT_PAGE_LIMIT, MAX_PAGE_LIMIT};
+(B[m use crate::tools::types::{Tool, ToolContext, ToolOutput};
+[32m+use crate::tools::MAX_OUTPUT_SIZE;
+(B[m use crate::workspace::{WorkspaceGrepRequest, WorkspaceGrepResult, WorkspacePath};
+ use anyhow::Result;
+ use async_trait::async_trait;
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/grep.rs:888:
+             .unwrap();
+ 
+         assert!(result.content.contains(r"actual\n>injected.txt"));
+[31m-        assert!(
+(B[m[31m-            !result
+(B[m[31m-                .content
+(B[m[31m-                .lines()
+(B[m[31m-                .any(|line| line.starts_with(">injected.txt:"))
+(B[m[31m-        );
+(B[m[32m+        assert!(!result
+(B[m[32m+            .content
+(B[m[32m+            .lines()
+(B[m[32m+            .any(|line| line.starts_with(">injected.txt:")));
+(B[m         assert_eq!(
+             result.metadata.unwrap()["source_anchors"],
+             serde_json::json!([filename])
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/grep.rs:939:
+             truncated: false,
+         };
+ 
+[31m-        assert!(
+(B[m[31m-            grep_source_anchors(
+(B[m[31m-                &result,
+(B[m[31m-                None,
+(B[m[31m-                &request,
+(B[m[31m-                &Regex::new("needle").unwrap(),
+(B[m[31m-                &ctx
+(B[m[31m-            )
+(B[m[31m-            .await
+(B[m[31m-            .is_empty()
+(B[m[31m-        );
+(B[m[32m+        assert!(grep_source_anchors(
+(B[m[32m+            &result,
+(B[m[32m+            None,
+(B[m[32m+            &request,
+(B[m[32m+            &Regex::new("needle").unwrap(),
+(B[m[32m+            &ctx
+(B[m[32m+        )
+(B[m[32m+        .await
+(B[m[32m+        .is_empty());
+(B[m     }
+ 
+     #[tokio::test]
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/hybrid_search.rs:3:
+ use crate::text::truncate_utf8;
+ use crate::tools::types::{Tool, ToolCapabilities, ToolContext, ToolOutput};
+ use crate::workspace::{
+[31m-    WorkspaceHybridFallbackReason, WorkspaceHybridSearchHit, WorkspaceHybridSearchRequest,
+(B[m[31m-    WorkspaceHybridSearchResult, WorkspaceRerankMode, WorkspaceRetrievalError,
+(B[m[31m-    escape_control_chars_for_display,
+(B[m[32m+    escape_control_chars_for_display, WorkspaceHybridFallbackReason, WorkspaceHybridSearchHit,
+(B[m[32m+    WorkspaceHybridSearchRequest, WorkspaceHybridSearchResult, WorkspaceRerankMode,
+(B[m[32m+    WorkspaceRetrievalError,
+(B[m };
+ use anyhow::Result;
+ use async_trait::async_trait;
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/ls.rs:1:
+ //! Ls tool - List directory contents
+ 
+[31m-use crate::tools::pagination::{DEFAULT_PAGE_LIMIT, MAX_PAGE_LIMIT, PageRequest};
+(B[m[32m+use crate::tools::pagination::{PageRequest, DEFAULT_PAGE_LIMIT, MAX_PAGE_LIMIT};
+(B[m use crate::tools::types::{Tool, ToolContext, ToolOutput};
+ use anyhow::Result;
+ use async_trait::async_trait;
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/mod.rs:37:
+ pub(crate) use read::read_image_file;
+ #[cfg(test)]
+ pub(crate) use safe_http::{
+[31m-    RedirectQueryPolicy, ResolutionScript, SafeHttpError, get_with_redirects_observed,
+(B[m[31m-    set_resolution_script,
+(B[m[32m+    get_with_redirects_observed, set_resolution_script, RedirectQueryPolicy, ResolutionScript,
+(B[m[32m+    SafeHttpError,
+(B[m };
+ #[cfg(test)]
+ pub(crate) use web_fetch::WebFetchTool;
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/patch.rs:732:
+         let mut metadata = serde_json::Map::new();
+         metadata.insert(
+             "files".to_string(),
+[31m-            serde_json::json!(
+(B[m[31m-                staged
+(B[m[31m-                    .iter()
+(B[m[31m-                    .map(|p| serde_json::json!({
+(B[m[31m-                        "file_path": p.file_path,
+(B[m[31m-                        "before": p.before,
+(B[m[31m-                        "after": p.after,
+(B[m[31m-                    }))
+(B[m[31m-                    .collect::<Vec<_>>()
+(B[m[31m-            ),
+(B[m[32m+            serde_json::json!(staged
+(B[m[32m+                .iter()
+(B[m[32m+                .map(|p| serde_json::json!({
+(B[m[32m+                    "file_path": p.file_path,
+(B[m[32m+                    "before": p.before,
+(B[m[32m+                    "after": p.after,
+(B[m[32m+                }))
+(B[m[32m+                .collect::<Vec<_>>()),
+(B[m         );
+         let hunks_total: usize = entries.len();
+         Ok(
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/patch.rs:1242:
+             .await
+             .unwrap();
+         assert!(result.success, "output: {}", result.content);
+[31m-        assert!(
+(B[m[31m-            std::fs::read_to_string(temp.path().join("a.txt"))
+(B[m[31m-                .unwrap()
+(B[m[31m-                .contains("alpha-two")
+(B[m[31m-        );
+(B[m[31m-        assert!(
+(B[m[31m-            std::fs::read_to_string(temp.path().join("b.txt"))
+(B[m[31m-                .unwrap()
+(B[m[31m-                .contains("beta-two")
+(B[m[31m-        );
+(B[m[32m+        assert!(std::fs::read_to_string(temp.path().join("a.txt"))
+(B[m[32m+            .unwrap()
+(B[m[32m+            .contains("alpha-two"));
+(B[m[32m+        assert!(std::fs::read_to_string(temp.path().join("b.txt"))
+(B[m[32m+            .unwrap()
+(B[m[32m+            .contains("beta-two"));
+(B[m         let metadata = result.metadata.expect("multi-file metadata");
+         assert_eq!(metadata["files"].as_array().unwrap().len(), 2);
+         crate::external_observation::release_session("patch-multi-ok");
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/read/batch_tests.rs:137:
+ 
+     assert!(result.success, "{}", result.content);
+     assert!(result.content.contains(r"actual\n=== injected.txt ==="));
+[31m-    assert!(
+(B[m[31m-        !result
+(B[m[31m-            .content
+(B[m[31m-            .lines()
+(B[m[31m-            .any(|line| line == "=== injected.txt === ===")
+(B[m[31m-    );
+(B[m[32m+    assert!(!result
+(B[m[32m+        .content
+(B[m[32m+        .lines()
+(B[m[32m+        .any(|line| line == "=== injected.txt === ==="));
+(B[m     assert_eq!(
+         result.metadata.unwrap()["source_anchors"],
+         serde_json::json!([filename])
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/read.rs:4:
+ use crate::text::truncate_utf8;
+ use crate::tools::types::{Tool, ToolContext, ToolOutput};
+ use crate::tools::{MAX_LINE_LENGTH, MAX_OUTPUT_SIZE, MAX_READ_LINES};
+[31m-use crate::workspace::{WorkspaceTextRange, escape_control_chars_for_display};
+(B[m[32m+use crate::workspace::{escape_control_chars_for_display, WorkspaceTextRange};
+(B[m use anyhow::Result;
+ use async_trait::async_trait;
+ use serde::{Deserialize, Serialize};
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/read.rs:1376:
+         // The multibyte character sits on the cut, so the prefix stops before
+         // it and the marker reports the omitted tail. 1999 ASCII bytes remain;
+         // the 3-byte character plus 20 ASCII bytes are the omitted 23.
+[31m-        assert!(
+(B[m[31m-            result
+(B[m[31m-                .content
+(B[m[31m-                .contains("[line truncated, 23 bytes omitted]")
+(B[m[31m-        );
+(B[m[32m+        assert!(result
+(B[m[32m+            .content
+(B[m[32m+            .contains("[line truncated, 23 bytes omitted]"));
+(B[m         assert!(!result.content.contains('频'));
+         assert!(!result.content.contains("byte index"));
+     }
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/read.rs:1426:
+             .await
+             .unwrap();
+         assert!(cut.success, "{}", cut.content);
+[31m-        assert!(
+(B[m[31m-            cut.content
+(B[m[31m-                .contains("[line truncated, 23 bytes omitted] continue with byte_offset=1999")
+(B[m[31m-        );
+(B[m[32m+        assert!(cut
+(B[m[32m+            .content
+(B[m[32m+            .contains("[line truncated, 23 bytes omitted] continue with byte_offset=1999"));
+(B[m         let rest = tool
+             .execute(
+                 &serde_json::json!({"file_path": "one-line.txt", "byte_offset": 1999}),
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/safe_http.rs:8:
+ //! DNS-over-HTTPS against `1.1.1.1`. DoH answers are still subject to the same
+ //! public-address SSRF checks before any connection is opened.
+ 
+[31m-use reqwest::header::{ACCEPT, ACCEPT_ENCODING, HeaderMap, LOCATION, RANGE};
+(B[m[31m-use reqwest::{Url, redirect::Policy};
+(B[m[32m+use reqwest::header::{HeaderMap, ACCEPT, ACCEPT_ENCODING, LOCATION, RANGE};
+(B[m[32m+use reqwest::{redirect::Policy, Url};
+(B[m use std::fmt;
+ use std::future::Future;
+ use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/safe_http.rs:744:
+             ]
+         );
+         assert!(parse_doh_answer_ips(r#"{"Status":2}"#, 443).is_err());
+[31m-        assert!(
+(B[m[31m-            parse_doh_answer_ips(r#"{"Status":0}"#, 443)
+(B[m[31m-                .unwrap()
+(B[m[31m-                .is_empty()
+(B[m[31m-        );
+(B[m[32m+        assert!(parse_doh_answer_ips(r#"{"Status":0}"#, 443)
+(B[m[32m+            .unwrap()
+(B[m[32m+            .is_empty());
+(B[m     }
+ 
+     #[test]
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/safe_http.rs:779:
+         let next = Url::parse("https://EXAMPLE.com/other").unwrap();
+         let mut headers = HeaderMap::new();
+         headers.insert(reqwest::header::IF_RANGE, "\"v1\"".parse().unwrap());
+[31m-        assert!(
+(B[m[31m-            redirect_headers(&current, &next, &headers).contains_key(reqwest::header::IF_RANGE)
+(B[m[31m-        );
+(B[m[32m+        assert!(redirect_headers(&current, &next, &headers).contains_key(reqwest::header::IF_RANGE));
+(B[m     }
+ 
+     #[tokio::test]
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/semantic_search.rs:3:
+ use crate::text::truncate_utf8;
+ use crate::tools::types::{Tool, ToolCapabilities, ToolContext, ToolOutput};
+ use crate::workspace::{
+[31m-    WorkspaceRetrievalError, WorkspaceSemanticFallbackReason, WorkspaceSemanticSearchHit,
+(B[m[31m-    WorkspaceSemanticSearchRequest, WorkspaceSemanticSearchResult,
+(B[m[31m-    escape_control_chars_for_display,
+(B[m[32m+    escape_control_chars_for_display, WorkspaceRetrievalError, WorkspaceSemanticFallbackReason,
+(B[m[32m+    WorkspaceSemanticSearchHit, WorkspaceSemanticSearchRequest, WorkspaceSemanticSearchResult,
+(B[m };
+ use anyhow::Result;
+ use async_trait::async_trait;
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/web_fetch/pdf.rs:80:
+     use super::*;
+     use crate::tools::types::{Tool, ToolContext};
+     use lopdf::{
+[31m-        Document, Object, Stream,
+(B[m         content::{Content, Operation},
+[31m-        dictionary,
+(B[m[32m+        dictionary, Document, Object, Stream,
+(B[m     };
+ 
+     fn pdf_document(text: Option<&str>) -> Vec<u8> {
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/web_fetch/tests.rs:1:
+[31m-#[cfg(unix)]
+(B[m[31m-use super::super::safe_http::{SYSTEM_PROXY_LOOKUP_TIMEOUT, command_output_with_timeout};
+(B[m use super::super::safe_http::{build_proxy_client, parse_macos_proxy, validate_resolved_addresses};
+[32m+#[cfg(unix)]
+(B[m[32m+use super::super::safe_http::{command_output_with_timeout, SYSTEM_PROXY_LOOKUP_TIMEOUT};
+(B[m use super::*;
+ use std::net::SocketAddr;
+ 
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/web_fetch/tests.rs:227:
+     assert!(validate_resolved_addresses("example.com", &[]).is_err());
+     // Fake-IP stays blocked at the validation boundary; recovery is DoH in
+     // resolve_public_target, not a relaxation of this predicate.
+[31m-    assert!(
+(B[m[31m-        validate_resolved_addresses("example.com", &[SocketAddr::from(([198, 18, 0, 95], 443))])
+(B[m[31m-            .is_err()
+(B[m[31m-    );
+(B[m[32m+    assert!(validate_resolved_addresses(
+(B[m[32m+        "example.com",
+(B[m[32m+        &[SocketAddr::from(([198, 18, 0, 95], 443))]
+(B[m[32m+    )
+(B[m[32m+    .is_err());
+(B[m }
+ 
+ #[test]
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/web_fetch/tests.rs:368:
+ #[ignore = "S-WF-01 soak: private redirects must not connect"]
+ async fn soak_private_redirect_never_connects_and_body_stays_capped() {
+     use std::io::ErrorKind;
+[31m-    use std::sync::Arc;
+(B[m     use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
+[32m+    use std::sync::Arc;
+(B[m     use std::time::Duration;
+ 
+     let listener = std::net::TcpListener::bind("127.0.0.1:0").expect("listener");
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/web_fetch.rs:5:
+ use async_trait::async_trait;
+ use futures::StreamExt;
+ use reqwest::{
+[31m-    StatusCode, Url,
+(B[m     header::{HeaderMap, RETRY_AFTER},
+[32m+    StatusCode, Url,
+(B[m };
+ use std::time::Duration;
+ 
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/web_fetch.rs:13:
+ mod pdf;
+ 
+ use super::safe_http::{
+[31m-    MAX_REDIRECTS, RedirectQueryPolicy, SafeHttpError, explicit_web_proxy_from_env,
+(B[m[31m-    get_with_redirects, parse_http_url, redirect_target, safe_url_for_diagnostic,
+(B[m[31m-    sanitize_fetch_url, system_web_proxy,
+(B[m[32m+    explicit_web_proxy_from_env, get_with_redirects, parse_http_url, redirect_target,
+(B[m[32m+    safe_url_for_diagnostic, sanitize_fetch_url, system_web_proxy, RedirectQueryPolicy,
+(B[m[32m+    SafeHttpError, MAX_REDIRECTS,
+(B[m };
+ 
+ /// Maximum response size (5MB)
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/web_search/tests.rs:438:
+     );
+     let metadata = result.metadata.expect("default search metadata");
+     assert_eq!(metadata["engine_selection_source"], "builtin_default");
+[31m-    assert!(
+(B[m[31m-        metadata["selected_engines"]
+(B[m[31m-            .as_array()
+(B[m[31m-            .is_some_and(|engines| !engines.is_empty())
+(B[m[31m-    );
+(B[m[32m+    assert!(metadata["selected_engines"]
+(B[m[32m+        .as_array()
+(B[m[32m+        .is_some_and(|engines| !engines.is_empty()));
+(B[m     let summaries = items
+         .as_array()
+         .expect("search result array")
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/web_search/tests.rs:714:
+     // Example with engines should use array format
+     assert!(examples[1]["engines"].is_array());
+     assert_eq!(examples[1]["engines"].as_array().unwrap(), &["ddg", "wiki"]);
+[31m-    assert!(
+(B[m[31m-        params["properties"]["engines"]["description"]
+(B[m[31m-            .as_str()
+(B[m[31m-            .is_some_and(|description| {
+(B[m[31m-                description.contains("bing (Bing RSS)")
+(B[m[31m-                    && description.contains("anysearch")
+(B[m[31m-                    && description.contains("tavily")
+(B[m[31m-            })
+(B[m[31m-    );
+(B[m[32m+    assert!(params["properties"]["engines"]["description"]
+(B[m[32m+        .as_str()
+(B[m[32m+        .is_some_and(|description| {
+(B[m[32m+            description.contains("bing (Bing RSS)")
+(B[m[32m+                && description.contains("anysearch")
+(B[m[32m+                && description.contains("tavily")
+(B[m[32m+        }));
+(B[m     #[cfg(feature = "headless-search")]
+[31m-    assert!(
+(B[m[31m-        params["properties"]["engines"]["description"]
+(B[m[31m-            .as_str()
+(B[m[31m-            .is_some_and(|description| description.contains("Google, headless"))
+(B[m[31m-    );
+(B[m[32m+    assert!(params["properties"]["engines"]["description"]
+(B[m[32m+        .as_str()
+(B[m[32m+        .is_some_and(|description| description.contains("Google, headless")));
+(B[m     #[cfg(feature = "headless-search")]
+[31m-    assert!(
+(B[m[31m-        params["properties"]["engines"]["description"]
+(B[m[31m-            .as_str()
+(B[m[31m-            .is_some_and(|description| {
+(B[m[31m-                description.contains("bing_browser")
+(B[m[31m-                    && description.contains("brave_browser")
+(B[m[31m-                    && description.contains("Moli")
+(B[m[31m-            })
+(B[m[31m-    );
+(B[m[32m+    assert!(params["properties"]["engines"]["description"]
+(B[m[32m+        .as_str()
+(B[m[32m+        .is_some_and(|description| {
+(B[m[32m+            description.contains("bing_browser")
+(B[m[32m+                && description.contains("brave_browser")
+(B[m[32m+                && description.contains("Moli")
+(B[m[32m+        }));
+(B[m     #[cfg(not(feature = "headless-search"))]
+[31m-    assert!(
+(B[m[31m-        params["properties"]["engines"]["description"]
+(B[m[31m-            .as_str()
+(B[m[31m-            .is_some_and(|description| !description.contains("Google"))
+(B[m[31m-    );
+(B[m[32m+    assert!(params["properties"]["engines"]["description"]
+(B[m[32m+        .as_str()
+(B[m[32m+        .is_some_and(|description| !description.contains("Google")));
+(B[m }
+ 
+ #[test]
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/web_search/tests.rs:1271:
+ #[tokio::test]
+ #[ignore = "S-WS-01 soak: loopback search fixture connection and byte caps"]
+ async fn soak_web_search_loopback_fixture_stays_connection_and_byte_capped() {
+[31m-    use std::sync::Arc;
+(B[m     use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
+[32m+    use std::sync::Arc;
+(B[m     use std::time::Duration;
+     use tokio::io::{AsyncReadExt, AsyncWriteExt};
+     use tokio::net::TcpListener;
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/web_search.rs:10:
+ use crate::tools::types::{Tool, ToolContext, ToolErrorKind, ToolOutput};
+ #[cfg(feature = "headless-search")]
+ use a3s_search::product::PendingHeadlessRuntime;
+[31m-use a3s_search::product::{CascadeControls, CascadeRequest, HeadlessBrowser, execute_cascade};
+(B[m[32m+use a3s_search::product::{execute_cascade, CascadeControls, CascadeRequest, HeadlessBrowser};
+(B[m use a3s_search::proxy::ProxyConfig;
+ use a3s_search::{
+     EngineTierPlan, Metrics, MetricsSnapshot, SearchCoalescerSnapshot, SearchQuery, SearchResult,
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/web_search.rs:48:
+      Supports proxy configuration for conventional search transports.";
+ 
+ #[cfg(feature = "headless-search")]
+[31m-const ENGINE_CATALOG_DESCRIPTION: &str = "Optional. List of search engines or native providers to use. Without explicit configuration, \
+(B[m[32m+const ENGINE_CATALOG_DESCRIPTION: &str =
+(B[m[32m+    "Optional. List of search engines or native providers to use. Without explicit configuration, \
+(B[m      all built-in providers that advertise anonymous access are combined with the public HTTP \
+      defaults. Available: anysearch (anonymous or authenticated native provider), tavily (keyless \
+      or authenticated native provider), ddg (DuckDuckGo), brave (Brave Search), bing (Bing RSS), \
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/builtin/web_search.rs:60:
+      Lightpanda remain explicit compatibility backends.";
+ 
+ #[cfg(not(feature = "headless-search"))]
+[31m-const ENGINE_CATALOG_DESCRIPTION: &str = "Optional. List of search engines or native providers to use. Without explicit configuration, \
+(B[m[32m+const ENGINE_CATALOG_DESCRIPTION: &str =
+(B[m[32m+    "Optional. List of search engines or native providers to use. Without explicit configuration, \
+(B[m      all built-in providers that advertise anonymous access are combined with the public HTTP \
+      defaults. Available: anysearch (anonymous or authenticated native provider), tavily (keyless \
+      or authenticated native provider), ddg (DuckDuckGo), brave (Brave Search), bing (Bing RSS), \
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/skill/tests.rs:8:
+ use crate::tools::ToolContext;
+ use anyhow::Result;
+ use async_trait::async_trait;
+[31m-use std::sync::Mutex;
+(B[m use std::sync::atomic::{AtomicUsize, Ordering};
+[32m+use std::sync::Mutex;
+(B[m use std::time::Duration;
+[31m-use tokio::sync::{Notify, mpsc};
+(B[m[32m+use tokio::sync::{mpsc, Notify};
+(B[m use tokio_util::sync::CancellationToken;
+ 
+ struct MockLlmClient {
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/skill/tests.rs:589:
+     .unwrap();
+ 
+     assert!(result.success);
+[31m-    assert!(
+(B[m[31m-        result
+(B[m[31m-            .content
+(B[m[31m-            .contains("Emit fences for the injected batch only.")
+(B[m[31m-    );
+(B[m[32m+    assert!(result
+(B[m[32m+        .content
+(B[m[32m+        .contains("Emit fences for the injected batch only."));
+(B[m     assert!(result.content.contains("审查本批注入正文"));
+     assert!(!result.content.contains("not found"));
+     assert_eq!(
+Diff in /Users/roylin/code/aster/crates/code/core/src/tools/skill.rs:20:
+ };
+ use crate::skills::{Skill, SkillRegistry};
+ use crate::tools::{Tool, ToolContext, ToolExecutor, ToolOutput};
+[31m-use anyhow::{Result, anyhow};
+(B[m[32m+use anyhow::{anyhow, Result};
+(B[m use async_trait::async_trait;
+ use serde::{Deserialize, Serialize};
+ use serde_json::Value;
+Diff in /Users/roylin/code/aster/crates/oci-runtime/crates/runtime/src/agent_session/tests.rs:444:
+     // A shell script avoids the macOS code-signing restriction on copied
+     // system binaries: scripts are interpreted by the shebang target, so
+     // their signature is not path-bound.
+[31m-    std::fs::write(&shim, "#!/bin/sh\nprintf retained\n")
+(B[m[31m-        .expect("write a portable script fixture");
+(B[m[32m+    std::fs::write(&shim, "#!/bin/sh\nprintf retained\n").expect("write a portable script fixture");
+(B[m     std::fs::set_permissions(&shim, std::fs::Permissions::from_mode(0o755))
+         .expect("make executable fixture runnable");
+ 
+Diff in /Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-pager/src/acp/a3s_spawn.rs:5:
+ use std::process::Stdio;
+ use std::thread;
+ 
+[31m-use anyhow::{anyhow, Context, Result};
+(B[m[32m+use anyhow::{Context, Result, anyhow};
+(B[m use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
+ use tokio::process::Command;
+ use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
+Diff in /Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-pager/src/acp/a3s_spawn.rs:12:
+ use tokio_util::sync::CancellationToken;
+ 
+[31m-use a3s_acp_lib::{acp_channels, AcpGatewayReceiver, AcpGatewaySender, LineBufferedRead};
+(B[m[32m+use a3s_acp_lib::{AcpGatewayReceiver, AcpGatewaySender, LineBufferedRead, acp_channels};
+(B[m use a3s_code_shell::util::grok_home::grok_home;
+ use agent_client_protocol as acp;
+ 
+Diff in /Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-pager/src/acp/a3s_spawn.rs:18:
+[31m-use super::spawn::{boot_auth_manager, SpawnedAgent};
+(B[m[32m+use super::spawn::{SpawnedAgent, boot_auth_manager};
+(B[m use a3s_code_shell::agent::config::Config as AgentConfig;
+ 
+ const MAX_BUF: usize = 8 * 1024 * 1024;

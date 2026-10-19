@@ -1,0 +1,78 @@
+{
+  "schema": "aster.t023.v3-prospective-cohort.v1",
+  "prepared_at_utc": "2026-10-19T19:11:10.561476+00:00",
+  "status": "inputs_only_pending_final_qualified_build_and_manifest_binding",
+  "prior_terminal_attempts": [
+    "t023-sa-01",
+    "t023-v2-hc-01",
+    "t023-v2-sa-01",
+    "t023-2m-hc-01"
+  ],
+  "initial_order": [
+    {
+      "run_id": "t023-v3-hc-01",
+      "variant": "hardware",
+      "profile": "code",
+      "workspace": "/Users/roylin/code/tasks/T01-t023-v3-hc-01",
+      "inputs": 12,
+      "model_run_started": false
+    },
+    {
+      "run_id": "t023-v3-sa-01",
+      "variant": "software",
+      "profile": "adaptive",
+      "workspace": "/Users/roylin/code/tasks/T01-t023-v3-sa-01",
+      "inputs": 12,
+      "model_run_started": false
+    },
+    {
+      "run_id": "t023-v3-ha-01",
+      "variant": "hardware",
+      "profile": "adaptive",
+      "workspace": "/Users/roylin/code/tasks/T01-t023-v3-ha-01",
+      "inputs": 12,
+      "model_run_started": false
+    },
+    {
+      "run_id": "t023-v3-sc-01",
+      "variant": "software",
+      "profile": "code",
+      "workspace": "/Users/roylin/code/tasks/T01-t023-v3-sc-01",
+      "inputs": 12,
+      "model_run_started": false
+    }
+  ],
+  "conditional_pair_order_only_if_all_four_qualify": [
+    "t023-v3-sa-02",
+    "t023-v3-hc-02"
+  ],
+  "budget": {
+    "max_execution_ms": 900000,
+    "llm_api_timeout_ms": 180000,
+    "tool_timeout_ms": 120000,
+    "max_tool_rounds": 128,
+    "max_continuation_turns": 4,
+    "max_parallel_tasks": 4,
+    "thinking_budget": 8192,
+    "reasoning_effort": "medium",
+    "reported_token_limit": 2000000
+  },
+  "prompt_sha256": "a55ceb23267a36b6aea90fa14c399621546a0223c551afa106ec5411b11cc6f5",
+  "route": "deepseek/deepseek-flash",
+  "endpoint": "https://api.deepseek.com",
+  "retrieval": "disabled",
+  "permissions": [
+    "*"
+  ],
+  "sample_caps": {
+    "previous_attempts": 4,
+    "remaining_core": 6,
+    "final_cua": 1,
+    "maximum_total_t01": 11,
+    "conditional_heldouts": 8
+  },
+  "source_rule": "New source cohort after owning repairs; do not pool old runs. Bind actual final executable/source/assets and verify before model access. No final build or manifest identity is claimed yet.",
+  "qualification_rule": "Every cell needs ordinary completion, all nine independent oracle scenarios, complete metrics, identity/input integrity and governance. PTC claims additionally require actual program adoption and complete child receipts. Failure stops promotion/expansion; identity/governance failure also stops the initial wave.",
+  "timing_rule": "No Cargo/tests/other models/source edits during a timed Run. Keep preflight, Core task, outer process and independent oracle timing separate.",
+  "promotion_rule": "Runtime and PTC decisions remain separate. These sparse samples cannot establish stable tail latency. Never change prompt, answers or the fixed 2M budget to rescue an outcome. Final CUA is separate desktop integration, not a matrix repeat."
+}

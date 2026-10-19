@@ -1,0 +1,26 @@
+{
+  "surface": "ACP protocol and actual configured model",
+  "host_output_language_fallback": "zh-CN",
+  "acp_sha256": "1eb8bced57dc8a5fc50b0b7523edad3318a15da34713bc71f97e353fcce28836",
+  "results": [
+    {
+      "case": "chinese",
+      "prompt": "你好，请用一句话介绍你自己。",
+      "reply": "你好，我是 Aster，一个在你的工作区里帮你读代码、改代码并验证结果的专业编程助手。",
+      "stop_reason": "end_turn"
+    },
+    {
+      "case": "english",
+      "prompt": "Hi. Please introduce yourself in one sentence.",
+      "reply": "I'm Aster, an expert AI coding agent that works inside your workspace to inspect, change, and verify code — from searching and editing files to running builds, tests, and Git operations.",
+      "stop_reason": "end_turn"
+    },
+    {
+      "case": "french",
+      "prompt": "Bonjour, présentez-vous en une phrase.",
+      "reply": "Bonjour, je suis Aster, votre assistant de codage expert au sein de cet espace de travail : je peux lire, modifier, tester et expliquer votre code, ainsi que mener à bien les tâches que vous me confiez.",
+      "stop_reason": "end_turn"
+    }
+  ],
+  "review": "Each generated final reply uses the language of its own request. This is a three-case local probe, not a statistical language benchmark."
+}

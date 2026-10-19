@@ -1,0 +1,47 @@
+--- frozen/apps/work/src/renderer/pages/agents/workbenchPermissionPostures.ts
++++ current/apps/work/src/renderer/pages/agents/workbenchPermissionPostures.ts
+@@ -75,6 +75,14 @@
+   planFirst: boolean
+ }
+ 
++/** One-turn instruction. The stored approval mode stays unchanged. */
++export const PLAN_FIRST_DIRECTIVE = '先出步骤：只写步骤和理由，不要修改文件，不要运行命令。用户确认后再执行。'
++
++export function withPlanFirstDirectives(directives: readonly string[], enabled: boolean): string[] {
++  if (!enabled) return [...directives]
++  return [PLAN_FIRST_DIRECTIVE, ...directives].slice(0, 8)
++}
++
+ function defaultStorage(): PendingStorage | null {
+   try {
+     return globalThis.localStorage ?? null
+--- frozen/apps/work/src/renderer/pages/agents/WorkbenchPermissionPicker.tsx
++++ current/apps/work/src/renderer/pages/agents/WorkbenchPermissionPicker.tsx
+@@ -234,12 +234,23 @@
+         role="switch"
+         aria-checked={planFirst}
+         aria-label={t('workbench.permission.plan_first')}
++        title={t('workbench.permission.plan_first_hint')}
+         data-ui="workbench.plan-first"
+         onClick={() => commit({ mode, planFirst: !planFirst })}
+-        className={cn(
+-          'flex h-8 items-center rounded-[8px] px-2 text-[13px] text-[#3f3f3f] hover:bg-[#f7f7f7]',
+-          planFirst && 'bg-[#f2f3f5] text-[#171717]'
+-        )}>
++        className="ml-0.5 flex h-8 items-center gap-1.5 border-l border-[#ececec] pr-1.5 pl-2 text-[13px] text-[#3f3f3f] outline-none hover:text-[#171717] focus-visible:ring-2 focus-visible:ring-black/10">
++        <span
++          aria-hidden
++          className={cn(
++            'relative h-4 w-7 shrink-0 rounded-full motion-reduce:transition-none',
++            planFirst ? 'bg-[#171717]' : 'bg-[#d4d4d4]'
++          )}>
++          <span
++            className={cn(
++              'absolute top-0.5 size-3 rounded-full bg-white motion-reduce:transition-none',
++              planFirst ? 'left-3.5' : 'left-0.5'
++            )}
++          />
++        </span>
+         {t('workbench.permission.plan_first')}
+       </button>
+     </div>

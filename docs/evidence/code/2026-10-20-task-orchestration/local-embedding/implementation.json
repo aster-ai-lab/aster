@@ -1,0 +1,85 @@
+{
+  "schema": "aster.local-embedding-implementation.v1",
+  "observed_at_utc": "2026-10-19T16:34:55.290209+00:00",
+  "status": "source implementation and focused hermetic checks complete; actual installed ONNX qualification remains unavailable",
+  "task": "T019",
+  "source_start_manifest": "docs/evidence/sandbox/2026-10-19-command-latency/optimization-source-start.json",
+  "owned_source": {
+    "crates/bge/src/embedding.rs": {
+      "sha256": "39eaa69d3aca9d56bad75fd757981a8698cbe175f7c547e4f8029eb8fd007b92",
+      "bytes": 20672
+    },
+    "crates/bge/src/embedding_tests.rs": {
+      "sha256": "cf3362801dfcc5808925cc0774a21434e3a437e9d441386e4fe5936a20469c77",
+      "bytes": 5992
+    },
+    "crates/code/acp/src/agent/local_embedding.rs": {
+      "sha256": "97774106c37a2518f991a7ab0a59db4dc01ccf49bc311c64d7a027e1e202ab9b",
+      "bytes": 10028
+    },
+    "crates/code/acp/src/agent/local_embedding_tests.rs": {
+      "sha256": "12cb7b73814ac0a7791a4ceb718d452ae2aa93cea1e95700bb7a48210233b543",
+      "bytes": 12173
+    }
+  },
+  "api": {
+    "preserved": [
+      "EmbeddingClient::embed",
+      "EmbeddingClient::warm"
+    ],
+    "added": [
+      "EmbeddingClient::installed_revision",
+      "EmbeddingClient::start_embedding",
+      "EmbeddingOperation::cancel",
+      "EmbeddingOperation::settle",
+      "EmbeddingOperation::settle_until_cancelled",
+      "EmbeddingOutput"
+    ],
+    "acp_factory": "local_embedding_provider(CancellationToken) -> Result<Arc<dyn EmbeddingProvider>, LocalEmbeddingSetupError>"
+  },
+  "limits": {
+    "probe_return_deadline_seconds": 30,
+    "probe_deadline_is_native_settlement_guarantee": false,
+    "adapter_max_batch_inputs": 64,
+    "adapter_max_input_bytes": 65536,
+    "adapter_max_batch_bytes": 262144,
+    "bge_request_limits_reuse_wire_constants": true
+  },
+  "ownership": [
+    "A shared per-client semaphore admits one worker; its owned permit moves into the blocking closure.",
+    "Drop or cancellation requests ORT RunOptions termination. The worker retains its engine, options and admission until native work actually exits.",
+    "Each operation uses new RunOptions; a cancelled operation cannot poison the next operation.",
+    "Core timeout may return while the worker is still settling; no native bounded-settlement claim is made."
+  ],
+  "asset_observation": {
+    "scope": "this audit process environment; not an ACP process-environment capture",
+    "families": [
+      {
+        "family": "bge-m3",
+        "model_directory_override_set": false,
+        "selected_directory_exists": false,
+        "receipt_exists": false
+      },
+      {
+        "family": "bge-reranker-v2-m3",
+        "model_directory_override_set": false,
+        "selected_directory_exists": false,
+        "receipt_exists": false
+      }
+    ],
+    "model_loaded": false,
+    "inference_executed": false,
+    "download_or_remote_provider_started": false
+  },
+  "compatibility": "Typed empty or oversized requests now obey the existing JSON wire bounds and return request_invalid before runtime or asset access; a one-item empty string remains legal.",
+  "pending": [
+    "actual installed ONNX cancellation/settlement qualification; no local model assets are provisioned in the audited environment"
+  ],
+  "explicitly_not_claimed": [
+    "No actual ONNX inference or cancellation qualification.",
+    "No ready capability, end-to-end task speedup or changed application deployment.",
+    "No T019 spec checkbox completion."
+  ],
+  "source_frozen_at_utc": "2026-10-19T16:39:25.081867+00:00",
+  "checks": "checks.json"
+}

@@ -1,0 +1,99 @@
+{
+  "BarChart": {
+    "children": false,
+    "props": [
+      "labels",
+      "values"
+    ]
+  },
+  "Button": {
+    "children": false,
+    "props": [
+      "action",
+      "label"
+    ]
+  },
+  "Card": {
+    "children": true,
+    "props": [
+      "title"
+    ]
+  },
+  "Checkbox": {
+    "children": false,
+    "props": [
+      "name",
+      "label",
+      "initial",
+      "required"
+    ]
+  },
+  "Grid": {
+    "children": true,
+    "props": [
+      "columns"
+    ]
+  },
+  "Input": {
+    "children": false,
+    "props": [
+      "name",
+      "label",
+      "initial",
+      "type",
+      "min",
+      "max",
+      "step",
+      "required",
+      "placeholder"
+    ]
+  },
+  "Metric": {
+    "children": false,
+    "props": [
+      "label",
+      "value",
+      "unit"
+    ]
+  },
+  "Select": {
+    "children": false,
+    "props": [
+      "name",
+      "label",
+      "initial",
+      "options",
+      "required",
+      "placeholder"
+    ]
+  },
+  "Slider": {
+    "children": false,
+    "props": [
+      "name",
+      "label",
+      "initial",
+      "min",
+      "max",
+      "step"
+    ]
+  },
+  "Stack": {
+    "children": true,
+    "props": []
+  },
+  "Text": {
+    "children": true,
+    "props": []
+  },
+  "Textarea": {
+    "children": false,
+    "props": [
+      "name",
+      "label",
+      "initial",
+      "required",
+      "placeholder"
+    ]
+  }
+}

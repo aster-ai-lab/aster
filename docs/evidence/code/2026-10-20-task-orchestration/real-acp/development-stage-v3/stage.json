@@ -1,0 +1,408 @@
+{
+  "schema": "aster.development-stage-signing.v3",
+  "started_at_utc": "2026-10-19T20:11:32.046345+00:00",
+  "app": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app",
+  "state": "signed_strict_verified_not_launched",
+  "launched": false,
+  "preparation_sha256": "e154daf666fd4fcf730a6a29fba13621c0cdf6145d4cbfb14ba3cc635793b268",
+  "build_report_sha256": "90af528bf0a37acf2e3b22556475bfd2301e4a0795869feac60cef6b70174598",
+  "script_sha256": "7168ff1eb624f835264550790ecfdaeabab12ca69a0e2452960d84be02042ba4",
+  "commands": [
+    {
+      "name": "plist-lint",
+      "command": [
+        "/usr/bin/plutil",
+        "-lint",
+        "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/Info.plist"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 6.133,
+      "stdout": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/development-stage-v3/plist-lint.stdout.log",
+      "stderr": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/development-stage-v3/plist-lint.stderr.log"
+    },
+    {
+      "name": "sign-acp",
+      "command": [
+        "/usr/bin/codesign",
+        "--force",
+        "--sign",
+        "-",
+        "--identifier",
+        "dev.a3s.studio.aster.task-orchestration-dev.acp",
+        "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/MacOS/a3s-code-acp"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 253.426,
+      "stdout": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/development-stage-v3/sign-acp.stdout.log",
+      "stderr": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/development-stage-v3/sign-acp.stderr.log"
+    },
+    {
+      "name": "signature-acp",
+      "command": [
+        "/usr/bin/codesign",
+        "-d",
+        "--verbose=4",
+        "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/MacOS/a3s-code-acp"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 6.177,
+      "stdout": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/development-stage-v3/signature-acp.stdout.log",
+      "stderr": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/development-stage-v3/signature-acp.stderr.log"
+    },
+    {
+      "name": "sign-office",
+      "command": [
+        "/usr/bin/codesign",
+        "--force",
+        "--sign",
+        "-",
+        "--identifier",
+        "dev.a3s.studio.aster.task-orchestration-dev.office",
+        "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/MacOS/a3s-office"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 113.297,
+      "stdout": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/development-stage-v3/sign-office.stdout.log",
+      "stderr": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/development-stage-v3/sign-office.stderr.log"
+    },
+    {
+      "name": "signature-office",
+      "command": [
+        "/usr/bin/codesign",
+        "-d",
+        "--verbose=4",
+        "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/MacOS/a3s-office"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 5.822,
+      "stdout": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/development-stage-v3/signature-office.stdout.log",
+      "stderr": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/development-stage-v3/signature-office.stderr.log"
+    },
+    {
+      "name": "sign-app",
+      "command": [
+        "/usr/bin/codesign",
+        "--force",
+        "--sign",
+        "-",
+        "--identifier",
+        "dev.a3s.studio.aster.task-orchestration-dev",
+        "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 144.16,
+      "stdout": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/development-stage-v3/sign-app.stdout.log",
+      "stderr": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/development-stage-v3/sign-app.stderr.log"
+    },
+    {
+      "name": "verify-app-strict-deep",
+      "command": [
+        "/usr/bin/codesign",
+        "--verify",
+        "--deep",
+        "--strict",
+        "--verbose=2",
+        "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 234.48,
+      "stdout": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/development-stage-v3/verify-app-strict-deep.stdout.log",
+      "stderr": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/development-stage-v3/verify-app-strict-deep.stderr.log"
+    },
+    {
+      "name": "signature-app",
+      "command": [
+        "/usr/bin/codesign",
+        "-d",
+        "--verbose=4",
+        "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 5.723,
+      "stdout": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/development-stage-v3/signature-app.stdout.log",
+      "stderr": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/development-stage-v3/signature-app.stderr.log"
+    },
+    {
+      "name": "signature-final-aster-dream",
+      "command": [
+        "/usr/bin/codesign",
+        "-d",
+        "--verbose=4",
+        "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/MacOS/AsterDream"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 5.842,
+      "stdout": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/development-stage-v3/signature-final-aster-dream.stdout.log",
+      "stderr": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/development-stage-v3/signature-final-aster-dream.stderr.log"
+    },
+    {
+      "name": "signature-final-a3s-code-acp",
+      "command": [
+        "/usr/bin/codesign",
+        "-d",
+        "--verbose=4",
+        "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/MacOS/a3s-code-acp"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 6.189,
+      "stdout": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/development-stage-v3/signature-final-a3s-code-acp.stdout.log",
+      "stderr": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/development-stage-v3/signature-final-a3s-code-acp.stderr.log"
+    },
+    {
+      "name": "signature-final-a3s-office",
+      "command": [
+        "/usr/bin/codesign",
+        "-d",
+        "--verbose=4",
+        "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/MacOS/a3s-office"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 5.51,
+      "stdout": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/development-stage-v3/signature-final-a3s-office.stdout.log",
+      "stderr": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/development-stage-v3/signature-final-a3s-office.stderr.log"
+    }
+  ],
+  "binaries": {
+    "aster-dream": {
+      "source_before": {
+        "path": "/Users/roylin/code/aster/target/debug/aster-dream",
+        "sha256": "70accee55841c85c309ff3564c4cdcd09402864973817c87c4205df391b27bdb",
+        "bytes": 178620672,
+        "mode": "0o755"
+      },
+      "copied_unsigned": {
+        "path": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/MacOS/AsterDream",
+        "sha256": "70accee55841c85c309ff3564c4cdcd09402864973817c87c4205df391b27bdb",
+        "bytes": 178620672,
+        "mode": "0o755"
+      },
+      "source_selection": "Exact final-build-v3/five-case SHA; ACP is the preserved deps artifact because the debug top-level path drifted",
+      "copy_operation": "shutil.copyfile(source,destination); chmod(0755)",
+      "signed_final": {
+        "path": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/MacOS/AsterDream",
+        "sha256": "52d9e2ff4076fb48877c350062edb78291d2c76e4eff82746493b3a10ecd49f4",
+        "bytes": 177600320,
+        "mode": "0o755"
+      },
+      "final_signature": {
+        "Identifier": "dev.a3s.studio.aster.task-orchestration-dev",
+        "Signature": "adhoc",
+        "CDHash": "94f16f2f228cfa19bdccfec1870825ee1d7b787b"
+      },
+      "source_after": {
+        "path": "/Users/roylin/code/aster/target/debug/aster-dream",
+        "sha256": "70accee55841c85c309ff3564c4cdcd09402864973817c87c4205df391b27bdb",
+        "bytes": 178620672,
+        "mode": "0o755"
+      }
+    },
+    "a3s-code-acp": {
+      "source_before": {
+        "path": "/Users/roylin/code/aster/target/debug/deps/a3s_code_acp-0f895f913ee015e2",
+        "sha256": "b5a88347d4e6770d8ef2dc8f348ff6903674aeb30bc7726a38616d99670d72e0",
+        "bytes": 323575968,
+        "mode": "0o755"
+      },
+      "copied_unsigned": {
+        "path": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/MacOS/a3s-code-acp",
+        "sha256": "b5a88347d4e6770d8ef2dc8f348ff6903674aeb30bc7726a38616d99670d72e0",
+        "bytes": 323575968,
+        "mode": "0o755"
+      },
+      "source_selection": "Exact final-build-v3/five-case SHA; ACP is the preserved deps artifact because the debug top-level path drifted",
+      "copy_operation": "shutil.copyfile(source,destination); chmod(0755)",
+      "signed_inner": {
+        "path": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/MacOS/a3s-code-acp",
+        "sha256": "fe16431112e890f17058b14a5e1b9fe3c933f714638f49d8f681302d5a60bb7c",
+        "bytes": 321712832,
+        "mode": "0o755"
+      },
+      "inner_signature": {
+        "Identifier": "dev.a3s.studio.aster.task-orchestration-dev.acp",
+        "Signature": "adhoc",
+        "CDHash": "8bded62ba4054354f98070a06946b12e068bb397"
+      },
+      "signed_final": {
+        "path": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/MacOS/a3s-code-acp",
+        "sha256": "fe16431112e890f17058b14a5e1b9fe3c933f714638f49d8f681302d5a60bb7c",
+        "bytes": 321712832,
+        "mode": "0o755"
+      },
+      "final_signature": {
+        "Identifier": "dev.a3s.studio.aster.task-orchestration-dev.acp",
+        "Signature": "adhoc",
+        "CDHash": "8bded62ba4054354f98070a06946b12e068bb397"
+      },
+      "source_after": {
+        "path": "/Users/roylin/code/aster/target/debug/deps/a3s_code_acp-0f895f913ee015e2",
+        "sha256": "b5a88347d4e6770d8ef2dc8f348ff6903674aeb30bc7726a38616d99670d72e0",
+        "bytes": 323575968,
+        "mode": "0o755"
+      }
+    },
+    "a3s-office": {
+      "source_before": {
+        "path": "/Users/roylin/code/aster/target/debug/a3s-office",
+        "sha256": "652d0f04943e4c0c0c0c42dc8c3ffb855bb7fdc0e7740b492733a1a0157af1af",
+        "bytes": 135876984,
+        "mode": "0o755"
+      },
+      "copied_unsigned": {
+        "path": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/MacOS/a3s-office",
+        "sha256": "652d0f04943e4c0c0c0c42dc8c3ffb855bb7fdc0e7740b492733a1a0157af1af",
+        "bytes": 135876984,
+        "mode": "0o755"
+      },
+      "source_selection": "Exact final-build-v3/five-case SHA; ACP is the preserved deps artifact because the debug top-level path drifted",
+      "copy_operation": "shutil.copyfile(source,destination); chmod(0755)",
+      "signed_inner": {
+        "path": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/MacOS/a3s-office",
+        "sha256": "7fcd1c0be82453b05ac2f9fbf80d69164b18ea7605af36a40c58d81e38ba35af",
+        "bytes": 135105136,
+        "mode": "0o755"
+      },
+      "inner_signature": {
+        "Identifier": "dev.a3s.studio.aster.task-orchestration-dev.office",
+        "Signature": "adhoc",
+        "CDHash": "07a9c75eb9b7a6e13f91d4aa19d17f6f0199c461"
+      },
+      "signed_final": {
+        "path": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/MacOS/a3s-office",
+        "sha256": "7fcd1c0be82453b05ac2f9fbf80d69164b18ea7605af36a40c58d81e38ba35af",
+        "bytes": 135105136,
+        "mode": "0o755"
+      },
+      "final_signature": {
+        "Identifier": "dev.a3s.studio.aster.task-orchestration-dev.office",
+        "Signature": "adhoc",
+        "CDHash": "07a9c75eb9b7a6e13f91d4aa19d17f6f0199c461"
+      },
+      "source_after": {
+        "path": "/Users/roylin/code/aster/target/debug/a3s-office",
+        "sha256": "652d0f04943e4c0c0c0c42dc8c3ffb855bb7fdc0e7740b492733a1a0157af1af",
+        "bytes": 135876984,
+        "mode": "0o755"
+      }
+    }
+  },
+  "old_app_before": [
+    {
+      "path": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/AsterDream.app/Contents/MacOS/AsterDream",
+      "sha256": "5ef74076bfee2c6a762dbfb910f5e08f2dae62739f63155a0b4a060f30472161",
+      "bytes": 176606864,
+      "mode": "0o755"
+    },
+    {
+      "path": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/AsterDream.app/Contents/Info.plist",
+      "sha256": "f6807149b8df2ac3a3892df4eb30c79fd36b5adddc5287b83ffd24ac77f6a4df",
+      "bytes": 1033,
+      "mode": "0o644"
+    }
+  ],
+  "host_capabilities_before": {
+    "path": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/host-capabilities.acl",
+    "sha256": "213428fb5061c855144ef5a551512eab0112ac6196ceef14abc5b35337161418",
+    "bytes": 80,
+    "mode": "0o600"
+  },
+  "plist_before": {
+    "path": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/Info.plist",
+    "sha256": "db82e336573c6de07c3a6813944b11c4a612e85d15bb1e4a0f0159805fbe7ba0",
+    "bytes": 1080,
+    "mode": "0o644"
+  },
+  "plist_values_before": {
+    "CFBundleDisplayName": "AsterDream",
+    "CFBundleExecutable": "AsterDream",
+    "CFBundleIconFile": "AsterDream",
+    "CFBundleIdentifier": "dev.a3s.studio.aster.task-orchestration-dev",
+    "CFBundleName": "AsterDream",
+    "CFBundlePackageType": "APPL",
+    "CFBundleShortVersionString": "0.1.1",
+    "CFBundleVersion": "0.1.1",
+    "LSEnvironment": {
+      "A3S_CONFIG": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/host-capabilities.acl",
+      "A3S_STUDIO_RENDERER_PORT": "4318",
+      "ASTER_SANDBOX_DIR": "/Users/roylin/code/aster/target/t013-assets-hardware"
+    },
+    "NSHighResolutionCapable": true
+  },
+  "template_source": {
+    "path": "/Users/roylin/code/aster/apps/work/src-tauri/src/macos_app.rs",
+    "sha256": "1ca03d13cfbe06e4f671c3146241f1a09d44b239146df96c0d1c6a6581670a3d",
+    "bytes": 18242,
+    "mode": "0o644"
+  },
+  "icon_before": {
+    "path": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/Resources/AsterDream.icns",
+    "sha256": "8bb605d6b8e785abf502ba42f7357246812404c2b50830f6dbfb760324a5902c",
+    "bytes": 540535,
+    "mode": "0o644"
+  },
+  "plist_completed": {
+    "path": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/Info.plist",
+    "sha256": "d4e8fda8007bd0a8222dd4a6b5da20044425b04b4e2a1b4cc8b36edec8e89427",
+    "bytes": 1361,
+    "mode": "0o644"
+  },
+  "plist_values_completed": {
+    "CFBundleDisplayName": "AsterDream",
+    "CFBundleExecutable": "AsterDream",
+    "CFBundleIconFile": "AsterDream",
+    "CFBundleIdentifier": "dev.a3s.studio.aster.task-orchestration-dev",
+    "CFBundleName": "AsterDream",
+    "CFBundlePackageType": "APPL",
+    "CFBundleShortVersionString": "0.1.1",
+    "CFBundleVersion": "0.1.1",
+    "LSEnvironment": {
+      "A3S_CONFIG": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/host-capabilities.acl",
+      "A3S_STUDIO_RENDERER_PORT": "4318",
+      "ASTER_SANDBOX_DIR": "/Users/roylin/code/aster/target/t013-assets-hardware"
+    },
+    "NSHighResolutionCapable": true,
+    "CFBundleInfoDictionaryVersion": "6.0",
+    "NSAppTransportSecurity": {
+      "NSAllowsArbitraryLoads": true,
+      "NSAllowsArbitraryLoadsInWebContent": true
+    },
+    "NSPrincipalClass": "NSApplication"
+  },
+  "app_signature": {
+    "Identifier": "dev.a3s.studio.aster.task-orchestration-dev",
+    "Signature": "adhoc",
+    "CDHash": "94f16f2f228cfa19bdccfec1870825ee1d7b787b"
+  },
+  "old_app_after": [
+    {
+      "path": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/AsterDream.app/Contents/MacOS/AsterDream",
+      "sha256": "5ef74076bfee2c6a762dbfb910f5e08f2dae62739f63155a0b4a060f30472161",
+      "bytes": 176606864,
+      "mode": "0o755"
+    },
+    {
+      "path": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/AsterDream.app/Contents/Info.plist",
+      "sha256": "f6807149b8df2ac3a3892df4eb30c79fd36b5adddc5287b83ffd24ac77f6a4df",
+      "bytes": 1033,
+      "mode": "0o644"
+    }
+  ],
+  "host_capabilities_after": {
+    "path": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/host-capabilities.acl",
+    "sha256": "213428fb5061c855144ef5a551512eab0112ac6196ceef14abc5b35337161418",
+    "bytes": 80,
+    "mode": "0o600"
+  },
+  "icon_after": {
+    "path": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/Resources/AsterDream.icns",
+    "sha256": "8bb605d6b8e785abf502ba42f7357246812404c2b50830f6dbfb760324a5902c",
+    "bytes": 540535,
+    "mode": "0o644"
+  },
+  "external_assets": {
+    "path": "/Users/roylin/code/aster/target/t013-assets-hardware",
+    "modified": false,
+    "signed": false,
+    "scope": "Existing frozen directory referenced only by per-app LSEnvironment"
+  },
+  "ended_at_utc": "2026-10-19T20:11:34.122525+00:00"
+}

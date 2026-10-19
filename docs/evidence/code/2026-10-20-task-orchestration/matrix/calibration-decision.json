@@ -1,0 +1,58 @@
+{
+  "schema": "aster.t023.calibration-decision.v1",
+  "decided_at_utc": "2026-10-19T18:15:14.456371+00:00",
+  "state": "frozen; all three pilot processes terminal; calibrated first wave prepared",
+  "evidence": [
+    "process/t023-sa-01-result.json",
+    "process/t023-sa-01-oracle.json",
+    "failure-diagnostics/t023-sa-01-budget.json",
+    "process/t023-v2-hc-01-checkpoint.json",
+    "process/t023-v2-hc-01-oracle.json"
+  ],
+  "reason": "The newly imposed 1M reported-token soft cap stopped two configurations after producing files; HC submitted bytes pass all nine scenarios. Completed-task speed cannot be measured from these forced failed terminals. This is one resource calibration, with no answer/prompt tuning and no production change.",
+  "pilot_attempts": [
+    "t023-sa-01",
+    "t023-v2-hc-01",
+    "t023-v2-sa-01"
+  ],
+  "retain_all_pilot_failures_and_scores": true,
+  "do_not_pool_pilot_times_with_calibrated_regime": true,
+  "unstarted_v2_cells_superseded": [
+    "t023-v2-ha-01",
+    "t023-v2-sc-01"
+  ],
+  "new_budget": {
+    "max_execution_ms": 900000,
+    "llm_api_timeout_ms": 180000,
+    "tool_timeout_ms": 120000,
+    "max_tool_rounds": 128,
+    "max_continuation_turns": 4,
+    "max_parallel_tasks": 4,
+    "thinking_budget": 8192,
+    "reasoning_effort": "medium",
+    "reported_token_limit": 2000000
+  },
+  "only_changed_experiment_field": "budget.reported_token_limit",
+  "runner": "/Users/roylin/code/aster/target/t023-frozen-event-window-v2/t023-real-llm",
+  "runner_sha256": "33de605e83617a2e850778a2308832610697b1bcc95c0ffd227ec0ad1d9f130a",
+  "source_and_input_identity": "same as event-window-v2",
+  "order": [
+    "hc",
+    "sa",
+    "ha",
+    "sc"
+  ],
+  "repeat_rule": "Run every initial cell and retain every outcome unless an identity/governance defect invalidates the experiment. Only if all four have ordinary completion, complete measurements and passing independent oracle, run the reverse second wave sc/ha/sa/hc. No third wave.",
+  "maximum_new_regime_attempts": 8,
+  "maximum_total_t01_attempts_including_pilots": 11,
+  "original_absolute_ceiling": 12,
+  "no_further_budget_increase": true,
+  "ptc_attribution": "A code-profile run with zero program calls establishes no PTC batching benefit.",
+  "independent_review": "runtime_speed read-only review supports a one-time common calibration and records incomplete-window/failure/wire-capture limits.",
+  "prepared_manifests": [
+    "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-2m-hc-01.json",
+    "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-2m-sa-01.json",
+    "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-2m-ha-01.json",
+    "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-2m-sc-01.json"
+  ]
+}

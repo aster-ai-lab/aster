@@ -38,6 +38,11 @@ pub(crate) struct FactModelContext {
 }
 
 impl crate::agent::TurnEngine {
+    /// Required, zero-I/O context retained even if optional assembly times out.
+    pub(crate) fn required_environment_context(&self) -> String {
+        render_env_block(&self.tool_context)
+    }
+
     /// System prompt and hook-adjusted prompt for one fact-log model call.
     ///
     /// PrePrompt and context providers run here. They do not choose whether
@@ -444,7 +449,7 @@ impl crate::agent::TurnEngine {
 
         // Always-on grounding facts the model cannot infer from tool output —
         // most importantly today's date (training cutoff is in the past).
-        let env_section = render_env_block(&self.tool_context.workspace);
+        let env_section = self.required_environment_context();
 
         let parts: Vec<&str> = [base.as_str(), env_section.as_str(), mcp_section.as_str()]
             .iter()
@@ -520,30 +525,49 @@ impl crate::agent::TurnEngine {
 /// the host platform, and the working directory. Computed fresh from live values
 /// each turn — cheap (no shell-out), so it is built in code rather than a static
 /// template that would serve stale data.
-fn render_env_block(workspace: &std::path::Path) -> String {
+fn render_env_block(ctx: &crate::tools::ToolContext) -> String {
+    render_env_block_for_host(ctx, std::env::consts::OS, std::env::consts::ARCH)
+}
+
+fn render_env_block_for_host(
+    ctx: &crate::tools::ToolContext,
+    host_os: &str,
+    host_arch: &str,
+) -> String {
+    let runner = ctx.workspace_services.command_runner();
+    let runner_target = runner.as_ref().map(|runner| runner.execution_target());
+    let runner_description = runner_target
+        .map(|target| describe_execution_target(target, host_os, host_arch))
+        .unwrap_or_else(|| "unavailable (workspace has no command runner)".to_string());
+    let default_target = match &ctx.sandbox {
+        Some(sandbox) => describe_execution_target(sandbox.execution_target(), host_os, host_arch),
+        None if ctx.workspace_services.local_root().is_some() && ctx.has_run_governance() => {
+            "unavailable (configured sandbox is missing)".to_string()
+        }
+        None => runner_description.clone(),
+    };
     format!(
-        "<env>\nWorking directory: {}\nPlatform: {} ({})\n{}Today's date: {}\n</env>",
-        workspace.display(),
-        std::env::consts::OS,
-        std::env::consts::ARCH,
-        host_shell_line(workspace),
+        "<env>\nWorking directory: {}\nHost platform: {host_os} ({host_arch})\nDefault Bash execution target: {default_target}\nEscalated Bash execution target: {runner_description}. Only after the exact require_escalated invocation passes permission and confirmation; never an automatic fallback.\nTarget metadata does not establish execution availability or authorization.\nToday's date: {}\n</env>",
+        ctx.workspace.display(),
         chrono::Local::now().format("%Y-%m-%d"),
     )
 }
 
-/// The `bash` tool is PowerShell on Windows; without this line models write bash.
-#[cfg(windows)]
-fn host_shell_line(workspace: &std::path::Path) -> String {
-    let shell = crate::tools::builtin::bash::windows_host_powershell(workspace).ok();
-    format!(
-        "{}\n",
-        crate::tools::builtin::bash::windows_shell::windows_shell_guidance(shell.as_deref())
-    )
-}
-
-#[cfg(not(windows))]
-fn host_shell_line(_workspace: &std::path::Path) -> String {
-    String::new()
+fn describe_execution_target(
+    target: crate::sandbox::ShellExecutionTarget,
+    host_os: &str,
+    host_arch: &str,
+) -> String {
+    use crate::sandbox::ShellExecutionTarget;
+    match target {
+        ShellExecutionTarget::Unknown => "unknown (backend did not report OS/shell)".to_string(),
+        ShellExecutionTarget::HostBash => format!("host {host_os} ({host_arch}); shell: bash"),
+        ShellExecutionTarget::HostPowerShell => {
+            format!("host {host_os} ({host_arch}); shell: PowerShell (use PowerShell syntax)")
+        }
+        ShellExecutionTarget::LinuxGuestBash => "linux guest; shell: /bin/bash".to_string(),
+        ShellExecutionTarget::LinuxGuestSh => "linux guest; shell: /bin/sh".to_string(),
+    }
 }
 
 #[cfg(test)]

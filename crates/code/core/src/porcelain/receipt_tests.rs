@@ -32,6 +32,143 @@ fn fixture_repository(root: &Path) {
 
 #[tokio::test]
 #[cfg(unix)]
+async fn receipt_preimages_bind_known_nongit_and_dirty_git_bytes_without_rewrite_progress() {
+    use a3s_effect::ToolObservationCompleteness;
+    for git_backed in [false, true] {
+        let root = tempfile::tempdir().unwrap();
+        if git_backed {
+            fixture_repository(root.path());
+        }
+        let path = "outside.txt";
+        fs::write(root.path().join(path), b"dirty before\n").unwrap();
+        let watch = Watch::start(root.path()).await;
+        fs::write(root.path().join(path), b"actual after\n").unwrap();
+        let effects = watch.finish_effects_with_revision(root.path(), false).await;
+        assert_eq!(effects.completeness, ToolObservationCompleteness::Complete);
+        let changed = effects
+            .changes
+            .iter()
+            .find(|change| change.path == path)
+            .unwrap();
+        assert_eq!(
+            changed.before.as_ref().unwrap().content_digest,
+            Some(format!("sha256:{:x}", Sha256::digest(b"dirty before\n")))
+        );
+        assert_eq!(
+            changed.after.content_digest,
+            Some(format!("sha256:{:x}", Sha256::digest(b"actual after\n")))
+        );
+        assert_ne!(changed.before.as_ref().unwrap(), &changed.after);
+
+        let watch = Watch::start(root.path()).await;
+        overwrite_preserving_mtime(&root.path().join(path), b"actual after\n");
+        let unchanged = watch.finish_effects_with_revision(root.path(), false).await;
+        assert_eq!(
+            unchanged.completeness,
+            ToolObservationCompleteness::Complete
+        );
+        for change in &unchanged.changes {
+            assert_eq!(change.path, path);
+            assert_eq!(
+                change.before.as_ref(),
+                Some(&change.after),
+                "mtime/ctime-only rewrites do not establish byte or mode changes"
+            );
+        }
+    }
+}
+
+#[tokio::test]
+#[cfg(unix)]
+async fn receipt_preimages_do_not_invent_the_first_clean_git_file_baseline() {
+    let root = tempfile::tempdir().unwrap();
+    fixture_repository(root.path());
+    let watch = Watch::start(root.path()).await;
+    assert!(watch.snapshot.stamps.is_empty());
+    fs::write(root.path().join("outside.txt"), b"first dirty bytes\n").unwrap();
+    let effects = watch.finish_effects_with_revision(root.path(), false).await;
+    assert_eq!(
+        effects.completeness,
+        a3s_effect::ToolObservationCompleteness::Complete
+    );
+    let changed = effects
+        .changes
+        .iter()
+        .find(|change| change.path == "outside.txt")
+        .unwrap();
+    assert!(
+        changed.before.is_none(),
+        "HEAD/index is not the actual pre-image"
+    );
+    assert!(changed.after.content_digest.is_some());
+}
+
+#[tokio::test]
+#[cfg(unix)]
+async fn receipt_preimages_use_complete_nongit_absence_for_creation_and_known_bytes_for_deletion() {
+    use a3s_effect::{ToolFileKind, ToolObservationCompleteness};
+    let root = tempfile::tempdir().unwrap();
+    let watch = Watch::start(root.path()).await;
+    fs::write(root.path().join("created.txt"), b"created bytes\n").unwrap();
+    let effects = watch.finish_effects_with_revision(root.path(), false).await;
+    assert_eq!(effects.completeness, ToolObservationCompleteness::Complete);
+    let created = effects
+        .changes
+        .iter()
+        .find(|change| change.path == "created.txt")
+        .unwrap();
+    assert_eq!(created.before.as_ref().unwrap().kind, ToolFileKind::Missing);
+    assert_eq!(created.after.kind, ToolFileKind::File);
+
+    let watch = Watch::start(root.path()).await;
+    fs::remove_file(root.path().join("created.txt")).unwrap();
+    let effects = watch.finish_effects_with_revision(root.path(), false).await;
+    assert_eq!(effects.completeness, ToolObservationCompleteness::Complete);
+    let deleted = effects
+        .changes
+        .iter()
+        .find(|change| change.path == "created.txt")
+        .unwrap();
+    assert_eq!(deleted.before.as_ref().unwrap().kind, ToolFileKind::File);
+    assert_eq!(deleted.after.kind, ToolFileKind::Missing);
+}
+
+#[tokio::test]
+#[cfg(unix)]
+async fn receipt_preimages_keep_uncaptured_existing_bytes_unknown_after_baseline_budget_failure() {
+    let root = tempfile::tempdir().unwrap();
+    File::create(root.path().join("oversized.bin"))
+        .unwrap()
+        .set_len(OBSERVATION_BYTE_CAP + 1)
+        .unwrap();
+    fs::write(root.path().join("state.txt"), b"before\n").unwrap();
+    let watch = Watch::start(root.path()).await;
+    let files = watch.files.as_ref().unwrap();
+    assert!(!files.incomplete);
+    assert!(files.content.is_none());
+    fs::write(root.path().join("state.txt"), b"after\n").unwrap();
+    let effects = watch.finish_effects_with_revision(root.path(), false).await;
+    assert_eq!(
+        effects.completeness,
+        a3s_effect::ToolObservationCompleteness::Complete
+    );
+    let changed = effects
+        .changes
+        .iter()
+        .find(|change| change.path == "state.txt")
+        .unwrap();
+    assert!(
+        changed.before.is_none(),
+        "stat presence without byte identity is not Missing"
+    );
+    assert_eq!(
+        changed.after.content_digest,
+        Some(format!("sha256:{:x}", Sha256::digest(b"after\n")))
+    );
+}
+
+#[tokio::test]
+#[cfg(unix)]
 async fn a_nested_git_workspace_observes_only_its_exact_relative_bytes() {
     use a3s_effect::{ToolFileKind, ToolObservationCompleteness};
     let repository = tempfile::tempdir().unwrap();
@@ -308,12 +445,27 @@ async fn git_output_read_failure_cannot_become_an_empty_success() {
 
 #[test]
 fn git_parsers_bound_paths_and_do_not_accept_overflow_as_complete() {
-    let status = (0..=FILE_WALK_CAP)
+    let within_stamp_cap = (0..=FILE_WALK_CAP)
         .map(|index| format!("?? f{index:04}\0"))
+        .collect::<String>();
+    let (records, incomplete) = porcelain_records(within_stamp_cap.as_bytes());
+    assert!(
+        !incomplete,
+        "a status list past the stamp cap is still a complete read"
+    );
+    assert_eq!(records.len(), FILE_WALK_CAP + 1);
+    let exact = (0..STATUS_RECORD_CAP)
+        .map(|index| format!("?? f{index:05}\0"))
+        .collect::<String>();
+    let (records, incomplete) = porcelain_records(exact.as_bytes());
+    assert!(!incomplete);
+    assert_eq!(records.len(), STATUS_RECORD_CAP);
+    let status = (0..=STATUS_RECORD_CAP)
+        .map(|index| format!("?? f{index:05}\0"))
         .collect::<String>();
     let (records, incomplete) = porcelain_records(status.as_bytes());
     assert!(incomplete);
-    assert_eq!(records.len(), FILE_WALK_CAP);
+    assert_eq!(records.len(), STATUS_RECORD_CAP);
     let hidden = (0..=FILE_WALK_CAP)
         .map(|index| format!("S f{index:04}\0"))
         .collect::<String>();
@@ -331,13 +483,13 @@ fn git_parsers_bound_paths_and_do_not_accept_overflow_as_complete() {
 
 #[test]
 fn a_rename_cannot_cross_the_path_bound_and_malformed_status_cannot_panic() {
-    let mut status = (0..FILE_WALK_CAP - 1)
-        .map(|index| format!("?? f{index:04}\0"))
+    let mut status = (0..STATUS_RECORD_CAP - 1)
+        .map(|index| format!("?? f{index:05}\0"))
         .collect::<String>();
     status.push_str("R  new\0old\0");
     let (records, incomplete) = porcelain_records(status.as_bytes());
     assert!(incomplete);
-    assert_eq!(records.len(), FILE_WALK_CAP - 1);
+    assert_eq!(records.len(), STATUS_RECORD_CAP - 1);
     let (records, incomplete) = porcelain_records("说 x\0".as_bytes());
     assert!(incomplete);
     assert!(records.is_empty());
@@ -799,4 +951,70 @@ fn a_changed_data_file_larger_than_a_baseline_budget_has_byte_identity() {
         effects.changes[0].after.content_digest.as_deref(),
         Some(format!("sha256:{:x}", Sha256::digest(&bytes)).as_str())
     );
+}
+
+#[test]
+fn a_large_status_list_is_a_digest_in_the_prepared_baseline() {
+    // This worktree's inlined status list was 1,131,889 bytes. The prepared
+    // fact rejects anything over 1 MiB before the command starts.
+    let status_count = 14_840;
+    let lines: Vec<String> = (0..status_count)
+        .map(|index| format!("?? \"path/{index:05}.txt\""))
+        .collect();
+    let stamps: Vec<ContentStamp> = (0..FILE_WALK_CAP)
+        .map(|index| ContentStamp {
+            path: format!("path/{index:05}.txt"),
+            present: true,
+            len: 1,
+            modified: 1,
+            mode: 0o100644,
+            kind: 0,
+            content_digest: Some("ab".repeat(32)),
+        })
+        .collect();
+    let watch = Watch {
+        snapshot: Snapshot {
+            porcelain: Some(lines.clone()),
+            head: Some("abc".into()),
+            stamps,
+            stamps_incomplete: true,
+            stamp_read_failed: false,
+            git_worktree: true,
+        },
+        files: None,
+    };
+    let baseline = watch.receipt_baseline();
+    let bytes = serde_json::to_vec(&baseline).unwrap();
+    assert!(bytes.len() < 4 * 1024, "baseline is {} bytes", bytes.len());
+    let git = &baseline["git"];
+    assert!(git.get("porcelain").is_none());
+    assert!(git.get("stamps").is_none());
+    assert_eq!(git["status_count"], status_count);
+    assert_eq!(git["status_complete"], true);
+    assert_eq!(git["stamp_read_failed"], false);
+    assert_eq!(git["stamps_incomplete"], true);
+    assert_eq!(git["stamp_count"], FILE_WALK_CAP);
+    let digest = git["status_digest"].as_str().unwrap();
+    assert!(digest.starts_with("sha256:"));
+    assert_eq!(digest, digest_status(&lines));
+    let mut changed = lines.clone();
+    changed[0].push('x');
+    assert_ne!(digest_status(&changed), digest);
+
+    let missed = Watch {
+        snapshot: Snapshot {
+            porcelain: None,
+            head: Some("abc".into()),
+            stamps: Vec::new(),
+            stamps_incomplete: true,
+            stamp_read_failed: true,
+            git_worktree: true,
+        },
+        files: None,
+    };
+    let missed = missed.receipt_baseline();
+    assert!(missed["git"]["status_digest"].is_null());
+    assert!(missed["git"]["status_count"].is_null());
+    assert_eq!(missed["git"]["status_complete"], false);
+    assert_eq!(missed["git"]["stamp_read_failed"], true);
 }

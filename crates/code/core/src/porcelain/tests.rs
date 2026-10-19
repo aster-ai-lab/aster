@@ -99,6 +99,7 @@ fn a_missed_status_with_a_known_head_is_not_an_empty_tree() {
     let before = snapshot_from_parts(None, Some("abc".to_string()), Vec::new());
     assert!(before.observes_git());
     assert!(before.stamps_incomplete);
+    assert!(before.stamp_read_failed);
 }
 
 #[test]
@@ -106,6 +107,7 @@ fn a_missed_status_outside_git_is_not_a_git_observation() {
     let before = snapshot_from_parts(None, None, Vec::new());
     assert!(!before.observes_git());
     assert!(!before.stamps_incomplete);
+    assert!(!before.stamp_read_failed);
 }
 
 #[tokio::test]
@@ -125,6 +127,56 @@ async fn an_unchanged_git_worktree_is_a_complete_empty_delta() {
         paths.is_empty(),
         "an unchanged worktree was reported as a mutation: {paths:?}"
     );
+}
+
+#[tokio::test]
+async fn a_status_list_past_the_stamp_cap_is_a_complete_empty_delta() {
+    let root = tempfile::tempdir().unwrap();
+    git_repo(root.path());
+    for index in 0..=FILE_WALK_CAP {
+        std::fs::write(root.path().join(format!("f{index:04}.txt")), "x").unwrap();
+    }
+
+    let watch = Watch::start(root.path()).await;
+    assert!(
+        watch
+            .snapshot
+            .porcelain
+            .as_ref()
+            .is_some_and(|lines| lines.len() == FILE_WALK_CAP + 1),
+        "status past the stamp cap was dropped: {:?}",
+        watch.snapshot.porcelain.as_ref().map(Vec::len)
+    );
+    assert!(watch.snapshot.stamps_incomplete);
+    assert!(!watch.snapshot.stamp_read_failed);
+    let baseline = watch.receipt_baseline();
+    assert!(serde_json::to_vec(&baseline).unwrap().len() < 4 * 1024);
+    assert_eq!(baseline["git"]["status_count"], FILE_WALK_CAP + 1);
+    assert_eq!(baseline["git"]["status_complete"], true);
+    assert_eq!(baseline["git"]["stamp_read_failed"], false);
+    assert_eq!(baseline["git"]["stamps_incomplete"], true);
+    assert!(baseline["git"].get("porcelain").is_none());
+    assert!(baseline["git"]["status_digest"]
+        .as_str()
+        .unwrap()
+        .starts_with("sha256:"));
+    let unchanged = watch
+        .finish_observed_with_revision(root.path(), false)
+        .await;
+    assert!(!unchanged.incomplete, "{unchanged:?}");
+    assert!(
+        unchanged.paths.is_empty(),
+        "an unchanged overflow was a mutation: {:?}",
+        unchanged.paths
+    );
+
+    let watch = Watch::start(root.path()).await;
+    std::fs::write(root.path().join("owned.txt"), "owned\n").unwrap();
+    let owned = watch
+        .finish_observed_with_revision(root.path(), false)
+        .await;
+    assert!(!owned.incomplete, "{owned:?}");
+    assert_eq!(owned.paths, vec!["owned.txt".to_string()]);
 }
 
 #[tokio::test]

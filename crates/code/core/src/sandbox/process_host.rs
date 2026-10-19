@@ -105,6 +105,10 @@ fn process_host_command(workspace: &Path, command: &str) -> (PathBuf, Vec<String
 
 #[async_trait]
 impl BashSandbox for ProcessHostBashSandbox {
+    fn execution_target(&self) -> super::ShellExecutionTarget {
+        super::ShellExecutionTarget::HostBash
+    }
+
     async fn exec_command(&self, command: &str, guest_workspace: &str) -> Result<SandboxOutput> {
         let output = self
             .exec(SandboxCommandRequest {

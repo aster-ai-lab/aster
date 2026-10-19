@@ -1,0 +1,16 @@
+{
+  "observed_at_utc": "2026-10-19T20:17:34.185577+00:00",
+  "pid": 4033,
+  "argument_flags": [
+    "--cwd",
+    "--model",
+    "--config"
+  ],
+  "config_path": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/agent-plane/runtime/01a155cf-02f1-7478-8105-070a97a1507c.acl",
+  "whitelisted_environment": {
+    "A3S_CONFIG": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/host-capabilities.acl",
+    "A3S_STUDIO_RENDERER_PORT": "4318",
+    "ASTER_SANDBOX_DIR": "/Users/roylin/code/aster/target/t013-assets-hardware"
+  },
+  "raw_arguments_or_other_environment_copied": false
+}

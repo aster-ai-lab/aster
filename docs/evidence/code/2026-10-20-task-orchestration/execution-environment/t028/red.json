@@ -1,0 +1,17 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-code-core",
+    "--lib",
+    "agent_api::tests::fact_log::execution_target::",
+    "--",
+    "--test-threads=1"
+  ],
+  "exit_code": 101,
+  "wall_seconds": 0.2312285,
+  "finished_utc": "2026-10-19T21:22:19.567253+00:00"
+}

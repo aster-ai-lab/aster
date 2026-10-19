@@ -1,0 +1,20 @@
+{
+  "source_config_unchanged": true,
+  "artifacts": {
+    "aster-dream": {
+      "size": 79375200,
+      "sha256": "0656af6e754a3dc0466361168365e12fcd6562055f2b7f70ba28148b5b4cb029",
+      "local_credential_matches": 0
+    },
+    "a3s-code-acp": {
+      "size": 50340784,
+      "sha256": "7d6d69ba46815dacaa6906c3132161b05940fda5b043d5f60cdd4068a3a17839",
+      "local_credential_matches": 0
+    },
+    "a3s-office": {
+      "size": 23240184,
+      "sha256": "bc2ecaa698c666ef3f7c880b1aa5f78360ffcbfa044fc3607a86ee76709f2ea1",
+      "local_credential_matches": 0
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "name": "@a3s-lab/form",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The A3S schema-form engine (Gleam-compiled core, React/Vue bindings) — extracted from the archived legacy library as its own bounded package; flow-ui and any form consumer depend on this, never on the legacy tree.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./core": "./src/core.ts",
+    "./cloud": "./src/cloud.ts",
+    "./cli": "./src/cli.ts",
+    "./react": "./src/react.tsx",
+    "./react-hooks": "./src/react-hooks.tsx",
+    "./vue": "./src/vue.ts"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-hook-form": "^7.0.0",
+    "vue": "^3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-hook-form": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^6.0.3",
+    "vitest": "5.0.1"
+  }
+}

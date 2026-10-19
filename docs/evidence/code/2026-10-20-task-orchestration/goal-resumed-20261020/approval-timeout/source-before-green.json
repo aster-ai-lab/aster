@@ -1,0 +1,31 @@
+{
+  "frozen_at_utc": "2026-10-19T22:36:33.088487+00:00",
+  "source_count": 6,
+  "sources": [
+    {
+      "path": "crates/code/core/src/agent_api/governance_facade.rs",
+      "sha256": "9554a8ab5cdfe4a55ab77e12e66ea9e2c3327d9c14193d819f22e94f871e8119"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log/work_policy.rs",
+      "sha256": "1dd2031efc5eed123e029e9023873fb62c06ceed86e90b7f816bafba6599f78d"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log/work_policy/confirmation.rs",
+      "sha256": "b1a3eac7971b9b59c94653be011274aeda556906935f2f6423b9610697b0d30e"
+    },
+    {
+      "path": "crates/code/acp/src/agent.rs",
+      "sha256": "482d0b18add0f506feffdeea3a791d3d82ca4e32889636328f4a547db9e07b1c"
+    },
+    {
+      "path": "crates/code/acp/src/agent_tests.rs",
+      "sha256": "723cc414df2788637803b2054794f9b72194157605e12dc426e86bfa136697a2"
+    },
+    {
+      "path": "crates/code/acp/src/agent/approval_deadline_tests.rs",
+      "sha256": "fda409cea71fce412ac71e210bfd540af7cdd50690c5b8bdd5c24b96e41f748f"
+    }
+  ],
+  "scope_note": "Six files contain the approval deadline/stale-answer fix and regression registration. agent.rs also retains unrelated existing local_embedding and registration_cleanup_tests declarations; they were not changed by this fix. No manifests, runtime assets or running stage were changed."
+}

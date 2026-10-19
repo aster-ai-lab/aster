@@ -1,0 +1,65 @@
+[
+  {
+    "name": "final-regression",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-code-acp",
+      "--lib",
+      "agent::registration_cleanup_tests::native_registration_failure_closes_and_settles_the_open_session",
+      "--",
+      "--exact",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "cwd": "/Users/roylin/code/aster",
+    "utc": "2026-10-19T16:52:53.995503+00:00",
+    "exitCode": 0,
+    "wallSeconds": 25.297337792
+  },
+  {
+    "name": "source-review",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-code-acp",
+      "--lib",
+      "agent::session_setup_tests::source_review_has_no_tools_even_after_a_yolo_mode_change",
+      "--",
+      "--exact",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "cwd": "/Users/roylin/code/aster",
+    "utc": "2026-10-19T16:52:54.549206+00:00",
+    "exitCode": 0,
+    "wallSeconds": 0.553104041000001
+  },
+  {
+    "name": "document-bridge",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-code-acp",
+      "--lib",
+      "agent::document_read_agent_tests::opted_in_agent_registers_reader_on_open_and_replacement_only",
+      "--",
+      "--exact",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "cwd": "/Users/roylin/code/aster",
+    "utc": "2026-10-19T16:52:55.104533+00:00",
+    "exitCode": 0,
+    "wallSeconds": 0.5550569170000017
+  }
+]

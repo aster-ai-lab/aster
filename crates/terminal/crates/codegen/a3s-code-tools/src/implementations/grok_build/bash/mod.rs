@@ -1503,6 +1503,22 @@ impl crate::types::tool_metadata::ToolMetadata for BashTool {
     }
 }
 
+/// Same operator-facing reason as Core's macOS native lifetime guard.
+const NATIVE_PROCESS_LIFETIME_UNQUALIFIED: &str = "native_process_lifetime_unqualified: macOS native command execution is unavailable until descendant lifetime and settlement are qualified";
+
+/// Set by the Aster process on macOS. Unset, the terminal backend still runs so library tests can drive it.
+const REFUSE_UNQUALIFIED_NATIVE_SHELL_ENV: &str = "A3S_REFUSE_UNQUALIFIED_NATIVE_SHELL";
+
+fn unqualified_native_shell_error() -> Option<a3s_tool_runtime::ToolError> {
+    if std::env::var_os(REFUSE_UNQUALIFIED_NATIVE_SHELL_ENV).is_none() {
+        return None;
+    }
+    Some(a3s_tool_runtime::ToolError::execution(
+        a3s_tool_protocol::ToolId::new("run_terminal_cmd").expect("valid tool id"),
+        NATIVE_PROCESS_LIFETIME_UNQUALIFIED,
+    ))
+}
+
 impl a3s_tool_runtime::Tool for BashTool {
     type Args = BashToolInput;
     type Output = BashToolOutput;
@@ -1677,6 +1693,9 @@ impl a3s_tool_runtime::Tool for BashTool {
         ctx: a3s_tool_runtime::ToolCallContext,
         input: BashToolInput,
     ) -> Result<BashToolOutput, a3s_tool_runtime::ToolError> {
+        if let Some(error) = unqualified_native_shell_error() {
+            return Err(error);
+        }
         use crate::types::tool_metadata::shared_resources;
         let resources = shared_resources(&ctx)?;
 

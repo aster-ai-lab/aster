@@ -875,6 +875,9 @@ enum Command {
         /// Absolute immutable macOS utility-VM system-image manifest.
         #[arg(long, value_name = "FILE")]
         system_image_manifest: PathBuf,
+        /// Shut down owned VMs when the launching client's stdin pipe closes.
+        #[arg(long)]
+        exit_on_stdin_eof: bool,
     },
     /// Qualify the complete public Apple Silicon HVF Host Service product path.
     #[cfg(all(target_os = "macos", target_arch = "aarch64"))]

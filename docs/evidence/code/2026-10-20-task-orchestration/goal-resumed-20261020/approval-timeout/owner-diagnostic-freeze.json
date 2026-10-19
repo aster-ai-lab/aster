@@ -1,0 +1,9 @@
+{
+  "frozen_at_utc": "2026-10-19T22:39:39.739737+00:00",
+  "path": "crates/code/core/src/agent_api/tests/fact_log/work_policy.rs",
+  "sha256": "bcabd539294bb04854ed485edf21d3338b3d7146b6ecf95b7370061f468555e2",
+  "change": "Diagnostic-only: race provider-entry semaphore against actual worker result and unchanged five-second deadline; failed diagnostic cleans spawned worker and both sessions/agents before panic. Production unchanged.",
+  "rustfmt_check_exit_code": 0,
+  "git_diff_check_exit_code": 0,
+  "root_test_filter": "two_actual_policy_sessions_share_original_owner_exclusion_and_legacy_refusal"
+}

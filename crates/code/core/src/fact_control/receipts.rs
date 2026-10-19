@@ -323,16 +323,27 @@ pub(super) async fn prepare_tools(
             })
             .await;
         Some((ToolExecutionOutcome::Denied, output))
+    } else if let Some(message) = argument_error {
+        let output = format!(
+            "Invalid arguments for tool '{}': {} [permanent - change the arguments before retrying]",
+            request.call.name, message
+        );
+        // This path never enters the executor, which normally settles the
+        // announced tool row. Report the rejection without claiming execution.
+        tools
+            .emit(crate::agent::AgentEvent::ToolEnd {
+                id: request.call.id.clone(),
+                name: request.call.name.clone(),
+                args: Some(request.call.args.clone()),
+                output: output.clone(),
+                exit_code: 1,
+                metadata: None,
+                error_kind: Some(crate::tools::ToolErrorKind::InvalidArgument { message }),
+            })
+            .await;
+        Some((ToolExecutionOutcome::Failed, output))
     } else {
-        argument_error.map(|message| {
-            (
-                ToolExecutionOutcome::Failed,
-                format!(
-                    "Invalid arguments for tool '{}': {} [permanent - change the arguments before retrying]",
-                    request.call.name, message
-                ),
-            )
-        })
+        None
     };
     if let Some((outcome, output)) = rejection {
         let mut result = result_without_execution(&prepared, outcome, output)?;
@@ -361,6 +372,7 @@ pub(super) async fn prepare_tools(
     }
     let mut executor = tools.as_ref().clone();
     executor.pre_tool_hook_resolved = true;
+    executor.context = executor.context.with_native_artifact_verifications();
     let executor = Arc::new(executor);
     let execution_prepared = prepared.clone();
     let consumed = Arc::new(AtomicBool::new(false));
@@ -409,38 +421,62 @@ pub(super) async fn prepare_tools(
             // Preserve a returned terminal result even if cancellation races
             // it. An interrupted execution remains explicitly uncertain.
             let output = tools.run(call.clone(), cancel.clone()).await;
-            let delta = match observation {
+            let mut effects = match observation {
                 Some(watch) => {
                     watch
-                        .finish_observed_with_revision(tools.context.workspace.as_path(), true)
+                        .finish_effects_with_revision(tools.context.workspace.as_path(), true)
                         .await
                 }
-                None => crate::porcelain::PathDelta {
-                    paths: Vec::new(),
-                    incomplete: !read_only,
-                },
+                None => crate::porcelain::observe_path_effects(
+                    tools.context.workspace.as_path(),
+                    crate::porcelain::PathDelta {
+                        paths: Vec::new(),
+                        incomplete: !read_only,
+                    },
+                ),
             };
-            let mut effects =
-                crate::porcelain::observe_path_effects(tools.context.workspace.as_path(), delta);
-            let (output, outcome, exit_code, child, source_incomplete) = match output {
+            let (output, outcome, exit_code, child, source_incomplete, never_started) = match output
+            {
                 Ok(value) => {
                     let envelope = value.as_str().and_then(decode_fact_tool_result);
                     match envelope {
-                        Some(envelope) => (
-                            value,
-                            envelope.outcome.unwrap_or(if envelope.is_error {
-                                ToolExecutionOutcome::Failed
-                            } else {
-                                ToolExecutionOutcome::Succeeded
-                            }),
-                            envelope.exit_code,
-                            envelope.workspace_child,
-                            envelope.observation_incomplete,
-                        ),
-                        None if cancel.is_cancelled() => {
-                            (value, ToolExecutionOutcome::Cancelled, None, None, false)
+                        Some(envelope) => {
+                            let never_started =
+                                envelope.metadata.as_ref().is_some_and(|metadata| {
+                                    metadata
+                                        .get("command_started")
+                                        .and_then(|value| value.as_bool())
+                                        == Some(false)
+                                });
+                            (
+                                value,
+                                envelope.outcome.unwrap_or(if envelope.is_error {
+                                    ToolExecutionOutcome::Failed
+                                } else {
+                                    ToolExecutionOutcome::Succeeded
+                                }),
+                                envelope.exit_code,
+                                envelope.workspace_child,
+                                envelope.observation_incomplete,
+                                never_started,
+                            )
                         }
-                        None => (value, ToolExecutionOutcome::Denied, None, None, false),
+                        None if cancel.is_cancelled() => (
+                            value,
+                            ToolExecutionOutcome::Cancelled,
+                            None,
+                            None,
+                            false,
+                            false,
+                        ),
+                        None => (
+                            value,
+                            ToolExecutionOutcome::Denied,
+                            None,
+                            None,
+                            false,
+                            false,
+                        ),
                     }
                 }
                 Err(error) => (
@@ -449,11 +485,18 @@ pub(super) async fn prepare_tools(
                     None,
                     None,
                     true,
+                    false,
                 ),
             };
             if source_incomplete {
                 effects.completeness = ToolObservationCompleteness::Incomplete;
                 effects.reason = Some("tool_effect_observation_incomplete: execution did not return complete evidence".into());
+            }
+            // No process was created, so this call owns no workspace delta.
+            // An incomplete watch of a tree that was already dirty must not
+            // freeze the next mutating call.
+            if never_started {
+                effects = ToolEffectObservationV1::complete(Vec::new());
             }
             if matches!(
                 outcome,
@@ -522,6 +565,17 @@ pub(super) async fn prepare_tools(
                     &mut envelope.metadata,
                     &mut projected,
                     &mut reports,
+                    tools
+                        .context
+                        .native_artifact_verifications
+                        .as_ref()
+                        .map(|scope| {
+                            scope
+                                .lock()
+                                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                                .clone()
+                        })
+                        .as_ref(),
                 );
                 if let Some(ledger) = &tools.ledger {
                     ledger

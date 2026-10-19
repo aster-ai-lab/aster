@@ -1,0 +1,2 @@
+The importOriginal<typeof import(...)>() expression reported by oxlint is unchanged from HEAD.
+It was not introduced by the member-provisioning patch.

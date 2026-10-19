@@ -1,0 +1,26 @@
+{
+  "schema": "aster.runtime-carrier-canonical.source-freeze.v1",
+  "phase": "production_repair_before_green",
+  "at_utc": "2026-10-19T22:10:32.497627+00:00",
+  "cargo_run_by_this_agent": false,
+  "production_changed": true,
+  "test_filter": "attachment::tests::",
+  "new_test_filter": "attachment::tests::canonical_attachment_",
+  "files": [
+    {
+      "path": "crates/oci-runtime/crates/sdk/src/attachment.rs",
+      "bytes": 49076,
+      "sha256": "bf6034482083538721bb72a1ba589f79cf8c16fff227b1c2cb4bc56632e08cb0"
+    },
+    {
+      "path": "crates/oci-runtime/crates/sdk/src/attachment/tests.rs",
+      "bytes": 58193,
+      "sha256": "c1244c7d901980d885ed4d36baffb81839caac3d7981bd7348e960474114d602"
+    },
+    {
+      "path": "crates/oci-runtime/crates/sdk/src/fingerprint.rs",
+      "bytes": 2607,
+      "sha256": "839b4444a82d9e65f78dc73a2190d25d2f4c95122e8db92ac204ecb1374cae74"
+    }
+  ]
+}

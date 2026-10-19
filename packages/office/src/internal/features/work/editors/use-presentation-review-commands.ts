@@ -1,0 +1,160 @@
+import { useCallback, type ReactNode } from 'react';
+import { createWorkId } from '../work-templates';
+import type {
+  WorkPresentationContent,
+  WorkSlide,
+  WorkSlideElement,
+} from '../work-types';
+import { useOfficeDialog } from './office-controls';
+import { clamp, updateSlide } from './presentation-editor-operations';
+import { officeMessage, resolveOfficeMessages } from '../../../i18n/office-locale';
+
+export interface PresentationReviewCommands {
+  addComment: () => void;
+  closeComments: () => void;
+  deleteComment: (slideId: string, commentId: string) => void;
+  dialog: ReactNode;
+  locateComment: (slideId: string, commentId: string) => void;
+  openComment: (commentId: string) => void;
+  updateComment: (slideId: string, commentId: string, text: string) => void;
+}
+
+export function usePresentationReviewCommands({
+  content,
+  onChange,
+  onClearSelection,
+  onCloseComments,
+  onOpenComments,
+  onSelectComment,
+  onSelectSlide,
+  selectedElement,
+  selectedSlide,
+}: {
+  content: WorkPresentationContent;
+  onChange: (content: WorkPresentationContent) => void;
+  onClearSelection: () => void;
+  onCloseComments: () => void;
+  onOpenComments: (invoker?: HTMLElement | null) => void;
+  onSelectComment: (id: string | null) => void;
+  onSelectSlide: (id: string) => void;
+  selectedElement: WorkSlideElement | null;
+  selectedSlide: WorkSlide;
+}): PresentationReviewCommands {
+  const messages = resolveOfficeMessages();
+  const officeDialog = useOfficeDialog();
+  const addComment = useCallback(() => {
+    const invoker = activePresentationReviewInvoker();
+    void officeDialog
+      .prompt({
+        title: officeMessage(messages, 'presentation.comments.promptTitle'),
+        multiline: true,
+        confirmLabel: officeMessage(messages, 'presentation.comments.promptConfirm'),
+        required: officeMessage(messages, 'presentation.comments.promptRequired'),
+      })
+      .then((text) => {
+        if (!text?.trim()) return;
+        const comment = {
+          id: createWorkId('slide-comment'),
+          author: officeMessage(messages, 'presentation.comments.defaultAuthor'),
+          initials: 'AW',
+          date: new Date().toISOString(),
+          text: text.trim(),
+          x: clamp(
+            selectedElement ? selectedElement.x + selectedElement.width : 50,
+            2,
+            98,
+          ),
+          y: clamp(selectedElement ? selectedElement.y : 50, 2, 98),
+        };
+        updateSlide(
+          content,
+          selectedSlide.id,
+          (slide) => ({
+            ...slide,
+            comments: [...(slide.comments ?? []), comment],
+          }),
+          onChange,
+        );
+        onSelectComment(comment.id);
+        onOpenComments(invoker);
+      });
+  }, [
+    content,
+    officeDialog,
+    onChange,
+    onOpenComments,
+    onSelectComment,
+    selectedElement,
+    selectedSlide.id,
+  ]);
+
+  const openComment = useCallback(
+    (commentId: string) => {
+      const invoker = activePresentationReviewInvoker();
+      onSelectComment(commentId);
+      onOpenComments(invoker);
+    },
+    [onOpenComments, onSelectComment],
+  );
+
+  const locateComment = useCallback(
+    (slideId: string, commentId: string) => {
+      onSelectSlide(slideId);
+      onClearSelection();
+      onSelectComment(commentId);
+    },
+    [onClearSelection, onSelectComment, onSelectSlide],
+  );
+
+  const updateComment = useCallback(
+    (slideId: string, commentId: string, text: string) => {
+      updateSlide(
+        content,
+        slideId,
+        (slide) => ({
+          ...slide,
+          comments: slide.comments?.map((comment) =>
+            comment.id === commentId ? { ...comment, text } : comment,
+          ),
+        }),
+        onChange,
+      );
+    },
+    [content, onChange],
+  );
+
+  const deleteComment = useCallback(
+    (slideId: string, commentId: string) => {
+      updateSlide(
+        content,
+        slideId,
+        (slide) => ({
+          ...slide,
+          comments: slide.comments?.filter(
+            (comment) => comment.id !== commentId,
+          ),
+        }),
+        onChange,
+      );
+      onSelectComment(null);
+    },
+    [content, onChange, onSelectComment],
+  );
+
+  return {
+    addComment,
+    closeComments: onCloseComments,
+    deleteComment,
+    dialog: officeDialog.dialog,
+    locateComment,
+    openComment,
+    updateComment,
+  };
+}
+
+function activePresentationReviewInvoker(): HTMLElement | null {
+  return typeof document !== 'undefined' &&
+    document.activeElement instanceof HTMLElement
+    ? document.activeElement
+    : null;
+}

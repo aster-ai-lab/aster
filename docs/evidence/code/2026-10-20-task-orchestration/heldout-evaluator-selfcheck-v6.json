@@ -1,0 +1,6 @@
+{
+  "passed": false,
+  "scope": "tool self-check only",
+  "error": "PermissionError: [Errno 1] Operation not permitted",
+  "seconds": 0.175411
+}

@@ -1,0 +1,34 @@
+[[permission]]
+identifier = "allow-open-workbench-applet-window"
+description = "Opens a system window for a workbench office applet."
+commands.allow = ["open_workbench_applet_window"]
+
+[[permission]]
+identifier = "allow-deliver-workbench-review"
+description = "Sends one Word document from the review applet to the main window."
+commands.allow = ["deliver_workbench_review"]
+
+[[permission]]
+identifier = "allow-office-tool"
+description = "Runs the local office redraw for one format conversion."
+commands.allow = ["office_tool"]
+
+[[permission]]
+identifier = "allow-stage-pdf-tool-handoff"
+description = "Stores one homepage format job until the PDF window takes it."
+commands.allow = ["stage_pdf_tool_handoff", "drop_pdf_tool_handoff"]
+
+[[permission]]
+identifier = "allow-take-pdf-tool-handoff"
+description = "Lets the PDF window take the homepage format job."
+commands.allow = ["take_pdf_tool_handoff"]
+
+[[permission]]
+identifier = "allow-request-document-result-save"
+description = "Requests the main window Documents save dialog for one converted file."
+commands.allow = ["stage_document_result_save", "document_result_save_status"]
+
+[[permission]]
+identifier = "allow-handle-document-result-save"
+description = "Lets the main window receive and acknowledge a converted file save."
+commands.allow = ["take_document_result_save", "finish_document_result_save"]

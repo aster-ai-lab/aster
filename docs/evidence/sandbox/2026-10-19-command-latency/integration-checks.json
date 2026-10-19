@@ -1,0 +1,160 @@
+{
+  "schema": "aster.sandbox.root-build-integration.v1",
+  "status": "source build and focused qualifications complete; no cache or installed app replacement",
+  "source_drift": [
+    "Imported nested workspace declares 0.3.6 but unregistered runtime/CLI/shim/agent/protocol package manifests had explicit 0.1.0.",
+    "Cached host/shim report 0.3.6; source CLI lacked the core-required --exit-on-stdin-eof flag.",
+    "Whole-bin root compilation exposed missing confinement-report field, missing console path accessor, two callers retaining the old console API, two missing exact-owner monitor helpers, and a worker launch missing required owner-pid/private process group."
+  ],
+  "versions": {
+    "agent": "0.3.6",
+    "agent-protocol": "0.3.6",
+    "cli": "0.3.6",
+    "runtime": "0.3.6",
+    "krun": "0.3.6",
+    "core": "0.3.2",
+    "sdk": "0.3.2",
+    "local-libkrun-sys": "3.2.7"
+  },
+  "implementation": [
+    "Root workspace is the only build entry used. No nested Cargo invocation or external source checkout.",
+    "macOS/aarch64 runtime and shim enable the existing sha2 asm backend with its CPU feature fallback; all digest/pin/identity checks remain.",
+    "EOF monitoring uses one dedicated standard thread, a bounded read buffer and a oneshot; errors finish existing service cleanup before returning an error; SIGTERM does not wait on Tokio stdin blocking work.",
+    "Each command remains DedicatedVm with unchanged shutdown deadlines and VM settlement requirements.",
+    "Legacy worker caller corrections retain PreparedConsoleOutput ownership and call the existing Seatbelt confinement requirement."
+  ],
+  "owned_paths": [
+    "Cargo.toml",
+    "Cargo.lock",
+    "crates/box/deps/libkrun-sys/Cargo.toml",
+    "crates/oci-runtime/crates/agent/Cargo.toml",
+    "crates/oci-runtime/crates/agent-protocol/Cargo.toml",
+    "crates/oci-runtime/crates/cli/Cargo.toml",
+    "crates/oci-runtime/crates/runtime/Cargo.toml",
+    "crates/oci-runtime/crates/krun/Cargo.toml",
+    "crates/oci-runtime/crates/cli/src/main.rs",
+    "crates/oci-runtime/crates/cli/src/dispatch.rs",
+    "crates/oci-runtime/crates/cli/src/macos_hvf_service.rs",
+    "crates/oci-runtime/crates/cli/src/macos_hvf_service_tests.rs",
+    "crates/oci-runtime/crates/cli/tests/macos_hvf_lifetime.rs",
+    "crates/oci-runtime/crates/krun/src/macos_guest_command.rs",
+    "crates/oci-runtime/crates/krun/src/macos_vm_smoke.rs",
+    "crates/oci-runtime/crates/krun/src/owner_process.rs",
+    "crates/oci-runtime/crates/krun/src/owner_process_macos_tests.rs",
+    "crates/oci-runtime/crates/krun/src/report.rs",
+    "crates/oci-runtime/crates/krun/src/report_tests.rs",
+    "crates/oci-runtime/crates/krun/src/unix_process.rs"
+  ],
+  "checks": [
+    {
+      "command": "cargo test --offline -p a3s-oci-cli --bin a3s-oci macos_hvf_service::tests --no-fail-fast",
+      "phase": "before implementation",
+      "result": "expected failure E0432: wait_for_stdin_eof not implemented"
+    },
+    {
+      "command": "cargo build --locked --offline -p a3s-oci-cli -p a3s-oci-krun --bins",
+      "result": "passed"
+    },
+    {
+      "command": "cargo test --locked --offline -p a3s-oci-cli --bin a3s-oci macos_hvf_service::tests --no-fail-fast",
+      "passed": 5,
+      "failed": 0
+    },
+    {
+      "command": "cargo test --locked --offline -p a3s-oci-cli --test macos_hvf_lifetime --no-fail-fast",
+      "passed": 2,
+      "failed": 0,
+      "vm_started": false
+    },
+    {
+      "command": "cargo test --locked --offline -p a3s-oci-krun --lib report::tests --no-fail-fast",
+      "passed": 1,
+      "failed": 0
+    },
+    {
+      "command": "cargo test --locked --offline -p a3s-oci-krun --bin a3s-oci-krun-shim owner_process::macos_tests --no-fail-fast",
+      "passed": 3,
+      "failed": 0,
+      "ignored": 3,
+      "note": "Ignored child entries were explicitly executed by parent tests. Owner-death oracle exercises both helper variants, observes kernel NOTE_EXIT for worker and its child, and checks an unrelated process group survives. Failure cleanup uses a retained pipe and owned Child handles."
+    },
+    {
+      "command": "cargo test --locked --offline -p a3s-oci-krun --lib unix_process::tests --no-fail-fast",
+      "passed": 12,
+      "failed": 0
+    },
+    {
+      "command": "cargo test --locked --offline -p a3s-oci-krun --lib macos_worker_sandbox::tests --no-fail-fast",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 1,
+      "note": "Ignored confined child was explicitly invoked by parent test; no VM."
+    },
+    {
+      "command": "cargo test --locked --offline -p a3s-oci-krun --lib macos_assets::tests --no-fail-fast",
+      "passed": 7,
+      "failed": 0
+    },
+    {
+      "command": "cargo test --locked --offline -p a3s-oci-krun --lib macos_system_image::tests --no-fail-fast",
+      "passed": 7,
+      "failed": 0
+    },
+    {
+      "command": "cargo test --locked --offline -p a3s-oci-krun --lib macos_context::tests::modified_runtime_asset_fails_closed_before_loading --no-fail-fast",
+      "passed": 1,
+      "failed": 0
+    },
+    {
+      "command": "rustfmt --edition 2021 --config skip_children=true --check crates/oci-runtime/crates/cli/src/main.rs crates/oci-runtime/crates/cli/src/dispatch.rs crates/oci-runtime/crates/cli/src/macos_hvf_service.rs crates/oci-runtime/crates/cli/src/macos_hvf_service_tests.rs crates/oci-runtime/crates/cli/tests/macos_hvf_lifetime.rs crates/oci-runtime/crates/krun/src/macos_guest_command.rs crates/oci-runtime/crates/krun/src/macos_vm_smoke.rs crates/oci-runtime/crates/krun/src/owner_process.rs crates/oci-runtime/crates/krun/src/owner_process_macos_tests.rs crates/oci-runtime/crates/krun/src/report.rs crates/oci-runtime/crates/krun/src/report_tests.rs crates/oci-runtime/crates/krun/src/unix_process.rs",
+      "result": "passed"
+    },
+    {
+      "command": "git diff --check -- Cargo.toml Cargo.lock crates/box/deps/libkrun-sys/Cargo.toml crates/oci-runtime/crates/agent/Cargo.toml crates/oci-runtime/crates/agent-protocol/Cargo.toml crates/oci-runtime/crates/cli/Cargo.toml crates/oci-runtime/crates/runtime/Cargo.toml crates/oci-runtime/crates/krun/Cargo.toml crates/oci-runtime/crates/cli/src/main.rs crates/oci-runtime/crates/cli/src/dispatch.rs crates/oci-runtime/crates/cli/src/macos_hvf_service.rs crates/oci-runtime/crates/cli/src/macos_hvf_service_tests.rs crates/oci-runtime/crates/cli/tests/macos_hvf_lifetime.rs crates/oci-runtime/crates/krun/src/macos_guest_command.rs crates/oci-runtime/crates/krun/src/macos_vm_smoke.rs crates/oci-runtime/crates/krun/src/owner_process.rs crates/oci-runtime/crates/krun/src/owner_process_macos_tests.rs crates/oci-runtime/crates/krun/src/report.rs crates/oci-runtime/crates/krun/src/report_tests.rs crates/oci-runtime/crates/krun/src/unix_process.rs",
+      "result": "passed"
+    },
+    {
+      "command": "cargo fmt --all -- --check",
+      "result": "failed: 66 preexisting or newly included imported source paths; changed Rust files pass focused rustfmt; no whole-tree formatting applied"
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 tests/workspace_dependencies.py",
+      "passed": 4,
+      "failed": 2,
+      "known_failures": [
+        "apps/work/.git exists",
+        "a3s-gateway publish is unset"
+      ]
+    },
+    {
+      "command": "cargo metadata --locked --offline --no-deps --format-version 1; assert local/unpublished OCI closure",
+      "result": "all 8 OCI/libkrun packages are local and unpublished; workspace_root and target_directory point to root workspace"
+    }
+  ],
+  "build_artifacts": {
+    "target/debug/a3s-oci": {
+      "size": 66319656,
+      "sha256": "6e6b8820316b37ace3014393e6bbd7415bc731176c8665902f2aee53364f2743"
+    },
+    "target/debug/a3s-oci-krun-shim": {
+      "size": 24999600,
+      "sha256": "1a4524be2f81ee86ef52a4a6650017ddc36e271e0a857b482845dbe7069f8497"
+    },
+    "target/debug/a3s-oci-krun-runtime/libkrun.1.17.0.dylib": {
+      "size": 4557488,
+      "sha256": "c5353f9cbd91564ce26eceaf1bdc33341097b43280fe029203ccca02807c082d"
+    },
+    "target/debug/a3s-oci-krun-runtime/libkrunfw.5.dylib": {
+      "size": 22952096,
+      "sha256": "841bc9d5eecbc2aeeb6098fbc75d484427680d7503f5ed9bcdfe9d072a9420d4"
+    }
+  },
+  "explicitly_not_claimed": [
+    "No performance conclusion from this integration report; latency comparison is owned by the parent evidence.",
+    "No complete T01 agent benchmark, 19-command campaign, release packaging or installed application replacement.",
+    "No Windows/Linux native execution qualification. Local Windows libkrun-sys dependency is 3.2.7 rather than the stale remote 3.1.0 pin.",
+    "No guest image rebuild. Existing 0.3.6 guest/image/runtime immutable assets are retained and checked.",
+    "Imported nested workspace manifest/lock remain historical source artifacts; they were not used as build entry points.",
+    "Local libkrun-sys is now an automatic root member; a future all-workspace build may run its existing vendored native build script."
+  ]
+}

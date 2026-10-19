@@ -1,0 +1,8 @@
+{
+  "name": "review-selected-b",
+  "required": [["以经", "已经"]],
+  "excluded": ["按排"],
+  "ambiguous": false,
+  "selected": "b.docx",
+  "unselected": "a.docx"
+}

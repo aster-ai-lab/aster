@@ -109,7 +109,7 @@ impl Tool for GlobTool {
                 return Ok(ToolOutput::error(format!(
                     "Invalid glob pattern '{}': {}",
                     pattern, e
-                )))
+                )));
             }
         };
         let mut matches: Vec<String> = result

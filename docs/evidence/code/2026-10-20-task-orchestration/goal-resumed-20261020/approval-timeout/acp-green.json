@@ -1,0 +1,17 @@
+{
+  "name": "acp-green",
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-code-acp",
+    "--lib",
+    "agent::tests::approval_deadline",
+    "--",
+    "--test-threads=1"
+  ],
+  "exit_code": 0,
+  "wall_seconds": 26.380517583000003
+}

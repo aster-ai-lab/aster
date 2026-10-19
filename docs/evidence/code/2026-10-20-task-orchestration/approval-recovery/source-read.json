@@ -1,0 +1,33 @@
+{
+  "schema": "aster.approval-recovery-readonly.v1",
+  "host_session_id": "01a155cf-02f1-7478-8105-070a97a1507c",
+  "source_sha256": {
+    "apps/work/src/renderer/pages/agents/WorkbenchHome.tsx": "60eabcc4e4bf7ba499ebb777694c408b0d5fc445acb5200471b2567ce34f4740",
+    "apps/work/src/renderer/components/composer/useToolApprovalComposerOverrides.ts": "b6b8793accaff76b24e56aa6ab0b8df4645e438ee0001c8e60d0eee08a20b7e7",
+    "apps/work/src/renderer/components/chat/messages/stream/useStableMessagePartsLayers.ts": "198689fe2c10b799ed4ec02595115847b3241c995dd8054a1e6d2a454fc3bb27",
+    "apps/work/src/renderer/services/aiTransport/ExecutionStreamOverlayService.ts": "28ad76e13d044880a96d350f7e932e81830ab05d5d6cd8025926053e057a5da4",
+    "apps/work/src/renderer/hooks/useTopicStreamStatus.ts": "bc0f90ea22695c3406c0713f703153a8b3aa5f842537c0d9b0ef07737ddbd7fc",
+    "apps/work/src/shared/ai/transport/turnState.ts": "23e5d122f81149f7f819c48df8ecb315388ab4109ae9bd0546189830700c6097",
+    "apps/work/src/renderer/components/composer/ComposerSurfaceRuntime.tsx": "e988494b1527f9bc67dc60b3933e92412c22957517a2954bfb4638996f8d7a8f",
+    "apps/work/src-tauri/src/agent_plane/turns.rs": "9abf5e044f05250774f16f9d6f2cd8d7ced55e0785845d55676df46e840acf03",
+    "apps/work/src-tauri/src/agent_plane/events.rs": "48ec691847ee8a24edc17209b906030c30aae4c98283a29a5db6ce5461776828"
+  },
+  "source_modified": false,
+  "gui_actions": 0,
+  "api_requests": 0,
+  "model_calls": 0,
+  "tests_run": 0,
+  "signals_sent": 0,
+  "live_receiver_verified": false,
+  "renderer_overlay_captured": false,
+  "run_cancelled_by_this_audit": false,
+  "initiating_race_established": false,
+  "independent_backend_review": "/root/runtime_evidence, source-only collaboration messages",
+  "later_existing_assistant_metadata": {
+    "status": "error",
+    "updatedAt": "2026-10-19T20:44:45.304Z",
+    "change_triggered_by_this_audit": false,
+    "error_body_read": false,
+    "independent_resource_settlement_proof": false
+  }
+}

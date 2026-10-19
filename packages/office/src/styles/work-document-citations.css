@@ -1,0 +1,52 @@
+.work-document-citation {
+  padding: 0 3px;
+  border-bottom: 1px dotted #8da9dd;
+  border-radius: 2px;
+  background: color-mix(in srgb, #dce9ff 45%, transparent);
+  color: #245fc4;
+  cursor: default;
+  white-space: nowrap;
+}
+
+.work-document-citation[data-citation-orphaned="true"] {
+  border-bottom-color: #d69b9b;
+  background: color-mix(in srgb, #ffe3e0 62%, transparent);
+  color: #b53b3b;
+}
+
+.work-document-editor.preview .work-document-citation,
+.work-pdf-export-page .work-document-citation {
+  padding: 0;
+  border-bottom: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.work-document-editor.preview
+  .work-document-citation[data-citation-orphaned="true"],
+.work-pdf-export-page .work-document-citation[data-citation-orphaned="true"] {
+  color: #b53b3b;
+}
+
+.work-document-bibliography {
+  margin: 24px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid #d8dce5;
+}
+
+.work-document-bibliography h2 {
+  margin: 0 0 10px;
+  font-size: 1.1em;
+}
+
+.work-document-bibliography p {
+  margin: 0 0 7px;
+  padding-left: 24px;
+  text-indent: -24px;
+}
+
+.work-document-bibliography [data-bibliography-empty] {
+  padding-left: 0;
+  color: #7b8495;
+  text-indent: 0;
+}

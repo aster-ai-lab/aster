@@ -1,0 +1,13 @@
+{
+  "network_disconnected": true,
+  "installed_refs": {
+    "runtime/org.gnome.Platform/x86_64/50": "7e410fa0d429fcc34f2ddd0d9b6224f1435d8640fb9759801db4f02700542353",
+    "runtime/org.freedesktop.Platform.GL.default/x86_64/25.08": "fe659a591fe882f573584ae62cfb55b92065e4ff7a972833271438bddfa6669e",
+    "app/dev.a3s.AsterDream/x86_64/50": "a2e7e0c6cd56a2c1e2066606584d3a5bfad9b87995ba449eddc692cd6d1b682c"
+  },
+  "binary_sha256": {
+    "aster-dream": "0656af6e754a3dc0466361168365e12fcd6562055f2b7f70ba28148b5b4cb029",
+    "agent/a3s-code-acp": "7d6d69ba46815dacaa6906c3132161b05940fda5b043d5f60cdd4068a3a17839",
+    "a3s-office": "bc2ecaa698c666ef3f7c880b1aa5f78360ffcbfa044fc3607a86ee76709f2ea1"
+  }
+}

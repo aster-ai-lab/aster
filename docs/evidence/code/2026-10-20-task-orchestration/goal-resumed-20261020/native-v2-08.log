@@ -1,0 +1,11 @@
+
+running 6 tests
+test agent_plane::turns::turns_form_tests::a_form_is_bound_to_the_live_execution_and_is_revoked_synchronously_on_abort ... ok
+test agent_plane::turns::turns_form_tests::native_owned_form_contract_built_for_sdk_and_renderer ... ignored, requires explicit A3S_CLOUD_TEST_AGENT_FORM_OUTPUT for the native/renderer campaign
+test agent_plane::turns::turns_form_tests::old_submission_and_cleanup_do_not_affect_the_new_execution ... ok
+test agent_plane::turns::turns_form_tests::only_native_prompt_correlated_observations_are_included_in_form_ownership ... ok
+test agent_plane::turns::turns_form_tests::render_failure_requires_the_current_live_turn_and_does_not_answer_the_form ... ok
+test agent_plane::turns::turns_form_tests::waiting_on_a_form_retains_the_active_execution_in_status_and_reconnect ... ok
+
+test result: ok. 5 passed; 0 failed; 1 ignored; 0 measured; 837 filtered out; finished in 0.00s
+

@@ -1,0 +1,71 @@
+/**
+ * GENERATED from DESIGN.md — DO NOT EDIT.
+ * Change DESIGN.md, then run `pnpm --filter @a3s-lab/ui theme:build`.
+ * The spec-role variables are the machine-readable projection of the
+ * canonical design spec; semantic layers and the compatibility bridge
+ * consume them instead of repeating literal values. Dark values live in
+ * DESIGN.md prose (per-role "Dark #…" notes) and are consumed by the
+ * semantic layers that own dark mirroring — no empty .dark block is
+ * emitted (the flat-contract mirror rejects declaration-less blocks).
+ */
+
+:root {
+  /* ==== Color roles (DESIGN.md §2) ==== */
+  --spec-ink: #171717; /* Ink — Selected row text, page titles via `text-foreground`, dialog confirm fill, session dot */
+  --spec-title-ink: #1a1a1a; /* Title ink — Plugin card titles, collection headings, hero title */
+  --spec-feature-ink: #1c1c1c; /* Feature ink — Feature-card titles and prompt text */
+  --spec-body: #3f3f3f; /* Body — Unselected rows and headers */
+  --spec-muted: #8a8a8a; /* Muted — Subtitles, section labels, timestamps, empty copy. Settings placeholder uses `--settings-nav-muted`, which is this value */
+  --spec-caption: #8b8b8b; /* Caption — Plugin card descriptions */
+  --spec-segment-rest: #6f6f6f; /* Segment rest — Unselected segment label */
+  --spec-placeholder: #c5c5c5; /* Placeholder — Work composer placeholder */
+  --spec-page: #ffffff; /* Page — Work, plugins, settings nav, settings content */
+  --spec-canvas: #e6e6e6; /* Canvas — Icon rail and the gutter around the content card. Dark `#242424` */
+  --spec-field: #f5f5f5; /* Field — Search, 新建任务, text fields, segmented track. Dark search and track `#2c2c2c` */
+  --spec-selected-row: #f2f3f5; /* Selected row — Selected nav row, selected session, selected category */
+  --spec-hover-row: #f7f7f7; /* Hover row — Row hover */
+  --spec-field-hover: #ececec; /* Field hover — 新建任务 hover */
+  --spec-card-border: #ececec; /* Card border — Plugin cards, composer, quiet outlines */
+  --spec-hairline: #efefef; /* Hairline — Work sidebar edge, feature-card border */
+  --spec-button-border: #e5e5e5; /* Button border — Plugin install button, hero button */
+  --spec-quiet-button-hover: #fafafa; /* Quiet button hover — White buttons */
+  --spec-inner-tile: #f4f5f7; /* Inner tile — Feature-card prompts. Hover `#eef0f3` */
+  --spec-rail-plate: #d4d4d4; /* Rail plate — Selected and hovered rail button. Dark `#3a3a3a` */
+  --spec-rail-rest: #666666; /* Rail rest — Unselected rail glyph. Hover `#3d3d3d`. Dark rest `#d0d0d0`, dark glyph `#f5f5f5` */
+  --spec-send-ready: #3a3a3a; /* Send ready — Composer send button when it can send */
+  --spec-send-idle: #d0d0d0; /* Send idle — Composer send button when it cannot send */
+  --spec-danger-text: #b42318; /* Danger text — The confirm step of a row delete */
+
+  /* ==== Type roles (DESIGN.md §3) ==== */
+  --spec-greeting: 28px / semibold; /* Greeting — Work home heading */
+  --spec-page-title: 24px / bold; /* Page title — Plugin title, settings section title */
+  --spec-hero: 22px / semibold; /* Hero — Plugin home hero */
+  --spec-section: 18px / semibold; /* Section — Plugin collection heading */
+  --spec-subtitle: 15px / regular; /* Subtitle — Page subtitle, settings description, composer text */
+  --spec-control: 14px / medium; /* Control — 新建任务, plugin card title, feature title, dialog title */
+  --spec-row: 13px / regular, medium when selected; /* Row — Nav rows, categories, sessions, buttons, segments */
+  --spec-meta: 12px / regular; /* Meta — Section labels, timestamps, card descriptions (`#8b8b8b`, line-height 20px) */
+  --spec-fine: 11px / regular; /* Fine — Feature-card tags */
+
+  /* ==== Shape roles (DESIGN.md §5) ==== */
+  --spec-radius-row: 8px; /* radius Row — Row, field, quiet button, 新建任务 */
+  --spec-shadow-row: none; /* shadow Row — Row, field, quiet button, 新建任务 */
+  --spec-radius-segment-pill: 6px; /* radius Segment pill — Segment pill */
+  --spec-shadow-segment-pill: `0 1px 2px rgba(0, 0, 0, 0.06)` when selected; /* shadow Segment pill — Segment pill */
+  --spec-radius-segment-track: 8px; /* radius Segment track — Segment track */
+  --spec-shadow-segment-track: none; /* shadow Segment track — Segment track */
+  --spec-radius-plugin-card: 14px; /* radius Plugin card — Plugin card, work composer */
+  --spec-shadow-plugin-card: `0 8px 22px rgba(20, 40, 80, 0.04)`; /* shadow Plugin card — Plugin card, work composer */
+  --spec-radius-feature-card: 16px; /* radius Feature card — Feature card, plugin hero */
+  --spec-shadow-feature-card: feature card `0 4px 16px rgba(0, 0, 0, 0.04)`, hero none; /* shadow Feature card — Feature card, plugin hero */
+  --spec-radius-dialog: 12px; /* radius Dialog — Dialog */
+  --spec-shadow-dialog: `0 12px 32px rgba(0, 0, 0, 0.12)`; /* shadow Dialog — Dialog */
+  --spec-radius-content-card: 10px; /* radius Content card — Content card */
+  --spec-shadow-content-card: none, `0.5px` `border-border`; /* shadow Content card — Content card */
+  --spec-radius-rail-menu-plate: 12px; /* radius Rail menu plate — Rail menu plate */
+  --spec-shadow-rail-menu-plate: none; /* shadow Rail menu plate — Rail menu plate */
+  --spec-radius-rail-avatar: 4px; /* radius Rail avatar — Rail avatar */
+  --spec-shadow-rail-avatar: none; /* shadow Rail avatar — Rail avatar */
+  --spec-radius-settings-panel: square to the content card; /* radius Settings panel — Settings panel */
+  --spec-shadow-settings-panel: `0 16px 48px rgba(23, 23, 23, 0.16)`; /* shadow Settings panel — Settings panel */
+}

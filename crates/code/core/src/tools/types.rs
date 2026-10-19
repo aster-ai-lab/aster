@@ -255,6 +255,9 @@ pub struct ToolContext {
     /// `FileLog` handle over the same directory would race duplicate seqs.
     /// Absent on plain host-direct contexts, which have no Run to own.
     pub(crate) fact_log: Option<Arc<a3s_effect::FileLog>>,
+    /// Private evidence owned by one prepared invocation, never tool metadata.
+    pub(crate) native_artifact_verifications:
+        Option<Arc<Mutex<crate::harness_loop::MutationLedger>>>,
     /// Permission boundary frozen by the agent run that owns this invocation.
     ///
     /// Child-run tools consult this value instead of the mutable session
@@ -421,6 +424,7 @@ impl ToolContext {
             artifact_store: None,
             result_budget_bytes: None,
             fact_log: None,
+            native_artifact_verifications: None,
             run_permission_checker: None,
             run_confirmation_manager: None,
             run_governance_bound: false,
@@ -744,6 +748,11 @@ impl ToolContext {
     /// Bind the Run's shared fact-log writer (see [`Self::fact_log`]).
     pub(crate) fn with_fact_log(mut self, log: Arc<a3s_effect::FileLog>) -> Self {
         self.fact_log = Some(log);
+        self
+    }
+
+    pub(crate) fn with_native_artifact_verifications(mut self) -> Self {
+        self.native_artifact_verifications = Some(Arc::new(Mutex::new(Default::default())));
         self
     }
 

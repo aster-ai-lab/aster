@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">A3S icon logo for light backgrounds</title>
+  <desc id="desc">Blue-accent A3S logo; icon composition; transparent canvas. All shapes and lettering are vector paths. Blue accent: #4e60ff.</desc>
+  <g id="logo" fill="#0b0a0e">
+    <g id="symbol" transform="translate(32 32) scale(1.6) translate(-21.47 -27.595)">
+      <path id="symbol-body" d="M8.05 21.50 15.05 14.35Q15.38 14.02 15.38 14.51V26.58L20.44 22.15 22.28 24.38 16.69 29.22H24.15L35.01 41.28H24.20L15.38 31.62V35.80Q15.38 36.19 15.04 36.49L9.45 41.34Q9.21 41.53 8.87 41.53H8.49Q7.93 41.53 7.93 40.95V22.00Q7.93 21.70 8.05 21.50Z" />
+      <path id="upper-facet-left" d="M17.05 15.10C17.92 13.98 18.48 13.66 19.30 13.66H20.82L26.21 20.57 24.06 22.44Z" />
+      <path id="upper-facet-middle" d="M23.40 13.66H27.10L30.10 17.39 27.75 19.29Z" />
+      <path id="upper-facet-right" d="M29.72 13.66H34.44L31.63 15.94Z" />
+      <g id="blue-curve-accents" fill="#4e60ff">
+        <path id="blue-curve-left" d="M17.05 15.10C17.92 13.98 18.48 13.66 19.30 13.66H20.82L22.09 15.29C20.63 15.06 20.22 16.95 18.55 16.67Z" />
+        <path id="blue-curve-middle" d="M23.40 13.66H27.10L28.21 15.04C27.01 14.02 26.10 14.64 25.43 16.29Z" />
+        <path id="blue-curve-right" d="M29.72 13.66H34.44C33.51 13.71 32.81 14.51 32.05 14.08C31.43 13.70 30.98 13.79 30.42 14.50Z" />
+      </g>
+    </g>
+  </g>
+</svg>

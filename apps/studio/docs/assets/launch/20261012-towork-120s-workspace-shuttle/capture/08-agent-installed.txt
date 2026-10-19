@@ -1,0 +1,114 @@
+Window: "ToWork", App: ToWork.
+0 standard window ToWork, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content Description: ToWork, URL: 127.0.0.1:4318/windows/main/index.html
+			3 pop up button RoyLin
+			4 button 工作
+			5 button 消息
+			6 button 知识
+			7 button 插件
+			8 button (collapsed) 任务, Secondary Actions: Expand
+			9 button 设置
+			10 container
+				11 button (disabled) 添加智能体
+				12 pop up button 展示方式
+				13 container
+					14 sortable ToWork 工作助手 更多 新任务
+					15 button 法务专家
+					16 button 新任务
+					17 text 暂无任务
+				18 splitter 调整面板宽度, Value: 275
+				19 toggle button 隐藏侧边栏, Value: on
+				20 pop up button Boyue DeepSeek V4 Flash | ToGateway
+				21 button (disabled) 不使用工作目录
+				22 toggle button 文件, Value: off
+				23 toggle button 浏览器, Value: off
+				24 toggle button 状态, Value: off
+				25 container 消息
+					26 container
+						27 text 请使用 frontend-design 技能，制作「秋日新品发布」复盘 HTML，并输出 Markdown 摘要和 CSV 漏斗数据。演示数据：浏览 12000，报名 860，到场 620，订单 186。计算各阶段转化率，给出 3 条行动建议。页面使用白底、黑色标题、绿色指标卡，标注演示数据。文件保存到 /Users/roylin/code/a3s/apps/studio/docs/assets/launch/20261012-towork-180s/demo-output，生成后提供预览链接。不要修改其他目录。
+						28 image
+						29 text 10/12 16:05
+						30 button 复制
+						31 button 删除
+						32 text ToWork 工作助手 deepseek-v4-flash 10/12 16:05 正在处理 58 秒
+						33 button (collapsed) 已深度思考, Secondary Actions: Expand
+						34 text 我先加载 
+						35 text frontend-design
+						36 text  技能，并检查目标目录的现有状态。
+						37 heading 项目检查, Value: 3
+							38 button (collapsed) 项目检查, Secondary Actions: Expand
+						39 text 原生命令执行当前不可用，我改用内置的目录工具查看。
+						40 button (collapsed) 已深度思考, Secondary Actions: Expand
+						41 button (collapsed) 已深度思考, Secondary Actions: Expand
+						42 button (collapsed) 已深度思考, Secondary Actions: Expand
+						43 text 工作区外路径被权限策略拒绝。我确认一下当前仓库与授权范围。
+				44 text entry area (settable) Agent 运行中 — Return 排队发送，⌘Return 立即引导
+					45 text Agent 运行中 — Return 排队发送，⌘Return 立即引导
+				46 button 新任务
+				47 pop up button 技能
+				48 pop up button 权限模式
+				49 button 输入快捷面板
+				50 button 暂停
+				51 button 新建任务
+				52 button (collapsed) 搜索任务, Secondary Actions: Expand
+				53 container 工作导航
+					54 button 智能体
+					55 button 连接器
+					56 button 技能
+					57 button 自动化
+				58 container 项目
+					59 container
+						60 heading 项目, Value: 3
+							61 text 项目
+						62 button 新建项目
+					63 text 还没有项目
+				64 container 任务
+					65 container
+						66 heading 任务, Value: 3
+							67 text 任务
+						68 button 查看全部最近任务
+					69 container 今天
+						70 heading 今天, Value: 3
+							71 text 今天
+						72 button 请使用 frontend-design 技能，制作「秋日新品发布」复盘 HTML…
+						73 text 刚刚
+						74 button 重命名
+						75 toggle button 置顶, Value: off
+						76 button 归档
+						77 button 用以下演示数据制作一份「秋日新品发布」复盘：浏览量 12000、报名 860、到…
+						78 text 2分钟前
+						79 button 重命名
+						80 toggle button 置顶, Value: off
+						81 button 归档
+				82 toggle button 收起侧边栏, Value: on
+				83 heading 智能体, Value: 1
+					84 text 智能体
+				85 container
+					86 search text field (settable) 搜索智能体或关键词...
+						87 text 搜索智能体或关键词...
+				88 (settable, unknown) 智能体
+					89 radio button 市场, Value: 1
+					90 radio button 已安装, Value: 0
+				91 button 刷新
+				92 text 浏览并安装可用的智能体
+				93 container 智能体
+					94 button 全部
+					95 button 精选
+				96 heading 全部, Value: 2
+					97 text 全部
+				98 container 法务专家
+					99 heading 法务专家, Value: 3
+						100 text 法务专家
+					101 text 审查 Word 合同。选择一份文档，宿主抽出文本，由法务专家按条款审查。
+					102 text @官方精选
+					103 button 百科
+					104 toggle button 卸载, Value: on
+	105 close button
+	106 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	107 minimize button
+108 menu bar
+	109 ToWork
+	110 Edit
+
+The focused UI element is 98 container 法务专家

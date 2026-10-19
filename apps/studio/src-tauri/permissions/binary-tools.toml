@@ -1,0 +1,4 @@
+[[permission]]
+identifier = "allow-binary-tools"
+description = "Installs environment tools through a3s-use."
+commands.allow = ["binary_ipc"]

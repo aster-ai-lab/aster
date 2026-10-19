@@ -1,0 +1,435 @@
+import {
+  officeMessage,
+  resolveOfficeMessages,
+} from '../../../i18n/office-locale';
+import { useOfficeMessages } from './office-messages-context';
+import { OfficeSelect, type OfficeSelectOption } from './office-controls';
+import type {
+  SpreadsheetSortKey,
+  SpreadsheetSortOrientation,
+} from './spreadsheet-sort';
+import {
+  parseSpreadsheetSortAppearanceTargetValue,
+  type SpreadsheetSortAppearanceField,
+  type SpreadsheetSortAppearanceKind,
+  type SpreadsheetSortAppearanceTarget,
+  spreadsheetSortAppearanceTargetLabel,
+  spreadsheetSortAppearanceTargets,
+  spreadsheetSortAppearanceTargetsEqual,
+  spreadsheetSortAppearanceTargetValue,
+} from './spreadsheet-sort-appearance';
+import {
+  type SpreadsheetSortCustomList,
+  spreadsheetSortCustomListsEqual,
+} from './spreadsheet-sort-custom-list';
+
+const CREATE_CUSTOM_LIST_ORDER = 'create-custom-list';
+const ORPHAN_CUSTOM_LIST_ORDER = 'orphan-custom-list';
+const CUSTOM_LIST_ORDER_PREFIX = 'custom-list:';
+
+export function SpreadsheetSortOrderControls({
+  appearanceField,
+  customLists,
+  level,
+  orientation,
+  sortKey,
+  onBeginCustomListEdit,
+  onChange,
+}: {
+  appearanceField: SpreadsheetSortAppearanceField | undefined;
+  customLists: readonly SpreadsheetSortCustomList[];
+  level: number;
+  orientation: SpreadsheetSortOrientation;
+  sortKey: SpreadsheetSortKey;
+  onBeginCustomListEdit: (entries?: readonly string[]) => void;
+  onChange: (key: SpreadsheetSortKey) => void;
+}) {
+  const messages = useOfficeMessages();
+  const sortOn = sortKey.sortOn ?? 'values';
+  const appearanceTarget = spreadsheetSortKeyAppearanceTarget(sortKey);
+  const appearancePosition = sortKey.position === 'last' ? 'last' : 'first';
+  const appearanceTargets =
+    sortOn === 'values'
+      ? []
+      : spreadsheetSortAppearanceTargets(appearanceField, sortOn);
+
+  const sortOnOptions: readonly OfficeSelectOption<string>[] = [
+    {
+      value: 'values',
+      label: officeMessage(messages, 'spreadsheet.sort.order.values'),
+    },
+    {
+      value: 'cell-color',
+      label: officeMessage(messages, 'spreadsheet.sort.order.cellColor'),
+      disabled: !spreadsheetSortAppearanceTargets(appearanceField, 'cell-color')
+        .length,
+    },
+    {
+      value: 'font-color',
+      label: officeMessage(messages, 'spreadsheet.sort.order.fontColor'),
+      disabled: !spreadsheetSortAppearanceTargets(appearanceField, 'font-color')
+        .length,
+    },
+    {
+      value: 'icon',
+      label: officeMessage(messages, 'spreadsheet.sort.order.icon'),
+      disabled: !spreadsheetSortAppearanceTargets(appearanceField, 'icon')
+        .length,
+    },
+  ];
+
+  const appearanceTargetOptions: readonly OfficeSelectOption<string>[] =
+    appearanceTargets.map((target) => ({
+      value: spreadsheetSortAppearanceTargetValue(target),
+      label: spreadsheetSortAppearanceTargetLabel(target),
+    }));
+
+  const positionOptions: readonly OfficeSelectOption<'first' | 'last'>[] = [
+    {
+      value: 'first',
+      label: spreadsheetSortPositionLabel(orientation, 'first'),
+    },
+    {
+      value: 'last',
+      label: spreadsheetSortPositionLabel(orientation, 'last'),
+    },
+  ];
+
+  return (
+    <div
+      className="work-spreadsheet-sort-order-controls"
+      data-appearance={sortOn === 'values' ? undefined : 'true'}
+    >
+      <div className="work-office-field">
+        <span>{officeMessage(messages, 'spreadsheet.sort.order.by')}</span>
+        <OfficeSelect
+          ariaLabel={officeMessage(messages, 'spreadsheet.sort.order.byAria', {
+            level: String(level),
+          })}
+          value={sortOn}
+          options={sortOnOptions}
+          onValueChange={(next) => {
+            if (next === 'values') {
+              onChange({ index: sortKey.index, direction: 'ascending' });
+              return;
+            }
+            if (!isSpreadsheetSortAppearanceKind(next)) return;
+            const target = spreadsheetSortAppearanceTargets(
+              appearanceField,
+              next,
+            )[0];
+            if (target) {
+              onChange(
+                spreadsheetSortAppearanceKey(sortKey.index, target, 'first'),
+              );
+            }
+          }}
+        />
+      </div>
+
+      {sortOn === 'values' ? (
+        <SpreadsheetSortValueOrder
+          customLists={customLists}
+          level={level}
+          sortKey={sortKey}
+          onBeginCustomListEdit={onBeginCustomListEdit}
+          onChange={onChange}
+        />
+      ) : (
+        <>
+          <div className="work-office-field">
+            <span>{officeMessage(messages, 'spreadsheet.sort.order.target')}</span>
+            <OfficeSelect
+              ariaLabel={officeMessage(
+                messages,
+                'spreadsheet.sort.order.targetAria',
+                { level: String(level) },
+              )}
+              value={
+                appearanceTarget
+                  ? spreadsheetSortAppearanceTargetValue(appearanceTarget)
+                  : (appearanceTargetOptions[0]?.value ?? '')
+              }
+              options={appearanceTargetOptions}
+              disabled={appearanceTargetOptions.length === 0}
+              onValueChange={(raw) => {
+                const target = parseSpreadsheetSortAppearanceTargetValue(raw);
+                if (!target || target.kind !== sortOn) return;
+                onChange(
+                  spreadsheetSortAppearanceKey(
+                    sortKey.index,
+                    target,
+                    appearancePosition,
+                  ),
+                );
+              }}
+            />
+          </div>
+          <div className="work-office-field work-spreadsheet-sort-position-field">
+            <span>
+              {officeMessage(messages, 'spreadsheet.sort.order.position')}
+            </span>
+            <OfficeSelect<'first' | 'last'>
+              ariaLabel={officeMessage(
+                messages,
+                'spreadsheet.sort.order.positionAria',
+                { level: String(level) },
+              )}
+              value={appearancePosition}
+              options={positionOptions}
+              disabled={!appearanceTarget}
+              onValueChange={(position) => {
+                if (!appearanceTarget) return;
+                onChange(
+                  spreadsheetSortAppearanceKey(
+                    sortKey.index,
+                    appearanceTarget,
+                    position,
+                  ),
+                );
+              }}
+            />
+          </div>
+          {appearanceTarget ? (
+            <div className="work-spreadsheet-sort-appearance-preview">
+              {appearanceTarget.kind === 'icon' ? (
+                <span aria-hidden="true">
+                  {spreadsheetSortAppearanceTargetLabel(appearanceTarget).split(
+                    ' ',
+                  )[0] ?? ''}
+                </span>
+              ) : (
+                <span
+                  aria-hidden="true"
+                  className="work-spreadsheet-sort-color-swatch"
+                  data-empty={
+                    appearanceTarget.color === null ? 'true' : undefined
+                  }
+                  style={
+                    appearanceTarget.color
+                      ? { backgroundColor: appearanceTarget.color }
+                      : undefined
+                  }
+                />
+              )}
+              <span>
+                {officeMessage(messages, 'spreadsheet.sort.appearance.preview', {
+                  target: spreadsheetSortAppearanceTargetLabel(appearanceTarget),
+                  position: spreadsheetSortPositionLabel(
+                    orientation,
+                    appearancePosition,
+                  ),
+                })}
+              </span>
+            </div>
+          ) : null}
+        </>
+      )}
+    </div>
+  );
+}
+
+function SpreadsheetSortValueOrder({
+  customLists,
+  level,
+  sortKey,
+  onBeginCustomListEdit,
+  onChange,
+}: {
+  customLists: readonly SpreadsheetSortCustomList[];
+  level: number;
+  sortKey: SpreadsheetSortKey;
+  onBeginCustomListEdit: (entries?: readonly string[]) => void;
+  onChange: (key: SpreadsheetSortKey) => void;
+}) {
+  const messages = useOfficeMessages();
+  const orderOptions: OfficeSelectOption<string>[] = [
+    {
+      value: 'ascending',
+      label: officeMessage(messages, 'spreadsheet.sort.order.asc'),
+    },
+    {
+      value: 'descending',
+      label: officeMessage(messages, 'spreadsheet.sort.order.desc'),
+    },
+  ];
+  customLists.forEach((customList, customListIndex) => {
+    if (customList.source === 'built-in') {
+      orderOptions.push({
+        value: `${CUSTOM_LIST_ORDER_PREFIX}${customListIndex}`,
+        label: customList.label,
+        group: officeMessage(messages, 'spreadsheet.sort.order.group.builtin'),
+      });
+    }
+  });
+  customLists.forEach((customList, customListIndex) => {
+    if (customList.source === 'stored') {
+      orderOptions.push({
+        value: `${CUSTOM_LIST_ORDER_PREFIX}${customListIndex}`,
+        label: customList.label,
+        group: officeMessage(messages, 'spreadsheet.sort.order.group.saved'),
+      });
+    }
+  });
+  customLists.forEach((customList, customListIndex) => {
+    if (customList.source === 'session') {
+      orderOptions.push({
+        value: `${CUSTOM_LIST_ORDER_PREFIX}${customListIndex}`,
+        label: customList.label,
+        group: officeMessage(messages, 'spreadsheet.sort.order.group.session'),
+      });
+    }
+  });
+  const orderValue = spreadsheetSortOrderValue(sortKey, customLists);
+  if (orderValue === ORPHAN_CUSTOM_LIST_ORDER) {
+    orderOptions.push({
+      value: ORPHAN_CUSTOM_LIST_ORDER,
+      label: officeMessage(messages, 'spreadsheet.sort.order.customList'),
+    });
+  }
+  orderOptions.push({
+    value: CREATE_CUSTOM_LIST_ORDER,
+    label: officeMessage(messages, 'spreadsheet.sort.order.newList'),
+  });
+
+  return (
+    <div className="work-office-field">
+      <span>{officeMessage(messages, 'spreadsheet.sort.order.target')}</span>
+      <OfficeSelect
+        ariaLabel={officeMessage(
+          messages,
+          'spreadsheet.sort.order.directionAria',
+          { level: String(level) },
+        )}
+        value={orderValue}
+        options={orderOptions}
+        onValueChange={(order) => {
+          if (order === CREATE_CUSTOM_LIST_ORDER) {
+            onBeginCustomListEdit(sortKey.customList);
+            return;
+          }
+          if (order === ORPHAN_CUSTOM_LIST_ORDER) {
+            return;
+          }
+          if (order === 'ascending' || order === 'descending') {
+            onChange({ index: sortKey.index, direction: order });
+            return;
+          }
+          const customListIndex = Number(
+            order.slice(CUSTOM_LIST_ORDER_PREFIX.length),
+          );
+          const customList = customLists[customListIndex];
+          if (!customList) return;
+          onChange({
+            index: sortKey.index,
+            customList: [...customList.entries],
+          });
+        }}
+      />
+    </div>
+  );
+}
+
+export function spreadsheetSortAppearanceKey(
+  index: number,
+  target: SpreadsheetSortAppearanceTarget,
+  position: 'first' | 'last',
+): SpreadsheetSortKey {
+  return target.kind === 'icon'
+    ? { index, sortOn: 'icon', icon: { ...target.icon }, position }
+    : { index, sortOn: target.kind, color: target.color, position };
+}
+
+export function nextSpreadsheetSortKey(
+  keys: readonly SpreadsheetSortKey[],
+  fields: readonly { index: number }[],
+  appearanceFields: readonly SpreadsheetSortAppearanceField[],
+): SpreadsheetSortKey | null {
+  const usedIndices = new Set(keys.map((key) => key.index));
+  const unused = fields.find((field) => !usedIndices.has(field.index));
+  if (unused) return { index: unused.index, direction: 'ascending' };
+
+  const defaultKinds: readonly SpreadsheetSortAppearanceKind[] = [
+    'cell-color',
+    'font-color',
+    'icon',
+  ];
+  for (const key of [...keys].reverse()) {
+    const field = appearanceFields.find(
+      (candidate) => candidate.index === key.index,
+    );
+    const currentTarget = spreadsheetSortKeyAppearanceTarget(key);
+    const kinds = currentTarget
+      ? [
+          currentTarget.kind,
+          ...defaultKinds.filter((kind) => kind !== currentTarget.kind),
+        ]
+      : defaultKinds;
+    for (const kind of kinds) {
+      const target = spreadsheetSortAppearanceTargets(field, kind).find(
+        (candidate) =>
+          !keys.some((existing) => {
+            const existingTarget = spreadsheetSortKeyAppearanceTarget(existing);
+            return (
+              existing.index === key.index &&
+              existingTarget !== null &&
+              spreadsheetSortAppearanceTargetsEqual(existingTarget, candidate)
+            );
+          }),
+      );
+      if (target) {
+        return spreadsheetSortAppearanceKey(
+          key.index,
+          target,
+          currentTarget?.kind === kind && key.position === 'last'
+            ? 'last'
+            : 'first',
+        );
+      }
+    }
+  }
+  return null;
+}
+
+function spreadsheetSortKeyAppearanceTarget(
+  key: SpreadsheetSortKey,
+): SpreadsheetSortAppearanceTarget | null {
+  if (key.sortOn === 'cell-color' || key.sortOn === 'font-color') {
+    return { kind: key.sortOn, color: key.color };
+  }
+  return key.sortOn === 'icon' ? { kind: 'icon', icon: { ...key.icon } } : null;
+}
+
+export function spreadsheetSortOrderValue(
+  key: SpreadsheetSortKey,
+  customLists: readonly SpreadsheetSortCustomList[],
+): string {
+  if (key.customList === undefined) return key.direction ?? 'ascending';
+  const index = customLists.findIndex((customList) =>
+    spreadsheetSortCustomListsEqual(customList.entries, key.customList ?? []),
+  );
+  return index < 0
+    ? ORPHAN_CUSTOM_LIST_ORDER
+    : `${CUSTOM_LIST_ORDER_PREFIX}${index}`;
+}
+
+function spreadsheetSortPositionLabel(
+  orientation: SpreadsheetSortOrientation,
+  position: 'first' | 'last',
+): string {
+  const catalog = resolveOfficeMessages();
+  if (orientation === 'left-to-right') {
+    return position === 'first'
+      ? officeMessage(catalog, 'spreadsheet.sort.order.onLeft')
+      : officeMessage(catalog, 'spreadsheet.sort.order.onRight');
+  }
+  return position === 'first'
+    ? officeMessage(catalog, 'spreadsheet.sort.order.onTop')
+    : officeMessage(catalog, 'spreadsheet.sort.order.onBottom');
+}
+
+function isSpreadsheetSortAppearanceKind(
+  value: string,
+): value is SpreadsheetSortAppearanceKind {
+  return value === 'cell-color' || value === 'font-color' || value === 'icon';
+}

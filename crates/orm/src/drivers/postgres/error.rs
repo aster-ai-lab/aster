@@ -27,6 +27,8 @@ impl PostgresRetryClass {
 #[derive(Debug, thiserror::Error)]
 #[non_exhaustive]
 pub enum PostgresError {
+    #[error("SQL statement is empty")]
+    EmptyStatement,
     #[error("could not get PostgreSQL connection from pool: {0}")]
     Pool(#[from] deadpool_postgres::PoolError),
     #[error("PostgreSQL operation failed: {0}")]
@@ -82,7 +84,8 @@ impl PostgresError {
             Self::Database(error) => classify_database(error),
             Self::TransactionSetup { source, .. } => classify_database(source),
             Self::TransactionSetupAndRollback { source, .. } => classify_database(source),
-            Self::Configuration(_)
+            Self::EmptyStatement
+            | Self::Configuration(_)
             | Self::Options(_)
             | Self::Tls(_)
             | Self::PoolBuild(_)

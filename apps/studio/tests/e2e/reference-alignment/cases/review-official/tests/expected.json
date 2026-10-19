@@ -1,0 +1,9 @@
+{
+  "name": "review-official",
+  "required": [
+    ["2026年13月40日", "【待核实】"],
+    ["报告", "通知"]
+  ],
+  "excluded": ["以经", "密码"],
+  "ambiguous": false
+}

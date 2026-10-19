@@ -1,0 +1,8 @@
+{
+  "command": [
+    "python3",
+    "tests/workspace_dependencies.py"
+  ],
+  "exit_code": 1,
+  "wall_seconds": 0.06925200000000001
+}

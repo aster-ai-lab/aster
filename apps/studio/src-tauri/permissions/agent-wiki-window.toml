@@ -1,0 +1,4 @@
+[[permission]]
+identifier = "allow-open-agent-wiki-window"
+description = "Opens a system window for one installed agent's encyclopedia."
+commands.allow = ["open_agent_wiki_window"]

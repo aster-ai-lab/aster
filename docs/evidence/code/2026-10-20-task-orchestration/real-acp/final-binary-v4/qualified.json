@@ -1,0 +1,135 @@
+{
+  "schema": "aster.final-acp-qualified.v4",
+  "qualified_at_utc": "2026-10-19T19:33:26.741649+00:00",
+  "result_ref": "result.json",
+  "passed": 5,
+  "failed": 0,
+  "identity_rows": [
+    {
+      "binary": "/Users/roylin/code/aster/target/debug/a3s-code-acp",
+      "clock": "Work turn open through terminal; includes launch preparation and early process identity lookup, excludes cleanup/hash/background drain",
+      "host_turn_ms": 229,
+      "pid": 77428,
+      "sha256": "b5a88347d4e6770d8ef2dc8f348ff6903674aeb30bc7726a38616d99670d72e0"
+    },
+    {
+      "binary": "/Users/roylin/code/aster/target/debug/a3s-code-acp",
+      "clock": "Work turn open through terminal; includes launch preparation and early process identity lookup, excludes cleanup/hash/background drain",
+      "host_turn_ms": 280,
+      "pid": 77639,
+      "sha256": "b5a88347d4e6770d8ef2dc8f348ff6903674aeb30bc7726a38616d99670d72e0"
+    },
+    {
+      "binary": "/Users/roylin/code/aster/target/debug/a3s-code-acp",
+      "clock": "Work turn open through terminal; includes launch preparation and early process identity lookup, excludes cleanup/hash/background drain",
+      "host_turn_ms": 109,
+      "pid": 77858,
+      "sha256": "b5a88347d4e6770d8ef2dc8f348ff6903674aeb30bc7726a38616d99670d72e0"
+    },
+    {
+      "binary": "/Users/roylin/code/aster/target/debug/a3s-code-acp",
+      "clock": "Work turn open through terminal; includes launch preparation and early process identity lookup, excludes cleanup/hash/background drain",
+      "host_turn_ms": 273,
+      "pid": 77899,
+      "sha256": "b5a88347d4e6770d8ef2dc8f348ff6903674aeb30bc7726a38616d99670d72e0"
+    },
+    {
+      "binary": "/Users/roylin/code/aster/target/debug/a3s-code-acp",
+      "clock": "Work turn open through terminal; includes launch preparation and early process identity lookup, excludes cleanup/hash/background drain",
+      "host_turn_ms": 405,
+      "pid": 78101,
+      "sha256": "b5a88347d4e6770d8ef2dc8f348ff6903674aeb30bc7726a38616d99670d72e0"
+    }
+  ],
+  "phases": [
+    {
+      "approval_cards_handled": 2,
+      "cancel_requested": true,
+      "events": 28,
+      "provider_aux_requests": 0,
+      "provider_main_requests": 1,
+      "terminal": {
+        "channel": "ai.stream.done",
+        "error": null,
+        "status": "paused"
+      },
+      "terminal_received": true,
+      "tools": "program:output-error:allowed_tools,language,limits,source,type read:output-available:file_path,limit office_file:output-error:blocks,file_path,kind"
+    },
+    {
+      "approval_cards_handled": 2,
+      "cancel_requested": false,
+      "events": 40,
+      "provider_aux_requests": 0,
+      "provider_main_requests": 2,
+      "terminal": {
+        "channel": "ai.stream.done",
+        "error": null,
+        "status": "success"
+      },
+      "terminal_received": true,
+      "tools": "program:output-available:allowed_tools,language,limits,source,type read:output-available:file_path,limit read:output-available:file_path,limit output_check:output-available:action,pairs office_file:output-available:blocks,file_path,kind"
+    },
+    {
+      "approval_cards_handled": 1,
+      "cancel_requested": false,
+      "events": 22,
+      "provider_aux_requests": 0,
+      "provider_main_requests": 1,
+      "terminal": {
+        "channel": "ai.stream.done",
+        "error": null,
+        "status": "success"
+      },
+      "terminal_received": true,
+      "tools": "program:approval-responded:allowed_tools,language,limits,source,type"
+    },
+    {
+      "approval_cards_handled": 2,
+      "cancel_requested": false,
+      "events": 33,
+      "provider_aux_requests": 0,
+      "provider_main_requests": 2,
+      "terminal": {
+        "channel": "ai.stream.error",
+        "error": {
+          "message": "completion gate: workspace mutation 3b55594ceb0211038728f896b855c706c7453564d113970aab4b03edec2f30d0 (unverified.docx) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or obtain a host waiver for this digest. Next step: run one `bash` command that exits 0 and includes `test -f unverified.docx` with the check that proves the change, for example `test -f unverified.docx && <test command>`.",
+          "name": "Error",
+          "stack": null
+        },
+        "status": null
+      },
+      "terminal_received": true,
+      "tools": "program:output-error:allowed_tools,language,limits,source,type office_file:output-available:blocks,file_path,kind output_check:output-error:action"
+    },
+    {
+      "approval_cards_handled": 4,
+      "cancel_requested": false,
+      "events": 56,
+      "provider_aux_requests": 0,
+      "provider_main_requests": 3,
+      "terminal": {
+        "channel": "ai.stream.done",
+        "error": null,
+        "status": "success"
+      },
+      "terminal_received": true,
+      "tools": "program:output-error:allowed_tools,language,limits,source,type write:output-available:content,file_path,variant output_check:output-error:action program:output-available:allowed_tools,language,limits,source,type write:output-available:content,file_path,variant read:output-available:file_path,limit output_check:output-available:action,text"
+    }
+  ],
+  "all_owned_acp_pids_gone": true,
+  "all_product_binaries_unchanged": true,
+  "fixture_source": {
+    "apps/work/src-tauri/src/agent_plane/local_acp_delivery_tests.rs": "6810301c86e355676e5735739e759df0854e1b97b6f17090a8a3d85cd8a3d579",
+    "apps/work/src-tauri/src/agent_plane/local_acp_provider_tests.rs": "2225ae7ad0731e7ce946f36637460fe03506498cb0e12d4ceabee0aff79b1da3",
+    "apps/work/src-tauri/src/agent_plane/local_acp_program_tests.rs": "fc8e4c629461f48547a59efc18e2f8c88903b0e61f1665701094a4292f0c6bc3"
+  },
+  "markers_present": {
+    "WORK_REAL_ACP_PROGRAM_PASS": 1,
+    "WORK_REAL_ACP_PROGRAM_REFUSAL_PASS": 1,
+    "WORK_REAL_ACP_PROGRAM_REQUIRED_FAILURE_PASS": 1,
+    "WORK_REAL_ACP_PROGRAM_CANCEL_PASS": 0,
+    "WORK_REAL_ACP_PROGRAM_RECOVERY_PASS": 1
+  },
+  "scope": "Controlled provider; five real Work-to-ACP/Core program scenarios. No live model or GUI acceptance."
+}

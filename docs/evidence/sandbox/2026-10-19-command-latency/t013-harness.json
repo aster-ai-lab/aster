@@ -1,0 +1,32 @@
+{
+  "schema": "aster.sandbox.t013.harness.v1",
+  "buildCommand": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-code-core",
+    "--lib",
+    "real_command_phase_timing",
+    "--no-run",
+    "--message-format=json"
+  ],
+  "executable": "/Users/roylin/code/aster/target/t013-probe/core-command-timing-probe",
+  "executableSha256": "16909621a2f34fc71378c0dc958cf3e5dcb681e37d8b960f52063e7c05c759ac",
+  "source": {
+    "crates/code/core/src/sandbox/oci/tests.rs": "bce98e89a64861fdbe1b09108fecd2f393a108335bc4288ad8c299ccb830f5a3",
+    "crates/code/core/src/sandbox/oci.rs": "869e16f45170e646c1ec3ee1439c63a3f9f05a03daa0c96cbfc0c55cc95ef333",
+    "crates/code/core/src/sandbox/oci/bundle.rs": "3fc45fe09f056974e9931bd95cdc51552db3c0fd785a3991224a9fe5a7beb45c"
+  },
+  "samplesPerRound": 19,
+  "command": "printf phase-probe",
+  "commandTimeoutMs": 5000,
+  "expected": {
+    "exit_code": 0,
+    "stdout": "phase-probe",
+    "stderr": "",
+    "timed_out": false
+  },
+  "coreSourceMayHaveConcurrentUnrelatedEdits": "The same copied executable is used for every controlled round; no Cargo invocation occurs during timing."
+}

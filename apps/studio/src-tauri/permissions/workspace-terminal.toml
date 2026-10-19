@@ -1,0 +1,10 @@
+[[permission]]
+identifier = "allow-workspace-terminal"
+description = "Opens the task conversation shell in a host PTY."
+commands.allow = [
+  "workspace_terminal_create",
+  "workspace_terminal_drain",
+  "workspace_terminal_write",
+  "workspace_terminal_resize",
+  "workspace_terminal_kill",
+]

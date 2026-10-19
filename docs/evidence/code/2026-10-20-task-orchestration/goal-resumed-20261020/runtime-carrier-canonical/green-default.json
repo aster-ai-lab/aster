@@ -1,0 +1,16 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-oci-sdk",
+    "--lib",
+    "attachment::tests::",
+    "--",
+    "--nocapture"
+  ],
+  "exit_code": 0,
+  "wall_seconds": 8.974393957999999
+}

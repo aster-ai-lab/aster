@@ -1,0 +1,21 @@
+{
+  "schema": "aster.t027.actual-stage-launch.v1",
+  "observed_at_utc": "2026-10-19T20:14:07.370058+00:00",
+  "launch_method": "CUA getApp exact app path; background launch",
+  "pid": 3167,
+  "actual_mapped_executable": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/MacOS/AsterDream",
+  "actual_main_sha256": "52d9e2ff4076fb48877c350062edb78291d2c76e4eff82746493b3a10ecd49f4",
+  "whitelisted_actual_process_environment": {
+    "A3S_CONFIG": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/host-capabilities.acl",
+    "A3S_STUDIO_RENDERER_PORT": "4318",
+    "ASTER_SANDBOX_DIR": "/Users/roylin/code/aster/target/t013-assets-hardware"
+  },
+  "environment_verified_via": "Darwin sysctl KERN_PROCARGS2; only the three declared non-secret launch values retained",
+  "old_application_pids_gone": [
+    83498,
+    2552
+  ],
+  "ui_window_observed": true,
+  "renderer_loaded_pending": true,
+  "model_task_started": false
+}

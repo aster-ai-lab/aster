@@ -1,0 +1,13 @@
+{
+  "observed_at_utc": "2026-10-19T22:36:31.020601+00:00",
+  "host_and_acp": {
+    "exit_code": 0,
+    "output": "45095     1 S    /Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/AsterDream-TaskOptimization-R2.app/Contents/MacOS/AsterDream\n",
+    "stderr": ""
+  },
+  "acp_children": {
+    "exit_code": 1,
+    "output": "",
+    "stderr": ""
+  }
+}

@@ -1,0 +1,201 @@
+请接力完成 AsterDream 的原始 22 项端到端复测与必要修复。先读取本提示词及所列证据，再继续，不要从头重复已完成的工作。
+
+用户目标与当前停止原因
+用户要求优化 ../tasks 的任务完成质量，并用完全访问、CUA 后台不抢鼠标模式重新执行原始 22 项端到端测试。GLM 5.3 返回 1113（余额不足），用户已明确授权“改用应用内已配置的其他模型，单独记录测试结果”，当前使用应用中的 Qwen 3.8 Flash。
+2026-10-19 用户因本智能体剩余额度不足，要求“收尾一下，准备好其它智能体接力执行的提示词”。因此本智能体停止新增评测，交接时 v9 正式任务提交数为 0；不要把用户要求交接解释为任务完成。
+用户已恢复 AsterDream 到当前桌面。不要再询问模型切换、完全访问、重跑或窗口恢复的许可；这些授权均已存在。
+
+最重要的真实状态
+1. Qwen v8 首轮原始 22 项全部运行、实际 UI 终态核验、不可变采集和严格评分完成：13 PASS / 9 FAIL（59.1%），零正式重试。
+   PASS：A03 A04 A06 A08 A10 A23 A24 A25 A26 A29 A30 A40 A49。
+   FAIL：A01 A02 A07 A09 A12 A28 A35 A36 A51。
+   后端 20 done / 2 error。A02 因 max_tokens 失败；A09 因内部原生文件验证凭据未到达外层完成检查而失败。
+2. 严格 PASS 不等于内容完全正确。已经对 20 项完成基于源材料的独立内容 QA；A02/A09 只有失败诊断。不要把词面宽松核验当作升级原严格成绩的理由。
+3. 已实现并构建 v9 修复版：内部原生文件验证凭据传递；通用交付规则收紧事实、计算、文件内部检查、额外交付范围。针对性测试通过，三件程序已冻结安装。
+4. v9 真实 UI 基础门禁已经由 root 确认全部通过：只回复 42；读取实际附件第一句；正常退出并后台重启后保留同一附件会话、Qwen、完全访问、规划关闭。新 baseline 已冻结：cutoff 2026-10-19T02:06:58.754488+00:00，排除84个既有sessions，52输入/49限定源码/3安装文件全部匹配。baseline SHA256 b1b1b006582a3ecd3181676b97ab4bb9571a928cbcb4ec7936b01a3ed7a73b81。
+5. v9 全 22 项一次正式重试已经选定，但尚未提交任何原始任务。接力后先核对新 baseline / gates 是否已冻结，确认构建与 UI 状态，然后开始。不得把 smoke 当成原始任务得分。
+
+工作区与约束
+仓库：/Users/roylin/code/aster；任务源：/Users/roylin/code/tasks。
+遵守仓库 AGENTS.md、docs/development-standards.md、.specify/memory/constitution.md；pinned Rust toolchain、单一 workspace、本地 A3S 依赖。当前工作树有大量与本任务无关的修改，不要 revert、stage、commit 或全局格式化。
+使用 ponytail 和 a3s-test skill；a3s-test 适配器此前不兼容，实际测试改用 native CUA。不要借此改成 shell/API 提交或代做原始任务。
+所有原始任务必须通过 native CUA 的应用界面新会话上传原文件、提交原提示词，并实际核对对应 UI 最终回答/错误及空闲状态。后台绑定窗口，不 Raise、不用全局鼠标、不用 AppleScript、不用 shell kill。shell 仅可用于源码、构建、限定测试元数据投影、不可变采集、独立 QA。
+不要读取或复制真实 ACL、账户配置、凭据、用户其他会话、进程 argv/env。仅投影明确测试会话的有限元数据。不要把 oracle、评分答案、A51 答案 PNG/核对答案文件发给应用模型。不要给模型补充评分词或替换原提示词。
+完全访问不能使 native_process_lifetime_unqualified 合格；使用应用已有的进程内原生 Office 工具，不放宽沙箱或绕过安全门禁。
+
+先读的证据
+主报告（历史正文保留）：
+/Users/roylin/code/aster/docs/evidence/work/2026-10-18-task-corpus-cua/OUTCOME.md
+临时证据根：
+/tmp/aster-task-corpus-cua-20261018-2245
+以下简称 BASE；证据在 BASE/evidence。
+首轮不可变文件：
+  original22-qwen-v8-attempt1-scores.json
+    SHA256 a8e080306b0604967aba122b296ffd86c00f18038c4d7c02ee018fdf125994c4
+  original22-qwen-v8-attempt1-final-validation.json
+    SHA256 3ee99f6b852678085f5c718a2ed70967c0f976a7497110061af566fa43382c3a
+  original22-qwen-v8-attempt1-matrix.md
+  original22-qwen-v8-ledger.json（仅 additive QA 引用可增补）
+  original22-qwen-v8-Axx-attempt1-independent-qa.json
+  original22-qwen-v8-A28-attempt1-independent-source-qa.json
+首轮采集：BASE/run-qwen-v8/TC-Axx。
+GLM 历史采集：BASE/run，必须独立保留，不能混入 Qwen。
+v9 准备和正式空目录：
+  evidence/original22-qwen-v9-retry1-ledger.json
+  evidence/original22-qwen-v9-retry1-selection.json
+  evidence/original22-qwen-v9-retry1-preparation.json
+  evidence/original22-qwen-v9-retry1-runbook.md
+  evidence/v9-qualification-gates.json
+  evidence/original22-qwen-v9-retry1-baseline.json（已成功冻结，SHA见上）
+  evidence/v9-handoff-final-evidence-status.json
+  BASE/run-qwen-v9-retry1（应为空；若非空先核 ledger，不覆盖）
+新 cutoff 必须使用 v9 baseline，不能复用 v8 cutoff。准备记录不是已执行任务。
+
+当前安装和窗口
+应用包：/Users/roylin/Library/Application Support/dev.a3s.studio/aster/AsterDream.app
+bundle id：dev.a3s.studio.aster。
+最后确认主 PID：98622（正常重启后，需重新核对，勿依赖过期 PID）。
+主程序 Mach-O arm64 UUID：766FF8E2-09F0-3EFD-ABD4-0736B3A933A2。
+程序位于 Contents/MacOS，三件 sibling 都已冻结：AsterDream、a3s-code-acp、a3s-office。现有发现逻辑优先 sibling，无产品配置改动。实际 smoke 的 ACP 子进程 comm 已确认来自该包 MacOS/a3s-code-acp，没有读取 argv/env。
+已签名安装 SHA256：
+  AsterDream b999a0970a723b3d8d0a637cf3cc28164f20050494662d2ce8218f00cf060d54
+  a3s-code-acp 0739de0789989e2c90143d97bc537e3a2a96a37f11aa5717daa81706a8b977f1
+  a3s-office 7069109477c527903001759231fa35738c11de06f5e35531472c682faf71342e
+证据：
+  evidence/build-identity-v9.json
+    SHA256 5058e522f1fa874cfbe43fa3f8a7715b08458486108a0092dd89b91d9722549b
+  evidence/build-v9-frozen-runtime-manifest.json
+    SHA256 99c700b85817776164281416a0ebb3a6d6a78642d6c9011f9d65f079ad9a9bb2
+  evidence/build-v9-installed-independent-verification.json
+    SHA256 100453fefc8248ffba0440de669fd39f187fe5c57448a1142539122edc1a9cae
+  evidence/build-v9-source-baseline.json：49 个限定源文件
+    SHA256 49beb9fb398aed1a2d971b01cf0e4f6c033e946b50dd3412e17b05115769256d
+冻结构建副本：BASE/frozen-build-v9/{aster-dream,a3s-code-acp,a3s-office,work-delivery-tests}。
+共享 target/debug 曾在构建快照后被另一轮构建覆盖，安装前 guard 拒绝了当次部署，尚未修改应用。保留 evidence/v9-deploy-precondition-rejection.json。随后重新 just build-work、复制冻结三件和测试 binary，再部署；不要用较早 build-v9-frozen-target-manifest.json 的主程序 UUID 代替最终运行构建。
+renderer 仍用 v8 已冻结的预览资源（本次无前端改动）：127.0.0.1:4319，拥有的 exec session 52718；共享 4318 未动。
+Info.plist 有临时 LSEnvironment.A3S_STUDIO_RENDERER_PORT=4319。交接时为继续测试保留应用和预览，不关闭、不恢复，以免接力丢失可用窗口。
+原 Info.plist 备份：BASE/build-backup/Info.plist.before-static-renderer，SHA256 89b93c5b74a8bc2db7d2f45a893317b90f9b5296b8bcc53d589db16b4f12229d。
+旧安装备份：BASE/build-backup/before-v9（之前没有 ACP/Office siblings，存在性记录在 build-identity-v9）。
+任务真正结束时才正常退出应用、确认 exact PID 消失、恢复 Info.plist、重新签名/注册，停止自己拥有的 4319 预览；不要动共享 4318，也不要假设新工具会话仍能 write_stdin 老 session。
+
+已完成的 v9 修复与验证
+A. 内部原生文件校验凭据传递：
+  生产文件：crates/code/core/src/tools/types.rs、agent/tool_invoker.rs、harness_loop.rs、fact_control/receipts.rs、agent/tool_completion_runtime.rs。
+  每次 prepared invocation 私有 scope；只接纳注册工具原生 hook 产生的凭据；保留当前字节、最终 writer identity、完整 mutation coverage、失败/取消/篡改隔离；不接受 program JSON 自报为证明，不将旧 error 升为 done。
+  证据：docs/evidence/code/2026-10-19-nested-native-artifact-proof/{OUTCOME.md,production-only.patch,source-sha256.json,INDEPENDENT_SOURCE_REVIEW.md}。
+  有效 RED 真实 Harness 0 PASS/1 FAIL；修复后 ACP office_file 19/19（其中含新 nested3，不重复加数）；Core native_artifact 5/5。独立安全复核无 must-fix。以前零测试过滤/无效 fixture 迭代均保留但不计有效通过。
+  before SHA 是从 HEAD 加已知既有 hunk 重建，证据已披露，不得宣称编辑前现场测量。
+B. Work 通用交付规则：
+  apps/work/src-tauri/src/agent_plane/{delivery_contract.md,delivery_contract_tests.rs,local_acp_delivery_tests.rs}。
+  3948 字符；8000 caller+2 separator 总11950，小于 ACP12000。检查回复和文件内容；事实/分析分离；不从 totals alone 推缺失组件或原因；解释/缺值列表留回复，除非用户要求工作表；无 probe/额外草稿；省略未请求分析。
+  证据：docs/evidence/work/2026-10-19-delivery-scope-and-facts/OUTCOME.md。
+  host3/3；冻结 test binary 与冻结 ACP 同目录的真实 ACP+脚本 loopback provider 3/3，日志 evidence/v9-frozen-real-acp-delivery.log（3.39s）。这是传输及错误行为证明，不是真实 Qwen 质量证明。较早共享 target transport3/3 曾使用不同 ACP hash，不能混称最终冻结 runtime。
+  最后 just build-work 成功日志 evidence/v9-just-build-work-final.log，session8209 exit0。没有安装新依赖。
+C. 仍然失败的范围外检查：
+  cargo fmt --all -- --check exit1，13 个 ACP 既有 agent/测试文件不在本次限定修改范围；不声称已证明其历史发生时间，不全局改格式。
+  tests/workspace_dependencies.py：系统 Python3.9 无 tomllib 的首次调用无效；/opt/homebrew/bin/python3.13 有效6项为5 PASS/1 FAIL，a3s-gateway publish=None。无本次 manifest 改动，不改无关文件。
+  整体 TypeScript/全 workspace CI 未声称通过。
+
+独立源核发现（严格得分保持原样，复测重点）
+A01：漏源项目名“报表系统升级项目”；把同级 Word 标题误判为 H2/H1；中文秒和实质日期实际保留。要区分影响分析和源事实。
+A02：max_tokens，无合格图表。不要仅从文本字节推断 token 配额设置错误，不放大显式用户 hard cap。
+A07：xlsx 主表10行/字段/金额/日期实质正确，但额外缺失表导致重复 ID，且说明称4日期转换而源实际8文本2原生日期。原文件与上传副本均未变。严格评分还会误读 Excel serial date；不要为词面破坏真实日期。
+A08：严格 PASS 但两区合计算术/比较范围/名次差额错误、漏12月例外、无源“全年抬价”。不要把无单价/销量的销售合计变成价格归因，也不要把替代反事实当真实剔除同比。
+A09：旧 error 即使有 PNG partial trace 也不采为成功；v9 必须重新真实 UI 跑并检查图、3发现、终态。
+A10：pptx10页且图数正确，但封面把2026Q1上线目标写成已上线。
+A12：源对照15项正确，但额外臆造预付/验收时点、因果依赖和无权重最优结论。
+A28：源核 PASS，X01 60% 未误称全部完成；严格要求字面“未完成”导致 FAIL，作为清晰度差距如实记，不篡改原提示词。
+A30：严格 PASS，但把作者风险推论放“事实”，把不可比/缺项都塞“数据冲突”。
+A35：真实4个sheet、R01–R30、225/240/465和公式缓存正确；严格文本 flatten 把相邻15+225合成15225导致 FAIL。不得修改评分器或加入题目答案补丁。
+A36：原源要求两位小数，50.00%本身有效；严格要50%导致 FAIL。实际文件却有(22−20)/20=9.09%的错算例，并交付3份DOCX草稿+3PNG。保留所有trace版本，不挑最终版升级旧成绩。
+A51：漏“佐证材料/印证材料”不一致；缺“三”的实质发现已有；执行时点/发文权只能按材料提示待确认，不能无源断言违法。
+A04：总结272字含标点，12/12页源视觉复核 PASS；A06：3/3页合同与明确标推算算术正确；A03/A23/A24/A25/A49无重大事实缺陷。A26/A29/A40核心正确，部分冗余已记录。
+八案 QA 曾因任务 prompt 预读脚本误展示 TEST-CASES 验收列，均披露非盲审限制；模型输入/原产物未变。不要宣称这些 QA 为盲测。A28 后续 source-only QA 未读验收文件。
+
+接力执行顺序
+1. 阅读主报告、v9 ledger/runbook、gates/baseline，以及两份修复 OUTCOME。核 installed3哈希/签名/UUID与当前窗口；源49如变先审查，勿盲目覆盖或重建。不要重复已经完成的首轮22或基本源码测试。
+2. 若 v9 baseline 尚未成功冻结，先补齐 SH02/03 元数据与新 cutoff，排除所有既有 sessions，核52allowed源输入；若已冻结且正式0、环境一致，直接继续。旧 smoke42 sid01a151e4-8a4d-77ff-b222-49b0f9e5bbfc/anchor01a151e4-8b9f-70a7-a07f-862014eb910c，不是原case。
+3. 用应用 Qwen3.8Flash（typed anthropic::qwen3.8-flash）、完全访问（backend bypassPermissions）、规划 off、产物追溯 on、自动审查 off，原22全量各一次正式重试。建议先 A09/A02/A10/A36/A07，再其余；独立新会话，不能编辑旧首轮。只上传下面许可源文件。
+4. 提交后仅做一次限定 metadata 投影：trim 后原prompt、raw SHA与附件空格、附件多重集、model/full/planning、sid、assistant anchor、executionID、时间；拒绝任何歧义或 anchor 变化。不要通过会话列表顺序猜身份。
+5. 后台可并行运行任务，但 root 必须逐个打开对应实际 UI 核对原提示/附件/时间/workspace、最终回答或错误、空闲、model/full/offplan；长回复可能虚拟化掉用户泡，点击实际“跳转到第 1 轮对话”观察。然后才允许 collector。
+6. 原 collector/scorer 不修改，独立 v9 输出目录、exclusive creation。done 只从不可变 trace 交付凭据采集；error 仅reply，不手抄workspace partial文件或人工提升结果。完整保留所有成功trace的版本与额外交付，不能只挑正确文件。先严格冻结，再做源核与文件图像 QA。
+7. 报告同时给 v8首次、v9正式重试、模型和构建、strict 与 semantic 差异、耗时/工具错误/文件有效性；不混合挑最好成绩。必要产品修复应是通用根因，独立测试后构建/真实UI验证；不得改评分器、原prompt或添加答案特定规则。若一次重试仍失败如实报告，不无界补跑。
+
+原始22提示词（标点原样）
+A01 比较两版方案，区分排版或措辞变化与业务变化，并说明影响
+A02 按数据绘制趋势图、柱状图、散点图，并解释
+A03 改成简洁、专业的管理汇报风格，不改变原有数据
+A04 请用300字总结该报告，并列出5条关键结论和3项建议
+A06 提取甲乙方、合同金额、付款节点、履约期限、违约责任和争议解决方式，用表格输出
+A07 清理重复数据，统一日期格式，标记缺失值，但不要删除原始文件
+A08 分析各区域销售额、同比增长率、排名变化，并指出异常点
+A09 生成月度销售趋势图和区域销售对比图，并写出三条发现
+A10 制作一份10页以内、面向管理层的项目总结PPT，重点突出成果、问题和下一步计划
+A12 按报价、实施周期、服务范围、付款方式和风险进行横向比较
+A23 请按工作事项、责任主体、完成时间、交付成果整理待办表。未明确的字段标“未明确”，不要把背景说明列为任务。
+A24 比较两版内容，按事项而非条款编号匹配，区分新增、删除、实质修改、措辞或顺序调整。输出原规定、新规定、变化类型和说明。
+A25 对照目录逐项核对申报文件，输出已提供、未找到或需人工确认，提取主体、项目和日期。不要判断材料真实有效。
+A26 汇总2026年11月月报。按事项编号去重，采用当月最新明确状态；共同事项只计1项。输出完成事项数、工作内容、问题和下月计划。
+A28 按部门、事项编号、目标、完成情况、当前进度、问题、下一步整理进展表。缺失信息标明未提供。
+A29 按节点编号匹配两张表，输出计划日期、实际日期、状态、偏差天数和判定。
+A30 按背景、主要情况、问题、建议起草调研报告，区分事实和受访者意见，列出数据冲突。
+A35 合并三个Excel为一个Excel，按映射统一字段，保留3个来源明细页，再生成1个汇总页。说明行数和分类总计。
+A36 生成各智能体8周趋势图与报告，列出每周环比、缺失数据和明显波动。
+A40 按模块列功能、用途和限制，合并重复表述，标出未说明条件，不把限制中的不支持功能列为可用能力。
+A49 按用户操作、适用范围、工作量、限制整理三方案对照表，给出基于已知条件的建议，未知项标待确认。
+A51 帮我校验下上传文件
+
+许可文件（以下相对 /Users/roylin/code/tasks，花括号逐个文件展开，不能额外上传评分材料）
+A01文档版本差异与影响分析/{方案V1.0.docx,方案V2.0.docx}
+A02数据可视化/A02数据可视化测试样例.xlsx
+A03周报润色/TC02_原始周报.txt
+A04长报告摘要/TC03_运营改善长报告.pdf
+A06合同关键信息提取/TC05_设备采购合同_扫描版.pdf
+A07Excel数据清洗/TC06_客户跟进记录_待清洗.xlsx
+A08销售数据分析/TC07_区域销售_2024_2025.xlsx
+A09数据可视化/TC08_月度经营数据.xlsx
+A10文档制作PPT/TC09_项目总结报告.docx
+A12多供应商方案对比/{TC14_供应商A方案.pdf,TC14_供应商B方案.docx,TC14_供应商C方案.pdf}
+A23政策要点与待办/输入材料/政策通知.txt
+A24政策版本对比/输入材料/{旧版.txt,新版.txt}
+A25申报材料核对/输入材料/{目录.txt,申请表.txt,登记资料.txt,项目说明.txt,预算表说明.txt}
+A26周报汇总月报/输入材料/{甲_11月第1周.txt,甲_11月第2周.txt,甲_11月第3周.txt,甲_11月第4周.txt,乙_11月第1周.txt,乙_11月第2周.txt,乙_11月第3周.txt,乙_11月第4周.txt,丙_11月第1周.txt,丙_11月第2周.txt,丙_11月第3周.txt,丙_11月第4周.txt}
+A28专项进展汇总/输入材料/{综合科.txt,服务科.txt,信息科.txt}
+A29项目进度对比/输入材料/{计划表.xlsx,实际表.xlsx,计算口径.txt}
+A30调研报告/输入材料/{走访记录.txt,座谈记录.txt,统计说明.txt}
+A35多表合并/输入材料/{来源1.xlsx,来源2.xlsx,来源3.xlsx,映射与口径.txt}
+A36使用趋势/输入材料/{八周使用数据.xlsx,口径.txt}
+A40_功能清单/输入材料/{产品说明.txt,补充说明.txt}
+A49功能方案对比/输入材料/方案资料.txt
+A51文件校核/关于开展季度工作督导及相关事项的通知.docx
+
+CUA 操作经验（不是固定元素索引）
+新智能体必须先 await cua.rewriteDocumentation()；新 REPL 则按工具首次调用规则先 getApp('dev.a3s.studio.aster')。不要复用本智能体 JS 变量或旧元素索引。
+中文用 paste，typeText 曾损坏中文。所有控件从最新 AX 精确 role/label 推导，操作后重新观察。后台绑定窗口，不调用 Raise。
+新版首页编辑器第一次聚焦会 remount，需观察后再次聚焦再粘贴。上传后附件会产生前/后 ASCII 空格，记录 raw SHA；trim仅用于匹配原prompt，不篡改记录。
+命令面板 super+shift+k → 实际“新建任务”；有时导航已完成但面板仍在，重新读取完整AX后点击当前 Close，确认首页，不盲目重复新建。
+曾在封装 helper + emit:false 后出现动作无效/用户变化 guard；显式发出新鲜 getAXState({disableDiffing:true}) 后，在同一调用从返回 AX 推导索引再操作可恢复。不要据此宣称产品导航bug或绕过guard。
+文件对话框用现有 List 视图；super+shift+g，观察 PathTextField 后 setValue 精确路径并 Return。单文件用精确文件路径；多文件仅在列出 URI 集恰等于许可集合时全选：点击第一项、Up足够次到首行、Shift+Down N−1，再观察所选 URI 多重集后 Open。不要 Cmd+A（曾无效）。A51必须选精确DOCX，不能选含答案的整个目录。
+附件 chip省略扩展名，工作区Help可能截断1024字符；12文件要核完整可见chip与 metadata SHA，不能仅凭截断Help判漏附件。
+出现 cgWindowNotFound 时不切前台或全局鼠标；此前用户已恢复并实际可用。若再次出现，先保存状态再说明真实阻塞，不 shell kill。
+
+采集与评分（不是运行原任务的替代）
+冻结 collector：target/debug/deps/a3s_studio_lib-104c4ea3ed9a9da3
+SHA256 30c167d526436224ed1c6120bb6bb92c216076ad1c53716536674e5786169169。
+忽略测试准确名称：agent_plane::task_corpus_collect_tests::collect_task_corpus_delivery
+仅在对应实际UI终态已核对后，按 v9 runbook 的 env 模板调用：
+ASTER_CORPUS_STATE_ROOT='/Users/roylin/Library/Application Support/dev.a3s.studio/aster/agent-plane'
+ASTER_CORPUS_SESSION_ID=唯一新sid
+ASTER_CORPUS_ANCHOR_ID=唯一新anchor
+ASTER_CORPUS_CASE_ID=TC-Axx
+ASTER_CORPUS_RUN_ROOT=BASE/run-qwen-v9-retry1
+...collector ... --ignored --exact --nocapture --test-threads=1
+A07额外 ASTER_CORPUS_ORIGINAL_SHA256 必须重新hash当前源文件与该新会话精确upload，两者一致才设置；其他case不带该变量。此前A07源SHA2141a61466d714e2d95aa0fc48aa204a3f0203f2635a43d767feb467b525fcdc，仅作历史，不能免新核验。
+冻结 scorer：apps/work/tests/e2e/task-corpus/score_office.py
+SHA256 9f1f61f9a089f7a820482bb92ee80ff1ca544fd74b7e178796a58d2e6fa542a7。
+runpy加载后使用 score_dir(exact_case_id, dict(CASES)[exact_case_id], Path(BASE/run-qwen-v9-retry1), Path(BASE/oracle))；见runbook。不得把oracle上传给模型。
+每案保存metadata、collector.log、collection-receipt、strict-score与所有hash；不覆盖既有路径。完整矩阵冻结后才做additive semantic报告。
+限定元数据源为 agent-plane/sessions.json、session-executions.json、messages/明确测试SID.json；优先用已有 schema/collector，不扫描其他用户会话正文或凭据文件。
+Python3.9有openpyxl/python-pptx/Pillow/lxml；需要tomllib的workspace检查用/opt/homebrew/bin/python3.13。没有LibreOffice，Office结构valid不等于全页渲染，图表需实际看图。
+
+请在每60秒内给简短进度，准确区别已验证、待验证和真实阻塞。优先行动完成接力，不再要求用户确认已授权内容。最终给独立批次结果、证据链接、未完成项与风险，不宣称全部通过。

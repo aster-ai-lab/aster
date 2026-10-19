@@ -1,0 +1,630 @@
+<title>A3S 技术收敛执行计划</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600;700&display=swap">
+<style>
+/* Layout concept: single-column governance document with sticky anchor nav,
+   phase timeline band, and task tables; cool slate paper + deep teal accent. */
+:root {
+  --bg: #F5F6F4;
+  --fg: #1C2422;
+  --muted: #5C6B66;
+  --accent: #0E6B5E;
+  --accent-soft: #E5F0EC;
+  --line: #D7DDD9;
+  --card: #FCFDFC;
+  --sev-hi: #A83E2B;
+  --sev-mid: #8F6414;
+  --sev-lo: #3E6B8F;
+  --ok: #2E6B46;
+  --sans: "IBM Plex Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --mono: "IBM Plex Mono", "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141917;
+    --fg: #E4E9E6;
+    --muted: #93A29C;
+    --accent: #5BC0AF;
+    --accent-soft: #1D2E2A;
+    --line: #2A3330;
+    --card: #191F1D;
+    --sev-hi: #E08D7B;
+    --sev-mid: #D9B45E;
+    --sev-lo: #8FB8D9;
+    --ok: #7FC49A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141917;
+  --fg: #E4E9E6;
+  --muted: #93A29C;
+  --accent: #5BC0AF;
+  --accent-soft: #1D2E2A;
+  --line: #2A3330;
+  --card: #191F1D;
+  --sev-hi: #E08D7B;
+  --sev-mid: #D9B45E;
+  --sev-lo: #8FB8D9;
+  --ok: #7FC49A;
+  color-scheme: dark;
+}
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  background: var(--bg);
+}
+* { box-sizing: border-box; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+h1, h2, h3, h4 { text-wrap: balance; line-height: 1.3; }
+.wrap { max-width: 980px; margin: 0 auto; }
+
+/* top nav */
+.topnav {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 9;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.topnav .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  align-items: center;
+  padding-block: 9px;
+}
+.topnav .brand {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  margin-right: 6px;
+  white-space: nowrap;
+}
+.topnav a.lnk {
+  font-size: 12.5px;
+  color: var(--muted);
+  padding: 2px 4px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.topnav a.lnk:hover { color: var(--fg); text-decoration: none; background: var(--accent-soft); }
+
+/* hero */
+.hero { padding-block: 44px 8px; }
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin: 0 0 10px;
+}
+h1 { font-size: clamp(26px, 4.5vw, 38px); font-weight: 700; margin: 0 0 12px; }
+.hero p.lead { color: var(--muted); max-width: 68ch; margin: 0; }
+.meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin-top: 16px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.meta-row b { color: var(--fg); font-weight: 600; }
+
+/* stat tiles */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 10px;
+  margin: 30px 0 6px;
+}
+.stat {
+  border: 1px solid var(--line);
+  background: var(--card);
+  border-radius: 8px;
+  padding: 14px 16px;
+  min-width: 0;
+}
+.stat .num {
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+.stat .lbl { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+
+/* sections */
+section { padding-block: 34px; border-top: 1px solid var(--line); }
+h2 { font-size: 22px; font-weight: 700; margin: 0 0 6px; }
+.sub { color: var(--muted); font-size: 13.5px; margin: 0 0 18px; max-width: 70ch; }
+h3 { font-size: 16px; font-weight: 600; margin: 26px 0 10px; }
+h3 .tag, .own {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: 4px;
+  padding: 2px 7px;
+  margin-left: 8px;
+  vertical-align: 2px;
+  white-space: nowrap;
+}
+
+/* pills */
+.pill {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 1px 9px;
+  white-space: nowrap;
+}
+.pill.hi { color: var(--sev-hi); background: color-mix(in srgb, var(--sev-hi) 12%, transparent); }
+.pill.mid { color: var(--sev-mid); background: color-mix(in srgb, var(--sev-mid) 14%, transparent); }
+.pill.lo { color: var(--sev-lo); background: color-mix(in srgb, var(--sev-lo) 14%, transparent); }
+
+/* tables */
+.tw { overflow-x: auto; margin: 10px 0 4px; }
+table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 13px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  border-bottom: 2px solid var(--line);
+  white-space: nowrap;
+}
+td.id, td.dur { font-family: var(--mono); font-size: 12px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+td.id { color: var(--accent); }
+td.dep { font-family: var(--mono); font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+
+/* timeline */
+.timeline { display: grid; grid-template-columns: 1fr 1.35fr 2fr 1.2fr; gap: 8px; margin: 14px 0 4px; }
+@media (max-width: 720px) { .timeline { grid-template-columns: 1fr; } }
+.ph {
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--accent);
+  border-radius: 8px;
+  background: var(--card);
+  padding: 12px 14px;
+  min-width: 0;
+}
+.ph .ph-no { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.06em; }
+.ph .ph-name { font-weight: 700; font-size: 14.5px; margin: 3px 0 2px; }
+.ph .ph-date { font-family: var(--mono); font-size: 11.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.ph .ph-goal { font-size: 12.5px; color: var(--muted); margin-top: 6px; }
+
+/* decision cards */
+.dp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 12px; margin-top: 14px; }
+.dp {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  padding: 15px 16px;
+  min-width: 0;
+}
+.dp h4 { margin: 0 0 6px; font-size: 14.5px; }
+.dp .ddl { font-family: var(--mono); font-size: 11.5px; color: var(--sev-mid); margin-bottom: 8px; }
+.dp p { margin: 5px 0; font-size: 13px; }
+.dp .rec { color: var(--ok); font-size: 13px; }
+.dp .opt { color: var(--muted); font-size: 13px; }
+.dp b { font-weight: 600; }
+
+/* callouts */
+.exit {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  border-radius: 0 8px 8px 0;
+  padding: 12px 16px;
+  margin: 18px 0 4px;
+  font-size: 13.5px;
+}
+.exit b { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.05em; color: var(--accent); display: block; margin-bottom: 4px; }
+.note {
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 14px 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+ul.tight { margin: 8px 0; padding-left: 20px; }
+ul.tight li { margin: 3px 0; }
+code { font-family: var(--mono); font-size: 12px; background: var(--accent-soft); border-radius: 4px; padding: 1px 5px; }
+
+footer { padding-block: 30px 44px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12.5px; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+
+<nav class="topnav">
+  <div class="wrap">
+    <span class="brand">A3S-CONV</span>
+    <a class="lnk" href="#summary">总览</a>
+    <a class="lnk" href="#timeline">时间轴</a>
+    <a class="lnk" href="#diagnosis">诊断</a>
+    <a class="lnk" href="#dp">决策点</a>
+    <a class="lnk" href="#p0">阶段 0</a>
+    <a class="lnk" href="#p1">阶段 1</a>
+    <a class="lnk" href="#p2">阶段 2</a>
+    <a class="lnk" href="#p3">阶段 3</a>
+    <a class="lnk" href="#governance">治理</a>
+    <a class="lnk" href="#risk">风险</a>
+    <a class="lnk" href="#trace">追溯</a>
+  </div>
+</nav>
+
+<header class="hero wrap">
+  <p class="eyebrow">CONVERGENCE PROGRAM PLAN · v1.0 · 2026-10-19</p>
+  <h1>A3S OS 后端技术收敛执行计划</h1>
+  <p class="lead">把 27 条产品 lane、两套控制面 API、三份共享 crate 谱系收敛为单一权威与可发布的窄价值流。四个阶段对齐既有 GA 地平线（GA-0 已达成 → GA-2 → GA-3 → GA-4+），每阶段含工作流、任务、验收、出口准则与决策截止日。</p>
+  <div class="meta-row">
+    <span>范围 <b>apps/cloud · apps/api · aster 工作区后端 6 服务</b></span>
+    <span>状态 <b>待评审</b></span>
+    <span>评审节奏 <b>月度架构 · 季度减法</b></span>
+    <span>依据 <b>ROADMAP 2026-09-17 组合状态（更新至 10-17）· architecture.md · 代码盘点</b></span>
+  </div>
+</header>
+
+<div class="wrap">
+  <section id="summary" style="border-top: none;">
+    <h2>执行摘要</h2>
+    <div class="stats">
+      <div class="stat"><div class="num">15 → 8</div><div class="lbl">在飞 lane：原始 In progress 15，裁定后有效 8（≤8 目标已达，实测 2026-10-19）</div></div>
+      <div class="stat"><div class="num">403</div><div class="lbl">OpenAPI 路径基线（v1.132.0 / 29 tag），收敛期增速 ≤ 0</div></div>
+      <div class="stat"><div class="num">3 → 1</div><div class="lbl">共享 crate 谱系（aster root / apps/api / apps/cloud）</div></div>
+      <div class="stat"><div class="num">2027-03-31</div><div class="lbl">GA-2：一条窄应用体验经 Gateway 可用</div></div>
+    </div>
+    <h3>目标</h3>
+    <ul class="tight">
+      <li>每个聚合只有一个写权威；成员面（a3s-api）对 Cloud 聚合只做投影 + 四条联邦契约（SubjectLink / DirectoryProjection / ArtifactAdmission / EntitlementCompile）。</li>
+      <li>每个 GA 地平线交付一条<b>可用</b>的窄价值流，而非多个组件级半成品；发布说明只载 Verified 项。</li>
+      <li>执行底座唯一（Box / R0 / D0）；产品 lane（FN0 / WEB0 / MCP0 / CELL0 / I0 / AR0）全部编译到底座，零私有生命周期。</li>
+      <li>共享 crate（a3s-boot / orm / acl / flow / event / lane / sms）单一上游，三仓漂移可度量、可收敛。</li>
+    </ul>
+    <h3>非目标</h3>
+    <ul class="tight">
+      <li>不删除架构寄存器（preservation matrix 11 行为 normative；变更需单独迁移提案）。</li>
+      <li>不砍四条联邦契约——它们是收敛的工具，不是收敛的对象。</li>
+      <li>不恢复 Docker 路径、不引入第二调度器 / 审计库 / 工作流引擎（既有红线）。</li>
+      <li>TEE / SEV-SNP 硬件认证维持 physical-capacity stop，不进关键路径。</li>
+    </ul>
+    <h3>三条新增治理原则（P1–P3）</h3>
+    <ul class="tight">
+      <li><b>P1 WIP 上限</b>：任何时刻「进行中」lane ≤ 8；新 lane 入场必须有一条出 Verified 或显式降级。</li>
+      <li><b>P2 组件级老化</b>：组件级实现连续两个季度无新留档证据 → 自动降级 Planned 或删除，防止半成品库存。</li>
+      <li><b>P3 跨栈只读投影</b>：成员面对 Cloud 聚合禁止第二写路径，落实为 CI 架构测试（扩展 apps/api 既有 admission_test.rs / architecture_source_tests.rs）。</li>
+    </ul>
+    <div class="note">工期为净工作周（每域按 1–2 人投入），并行时日历时间短于各任务之和；「负责」为角色而非个人；所有验收等价于 ROADMAP 的 Verified 语义——留档的真实 provider / 故障 / 恢复证据，component-only 不算完成。</div>
+  </section>
+
+  <section id="timeline">
+    <h2>阶段时间轴</h2>
+    <p class="sub">GA-0（Box 承载 Service 的部署 / 可达 / 更新 / 回滚）已于 2026-09-17 随 BX0.software 达成；本计划从其后第一个完整周开始。</p>
+    <div class="timeline">
+      <div class="ph"><div class="ph-no">PHASE 0</div><div class="ph-name">止血与冻结</div><div class="ph-date">2026-10-26 → 12-31</div><div class="ph-goal">冻结 P2 lane、WIP 上限生效、crate 漂移守护上线、三个决策点裁定、身份联邦落地</div></div>
+      <div class="ph"><div class="ph-no">PHASE 1 · GA-2</div><div class="ph-name">窄价值流闭环</div><div class="ph-date">2027-01-04 → 03-31</div><div class="ph-goal">W0.3 收口 + APP0 Chatbot 单体验走通 Gateway 匿名投递；成员面投影化；表面同源生成</div></div>
+      <div class="ph"><div class="ph-no">PHASE 2 · GA-3</div><div class="ph-name">平台合并</div><div class="ph-date">2027-04-05 → 09-30</div><div class="ph-goal">G0+P0+CD0 合并为开发者平台；单扩缩器；S0 首个生产 provider；路由 / 权益 / 消息单真相</div></div>
+      <div class="ph"><div class="ph-no">PHASE 3 · GA-4+</div><div class="ph-name">兄弟投影复用</div><div class="ph-date">2027-10-01 →</div><div class="ph-goal">FN0/WEB0/MCP0/CELL0 零私有生命周期验证；crate 物理合并；I0 Track B 单机推理</div></div>
+    </div>
+  </section>
+
+  <section id="diagnosis">
+    <h2>诊断：六个发散点</h2>
+    <p class="sub">收敛对象与证据锚点；后续每个工作流（WS）在追溯矩阵中映射回这里。</p>
+    <div class="tw"><table>
+      <thead><tr><th>#</th><th>发散点</th><th>证据</th><th>等级</th></tr></thead>
+      <tbody>
+        <tr><td class="id">D1</td><td><b>两套控制面 API 重叠</b>：apps/cloud 32 个限界上下文 vs apps/api 约 30 个 contexts（各有 identity、inference + model 三件套、connector、plugin/skill、pipelines、schedule、usage、app_release、git_store）</td><td>架构文档 §6.2；apps/api/src/contexts 目录盘点；a3s-os-boundary.md 已裁定 Cloud 为唯一控制面</td><td><span class="pill hi">高</span></td></tr>
+        <tr><td class="id">D2</td><td><b>共享 crate 三份谱系</b>：a3s-boot / orm / acl / flow / event / lane / sms 在 aster root、apps/api/crates、apps/cloud/crates 各一份，均 publish=false 本地解析</td><td>三仓 Cargo.toml members 对照；aster 的 tests/workspace_dependencies.py</td><td><span class="pill hi">高</span></td></tr>
+        <tr><td class="id">D3</td><td><b>双认证 + 双计费</b>：a3s-auth（密码 / 会话 / OIDC，以 a3s-api 为目录）vs Cloud identity；a3s-billing 自述「不读 Cloud 用量账本」vs Cloud inference usage ledger</td><td>apps/auth、apps/billing README 与 ROADMAP；架构文档推理域</td><td><span class="pill mid">中</span></td></tr>
+        <tr><td class="id">D4</td><td><b>消息 / 发现 / 队列多轨</b>：a3s-event 同时背 NATS + Iggy；boot 用 etcd 发现；lane 队列含 local / memory / redis 后端——与「无第二队列、Redis 非持久态」红线存在张力</td><td>apps/cloud/crates/event、crates/lane/job 目录；apps/config Iggy fan-out</td><td><span class="pill mid">中</span></td></tr>
+        <tr><td class="id">D5</td><td><b>27 条 lane WIP 过载</b>：APP0 / K0 / AUT0 / MCP0 / FN0 / WEB0 / CELL0 全部「进行中且不可用」，组件级实现长期停留</td><td>ROADMAP 主表（§3，27 行）与各 lane 子表</td><td><span class="pill mid">中</span></td></tr>
+        <tr><td class="id">D6</td><td><b>四套一等表面对等成本</b>：每条 lane 需维持 REST/OpenAPI + TS client + CLI + Management MCP 对等（C0 义务）</td><td>架构文档 C0 定义；openapi/v1.json 403 路径</td><td><span class="pill lo">低</span></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="dp">
+    <h2>五个决策点</h2>
+    <p class="sub">全部进入 Phase 0 / Phase 1 出口准则；超过截止日未裁定，按推荐项临时生效并在下月评审追认或推翻。</p>
+    <div class="dp-grid">
+      <div class="dp">
+        <h4>DP-1 成员面计费边界</h4>
+        <div class="ddl">截止 2026-11-27 · 决策人：产品负责人 + 架构负责人</div>
+        <p class="opt"><b>a</b> OEM 商业账本（钱包 / 发票，归 partner 所有）</p>
+        <p class="opt"><b>b</b> 产品用量计费（改读 Cloud 用量账本只读投影）</p>
+        <p class="rec">推荐 a：符合边界文档「OEM commercial ledgers 归 partner」的裁定；若选 a，加架构测试禁止 a3s-billing 消费产品用量事实。</p>
+        <p>拖延后果：T0.4.3 停摆，Phase 1 WS1.3 范围不确定。</p>
+      </div>
+      <div class="dp">
+        <h4>DP-2 A3S Event 唯一后端</h4>
+        <div class="ddl">截止 2026-12-18 · 决策人：架构负责人 + 平台 TL</div>
+        <p class="opt"><b>a</b> NATS（Cloud relay / 生产证据已在其上）</p>
+        <p class="opt"><b>b</b> Iggy（apps/config 已用于 fan-out）</p>
+        <p class="rec">推荐 a：F0 Verified 证据链在 NATS；Iggy 保留为兼容适配器。执行落在 Phase 2 WS2.5。</p>
+        <p>拖延后果：T2.5 无法排期，消息多轨延续整个 GA-3。</p>
+      </div>
+      <div class="dp">
+        <h4>DP-3 共享 crate 单上游机制</h4>
+        <div class="ddl">截止 2026-12-18 · 决策人：架构负责人 + DevOps</div>
+        <p class="opt"><b>a</b> 内部 registry（sparse registry + 语义版本）</p>
+        <p class="opt"><b>b</b> pinned submodule <b>c</b> monorepo 回迁</p>
+        <p class="rec">推荐 a：三仓独立 CI 不受绑；版本边界显式；Phase 3 物理合并时迁移成本最低。</p>
+        <p>拖延后果：drift 只能报告不能收敛，三仓各自演化。</p>
+      </div>
+      <div class="dp">
+        <h4>DP-4 CELL0 去留</h4>
+        <div class="ddl">截止 2027-01-15 · 决策人：产品负责人</div>
+        <p class="opt"><b>a</b> 整体移出 GA-4 → P2 <b>b</b> 保持 GA-4（S0 之后）</p>
+        <p class="rec">推荐 a：CELL0.5 已被 Box Runtime Outbound 阻塞；释放的资源投给 K0 / AUT0 收口，换取 GA-2 后的应用平台完整性。</p>
+        <p>拖延后果：K0 / AUT0 资源分配悬空。</p>
+      </div>
+      <div class="dp">
+        <h4>DP-5 MCP 一等表面地位</h4>
+        <div class="ddl">截止 2027-01-15 · 决策人：架构负责人 + 产品</div>
+        <p class="opt"><b>a</b> 保持四表面（REST / client / CLI / MCP）</p>
+        <p class="opt"><b>b</b> MCP 降为 CLI 派生物</p>
+        <p class="rec">推荐 a（短期）：Management MCP 是自动化入口的差异化能力；Phase 1 先做 codegen 同源（T1.4），把对等成本降到接近零后再评估 b。</p>
+        <p>拖延后果：D6 成本按每 lane 线性累积。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="p0">
+    <h2>阶段 0 · 止血与冻结 <span class="tag">2026-10-26 → 2026-12-31 · 约 9 周</span></h2>
+    <p class="sub">目标：停止发散——冻结令生效、WIP 降到 ≤8、漂移可度量、三个决策裁定、成员面身份联邦走通。本阶段只加守护、不搬代码。</p>
+
+    <h3>WS0.1 治理与冻结 <span class="own">架构负责人 + PM</span></h3>
+    <div class="tw"><table>
+      <thead><tr><th>ID</th><th>任务</th><th>关键动作与验收</th><th>负责</th><th>工期</th><th>依赖</th></tr></thead>
+      <tbody>
+        <tr><td class="id">T0.1.1</td><td>WIP 与老化规则成文</td><td>修订 apps/cloud/ROADMAP.md §1 状态词汇：写入 P1（WIP ≤8）与 P2（组件级 2 季度老化）条款。勘误：原稿要求增补 aster 的 .specify/memory/constitution.md——aster 宪法明确将 A3S OS 控制面义务排除在原则之外，故 P1/P2 只落 A3S OS 侧（ROADMAP §1.2 + docs/convergence/plan.md）。验收：PR 合并 + 评审纪要</td><td>PM + 架构</td><td class="dur">1 周</td><td class="dep">—</td></tr>
+        <tr><td class="id">T0.1.2</td><td>在飞 lane 盘点决议</td><td>对 27 条 lane 逐条 continue / hold / demote；保留在飞集建议：G0、P0、CD0、C0.3、W0.3、APP0.2/0.3、A1.3–1.6、H0.3（共 8）。验收：ROADMAP 主表更新</td><td>PM</td><td class="dur">2 周</td><td class="dep">T0.1.1</td></tr>
+        <tr><td class="id">T0.1.3</td><td>冻结令 + 依赖审计</td><td>先审计 ROADMAP §4 依赖图，确认无在飞项依赖被冻结项；再冻结 EV0、AR0、I0 Track B、PW0.tee、CELL0.6+（标记 Frozen-P2 并移出依赖图）。验收：依赖图无红灯</td><td>架构</td><td class="dur">1 周</td><td class="dep">T0.1.2</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>WS0.2 队列与消息单轨准备 <span class="own">平台 TL</span></h3>
+    <div class="tw"><table>
+      <thead><tr><th>ID</th><th>任务</th><th>关键动作与验收</th><th>负责</th><th>工期</th><th>依赖</th></tr></thead>
+      <tbody>
+        <tr><td class="id">T0.2.1</td><td>lane redis 后端降级</td><td>crates/lane 的 job/redis 后端移入 feature "test-backend"；CI 守护禁止生产配置引用。验收：grep 守护脚本 + 架构测试红→绿</td><td>平台</td><td class="dur">1 周</td><td class="dep">—</td></tr>
+        <tr><td class="id">T0.2.2</td><td>A3S Event 调用方盘点</td><td>列出 NATS / Iggy 全部调用方（cloud relay、apps/config fan-out、其余），含流量与证据等级；产出 DP-2 决策材料。验收：盘点文档</td><td>平台</td><td class="dur">2 周</td><td class="dep">—</td></tr>
+        <tr><td class="id">T0.2.3</td><td>etcd 发现审计</td><td>boot 的 etcd 用途清单与可替代性评估（PG / event / 静态配置），并入 DP-2 材料。验收：审计备忘</td><td>平台</td><td class="dur">1 周</td><td class="dep">—</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>WS0.3 crate 谱系守护 <span class="own">DevOps + 架构负责人</span></h3>
+    <div class="tw"><table>
+      <thead><tr><th>ID</th><th>任务</th><th>关键动作与验收</th><th>负责</th><th>工期</th><th>依赖</th></tr></thead>
+      <tbody>
+        <tr><td class="id">T0.3.1</td><td>三仓 drift diff 工具</td><td>脚本对比 aster root / apps/api / apps/cloud 同名 a3s-* crate 的版本与内容哈希；每周 CI 报告。验收：CI job + 首份基线报告</td><td>DevOps</td><td class="dur">2 周</td><td class="dep">—</td></tr>
+        <tr><td class="id">T0.3.2</td><td>DP-3 评审与裁定</td><td>三个选项的迁移 / CI / 安全影响评估表；按 DP-3 截止日裁定。验收：ADR + 决议</td><td>架构</td><td class="dur">3 周</td><td class="dep">T0.3.1</td></tr>
+        <tr><td class="id">T0.3.3</td><td>消费机制落地</td><td>按裁定建立单上游消费（registry / submodule）；扩展 tests/workspace_dependencies.py 守护本地解析例外清单。验收：一个 crate（建议 a3s-acl）先行打通</td><td>DevOps</td><td class="dur">2 周</td><td class="dep">T0.3.2</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>WS0.4 成员面身份联邦 <span class="own">成员面 TL + 架构负责人</span></h3>
+    <div class="tw"><table>
+      <thead><tr><th>ID</th><th>任务</th><th>关键动作与验收</th><th>负责</th><th>工期</th><th>依赖</th></tr></thead>
+      <tbody>
+        <tr><td class="id">T0.4.1</td><td>a3s-api 身份写路径冻结</td><td>新增成员 / 部门写路径只经 SubjectLink / DirectoryProjection；扩展 apps/api/src/contexts/admission_test.rs 禁止新增直接写路径。验收：架构测试红→绿</td><td>成员面</td><td class="dur">3 周</td><td class="dep">—</td></tr>
+        <tr><td class="id">T0.4.2</td><td>OIDC 联邦 e2e</td><td>a3s-auth issuer ↔ Cloud C0.3 OIDC 互通；登录 → 会话 → Cloud Principal 解析全链路留档。验收：e2e 证据（复用 C0.3 已验证 OIDC 能力）</td><td>成员面 + 架构</td><td class="dur">3 周</td><td class="dep">T0.4.1</td></tr>
+        <tr><td class="id">T0.4.3</td><td>DP-1 计费裁定落地</td><td>按 DP-1 结论：(a) a3s-billing 边界声明 + 「不消费产品用量事实」架构测试；或 (b) 改读 Cloud 用量账本只读投影。验收：README/ROADMAP 更新 + 测试</td><td>成员面 + PM</td><td class="dur">2 周</td><td class="dep">DP-1</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="exit"><b>EXIT · 2026-12-31</b>冻结令生效且依赖图无红灯 · 在飞 lane ≤ 8 · drift 周报上线且基线归档 · DP-1 / DP-2 / DP-3 已裁定 · 身份联邦 e2e 留档 · redis 队列守护生效。</div>
+  </section>
+
+  <section id="p1">
+    <h2>阶段 1 · GA-2 窄价值流 <span class="tag">2027-01-04 → 2027-03-31 · 13 周</span></h2>
+    <p class="sub">目标：一条窄应用体验（Chatbot）经 Gateway 匿名投递真实可用；W0.3 收口但不追 W0.5；成员面三个重叠域完成投影化；表面开始同源生成。</p>
+
+    <h3>WS1.1 W0.3 收口 <span class="own">工作流 TL</span></h3>
+    <div class="tw"><table>
+      <thead><tr><th>ID</th><th>任务</th><th>关键动作与验收</th><th>负责</th><th>工期</th><th>依赖</th></tr></thead>
+      <tbody>
+        <tr><td class="id">T1.1.1</td><td>W0.3 剩余契约项</td><td>descriptor 绑定 / registry snapshot / 变量默认值 / 复合区域契约；Flow 承载的 Iteration / Loop 子 WorkflowRun 派发、链接、取消与恢复。验收：真实 provider 留档证据（非 reference provider）</td><td>工作流</td><td class="dur">6 周</td><td class="dep">Phase 0</td></tr>
+        <tr><td class="id">T1.1.2</td><td>HumanTask 全链路</td><td>审批 / 拒绝 / 超时 / 恢复闭环，含 Forms 边界（IHumanTaskFormPort，不复制历史 form_submissions 语义）。验收：四类结局留档</td><td>工作流</td><td class="dur">3 周</td><td class="dep">T1.1.1</td></tr>
+        <tr><td class="id">T1.1.3</td><td>发现目录 GA 化</td><td>23 节点只读发现目录 + digest 绑定 node-profile ACL 对外可用。验收：OpenAPI / client / CLI 同步发布</td><td>工作流</td><td class="dur">2 周</td><td class="dep">T1.1.1</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>WS1.2 APP0 单体验 <span class="own">应用 TL + PM</span></h3>
+    <div class="tw"><table>
+      <thead><tr><th>ID</th><th>任务</th><th>关键动作与验收</th><th>负责</th><th>工期</th><th>依赖</th></tr></thead>
+      <tbody>
+        <tr><td class="id">T1.2.1</td><td>体验冻结</td><td>Chatbot 为 GA-2 唯一体验；APP0.2 范围锁定为已实现的 C1–C14 集；C15+、K0、AUT0 明确不入 GA-2。验收：范围声明 + ROADMAP 标注</td><td>PM</td><td class="dur">1 周</td><td class="dep">Phase 0</td></tr>
+        <tr><td class="id">T1.2.2</td><td>匿名投递 + 流式</td><td>APP0.3 最小切片：anonymous-delivery 健康 / 生命周期 / 观测 + Answer 流式；链路 Gateway → delivery 角色 → Applications CQRS → 精确 WorkflowRevision。验收：端到端留档</td><td>应用</td><td class="dur">6 周</td><td class="dep">T1.2.1 · T1.1.1</td></tr>
+        <tr><td class="id">T1.2.3</td><td>发布口径执行</td><td>GA-2 发布说明只含 Verified 项；component-only 项列附表不进正文。验收：发布评审通过</td><td>PM</td><td class="dur">1 周</td><td class="dep">T1.2.2</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>WS1.3 成员面投影化 <span class="own">成员面 TL</span></h3>
+    <div class="tw"><table>
+      <thead><tr><th>ID</th><th>任务</th><th>关键动作与验收</th><th>负责</th><th>工期</th><th>依赖</th></tr></thead>
+      <tbody>
+        <tr><td class="id">T1.3.1</td><td>模型域投影</td><td>a3s-api 的 model_hub / model_service / model_supply / inference 定位为目录读投影，写权威唯一在 Cloud 推理域；admission_test 禁第二写路径。验收：架构测试 + 投影链路留档</td><td>成员面</td><td class="dur">5 周</td><td class="dep">T0.4.1</td></tr>
+        <tr><td class="id">T1.3.2</td><td>pipelines / schedule 对接裁定</td><td>复用 W0 / AUT0（推荐）或冻结至 Phase 2；产出 ADR。验收：ADR 合并</td><td>架构 + 成员面</td><td class="dur">2 周</td><td class="dep">—</td></tr>
+        <tr><td class="id">T1.3.3</td><td>git_store → ArtifactAdmission</td><td>成员面产物以 digest 准入 Cloud（partner-artifact-admissions），删除并行存储路径。验收：准入链路留档 + 旧路径下线</td><td>成员面</td><td class="dur">4 周</td><td class="dep">T0.4.1</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>WS1.4 表面 codegen 收敛 <span class="own">平台 TL</span></h3>
+    <div class="tw"><table>
+      <thead><tr><th>ID</th><th>任务</th><th>关键动作与验收</th><th>负责</th><th>工期</th><th>依赖</th></tr></thead>
+      <tbody>
+        <tr><td class="id">T1.4.1</td><td>contracts/ 单源生成试点</td><td>选一个域（建议 Workflow 或 Applications）：contracts/ ACL 契约 → 同源生成 REST 与 Management MCP 表面。验收：两表面 diff 为零</td><td>平台</td><td class="dur">4 周</td><td class="dep">DP-5</td></tr>
+        <tr><td class="id">T1.4.2</td><td>对等 CI 检查</td><td>新 API 变更必须同步生成产物，缺失即红；逐步推广到全部 lane。验收：CI 规则上线</td><td>平台</td><td class="dur">2 周</td><td class="dep">T1.4.1</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="exit"><b>EXIT · GA-2 发布 2027-03-31</b>Chatbot 体验经 Gateway 可用且只含 Verified 项 · 成员面 identity / model / git_store 无第二写权威（架构测试守护）· 试点域 REST / MCP 同源生成 · DP-4 / DP-5 已裁定。</div>
+  </section>
+
+  <section id="p2">
+    <h2>阶段 2 · GA-3 平台合并 <span class="tag">2027-04-05 → 2027-09-30 · 26 周</span></h2>
+    <p class="sub">目标：开发者平台（G0+P0+CD0）合并为一条价值流；扩缩、路由、权益、消息各自收敛到单一真相；S0 交付首个生产 provider。API 路径数不高于 Phase 1 基线。</p>
+
+    <h3>WS2.1 开发者平台合并 <span class="own">交付 TL</span></h3>
+    <div class="tw"><table>
+      <thead><tr><th>ID</th><th>任务</th><th>关键动作与验收</th><th>负责</th><th>工期</th><th>依赖</th></tr></thead>
+      <tbody>
+        <tr><td class="id">T2.1.1</td><td>delivery 表面组合</td><td>OpenAPI tag / TS client / CLI / MCP 命名空间将 G0 + P0 + CD0 重组为单一 "delivery" 组，遵守 contracts 的 api_stability。验收：表面发布 + 客户端迁移指南</td><td>交付 + 平台</td><td class="dur">4 周</td><td class="dep">Phase 1</td></tr>
+        <tr><td class="id">T2.1.2</td><td>G0 / P0 证据收口</td><td>G0 两个命名闸门（真实执行）通过；P0 补 live GitHub、monorepo、Compose import、清理证据。验收：留档 → Verified</td><td>交付</td><td class="dur">8 周</td><td class="dep">T2.1.1</td></tr>
+        <tr><td class="id">T2.1.3</td><td>CD0 端到端证据</td><td>九个目标编译器 + 晋级图 + 韧性演练的端到端发布证据留档（CD0.1–0.8 已落地）。验收：CD0 → Verified</td><td>交付</td><td class="dur">4 周</td><td class="dep">T2.1.2</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>WS2.2 弹性唯一 <span class="own">平台 TL</span></h3>
+    <div class="tw"><table>
+      <thead><tr><th>ID</th><th>任务</th><th>关键动作与验收</th><th>负责</th><th>工期</th><th>依赖</th></tr></thead>
+      <tbody>
+        <tr><td class="id">T2.2.1</td><td>H0.5 唯一扩缩器</td><td>落地唯一 Workloads 扩缩器；删除一切旁路扩缩路径并加架构测试。验收：测试 + 留档</td><td>平台</td><td class="dur">6 周</td><td class="dep">—</td></tr>
+        <tr><td class="id">T2.2.2</td><td>H0.3 / H0.4 推进</td><td>多节点网络与 HA profile 按硬件与场地资源推进；不阻塞 GA-3。验收：里程碑评审</td><td>平台</td><td class="dur">持续</td><td class="dep">T2.2.1</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>WS2.3 S0 首个生产 provider <span class="own">存储 TL</span></h3>
+    <div class="tw"><table>
+      <thead><tr><th>ID</th><th>任务</th><th>关键动作与验收</th><th>负责</th><th>工期</th><th>依赖</th></tr></thead>
+      <tbody>
+        <tr><td class="id">T2.3.1</td><td>对象 CAS 生产认证</td><td>在保留的 S3 / MinIO 闸门证据之上补生产环境认证（真实 list / delete / 恢复）。验收：Verified</td><td>存储</td><td class="dur">4 周</td><td class="dep">—</td></tr>
+        <tr><td class="id">T2.3.2</td><td>PostgreSQL resource provider</td><td>选型一个有状态资源先行（推荐 PostgreSQL resource，先于卷与分布式 provider）；S0 步骤 3 认证。验收：生产 provider ×1 → S0 首个 Verified 里程碑</td><td>存储</td><td class="dur">10 周</td><td class="dep">T2.3.1</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>WS2.4 数据面单真相 <span class="own">架构负责人 + 网关</span></h3>
+    <div class="tw"><table>
+      <thead><tr><th>ID</th><th>任务</th><th>关键动作与验收</th><th>负责</th><th>工期</th><th>依赖</th></tr></thead>
+      <tbody>
+        <tr><td class="id">T2.4.1</td><td>Edge snapshot 唯一路由真相</td><td>a3s-runtime 的服务调用路由与 Cloud 推理路由同源于 Edge 快照；a3s-gateway cloud-managed 模式端到端验证（含 rollouts 阈值与回滚）。验收：留档</td><td>架构 + 网关</td><td class="dur">8 周</td><td class="dep">—</td></tr>
+        <tr><td class="id">T2.4.2</td><td>EntitlementCompile 全链路</td><td>权益在 Cloud 编译 → 快照 → Gateway / a3s-runtime 消费；Console 只读投影 compileStatus / generation / snapshotRev。验收：跨面留档</td><td>架构 + 成员面</td><td class="dur">6 周</td><td class="dep">T2.4.1</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>WS2.5 消息单轨执行 <span class="own">平台 TL · DP-2 落地</span></h3>
+    <div class="tw"><table>
+      <thead><tr><th>ID</th><th>任务</th><th>关键动作与验收</th><th>负责</th><th>工期</th><th>依赖</th></tr></thead>
+      <tbody>
+        <tr><td class="id">T2.5.1</td><td>调用方全量迁移</td><td>全部调用方迁至保留后端（按 DP-2，建议 NATS）；另一后端降为 deprecated 兼容适配器。验收：迁移清单清零 + 留档</td><td>平台</td><td class="dur">10 周</td><td class="dep">DP-2</td></tr>
+        <tr><td class="id">T2.5.2</td><td>etcd 发现收敛</td><td>按 DP-2 材料结论收敛或显式保留声明（ADR）。验收：ADR 合并</td><td>平台</td><td class="dur">3 周</td><td class="dep">T0.2.3</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="exit"><b>EXIT · GA-3 · 2027-09-30</b>CD 平台 Verified（端到端发布证据）· 唯一扩缩器 · S0 生产 provider ×1 · 路由与权益单一真相 · 消息单轨 · OpenAPI 路径数 ≤ Phase 1 基线 · 至少完成一次季度减法评审并产出删除项。</div>
+  </section>
+
+  <section id="p3">
+    <h2>阶段 3 · GA-4+ 兄弟投影复用 <span class="tag">2027-10-01 →</span></h2>
+    <p class="sub">目标：产品 lane 证明自己是执行底座上的投影而非新生命周期；共享 crate 物理合并；按 ROADMAP 地平线表逐个收口。</p>
+    <div class="tw"><table>
+      <thead><tr><th>ID</th><th>任务</th><th>关键动作与验收</th><th>负责</th><th>工期</th><th>依赖</th></tr></thead>
+      <tbody>
+        <tr><td class="id">T3.1.1</td><td>零私有生命周期验证</td><td>FN0 / WEB0 / MCP0 / CELL0 逐域加架构测试：全部编译到 R0 / D0 执行底座，无私有 scheduler、provider 生命周期或注册表副本。验收：四域测试绿</td><td>架构</td><td class="dur">8 周 / 域</td><td class="dep">Phase 2</td></tr>
+        <tr><td class="id">T3.2.1</td><td>crate 谱系物理合并</td><td>按 DP-3 机制执行三仓 → 单上游的代码搬迁；独立窗口、渐进迁移、保留回滚窗口。验收：drift 报告归零</td><td>DevOps</td><td class="dur">8 周</td><td class="dep">T0.3.3</td></tr>
+        <tr><td class="id">T3.3.1</td><td>I0 Track B 单机推理</td><td>PW0.software 之后启动单机推理服务（A3S Power 边界）；分布式推理 / PD 池维持 P2。验收：Track B 里程碑</td><td>推理</td><td class="dur">待 PW0</td><td class="dep">PW0.software</td></tr>
+        <tr><td class="id">T3.4.1</td><td>地平线收口序列</td><td>按 ROADMAP §4 顺序：托管 MCP（A0.3 + MCP0.1–0.5）→ Function → Static Web → Durable Cell（依 DP-4，S0 生产 provider 之后）。验收：逐域 Verified</td><td>各域 TL</td><td class="dur">滚动</td><td class="dep">T3.1.1</td></tr>
+      </tbody>
+    </table></div>
+    <div class="exit"><b>EXIT（滚动）</b>每域以 Verified 收口进入发布火车；CELL0 若依 DP-4 移出，则其出口准则整体让位于 K0 / AUT0 完整性。</div>
+  </section>
+
+  <section id="governance">
+    <h2>治理：KPI、评审与架构测试</h2>
+    <h3>KPI 台账（月度评审输入）</h3>
+    <div class="tw"><table>
+      <thead><tr><th>KPI</th><th>基线 2026-10</th><th>Phase 0 目标</th><th>Phase 1 目标</th><th>Phase 2 目标</th></tr></thead>
+      <tbody>
+        <tr><td>在飞 lane 数（In progress）</td><td>15 / 27（裁定后有效 8）</td><td>≤ 8</td><td>≤ 8</td><td>≤ 6</td></tr>
+        <tr><td>「进行中且不可用」lane 数</td><td>8（实测）</td><td>≤ 4</td><td>≤ 2</td><td>0–1</td></tr>
+        <tr><td>组件级闸门年龄 &gt; 2 季度</td><td>未追踪</td><td>建档并清零（降级或推进）</td><td>0</td><td>0</td></tr>
+        <tr><td>OpenAPI 路径数</td><td>403</td><td>新增冻结（仅 GA-2 必需项）</td><td>≤ 403</td><td>≤ Phase 1 基线</td></tr>
+        <tr><td>三仓 crate 漂移</td><td>未追踪</td><td>周报上线 + 基线归档</td><td>仅计划内漂移</td><td>单上游，漂移归零</td></tr>
+        <tr><td>成员面第二写路径（架构测试）</td><td>存在（identity 等）</td><td>identity 域清零</td><td>identity / model / git_store 清零</td><td>全域清零</td></tr>
+      </tbody>
+    </table></div>
+    <h3>评审节奏</h3>
+    <ul class="tight">
+      <li><b>月度架构收敛评审</b>：KPI 台账 + 架构测试报告 + drift 周报 + 决策点状态；决策点超期 → 自动按推荐项临时生效并升级到产品负责人。</li>
+      <li><b>季度减法评审</b>：必须产出至少一项删除 / 合并（API 路径、废弃迁移表、重复 crate、冻结 lane 的代码面）；空手而归视为评审失败。</li>
+      <li><b>GA 发布火车</b>：GA-2 / GA-3 只载 Verified 项；component-only 项进附表。</li>
+    </ul>
+    <h3>新增架构测试清单（守护收敛成果）</h3>
+    <ul class="tight">
+      <li>成员面写路径禁令：identity（T0.4.1）、model 三件套（T1.3.1）、git_store（T1.3.3）——落在 apps/api 的 admission_test.rs / architecture_source_tests.rs。</li>
+      <li>lane redis 生产引用禁令（T0.2.1）。</li>
+      <li>唯一扩缩器：无并行 autoscale 路径（T2.2.1）。</li>
+      <li>兄弟投影零私有生命周期：FN0 / WEB0 / MCP0 / CELL0（T3.1.1）。</li>
+      <li>REST / MCP codegen 同源检查（T1.4.2）。</li>
+      <li>a3s-billing 用量事实消费边界（依 DP-1 结论，T0.4.3）。</li>
+    </ul>
+  </section>
+
+  <section id="risk">
+    <h2>风险登记册</h2>
+    <div class="tw"><table>
+      <thead><tr><th>#</th><th>风险</th><th>概率</th><th>缓解</th><th>触发与应对</th></tr></thead>
+      <tbody>
+        <tr><td class="id">R1</td><td>成员面投影化受阻于 Kense Console 既有依赖（a3s-api 的 contexts 已被前端消费）</td><td><span class="pill hi">高</span></td><td>投影先行、删除殿后；四条联邦契约逐域渐进；每域独立 ADR</td><td>任一域对接超 2 个迭代 → 该域缓办并升级产品负责人重排范围</td></tr>
+        <tr><td class="id">R2</td><td>DP-1 / DP-2 / DP-3 决策拖延，Phase 1 排期悬空</td><td><span class="pill mid">中</span></td><td>截止日写入 Phase 0 出口准则；超期自动采用推荐项临时生效</td><td>连续两次月度评审未追认 → 升级至产品负责人拍板</td></tr>
+        <tr><td class="id">R3</td><td>冻结 lane 被在飞项隐性依赖（如 APP0 依赖 CELL0 能力）</td><td><span class="pill mid">中</span></td><td>T0.1.3 依赖审计先于冻结令</td><td>依赖图红灯 → 解冻该单项并重排在飞集</td></tr>
+        <tr><td class="id">R4</td><td>GA-2 窄体验市场反馈不佳</td><td><span class="pill mid">中</span></td><td>体验选择经产品评审（T1.2.1）；反馈进入 GA-3 范围而非扩大 GA-2</td><td>反馈持续负面 → GA-3 前加一次体验评审关口</td></tr>
+        <tr><td class="id">R5</td><td>crate 物理合并造成三仓 CI 大面积破损</td><td><span class="pill mid">中</span></td><td>Phase 0 只加守护不搬代码；Phase 3 独立窗口渐进迁移；保留回滚窗口</td><td>破损面超 2 个 crate → 回滚窗口执行并重排</td></tr>
+        <tr><td class="id">R6</td><td>SEV-SNP / TEE 硬件长期缺位</td><td><span class="pill lo">低</span></td><td>已按 physical-capacity stop 处理，不在任何阶段关键路径</td><td>硬件到位 → PW0.tee / BX0.3 硬件闸门另立窗口</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="trace">
+    <h2>追溯矩阵与依据</h2>
+    <div class="tw"><table>
+      <thead><tr><th>工作流</th><th>针对发散点</th><th>阶段</th><th>证据锚点</th></tr></thead>
+      <tbody>
+        <tr><td class="id">WS0.1</td><td>D5</td><td>0</td><td>apps/cloud/ROADMAP.md 主表（§3）与依赖图（§4）</td></tr>
+        <tr><td class="id">WS0.2</td><td>D4</td><td>0</td><td>apps/cloud/crates/event（NATS + Iggy）、crates/lane/job/{local,memory,redis}</td></tr>
+        <tr><td class="id">WS0.3</td><td>D2</td><td>0 → 3</td><td>三仓 Cargo.toml members；tests/workspace_dependencies.py</td></tr>
+        <tr><td class="id">WS0.4</td><td>D1 · D3</td><td>0</td><td>apps/api/src/contexts/{identity,human_auth}；a3s-os-boundary.md §4 联邦契约</td></tr>
+        <tr><td class="id">WS1.3</td><td>D1</td><td>1</td><td>apps/api/src/contexts/{model_hub,model_service,model_supply,git_store,pipelines,schedule}</td></tr>
+        <tr><td class="id">WS1.4</td><td>D6</td><td>1</td><td>apps/cloud/contracts/（版本化 ACL 契约）；openapi/v1.json</td></tr>
+        <tr><td class="id">WS2.1</td><td>D5 · D6</td><td>2</td><td>ROADMAP §5.1/5.2/5.19；api_stability 契约</td></tr>
+        <tr><td class="id">WS2.4</td><td>D1 · D3</td><td>2</td><td>a3s-os-boundary.md EntitlementCompile；apps/runtime README</td></tr>
+        <tr><td class="id">WS2.5</td><td>D4</td><td>2</td><td>DP-2 决策材料（T0.2.2 / T0.2.3 产出）</td></tr>
+        <tr><td class="id">WS3.1</td><td>D5</td><td>3</td><td>ROADMAP §3 sibling-projection 注（AR0/FN0/CELL0/MCP0/I0/WEB0）</td></tr>
+        <tr><td class="id">WS3.2</td><td>D2</td><td>3</td><td>DP-3 决议 + drift 报告</td></tr>
+      </tbody>
+    </table></div>
+    <h3>本计划的依据材料</h3>
+    <ul class="tight">
+      <li>apps/cloud/ROADMAP.md（3,876 行；组合状态 2026-09-17，运营更新至 2026-10-17）—— lane 状态、GA 地平线、依赖图。</li>
+      <li>apps/cloud/docs/architecture.md（2,515 行）—— §4 单一权威映射、§6.2 限界上下文表、§2.2 能力寄存器。</li>
+      <li>apps/cloud/docs/a3s-os-boundary.md —— Cloud 唯一控制面裁定与四条联邦契约。</li>
+      <li>代码盘点（2026-10-19）：控制面 32 个域模块、277 个迁移、OpenAPI v1.132.0（403 路径 / 29 tag）；apps/api 约 30 个 contexts；aster 工作区 6 个后端服务。</li>
+    </ul>
+  </section>
+
+  <footer>
+    A3S OS 后端技术收敛执行计划 · v1.0 · 2026-10-19 拟制 · 月度架构评审与季度减法评审维护 · 决策点状态见 DP 卡片截止日。
+  </footer>
+</div>

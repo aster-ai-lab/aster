@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "jsx": "react-jsx",
+    "target": "ES2022",
+    "module": "ESNext",
+    "noEmit": true,
+    "skipLibCheck": true,
+    "useDefineForClassFields": true,
+    "ignoreDeprecations": "6.0",
+    "moduleDetection": "force",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strict": true,
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@a3s-lab/ui": ["./src/index.ts"],
+      "@a3s-lab/ui/*": ["./src/*"]
+    }
+  },
+  "include": ["src", "stories/components", "scripts", "rsbuild.ts"],
+  "exclude": ["src/__tests__", "**/*.test.*", "**/__tests__/**"]
+}

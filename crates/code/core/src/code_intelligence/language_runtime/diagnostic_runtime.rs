@@ -9,7 +9,7 @@ use lsp_types::{
     PublishDiagnosticsParams, TextDocumentIdentifier, Uri, WorkDoneProgressParams,
 };
 use serde::Serialize;
-use tokio::sync::{mpsc, Mutex};
+use tokio::sync::{mpsc, watch, Mutex};
 use tokio_util::sync::CancellationToken;
 
 use super::super::{
@@ -213,8 +213,15 @@ pub(super) async fn consume_notifications(
     diagnostics: Arc<DiagnosticsStore>,
     diagnostic_state: Arc<Mutex<DiagnosticRuntimeState>>,
     diagnostic_updates: Arc<Mutex<()>>,
+    readiness: Option<watch::Sender<super::readiness::ReadinessState>>,
 ) {
     while let Some(notification) = notifications.recv().await {
+        if notification.method == super::readiness::SERVER_STATUS {
+            if let Some(readiness) = &readiness {
+                readiness.send_replace(super::readiness::observe(notification.params));
+            }
+            continue;
+        }
         if notification.method != "textDocument/publishDiagnostics" {
             continue;
         }

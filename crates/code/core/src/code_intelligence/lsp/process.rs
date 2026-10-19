@@ -1,5 +1,8 @@
 //! Long-lived language server process lifecycle.
 
+#[cfg(test)]
+pub(crate) mod test_trace;
+
 use super::client::LspClient;
 use super::router::ServerRequestRouter;
 use crate::code_intelligence::language_profile::LanguageServerCommand;
@@ -10,7 +13,7 @@ use std::process::Stdio;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex as StdMutex};
 use std::time::Duration;
-use tokio::io::AsyncReadExt;
+use tokio::io::{AsyncRead, AsyncReadExt};
 use tokio::process::{Child, Command};
 use tokio::sync::{mpsc, watch};
 use tokio::task::JoinHandle;
@@ -100,6 +103,15 @@ impl LspProcess {
             .stderr
             .take()
             .ok_or(LspProcessError::MissingPipe { stream: "stderr" })?;
+
+        #[cfg(test)]
+        let stdout =
+            test_trace::observe_read(stdout, working_directory, test_trace::Stream::Stdout);
+        #[cfg(test)]
+        let stdin = test_trace::observe_write(stdin, working_directory);
+        #[cfg(test)]
+        let stderr =
+            test_trace::observe_read(stderr, working_directory, test_trace::Stream::Stderr);
 
         let client = LspClient::start_split(stdout, stdin, router);
         let protocol_closed = client.shutdown_token();
@@ -269,10 +281,7 @@ async fn wait_for_terminal_state(
     .flatten()
 }
 
-async fn read_stderr(
-    mut stderr: tokio::process::ChildStderr,
-    buffer: Arc<StdMutex<BoundedStderr>>,
-) {
+async fn read_stderr(mut stderr: impl AsyncRead + Unpin, buffer: Arc<StdMutex<BoundedStderr>>) {
     let mut chunk = [0_u8; 4096];
     loop {
         match stderr.read(&mut chunk).await {

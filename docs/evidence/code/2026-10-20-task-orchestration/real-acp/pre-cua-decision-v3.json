@@ -1,0 +1,47 @@
+{
+  "schema": "aster.t027.pre-cua-decision.v3",
+  "recorded_at_utc": "2026-10-19T20:13:26.543367+00:00",
+  "matrix_outcome": "../matrix/screen-outcome-v3.json",
+  "matrix_qualified": false,
+  "runtime_promoted": false,
+  "ptc_promoted": false,
+  "additional_matrix_pair": false,
+  "conditional_heldouts": false,
+  "product_defaults_changed": false,
+  "purpose": "Complete the explicitly requested independent visible nonactivating AsterDream/DeepSeek Flash capability assessment. This is an experimental side-by-side development app, not a candidate promotion or default switch. Failed local nine-case quality results remain failed.",
+  "evaluation_configuration": {
+    "app": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app",
+    "runtime_variant": "hardware",
+    "profile": "adaptive",
+    "retrieval": "disabled",
+    "reason": "Runtime identity/governance and hardware SHA microbenchmark are qualified; this configuration also produced ordinary completion and complete metrics in the screen. It is not declared a statistically established winner.",
+    "stage_report_sha256": "36e6e36a66d2730fd8090cdb722afa5de21ff1e66ca6e10b438b64bd1e04cd79",
+    "actual_process_environment_and_companion_path_pending": true
+  },
+  "rollback": {
+    "initial_old_pid": 83498,
+    "reopened_old_pid": 2552,
+    "path": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/AsterDream.app",
+    "main_sha256": "5ef74076bfee2c6a762dbfb910f5e08f2dae62739f63155a0b4a060f30472161",
+    "normal_quit_and_original_path_reopen_observed_by_cua": true,
+    "rendered_home_and_screenshot_observed": true,
+    "selected_model": "DeepSeek Flash",
+    "model_task_started": false,
+    "both_old_pids_now_gone": true,
+    "scope": "Actual application-level reopen only; old bundle strict signature remains previously unqualified and no old-model task was rerun."
+  },
+  "input_preparation": "t027-input-preparation.json",
+  "input_files_reverified": 12,
+  "fresh_workspace": "/Users/roylin/code/tasks/T01-t027-cua-01",
+  "prompt_sha256": "a55ceb23267a36b6aea90fa14c399621546a0223c551afa106ec5411b11cc6f5",
+  "core_attempts_terminal": 8,
+  "reserved_final_cua_attempts": 1,
+  "cua_attempt_started": false,
+  "requirements_before_task_acceptance": [
+    "Actual mapped staged main and post-sign digest",
+    "Effective per-app asset/profile/retrieval declaration and current exact inputs",
+    "Actual staged ACP/Office resolution, model route, permission and budget",
+    "Visible final terminal, frozen original submission, all nine independent oracle cases and separate clocks"
+  ],
+  "no_manual_submission_repair": true
+}

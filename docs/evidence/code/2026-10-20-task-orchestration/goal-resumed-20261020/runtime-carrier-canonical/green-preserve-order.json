@@ -1,0 +1,18 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-oci-sdk",
+    "--features",
+    "serde_json/preserve_order",
+    "--lib",
+    "attachment::tests::",
+    "--",
+    "--nocapture"
+  ],
+  "exit_code": 0,
+  "wall_seconds": 7.091872292000001
+}

@@ -1,0 +1,12 @@
+
+running 7 tests
+test agent::turn_context::tests::execution_target::bound_linux_target_is_independent_of_macos_or_windows_host ... ok
+test agent::turn_context::tests::execution_target::custom_runner_without_metadata_remains_unknown ... ok
+test agent::turn_context::tests::execution_target::execution_target_closed_set_round_trips_without_guessing ... ok
+test agent::turn_context::tests::execution_target::governed_local_missing_sandbox_does_not_advertise_default_host_execution ... ok
+test agent::turn_context::tests::execution_target::plain_local_context_reports_its_actual_runner_shell ... ok
+test agent::turn_context::tests::execution_target::unknown_bound_sandbox_is_not_overridden_by_known_local_runner ... ok
+test agent::turn_context::tests::execution_target::workspace_without_command_runner_reports_unavailable ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 5184 filtered out; finished in 0.00s
+

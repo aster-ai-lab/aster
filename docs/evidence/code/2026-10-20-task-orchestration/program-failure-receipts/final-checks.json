@@ -1,0 +1,87 @@
+[
+  {
+    "name": "green-facts-final",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-code-core",
+      "--lib",
+      "agent_api::tests::fact_log::program_failure_receipts",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 0,
+    "elapsed_ms": 648.243
+  },
+  {
+    "name": "green-nested-governance-final",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-code-core",
+      "--lib",
+      "agent_api::tests::fact_log::nested_governance",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 0,
+    "elapsed_ms": 1144.819
+  },
+  {
+    "name": "green-metrics-final",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-code-core",
+      "--features",
+      "advanced-harness",
+      "--test",
+      "test_extensibility_real_llm",
+      "metrics::",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 0,
+    "elapsed_ms": 25795.281
+  },
+  {
+    "name": "format-own-files",
+    "command": [
+      "rustfmt",
+      "--edition",
+      "2021",
+      "--check",
+      "--config",
+      "skip_children=true",
+      "crates/code/core/src/tools/program_tool.rs",
+      "crates/code/core/src/tools/program_tool/failure_receipt_tests.rs",
+      "crates/code/core/src/tools/program_tool/worker_deadline_tests.rs",
+      "crates/code/core/src/agent_api/tests/fact_log.rs",
+      "crates/code/core/src/agent_api/tests/fact_log/program_failure_receipts.rs",
+      "crates/code/core/tests/extensibility/metrics.rs"
+    ],
+    "exit_code": 0,
+    "elapsed_ms": 46.491
+  },
+  {
+    "name": "format-workspace",
+    "command": [
+      "cargo",
+      "fmt",
+      "--all",
+      "--",
+      "--check"
+    ],
+    "exit_code": 1,
+    "elapsed_ms": 16347.424
+  }
+]

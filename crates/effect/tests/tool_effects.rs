@@ -13,6 +13,9 @@ use tokio_util::sync::CancellationToken;
 const THREAD: &str = "receipt-thread";
 const LIMIT: u32 = 32;
 
+#[path = "tool_effects/revalidation.rs"]
+mod revalidation;
+
 struct ScriptModel(Mutex<VecDeque<ModelDecision>>);
 impl Completion for ScriptModel {
     fn complete(

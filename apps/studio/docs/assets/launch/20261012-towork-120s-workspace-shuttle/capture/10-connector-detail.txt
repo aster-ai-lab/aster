@@ -1,0 +1,23 @@
+Window: "ToWork", App: ToWork.
+0 standard window ToWork, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content Description: ToWork, URL: 127.0.0.1:4318/windows/main/index.html
+			3 container
+				4 container Fetch网页内容抓取
+					5 heading Fetch网页内容抓取, Value: 2
+						6 text Fetch网页内容抓取
+					7 text 连接器 · 搜索 · 本地命令
+					8 text 该服务器使大型语言模型能够检索和处理网页内容，将HTML转换为markdown格式，以便于更轻松地使用。
+					9 heading 连接, Value: 3
+						10 text 连接
+					11 text uvx mcp-server-fetch
+					12 button 安装
+					13 button 关闭
+	14 close button
+	15 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	16 minimize button
+17 menu bar
+	18 ToWork
+	19 Edit
+
+The focused UI element is 12 button 安装

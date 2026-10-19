@@ -1,0 +1,11 @@
+
+/Users/roylin/code/aster/apps/work/src/renderer/hooks/useAssistantCatalogPresets.ts
+  6:42  error  Unexpected path "@renderer/pages/agents/aixAgentRuntime" imported in restricted zone. Shared buckets must not import pages/windows (reverse layer edge). architecture/renderer.md §7         import-x/no-restricted-paths
+  7:37  error  Unexpected path "@renderer/pages/agents/officialAgentAvatars" imported in restricted zone. Shared buckets must not import pages/windows (reverse layer edge). architecture/renderer.md §7    import-x/no-restricted-paths
+  8:62  error  Unexpected path "@renderer/pages/capabilities/capabilitiesData" imported in restricted zone. Shared buckets must not import pages/windows (reverse layer edge). architecture/renderer.md §7  import-x/no-restricted-paths
+
+/Users/roylin/code/aster/apps/work/src/renderer/pages/agents/expertRow.tsx
+  3:44  warning  Unexpected path "@renderer/pages/capabilities/capabilitiesData" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7  import-x/no-restricted-paths
+
+✖ 4 problems (3 errors, 1 warning)
+

@@ -539,6 +539,12 @@ pub trait WorkspaceFileSystemExt: Send + Sync {
 /// Shell/command execution available to the `bash` tool.
 #[async_trait]
 pub trait WorkspaceCommandRunner: Send + Sync {
+    /// Report the configured OS/shell without executing or probing the backend.
+    /// Unreported custom or remote command runners remain unknown.
+    fn execution_target(&self) -> crate::sandbox::ShellExecutionTarget {
+        crate::sandbox::ShellExecutionTarget::Unknown
+    }
+
     async fn exec(&self, request: CommandRequest) -> Result<CommandOutput>;
 }
 

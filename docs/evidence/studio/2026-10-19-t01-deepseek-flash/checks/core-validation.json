@@ -1,0 +1,56 @@
+{
+  "regression_before_fix": {
+    "command": "cargo test --locked -p a3s-code-core --lib distinct_read_only -- --nocapture",
+    "passed": 0,
+    "failed": 2,
+    "failures": [
+      "legacy reserved finalization rejected 13th tool",
+      "production fact path returned internal read-only finalization text"
+    ]
+  },
+  "focused_after_fix": {
+    "distinct_read_only": {
+      "passed": 2,
+      "failed": 0
+    },
+    "fact_control": {
+      "passed": 162,
+      "failed": 0
+    },
+    "budget_denial_names_the_forced_stop": {
+      "passed": 1,
+      "failed": 0
+    },
+    "read_only_filter": {
+      "passed": 26,
+      "failed": 1,
+      "failure": "existing plan-heavy real Node checker was denied because default sandbox companion absent",
+      "isolated_rerun": "same denial reproduced"
+    }
+  },
+  "workspace_checks": {
+    "workspace_dependencies": {
+      "python": "/opt/homebrew/bin/python3.13",
+      "passed": 4,
+      "failed": 2,
+      "failures": [
+        "existing apps/work/.git checkout marker",
+        "existing a3s-gateway publish metadata"
+      ]
+    },
+    "cargo_fmt_all_check": {
+      "exit": 1,
+      "affected_file_checks": "pass",
+      "other_tree_diffs": 127,
+      "log": "checks/workspace-fmt.log"
+    }
+  },
+  "build_work": {
+    "exit": 0,
+    "log": "checks/build-work.log"
+  },
+  "notes": [
+    "No full workspace test success is claimed.",
+    "Development bundle host must be distributed together with current ACP and Office siblings; updating host alone did not update the running executor."
+  ]
+}

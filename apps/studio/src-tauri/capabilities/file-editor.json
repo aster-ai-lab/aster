@@ -1,0 +1,17 @@
+{
+  "identifier": "file-editor-capability",
+  "description": "Workspace file editor windows. Only minimize, zoom, close, dragging, and host logs. Child webviews stay on the main window.",
+  "local": true,
+  "remote": {
+    "urls": ["http://127.0.0.1:*"]
+  },
+  "windows": ["file-editor-*"],
+  "webviews": ["file-editor-*"],
+  "permissions": [
+    "allow-log-to-host",
+    "core:window:allow-start-dragging",
+    "core:window:allow-minimize",
+    "core:window:allow-toggle-maximize",
+    "core:window:allow-close"
+  ]
+}

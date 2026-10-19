@@ -1,0 +1,459 @@
+{
+  "schema": "aster.task-matrix-budget-diagnostic.v1",
+  "run_id": "t023-sa-01",
+  "captured_utc": "2026-10-19T18:06:35.228477+00:00",
+  "scope": "Read-only production-budget source and original fact metadata. No model, tool, VM, Cargo or artifact script execution. No model text, reasoning, tool arguments, output bodies or credentials copied. Original paid sample remains failed and counted; budget unchanged.",
+  "verdict": {
+    "confirmed_stop": "Configured experiment workflow_tokens soft ceiling exhausted, followed by tool denial and next LLM admission refusal.",
+    "production_budget_defect_demonstrated": false,
+    "uniform_main_call_double_counting_supported": false,
+    "qualification_pass": false,
+    "artifact_semantics_evaluated": false
+  },
+  "evidence": {
+    "run_report": "docs/evidence/code/2026-10-20-task-orchestration/matrix/runs/t023-sa-01/run.json",
+    "run_report_sha256": "700d3fa7cbeb3b1e37310b1a8cd06fd4ecb135ff82e575d1322c78e41c678031",
+    "original_fact_log": "/Users/roylin/code/tasks/T01-t023-sa-01/.a3s/effect-log/t023-sa-01.jsonl",
+    "original_fact_bytes": 612078,
+    "original_fact_sha256": "b4ffdbaa3a221476ec0ca398e4b86d10ad0c3822191b4d5edcd9462dc7b7de7d",
+    "original_fact_count": 77,
+    "original_fact_type_counts": {
+      "a3s.standing-context": 1,
+      "user.message": 1,
+      "context.sections": 1,
+      "model.turn": 22,
+      "tool.prepared": 26,
+      "tool.result": 26
+    },
+    "duplicate_fact_keys": 0,
+    "duplicate_parent_receipt_call_ids": 0
+  },
+  "configured_budget": {
+    "llm_api_timeout_ms": 180000,
+    "max_continuation_turns": 4,
+    "max_execution_ms": 900000,
+    "max_parallel_tasks": 4,
+    "max_tool_rounds": 128,
+    "reasoning_effort": "medium",
+    "reported_token_limit": 1000000,
+    "thinking_budget": 8192,
+    "tool_timeout_ms": 120000
+  },
+  "stop_causality": {
+    "consumed_reported_total_tokens": 1004236,
+    "configured_reported_token_limit": 1000000,
+    "overrun_tokens": 4236,
+    "overrun_percent": 0.4236,
+    "source_derived_llm_budget_error": {
+      "resource": "workflow_tokens",
+      "code": "BUDGET_EXHAUSTED",
+      "bytes": 97,
+      "sha256": "b1697ee0015750fea81032be797e1ffc13a5476ead3c51e846cbe556c7b2710a",
+      "exact_match_to_run_error_identity": true,
+      "derivation": "WorkflowBudget::check_before_llm reason and CodeError::BudgetExhausted Display format with observed counter/limit, not model-content interpretation."
+    },
+    "last_original_tool": {
+      "fact_sequence": 77,
+      "tool_call_id": "call_00_jDhL3KwvcxvSXxDqvIhJ2418",
+      "tool_name": "bash",
+      "outcome": "denied",
+      "exit_code": null,
+      "effect_completeness": "complete",
+      "source_derived_budget_error_bytes": 70,
+      "source_derived_budget_error_sha256": "9be0f67205f7aa128ea54bb84a07d30aad1c5c2b575dfbe9b6c8ded4c58a6a50",
+      "exact_match_to_original_receipt_body": true
+    },
+    "ordered_boundary": [
+      "22nd successful main model response charged its provider-reported total after return; shared counter is now above cap.",
+      "The pending Bash invocation is checked before its body and commits a typed Denied receipt with null process exit; no sixteenth command VM is admitted.",
+      "The following LLM admission check refuses before provider dispatch/evidence capture; CodeError BudgetExhausted maps to ActorError Defect, so it is not retried as a transient provider error."
+    ],
+    "other_stops": {
+      "execution_timeout": false,
+      "task_ms": 408528,
+      "configured_execution_ms": 900000,
+      "tool_results": 26,
+      "configured_tool_rounds": 128,
+      "stream_settled": true,
+      "close_settled": true
+    }
+  },
+  "complete_original_call_metadata": {
+    "successful_main_model_turns": 22,
+    "model_turn_kinds": {
+      "tool": 22
+    },
+    "top_level_tool_calls": 26,
+    "original_tool_results": 26,
+    "tool_outcomes": {
+      "succeeded": 25,
+      "denied": 1
+    },
+    "tool_names": {
+      "ls": 2,
+      "read": 6,
+      "bash": 16,
+      "update_plan": 1,
+      "write": 1
+    },
+    "independent_runtime_vm_count": 15,
+    "vm_source": "Original OCI command-stage collector, not inferred from Bash count; 16 requested Bash results consist of 15 succeeded and 1 denied.",
+    "model_turns": [
+      {
+        "ordinal": 1,
+        "fact_sequence": 4,
+        "fact_key": "model:1:0",
+        "decision_kind": "tool",
+        "provider_prompt_tokens": 11285,
+        "tool_call_count": 2,
+        "provider_completion_tokens": null,
+        "provider_total_tokens": null
+      },
+      {
+        "ordinal": 2,
+        "fact_sequence": 9,
+        "fact_key": "model:1:2",
+        "decision_kind": "tool",
+        "provider_prompt_tokens": 14732,
+        "tool_call_count": 1,
+        "provider_completion_tokens": null,
+        "provider_total_tokens": null
+      },
+      {
+        "ordinal": 3,
+        "fact_sequence": 12,
+        "fact_key": "model:1:3",
+        "decision_kind": "tool",
+        "provider_prompt_tokens": 14940,
+        "tool_call_count": 4,
+        "provider_completion_tokens": null,
+        "provider_total_tokens": null
+      },
+      {
+        "ordinal": 4,
+        "fact_sequence": 21,
+        "fact_key": "model:1:7",
+        "decision_kind": "tool",
+        "provider_prompt_tokens": 15822,
+        "tool_call_count": 1,
+        "provider_completion_tokens": null,
+        "provider_total_tokens": null
+      },
+      {
+        "ordinal": 5,
+        "fact_sequence": 24,
+        "fact_key": "model:1:8",
+        "decision_kind": "tool",
+        "provider_prompt_tokens": 16500,
+        "tool_call_count": 1,
+        "provider_completion_tokens": null,
+        "provider_total_tokens": null
+      },
+      {
+        "ordinal": 6,
+        "fact_sequence": 27,
+        "fact_key": "model:1:9",
+        "decision_kind": "tool",
+        "provider_prompt_tokens": 19425,
+        "tool_call_count": 1,
+        "provider_completion_tokens": null,
+        "provider_total_tokens": null
+      },
+      {
+        "ordinal": 7,
+        "fact_sequence": 30,
+        "fact_key": "model:1:10",
+        "decision_kind": "tool",
+        "provider_prompt_tokens": 19725,
+        "tool_call_count": 1,
+        "provider_completion_tokens": null,
+        "provider_total_tokens": null
+      },
+      {
+        "ordinal": 8,
+        "fact_sequence": 33,
+        "fact_key": "model:1:11",
+        "decision_kind": "tool",
+        "provider_prompt_tokens": 20045,
+        "tool_call_count": 1,
+        "provider_completion_tokens": null,
+        "provider_total_tokens": null
+      },
+      {
+        "ordinal": 9,
+        "fact_sequence": 36,
+        "fact_key": "model:1:12",
+        "decision_kind": "tool",
+        "provider_prompt_tokens": 21580,
+        "tool_call_count": 1,
+        "provider_completion_tokens": null,
+        "provider_total_tokens": null
+      },
+      {
+        "ordinal": 10,
+        "fact_sequence": 39,
+        "fact_key": "model:1:13",
+        "decision_kind": "tool",
+        "provider_prompt_tokens": 22254,
+        "tool_call_count": 1,
+        "provider_completion_tokens": null,
+        "provider_total_tokens": null
+      },
+      {
+        "ordinal": 11,
+        "fact_sequence": 42,
+        "fact_key": "model:1:14",
+        "decision_kind": "tool",
+        "provider_prompt_tokens": 22654,
+        "tool_call_count": 1,
+        "provider_completion_tokens": null,
+        "provider_total_tokens": null
+      },
+      {
+        "ordinal": 12,
+        "fact_sequence": 45,
+        "fact_key": "model:1:15",
+        "decision_kind": "tool",
+        "provider_prompt_tokens": 55323,
+        "tool_call_count": 1,
+        "provider_completion_tokens": null,
+        "provider_total_tokens": null
+      },
+      {
+        "ordinal": 13,
+        "fact_sequence": 48,
+        "fact_key": "model:1:16",
+        "decision_kind": "tool",
+        "provider_prompt_tokens": 61484,
+        "tool_call_count": 1,
+        "provider_completion_tokens": null,
+        "provider_total_tokens": null
+      },
+      {
+        "ordinal": 14,
+        "fact_sequence": 51,
+        "fact_key": "model:1:17",
+        "decision_kind": "tool",
+        "provider_prompt_tokens": 62485,
+        "tool_call_count": 1,
+        "provider_completion_tokens": null,
+        "provider_total_tokens": null
+      },
+      {
+        "ordinal": 15,
+        "fact_sequence": 54,
+        "fact_key": "model:1:18",
+        "decision_kind": "tool",
+        "provider_prompt_tokens": 63298,
+        "tool_call_count": 1,
+        "provider_completion_tokens": null,
+        "provider_total_tokens": null
+      },
+      {
+        "ordinal": 16,
+        "fact_sequence": 57,
+        "fact_key": "model:1:19",
+        "decision_kind": "tool",
+        "provider_prompt_tokens": 64136,
+        "tool_call_count": 1,
+        "provider_completion_tokens": null,
+        "provider_total_tokens": null
+      },
+      {
+        "ordinal": 17,
+        "fact_sequence": 60,
+        "fact_key": "model:1:20",
+        "decision_kind": "tool",
+        "provider_prompt_tokens": 65451,
+        "tool_call_count": 1,
+        "provider_completion_tokens": null,
+        "provider_total_tokens": null
+      },
+      {
+        "ordinal": 18,
+        "fact_sequence": 63,
+        "fact_key": "model:1:21",
+        "decision_kind": "tool",
+        "provider_prompt_tokens": 68008,
+        "tool_call_count": 1,
+        "provider_completion_tokens": null,
+        "provider_total_tokens": null
+      },
+      {
+        "ordinal": 19,
+        "fact_sequence": 66,
+        "fact_key": "model:1:22",
+        "decision_kind": "tool",
+        "provider_prompt_tokens": 70446,
+        "tool_call_count": 1,
+        "provider_completion_tokens": null,
+        "provider_total_tokens": null
+      },
+      {
+        "ordinal": 20,
+        "fact_sequence": 69,
+        "fact_key": "model:1:23",
+        "decision_kind": "tool",
+        "provider_prompt_tokens": 75408,
+        "tool_call_count": 1,
+        "provider_completion_tokens": null,
+        "provider_total_tokens": null
+      },
+      {
+        "ordinal": 21,
+        "fact_sequence": 72,
+        "fact_key": "model:1:24",
+        "decision_kind": "tool",
+        "provider_prompt_tokens": 77926,
+        "tool_call_count": 1,
+        "provider_completion_tokens": null,
+        "provider_total_tokens": null
+      },
+      {
+        "ordinal": 22,
+        "fact_sequence": 75,
+        "fact_key": "model:1:25",
+        "decision_kind": "tool",
+        "provider_prompt_tokens": 83460,
+        "tool_call_count": 1,
+        "provider_completion_tokens": null,
+        "provider_total_tokens": null
+      }
+    ]
+  },
+  "usage_reconciliation": {
+    "complete_provider_prompt_tokens_from_22_original_model_turns": 946387,
+    "complete_provider_completion_tokens_independently_available": false,
+    "complete_provider_per_call_total_tokens_independently_available": false,
+    "retained_reported_usage_calls": 12,
+    "retained_model_input_calls": 11,
+    "retained_model_input_call_sequences": [
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22
+    ],
+    "retained_last12_prompt_tokens": 770079,
+    "retained_last12_completion_tokens": 55409,
+    "retained_last12_prompt_exactly_matches_original_last12": true,
+    "original_first10_prompt_tokens": 176308,
+    "ledger_minus_all_original_prompt_tokens": 57849,
+    "inferred_full_completion_if_single_additive_main_usage": 57849,
+    "inferred_first10_completion_if_single_additive_main_usage": 2440,
+    "inference_limit": "The inferred completion values are arithmetic consistency checks, not recovered missing provider snapshots. Upstream usage inconsistencies or every possible partial anomaly cannot be excluded after retention loss.",
+    "double_counting_assessment": "No duplicated guard-charge path found: one shared WorkflowBudget is installed with no inner guard, managed fact binding calls the inner transport, finish_success charges it once per winning Ok/Done, returns immediately, then emits usage/Done frames. record_usage(surface) updates a separate session usage projection and does not call the budget guard. Event summarization never feeds the guard. Repeated prompt context across separate provider calls is intentionally counted, rather than deduplicated as unique context.",
+    "arithmetic_against_whole_call_duplicates": {
+      "known_prompt_plus_retained_completion_floor": 1001796,
+      "counter_above_that_floor": 2440,
+      "smallest_original_prompt_tokens": 11285,
+      "interpretation": "Under ordinary additive provider usage, only 2440 tokens remain for the first ten completions. Duplicating any complete observed main call would add at least its 11285 prompt tokens and cannot fit this counter; this rejects uniform/whole-main-call double charging, not arbitrary provider telemetry corruption."
+    }
+  },
+  "event_retention_issue": {
+    "event_count": 45684,
+    "retained_events": 16384,
+    "discarded_events": 29300,
+    "event_window_complete": false,
+    "old_metrics_complete_flag": true,
+    "old_retained_model_calls_metric": 11,
+    "old_retained_parent_calls_metric": 11,
+    "old_usage_complete_flag": false,
+    "effect_on_stop": "None: WorkflowBudget AtomicU64 accounting is separate from retained event storage. This loss makes suffix-only metrics incomplete; it does not itself exhaust the budget.",
+    "effect_on_qualification": "The original runner already fails its event_window_complete gate; its metrics_complete=true field was nevertheless misleading and is being corrected by a separately owned test-only bounded-retention patch. Do not retrofit this old paid sample into a full-metric pass."
+  },
+  "source_review": {
+    "frozen_source_checks": [
+      {
+        "path": "crates/code/core/src/orchestration/workflow_budget.rs",
+        "sha256": "d67e6e649a30183f1f068ad66571807454a86d8cad2f40dcb8c836ecf2f42cb7",
+        "matches_run_frozen_manifest": true
+      },
+      {
+        "path": "crates/code/core/src/agent/llm_invoker/fact_governance.rs",
+        "sha256": "3a741a980a7cf87702f297ad2dcd3f1995adfca582747c7257fc7f9cf43821c6",
+        "matches_run_frozen_manifest": true
+      },
+      {
+        "path": "crates/code/core/src/agent/llm_invoker.rs",
+        "sha256": "44d6965085a3e1fea3bf054c82025300b76f877056bcfc47922b98f212f6571f",
+        "matches_run_frozen_manifest": true
+      },
+      {
+        "path": "crates/code/core/src/fact_control/model_call.rs",
+        "sha256": "dc984e1b0c71fd16dc5fb8053fe59ecb40068cf174e82de7371a03c97f685c9e",
+        "matches_run_frozen_manifest": true
+      },
+      {
+        "path": "crates/code/core/src/agent/tool_invoker.rs",
+        "sha256": "0fafb77f563b7d6952f60a864431748061f2d6d1e5800db643e65f6b2fa6f23d",
+        "matches_run_frozen_manifest": true
+      },
+      {
+        "path": "crates/code/core/src/error.rs",
+        "sha256": "f3aa7e812575154763fac0041b79accebc2b3cebba3eebe6c4acd8b174cedbfb",
+        "matches_run_frozen_manifest": true
+      },
+      {
+        "path": "crates/code/core/src/fact_control.rs",
+        "sha256": "9a2d675d6d9839be8c70c15378b9558f1b113d723cd15eb6591bbeba43670520",
+        "matches_run_frozen_manifest": true
+      }
+    ],
+    "references": [
+      {
+        "path": "crates/code/core/src/orchestration/workflow_budget.rs",
+        "lines": [
+          111,
+          135,
+          143
+        ],
+        "finding": "Deny when current counter >= cap; record_after adds usage.total_tokens once; tool guard also checks cap. Threshold check ignores the estimated next prompt, so one returned call may overshoot this soft ceiling."
+      },
+      {
+        "path": "crates/code/core/src/agent/llm_invoker/fact_governance.rs",
+        "lines": [
+          223,
+          381,
+          439,
+          449,
+          503,
+          513,
+          526
+        ],
+        "finding": "Managed inner transport binding, pre-call check, one winning-success charge and Usage/Done projection; branches return after finish."
+      },
+      {
+        "path": "crates/code/core/src/fact_control/model_call.rs",
+        "lines": [
+          85,
+          263,
+          297,
+          546
+        ],
+        "finding": "Budget refusal is non-retryable Defect; Done accumulates separate SessionSurface usage; Usage only projects an event."
+      },
+      {
+        "path": "crates/code/core/src/agent/tool_invoker.rs",
+        "lines": [
+          350,
+          367
+        ],
+        "finding": "Budget refusal before tool execution becomes typed denial."
+      },
+      {
+        "path": "crates/code/core/src/error.rs",
+        "lines": [
+          143
+        ],
+        "finding": "Deterministic formal budget error format."
+      }
+    ]
+  }
+}

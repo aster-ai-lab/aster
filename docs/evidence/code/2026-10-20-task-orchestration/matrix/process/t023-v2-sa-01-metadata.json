@@ -1,0 +1,449 @@
+{
+  "schema": "aster.t023-terminal-run-metadata.v1",
+  "captured_at_utc": "2026-10-19T18:20:16.634906+00:00",
+  "run_id": "t023-v2-sa-01",
+  "report_path": "docs/evidence/code/2026-10-20-task-orchestration/matrix/runs/t023-v2-sa-01/run.json",
+  "report_sha256": "b30fde91f3b78578c0d13e95c20fc6ced05e452ae8ad2e11c0eb852bbffd398e",
+  "status": "failed",
+  "runner_gates_passed": false,
+  "identity": {
+    "production_and_runner_frozen_identity_unchanged": true,
+    "immutable_inputs_unchanged": true,
+    "snapshot_pipeline_sha256": "0dba8ca2241d78473c6bb8f449a3ff9aaf854fe59dbcac618bf78662edea3c62",
+    "pipeline_matches_oracle_input": true
+  },
+  "runtime": {
+    "task_ms": 315839,
+    "preparation_ms": 1,
+    "reported_token_ledger": 1000946,
+    "reported_token_limit": 1000000,
+    "execution_completed": false,
+    "timed_out": false,
+    "error_code": null,
+    "event_count": 12976,
+    "retained_events": 12976,
+    "event_window_complete": true,
+    "metrics_complete": true,
+    "model_calls": 28,
+    "executed_parent_calls": 28,
+    "vm_count": 19,
+    "close_settled": true,
+    "agent_close_settled": true,
+    "session_closed": true,
+    "stream_settled": true,
+    "terminal_end_event_present": false
+  },
+  "presentation": {
+    "manifest_profile": "adaptive",
+    "snapshots": 28,
+    "model_input_snapshots": 28,
+    "all_profiled_adaptive": true,
+    "all_input_digests_match": true,
+    "pairs": [
+      {
+        "call_sequence": 1,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 2,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 3,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 4,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 5,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 6,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 7,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 8,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 9,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 10,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 11,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 12,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 13,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 14,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 15,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 16,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 17,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 18,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 19,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 20,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 21,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 22,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 23,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 24,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 25,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 26,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 27,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      },
+      {
+        "call_sequence": 28,
+        "application": "profiled",
+        "profile_mode": "adaptive",
+        "source_tool_count": 19,
+        "presented_tool_count": 19,
+        "presented_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "model_input_tool_count": 19,
+        "model_input_definitions_digest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06",
+        "input_definition_digest_matches": true
+      }
+    ]
+  },
+  "fact_metadata": {
+    "type_counts": {
+      "a3s.standing-context": 1,
+      "user.message": 1,
+      "context.sections": 1,
+      "model.turn": 28,
+      "tool.prepared": 29,
+      "tool.result": 29
+    },
+    "model_turn_call_names": {
+      "read": 2,
+      "ls": 2,
+      "batch": 1,
+      "bash": 20,
+      "write": 1,
+      "patch": 1,
+      "edit": 2
+    },
+    "prepared_tool_names": {
+      "read": 2,
+      "ls": 2,
+      "batch": 1,
+      "bash": 20,
+      "write": 1,
+      "patch": 1,
+      "edit": 2
+    },
+    "program_model_decisions": 0,
+    "program_prepared_count": 0,
+    "program_receipt_child_calls": 0
+  },
+  "relevant_frozen_source_checks": [
+    {
+      "path": "crates/code/core/src/fact_control/model_call.rs",
+      "actual_sha256": "dc984e1b0c71fd16dc5fb8053fe59ecb40068cf174e82de7371a03c97f685c9e",
+      "manifest_sha256": "dc984e1b0c71fd16dc5fb8053fe59ecb40068cf174e82de7371a03c97f685c9e",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/fact_control/tool_results.rs",
+      "actual_sha256": "6f8282212c364a4d7baf0550de87040ffe68a157142847c2e8484b8cf58c6bb0",
+      "manifest_sha256": "6f8282212c364a4d7baf0550de87040ffe68a157142847c2e8484b8cf58c6bb0",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/agent/llm_invoker/fact_governance.rs",
+      "actual_sha256": "3a741a980a7cf87702f297ad2dcd3f1995adfca582747c7257fc7f9cf43821c6",
+      "manifest_sha256": "3a741a980a7cf87702f297ad2dcd3f1995adfca582747c7257fc7f9cf43821c6",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/tools/presentation.rs",
+      "actual_sha256": "44f7bba4eb0d3093aa4850b716a64335d235dd90ab7195de0f8af8d9d9677565",
+      "manifest_sha256": "44f7bba4eb0d3093aa4850b716a64335d235dd90ab7195de0f8af8d9d9677565",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/llm/openai.rs",
+      "actual_sha256": "4acec2e99f9ad765c904b831654cb2cad8afad0a861cc6635d80a28446deb720",
+      "manifest_sha256": "4acec2e99f9ad765c904b831654cb2cad8afad0a861cc6635d80a28446deb720",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/agent_api/session_builder.rs",
+      "actual_sha256": "beb5a35e661fac650c920bf428f4bb9675e9d03b8246c18d3d442ad9de5bbea7",
+      "manifest_sha256": "beb5a35e661fac650c920bf428f4bb9675e9d03b8246c18d3d442ad9de5bbea7",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/tests/extensibility/task_matrix.rs",
+      "actual_sha256": "996b60461d683374646d43a3765928576886b1578eb664cfa9f869284fa5c893",
+      "manifest_sha256": "996b60461d683374646d43a3765928576886b1578eb664cfa9f869284fa5c893",
+      "matched": true
+    }
+  ],
+  "independent_oracle": {
+    "report_ref": "t023-v2-sa-01-oracle.json",
+    "log_ref": "t023-v2-sa-01-oracle.log",
+    "exit_code": 1,
+    "wall_seconds": 1.789059458,
+    "passed_cases": 8,
+    "total_cases": 9,
+    "failed_case_names": [
+      "negative_zero"
+    ],
+    "pipeline_unchanged": true,
+    "original_input_unchanged": true,
+    "separate_from_run_status": true
+  },
+  "limits": [
+    "No raw HTTP request/body capture; snapshots attest framework definition inputs, not provider receipt or interpretation.",
+    "An artifact oracle score does not promote the failed Run to success or erase its original token/task-cap outcome.",
+    "This is a retained pilot result, not a paired speed estimate or PTC execution-gain qualification.",
+    "No submission/config/source change, Cargo, model request, or VM was performed by this analysis."
+  ],
+  "privacy": "Whitelist counters/statuses/tool names/digests only; no commands, results, user prompts, credentials, headers, model reasoning or original response bodies."
+}

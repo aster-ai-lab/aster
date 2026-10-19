@@ -132,3 +132,15 @@ Guest packaging, protected metadata policy, stale control-file recovery,
 network mediation, background streaming and Python/openpyxl remain unqualified.
 The fixture image and shim were supplied explicitly, so these results do not
 qualify installation or an ordinary user's default command workflow.
+
+## CLI P0, 2026-10-19
+
+The [CLI P0 record](evidence/terminal/2026-10-19-cli-p0/OUTCOME.md) ran the
+shipped debug `aster` binary on macOS: version, doctor, inspect, unconfigured
+`setup --json`, source-build `update --check`, local session commands, one
+loopback conversation with continue, resume, fork, and delete, a sandbox-profile
+refusal, and the macOS shell refusal. 1 P0 process passed, 43 binary unit
+tests passed, and 2 workspace tests passed. Developer `~/.a3s` was unchanged.
+
+This still does not qualify a signed installer, a release-profile binary,
+Linux or Windows, or a live provider. The macOS native shell remains refused.

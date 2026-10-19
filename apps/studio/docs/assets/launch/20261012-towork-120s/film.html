@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="zh-CN">
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ToWork · 工作台漫游 · 120 秒</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #f3f3f1;
+    }
+    canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    #hud {
+      position: fixed;
+      bottom: 8px;
+      left: 12px;
+      font: 14px monospace;
+      display: none;
+    }
+  </style>
+  <canvas id="film" width="1920" height="1080"></canvas
+  ><span id="hud"></span>
+  <script src="motion.js"></script>
+  <script src="look.js"></script>
+  <script>
+    'use strict'
+    const g = document.getElementById('film').getContext('2d'),
+      W = 1920,
+      H = 1080,
+      DUR = 120,
+      C = LOOK.color
+    const { clamp, lerp } = OM,
+      P = { x: 240, y: 65, w: 1440, h: 920, r: 20 },
+      ICON = { x: 760, y: 225, w: 400, h: 400, r: 50 }
+    const phase = (t, a, b, e = OM.ease.expoInOut) => e(OM.seg(t, a, b))
+    let tracks = {},
+      images = {},
+      surfaces = {}
+    const SOURCES = [
+      '02-task-draft',
+      '23-task-result-clean',
+      '25-knowledge-home-clean',
+      '22-knowledge-search-clean',
+      '07-knowledge-list',
+      '08-knowledge-split',
+      '24-knowledge-toolbar-clean',
+      '09-agents',
+      '11-automation',
+      '12-automation-form',
+      '13-automation-draft',
+      '14-automation-frequency',
+      '15-automation-workdays',
+      '16-home-return'
+    ]
+    const CAPTIONS = [
+      [7, 10.2, '01 / 任务', '从一句话，开始一项工作。'],
+      [11, 17.6, '01 / 任务', '说清目标、时间与需要的格式。'],
+      [19.2, 26.5, '01 / 任务', '会前，把设备和物料准备好。'],
+      [27.3, 32.1, '01 / 任务', '会中，让节奏与互动有条理。'],
+      [33.2, 37.5, '01 / 任务', '会后，把纪要和跟进列清楚。'],
+      [38.3, 42.4, '01 / 任务', '任务留在侧栏，随时回来继续。'],
+      [44, 49, '02 / 知识', '需要的笔记，从搜索开始。'],
+      [50.5, 58.1, '02 / 知识', '把零散信息，整理成自己的清单。'],
+      [60.7, 64, '02 / 知识', 'Markdown 源码，直接阅读。'],
+      [65, 68.5, '02 / 知识', '分屏预览，看见内容的样子。'],
+      [71.5, 74, '03 / 智能体', '在工作台里，找到不同角色。'],
+      [74.7, 79.1, '03 / 智能体', '先了解职责，再选择合适的智能体。'],
+      [82, 86.1, '04 / 自动化', '重复的工作，先定义清楚。'],
+      [88, 94.6, '04 / 自动化', '为每次运行，写下同一个目标。'],
+      [96, 99, '04 / 自动化', '每天、工作日，或自定义频率。'],
+      [100, 104.7, '04 / 自动化', '运行时间与会话方式，在这里配置。'],
+      [106.8, 111, 'ToWork', '任务、知识、智能体与自动化，在一个工作台。']
+    ]
+    const KEYS = []
+    function key(t, x, y, zoom = 1, curve = OM.ease.sineInOut) {
+      KEYS.push({ t, x: P.x + x, y: P.y + y, zoom, curve })
+    }
+    key(0, 720, 460, 0.92)
+    key(7.7, 720, 460, 0.92)
+    key(9, 885, 455, 1.82, OM.ease.expoInOut)
+    key(17.8, 885, 455, 1.82)
+    key(18.8, 1040, 377, 1.95, OM.ease.expoInOut)
+    key(26.4, 1040, 377, 1.95)
+    key(27.3, 1040, 505, 1.95)
+    key(32.1, 1040, 505, 1.95)
+    key(33, 1040, 628, 1.95)
+    key(37.6, 1040, 628, 1.95)
+    key(38.6, 200, 332, 1.95, OM.ease.expoInOut)
+    key(40.2, 200, 332, 1.95)
+    key(42, 720, 460, 0.92)
+    key(43.1, 720, 460, 0.92)
+    key(44.1, 245, 145, 2.1, OM.ease.expoInOut)
+    key(48.7, 245, 145, 2.1)
+    key(50.3, 922, 350, 1.8)
+    key(57.7, 922, 350, 1.8)
+    key(59.1, 1240, 158, 2.1, OM.ease.expoInOut)
+    key(60.1, 1240, 158, 2.1)
+    key(61.3, 650, 360, 1.9)
+    key(63.7, 650, 360, 1.9)
+    key(65.1, 1145, 390, 1.9)
+    key(68.1, 1145, 390, 1.9)
+    key(69.5, 720, 460, 0.92)
+    key(70.4, 720, 460, 0.92)
+    key(71.6, 480, 90, 1.8, OM.ease.expoInOut)
+    key(73.8, 480, 90, 1.8)
+    key(74.7, 860, 219, 2.1)
+    key(79.1, 860, 219, 2.1)
+    key(80.7, 250, 185, 1.7, OM.ease.expoInOut)
+    key(81.1, 250, 185, 1.7)
+    key(82.1, 800, 75, 1.45)
+    key(83.6, 800, 75, 1.45)
+    key(84.8, 1280, 85, 2, OM.ease.expoInOut)
+    key(86.3, 1280, 85, 2)
+    key(87.5, 720, 360, 1.6)
+    key(94.3, 720, 360, 1.6)
+    key(95.2, 660, 570, 1.85)
+    key(99, 660, 570, 1.85)
+    key(100.1, 720, 636, 1.8)
+    key(104.5, 720, 636, 1.8)
+    key(105.8, 720, 460, 0.98)
+    key(106.2, 720, 460, 0.98)
+    key(107.5, 500, 310, 1.1)
+    key(108.3, 500, 310, 1.1)
+    key(110.5, 720, 460, 0.92)
+    key(111.2, 720, 475, 1)
+    key(120, 720, 475, 1)
+    const HAND = []
+    function handKey(t, x, y) {
+      HAND.push({ t, x: P.x + x, y: P.y + y })
+    }
+    ;[
+      [7.4, 1000, 610],
+      [9.2, 610, 455],
+      [10.6, 540, 440],
+      [16.7, 1150, 480],
+      [17.9, 1233, 528],
+      [18.1, 1233, 528],
+      [19.5, 700, 315],
+      [25.8, 700, 315],
+      [27.3, 700, 482],
+      [31.8, 700, 482],
+      [33, 700, 615],
+      [37.2, 700, 615],
+      [38.7, 190, 363],
+      [40.2, 190, 363],
+      [42.5, 30, 138],
+      [43, 30, 138],
+      [44.6, 170, 117],
+      [48, 170, 117],
+      [49.2, 180, 269],
+      [49.6, 180, 269],
+      [52, 920, 435],
+      [57.8, 920, 435],
+      [59.7, 1325, 160],
+      [60, 1325, 160],
+      [62, 680, 416],
+      [63.8, 680, 416],
+      [65, 1160, 490],
+      [67.7, 1160, 490],
+      [69.7, 30, 190],
+      [70, 30, 190],
+      [70.9, 145, 80],
+      [71.1, 145, 80],
+      [74.6, 820, 213],
+      [78.8, 820, 213],
+      [80.6, 140, 188],
+      [81, 140, 188],
+      [83, 1100, 90],
+      [85.4, 1365, 35],
+      [85.6, 1365, 35],
+      [86.6, 1330, 75],
+      [86.8, 1330, 75],
+      [88, 500, 266],
+      [89.3, 500, 266],
+      [90, 650, 354],
+      [94, 650, 354],
+      [95.4, 475, 541],
+      [95.6, 475, 541],
+      [98.9, 425, 649],
+      [99.1, 425, 649],
+      [101, 820, 676],
+      [104.3, 820, 676],
+      [105.5, 965, 745],
+      [105.7, 965, 745],
+      [106.6, 210, 30],
+      [107, 210, 30],
+      [109, 920, 630],
+      [111.2, 920, 630]
+    ].forEach((a) => handKey(...a))
+    const CLICKS = [17.9, 43, 49.5, 60, 70, 71.1, 81, 85.6, 86.8, 95.6, 99.1, 105.7, 107]
+    const phaseCuts = [
+      [18.1, '23-task-result-clean'],
+      [43, '25-knowledge-home-clean'],
+      [47.5, '22-knowledge-search-clean'],
+      [49.5, '07-knowledge-list'],
+      [60, '08-knowledge-split'],
+      [70, '16-home-return'],
+      [71.1, '09-agents'],
+      [81, '11-automation'],
+      [85.6, '12-automation-form'],
+      [86.8, '13-automation-draft'],
+      [95.6, '14-automation-frequency'],
+      [99.1, '15-automation-workdays'],
+      [105.7, '11-automation'],
+      [107, '16-home-return']
+    ]
+    function stateAt(t) {
+      let state = '02-task-draft'
+      for (const [a, s] of phaseCuts) {
+        if (t < a) break
+        state = s
+      }
+      return state
+    }
+    function rect(r, fill, stroke) {
+      g.beginPath()
+      g.roundRect(r.x, r.y, Math.max(0.01, r.w), Math.max(0.01, r.h), r.r || 0)
+      if (fill) {
+        g.fillStyle = fill
+        g.fill()
+      }
+      if (stroke) {
+        g.strokeStyle = stroke
+        g.lineWidth = 1
+        g.stroke()
+      }
+    }
+    function track(id, r, op = 1) {
+      const m = g.getTransform(),
+        b = OM.projectBox([m.a, m.b, m.c, m.d, m.e, m.f], r)
+      tracks[id] = { ...b, op }
+    }
+    function font(role, size) {
+      g.font = LOOK.font(role, size)
+      g.textBaseline = 'alphabetic'
+    }
+    function text(s, x, y, size, color = C.ink, role = 'text', align = 'left') {
+      font(role, size)
+      g.fillStyle = color
+      g.textAlign = align
+      g.fillText(s, x, y)
+    }
+    function erase(r, color = '#fff') {
+      g.fillStyle = color
+      g.fillRect(r.x, r.y, r.w, r.h)
+    }
+    function surface(name) {
+      if (surfaces[name]) return surfaces[name]
+      const c = document.createElement('canvas')
+      c.width = 2880
+      c.height = 1840
+      const q = c.getContext('2d')
+      q.scale(2, 2)
+      q.drawImage(images[name], 0, 0, 1440, 920)
+      // Native pointer remnants are in blank surfaces; content pixels stay untouched.
+      const patches = {
+        '02-task-draft': [835, 461, 90, 47, '#fff'],
+        '23-task-result-clean': [968, 756, 99, 61, '#fff'],
+        '07-knowledge-list': [265, 897, 51, 19, '#fff'],
+        '09-agents': [165, 61, 50, 35, '#f3f3f3'],
+        '11-automation': [165, 172, 50, 35, '#f3f3f3'],
+        '13-automation-draft': [680, 365, 90, 64, '#fff']
+      }
+      const a = patches[name]
+      if (a) {
+        q.fillStyle = a[4]
+        q.fillRect(...a.slice(0, 4))
+      }
+      if (name === '08-knowledge-split')
+        q.drawImage(images['24-knowledge-toolbar-clean'], 1200 * 2, 125 * 2, 225 * 2, 80 * 2, 1200, 125, 225, 80)
+      if (name === '25-knowledge-home-clean')
+        q.drawImage(images['22-knowledge-search-clean'], 320 * 2, 0, 1120 * 2, 920 * 2, 320, 0, 1120, 920)
+      if (name === '22-knowledge-search-clean')
+        q.drawImage(images['24-knowledge-toolbar-clean'], 72 * 2, 99 * 2, 235 * 2, 38 * 2, 72, 99, 235, 38)
+      if (name === '16-home-return') q.drawImage(images['02-task-draft'], 70, 5, 240, 48, 70, 5, 240, 48)
+      if (name === '12-automation-form') {
+        q.drawImage(surface('11-automation'), 0, 0, 1440, 920)
+        q.drawImage(images[name], 1245 * 2, 55 * 2, 180 * 2, 80 * 2, 1245, 55, 180, 80)
+      }
+      if (name === '14-automation-frequency') {
+        q.drawImage(surface('13-automation-draft'), 0, 0, 1440, 920)
+        q.drawImage(images[name], 382 * 2, 563 * 2, 182 * 2, 237 * 2, 382, 563, 182, 237)
+      }
+      if (name === '15-automation-workdays') {
+        q.drawImage(surface('13-automation-draft'), 0, 0, 1440, 920)
+        q.drawImage(images[name], 358 * 2, 131 * 2, 724 * 2, 657 * 2, 358, 131, 724, 657)
+      }
+      surfaces[name] = c
+      return c
+    }
+    function reveal(name, r, k, bg = '#fff') {
+      erase(r, bg)
+      if (k <= 0) return
+      g.save()
+      g.beginPath()
+      g.rect(r.x, r.y, r.w * clamp(k, 0, 1), r.h)
+      g.clip()
+      g.drawImage(surface(name), 0, 0, 1440, 920)
+      g.restore()
+    }
+    function product(t) {
+      const name = stateAt(t)
+      g.drawImage(surface(name), 0, 0, 1440, 920)
+      if (name === '02-task-draft') {
+        const k = clamp(OM.seg(t, 10.8, 16.1), 0, 1),
+          a = { x: 514, y: 428, w: 721, h: 17 },
+          b = { x: 514, y: 448, w: 235, h: 17 }
+        reveal(name, a, k * 1.32)
+        reveal(name, b, (k - 0.76) / 0.24)
+        if (t < 10.8) erase({ x: 1217, y: 512, w: 32, h: 31 }, '#fff')
+      }
+      if (name === '13-automation-draft') {
+        reveal(name, { x: 397, y: 255, w: 126, h: 20 }, OM.seg(t, 87.4, 88.5), '#f5f5f5')
+        reveal(name, { x: 398, y: 345, w: 442, h: 20 }, OM.seg(t, 89.2, 92.7))
+      }
+    }
+    function planeAt(t) {
+      if (t < 7) return OM.morphRect(t, 3.8, 6.9, ICON, P, { curve: OM.ease.expoInOut })
+      if (t >= 111.2) return OM.morphRect(t, 111.2, 113.4, P, ICON, { curve: OM.ease.expoInOut })
+      return P
+    }
+    function workspace(t) {
+      const p = planeAt(t)
+      g.save()
+      rect({ ...p, r: 20 }, '#fff')
+      g.beginPath()
+      g.roundRect(p.x, p.y, p.w, p.h, 20)
+      g.clip()
+      g.translate(p.x, p.y)
+      g.scale(p.w / 1440, p.h / 920)
+      product(t)
+      g.restore()
+      track('workspace', p, t < 113.4 ? 1 : 0)
+      if (t < 7) {
+        g.save()
+        g.globalAlpha = 1 - phase(t, 4.3, 6.4)
+        g.fillStyle = C.ground
+        g.fillRect(p.x, p.y, p.w, p.h)
+        g.drawImage(images.logo, p.x, p.y, p.w, p.h)
+        g.restore()
+      }
+      if (t >= 111.2) {
+        g.save()
+        g.globalAlpha = phase(t, 112.2, 113.4)
+        g.fillStyle = C.ground
+        g.fillRect(p.x, p.y, p.w, p.h)
+        g.drawImage(images.logo, p.x, p.y, p.w, p.h)
+        g.restore()
+      }
+      track('carrier', p)
+    }
+    function handAt(t) {
+      const h = OM.cursor(t, HAND, CLICKS)
+      let i = 0
+      while (i < HAND.length - 2 && t > HAND[i + 1].t) i++
+      const a = HAND[i],
+        b = HAND[i + 1],
+        p = OM.morphRect(t, a.t, b.t, { ...a, w: 0, h: 0 }, { ...b, w: 0, h: 0 }, { curve: OM.ease.sineInOut })
+      return { x: p.x, y: p.y, s: h.s }
+    }
+    function hand(t) {
+      if (t < 7.4 || t > 111.2) return
+      const h = handAt(t),
+        z = OM.camera(t, KEYS).zoom,
+        fade = Math.min(phase(t, 7.4, 7.8), 1 - phase(t, 110.7, 111.2))
+      g.save()
+      g.globalAlpha = fade
+      g.translate(h.x, h.y)
+      g.scale(h.s / z, h.s / z)
+      g.beginPath()
+      g.moveTo(0, 0)
+      g.lineTo(0, 27)
+      g.lineTo(7, 20)
+      g.lineTo(13, 33)
+      g.lineTo(19, 30)
+      g.lineTo(13, 18)
+      g.lineTo(24, 18)
+      g.closePath()
+      g.fillStyle = '#171717'
+      g.fill()
+      g.strokeStyle = '#fff'
+      g.lineWidth = 2
+      g.stroke()
+      for (const a of CLICKS) {
+        const p = OM.seg(t, a, a + 0.35)
+        if (t >= a && t < a + 0.35) {
+          g.beginPath()
+          g.arc(0, 0, lerp(9, 30, OM.ease.expoOut(p)), 0, Math.PI * 2)
+          g.strokeStyle = `rgba(0,0,0,${0.32 * (1 - p)})`
+          g.lineWidth = 2
+          g.stroke()
+        }
+      }
+      g.restore()
+      track('hand', { x: h.x, y: h.y, w: 24 / z, h: 34 / z }, fade)
+    }
+    function emphasis(t) {
+      const points = [
+        [19.2, 26.5, 714, 323, 50],
+        [27.3, 32.1, 714, 481, 50],
+        [33, 37.5, 714, 615, 50],
+        [50.5, 57.6, 552, 260, 48]
+      ]
+      const p = points.find((p) => t >= p[0] && t <= p[1])
+      if (!p) return
+      const u = phase(t, p[0], p[0] + 0.3, OM.ease.expoOut),
+        op = 1 - phase(t, p[1] - 0.2, p[1])
+      g.save()
+      g.globalAlpha = op
+      rect({ x: P.x + p[2] - 10, y: P.y + p[3] - 14, w: 2, h: p[4] * u, r: 1 }, C.accent)
+      g.restore()
+      track('reading-anchor', { x: P.x + p[2] - 10, y: P.y + p[3] - 14, w: 2, h: p[4] * u }, op)
+    }
+    function subjects(t) {
+      const windows = [
+        ['before', 19.2, 26.5, 720, 320, 650, 124],
+        ['during', 27.3, 32.1, 720, 480, 650, 98],
+        ['after', 33.2, 37.5, 720, 615, 650, 77],
+        ['note', 51, 57.6, 552, 250, 640, 218],
+        ['role', 75, 78.8, 670, 178, 275, 76],
+        ['schedule', 100.5, 104.3, 384, 523, 672, 181]
+      ]
+      for (const [id, a, b, x, y, w, h] of windows) if (t >= a && t <= b) track(id, { x: P.x + x, y: P.y + y, w, h })
+    }
+    function overlay(t) {
+      if (t < 3.8) {
+        const a = OM.maskRise(Math.min(t, 2.3), 0.45, 0, { dist: 30, zeta: 0.8, omega: 20 })
+        g.save()
+        g.globalAlpha = a.visible ? 1 : 0
+        text('把工作，放在一起。', 960, 748 + a.y, 56, C.ink, 'display', 'center')
+        g.restore()
+        track('opening-line', { x: 500, y: 700, w: 920, h: 70 }, a.visible ? 1 : 0)
+      }
+      const c = CAPTIONS.find((c) => t >= c[0] && t <= c[1])
+      if (c) {
+        const a = Math.min(phase(t, c[0], c[0] + 0.25, OM.ease.expoOut), 1 - phase(t, c[1] - 0.2, c[1]))
+        g.save()
+        g.globalAlpha = a
+        const grad = g.createLinearGradient(0, 940, 0, 1000)
+        grad.addColorStop(0, 'rgba(243,243,241,0)')
+        grad.addColorStop(1, C.ground)
+        g.fillStyle = grad
+        g.fillRect(0, 940, 1920, 60)
+        g.fillStyle = C.ground
+        g.fillRect(0, 1000, 1920, 80)
+        text(c[2], 100, 1016, 18, C.mute, 'mono')
+        text(c[3], 960, 1050, 30, C.ink, 'text', 'center')
+        g.restore()
+        track('caption', { x: 100, y: 997, w: 1720, h: 65 }, a)
+      }
+      if (t >= 113.4) {
+        const a = OM.maskRise(Math.min(t, 115.7), 113.4, 0, { dist: 28, zeta: 0.85, omega: 24 })
+        text('把工作，放在一起。', 960, 752 + a.y, 48, C.ink, 'display', 'center')
+        const b = phase(t, 114.4, 115.3, OM.ease.sineInOut)
+        g.save()
+        g.globalAlpha = b
+        text('任务  ·  知识  ·  智能体  ·  自动化', 960, 823, 25, C.mute, 'text', 'center')
+        g.restore()
+        track('closing-line', { x: 490, y: 704, w: 940, h: 64 })
+        track('closing-sub', { x: 500, y: 788, w: 920, h: 48 }, b)
+      }
+    }
+    function cameraAt(t) {
+      return t >= 111.2 ? { x: 960, y: 540, zoom: 1, rot: 0 } : OM.camera(t, KEYS)
+    }
+    function seek(t) {
+      t = clamp(t, 0, DUR)
+      tracks = {}
+      g.setTransform(1, 0, 0, 1, 0, 0)
+      g.globalAlpha = 1
+      g.fillStyle = C.ground
+      g.fillRect(0, 0, W, H)
+      const cam = cameraAt(t)
+      g.setTransform(...OM.view(cam))
+      workspace(t)
+      emphasis(t)
+      subjects(t)
+      hand(t)
+      g.setTransform(1, 0, 0, 1, 0, 0)
+      overlay(t)
+      g.globalAlpha = 1
+      if (location.search.includes('hud')) {
+        document.getElementById('hud').style.display = 'block'
+        document.getElementById('hud').textContent = t.toFixed(3) + ' s'
+      }
+      return true
+    }
+    window.__meta = {
+      dur: DUR,
+      fps: 30,
+      w: W,
+      h: H,
+      cuts: [],
+      inFrame: {
+        carrier: [0, 7, 'whole'],
+        'opening-line': [1, 3.7, 'whole'],
+        before: [20, 26, 'whole'],
+        during: [28, 32, 'whole'],
+        after: [34, 37, 'whole'],
+        note: [51, 57, 'whole'],
+        role: [75, 78.8, 'whole'],
+        schedule: [100.5, 104.3, 'whole'],
+        'closing-line': [114, 120, 'whole'],
+        'closing-sub': [115.4, 120, 'whole'],
+        workspace: [110.5, 111.1, 'whole']
+      }
+    }
+    window.__seek = async (t) => seek(t)
+    window.__track = () => tracks
+    window.__motion = (a, b) => {
+      const ca = cameraAt(a),
+        cb = cameraAt(b),
+        cm = cameraAt((a + b) / 2),
+        pa = OM.projectBox(OM.view(ca), planeAt(a)),
+        pb = OM.projectBox(OM.view(cb), planeAt(b))
+      const h0 = handAt(a),
+        h1 = handAt(b),
+        ha = OM.project(OM.view(ca), h0.x, h0.y),
+        hb = OM.project(OM.view(cb), h1.x, h1.y)
+      const opening = (t) => OM.maskRise(Math.min(t, 2.3), 0.45, 0, { dist: 30, zeta: 0.8, omega: 20 }).y,
+        closing = (t) => OM.maskRise(Math.min(t, 115.7), 113.4, 0, { dist: 28, zeta: 0.85, omega: 24 }).y
+      return Math.max(
+        OM.screenTravel(ca, cb, cm),
+        Math.abs(pa.x - pb.x) + Math.abs(pa.w - pb.w),
+        Math.abs(pa.y - pb.y) + Math.abs(pa.h - pb.h),
+        Math.hypot(ha[0] - hb[0], ha[1] - hb[1]),
+        34 * Math.abs(h0.s - h1.s),
+        Math.abs(opening(a) - opening(b)),
+        Math.abs(closing(a) - closing(b)),
+        ...[
+          [19.2, 26.5],
+          [27.3, 32.1],
+          [33, 37.5],
+          [50.5, 57.6]
+        ].map(([t]) => 50 * Math.abs(phase(a, t, t + 0.3, OM.ease.expoOut) - phase(b, t, t + 0.3, OM.ease.expoOut)))
+      )
+    }
+    window.__events = () => ({
+      T: DUR,
+      events: [
+        [3.8, 'open', 0, 0.7],
+        [9, 'focus', 0.15, 0.35],
+        [10.8, 'key', -0.1, 0.2],
+        [12.2, 'key', 0.05, 0.13],
+        [14, 'key', 0.1, 0.16],
+        [17.9, 'run', 0.3, 0.6],
+        [19.2, 'focus', 0.1, 0.3],
+        [27.3, 'focus', 0.1, 0.2],
+        [33, 'focus', 0.1, 0.25],
+        [38.6, 'focus', -0.4, 0.35],
+        [43, 'open', -0.4, 0.4],
+        [47.5, 'key', -0.3, 0.2],
+        [49.5, 'run', -0.3, 0.4],
+        [59.7, 'focus', 0.35, 0.3],
+        [60, 'open', 0.3, 0.5],
+        [65.1, 'focus', 0.3, 0.2],
+        [70, 'open', -0.4, 0.3],
+        [71.1, 'run', -0.4, 0.35],
+        [74.7, 'focus', 0.15, 0.2],
+        [81, 'open', -0.3, 0.5],
+        [85.6, 'run', 0.4, 0.35],
+        [86.8, 'open', 0.1, 0.4],
+        [87.4, 'key', -0.1, 0.2],
+        [89.2, 'key', 0.1, 0.2],
+        [90.8, 'key', 0.2, 0.13],
+        [95.6, 'open', -0.25, 0.4],
+        [99.1, 'run', -0.25, 0.4],
+        [105.7, 'fold', 0.2, 0.3],
+        [107, 'run', -0.3, 0.3],
+        [111.2, 'fold', 0, 0.6],
+        [113.4, 'seal', 0, 0.5]
+      ].map(([t, kind, pan, v]) => ({ t, kind, pan, v }))
+    })
+    window.__ready = Promise.all([
+      LOOK.ready,
+      ...SOURCES.map(
+        (name) =>
+          new Promise((resolve, reject) => {
+            const i = new Image()
+            i.onload = () => resolve()
+            i.onerror = reject
+            i.src = 'capture/' + name + '.png'
+            images[name] = i
+          })
+      ),
+      new Promise((resolve, reject) => {
+        const i = new Image()
+        i.onload = resolve
+        i.onerror = reject
+        i.src = 'brand/towork-logo.png'
+        images.logo = i
+      })
+    ]).then(() => {
+      for (const s of SOURCES) surface(s)
+      seek(0)
+      const q = new URLSearchParams(location.search)
+      if (q.has('t')) seek(Number(q.get('t')))
+      if (q.has('play')) {
+        const start = performance.now()
+        function tick() {
+          seek(((performance.now() - start) / 1000) % DUR)
+          requestAnimationFrame(tick)
+        }
+        requestAnimationFrame(tick)
+      }
+    })
+  </script>
+</html>

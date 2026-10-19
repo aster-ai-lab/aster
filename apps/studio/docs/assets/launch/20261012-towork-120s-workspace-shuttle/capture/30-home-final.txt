@@ -1,0 +1,95 @@
+Window: "ToWork", App: ToWork.
+0 standard window ToWork, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content Description: ToWork, URL: 127.0.0.1:4318/windows/main/index.html
+			3 pop up button RoyLin
+			4 button 工作
+			5 button 消息
+			6 button 知识
+			7 button 插件
+			8 button (collapsed) 任务, Secondary Actions: Expand
+			9 button 设置
+			10 container
+				11 button (disabled) 添加智能体
+				12 pop up button 展示方式
+				13 container
+					14 sortable ToWork 工作助手 更多 新任务
+					15 button 法务专家
+					16 button 新任务
+					17 text 暂无任务
+				18 splitter 调整面板宽度, Value: 275
+				19 toggle button 隐藏侧边栏, Value: on
+				20 pop up button Boyue DeepSeek V4 Flash | ToGateway
+				21 pop up button 不使用工作目录
+				22 toggle button 文件, Value: off
+				23 toggle button 浏览器, Value: off
+				24 toggle button 状态, Value: off
+				25 heading 今天想做点什么？, Value: 2
+					26 text 今天想做点什么？
+				27 container 消息
+				28 button 新建任务
+				29 button (collapsed) 搜索任务, Secondary Actions: Expand
+				30 container 工作导航
+					31 button 智能体
+					32 button 连接器
+					33 button 技能
+					34 button 自动化
+				35 container 项目
+					36 container
+						37 heading 项目, Value: 3
+							38 text 项目
+						39 button 新建项目
+					40 text 还没有项目
+				41 container 任务
+					42 container
+						43 heading 任务, Value: 3
+							44 text 任务
+						45 button 查看全部最近任务
+					46 container 今天
+						47 heading 今天, Value: 3
+							48 text 今天
+						49 button 请使用 frontend-design 技能，制作「秋日新品发布」复盘 HTML…
+						50 text 2分钟前
+						51 button 重命名
+						52 toggle button 置顶, Value: off
+						53 button 归档
+						54 button 项目
+						55 text 5分钟前
+						56 button 重命名
+						57 toggle button 置顶, Value: off
+						58 button 归档
+						59 button 使用已安装的 Fetch 网页内容抓取连接器，读取 https://exampl…
+						60 text 5分钟前
+						61 button 重命名
+						62 toggle button 置顶, Value: off
+						63 button 归档
+						64 button 发布复盘提醒 · 视频演示
+						65 text 13分钟前
+						66 button 重命名
+						67 toggle button 置顶, Value: off
+						68 button 归档
+						69 button 用以下演示数据制作一份「秋日新品发布」复盘：浏览量 12000、报名 860、到…
+						70 text 19分钟前
+						71 button 重命名
+						72 toggle button 置顶, Value: off
+						73 button 归档
+				74 toggle button 收起侧边栏, Value: on
+				75 heading ToWork, Value: 1
+				76 text entry area (settable) 
+
+					77 text 描述任务，输入 / 使用指令或技能，@ 使用智能体
+				78 pop up button 更多选项
+				79 pop up button 授权模式: 逐次确认
+				80 pop up button Boyue DeepSeek V4 Flash
+				81 button (disabled) 发送
+				82 toolbar 任务范围
+					83 pop up button 项目文件夹
+					84 pop up button 工作区文件
+	85 close button
+	86 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	87 minimize button
+88 menu bar
+	89 ToWork
+	90 Edit
+
+The focused UI element is 76 text entry area (settable) 

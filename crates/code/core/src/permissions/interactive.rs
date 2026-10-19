@@ -371,8 +371,8 @@ pub(super) fn classify_atomic_tool(
         "search" | "ls" | "code_symbols" | "code_navigation" | "code_diagnostics" => {
             classify_scoped_path(args, "path", PermissionDecision::Allow, workspace)
         }
-        "web_search" | "web_fetch" | "search_skills" | "generate_object" | "output_check"
-        | "update_plan" | "ask_user" | "ask_user_form" => PermissionDecision::Allow,
+        "web_search" | "web_fetch" | "generate_object" | "output_check" | "update_plan"
+        | "ask_user" | "ask_user_form" => PermissionDecision::Allow,
         "write" | "edit" | "office_file" => {
             classify_scoped_path(args, "file_path", PermissionDecision::Ask, workspace)
         }

@@ -1,0 +1,22 @@
+sha2 v0.10.9
+├── sha2 feature "asm"
+│   └── a3s-oci-runtime v0.3.6 (/Users/roylin/code/aster/crates/oci-runtime/crates/runtime)
+│       └── a3s-oci-runtime feature "default"
+│           └── a3s-oci-cli v0.3.6 (/Users/roylin/code/aster/crates/oci-runtime/crates/cli)
+│               └── a3s-oci-cli feature "default" (command-line)
+├── sha2 feature "default"
+│   ├── a3s-oci-agent-protocol v0.3.6 (/Users/roylin/code/aster/crates/oci-runtime/crates/agent-protocol)
+│   │   └── a3s-oci-agent-protocol feature "default"
+│   │       └── a3s-oci-runtime v0.3.6 (/Users/roylin/code/aster/crates/oci-runtime/crates/runtime) (*)
+│   ├── a3s-oci-cli v0.3.6 (/Users/roylin/code/aster/crates/oci-runtime/crates/cli) (*)
+│   ├── a3s-oci-runtime v0.3.6 (/Users/roylin/code/aster/crates/oci-runtime/crates/runtime) (*)
+│   └── a3s-oci-sdk v0.3.2 (/Users/roylin/code/aster/crates/oci-runtime/crates/sdk)
+│       └── a3s-oci-sdk feature "default"
+│           ├── a3s-oci-agent-protocol v0.3.6 (/Users/roylin/code/aster/crates/oci-runtime/crates/agent-protocol) (*)
+│           ├── a3s-oci-cli v0.3.6 (/Users/roylin/code/aster/crates/oci-runtime/crates/cli) (*)
+│           └── a3s-oci-runtime v0.3.6 (/Users/roylin/code/aster/crates/oci-runtime/crates/runtime) (*)
+├── sha2 feature "force-soft" (command-line)
+├── sha2 feature "sha2-asm"
+│   └── sha2 feature "asm" (*)
+└── sha2 feature "std"
+    └── sha2 feature "default" (*)

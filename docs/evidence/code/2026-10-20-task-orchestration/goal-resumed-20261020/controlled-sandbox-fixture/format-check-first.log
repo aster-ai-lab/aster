@@ -1,0 +1,13 @@
+Diff in /Users/roylin/code/aster/apps/work/src-tauri/src/agent_plane/local_acp_delivery_tests.rs:9:
+ mod program;
+ #[path = "local_acp_provider_tests.rs"]
+ mod provider_socket;
+[31m-#[path = "local_acp_search_tests.rs"]
+(B[m[31m-mod search;
+(B[m #[path = "local_acp_sandbox_tests.rs"]
+ mod sandbox;
+[32m+#[path = "local_acp_search_tests.rs"]
+(B[m[32m+mod search;
+(B[m 
+ /// Only the provider is scripted; Work launches this checkout's real ACP/Core.
+ struct Provider {

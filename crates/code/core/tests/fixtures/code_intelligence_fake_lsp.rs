@@ -2,6 +2,10 @@ use std::{
     fs::OpenOptions,
     io::{self, BufRead, BufReader, Write},
     path::PathBuf,
+    sync::{
+        atomic::{AtomicBool, Ordering},
+        Arc, Mutex,
+    },
 };
 
 fn main() -> io::Result<()> {
@@ -27,16 +31,44 @@ fn main() -> io::Result<()> {
     } else {
         ColdNavigation::Disabled
     };
+    let readiness = match executable.file_stem().and_then(|name| name.to_str()) {
+        Some("readiness-cold-fake-lsp") => Some("cold"),
+        Some("readiness-early-fake-lsp") => Some("early"),
+        Some("readiness-warning-fake-lsp") => Some("warning"),
+        Some("readiness-error-fake-lsp") => Some("error"),
+        Some("readiness-missing-fake-lsp") => Some("missing"),
+        Some("readiness-invalid-fake-lsp") => Some("invalid"),
+        Some("readiness-query-budget-fake-lsp") => Some("query-budget"),
+        _ => None,
+    };
+    let ready = Arc::new(AtomicBool::new(readiness.is_none()));
+    let stopping = Arc::new(AtomicBool::new(false));
+    let mut readiness_task = None;
     let stdin = io::stdin();
     let mut input = BufReader::new(stdin.lock());
-    let stdout = io::stdout();
-    let mut output = stdout.lock();
+    let output = Arc::new(Mutex::new(io::stdout()));
     let mut document_uri = None;
     let mut navigation_requests = 0_usize;
 
     while let Some(body) = read_message(&mut input)? {
         append_log(&log_path, &body)?;
         let method = string_field(&body, "method").unwrap_or_default();
+        if method == "initialize" {
+            let status = match readiness {
+                Some("early" | "query-budget") => {
+                    ready.store(true, Ordering::Release);
+                    Some(server_status("ok", true))
+                }
+                Some("cold") => Some(server_status("ok", false)),
+                Some("warning") => Some(server_status("warning", true)),
+                Some("error") => Some(server_status("error", true)),
+                Some("invalid") => Some("{\"jsonrpc\":\"2.0\",\"method\":\"experimental/serverStatus\",\"params\":{\"health\":\"ok\",\"quiescent\":\"yes\"}}".to_owned()),
+                _ => None,
+            };
+            if let Some(status) = status {
+                write_message(&mut *output.lock().unwrap(), &status)?;
+            }
+        }
         if executable_name.contains("slow-initialize") && method == "initialize" {
             std::thread::sleep(std::time::Duration::from_millis(500));
         }
@@ -45,11 +77,24 @@ fn main() -> io::Result<()> {
             std::process::exit(12);
         }
         if method == "textDocument/didOpen" {
+            if readiness == Some("query-budget") && document_uri.is_none() {
+                ready.store(false, Ordering::Release);
+                write_message(&mut *output.lock().unwrap(), &server_status("ok", false))?;
+                readiness_task = Some(ready_after(
+                    Arc::clone(&output),
+                    Arc::clone(&ready),
+                    Arc::clone(&stopping),
+                    std::time::Duration::from_millis(500),
+                ));
+            }
             document_uri = string_field(&body, "uri");
             if push_diagnostics {
                 if let Some(uri) = document_uri.as_deref() {
                     std::thread::sleep(std::time::Duration::from_millis(50));
-                    write_message(&mut output, &publish_diagnostics_notification(uri))?;
+                    write_message(
+                        &mut *output.lock().unwrap(),
+                        &publish_diagnostics_notification(uri),
+                    )?;
                 }
             }
         }
@@ -68,7 +113,7 @@ fn main() -> io::Result<()> {
             && document_uri.is_none()
         {
             write_message(
-                &mut output,
+                &mut *output.lock().unwrap(),
                 &format!(
                     "{{\"jsonrpc\":\"2.0\",\"id\":{id},\"error\":{{\"code\":1,\"message\":\"No Project.\"}}}}"
                 ),
@@ -77,18 +122,40 @@ fn main() -> io::Result<()> {
         }
         if is_navigation_method(&method) {
             navigation_requests += 1;
+            if readiness == Some("query-budget") && ready.load(Ordering::Acquire) {
+                std::thread::sleep(std::time::Duration::from_millis(500));
+            }
         }
-        let result = response_for(
-            &method,
-            document_uri.as_deref(),
-            push_diagnostics,
-            cold_navigation,
-            navigation_requests,
-        );
+        let result = if readiness.is_some()
+            && !ready.load(Ordering::Acquire)
+            && is_navigation_method(&method)
+        {
+            "[]".to_owned()
+        } else {
+            response_for(
+                &method,
+                document_uri.as_deref(),
+                push_diagnostics,
+                cold_navigation,
+                navigation_requests,
+            )
+        };
         write_message(
-            &mut output,
+            &mut *output.lock().unwrap(),
             &format!("{{\"jsonrpc\":\"2.0\",\"id\":{id},\"result\":{result}}}"),
         )?;
+        if method == "initialize" && readiness == Some("cold") {
+            readiness_task = Some(ready_after(
+                Arc::clone(&output),
+                Arc::clone(&ready),
+                Arc::clone(&stopping),
+                std::time::Duration::from_secs(3),
+            ));
+        }
+    }
+    stopping.store(true, Ordering::Release);
+    if let Some(task) = readiness_task {
+        let _ = task.join();
     }
     append_log(
         &log_path,
@@ -98,6 +165,29 @@ fn main() -> io::Result<()> {
         ),
     )?;
     Ok(())
+}
+
+fn ready_after(
+    output: Arc<Mutex<io::Stdout>>,
+    ready: Arc<AtomicBool>,
+    stopping: Arc<AtomicBool>,
+    delay: std::time::Duration,
+) -> std::thread::JoinHandle<()> {
+    std::thread::spawn(move || {
+        let deadline = std::time::Instant::now() + delay;
+        while std::time::Instant::now() < deadline {
+            if stopping.load(Ordering::Acquire) {
+                return;
+            }
+            std::thread::sleep(std::time::Duration::from_millis(10));
+        }
+        ready.store(true, Ordering::Release);
+        let _ = write_message(&mut *output.lock().unwrap(), &server_status("ok", true));
+    })
+}
+
+fn server_status(health: &str, quiescent: bool) -> String {
+    format!("{{\"jsonrpc\":\"2.0\",\"method\":\"experimental/serverStatus\",\"params\":{{\"health\":\"{health}\",\"quiescent\":{quiescent}}}}}")
 }
 
 #[derive(Clone, Copy)]

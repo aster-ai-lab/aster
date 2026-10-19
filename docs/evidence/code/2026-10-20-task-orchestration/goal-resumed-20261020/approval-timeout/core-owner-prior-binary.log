@@ -1,0 +1,18 @@
+
+running 1 test
+test agent_api::tests::fact_log::work_policy::two_actual_policy_sessions_share_original_owner_exclusion_and_legacy_refusal ... FAILED
+
+failures:
+
+---- agent_api::tests::fact_log::work_policy::two_actual_policy_sessions_share_original_owner_exclusion_and_legacy_refusal stdout ----
+
+thread 'agent_api::tests::fact_log::work_policy::two_actual_policy_sessions_share_original_owner_exclusion_and_legacy_refusal' (49987286) panicked at crates/code/core/src/agent_api/tests/fact_log/work_policy.rs:344:6:
+called `Result::unwrap()` on an `Err` value: Elapsed(())
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    agent_api::tests::fact_log::work_policy::two_actual_policy_sessions_share_original_owner_exclusion_and_legacy_refusal
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5196 filtered out; finished in 5.16s
+

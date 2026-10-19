@@ -90,7 +90,11 @@ pub(super) fn schema_tools(
 #[tokio::test]
 async fn invalid_original_arguments_fail_before_hook_or_tool_execution() {
     let root = tempfile::tempdir().unwrap();
-    let (tools, executions, hook_calls) = schema_tools(root.path(), Some(json!({"write":true})));
+    let (base, executions, hook_calls) = schema_tools(root.path(), Some(json!({"write":true})));
+    let (events, mut received) = tokio::sync::mpsc::channel(8);
+    let mut tools = base.as_ref().clone();
+    tools.events = Some(events);
+    let tools = Arc::new(tools);
     let invalid = json!({"write":true,"unexpected":true});
     let prepared = prepare_tools(
         Arc::clone(&tools),
@@ -123,6 +127,21 @@ async fn invalid_original_arguments_fail_before_hook_or_tool_execution() {
     assert_eq!(executions.load(Ordering::SeqCst), 0);
     assert!(!root.path().join("hook-effect.txt").exists());
     assert!(!root.path().join("changed.txt").exists());
+    assert!(
+        matches!(
+            received.try_recv(),
+            Ok(crate::agent::AgentEvent::ToolEnd {
+                id, name, args: Some(args), output, exit_code: 1,
+                error_kind: Some(crate::tools::ToolErrorKind::InvalidArgument { .. }), ..
+            }) if id == "invalid-original" && name == "receipt_probe" && args == invalid
+                && result.output.as_str() == Some(output.as_str())
+        ),
+        "a rejected schema must settle the same tool row"
+    );
+    assert!(
+        received.try_recv().is_err(),
+        "schema rejection has exactly one terminal event"
+    );
 }
 
 #[tokio::test]

@@ -1,0 +1,223 @@
+{
+  "pipeline_sha256": "1c3463746c2a5da2ad78543995c071810498823bac02ec79327221eeec6e1c61",
+  "oracle_self_test": "270 DP versus brute-force cases passed",
+  "static_imports": [
+    "argparse",
+    "csv",
+    "datetime",
+    "decimal",
+    "fractions",
+    "hashlib",
+    "json",
+    "os"
+  ],
+  "non_stdlib_static_imports": [],
+  "original_input_unchanged": true,
+  "passed_cases": 8,
+  "total_cases": 9,
+  "cases": [
+    {
+      "case": "public",
+      "passed": true,
+      "input_rows": 1000,
+      "expected_gain_milli": 3165191,
+      "runs": [
+        {
+          "exit_code": 0,
+          "seconds": 0.058,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.06,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "deterministic": true,
+      "input_unchanged": true,
+      "results_sha256": "1410d96bf12818691780e94e03e6c58001060c9af862d092736f255b58c097e8"
+    },
+    {
+      "case": "zero_budget",
+      "passed": true,
+      "input_rows": 1000,
+      "expected_gain_milli": 0,
+      "runs": [
+        {
+          "exit_code": 0,
+          "seconds": 0.057,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.061,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "deterministic": true,
+      "input_unchanged": true,
+      "results_sha256": "d0c93ea49570981c80b58071f100d4ee2410b7cfef1744555fc7cb75b9c017b5"
+    },
+    {
+      "case": "changed_policy",
+      "passed": true,
+      "input_rows": 1000,
+      "expected_gain_milli": 6122991,
+      "runs": [
+        {
+          "exit_code": 0,
+          "seconds": 0.061,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.059,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "deterministic": true,
+      "input_unchanged": true,
+      "results_sha256": "e263897fb43ad5b671a1469e5bbeaa25dee4cafae5d1c5f8ff4e4c1f647876b6"
+    },
+    {
+      "case": "changed_data_and_references",
+      "passed": true,
+      "input_rows": 1001,
+      "expected_gain_milli": 3165191,
+      "runs": [
+        {
+          "exit_code": 0,
+          "seconds": 0.057,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.067,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "deterministic": true,
+      "input_unchanged": true,
+      "results_sha256": "ace4c03d14e6d0aafb97ec38125998ec0e2c838706d636fa27acd6caba712b31"
+    },
+    {
+      "case": "synthetic_row_exclusivity",
+      "passed": true,
+      "input_rows": 5,
+      "expected_gain_milli": 10000,
+      "runs": [
+        {
+          "exit_code": 0,
+          "seconds": 0.03,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.029,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "deterministic": true,
+      "input_unchanged": true,
+      "results_sha256": "c784615c6ab7b6c26ed93a013f8dcbe8d58dd839002b0c255d24322fa99c46c2"
+    },
+    {
+      "case": "synthetic_lex_tie_budget_one",
+      "passed": true,
+      "input_rows": 5,
+      "expected_gain_milli": 5000,
+      "runs": [
+        {
+          "exit_code": 0,
+          "seconds": 0.03,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.032,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "deterministic": true,
+      "input_unchanged": true,
+      "results_sha256": "b36faaba7594ef63c3d0d053ecb9252667978133f572e4807aa72a6a4754e05f"
+    },
+    {
+      "case": "synthetic_cost_tie",
+      "passed": true,
+      "input_rows": 5,
+      "expected_gain_milli": 10000,
+      "runs": [
+        {
+          "exit_code": 0,
+          "seconds": 0.032,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.031,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "deterministic": true,
+      "input_unchanged": true,
+      "results_sha256": "46615bad079b39b8c7dec7254077e5a988ffbea4eda00573a91f9f12ecebf1b4"
+    },
+    {
+      "case": "synthetic_non_greedy",
+      "passed": true,
+      "input_rows": 3,
+      "expected_gain_milli": 6000,
+      "runs": [
+        {
+          "exit_code": 0,
+          "seconds": 0.033,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.028,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "deterministic": true,
+      "input_unchanged": true,
+      "results_sha256": "1665ea334cf9ecc740910bac22764cd05e5bb1511e4bad5ff367b805fe800ebe"
+    },
+    {
+      "case": "negative_zero",
+      "passed": false,
+      "input_rows": 1,
+      "expected_gain_milli": 0,
+      "runs": [
+        {
+          "exit_code": 0,
+          "seconds": 0.028,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "differences": [
+        "$.reconciliation[3].reference: '0.00', expected '-0.00'",
+        "$.reconciliation[3].actual: '0.00', expected '-0.00'"
+      ]
+    }
+  ],
+  "passed": false
+}

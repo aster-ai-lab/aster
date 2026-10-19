@@ -1479,6 +1479,17 @@ async fn handle_http_request_inner(
     // still create one lazily below when it needs a stable request identity.
     let mut trace_ctx = request_trace_context(req.headers(), state.tracing_enabled);
 
+    // Reserved catalog paths never fall through to an ordinary snapshot route.
+    if OpenAiRequestProfile::is_reserved_route(req.method(), req.uri().path()) {
+        if state.metrics_enabled {
+            state.metrics.record_request(404, 0);
+        }
+        return Ok(finish_access_log(
+            access_log,
+            error_response(404, "standard_not_admitted"),
+        ));
+    }
+
     // Route the request.
     let (route, route_plan_index) = match state.router_table.match_request_ref(
         request_host,

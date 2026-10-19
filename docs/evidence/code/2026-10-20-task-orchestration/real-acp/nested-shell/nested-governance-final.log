@@ -1,0 +1,29 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.33s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 8 tests
+test agent_api::tests::fact_log::nested_governance::fact_run_without_permission_or_confirmation_presents_no_tools ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_provider_projection_retains_admitted_schema_and_profile_identity ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_cancellation_settles_program_children_on_the_original_run ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_batch_nested_call_obeys_the_session_deny ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_program_nested_call_obeys_the_session_deny ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_delegated_main_turn_inherits_the_code_profile ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_program_children_share_the_run_budget_and_keep_denied_receipts ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_skill_visibility_keeps_execution_permission_and_confirmation_gates ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 5171 filtered out; finished in 0.70s
+

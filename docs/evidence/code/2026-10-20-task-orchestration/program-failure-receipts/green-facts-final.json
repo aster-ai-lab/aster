@@ -1,0 +1,16 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-code-core",
+    "--lib",
+    "agent_api::tests::fact_log::program_failure_receipts",
+    "--",
+    "--nocapture"
+  ],
+  "exit_code": 0,
+  "elapsed_ms": 648.243
+}

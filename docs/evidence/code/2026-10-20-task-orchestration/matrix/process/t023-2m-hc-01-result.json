@@ -1,0 +1,15 @@
+{
+  "schema": "aster.t023.process.v1",
+  "run_id": "t023-2m-hc-01",
+  "pid": 41183,
+  "exe": "/Users/roylin/code/aster/target/t023-frozen-event-window-v2/t023-real-llm",
+  "runner_sha256": "33de605e83617a2e850778a2308832610697b1bcc95c0ffd227ec0ad1d9f130a",
+  "started_at_utc": "2026-10-19T18:20:41.020957+00:00",
+  "manifest_sha256": "d425e1d32888ab857964600bb64b1e499d4b56790fe27db6784a23cdbac7ae6a",
+  "log": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/process/t023-2m-hc-01.log",
+  "state": "terminal",
+  "exit_code": 101,
+  "outer_wall_seconds": 336.50189729209524,
+  "ended_at_utc": "2026-10-19T18:26:17.510825+00:00",
+  "log_sha256": "3221fde0df5f014562a557e13cf6baa9a47ddb16d6acbcf873d5356a53c8764b"
+}

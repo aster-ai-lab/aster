@@ -1,6 +1,0 @@
-{
-  "crates/code/core/src/agent_api/tests/long_horizon_capabilities.rs": "69943c7cc0f874938c5c8512af80e9b24973089a17ce321ad9d17e3faeec4e4c",
-  "crates/code/core/src/completion_attestor.rs": "b6cb8f6e9d512b25f350630eb35ec5588e127f76852516e9552704f18694a56f",
-  "crates/code/core/src/completion_attestor_failure_tests.rs": "44592f4574fb3cb9be3e44d9953eb2defd1892f33fb5ba96a6cecdc95e814e4e",
-  "crates/code/core/src/harness_loop.rs": "5a999ab7ffa4e8c8afd9dbcd899c9b5cbb8c4f41f1dfa568643be5b9e9c4421c"
-}

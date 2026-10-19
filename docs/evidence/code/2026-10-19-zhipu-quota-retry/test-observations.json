@@ -1,0 +1,399 @@
+[
+  {
+    "run": "before-fix-hermetic",
+    "result": "test result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 5110 filtered out; finished in 0.05s",
+    "observedMockCases": 29,
+    "observedMockHttpCalls": 83,
+    "caseObservations": [
+      {
+        "provider": "openai",
+        "status": 429,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": true,
+        "calls": 3
+      },
+      {
+        "provider": "openai",
+        "status": 429,
+        "streaming": true,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "deepseek",
+        "status": 429,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": true,
+        "calls": 3
+      },
+      {
+        "provider": "deepseek",
+        "status": 429,
+        "streaming": true,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "custom-zhipu",
+        "status": 429,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": true,
+        "calls": 3
+      },
+      {
+        "provider": "custom-zhipu",
+        "status": 429,
+        "streaming": true,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 503,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": true,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 503,
+        "streaming": true,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 400,
+        "streaming": false,
+        "calls": 1
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": true,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 400,
+        "streaming": true,
+        "calls": 1
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": true,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": true,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": true,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": true,
+        "calls": 3
+      }
+    ]
+  },
+  {
+    "run": "after-fix",
+    "result": "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 5110 filtered out; finished in 0.01s",
+    "observedMockCases": 30,
+    "observedMockHttpCalls": 82,
+    "caseObservations": [
+      {
+        "provider": "openai",
+        "status": 429,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": false,
+        "calls": 1
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": true,
+        "calls": 1
+      },
+      {
+        "provider": "openai",
+        "status": 429,
+        "streaming": true,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": true,
+        "calls": 3
+      },
+      {
+        "provider": "deepseek",
+        "status": 429,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "deepseek",
+        "status": 429,
+        "streaming": true,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": true,
+        "calls": 3
+      },
+      {
+        "provider": "custom-zhipu",
+        "status": 429,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "custom-zhipu",
+        "status": 429,
+        "streaming": true,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": true,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 503,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 503,
+        "streaming": true,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 400,
+        "streaming": false,
+        "calls": 1
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": true,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 400,
+        "streaming": true,
+        "calls": 1
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": true,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": true,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": true,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": true,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": false,
+        "calls": 3
+      },
+      {
+        "provider": "zhipu",
+        "status": 429,
+        "streaming": true,
+        "calls": 3
+      }
+    ]
+  },
+  {
+    "run": "existing-cached-1",
+    "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5112 filtered out; finished in 0.10s"
+  },
+  {
+    "run": "existing-cached-2",
+    "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5112 filtered out; finished in 0.00s"
+  },
+  {
+    "run": "existing-cached-3",
+    "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5112 filtered out; finished in 0.00s"
+  },
+  {
+    "run": "existing-cached-4",
+    "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5112 filtered out; finished in 0.00s"
+  },
+  {
+    "run": "fixture-wiring-failure",
+    "validHermeticResult": false,
+    "reason": "Factory http_override only applies to Cursor. Discarded fixture hit zero injected calls; synthetic-key default connections timed out. Replaced by direct public-client transport injection."
+  },
+  {
+    "run": "existing-focused",
+    "countedAsTestResult": false,
+    "exit": 143,
+    "reason": "Redundant Cargo check waited on the shared build lock; stopped only its owned waiting process after exact stdout-log validation. Four exact checks completed using the already fresh libtest binary instead."
+  }
+]

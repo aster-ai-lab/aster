@@ -303,6 +303,7 @@ fn start_request(release: &str, session_id: &str, run_id: &str) -> AgentProtocol
                 run_id: run_id.into(),
             },
             prompt: "create an ordinary live Session".into(),
+            models: None,
         },
     }
 }
@@ -671,7 +672,7 @@ async fn portable_recovery_rejects_forced_invalid_capability_binding() {
         "forced-invalid-binding-target",
         &export,
     );
-    a3s_code_core::force_invalid_recovery_binding_for_test("forced-invalid-binding-target");
+    a3s_code_core::force_invalid_recovery_binding_for_test();
     let error = harness
         .execute_checkpoint_recovery(&request, export)
         .await

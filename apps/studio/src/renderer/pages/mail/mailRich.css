@@ -1,0 +1,58 @@
+/* Unlayered: @layer app in richtext.css beats utilities, so .tiptap a stays blue. */
+
+[data-ui='mail.editor'] .tiptap a,
+[data-ui='mail.editor'] .tiptap a:hover,
+[data-ui='mail.body'] a,
+[data-ui='mail.body'] a:hover {
+  color: #171717;
+  text-decoration-line: underline;
+  text-underline-offset: 2px;
+}
+
+[data-ui='mail.editor'] .tiptap p,
+[data-ui='mail.body'] p {
+  margin: 0;
+}
+
+[data-ui='mail.editor'] .tiptap p + p,
+[data-ui='mail.body'] p + p {
+  margin-top: 12px;
+}
+
+[data-ui='mail.editor'] .tiptap ul,
+[data-ui='mail.editor'] .tiptap ol,
+[data-ui='mail.body'] ul,
+[data-ui='mail.body'] ol {
+  margin: 8px 0;
+  padding-left: 1.25rem;
+}
+
+[data-ui='mail.editor'] .tiptap ul,
+[data-ui='mail.body'] ul {
+  list-style: disc;
+}
+
+[data-ui='mail.editor'] .tiptap ol,
+[data-ui='mail.body'] ol {
+  list-style: decimal;
+}
+
+[data-ui='mail.editor'] .tiptap li p,
+[data-ui='mail.body'] li p {
+  margin: 0;
+}
+
+[data-ui='mail.editor'] .tiptap blockquote,
+[data-ui='mail.body'] blockquote {
+  margin: 12px 0;
+  border-left: 2px solid #e5e5e5;
+  padding-left: 12px;
+  color: #3f3f3f;
+}
+
+[data-ui='mail.editor'] .tiptap mail-signature,
+[data-ui='mail.body'] mail-signature {
+  display: block;
+  margin-top: 16px;
+  color: #3f3f3f;
+}

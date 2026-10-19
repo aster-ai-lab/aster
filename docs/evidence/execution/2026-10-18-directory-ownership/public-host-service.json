@@ -1,0 +1,560 @@
+{
+  "schema_version": "a3s.oci.macos-hvf-host-service-smoke.v1",
+  "status": "available",
+  "platform": "macos",
+  "evidence_root": "/private/var/tmp/oh-7vehdiwn/hvf-96976-1792327287457416000",
+  "artifacts": {
+    "host_service_executable": "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-20261018/qualified-candidate-srvtus16/a3s-oci",
+    "host_service_executable_sha256": "e612faddfea64c4200c1647e066d0d40b13adcc2eacb1ed1c1663e15dc94cd43",
+    "shim": "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-20261018/qualified-candidate-srvtus16/a3s-oci-krun-shim",
+    "shim_sha256": "cbd22917202228f2be683ce3d0c192ce5d62a6d384e7147f291df3da3b277ccf",
+    "system_image_manifest": "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-20261018/system/system-image.json",
+    "system_image_manifest_sha256": "da379dbbc50a88e1b5a103042caa5e31523095af75475a8aca3ab2f994796c72",
+    "source_bundle": "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/macos-vmm-confinement-20261018/fixture",
+    "source_bundle_config_digest": "sha256:4b735fa45be897471578f2d34bf8b0018483176f0dbdee96791b8bce13237b4e",
+    "source_revision": "2a1de03651aa71d31bfee92a314fa80eefeb6091"
+  },
+  "lifecycle": {
+    "host_service_pid": 97003,
+    "socket_private": true,
+    "features_verified": true,
+    "advertised_operations": [
+      "features",
+      "create",
+      "state",
+      "start",
+      "kill",
+      "delete",
+      "exec",
+      "wait",
+      "list",
+      "pause",
+      "resume",
+      "update",
+      "processes",
+      "stats",
+      "events",
+      "read-output",
+      "write-stdin",
+      "close-stdin",
+      "resize",
+      "signal-process",
+      "wait-process",
+      "file",
+      "filesystem"
+    ],
+    "exercised_operations": [
+      "features",
+      "create",
+      "state",
+      "start",
+      "kill",
+      "delete",
+      "exec",
+      "wait",
+      "list",
+      "pause",
+      "resume",
+      "update",
+      "processes",
+      "stats",
+      "events",
+      "read-output",
+      "write-stdin",
+      "close-stdin",
+      "resize",
+      "signal-process",
+      "wait-process",
+      "file",
+      "filesystem"
+    ],
+    "bundle_handoff_staged": true,
+    "bundle_handoff_consumed": true,
+    "create_returned_created": true,
+    "create_replayed": true,
+    "state_exact_after_create": true,
+    "list_exact_after_create": true,
+    "start_returned_running": true,
+    "init_marker_verified": true,
+    "process_io_verified": true,
+    "terminal_io_verified": true,
+    "exec_lifecycle_verified": true,
+    "signal_process_verified": true,
+    "wait_process_verified": true,
+    "read_output_verified": true,
+    "write_stdin_verified": true,
+    "close_stdin_verified": true,
+    "resize_verified": true,
+    "file_transfer_verified": true,
+    "filesystem_operations_verified": true,
+    "process_inventory_verified": true,
+    "resources_updated": true,
+    "stats_verified": true,
+    "pause_verified": true,
+    "resume_verified": true,
+    "wait_timeout_enforced": true,
+    "kill_replayed": true,
+    "wait_status": {
+      "signal": 9,
+      "oom_killed": false
+    },
+    "wait_replayed": true,
+    "events_verified": true,
+    "delete_replayed": true,
+    "state_removed": true,
+    "generation_monotonic": true,
+    "stale_generation_rejected": true,
+    "recreated_generation_deleted": true,
+    "list_empty_after_delete": true,
+    "service_descriptor_inventory_restored": true,
+    "open_descriptors_before": 13,
+    "open_descriptors_after": 13,
+    "vm_processes_reaped": true,
+    "endpoint_inventory_restored": true,
+    "bundle_handoffs_clean": true,
+    "runtime_shares_clean": true,
+    "recovery_reports_clean": true,
+    "console_files_created": 2,
+    "service_socket_removed": true,
+    "service_exit_success": true
+  },
+  "owner_death": {
+    "first_host_service_pid": 97168,
+    "first_socket_peer": {
+      "pid": 97168,
+      "parent_pid": 96976,
+      "process_group_id": 96976,
+      "start_time_unix_us": 1792327315976923,
+      "command": "a3s-oci"
+    },
+    "target": {
+      "id": "hvf-owner-death-96976-1792327287457416000-owner",
+      "generation": 1
+    },
+    "created_config_digest": "sha256:8eee043dc0718248111d561fb9c9f15d6bb899d47271c9445ba9d9951d0f98aa",
+    "live_vm_processes": [
+      {
+        "pid": 97171,
+        "parent_pid": 97170,
+        "process_group_id": 97170,
+        "start_time_unix_us": 1792327316226471,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 97170,
+        "parent_pid": 97168,
+        "process_group_id": 97170,
+        "start_time_unix_us": 1792327316215190,
+        "command": "a3s-oci-krun-shim"
+      }
+    ],
+    "authenticated_endpoint_consumed": true,
+    "host_service_sigkill_delivered": true,
+    "first_host_service_reaped": true,
+    "stale_socket_retained": true,
+    "live_vm_processes_reaped": true,
+    "endpoint_inventory_restored": true,
+    "authenticated_recovery_report_retained": true,
+    "replacement_host_service_pid": 97215,
+    "replacement_socket_peer": {
+      "pid": 97215,
+      "parent_pid": 96976,
+      "process_group_id": 96976,
+      "start_time_unix_us": 1792327326950922,
+      "command": "a3s-oci"
+    },
+    "replacement_socket_new_owner": true,
+    "replacement_connected": true,
+    "exact_stopped_state_recovered": true,
+    "process_inventory_empty": true,
+    "recovered_wait_status": {
+      "signal": 9,
+      "oom_killed": false
+    },
+    "recovered_wait_replayed": true,
+    "stopped_delete_succeeded": true,
+    "durable_state_removed": true,
+    "replacement_descriptor_inventory_restored": true,
+    "open_descriptors_before": 13,
+    "open_descriptors_after": 13,
+    "bundle_handoffs_clean": true,
+    "runtime_shares_clean": true,
+    "recovery_reports_clean": true,
+    "replacement_socket_removed": true,
+    "replacement_exit_success": true
+  },
+  "soak": {
+    "requested_iterations": 25,
+    "completed_iterations": 25,
+    "host_service_pid": 97216,
+    "completed_vm_generations": 25,
+    "create_replays_verified": 25,
+    "kill_replays_verified": 25,
+    "wait_replays_verified": 25,
+    "delete_replays_verified": 25,
+    "generation_monotonic_every_iteration": true,
+    "stale_generation_rejected_every_iteration": true,
+    "descriptor_inventory_stable_every_iteration": true,
+    "steady_open_descriptors": 13,
+    "final_open_descriptors": 13,
+    "vm_processes_reaped_every_iteration": true,
+    "endpoint_inventory_restored_every_iteration": true,
+    "transients_clean_every_iteration": true,
+    "unique_vm_processes": true,
+    "vm_processes": [
+      {
+        "pid": 97220,
+        "parent_pid": 97219,
+        "process_group_id": 97219,
+        "start_time_unix_us": 1792327327407651,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 97219,
+        "parent_pid": 97216,
+        "process_group_id": 97219,
+        "start_time_unix_us": 1792327327397565,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 97300,
+        "parent_pid": 97298,
+        "process_group_id": 97298,
+        "start_time_unix_us": 1792327338641838,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 97298,
+        "parent_pid": 97216,
+        "process_group_id": 97298,
+        "start_time_unix_us": 1792327338631527,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 97369,
+        "parent_pid": 97368,
+        "process_group_id": 97368,
+        "start_time_unix_us": 1792327349770069,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 97368,
+        "parent_pid": 97216,
+        "process_group_id": 97368,
+        "start_time_unix_us": 1792327349759129,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 97440,
+        "parent_pid": 97439,
+        "process_group_id": 97439,
+        "start_time_unix_us": 1792327360924335,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 97439,
+        "parent_pid": 97216,
+        "process_group_id": 97439,
+        "start_time_unix_us": 1792327360913228,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 97500,
+        "parent_pid": 97499,
+        "process_group_id": 97499,
+        "start_time_unix_us": 1792327372124454,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 97499,
+        "parent_pid": 97216,
+        "process_group_id": 97499,
+        "start_time_unix_us": 1792327372114151,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 97570,
+        "parent_pid": 97569,
+        "process_group_id": 97569,
+        "start_time_unix_us": 1792327383287790,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 97569,
+        "parent_pid": 97216,
+        "process_group_id": 97569,
+        "start_time_unix_us": 1792327383276594,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 97643,
+        "parent_pid": 97642,
+        "process_group_id": 97642,
+        "start_time_unix_us": 1792327394548895,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 97642,
+        "parent_pid": 97216,
+        "process_group_id": 97642,
+        "start_time_unix_us": 1792327394537635,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 97707,
+        "parent_pid": 97706,
+        "process_group_id": 97706,
+        "start_time_unix_us": 1792327405904801,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 97706,
+        "parent_pid": 97216,
+        "process_group_id": 97706,
+        "start_time_unix_us": 1792327405893876,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 97798,
+        "parent_pid": 97797,
+        "process_group_id": 97797,
+        "start_time_unix_us": 1792327417320470,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 97797,
+        "parent_pid": 97216,
+        "process_group_id": 97797,
+        "start_time_unix_us": 1792327417311607,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 97866,
+        "parent_pid": 97865,
+        "process_group_id": 97865,
+        "start_time_unix_us": 1792327428503448,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 97865,
+        "parent_pid": 97216,
+        "process_group_id": 97865,
+        "start_time_unix_us": 1792327428493199,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 97906,
+        "parent_pid": 97905,
+        "process_group_id": 97905,
+        "start_time_unix_us": 1792327439645082,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 97905,
+        "parent_pid": 97216,
+        "process_group_id": 97905,
+        "start_time_unix_us": 1792327439634790,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 97930,
+        "parent_pid": 97929,
+        "process_group_id": 97929,
+        "start_time_unix_us": 1792327450727713,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 97929,
+        "parent_pid": 97216,
+        "process_group_id": 97929,
+        "start_time_unix_us": 1792327450717461,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 98067,
+        "parent_pid": 98066,
+        "process_group_id": 98066,
+        "start_time_unix_us": 1792327462029285,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 98066,
+        "parent_pid": 97216,
+        "process_group_id": 98066,
+        "start_time_unix_us": 1792327462018393,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 98187,
+        "parent_pid": 98185,
+        "process_group_id": 98185,
+        "start_time_unix_us": 1792327473449840,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 98185,
+        "parent_pid": 97216,
+        "process_group_id": 98185,
+        "start_time_unix_us": 1792327473439247,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 98310,
+        "parent_pid": 98309,
+        "process_group_id": 98309,
+        "start_time_unix_us": 1792327485273478,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 98309,
+        "parent_pid": 97216,
+        "process_group_id": 98309,
+        "start_time_unix_us": 1792327485263283,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 98476,
+        "parent_pid": 98475,
+        "process_group_id": 98475,
+        "start_time_unix_us": 1792327496644249,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 98475,
+        "parent_pid": 97216,
+        "process_group_id": 98475,
+        "start_time_unix_us": 1792327496633561,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 98593,
+        "parent_pid": 98592,
+        "process_group_id": 98592,
+        "start_time_unix_us": 1792327507843771,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 98592,
+        "parent_pid": 97216,
+        "process_group_id": 98592,
+        "start_time_unix_us": 1792327507832733,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 98762,
+        "parent_pid": 98761,
+        "process_group_id": 98761,
+        "start_time_unix_us": 1792327519187715,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 98761,
+        "parent_pid": 97216,
+        "process_group_id": 98761,
+        "start_time_unix_us": 1792327519177050,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 98824,
+        "parent_pid": 98823,
+        "process_group_id": 98823,
+        "start_time_unix_us": 1792327530288592,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 98823,
+        "parent_pid": 97216,
+        "process_group_id": 98823,
+        "start_time_unix_us": 1792327530277626,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 98898,
+        "parent_pid": 98897,
+        "process_group_id": 98897,
+        "start_time_unix_us": 1792327541456131,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 98897,
+        "parent_pid": 97216,
+        "process_group_id": 98897,
+        "start_time_unix_us": 1792327541445908,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 99004,
+        "parent_pid": 99003,
+        "process_group_id": 99003,
+        "start_time_unix_us": 1792327552719070,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 99003,
+        "parent_pid": 97216,
+        "process_group_id": 99003,
+        "start_time_unix_us": 1792327552709011,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 99074,
+        "parent_pid": 99073,
+        "process_group_id": 99073,
+        "start_time_unix_us": 1792327563905065,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 99073,
+        "parent_pid": 97216,
+        "process_group_id": 99073,
+        "start_time_unix_us": 1792327563893994,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 99136,
+        "parent_pid": 99135,
+        "process_group_id": 99135,
+        "start_time_unix_us": 1792327575023631,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 99135,
+        "parent_pid": 97216,
+        "process_group_id": 99135,
+        "start_time_unix_us": 1792327575013335,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 99258,
+        "parent_pid": 99257,
+        "process_group_id": 99257,
+        "start_time_unix_us": 1792327586327241,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 99257,
+        "parent_pid": 97216,
+        "process_group_id": 99257,
+        "start_time_unix_us": 1792327586316271,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 99409,
+        "parent_pid": 99408,
+        "process_group_id": 99408,
+        "start_time_unix_us": 1792327597731884,
+        "command": "a3s-oci-krun-shim"
+      },
+      {
+        "pid": 99408,
+        "parent_pid": 97216,
+        "process_group_id": 99408,
+        "start_time_unix_us": 1792327597721528,
+        "command": "a3s-oci-krun-shim"
+      }
+    ],
+    "console_files_created": 25,
+    "service_socket_removed": true,
+    "service_exit_success": true
+  }
+}

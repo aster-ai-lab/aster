@@ -1,0 +1,199 @@
+{
+  "observed_at_utc": "2026-10-19T22:40:17.798203+00:00",
+  "groups": [
+    {
+      "qualification_manifest": "docs/evidence/code/2026-10-20-task-orchestration/approval-recovery/frontend-fix/revalidation-20261020/source-after.json",
+      "checked": 25,
+      "all_match": true,
+      "checks": [
+        {
+          "path": "apps/work/src/renderer/components/composer/useToolApprovalComposerOverrides.ts",
+          "sha256": "da7ab5a06eed965fd23550c9496f43c4273cb14c560886f60323f05c7a05361e",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/renderer/components/composer/ComposerContext.ts",
+          "sha256": "4bc08118ed4074ed2ff6ab30809eb66d603765ddaf024e550652a03e3499a531",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/renderer/components/composer/ComposerCore.tsx",
+          "sha256": "21efd17e1b29af5961892eea7e7e48fc03226a1e319678ea170883557d734175",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/renderer/components/composer/__tests__/useToolApprovalComposerOverrides.test.ts",
+          "sha256": "0aed985aa0673d3860689af777ffe42677efcd9f3ec86ede0d84405ee943eca1",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/renderer/components/composer/__tests__/ComposerCore.test.tsx",
+          "sha256": "54d4a241e3b2b0adc7a6562c7acb9ec9c9fe363b28a4fabe2409a9f483e9f6e0",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/renderer/hooks/useTopicStreamStatus.ts",
+          "sha256": "08a402b95819447d18edf55b12a85e83cb471b32d86688b121a0458f0b04e0ab",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/renderer/hooks/__tests__/useTopicAwaitingApproval.test.ts",
+          "sha256": "d0b0feab74f00f929db3850e6e907259e2d48dcb59f8adec940871e6126974fe",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/renderer/pages/agents/useAgentChatRuntimeState.ts",
+          "sha256": "cec80d86916547dfe5e8d366568cb4b945fc3cae68d5b272c209157beb6be8e5",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/renderer/pages/agents/__tests__/useAgentChatRuntimeState.test.tsx",
+          "sha256": "ccefbf904f871b03c4d865f3aa04ea3dd15fb9341c41fbf92dc496dce8288716",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/renderer/data/studioAgentPlane.ts",
+          "sha256": "12561418b95b852e8512208dc73d224f3ea18cd90411f4159f65340aad1e6421",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/renderer/data/__tests__/studioAgentPlane.test.ts",
+          "sha256": "aec63d7881a3bd077d9663276734633b26204028661b8e394d774d85e517f77c",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/shared/ai/transport/stream.ts",
+          "sha256": "625e8b0d3092d2b998ef77eeb1466141ded0dbfcf58e2b4440dcaaa7ff33d8e2",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/shared/ipc/schemas/ai.ts",
+          "sha256": "4f5843361e62aafb0daa7e2fae638cc4cdee9c0e4be81fcad8361b472c0014dc",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/shared/ai/transport/index.ts",
+          "sha256": "5bc3e677f7965bbb34305cddca6a3dfcfddcaff6d3c45478e6fbd6d23adb48ee",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/shared/types/studioExecution.ts",
+          "sha256": "ca7249659b8b2f571addd538f1e6ffb964a6d1a03be25c64c2d887162c2bd250",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/renderer/services/aiTransport/__tests__/IpcChatTransport.test.ts",
+          "sha256": "a198d4e3305c502d6f6e09a57d1f6c1f3e8bccda0ed53cb56c78677bd666a538",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/renderer/services/aiTransport/__tests__/TopicStreamSubscription.test.ts",
+          "sha256": "d5b677b4c1febf5a9df339bcb1e826b596823377dc7cd6afcc391cd841e05f96",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/renderer/hooks/__tests__/useChatWithHistory.test.ts",
+          "sha256": "59e45934fd46e95a57e90533308b154f33f43ff50dae23b4fa03c9dd05712282",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/renderer/components/composer/__tests__/ComposerCore.insertion.test.tsx",
+          "sha256": "413593a693e68d35078dbc1df9d4d3b1aed15c0073e7537b3509d287fd97aca0",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/renderer/components/composer/__tests__/ComposerSurface.lazy.test.tsx",
+          "sha256": "61e590f494dc787a64d4a654fd28e86db2872fb560d82947585c839d50688d8f",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/renderer/pages/home/__tests__/ChatContent.test.tsx",
+          "sha256": "2d29b0aced3919b6252e7d4dc95e8e9e2b73497ee9312785fb7f843c1de9b4f9",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src-tauri/src/agent_plane/controllers.rs",
+          "sha256": "69902055dde43e1856512a11ed507db72cab86e40cffa10870e5d54024b789a8",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src-tauri/src/agent_plane/turns.rs",
+          "sha256": "5e4598b7448ac8fc3945b4e216f9f89a45c62b40a45870c1daad4e546361526d",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src-tauri/src/agent_plane/workbench_turns.rs",
+          "sha256": "2c5fd28697c806b0381697dd191eeb0eb982f94de6f0cad0edea0587d2014de0",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src-tauri/src/agent_plane/events.rs",
+          "sha256": "f550427e740166bb58e2591f0701a08c66940c2af0fbb134bde604f7b53c9087",
+          "matches_qualified_source": true
+        }
+      ]
+    },
+    {
+      "qualification_manifest": "docs/evidence/code/2026-10-20-task-orchestration/goal-resumed-20261020/workspace-products-open-folder-revalidation/source-after.json",
+      "checked": 11,
+      "all_match": true,
+      "checks": [
+        {
+          "path": "apps/work/src/renderer/pages/agents/taskConversation/turn.ts",
+          "sha256": "d75bcbd01cefcf7495f299116fd27838b9fdf706f4a6ef7eb1f84a37675fb377",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/renderer/pages/agents/taskConversation/TaskConversationMessage.tsx",
+          "sha256": "ca1dd2831ffe477601437bb3b245f4f1ed1c8a57d587b4fdbff9bff4425d58c2",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/renderer/pages/agents/components/AgentSessionMessages.tsx",
+          "sha256": "0b621715ecb0f38b20bfe4c878e915582a09a0743203318457113b6203629bc6",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+          "sha256": "9a657e7eb6fa27cb54bd8fb2362b56c126c47238692ae31d30c746aa59fce67e",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/renderer/pages/agents/WorkbenchSessionFiles.tsx",
+          "sha256": "2109cab514dd4d68d71fd4ba256162fcfb98025451a96af6adc02bafa6db37da",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/renderer/pages/agents/__tests__/WorkbenchSessionFiles.openFolder.test.tsx",
+          "sha256": "0f2600a5faca302ba8668f7ae0df00c86a6ce20c57a399f06b345c57c9b9fa8c",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/renderer/shell/studioMainBridge.js",
+          "sha256": "78892437347d09e70a41de34c9cb1862a177d556dc86806cc87f16c4e6495dd8",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src/renderer/shell/studioMainBridge.test.ts",
+          "sha256": "0887a6f0b18c8ba536f6ae1957276bad0bcab3c757942f3adb33b9ce59a047bd",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src-tauri/src/workspace_file.rs",
+          "sha256": "d88370f843be4a7535524af913bbc84f5864fd834716e5b2a96248fa567f1889",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src-tauri/src/authority.rs",
+          "sha256": "1b5c050da76d1d070790ec803a481c644e668401d03b2a9e2488dae560368623",
+          "matches_qualified_source": true
+        },
+        {
+          "path": "apps/work/src-tauri/src/no_window.rs",
+          "sha256": "b60d0b5d7972cc7bddb31090dab6fc7ca42bc0ce6f51e9e194a9198749846bd0",
+          "matches_qualified_source": true
+        }
+      ]
+    }
+  ]
+}

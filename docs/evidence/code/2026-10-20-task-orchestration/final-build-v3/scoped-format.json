@@ -1,0 +1,25 @@
+{
+  "command": [
+    "rustfmt",
+    "--edition",
+    "2021",
+    "--check",
+    "--config",
+    "skip_children=true",
+    "crates/code/core/src/tools/program_tool.rs",
+    "crates/code/core/src/harness_loop.rs",
+    "crates/code/core/src/agent/tool_invoker.rs",
+    "crates/code/core/src/agent/tool_completion_runtime.rs",
+    "crates/code/core/src/tools/program_tool/failure_receipt_tests.rs",
+    "crates/code/core/src/tools/program_tool/worker_deadline_tests.rs",
+    "crates/code/core/src/agent_api/tests/fact_log/program_failure_receipts.rs",
+    "crates/code/core/src/agent_api/tests/fact_log/nested_shell_verification.rs",
+    "crates/code/core/src/harness_loop/shell_diagnostic_tests.rs",
+    "crates/code/core/tests/extensibility/metrics.rs",
+    "crates/code/core/src/fact_control_tests.rs",
+    "crates/code/core/src/fact_control/tool_history_tests.rs",
+    "crates/code/core/src/agent_api/tests/fact_log.rs"
+  ],
+  "exit_code": 0,
+  "elapsed_ms": 71.97
+}

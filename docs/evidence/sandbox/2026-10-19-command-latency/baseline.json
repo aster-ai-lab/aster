@@ -1,0 +1,129 @@
+{
+  "schema": "aster.oci-command-latency.v1",
+  "stage": "baseline",
+  "assets": "/Users/roylin/Library/Caches/aster/sandbox/dev-20261018-core-bash",
+  "asset_sha256": {
+    "a3s-oci": "62cec8830c735e6df9c9a5a8e51a62417d831bd685ba6bf780ae2f8a790ba689",
+    "a3s-oci-krun-shim": "283634f567ec98aacbbd223367dc2f23e163a3305d080d6af6dc5636f6c4228d",
+    "system-image.json": "e1b6b5287caf144b7bfe083f996f90f26f80417a969ba9f96e137848586cab1b"
+  },
+  "sample_command": "printf phase-probe",
+  "samples": [
+    {
+      "sample": 0,
+      "total_ms": 14009.798,
+      "phases": [
+        {
+          "phase": "host_connect",
+          "milliseconds": 2494.7378750000003
+        },
+        {
+          "phase": "bundle_prepare",
+          "milliseconds": 456.866667
+        },
+        {
+          "phase": "vm_create",
+          "milliseconds": 10754.730500000001
+        },
+        {
+          "phase": "process_start",
+          "milliseconds": 62.6105
+        },
+        {
+          "phase": "collect_wait",
+          "milliseconds": 71.647666
+        },
+        {
+          "phase": "vm_delete",
+          "milliseconds": 163.890625
+        },
+        {
+          "phase": "host_shutdown",
+          "milliseconds": 0.890333
+        },
+        {
+          "phase": "scratch_remove",
+          "milliseconds": 1.4590409999999998
+        }
+      ]
+    },
+    {
+      "sample": 1,
+      "total_ms": 13839.698,
+      "phases": [
+        {
+          "phase": "host_connect",
+          "milliseconds": 2425.726375
+        },
+        {
+          "phase": "bundle_prepare",
+          "milliseconds": 289.733625
+        },
+        {
+          "phase": "vm_create",
+          "milliseconds": 10826.334541
+        },
+        {
+          "phase": "process_start",
+          "milliseconds": 59.921457999999994
+        },
+        {
+          "phase": "collect_wait",
+          "milliseconds": 70.756292
+        },
+        {
+          "phase": "vm_delete",
+          "milliseconds": 163.484916
+        },
+        {
+          "phase": "host_shutdown",
+          "milliseconds": 0.935625
+        },
+        {
+          "phase": "scratch_remove",
+          "milliseconds": 1.4355419999999999
+        }
+      ]
+    },
+    {
+      "sample": 2,
+      "total_ms": 14083.312,
+      "phases": [
+        {
+          "phase": "host_connect",
+          "milliseconds": 2461.889542
+        },
+        {
+          "phase": "bundle_prepare",
+          "milliseconds": 380.328083
+        },
+        {
+          "phase": "vm_create",
+          "milliseconds": 10942.614041
+        },
+        {
+          "phase": "process_start",
+          "milliseconds": 61.928416999999996
+        },
+        {
+          "phase": "collect_wait",
+          "milliseconds": 72.609708
+        },
+        {
+          "phase": "vm_delete",
+          "milliseconds": 159.802417
+        },
+        {
+          "phase": "host_shutdown",
+          "milliseconds": 0.968625
+        },
+        {
+          "phase": "scratch_remove",
+          "milliseconds": 1.774791
+        }
+      ]
+    }
+  ],
+  "mean_total_ms": 13977.602666666668,
+  "limits": "No model calls; synthetic isolated workspace; every run creates and settles its own dedicated VM. Phase logging excludes command text and user paths."
+}

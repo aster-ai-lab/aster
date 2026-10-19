@@ -1,0 +1,12 @@
+{
+  "run_id": "t023-v3-ha-01",
+  "pid": 89536,
+  "exit_code": 0,
+  "outer_wall_seconds": 308.8374414589489,
+  "started_at_utc": "2026-10-19T19:52:47.766991+00:00",
+  "ended_at_utc": "2026-10-19T19:57:56.606118+00:00",
+  "supervisor_deadline_exceeded": false,
+  "executable_sha256": "dafcdb08898bbb196b05d4da739229abb81b16a2a9c60382a889e1291fa6b6dd",
+  "manifest_sha256": "a50622b729cd3524c4115bbe9a8be7fc04bfc7a41f6c8d0077b2bb2279c625e7",
+  "log_sha256": "9fbb83bc5f4fac85b7061eb289219289303674678a6f9d6caa762bf740f53747"
+}

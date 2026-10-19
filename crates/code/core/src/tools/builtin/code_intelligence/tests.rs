@@ -8,6 +8,10 @@ use serde_json::{json, Value};
 use tokio::sync::{watch, Mutex};
 use tokio_util::sync::CancellationToken;
 
+#[cfg(unix)]
+#[path = "real_lsp_tests.rs"]
+mod real_lsp_tests;
+
 use super::{
     diagnostics::CodeDiagnosticsTool, navigation::CodeNavigationTool, symbols::CodeSymbolsTool,
 };

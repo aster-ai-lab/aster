@@ -230,10 +230,10 @@ impl Tool for DocumentReadTool {
         "studio_document_read"
     }
     fn description(&self) -> &str {
-        "Read Studio's shared document text, version and advisory diagnostics from scoped publishers. An empty published set does not verify a document. Set retain_for_run to keep its model identity until Run cleanup."
+        "Read UTF-8 plain text, including unsaved text, version and advisory diagnostics from the shared editor document model. This tool does not parse Office or PDF files; when available, use parse_document with an absolute file path for those. An empty published set does not verify a document. Set retain_for_run to keep its model identity until Run cleanup."
     }
     fn parameters(&self) -> Value {
-        json!({"type":"object","properties":{"file_path":{"type":"string"},"retain_for_run":{"type":"boolean","description":"Keep this model pinned until the current Run releases its resources."}},"required":["file_path"],"additionalProperties":false})
+        json!({"type":"object","properties":{"file_path":{"type":"string","description":"UTF-8 text file path, absolute or relative to the current workspace; not a document ID."},"retain_for_run":{"type":"boolean","description":"Keep this model pinned until the current Run releases its resources."}},"required":["file_path"],"additionalProperties":false})
     }
     fn capabilities(&self, _: &Value) -> ToolCapabilities {
         // Fencing a cancelled RPC does not certify settlement of native blocking I/O.

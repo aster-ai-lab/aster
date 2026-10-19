@@ -1,0 +1,67 @@
+[
+  {
+    "path": "apps/work/src/renderer/components/composer/useToolApprovalComposerOverrides.ts",
+    "sha256": "b6b8793accaff76b24e56aa6ab0b8df4645e438ee0001c8e60d0eee08a20b7e7",
+    "bytes": 4738
+  },
+  {
+    "path": "apps/work/src/renderer/components/composer/ComposerContext.ts",
+    "sha256": "0ec8a4d388d87d937d2181de9cb90d175ea2e091e5946c938c82e61f08d3f40b",
+    "bytes": 1359
+  },
+  {
+    "path": "apps/work/src/renderer/components/composer/ComposerCore.tsx",
+    "sha256": "b3de7ee57c562e5620b56bcdb469d6922343838dc22631de4b3db67b582792a0",
+    "bytes": 3374
+  },
+  {
+    "path": "apps/work/src/renderer/components/composer/__tests__/useToolApprovalComposerOverrides.test.ts",
+    "sha256": "9e6074d81834385236cbf4088543100d6a532c037cc11a47d3fbc5e72050f375",
+    "bytes": 10396
+  },
+  {
+    "path": "apps/work/src/renderer/components/composer/__tests__/ComposerCore.test.tsx",
+    "sha256": "5f861d8a79c86270f538017d7169ee8fb564a12be608f8dc5f4d9f2b1e6b755b",
+    "bytes": 4201
+  },
+  {
+    "path": "apps/work/src/renderer/hooks/useTopicStreamStatus.ts",
+    "sha256": "bc0f90ea22695c3406c0713f703153a8b3aa5f842537c0d9b0ef07737ddbd7fc",
+    "bytes": 5501
+  },
+  {
+    "path": "apps/work/src/renderer/hooks/__tests__/useTopicAwaitingApproval.test.ts",
+    "sha256": "8641cd57e2b64ccedff700a0d044204631907defdcd3582fac12d3f6efe7222c",
+    "bytes": 4270
+  },
+  {
+    "path": "apps/work/src/renderer/pages/agents/useAgentChatRuntimeState.ts",
+    "sha256": "5127b6eff6d0ebf94f190344beaec92a5f37c5ecc51c3ea0ae29735566eddf6e",
+    "bytes": 21256
+  },
+  {
+    "path": "apps/work/src/renderer/pages/agents/__tests__/useAgentChatRuntimeState.test.tsx",
+    "sha256": "7be0fd48aeb7ae5172c9b5183fb494ab8392a790edcfa24085bec7c217a01212",
+    "bytes": 30937
+  },
+  {
+    "path": "apps/work/src/renderer/data/studioAgentPlane.ts",
+    "sha256": "29d1f39af9ed004faa269afeb9d754d0cc69100555d365dc5f4d1a74c6e31a1b",
+    "bytes": 26074
+  },
+  {
+    "path": "apps/work/src/renderer/data/__tests__/studioAgentPlane.test.ts",
+    "sha256": "0ee163fc749961e7a31250ec124889e39866c6e6762c5d48eda2989e312d9449",
+    "bytes": 27951
+  },
+  {
+    "path": "apps/work/src/shared/ai/transport/stream.ts",
+    "sha256": "c1e1ae8fec5018091421073028c5634f962efaaa3af7d5d58265b37c8c9f4400",
+    "bytes": 17206
+  },
+  {
+    "path": "apps/work/src/shared/ipc/schemas/ai.ts",
+    "sha256": "1430f4130529e6730f52456a08aeb903923dfdfffbd545c0cd8080027cdec660",
+    "bytes": 23812
+  }
+]

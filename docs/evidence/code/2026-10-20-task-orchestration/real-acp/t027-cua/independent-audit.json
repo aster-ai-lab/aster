@@ -1,0 +1,375 @@
+{
+  "schema": "aster.t027.independent-audit.v1",
+  "reviewer": "runtime_evidence",
+  "reviewed_at_utc": "2026-10-19T20:49:26.158115+00:00",
+  "verdict": "assessment_completed_with_failures_not_model_success_not_promotion",
+  "checks": [
+    {
+      "name": "native_facts_unchanged_after_app_exit",
+      "passed": true
+    },
+    {
+      "name": "no_prompt_resend",
+      "passed": true
+    },
+    {
+      "name": "all_prepared_native_calls_have_receipts",
+      "passed": true
+    },
+    {
+      "name": "host_and_assistant_interrupted_error_not_model_success",
+      "passed": true
+    },
+    {
+      "name": "all_frozen_files_match_and_no_submission_repair",
+      "passed": true
+    },
+    {
+      "name": "all_12_inputs_match_freeze_and_original",
+      "passed": true
+    },
+    {
+      "name": "oracle_evaluated_exact_frozen_pipeline",
+      "passed": true
+    },
+    {
+      "name": "public_regeneration_matches_saved_results",
+      "passed": true
+    },
+    {
+      "name": "nine_case_quality_failure_retained",
+      "passed": true
+    },
+    {
+      "name": "staged_app_acp_office_identity_matches",
+      "passed": true
+    },
+    {
+      "name": "actual_mapped_acp_matches_stage",
+      "passed": true
+    },
+    {
+      "name": "observed_hardware_runtime_identity_matches",
+      "passed": true
+    },
+    {
+      "name": "original_owned_processes_absent_and_reopened_app_present",
+      "passed": true
+    },
+    {
+      "name": "attempt_counter_nine_no_automatic_expansion",
+      "passed": true
+    },
+    {
+      "name": "original_oracle_and_log_identity",
+      "passed": true
+    }
+  ],
+  "unexpected_evidence_mismatches": [],
+  "termination": {
+    "assessment_outcome": "failed_host_approval_recovery_interrupted",
+    "normal_model_completion": false,
+    "host_execution_status": "error",
+    "assistant_status": "error",
+    "model_final_not_observed": true,
+    "pending_native_decision_executed": false,
+    "host_session_id": "01a155cf-02f1-7478-8105-070a97a1507c",
+    "core_session_id": "591d55d3-ea0e-42c5-8036-ae475c7881fc"
+  },
+  "attempts": {
+    "prior_core_terminal": 8,
+    "independent_cua": 1,
+    "total_t01": 9,
+    "new_prompt_sent": false,
+    "conditional_pair_or_heldouts_admitted": false,
+    "product_default_promoted": false
+  },
+  "artifacts": {
+    "pipeline.py": {
+      "bytes": 23208,
+      "sha256": "ad1be2d94cc2b9987e0c1ac4ff2c0483fe56765d7dc1493c1b5e241b800a9581",
+      "snapshot_matches_manifest": true,
+      "workspace_matches_frozen_copy": true
+    },
+    "output/results.json": {
+      "bytes": 1439900,
+      "sha256": "1410d96bf12818691780e94e03e6c58001060c9af862d092736f255b58c097e8",
+      "snapshot_matches_manifest": true,
+      "workspace_matches_frozen_copy": true
+    },
+    "verify_tmp.py": {
+      "bytes": 5514,
+      "sha256": "c6572ffc83a4037f0c01c613e9893da7e9e769a5cfda6660bc2c089a6f6ea9c2",
+      "snapshot_matches_manifest": true,
+      "workspace_matches_frozen_copy": true
+    },
+    "verify_tmp2.py": {
+      "bytes": 1835,
+      "sha256": "7738f1511f5d852da07352cb4b71f6fcf1f2be8c67af6fdfaed8251bb6f2bd2e",
+      "snapshot_matches_manifest": true,
+      "workspace_matches_frozen_copy": true
+    },
+    "verify_tmp3.py": {
+      "bytes": 1056,
+      "sha256": "076f2abfe4c85520610e239500da200f000944e48a388aa680ec00df91d1e379",
+      "snapshot_matches_manifest": true,
+      "workspace_matches_frozen_copy": true
+    },
+    "verify_tmp4.py": {
+      "bytes": 2516,
+      "sha256": "2f8273c6d36c9f162fa16e015f4c45feac28fa2898b035a3012ac09c44caa520",
+      "snapshot_matches_manifest": true,
+      "workspace_matches_frozen_copy": true
+    }
+  },
+  "inputs": {
+    "count": 12,
+    "files": {
+      "instruction.md": {
+        "sha256": "0cd971564a0655ae78bdba0ed472b1255ce323db6a19feb6b26b6d4dcd67c22c",
+        "matches_freeze": true,
+        "matches_original": true
+      },
+      "input/Africa_orders.csv": {
+        "sha256": "7c0b74268c52b75a9dc0d892e343855775ff2d1bdfe6ea544d77e343699db5bc",
+        "matches_freeze": true,
+        "matches_original": true
+      },
+      "input/Asia_Pacific_orders.csv": {
+        "sha256": "8c9aaeae2e3f340247f5c0472a5912cbe6d0d74e5c88e0b1d5efab4b5bfb8d5b",
+        "matches_freeze": true,
+        "matches_original": true
+      },
+      "input/Europe_orders.csv": {
+        "sha256": "b132f6dc46fe5894818bf4a85243a122b508a64e0e76b06f8e0834556070fc02",
+        "matches_freeze": true,
+        "matches_original": true
+      },
+      "input/LATAM_orders.csv": {
+        "sha256": "546ca18eff9190355307c935f95016bb21f94a07f13ded07b8bf8f4115c62a36",
+        "matches_freeze": true,
+        "matches_original": true
+      },
+      "input/USCA_orders.csv": {
+        "sha256": "a0931573a257d766a122bdbb0ad9007fb49bdec18ca25931ec43a5852faa775c",
+        "matches_freeze": true,
+        "matches_original": true
+      },
+      "input/adjustments.jsonl": {
+        "sha256": "f6f9c1a604c8531efa63ebf90904a3a90b9f9cbefefdd17dd9254b67b6f654d8",
+        "matches_freeze": true,
+        "matches_original": true
+      },
+      "input/policy.json": {
+        "sha256": "471f6e3a27d29b432454deae7223f1927740bdc67a6cb885a55bc90c42ef17c5",
+        "matches_freeze": true,
+        "matches_original": true
+      },
+      "input/priority_codebook.txt": {
+        "sha256": "5033d8d25338cd67fd93c72e13b7b036cdaab9bc102325534d6de90e65548e2d",
+        "matches_freeze": true,
+        "matches_original": true
+      },
+      "input/product_info.csv": {
+        "sha256": "a508c5c50582a72e741bfed176be8a1dcdf3cbd8914391c57110585c1e5cf8a7",
+        "matches_freeze": true,
+        "matches_original": true
+      },
+      "input/segment_performance.csv": {
+        "sha256": "f20fce60c51dc2bdfef77f7bf0b25dee4107c6f4e31cdd8f5e79fa3d01cf1dd2",
+        "matches_freeze": true,
+        "matches_original": true
+      },
+      "input/shipping_by_mode.csv": {
+        "sha256": "1922a7d1f651bf42c1ab05275b364a6669d9dd08c6f6c2adf106982d031336eb",
+        "matches_freeze": true,
+        "matches_original": true
+      }
+    },
+    "all_match_freeze_and_original": true
+  },
+  "oracle": {
+    "source_report": "oracle.json",
+    "source_process": "oracle-process.json",
+    "source_interpretation": "oracle-interpretation.json",
+    "existing_execution_only": true,
+    "executed_by_reviewer": false,
+    "passed": false,
+    "passed_cases": 8,
+    "total_cases": 9,
+    "cases": [
+      {
+        "name": "public",
+        "passed": true
+      },
+      {
+        "name": "zero_budget",
+        "passed": true
+      },
+      {
+        "name": "changed_policy",
+        "passed": true
+      },
+      {
+        "name": "changed_data_and_references",
+        "passed": true
+      },
+      {
+        "name": "synthetic_row_exclusivity",
+        "passed": true
+      },
+      {
+        "name": "synthetic_lex_tie_budget_one",
+        "passed": true
+      },
+      {
+        "name": "synthetic_cost_tie",
+        "passed": true
+      },
+      {
+        "name": "synthetic_non_greedy",
+        "passed": true
+      },
+      {
+        "name": "negative_zero",
+        "passed": false
+      }
+    ],
+    "failed_cases": [
+      "negative_zero"
+    ],
+    "evaluator_exit_code": 1,
+    "oracle_process_reaped": true,
+    "wall_seconds": 0.9604281669016927,
+    "pipeline_sha256": "ad1be2d94cc2b9987e0c1ac4ff2c0483fe56765d7dc1493c1b5e241b800a9581",
+    "saved_results_sha256": "1410d96bf12818691780e94e03e6c58001060c9af862d092736f255b58c097e8",
+    "public_regenerated_results_sha256": "1410d96bf12818691780e94e03e6c58001060c9af862d092736f255b58c097e8",
+    "public_regenerated_matches_saved": true,
+    "post_report_supervisor_assertion_error_retained": true,
+    "exit_code_interpretation": "exit 1 matches the retained 8/9 quality failure; the wrapper post-report assertion does not convert it to timeout or rerun"
+  },
+  "identity": {
+    "binaries": {
+      "aster-dream": {
+        "path": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/MacOS/AsterDream",
+        "sha256": "52d9e2ff4076fb48877c350062edb78291d2c76e4eff82746493b3a10ecd49f4",
+        "matches_signed_stage": true,
+        "unsigned_source_sha256": "70accee55841c85c309ff3564c4cdcd09402864973817c87c4205df391b27bdb",
+        "copied_unsigned_matches_source": true
+      },
+      "a3s-code-acp": {
+        "path": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/MacOS/a3s-code-acp",
+        "sha256": "fe16431112e890f17058b14a5e1b9fe3c933f714638f49d8f681302d5a60bb7c",
+        "matches_signed_stage": true,
+        "unsigned_source_sha256": "b5a88347d4e6770d8ef2dc8f348ff6903674aeb30bc7726a38616d99670d72e0",
+        "copied_unsigned_matches_source": true
+      },
+      "a3s-office": {
+        "path": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/MacOS/a3s-office",
+        "sha256": "7fcd1c0be82453b05ac2f9fbf80d69164b18ea7605af36a40c58d81e38ba35af",
+        "matches_signed_stage": true,
+        "unsigned_source_sha256": "652d0f04943e4c0c0c0c42dc8c3ffb855bb7fdc0e7740b492733a1a0157af1af",
+        "copied_unsigned_matches_source": true
+      }
+    },
+    "actual_acp": {
+      "pid": 4033,
+      "path": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/MacOS/a3s-code-acp",
+      "sha256": "fe16431112e890f17058b14a5e1b9fe3c933f714638f49d8f681302d5a60bb7c"
+    },
+    "runtime": [
+      {
+        "pid": 7097,
+        "path": "/Users/roylin/code/aster/target/t013-assets-hardware/a3s-oci",
+        "sha256": "90e6a3e1c365948a659de6703c47af7f8c0ca413987ed8200aabcd72687e7779",
+        "matches_observed": true
+      },
+      {
+        "pid": 7116,
+        "path": "/Users/roylin/code/aster/target/t013-assets-hardware/a3s-oci-krun-shim",
+        "sha256": "11d1e608df61b08433b7bb0834953b2cfd517e5a0d0a9c1e93f977301bc7ea0a",
+        "matches_observed": true
+      }
+    ],
+    "renderer_port": "4318",
+    "hardware_assets_root": "/Users/roylin/code/aster/target/t013-assets-hardware",
+    "process_observation": {
+      "owned_pids_only": [
+        3167,
+        4033,
+        7097,
+        7116,
+        13047
+      ],
+      "ps_fields": [
+        "pid",
+        "ppid",
+        "comm"
+      ],
+      "present": [
+        {
+          "pid": 13047,
+          "ppid": 1,
+          "executable": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/MacOS/AsterDream"
+        }
+      ]
+    },
+    "signing_boundary": "Signed stage SHA differs from unsigned build SHA; the stage record preserves source-to-copy-to-sign identities."
+  },
+  "model_configuration": {
+    "requested_ui_model": "DeepSeek Flash",
+    "persisted_assistant_model": "deepseek::deepseek-flash",
+    "profile": "adaptive",
+    "retrieval": "disabled",
+    "runtime_variant": "hardware",
+    "actual_workspace": "/Users/roylin/code/tasks/T01-t027-cua-01",
+    "effective_budget_values": "unknown",
+    "limits_source": "No effective budget policy snapshot in the reviewed evidence; no matrix 2M/15-minute/128-round equivalence claim."
+  },
+  "timing": {
+    "send_action_requested_at_utc": "2026-10-19T20:16:29.690597+00:00",
+    "artifact_freeze_at_utc": "2026-10-19T20:44:08.860283+00:00",
+    "recorded_request_to_freeze_seconds": 1659.334746667,
+    "request_to_freeze_includes": "GUI task, tools, approval waits and interruption handling; not pure model execution or successful completion time.",
+    "native_fact_absolute_timestamps": false,
+    "independent_oracle_seconds": 0.9604281669016927,
+    "cua_and_fixed_permission_matrix_times_pooled": false
+  },
+  "denial_classification": [
+    {
+      "sequence": 33,
+      "tool": "bash",
+      "classification": "effective_arguments_frozen_permission_refusal",
+      "error_bytes": 106,
+      "error_sha256": "7b6363e8b49dc28e833e0088be4dc991d465b079bc1c6fab0a6c369cbf7fe0ee",
+      "raw_error_copied": false
+    },
+    {
+      "sequence": 124,
+      "tool": "bash",
+      "classification": "duplicate_call_guard",
+      "error_bytes": 114,
+      "error_sha256": "858723d1cdc3dab44843997b2b085c083ed79610ae0238e7e5c83b346a804af9",
+      "raw_error_copied": false
+    }
+  ],
+  "fact_summary_ref": "fact-summary.json",
+  "limits": {
+    "approval_oneshot_liveness_before_exit": "not proven by persisted awaiting-approval state",
+    "ui_terminal_observation": "root-owned CUA terminal.json; this reviewer did not operate the UI",
+    "specific_BSD_command_causal_attribution": "not established",
+    "model_task_success": false,
+    "optimization_qualification_or_stable_speedup": false,
+    "onnx_or_other_platform_qualification": false,
+    "goal_status_modified": false
+  },
+  "actions": {
+    "source_or_model_submission_modified": false,
+    "model_tests_oracle_vm_gui_or_signals_executed": false,
+    "credentials_prompt_reasoning_inputs_or_full_outputs_copied": false,
+    "files_written": [
+      "fact-summary.json",
+      "independent-audit.json"
+    ]
+  }
+}

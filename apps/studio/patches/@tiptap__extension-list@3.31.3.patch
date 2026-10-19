@@ -1,0 +1,94 @@
+diff --git a/dist/index.cjs b/dist/index.cjs
+index 283575c..764de5d 100644
+--- a/dist/index.cjs
++++ b/dist/index.cjs
+@@ -753,6 +753,26 @@ const ListKeymap = _tiptap_core.Extension.create({
+ * Examples: "1. Item", "  a) Nested item", "    I. Roman item", "iii. Another", "aa. Item 27"
+ */
+ const ORDERED_LIST_ITEM_REGEX = new RegExp(`^(\\s*)(${ORDERED_LIST_MARKER_PATTERN})([.)])\\s+(.*)$`);
++// Cherry Studio perf patch: marked invokes each custom tokenizer at every block boundary
++// with the full remaining source. Reject non-list blocks before splitting or parsing it.
++function firstNonBlankLine(src) {
++  let start = 0;
++  while (start < src.length) {
++    let nl = src.indexOf("\n", start);
++    if (nl === -1) nl = src.length;
++    const line = src.slice(start, nl);
++    if (line.trim() !== "") return line;
++    start = nl + 1;
++  }
++  return "";
++}
++function startsWithOrderedListItem(src) {
++  return ORDERED_LIST_ITEM_REGEX.test(firstNonBlankLine(src).trimStart());
++}
++function startsWithTaskListItem(src) {
++  return /^\s*[-+*]\s+\[([ xX])\]\s+/.test(firstNonBlankLine(src));
++}
++
+ /**
+ * Matches any line that starts with whitespace (indented content).
+ * Used to identify continuation content that belongs to a list item.
+@@ -1101,6 +1121,7 @@ const OrderedList = _tiptap_core.Node.create({
+ 		level: "block",
+ 		start: () => -1,
+ 		tokenize: (src, _tokens, lexer) => {
++			if (!startsWithOrderedListItem(src)) return;
+ 			var _listItems$, _listItems$2;
+ 			const lines = src.split("\n");
+ 			const [listItems, consumed] = collectOrderedListItems(lines);
+@@ -1403,6 +1424,7 @@ const TaskList = _tiptap_core.Node.create({
+ 			return index !== void 0 ? index : -1;
+ 		},
+ 		tokenize(src, tokens, lexer) {
++			if (!startsWithTaskListItem(src)) return;
+ 			const parseTaskListContent = (content) => {
+ 				const nestedResult = (0, _tiptap_core.parseIndentedBlocks)(content, {
+ 					itemPattern: /^(\s*)([-+*])\s+\[([ xX])\]\s+(.*)$/,
+diff --git a/dist/index.js b/dist/index.js
+index 1fa29e7..25c43ad 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -741,6 +741,26 @@ const ListKeymap = Extension.create({
+ * Examples: "1. Item", "  a) Nested item", "    I. Roman item", "iii. Another", "aa. Item 27"
+ */
+ const ORDERED_LIST_ITEM_REGEX = new RegExp(`^(\\s*)(${ORDERED_LIST_MARKER_PATTERN})([.)])\\s+(.*)$`);
++// Cherry Studio perf patch: marked invokes each custom tokenizer at every block boundary
++// with the full remaining source. Reject non-list blocks before splitting or parsing it.
++function firstNonBlankLine(src) {
++  let start = 0;
++  while (start < src.length) {
++    let nl = src.indexOf("\n", start);
++    if (nl === -1) nl = src.length;
++    const line = src.slice(start, nl);
++    if (line.trim() !== "") return line;
++    start = nl + 1;
++  }
++  return "";
++}
++function startsWithOrderedListItem(src) {
++  return ORDERED_LIST_ITEM_REGEX.test(firstNonBlankLine(src).trimStart());
++}
++function startsWithTaskListItem(src) {
++  return /^\s*[-+*]\s+\[([ xX])\]\s+/.test(firstNonBlankLine(src));
++}
++
+ /**
+ * Matches any line that starts with whitespace (indented content).
+ * Used to identify continuation content that belongs to a list item.
+@@ -1089,6 +1109,7 @@ const OrderedList = Node.create({
+ 		level: "block",
+ 		start: () => -1,
+ 		tokenize: (src, _tokens, lexer) => {
++			if (!startsWithOrderedListItem(src)) return;
+ 			var _listItems$, _listItems$2;
+ 			const lines = src.split("\n");
+ 			const [listItems, consumed] = collectOrderedListItems(lines);
+@@ -1391,6 +1412,7 @@ const TaskList = Node.create({
+ 			return index !== void 0 ? index : -1;
+ 		},
+ 		tokenize(src, tokens, lexer) {
++			if (!startsWithTaskListItem(src)) return;
+ 			const parseTaskListContent = (content) => {
+ 				const nestedResult = parseIndentedBlocks(content, {
+ 					itemPattern: /^(\s*)([-+*])\s+\[([ xX])\]\s+(.*)$/,

@@ -1,0 +1,46 @@
+{
+  "source_files": [
+    {
+      "path": "apps/work/rsbuild.config.ts",
+      "sha256": "481e0a1db63cba9aa2b98eb56c376c30169ba5eccbbe62f497b700b05fdcb899"
+    },
+    {
+      "path": "apps/work/scripts/studioRendererRsbuild.ts",
+      "sha256": "52968e3495917a407fabb9d54b99950cd4ca2a1729a2a2f29cdaa8ac8ec484b5"
+    },
+    {
+      "path": "apps/work/scripts/dedupeRendererAssets.ts",
+      "sha256": "fdc58a5aebc7e92d8bac01cb76ce9391b48e5488b11a2003dc9044c7996a0521"
+    },
+    {
+      "path": "apps/work/scripts/flowDesignerAlias.ts",
+      "sha256": "e477b615153f7cc77460ab527138a38b73a287e0a9ce988f5aa9abb37079d89e"
+    },
+    {
+      "path": "apps/work/scripts/studioPreferenceDefaults.ts",
+      "sha256": "61d89f1c0d6db62a273512a13cf1317318112e495fcb7ed2cab8b9d0f5f8ab45"
+    },
+    {
+      "path": "apps/work/scripts/uiContract/scan.ts",
+      "sha256": "52737855ab637e6504c3c015a5c44844d2d4555d7f1b4f7934db444a43849de9"
+    },
+    {
+      "path": "apps/work/scripts/uiContract/semanticId.ts",
+      "sha256": "8adfff6458824630cd758abc2bb39e7b37103577e40dba4bc932d15eb19865d5"
+    },
+    {
+      "path": "apps/work/scripts/uiContract/transform.ts",
+      "sha256": "8f6cf3eae28f3d0d713bf0af2e26e015de98dd8fb4803e49b13efd136a9e9bab"
+    },
+    {
+      "path": "apps/work/node_modules/@rsbuild/core/dist/626.js",
+      "sha256": "1b826a08d8cc27d385869c40e16e6a891e6127f9599d5c53d16951bb06b8ffef"
+    }
+  ],
+  "custom_plugin_reloads_dotenv": false,
+  "rsbuild_default_loads_dotenv": true,
+  "installed_cli_no_env_supported": true,
+  "no_env_disables_load_before_config_factory": true,
+  "secret_values_inspected": false,
+  "env_files_read": false
+}

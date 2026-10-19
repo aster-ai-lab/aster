@@ -1,0 +1,572 @@
+import JSZip from 'jszip';
+import { patchPptxChartAxes } from './work-pptx-chart-axes';
+import { patchPptxChartDataLabels } from './work-pptx-chart-data-labels';
+import { patchPptxChartLayoutAndSeriesStyles } from './work-pptx-chart-layout-style';
+import { patchPptxChartSeriesAnalysis } from './work-pptx-chart-series-analysis';
+import { patchPptxChartXySettings } from './work-pptx-chart-xy';
+import { patchPptxComments } from './work-pptx-comments';
+import { patchPptxAnimations } from './work-pptx-animation';
+import {
+  patchPptxNativeGroups,
+  PptxGroupExportRegistry,
+} from './work-pptx-groups';
+import { definePptxSlideLayouts } from './work-pptx-layout-export';
+import { presentationPictureAltText } from './work-pptx-picture-alt';
+import { patchPptxTransitions } from './work-pptx-transition';
+import { presentationGroupPath } from './work-presentation-groups';
+import { presentationChartAxes } from './work-presentation-chart-axes';
+import {
+  normalizeDoughnutHoleSize,
+  normalizePresentationChartLegendPosition,
+  normalizePresentationScatterStyle,
+  normalizeRadarStyle,
+  presentationChartBubbleSizes,
+  presentationChartShowsLegend,
+  presentationChartSupportsAxisTitles,
+  presentationChartUsesNumericXAxis,
+  presentationChartXValues,
+} from './work-presentation-charts';
+import { attribute, directChildren, parseXml } from './work-ooxml-package';
+import type {
+  WorkArtifact,
+  WorkSlideChart,
+  WorkSlideChartLegendPosition,
+  WorkSlideElement,
+  WorkSlideTextRun,
+} from './work-types';
+
+type PptxConstructor = typeof import('pptxgenjs').default;
+type PptxPresentation = InstanceType<PptxConstructor>;
+type PptxSlide = ReturnType<PptxPresentation['addSlide']>;
+
+function createPptxExportState(
+  artifact: WorkArtifact,
+  PptxGenJS: PptxConstructor,
+): {
+  groups: PptxGroupExportRegistry;
+  presentation: PptxPresentation;
+} {
+  if (artifact.content.type !== 'presentation') {
+    throw new Error('Only presentation artifacts can be exported as PPTX.');
+  }
+  const groups = new PptxGroupExportRegistry();
+  const presentation = new PptxGenJS();
+  const slideWidth = artifact.content.width ?? 13.333;
+  const slideHeight = artifact.content.height ?? 7.5;
+  presentation.defineLayout({
+    name: 'A3S_WORK',
+    width: slideWidth,
+    height: slideHeight,
+  });
+  presentation.layout = 'A3S_WORK';
+  presentation.author = 'A3S Work';
+  presentation.subject = artifact.title;
+  presentation.title = artifact.title;
+  presentation.company = 'A3S Lab';
+  const design = definePptxSlideLayouts(
+    presentation,
+    artifact.content,
+    slideWidth,
+    slideHeight,
+    groups,
+  );
+  for (const source of design.content.slides) {
+    const binding =
+      design.bindings.get(source.layoutId ?? '') ??
+      design.bindings.values().next().value;
+    const slide = binding
+      ? presentation.addSlide({ masterName: binding.masterName })
+      : presentation.addSlide();
+    if (!source.useLayoutBackground) {
+      slide.background = { color: source.background.replace('#', '') };
+    }
+    const groupScope = `slide:${source.id}`;
+    groups.registerAnimatedElements(
+      groupScope,
+      source.animations?.map((animation) => animation.elementId) ?? [],
+    );
+    for (const element of source.elements) {
+      addPresentationElement(
+        slide,
+        element,
+        presentation,
+        slideWidth,
+        slideHeight,
+        groups,
+        groupScope,
+        element.placeholder
+          ? binding?.placeholderNames.get(element.placeholder.key)
+          : undefined,
+      );
+    }
+    if (source.notes?.trim()) slide.addNotes(source.notes);
+  }
+  return { groups, presentation };
+}
+
+export async function createPptxBlob(
+  artifact: WorkArtifact,
+  PptxGenJS: PptxConstructor,
+): Promise<Blob> {
+  const { groups, presentation } = createPptxExportState(artifact, PptxGenJS);
+  const output = await presentation.write({
+    outputType: 'arraybuffer',
+    compression: true,
+  });
+  const buffer = await presentationArrayBuffer(output);
+  const slides =
+    artifact.content.type === 'presentation' ? artifact.content.slides : [];
+  const withChartXySettings = await patchPptxChartXySettings(buffer, slides);
+  const withChartLayoutAndStyles = await patchPptxChartLayoutAndSeriesStyles(
+    withChartXySettings,
+    slides,
+  );
+  const withChartDataLabels = await patchPptxChartDataLabels(
+    withChartLayoutAndStyles,
+    slides,
+  );
+  const withChartAxes = await patchPptxChartAxes(withChartDataLabels, slides);
+  const withChartSeriesAnalysis = await patchPptxChartSeriesAnalysis(
+    withChartAxes,
+    slides,
+  );
+  const withTransitions = await patchPptxTransitions(
+    withChartSeriesAnalysis,
+    slides,
+  );
+  const withComments = await patchPptxComments(
+    withTransitions,
+    slides,
+    artifact.content.type === 'presentation'
+      ? (artifact.content.width ?? 13.333)
+      : 13.333,
+    artifact.content.type === 'presentation'
+      ? (artifact.content.height ?? 7.5)
+      : 7.5,
+  );
+  const withAnimations = await patchPptxAnimations(
+    withComments,
+    slides,
+    groups,
+  );
+  const patched = await patchPptxNativeGroups(withAnimations, groups);
+  // pptxgenjs writes one slideMaster content-type override per slide, but only
+  // slideMaster1.xml. Drop overrides whose parts were never written.
+  const repaired = await removeDanglingContentTypeOverrides(patched);
+  return new Blob([repaired], {
+    type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  });
+}
+
+function addPresentationElement(
+  slide: PptxSlide,
+  element: WorkSlideElement,
+  presentation: PptxPresentation,
+  slideWidth: number,
+  slideHeight: number,
+  groups: PptxGroupExportRegistry,
+  groupScope: string,
+  placeholder?: string,
+) {
+  const x = (element.x / 100) * slideWidth;
+  const y = (element.y / 100) * slideHeight;
+  const width = (element.width / 100) * slideWidth;
+  const height = (element.height / 100) * slideHeight;
+  const color = element.color.replace('#', '');
+  const fillColor = element.fill.replace('#', '');
+  const borderColor = (element.borderColor ?? element.fill).replace('#', '');
+  const rotation = element.rotation;
+  const resolvedPlaceholder = presentationGroupPath(element).length
+    ? undefined
+    : placeholder;
+
+  if (
+    element.placeholder &&
+    !element.text &&
+    !element.image &&
+    !element.table &&
+    !element.chart
+  ) {
+    return;
+  }
+  if (element.type === 'image' && element.image) {
+    const objectName = groups.objectName(groupScope, element, 'image');
+    const altText = presentationPictureAltText(
+      element.altText,
+      element.image.name,
+    );
+    slide.addImage({
+      data: element.image.dataUrl,
+      x,
+      y,
+      w: width,
+      h: height,
+      rotate: rotation,
+      placeholder: resolvedPlaceholder,
+      ...(altText ? { altText } : {}),
+      ...(objectName ? { objectName } : {}),
+    });
+    return;
+  }
+  if (element.type === 'table' && element.table) {
+    const objectName = groups.objectName(groupScope, element, 'table');
+    const options = {
+      x,
+      y,
+      w: width,
+      h: height,
+      border: { color: borderColor, pt: element.borderWidth ?? 1 },
+      color,
+      fill: { color: fillColor },
+      fontFace: element.fontFamily ?? 'Aptos',
+      fontSize: Math.max(7, element.fontSize * 0.75),
+      margin: 0.06,
+      placeholder: resolvedPlaceholder,
+      ...(objectName ? { objectName } : {}),
+    };
+    slide.addTable(
+      element.table.rows.map((row) => row.map((text) => ({ text }))),
+      options,
+    );
+    return;
+  }
+  if (element.type === 'chart' && element.chart) {
+    const objectName = groups.objectName(groupScope, element, 'chart');
+    const axes = presentationChartAxes(element.chart);
+    const categoryAxis =
+      element.chart.type === 'bar' ? axes?.left : axes?.bottom;
+    const valueAxis = element.chart.type === 'bar' ? axes?.bottom : axes?.left;
+    const chartType =
+      element.chart.type === 'scatter'
+        ? presentation.ChartType.scatter
+        : element.chart.type === 'bubble'
+          ? presentation.ChartType.bubble
+          : element.chart.type === 'line'
+            ? presentation.ChartType.line
+            : element.chart.type === 'pie'
+              ? presentation.ChartType.pie
+              : element.chart.type === 'doughnut'
+                ? presentation.ChartType.doughnut
+                : element.chart.type === 'radar'
+                  ? presentation.ChartType.radar
+                  : element.chart.type === 'area'
+                    ? presentation.ChartType.area
+                    : presentation.ChartType.bar;
+    const options = {
+      x,
+      y,
+      w: width,
+      h: height,
+      catAxisLabelFontFace: element.fontFamily ?? 'Aptos',
+      chartColors: ['4472C4', 'ED7D31', 'A5A5A5', 'FFC000', '5B9BD5', '70AD47'],
+      showLegend: presentationChartShowsLegend(element.chart),
+      legendPos: pptxLegendPosition(element.chart.legendPosition),
+      showTitle: Boolean(element.chart.title),
+      title: element.chart.title,
+      placeholder: resolvedPlaceholder,
+      ...(objectName ? { objectName } : {}),
+      ...(presentationChartSupportsAxisTitles(element.chart)
+        ? {
+            catAxisTitle: categoryAxis?.title,
+            showCatAxisTitle: Boolean(categoryAxis?.title),
+            valAxisTitle: valueAxis?.title,
+            showValAxisTitle: Boolean(valueAxis?.title),
+          }
+        : {}),
+      ...(element.chart.type === 'column' ? { barDir: 'col' as const } : {}),
+      ...(element.chart.type === 'doughnut'
+        ? {
+            holeSize: normalizeDoughnutHoleSize(element.chart.doughnutHoleSize),
+          }
+        : {}),
+      ...(element.chart.type === 'radar'
+        ? { radarStyle: normalizeRadarStyle(element.chart.radarStyle) }
+        : {}),
+      ...(element.chart.type === 'scatter'
+        ? pptxScatterOptions(element.chart)
+        : {}),
+    };
+    slide.addChart(chartType, pptxChartData(element.chart), options);
+    return;
+  }
+  if (element.type === 'line') {
+    const objectName = groups.objectName(groupScope, element, 'line');
+    slide.addShape(presentation.ShapeType.line, {
+      x,
+      y,
+      w: width,
+      h: height,
+      rotate: rotation,
+      line: { color: borderColor, width: element.borderWidth ?? 1 },
+      ...(objectName ? { objectName } : {}),
+    });
+    return;
+  }
+  if (element.type === 'shape') {
+    const objectName = groups.objectName(groupScope, element, 'shape');
+    if (element.text || element.textRuns?.length) {
+      addText(
+        slide,
+        element,
+        x,
+        y,
+        width,
+        height,
+        resolvedPlaceholder,
+        objectName,
+        pptxShapeType(presentation, element),
+      );
+    } else {
+      addShape(
+        slide,
+        element,
+        presentation,
+        x,
+        y,
+        width,
+        height,
+        resolvedPlaceholder,
+        objectName,
+      );
+    }
+    return;
+  }
+  if (element.type === 'text') {
+    addText(
+      slide,
+      element,
+      x,
+      y,
+      width,
+      height,
+      resolvedPlaceholder,
+      groups.objectName(groupScope, element, 'text'),
+    );
+  }
+}
+
+function pptxChartData(chart: WorkSlideChart) {
+  if (presentationChartUsesNumericXAxis(chart.type)) {
+    return [
+      { name: 'X values', values: presentationChartXValues(chart) },
+      ...chart.series.map((series) => ({
+        name: series.name,
+        values: series.values,
+        ...(chart.type === 'bubble'
+          ? { sizes: presentationChartBubbleSizes(series) }
+          : {}),
+      })),
+    ];
+  }
+  return chart.series.map((series) => ({
+    name: series.name,
+    labels: chart.categories,
+    values: series.values,
+  }));
+}
+
+function pptxScatterOptions(chart: WorkSlideChart) {
+  const style = normalizePresentationScatterStyle(chart.scatterStyle);
+  return {
+    lineDataSymbol:
+      style === 'line' || style === 'smooth'
+        ? ('none' as const)
+        : ('circle' as const),
+    lineSize: style === 'marker' ? 0 : 2,
+    lineSmooth: style === 'smooth' || style === 'smoothMarker',
+  };
+}
+
+function pptxLegendPosition(
+  position: WorkSlideChartLegendPosition | undefined,
+) {
+  const normalized = normalizePresentationChartLegendPosition(position);
+  if (normalized === 'left') return 'l' as const;
+  if (normalized === 'top') return 't' as const;
+  if (normalized === 'bottom') return 'b' as const;
+  if (normalized === 'topRight') return 'tr' as const;
+  return 'r' as const;
+}
+
+function addShape(
+  slide: PptxSlide,
+  element: WorkSlideElement,
+  presentation: PptxPresentation,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  placeholder?: string,
+  objectName?: string,
+) {
+  const shapeType = pptxShapeType(presentation, element);
+  const fillColor = element.fill.replace('#', '');
+  const borderColor = (element.borderColor ?? element.fill).replace('#', '');
+  const options = {
+    x,
+    y,
+    w: width,
+    h: height,
+    rotate: element.rotation,
+    placeholder,
+    ...(objectName ? { objectName } : {}),
+    fill:
+      element.fill === 'transparent'
+        ? { color: 'FFFFFF', transparency: 100 }
+        : {
+            color: fillColor,
+            transparency: Math.round((1 - (element.opacity ?? 1)) * 100),
+          },
+    line: {
+      color: borderColor,
+      width: element.borderWidth ?? 0,
+      transparency: element.borderWidth ? 0 : 100,
+    },
+    ...(element.href ? { hyperlink: { url: element.href } } : {}),
+  };
+  slide.addShape(shapeType, options);
+}
+
+function addText(
+  slide: PptxSlide,
+  element: WorkSlideElement,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  placeholder?: string,
+  objectName?: string,
+  shape?: NonNullable<Parameters<PptxSlide['addText']>[1]>['shape'],
+) {
+  const shapeHyperlink = element.href ? { url: element.href } : undefined;
+  const text = presentationTextContent(element, shapeHyperlink);
+  slide.addText(text, {
+    x,
+    y,
+    w: width,
+    h: height,
+    rotate: element.rotation,
+    fontFace: element.fontFamily ?? 'Aptos',
+    fontSize: Math.max(8, element.fontSize * 0.75),
+    color: element.color.replace('#', ''),
+    bold: element.bold,
+    italic: element.italic,
+    underline: element.underline ? { style: 'sng' } : undefined,
+    align: element.align,
+    valign: element.verticalAlign ?? 'middle',
+    margin: element.fill === 'transparent' ? 0 : 10,
+    breakLine: false,
+    shape,
+    fill:
+      element.fill === 'transparent'
+        ? undefined
+        : { color: element.fill.replace('#', '') },
+    line:
+      element.borderWidth && element.borderColor
+        ? {
+            color: element.borderColor.replace('#', ''),
+            width: element.borderWidth,
+          }
+        : undefined,
+    hyperlink: shapeHyperlink,
+    placeholder,
+    ...(objectName ? { objectName } : {}),
+  });
+}
+
+function presentationTextContent(
+  element: WorkSlideElement,
+  shapeHyperlink: { url: string } | undefined,
+):
+  | string
+  | Array<{
+      text: string;
+      options: {
+        fontFace?: string;
+        fontSize?: number;
+        color?: string;
+        bold?: boolean;
+        italic?: boolean;
+        underline?: { style: 'sng' };
+        hyperlink?: { url: string };
+      };
+    }> {
+  if (element.textRuns?.length) {
+    const runs = element.textRuns.map((run: WorkSlideTextRun) => ({
+      text: run.text,
+      options: {
+        fontFace: run.fontFamily ?? element.fontFamily ?? 'Aptos',
+        fontSize: Math.max(7, (run.fontSize ?? element.fontSize) * 0.75),
+        color: (run.color ?? element.color).replace('#', ''),
+        bold: run.bold,
+        italic: run.italic,
+        underline: run.underline ? ({ style: 'sng' } as const) : undefined,
+        hyperlink: run.href ? { url: run.href } : shapeHyperlink,
+      },
+    }));
+    // pptxgenjs only assigns a relationship id to hyperlinks that live on a
+    // text run. Share the shape link object so the shape hlinkClick is valid.
+    if (
+      shapeHyperlink &&
+      !runs.some((run) => run.options.hyperlink === shapeHyperlink)
+    ) {
+      return [...runs, { text: '', options: { hyperlink: shapeHyperlink } }];
+    }
+    return runs;
+  }
+  if (shapeHyperlink) {
+    return [
+      { text: element.text ?? '', options: { hyperlink: shapeHyperlink } },
+    ];
+  }
+  return element.text;
+}
+
+function pptxShapeType(
+  presentation: PptxPresentation,
+  element: WorkSlideElement,
+) {
+  if (element.shapeType === 'ellipse') return presentation.ShapeType.ellipse;
+  if (element.shapeType === 'triangle') return presentation.ShapeType.triangle;
+  if (element.shapeType === 'diamond') return presentation.ShapeType.diamond;
+  if (element.shapeType === 'roundRect')
+    return presentation.ShapeType.roundRect;
+  return presentation.ShapeType.rect;
+}
+
+async function removeDanglingContentTypeOverrides(
+  buffer: ArrayBuffer,
+): Promise<ArrayBuffer> {
+  const archive = await JSZip.loadAsync(buffer);
+  const entry = archive.file('[Content_Types].xml');
+  if (!entry) return buffer;
+  const document = parseXml(await entry.async('text'), '[Content_Types].xml');
+  let changed = false;
+  for (const override of [
+    ...directChildren(document.documentElement, 'Override'),
+  ]) {
+    const partName = attribute(override, 'PartName');
+    if (!partName?.startsWith('/')) continue;
+    const path = decodeURIComponent(partName.slice(1));
+    if (archive.file(path)) continue;
+    override.parentNode?.removeChild(override);
+    changed = true;
+  }
+  if (!changed) return buffer;
+  archive.file(
+    '[Content_Types].xml',
+    new XMLSerializer().serializeToString(document),
+  );
+  return archive.generateAsync({ type: 'arraybuffer' });
+}
+
+async function presentationArrayBuffer(
+  output: string | ArrayBuffer | Blob | Uint8Array,
+): Promise<ArrayBuffer> {
+  if (output instanceof ArrayBuffer) return output;
+  if (output instanceof Blob) return output.arrayBuffer();
+  if (output instanceof Uint8Array) return output.slice().buffer as ArrayBuffer;
+  throw new Error(
+    'PowerPoint export returned an unsupported binary representation.',
+  );
+}

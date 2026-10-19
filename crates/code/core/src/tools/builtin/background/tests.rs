@@ -830,8 +830,9 @@ async fn native_background_denies_ungranted_network_egress() {
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
     let port = listener.local_addr().unwrap().port();
     let tool = BackgroundTool::default();
-    let command =
-        format!("printf 'sandbox-ready\n'; /usr/bin/curl --noproxy '*' --connect-timeout 1 --max-time 2 http://127.0.0.1:{port}/");
+    let command = format!(
+        "printf 'sandbox-ready\n'; /usr/bin/curl --noproxy '*' --connect-timeout 1 --max-time 2 http://127.0.0.1:{port}/"
+    );
     let output = start(&tool, &owned.ctx, "network-denied", &command).await;
     if cfg!(target_os = "macos") {
         assert_native_start_is_unsupported(&owned, &tool, &output).await;

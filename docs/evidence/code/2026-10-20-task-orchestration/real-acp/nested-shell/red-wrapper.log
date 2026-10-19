@@ -1,0 +1,33 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 22.42s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 1 test
+
+thread 'agent_api::tests::fact_log::nested_shell_verification::nested_wrappers_preserve_serial_proofs_but_cannot_rebase_a_nonexclusive_window' (49452446) panicked at crates/code/core/src/agent_api/tests/fact_log/nested_shell_verification.rs:263:5:
+assertion failed: !observation.verified
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agent_api::tests::fact_log::nested_shell_verification::nested_wrappers_preserve_serial_proofs_but_cannot_rebase_a_nonexclusive_window ... FAILED
+
+failures:
+
+failures:
+    agent_api::tests::fact_log::nested_shell_verification::nested_wrappers_preserve_serial_proofs_but_cannot_rebase_a_nonexclusive_window
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5174 filtered out; finished in 0.85s
+
+error: test failed, to rerun pass `-p a3s-code-core --lib`

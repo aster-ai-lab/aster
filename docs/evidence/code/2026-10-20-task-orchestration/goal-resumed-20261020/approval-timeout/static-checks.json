@@ -1,0 +1,15 @@
+{
+  "recorded_at_utc": "2026-10-19T22:36:33.088487+00:00",
+  "cargo_run_by_this_agent": false,
+  "checks": [
+    {
+      "command": "rustup run 1.97.1 rustfmt --check --edition 2021 --config skip_children=true crates/code/core/src/agent_api/governance_facade.rs crates/code/core/src/agent_api/tests/fact_log/work_policy/confirmation.rs crates/code/acp/src/agent.rs crates/code/acp/src/agent/approval_deadline_tests.rs",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check -- crates/code/core/src/agent_api/governance_facade.rs crates/code/core/src/agent_api/tests/fact_log/work_policy.rs crates/code/core/src/agent_api/tests/fact_log/work_policy/confirmation.rs crates/code/acp/src/agent.rs crates/code/acp/src/agent_tests.rs crates/code/acp/src/agent/approval_deadline_tests.rs",
+      "exit_code": 0
+    }
+  ],
+  "production_green_status": "pending root serial Cargo qualification"
+}

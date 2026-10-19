@@ -1,0 +1,4 @@
+[[permission]]
+identifier = "allow-code-git"
+description = "Creates a git worktree and a GitHub pull request for the code work mode."
+commands.allow = ["code_worktree_add", "code_pull_request"]

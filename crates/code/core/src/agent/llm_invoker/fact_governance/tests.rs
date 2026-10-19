@@ -618,3 +618,95 @@ async fn compatibility_loop_new_gate_refuses_managed_binding_but_raw_preparation
     assert!(guard.records.lock().unwrap().is_empty());
     assert_eq!(client.streaming.load(Ordering::SeqCst), 0);
 }
+
+#[tokio::test]
+async fn main_turn_rejects_foreign_definitions_before_provider_but_auxiliary_keeps_its_surface() {
+    let guard = Guard::new(vec![], false);
+    let (agent, client, provider_sender) = fixture(guard.clone(), false, false);
+    // The bound invocation froze an empty registry. This definition has no
+    // admitted identity, regardless of whether its arguments look harmless.
+    let foreign = vec![ToolDefinition {
+        name: "foreign_check".into(),
+        description: "Unadmitted fixture definition".into(),
+        parameters: serde_json::json!({"type":"object"}),
+    }];
+    let messages = vec![Message::user("controlled profile refusal")];
+    let prepared = agent
+        .prepare_profiled_fact_model_call(
+            "fact-original",
+            client.clone(),
+            messages.clone(),
+            None,
+            foreign.clone(),
+        )
+        .unwrap();
+    let (sender, _receiver) = mpsc::channel(64);
+    let result = prepared
+        .run(
+            sender,
+            CancellationToken::new(),
+            Arc::new(FactModelAccountingObservation::default()),
+        )
+        .await;
+    assert!(matches!(result, Err(ActorError::Defect(_))));
+    let evidence_error = agent
+        .fact_profiled_model_evidence(&messages, None, &foreign)
+        .await
+        .unwrap_err();
+    assert!(matches!(
+        crate::fact_control::model_error(evidence_error),
+        ActorError::Defect(_)
+    ));
+    assert_eq!(client.streaming.load(Ordering::SeqCst), 0);
+    assert_eq!(client.complete.load(Ordering::SeqCst), 0);
+    assert!(guard.records.lock().unwrap().is_empty());
+
+    provider_sender
+        .send(StreamEvent::Done(response()))
+        .await
+        .unwrap();
+    let auxiliary = agent
+        .prepare_fact_model_call("fact-original", client.clone(), messages, None, foreign)
+        .unwrap();
+    let (sender, mut receiver) = mpsc::channel(64);
+    auxiliary
+        .run(
+            sender,
+            CancellationToken::new(),
+            Arc::new(FactModelAccountingObservation::default()),
+        )
+        .await
+        .unwrap();
+    let mut presentations = 0;
+    while let Some(frame) = receiver.recv().await {
+        if let FactModelFrame::Presentation(snapshot) = frame {
+            presentations += 1;
+            assert_eq!(
+                snapshot.application,
+                ModelPresentationApplicationV1::Auxiliary
+            );
+            assert_eq!(snapshot.presented_tool_count, 1);
+        }
+    }
+    assert_eq!(presentations, 1);
+    assert_eq!(client.streaming.load(Ordering::SeqCst), 1);
+}
+
+#[tokio::test]
+async fn unsupported_frozen_profile_is_a_permanent_refusal_before_provider() {
+    let guard = Guard::new(vec![], false);
+    let (mut agent, client, _sender) = fixture(guard, false, false);
+    agent.config.tool_presentation_profile = serde_json::from_value(serde_json::json!({
+        "schema":"unsupported-profile", "mode":"code"
+    }))
+    .unwrap();
+    let error = agent
+        .present_fact_turn_tools(&[], &[Message::user("inspect")])
+        .unwrap_err();
+    assert!(matches!(
+        crate::fact_control::model_error(error),
+        ActorError::Defect(_)
+    ));
+    assert_eq!(client.streaming.load(Ordering::SeqCst), 0);
+    assert_eq!(client.complete.load(Ordering::SeqCst), 0);
+}

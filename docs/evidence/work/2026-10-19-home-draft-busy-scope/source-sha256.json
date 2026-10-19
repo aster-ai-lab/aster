@@ -1,0 +1,6 @@
+{
+  "apps/work/src/renderer/pages/agents/AgentComposer.tsx": "6c661326d083c398ddcc71525a8bd6a04a4a10df7e5f80fef7ef7c34a1a3ab25",
+  "apps/work/src/renderer/pages/agents/AgentPage.tsx": "d75f46e3ffb1967105b0923278d268a54b2a5bad795b5f55d6cd5b5ac569bfb9",
+  "apps/work/src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx": "87b7aa06cac062a0e22ca59b4e5b5a4f824313374454a26bd0a4a13eee6eb9e2",
+  "apps/work/src/renderer/pages/agents/__tests__/AgentPage.test.tsx": "8f46b0a884be654f78a3256fb4ec8cbf58e0641d82440f3afba40a0f6091dd1f"
+}

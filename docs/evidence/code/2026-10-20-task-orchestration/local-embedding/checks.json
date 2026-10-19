@@ -1,0 +1,91 @@
+{
+  "schema": "aster.local-embedding-checks.v1",
+  "updated_at_utc": "2026-10-19T16:44:03.353115+00:00",
+  "checks": [
+    {
+      "command": "cargo test --locked --offline -p a3s-use-bge --features bge-m3 --lib embedding::tests -- --test-threads=1",
+      "status": "passed",
+      "passed": 6,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 17,
+      "reported_test_elapsed_seconds": 0.05,
+      "reported_cargo_elapsed": "2m 16s; includes shared build-lock wait and compilation",
+      "warnings": [
+        "Existing bge-m3-only dead_code warning: tokenizer::encode_pairs; unrelated workspace profile/patch warnings."
+      ],
+      "scope": "Owned operation resource/cancellation and typed-request boundary tests; no native ONNX execution."
+    },
+    {
+      "command": "cargo test --locked --offline -p a3s-code-acp --lib agent::local_embedding::tests -- --test-threads=1",
+      "status": "passed",
+      "passed": 10,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 326,
+      "reported_test_elapsed_seconds": 0.05,
+      "reported_cargo_elapsed": "20.75s",
+      "scope": "Fake backend adaptation, generation/bounds, and real Core executor timeout; no native ONNX inference.",
+      "warnings": [
+        "Existing BGE single-feature dead_code warnings; Core OCI version helper unused warnings; existing large eh_frame linker warning."
+      ]
+    },
+    {
+      "command": "cargo clippy --locked --offline -p a3s-use-bge --features bge-m3 --lib --tests",
+      "status": "passed with existing warnings outside owned files",
+      "exit_code": 0,
+      "reported_cargo_elapsed": "31.74s",
+      "owned_file_warnings": 0,
+      "warnings": [
+        "Single-feature dead_code: math::sigmoid and tokenizer::encode_pairs.",
+        "Existing install/tests.rs: type_complexity and await_holding_lock.",
+        "Existing tests.rs: excessive_precision.",
+        "Existing workspace profile/patch warnings."
+      ]
+    },
+    {
+      "command": "rustfmt --edition 2021 --config skip_children=true --check crates/bge/src/embedding.rs crates/bge/src/embedding_tests.rs crates/code/acp/src/agent/local_embedding.rs crates/code/acp/src/agent/local_embedding_tests.rs",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check -- crates/bge/src/embedding.rs crates/bge/src/embedding_tests.rs crates/code/acp/src/agent/local_embedding.rs crates/code/acp/src/agent/local_embedding_tests.rs",
+      "status": "passed",
+      "exit_code": 0
+    }
+  ],
+  "owned_source": {
+    "crates/bge/src/embedding.rs": {
+      "sha256": "39eaa69d3aca9d56bad75fd757981a8698cbe175f7c547e4f8029eb8fd007b92",
+      "bytes": 20672
+    },
+    "crates/bge/src/embedding_tests.rs": {
+      "sha256": "cf3362801dfcc5808925cc0774a21434e3a437e9d441386e4fe5936a20469c77",
+      "bytes": 5992
+    },
+    "crates/code/acp/src/agent/local_embedding.rs": {
+      "sha256": "97774106c37a2518f991a7ab0a59db4dc01ccf49bc311c64d7a027e1e202ab9b",
+      "bytes": 10028
+    },
+    "crates/code/acp/src/agent/local_embedding_tests.rs": {
+      "sha256": "12cb7b73814ac0a7791a4ceb718d452ae2aa93cea1e95700bb7a48210233b543",
+      "bytes": 12173
+    }
+  },
+  "native_backend_qualified": false,
+  "real_model_or_vm_executed": false,
+  "new_assets_downloaded": false,
+  "owned_source_unchanged_during_checks": true,
+  "counts": {
+    "bge_new_tests_passed": 6,
+    "acp_new_tests_passed": 10,
+    "new_tests_failed": 0
+  },
+  "independent_source_review": {
+    "reviewer": "runtime_speed",
+    "blocking_findings": 0,
+    "scope": "Four owned source/test files; cancellation ownership, RunOptions lifetime, generation and output validation.",
+    "limitation": "Read-only review; not native ONNX qualification."
+  },
+  "root_lock_sha256_at_completion": "66b5513f12803ea4e651fda88b47456f9bf8c07cd9db35f162fe6eacd45a80ef"
+}

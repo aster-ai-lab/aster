@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-10-19T17:24:54.874044+00:00",
+  "command": "cargo clippy --locked --offline -p a3s-code-core --lib --tests --message-format=json",
+  "exit_code": 101,
+  "diagnostics": [
+    {
+      "level": "warning",
+      "message": "manual `!RangeInclusive::contains` implementation",
+      "code": "clippy::manual_range_contains",
+      "files": [
+        "crates/oci-runtime/crates/core/src/hardware_vm.rs"
+      ],
+      "owned": false
+    },
+    {
+      "level": "warning",
+      "message": "manual implementation of `.is_multiple_of()`",
+      "code": "clippy::manual_is_multiple_of",
+      "files": [
+        "crates/oci-runtime/crates/core/src/hardware_vm.rs"
+      ],
+      "owned": false
+    },
+    {
+      "level": "warning",
+      "message": "this `impl` can be derived",
+      "code": "clippy::derivable_impls",
+      "files": [
+        "crates/common/src/privacy.rs"
+      ],
+      "owned": false
+    },
+    {
+      "level": "warning",
+      "message": "consider using `sort_by_key`",
+      "code": "clippy::unnecessary_sort_by",
+      "files": [
+        "crates/common/src/privacy.rs"
+      ],
+      "owned": false
+    },
+    {
+      "level": "warning",
+      "message": "unused imports: `guest_agent_hello` and `host_runtime_version`",
+      "code": "unused_imports",
+      "files": [
+        "crates/code/core/src/sandbox/oci.rs",
+        "crates/code/core/src/sandbox/oci.rs"
+      ],
+      "owned": false
+    },
+    {
+      "level": "warning",
+      "message": "constant `HOST_MISMATCH` is never used",
+      "code": "dead_code",
+      "files": [
+        "crates/code/core/src/sandbox/oci/version.rs"
+      ],
+      "owned": false
+    },
+    {
+      "level": "warning",
+      "message": "function `host_runtime_version` is never used",
+      "code": "dead_code",
+      "files": [
+        "crates/code/core/src/sandbox/oci/version.rs"
+      ],
+      "owned": false
+    },
+    {
+      "level": "warning",
+      "message": "function `guest_agent_hello` is never used",
+      "code": "dead_code",
+      "files": [
+        "crates/code/core/src/sandbox/oci/version.rs"
+      ],
+      "owned": false
+    },
+    {
+      "level": "warning",
+      "message": "function `version_immediately_before` is never used",
+      "code": "dead_code",
+      "files": [
+        "crates/code/core/src/sandbox/oci/version.rs"
+      ],
+      "owned": false
+    },
+    {
+      "level": "warning",
+      "message": "function `semver_ending_at` is never used",
+      "code": "dead_code",
+      "files": [
+        "crates/code/core/src/sandbox/oci/version.rs"
+      ],
+      "owned": false
+    },
+    {
+      "level": "warning",
+      "message": "this function has too many arguments (8/7)",
+      "code": "clippy::too_many_arguments",
+      "files": [
+        "crates/code/core/src/agent/tool_completion_runtime.rs"
+      ],
+      "owned": false
+    },
+    {
+      "level": "warning",
+      "message": "this `if` has identical blocks",
+      "code": "clippy::if_same_then_else",
+      "files": [
+        "crates/code/core/src/code_intelligence/language_runtime.rs"
+      ],
+      "owned": true
+    },
+    {
+      "level": "error",
+      "message": "missing field `models` in initializer of `a3s_code_core::agent_protocol::AgentProtocolRunStartV1`",
+      "code": "E0063",
+      "files": [
+        "crates/code/core/tests/agent_protocol_v1.rs"
+      ],
+      "owned": false
+    },
+    {
+      "level": "warning",
+      "message": "this function has too many arguments (8/7)",
+      "code": "clippy::too_many_arguments",
+      "files": [
+        "crates/code/core/src/agent/tool_completion_runtime.rs"
+      ],
+      "owned": false
+    },
+    {
+      "level": "warning",
+      "message": "called `.err().expect()` on a `Result` value",
+      "code": "clippy::err_expect",
+      "files": [
+        "crates/code/core/src/agent_api/session_sandbox.rs"
+      ],
+      "owned": false
+    },
+    {
+      "level": "warning",
+      "message": "this `if` has identical blocks",
+      "code": "clippy::if_same_then_else",
+      "files": [
+        "crates/code/core/src/code_intelligence/language_runtime.rs"
+      ],
+      "owned": true
+    },
+    {
+      "level": "warning",
+      "message": "this let-binding has unit value",
+      "code": "clippy::let_unit_value",
+      "files": [
+        "crates/code/core/src/sandbox/oci/tests.rs"
+      ],
+      "owned": false
+    }
+  ],
+  "raw_stdout_or_source_renderings_retained": false,
+  "raw_stderr_retained": false
+}

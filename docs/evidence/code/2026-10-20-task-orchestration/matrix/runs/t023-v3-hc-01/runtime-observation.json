@@ -1,0 +1,2133 @@
+{
+  "runtime": {
+    "agent_close_settled": true,
+    "clock": "Core stream admission through event drain and bounded worker/cancel settlement; excludes backend preflight, preparation, close and independent oracle",
+    "close_settled": true,
+    "error_code": null,
+    "event_window_complete": true,
+    "execution_completed": true,
+    "final_skill_count": 0,
+    "initial_skill_count": 0,
+    "metrics_complete": false,
+    "oracle_passed": null,
+    "parent_identity_error": null,
+    "parent_identity_source": "typed original top-level tool.result receipts bound to the exact admitted Run",
+    "preparation_ms": 5,
+    "presentation_matches": true,
+    "reported_token_ledger": 1423101,
+    "runs": [
+      {
+        "error": null,
+        "event_count": 45016,
+        "event_window_complete": true,
+        "evidence": {
+          "error_event_count": 0,
+          "model_inputs": [
+            {
+              "callSequence": 1,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 1,
+              "estimatedPromptTokens": 4502,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:57e64cd732579bde05594cf2983eb3c6dc17b4e8902b1de29f00b7cdf30d07e1",
+              "kind": "completion",
+              "messageCount": 1,
+              "messagePayloadBytes": 266,
+              "messagesDigest": "sha256:fb8b2bf628d231c8d034279e6c23323c0d5d1b3a8e27241b8abee92b026e1601",
+              "payloadBytes": 18401,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:112b0718c332d83e3b979e1f7c46b3342fa4967db1e5cd5d5c67637b8411023a",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 13025,
+              "systemDigest": "sha256:02fb443554761d31044a51af6f88800690bdeb9beac47992b2cf16d6d092b6c9",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 0
+            },
+            {
+              "callSequence": 2,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 3,
+              "estimatedPromptTokens": 4576,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:5240d23160a1dbfd8551bfa90caeef68d31333559c2e6fec11323010c2775e28",
+              "kind": "completion",
+              "messageCount": 3,
+              "messagePayloadBytes": 770,
+              "messagesDigest": "sha256:a84b877e377451ef328737d3a6bdb2d8c090bb954ca6a454c640ffc81413f3d2",
+              "payloadBytes": 18905,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:c25ce7fa5d3c177d79b63e830a991fff7bb10723d6399af4bc82fb9732c406c2",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 13025,
+              "systemDigest": "sha256:02fb443554761d31044a51af6f88800690bdeb9beac47992b2cf16d6d092b6c9",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 1
+            },
+            {
+              "callSequence": 3,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 5,
+              "estimatedPromptTokens": 5092,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:59efb595ecb1ed54c2e8d43cfb1b63b2a7a453b715d31b6dbe891e541a58288d",
+              "kind": "completion",
+              "messageCount": 5,
+              "messagePayloadBytes": 3199,
+              "messagesDigest": "sha256:799595ae665221a71b1dcc9df646e4a78895a3ddbd3e0c0bfe0ac73cd7bd4a58",
+              "payloadBytes": 21334,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:9c22fc4622c5204566c2283cea0147469365dc28f07e9e985194b127fc071aaa",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 13025,
+              "systemDigest": "sha256:02fb443554761d31044a51af6f88800690bdeb9beac47992b2cf16d6d092b6c9",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 2
+            },
+            {
+              "callSequence": 4,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 7,
+              "estimatedPromptTokens": 8414,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:c4d96d309ea550daba51220067a1e6f16ffaebc7e5f7ecb0d8ed1c8e46023f04",
+              "kind": "completion",
+              "messageCount": 7,
+              "messagePayloadBytes": 17078,
+              "messagesDigest": "sha256:cf9591de3be8b287a5e585cd60c76872263a910bf48d90aa23bbde1d8b1bea59",
+              "payloadBytes": 35213,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:9e9258fe5fd83da6c903713b576376ec8e83294c8ebed7a1b7fc80e43b71cf8c",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 13025,
+              "systemDigest": "sha256:02fb443554761d31044a51af6f88800690bdeb9beac47992b2cf16d6d092b6c9",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 3
+            },
+            {
+              "callSequence": 5,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 9,
+              "estimatedPromptTokens": 9123,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:97bed3d427123e704410711f38f28d0d0274f8c0ff9d85c8cb3ab04ff8dbb5b5",
+              "kind": "completion",
+              "messageCount": 9,
+              "messagePayloadBytes": 20327,
+              "messagesDigest": "sha256:b0b7b1f7287faf254d8f49723f7509c7c4724f098e31133e097b2ad4c67188a0",
+              "payloadBytes": 38462,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:6e0178f522f9a5d5d100adf93a45bbb18f2cee245516d956c42e0c3de57842c4",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 13025,
+              "systemDigest": "sha256:02fb443554761d31044a51af6f88800690bdeb9beac47992b2cf16d6d092b6c9",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 4
+            },
+            {
+              "callSequence": 6,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 11,
+              "estimatedPromptTokens": 9701,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:e3c44641d2ce04551e8e386ffe8a979b3ebeb5f62baec2c021b9a958abc42cd5",
+              "kind": "completion",
+              "messageCount": 11,
+              "messagePayloadBytes": 23047,
+              "messagesDigest": "sha256:2966c2534aa6d7927798b7d0209ebf6c72a7c04db7aa6e73b6396ec5d5453987",
+              "payloadBytes": 41182,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:bfc1d4d86a998b29748c0b8c2f6632291694dc66d9a5fe5ff89df6206ef7d7b0",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 13025,
+              "systemDigest": "sha256:02fb443554761d31044a51af6f88800690bdeb9beac47992b2cf16d6d092b6c9",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 5
+            },
+            {
+              "callSequence": 7,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 13,
+              "estimatedPromptTokens": 10229,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:8b8248ac61dc38695f3fc663cfdb8ffd2c81306788197106048c8dc0be63b3a2",
+              "kind": "completion",
+              "messageCount": 13,
+              "messagePayloadBytes": 25370,
+              "messagesDigest": "sha256:00c8a609db6b1a92abe25cbcf826df5a22a5fad511544a04acdec7ef2996f816",
+              "payloadBytes": 43505,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:5032d43b5180a7271e7c5125b9f012098e627b3d909b3a4dbe7ba4e16beb8648",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 13025,
+              "systemDigest": "sha256:02fb443554761d31044a51af6f88800690bdeb9beac47992b2cf16d6d092b6c9",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 6
+            },
+            {
+              "callSequence": 8,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 15,
+              "estimatedPromptTokens": 10438,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:173b86788fadfb1e032250ebad306c23505d07ba797c3f9204d6b3cb81fbdb84",
+              "kind": "completion",
+              "messageCount": 15,
+              "messagePayloadBytes": 26424,
+              "messagesDigest": "sha256:da226938a903bde28bc50b564cfa22e4fb086b0f633ec5f5c714e2e97f09c717",
+              "payloadBytes": 44559,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:2a45cccdfe01c3a0092093b5403e9d4b95a06195a56d70a698afae848e663453",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 13025,
+              "systemDigest": "sha256:02fb443554761d31044a51af6f88800690bdeb9beac47992b2cf16d6d092b6c9",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 7
+            },
+            {
+              "callSequence": 9,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 17,
+              "estimatedPromptTokens": 11293,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:e6081ae367ac1ff72da1e35c208c3766d872e35caed0a795b34429a799535188",
+              "kind": "completion",
+              "messageCount": 17,
+              "messagePayloadBytes": 30101,
+              "messagesDigest": "sha256:5e0f2c56ad1a376f3f19e93ce22140470c8731a2fe8927b1666299f1722a625b",
+              "payloadBytes": 48236,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:9490a18a7205e1c9f6f26c505b72d843d7bd2cc684fa38ae4a7c5b18b763b73a",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 13025,
+              "systemDigest": "sha256:02fb443554761d31044a51af6f88800690bdeb9beac47992b2cf16d6d092b6c9",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 8
+            },
+            {
+              "callSequence": 10,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 19,
+              "estimatedPromptTokens": 26943,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:2fed5b83fb1be90cb0cb236461923d3f63bede9740ed66f6ff7ed095095255ea",
+              "kind": "completion",
+              "messageCount": 19,
+              "messagePayloadBytes": 95567,
+              "messagesDigest": "sha256:b7cef2fdb3d1e0558b9f749e6144e080d04a0f776f6dc5d9081f83e2e8dcf07c",
+              "payloadBytes": 113702,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:cf9cc8c6db1d577a196c4e7d86bf3aee1e55a9a71e6cf3e2fdf8314d2df39803",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 13025,
+              "systemDigest": "sha256:02fb443554761d31044a51af6f88800690bdeb9beac47992b2cf16d6d092b6c9",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 9
+            },
+            {
+              "callSequence": 11,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 21,
+              "estimatedPromptTokens": 29030,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:057ae3d8d5e7af401797fa0765948e57f25b895eb36bcdaf4f89623063944c27",
+              "kind": "completion",
+              "messageCount": 21,
+              "messagePayloadBytes": 104229,
+              "messagesDigest": "sha256:40ad6e5cf55ffb02654e2c5a2f18453622eb8e8f01502bc4cfd006e68a54b7e5",
+              "payloadBytes": 122364,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:652034097e782f360c83a01ee7485da13e553253fce8e97009020639a18e2eb9",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 13025,
+              "systemDigest": "sha256:02fb443554761d31044a51af6f88800690bdeb9beac47992b2cf16d6d092b6c9",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 10
+            },
+            {
+              "callSequence": 12,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 23,
+              "estimatedPromptTokens": 29982,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:b8980d150e3459e12d70faedd275f2dffd5d41d6da89eda0d5640edbe619d5dd",
+              "kind": "completion",
+              "messageCount": 23,
+              "messagePayloadBytes": 108309,
+              "messagesDigest": "sha256:3de2dbd87d18bdd9a02551c95167517327e8866bdb57a624bc4be6e31abcb340",
+              "payloadBytes": 126444,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:aa553a8af9f61eebe37334f115ad8b53bc9f8f1bb148d8cbe30b453a1503f6f3",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 13025,
+              "systemDigest": "sha256:02fb443554761d31044a51af6f88800690bdeb9beac47992b2cf16d6d092b6c9",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 11
+            },
+            {
+              "callSequence": 13,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 25,
+              "estimatedPromptTokens": 44645,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:67eba9862c4e9fadcbcff4c5500ae4c3883cd00e563205e725624434f85153dc",
+              "kind": "completion",
+              "messageCount": 25,
+              "messagePayloadBytes": 167397,
+              "messagesDigest": "sha256:b2bd1a13b9f41b8fda71a28fb03bc1a377dd20913936ccfe812f242b06f5a6e7",
+              "payloadBytes": 186448,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:8bb94414d2dcb94f0fe3d4f15b432d0a35d1efb4f548923d5638cbcd8028ad18",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 13941,
+              "systemDigest": "sha256:efcc15b199261c8af2c78249842e4765d3dd1e8c0b5e33c2839683e3e7661b35",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 12
+            },
+            {
+              "callSequence": 14,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 27,
+              "estimatedPromptTokens": 44927,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:e7efc2f21347b0be09e7cddf3acb84feb6af9ff81c3fbe4b1e1f4845c9186d54",
+              "kind": "completion",
+              "messageCount": 27,
+              "messagePayloadBytes": 168779,
+              "messagesDigest": "sha256:5fe47e4baece55992124363b5ea346f0543942069e3d527c8ba4e42838496240",
+              "payloadBytes": 187875,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:5d29eb7cf47abb67007908fffdc7fe447ec2af4d85b50c201b9b9db0cc04c01f",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 13986,
+              "systemDigest": "sha256:ab8d561245e062547cca92bc2c63ebad5c30631ac2cb67780e75e30d159f3fdb",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 13
+            },
+            {
+              "callSequence": 15,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 29,
+              "estimatedPromptTokens": 45768,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:09dce817a57d95c7865645e85e1d18c16a54c862b82b911a507cc761f198d3e9",
+              "kind": "completion",
+              "messageCount": 29,
+              "messagePayloadBytes": 172476,
+              "messagesDigest": "sha256:c57946806bf4ea998dd681f4e49829a4526d6dcd4b7ae8960b880a0787a283ed",
+              "payloadBytes": 191572,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:22a03d14ad2f370044e19a554fd217ef342e7bd4d9f604c40f7d6198f2f0ba8c",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 13986,
+              "systemDigest": "sha256:ab8d561245e062547cca92bc2c63ebad5c30631ac2cb67780e75e30d159f3fdb",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 14
+            },
+            {
+              "callSequence": 16,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 31,
+              "estimatedPromptTokens": 49564,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:2cba48c2eb942481f0b9a655aa5ec490e35f4fd4eaec493d013221bd247c3357",
+              "kind": "completion",
+              "messageCount": 31,
+              "messagePayloadBytes": 188057,
+              "messagesDigest": "sha256:123dead5ce1b88e68cf1f0a1367dfad5c943990ac83194b10b202473b5fdd869",
+              "payloadBytes": 207153,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:39cc161df45fca390e2816750e47f96f42012817548bba248e8299da9d68b67f",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 13986,
+              "systemDigest": "sha256:ab8d561245e062547cca92bc2c63ebad5c30631ac2cb67780e75e30d159f3fdb",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 15
+            },
+            {
+              "callSequence": 17,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 33,
+              "estimatedPromptTokens": 51666,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:c59731bc2d5be1c6a221ee1e0711d82edde9a9cc42c0e754592bdca2b62df632",
+              "kind": "completion",
+              "messageCount": 33,
+              "messagePayloadBytes": 196796,
+              "messagesDigest": "sha256:6d778627f1fd0e9e99c88a3de227f11a01003aae1fdf394a039aa00c561d2e10",
+              "payloadBytes": 215892,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:bb4e8e855899ddeafe25ea668e7cf704881962554e33dfb019c045e2d843c121",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 13986,
+              "systemDigest": "sha256:ab8d561245e062547cca92bc2c63ebad5c30631ac2cb67780e75e30d159f3fdb",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 16
+            },
+            {
+              "callSequence": 18,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 35,
+              "estimatedPromptTokens": 54972,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:c696ed80567e2139cb67735d6e434a20ab4a1b52670649c3be7917d8013057c6",
+              "kind": "completion",
+              "messageCount": 35,
+              "messagePayloadBytes": 210490,
+              "messagesDigest": "sha256:1b1c7d8bf51c65579292d8028d2e782790a3cdb179f08decec59a77c044c5371",
+              "payloadBytes": 229586,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:35d021b29201474a5992d5b4e37e9af8035a6c3cf5a423373f90b56da45a4417",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 13986,
+              "systemDigest": "sha256:ab8d561245e062547cca92bc2c63ebad5c30631ac2cb67780e75e30d159f3fdb",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 17
+            },
+            {
+              "callSequence": 19,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 37,
+              "estimatedPromptTokens": 56577,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:89bd85ed451ed0ddde1f55f17e89959bd95dc54e03e20a423fa5926757cb5989",
+              "kind": "completion",
+              "messageCount": 37,
+              "messagePayloadBytes": 217160,
+              "messagesDigest": "sha256:36be61e6e88045ef7cf7086c4cfd92ad11c3543f25974320353bc7a04a3c2254",
+              "payloadBytes": 236256,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:03820b78c16dca4ae4d3a6a07232009ba22b8db2c3d86aa3758f971f63e1eae2",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 13986,
+              "systemDigest": "sha256:ab8d561245e062547cca92bc2c63ebad5c30631ac2cb67780e75e30d159f3fdb",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 18
+            },
+            {
+              "callSequence": 20,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 39,
+              "estimatedPromptTokens": 57279,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:353b96912230bdf7267d3c0407b4c45adea93481d770b8ab77bece7c72830e6e",
+              "kind": "completion",
+              "messageCount": 39,
+              "messagePayloadBytes": 220203,
+              "messagesDigest": "sha256:1dd8543e697d941c35f6a652965e2be6046945b14208cb6a6aa1a497f4cfc19b",
+              "payloadBytes": 239299,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:b6eabf290697c675224743c83c5720e11cb5c1e37f1c7f37be4c40b087e12307",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 13986,
+              "systemDigest": "sha256:ab8d561245e062547cca92bc2c63ebad5c30631ac2cb67780e75e30d159f3fdb",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 19
+            },
+            {
+              "callSequence": 21,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 41,
+              "estimatedPromptTokens": 63457,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:e8428170917f2b5560965b74271add4adb5d11488c69b1bbd559b3ff8b4fd9e7",
+              "kind": "completion",
+              "messageCount": 41,
+              "messagePayloadBytes": 245464,
+              "messagesDigest": "sha256:bab0173a143e7e433ee1a161f6a83c482927dd6d42d6f18e161ac9801fee020b",
+              "payloadBytes": 264560,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:1e081e6e0af099339195fe4a42d391e066730df675d0f1ce921d1d05e912d59b",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 13986,
+              "systemDigest": "sha256:ab8d561245e062547cca92bc2c63ebad5c30631ac2cb67780e75e30d159f3fdb",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 20
+            },
+            {
+              "callSequence": 22,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 43,
+              "estimatedPromptTokens": 65049,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:e6490a930cd63da25ec17bf84666fbcba922d9a60186f6ebea82da073dff1705",
+              "kind": "completion",
+              "messageCount": 43,
+              "messagePayloadBytes": 252112,
+              "messagesDigest": "sha256:d4da774f8dc00f6f1678b9c036dbffdd189746e1ab2c5d893ee3a9e0299931b7",
+              "payloadBytes": 271208,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:79c577a3a93e285f8e144e564db45f4289d65baab3ede6509573e9a4b4bd9c83",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 13986,
+              "systemDigest": "sha256:ab8d561245e062547cca92bc2c63ebad5c30631ac2cb67780e75e30d159f3fdb",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 21
+            },
+            {
+              "callSequence": 23,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 45,
+              "estimatedPromptTokens": 65546,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:9c9f3e535fa822e4365703a007b157b56340c0a424be4a0eb00089e2614c7a0d",
+              "kind": "completion",
+              "messageCount": 45,
+              "messagePayloadBytes": 254338,
+              "messagesDigest": "sha256:803b6ae285dacbe93077d89f1c06087be57cf501b9f355f6147193178381bd5e",
+              "payloadBytes": 273434,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:db72e80708ddad1d6e088d6e0acebf0f959f4033f2c262f553aeaa4cc8fd0bf7",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 13986,
+              "systemDigest": "sha256:ab8d561245e062547cca92bc2c63ebad5c30631ac2cb67780e75e30d159f3fdb",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 22
+            },
+            {
+              "callSequence": 24,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 47,
+              "estimatedPromptTokens": 66039,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:6dcdeed0620877a4158b8513550881c301658bc1f15299c9f36eceb19e587a41",
+              "kind": "completion",
+              "messageCount": 47,
+              "messagePayloadBytes": 256454,
+              "messagesDigest": "sha256:b4df71e2c1831eba6750c809629fdfffa089f3fa38755c6022b23d4ed5980545",
+              "payloadBytes": 275634,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:e2eea29373d2d963ded65ec8490cd84464e139400b2f9e943b7b0a72be33db85",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 14070,
+              "systemDigest": "sha256:0ee4f436f72cd63993f2777aef3ebe9c782898f6f39a52c94fb5b5ab6d382ef4",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 23
+            },
+            {
+              "callSequence": 25,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 49,
+              "estimatedPromptTokens": 68684,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:46d7695bff48248a3a6b19b1de3d62be75505822b8f99a3279af8d43cccff126",
+              "kind": "completion",
+              "messageCount": 49,
+              "messagePayloadBytes": 267340,
+              "messagesDigest": "sha256:3a5b9f1eb6bddc30c21bf97035bbd1633c6714baec6d82f1972896360b629885",
+              "payloadBytes": 286520,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:ae0e71e789052a413f9574999443d6a53df47915bdaea51071c7ae6a4cfb87ea",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 14070,
+              "systemDigest": "sha256:0ee4f436f72cd63993f2777aef3ebe9c782898f6f39a52c94fb5b5ab6d382ef4",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 24
+            },
+            {
+              "callSequence": 26,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 51,
+              "estimatedPromptTokens": 69008,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:84bb19ba9289bcefc8576b0a6912cd147aeef062e6f1488719b41d4c3244aa26",
+              "kind": "completion",
+              "messageCount": 51,
+              "messagePayloadBytes": 268862,
+              "messagesDigest": "sha256:09ee7e38aead3ee561f677bf1bd9dc8f65c851b1cf0756224f82803bd4cc351f",
+              "payloadBytes": 288042,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:2454234bd2eb936958504da4439eb7653465e71ef1f3aac9b1a8b7e637bcce0c",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 14070,
+              "systemDigest": "sha256:0ee4f436f72cd63993f2777aef3ebe9c782898f6f39a52c94fb5b5ab6d382ef4",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 25
+            },
+            {
+              "callSequence": 27,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 53,
+              "estimatedPromptTokens": 69562,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:66cc5626213bb6cab852ee15f62a62b756c66e382d508a5423a856dc67b5208d",
+              "kind": "completion",
+              "messageCount": 53,
+              "messagePayloadBytes": 271360,
+              "messagesDigest": "sha256:496b552e917e1976218cf5967ff68c64421be65d71329830f99623e034dc4f86",
+              "payloadBytes": 290540,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:eefc849621da36e9acf49c70a99a93c3053ebbdc64e0a091602894d9b74fa0fd",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 14070,
+              "systemDigest": "sha256:0ee4f436f72cd63993f2777aef3ebe9c782898f6f39a52c94fb5b5ab6d382ef4",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 26
+            },
+            {
+              "callSequence": 28,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 55,
+              "estimatedPromptTokens": 71037,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:e296ef66af7ebae1d54d2ef015342c68bee3a1ed6ef81598c4b1453e2399fbca",
+              "kind": "completion",
+              "messageCount": 55,
+              "messagePayloadBytes": 277466,
+              "messagesDigest": "sha256:4894079f5e1b55d7ab3376f36b19daab581e23a3c28ba29e373787f97714b27d",
+              "payloadBytes": 296664,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:8dccec9445de239c2a222422ef5af0d8ade6cbeb8ba2050e4756475b10b06960",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 14088,
+              "systemDigest": "sha256:5d39a9acf2b599bb04fea72aa266b039351153823a7402d0be5987569315923b",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 27
+            },
+            {
+              "callSequence": 29,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 57,
+              "estimatedPromptTokens": 72537,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:cddf9070c3d82b28444330a48ccd48f72b55f2a165687948c550c64605e6c4ba",
+              "kind": "completion",
+              "messageCount": 57,
+              "messagePayloadBytes": 283731,
+              "messagesDigest": "sha256:7daa1ae5170928e0d9ef9412187078d37bd6889ca6066482243a9164f81fb800",
+              "payloadBytes": 302929,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:1190fc39e037f4648fed7d4e6b7705e46bd84fa8b1e26d5e0666b15c423f1832",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 14088,
+              "systemDigest": "sha256:5d39a9acf2b599bb04fea72aa266b039351153823a7402d0be5987569315923b",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 28
+            },
+            {
+              "callSequence": 30,
+              "capabilitySnapshotDigest": "sha256:68f6050490a031babffc3ddff0549d3e969c517380726dd33b55864e1be5a68e",
+              "contentBlockCount": 59,
+              "estimatedPromptTokens": 78467,
+              "imageBlockCount": 0,
+              "inputDigest": "sha256:a406711d3f1e147fff85c3cfe99010a94e1c026dbbb75dc70115258bfb120774",
+              "kind": "completion",
+              "messageCount": 59,
+              "messagePayloadBytes": 308097,
+              "messagesDigest": "sha256:2798a5b8ded733dd93879d43d421cb59fb96cbd35b3121cb905a01d884923993",
+              "payloadBytes": 327261,
+              "retrievalResultBytes": 0,
+              "retrievalResultCount": 0,
+              "retrievalResultsDigest": null,
+              "schema": "a3s.code.model-input-snapshot.v1",
+              "snapshotDigest": "sha256:b77037a127588738b033040dfa9b463c3d908bb643f64099dee8560588112424",
+              "structuredOutputBytes": 0,
+              "structuredOutputDigest": null,
+              "systemBytes": 14054,
+              "systemDigest": "sha256:0b2b2f1beb743b50c6852586cd670ec27fb63003dab9a66cefb342d41246a9dc",
+              "toolCount": 1,
+              "toolDefinitionBytes": 5040,
+              "toolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "toolResultCount": 29
+            }
+          ],
+          "presentation": [
+            {
+              "application": "profiled",
+              "callSequence": 1,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:7d5f53143bc46cbe418e4590c584319ab3e53493a2f278ca2094537bcd8f51ca",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 2,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:27b9072c566f26847c51056cb73e6c108fa5c7f368454f93b9705e5976567af6",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 3,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:121fddd9be7ec43f1238641f0b9a4b9a58db6f2e2d089e189b863cd5603114b1",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 4,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:fe47369726c09d6379929394b51fc270c8fe2912f0fcfa076edc12571b212b0d",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 5,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:157c70e11669e1d39f089a4b729351a8bc2281765e4e5abd8468c7f47b189a5b",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 6,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:15ca2cf4cb2a4eaf524e6db7c29cc4bbb3ff8845d0cbad2e00f270082b1506a7",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 7,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:0ac943e7c34904296f624e0b96cb9235c79e05c4d64d733e93e0658cc445eae4",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 8,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:b91a8a2b670f5daad5f0e4edd8419f498362ee98f413b289b6454c0952aff8ea",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 9,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:a740ef7b3d40b532ee870186a6083ecd78960e30078d1d3b459ad87d78ef6af0",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 10,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:452ac8cd1c21a1ac2ddf8059932e39770a6899d46b25a038e7289b98ea1d5afb",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 11,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:84323a95136d88214c1c6e058d78f707eab805953ceb5c1e8dbda5f69ecb6ac2",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 12,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:3f096fb35fe21f67c4b64a3328cbc3d0158e8f71fa70a6943ac12e89740acf9c",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 13,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:0f077a3107603e5b0617697cad952af0749466246766d935a476d184e92f9fe5",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 14,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:632f68c76d6b7d6b4f56fc01015f3128d6c5a9629e4faf5b3de4eab4fb18d2fc",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 15,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:fd00391b5fac9f8eea4d22a4eabf17ad465cc4283c795c883948c3bbcfc90c79",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 16,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:9934d67e2fee12925335b03c369237ba1630036d23ffd301b1fb6c2a51f05403",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 17,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:813199322294618149d84619615a12e3e4c693dd8b37529cfc172b1e47a1c810",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 18,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:ee28cde1d9ab2d61fb85a76cf8c3baac5509f64b5e8ec0d57c387db0478edb24",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 19,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:2dda41abc917f28fd270a102ad1a712f4821dd8a9b80ea535e2c4c0f52bf892d",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 20,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:18a6bdf9b21eed608e3195bfb565436486f290db48b1624422e9de37ec497724",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 21,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:2bf3111e4e5e6bebe0b068f2afe0793973c3d1161ceaca56872563be989bcb82",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 22,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:0d0e4c42a01870dd9901fb30677887d862800f38ede9703cc5f45e79a69be7ff",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 23,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:23e1e0b03048e48903e35867c44271fdf26b8a3ccbcd64b8e106c27bf3669b12",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 24,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:7f75b4cc5e1aac6e21f970d13b0b07830aae71c4f0b6d27af7e9eaca66807b29",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 25,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:5ba56967839e6b70d974c15642d7bbf171d21f7a63ca735221c8b9055d393c33",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 26,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:8b4ec9e5b871e6dc04c7e2565fd12867b0406cd44f70955cc8cc6f2fd9866785",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 27,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:994b94c318be97bf91e230bb6d119365c1ed0b68dd0693593653c2a5454f6001",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 28,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:dbff51a522456118db6d674bc6e4f6e8881804aa93905d84cba0764f08079c2e",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 29,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:7b5f967e234976ff9b413eb0fb1e79fc3cd22a58884d0fb3f9ecd4d8f9b760c6",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            },
+            {
+              "application": "profiled",
+              "callSequence": 30,
+              "presentedEstimatedTokens": 1251,
+              "presentedToolCount": 1,
+              "presentedToolDefinitionsDigest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+              "profile": {
+                "mode": "code",
+                "schema": "a3s.code.tool-presentation-profile.v1"
+              },
+              "schema": "a3s.code.model-presentation-snapshot.v1",
+              "snapshotDigest": "sha256:a146313a1cdaa9efa0071fadfa714973f64dfe43f772f2d6eb6d9acfb2dd978d",
+              "sourceEstimatedTokens": 7517,
+              "sourceToolCount": 19,
+              "sourceToolDefinitionsDigest": "sha256:22b80109b27b7df81fa62af6cd2b82d9928ba4e2835655f83b41c405a2521a06"
+            }
+          ],
+          "terminal": {
+            "completion": {
+              "effect_digest": "794f0aec3cbe1b8d5d2b7c096958b01386f96937defc5fd4e00563c7f64220e5",
+              "kind": "verified"
+            },
+            "final_text_bytes": 9,
+            "final_text_sha256": "4ddb3e96801a1ee2b77dc5247c0db478d5f97a93b90e7cdb09f5f51d43764b08",
+            "forced_stop": null
+          }
+        },
+        "metrics": {
+          "child_interval_union_ms": null,
+          "child_output_bytes": null,
+          "child_public_event_calls": 0,
+          "child_tool_calls": null,
+          "limits": "Parent IDs come from the actual model transcript. ToolStart-to-ToolEnd intervals include preparation unless an execution-start event narrows them. Parent intervals may contain children; do not add their durations. Program child intervals use per-program monotonic clocks, so separate programs' unions are not a global child union. Child receipt bytes reflect retained bounded output. Zero-only normalized token usage cannot establish provider reporting. VM counts require independent runtime observations; Bash calls do not establish VM counts.",
+          "model_calls": 30,
+          "observed_tool_interval_union_ms": 66679,
+          "origin_complete": true,
+          "parent_interval_union_ms": null,
+          "parent_output_bytes": 46302,
+          "parent_tool_calls": 30,
+          "program_child_intervals": [
+            {
+              "calls": 0,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 0,
+              "parent_tool_id": "call_00_x9vL2e0BSRb36Q3Biw5h7168",
+              "timed_calls": 0
+            },
+            {
+              "calls": 1,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 1,
+              "parent_tool_id": "call_00_3wtLY7Wn7xuUOVUSpe8p7681",
+              "timed_calls": 1
+            },
+            {
+              "calls": 2,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 9,
+              "parent_tool_id": "call_00_ET_IkuVam2iyl2pJwC6BnRD9538",
+              "timed_calls": 2
+            },
+            {
+              "calls": 1,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 3,
+              "parent_tool_id": "call_00_kGJ8tnSTpMGkqmhKjWno3973",
+              "timed_calls": 1
+            },
+            {
+              "calls": 1,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 3181,
+              "parent_tool_id": "call_00_ET_RZRV0CFU7Hki4zoiXSOb9812",
+              "timed_calls": 1
+            },
+            {
+              "calls": 0,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 0,
+              "parent_tool_id": "call_00_WJaghu1Y1Cnet41nku0h3627",
+              "timed_calls": 0
+            },
+            {
+              "calls": 0,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 0,
+              "parent_tool_id": "call_00_oKDDeZPVPO4lHFDWMulq9795",
+              "timed_calls": 0
+            },
+            {
+              "calls": 1,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 3269,
+              "parent_tool_id": "call_00_aTyCMQVWPuWaciVgULWx9405",
+              "timed_calls": 1
+            },
+            {
+              "calls": 1,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 1,
+              "parent_tool_id": "call_00_MB4SUmOoUSiimjlDbTUr4453",
+              "timed_calls": 1
+            },
+            {
+              "calls": 0,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 0,
+              "parent_tool_id": "call_00_Wd2ieA45TJVGCzDMQ37t5588",
+              "timed_calls": 0
+            },
+            {
+              "calls": 1,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 3205,
+              "parent_tool_id": "call_00_zMm0L9rnBpR3GnIDi9mU1911",
+              "timed_calls": 1
+            },
+            {
+              "calls": 1,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 58,
+              "parent_tool_id": "call_00_lU1GQEw7SP8MdGj7MOuN8807",
+              "timed_calls": 1
+            },
+            {
+              "calls": 1,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 3367,
+              "parent_tool_id": "call_00_BJGnbZ6n52gFv2s5zsGP6130",
+              "timed_calls": 1
+            },
+            {
+              "calls": 1,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 3301,
+              "parent_tool_id": "call_00_gCwIHw6nLSewQsuOJ2wE4882",
+              "timed_calls": 1
+            },
+            {
+              "calls": 1,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 3302,
+              "parent_tool_id": "call_00_2PRAaMO1odibFFIWZEZB1623",
+              "timed_calls": 1
+            },
+            {
+              "calls": 1,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 3493,
+              "parent_tool_id": "call_00_EJ0f8mFDOfJgiueeYWhj2780",
+              "timed_calls": 1
+            },
+            {
+              "calls": 1,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 3312,
+              "parent_tool_id": "call_00_LaiEBIAF8EypJFDzJLTE1216",
+              "timed_calls": 1
+            },
+            {
+              "calls": 1,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 3302,
+              "parent_tool_id": "call_00_KktVQVs71o8kIgk1cEle6026",
+              "timed_calls": 1
+            },
+            {
+              "calls": 1,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 3312,
+              "parent_tool_id": "call_00_Q5b63VCL03OcNWlMhcuf9094",
+              "timed_calls": 1
+            },
+            {
+              "calls": 1,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 3312,
+              "parent_tool_id": "call_00_rSk2kq17n2FSV8No4ocq7096",
+              "timed_calls": 1
+            },
+            {
+              "calls": 1,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 3275,
+              "parent_tool_id": "call_00_Cdtonvox0qJ60ZaaC0xP2703",
+              "timed_calls": 1
+            },
+            {
+              "calls": 1,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 3310,
+              "parent_tool_id": "call_00_JplwIVPHVf1MTeEy0la84423",
+              "timed_calls": 1
+            },
+            {
+              "calls": 1,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 3380,
+              "parent_tool_id": "call_00_0PI1reveDGOaAkcnI7fA5504",
+              "timed_calls": 1
+            },
+            {
+              "calls": 1,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 3286,
+              "parent_tool_id": "call_00_fPjxgDZqeFoUbyiJyOH37978",
+              "timed_calls": 1
+            },
+            {
+              "calls": 1,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 3334,
+              "parent_tool_id": "call_00_qO1y7FDQV2zxYEbQrKzf4967",
+              "timed_calls": 1
+            },
+            {
+              "calls": 1,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 3393,
+              "parent_tool_id": "call_00_muQNmQ0TjMo1tRK9yRZq2594",
+              "timed_calls": 1
+            },
+            {
+              "calls": 1,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 3293,
+              "parent_tool_id": "call_00_m8zwu8Qgp111PXQEFuvS3528",
+              "timed_calls": 1
+            },
+            {
+              "calls": 1,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 3236,
+              "parent_tool_id": "call_00_AU16QGgh5VFQWvprVeQv6684",
+              "timed_calls": 1
+            },
+            {
+              "calls": 1,
+              "clock": "monotonic-ms-since-program-start",
+              "interval_union_ms": 3463,
+              "parent_tool_id": "call_00_y3b9w3BTnLaDOBvBH1253047",
+              "timed_calls": 1
+            }
+          ],
+          "program_receipt_child_calls": 26,
+          "programs_missing_child_receipts": 1,
+          "reported_tokens": {
+            "input": 1355509,
+            "output": 66535
+          },
+          "reported_usage_calls": 30,
+          "schema": "aster.ptc-run-metrics.v1",
+          "timed_tool_calls": 29,
+          "tool_interval_union_ms": null,
+          "unknown_origin_tool_calls": 0,
+          "unsettled_execution_intervals": 0,
+          "usage_complete": true,
+          "vm_count": 20,
+          "vm_count_source": "independent-runtime-observation"
+        },
+        "retained_events": 45016,
+        "run_id": "run-4921a261-cd79-4df6-852d-90e522ab4045",
+        "status": "completed"
+      }
+    ],
+    "runtime_observations": {
+      "cause": null,
+      "commands": {
+        "1": {
+          "closed": true,
+          "phases_ms": {
+            "bundle_prepare": [
+              277.28779199999997
+            ],
+            "collect_wait": [
+              70.674041
+            ],
+            "host_connect": [
+              402.904291
+            ],
+            "host_shutdown": [
+              0.81025
+            ],
+            "process_start": [
+              59.9985
+            ],
+            "scratch_remove": [
+              1.376833
+            ],
+            "vm_create": [
+              2096.935791
+            ],
+            "vm_delete": [
+              159.403291
+            ]
+          }
+        },
+        "10": {
+          "closed": true,
+          "phases_ms": {
+            "bundle_prepare": [
+              291.14225
+            ],
+            "collect_wait": [
+              119.78545799999999
+            ],
+            "host_connect": [
+              401.107417
+            ],
+            "host_shutdown": [
+              0.8206249999999999
+            ],
+            "process_start": [
+              59.952125
+            ],
+            "scratch_remove": [
+              1.406542
+            ],
+            "vm_create": [
+              2108.037375
+            ],
+            "vm_delete": [
+              152.399833
+            ]
+          }
+        },
+        "11": {
+          "closed": true,
+          "phases_ms": {
+            "bundle_prepare": [
+              283.241084
+            ],
+            "collect_wait": [
+              129.691
+            ],
+            "host_connect": [
+              402.545917
+            ],
+            "host_shutdown": [
+              0.812542
+            ],
+            "process_start": [
+              62.09675
+            ],
+            "scratch_remove": [
+              1.425875
+            ],
+            "vm_create": [
+              2103.625
+            ],
+            "vm_delete": [
+              149.500667
+            ]
+          }
+        },
+        "12": {
+          "closed": true,
+          "phases_ms": {
+            "bundle_prepare": [
+              280.48479199999997
+            ],
+            "collect_wait": [
+              73.873125
+            ],
+            "host_connect": [
+              403.53825
+            ],
+            "host_shutdown": [
+              0.8203750000000001
+            ],
+            "process_start": [
+              73.83158300000001
+            ],
+            "scratch_remove": [
+              1.4194170000000002
+            ],
+            "vm_create": [
+              2095.803791
+            ],
+            "vm_delete": [
+              164.86766599999999
+            ]
+          }
+        },
+        "13": {
+          "closed": true,
+          "phases_ms": {
+            "bundle_prepare": [
+              281.9815
+            ],
+            "collect_wait": [
+              146.617417
+            ],
+            "host_connect": [
+              404.461125
+            ],
+            "host_shutdown": [
+              0.810667
+            ],
+            "process_start": [
+              62.01925
+            ],
+            "scratch_remove": [
+              1.534084
+            ],
+            "vm_create": [
+              2092.7745
+            ],
+            "vm_delete": [
+              139.10820800000002
+            ]
+          }
+        },
+        "14": {
+          "closed": true,
+          "phases_ms": {
+            "bundle_prepare": [
+              280.045167
+            ],
+            "collect_wait": [
+              196.874958
+            ],
+            "host_connect": [
+              404.013916
+            ],
+            "host_shutdown": [
+              0.840916
+            ],
+            "process_start": [
+              61.932083
+            ],
+            "scratch_remove": [
+              1.871167
+            ],
+            "vm_create": [
+              2097.804792
+            ],
+            "vm_delete": [
+              155.511334
+            ]
+          }
+        },
+        "15": {
+          "closed": true,
+          "phases_ms": {
+            "bundle_prepare": [
+              285.592709
+            ],
+            "collect_wait": [
+              113.717792
+            ],
+            "host_connect": [
+              404.066375
+            ],
+            "host_shutdown": [
+              0.823209
+            ],
+            "process_start": [
+              60.02675
+            ],
+            "scratch_remove": [
+              1.572959
+            ],
+            "vm_create": [
+              2093.491708
+            ],
+            "vm_delete": [
+              145.967958
+            ]
+          }
+        },
+        "16": {
+          "closed": true,
+          "phases_ms": {
+            "bundle_prepare": [
+              284.349041
+            ],
+            "collect_wait": [
+              156.67775
+            ],
+            "host_connect": [
+              401.18541600000003
+            ],
+            "host_shutdown": [
+              0.797792
+            ],
+            "process_start": [
+              60.949749999999995
+            ],
+            "scratch_remove": [
+              1.3847079999999998
+            ],
+            "vm_create": [
+              2099.621208
+            ],
+            "vm_delete": [
+              148.976583
+            ]
+          }
+        },
+        "17": {
+          "closed": true,
+          "phases_ms": {
+            "bundle_prepare": [
+              282.821417
+            ],
+            "collect_wait": [
+              197.75875000000002
+            ],
+            "host_connect": [
+              404.01245800000004
+            ],
+            "host_shutdown": [
+              0.789834
+            ],
+            "process_start": [
+              61.980875
+            ],
+            "scratch_remove": [
+              1.592375
+            ],
+            "vm_create": [
+              2105.509
+            ],
+            "vm_delete": [
+              156.974541
+            ]
+          }
+        },
+        "18": {
+          "closed": true,
+          "phases_ms": {
+            "bundle_prepare": [
+              281.27341700000005
+            ],
+            "collect_wait": [
+              115.735375
+            ],
+            "host_connect": [
+              402.84916599999997
+            ],
+            "host_shutdown": [
+              0.80125
+            ],
+            "process_start": [
+              59.967458
+            ],
+            "scratch_remove": [
+              1.505792
+            ],
+            "vm_create": [
+              2094.4591250000003
+            ],
+            "vm_delete": [
+              154.343334
+            ]
+          }
+        },
+        "19": {
+          "closed": true,
+          "phases_ms": {
+            "bundle_prepare": [
+              276.667208
+            ],
+            "collect_wait": [
+              69.73520900000001
+            ],
+            "host_connect": [
+              401.941375
+            ],
+            "host_shutdown": [
+              0.8582919999999999
+            ],
+            "process_start": [
+              61.120417
+            ],
+            "scratch_remove": [
+              1.4187500000000002
+            ],
+            "vm_create": [
+              2104.468583
+            ],
+            "vm_delete": [
+              136.788375
+            ]
+          }
+        },
+        "2": {
+          "closed": true,
+          "phases_ms": {
+            "bundle_prepare": [
+              274.202792
+            ],
+            "collect_wait": [
+              134.7245
+            ],
+            "host_connect": [
+              406.20125
+            ],
+            "host_shutdown": [
+              0.9600000000000001
+            ],
+            "process_start": [
+              63.03679199999999
+            ],
+            "scratch_remove": [
+              1.427
+            ],
+            "vm_create": [
+              2109.565292
+            ],
+            "vm_delete": [
+              166.021666
+            ]
+          }
+        },
+        "20": {
+          "closed": true,
+          "phases_ms": {
+            "bundle_prepare": [
+              288.361042
+            ],
+            "collect_wait": [
+              215.9035
+            ],
+            "host_connect": [
+              402.316167
+            ],
+            "host_shutdown": [
+              0.7951250000000001
+            ],
+            "process_start": [
+              60.946958
+            ],
+            "scratch_remove": [
+              1.376042
+            ],
+            "vm_create": [
+              2094.2705
+            ],
+            "vm_delete": [
+              158.09216700000002
+            ]
+          }
+        },
+        "3": {
+          "closed": true,
+          "phases_ms": {
+            "bundle_prepare": [
+              275.737208
+            ],
+            "collect_wait": [
+              123.27141599999999
+            ],
+            "host_connect": [
+              401.41175
+            ],
+            "host_shutdown": [
+              0.806792
+            ],
+            "process_start": [
+              60.432208
+            ],
+            "scratch_remove": [
+              1.448375
+            ],
+            "vm_create": [
+              2092.8824170000003
+            ],
+            "vm_delete": [
+              135.054583
+            ]
+          }
+        },
+        "4": {
+          "closed": true,
+          "phases_ms": {
+            "bundle_prepare": [
+              297.692167
+            ],
+            "collect_wait": [
+              210.837209
+            ],
+            "host_connect": [
+              402.288917
+            ],
+            "host_shutdown": [
+              0.811458
+            ],
+            "process_start": [
+              59.991292
+            ],
+            "scratch_remove": [
+              1.33575
+            ],
+            "vm_create": [
+              2106.5922920000003
+            ],
+            "vm_delete": [
+              142.87375
+            ]
+          }
+        },
+        "5": {
+          "closed": true,
+          "phases_ms": {
+            "bundle_prepare": [
+              284.28225000000003
+            ],
+            "collect_wait": [
+              121.71
+            ],
+            "host_connect": [
+              403.058375
+            ],
+            "host_shutdown": [
+              0.7835420000000001
+            ],
+            "process_start": [
+              60.134167000000005
+            ],
+            "scratch_remove": [
+              1.300416
+            ],
+            "vm_create": [
+              2094.061083
+            ],
+            "vm_delete": [
+              157.053208
+            ]
+          }
+        },
+        "6": {
+          "closed": true,
+          "phases_ms": {
+            "bundle_prepare": [
+              283.46583400000003
+            ],
+            "collect_wait": [
+              135.6865
+            ],
+            "host_connect": [
+              401.865917
+            ],
+            "host_shutdown": [
+              0.815083
+            ],
+            "process_start": [
+              62.043082999999996
+            ],
+            "scratch_remove": [
+              1.4258330000000001
+            ],
+            "vm_create": [
+              2095.4761249999997
+            ],
+            "vm_delete": [
+              142.939292
+            ]
+          }
+        },
+        "7": {
+          "closed": true,
+          "phases_ms": {
+            "bundle_prepare": [
+              284.760958
+            ],
+            "collect_wait": [
+              313.09645800000004
+            ],
+            "host_connect": [
+              403.957708
+            ],
+            "host_shutdown": [
+              0.814083
+            ],
+            "process_start": [
+              60.432874999999996
+            ],
+            "scratch_remove": [
+              1.697417
+            ],
+            "vm_create": [
+              2104.39475
+            ],
+            "vm_delete": [
+              142.771167
+            ]
+          }
+        },
+        "8": {
+          "closed": true,
+          "phases_ms": {
+            "bundle_prepare": [
+              284.333458
+            ],
+            "collect_wait": [
+              120.884458
+            ],
+            "host_connect": [
+              402.993625
+            ],
+            "host_shutdown": [
+              0.7936249999999999
+            ],
+            "process_start": [
+              61.932
+            ],
+            "scratch_remove": [
+              1.4749999999999999
+            ],
+            "vm_create": [
+              2104.8407500000003
+            ],
+            "vm_delete": [
+              155.665125
+            ]
+          }
+        },
+        "9": {
+          "closed": true,
+          "phases_ms": {
+            "bundle_prepare": [
+              284.56762499999996
+            ],
+            "collect_wait": [
+              120.725542
+            ],
+            "host_connect": [
+              403.53337500000004
+            ],
+            "host_shutdown": [
+              0.8063750000000001
+            ],
+            "process_start": [
+              59.948084
+            ],
+            "scratch_remove": [
+              1.690917
+            ],
+            "vm_create": [
+              2098.484042
+            ],
+            "vm_delete": [
+              151.55504200000001
+            ]
+          }
+        }
+      },
+      "complete": true,
+      "source": "OCI execute span and successful vm_create event; complete phases and closed spans required; never inferred from Bash calls",
+      "vm_count": 20
+    },
+    "session_closed": true,
+    "stream_settled": true,
+    "task_ms": 343584,
+    "timed_out": false,
+    "token_limit_semantics": "reported-token soft cap; missing provider usage is not estimated"
+  },
+  "schema": "aster.task-matrix-result.v1",
+  "status": "observed"
+}

@@ -1,0 +1,31 @@
+{
+  "schema": "aster.t023.cell-checkpoint.v1",
+  "run_id": "t023-2m-hc-01",
+  "ordinary_completion": false,
+  "task_ms": 311182,
+  "token_ledger": 1631144,
+  "token_soft_limit": 2000000,
+  "event_window_complete": true,
+  "retained_events": 32008,
+  "metrics_complete": false,
+  "model_calls": 29,
+  "parent_tool_calls": 28,
+  "retained_program_receipt_child_calls": 33,
+  "programs_missing_child_receipts": 8,
+  "vm_count": 16,
+  "all_resources_settled": true,
+  "immutable_inputs": true,
+  "frozen_identity": true,
+  "run_error": {
+    "bytes": 631,
+    "sha256": "7022e3531312ba1a7d02c56e2c21d40b11f38be89bed23e42a8ea562ed0ed7ca"
+  },
+  "oracle": {
+    "passed": false,
+    "passed_cases": 8,
+    "total_cases": 9,
+    "pipeline_sha256": "057bfeb6adcc63dc29d05c2432739e9a6689527003d8e010e4f3b09870b0b1bf",
+    "report": "process/t023-2m-hc-01-oracle.json"
+  },
+  "next": "Diagnose non-budget completion refusal and missing failed-program receipt structure before starting another calibrated cell. Do not weaken completion or invent zero child counts."
+}

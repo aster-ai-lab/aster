@@ -1,0 +1,60 @@
+diff --git a/build/pdf.mjs b/build/pdf.mjs
+--- a/build/pdf.mjs
++++ b/build/pdf.mjs
+@@ -14479,7 +14479,8 @@
+     printAnnotationStorage = null,
+     isEditing = false,
+     recordOperations = false,
+-    operationsFilter = null
++    operationsFilter = null,
++    useRequestAnimationFrame = true
+   }) {
+     this._stats?.time("Overall");
+     const intentArgs = this._transport.getRenderingIntent(intent, annotationMode, printAnnotationStorage, isEditing);
+@@ -14563,7 +14564,7 @@
+       pageIndex: this._pageIndex,
+       canvasFactory: this._transport.canvasFactory,
+       filterFactory: this._transport.filterFactory,
+-      useRequestAnimationFrame: !intentPrint,
++      useRequestAnimationFrame: !intentPrint && useRequestAnimationFrame,
+       pdfBug: this._pdfBug,
+       pageColors,
+       enableHWA: this._transport.enableHWA,
+diff --git a/legacy/build/pdf.mjs b/legacy/build/pdf.mjs
+--- a/legacy/build/pdf.mjs
++++ b/legacy/build/pdf.mjs
+@@ -20798,7 +20798,8 @@
+     printAnnotationStorage = null,
+     isEditing = false,
+     recordOperations = false,
+-    operationsFilter = null
++    operationsFilter = null,
++    useRequestAnimationFrame = true
+   }) {
+     this._stats?.time("Overall");
+     const intentArgs = this._transport.getRenderingIntent(intent, annotationMode, printAnnotationStorage, isEditing);
+@@ -20882,7 +20883,7 @@
+       pageIndex: this._pageIndex,
+       canvasFactory: this._transport.canvasFactory,
+       filterFactory: this._transport.filterFactory,
+-      useRequestAnimationFrame: !intentPrint,
++      useRequestAnimationFrame: !intentPrint && useRequestAnimationFrame,
+       pdfBug: this._pdfBug,
+       pageColors,
+       enableHWA: this._transport.enableHWA,
+diff --git a/types/src/display/api.d.ts b/types/src/display/api.d.ts
+--- a/types/src/display/api.d.ts
++++ b/types/src/display/api.d.ts
+@@ -413,6 +413,12 @@
+  * Page render parameters.
+  */
+ export type RenderParameters = {
++    /**
++     * Whether display rendering waits for animation frames. Disable in inactive
++     * windows; use RenderTask.onContinue to yield between rendering steps.
++     * @default true
++     */
++    useRequestAnimationFrame?: boolean | undefined;
+     /**
+      * - A DOM Canvas object. The default
+      * value is the canvas associated with the `canvasContext` parameter if no

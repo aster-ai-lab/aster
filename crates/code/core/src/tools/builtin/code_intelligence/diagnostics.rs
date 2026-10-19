@@ -48,7 +48,7 @@ impl Tool for CodeDiagnosticsTool {
                     Err(error) => {
                         return Ok(invalid_argument(format!(
                             "failed to resolve workspace path: {error}"
-                        )))
+                        )));
                     }
                 }
             }

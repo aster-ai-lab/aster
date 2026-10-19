@@ -1,0 +1,3 @@
+The declaration getWorkspaceSourceFromSession is byte-identical to HEAD.
+Both HEAD and current AgentPage contain exactly one occurrence (the declaration).
+The current permission change does not add, remove, or call this helper.

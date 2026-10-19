@@ -1,0 +1,279 @@
+suite "workbench-office-ui" {
+    version = 1
+
+    scenario "notice-draft-reaches-composer" {
+        name = "从首页通知磁贴生成草稿并交给助手"
+        surface = "web"
+        timeout_ms = 90000
+
+        viewport "desktop" {
+            width = 1280
+            height = 800
+            scale = 1
+        }
+
+        navigate "open-home" {
+            url = "http://127.0.0.1:4318/windows/main/index.html"
+        }
+
+        expect "review-entry-visible" {
+            visible = role("button", "审查")
+        }
+
+        click "notice-tile" {
+            target = css("[data-feature=write] [data-writing-type=notice]")
+        }
+
+        expect "writing-dialog" {
+            visible = role("heading", "公文写作")
+        }
+
+        expect "seeded-brief" {
+            target = label("写作说明")
+            value = "发布需要周知或执行的事项。"
+        }
+
+        expect "generate-enabled" {
+            enabled = role("button", "生成草稿")
+        }
+
+        fill "issuer" {
+            target = css("[data-writing-field=org]")
+            value = "市教育局"
+        }
+
+        expect "live-banner" {
+            text = "市教育局文件"
+        }
+
+        click "generate" {
+            target = role("button", "生成草稿")
+        }
+
+        expect "draft-title" {
+            text = "市教育局关于事由的通知"
+        }
+
+        expect "draft-closer" {
+            text = "特此通知。"
+        }
+
+        click "hand-off" {
+            target = role("button", "交给助手")
+        }
+
+        wait "dialog-closed" {
+            hidden = role("heading", "公文写作")
+        }
+
+        expect "composer-task" {
+            text = "请按公文体例完成这份通知。"
+            stable_for_ms = 300
+            sample_interval_ms = 50
+        }
+
+        expect "composer-note" {
+            text = "写作说明："
+        }
+
+        expect "composer-closer" {
+            text = "特此通知。"
+        }
+
+        expect "send-disabled" {
+            disabled = role("button", "发送")
+        }
+
+        expect "still-on-home" {
+            text = "尚无任务"
+        }
+
+        screenshot "composer" {
+            path = "screenshots/notice-composer.png"
+        }
+    }
+
+    scenario "other-writing-tiles-seed-the-brief" {
+        name = "报告、请示、纪要磁贴带入各自的写作说明"
+        surface = "web"
+        timeout_ms = 90000
+
+        navigate "open-home" {
+            url = "http://127.0.0.1:4318/windows/main/index.html"
+        }
+
+        click "report-tile" {
+            target = css("[data-feature=write] [data-writing-type=report]")
+        }
+
+        expect "report-brief" {
+            target = label("写作说明")
+            value = "向上级汇报工作进展和需要说明的情况。"
+        }
+
+        click "close-report" {
+            target = role("button", "关闭")
+        }
+
+        click "request-tile" {
+            target = css("[data-feature=write] [data-writing-type=request]")
+        }
+
+        expect "request-brief" {
+            target = label("写作说明")
+            value = "就下列事项请求指示或批准。"
+        }
+
+        click "close-request" {
+            target = role("button", "关闭")
+        }
+
+        click "minutes-tile" {
+            target = css("[data-feature=write] [data-writing-type=minutes]")
+        }
+
+        expect "minutes-brief" {
+            target = label("写作说明")
+            value = "记载会议的主要情况和议定事项。"
+        }
+    }
+
+    scenario "catalog-notice-needs-a-brief" {
+        name = "去拟稿后空说明不能生成草稿"
+        surface = "web"
+        timeout_ms = 90000
+
+        navigate "open-home" {
+            url = "http://127.0.0.1:4318/windows/main/index.html"
+        }
+
+        click "open-catalog" {
+            target = role("button", "去拟稿")
+        }
+
+        expect "eleven-types" {
+            target = css("[data-official-type]")
+            visible_count = 11
+        }
+
+        click "catalog-notice" {
+            target = css("[data-ui='workbench.writing.picker'] [data-official-type=notice]")
+        }
+
+        expect "empty-brief" {
+            target = label("写作说明")
+            value = ""
+        }
+
+        expect "banner-on" {
+            checked = role("switch", "使用红头")
+        }
+
+        expect "generate-disabled" {
+            disabled = role("button", "生成草稿")
+        }
+    }
+
+    scenario "closed-entries-toast" {
+        name = "创作和首页审查在浏览器里只提示暂未开放"
+        surface = "web"
+        timeout_ms = 90000
+
+        navigate "open-home" {
+            url = "http://127.0.0.1:4318/windows/main/index.html"
+        }
+
+        click "creation-center" {
+            target = role("button", "创作中心")
+        }
+
+        expect "creation-closed" {
+            text = "暂未开放"
+        }
+
+        navigate "reopen-home" {
+            url = "http://127.0.0.1:4318/windows/main/index.html"
+        }
+
+        click "review-tile" {
+            target = role("button", "审查")
+        }
+
+        expect "review-closed-in-browser" {
+            text = "暂未开放"
+        }
+
+        expect "review-window-did-not-open" {
+            hidden = role("heading", "申请使用以下权限")
+        }
+
+        expect "home-composer-remains" {
+            visible = role("button", "发送")
+        }
+    }
+
+    scenario "review-window-accepts-only-a-word-file" {
+        name = "审查窗口先问权限，再按文件给出可见结果"
+        surface = "web"
+        timeout_ms = 90000
+
+        navigate "open-review" {
+            url = "http://127.0.0.1:4318/windows/main/index.html?workbench-applet=review"
+        }
+
+        expect "permission-title" {
+            visible = role("heading", "申请使用以下权限")
+        }
+
+        click "deny" {
+            target = role("button", "拒绝")
+        }
+
+        expect "deny-keeps-the-ask" {
+            visible = role("button", "允许")
+        }
+
+        expect "body-stays-unmounted" {
+            hidden = role("button", "选择文件")
+        }
+
+        click "allow" {
+            target = role("button", "允许")
+        }
+
+        expect "drop-hint" {
+            text = "点击或拖放 Word 文档到此处"
+        }
+
+        upload "pdf" {
+            target = css("[data-ui='workbench.review.input']")
+            paths = ["apps/studio/tests/e2e/workbench-office/fixtures/scan.pdf"]
+        }
+
+        expect "pdf-rejected" {
+            text = "请选择 Word（.docx）文档。"
+        }
+
+        upload "empty-docx" {
+            target = css("[data-ui='workbench.review.input']")
+            paths = ["apps/studio/tests/e2e/workbench-office/fixtures/empty.docx"]
+        }
+
+        expect "empty-rejected" {
+            text = "空文件无法审查。"
+        }
+
+        upload "notice-docx" {
+            target = css("[data-ui='workbench.review.input']")
+            paths = ["apps/studio/tests/e2e/workbench-office/fixtures/notice.docx"]
+        }
+
+        expect "shell-unavailable" {
+            text = "无法开始审查，请重试。"
+        }
+
+        screenshot "review-error" {
+            path = "screenshots/review-upload.png"
+        }
+    }
+}

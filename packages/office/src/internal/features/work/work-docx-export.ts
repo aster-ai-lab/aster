@@ -1,0 +1,2225 @@
+import type {
+  FileChild,
+  IRunOptions,
+  ISectionOptions,
+  IWpsShapeOptions,
+  ParagraphChild,
+} from 'docx';
+import { normalizeDocumentBookmarkReferencesHtml } from './work-document-bookmark-references';
+import { normalizeDocumentBookmarksHtml } from './work-document-bookmarks';
+import { documentCharacterPositionHalfPointsFromElement } from './work-document-character-position';
+import { documentCharacterScalePercentFromElement } from './work-document-character-scale';
+import { documentCharacterSpacingTwipsFromElement } from './work-document-character-spacing';
+import {
+  documentConnectorPropertiesFromElement,
+  type WorkDocumentConnectorProperties,
+} from './work-document-connector';
+import { documentEmphasisMarkFromElement } from './work-document-emphasis';
+import { documentHiddenTextFromElement } from './work-document-hidden-text';
+import {
+  DOCUMENT_HIGHLIGHT_ATTRIBUTE,
+  documentHighlightFromElement,
+} from './work-document-highlight';
+import { normalizeDocumentIndexesHtml } from './work-document-index';
+import { documentKerningThresholdHalfPointsFromElement } from './work-document-kerning';
+import {
+  DOCUMENT_LEGACY_TEXT_EMBOSS_ATTRIBUTE,
+  DOCUMENT_LEGACY_TEXT_IMPRINT_ATTRIBUTE,
+  DOCUMENT_LEGACY_TEXT_OUTLINE_ATTRIBUTE,
+  DOCUMENT_LEGACY_TEXT_SHADOW_ATTRIBUTE,
+  documentLegacyTextEffectsConflict,
+  documentLegacyTextEffectsFromElement,
+  type WorkDocumentLegacyTextEffects,
+} from './work-document-legacy-text-effects';
+import { normalizeDocumentHref } from './work-document-links';
+import {
+  collectDocumentNotes,
+  documentNoteKey,
+  documentNoteKind,
+  type WorkDocumentNote,
+  type WorkDocumentNoteKind,
+} from './work-document-notes';
+import {
+  DOCUMENT_OPEN_TYPE_ATTRIBUTE,
+  documentOpenTypeFeaturesFromElement,
+  type WorkDocumentOpenTypeFeatures,
+} from './work-document-opentype';
+import { normalizeDocumentPageChrome } from './work-document-page-chrome';
+import { documentPageMarginsForLayout } from './work-document-page-margins';
+import { documentPageGeometryForLayout } from './work-document-page-size';
+import {
+  DOCUMENT_NO_PROOF_ATTRIBUTE,
+  DOCUMENT_PROOFING_LANGUAGES_ATTRIBUTE,
+  documentNoProofFromElement,
+  documentProofingLanguagesFromElement,
+} from './work-document-proofing';
+import {
+  DOCUMENT_RUN_BORDER_ATTRIBUTE,
+  parseDocumentRunBorderElement,
+} from './work-document-run-border';
+import {
+  DOCUMENT_RUN_SHADING_ATTRIBUTE,
+  parseDocumentRunShadingElement,
+} from './work-document-run-shading';
+import {
+  documentScriptFontSlotFromElement,
+  documentScriptFontsFromElement,
+} from './work-document-script-fonts';
+import { documentSections } from './work-document-section';
+import {
+  DOCUMENT_STRIKE_STYLE_ATTRIBUTE,
+  documentStrikeFormattingFromElement,
+} from './work-document-strike';
+import {
+  documentTextBoxPropertiesFromElement,
+  type WorkDocumentTextBoxProperties,
+} from './work-document-text-box';
+import { normalizeDocumentTextCase } from './work-document-text-case';
+import {
+  DOCUMENT_UNDERLINE_STYLE_ATTRIBUTE,
+  documentUnderlineFormattingFromElement,
+  type WorkDocumentUnderlineFormatting,
+} from './work-document-underline';
+import { patchDocxBibliography } from './work-docx-bibliography';
+import {
+  DocxBlockContentControlPatchCollector,
+  docxBlockContentControlParagraphs,
+  patchDocxBlockContentControls,
+} from './work-docx-block-content-control-export';
+import {
+  DocxBookmarkPatchCollector,
+  patchDocxBookmarks,
+} from './work-docx-bookmarks';
+import {
+  docxCaptionParagraph,
+  docxCrossReferenceRuns,
+} from './work-docx-caption-export';
+import {
+  DocxCellFormattingChangePatchCollector,
+  patchDocxCellFormattingChanges,
+} from './work-docx-cell-format-change-export';
+import { docxCharacterPositionValue } from './work-docx-character-position';
+import { docxCharacterScaleValue } from './work-docx-character-scale';
+import {
+  docxCharacterSpacingValue,
+  patchDocxExplicitZeroCharacterSpacing,
+} from './work-docx-character-spacing';
+import {
+  docxBibliographyParagraph,
+  docxCitationRun,
+} from './work-docx-citation-export';
+import { docxSectionColumns } from './work-docx-column-export';
+import { createDocxCommentRecords } from './work-docx-comment-export';
+import { patchDocxCommentMetadata } from './work-docx-comment-metadata';
+import {
+  DocxConnectorPatchCollector,
+  patchDocxConnectors,
+} from './work-docx-connector-export';
+import {
+  DocxContentControlPatchCollector,
+  docxContentControlRuns,
+  patchDocxContentControls,
+} from './work-docx-content-control-export';
+import { patchDocxDocumentLayout } from './work-docx-document-layout';
+import { docxEmphasisMarkRunOptions } from './work-docx-emphasis';
+import {
+  DocxEquationPatchCollector,
+  patchDocxEquations,
+} from './work-docx-equation-export';
+import {
+  cssColorToHex,
+  cssFontFamily,
+  cssFontSize,
+  dataBoolean,
+  domDirection,
+  paragraphAlignment,
+  paragraphBidirectional,
+  paragraphDirectionOptions,
+  paragraphIndent,
+  paragraphPaginationOptions,
+  paragraphSpacingOptions,
+  paragraphTabStops,
+} from './work-docx-export-formatting';
+import { imageToDocx } from './work-docx-export-image';
+import { docxDocumentFieldRun } from './work-docx-field-export';
+import {
+  DocxRunFormattingChangePatchCollector,
+  patchDocxRunFormattingChanges,
+} from './work-docx-format-change-export';
+import {
+  DocxHiddenTextPatchCollector,
+  patchDocxHiddenText,
+} from './work-docx-hidden-text-export';
+import {
+  DocxImageCropPatchCollector,
+  patchDocxImageCrops,
+} from './work-docx-image-crop';
+import {
+  DocxImageIdentityPatchCollector,
+  patchDocxImageIdentities,
+} from './work-docx-image-identity';
+import {
+  DocxImageLayerPatchCollector,
+  patchDocxImageLayers,
+} from './work-docx-image-layer';
+import {
+  DocxImageTransformPatchCollector,
+  patchDocxImageTransforms,
+} from './work-docx-image-transform';
+import {
+  DocxImageWrapPatchCollector,
+  patchDocxImageWraps,
+} from './work-docx-image-wrap';
+import {
+  DocxIndexPatchCollector,
+  docxDocumentIndex,
+  docxIndexEntryRun,
+  patchDocxIndexes,
+} from './work-docx-index-export';
+import {
+  docxKerningThresholdValue,
+  patchDocxExplicitZeroKerningThresholds,
+} from './work-docx-kerning';
+import {
+  DocxLegacyTextEffectsPatchCollector,
+  patchDocxLegacyTextEffects,
+} from './work-docx-legacy-text-effects-export';
+import {
+  type DocxListExportContext,
+  listToDocxParagraphs,
+} from './work-docx-list-export';
+import {
+  DocxMoveRevisionPatchCollector,
+  type DocxMoveRevisionRegistration,
+  patchDocxMoveRevisions,
+} from './work-docx-move-revision-export';
+import {
+  assignDocxCommentThreads,
+  assignDocxNoteIds,
+} from './work-docx-note-comment-identity';
+import { patchDocxNoteImageRelationships } from './work-docx-note-image-relationships';
+import { patchDocxNumberingRestartRules } from './work-docx-numbering';
+import {
+  DocxNumberingChangePatchCollector,
+  patchDocxNumberingChanges,
+} from './work-docx-numbering-change-export';
+import {
+  DocxOpenTypePatchCollector,
+  patchDocxOpenTypeFeatures,
+} from './work-docx-opentype-export';
+import { patchDocxPageColor } from './work-docx-page-color';
+import {
+  DocxParagraphBorderPatchCollector,
+  documentParagraphBordersDocxOptions,
+  patchDocxParagraphBorders,
+} from './work-docx-paragraph-borders-export';
+import {
+  DocxParagraphDefaultCollapsedPatchCollector,
+  patchDocxParagraphDefaultCollapsed,
+} from './work-docx-paragraph-default-collapsed';
+import {
+  DocxParagraphFormattingChangePatchCollector,
+  patchDocxParagraphFormattingChanges,
+} from './work-docx-paragraph-format-change-export';
+import {
+  DocxParagraphIdentityPatchCollector,
+  patchDocxParagraphIdentities,
+} from './work-docx-paragraph-identity';
+import {
+  DocxParagraphMarkChangePatchCollector,
+  patchDocxParagraphMarkChanges,
+} from './work-docx-paragraph-mark-change-export';
+import { documentParagraphShadingDocxOptions } from './work-docx-paragraph-shading-export';
+import { documentProofingLanguageDocxOptions } from './work-docx-proofing';
+import {
+  DocxRepeatingSectionPatchCollector,
+  docxRepeatingSectionParagraphs,
+  patchDocxRepeatingSections,
+} from './work-docx-repeating-section-export';
+import {
+  DocxRowFormattingChangePatchCollector,
+  patchDocxRowFormattingChanges,
+} from './work-docx-row-format-change-export';
+import {
+  DocxRunBorderPatchCollector,
+  documentRunBorderDocxOptions,
+  patchDocxRunBorders,
+} from './work-docx-run-border-export';
+import {
+  DocxRunFontsPatchCollector,
+  patchDocxRunFonts,
+} from './work-docx-run-fonts-export';
+import {
+  DocxRunShadingPatchCollector,
+  documentRunShadingDocxOptions,
+  patchDocxRunShading,
+} from './work-docx-run-shading-export';
+import {
+  DocxSectionFormattingChangePatchCollector,
+  patchDocxSectionFormattingChanges,
+} from './work-docx-section-format-change-export';
+import {
+  DocxSectionPropertyRevisionPatchCollector,
+  patchDocxSectionPropertyRevisions,
+} from './work-docx-section-property-revision-export';
+import { documentTableCellDocxOptions } from './work-docx-table-cell-export';
+import {
+  DocxTableFloatPatchCollector,
+  patchDocxTableFloats,
+} from './work-docx-table-float-export';
+import {
+  DocxTableFormattingChangePatchCollector,
+  patchDocxTableFormattingChanges,
+} from './work-docx-table-format-change-export';
+import {
+  DocxTableOfContentsPatchCollector,
+  docxTableOfContents,
+  patchDocxTableOfContents,
+} from './work-docx-table-of-contents-export';
+import {
+  DocxTablePropertyRevisionPatchCollector,
+  patchDocxTablePropertyRevisions,
+} from './work-docx-table-property-revision-export';
+import {
+  documentTableCellSizingDocxOptions,
+  documentTableRowSizingDocxOptions,
+  documentTableSizingDocxOptions,
+} from './work-docx-table-sizing-export';
+import {
+  DocxTextBoxIdentityPatchCollector,
+  patchDocxTextBoxIdentities,
+} from './work-docx-text-box-export';
+import {
+  DocxThemePatchCollector,
+  parseDocxThemeReference,
+  patchDocxThemeReferences,
+} from './work-docx-theme-reference';
+import { preserveDocxSourcePackage } from './work-ooxml-package-preservation';
+import type {
+  WorkDocumentComment,
+  WorkDocumentContent,
+  WorkDocumentSectionBreakType,
+  WorkDocumentSectionLayout,
+} from './work-types';
+
+interface DocxNoteContext extends DocxListExportContext {
+  ids: Map<string, number>;
+  changeIds: Map<string, number>;
+  nextChangeId: number;
+  commentIds: Map<string, number>;
+  commentRangeCounts: Map<string, number>;
+  commentRangeSeen: Map<string, number>;
+  themePatches: DocxThemePatchCollector;
+  bookmarkPatches: DocxBookmarkPatchCollector;
+  imageCropPatches: DocxImageCropPatchCollector;
+  imageIdentityPatches: DocxImageIdentityPatchCollector;
+  imageLayerPatches: DocxImageLayerPatchCollector;
+  imageWrapPatches: DocxImageWrapPatchCollector;
+  imageTransformPatches: DocxImageTransformPatchCollector;
+  textBoxIdentityPatches: DocxTextBoxIdentityPatchCollector;
+  connectorPatches: DocxConnectorPatchCollector;
+  contentControlPatches: DocxContentControlPatchCollector;
+  blockContentControlPatches: DocxBlockContentControlPatchCollector;
+  repeatingSectionPatches: DocxRepeatingSectionPatchCollector;
+  paragraphBorderPatches: DocxParagraphBorderPatchCollector;
+  paragraphDefaultCollapsedPatches: DocxParagraphDefaultCollapsedPatchCollector;
+  paragraphIdentityPatches: DocxParagraphIdentityPatchCollector;
+  equationPatches: DocxEquationPatchCollector;
+  tableFloatPatches: DocxTableFloatPatchCollector;
+  tableFloatPart: 'document' | 'chrome' | 'note';
+  tablePropertyRevisionPatches: DocxTablePropertyRevisionPatchCollector;
+  tableFormattingChangePatches: DocxTableFormattingChangePatchCollector;
+  rowFormattingChangePatches: DocxRowFormattingChangePatchCollector;
+  cellFormattingChangePatches: DocxCellFormattingChangePatchCollector;
+  sectionFormattingChangePatches: DocxSectionFormattingChangePatchCollector;
+  sectionPropertyRevisionPatches: DocxSectionPropertyRevisionPatchCollector;
+  formattingChangePatches: DocxRunFormattingChangePatchCollector;
+  runFontPatches: DocxRunFontsPatchCollector;
+  hiddenTextPatches: DocxHiddenTextPatchCollector;
+  legacyTextEffectsPatches: DocxLegacyTextEffectsPatchCollector;
+  openTypePatches: DocxOpenTypePatchCollector;
+  runBorderPatches: DocxRunBorderPatchCollector;
+  usedRunBorderMarkers: Set<string>;
+  runShadingPatches: DocxRunShadingPatchCollector;
+  usedRunShadingMarkers: Set<string>;
+  usedNativeTextEffectMarkers: Set<string>;
+  usedOpenTypeMarkers: Set<string>;
+  paragraphFormattingChangePatches: DocxParagraphFormattingChangePatchCollector;
+  paragraphMarkChangePatches: DocxParagraphMarkChangePatchCollector;
+  numberingChangePatches: DocxNumberingChangePatchCollector;
+  moveRevisionPatches: DocxMoveRevisionPatchCollector;
+  moveRevisionDefaultDate: string;
+  tableOfContentsPatches: DocxTableOfContentsPatchCollector;
+  indexPatches: DocxIndexPatchCollector;
+  hasExplicitZeroCharacterSpacing: boolean;
+  hasExplicitZeroKerningThreshold: boolean;
+}
+
+interface DocxTextRevision {
+  kind: 'insertion' | 'deletion' | 'move-from' | 'move-to';
+  id: number;
+  author: string;
+  date: string;
+  wireId?: number;
+}
+
+interface DocxRunStyleState {
+  baseStyle?: string;
+  hiddenText?: boolean;
+  legacyTextEffects: WorkDocumentLegacyTextEffects;
+  openTypeFeatures?: WorkDocumentOpenTypeFeatures;
+}
+
+export async function createDocxBlob(
+  content: WorkDocumentContent,
+  sourcePackage?: ArrayBuffer,
+): Promise<Blob> {
+  const docx = await import('docx');
+  const normalizedContent = {
+    ...content,
+    html: normalizeDocumentIndexesHtml(
+      normalizeDocumentBookmarkReferencesHtml(
+        normalizeDocumentBookmarksHtml(content.html),
+      ),
+    ),
+  };
+  const noteCollection = collectDocumentNotes(normalizedContent.html);
+  const comments = anchoredDocumentComments(normalizedContent);
+  const commentThreads = assignDocxCommentThreads(comments);
+  const noteContext: DocxNoteContext = {
+    ids: assignDocxNoteIds(noteCollection.notes),
+    changeIds: new Map(),
+    nextChangeId: 1,
+    commentIds: new Map(),
+    commentRangeCounts: documentCommentRangeCounts(normalizedContent.html),
+    commentRangeSeen: new Map(),
+    numbering: [],
+    nextNumberingReference: 1,
+    numberingReferences: new Map(),
+    numberingLevels: new Map(),
+    numberingRestartRules: [],
+    numberingRestartRulesByIdentity: new Map(),
+    numberingSourceIdentities: [],
+    themePatches: new DocxThemePatchCollector(
+      JSON.stringify(normalizedContent),
+    ),
+    bookmarkPatches: new DocxBookmarkPatchCollector(normalizedContent.html),
+    imageCropPatches: new DocxImageCropPatchCollector(),
+    imageIdentityPatches: new DocxImageIdentityPatchCollector(),
+    imageLayerPatches: new DocxImageLayerPatchCollector(),
+    imageWrapPatches: new DocxImageWrapPatchCollector(),
+    imageTransformPatches: new DocxImageTransformPatchCollector(),
+    textBoxIdentityPatches: new DocxTextBoxIdentityPatchCollector(),
+    connectorPatches: new DocxConnectorPatchCollector(),
+    contentControlPatches: new DocxContentControlPatchCollector(),
+    blockContentControlPatches: new DocxBlockContentControlPatchCollector(),
+    repeatingSectionPatches: new DocxRepeatingSectionPatchCollector(),
+    paragraphBorderPatches: new DocxParagraphBorderPatchCollector(
+      JSON.stringify(normalizedContent),
+    ),
+    paragraphDefaultCollapsedPatches:
+      new DocxParagraphDefaultCollapsedPatchCollector(),
+    paragraphIdentityPatches: new DocxParagraphIdentityPatchCollector(
+      JSON.stringify(normalizedContent),
+    ),
+    equationPatches: new DocxEquationPatchCollector(
+      JSON.stringify(normalizedContent),
+    ),
+    tableFloatPatches: new DocxTableFloatPatchCollector(),
+    tableFloatPart: 'document',
+    tablePropertyRevisionPatches: new DocxTablePropertyRevisionPatchCollector(),
+    tableFormattingChangePatches: new DocxTableFormattingChangePatchCollector(),
+    rowFormattingChangePatches: new DocxRowFormattingChangePatchCollector(),
+    cellFormattingChangePatches: new DocxCellFormattingChangePatchCollector(),
+    sectionFormattingChangePatches:
+      new DocxSectionFormattingChangePatchCollector(),
+    sectionPropertyRevisionPatches:
+      new DocxSectionPropertyRevisionPatchCollector(),
+    formattingChangePatches: new DocxRunFormattingChangePatchCollector(),
+    runFontPatches: new DocxRunFontsPatchCollector(
+      JSON.stringify(normalizedContent),
+    ),
+    hiddenTextPatches: new DocxHiddenTextPatchCollector(
+      JSON.stringify(normalizedContent),
+    ),
+    legacyTextEffectsPatches: new DocxLegacyTextEffectsPatchCollector(
+      JSON.stringify(normalizedContent),
+    ),
+    openTypePatches: new DocxOpenTypePatchCollector(
+      JSON.stringify(normalizedContent),
+    ),
+    runBorderPatches: new DocxRunBorderPatchCollector(
+      JSON.stringify(normalizedContent),
+    ),
+    usedRunBorderMarkers: new Set(),
+    runShadingPatches: new DocxRunShadingPatchCollector(
+      JSON.stringify(normalizedContent),
+    ),
+    usedRunShadingMarkers: new Set(),
+    usedNativeTextEffectMarkers: new Set(),
+    usedOpenTypeMarkers: new Set(),
+    paragraphFormattingChangePatches:
+      new DocxParagraphFormattingChangePatchCollector(),
+    paragraphMarkChangePatches: new DocxParagraphMarkChangePatchCollector(),
+    numberingChangePatches: new DocxNumberingChangePatchCollector(),
+    moveRevisionPatches: new DocxMoveRevisionPatchCollector(),
+    moveRevisionDefaultDate: new Date().toISOString(),
+    tableOfContentsPatches: new DocxTableOfContentsPatchCollector(),
+    indexPatches: new DocxIndexPatchCollector(),
+    hasExplicitZeroCharacterSpacing: false,
+    hasExplicitZeroKerningThreshold: false,
+  };
+  noteContext.numberingChangeMarker = (list, itemIndex) =>
+    noteContext.numberingChangePatches.register(
+      list,
+      itemIndex,
+      docxRevisionId(
+        list,
+        noteContext,
+        `numbering:${noteContext.numberingChangePatches.patches.length + 1}`,
+      ),
+    );
+  const commentRecords = createDocxCommentRecords(
+    commentThreads,
+    docx,
+    noteContext.commentIds,
+  );
+  const sections: ISectionOptions[] = [];
+  let usesOddEvenPageChrome = false;
+  const sourceSections = documentSections({
+    ...normalizedContent,
+    html: noteCollection.html,
+  });
+  for (const section of sourceSections) {
+    const parsed = new DOMParser().parseFromString(section.html, 'text/html');
+    const children: FileChild[] = [];
+    for (const node of parsed.body.children) {
+      const element = node as HTMLElement;
+      if (element.hasAttribute('data-document-note')) continue;
+      children.push(...(await blockToFileChildren(element, docx, noteContext)));
+    }
+    if (!children.length) children.push(new docx.Paragraph(''));
+    const pageChrome = normalizeDocumentPageChrome(
+      section.layout.pageChrome,
+      section.layout,
+    );
+    usesOddEvenPageChrome ||= pageChrome.differentOddEvenPages;
+    noteContext.sectionFormattingChangePatches.record(
+      section.layout,
+      docxRevisionIdForKey(
+        section.layout.formattingChange?.id || `section-format-${section.id}`,
+        noteContext,
+      ),
+    );
+    noteContext.sectionPropertyRevisionPatches.record(section.layout);
+    const headers = await sectionHeaders(pageChrome, docx, noteContext);
+    const footers = await sectionFooters(pageChrome, docx, noteContext);
+    sections.push({
+      properties: sectionProperties(section.layout, docx),
+      headers,
+      footers,
+      children,
+    });
+  }
+  const footnotes = await createNoteRecords(
+    noteCollection.notes,
+    'footnote',
+    docx,
+    noteContext,
+  );
+  const endnotes = await createNoteRecords(
+    noteCollection.notes,
+    'endnote',
+    docx,
+    noteContext,
+  );
+  const document = new docx.Document({
+    sections,
+    footnotes: Object.keys(footnotes).length ? footnotes : undefined,
+    endnotes: Object.keys(endnotes).length ? endnotes : undefined,
+    comments: commentRecords.length ? { children: commentRecords } : undefined,
+    numbering: noteContext.numbering.length
+      ? { config: noteContext.numbering }
+      : undefined,
+    evenAndOddHeaderAndFooters: usesOddEvenPageChrome,
+    features: {
+      trackRevisions: Boolean(
+        normalizedContent.trackChanges ||
+          documentHasTrackedChanges(normalizedContent.html),
+      ),
+      updateFields: true,
+    },
+  });
+  const packed = await docx.Packer.toBlob(document);
+  const characterSpacingPatched = noteContext.hasExplicitZeroCharacterSpacing
+    ? await patchDocxExplicitZeroCharacterSpacing(await packed.arrayBuffer())
+    : await packed.arrayBuffer();
+  const kerningPatched = noteContext.hasExplicitZeroKerningThreshold
+    ? await patchDocxExplicitZeroKerningThresholds(characterSpacingPatched)
+    : characterSpacingPatched;
+  const runFontsPatched = await patchDocxRunFonts(
+    kerningPatched,
+    noteContext.runFontPatches.patches,
+  );
+  const openTypePatched = await patchDocxOpenTypeFeatures(
+    runFontsPatched,
+    noteContext.openTypePatches.patches.filter((patch) =>
+      noteContext.usedOpenTypeMarkers.has(patch.marker),
+    ),
+  );
+  const hiddenTextPatched = await patchDocxHiddenText(
+    openTypePatched,
+    noteContext.hiddenTextPatches.patches.filter((patch) =>
+      noteContext.usedNativeTextEffectMarkers.has(patch.marker),
+    ),
+  );
+  const legacyTextEffectsPatched = await patchDocxLegacyTextEffects(
+    hiddenTextPatched,
+    noteContext.legacyTextEffectsPatches.patches.filter((patch) =>
+      noteContext.usedNativeTextEffectMarkers.has(patch.marker),
+    ),
+  );
+  const runBordersPatched = await patchDocxRunBorders(
+    legacyTextEffectsPatched,
+    noteContext.runBorderPatches.patches.filter((patch) =>
+      noteContext.usedRunBorderMarkers.has(patch.marker),
+    ),
+  );
+  const runShadingPatched = await patchDocxRunShading(
+    runBordersPatched,
+    noteContext.runShadingPatches.patches.filter((patch) =>
+      noteContext.usedRunShadingMarkers.has(patch.marker),
+    ),
+  );
+  const formattingChangesPatched = await patchDocxRunFormattingChanges(
+    runShadingPatched,
+    noteContext.formattingChangePatches.patches,
+  );
+  const noteImageRelationshipsPatched = await patchDocxNoteImageRelationships(
+    formattingChangesPatched,
+  );
+  const commentMetadataPatched = await patchDocxCommentMetadata(
+    noteImageRelationshipsPatched,
+    commentThreads,
+  );
+  const numberingPatched = await patchDocxNumberingRestartRules(
+    commentMetadataPatched,
+    noteContext.numberingRestartRules,
+  );
+  const bibliographyPatched = await patchDocxBibliography(
+    numberingPatched,
+    normalizedContent.bibliography,
+  );
+  const layoutPatched = await patchDocxDocumentLayout(
+    bibliographyPatched,
+    sourceSections,
+  );
+  const paragraphBordersPatched = await patchDocxParagraphBorders(
+    layoutPatched,
+    noteContext.paragraphBorderPatches.patches,
+  );
+  const themePatched = await patchDocxThemeReferences(
+    paragraphBordersPatched,
+    noteContext.themePatches.patches,
+  );
+  const imageCropPatched = await patchDocxImageCrops(
+    themePatched,
+    noteContext.imageCropPatches.patches,
+  );
+  const imageWrapPatched = await patchDocxImageWraps(
+    imageCropPatched,
+    noteContext.imageWrapPatches.patches,
+  );
+  const imageLayerPatched = await patchDocxImageLayers(
+    imageWrapPatched,
+    noteContext.imageLayerPatches.patches,
+  );
+  const imageTransformPatched = await patchDocxImageTransforms(
+    imageLayerPatched,
+    noteContext.imageTransformPatches.patches,
+  );
+  const imageIdentityPatched = await patchDocxImageIdentities(
+    imageTransformPatched,
+    noteContext.imageIdentityPatches.patches,
+  );
+  const textBoxIdentityPatched = await patchDocxTextBoxIdentities(
+    imageIdentityPatched,
+    noteContext.textBoxIdentityPatches.patches,
+  );
+  const connectorPatched = await patchDocxConnectors(
+    textBoxIdentityPatched,
+    noteContext.connectorPatches.patches,
+  );
+  const bookmarkPatched = await patchDocxBookmarks(
+    connectorPatched,
+    noteContext.bookmarkPatches.patches,
+  );
+  const paragraphDefaultCollapsedPatched =
+    await patchDocxParagraphDefaultCollapsed(
+      bookmarkPatched,
+      noteContext.paragraphDefaultCollapsedPatches.patches,
+    );
+  const paragraphIdentityPatched = await patchDocxParagraphIdentities(
+    paragraphDefaultCollapsedPatched,
+    noteContext.paragraphIdentityPatches.patches,
+  );
+  const tableOfContentsPatched = await patchDocxTableOfContents(
+    paragraphIdentityPatched,
+    noteContext.tableOfContentsPatches.patches,
+  );
+  const indexPatched = await patchDocxIndexes(
+    tableOfContentsPatched,
+    noteContext.indexPatches.patches,
+  );
+  const paragraphFormattingChangesPatched =
+    await patchDocxParagraphFormattingChanges(
+      indexPatched,
+      noteContext.paragraphFormattingChangePatches.patches,
+    );
+  const paragraphMarkChangesPatched = await patchDocxParagraphMarkChanges(
+    paragraphFormattingChangesPatched,
+    noteContext.paragraphMarkChangePatches.patches,
+  );
+  const numberingChangesPatched = await patchDocxNumberingChanges(
+    paragraphMarkChangesPatched,
+    noteContext.numberingChangePatches.patches,
+  );
+  const moveRevisionsPatched = await patchDocxMoveRevisions(
+    numberingChangesPatched,
+    noteContext.moveRevisionPatches.patches,
+  );
+  const equationPatched = await patchDocxEquations(
+    moveRevisionsPatched,
+    noteContext.equationPatches.patches,
+  );
+  const tableFloatPatched = await patchDocxTableFloats(
+    equationPatched,
+    noteContext.tableFloatPatches.patches,
+  );
+  const tablePropertyRevisionPatched = await patchDocxTablePropertyRevisions(
+    tableFloatPatched,
+    noteContext.tablePropertyRevisionPatches,
+  );
+  const tableFormattingChangesPatched = await patchDocxTableFormattingChanges(
+    tablePropertyRevisionPatched,
+    noteContext.tableFormattingChangePatches.patches,
+    noteContext.tableFormattingChangePatches.bidiVisual,
+    noteContext.tableFormattingChangePatches.fills,
+    noteContext.tableFormattingChangePatches.looks,
+    noteContext.tableFormattingChangePatches.overlaps,
+    noteContext.tableFormattingChangePatches.styleIds,
+    noteContext.tableFormattingChangePatches.cellSpacings,
+    noteContext.tableFormattingChangePatches.colBandSizes,
+    noteContext.tableFormattingChangePatches.rowBandSizes,
+    noteContext.tableFormattingChangePatches.borders,
+    noteContext.tableFormattingChangePatches.captions,
+    noteContext.tableFormattingChangePatches.descriptions,
+  );
+  const rowFormattingChangesPatched = await patchDocxRowFormattingChanges(
+    tableFormattingChangesPatched,
+    noteContext.rowFormattingChangePatches.patches,
+    noteContext.rowFormattingChangePatches.hidden,
+    noteContext.rowFormattingChangePatches.alignments,
+    noteContext.rowFormattingChangePatches.gridBefore,
+    noteContext.rowFormattingChangePatches.gridAfter,
+    noteContext.rowFormattingChangePatches.widthBefore,
+    noteContext.rowFormattingChangePatches.widthAfter,
+    noteContext.rowFormattingChangePatches.cnfStyles,
+    noteContext.rowFormattingChangePatches.divIds,
+    noteContext.rowFormattingChangePatches.tblCellSpacings,
+  );
+  const cellFormattingChangesPatched = await patchDocxCellFormattingChanges(
+    rowFormattingChangesPatched,
+    noteContext.cellFormattingChangePatches.patches,
+    noteContext.cellFormattingChangePatches.noWrap,
+    noteContext.cellFormattingChangePatches.textDirection,
+    noteContext.cellFormattingChangePatches.fitText,
+    noteContext.cellFormattingChangePatches.hideMark,
+    noteContext.cellFormattingChangePatches.cnfStyles,
+    noteContext.cellFormattingChangePatches.hMerges,
+    noteContext.cellFormattingChangePatches.vMerges,
+    noteContext.cellFormattingChangePatches.gridSpans,
+    noteContext.cellFormattingChangePatches.borders,
+  );
+  const sectionFormattingChangesPatched =
+    await patchDocxSectionFormattingChanges(
+      cellFormattingChangesPatched,
+      noteContext.sectionFormattingChangePatches.patches,
+    );
+  const sectionPropertyRevisionPatched =
+    await patchDocxSectionPropertyRevisions(
+      sectionFormattingChangesPatched,
+      noteContext.sectionPropertyRevisionPatches.patches,
+    );
+  const patched = await patchDocxPageColor(
+    sectionPropertyRevisionPatched,
+    normalizedContent.pageColor,
+  );
+  const contentControlsPatched = await patchDocxContentControls(
+    patched,
+    noteContext.contentControlPatches.patches,
+  );
+  const blockContentControlsPatched = await patchDocxBlockContentControls(
+    contentControlsPatched,
+    noteContext.blockContentControlPatches.patches,
+  );
+  const repeatingSectionsPatched = await patchDocxRepeatingSections(
+    blockContentControlsPatched,
+    noteContext.repeatingSectionPatches.patches,
+  );
+  const preserved = sourcePackage
+    ? await preserveDocxSourcePackage(repeatingSectionsPatched, sourcePackage, {
+        numberingIdentities: noteContext.numberingSourceIdentities,
+      })
+    : repeatingSectionsPatched;
+  return new Blob([preserved], {
+    type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  });
+}
+
+function docxRunStyleState(
+  style: string | undefined,
+  context: DocxNoteContext,
+): DocxRunStyleState {
+  let current = style;
+  let hiddenText: boolean | undefined;
+  let openTypeFeatures: WorkDocumentOpenTypeFeatures | undefined;
+  const legacyTextEffects: WorkDocumentLegacyTextEffects = {};
+  const seen = new Set<string>();
+  while (current && !seen.has(current)) {
+    seen.add(current);
+    const openTypePatch = context.openTypePatches.lookup(current);
+    if (openTypePatch) {
+      openTypeFeatures ??= openTypePatch.features;
+      current = openTypePatch.style;
+      continue;
+    }
+    const hiddenPatch = context.hiddenTextPatches.lookup(current);
+    if (hiddenPatch) {
+      hiddenText ??= hiddenPatch.value;
+      current = hiddenPatch.style;
+      continue;
+    }
+    const legacyPatch = context.legacyTextEffectsPatches.lookup(current);
+    if (legacyPatch) {
+      for (const [name, value] of Object.entries(legacyPatch.effects)) {
+        const effect = name as keyof WorkDocumentLegacyTextEffects;
+        if (legacyTextEffects[effect] === undefined) {
+          legacyTextEffects[effect] = value;
+        }
+      }
+      current = legacyPatch.style;
+      continue;
+    }
+    break;
+  }
+  return {
+    ...(current ? { baseStyle: current } : {}),
+    ...(hiddenText !== undefined ? { hiddenText } : {}),
+    ...(openTypeFeatures ? { openTypeFeatures } : {}),
+    legacyTextEffects,
+  };
+}
+
+function markDocxRunStyleMarkersUsed(
+  style: string | undefined,
+  context: DocxNoteContext,
+): void {
+  let current = style;
+  const seen = new Set<string>();
+  while (current && !seen.has(current)) {
+    seen.add(current);
+    const openTypePatch = context.openTypePatches.lookup(current);
+    if (openTypePatch) {
+      context.usedOpenTypeMarkers.add(current);
+      current = openTypePatch.style;
+      continue;
+    }
+    const hiddenPatch = context.hiddenTextPatches.lookup(current);
+    if (hiddenPatch) {
+      context.usedNativeTextEffectMarkers.add(current);
+      current = hiddenPatch.style;
+      continue;
+    }
+    const legacyPatch = context.legacyTextEffectsPatches.lookup(current);
+    if (legacyPatch) {
+      context.usedNativeTextEffectMarkers.add(current);
+      current = legacyPatch.style;
+      continue;
+    }
+    break;
+  }
+}
+
+function markDocxRunBorderUsed(
+  border: IRunOptions['border'],
+  context: DocxNoteContext,
+): void {
+  const marker = border?.color?.toUpperCase();
+  if (context.runBorderPatches.hasMarker(marker)) {
+    context.usedRunBorderMarkers.add(marker);
+  }
+}
+
+function markDocxRunShadingUsed(
+  shading: IRunOptions['shading'],
+  context: DocxNoteContext,
+): void {
+  const marker = shading?.fill?.toUpperCase();
+  if (context.runShadingPatches.hasMarker(marker)) {
+    context.usedRunShadingMarkers.add(marker);
+  }
+}
+
+function sectionProperties(
+  layout: WorkDocumentSectionLayout,
+  docx: typeof import('docx'),
+): NonNullable<ISectionOptions['properties']> {
+  const landscape = layout.orientation === 'landscape';
+  const dimensions = documentPageGeometryForLayout(layout);
+  const pageMargins = documentPageMarginsForLayout(layout);
+  return {
+    type: docxSectionType(layout.breakAfter, docx),
+    titlePage: normalizeDocumentPageChrome(layout.pageChrome, layout)
+      .differentFirstPage,
+    page: {
+      size: {
+        ...dimensions,
+        orientation: landscape
+          ? docx.PageOrientation.LANDSCAPE
+          : docx.PageOrientation.PORTRAIT,
+      },
+      margin: {
+        top: pageMargins.top,
+        right: pageMargins.right,
+        bottom: pageMargins.bottom,
+        left: pageMargins.left,
+        header: pageMargins.header,
+        footer: pageMargins.footer,
+        gutter: pageMargins.gutter,
+      },
+      pageNumbers: layout.pageNumberStart
+        ? { start: layout.pageNumberStart }
+        : undefined,
+    },
+    column: docxSectionColumns(layout, dimensions.width, docx),
+  };
+}
+
+async function sectionHeaders(
+  chrome: ReturnType<typeof normalizeDocumentPageChrome>,
+  docx: typeof import('docx'),
+  noteContext: DocxNoteContext,
+): Promise<ISectionOptions['headers']> {
+  const headers: {
+    default?: InstanceType<typeof docx.Header>;
+    first?: InstanceType<typeof docx.Header>;
+    even?: InstanceType<typeof docx.Header>;
+  } = {};
+  const defaultHeader = await headerFromHtml(
+    chrome.default.headerHtml,
+    docx,
+    noteContext,
+  );
+  if (defaultHeader) headers.default = defaultHeader;
+  if (chrome.differentFirstPage) {
+    const firstHeader = await headerFromHtml(
+      chrome.first.headerHtml,
+      docx,
+      noteContext,
+    );
+    if (firstHeader) headers.first = firstHeader;
+  }
+  if (chrome.differentOddEvenPages) {
+    const evenHeader = await headerFromHtml(
+      chrome.even.headerHtml,
+      docx,
+      noteContext,
+    );
+    if (evenHeader) headers.even = evenHeader;
+  }
+  return Object.keys(headers).length ? headers : undefined;
+}
+
+async function sectionFooters(
+  chrome: ReturnType<typeof normalizeDocumentPageChrome>,
+  docx: typeof import('docx'),
+  noteContext: DocxNoteContext,
+): Promise<ISectionOptions['footers']> {
+  const footers: {
+    default?: InstanceType<typeof docx.Footer>;
+    first?: InstanceType<typeof docx.Footer>;
+    even?: InstanceType<typeof docx.Footer>;
+  } = {};
+  const defaultFooter = await footerFromContent(
+    chrome.default,
+    docx,
+    noteContext,
+  );
+  if (defaultFooter) footers.default = defaultFooter;
+  if (chrome.differentFirstPage) {
+    const firstFooter = await footerFromContent(
+      chrome.first,
+      docx,
+      noteContext,
+    );
+    if (firstFooter) footers.first = firstFooter;
+  }
+  if (chrome.differentOddEvenPages) {
+    const evenFooter = await footerFromContent(chrome.even, docx, noteContext);
+    if (evenFooter) footers.even = evenFooter;
+  }
+  return Object.keys(footers).length ? footers : undefined;
+}
+
+async function headerFromHtml(
+  html: string,
+  docx: typeof import('docx'),
+  noteContext: DocxNoteContext,
+): Promise<InstanceType<typeof docx.Header> | undefined> {
+  const children = await pageChromeBlocks(html, docx, noteContext);
+  return children.length ? new docx.Header({ children }) : undefined;
+}
+
+async function footerFromContent(
+  content: ReturnType<typeof normalizeDocumentPageChrome>['default'],
+  docx: typeof import('docx'),
+  noteContext: DocxNoteContext,
+): Promise<InstanceType<typeof docx.Footer> | undefined> {
+  const children = await pageChromeBlocks(
+    content.footerHtml,
+    docx,
+    noteContext,
+  );
+  if (content.showPageNumber) {
+    children.push(
+      new docx.Paragraph({
+        alignment: docx.AlignmentType.CENTER,
+        children: [new docx.TextRun({ children: [docx.PageNumber.CURRENT] })],
+      }),
+    );
+  }
+  return children.length ? new docx.Footer({ children }) : undefined;
+}
+
+function docxSectionType(
+  type: WorkDocumentSectionBreakType,
+  docx: typeof import('docx'),
+): (typeof docx.SectionType)[keyof typeof docx.SectionType] {
+  if (type === 'continuous') return docx.SectionType.CONTINUOUS;
+  if (type === 'evenPage') return docx.SectionType.EVEN_PAGE;
+  if (type === 'oddPage') return docx.SectionType.ODD_PAGE;
+  if (type === 'nextColumn') return docx.SectionType.NEXT_COLUMN;
+  return docx.SectionType.NEXT_PAGE;
+}
+
+async function blockToFileChildren(
+  element: HTMLElement,
+  docx: typeof import('docx'),
+  noteContext: DocxNoteContext,
+): Promise<FileChild[]> {
+  const tag = element.tagName.toLowerCase();
+  if (element.hasAttribute('data-page-break')) {
+    return [new docx.Paragraph({ children: [new docx.PageBreak()] })];
+  }
+  if (element.hasAttribute('data-document-bibliography')) {
+    return [
+      docxBibliographyParagraph(element, docx, paragraphBidirectional(element)),
+    ];
+  }
+  if (element.hasAttribute('data-document-table-of-contents')) {
+    return [
+      docxTableOfContents(element, docx, noteContext.tableOfContentsPatches),
+    ];
+  }
+  if (element.hasAttribute('data-document-index')) {
+    return docxDocumentIndex(element, docx, noteContext.indexPatches);
+  }
+  if (element.hasAttribute('data-document-caption')) {
+    return [
+      docxCaptionParagraph(
+        element,
+        await paragraphRuns(element, docx, noteContext),
+        docx,
+        paragraphBidirectional(element),
+      ),
+    ];
+  }
+  if (element.hasAttribute('data-document-text-box')) {
+    return [
+      new docx.Paragraph({
+        children: [await textBoxToDocx(element, docx, noteContext)],
+      }),
+    ];
+  }
+  if (element.hasAttribute('data-document-block-content-control')) {
+    return serializeDocxBlockContentControlElement(element, docx, noteContext);
+  }
+  if (element.hasAttribute('data-document-repeating-section')) {
+    const itemElements = Array.from(
+      element.querySelectorAll<HTMLElement>(
+        ':scope > [data-document-repeating-section-item]',
+      ),
+    );
+    const itemParagraphs = await Promise.all(
+      itemElements.map(async (item) => {
+        const paragraph =
+          item.querySelector(':scope > p') ?? item.querySelector('p') ?? item;
+        const runs = await paragraphRuns(
+          paragraph as HTMLElement,
+          docx,
+          noteContext,
+        );
+        return new docx.Paragraph({
+          children: runs.length ? runs : [new docx.TextRun('')],
+        });
+      }),
+    );
+    return docxRepeatingSectionParagraphs(
+      element,
+      docx,
+      noteContext.repeatingSectionPatches,
+      itemParagraphs,
+    );
+  }
+  if (element.hasAttribute('data-document-connector')) {
+    return [
+      new docx.Paragraph({
+        children: [await connectorToDocx(element, docx, noteContext)],
+      }),
+    ];
+  }
+  if (tag === 'table')
+    return [await tableToDocx(element as HTMLTableElement, docx, noteContext)];
+  if (tag === 'img') {
+    return [
+      new docx.Paragraph({
+        children: [
+          await imageToDocx(
+            element as HTMLImageElement,
+            docx,
+            noteContext.imageCropPatches,
+            noteContext.imageWrapPatches,
+            noteContext.imageLayerPatches,
+            noteContext.imageIdentityPatches,
+            noteContext.imageTransformPatches,
+          ),
+        ],
+      }),
+    ];
+  }
+  if (tag === 'ul' || tag === 'ol') {
+    return listToDocxParagraphs(element, docx, noteContext, (block) =>
+      paragraphRuns(block, docx, noteContext),
+    );
+  }
+  const runs = await paragraphRuns(element, docx, noteContext);
+  const heading = paragraphHeadingLevel(tag, docx);
+  return [
+    new docx.Paragraph({
+      children: runs.length ? runs : [new docx.TextRun('')],
+      heading,
+      alignment: paragraphAlignment(element, docx),
+      spacing: paragraphSpacingOptions(element, Boolean(heading), docx),
+      indent: paragraphIndent(element, tag),
+      tabStops: paragraphTabStops(element, docx),
+      ...paragraphPaginationOptions(element),
+      ...paragraphDirectionOptions(element),
+      ...documentParagraphBordersDocxOptions(
+        element,
+        noteContext.paragraphBorderPatches,
+      ),
+      ...documentParagraphShadingDocxOptions(element, noteContext.themePatches),
+    }),
+  ];
+}
+
+async function textBoxToDocx(
+  element: HTMLElement,
+  docx: typeof import('docx'),
+  noteContext: DocxNoteContext,
+): Promise<InstanceType<typeof docx.WpsShapeRun>> {
+  const properties = documentTextBoxPropertiesFromElement(element);
+  const identity = noteContext.textBoxIdentityPatches.register(properties);
+  const runs = await paragraphRuns(element, docx, noteContext);
+  const paragraph = new docx.Paragraph({
+    children: runs.length ? runs : [new docx.TextRun('')],
+    alignment: paragraphAlignment(element, docx),
+    ...paragraphDirectionOptions(element),
+  });
+  const shapeOptions: IWpsShapeOptions = {
+    type: 'wps',
+    transformation: {
+      width: millimetersToPixels(properties.width),
+      height: millimetersToPixels(properties.height),
+    },
+    children: [paragraph],
+    nonVisualProperties: { txBox: '1' },
+    bodyProperties: {
+      verticalAnchor: textBoxVerticalAnchor(properties, docx),
+      margins: {
+        top: millimetersToEmus(properties.padding),
+        right: millimetersToEmus(properties.padding),
+        bottom: millimetersToEmus(properties.padding),
+        left: millimetersToEmus(properties.padding),
+      },
+      noAutoFit: true,
+    },
+    altText: {
+      name: `A3S Text Box ${properties.id || 'text-box'} ${identity.marker}`,
+      description: 'A3S editable text box',
+      title: 'Text box',
+      ...(identity.docPropertiesId === null
+        ? {}
+        : { id: String(identity.docPropertiesId) }),
+    },
+    ...(properties.fill === 'transparent'
+      ? {}
+      : {
+          solidFill: {
+            type: 'rgb' as const,
+            value: properties.fill.slice(1),
+          },
+        }),
+    outline:
+      properties.borderColor === 'none' || properties.borderWidth <= 0
+        ? { type: 'noFill' as const }
+        : {
+            type: 'solidFill' as const,
+            solidFillType: 'rgb' as const,
+            value: properties.borderColor.slice(1),
+            width: millimetersToEmus(properties.borderWidth),
+          },
+    ...(properties.layout === 'floating'
+      ? { floating: textBoxFloatingOptions(properties, docx) }
+      : {}),
+  };
+  return new docx.WpsShapeRun(shapeOptions);
+}
+
+async function connectorToDocx(
+  element: HTMLElement,
+  docx: typeof import('docx'),
+  noteContext: DocxNoteContext,
+): Promise<InstanceType<typeof docx.WpsShapeRun>> {
+  const properties = documentConnectorPropertiesFromElement(element);
+  const identity = noteContext.connectorPatches.register(properties);
+  const shapeOptions: IWpsShapeOptions = {
+    type: 'wps',
+    transformation: {
+      width: millimetersToPixels(properties.width),
+      height: millimetersToPixels(properties.height),
+    },
+    children: [new docx.Paragraph('')],
+    altText: {
+      name: identity.marker,
+      description: 'A3S editable straight connector',
+      title: 'Connector',
+      ...(identity.docPropertiesId === null
+        ? {}
+        : { id: String(identity.docPropertiesId) }),
+    },
+    ...(properties.layout === 'floating'
+      ? { floating: connectorFloatingOptions(properties, docx) }
+      : {}),
+  };
+  return new docx.WpsShapeRun(shapeOptions);
+}
+
+function connectorFloatingOptions(
+  properties: WorkDocumentConnectorProperties,
+  docx: typeof import('docx'),
+) {
+  return {
+    horizontalPosition: {
+      relative: connectorHorizontalReference(properties, docx),
+      offset: millimetersToEmus(properties.horizontalOffset ?? 0),
+    },
+    verticalPosition: {
+      relative: connectorVerticalReference(properties, docx),
+      offset: millimetersToEmus(properties.verticalOffset ?? 0),
+    },
+    allowOverlap: true,
+    behindDocument: false,
+    layoutInCell: true,
+    lockAnchor: false,
+    margins: { top: 0, right: 0, bottom: 0, left: 0 },
+    wrap: { type: docx.TextWrappingType.NONE },
+  };
+}
+
+function connectorHorizontalReference(
+  properties: WorkDocumentConnectorProperties,
+  docx: typeof import('docx'),
+) {
+  if (properties.horizontalReference === 'margin') {
+    return docx.HorizontalPositionRelativeFrom.MARGIN;
+  }
+  if (properties.horizontalReference === 'page') {
+    return docx.HorizontalPositionRelativeFrom.PAGE;
+  }
+  return docx.HorizontalPositionRelativeFrom.COLUMN;
+}
+
+function connectorVerticalReference(
+  properties: WorkDocumentConnectorProperties,
+  docx: typeof import('docx'),
+) {
+  if (properties.verticalReference === 'margin') {
+    return docx.VerticalPositionRelativeFrom.MARGIN;
+  }
+  if (properties.verticalReference === 'page') {
+    return docx.VerticalPositionRelativeFrom.PAGE;
+  }
+  return docx.VerticalPositionRelativeFrom.PARAGRAPH;
+}
+
+function textBoxVerticalAnchor(
+  properties: WorkDocumentTextBoxProperties,
+  docx: typeof import('docx'),
+) {
+  if (properties.verticalAlign === 'center') return docx.VerticalAnchor.CENTER;
+  if (properties.verticalAlign === 'bottom') return docx.VerticalAnchor.BOTTOM;
+  return docx.VerticalAnchor.TOP;
+}
+
+function textBoxFloatingOptions(
+  properties: WorkDocumentTextBoxProperties,
+  docx: typeof import('docx'),
+) {
+  return {
+    horizontalPosition: {
+      relative: textBoxHorizontalReference(properties, docx),
+      offset: millimetersToEmus(properties.horizontalOffset ?? 0),
+    },
+    verticalPosition: {
+      relative: textBoxVerticalReference(properties, docx),
+      offset: millimetersToEmus(properties.verticalOffset ?? 0),
+    },
+    allowOverlap: true,
+    behindDocument: false,
+    layoutInCell: true,
+    lockAnchor: false,
+    zIndex: 0,
+    margins: { top: 0, right: 0, bottom: 0, left: 0 },
+    wrap: { type: docx.TextWrappingType.SQUARE },
+  };
+}
+
+function textBoxHorizontalReference(
+  properties: WorkDocumentTextBoxProperties,
+  docx: typeof import('docx'),
+) {
+  if (properties.horizontalReference === 'margin') {
+    return docx.HorizontalPositionRelativeFrom.MARGIN;
+  }
+  if (properties.horizontalReference === 'page') {
+    return docx.HorizontalPositionRelativeFrom.PAGE;
+  }
+  return docx.HorizontalPositionRelativeFrom.COLUMN;
+}
+
+function textBoxVerticalReference(
+  properties: WorkDocumentTextBoxProperties,
+  docx: typeof import('docx'),
+) {
+  if (properties.verticalReference === 'margin') {
+    return docx.VerticalPositionRelativeFrom.MARGIN;
+  }
+  if (properties.verticalReference === 'page') {
+    return docx.VerticalPositionRelativeFrom.PAGE;
+  }
+  return docx.VerticalPositionRelativeFrom.PARAGRAPH;
+}
+
+function millimetersToPixels(value: number): number {
+  return (value * 96) / 25.4;
+}
+
+function millimetersToEmus(value: number): number {
+  return Math.round(value * 36_000);
+}
+
+function paragraphHeadingLevel(tag: string, docx: typeof import('docx')) {
+  if (tag === 'h1') return docx.HeadingLevel.HEADING_1;
+  if (tag === 'h2') return docx.HeadingLevel.HEADING_2;
+  if (tag === 'h3') return docx.HeadingLevel.HEADING_3;
+  if (tag === 'h4') return docx.HeadingLevel.HEADING_4;
+  if (tag === 'h5') return docx.HeadingLevel.HEADING_5;
+  if (tag === 'h6') return docx.HeadingLevel.HEADING_6;
+  return undefined;
+}
+
+async function pageChromeBlocks(
+  html: string,
+  docx: typeof import('docx'),
+  noteContext: DocxNoteContext,
+): Promise<
+  Array<InstanceType<typeof docx.Paragraph> | InstanceType<typeof docx.Table>>
+> {
+  if (!html.trim()) return [];
+  const previousPart = noteContext.tableFloatPart;
+  noteContext.tableFloatPart = 'chrome';
+  try {
+    const document = new DOMParser().parseFromString(html, 'text/html');
+    const children: Array<
+      InstanceType<typeof docx.Paragraph> | InstanceType<typeof docx.Table>
+    > = [];
+    for (const element of Array.from(document.body.children)) {
+      const blocks = await blockToFileChildren(
+        element as HTMLElement,
+        docx,
+        noteContext,
+      );
+      for (const block of blocks) {
+        if (block instanceof docx.Paragraph || block instanceof docx.Table)
+          children.push(block);
+      }
+    }
+    if (!children.length && document.body.textContent?.trim()) {
+      children.push(
+        new docx.Paragraph({
+          children: await inlineRuns(document.body, docx, noteContext),
+          ...paragraphDirectionOptions(document.body),
+        }),
+      );
+    }
+    return children;
+  } finally {
+    noteContext.tableFloatPart = previousPart;
+  }
+}
+
+async function serializeDocxBlockContentControlElement(
+  element: HTMLElement,
+  docx: typeof import('docx'),
+  noteContext: DocxNoteContext,
+): Promise<import('docx').Paragraph[]> {
+  const children: import('docx').Paragraph[] = [];
+  for (const child of Array.from(element.children).slice(0, 64)) {
+    if (!(child instanceof HTMLElement)) continue;
+    if (child.localName === 'p') {
+      const runs = await paragraphRuns(child, docx, noteContext);
+      children.push(
+        new docx.Paragraph({
+          children: runs.length ? runs : [new docx.TextRun('')],
+        }),
+      );
+      continue;
+    }
+    if (child.hasAttribute('data-document-block-content-control')) {
+      children.push(
+        ...(await serializeDocxBlockContentControlElement(
+          child,
+          docx,
+          noteContext,
+        )),
+      );
+    }
+  }
+  if (!children.length) {
+    children.push(new docx.Paragraph({ children: [new docx.TextRun('')] }));
+  }
+  return docxBlockContentControlParagraphs(
+    element,
+    docx,
+    noteContext.blockContentControlPatches,
+    children,
+  );
+}
+
+async function paragraphRuns(
+  element: HTMLElement,
+  docx: typeof import('docx'),
+  noteContext: DocxNoteContext,
+): Promise<ParagraphChild[]> {
+  const identityMarker = noteContext.paragraphIdentityPatches.marker(element);
+  noteContext.paragraphDefaultCollapsedPatches.register(
+    identityMarker,
+    element,
+  );
+  const paragraphFormattingChangeMarker =
+    element.hasAttribute('data-document-change') &&
+    element.dataset.changeKind === 'paragraph-formatting'
+      ? noteContext.paragraphFormattingChangePatches.register(
+          element,
+          docxRevisionId(element, noteContext),
+        )
+      : null;
+  const paragraphMarkChangeMarker =
+    element.hasAttribute('data-document-block-change') ||
+    element.getAttribute('data-paragraph-break-change') === 'true'
+      ? noteContext.paragraphMarkChangePatches.register(
+          element,
+          docxRevisionIdForKey(
+            element.dataset.paragraphBreakChange === 'true'
+              ? (element.dataset.paragraphBreakId?.trim() ?? '')
+              : (element.dataset.blockChangeId?.trim() ?? ''),
+            noteContext,
+            element.dataset.paragraphBreakChange === 'true'
+              ? 'paragraph-break'
+              : 'paragraph-mark',
+          ),
+        )
+      : null;
+  return [
+    new docx.TextRun(identityMarker),
+    ...(paragraphFormattingChangeMarker
+      ? [new docx.TextRun(paragraphFormattingChangeMarker)]
+      : []),
+    ...(paragraphMarkChangeMarker
+      ? [new docx.TextRun(paragraphMarkChangeMarker)]
+      : []),
+    ...(await inlineRuns(element, docx, noteContext)),
+  ];
+}
+
+async function inlineRuns(
+  root: HTMLElement,
+  docx: typeof import('docx'),
+  noteContext: DocxNoteContext,
+): Promise<ParagraphChild[]> {
+  const runs: ParagraphChild[] = [];
+  const visit = async (
+    node: Node,
+    inherited: IRunOptions = {},
+    revision?: DocxTextRevision,
+  ): Promise<ParagraphChild[]> => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      if (!node.textContent) return [];
+      markDocxRunStyleMarkersUsed(inherited.style, noteContext);
+      markDocxRunBorderUsed(inherited.border, noteContext);
+      markDocxRunShadingUsed(inherited.shading, noteContext);
+      if (revision?.kind === 'insertion' || revision?.kind === 'move-to') {
+        return [
+          new docx.InsertedTextRun({
+            ...inherited,
+            id: revision.wireId ?? revision.id,
+            author: revision.author,
+            date: revision.date,
+            text: node.textContent,
+          }),
+        ];
+      }
+      if (revision?.kind === 'deletion' || revision?.kind === 'move-from') {
+        return [
+          new docx.DeletedTextRun({
+            ...inherited,
+            id: revision.wireId ?? revision.id,
+            author: revision.author,
+            date: revision.date,
+            text: node.textContent,
+          }),
+        ];
+      }
+      return [new docx.TextRun({ ...inherited, text: node.textContent })];
+    }
+    if (!(node instanceof HTMLElement)) return [];
+    const tag = node.tagName.toLowerCase();
+    if (node.hasAttribute('data-document-tab')) return [new docx.Tab()];
+    if (node.hasAttribute('data-document-citation'))
+      return [docxCitationRun(node, docx)];
+    if (node.hasAttribute('data-document-field'))
+      return [docxDocumentFieldRun(node, docx)];
+    if (node.hasAttribute('data-document-index-entry')) {
+      const entry = docxIndexEntryRun(node, docx);
+      return entry ? [entry] : [];
+    }
+    if (
+      node.hasAttribute('data-document-equation') ||
+      node.hasAttribute('data-document-equation-opaque')
+    ) {
+      const equation = noteContext.equationPatches.marker(node);
+      return [new docx.TextRun(equation ?? node.textContent ?? '')];
+    }
+    if (node.hasAttribute('data-document-cross-reference'))
+      return docxCrossReferenceRuns(node, docx);
+    if (node.hasAttribute('data-document-note-reference')) {
+      const kind = documentNoteKind(node.dataset.noteKind);
+      const id = node.dataset.noteId?.trim();
+      const noteId =
+        kind && id ? noteContext.ids.get(documentNoteKey(kind, id)) : undefined;
+      if (!kind || !noteId) return [];
+      return [
+        kind === 'footnote'
+          ? new docx.FootnoteReferenceRun(noteId)
+          : (new docx.EndnoteReferenceRun(noteId) as ParagraphChild),
+      ];
+    }
+    if (node.hasAttribute('data-document-content-control')) {
+      const children: ParagraphChild[] = [];
+      for (const child of node.childNodes) {
+        children.push(...(await visit(child, inherited, revision)));
+      }
+      return docxContentControlRuns(
+        node,
+        docx,
+        noteContext.contentControlPatches,
+        children,
+      );
+    }
+    const textRevisionKind: DocxTextRevision['kind'] | null =
+      tag === 'del'
+        ? node.dataset.changeKind === 'move'
+          ? 'move-from'
+          : 'deletion'
+        : tag === 'ins'
+          ? node.dataset.changeKind === 'move'
+            ? 'move-to'
+            : 'insertion'
+          : null;
+    const change =
+      node.hasAttribute('data-document-change') && textRevisionKind
+        ? docxTextRevision(node, textRevisionKind, noteContext)
+        : revision;
+    const formattingChange =
+      node.hasAttribute('data-document-change') &&
+      node.dataset.changeKind === 'formatting'
+        ? noteContext.formattingChangePatches.register(
+            node,
+            docxRevisionId(node, noteContext),
+          )
+        : null;
+    const commentBoundary = node.hasAttribute('data-document-comment')
+      ? nextDocxCommentBoundary(node.dataset.commentId, noteContext)
+      : null;
+    const backgroundColor = cssColorToHex(node.style.backgroundColor);
+    const hasExplicitRunShading =
+      tag === 'span' && node.hasAttribute(DOCUMENT_RUN_SHADING_ATTRIBUTE);
+    const explicitRunShading = hasExplicitRunShading
+      ? parseDocumentRunShadingElement(node)
+      : null;
+    if (hasExplicitRunShading && !explicitRunShading) {
+      throw new Error('Document contains invalid character shading.');
+    }
+    const hasHighlightSemantics =
+      node.hasAttribute(DOCUMENT_HIGHLIGHT_ATTRIBUTE) ||
+      node.hasAttribute('data-color') ||
+      tag === 'mark' ||
+      (Boolean(backgroundColor) && !hasExplicitRunShading);
+    const explicitHighlight = hasHighlightSemantics
+      ? documentHighlightFromElement(node)
+      : null;
+    const direction = domDirection(node);
+    const resolvedColor = cssColorToHex(node.style.color) ?? inherited.color;
+    const themeColorMarker = noteContext.themePatches.marker(
+      'color',
+      parseDocxThemeReference(node.dataset.officeThemeColor),
+      resolvedColor ? `#${resolvedColor}` : null,
+    );
+    const runShading = explicitRunShading
+      ? documentRunShadingDocxOptions(
+          explicitRunShading,
+          noteContext.runShadingPatches,
+        ).shading
+      : undefined;
+    const customHighlightFill =
+      hasHighlightSemantics && !explicitHighlight ? backgroundColor : null;
+    const resolvedShading =
+      runShading ??
+      (customHighlightFill ? { fill: customHighlightFill } : inherited.shading);
+    const themeFillMarker =
+      !runShading && customHighlightFill
+        ? noteContext.themePatches.marker(
+            'fill',
+            parseDocxThemeReference(node.dataset.officeThemeFill),
+            `#${customHighlightFill}`,
+          )
+        : null;
+    const explicitTextCase = normalizeDocumentTextCase(
+      node.dataset.officeTextCase,
+    );
+    const explicitCharacterSpacing =
+      documentCharacterSpacingTwipsFromElement(node);
+    const explicitCharacterScale =
+      documentCharacterScalePercentFromElement(node);
+    const explicitKerningThreshold =
+      documentKerningThresholdHalfPointsFromElement(node);
+    const explicitEmphasisMark = documentEmphasisMarkFromElement(node);
+    const explicitHiddenText = documentHiddenTextFromElement(node);
+    const hasExplicitProofingLanguages =
+      tag === 'span' &&
+      node.hasAttribute(DOCUMENT_PROOFING_LANGUAGES_ATTRIBUTE);
+    const explicitProofingLanguages = hasExplicitProofingLanguages
+      ? documentProofingLanguagesFromElement(node)
+      : null;
+    if (hasExplicitProofingLanguages && !explicitProofingLanguages) {
+      throw new Error('Document contains invalid proofing languages.');
+    }
+    const hasExplicitNoProof =
+      tag === 'span' && node.hasAttribute(DOCUMENT_NO_PROOF_ATTRIBUTE);
+    const explicitNoProof = hasExplicitNoProof
+      ? documentNoProofFromElement(node)
+      : null;
+    if (hasExplicitNoProof && explicitNoProof === null) {
+      throw new Error('Document contains invalid proofing state.');
+    }
+    const hasExplicitOpenType =
+      tag === 'span' && node.hasAttribute(DOCUMENT_OPEN_TYPE_ATTRIBUTE);
+    const explicitOpenType = hasExplicitOpenType
+      ? documentOpenTypeFeaturesFromElement(node)
+      : null;
+    if (hasExplicitOpenType && !explicitOpenType) {
+      throw new Error('Document contains invalid OpenType typography.');
+    }
+    const hasExplicitLegacyTextEffects =
+      tag === 'span' &&
+      [
+        DOCUMENT_LEGACY_TEXT_OUTLINE_ATTRIBUTE,
+        DOCUMENT_LEGACY_TEXT_SHADOW_ATTRIBUTE,
+        DOCUMENT_LEGACY_TEXT_EMBOSS_ATTRIBUTE,
+        DOCUMENT_LEGACY_TEXT_IMPRINT_ATTRIBUTE,
+      ].some((attribute) => node.hasAttribute(attribute));
+    const explicitLegacyTextEffects = hasExplicitLegacyTextEffects
+      ? documentLegacyTextEffectsFromElement(node)
+      : {};
+    if (hasExplicitLegacyTextEffects && !explicitLegacyTextEffects) {
+      throw new Error('Document contains invalid legacy text effects.');
+    }
+    const explicitCharacterPosition =
+      documentCharacterPositionHalfPointsFromElement(node);
+    const hasExplicitRunBorder =
+      tag === 'span' &&
+      (node.hasAttribute(DOCUMENT_RUN_BORDER_ATTRIBUTE) ||
+        Boolean(node.style.borderStyle));
+    const explicitRunBorder = hasExplicitRunBorder
+      ? parseDocumentRunBorderElement(node)
+      : null;
+    if (hasExplicitRunBorder && !explicitRunBorder) {
+      throw new Error('Document contains an invalid character border.');
+    }
+    if (explicitCharacterSpacing === 0) {
+      noteContext.hasExplicitZeroCharacterSpacing = true;
+    }
+    if (explicitKerningThreshold === 0) {
+      noteContext.hasExplicitZeroKerningThreshold = true;
+    }
+    const characterSpacing =
+      explicitCharacterSpacing === null
+        ? inherited.characterSpacing
+        : docxCharacterSpacingValue(explicitCharacterSpacing);
+    const scale =
+      explicitCharacterScale === null
+        ? inherited.scale
+        : docxCharacterScaleValue(explicitCharacterScale);
+    const kern =
+      explicitKerningThreshold === null
+        ? inherited.kern
+        : docxKerningThresholdValue(explicitKerningThreshold);
+    const position =
+      explicitCharacterPosition === null
+        ? inherited.position
+        : (docxCharacterPositionValue(
+            explicitCharacterPosition,
+          ) as IRunOptions['position']);
+    const emphasisMark =
+      explicitEmphasisMark === null
+        ? inherited.emphasisMark
+        : docxEmphasisMarkRunOptions(explicitEmphasisMark);
+    const textCaseOptions = docxTextCaseRunOptions(explicitTextCase, inherited);
+    const inheritedRunStyle = docxRunStyleState(inherited.style, noteContext);
+    const legacyTextEffects = {
+      ...inheritedRunStyle.legacyTextEffects,
+      ...(explicitLegacyTextEffects ?? {}),
+    };
+    if (documentLegacyTextEffectsConflict(legacyTextEffects)) {
+      throw new Error('Document contains conflicting legacy text effects.');
+    }
+    const hiddenText =
+      explicitHiddenText === null
+        ? inheritedRunStyle.hiddenText
+        : explicitHiddenText;
+    const openTypeFeatures = hasExplicitOpenType
+      ? (explicitOpenType ?? undefined)
+      : inheritedRunStyle.openTypeFeatures;
+    let runStyle = inherited.style;
+    if (
+      hasExplicitLegacyTextEffects ||
+      explicitHiddenText !== null ||
+      hasExplicitOpenType
+    ) {
+      runStyle = inheritedRunStyle.baseStyle;
+      if (Object.keys(legacyTextEffects).length) {
+        runStyle = noteContext.legacyTextEffectsPatches.marker(
+          legacyTextEffects,
+          runStyle,
+        );
+      }
+      if (hiddenText !== undefined) {
+        runStyle = noteContext.hiddenTextPatches.marker(hiddenText, runStyle);
+      }
+      if (openTypeFeatures) {
+        runStyle = noteContext.openTypePatches.marker(
+          openTypeFeatures,
+          runStyle,
+        );
+      }
+    }
+    const underline = docxUnderlineRunOptions(
+      node,
+      inherited.underline,
+      noteContext.themePatches,
+    );
+    const strike = docxStrikeRunOptions(node, inherited);
+    const scriptFontMarker = noteContext.runFontPatches.marker(
+      documentScriptFontsFromElement(node),
+      documentScriptFontSlotFromElement(node),
+      node.style.fontFamily,
+    );
+    const runBorder = explicitRunBorder
+      ? documentRunBorderDocxOptions(
+          explicitRunBorder,
+          noteContext.runBorderPatches,
+        ).border
+      : inherited.border;
+    const language = hasExplicitProofingLanguages
+      ? documentProofingLanguageDocxOptions(explicitProofingLanguages)
+      : inherited.language;
+    const noProof = hasExplicitNoProof
+      ? (explicitNoProof ?? false)
+      : inherited.noProof;
+    const style: IRunOptions = {
+      ...inherited,
+      style: runStyle,
+      // Keep unset distinct from explicit false. `undefined || false` would emit
+      // w:b/w:i val="false" on every run and break tracked-change re-import wraps.
+      bold: tag === 'strong' || tag === 'b' ? true : inherited.bold,
+      italics: tag === 'em' || tag === 'i' ? true : inherited.italics,
+      underline,
+      ...strike,
+      subScript: tag === 'sub' ? true : inherited.subScript,
+      superScript: tag === 'sup' ? true : inherited.superScript,
+      color: themeColorMarker ?? resolvedColor,
+      font: scriptFontMarker
+        ? { ascii: scriptFontMarker }
+        : (cssFontFamily(node.style.fontFamily) ?? inherited.font),
+      size: cssFontSize(node.style.fontSize) ?? inherited.size,
+      characterSpacing,
+      scale,
+      kern,
+      position,
+      emphasisMark,
+      language,
+      noProof,
+      border: runBorder,
+      shading: themeFillMarker ? { fill: themeFillMarker } : resolvedShading,
+      highlight: hasHighlightSemantics
+        ? (explicitHighlight ?? (customHighlightFill ? 'none' : undefined))
+        : inherited.highlight,
+      snapToGrid:
+        dataBoolean(node.dataset.officeWordSnapToGrid) ?? inherited.snapToGrid,
+      rightToLeft:
+        direction === undefined ? inherited.rightToLeft : direction === 'rtl',
+      ...textCaseOptions,
+    };
+    if (tag === 'br') {
+      markDocxRunStyleMarkersUsed(style.style, noteContext);
+      markDocxRunBorderUsed(style.border, noteContext);
+      markDocxRunShadingUsed(style.shading, noteContext);
+      return [new docx.TextRun({ ...style, break: 1 })];
+    }
+    if (tag === 'img')
+      return [
+        await imageToDocx(
+          node as HTMLImageElement,
+          docx,
+          noteContext.imageCropPatches,
+          noteContext.imageWrapPatches,
+          noteContext.imageLayerPatches,
+          noteContext.imageIdentityPatches,
+          noteContext.imageTransformPatches,
+        ),
+      ];
+    if (tag === 'span' && node.dataset.documentBookmarkBoundary === 'true') {
+      const marker = noteContext.bookmarkPatches.register(node);
+      return marker ? [new docx.TextRun(marker)] : [];
+    }
+    const children: ParagraphChild[] = [];
+    for (const child of node.childNodes)
+      children.push(...(await visit(child, style, change)));
+    const href =
+      tag === 'a'
+        ? normalizeDocumentHref(node.getAttribute('href') ?? '')
+        : null;
+    const linked = href
+      ? [
+          href.startsWith('#')
+            ? new docx.InternalHyperlink({
+                anchor: href.slice(1),
+                children,
+              })
+            : new docx.ExternalHyperlink({ link: href, children }),
+        ]
+      : children;
+    const result = formattingChange
+      ? [
+          new docx.TextRun(formattingChange.start),
+          ...linked,
+          new docx.TextRun(formattingChange.end),
+        ]
+      : linked;
+    if (!commentBoundary) return result;
+    return [
+      ...(commentBoundary.start
+        ? [new docx.CommentRangeStart(commentBoundary.id)]
+        : []),
+      ...result,
+      ...(commentBoundary.end
+        ? [
+            new docx.CommentRangeEnd(commentBoundary.id),
+            new docx.CommentReference(commentBoundary.id),
+          ]
+        : []),
+    ];
+  };
+  const direction = domDirection(root);
+  const inheritedDirection: IRunOptions =
+    direction === undefined ? {} : { rightToLeft: direction === 'rtl' };
+  for (const node of root.childNodes)
+    runs.push(...(await visit(node, inheritedDirection)));
+  return runs;
+}
+
+function docxStrikeRunOptions(
+  element: HTMLElement,
+  inherited: IRunOptions,
+): Pick<IRunOptions, 'doubleStrike' | 'strike'> {
+  if (
+    element.hasAttribute(DOCUMENT_UNDERLINE_STYLE_ATTRIBUTE) &&
+    !element.hasAttribute(DOCUMENT_STRIKE_STYLE_ATTRIBUTE)
+  ) {
+    return {
+      doubleStrike: inherited.doubleStrike,
+      strike: inherited.strike,
+    };
+  }
+  const formatting = documentStrikeFormattingFromElement(element);
+  if (!formatting) {
+    return {
+      doubleStrike: inherited.doubleStrike,
+      strike: inherited.strike,
+    };
+  }
+  return {
+    doubleStrike: formatting.style === 'double',
+    strike: formatting.style === 'single',
+  };
+}
+
+function docxUnderlineRunOptions(
+  element: HTMLElement,
+  inherited: IRunOptions['underline'],
+  themePatches: DocxThemePatchCollector,
+): IRunOptions['underline'] {
+  if (
+    element.hasAttribute(DOCUMENT_STRIKE_STYLE_ATTRIBUTE) &&
+    !element.hasAttribute(DOCUMENT_UNDERLINE_STYLE_ATTRIBUTE)
+  ) {
+    return inherited;
+  }
+  const formatting = documentUnderlineFormattingFromElement(element);
+  if (!formatting) return inherited;
+  const color = docxUnderlineColor(formatting, themePatches);
+  return {
+    type: formatting.style,
+    ...(color ? { color } : {}),
+  };
+}
+
+function docxUnderlineColor(
+  formatting: WorkDocumentUnderlineFormatting,
+  themePatches: DocxThemePatchCollector,
+): string | undefined {
+  const direct = formatting.color ? cssColorToHex(formatting.color) : undefined;
+  return (
+    themePatches.marker(
+      'underline',
+      formatting.themeColor ?? null,
+      direct ? `#${direct}` : null,
+    ) ?? direct
+  );
+}
+
+function docxTextCaseRunOptions(
+  explicitTextCase: ReturnType<typeof normalizeDocumentTextCase>,
+  inherited: IRunOptions,
+): Pick<IRunOptions, 'allCaps' | 'smallCaps'> {
+  if (explicitTextCase === null) {
+    if (inherited.smallCaps !== undefined) {
+      return { allCaps: undefined, smallCaps: inherited.smallCaps };
+    }
+    return inherited.allCaps === undefined
+      ? {}
+      : { allCaps: inherited.allCaps, smallCaps: undefined };
+  }
+  if (explicitTextCase === 'all-caps') {
+    return { allCaps: true, smallCaps: undefined };
+  }
+  if (explicitTextCase === 'small-caps') {
+    return { allCaps: undefined, smallCaps: true };
+  }
+  return inherited.smallCaps
+    ? { allCaps: undefined, smallCaps: false }
+    : { allCaps: false, smallCaps: undefined };
+}
+
+function docxTextRevision(
+  element: HTMLElement,
+  kind: DocxTextRevision['kind'],
+  context: DocxNoteContext,
+): DocxTextRevision {
+  const id = docxRevisionId(element, context);
+  const sourceDate = element.dataset.changeDate?.trim() ?? '';
+  const time = Date.parse(sourceDate);
+  const revision: DocxTextRevision = {
+    kind,
+    id,
+    author: element.dataset.changeAuthor?.trim() || 'A3S Work',
+    date: Number.isFinite(time)
+      ? new Date(time).toISOString()
+      : kind === 'move-from' || kind === 'move-to'
+        ? context.moveRevisionDefaultDate
+        : new Date().toISOString(),
+  };
+  if (kind === 'move-from' || kind === 'move-to') {
+    const registration: DocxMoveRevisionRegistration | null =
+      context.moveRevisionPatches.register(element, id, revision.date);
+    if (!registration) {
+      throw new Error('Document contains an invalid move revision.');
+    }
+    revision.wireId = registration.wireId;
+  }
+  return revision;
+}
+
+function docxRevisionId(
+  element: HTMLElement,
+  context: DocxNoteContext,
+  suffix?: string,
+): number {
+  const baseKey =
+    element.dataset.changeId?.trim() || `change-${context.nextChangeId}`;
+  return docxRevisionIdForKey(baseKey, context, suffix);
+}
+
+function docxRevisionIdForKey(
+  baseKey: string,
+  context: DocxNoteContext,
+  suffix?: string,
+): number {
+  const key = suffix ? `${baseKey}:${suffix}` : baseKey;
+  let id = context.changeIds.get(key);
+  if (!id) {
+    id = context.nextChangeId;
+    context.nextChangeId += 1;
+    context.changeIds.set(key, id);
+  }
+  return id;
+}
+
+function documentHasTrackedChanges(html: string): boolean {
+  const document = new DOMParser().parseFromString(html, 'text/html');
+  return Boolean(
+    document.body.querySelector(
+      'ins[data-document-change], del[data-document-change], span[data-document-change][data-change-kind="formatting"], [data-document-change][data-change-kind="paragraph-formatting"], [data-document-change][data-change-kind="numbering"], [data-document-change][data-change-kind="table-formatting"], [data-document-change][data-change-kind="row-formatting"], [data-document-change][data-change-kind="cell-formatting"], [data-document-change][data-change-kind="section-formatting"], [data-document-change][data-change-kind="move"], [data-document-block-change="true"], [data-paragraph-break-change="true"]',
+    ),
+  );
+}
+
+function anchoredDocumentComments(
+  content: WorkDocumentContent,
+): WorkDocumentComment[] {
+  const document = new DOMParser().parseFromString(content.html, 'text/html');
+  const ids = Array.from(
+    document.body.querySelectorAll<HTMLElement>(
+      '[data-document-comment][data-comment-id]',
+    ),
+  )
+    .map((element) => element.dataset.commentId?.trim() ?? '')
+    .filter(Boolean);
+  const stored = new Map(
+    (content.comments ?? []).map((comment) => [comment.id, comment] as const),
+  );
+  return Array.from(new Set(ids)).map(
+    (id) =>
+      stored.get(id) ?? {
+        id,
+        author: '未知审阅者',
+        date: '',
+        text: '此批注的内容不可用。',
+        resolved: false,
+      },
+  );
+}
+
+function documentCommentRangeCounts(html: string): Map<string, number> {
+  const document = new DOMParser().parseFromString(html, 'text/html');
+  const counts = new Map<string, number>();
+  for (const element of Array.from(
+    document.body.querySelectorAll<HTMLElement>(
+      '[data-document-comment][data-comment-id]',
+    ),
+  )) {
+    const id = element.dataset.commentId?.trim();
+    if (id) counts.set(id, (counts.get(id) ?? 0) + 1);
+  }
+  return counts;
+}
+
+function nextDocxCommentBoundary(
+  sourceId: string | undefined,
+  context: DocxNoteContext,
+): { id: number; start: boolean; end: boolean } | null {
+  const key = sourceId?.trim() ?? '';
+  const id = context.commentIds.get(key);
+  const count = context.commentRangeCounts.get(key) ?? 0;
+  if (id === undefined || !count) return null;
+  const seen = (context.commentRangeSeen.get(key) ?? 0) + 1;
+  context.commentRangeSeen.set(key, seen);
+  return { id, start: seen === 1, end: seen === count };
+}
+
+async function tableToDocx(
+  element: HTMLTableElement,
+  docx: typeof import('docx'),
+  noteContext: DocxNoteContext,
+): Promise<InstanceType<typeof docx.Table>> {
+  if (noteContext.tableFloatPart === 'document') {
+    noteContext.tableFloatPatches.record(element);
+    noteContext.tableFormattingChangePatches.record(
+      element,
+      docxRevisionId(element, noteContext),
+    );
+    noteContext.tablePropertyRevisionPatches.recordTable(element);
+  }
+  const rows: InstanceType<typeof docx.TableRow>[] = [];
+  let inferLeadingHeader = true;
+  const ownedRows = Array.from(element.rows).filter(
+    (row) => row.closest('table') === element,
+  );
+  for (const row of ownedRows) {
+    if (noteContext.tableFloatPart === 'document') {
+      noteContext.rowFormattingChangePatches.record(
+        row,
+        docxRevisionId(row, noteContext),
+      );
+      noteContext.tablePropertyRevisionPatches.recordRow(row);
+    }
+    const ownedCells = Array.from(row.cells).filter(
+      (cell) => cell.closest('tr') === row,
+    );
+    const rowIdentityMarker = ownedCells.length
+      ? noteContext.paragraphIdentityPatches.rowMarker(row)
+      : null;
+    const cells: InstanceType<typeof docx.TableCell>[] = [];
+    for (const [cellIndex, cell] of ownedCells.entries()) {
+      if (noteContext.tableFloatPart === 'document') {
+        noteContext.cellFormattingChangePatches.record(
+          cell,
+          docxRevisionId(cell, noteContext),
+        );
+        noteContext.tablePropertyRevisionPatches.recordCell(cell);
+      }
+      const children: Array<
+        InstanceType<typeof docx.Paragraph> | InstanceType<typeof docx.Table>
+      > = [];
+      if (cellIndex === 0 && rowIdentityMarker) {
+        children.push(
+          new docx.Paragraph({
+            children: [new docx.TextRun(rowIdentityMarker)],
+          }),
+        );
+      }
+      const blocks = Array.from(cell.children);
+      if (blocks.length) {
+        for (const block of blocks) {
+          for (const child of await blockToFileChildren(
+            block as HTMLElement,
+            docx,
+            noteContext,
+          )) {
+            if (
+              child instanceof docx.Paragraph ||
+              child instanceof docx.Table
+            ) {
+              children.push(child);
+            }
+          }
+        }
+      } else {
+        children.push(
+          new docx.Paragraph({
+            children: await inlineRuns(cell, docx, noteContext),
+            ...paragraphDirectionOptions(cell),
+          }),
+        );
+      }
+      cells.push(
+        new docx.TableCell({
+          children: children.length ? children : [new docx.Paragraph('')],
+          columnSpan: cell.colSpan > 1 ? cell.colSpan : undefined,
+          rowSpan: cell.rowSpan > 1 ? cell.rowSpan : undefined,
+          ...documentTableCellDocxOptions(cell, docx, noteContext.themePatches),
+          ...documentTableCellSizingDocxOptions(cell, docx),
+        }),
+      );
+    }
+    const explicitHeader = dataBoolean(row.dataset.officeRepeatHeader);
+    const inferredHeader =
+      inferLeadingHeader &&
+      ownedCells.length > 0 &&
+      ownedCells.every((cell) => cell.tagName.toLowerCase() === 'th');
+    const tableHeader = explicitHeader ?? inferredHeader;
+    if (!tableHeader) inferLeadingHeader = false;
+    rows.push(
+      new docx.TableRow({
+        children: cells,
+        cantSplit: dataBoolean(row.dataset.officeCantSplit),
+        tableHeader: tableHeader ? true : undefined,
+        ...documentTableRowSizingDocxOptions(row, docx),
+      }),
+    );
+  }
+  return new docx.Table({
+    rows,
+    ...documentTableSizingDocxOptions(element, docx),
+  });
+}
+
+async function createNoteRecords(
+  notes: WorkDocumentNote[],
+  kind: WorkDocumentNoteKind,
+  docx: typeof import('docx'),
+  noteContext: DocxNoteContext,
+): Promise<
+  Record<string, { children: InstanceType<typeof docx.Paragraph>[] }>
+> {
+  const records: Record<
+    string,
+    { children: InstanceType<typeof docx.Paragraph>[] }
+  > = {};
+  for (const note of notes) {
+    if (note.kind !== kind) continue;
+    const id = noteContext.ids.get(documentNoteKey(note.kind, note.id));
+    if (id === undefined) continue;
+    records[String(id)] = {
+      children: await noteBlocks(note.html, docx, noteContext),
+    };
+  }
+  return records;
+}
+
+async function noteBlocks(
+  html: string,
+  docx: typeof import('docx'),
+  noteContext: DocxNoteContext,
+): Promise<InstanceType<typeof docx.Paragraph>[]> {
+  const blocks = await pageChromeBlocks(html, docx, noteContext);
+  if (!(blocks[0] instanceof docx.Paragraph)) {
+    blocks.unshift(new docx.Paragraph(''));
+  }
+  // The upstream type narrows note children to Paragraph even though Word's
+  // block-content model and the serializer accept Table after the leading
+  // reference paragraph.
+  return blocks as InstanceType<typeof docx.Paragraph>[];
+}

@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/opt/homebrew/bin/python3.13",
+    "/Users/roylin/code/aster/docs/evidence/studio/2026-10-19-t01-deepseek-flash/oracle/evaluate.py",
+    "--pipeline",
+    "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/runs/t023-v3-hc-01/submission/pipeline.py",
+    "--input",
+    "/Users/roylin/code/tasks/T01/input",
+    "--report",
+    "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/process/t023-v3-hc-01-oracle.json"
+  ],
+  "exit_code": 1,
+  "wall_seconds": 0.8276873750146478,
+  "started_at_utc": "2026-10-19T19:41:31.705076+00:00",
+  "ended_at_utc": "2026-10-19T19:41:32.532769+00:00"
+}

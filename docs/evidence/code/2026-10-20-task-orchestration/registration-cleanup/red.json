@@ -1,0 +1,20 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-code-acp",
+    "--lib",
+    "agent::registration_cleanup_tests::native_registration_failure_closes_and_settles_the_open_session",
+    "--",
+    "--exact",
+    "--nocapture",
+    "--test-threads=1"
+  ],
+  "cwd": "/Users/roylin/code/aster",
+  "utc": "2026-10-19T16:51:13.274737+00:00",
+  "exitCode": 101,
+  "wallSeconds": 20.67940575
+}

@@ -1,0 +1,5 @@
+{
+  "apps/work/src/renderer/shell/studioMainBridge.js": "8ba1f5459fbc37d12b8f009caead6f905864ffcebbdff5f0fb43f2a675485d9a",
+  "apps/work/src/renderer/shell/studioMainBridgeFileSelect.test.ts": "9260a65f4aecbdf93a29a3e18b9dc9897e9c915268e48ecedeca67487990127e",
+  "apps/work/src/renderer/pages/agents/__tests__/WorkbenchComposerAttachmentPipeline.test.tsx": "1e0ad824d482a471dc837a98e0fef363880f72762e7585363f2b533509917603"
+}

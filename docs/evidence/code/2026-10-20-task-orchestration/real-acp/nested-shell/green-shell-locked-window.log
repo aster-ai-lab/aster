@@ -1,0 +1,68 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 21.66s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 42 tests
+test harness_loop::shell_diagnostic_tests::shell_gate_advice_uses_a_present_exact_file_instead_of_a_deleted_suffix_alias ... ok
+test permissions::shell::tests::a_quoted_heredoc_body_is_data_unless_a_shell_reads_it ... ok
+test permissions::tests::catastrophic_bash_classifier_is_independent_from_conservative_shell_syntax ... ok
+test permissions::tests::interactive_guardrail_rejects_silent_shell_escape_regressions ... ok
+test harness_loop::shell_diagnostic_tests::a_closed_wrapper_window_is_rechecked_after_a_sibling_restores_the_same_digest ... ok
+test permissions::tests::workspace_boundary_leaves_shell_globs_for_interactive_review ... ok
+test shell_session::tests::cd_is_visible_in_the_same_session_and_not_in_another ... ok
+test harness_loop::shell_diagnostic_tests::serialized_or_forged_checkpoint_fields_cannot_restore_private_shell_authority ... ok
+test shell_session::tests::soak_rooted_shell_keeps_cwd_inside_one_hundred_commands ... ignored, S-WT-01 rooted shell soak
+test shell_session::tests::cancel_kills_detached_jobs_in_the_session ... ok
+test harness_loop::shell_diagnostic_tests::shell_proof_authority_is_bounded_by_existing_command_and_effect_limits ... ok
+test shell_session::tests::detached_job_outlives_the_return_and_can_be_polled_and_killed ... ok
+test shell_session::tests::transcript_omits_secret_env ... ok
+test tools::builtin::bash::tests::shell_admission_denies_when_run_checker_denies ... ok
+test tools::builtin::bash::tests::prefix_session_cwd_quotes_shell_metacharacters_in_the_cwd ... ok
+test tools::builtin::bash::tests::windows_host_shell_prefers_powershell_7_then_the_builtin_windows_powershell ... ok
+test tools::builtin::bash::tests::unsupported_job_action_requires_bound_shell_session ... ok
+test tools::builtin::bash::tests::windows_shell_guidance_names_the_real_shell_and_its_chaining_rules ... ok
+test verification::tests::acceptance_subject_helpers_recognize_passing_shell_acceptance ... ok
+test verification::tests::bind_host_shell_reports_to_mutations_sets_effect_digest_for_matching_path ... ok
+test verification::tests::merge_shell_verification_metadata_without_workspace_keeps_shell_command_only ... ok
+test verification::tests::normalize_shell_command_and_preset_coverage_handle_semicolons_and_empty ... ok
+test verification::tests::merge_shell_verification_metadata_attaches_rust_preset_report ... ok
+test verification::tests::shell_command_covers_preset_matches_exact_and_trailing_args ... ok
+test verification::tests::shell_verification_report_attaches_for_workspace_preset_commands ... ok
+test verification::tests::shell_verification_report_attaches_for_goal_acceptance_commands ... ok
+test harness_loop::shell_diagnostic_tests::shell_proof_requires_a_complete_successful_exact_parent_and_current_effect_identity ... ok
+Initialized empty Git repository in /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpCu14rN/.git/
+test shell_session::tests::command_overlay_does_not_cross_sessions_that_share_a_cwd ... ok
+test shell_session::tests::timeout_leaves_no_child_process ... ok
+[main (root-commit) a3ca10f] init
+ 1 file changed, 1 insertion(+)
+ create mode 100644 README.md
+test agent_api::tests::persistence::test_verify_commands_builds_report_from_shell_results ... ok
+test effect_isolation::tests::isolation_shell_cd_does_not_leave_the_worktree ... ok
+test fact_control::receipts::tests::pre_spawn::a_shell_that_never_starts_does_not_block_a_later_tool ... ok
+test agent_api::tests::fact_log::nested_shell_verification::same_bytes_in_a_different_directory_do_not_prove_the_mutated_path ... ok
+test agent_api::tests::fact_log::nested_shell_verification::failed_parent_cannot_promote_its_earlier_successful_nested_shell_check ... ok
+test agent_api::tests::fact_log::nested_shell_verification::a_concurrent_mutator_cannot_hide_behind_a_later_checker_return ... ok
+test agent_api::tests::fact_log::nested_shell_verification::a_later_formal_check_can_recover_the_current_failed_effect_without_erasing_its_receipt ... ok
+test agent_api::tests::fact_log::nested_shell_verification::script_results_and_non_bash_metadata_cannot_manufacture_a_private_shell_proof ... ok
+test agent_api::tests::fact_log::nested_shell_verification::a_later_parent_write_cannot_reuse_a_previously_bound_program_report ... ok
+test agent_api::tests::fact_log::nested_shell_verification::nested_wrappers_preserve_serial_proofs_but_cannot_rebase_a_nonexclusive_window ... ok
+test agent_api::tests::fact_log::nested_shell_verification::direct_and_program_formal_bash_checks_bind_the_actual_parent_effect ... ok
+test agent_api::tests::fact_log::nested_shell_verification::a_write_after_the_check_invalidates_the_private_proof_for_any_path ... ok
+test tools::builtin::bash::tests::test_dropping_bash_execution_kills_shell_before_later_side_effects ... ok
+
+test result: ok. 41 passed; 0 failed; 1 ignored; 0 measured; 5137 filtered out; finished in 9.15s
+

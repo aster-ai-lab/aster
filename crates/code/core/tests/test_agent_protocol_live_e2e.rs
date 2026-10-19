@@ -124,6 +124,7 @@ fn start_command(
                 run_id: run_id.into(),
             },
             prompt: prompt.into(),
+            models: None,
         },
     }
 }

@@ -1,0 +1,470 @@
+{
+  "schema": "aster.orchestration-final-build.v1",
+  "started_at_utc": "2026-10-19T17:46:54.928619+00:00",
+  "environment_overrides": {
+    "RUSTUP_TOOLCHAIN": "1.97.1",
+    "CARGO_NET_OFFLINE": "true"
+  },
+  "target_directory": "/Users/roylin/code/aster/target",
+  "source_before_ref": "source-before.json",
+  "format_refs": [
+    "format-checks.json",
+    "format-checks-correct-edition.json"
+  ],
+  "steps": [
+    {
+      "name": "paired-cli-companions",
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "--offline",
+        "-p",
+        "aster",
+        "-p",
+        "a3s-code-acp",
+        "-p",
+        "a3s-office-cli"
+      ],
+      "started_at_utc": "2026-10-19T17:46:54.928797+00:00",
+      "state": "complete",
+      "ended_at_utc": "2026-10-19T17:49:48.170674+00:00",
+      "duration_seconds": 173.242589,
+      "exit_code": 0,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/final-build/paired-cli-companions.log",
+      "binary_snapshots": {
+        "aster": {
+          "path": "/Users/roylin/code/aster/target/debug/aster",
+          "bytes": 809166616,
+          "mtime_ns": 1792432188042861287,
+          "sha256": "963d310f26c2ae3ad24de558196183b778ec34daeffd0d016b04f7076b837e4a"
+        },
+        "a3s-code-acp": {
+          "path": "/Users/roylin/code/aster/target/debug/a3s-code-acp",
+          "bytes": 325130368,
+          "mtime_ns": 1792432076294380078,
+          "sha256": "105695fcee1eccfb7d79d2f8479c7a8a7148af70d322137c2805cfb5df6a8ef5"
+        },
+        "aster-dream": {
+          "path": "/Users/roylin/code/aster/target/debug/aster-dream",
+          "bytes": 178620672,
+          "mtime_ns": 1792429525048041306,
+          "sha256": "caa276a58da96d9660ca9b43d8e6a77ec909518afeed23da2c6ae337687b5810"
+        },
+        "a3s-office-cli": {
+          "path": "/Users/roylin/code/aster/target/debug/a3s-office",
+          "bytes": 137516568,
+          "mtime_ns": 1792428907926986070,
+          "sha256": "9ab8e55137f13360df591b4ca7fca7c64cc6313d6ac470049a3df14d7e72f6c1"
+        }
+      }
+    },
+    {
+      "name": "build-work",
+      "command": [
+        "just",
+        "build-work"
+      ],
+      "started_at_utc": "2026-10-19T17:49:48.754837+00:00",
+      "state": "complete",
+      "ended_at_utc": "2026-10-19T17:50:37.848682+00:00",
+      "duration_seconds": 49.094009,
+      "exit_code": 0,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/final-build/build-work.log",
+      "binary_snapshots": {
+        "aster": {
+          "path": "/Users/roylin/code/aster/target/debug/aster",
+          "bytes": 809166616,
+          "mtime_ns": 1792432188042861287,
+          "sha256": "963d310f26c2ae3ad24de558196183b778ec34daeffd0d016b04f7076b837e4a"
+        },
+        "a3s-code-acp": {
+          "path": "/Users/roylin/code/aster/target/debug/a3s-code-acp",
+          "bytes": 323390496,
+          "mtime_ns": 1792432228563512590,
+          "sha256": "fa611e2fe6404208d509fe1885e7f26cf346e169bffb88722b39bddc414fae08"
+        },
+        "aster-dream": {
+          "path": "/Users/roylin/code/aster/target/debug/aster-dream",
+          "bytes": 178620672,
+          "mtime_ns": 1792432237761552363,
+          "sha256": "224dafa1a87ab921ae8bc4ee8f07b090538189ac554d39e52f3809353ffef29a"
+        },
+        "a3s-office-cli": {
+          "path": "/Users/roylin/code/aster/target/debug/a3s-office",
+          "bytes": 135876984,
+          "mtime_ns": 1792429475568033755,
+          "sha256": "652d0f04943e4c0c0c0c42dc8c3ffb855bb7fdc0e7740b492733a1a0157af1af"
+        }
+      }
+    },
+    {
+      "name": "real-llm-test-no-run",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "-p",
+        "a3s-code-core",
+        "--features",
+        "advanced-harness",
+        "--test",
+        "test_extensibility_real_llm",
+        "--no-run",
+        "--message-format=json-render-diagnostics"
+      ],
+      "started_at_utc": "2026-10-19T17:50:38.423436+00:00",
+      "state": "complete",
+      "ended_at_utc": "2026-10-19T17:50:54.816560+00:00",
+      "duration_seconds": 16.393106,
+      "exit_code": 0,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/final-build/real-llm-test-no-run.log",
+      "binary_snapshots": {
+        "aster": {
+          "path": "/Users/roylin/code/aster/target/debug/aster",
+          "bytes": 809166616,
+          "mtime_ns": 1792432188042861287,
+          "sha256": "963d310f26c2ae3ad24de558196183b778ec34daeffd0d016b04f7076b837e4a"
+        },
+        "a3s-code-acp": {
+          "path": "/Users/roylin/code/aster/target/debug/a3s-code-acp",
+          "bytes": 323390496,
+          "mtime_ns": 1792432228563512590,
+          "sha256": "fa611e2fe6404208d509fe1885e7f26cf346e169bffb88722b39bddc414fae08"
+        },
+        "aster-dream": {
+          "path": "/Users/roylin/code/aster/target/debug/aster-dream",
+          "bytes": 178620672,
+          "mtime_ns": 1792432237761552363,
+          "sha256": "224dafa1a87ab921ae8bc4ee8f07b090538189ac554d39e52f3809353ffef29a"
+        },
+        "a3s-office-cli": {
+          "path": "/Users/roylin/code/aster/target/debug/a3s-office",
+          "bytes": 135876984,
+          "mtime_ns": 1792429475568033755,
+          "sha256": "652d0f04943e4c0c0c0c42dc8c3ffb855bb7fdc0e7740b492733a1a0157af1af"
+        }
+      },
+      "authoritative_test_executables": [
+        {
+          "cargo_target": "test_extensibility_real_llm",
+          "profile_test": true,
+          "features": [
+            "a3s-vec-fts",
+            "advanced-harness",
+            "default",
+            "dynamic-workflow",
+            "evaluation",
+            "grep-trigram",
+            "local-code",
+            "research",
+            "state-graph",
+            "web-fetch-pdf"
+          ],
+          "path": "/Users/roylin/code/aster/target/debug/deps/test_extensibility_real_llm-d4219b08e7cc2f51",
+          "bytes": 219685024,
+          "mtime_ns": 1792432254746092523,
+          "sha256": "fa8dea5c20ea447352ec72d228462adedd5e0ba56738a6d870e9eced4c8a8165"
+        }
+      ]
+    }
+  ],
+  "real_model_or_vm_executed": false,
+  "ended_at_utc": "2026-10-19T17:50:55.488871+00:00",
+  "completed": true,
+  "source_after": [
+    {
+      "path": "crates/code/core/src/tools/presentation.rs",
+      "before_sha256": "44f7bba4eb0d3093aa4850b716a64335d235dd90ab7195de0f8af8d9d9677565",
+      "after_sha256": "44f7bba4eb0d3093aa4850b716a64335d235dd90ab7195de0f8af8d9d9677565",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/tools/presentation_tests.rs",
+      "before_sha256": "4a95f060dae40a9b38e354f3c49091e5ca4892719c2fc698cf84fb1916860345",
+      "after_sha256": "4a95f060dae40a9b38e354f3c49091e5ca4892719c2fc698cf84fb1916860345",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/tools/program_tool.rs",
+      "before_sha256": "4715cc5dce76196c10c16a4632ba9c6c938f68e073c821d27b4e3e124e8e258c",
+      "after_sha256": "4715cc5dce76196c10c16a4632ba9c6c938f68e073c821d27b4e3e124e8e258c",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/tools/program_tool/tests.rs",
+      "before_sha256": "1fef19502e213d197d4e2be16231c3c4048a5f5eb8034ec6ea0cc1ed51004955",
+      "after_sha256": "1fef19502e213d197d4e2be16231c3c4048a5f5eb8034ec6ea0cc1ed51004955",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log/nested_governance.rs",
+      "before_sha256": "e60f8aa815a462ced107c6bb17d136a93e3b31af43fe2bcf9820d0a783f80dbe",
+      "after_sha256": "e60f8aa815a462ced107c6bb17d136a93e3b31af43fe2bcf9820d0a783f80dbe",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/agent/llm_invoker/fact_governance.rs",
+      "before_sha256": "3a741a980a7cf87702f297ad2dcd3f1995adfca582747c7257fc7f9cf43821c6",
+      "after_sha256": "3a741a980a7cf87702f297ad2dcd3f1995adfca582747c7257fc7f9cf43821c6",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/agent/llm_invoker/fact_governance/tests.rs",
+      "before_sha256": "4246b029ce699a88af489bff90b811bbae239cbd0df2ae6b1d02e5178c7b8e11",
+      "after_sha256": "4246b029ce699a88af489bff90b811bbae239cbd0df2ae6b1d02e5178c7b8e11",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/fact_control/model_call.rs",
+      "before_sha256": "dc984e1b0c71fd16dc5fb8053fe59ecb40068cf174e82de7371a03c97f685c9e",
+      "after_sha256": "dc984e1b0c71fd16dc5fb8053fe59ecb40068cf174e82de7371a03c97f685c9e",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/agent/llm_invoker.rs",
+      "before_sha256": "44d6965085a3e1fea3bf054c82025300b76f877056bcfc47922b98f212f6571f",
+      "after_sha256": "44d6965085a3e1fea3bf054c82025300b76f877056bcfc47922b98f212f6571f",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/tests/test_extensibility_real_llm.rs",
+      "before_sha256": "64e762fb922912ed8b498c55e498d22984a28637785b98ea0b7aa7d1bd68b096",
+      "after_sha256": "64e762fb922912ed8b498c55e498d22984a28637785b98ea0b7aa7d1bd68b096",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/tests/extensibility/metrics.rs",
+      "before_sha256": "5f77e52a67dd8ee682c2c8196eceec5fcba197da59c440460d3a7476b4f37bc4",
+      "after_sha256": "5f77e52a67dd8ee682c2c8196eceec5fcba197da59c440460d3a7476b4f37bc4",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/harness_loop.rs",
+      "before_sha256": "4e4f031ebf183678f5e29ffd7ef49c7021eb26aa81d5924c93a2f4e477ffdef2",
+      "after_sha256": "4e4f031ebf183678f5e29ffd7ef49c7021eb26aa81d5924c93a2f4e477ffdef2",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/completion_attestor.rs",
+      "before_sha256": "b6cb8f6e9d512b25f350630eb35ec5588e127f76852516e9552704f18694a56f",
+      "after_sha256": "b6cb8f6e9d512b25f350630eb35ec5588e127f76852516e9552704f18694a56f",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/completion_attestor_failure_tests.rs",
+      "before_sha256": "234de49cc5fa2d0f041eefb512132792e4a18de28e31f3b7839700e77fd1d7ff",
+      "after_sha256": "234de49cc5fa2d0f041eefb512132792e4a18de28e31f3b7839700e77fd1d7ff",
+      "matched": true
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/local_acp_delivery_tests.rs",
+      "before_sha256": "6f342522869464c9005ce9d91f53d065413e4bef0196acbd3103fce39e77df91",
+      "after_sha256": "6f342522869464c9005ce9d91f53d065413e4bef0196acbd3103fce39e77df91",
+      "matched": true
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/local_acp_program_tests.rs",
+      "before_sha256": "fc8e4c629461f48547a59efc18e2f8c88903b0e61f1665701094a4292f0c6bc3",
+      "after_sha256": "fc8e4c629461f48547a59efc18e2f8c88903b0e61f1665701094a4292f0c6bc3",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/agent/llm_turn.rs",
+      "before_sha256": "9b384b5195637afec7d81fb14b7b5ace647b315e7e9adbcda21624e47a7df639",
+      "after_sha256": "9b384b5195637afec7d81fb14b7b5ace647b315e7e9adbcda21624e47a7df639",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/agent_api/direct_tools/governed_tests.rs",
+      "before_sha256": "8929bbbd7dc760b6ffe080f1f369ce88d3f8ed9d4808d221c9949c4d4f260747",
+      "after_sha256": "8929bbbd7dc760b6ffe080f1f369ce88d3f8ed9d4808d221c9949c4d4f260747",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/tools/builtin/code_intelligence/tests.rs",
+      "before_sha256": "c6fe2d22c3a3b80f374f183917233989ca53039407e167e0cd1449db711010f8",
+      "after_sha256": "c6fe2d22c3a3b80f374f183917233989ca53039407e167e0cd1449db711010f8",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/tools/builtin/code_intelligence/real_lsp_tests.rs",
+      "before_sha256": "108d561cc171ee9624d40443b8b78cf247bc6419cd32d4551b1b266492fb286b",
+      "after_sha256": "108d561cc171ee9624d40443b8b78cf247bc6419cd32d4551b1b266492fb286b",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/code_intelligence/language_profile.rs",
+      "before_sha256": "53c02d35b0f34e092907f9df0fc52e41e14c7e066c20ecc29a78b7458779625b",
+      "after_sha256": "53c02d35b0f34e092907f9df0fc52e41e14c7e066c20ecc29a78b7458779625b",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/code_intelligence/lsp/initialize.rs",
+      "before_sha256": "3efbf894ac8f0f4ebbea93d39a015c5b9cf30fb6cce75865ce2e0a50f35abcb1",
+      "after_sha256": "3efbf894ac8f0f4ebbea93d39a015c5b9cf30fb6cce75865ce2e0a50f35abcb1",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/code_intelligence/language_runtime.rs",
+      "before_sha256": "154ce79beeb93f1449f26e004ecef50abe83bd36eace257a93d1c02f94d535fc",
+      "after_sha256": "154ce79beeb93f1449f26e004ecef50abe83bd36eace257a93d1c02f94d535fc",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/code_intelligence/language_runtime/readiness.rs",
+      "before_sha256": "85ee1cde0195b1f7338e2b705feda5e68265846b8c7c867207cbb252c96dbaa0",
+      "after_sha256": "85ee1cde0195b1f7338e2b705feda5e68265846b8c7c867207cbb252c96dbaa0",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/code_intelligence/language_runtime/readiness_integration_tests.rs",
+      "before_sha256": "0093b00106c0004dcaf411ddd7ea817d083c4d8d1beca23dfa37108c180118bb",
+      "after_sha256": "0093b00106c0004dcaf411ddd7ea817d083c4d8d1beca23dfa37108c180118bb",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/code_intelligence/language_runtime/protocol.rs",
+      "before_sha256": "3818b9673d82d332bd840e1af5f903d7800bc35b65ff2f9b3644ed02ca25065a",
+      "after_sha256": "3818b9673d82d332bd840e1af5f903d7800bc35b65ff2f9b3644ed02ca25065a",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/code_intelligence/language_runtime/diagnostic_runtime.rs",
+      "before_sha256": "f4e736985958c8c280e260c22b48752c2000309ec24ec202df6e608e689500da",
+      "after_sha256": "f4e736985958c8c280e260c22b48752c2000309ec24ec202df6e608e689500da",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/code_intelligence/workspace_runtime/support.rs",
+      "before_sha256": "1f00c0979ecc8d55852db0eca5c16c8e1537edf1d2dabda77ab504981c537e4a",
+      "after_sha256": "1f00c0979ecc8d55852db0eca5c16c8e1537edf1d2dabda77ab504981c537e4a",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/code_intelligence/lsp/process.rs",
+      "before_sha256": "d4ab5914bc3fad3e35e0b99255d39e9509b6b66b71c157aeded9a0ec9b3126d0",
+      "after_sha256": "d4ab5914bc3fad3e35e0b99255d39e9509b6b66b71c157aeded9a0ec9b3126d0",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/code_intelligence/lsp/process/test_trace.rs",
+      "before_sha256": "88845475c777d35a00e15b14a6b8b393b3afda40c9925735fe8ce1937863c033",
+      "after_sha256": "88845475c777d35a00e15b14a6b8b393b3afda40c9925735fe8ce1937863c033",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/tests/fixtures/code_intelligence_fake_lsp.rs",
+      "before_sha256": "a263d8c03d1f1a4142cc0e75c6ab26f430819bc862a493094970071250dd4481",
+      "after_sha256": "a263d8c03d1f1a4142cc0e75c6ab26f430819bc862a493094970071250dd4481",
+      "matched": true
+    },
+    {
+      "path": "crates/bge/src/embedding.rs",
+      "before_sha256": "39eaa69d3aca9d56bad75fd757981a8698cbe175f7c547e4f8029eb8fd007b92",
+      "after_sha256": "39eaa69d3aca9d56bad75fd757981a8698cbe175f7c547e4f8029eb8fd007b92",
+      "matched": true
+    },
+    {
+      "path": "crates/bge/src/embedding_tests.rs",
+      "before_sha256": "cf3362801dfcc5808925cc0774a21434e3a437e9d441386e4fe5936a20469c77",
+      "after_sha256": "cf3362801dfcc5808925cc0774a21434e3a437e9d441386e4fe5936a20469c77",
+      "matched": true
+    },
+    {
+      "path": "crates/code/acp/src/agent/local_embedding.rs",
+      "before_sha256": "97774106c37a2518f991a7ab0a59db4dc01ccf49bc311c64d7a027e1e202ab9b",
+      "after_sha256": "97774106c37a2518f991a7ab0a59db4dc01ccf49bc311c64d7a027e1e202ab9b",
+      "matched": true
+    },
+    {
+      "path": "crates/code/acp/src/agent/local_embedding_tests.rs",
+      "before_sha256": "12cb7b73814ac0a7791a4ceb718d452ae2aa93cea1e95700bb7a48210233b543",
+      "after_sha256": "12cb7b73814ac0a7791a4ceb718d452ae2aa93cea1e95700bb7a48210233b543",
+      "matched": true
+    },
+    {
+      "path": "Cargo.toml",
+      "before_sha256": "ebffee14b804bb952e2781c87780ceb50face6c808a0f061867ab80c05d8f807",
+      "after_sha256": "ebffee14b804bb952e2781c87780ceb50face6c808a0f061867ab80c05d8f807",
+      "matched": true
+    },
+    {
+      "path": "Cargo.lock",
+      "before_sha256": "66b5513f12803ea4e651fda88b47456f9bf8c07cd9db35f162fe6eacd45a80ef",
+      "after_sha256": "66b5513f12803ea4e651fda88b47456f9bf8c07cd9db35f162fe6eacd45a80ef",
+      "matched": true
+    },
+    {
+      "path": "rust-toolchain.toml",
+      "before_sha256": "279d77167cec5426fa80f457cd066dc74a360fbe4e2816f4f3fa01487a918fdc",
+      "after_sha256": "279d77167cec5426fa80f457cd066dc74a360fbe4e2816f4f3fa01487a918fdc",
+      "matched": true
+    },
+    {
+      "path": "justfile",
+      "before_sha256": "c7bd7f9fb437b9aeb81b1b62808377bc59e71dafd0a8e5f32dad012d9488e31c",
+      "after_sha256": "c7bd7f9fb437b9aeb81b1b62808377bc59e71dafd0a8e5f32dad012d9488e31c",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/Cargo.toml",
+      "before_sha256": "e4564c3d53cf423eae13695827f0a75549f9d1131c806e62483115f93aec9611",
+      "after_sha256": "e4564c3d53cf423eae13695827f0a75549f9d1131c806e62483115f93aec9611",
+      "matched": true
+    },
+    {
+      "path": "crates/code/acp/Cargo.toml",
+      "before_sha256": "4ccbb9c5de9e078f376a854942100cf8069a5469e0dbd1092541857a4bc0c1d5",
+      "after_sha256": "4ccbb9c5de9e078f376a854942100cf8069a5469e0dbd1092541857a4bc0c1d5",
+      "matched": true
+    },
+    {
+      "path": "crates/bge/Cargo.toml",
+      "before_sha256": "a5abef929317dca03466f3ea6fcdb356afcdff7b1a42942b63a56bb52fc99a95",
+      "after_sha256": "a5abef929317dca03466f3ea6fcdb356afcdff7b1a42942b63a56bb52fc99a95",
+      "matched": true
+    },
+    {
+      "path": "apps/aster/Cargo.toml",
+      "before_sha256": "4150ca421b11e416b9f061a35b4391d4f193f1c6ca5db756cf2288500b033ff7",
+      "after_sha256": "4150ca421b11e416b9f061a35b4391d4f193f1c6ca5db756cf2288500b033ff7",
+      "matched": true
+    },
+    {
+      "path": "apps/work/src-tauri/Cargo.toml",
+      "before_sha256": "cb22b9244d4d3be92b10ca18b7dc4596e2110b8817b6fa32aed0e38f45231442",
+      "after_sha256": "cb22b9244d4d3be92b10ca18b7dc4596e2110b8817b6fa32aed0e38f45231442",
+      "matched": true
+    }
+  ],
+  "all_frozen_source_unchanged": true,
+  "final_binaries": {
+    "aster": {
+      "path": "/Users/roylin/code/aster/target/debug/aster",
+      "bytes": 809166616,
+      "mtime_ns": 1792432188042861287,
+      "sha256": "963d310f26c2ae3ad24de558196183b778ec34daeffd0d016b04f7076b837e4a"
+    },
+    "a3s-code-acp": {
+      "path": "/Users/roylin/code/aster/target/debug/a3s-code-acp",
+      "bytes": 323390496,
+      "mtime_ns": 1792432228563512590,
+      "sha256": "fa611e2fe6404208d509fe1885e7f26cf346e169bffb88722b39bddc414fae08"
+    },
+    "aster-dream": {
+      "path": "/Users/roylin/code/aster/target/debug/aster-dream",
+      "bytes": 178620672,
+      "mtime_ns": 1792432237761552363,
+      "sha256": "224dafa1a87ab921ae8bc4ee8f07b090538189ac554d39e52f3809353ffef29a"
+    },
+    "a3s-office-cli": {
+      "path": "/Users/roylin/code/aster/target/debug/a3s-office",
+      "bytes": 135876984,
+      "mtime_ns": 1792429475568033755,
+      "sha256": "652d0f04943e4c0c0c0c42dc8c3ffb855bb7fdc0e7740b492733a1a0157af1af"
+    }
+  },
+  "queue_released": true
+}

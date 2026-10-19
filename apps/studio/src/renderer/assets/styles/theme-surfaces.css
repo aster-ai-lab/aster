@@ -1,0 +1,313 @@
+/* Solid page color. The shared dark token is 55% opaque, so bg-background never reads as a page. */
+.dark {
+  --cs-background: #111112;
+  --background: #111112;
+  --cs-foreground: #f2f2f3;
+  --foreground: #f2f2f3;
+  --cs-card: #171717;
+  --card: #171717;
+  --cs-card-foreground: #f2f2f3;
+  --card-foreground: #f2f2f3;
+  --cs-popover: #1a1a1a;
+  --popover: #1a1a1a;
+  --cs-popover-foreground: #f2f2f3;
+  --popover-foreground: #f2f2f3;
+  --cs-muted: #2c2c2c;
+  --muted: #2c2c2c;
+  --cs-muted-foreground: #8b8b90;
+  --muted-foreground: #8b8b90;
+  --cs-accent: #2c2c2c;
+  --accent: #2c2c2c;
+  --cs-accent-foreground: #f5f5f5;
+  --accent-foreground: #f5f5f5;
+  --cs-secondary: #2c2c2c;
+  --secondary: #2c2c2c;
+  --cs-secondary-foreground: #f2f2f3;
+  --secondary-foreground: #f2f2f3;
+  --cs-border: #2a2a2c;
+  --border: #2a2a2c;
+  --cs-input: #2c2c2c;
+  --input: #2c2c2c;
+  --cs-sidebar: #171717;
+  --sidebar: #171717;
+  --cs-sidebar-foreground: #f2f2f3;
+  --sidebar-foreground: #f2f2f3;
+  --background-subtle: #1a1a1a;
+  --foreground-tertiary: #8b8b90;
+  --border-subtle: #2a2a2c;
+  --border-strong: #3a3a3a;
+}
+
+/* Authored light utilities. Samples keep their own inline colors. */
+.dark .bg-white,
+.dark .bg-\[\#fff\],
+.dark .bg-\[\#ffffff\] {
+  background-color: var(--color-bg-elevated);
+}
+
+.dark .bg-\[\#f3f3f3\],
+.dark .bg-\[\#f4f4f5\],
+.dark .bg-\[\#f4f5f7\],
+.dark .bg-\[\#f5f5f5\],
+.dark .bg-\[\#f5f5f7\],
+.dark .bg-\[\#f6f6f6\],
+.dark .bg-\[\#f7f7f7\],
+.dark .bg-\[\#f8f8f8\],
+.dark .bg-\[\#fafafa\],
+.dark .bg-\[\#fafbfc\],
+.dark .bg-\[\#f2f3f5\] {
+  background-color: var(--color-control-fill);
+}
+
+.dark .bg-\[\#e6e6e6\],
+.dark .bg-\[\#e6e7ee\],
+.dark .bg-\[\#ececec\],
+.dark .bg-\[\#eef0f3\],
+.dark .bg-\[\#efefef\] {
+  background-color: var(--color-control-fill-hover);
+}
+
+.dark .bg-\[\#171717\],
+.dark .bg-\[\#1a1a1a\],
+.dark .bg-\[\#3a3a3a\] {
+  background-color: #f5f5f5;
+  color: #111112;
+}
+
+.dark .bg-\[\#d0d0d0\] {
+  background-color: #3a3a3a;
+}
+
+.dark .text-\[\#111\],
+.dark .text-\[\#111111\],
+.dark .text-\[\#171717\],
+.dark .text-\[\#1a1a1a\],
+.dark .text-\[\#1c1c1c\],
+.dark .text-\[\#222\],
+.dark .text-\[\#0a0a0a\] {
+  color: var(--color-ink);
+}
+
+.dark .text-\[\#3d3d3d\],
+.dark .text-\[\#3f3f3f\],
+.dark .text-\[\#60646c\],
+.dark .text-\[\#666\],
+.dark .text-\[\#666666\],
+.dark .text-\[\#6f6f6f\] {
+  color: var(--color-ink-muted);
+}
+
+.dark .text-\[\#8a8a8a\],
+.dark .text-\[\#8b8b8b\],
+.dark .text-\[\#999\],
+.dark .text-\[\#999999\],
+.dark .text-\[\#9a9a9a\],
+.dark .text-\[\#a3a3a3\],
+.dark .text-\[\#b0b0b0\],
+.dark .text-\[\#b5b5b5\],
+.dark .text-\[\#c4c4c4\],
+.dark .text-\[\#c5c5c5\] {
+  color: var(--color-ink-faint);
+}
+
+.dark .border-\[\#e5e5e5\],
+.dark .border-\[\#e6e6e6\],
+.dark .border-\[\#e6e7ee\],
+.dark .border-\[\#e8e8e8\],
+.dark .border-\[\#ebebeb\],
+.dark .border-\[\#ececec\],
+.dark .border-\[\#efefef\],
+.dark .border-\[\#f0f0f0\] {
+  border-color: var(--color-hairline);
+}
+
+.dark .border-\[\#171717\] {
+  border-color: #f5f5f5;
+}
+
+.dark .hover\:bg-white:hover,
+.dark .hover\:bg-\[\#f5f5f5\]:hover,
+.dark .hover\:bg-\[\#f7f7f7\]:hover,
+.dark .hover\:bg-\[\#fafafa\]:hover,
+.dark .hover\:bg-\[\#f2f3f5\]:hover,
+.dark .hover\:bg-\[\#eef0f3\]:hover {
+  background-color: var(--color-control-fill-hover);
+}
+
+.dark .hover\:text-\[\#171717\]:hover,
+.dark .hover\:text-\[\#1a1a1a\]:hover,
+.dark .hover\:text-\[\#666\]:hover {
+  color: var(--color-ink);
+}
+
+.dark .hover\:bg-\[\#171717\]:hover {
+  background-color: #f5f5f5;
+  color: #111112;
+}
+
+.dark .placeholder\:text-\[\#8a8a8a\]::placeholder,
+.dark .placeholder\:text-\[\#9a9a9a\]::placeholder,
+.dark .placeholder\:text-\[\#a3a3a3\]::placeholder,
+.dark .placeholder\:text-\[\#999999\]::placeholder,
+.dark .placeholder\:text-\[\#b0b0b0\]::placeholder,
+.dark .placeholder\:text-\[\#c5c5c5\]::placeholder {
+  color: var(--color-ink-faint);
+}
+
+/* The mark is authored at #303030. Dark pages need the light glyph. */
+html.dark [data-ui='workbench.wordmark.mark'] {
+  stroke: #f5f5f5;
+}
+
+/* Document samples stay paper. The shared white remap must not darken them. */
+.dark [data-ui='workbench.feature-thumb'].bg-white {
+  background-color: #fff;
+  color: #171717;
+}
+
+.dark [data-ui='workbench.feature-thumb'] .bg-\[\#e6e7ee\],
+.dark [data-ui='workbench.feature-thumb'] .bg-\[\#ececec\] {
+  background-color: #e6e7ee;
+}
+
+.dark [data-ui='workbench.feature-thumb'] .text-\[\#123a78\] {
+  color: #123a78;
+}
+
+.dark [data-ui='workbench.feature-thumb'].border-\[\#ececec\],
+.dark [data-ui='workbench.feature-thumb'] .border-\[\#ececec\] {
+  border-color: #ececec;
+}
+
+.dark [data-ui='workbench.feature'] {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
+}
+
+.writing-paper {
+  background: #fff;
+  color: #171717;
+  border-color: #efefef;
+}
+
+.writing-banner {
+  color: #8f1d1d;
+}
+
+.dark .writing-paper,
+.dark .writing-paper.border-\[\#efefef\] {
+  background: #fff;
+  color: #171717;
+  border-color: #efefef;
+}
+
+.writing-switch {
+  position: relative;
+  width: 36px;
+  height: 22px;
+  flex: none;
+  border-radius: 999px;
+  background: #e5e5e5;
+}
+
+.writing-switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: #fff;
+}
+
+.writing-switch[data-on='true'] {
+  background: #171717;
+}
+
+.writing-switch[data-on='true']::after {
+  transform: translateX(14px);
+}
+
+.dark .writing-switch {
+  background: #3a3a3a;
+}
+
+.dark .writing-switch::after {
+  background: #f5f5f5;
+}
+
+.dark .writing-switch[data-on='true'] {
+  background: #f5f5f5;
+}
+
+.dark .writing-switch[data-on='true']::after {
+  background: #111112;
+}
+
+.writing-word-preview {
+  --writing-fit-zoom: 0.78;
+  background: #f4f5f7;
+}
+
+.writing-word-preview > .a3s-office {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+}
+
+.writing-word-preview .work-office-preview-bar,
+.writing-word-preview .work-office-status,
+.writing-word-preview .work-document-ruler-shell {
+  display: none;
+}
+
+.writing-word-preview .work-document-scroll {
+  padding: 4px 4px 8px;
+  background: transparent;
+}
+
+.writing-word-preview .work-document-page-stage {
+  zoom: var(--writing-fit-zoom) !important;
+}
+
+.writing-word-preview .work-document-preview-page {
+  margin-bottom: 8px;
+}
+
+.writing-agent-document {
+  min-height: 0;
+  max-height: 46%;
+  flex: 1 1 auto;
+  margin: 0;
+  overflow: auto;
+  padding: 16px 20px 20px;
+  background: #fff;
+  color: #171717;
+  white-space: pre-wrap;
+  font-family: FangSong, STFangsong, serif;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.writing-agent-caret {
+  display: inline-block;
+  width: 1px;
+  height: 1.05em;
+  margin: 0 1px;
+  background: #171717;
+  vertical-align: text-bottom;
+  animation: writing-agent-caret-blink 1s steps(1) infinite;
+}
+
+@keyframes writing-agent-caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .writing-agent-caret {
+    animation: none;
+  }
+}

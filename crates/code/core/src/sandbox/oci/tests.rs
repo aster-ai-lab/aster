@@ -43,6 +43,50 @@ fn request(
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 #[ignore = "requires signed HVF assets; run explicitly on Apple Silicon"]
+async fn real_command_phase_timing() {
+    let _ = tracing_subscriber::fmt()
+        .with_env_filter("a3s_code_core::sandbox::oci=debug")
+        .with_target(true)
+        .json()
+        .without_time()
+        .with_ansi(false)
+        .try_init()
+        .expect("timing probe requires its own tracing subscriber");
+    let workspace = tempfile::tempdir_in("/private/var/tmp").unwrap();
+    let root = workspace.path().canonicalize().unwrap();
+    let sandbox = OciBashSandbox::from_artifacts(&root, assets()).unwrap();
+    for sample in 0..19 {
+        println!(
+            "OCI_TIMING_BEGIN {}",
+            serde_json::json!({"sample": sample, "timeout_ms": 5_000})
+        );
+        let began = Instant::now();
+        let output = sandbox
+            .exec(request("printf phase-probe".into(), None, 5_000))
+            .await;
+        println!(
+            "OCI_TIMING {}",
+            serde_json::json!({
+                "sample": sample,
+                "total_ms": began.elapsed().as_secs_f64() * 1000.0,
+                "exit_code": output.as_ref().ok().map(|output| output.exit_code),
+                "stdout": output.as_ref().ok().map(|output| &output.stdout),
+                "stderr": output.as_ref().ok().map(|output| &output.stderr),
+                "timed_out": output.as_ref().ok().map(|output| output.timed_out),
+                "error": output.as_ref().err().map(|error| format!("{error:#}")),
+            })
+        );
+        let output = output.expect("timed command must produce a settled receipt");
+        assert_eq!(output.exit_code, 0);
+        assert_eq!(output.stdout, "phase-probe");
+        assert_eq!(output.stderr, "");
+        assert!(!output.timed_out);
+    }
+    sandbox.shutdown().await;
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+#[ignore = "requires signed HVF assets; run explicitly on Apple Silicon"]
 async fn real_bash_streaming_receipt_workspace_and_credential_contract() {
     let directory = tempfile::Builder::new()
         .prefix("aster-中文-\"-\\-")

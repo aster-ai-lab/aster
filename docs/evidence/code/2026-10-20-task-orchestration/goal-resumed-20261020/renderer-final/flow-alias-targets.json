@@ -1,0 +1,86 @@
+[
+  {
+    "specifier": "@a3s-lab/flow-ui/workflow-node-preview",
+    "path": "/Users/roylin/code/aster/crates/flow/packages/ui/src/react/workflow-node-preview.tsx",
+    "exists": true,
+    "kind": "file"
+  },
+  {
+    "specifier": "@a3s-lab/flow-ui/workflow-node.css",
+    "path": "/Users/roylin/code/aster/crates/flow/packages/ui/src/styles/workflow-node.css",
+    "exists": true,
+    "kind": "file"
+  },
+  {
+    "specifier": "@a3s-lab/flow-ui/node.css",
+    "path": "/Users/roylin/code/aster/crates/flow/packages/ui/src/styles/a3s-flow-node.css",
+    "exists": true,
+    "kind": "file"
+  },
+  {
+    "specifier": "@a3s-lab/flow-ui/react",
+    "path": "/Users/roylin/code/aster/crates/flow/packages/ui/src/react.ts",
+    "exists": true,
+    "kind": "file"
+  },
+  {
+    "specifier": "@a3s-lab/flow-ui",
+    "path": "/Users/roylin/code/aster/crates/flow/packages/ui/src/index.ts",
+    "exists": true,
+    "kind": "file"
+  },
+  {
+    "specifier": "@a3s-lab/form/styles.css",
+    "path": "/Users/roylin/code/aster/apps/work/vendor/packages/form/src/styles.css",
+    "exists": true,
+    "kind": "file"
+  },
+  {
+    "specifier": "@a3s-lab/form/core",
+    "path": "/Users/roylin/code/aster/apps/work/vendor/packages/form/src/core.ts",
+    "exists": true,
+    "kind": "file"
+  },
+  {
+    "specifier": "@a3s-lab/form/react",
+    "path": "/Users/roylin/code/aster/apps/work/vendor/packages/form/src/react.tsx",
+    "exists": true,
+    "kind": "file"
+  },
+  {
+    "specifier": "@a3s-lab/form",
+    "path": "/Users/roylin/code/aster/apps/work/vendor/packages/form/src/index.ts",
+    "exists": true,
+    "kind": "file"
+  },
+  {
+    "specifier": "@a3s-lab/ce/components/code-editor.css",
+    "path": "/Users/roylin/code/aster/apps/work/vendor/packages/ce/dist/components/code-editor.css",
+    "exists": false,
+    "kind": "missing"
+  },
+  {
+    "specifier": "@a3s-lab/ce/basecoat",
+    "path": "/Users/roylin/code/aster/apps/work/vendor/packages/ce/dist/js/basecoat.js",
+    "exists": false,
+    "kind": "missing"
+  },
+  {
+    "specifier": "@a3s-lab/ce/select",
+    "path": "/Users/roylin/code/aster/apps/work/vendor/packages/ce/dist/js/select.js",
+    "exists": false,
+    "kind": "missing"
+  },
+  {
+    "specifier": "@a3s-lab/ce/code-editor",
+    "path": "/Users/roylin/code/aster/apps/work/vendor/packages/ce/dist/js/code-editor.js",
+    "exists": false,
+    "kind": "missing"
+  },
+  {
+    "specifier": "@xyflow/react",
+    "path": "/Users/roylin/code/aster/apps/work/node_modules/@xyflow/react",
+    "exists": true,
+    "kind": "directory"
+  }
+]

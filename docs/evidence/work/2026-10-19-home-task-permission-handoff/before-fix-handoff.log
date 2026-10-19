@@ -1,0 +1,118 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:39119) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/local-product-scope.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-local-product-scope.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/work
+
+stderr | src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx > AgentComposer > uses the explicit home draft mode instead of the hidden conversation mode before creating a task
+Bundled catalog resources path is not ready { catalog: 'assistant presets' }
+
+ ❯ |renderer| src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx (155 tests | 1 failed | 154 skipped) 148ms
+   ❯ AgentComposer (155)
+     × uses the explicit home draft mode instead of the hidden conversation mode before creating a task 62ms
+stderr | src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > hands the selected home permission to the created task before adoption
+React does not recognize the `asChild` prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase `aschild` instead. If you accidentally passed it from a parent component, remove it from the DOM element.
+
+stdout | src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > hands the selected home permission to the created task before adoption
+TEMP-PERF workspace-source 8902ms
+
+stdout | src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > hands the selected home permission to the created task before adoption
+TEMP-PERF reuse-or-create created=true 8903ms
+TEMP-PERF bind-workspace 8903ms
+
+ ❯ |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx (79 tests | 1 failed | 78 skipped) 62ms
+   ❯ AgentPage (79)
+     × hands the selected home permission to the created task before adoption 33ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > hands the selected home permission to the created task before adoption
+AssertionError: expected null to deeply equal { mode: 'bypassPermissions', …(1) }
+
+- Expected:
+{
+  "mode": "bypassPermissions",
+  "planFirst": true,
+}
+
++ Received:
+null
+
+ ❯ src/renderer/pages/agents/__tests__/AgentPage.test.tsx:2166:94
+    2164|       })
+    2165|       expect(created).toEqual({ id: 'permission-created-task' })
+    2166|       expect(readTaskPermission('permission-created-task', undefined, …
+       |                                                                                              ^
+    2167|         mode: 'bypassPermissions', planFirst: true
+    2168|       })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx > AgentComposer > uses the explicit home draft mode instead of the hidden conversation mode before creating a task
+AssertionError: expected "vi.fn()" to be called with arguments: [ { id: 'agent-1', …(1) }, …(1) ]
+
+Number of calls: 0
+
+ ❯ src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx:5466:33
+    5464|       })
+    5465|       expect(create).toHaveBeenCalledOnce()
+    5466|       expect(mocks.updateAgent).toHaveBeenCalledWith(
+       |                                 ^
+    5467|         { id: 'agent-1', configuration: { permission_mode: 'bypassPerm…
+    5468|         { showSuccessToast: false }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 232 skipped (234)
+   Start at  23:38:15
+   Duration  8.35s (transform 57%, import 39%, environment 2%, tests 1%, setup 1%)
+
+  Transform  |renderer| transforming modules took 8.23s · 57% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+

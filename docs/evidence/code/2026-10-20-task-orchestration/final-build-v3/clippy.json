@@ -1,0 +1,20 @@
+{
+  "command": [
+    "cargo",
+    "clippy",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-code-core",
+    "--lib",
+    "--tests",
+    "--message-format=json"
+  ],
+  "started_at_utc": "2026-10-19T19:10:39.415466+00:00",
+  "exit_code": 0,
+  "elapsed_ms": 68068.962,
+  "environment_overrides": {
+    "RUSTUP_TOOLCHAIN": "1.97.1",
+    "CARGO_NET_OFFLINE": "true"
+  }
+}

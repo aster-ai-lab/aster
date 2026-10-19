@@ -1,0 +1,29 @@
+{
+  "schema": "aster.t023.metric-gap-audit.v1",
+  "run_id": "t023-v3-hc-01",
+  "audited_at_utc": "2026-10-19T19:43:51.217650+00:00",
+  "original_fact_sequence": 66,
+  "native_outcome": "failed",
+  "native_exit_code": null,
+  "native_effect_completeness": "complete",
+  "native_effect_changes": 0,
+  "native_error_bytes": 121,
+  "native_error_sha256": "72391994bdcf9ca02a758ccec5e7d43e23c99e00ff945ac93b7c28d154842912",
+  "missing_schema_field": "type",
+  "submitted_argument_keys": [
+    "source"
+  ],
+  "original_effective_argument_digest_equal": true,
+  "source_route": [
+    "tools/registry.rs:356 and :407 validate_arguments",
+    "fact_control/receipts.rs:66 captures argument_error",
+    "fact_control/receipts.rs:326-344 emits ToolEnd metadata=None, InvalidArgument",
+    "fact_control/receipts.rs:348-364 result_without_execution; tools.run/ProgramTool not called"
+  ],
+  "classification": "pre-body native argument refusal; existing metric collector conservatively leaves child totals and parent interval union unknown. Not evidence of lost in-worker receipts or resource settlement failure.",
+  "other_parent_program_receipts_complete": 29,
+  "missing_program_receipt_count_retained": 1,
+  "raw_model_text_copied": false,
+  "independent_review": "runtime_speed read-only exact source and native facts; no edits, tests, model, VM or rebuild",
+  "decision": "Original HC remains unqualified; no repeat, promotion or extra confirmation pair. Remaining three frozen initial screen cells may proceed under unchanged identity/governance/quality gates."
+}

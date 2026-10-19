@@ -1,0 +1,14 @@
+[
+  {
+    "path": "crates/code/core/src/harness_loop.rs",
+    "sha256": "fc9de5f88e9c996d033d9e15c11b8c31b366fff2cff328d47203461f574dcde5"
+  },
+  {
+    "path": "crates/code/core/src/agent/tool_invoker.rs",
+    "sha256": "0d525317f8e42b0e0fd41b845e7a7cbce0e4a4ea86d6a046b0b705a5bf303435"
+  },
+  {
+    "path": "crates/code/core/src/agent/tool_completion_runtime.rs",
+    "sha256": "0e8f7d384ec55590bb8c9656e33e41b4585bf46f346c7c47825ed9002a616dc0"
+  }
+]

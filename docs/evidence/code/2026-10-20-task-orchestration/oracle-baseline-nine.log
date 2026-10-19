@@ -1,0 +1,28 @@
+{
+  "pipeline_sha256": "a0f468639ddac231ba38fb8452ab7946b4651a2ee62ead69341bac042d5b7b4b",
+  "oracle_self_test": "270 DP versus brute-force cases passed",
+  "static_imports": [
+    "__future__",
+    "argparse",
+    "csv",
+    "datetime",
+    "decimal",
+    "hashlib",
+    "json",
+    "os"
+  ],
+  "non_stdlib_static_imports": [],
+  "original_input_unchanged": true,
+  "passed_cases": 8,
+  "total_cases": 9,
+  "passed": false
+}
+public: PASS
+zero_budget: PASS
+changed_policy: PASS
+changed_data_and_references: PASS
+synthetic_row_exclusivity: PASS
+synthetic_lex_tie_budget_one: PASS
+synthetic_cost_tie: PASS
+synthetic_non_greedy: PASS
+negative_zero: FAIL

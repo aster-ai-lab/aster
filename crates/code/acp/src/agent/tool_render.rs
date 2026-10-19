@@ -40,7 +40,7 @@ pub(super) fn tool_kind_for(name: &str) -> acp::ToolKind {
     match name {
         "bash" | "shell" | "execute" | "git" => acp::ToolKind::Execute,
         "read" => acp::ToolKind::Read,
-        "write" | "edit" | "patch" => acp::ToolKind::Edit,
+        "write" | "edit" | "patch" | "office_file" => acp::ToolKind::Edit,
         "grep" | "glob" | "search" | "semantic" | "hybrid" | "bm25" | "code_symbols"
         | "code_navigation" | "code_diagnostics" | "web_search" => acp::ToolKind::Search,
         "web_fetch" | "download" => acp::ToolKind::Fetch,

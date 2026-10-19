@@ -1,6 +1,6 @@
 #![cfg(test)]
 
-use super::standards::{ModelNamePlacement, ModelStandard};
+use super::standards::{ModelNamePlacement, ModelStandard, StandardAdmission};
 
 #[test]
 fn catalog_is_the_closed_plan() {
@@ -155,4 +155,70 @@ fn companion_routes_stay_on_their_standard() {
         .map(|route| route.path)
         .collect();
     assert_eq!(audio, vec!["/v1/audio/speech", "/v1/audio/transcriptions"]);
+}
+
+#[test]
+fn admission_keeps_only_the_openai_core_and_platform_models() {
+    let admitted: Vec<_> = ModelStandard::ALL
+        .into_iter()
+        .filter(|standard| standard.admission() == StandardAdmission::Admitted)
+        .map(ModelStandard::as_str)
+        .collect();
+    assert_eq!(
+        admitted,
+        vec![
+            "openai.models",
+            "openai.chat",
+            "openai.completions",
+            "openai.embeddings",
+        ]
+    );
+    assert_eq!(ModelStandard::Ocr.admission(), StandardAdmission::Platform);
+    assert_eq!(
+        ModelStandard::DecisionSystemOne.admission(),
+        StandardAdmission::Platform
+    );
+    for standard in ModelStandard::ALL {
+        let routes = standard.routes();
+        assert!(!routes.is_empty());
+        match standard.admission() {
+            StandardAdmission::Admitted | StandardAdmission::Platform => {
+                assert!(!ModelStandard::is_reserved_route(
+                    routes[0].method,
+                    routes[0].path
+                ));
+            }
+            StandardAdmission::Reserved => {
+                for route in routes {
+                    if route.path.contains("{model}") {
+                        continue;
+                    }
+                    assert!(ModelStandard::is_reserved_route(route.method, route.path));
+                    assert!(
+                        ModelStandard::match_route("GET", route.path).is_none()
+                            || route.method == "GET"
+                    );
+                }
+            }
+        }
+    }
+    assert_eq!(
+        ModelStandard::match_route("POST", "/v1beta/models/gemma:generateContent"),
+        Some(ModelStandard::GeminiGenerate)
+    );
+    assert_eq!(
+        ModelStandard::match_route("POST", "/v1beta/models/gemma:streamGenerateContent"),
+        Some(ModelStandard::GeminiGenerate)
+    );
+    assert_eq!(
+        ModelStandard::match_route("POST", "/v1beta/models/gemma:embedContent"),
+        Some(ModelStandard::GeminiEmbed)
+    );
+    assert!(ModelStandard::is_reserved_route(
+        "POST",
+        "/v1beta/models/gemma:generateContent"
+    ));
+    assert!(ModelStandard::match_route("POST", "/v1beta/models/:generateContent").is_none());
+    assert!(ModelStandard::match_route("POST", "/v1beta/models/a/b:generateContent").is_none());
+    assert!(ModelStandard::match_route("GET", "/v1/messages").is_none());
 }

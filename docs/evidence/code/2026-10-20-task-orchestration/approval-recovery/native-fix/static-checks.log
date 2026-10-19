@@ -1,0 +1,7 @@
+command: ['rustup', 'run', '1.97.1', 'rustfmt', '--edition', '2024', '--config', 'skip_children=true', '--check', 'apps/work/src-tauri/src/agent_plane/turns.rs', 'apps/work/src-tauri/src/agent_plane/controllers.rs', 'apps/work/src-tauri/src/agent_plane/events.rs', 'apps/work/src-tauri/src/agent_plane/events_tests.rs', 'apps/work/src-tauri/src/agent_plane/workbench_turns.rs', 'apps/work/src-tauri/src/agent_plane/approval_recovery_tests.rs', 'apps/work/src-tauri/src/agent_plane/approval_response_tests.rs', 'apps/work/src-tauri/src/agent_plane/workbench_turns_tests.rs', 'apps/work/src-tauri/src/agent_plane/turns_form_tests.rs', 'apps/work/src-tauri/src/agent_plane/execution_status_tests.rs', 'apps/work/src-tauri/src/agent_plane/message_delete_tests.rs', 'apps/work/src-tauri/src/agent_plane/scheduled_recovery_tests.rs']
+exit_code: 0
+
+
+command: ['git', '-C', 'apps/work', 'diff', '--check', '--', 'src-tauri/src/agent_plane/turns.rs', 'src-tauri/src/agent_plane/controllers.rs', 'src-tauri/src/agent_plane/events.rs', 'src-tauri/src/agent_plane/events_tests.rs', 'src-tauri/src/agent_plane/workbench_turns.rs', 'src-tauri/src/agent_plane/approval_recovery_tests.rs', 'src-tauri/src/agent_plane/approval_response_tests.rs', 'src-tauri/src/agent_plane/workbench_turns_tests.rs', 'src-tauri/src/agent_plane/turns_form_tests.rs', 'src-tauri/src/agent_plane/execution_status_tests.rs', 'src-tauri/src/agent_plane/message_delete_tests.rs', 'src-tauri/src/agent_plane/scheduled_recovery_tests.rs']
+exit_code: 0
+

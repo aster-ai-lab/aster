@@ -68,7 +68,9 @@ impl BackgroundDisposition {
             "failed" => Ok(Self::Failed),
             "timed_out" => Ok(Self::TimedOut),
             "unknown" => Ok(Self::Unknown),
-            other => anyhow::bail!("background disposition must be one of the closed set [completed, cancelled, failed, timed_out, unknown]; got {other:?}"),
+            other => anyhow::bail!(
+                "background disposition must be one of the closed set [completed, cancelled, failed, timed_out, unknown]; got {other:?}"
+            ),
         }
     }
 
@@ -103,7 +105,9 @@ impl ProcessSettlementBasis {
             "backend_drop_contract" => Ok(Self::BackendDropContract),
             "unproven" => Ok(Self::Unproven),
             "admission_refused" => Ok(Self::AdmissionRefused),
-            other => anyhow::bail!("background process settlement basis must be one of the closed set [execution_returned, backend_drop_contract, unproven, admission_refused]; got {other:?}"),
+            other => anyhow::bail!(
+                "background process settlement basis must be one of the closed set [execution_returned, backend_drop_contract, unproven, admission_refused]; got {other:?}"
+            ),
         }
     }
 
@@ -646,7 +650,7 @@ impl BackgroundTool {
             Err(error) => {
                 return Ok(ToolOutput::error(format!(
                     "background Run owner is unavailable: {error}"
-                )))
+                )));
             }
         };
         let existing = self.runs.names_for(run);

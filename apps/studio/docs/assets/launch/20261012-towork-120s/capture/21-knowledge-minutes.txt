@@ -1,0 +1,88 @@
+Window: "ToWork", App: ToWork.
+0 standard window ToWork, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content Description: ToWork, URL: 127.0.0.1:4318/windows/main/index.html
+			3 pop up button 林书豪
+			4 button 知识
+			5 button 工作
+			6 button 消息
+			7 button 插件
+			8 button (collapsed) 任务, Secondary Actions: Expand
+			9 button 设置
+			10 container
+				11 heading 知识, Value: 1
+					12 text 知识
+				13 text 编写本地工作区里的笔记
+				14 search text field (settable) 搜索笔记, Value: 纪要
+					15 text (settable) 纪要
+				16 button 刷新
+				17 container 笔记
+					18 container
+						19 button 笔记
+						20 button 新建文件
+						21 button 新建文件夹
+						22 button (expanded) 测试样本, Secondary Actions: Collapse
+						23 button (expanded) 会议, Secondary Actions: Collapse
+						24 button 纪要草稿
+				25 heading 纪要草稿, Value: 2
+					26 text 纪要草稿
+				27 toolbar Markdown 功能区
+					28 toggle button (disabled) 撤销, Help: 撤销（Cmd/Ctrl+Z）, Value: off
+					29 toggle button (disabled) 重做, Help: 重做（Cmd/Ctrl+Shift+Z 或 Cmd/Ctrl+Y）, Value: off
+					30 combo box (collapsed, settable) 段落样式, Secondary Actions: Expand, Value: 标题 1
+
+						31 text 标题 1
+					32 toggle button 加粗, Help: 加粗（Cmd/Ctrl+B）, Value: off
+					33 toggle button 斜体, Help: 斜体（Cmd/Ctrl+I）, Value: off
+					34 toggle button 删除线, Help: 删除线（Cmd/Ctrl+Shift+S）, Value: off
+					35 toggle button 行内代码, Help: 行内代码（Cmd/Ctrl+E）, Value: off
+					36 toggle button 项目列表, Help: 项目列表（Cmd/Ctrl+Shift+8）, Value: off
+					37 toggle button 编号列表, Help: 编号列表（Cmd/Ctrl+Shift+7）, Value: off
+					38 toggle button 任务列表, Help: 任务列表（Cmd/Ctrl+Shift+9）, Value: off
+					39 toggle button 引用, Help: 引用（Cmd/Ctrl+Shift+B）, Value: off
+					40 (settable, unknown) 对齐
+						41 radio button 左对齐, Value: 1
+						42 radio button 居中, Value: 0
+						43 radio button 右对齐, Value: 0
+						44 radio button 两端对齐, Value: 0
+					45 toggle button 添加链接, Help: 添加链接（Cmd/Ctrl+K）, Value: off
+					46 toggle button (disabled) 移除链接, Value: off
+					47 toggle button 插入图片, Value: off
+					48 toggle button 代码块, Help: 代码块（Cmd/Ctrl+Alt+C）, Value: off
+					49 toggle button 分隔线, Value: off
+					50 toggle button 表格, Value: off
+				51 container 编辑方式
+					52 toggle button 可视化编辑, Value: on
+					53 toggle button 分屏编辑, Value: off
+					54 toggle button 源码编辑, Value: off
+				55 container Markdown 编辑窗格
+					56 text entry area (settable) Markdown 编辑区, Value: **纪要草稿**
+还没开会。先记下可能被问到的边界：
+
+• 个人笔记在默认工作区的 wiki/local。
+• 选中团队时，知识页仍然是这些本地笔记。
+• 云盘百科不在这个目录里。
+草稿可以改。定稿后再从 [[会议/2026-10-13-西湖]] 链过来。
+
+检索口令：纪要草稿边界只写在测试笔记8f36。
+						57 heading (settable, integer) 纪要草稿, Value: 1
+							58 text (settable) 纪要草稿
+						59 text (settable) 还没开会。先记下可能被问到的边界：
+						60 content list (settable)
+							61 container (settable) 个人笔记在默认工作区的 wiki/local。
+								62 list marker •
+								63 text (settable) 个人笔记在默认工作区的 wiki/local。
+							64 container (settable) 选中团队时，知识页仍然是这些本地笔记。
+								65 list marker •
+								66 text (settable) 选中团队时，知识页仍然是这些本地笔记。
+							67 container (settable) 云盘百科不在这个目录里。
+								68 list marker •
+								69 text (settable) 云盘百科不在这个目录里。
+						70 text (settable) 草稿可以改。定稿后再从 [[会议/2026-10-13-西湖]] 链过来。
+						71 text (settable) 检索口令：纪要草稿边界只写在测试笔记8f36。
+	72 close button
+	73 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	74 minimize button
+75 menu bar
+	76 ToWork
+	77 Edit

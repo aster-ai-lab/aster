@@ -1,0 +1,8 @@
+
+running 3 tests
+test agent_plane::turns::approval_recovery_tests::aborting_an_approval_revokes_answers_before_the_owned_turn_settles ... ok
+test agent_plane::turns::approval_recovery_tests::closed_or_foreign_receivers_and_persisted_pending_do_not_restore_authority ... ok
+test agent_plane::turns::approval_recovery_tests::reattach_recovers_only_the_current_live_permission_receiver ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 840 filtered out; finished in 0.63s
+

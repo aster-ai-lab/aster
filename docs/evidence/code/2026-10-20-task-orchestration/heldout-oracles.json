@@ -1,0 +1,64 @@
+{
+  "scope": "Held-out fixtures authored before live matrix; no product/task-name routing or tuning from their results. These source directories stay outside model workspaces. Fresh copies will be frozen independently for each Run.",
+  "analysis": {
+    "expected": {
+      "schema_version": "regional-units-v1",
+      "regions": [
+        {
+          "region": "East",
+          "delivered_units": 42
+        },
+        {
+          "region": "West",
+          "delivered_units": 64
+        },
+        {
+          "region": "北区",
+          "delivered_units": 5
+        }
+      ],
+      "total_delivered_units": 111
+    },
+    "submission": "report.json"
+  },
+  "repair": {
+    "submission": "pricing.py",
+    "immutable": [
+      "instruction.md",
+      "test_pricing.py"
+    ],
+    "independent_cases": [
+      [
+        [],
+        0,
+        0
+      ],
+      [
+        [
+          8,
+          2
+        ],
+        0,
+        10
+      ],
+      [
+        [
+          -5,
+          -8
+        ],
+        4,
+        -9
+      ],
+      [
+        [
+          1,
+          2,
+          3,
+          4
+        ],
+        9,
+        19
+      ]
+    ]
+  }
+}

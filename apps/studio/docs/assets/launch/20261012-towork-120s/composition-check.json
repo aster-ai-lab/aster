@@ -1,0 +1,70 @@
+{
+  "sampled_frames": 3601,
+  "seek_errors": [],
+  "repeated_seek_pixels_identical": true,
+  "pixel_hashes": [
+    "19d5f1dad09ae7ffff2a04264b385d2bb0f4a97fe2614c79ed252358e4c07c71",
+    "7e833a4b84784c94136d16c6a02ef4c3d40cb1920617c8a62af5bd35a3f74388",
+    "19d5f1dad09ae7ffff2a04264b385d2bb0f4a97fe2614c79ed252358e4c07c71"
+  ],
+  "used_captures": [
+    {
+      "name": "02-task-draft",
+      "sha256": "7f01535a77dc6cdecb8302be96995028f73caf20018b4506c96a1aba4a2b4df8"
+    },
+    {
+      "name": "23-task-result-clean",
+      "sha256": "cc77fbdb459bbd8ad1a9f87ff05b6d0b2ab283b76b707a84e488909a5cacc0e3"
+    },
+    {
+      "name": "25-knowledge-home-clean",
+      "sha256": "a7b494ea91a8ab7dc4fbc121c08ee07aa67a36b0874a48fd9ffae25ad3e63020"
+    },
+    {
+      "name": "22-knowledge-search-clean",
+      "sha256": "df2d55aa5dc8cb916994bc8c7983b0a3853f4e995e53fe590a6e5229d22c7b6b"
+    },
+    {
+      "name": "07-knowledge-list",
+      "sha256": "66c23e58c1da0abc4e12816d98482b6ee58b69037f3ed30af24415d5b76d4af3"
+    },
+    {
+      "name": "08-knowledge-split",
+      "sha256": "971308a179dff7622b54c3513333cf6991b43c83900c4ab54d252e73451a39bd"
+    },
+    {
+      "name": "24-knowledge-toolbar-clean",
+      "sha256": "71be1344f19601d461ea43be00f5eabff2afa2cecd9a44cec34662f5077ca87f"
+    },
+    {
+      "name": "09-agents",
+      "sha256": "e3cb334feb8479092ba27d5cfb55ca48b3adb26d655ed3e78a429162156990ca"
+    },
+    {
+      "name": "11-automation",
+      "sha256": "8eb75e67c45d5bdd52b25003360d4e2b60c1c5e65cd3ee9cbf42fc428ba2bed5"
+    },
+    {
+      "name": "12-automation-form",
+      "sha256": "2e06f08952bfc36879ec3fffd8753d38e1b604e4ce141f0dcab5d1a04caa95db"
+    },
+    {
+      "name": "13-automation-draft",
+      "sha256": "f8700e6d5eeb4c74a281b792c9341c4e6dfc653ae017b4ee542af8dae695f9ec"
+    },
+    {
+      "name": "14-automation-frequency",
+      "sha256": "c68350b976200411e4b45c49c5ba45a7d67ce092091ae4e4f2c31496dc8d2757"
+    },
+    {
+      "name": "15-automation-workdays",
+      "sha256": "0facf6f60fe33afac65fc6af4c27671b3caaabb57392fb21cfd104405011c58b"
+    },
+    {
+      "name": "16-home-return",
+      "sha256": "791b7c37c61af319ec7d71250da8393a2ecc08002837a4ca82903f185fed61cf"
+    }
+  ],
+  "plugin_pages": 0,
+  "logo_matches_source": true
+}

@@ -1,0 +1,30 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-code-core",
+    "--features",
+    "advanced-harness",
+    "--test",
+    "test_extensibility_real_llm",
+    "task_matrix::",
+    "--",
+    "--test-threads=1",
+    "--nocapture"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 86.719,
+  "scope": "hermetic runner validation only; live model/VM fixture ignored",
+  "source_before": {
+    "crates/code/core/tests/test_extensibility_real_llm.rs": "64e762fb922912ed8b498c55e498d22984a28637785b98ea0b7aa7d1bd68b096",
+    "crates/code/core/tests/extensibility/task_matrix.rs": "5eda21874fb9fd9853fcae05d33fce038e705db973020002aadf3fad1dbc31b8"
+  },
+  "source_after": {
+    "crates/code/core/tests/test_extensibility_real_llm.rs": "64e762fb922912ed8b498c55e498d22984a28637785b98ea0b7aa7d1bd68b096",
+    "crates/code/core/tests/extensibility/task_matrix.rs": "5eda21874fb9fd9853fcae05d33fce038e705db973020002aadf3fad1dbc31b8"
+  },
+  "owned_sources_stable": true
+}

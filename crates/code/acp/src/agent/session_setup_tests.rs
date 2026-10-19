@@ -342,6 +342,12 @@ async fn source_review_has_no_tools_even_after_a_yolo_mode_change() {
     assert_ne!(result.exit_code, 0);
     assert!(result.output.contains("Permission denied"));
     assert!(!result.output.contains("not part of the supplied snapshot"));
+    for name in ["office_file", "output_check"] {
+        assert!(!session
+            .tool_definitions()
+            .iter()
+            .any(|tool| tool.name == name));
+    }
     session.close().await;
 
     let ordinary = host
@@ -360,6 +366,12 @@ async fn source_review_has_no_tools_even_after_a_yolo_mode_change() {
         .presented_tool_definitions("Read private.txt.")
         .unwrap()
         .is_empty());
+    for name in ["office_file", "output_check"] {
+        assert!(ordinary
+            .tool_definitions()
+            .iter()
+            .any(|tool| tool.name == name));
+    }
     ordinary.close().await;
 }
 

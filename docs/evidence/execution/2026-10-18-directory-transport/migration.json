@@ -1,0 +1,278 @@
+{
+  "producer_revision": "86e6cd2a21025875ba0903d7be74da58c7a66224",
+  "files": [
+    {
+      "path": "crates/oci-runtime/ROADMAP.md",
+      "sha256": "74147ab28128ac0c6bde2c73ae08e3cf32ae0818b058d0a7f229d742a438b17a"
+    },
+    {
+      "path": "crates/oci-runtime/crates/agent-protocol/src/lib.rs",
+      "sha256": "58c781ffaa85a79f55a47550ff5a18d66b6e07c0d1517eb8b04cd7de5b603f1b"
+    },
+    {
+      "path": "crates/oci-runtime/crates/agent-protocol/src/vm_attachment.rs",
+      "sha256": "d711928fd3d050289784449cec5606a0a55dfd5c65958e2a1912b7490e1da1bd"
+    },
+    {
+      "path": "crates/oci-runtime/crates/agent-protocol/src/vm_attachment/directory.rs",
+      "sha256": "5f13c3ba5f90e76c2b8ac89f044ee497bdb5a150b7bad3069e0b0ff389f50440"
+    },
+    {
+      "path": "crates/oci-runtime/crates/agent-protocol/src/vm_attachment/directory_tests.rs",
+      "sha256": "2a08085b2845692653c83fd1085e0c0e26141346e9990403492483c01cb0501c"
+    },
+    {
+      "path": "crates/oci-runtime/crates/agent-protocol/src/vm_attachment/storage.rs",
+      "sha256": "67750df1e500cc7cdc85f4d1b8ae80cf1322771043d172a493ad5def8a3c866b"
+    },
+    {
+      "path": "crates/oci-runtime/crates/agent/src/executor/mount.rs",
+      "sha256": "b8eb7f50c329b8972a07a30588c65d6c5cc716350fee0ad52bb250bf20e526db"
+    },
+    {
+      "path": "crates/oci-runtime/crates/agent/src/executor/mount_tests.rs",
+      "sha256": "f1b67cb52f39a64dfa00acbcbe82d297ed2de307b22a132ec96c1e799e120d60"
+    },
+    {
+      "path": "crates/oci-runtime/crates/agent/src/vm_attachment.rs",
+      "sha256": "55faaab5b091b831766623d691b40a0a89b7657c4c460bc4092913f48462c167"
+    },
+    {
+      "path": "crates/oci-runtime/crates/agent/src/vm_attachment/directory.rs",
+      "sha256": "e94fb8b46f2cec7aed7ca8ffbd28ab2de9f61f578ca4585f9da00f0d50a221d6"
+    },
+    {
+      "path": "crates/oci-runtime/crates/agent/src/vm_attachment/storage.rs",
+      "sha256": "1619ab7598b49b57465fea3f21db60d50097ba83620e8754718f6301f68eb15e"
+    },
+    {
+      "path": "crates/oci-runtime/crates/krun/src/agent_smoke.rs",
+      "sha256": "b211fd88183a8c45f283ab4d138e68f03b13d2269834997bf916edf50274c149"
+    },
+    {
+      "path": "crates/oci-runtime/crates/krun/src/lib.rs",
+      "sha256": "2aca901d1af6dae594e5803bf8333c4e944a69f2b574ee1a75d7a7351b02bdcc"
+    },
+    {
+      "path": "crates/oci-runtime/crates/krun/src/linux_vm_attachment.rs",
+      "sha256": "ed8f8a55a399aa01d55eb4688bcde41092adb9811f6eeaeff13481b0cc628235"
+    },
+    {
+      "path": "crates/oci-runtime/crates/krun/src/macos_agent_smoke.rs",
+      "sha256": "6f46a5af04c9cb74f7a112492182d36a3bad2dc8d22764c5d1d50950a734517a"
+    },
+    {
+      "path": "crates/oci-runtime/crates/krun/src/macos_context.rs",
+      "sha256": "54566807013de0c1b3457b76e1c456ae45b7d3784879841cd14af28b1aca5b27"
+    },
+    {
+      "path": "crates/oci-runtime/crates/krun/src/macos_vm_attachment.rs",
+      "sha256": "f6a6af88261b4534dd91212c06022985e90ba01a9307ba23af1f16603d83874c"
+    },
+    {
+      "path": "crates/oci-runtime/crates/krun/src/macos_vm_attachment_tests.rs",
+      "sha256": "5d59445f112501fe58f3c43f48eeccd35ca1c2b677c8604fe59fbd1df1385b0a"
+    },
+    {
+      "path": "crates/oci-runtime/crates/krun/src/macos_worker_sandbox.rs",
+      "sha256": "28a9a19ae3574520455af25545535c6db2a821cc04d9b53544d5060192b78d80"
+    },
+    {
+      "path": "crates/oci-runtime/crates/krun/src/macos_worker_sandbox_tests.rs",
+      "sha256": "4614727ce31a0402a2d9685cc521e9df4137840f289245f33bd4fd9ede40446a"
+    },
+    {
+      "path": "crates/oci-runtime/crates/krun/src/main.rs",
+      "sha256": "56b5b11f824012ab2d2d1ac1331ceabf49534fdf13b2a9792ddb3513a35c256a"
+    },
+    {
+      "path": "crates/oci-runtime/crates/runtime/src/agent_session.rs",
+      "sha256": "28364c4589aac34d500edc0c95fd6de3175e5c13f771792821cc091465594c5b"
+    },
+    {
+      "path": "crates/oci-runtime/crates/runtime/src/hvf_driver.rs",
+      "sha256": "8052e7138764b5f2e0302bebd32834323c60cceab67da7fa27d234d0b47ba928"
+    },
+    {
+      "path": "crates/oci-runtime/crates/runtime/src/utility_vm_driver.rs",
+      "sha256": "b10576c23655e5ee89480d1893ddb0003812697ce1eef6d312dccf8babdc6dbb"
+    },
+    {
+      "path": "crates/oci-runtime/crates/runtime/src/utility_vm_driver/handoff.rs",
+      "sha256": "73fa4704d44f0d28271423b82e442b187cca0eb8d109b29bc35aefc78898366b"
+    },
+    {
+      "path": "crates/oci-runtime/crates/runtime/src/utility_vm_driver/hvf_directory.rs",
+      "sha256": "20696a831aaca34e6379290db58606983cd7ca2b57fcc6643556bbdfa3fb7de8"
+    },
+    {
+      "path": "crates/oci-runtime/crates/runtime/src/utility_vm_driver/hvf_directory_tests.rs",
+      "sha256": "b96b24184502a4483d6e896c9726cf48fceace89b91dd17830d384b218965fde"
+    },
+    {
+      "path": "crates/oci-runtime/crates/runtime/src/utility_vm_driver/kvm_network.rs",
+      "sha256": "bfe4538dcbde88b7bd47be7b7965df7d4c5e89b7d3d744d5969b8465e6f9d3c9"
+    },
+    {
+      "path": "crates/oci-runtime/crates/runtime/src/utility_vm_driver/kvm_network/tests.rs",
+      "sha256": "f7c35dcdd2516449b7fda1473e7d6077edf92e06725b3fa32eb439c839ad44cc"
+    },
+    {
+      "path": "crates/oci-runtime/crates/runtime/src/utility_vm_driver/tests.rs",
+      "sha256": "3613124b8deb3e816e9c940ac2d34375a48d19a99b8639956ed956e367a94c53"
+    },
+    {
+      "path": "crates/oci-runtime/crates/runtime/src/utility_vm_driver/tests/external_storage.rs",
+      "sha256": "638192272f1903a4f2a28a315c7cb08b2e73b21f3f9e0ef5213142699d2a7e06"
+    },
+    {
+      "path": "crates/oci-runtime/crates/runtime/src/utility_vm_driver/tests/isolation.rs",
+      "sha256": "93998961f5b3fa40011e54d1b1d4fd6fc284068033625671dc3bbdf2b7817376"
+    },
+    {
+      "path": "crates/oci-runtime/crates/runtime/src/utility_vm_driver/vm_attachment_transport.rs",
+      "sha256": "63c732a8cf27d2d2a8af9448d90414acd8c19cdb6eb5fb250a6247b030163fd4"
+    },
+    {
+      "path": "crates/oci-runtime/crates/runtime/src/utility_vm_driver/vm_attachment_transport_tests.rs",
+      "sha256": "64444c202897c8d69b61d88922e8c1ffceab731b000a1af9daecf29c6a6e611c"
+    },
+    {
+      "path": "crates/oci-runtime/crates/sdk/examples/qualify_hvf_workspace.rs",
+      "sha256": "c89f8bad95f1ec02bc31a947773cb218e348c4371ce837112016ea494c44536b"
+    },
+    {
+      "path": "crates/oci-sdk/examples/qualify_hvf_workspace.rs",
+      "sha256": "c89f8bad95f1ec02bc31a947773cb218e348c4371ce837112016ea494c44536b"
+    },
+    {
+      "path": "crates/oci-runtime/crates/sdk/src/attachment.rs",
+      "sha256": "cfecad793f9e3027d120b8f0e1a8248e99ac6f9fc085aa49ea83255f8e36575f"
+    },
+    {
+      "path": "crates/oci-sdk/src/attachment.rs",
+      "sha256": "cfecad793f9e3027d120b8f0e1a8248e99ac6f9fc085aa49ea83255f8e36575f"
+    },
+    {
+      "path": "crates/oci-runtime/crates/sdk/src/attachment/tests.rs",
+      "sha256": "0a193a2e68f8fc3592610250cabb92a70ef772a9f82d5d852632c8bebf5b53eb"
+    },
+    {
+      "path": "crates/oci-sdk/src/attachment/tests.rs",
+      "sha256": "0a193a2e68f8fc3592610250cabb92a70ef772a9f82d5d852632c8bebf5b53eb"
+    },
+    {
+      "path": "crates/oci-runtime/crates/sdk/src/lib.rs",
+      "sha256": "f50c76cc2583065857c6ffa2f60dd76ca937cd4f0d23b8b2c03155fb138f2273"
+    },
+    {
+      "path": "crates/oci-sdk/src/lib.rs",
+      "sha256": "f50c76cc2583065857c6ffa2f60dd76ca937cd4f0d23b8b2c03155fb138f2273"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-directory-ownership/OUTCOME.md",
+      "sha256": "4efd408762b713e49905b441894849f63e6d7de7da980ba13ff4fe8b63261373"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-directory-ownership/cross-build.log.gz",
+      "sha256": "1ec560163f987f4182f8de1a90f1314c7e282324898b41403e057ce25a01560d"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-directory-ownership/public-build-and-run.log.gz",
+      "sha256": "412385152fc167f6fc835874bcbab1256efc86c885da812f1b9ab8d89ddca486"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-directory-ownership/public-host-service.json",
+      "sha256": "6c86df9d1de8198aac14318b39a08b90cb24dd23b78b8105294693e331422807"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-directory-ownership/public-invocation.json",
+      "sha256": "963928144b10a9368c74473dcdb841eea85eaf16785c6126a864684d56428c9e"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-directory-ownership/public-preflight-invocation.json",
+      "sha256": "c3d7b079184bc7d408c0b0929439b48bde63ed08f464d274cb13b2c2296b0742"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-directory-ownership/public-preflight-rejection.json",
+      "sha256": "031fc8dd9e04db9fa59efee9bbc571e2b214451b2b28163a1b9601e1c7239cd6"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-directory-ownership/system-image.json",
+      "sha256": "da379dbbc50a88e1b5a103042caa5e31523095af75475a8aca3ab2f994796c72"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-directory-ownership/tests.log.gz",
+      "sha256": "74d3c150a4483eb25b7d93f6112a5463e85d939c6d11e56efa495f9f354b389b"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-directory-transport/OUTCOME.md",
+      "sha256": "b1a02e44cc19a5d694c4c9e846660e00fd08cab00d9d544278b74deb41c26629"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-directory-transport/checks.log.gz",
+      "sha256": "52670935d3f118141e6b9523b1e7bc8ef917c59472ce32c5fce4d90a1995ed57"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-directory-transport/diagnostic-host.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-directory-transport/diagnostic-host.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-directory-transport/diagnostic-invocation.json",
+      "sha256": "c2f45859a84a945892d7d3a0437c80b4081e5d70ecc3aae296832cda8ca359d9"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-directory-transport/diagnostic-payload-output.json",
+      "sha256": "29c0bfe075099a2b8264903b86b2c85806bd9c466c0699ba0a0a693f52fa9ed4"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-directory-transport/diagnostic-system-image.json",
+      "sha256": "2a9d7ad6e72e8d93a8f6b4d9dae8a036e8c65a552094b2c2e2dbbc7f7319744f"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-directory-transport/diagnostic-workspace-report.json",
+      "sha256": "4aae1356d5e862bca75c7c42b3fa460ee6dd6430e313facce6b92607a810b271"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-macos-vmm-confinement/OUTCOME.md",
+      "sha256": "3391b9b33f771a334650db2ea438410d04e91d49cbf2646af035ed5249634851"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-macos-vmm-confinement/clean-build.log.gz",
+      "sha256": "d614f7714ee84106c4dfd9ee598a8d5f791d7abab2e0dd294dc3226827f94a6c"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-macos-vmm-confinement/commit-verify.log.gz",
+      "sha256": "60112ade7109145e4cc63e86886294beeaf32350fa56bb37c49575973cc7c8bc"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-macos-vmm-confinement/public-host-service.json",
+      "sha256": "f908db60f32114bcfe3130f137ec66514967bf78e75a7ba4f0401dd91ecaa914"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-macos-vmm-confinement/public-invocation.json",
+      "sha256": "fdd4b7e65e744ce39ce0d925441da460ec495ec9f8c75cfde825cebbc677af7c"
+    },
+    {
+      "path": "crates/oci-runtime/crates/core/Cargo.toml",
+      "sha256": "f77136f28d1270ddb495e5f029798ac6474bd4a18e11bb60d930bba941cf3727"
+    },
+    {
+      "path": "crates/oci-runtime/crates/sdk/Cargo.toml",
+      "sha256": "1ed505c3d8f564c713ef80ec5a1ffbc0107a3a0775a122f6ba8a874cc1919c96"
+    }
+  ],
+  "product_default_bash_integrated": false,
+  "evidence_revision": "2af8f8147",
+  "active_sdk": "crates/oci-runtime/crates/sdk",
+  "local_adjustments": [
+    "Use the original SDK layout for compile-time conformance resources",
+    "Apply the existing unsigned HugeTLB oci-spec patch at the Aster workspace root",
+    "Keep internal SDK and core packages publish=false",
+    "Preserve existing local Cargo package metadata and paths"
+  ]
+}

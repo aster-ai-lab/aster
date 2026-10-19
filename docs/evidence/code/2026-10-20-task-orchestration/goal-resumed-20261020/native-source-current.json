@@ -1,0 +1,50 @@
+[
+  {
+    "path": "apps/work/src-tauri/src/agent_plane/turns.rs",
+    "sha256": "5e4598b7448ac8fc3945b4e216f9f89a45c62b40a45870c1daad4e546361526d"
+  },
+  {
+    "path": "apps/work/src-tauri/src/agent_plane/controllers.rs",
+    "sha256": "69902055dde43e1856512a11ed507db72cab86e40cffa10870e5d54024b789a8"
+  },
+  {
+    "path": "apps/work/src-tauri/src/agent_plane/events.rs",
+    "sha256": "f550427e740166bb58e2591f0701a08c66940c2af0fbb134bde604f7b53c9087"
+  },
+  {
+    "path": "apps/work/src-tauri/src/agent_plane/events_tests.rs",
+    "sha256": "4fc43ebe6a41e4b4d5ccc4023f1083a2116ccd9881594a2df52f91dfaffc3e3c"
+  },
+  {
+    "path": "apps/work/src-tauri/src/agent_plane/workbench_turns.rs",
+    "sha256": "2c5fd28697c806b0381697dd191eeb0eb982f94de6f0cad0edea0587d2014de0"
+  },
+  {
+    "path": "apps/work/src-tauri/src/agent_plane/approval_recovery_tests.rs",
+    "sha256": "883b94d803dd42a2673754cb98d8f2a6e3649b210d51654602063a4a953c7c8e"
+  },
+  {
+    "path": "apps/work/src-tauri/src/agent_plane/approval_response_tests.rs",
+    "sha256": "0ab30f81db334356e335b46866b7fac7ebc2158e7f08ed4d908656d3b9e54222"
+  },
+  {
+    "path": "apps/work/src-tauri/src/agent_plane/workbench_turns_tests.rs",
+    "sha256": "a885f2c16b7efc0e8724904b5d004615669e333663ac3595ac616c2da1eb4ced"
+  },
+  {
+    "path": "apps/work/src-tauri/src/agent_plane/turns_form_tests.rs",
+    "sha256": "a7fbd35a275c84766861681e0cedca187ff23436ede34abfdf22b50ead9705ad"
+  },
+  {
+    "path": "apps/work/src-tauri/src/agent_plane/execution_status_tests.rs",
+    "sha256": "66365c367a2df3d980082c7bdbc3c0646b5783bb94c584ef26965171a2417984"
+  },
+  {
+    "path": "apps/work/src-tauri/src/agent_plane/message_delete_tests.rs",
+    "sha256": "9c31037615245d9973c24b7ce63d7d6c9ca54a3fe2fe811a3929a170388e1035"
+  },
+  {
+    "path": "apps/work/src-tauri/src/agent_plane/scheduled_recovery_tests.rs",
+    "sha256": "217e725a57b832c0f4793995c91e7ef8149e152ce86b8f7dcb0d2d471ad13683"
+  }
+]

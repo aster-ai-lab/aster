@@ -342,8 +342,7 @@ pub(crate) fn register_skill(
     tool_executor: Arc<crate::tools::ToolExecutor>,
     base_config: crate::agent::AgentConfig,
 ) {
-    use crate::tools::skill::{SearchSkillsTool, SkillTool};
-    registry.register_builtin(Arc::new(SearchSkillsTool::new(Arc::clone(&skill_registry))));
+    use crate::tools::skill::SkillTool;
     registry.register_builtin(Arc::new(SkillTool::new_registry_bound(
         skill_registry,
         llm_client,

@@ -160,6 +160,26 @@ impl A3sCodeAgent {
         setup: &SessionSetup<'_>,
         session_store_dir: &std::path::Path,
     ) -> acp::Result<SessionOptions> {
+        let (embedding, unavailable) = match self.launch.config.workspace_retrieval {
+            Some(retrieval) if retrieval.enabled && retrieval.local_cpu => {
+                match super::local_embedding::local_embedding_provider(
+                    tokio_util::sync::CancellationToken::new(),
+                )
+                .await
+                {
+                    Ok(provider) => (Some(provider), None),
+                    Err(error) => (None, Some(error.to_string())),
+                }
+            }
+            Some(retrieval) if retrieval.enabled => (
+                None,
+                Some(
+                    "workspace_retrieval requires an explicitly selected local_cpu backend"
+                        .to_owned(),
+                ),
+            ),
+            _ => (None, None),
+        };
         let options = match &self.unattended {
             Some(unattended) => unattended
                 .session_options(
@@ -167,19 +187,31 @@ impl A3sCodeAgent {
                     setup.model_id,
                     interactive_skill_dirs(&setup.workspace, &self.launch.config.skill_dirs),
                 )
+                .map(|options| match embedding {
+                    Some(provider) => options.with_workspace_retrieval(
+                        a3s_code_core::WorkspaceRetrievalOptions::new(provider),
+                    ),
+                    None => options,
+                })
                 .map_err(|error| acp::Error::internal_error().data(error)),
             None => Self::host_session_options_with_embedding(
                 session_id,
                 setup,
                 &self.launch.config,
                 session_store_dir,
-                None,
+                embedding,
             ),
         }?;
-        let options = match &self.launch.config.tool_presentation_profile {
+        let mut options = match &self.launch.config.tool_presentation_profile {
             Some(profile) => options.with_tool_presentation_profile(profile.clone()),
             None => options,
         };
+        if let Some(reason) = unavailable {
+            tracing::error!(%reason, "configured local workspace retrieval is unavailable");
+            let mut slots = options.prompt_slots.clone().unwrap_or_default();
+            append_slot_extra(&mut slots, &format!("Workspace semantic retrieval unavailable: {reason}. grep, glob and bm25 remain available; no remote backend was activated."));
+            options = options.with_prompt_slots(slots);
+        }
         let options = self.with_client_reads(options, session_id, &setup.workspace);
         if setup.host.source_review {
             // A fixed checker keeps the capability ceiling empty even after a mode change.
@@ -281,13 +313,28 @@ impl A3sCodeAgent {
         mut live: LiveSession,
         entries: Vec<serde_json::Value>,
     ) -> acp::Result<LiveSession> {
-        let result = if let Some(host) = &self.plugin_selection {
-            host.apply(&live.session)
-                .await
-                .map_err(|error| acp::Error::internal_error().data(error.to_string()))
-        } else {
-            Self::admit_plugin_tools(&live.session, &entries)
-        };
+        let result = async {
+            if !live.host.source_review {
+                live.session
+                    .register_dynamic_tool(Arc::new(
+                        crate::office_file::OfficeFileTool::new(&live.workspace).map_err(
+                            |error| acp::Error::internal_error().data(error.to_string()),
+                        )?,
+                    ))
+                    .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
+                live.session
+                    .register_dynamic_tool(Arc::new(crate::output_check::OutputCheckTool))
+                    .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
+            }
+            if let Some(host) = &self.plugin_selection {
+                host.apply(&live.session)
+                    .await
+                    .map_err(|error| acp::Error::internal_error().data(error.to_string()))
+            } else {
+                Self::admit_plugin_tools(&live.session, &entries)
+            }
+        }
+        .await;
         if let Err(error) = result {
             live.session.close().await;
             return Err(error);

@@ -1,0 +1,25 @@
+{
+  "schema_version": "107-policy-v1",
+  "budget_units": 64,
+  "shipping_priorities": [
+    "Low",
+    "Medium"
+  ],
+  "shipping_saving_bp": 2500,
+  "discount_threshold_ppm": 200000,
+  "discount_recovery_bp": 800,
+  "shipping_cost_by_market": {
+    "Africa": 3,
+    "Asia_Pacific": 5,
+    "Europe": 4,
+    "LATAM": 2,
+    "USCA": 3
+  },
+  "discount_cost_by_market": {
+    "Africa": 4,
+    "Asia_Pacific": 6,
+    "Europe": 5,
+    "LATAM": 3,
+    "USCA": 4
+  }
+}

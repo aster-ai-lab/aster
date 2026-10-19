@@ -32,6 +32,7 @@ pub(crate) struct InitializeConfig {
     initialization_options: Option<Value>,
     client_name: String,
     client_version: String,
+    server_status_notification: bool,
 }
 
 impl InitializeConfig {
@@ -48,7 +49,13 @@ impl InitializeConfig {
             initialization_options,
             client_name: client_name.into(),
             client_version: client_version.into(),
+            server_status_notification: false,
         }
+    }
+
+    pub(crate) fn with_server_status_notification(mut self, enabled: bool) -> Self {
+        self.server_status_notification = enabled;
+        self
     }
 }
 
@@ -125,7 +132,7 @@ fn initialize_params(config: &InitializeConfig) -> Result<InitializeParams, LspC
         root_path: None,
         root_uri: Some(root_uri),
         initialization_options: config.initialization_options.clone(),
-        capabilities: client_capabilities(),
+        capabilities: client_capabilities(config.server_status_notification),
         trace: None,
         workspace_folders: Some(workspace_folders),
         client_info: Some(ClientInfo {
@@ -143,7 +150,7 @@ fn protocol_uri(uri: &Url) -> Result<Uri, LspClientError> {
     })
 }
 
-fn client_capabilities() -> ClientCapabilities {
+fn client_capabilities(server_status_notification: bool) -> ClientCapabilities {
     let goto = || GotoCapability {
         dynamic_registration: Some(false),
         link_support: Some(true),
@@ -197,6 +204,8 @@ fn client_capabilities() -> ClientCapabilities {
             position_encodings: Some(vec![PositionEncodingKind::UTF16]),
             ..GeneralClientCapabilities::default()
         }),
+        experimental: server_status_notification
+            .then(|| serde_json::json!({"serverStatusNotification": true})),
         ..ClientCapabilities::default()
     }
 }

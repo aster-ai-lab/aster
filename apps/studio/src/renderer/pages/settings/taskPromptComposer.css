@@ -1,0 +1,34 @@
+/* The menu opens under the field. Above it, the menu covers the dialog title and the name. */
+/* This rule beats the home card's z-index 80 so the field stays inside the dialog. */
+[data-ui~='task.prompt.composer'][data-ui~='workbench.composer'] {
+  position: relative;
+  z-index: 20;
+}
+
+[data-ui~='task.prompt.composer'] [data-testid='quick-panel'] {
+  top: calc(100% + 4px);
+  /* 0 0, not none: the CSS minifier drops none and the utility translate stays. */
+  translate: 0 0;
+}
+
+[data-ui~='task.prompt.composer'][data-invalid] [data-composer-inputbar],
+[data-ui~='task.prompt.composer'][data-invalid]:focus-within [data-composer-inputbar] {
+  border-color: #b42318;
+  box-shadow: none;
+}
+
+[data-ui~='task.prompt.composer'] .inputbar > .text-center {
+  display: none;
+}
+
+/* The home card pins the editor at 88px. This form keeps four lines. */
+[data-ui~='task.prompt.composer'][data-ui~='workbench.composer'] [data-composer-editor-frame],
+[data-ui~='task.prompt.composer'][data-ui~='workbench.composer'] .composer-tiptap.tiptap {
+  min-height: 96px !important;
+  max-height: 160px;
+}
+
+[data-ui~='task.prompt.composer'][data-ui~='workbench.composer'] textarea[data-ui~='part:composer-input'] {
+  height: 96px !important;
+  min-height: 96px !important;
+}

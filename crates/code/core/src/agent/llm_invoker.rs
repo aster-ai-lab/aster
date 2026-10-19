@@ -1351,14 +1351,14 @@ impl crate::agent::TurnEngine {
     /// provider gateway records, for a fact-log completion that does not go
     /// through that gateway. The usage event is emitted after the provider
     /// returns.
-    pub(crate) async fn fact_model_evidence(
+    pub(crate) async fn fact_profiled_model_evidence(
         &self,
         messages: &[Message],
         system: Option<&str>,
         tools: &[ToolDefinition],
-    ) -> (Vec<AgentEvent>, Option<ModelUsageBinding>) {
+    ) -> anyhow::Result<(Vec<AgentEvent>, Option<ModelUsageBinding>)> {
         let Some(invocation) = &self.bound_invocation else {
-            return (Vec::new(), None);
+            return Ok((Vec::new(), None));
         };
         let observation = ModelCallObservation::with_presentation_application(
             ModelInputKindV1::Completion,
@@ -1367,10 +1367,10 @@ impl crate::agent::TurnEngine {
             tools,
             None,
             estimate_prompt_tokens(messages, system, tools),
-            ModelPresentationApplicationV1::Auxiliary,
+            ModelPresentationApplicationV1::Profiled,
         );
-        let Ok(Some(evidence)) = invocation.capture_model_evidence(observation) else {
-            return (Vec::new(), None);
+        let Some(evidence) = invocation.capture_model_evidence(observation)? else {
+            return Ok((Vec::new(), None));
         };
         let usage_binding =
             ModelUsageBinding::from_input(&evidence.input, evidence.tool_result_context);
@@ -1383,7 +1383,7 @@ impl crate::agent::TurnEngine {
             .send_capability_if_changed(&tx, call_sequence, capability)
             .await
         {
-            return (Vec::new(), Some(usage_binding));
+            return Ok((Vec::new(), Some(usage_binding)));
         }
         let _ = tx
             .send(AgentEvent::ModelPresentationBound {
@@ -1398,7 +1398,7 @@ impl crate::agent::TurnEngine {
         while let Some(event) = rx.recv().await {
             events.push(event);
         }
-        (events, Some(usage_binding))
+        Ok((events, Some(usage_binding)))
     }
 
     pub(crate) fn fact_model_usage_event(

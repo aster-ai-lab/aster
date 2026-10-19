@@ -1,0 +1,2990 @@
+{
+  "Cargo.lock": {
+    "bytes": 543134,
+    "sha256": "10be1f74eb1ada3c525f6eb00caf8e3b985a0afac9d7d4a5514c7a81ff554e53"
+  },
+  "Cargo.toml": {
+    "bytes": 16747,
+    "sha256": "ebffee14b804bb952e2781c87780ceb50face6c808a0f061867ab80c05d8f807"
+  },
+  "crates/oci-runtime/crates/agent/Cargo.toml": {
+    "bytes": 921,
+    "sha256": "81ba9803527a9618ba83dd189e6d6b3fc481e95a9c386cff9c41f3b56bcd0a62"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/bundle_scope.rs": {
+    "bytes": 24165,
+    "sha256": "70e300cee24a8dc4965aea9bc4feed8587d6e02db1bf31827401944ac7ddde1d"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/capability/tests.rs": {
+    "bytes": 6593,
+    "sha256": "4c04e71bbe8bcf60c961761c525d270d9b4e212275feef20366b0d479f028195"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/capability/warning.rs": {
+    "bytes": 4192,
+    "sha256": "38a259ce3d748ac66ada646625b148215fcd09a7c19b304814b79220b29ae9a8"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/capability.rs": {
+    "bytes": 15044,
+    "sha256": "0c119e63454d87982bee3e9ce4ad96012334c8bce7f33def661f92a58c6f8c58"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/cgroup/hugetlb.rs": {
+    "bytes": 12701,
+    "sha256": "122ce13be5417f36ad558987ef6cf35f411e05e662a7a8c54651e48ff4d4258b"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/cgroup/io/state.rs": {
+    "bytes": 8375,
+    "sha256": "f8e552db844b94565db68fb5af8f37b89a3cf3fa6a94b1e8aeed574d213022ba"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/cgroup/io/tests.rs": {
+    "bytes": 10770,
+    "sha256": "4d82b7251a7ac6480f57b21f1f7f14c535956811b78a6797c5d928a708888375"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/cgroup/io/update.rs": {
+    "bytes": 13790,
+    "sha256": "180973abcd51f30d2c0f6c117014bf8ac9294767a419aaa2e458d0df4d68d993"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/cgroup/io.rs": {
+    "bytes": 14301,
+    "sha256": "0bde44473cb25c08a8c17646f1c0246bd987a6ecaebb0413e39cfc591dcb3aeb"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/cgroup/manager.rs": {
+    "bytes": 35918,
+    "sha256": "1d9709d6aab259657c54f2bd6ca51fdae4b0024556e93780d064859fcc39e909"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/cgroup/ownership.rs": {
+    "bytes": 21551,
+    "sha256": "2743ea74bceb8dfd5a19923a683b26c8b3d9e1c3a115f64c3b4dd76df2beb52d"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/cgroup/plan.rs": {
+    "bytes": 50087,
+    "sha256": "65a8bd788b3fd3ee6b5d717eb877394d41cfa2f3786a79d91cc64c1e9a931a17"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/cgroup/rdma/state.rs": {
+    "bytes": 3762,
+    "sha256": "062a4134a7b1176bc1286ea88b7bd01a5f287169d70a978e4d85c2430c7ee27b"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/cgroup/rdma/tests.rs": {
+    "bytes": 6718,
+    "sha256": "0a8c7fd26d0c8a211dfd089b8086bed047256c2880397e4c77999140e5ffebc6"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/cgroup/rdma/update.rs": {
+    "bytes": 7342,
+    "sha256": "634300135b1e19f748948717f4065289b789210ad7095bb294fd383446074c69"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/cgroup/rdma.rs": {
+    "bytes": 7506,
+    "sha256": "e8d7b5baa659b391afa41dfc2eda9fd55e210ea31e556559a66df54ef7a7d9ec"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/cgroup/setting.rs": {
+    "bytes": 1317,
+    "sha256": "ffe495ca4cadd217c599509799751341cd0834242ddeb801e143a20b729f2d1e"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/cgroup/stats.rs": {
+    "bytes": 15143,
+    "sha256": "989a030ce2da703591306b63434cbd7db718840d01af4d9bbbbb5445e89ec258"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/cgroup/unified.rs": {
+    "bytes": 11331,
+    "sha256": "36b8b35c76cb3396a69749e63e1fc6208b61167db6804ec7c3e4188463c79361"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/cgroup/update.rs": {
+    "bytes": 67162,
+    "sha256": "781afa3c7403dcf247eec913744a7259a6a4ff29db5a9af49f72079efcf6f9e8"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/cgroup.rs": {
+    "bytes": 58852,
+    "sha256": "0824cb967664e2c54ebe5dd3576565d777147c1826da28185f992b6c1da9cd8f"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/checkpoint.rs": {
+    "bytes": 7356,
+    "sha256": "075ce3f4b87d6b6920e171d1b56c5bcfe1360ef55a4b86038081008ac61e0aae"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/control/tests.rs": {
+    "bytes": 16319,
+    "sha256": "827e0dcb0a2a5a5af53aea39f3efcabacb13b0da6566d7e988d53b489c4639a3"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/control.rs": {
+    "bytes": 20775,
+    "sha256": "b880a206af45f1435fa9ff351da31ced56a7accf0ecc6366f457ac57b6d56b5c"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/cpu_affinity.rs": {
+    "bytes": 12327,
+    "sha256": "05ff10d14ae33f1609a42fda0209fd0a33aa7911f47afc112d3d0d7bd486bfc7"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/device/access/kernel.rs": {
+    "bytes": 10121,
+    "sha256": "ad903426491d01d9c48074efe5444c6f12b8dbb3e401155114aa2d252f4ae747"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/device/access/tests.rs": {
+    "bytes": 15922,
+    "sha256": "b59ed3730b4cf20a8603e0835a7f45db8ebdee5cbc29ca19a18a9f425935ef5a"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/device/access.rs": {
+    "bytes": 19084,
+    "sha256": "760ef9daf50f97a5aeba8774f8e8f828bb270fa44d2bcd730392b8f34c15d9dd"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/device/console.rs": {
+    "bytes": 9491,
+    "sha256": "dcb00cd26dfb100c7c793d4bacbcb3f259875a2470b381be20feb52dacd1506e"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/device/manifest.rs": {
+    "bytes": 27392,
+    "sha256": "64f10fbb80446345af023826893a663372b551603d959c58bce2431157bc8433"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/device/mount_source.rs": {
+    "bytes": 9461,
+    "sha256": "90c3a46e26657a496bca6c9ae29e6ced0575cd66d42d8deda6835e5bcbb81cfc"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/device/node.rs": {
+    "bytes": 21136,
+    "sha256": "eca8ceb5b2d4faacecc9a1975a06e24fd702e0c4d42c8ca712b27eaed5a0233a"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/device/plan.rs": {
+    "bytes": 26966,
+    "sha256": "c266ee2a2f41f0ac5221e485045d4df10c0ec8df1ffeac81e71b6832fa70cadf"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/device/tests.rs": {
+    "bytes": 44931,
+    "sha256": "02727311de6f7f0e955a58c9e433836bf80451bdd1b8c941adff1d4b0243b001"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/device/types.rs": {
+    "bytes": 3012,
+    "sha256": "79c023a1384bbf4f120c6ee48ea887fa23a8e15438eadfbd022a733a272a2cea"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/device.rs": {
+    "bytes": 1461,
+    "sha256": "11d6c4870ce65ad64da0d665e315ca351aeb9b9c4871c73c83cc2409472e7d7a"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/device_mount_transport.rs": {
+    "bytes": 18613,
+    "sha256": "54515fe238bd02ccc7cdeb7c3e52ba69bab5e1b16d3ccc0f5faca443da8bbecc"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/device_policy/mount.rs": {
+    "bytes": 5632,
+    "sha256": "a11aad5a64490a0342358ff4bb8ccf1da78cecb07a89b19705ae871903c69eaa"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/device_policy/protocol.rs": {
+    "bytes": 5519,
+    "sha256": "321b46f07875e825c4ce474e2e9bf611f106869e7fc0d91446910c26f262b493"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/device_policy/tests.rs": {
+    "bytes": 13395,
+    "sha256": "8e5c030cfbd6cae0227561452ab40128ecc4fc1783ff4ea9a456a47d2dc2790b"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/device_policy.rs": {
+    "bytes": 37543,
+    "sha256": "3ad3d704f7a4523e6585ab562b2fe453c2abb1f812233e0e6e4a243a00f26269"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/exec.rs": {
+    "bytes": 19284,
+    "sha256": "104dbe66f5ec34f7d559e76c10cbed0ae03608db9759e513ea9b3c460d10ffbe"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/exec_process/helper.rs": {
+    "bytes": 25629,
+    "sha256": "385f55de8036bc20dd562d7978fd6ec82619573c539ccb7093a99753497a9b00"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/exec_process.rs": {
+    "bytes": 31166,
+    "sha256": "bd8f5a29f94745afe824651721ce31f5239177e6145191074edb8a19b13c6760"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/fd_boundary.rs": {
+    "bytes": 2741,
+    "sha256": "c9d18bb619d33a7f087e029919d05dfce70532fd82b31554d770903ceec53f7e"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/filesystem/helper.rs": {
+    "bytes": 17217,
+    "sha256": "859fa8850f81b945e6dee9bf2fc41221b97978285c1530ce0127b03d2183f9a2"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/filesystem.rs": {
+    "bytes": 44332,
+    "sha256": "3467bdf6e1294d5dde3f1deb2735b70d6bbcf5922f2c33827efe6d2207c0f2b4"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/hook/owner_death_tests.rs": {
+    "bytes": 5037,
+    "sha256": "6467332bab4eacb942b20618aa2506f6e23cee35b40e7a8d47bc0dd7ec54a7d6"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/hook/watchdog.rs": {
+    "bytes": 7600,
+    "sha256": "04dd1367d7f44c02ef5b04314c671809231ea649de82cf9a9a0cd027450e8e7c"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/hook.rs": {
+    "bytes": 32086,
+    "sha256": "3a84b1c78934e8636ea01e8fbb16442b1e5ec52200e322e10d2b7014a6477ed5"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/inherited_descriptor.rs": {
+    "bytes": 23567,
+    "sha256": "630ca3bfd68aabc226342a0d865bd61f945ce4f8cfa7ff4912faae27b4efa1a6"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/init/supervision.rs": {
+    "bytes": 4682,
+    "sha256": "21d9d566c4162043726cfef8d0c452d0167fd4fd4eb8195cdc8b08f77fe7ebef"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/init/tests.rs": {
+    "bytes": 9896,
+    "sha256": "26b1de8955f15dec6c75795a15ea1055792eecb28f8d28e9a7e2627c5ec60107"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/init.rs": {
+    "bytes": 37990,
+    "sha256": "c64b5cd79ef131c1e120aecdee75363073a72240af825a16af5b8055f79e05c1"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/intel_rdt.rs": {
+    "bytes": 35187,
+    "sha256": "423645f5d35e621b38f761f41286506a88b90e79f0814e7d7a3db7d281945d61"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/intel_rdt_test_support.rs": {
+    "bytes": 5064,
+    "sha256": "88fd0d324694e63627c45cfc27634bed983ad988ed613593162d14600057f807"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/io.rs": {
+    "bytes": 41464,
+    "sha256": "cf36e18161f09994a495c5bb9eae1407b1b8e28b6804cbcdedddd1647acf23cd"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/io_priority.rs": {
+    "bytes": 9480,
+    "sha256": "ddff6ce817f592cdec6c8f26d4e1ad9df2d411927ee18e4cadf8712a9f284228"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/linux_support.rs": {
+    "bytes": 315,
+    "sha256": "f8162bf9cd627aa320c897249fa34eda043a00886f46a9a0d4a7194879fb290c"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/memory_policy.rs": {
+    "bytes": 20338,
+    "sha256": "c9574c9639de8cbfe587f6d73b9e9cce4f3ee26e52769084a26bc72c93b709d3"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/mod.rs": {
+    "bytes": 87685,
+    "sha256": "988671b4d72a8bcd12a9408745438b679414a5aef0b2f70d3d00aa86c7dfc4cf"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/mount/attributes.rs": {
+    "bytes": 6229,
+    "sha256": "c6211b858576c139599a5ab3db32b4418dbce439aa5a91c8a1aca295407fd543"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/mount/default_filesystem.rs": {
+    "bytes": 6184,
+    "sha256": "3c87185a20175cd375af48bfc60e89b8e98bbaa7e70207eaf318f12fba744d6d"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/mount/idmap.rs": {
+    "bytes": 36801,
+    "sha256": "a990bf1b00e6ac234bb2ef3b553ad3933bc8257363df79d7162079f7b27531f9"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/mount/scope.rs": {
+    "bytes": 7541,
+    "sha256": "f810cef8fba0a93a7054c78fe10ca07836d88ddbaccffd20669c53b39ff81e16"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/mount/target.rs": {
+    "bytes": 5038,
+    "sha256": "a5ce95988a0fab3d9b8d30bf8658a60ce4b7b146303d88096dabf12b4f145b95"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/mount.rs": {
+    "bytes": 38086,
+    "sha256": "b8eb7f50c329b8972a07a30588c65d6c5cc716350fee0ad52bb250bf20e526db"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/mount_tests.rs": {
+    "bytes": 42441,
+    "sha256": "f1b67cb52f39a64dfa00acbcbe82d297ed2de307b22a132ec96c1e799e120d60"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/namespace/join.rs": {
+    "bytes": 11553,
+    "sha256": "ca82a98ae64dfcf869a4ac1b45adb6a3a65e8cc96c1c21aa739ba17eb165686d"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/namespace/joined_user.rs": {
+    "bytes": 14761,
+    "sha256": "ebcbe89bfd196e4f10906e250546ddd5dac5bb0a2f04a7b0d87220f0003804af"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/namespace/mount_idmap.rs": {
+    "bytes": 12132,
+    "sha256": "83ef5fd9dc7ee7dc53e8a42323d350c25bf350262173425d860e6d8b1bb3857b"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/namespace/network.rs": {
+    "bytes": 10779,
+    "sha256": "57a63f109a180e98109b67828dc1d506d0328fbaf98457b306d6e3bcfd4bfb3c"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/namespace/retained.rs": {
+    "bytes": 14435,
+    "sha256": "62a6a6d9363af3f8307a490060639f022dcd8d457c891a3183a99b5f0fb641c1"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/namespace/time.rs": {
+    "bytes": 3524,
+    "sha256": "94c0976e28c35de102be35a3f54c0db5777c4c1a0722d34a53cb0aaf5e66e9f7"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/namespace/user.rs": {
+    "bytes": 24019,
+    "sha256": "2709a4d724d07c438c07603419d24fef208af0250a9af7c41d1ff158f805c95a"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/namespace.rs": {
+    "bytes": 21308,
+    "sha256": "62f1e489ce62c950d2118534675b47293510507ed0ec4b5797c896e1015228d8"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/namespace_tests.rs": {
+    "bytes": 7423,
+    "sha256": "1ea8cfd5939a53c766b33473dff121be3185a6508b42dec9c8a9a06fbdc19a6d"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/network_device/netlink/protocol.rs": {
+    "bytes": 18505,
+    "sha256": "d54b838761a90bbbfed46c922586d1fad940d7dede9b4dc57335153b08dde18b"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/network_device/netlink/snapshot.rs": {
+    "bytes": 3294,
+    "sha256": "a80db5930175b72151ee8eaa319e8c38bca3fa41e334326999797bbcace0ee5e"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/network_device/netlink.rs": {
+    "bytes": 31439,
+    "sha256": "7b6864a90c5b392478807fbb05736a34451abb1432db9ba80dce8949fc937a30"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/network_device.rs": {
+    "bytes": 8152,
+    "sha256": "3541c16e089cf1a8fd275849d01d542dc87ac86ed8ed044342ed30db20077d85"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/no_new_privileges.rs": {
+    "bytes": 2768,
+    "sha256": "9a1de133bf335f09dc085a8b1c1123ed77ffa208c13ed1d2849fdd0f770b776e"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/oom.rs": {
+    "bytes": 11379,
+    "sha256": "6147ac04bbedb00fc789e7852043631f113759bdc4d05672354f9640716f1a27"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/personality.rs": {
+    "bytes": 7737,
+    "sha256": "1a186df5336ee8f562d8dc5d4a226b4089cd5762fa1ea3d01a0a173a53dc72d5"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/pid.rs": {
+    "bytes": 18504,
+    "sha256": "c55190dbb0e4d885036fcc59f0bf52bcd479d2929a4f38a5f2a8c0747c0e8dd3"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/pid_supervisor.rs": {
+    "bytes": 30559,
+    "sha256": "4529ee7f1a04a7ef4df5e1e8550fd94953c576768f8a25c8ac4e77886b466bbd"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/pid_supervisor_tests.rs": {
+    "bytes": 6348,
+    "sha256": "b0f89321ff72ad031bdd86581eefaac714b69a1949f9121956c23782a7836ef3"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/pidfd.rs": {
+    "bytes": 6954,
+    "sha256": "bb0416339980321d57fce38dad6dfe0e5d9231c9c7cec8aa2728ebe3b41a8e9d"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/plan.rs": {
+    "bytes": 30576,
+    "sha256": "945b0d64170177116ebb7944e8effd89a5bae2d9088a4be6ee7a93abd31bf167"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/plan_tests.rs": {
+    "bytes": 63588,
+    "sha256": "ccf66cd0331373c7b1ff026f1f5afe2f9c3cfd871627209bf49dc0bca34321c0"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/portable_rootfs_metadata.rs": {
+    "bytes": 23617,
+    "sha256": "cda19992106b4a886a2ffbbce82892a56157bb1d792a54acfc1ab468483a57a8"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/process/launch.rs": {
+    "bytes": 18422,
+    "sha256": "e62d667b9cc981e20b9bce1250b7497197162c0057c419dd757e5909fe2700c4"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/process/restore.rs": {
+    "bytes": 22512,
+    "sha256": "b63503930bafad9d3c72a65e47ff6d872f7224168b04fce7deee374bfb974cad"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/process/tests.rs": {
+    "bytes": 6117,
+    "sha256": "aa7a429e075e5bb85d5154297037c69198e7ca2de42b5299f7b4f4e119a7cd43"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/process.rs": {
+    "bytes": 53642,
+    "sha256": "17b13da03831c85b560e73f783897d2cadfe94a39db63b37593fa46318397158"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/process_executable.rs": {
+    "bytes": 6752,
+    "sha256": "8de24ed348ca6aa15c5549a04c539994dbdf6b554e7216189ca9cd112cffec31"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/process_group.rs": {
+    "bytes": 6839,
+    "sha256": "6e29c081a98f3f712023c4a8b97cd9dd11af47e7199c17eb15c66540e355aa20"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/process_group_tests.rs": {
+    "bytes": 2112,
+    "sha256": "ab9eadfaaa0b032b945253b7e027c03d2449d1bc75320e66318d9388a08ffdeb"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/process_io.rs": {
+    "bytes": 10896,
+    "sha256": "91a6e17935acd42f650e628adda3f04c99b84828b039c7ff116a6a2aec361485"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/recovery.rs": {
+    "bytes": 252626,
+    "sha256": "0e4aa7cdb52a3e86060ad95c965e979c419ed49bf3de8accb97184850a138d52"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/recovery_mode_tests.rs": {
+    "bytes": 2360,
+    "sha256": "cc34989b3bd2a5a47f60e5f2b062dcb83af2d97b12938f53512a4156601c3573"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/restore.rs": {
+    "bytes": 22038,
+    "sha256": "1b31ee5da805292a76ba3a59a859dfe0736cd08c2e6d1929c5ee79f321c0736e"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/restore_cgroup_namespace.rs": {
+    "bytes": 5173,
+    "sha256": "ccdcdbd04b20995f6a626f8a6f398f69908bc3d665f6eca8f12f3a5d38f3484c"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/restore_supervisor.rs": {
+    "bytes": 9897,
+    "sha256": "1b15e42ca31a6f002fbab9a9b2226f6d9db5186e6dd77d2bd969241af53754b4"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/rlimit.rs": {
+    "bytes": 12424,
+    "sha256": "f7df38b4a2e13e2d9cc75cef61840b35084d199fe382072a20dcd381e9f159ce"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/rootfs/dev_symlink.rs": {
+    "bytes": 14898,
+    "sha256": "d2c2e596310aae5b920d8636558046b7c712fb6150a767ddcab3b3232d291e3d"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/rootfs/mask.rs": {
+    "bytes": 7992,
+    "sha256": "34dfd864efab6e2159dd1beab132aae33c515cbbb1552ceb8459a9d677ea734f"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/rootfs.rs": {
+    "bytes": 23263,
+    "sha256": "16c308ebd364bf214f40e9673f9ed632892f8218b9f987104d847aad8088de87"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/rootfs_tests.rs": {
+    "bytes": 4889,
+    "sha256": "c83f95410beccd17460b6828043ac502c9493321ac3299bb6053183c6f7d0578"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/scheduler.rs": {
+    "bytes": 24793,
+    "sha256": "8495c1bc219f60da7aadd51ecada279972338d875eda7769bed3fc045b96de80"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/seccomp/architecture.rs": {
+    "bytes": 16107,
+    "sha256": "45558efef7fa955bfa0647365046124daa6ebef06de1c5000d1e1584b371fd01"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/seccomp/syscall.rs": {
+    "bytes": 10197,
+    "sha256": "52a7f0bf8492f8c6346994740dccd0e6b2910a66b5191186ab966212b64994dc"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/seccomp.rs": {
+    "bytes": 23196,
+    "sha256": "2101fceeeb6a2c50b5222812e6808d394fece121a71b0e7618d288512e7e9694"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/seccomp_bpf_tests.rs": {
+    "bytes": 5653,
+    "sha256": "d7180ac65ef61326245f1ef6abda3e6a2840cf6574ca838b9d7ba12ca9870b86"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/seccomp_tests.rs": {
+    "bytes": 14065,
+    "sha256": "d7034206b4cd3ee337a593bc55031990cb0fc48f3a2ab0fc3c523ac9c38dc4c9"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/secret_env.rs": {
+    "bytes": 13956,
+    "sha256": "f71ea7bf841b13fc3bca52274359f1b1453b6b91db167054c307da162074e05c"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/session_supervisor/mod.rs": {
+    "bytes": 121581,
+    "sha256": "7529b4686be6dc79abea490640750a4f55cd01f96e35fc738952d9126f86ccec"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/session_supervisor/output_buffer.rs": {
+    "bytes": 10137,
+    "sha256": "d4a8235988459701da14d133fa6fe8462acba1148ae5c6430133c45f8e5c91cb"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/state.rs": {
+    "bytes": 44986,
+    "sha256": "4bbb5af79d656c7bfc3dbe0bd485ca269c221f538cf35cb6cae1e9e698adc42e"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/sysctl.rs": {
+    "bytes": 17641,
+    "sha256": "c9b5e6d30cd9582b112bdf53b41b0a00b943134e20b98015410fd8a1f1aa7306"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/terminal.rs": {
+    "bytes": 11792,
+    "sha256": "b3fa886b983981ab11c43ce48d133edaf54cb2eb51bf110b996c6150d89352c9"
+  },
+  "crates/oci-runtime/crates/agent/src/executor/trusted_executable.rs": {
+    "bytes": 9955,
+    "sha256": "30296af1160fc85fd80268948f436e5f5d2a6a1ea4a3c8aa644a825f17f7de63"
+  },
+  "crates/oci-runtime/crates/agent/src/handoff_fs.rs": {
+    "bytes": 27823,
+    "sha256": "01700f050856c749fc30bfaa98f240f4c65de1542e5d523caa56e44c0a00cf8b"
+  },
+  "crates/oci-runtime/crates/agent/src/lib.rs": {
+    "bytes": 35739,
+    "sha256": "4bf98f9ee0ff4ecafcd6b4ea51257c5fcb909ca7663be0b50eb409d2d0eca0e1"
+  },
+  "crates/oci-runtime/crates/agent/src/linux_device.rs": {
+    "bytes": 1393,
+    "sha256": "e38993b773976ed6a5c14e7397f925ac945a9d11c62cbbfdc0bf573669f70632"
+  },
+  "crates/oci-runtime/crates/agent/src/main.rs": {
+    "bytes": 2114,
+    "sha256": "d9b8c362aa334d8d7292e00c0094e840c483d6126148f6b9043959da011075d0"
+  },
+  "crates/oci-runtime/crates/agent/src/operator_setuid.rs": {
+    "bytes": 9588,
+    "sha256": "b476c53c6e4a8812bdead588504854295e9a7237fd1c9f922153377b0094b289"
+  },
+  "crates/oci-runtime/crates/agent/src/transport_qualification.rs": {
+    "bytes": 9463,
+    "sha256": "57c7755912a92be925c421e419fefad8e2bbc554ad70d33284a228f15ba1e0ad"
+  },
+  "crates/oci-runtime/crates/agent/src/vm_attachment/directory.rs": {
+    "bytes": 3608,
+    "sha256": "75d154ba44e2cb45863638367cf8d3b97a82562d41f89deb8134d5c1501b70c6"
+  },
+  "crates/oci-runtime/crates/agent/src/vm_attachment/network.rs": {
+    "bytes": 9781,
+    "sha256": "377adae5df66af7af48c730099ba73c31d634cfb8a2ae8d2a185cd3c652dfdae"
+  },
+  "crates/oci-runtime/crates/agent/src/vm_attachment/storage.rs": {
+    "bytes": 16439,
+    "sha256": "1619ab7598b49b57465fea3f21db60d50097ba83620e8754718f6301f68eb15e"
+  },
+  "crates/oci-runtime/crates/agent/src/vm_attachment.rs": {
+    "bytes": 20855,
+    "sha256": "b8977556881aeb02b65d57edeec54cc43bbba47515094ff7a3224ef902a8e80b"
+  },
+  "crates/oci-runtime/crates/agent/src/vsock.rs": {
+    "bytes": 4860,
+    "sha256": "43ad0248b196c5edd8d8464955c4be601b74198eaa0d4b7e327792c131b9794f"
+  },
+  "crates/oci-runtime/crates/agent-protocol/Cargo.toml": {
+    "bytes": 484,
+    "sha256": "377d26a59f4a01f2db94510fb3c75b55edbda0337a415becc7dd1ab50405b877"
+  },
+  "crates/oci-runtime/crates/agent-protocol/src/client.rs": {
+    "bytes": 38517,
+    "sha256": "a37082078f5cf55dd83a8bd00c83c5d429d2338fd689bc1d8507e419c8e93336"
+  },
+  "crates/oci-runtime/crates/agent-protocol/src/fault.rs": {
+    "bytes": 11623,
+    "sha256": "fdd4475a9e24e520eaa0e95527481ffd6d183f437769f1638ffb207f44caf196"
+  },
+  "crates/oci-runtime/crates/agent-protocol/src/inherited_descriptor.rs": {
+    "bytes": 5092,
+    "sha256": "cab1195125fbee55c81eed85ba649b8d50443c321d59af6cd51022c7346d3c1a"
+  },
+  "crates/oci-runtime/crates/agent-protocol/src/lib.rs": {
+    "bytes": 3616,
+    "sha256": "db0a9cdaccb71bb7e6a9d304b99da350070f052adc5bc950977a06a2783e463b"
+  },
+  "crates/oci-runtime/crates/agent-protocol/src/model.rs": {
+    "bytes": 41210,
+    "sha256": "7a5efc0eb9c453ca3c1bff949e548a4d7c9e2c4a24c9fced4b94b6c5da544b7f"
+  },
+  "crates/oci-runtime/crates/agent-protocol/src/qualification.rs": {
+    "bytes": 13221,
+    "sha256": "6067aa2c0addce2c4baa109f5774887b8df9fe764f03181f44be4f61a7990265"
+  },
+  "crates/oci-runtime/crates/agent-protocol/src/recovery.rs": {
+    "bytes": 15446,
+    "sha256": "573168398c442934efc6bbc1ce8447404ae1b03587b8cdc1a6e84ffed6c4c873"
+  },
+  "crates/oci-runtime/crates/agent-protocol/src/server.rs": {
+    "bytes": 16725,
+    "sha256": "9aa0a00ccd0f1ca18e741a43c101f475dc2392c287704616fa9295f49870821b"
+  },
+  "crates/oci-runtime/crates/agent-protocol/src/tests/acknowledgement.rs": {
+    "bytes": 3787,
+    "sha256": "2c9e69b0d0818263d55c479eb8a6c1768e24b773e6c4031a7602e7566fb13c6c"
+  },
+  "crates/oci-runtime/crates/agent-protocol/src/tests/fault_matrix.rs": {
+    "bytes": 14956,
+    "sha256": "807c8a7b8f32d988dfa14c34dfda4a893036de31066d635bab2d6f32bb86872c"
+  },
+  "crates/oci-runtime/crates/agent-protocol/src/tests/process.rs": {
+    "bytes": 28080,
+    "sha256": "65c0a1a6b883eeaec4734e9c03742c0f2e4f2c0129e32e67c1d81080007d9318"
+  },
+  "crates/oci-runtime/crates/agent-protocol/src/tests/protocol.rs": {
+    "bytes": 23035,
+    "sha256": "dd3e041e77a897341cf17c663f6d523a9e667d37826a9eefc3f99515f473f4be"
+  },
+  "crates/oci-runtime/crates/agent-protocol/src/tests/response_replay.rs": {
+    "bytes": 20365,
+    "sha256": "74e7859d8f7050ff42c7fdef6f235312b99e45046b93f7a200c8f3d2b1702a20"
+  },
+  "crates/oci-runtime/crates/agent-protocol/src/tests/transport_failures.rs": {
+    "bytes": 8266,
+    "sha256": "bbde616822cf828ae4cc6976dc26a29fe74b3ee3a765fa43695e1d82f68151bf"
+  },
+  "crates/oci-runtime/crates/agent-protocol/src/tests.rs": {
+    "bytes": 26706,
+    "sha256": "a0c75a12b4949c17bc5506c5f033f94d3dc3eaffd116871538ca3e279043cd3a"
+  },
+  "crates/oci-runtime/crates/agent-protocol/src/transport.rs": {
+    "bytes": 5972,
+    "sha256": "37980be01370982a81b0ffd243b4f0839339ee759b65126936501f7c6bd7382c"
+  },
+  "crates/oci-runtime/crates/agent-protocol/src/validation.rs": {
+    "bytes": 23100,
+    "sha256": "926e20283a14939e2029ecac2036a9ae9075fbad7eb27e5450757d4ffbfeffa9"
+  },
+  "crates/oci-runtime/crates/agent-protocol/src/vm_attachment/directory.rs": {
+    "bytes": 7558,
+    "sha256": "5f13c3ba5f90e76c2b8ac89f044ee497bdb5a150b7bad3069e0b0ff389f50440"
+  },
+  "crates/oci-runtime/crates/agent-protocol/src/vm_attachment/directory_tests.rs": {
+    "bytes": 8149,
+    "sha256": "c69f0b1ad7ba425c55c99fad3f39be829ff430c7368fa9520ef72d730b840957"
+  },
+  "crates/oci-runtime/crates/agent-protocol/src/vm_attachment/storage.rs": {
+    "bytes": 11683,
+    "sha256": "67750df1e500cc7cdc85f4d1b8ae80cf1322771043d172a493ad5def8a3c866b"
+  },
+  "crates/oci-runtime/crates/agent-protocol/src/vm_attachment.rs": {
+    "bytes": 39586,
+    "sha256": "31095f1792ce40657fb497e5e9cfe6f3f4877ea56265e6ad58a131495da7d726"
+  },
+  "crates/oci-runtime/crates/agent-protocol/src/wire.rs": {
+    "bytes": 3499,
+    "sha256": "2e4d6b2a3b7bc7095283bd6eae6984277b6d112ca41cf5515f79feb9eb40de85"
+  },
+  "crates/oci-runtime/crates/cli/Cargo.toml": {
+    "bytes": 638,
+    "sha256": "ff3f57bdae5953e9b84eead322586733605e19c0c0810dfba2b21418c1ec8177"
+  },
+  "crates/oci-runtime/crates/cli/src/dispatch/native.rs": {
+    "bytes": 2718,
+    "sha256": "6859b003f101c3927815f146d8fd0cd3b58f64c512fae504fcf6665139ce1abe"
+  },
+  "crates/oci-runtime/crates/cli/src/dispatch.rs": {
+    "bytes": 81729,
+    "sha256": "60983fd4f6a3eca9ca3c85888814cde308c8e61d1129a0d32d4fb48b0ec6fe7b"
+  },
+  "crates/oci-runtime/crates/cli/src/linux_kvm_service.rs": {
+    "bytes": 3008,
+    "sha256": "56af697a9caf9a95ee995e58cee7218df8a2b797ea5e62d5baae41c68ee08788"
+  },
+  "crates/oci-runtime/crates/cli/src/macos_hvf_service.rs": {
+    "bytes": 2590,
+    "sha256": "ccf9b942163261df887f3bdc9fcfb5918a69944b212463f633767282b9ecf393"
+  },
+  "crates/oci-runtime/crates/cli/src/macos_hvf_service_tests.rs": {
+    "bytes": 2843,
+    "sha256": "658681a96a03c01d39e1c34019050ad5057e9086adfc734132d1cb6351dbd480"
+  },
+  "crates/oci-runtime/crates/cli/src/main.rs": {
+    "bytes": 65177,
+    "sha256": "27ba004284f3f997e8d5e685e9bb3dd901fef22ec92430021821b8da1824ff90"
+  },
+  "crates/oci-runtime/crates/cli/src/native_service.rs": {
+    "bytes": 2884,
+    "sha256": "6b8ba801c380c991787ea8bc1343da6d0459c878fc6af4cc5b59b51f5b221ae7"
+  },
+  "crates/oci-runtime/crates/cli/src/oci_cli/config.rs": {
+    "bytes": 3541,
+    "sha256": "1582622ec640081868715cdaeef75d5004a6d9d2c2373b1f40b455eb6b1540ee"
+  },
+  "crates/oci-runtime/crates/cli/src/oci_cli/journal.rs": {
+    "bytes": 29807,
+    "sha256": "9039f311d8a38a55dc8807f2421bdfbbbe26ea11960056cfe270844e873680c8"
+  },
+  "crates/oci-runtime/crates/cli/src/oci_cli/mod.rs": {
+    "bytes": 25725,
+    "sha256": "135af227550e6c2eb9b94990aa3defebf9d4b068497e67bba64ab5fb68261837"
+  },
+  "crates/oci-runtime/crates/cli/src/oci_cli/signal.rs": {
+    "bytes": 2629,
+    "sha256": "4f17d45e4b19bb2e8ec3177684edaf1c6496e9f99d42a6d279bce77f206b24e4"
+  },
+  "crates/oci-runtime/crates/cli/src/oci_cli/tests.rs": {
+    "bytes": 25817,
+    "sha256": "157bff979c793735808e03054e907661ac9db5583bd75acd1d01d987b298022a"
+  },
+  "crates/oci-runtime/crates/cli/src/reopen_replacement.rs": {
+    "bytes": 17418,
+    "sha256": "f8fed8dab3580d8f48d44f27cae7ba3377730aa2ab7b7423006956f40b9877f6"
+  },
+  "crates/oci-runtime/crates/core/Cargo.toml": {
+    "bytes": 313,
+    "sha256": "f77136f28d1270ddb495e5f029798ac6474bd4a18e11bb60d930bba941cf3727"
+  },
+  "crates/oci-runtime/crates/core/src/capability.rs": {
+    "bytes": 5966,
+    "sha256": "51f86a9283e761a80363b8f982fad051767fb2bfba44527dae4ea98c9e193217"
+  },
+  "crates/oci-runtime/crates/core/src/hardware_vm.rs": {
+    "bytes": 11143,
+    "sha256": "23381589d7affefc1681d15ed74b394418e37d7763ceeadc04fe9799fe188eb9"
+  },
+  "crates/oci-runtime/crates/core/src/hardware_vm_tests.rs": {
+    "bytes": 7458,
+    "sha256": "816ed116e614be9d94dc188067802d766c7030f8b186ae1aa57d5f91a9a7a888"
+  },
+  "crates/oci-runtime/crates/core/src/lib.rs": {
+    "bytes": 356,
+    "sha256": "23060d273ed2a8779f161540b69b724a718fc5a4402208860d86804b2f990221"
+  },
+  "crates/oci-runtime/crates/core/src/lifecycle.rs": {
+    "bytes": 3358,
+    "sha256": "1bc5f8b7bccb1bed77afb358f1834ae16c19d16c801ddf43e06bd190344007fb"
+  },
+  "crates/oci-runtime/crates/krun/Cargo.toml": {
+    "bytes": 1207,
+    "sha256": "1b6528e014b3a12ba39c4a38632ad066d5a3e2724f0b4385135b50db1740e616"
+  },
+  "crates/oci-runtime/crates/krun/build.rs": {
+    "bytes": 8146,
+    "sha256": "9766b1b128c1c15adf210cf6d1e48fe6c0afdead8b6199775313a492a25c6b82"
+  },
+  "crates/oci-runtime/crates/krun/runtime/runtime-assets.json": {
+    "bytes": 4040,
+    "sha256": "893361445b37ce369b33832a70526346e31f4c7cb00d0021787c1f2e22ad78d5"
+  },
+  "crates/oci-runtime/crates/krun/src/agent_smoke.rs": {
+    "bytes": 19818,
+    "sha256": "b211fd88183a8c45f283ab4d138e68f03b13d2269834997bf916edf50274c149"
+  },
+  "crates/oci-runtime/crates/krun/src/bootstrap_token.rs": {
+    "bytes": 27959,
+    "sha256": "bc0cfe2cb6887e7d2279d242de0500aef65e09a0383315372f7bad66e7921f45"
+  },
+  "crates/oci-runtime/crates/krun/src/context.rs": {
+    "bytes": 13072,
+    "sha256": "20d14b617f6f9bb0c2d26fa728c007c8f0773d9fc901d6a0fd4ae6563c493bfe"
+  },
+  "crates/oci-runtime/crates/krun/src/ffi.rs": {
+    "bytes": 3340,
+    "sha256": "a99e24b63517c9c98f439b9b45472526ad1552550c053def59cb99ed8b63718a"
+  },
+  "crates/oci-runtime/crates/krun/src/lib.rs": {
+    "bytes": 45403,
+    "sha256": "2aca901d1af6dae594e5803bf8333c4e944a69f2b574ee1a75d7a7351b02bdcc"
+  },
+  "crates/oci-runtime/crates/krun/src/linux_agent_smoke.rs": {
+    "bytes": 27202,
+    "sha256": "28d5651dfc892d2f4adfea58caa26943a389236401c1cf51e1e83f37a194f019"
+  },
+  "crates/oci-runtime/crates/krun/src/linux_compatibility_drift.rs": {
+    "bytes": 16440,
+    "sha256": "51673d2622ec0989431a714171500798f0720a4cc711f93ee902574864b63e4b"
+  },
+  "crates/oci-runtime/crates/krun/src/linux_context.rs": {
+    "bytes": 34930,
+    "sha256": "71813a0871ab9d73064a57d034b4485753cad3b228ceaade97cc049eb5d95d2e"
+  },
+  "crates/oci-runtime/crates/krun/src/linux_kvm_device.rs": {
+    "bytes": 6092,
+    "sha256": "d769762f586280529a978047073b2b6fab67e440dcb61a602fa46a87acc35152"
+  },
+  "crates/oci-runtime/crates/krun/src/linux_runtime_asset.rs": {
+    "bytes": 13368,
+    "sha256": "6724ad9b387e31f1f4c36947ca57ef799344cc524c2e8dd55e2fdba34d50329a"
+  },
+  "crates/oci-runtime/crates/krun/src/linux_runtime_share.rs": {
+    "bytes": 16876,
+    "sha256": "7f38676815223458f804070a7cf013d7a08fe448b6d87782e702c409b3472a42"
+  },
+  "crates/oci-runtime/crates/krun/src/linux_system_image/manifest.rs": {
+    "bytes": 6447,
+    "sha256": "8926683dae47d4a9f43e2b6af92217acf3f036365c67c39ad0f700946ca5c099"
+  },
+  "crates/oci-runtime/crates/krun/src/linux_system_image/pinned_file.rs": {
+    "bytes": 8846,
+    "sha256": "a871e6a10033e127464b1f52d45b0baf94fbdbe07307f7c07ddb4bd87657b77a"
+  },
+  "crates/oci-runtime/crates/krun/src/linux_system_image/tests.rs": {
+    "bytes": 7800,
+    "sha256": "061c873d46506c3c65ebc82fea735fc23911b684495830bfc89fdb12b35d1d80"
+  },
+  "crates/oci-runtime/crates/krun/src/linux_system_image.rs": {
+    "bytes": 7142,
+    "sha256": "537d3f7928ae103f0deb20fa9f3a40c26476baf8c9b898e5042744fce3514147"
+  },
+  "crates/oci-runtime/crates/krun/src/linux_vm_attachment.rs": {
+    "bytes": 28528,
+    "sha256": "ed8f8a55a399aa01d55eb4688bcde41092adb9811f6eeaeff13481b0cc628235"
+  },
+  "crates/oci-runtime/crates/krun/src/macos_agent_smoke.rs": {
+    "bytes": 22356,
+    "sha256": "a976c0f5f31ea90d5b73e2bd77041bd777e57a3e46f8ee06331244868fba3f15"
+  },
+  "crates/oci-runtime/crates/krun/src/macos_assets.rs": {
+    "bytes": 18857,
+    "sha256": "093938de771250bb8f90985c549eda88d6098450ecca22c04fd13f641c26b867"
+  },
+  "crates/oci-runtime/crates/krun/src/macos_context.rs": {
+    "bytes": 31866,
+    "sha256": "2ed5a880b01e505eb85ca42e99f99f9732f4a414da4302044660626f89104cbb"
+  },
+  "crates/oci-runtime/crates/krun/src/macos_guest_command.rs": {
+    "bytes": 19307,
+    "sha256": "87dd2af2b922779c4321adc7d776c2629ff54369ee4e9bde5ecf3fbcc7b4bf0b"
+  },
+  "crates/oci-runtime/crates/krun/src/macos_runtime_share.rs": {
+    "bytes": 19389,
+    "sha256": "ab22e1ba41855e31c3ae2c763cc45911dc1f637b5d8fca4b93a1ee8578f4535a"
+  },
+  "crates/oci-runtime/crates/krun/src/macos_system_image.rs": {
+    "bytes": 22895,
+    "sha256": "8fe4793c0c654597d4dd5dc9b28b4974821f96f8e4dbc4494b32c783d903fd12"
+  },
+  "crates/oci-runtime/crates/krun/src/macos_vm_attachment.rs": {
+    "bytes": 8933,
+    "sha256": "3d5a23d58ae38d28d9328d0f7fb491fd4847991928112dd88489d4617360d1cb"
+  },
+  "crates/oci-runtime/crates/krun/src/macos_vm_attachment_tests.rs": {
+    "bytes": 7481,
+    "sha256": "a16ea1acab266d4a36d630da39a4c2be287d546bddb0d304d6d5812dec45bbc4"
+  },
+  "crates/oci-runtime/crates/krun/src/macos_vm_marker.rs": {
+    "bytes": 21602,
+    "sha256": "a8c327c3a1cb8c4e415d69ba10cf5ef185c80b4e5a10eea8796945728e859f20"
+  },
+  "crates/oci-runtime/crates/krun/src/macos_vm_smoke.rs": {
+    "bytes": 19989,
+    "sha256": "20ba2894a1a9b2904ec9aefcf70f9ea901d8d3d86e401373e03f405c94fcda5d"
+  },
+  "crates/oci-runtime/crates/krun/src/macos_worker_sandbox.rs": {
+    "bytes": 9289,
+    "sha256": "c3bc85e5fd1cdff297b7cbbcacb84e53f94bbdc01bbd56232bcfbfb107b3d4d6"
+  },
+  "crates/oci-runtime/crates/krun/src/macos_worker_sandbox_tests.rs": {
+    "bytes": 5619,
+    "sha256": "a4ff72b8473e443acc844c451e3c0509fe65599e26a368ee05c720541f4ab3ad"
+  },
+  "crates/oci-runtime/crates/krun/src/main.rs": {
+    "bytes": 68443,
+    "sha256": "2b9fbeb64bf270d7644d15ecf5e33871147b2f78de8578b8df4ae590ed2fc3fd"
+  },
+  "crates/oci-runtime/crates/krun/src/owner_process.rs": {
+    "bytes": 16525,
+    "sha256": "b00b602be3077c91d6deff08110e2859fa377f675d1b65c4e571a4f414e2fd36"
+  },
+  "crates/oci-runtime/crates/krun/src/owner_process_macos_tests.rs": {
+    "bytes": 6983,
+    "sha256": "89696a24c9535d38e68cd4c56511095905efe11858d58de16e09d4679376adcd"
+  },
+  "crates/oci-runtime/crates/krun/src/recovery_report.rs": {
+    "bytes": 40371,
+    "sha256": "c6233145ac08141a41421c03b2993e8b90153b65d2d4b168ed99e252994ec4d2"
+  },
+  "crates/oci-runtime/crates/krun/src/report.rs": {
+    "bytes": 21265,
+    "sha256": "638df6968eac4d2ce87130f15b7b1668d8c55dec444574ad9b0c4fd152e0abc0"
+  },
+  "crates/oci-runtime/crates/krun/src/report_tests.rs": {
+    "bytes": 1769,
+    "sha256": "aedb4bfa9342d975bc31200db0727a03a5753fca98ae4d8d317706d969f84e9c"
+  },
+  "crates/oci-runtime/crates/krun/src/runtime_assets.rs": {
+    "bytes": 16666,
+    "sha256": "8b2d22022ec58552520dc3967ef305a35da1e00c53b195b4d0a17f3c18cec235"
+  },
+  "crates/oci-runtime/crates/krun/src/unix_process.rs": {
+    "bytes": 31663,
+    "sha256": "de0c42b4f224e27e0079c0e595042e7a7dab8a9d924c80d5db9a31541d8f9d7f"
+  },
+  "crates/oci-runtime/crates/krun/src/whpx_handle_reclamation_report.rs": {
+    "bytes": 9787,
+    "sha256": "0ce08cc895206f9f61163f73a3f289e26503fd960948341f5dabbed4c503d220"
+  },
+  "crates/oci-runtime/crates/krun/src/windows_bootstrap_console.rs": {
+    "bytes": 5076,
+    "sha256": "cdb891a48db062f83e3442bc8991a2b3332327ea7b42c6eedb42e3af7cfcd276"
+  },
+  "crates/oci-runtime/crates/krun/src/windows_handle_baseline.rs": {
+    "bytes": 13794,
+    "sha256": "c9ff3cdd28ae3700055dd1520a4fb7bdccc0724f5663f1d80f9987b0593279fc"
+  },
+  "crates/oci-runtime/crates/krun/src/windows_handle_reclamation.rs": {
+    "bytes": 18068,
+    "sha256": "891f7464241461674f6b34c2b38b2e4b45507dc7f3eb94619270c2d9b119b279"
+  },
+  "crates/oci-runtime/crates/krun/src/windows_session_owner.rs": {
+    "bytes": 22122,
+    "sha256": "69176fa659d65596d57d72eaa6e1256b4215a84711d2ab07544441f800214c65"
+  },
+  "crates/oci-runtime/crates/krun/src/windows_system_image/tests.rs": {
+    "bytes": 5720,
+    "sha256": "c8e16be972ac5169cc5c94cb42dc59514bfb0f74eab36ebc1818d154666f361a"
+  },
+  "crates/oci-runtime/crates/krun/src/windows_system_image.rs": {
+    "bytes": 28975,
+    "sha256": "0d1f7c73b08bf399402a8282da5b7203cd591acd7bc79df87fc38d270ebc4f9f"
+  },
+  "crates/oci-runtime/crates/runtime/Cargo.toml": {
+    "bytes": 1032,
+    "sha256": "fa472771e56cf063654e825de1852c7678c3e0cd7b4e3e258873855f3e5953ed"
+  },
+  "crates/oci-runtime/crates/runtime/src/agent_driver.rs": {
+    "bytes": 36033,
+    "sha256": "b8fdf6747b2df75fa7e0f137b9c848aff74d5058ec63521ceb3c438641f06582"
+  },
+  "crates/oci-runtime/crates/runtime/src/agent_launch_cleanup.rs": {
+    "bytes": 22931,
+    "sha256": "c7da078db43c7ed23d6d5d54e0aed2b8e156208082b213dc0d16b520c891cd74"
+  },
+  "crates/oci-runtime/crates/runtime/src/agent_pipe.rs": {
+    "bytes": 9452,
+    "sha256": "fa48f80875c86ee670187f55ce4091dc7993065b7b3d081255ded171b8944989"
+  },
+  "crates/oci-runtime/crates/runtime/src/agent_session/tests.rs": {
+    "bytes": 20454,
+    "sha256": "0b704c1ca7ccee7d9ce1fd02fc1dd5a6a7e8d09ebc14b35cb36720deae60719f"
+  },
+  "crates/oci-runtime/crates/runtime/src/agent_session.rs": {
+    "bytes": 122656,
+    "sha256": "28364c4589aac34d500edc0c95fd6de3175e5c13f771792821cc091465594c5b"
+  },
+  "crates/oci-runtime/crates/runtime/src/agent_smoke.rs": {
+    "bytes": 5126,
+    "sha256": "6f813e5b8f6d12a5f8f928a13b030594fd8494aeb8671008ae1184b63e19c349"
+  },
+  "crates/oci-runtime/crates/runtime/src/agent_smoke_process.rs": {
+    "bytes": 17752,
+    "sha256": "586fb523fb7a049a8cb995c60371054d91a87e5cc793e65d6a854074df5d1eff"
+  },
+  "crates/oci-runtime/crates/runtime/src/agent_socket/tests.rs": {
+    "bytes": 9297,
+    "sha256": "a830ad05eb716a72a6376b1fc194e55706f2ecc08bbb3a2873b3c08fe30a56df"
+  },
+  "crates/oci-runtime/crates/runtime/src/agent_socket.rs": {
+    "bytes": 23342,
+    "sha256": "f533e84080bd266c0d2407622613af3b4a8ff3ed32c639442b6938563d1fb684"
+  },
+  "crates/oci-runtime/crates/runtime/src/async_cleanup.rs": {
+    "bytes": 3010,
+    "sha256": "9201373956be416ac3a1412576bdbe6fc7b0d0e7a848a03400dd7c66bcac6874"
+  },
+  "crates/oci-runtime/crates/runtime/src/box_whpx_service.rs": {
+    "bytes": 9398,
+    "sha256": "d97f65e1472c8c78b0a585805c2ffc3d018140323782757be60ca4da5f2d50fa"
+  },
+  "crates/oci-runtime/crates/runtime/src/cleanup_report.rs": {
+    "bytes": 17148,
+    "sha256": "02042400b3afa7999e89f87d27539f4ee2dff866a42adb91647d95f4fddacd19"
+  },
+  "crates/oci-runtime/crates/runtime/src/driver.rs": {
+    "bytes": 38991,
+    "sha256": "a74c1cf80982a2cf2ae44ea4409345a50bfabfc1691c06bfe086b3f6e38eaa9b"
+  },
+  "crates/oci-runtime/crates/runtime/src/fault.rs": {
+    "bytes": 15274,
+    "sha256": "9471ccd989faa136df8142b225b406582acb0d6913e1f94bdeebaad909cd8724"
+  },
+  "crates/oci-runtime/crates/runtime/src/file_security.rs": {
+    "bytes": 16623,
+    "sha256": "55cbc4f240f3c585254fde51a46915d60b6b7dfb964c1dacfaed0416a444b834"
+  },
+  "crates/oci-runtime/crates/runtime/src/filesystem_smoke.rs": {
+    "bytes": 15791,
+    "sha256": "5d10608f6a021d8a94cbb9a8e68ab01fbf48abfa35cedae19c1471b271f04649"
+  },
+  "crates/oci-runtime/crates/runtime/src/guest_isolation_report.rs": {
+    "bytes": 7900,
+    "sha256": "2d8f82c8be039e1a21c3776be25f41e1e45fe4b90681e0724d422b50bea7e25d"
+  },
+  "crates/oci-runtime/crates/runtime/src/host_cleanup.rs": {
+    "bytes": 16104,
+    "sha256": "3f2ba29131c94ad3170b5b961cbbce70a125d68155613b04e8cc91b25542c905"
+  },
+  "crates/oci-runtime/crates/runtime/src/hvf_driver.rs": {
+    "bytes": 9516,
+    "sha256": "a86a431b3fc6d6fba381d151e4a126856a37fdba73e9c53b5f6de9a7dc37e7c5"
+  },
+  "crates/oci-runtime/crates/runtime/src/kvm_driver.rs": {
+    "bytes": 23593,
+    "sha256": "c8f277beae8f3c21769c66c8fa6c2c4a553831661b18d6f2d662ab26eebe9176"
+  },
+  "crates/oci-runtime/crates/runtime/src/kvm_durable_session_owner.rs": {
+    "bytes": 24465,
+    "sha256": "bcd4b49128e094fe373b8d03375cce8529ae9dbdba97625fa20d706ac393cd33"
+  },
+  "crates/oci-runtime/crates/runtime/src/kvm_live_session_binding.rs": {
+    "bytes": 14120,
+    "sha256": "4275eea7315f928048ca4e54b2e271657a55dbbdc760ac7f44fef92f37c49fc0"
+  },
+  "crates/oci-runtime/crates/runtime/src/lib.rs": {
+    "bytes": 18688,
+    "sha256": "3efe86c99e25389c18dbee01b391b58867191e27f5da0b9f6f56759c85e6fc61"
+  },
+  "crates/oci-runtime/crates/runtime/src/linux_kvm_live_recovery_smoke/mod.rs": {
+    "bytes": 949,
+    "sha256": "7b1c7d749bbdff76f6f73733cdccef96ab8e4da122edef4cfa3286bbe241e938"
+  },
+  "crates/oci-runtime/crates/runtime/src/linux_kvm_live_recovery_smoke/report.rs": {
+    "bytes": 14962,
+    "sha256": "d553f05710536ada8c43ed2b8692550104267dfe937bf7172894a0423c630a17"
+  },
+  "crates/oci-runtime/crates/runtime/src/linux_kvm_live_recovery_smoke/runner.rs": {
+    "bytes": 39637,
+    "sha256": "d05b32161dbc147d1e7b6bd3619add871b16b8a8c202fc75094974ffdbaa450f"
+  },
+  "crates/oci-runtime/crates/runtime/src/linux_kvm_recovery_smoke/bundle.rs": {
+    "bytes": 9145,
+    "sha256": "ef6e8f51a52087e921fcc3c81fbfe761a940fcf5ea7a49977738ffd4ba63aa16"
+  },
+  "crates/oci-runtime/crates/runtime/src/linux_kvm_recovery_smoke/host.rs": {
+    "bytes": 20190,
+    "sha256": "b37a705c4b4bf41b90ce2a2531714c0de3d316b0b325a2521d6e6f9a85595374"
+  },
+  "crates/oci-runtime/crates/runtime/src/linux_kvm_recovery_smoke/mod.rs": {
+    "bytes": 670,
+    "sha256": "830a6923e95199c2723c882c21164239f9fa967a3ce5a0d57d55883649c230a1"
+  },
+  "crates/oci-runtime/crates/runtime/src/linux_kvm_recovery_smoke/prepare.rs": {
+    "bytes": 7155,
+    "sha256": "41e6069fb13de8575481951d77c9594c4ed3e42736474a4539659fd91440aa21"
+  },
+  "crates/oci-runtime/crates/runtime/src/linux_kvm_recovery_smoke/qualification.rs": {
+    "bytes": 4448,
+    "sha256": "d90ae8c2c3b99782a6e0e801bfb34f8647bea0d7e8ee40211e8b883cb73bb1a6"
+  },
+  "crates/oci-runtime/crates/runtime/src/linux_kvm_recovery_smoke/report.rs": {
+    "bytes": 12501,
+    "sha256": "6f5a771746ed3afa288534d84c1f11d18c2e67b59e44ff66f75d9824baabf3af"
+  },
+  "crates/oci-runtime/crates/runtime/src/linux_kvm_recovery_smoke/runner.rs": {
+    "bytes": 16375,
+    "sha256": "481a3d42f2a009f9875d50aac79e7bbe99e4f129b1a49024cdb4689caaca1b24"
+  },
+  "crates/oci-runtime/crates/runtime/src/linux_kvm_recovery_smoke/soak_report.rs": {
+    "bytes": 13387,
+    "sha256": "2f62b8d8a85ca73e2f9420d4d03f7ec6f930554c6a265fea400d567efb0ddbed"
+  },
+  "crates/oci-runtime/crates/runtime/src/linux_kvm_recovery_smoke/soak_runner.rs": {
+    "bytes": 17609,
+    "sha256": "56beae4e5bfffdf9002c0902c3823a0e440f607998295871208464a836597fed"
+  },
+  "crates/oci-runtime/crates/runtime/src/linux_kvm_service.rs": {
+    "bytes": 20147,
+    "sha256": "3c29d52e649e88def38a4105986b01a033af4b8f1ee12fe89f17074ddc205c93"
+  },
+  "crates/oci-runtime/crates/runtime/src/linux_native_live_recovery_smoke/host.rs": {
+    "bytes": 9849,
+    "sha256": "585744f919dd7e24eb9493f5949f8a43216838e46e7960c0f5b2f6781bc9994e"
+  },
+  "crates/oci-runtime/crates/runtime/src/linux_native_live_recovery_smoke/mod.rs": {
+    "bytes": 1223,
+    "sha256": "f92700baaf936e491511ccdf1838e465ff5f47885cae4ed1f75c5ba1e3bac3e8"
+  },
+  "crates/oci-runtime/crates/runtime/src/linux_native_live_recovery_smoke/report.rs": {
+    "bytes": 11846,
+    "sha256": "5aa2c50b13b22cfb4274232f7935cd721958bdde8b1faf266cca06fa3ab7d115"
+  },
+  "crates/oci-runtime/crates/runtime/src/linux_native_live_recovery_smoke/runner.rs": {
+    "bytes": 26089,
+    "sha256": "52ee4c81bd71d7f2bc2174b404021a01d96ff6c8b82bdb98e79248b8722afe6b"
+  },
+  "crates/oci-runtime/crates/runtime/src/macos_hvf_host_smoke/bundle.rs": {
+    "bytes": 6106,
+    "sha256": "922adf25d2894058b12469e7d9775f6f72fecff739c402e08ba1e60808422223"
+  },
+  "crates/oci-runtime/crates/runtime/src/macos_hvf_host_smoke/cleanup.rs": {
+    "bytes": 3378,
+    "sha256": "5280f59e6bb4f33ab5a1e40d641f42629c710674d03d48d36f7cb110cb2cb9df"
+  },
+  "crates/oci-runtime/crates/runtime/src/macos_hvf_host_smoke/host.rs": {
+    "bytes": 18197,
+    "sha256": "c10f96b17f80f1e984226df53c4a51ad73a088f279b39480a47d84c77da351ab"
+  },
+  "crates/oci-runtime/crates/runtime/src/macos_hvf_host_smoke/lifecycle.rs": {
+    "bytes": 22421,
+    "sha256": "1918d025e5c977a97fe58a2df6b983093bb02ded4afff4ee6fd034533c4f2e7e"
+  },
+  "crates/oci-runtime/crates/runtime/src/macos_hvf_host_smoke/mod.rs": {
+    "bytes": 535,
+    "sha256": "20b96efcce8f3e1849b072d6e58f22e73d6c775a7303e8541fd4dda0cfeff709"
+  },
+  "crates/oci-runtime/crates/runtime/src/macos_hvf_host_smoke/owner_death.rs": {
+    "bytes": 13883,
+    "sha256": "1b472d1436abb09ca04593ab701ddb10585b634db18d091eb3fa3c8b3e66d8f8"
+  },
+  "crates/oci-runtime/crates/runtime/src/macos_hvf_host_smoke/report.rs": {
+    "bytes": 21924,
+    "sha256": "94975635170af5ad4ceba6fc5e8c406f8b691da23313ac011ccd9d7a066ef99f"
+  },
+  "crates/oci-runtime/crates/runtime/src/macos_hvf_host_smoke/runner.rs": {
+    "bytes": 22404,
+    "sha256": "3e4ae21669b7c02817b1f2ac66d5adc4d0ef4c5e6250df9f702afb10c8a1f7e0"
+  },
+  "crates/oci-runtime/crates/runtime/src/macos_hvf_host_smoke/soak.rs": {
+    "bytes": 10622,
+    "sha256": "7ea71d98f429ea5847b0ac34c1fb0761673f9d1e31865d0e5223ea2928fb2a95"
+  },
+  "crates/oci-runtime/crates/runtime/src/macos_hvf_service.rs": {
+    "bytes": 11633,
+    "sha256": "22fd9fb705cd149b791ff7149b5f9a257dd8b8d7c5aa4a88176efeff9238f9a8"
+  },
+  "crates/oci-runtime/crates/runtime/src/marker.rs": {
+    "bytes": 1289,
+    "sha256": "990c126358178a960cf98e3b42ffb914d9aa3706dd03dc62d2fe7e5d86035ae5"
+  },
+  "crates/oci-runtime/crates/runtime/src/multi_container_report/cgroup_path.rs": {
+    "bytes": 2157,
+    "sha256": "cb332ac49c0b260aa628cec957f2330a6e71b9bcaa004b4f71184d8bfd3c7608"
+  },
+  "crates/oci-runtime/crates/runtime/src/multi_container_report.rs": {
+    "bytes": 43486,
+    "sha256": "150a3e42cd63cb3b2a74fac3e62a398db552bd0382d37f28ce3ebca8fc128ae4"
+  },
+  "crates/oci-runtime/crates/runtime/src/namespace_join.rs": {
+    "bytes": 10934,
+    "sha256": "4218ec93e0ce0c6b0cc9fd13466c9e1e32a0b11f397dc03949698eff45c20434"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_checkpoint/artifact.rs": {
+    "bytes": 37960,
+    "sha256": "2b6db2d285bbf1f21dd353e0b6e23312061c8fe2e6268c7b9b0e6702a860108a"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_checkpoint/journal/restore.rs": {
+    "bytes": 30481,
+    "sha256": "7df9f92c092c2d600c6066ce5adb20ed29d5f94bc00c83157a514d8531c82964"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_checkpoint/journal.rs": {
+    "bytes": 30236,
+    "sha256": "b3c9f0192417a640de7ee8eaeb7e7e746c3014aba0722eb0da61dee244ddc9df"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_checkpoint/mod.rs": {
+    "bytes": 23986,
+    "sha256": "33c69218f39bf393fad36e12b5aa1aa71898408851938ea0bc857108c2f0f015"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_checkpoint/publication.rs": {
+    "bytes": 18439,
+    "sha256": "0689c981d6d6df1b886bb58b39ce3b6d5979002cf0cb01762e341dca98659dfd"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_checkpoint/restore.rs": {
+    "bytes": 21253,
+    "sha256": "6aea59457a3a46c3068f9c9118471c1a937ba50734ae473e24445c0f12c3e9a8"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_checkpoint/tool.rs": {
+    "bytes": 25596,
+    "sha256": "b49cef86469028129eb51fd669d934bf8b6dc01f6bd2cefdcc963cf89ed80da4"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_checkpoint_report.rs": {
+    "bytes": 9414,
+    "sha256": "67c1e94e6f24b7a3039ddde501a58bc381dbab8e5cdd171df3a31015885e3df5"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_control.rs": {
+    "bytes": 7850,
+    "sha256": "309c9b8876d431aae383e792bab9d8fa22d16218d0bc0a7d7274e43118ac66bf"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_hook_recovery_smoke.rs": {
+    "bytes": 15616,
+    "sha256": "f9e874446163c60be24fa5d8122deddb6d98e0700d0bac450720aaacc3cfcc0c"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_linux_driver.rs": {
+    "bytes": 47197,
+    "sha256": "1b717c1e71f0a3c03c9293b46e127279e577d3fa80f724dcdc6e7f48ec668edc"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_network_enforcement_report.rs": {
+    "bytes": 13396,
+    "sha256": "325337bfbd1a98983691c2b09f9405f85b58be16a37f15bae65face319d1cadc"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_recovery_smoke.rs": {
+    "bytes": 30534,
+    "sha256": "3bbf39714cbc75b78ad64a9bc2f7693151434821d18bea572844fc04688b9018"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_service.rs": {
+    "bytes": 16416,
+    "sha256": "2d5c2e5d6d9bd433b7f509bf4e8b151f8a50fbdd5793dcca922d7fe2f0881960"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_smoke/linux/checkpoint/cross_process.rs": {
+    "bytes": 28018,
+    "sha256": "b9773ba13579041554d1dceffb86bff5295519d8214f7cae04a32cc2dcaf010a"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_smoke/linux/checkpoint.rs": {
+    "bytes": 31402,
+    "sha256": "9cd1186e8c3690446a03c14084f8c79aae90060fa6299bbd58659aef42a23c3e"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_smoke/linux/control_descriptors.rs": {
+    "bytes": 5799,
+    "sha256": "0caf071b0af615cdb28cde0e94772a9ae32a550484707666d8ab490b09f5b551"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_smoke/linux/fault_cleanup.rs": {
+    "bytes": 9532,
+    "sha256": "4c05710a5d33ceaabc1b91d5f8b0f03838677d28899e771d91ef0cbf41c02e85"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_smoke/linux/filesystem.rs": {
+    "bytes": 4406,
+    "sha256": "43776965f25f4fe2e293d9140da7d5a4c5285cbeb4643bf4a792ae15ba7792a2"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_smoke/linux/lifecycle.rs": {
+    "bytes": 34822,
+    "sha256": "bf1f01614b02debad3db0986f84864d4efdc987bad3ec741145bcc9ed569c30e"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_smoke/linux/multi_container/initialization.rs": {
+    "bytes": 27204,
+    "sha256": "ccf312b1d127a80b3acfe169b76de0dae966a0da2df9930e666c74510a7c7aaa"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_smoke/linux/multi_container/lifecycle.rs": {
+    "bytes": 28451,
+    "sha256": "056b315d8f987a37e50ef9d589231aa4fab368adab7a3e126499027f5f9e037c"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_smoke/linux/multi_container/namespace_join/device_fixture.rs": {
+    "bytes": 7570,
+    "sha256": "5dec31bcc3d66d194ae9c0b677170182d2f97535dc565b0083c51945b6bb3515"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_smoke/linux/multi_container/namespace_join.rs": {
+    "bytes": 13781,
+    "sha256": "609144905953aa4b3df7d40945619e5f811eed9197e52bd10984580c5817dd06"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_smoke/linux/multi_container/rootfs_enforcement.rs": {
+    "bytes": 3555,
+    "sha256": "17ed7ac578d7f09c296ed712ef246c57d86052b311fa2f8f5a49a4ec96e4293c"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_smoke/linux/multi_container/storage_volume.rs": {
+    "bytes": 14281,
+    "sha256": "02c5ca774b8c35672ca67cef0f6107fe9459d55290f00a1aa11c2e9c329001b3"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_smoke/linux/multi_container.rs": {
+    "bytes": 10314,
+    "sha256": "3d44a2fe2071995deab77e1e0ed5b42f09201d8d8190e051023cd839264a4549"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_smoke/linux/network_enforcement/lifecycle.rs": {
+    "bytes": 12820,
+    "sha256": "9b4ba484d8fd160b72f7a2cce0d23a6d9f71aebf3e606008922a82b59f5f5544"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_smoke/linux/network_enforcement/probe.rs": {
+    "bytes": 5263,
+    "sha256": "290bd6b25a9d3695a4732bd9051e910ec09f6e570353b47a8a56389e97ce98e3"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_smoke/linux/network_enforcement/profile.rs": {
+    "bytes": 3397,
+    "sha256": "3d9243297d995ad52710746ea46c51ba62464018366387d5f0aa69786cbb2b05"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_smoke/linux/network_enforcement.rs": {
+    "bytes": 8344,
+    "sha256": "afa980cd97fdbd153244950d26dd38882ac2e1c5c4a90eab72978be3022ebbe2"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_smoke/linux/rootless/config.rs": {
+    "bytes": 9006,
+    "sha256": "9e880689287ad5197e2e679035d54a568725a835bb6bfc8584b83273452773f3"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_smoke/linux/rootless.rs": {
+    "bytes": 44710,
+    "sha256": "ee0684a071a9be5a1e5e89385b9df59e602bea2fa3454f299159b06c1564e0ce"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_smoke/linux/soak/cleanup.rs": {
+    "bytes": 7170,
+    "sha256": "8ce69be4fd7aef72b359b54e40995e218ecc872a152d86df3f451c88eee57159"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_smoke/linux/soak/pause_resume.rs": {
+    "bytes": 16372,
+    "sha256": "6bf6357cc2ba1901180077eacc7395ff89f3db1135cf1d0cec869ce0ec111213"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_smoke/linux/soak/wave.rs": {
+    "bytes": 26189,
+    "sha256": "4c82aa38b1e8a13f4f4ec853249ec26c335400824c4c517ac9ccb7e63879045d"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_smoke/linux/soak.rs": {
+    "bytes": 16005,
+    "sha256": "97095fc4ea8fce3c1a2ba3d6d88fa06149724701c08eca8c2e947cd0c4f7dcef"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_smoke/linux.rs": {
+    "bytes": 20100,
+    "sha256": "35c384c4dc825c6b0aaa1bc841e514c012787aac2eca68e4e7befe447599f3bc"
+  },
+  "crates/oci-runtime/crates/runtime/src/native_smoke.rs": {
+    "bytes": 11365,
+    "sha256": "23703a3216978cba92c1bcf9375b2c05356f440e801ab77fef0d55c1a870f7f5"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/fault_cleanup.rs": {
+    "bytes": 6784,
+    "sha256": "bb6df3416c91b93bc9c3c6a853a23e2c46713e5f8ff2e0125523da33c3914f0e"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/guest_isolation/fixture.rs": {
+    "bytes": 16392,
+    "sha256": "faaea86ee75665187506baf381bbb8edacf6124c8410878114af89fc0b7e8fdc"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/guest_isolation.rs": {
+    "bytes": 19464,
+    "sha256": "21e9d77775ca3dca1d42d13be762a80330f524858b1667fa2ad917b9e4f92b95"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/lifecycle.rs": {
+    "bytes": 44561,
+    "sha256": "89063274a24620a3280303c8c214f906d4e6d661d601618453c396f58ef5f3dc"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/multi_container/lifecycle.rs": {
+    "bytes": 22367,
+    "sha256": "731f93a5c5ceba3afa5c8a83e3f584dcc75bc00f59b56f2f27f885509391f743"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/multi_container/namespace_join.rs": {
+    "bytes": 8284,
+    "sha256": "e8f009e91e1b3847ffa8b7a076171de38e0a2caafa8de4e274bc225719a3a026"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/multi_container/rootfs_enforcement.rs": {
+    "bytes": 3670,
+    "sha256": "e152514b75928ea07a45985989356583715102b453fa3dd506c8e7b8ede3329d"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/multi_container.rs": {
+    "bytes": 16877,
+    "sha256": "c8beb5bdb0016694586f3b153908b6803fde1e31068be943821c926321441ec6"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/close_stdin/entry.rs": {
+    "bytes": 11827,
+    "sha256": "6419514b75ab96a5004df7e4133dd3a7f37c72f528c9056405d08e2a10a7c503"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/close_stdin/first_owner.rs": {
+    "bytes": 18327,
+    "sha256": "4f0499745cc6d36861f38ccab2aa4b5b7be0c6e642bd9de6087ec6d6a5408e34"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/close_stdin/replacement.rs": {
+    "bytes": 22816,
+    "sha256": "98ec0be401d8231e5d60332a153b3905aeeb3e9a21304125e4c7a7d6702d4f61"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/close_stdin/support.rs": {
+    "bytes": 7181,
+    "sha256": "7fc47ef527118b290fc9aa2a050d54d2096af9bd2f604b9a942b5ff7621bcb42"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/close_stdin.rs": {
+    "bytes": 1913,
+    "sha256": "0ba1034ceb152d83438a411ee5a08f4e42499d02530b5e3b436b962b72b9a310"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/delete.rs": {
+    "bytes": 35451,
+    "sha256": "d0f7b3c2ed46988be79937db87fe490100e11ed1e79b02844dbf5c637251bc79"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/delete_support.rs": {
+    "bytes": 3813,
+    "sha256": "6470e00f244592d30138c42b39d703f64453d530a04cc10a2be270713e2cc4a3"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/exec/entry.rs": {
+    "bytes": 10417,
+    "sha256": "e2da5f53d717b25cae28afaba0fe18fcf1c9ed9e848fd9b79ffaaebe941b4573"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/exec/first_owner.rs": {
+    "bytes": 14891,
+    "sha256": "f8f58681cfe5814095a486ed497b3a727954597326bfef5ef562c15e79a5cee3"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/exec/replacement.rs": {
+    "bytes": 20856,
+    "sha256": "0f6df5ac780bac0659ce48d50bc849ff895e69158bf3a17f24e32ff7075fa6a0"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/exec/support.rs": {
+    "bytes": 11404,
+    "sha256": "60b3f7c23367992e9f794239c404280b1fa0515b45a224984676e1048b002db1"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/exec.rs": {
+    "bytes": 1870,
+    "sha256": "4dc54e6e231ec84fe5a4e64b0c399d93d1df2b38f64c1ee281e66241536b3cf4"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/file/entry.rs": {
+    "bytes": 10507,
+    "sha256": "e0af7d0148811341943367cd4e1be6b69bd2166971df7dafce9a65767ac189e0"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/file/first_owner.rs": {
+    "bytes": 14129,
+    "sha256": "72424a6e48456fc1dccac34d9554f15cd46cf8fe6c66e398c6f3645a1a67b732"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/file/replacement.rs": {
+    "bytes": 21832,
+    "sha256": "333eedd3b423566e30142f7cea50e5b81a4aefda19233de24d23ae07b4b89527"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/file/support.rs": {
+    "bytes": 7996,
+    "sha256": "36a335ac1d3144d55d938389a32000ea21f6663a4e67140acc25dc5088f34708"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/file.rs": {
+    "bytes": 1671,
+    "sha256": "b37b58fe4a6ede5244b00a18875831f6336b832c370e2659350e77ee33985701"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/filesystem/entry.rs": {
+    "bytes": 10539,
+    "sha256": "87206694832ccf796a2e338934e4efe150d7d174011d68d6d0b4420f53c63a27"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/filesystem/first_owner.rs": {
+    "bytes": 14458,
+    "sha256": "9f5e0fe6a3b95c918294481243875f4de4c7a0cbf719360d17cb0164c386e153"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/filesystem/replacement.rs": {
+    "bytes": 22668,
+    "sha256": "c6f502951e1669af24c5d195918f5b747da6c6a4fb3fea72f4fa0cf10320f505"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/filesystem/support.rs": {
+    "bytes": 7094,
+    "sha256": "0d9f2e4d445facb40c979c086fc5b30b122b3ee2fa160ecc12760fe4a0e23c65"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/filesystem.rs": {
+    "bytes": 1595,
+    "sha256": "92474d0e433798638b587fdda7cb8e88dfda8f59cbb6f1ccd372ed0ffce94661"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/kill.rs": {
+    "bytes": 42609,
+    "sha256": "925ea2e3dcd7d839394fe87186880de7766fc5f99c7bfc0d57b9b4032c59fabe"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/pause/entry.rs": {
+    "bytes": 9031,
+    "sha256": "a75fc667e2fe192b20f32b661c522caf1f905c7bef0cdf1ff1d51de04e5abae9"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/pause/first_owner.rs": {
+    "bytes": 14433,
+    "sha256": "ea06da2eef15ede2bdd7dd9682a39c8bccec9db4e967056e153fbb2f93677f7f"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/pause/replacement.rs": {
+    "bytes": 19836,
+    "sha256": "2479c27ed76fe180d15f0194f549b5fe85af3452ee1c47de902a15ca6faddc55"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/pause/support.rs": {
+    "bytes": 2205,
+    "sha256": "6ee01f17941c0e84e1e45cc7933c3ae66f21167d5d61c8689cb7f387409f84e7"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/pause.rs": {
+    "bytes": 1539,
+    "sha256": "4b4273d75433ec7d957363845d1c39b19f16c686ecf57d13a0995b4382d58f04"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/processes/entry.rs": {
+    "bytes": 10071,
+    "sha256": "066cff348fe8784fa9243e2f455bd2e5f6499996fb9af574d1c820a57ad6687a"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/processes/first_owner.rs": {
+    "bytes": 18734,
+    "sha256": "93be0687005f06d3ff017b184c799139b80a387a7baf56d5c9dc83c46c467e4f"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/processes/replacement.rs": {
+    "bytes": 18438,
+    "sha256": "b85bae11ec5b0e7abdb51daa31f2c7b065dce0ed731a93b9541cedfe5bfa675c"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/processes/support.rs": {
+    "bytes": 2094,
+    "sha256": "26206126ce709bed2e507ece5cf9bf7c36edd25c51351602cab2372102628abc"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/processes.rs": {
+    "bytes": 1595,
+    "sha256": "7516b58c9632a960acb9c6c11156430a0302bd322eb2a1da046dea6580a04eea"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/read_output/entry.rs": {
+    "bytes": 11135,
+    "sha256": "b57b1afc7bfe3855e8e9445b03f05d92e6def77b1d6e46a56427cf43d543a169"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/read_output/first_owner.rs": {
+    "bytes": 18821,
+    "sha256": "2942af6a0dfd82f197d191a7d6225821f95ba7896e992f8681e700ade3562c8b"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/read_output/replacement.rs": {
+    "bytes": 18657,
+    "sha256": "4dfe3bc14defc47a35f7fc53da9afe1e14d270725b424d3d845660fa22201b8c"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/read_output/support.rs": {
+    "bytes": 3076,
+    "sha256": "34d1b1d736f5fda8865b5815d4fa7423fda8c5b054ab7b6b945a332605a62050"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/read_output.rs": {
+    "bytes": 1766,
+    "sha256": "09eba5ce36cc0d374e859602ebc40889a81c8a1c03f1fb6acd9228a44f286eb1"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/resize/entry.rs": {
+    "bytes": 11438,
+    "sha256": "993ed0fbfd53af04d1e37c9b1511841b1211e4c3e4c793190c526025d5ffe5ea"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/resize/first_owner.rs": {
+    "bytes": 18157,
+    "sha256": "ee1ce085a53761bb55ad5134a92d6189a3b566842e53d67a5a212438f66bd1b6"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/resize/replacement.rs": {
+    "bytes": 22596,
+    "sha256": "2bbc2b8593bbb6982186f4160c06e6b54ced5ceb1f184b8f0c7890c074d03f89"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/resize/support.rs": {
+    "bytes": 7259,
+    "sha256": "5e2e8bc66f71b6254c216a3799b3cf6cebb8b116f0496bad21b8f5d610da5c24"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/resize.rs": {
+    "bytes": 1835,
+    "sha256": "d75911c544a795c2950333ac122d70e74c1fed0a5e86fd7b20cc78a9a1160040"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/resume/entry.rs": {
+    "bytes": 9484,
+    "sha256": "90d1114e9571357089f9c8e5f8a3782b7aaccb0587e1cab6f8af5728d313cef0"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/resume/first_owner.rs": {
+    "bytes": 18320,
+    "sha256": "0a85bda5289d7d19d97bd87fbe7b1d6a9e3eb8805f56919c938d56fbe21c7843"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/resume/replacement.rs": {
+    "bytes": 22914,
+    "sha256": "7c1d1b541360fb8178d53cb7ec831a396688e9ba6457c807a544378778a6e460"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/resume/support.rs": {
+    "bytes": 2885,
+    "sha256": "8a8ec25ff59bac4b2fc268281afd7bf9d5139f59786db2eb73dcc673248b4add"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/resume.rs": {
+    "bytes": 1631,
+    "sha256": "d95ec65e32d1ecdeb669d86798723451496c911640349714d101b1d2680cd09e"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/signal_process/entry.rs": {
+    "bytes": 11948,
+    "sha256": "aecf801792214fe0037d9ca1be6e87f004c4a4acbbf9ef3cbb1d67066e313819"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/signal_process/first_owner.rs": {
+    "bytes": 18489,
+    "sha256": "6f413e957af6e94066bd6124bf6a081e200368646deacebd0903e657031fc19a"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/signal_process/replacement.rs": {
+    "bytes": 23376,
+    "sha256": "660e48b895a57634e71ab5f2fbf14d61bf343828c83c300a6b1db52e9e8eb1bb"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/signal_process/support.rs": {
+    "bytes": 5416,
+    "sha256": "585de2c837b2cbd735d3148c5f44eb0ca783d2ac0a3d7e7277e3836de3944ec9"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/signal_process.rs": {
+    "bytes": 1937,
+    "sha256": "50f7b8c324a3d1583920e9974c24e8cb31389117ee61abeba268a18aaa63471c"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/start.rs": {
+    "bytes": 34440,
+    "sha256": "6d97c506e95b0e7590c7e316e271f376bdbb7d4f3b8ef854f1ea5b45b41ba155"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/state.rs": {
+    "bytes": 28795,
+    "sha256": "c10fb966fb77e3841dc6ddaef1f37f0aee0234669c9a2c129f2fa014cb4f9285"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/stats/entry.rs": {
+    "bytes": 9304,
+    "sha256": "16c9c6233edd1b621e97ee9c2bd979760c7a097a47bd6ed20d3f2a2624ec894e"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/stats/first_owner.rs": {
+    "bytes": 18038,
+    "sha256": "6170ebaf6501864c8d3101197e7adc33570f50607f0590921e949a5f5cca53e2"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/stats/replacement.rs": {
+    "bytes": 20115,
+    "sha256": "c0576cd6da823e4fecf4eff847c7153ae8ae1eb1e6b979f912ce661e35192155"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/stats/support.rs": {
+    "bytes": 1397,
+    "sha256": "32e5037f809fab4fbe31472cde2c4ba84fb1c3a24ee84f4442b4ca8c32c63ec9"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/stats.rs": {
+    "bytes": 1530,
+    "sha256": "e4bdb1bb9d267aa6b634142e952758b4e85683863913e33c6d1b426fb03e0640"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/update/entry.rs": {
+    "bytes": 9366,
+    "sha256": "11f2316904d1b622828e521150f3f128e3a0f43b1de87338d7ee887752fb0d8a"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/update/first_owner.rs": {
+    "bytes": 14504,
+    "sha256": "fbe9dd2192a19013003043e90ddf102ed99ed74cfecddba138059c7ec70780ee"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/update/replacement.rs": {
+    "bytes": 23346,
+    "sha256": "11615cd1537ece84b60cc0c9b4b328de414ef696aa2729065acd8cd5f940428c"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/update/support.rs": {
+    "bytes": 2336,
+    "sha256": "268bc7d76cb3314a634e412e89ece7e2c2cb4a9c0135e699a1df3a0c9545813a"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/update.rs": {
+    "bytes": 1533,
+    "sha256": "99591a1fc7db4b5be439e752d2e8dae05cebf47e8f4c5df518f9412f3a3e176d"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/wait/entry.rs": {
+    "bytes": 7658,
+    "sha256": "0cddc8892b6870dc5de3a681946a52c8037f631dfcfa40934f1d842bba1fea27"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/wait/support.rs": {
+    "bytes": 4192,
+    "sha256": "3e5df59052a966926f7453340d00e3cd7c2e9b8151e0c82b7fe9613f7648bc90"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/wait.rs": {
+    "bytes": 35536,
+    "sha256": "b5386a493cfff8eb2fb6b390a63163e2d81916a55ddf21e94c159fb146829a37"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/wait_process/entry.rs": {
+    "bytes": 11297,
+    "sha256": "1afd51c7715255f30943dd70ca84505aaed73cd0e645dc11cc9ad95a8b8243f7"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/wait_process/first_owner.rs": {
+    "bytes": 21034,
+    "sha256": "8601c3e545a868faf8e89aa8409f5e61975f9a0f2c3c0890d7baab0c6a880bf1"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/wait_process/replacement.rs": {
+    "bytes": 23976,
+    "sha256": "38232a09e72cb2ddd713dec4ac5253abf980def22c02861f1d4e9a34c411a1de"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/wait_process/support.rs": {
+    "bytes": 4946,
+    "sha256": "9977ee9e6a36493d700988fc0660bd2f3ee56a6c8e922a382326813a5ef45083"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/wait_process.rs": {
+    "bytes": 1829,
+    "sha256": "959c16e12158da0ca266fd3f2a37973eb69b8f2d95ea02d1a9ed10e0b8127323"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/write_stdin/entry.rs": {
+    "bytes": 11601,
+    "sha256": "a40f9e5354f6e563c5056c8afd22a0bb018970a1b0672bb37f76da24a12ab5e6"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/write_stdin/first_owner.rs": {
+    "bytes": 18381,
+    "sha256": "3baff5df012513c981eeeacb2bc12a65ca576573605b15c241a12409df9cca08"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/write_stdin/replacement.rs": {
+    "bytes": 22955,
+    "sha256": "9c96657e2be3e498a4f4b56994c81a50aafb32d5aa7e9c275eda6aa41e6a1923"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/write_stdin/support.rs": {
+    "bytes": 7149,
+    "sha256": "2edeea4c81af572fd0619cf86db27ba4da165d91ea945113feaf9d90fa409f10"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement/write_stdin.rs": {
+    "bytes": 1863,
+    "sha256": "bafee810e6dff284b906eb57281dea10111ecf8b22ea9e10cc6cc01a96568583"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/reopen_replacement.rs": {
+    "bytes": 134517,
+    "sha256": "b3d93d1e744cbd47e14171d4d5333082a6a5a3924212739310b007db7c30ca45"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/soak.rs": {
+    "bytes": 6090,
+    "sha256": "5b9aa6a3507a25c0eb7835fdf9b9777d59d5076f6c3508af6b032cbc693f6ebf"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm/transport_fault_cleanup.rs": {
+    "bytes": 26922,
+    "sha256": "1756eae957beb3ace7a847995e3df9734fd8bf024fbfa6a4a778ded7bbfddda3"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke/utility_vm.rs": {
+    "bytes": 31643,
+    "sha256": "c7cfb94ddcaf5598e546b8ed927dc8e1c37cc266c49934bcb758f522ab4669a5"
+  },
+  "crates/oci-runtime/crates/runtime/src/oci_smoke.rs": {
+    "bytes": 39915,
+    "sha256": "ebf60cbdaba6b869e4217e95fd5a15cb169b0adfac4fdf1fcfc9cbb01166901a"
+  },
+  "crates/oci-runtime/crates/runtime/src/operation_journal_evidence.rs": {
+    "bytes": 17277,
+    "sha256": "bd9fe81183a2451f6343f6365ecb503e8da3d0e9c11a7b3e531af7ba5acdd853"
+  },
+  "crates/oci-runtime/crates/runtime/src/operation_reopen_replacement_report/close_stdin.rs": {
+    "bytes": 20010,
+    "sha256": "3805425037bd5b63a95e5a4758b13580a2d3ab1ce8b7f7731d27c30d48434205"
+  },
+  "crates/oci-runtime/crates/runtime/src/operation_reopen_replacement_report/delete.rs": {
+    "bytes": 17782,
+    "sha256": "a9ad9f09fc1fe071c76026cf1b35f13669a8fadc6f55891d84e82a175effd994"
+  },
+  "crates/oci-runtime/crates/runtime/src/operation_reopen_replacement_report/exec.rs": {
+    "bytes": 18701,
+    "sha256": "d2750c06a1feb953d704738b0ffbde3d52a61d92a8226e0131ad42f8a18f169d"
+  },
+  "crates/oci-runtime/crates/runtime/src/operation_reopen_replacement_report/file.rs": {
+    "bytes": 15692,
+    "sha256": "0bad93a4a524c347cdb9c97867a867f0246498ccb91a656fd779f4a34df8ae7d"
+  },
+  "crates/oci-runtime/crates/runtime/src/operation_reopen_replacement_report/filesystem.rs": {
+    "bytes": 15041,
+    "sha256": "584af71ffd6ec9c23d9145d11cb5c28999e9561520a6c8a3fea7f2eec2b75243"
+  },
+  "crates/oci-runtime/crates/runtime/src/operation_reopen_replacement_report/kill.rs": {
+    "bytes": 15767,
+    "sha256": "8db3de59035f87f1809c2e9d09ee7430f8db87cdd2eb820ef82cdbc9eb4e1090"
+  },
+  "crates/oci-runtime/crates/runtime/src/operation_reopen_replacement_report/pause.rs": {
+    "bytes": 19299,
+    "sha256": "d61d682081f52a21d2d6b5edcaa19199915d52b71ae6b5d3af7a368915e60ff8"
+  },
+  "crates/oci-runtime/crates/runtime/src/operation_reopen_replacement_report/processes.rs": {
+    "bytes": 23868,
+    "sha256": "ba4aeaafc857477ebbe2c9a52ec5d9cb8630b126475857f6759ef930ce10cd93"
+  },
+  "crates/oci-runtime/crates/runtime/src/operation_reopen_replacement_report/read_output.rs": {
+    "bytes": 23144,
+    "sha256": "37baeceef2dc339450e9f06ba17e466497b3401c15872897d7adb0b7b6166666"
+  },
+  "crates/oci-runtime/crates/runtime/src/operation_reopen_replacement_report/resize.rs": {
+    "bytes": 20265,
+    "sha256": "3ddbc0c70c0a29d5f6dcefc230c090a8da93d40311d308521416323d21362ec2"
+  },
+  "crates/oci-runtime/crates/runtime/src/operation_reopen_replacement_report/resume.rs": {
+    "bytes": 20212,
+    "sha256": "625ca3ba3de905aab1921d6e002ff786464694b96d7a87ac99f7eb8300c8eddf"
+  },
+  "crates/oci-runtime/crates/runtime/src/operation_reopen_replacement_report/signal_process.rs": {
+    "bytes": 20186,
+    "sha256": "803415474b7c56dc2a69ba95b54fdf8e462ee614c7ddeabd07dd1392094e5f29"
+  },
+  "crates/oci-runtime/crates/runtime/src/operation_reopen_replacement_report/start.rs": {
+    "bytes": 14872,
+    "sha256": "ca624fe395f33da684e9c0e0dfc0d18f2395590b0844f01d364b776df359227e"
+  },
+  "crates/oci-runtime/crates/runtime/src/operation_reopen_replacement_report/stats.rs": {
+    "bytes": 26604,
+    "sha256": "e5e3c1a4cb8b95a391755c65874830da99d86d9a605feedb9f10ddd87b1f9319"
+  },
+  "crates/oci-runtime/crates/runtime/src/operation_reopen_replacement_report/update.rs": {
+    "bytes": 23775,
+    "sha256": "d8eefbc3d7ad6c0525825ae4669205dbaaaaa9c4eb1beaa800f744b78dae3eb5"
+  },
+  "crates/oci-runtime/crates/runtime/src/operation_reopen_replacement_report/wait.rs": {
+    "bytes": 18861,
+    "sha256": "81317e38679e095be8259cae056acf4f6717d850b77aa8ad56a08a10e6249d19"
+  },
+  "crates/oci-runtime/crates/runtime/src/operation_reopen_replacement_report/wait_process.rs": {
+    "bytes": 21844,
+    "sha256": "4a331715e8c93345851893579d1502e338203543a066dc53265f32c5d0d7e0c0"
+  },
+  "crates/oci-runtime/crates/runtime/src/operation_reopen_replacement_report/write_stdin.rs": {
+    "bytes": 20185,
+    "sha256": "a28411ec6275b2e3bd4de410927f9fbcc29f81a7b63863b844fab1275d174d7c"
+  },
+  "crates/oci-runtime/crates/runtime/src/operation_reopen_replacement_report.rs": {
+    "bytes": 69583,
+    "sha256": "d4234f8a99430a0898ab4cee34416b8e4f4e542b26e81a1abe34e9fa607d8296"
+  },
+  "crates/oci-runtime/crates/runtime/src/platform/linux.rs": {
+    "bytes": 12105,
+    "sha256": "cda9c303536439f7e206f5996a36036b2dc702baec73c4a1a395f70b1903f253"
+  },
+  "crates/oci-runtime/crates/runtime/src/platform/macos.rs": {
+    "bytes": 9818,
+    "sha256": "4e08910b4357aba29b8b58e863c61ba37869a6b76b708d2765544b8647ecfcc7"
+  },
+  "crates/oci-runtime/crates/runtime/src/platform/mod.rs": {
+    "bytes": 1275,
+    "sha256": "4a361aaa34a2453a7172b9d418434dafcb25b7eaf79c949531ce1630488cb47c"
+  },
+  "crates/oci-runtime/crates/runtime/src/platform/unsupported.rs": {
+    "bytes": 1414,
+    "sha256": "f9446f666c044a9fbd65430415258450a2fb5fd4cac4e4e7ce5e5385ebda0056"
+  },
+  "crates/oci-runtime/crates/runtime/src/platform/windows.rs": {
+    "bytes": 10601,
+    "sha256": "51cdec9e758ce8a089ced00f39f48b3792c16657920c39beb387d35a136a8167"
+  },
+  "crates/oci-runtime/crates/runtime/src/reopen_replacement_report.rs": {
+    "bytes": 27534,
+    "sha256": "0c6218085133e202c4ee99a6a8f036f5df353dc1305355c4e91748acb1d7082e"
+  },
+  "crates/oci-runtime/crates/runtime/src/report.rs": {
+    "bytes": 58376,
+    "sha256": "b49b0b386907b8c59d02bd4957ce153420531757dd7c852fcc241d565a02ff94"
+  },
+  "crates/oci-runtime/crates/runtime/src/rootfs_enforcement/command.rs": {
+    "bytes": 12555,
+    "sha256": "7d8a260282209ebb724d6c35071ad893956b92030a7ef1696dc173a4027d5599"
+  },
+  "crates/oci-runtime/crates/runtime/src/rootfs_enforcement/tests.rs": {
+    "bytes": 12446,
+    "sha256": "824dd9d17d721b2e430634d006abc8a0241036da1a7bb51c219c916b6b0e2168"
+  },
+  "crates/oci-runtime/crates/runtime/src/rootfs_enforcement.rs": {
+    "bytes": 36563,
+    "sha256": "d9bed5b6205d6562ae796437fd99070761d7fc8bf08a4b2c8b75266042253485"
+  },
+  "crates/oci-runtime/crates/runtime/src/runtime_client_process_smoke.rs": {
+    "bytes": 24234,
+    "sha256": "370a39f147fbc40be7b2af9d37bedd1b926fa0d623533112cf0f892664990b84"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/artifact.rs": {
+    "bytes": 19347,
+    "sha256": "ffeb6ff70f9573e682fb185bad0a90ace2792a806289d0cc7c665e6c9a321d0f"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/driver_registry.rs": {
+    "bytes": 20366,
+    "sha256": "be289a2fa82b3ee5604a3992ef9d6f836d5bbb951c3488887f142b18e216236c"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/feature_report.rs": {
+    "bytes": 2390,
+    "sha256": "bb328ac3d0b504b012243456dbf9c41923449bdf1ee3caadd22713c43ae3e7f3"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/close_stdin.rs": {
+    "bytes": 9103,
+    "sha256": "0ed27a6fc18f1ef01d85eb0be2808dcceff664bafd699fb253d3351a83de7dcc"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/create.rs": {
+    "bytes": 8218,
+    "sha256": "0ddc66d2064e7f8482f41c4db9f82eb12ad18ca2e2968dc77bf5a6853ed23c01"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/delete.rs": {
+    "bytes": 9722,
+    "sha256": "feaa521a571581a0020c0aab5ddc60d356f46bed4fbcd6e74513383a64af3e8f"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/driver/metrics.rs": {
+    "bytes": 3807,
+    "sha256": "da758b59aee477ecf1a026eab8e5f0c4d7103d0fba311a56460b3c4a8846a4f9"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/driver.rs": {
+    "bytes": 14547,
+    "sha256": "8658300772a41864ef81a0a9324b1eb40adc8d78d55cb7ff20014ffb7aab7e6e"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/exec.rs": {
+    "bytes": 9643,
+    "sha256": "daaf87c770858627cd51bb473b5c3f3f1f39f9c3b4caf2320d622a85ba634b69"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/file.rs": {
+    "bytes": 10354,
+    "sha256": "9c66761f7d9b2fd0962bd161c461cce4932677dbd527cef067295e292c147bb9"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/filesystem.rs": {
+    "bytes": 11010,
+    "sha256": "1135c0f24b6755cd3758bdd0b5a688cb1caaedbd72ab79c7c78986a7523b358b"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/guest/filesystem.rs": {
+    "bytes": 7788,
+    "sha256": "6b2b6dee0bff437eac2f8a2d2373b8f7bfc8a7fb6cab6ba683ad5ce1ad093780"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/guest/freezer.rs": {
+    "bytes": 2764,
+    "sha256": "8acf6bd0a9968d5b53722922932e4ee3e18b2bf2511e65ea70b10dad35b131ec"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/guest/io.rs": {
+    "bytes": 10694,
+    "sha256": "2ff26147484516195f4da25b23dfbd1a455371e3ceb47de341ec5d533677748a"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/guest/metrics.rs": {
+    "bytes": 7182,
+    "sha256": "f8d853cf9477809050ab6f930ab11e95d0c04e46e81c38192a2030ee9cc184f2"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/guest/process.rs": {
+    "bytes": 1850,
+    "sha256": "973f33366e51ddd33c29368d190f7df6463d6691a839c46fc2231659dfdf2726"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/guest/resource.rs": {
+    "bytes": 1884,
+    "sha256": "1ef13398dba98d187dcd78b9dc0365112a16eb083b718a9bb953bee7ef52f40b"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/guest/stats.rs": {
+    "bytes": 1539,
+    "sha256": "8700cf6490331fb467011f9531f9ef57a12eabbff00b3b83b82452e51f4e50da"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/guest.rs": {
+    "bytes": 17644,
+    "sha256": "24271ecb6051204d8306e5acc47b2107efe3070d9a44e3c9047d21cc176d28a2"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/guest_journal.rs": {
+    "bytes": 956,
+    "sha256": "ac6f3c4ff5b0276488582ab2559ea642fd7bebe6006a2f3c4b02a9050c49300d"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/kill.rs": {
+    "bytes": 8940,
+    "sha256": "8bf7c1a070510cfc8ba71c96d2e1197f404cecaab3c8f09b168d8391f21b6748"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/pause.rs": {
+    "bytes": 9362,
+    "sha256": "d5e9fbdf4222711632dda79146b4b57de73d1eb1ab5c4497e67fc356384262f4"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/processes.rs": {
+    "bytes": 8324,
+    "sha256": "02a7cdb383606b074a6aac94bf3bd133a4b8abb0b2ccdf1100df8c6e8907dac6"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/read_output.rs": {
+    "bytes": 8275,
+    "sha256": "e148c911be71e5d472ea76d525eb105ef6e23e4e4bdf62ece085ee0e395e5a75"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/resize.rs": {
+    "bytes": 9986,
+    "sha256": "d36c2a38af985f6786d6e8a9037f13f7b8e758dd2947c9dd9873df84ed9d1721"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/resume.rs": {
+    "bytes": 9868,
+    "sha256": "dcd569db405e95bdc9db2064c10a7fd2382671840949ec3245c28a44ab4b0eb7"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/signal_process.rs": {
+    "bytes": 9640,
+    "sha256": "35339537307f38ab940f10a2b1cf73174a640abea39d32c3f69419377d9ce909"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/start.rs": {
+    "bytes": 8312,
+    "sha256": "342006130276aec9becd06e9812cd30d3cc63fd737e16da790caea39b1f9923a"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/state.rs": {
+    "bytes": 7473,
+    "sha256": "40d3728085038bf588ea83db531997a4559a03aa4e8cc3e6693be90d4c0dc9f8"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/stats.rs": {
+    "bytes": 7771,
+    "sha256": "c91ff6c5b3a14f00f16734d33f609e7fb938ca49d4799f32a1865b95c299de60"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/transport.rs": {
+    "bytes": 4628,
+    "sha256": "651b742d154ddfb5860e5d7489b7db5870a1b9a86bce675a2f66d3ebf28986ed"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/update.rs": {
+    "bytes": 9338,
+    "sha256": "1fa3fcaea5f1a853334721a63622bac0d631253e5566bfc99ed4c248c5148ca2"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/wait.rs": {
+    "bytes": 9334,
+    "sha256": "768f953775baaa336110e007deb9357c2c0875b3bcb577023517b4aae8399500"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/wait_process.rs": {
+    "bytes": 9988,
+    "sha256": "fd0b885fb40e476ee7df2df33abde64e000aa20d3292ebb1e590a223552ea31b"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery/write_stdin.rs": {
+    "bytes": 9089,
+    "sha256": "8e23adb3e8fed3c32f1a57fbdd0400ac58cb129d5728897fa47104a7a2f5b1f8"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/agent_transport_recovery.rs": {
+    "bytes": 321,
+    "sha256": "4a80846300fd6bf352a9671e78883b2e5ec477ea427d25eafb5e21a0e93b691d"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/attestation_operations.rs": {
+    "bytes": 11395,
+    "sha256": "53fb0438c5a2ce92712307e7cd9da439f38c7951b5b9c89c804d329ba7b0b724"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/checkpoint_operations.rs": {
+    "bytes": 10406,
+    "sha256": "cb46671bbc303ea6867aabdfd34e8151f6bddd5f3f0c6f7da4e48b402afb9507"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/fault_matrix.rs": {
+    "bytes": 26129,
+    "sha256": "a025868035e1c0c3cda4c7f267376395df034b123f186b78a30fe9cd287e2201"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/filesystem_operations.rs": {
+    "bytes": 6634,
+    "sha256": "dac672e7a404dafb3779ef5077c7cc417d86114802f8d6406445d65eb8973231"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/guest_sessions.rs": {
+    "bytes": 5203,
+    "sha256": "37ae9eb9a7c4d1fc4322f4da862283915bb2d30a1089350f4068aaedf5e60d1b"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/io_durability.rs": {
+    "bytes": 10109,
+    "sha256": "dd7e046c3ac576512612663d81bf45aa0424893ff9632e29d5e39ea2f8b234ae"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/io_operations.rs": {
+    "bytes": 10344,
+    "sha256": "9213796d4a13140fb5092c49c8f77897b44cc41d944d14dda501221f35718d65"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/linux_support.rs": {
+    "bytes": 8129,
+    "sha256": "8dac2d9a5f16663044e411864b5d8b4d894d912ac0e84be2047ce5efffa3246a"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/network_attachments.rs": {
+    "bytes": 12059,
+    "sha256": "4d9f450057a9381b2cae9f4b8184af04fcddf73ff541a7ce16a11f461ac16d18"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/process_operations.rs": {
+    "bytes": 17601,
+    "sha256": "22cf496420c3cb0ed7ae3bb6ff2f083e53a2387910dd70c6ff8b8684310456ca"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/resource_operations.rs": {
+    "bytes": 2468,
+    "sha256": "86bbd4b53003d2611c294733197cd286a8e287afb5ab9758461c16921a11eb4f"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/restore_operations.rs": {
+    "bytes": 23784,
+    "sha256": "9714105c43a2b3afb643edd87f9fce33d9afedf25f5a18a2ecac3e134133d03b"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/schema_profiles.rs": {
+    "bytes": 6328,
+    "sha256": "4bc8d1495726006789ad2d1fae1dc40fba55cb86219210c5a44f0c1cd0e7ef81"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests/state_observation.rs": {
+    "bytes": 7736,
+    "sha256": "dbead3d63448c8bcda70d1e9db493e271ed5bbdf25bb92aa2dc9c50723728900"
+  },
+  "crates/oci-runtime/crates/runtime/src/service/tests.rs": {
+    "bytes": 192768,
+    "sha256": "b5ebab8f683b7e3cc2a0b9718f58c3548fc4e9b57b7fcfddaa49193289dc5906"
+  },
+  "crates/oci-runtime/crates/runtime/src/service.rs": {
+    "bytes": 96114,
+    "sha256": "8a749f603522fe1a90d83f62898589fa25cec78eadbf2e52fcdf5c2673ea83f2"
+  },
+  "crates/oci-runtime/crates/runtime/src/soak_report.rs": {
+    "bytes": 22122,
+    "sha256": "71e2beec37fdcf675b3681c14850ccbe72e125c7a0e321d8c13edccb1f5ea2c9"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/attestation.rs": {
+    "bytes": 13214,
+    "sha256": "dab45610f7724de5cdecec4f2e350c8afe1d5c0528c04ee240f29be18c4563f3"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/checkpoint.rs": {
+    "bytes": 10113,
+    "sha256": "74b74e406f90ed11cea7eb9c06ec8a7e439667727fb989588741c0e750be68e4"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/create.rs": {
+    "bytes": 1440,
+    "sha256": "429111ec9ee6d8b9090b5bfbdd96b22396447aa5d0dc0d8efb8e254e4576535d"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/creation.rs": {
+    "bytes": 4512,
+    "sha256": "3e02cbc65f499cc719ba72722ed0d3f77ecee3fa48dacd85f323f03e6701ca8e"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/delete.rs": {
+    "bytes": 12956,
+    "sha256": "7e033ffbc1b81be8d641f592b6f4b9a06f666581622aa946217bc8de9d5f6d1d"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/event/audit.rs": {
+    "bytes": 4368,
+    "sha256": "2f76788fd5ee8ab4c644ac2977013cf1bef77c4fa8389238cd7ab21d35e6395b"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/event.rs": {
+    "bytes": 22419,
+    "sha256": "df5d847fab38c7dee425d936ed3f957bb6efb1cae7c6300bd5c0091b6f3d001b"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/failure.rs": {
+    "bytes": 13509,
+    "sha256": "347b718cc605ba8b23f80e8be8479f0e1da2245c51b2c846c7ee0e87cd52b0c8"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/filesystem/platform.rs": {
+    "bytes": 19067,
+    "sha256": "a914534167ebc04d54cc1eace75e65066469b1ee6d66e36f9b5e2dae92349958"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/filesystem/transaction.rs": {
+    "bytes": 19675,
+    "sha256": "2b56777db8e1a0eaf69d9926369d01691b30632e54ca9a38323e3014c45b339f"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/filesystem.rs": {
+    "bytes": 29544,
+    "sha256": "bdc8bf1d84cceee66521f07c2dae24cd1d3aedb638e7cb5aea7253ef6e7cfc92"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/filesystem_mutation.rs": {
+    "bytes": 15179,
+    "sha256": "e6145505e5a5ff678f1ce4321ec0eaa5902288e63ddc1bd06f9ac6f5c56e6f29"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/freezer.rs": {
+    "bytes": 17631,
+    "sha256": "bf483e81e69eae4aea5f59956a71d66b17dde045071cef8bef28004c1855dc32"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/kill.rs": {
+    "bytes": 13239,
+    "sha256": "56fe3d0ff624845442a27d4754897fe8c348fbb4b6bebb08c5372906b5b21ccd"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/list.rs": {
+    "bytes": 2047,
+    "sha256": "8129f70c8295d4895d5c65d2f8b8a551aebb209f1ba6516ba0b799d39bb96fbf"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/mod.rs": {
+    "bytes": 52649,
+    "sha256": "0e17858ef96f2fc8b7d9b5cf7c8958326284cba8550f0e9f09c2026d7dca77ee"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/model.rs": {
+    "bytes": 6848,
+    "sha256": "eac00e8c0dee0f377d9c1da5d8fb9bba5636dacb7e600d905675c51f6dd900ee"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/observe.rs": {
+    "bytes": 19183,
+    "sha256": "7d01f2f6165c742c33bc8f272c8ea5d6f9f0d47be70facefd41234453691efb1"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/oci_state.rs": {
+    "bytes": 8726,
+    "sha256": "54c1cccb963727942b3c8b27a92fa0cea11580bf809ae8e85bcf1d44f0edf9dc"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/operation.rs": {
+    "bytes": 7071,
+    "sha256": "62e4c5bf4676e1affef1c52f592cabdb3de458ef66b90d4070c9bd593359e69d"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/process.rs": {
+    "bytes": 45627,
+    "sha256": "599fe05ebbe91e7efe2092a1411bc35e5522b067402bae9cbb53644a37579a0a"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/process_io.rs": {
+    "bytes": 17730,
+    "sha256": "f800e3e986342f8c6a94af08107b42a7b74f8dc54f6b5190000a8f4748ea78d8"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/process_recovery.rs": {
+    "bytes": 10494,
+    "sha256": "ff11e9a86c0b7f6dc92c95915bb567278ceb593b15072efe903cd6b8b5be97c3"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/restore.rs": {
+    "bytes": 18746,
+    "sha256": "8de076da952760d0f35f3791d68c9611dd4f05e29b0911003d5de140d0cfbf88"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/start.rs": {
+    "bytes": 18987,
+    "sha256": "9bfab6727649e136506ccdb38292ab27cb8c58ebe36e70595223ecd91a5435d8"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/startup_audit/event.rs": {
+    "bytes": 3395,
+    "sha256": "74d94c473f5e6a8487a55bb920bed19befb58238cffed061ccfdcc9a9fe3571c"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/startup_audit/quarantine.rs": {
+    "bytes": 4616,
+    "sha256": "502b7146d9a310598c1f86bd3b65ac29ce1905cdcf2c27ade161bfbbdd4ac8a3"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/startup_audit.rs": {
+    "bytes": 21595,
+    "sha256": "a80ad0e1c731e50003bf3477d51f50bd85929682134ffaf5228a895c370256f3"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/tests/attestation_operations.rs": {
+    "bytes": 7522,
+    "sha256": "ac384e1470af08965b7f91fdf6d622ec9b4a564c3072d3acf33e91113f61d43e"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/tests/checkpoint_operations.rs": {
+    "bytes": 8494,
+    "sha256": "1c60993b666de34f8985a30ec31deef0803332e2e3f6c6b1b021fda19082249d"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/tests/events.rs": {
+    "bytes": 23756,
+    "sha256": "14a5e39cd2bd0a1c95f4657f8834d65d834c1d22993777de0d2508414a15131b"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/tests/fault_matrix/attestation.rs": {
+    "bytes": 7145,
+    "sha256": "0339321f2a625fc95d75104d782660e7e8cb29cc1b619c9a1284941630e2d1e8"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/tests/fault_matrix/checkpoint.rs": {
+    "bytes": 6682,
+    "sha256": "aa0b0b4f03dbd9b22709c46406c21987abb3228a95056b9b15d7752ef4fdcf70"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/tests/fault_matrix/filesystem_mutation.rs": {
+    "bytes": 9913,
+    "sha256": "5a3638b94ccf69310f9271f95bef7b1a636c7d96a7f796bf6b723b6b11f55b0d"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/tests/fault_matrix/process.rs": {
+    "bytes": 17657,
+    "sha256": "bc7f47b986aa25c0c366c43ba0c817b74e2d11c502700917471862d23ffc3f39"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/tests/fault_matrix/process_io.rs": {
+    "bytes": 10176,
+    "sha256": "daa985c3d09c7b33aac88b600cc434803fa983bad4f4d82cafb33b6d86f807ed"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/tests/fault_matrix/restore.rs": {
+    "bytes": 10626,
+    "sha256": "73fbc1da4d42a660cef8292f4d27297317d1c4fa49bac03dfc41edec8985349e"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/tests/fault_matrix.rs": {
+    "bytes": 70438,
+    "sha256": "01cd98806540e0d5751ff612bcfddc20de6f750959b005764b6f4d616f5c9981"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/tests/filesystem_security.rs": {
+    "bytes": 7597,
+    "sha256": "3be9c8cf34debb4f384335347ea9e2f2f2ec9bae157e611d3debb18659837aeb"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/tests/recovery.rs": {
+    "bytes": 20240,
+    "sha256": "d5e1d7d78e0a022b5b08e77c9771ddbb3b9c912b4215710b51fdcb3b3dc65d42"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/tests/restore_operations.rs": {
+    "bytes": 10689,
+    "sha256": "d84ab9e1a57316b61655c4d8ab0f66b6c78a529efb5519bff6f87f39d0c89eaf"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/tests/startup_audit.rs": {
+    "bytes": 19156,
+    "sha256": "0b460feeb4a7283eb4952e997c4d053e9ccfc10ce58e19f5270214b46827f162"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/tests/windows_filesystem_security.rs": {
+    "bytes": 11365,
+    "sha256": "c8ba4c7df921ccb7c600935d61edd78a590bb5d403e23150a6107f3f730f8541"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/tests.rs": {
+    "bytes": 56103,
+    "sha256": "5b8207fc7a05be933caf1e9ab8d3a9a324eadc2d5b77f9f99eaf30a9a3d630ea"
+  },
+  "crates/oci-runtime/crates/runtime/src/state/update.rs": {
+    "bytes": 11980,
+    "sha256": "c611538142ff857ace9742b8315a1c622892ab2189f55c2aed5cbee9e517ac4a"
+  },
+  "crates/oci-runtime/crates/runtime/src/transport_cleanup_report.rs": {
+    "bytes": 19576,
+    "sha256": "de96a206e5aade038c59fd36e2c7f9b79121c392f4c508f2a9b2f5d2ad137d3a"
+  },
+  "crates/oci-runtime/crates/runtime/src/unix_service.rs": {
+    "bytes": 31570,
+    "sha256": "51983d90f831c2f881854acc89afa89d784ce9eb5627de51b7ded040f124b8d9"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/atomic_publication.rs": {
+    "bytes": 6310,
+    "sha256": "18014526c316825aef4d48dfa43557a71040ec1a91b0543fe23278704a76f5ed"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/delegate.rs": {
+    "bytes": 7029,
+    "sha256": "6994eca7f1519658a6c02afb3e582eeaa49b4f09cad64c3eba885e922e88aefe"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/directory_cleanup.rs": {
+    "bytes": 17195,
+    "sha256": "5c82b79add76327469fa744620ff4b0b95aaeaab8be05c369e81339ba60c136c"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/handoff.rs": {
+    "bytes": 53313,
+    "sha256": "73fa4704d44f0d28271423b82e442b187cca0eb8d109b29bc35aefc78898366b"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/hvf_directory.rs": {
+    "bytes": 4702,
+    "sha256": "98d7f6f61e72e68112c54f96c3a20bf75fcbb529a3ec5c70c299ba05c978a7a5"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/hvf_directory_tests.rs": {
+    "bytes": 7995,
+    "sha256": "77af4c52e4fb16e8ce4210327c4c9f0ea7bc5d2c37d363fbd59ea864b24f6119"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/kvm_live_reattach.rs": {
+    "bytes": 18916,
+    "sha256": "59c16133108c6af609f4cffa88aa4f793df9dc57037b7a5ac12e85f38382f479"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/kvm_network/storage.rs": {
+    "bytes": 5219,
+    "sha256": "d6c6b2edb46b8c5b08479393cabae623ed658e7f20649c7d08041a4ef7c7964f"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/kvm_network/tests.rs": {
+    "bytes": 5525,
+    "sha256": "f7c35dcdd2516449b7fda1473e7d6077edf92e06725b3fa32eb439c839ad44cc"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/kvm_network.rs": {
+    "bytes": 6234,
+    "sha256": "bfe4538dcbde88b7bd47be7b7965df7d4c5e89b7d3d744d5969b8465e6f9d3c9"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/layout.rs": {
+    "bytes": 18879,
+    "sha256": "79371c1646efe549e94fe773fd520c34e90f6b3011d27bb892eeb36609f6d907"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/close_stdin/flow/first_owner.rs": {
+    "bytes": 21634,
+    "sha256": "481e699ddfad843c9af8e623ce418f3ec7135ccf065679978e056713a394c75e"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/close_stdin/flow/replacement.rs": {
+    "bytes": 23648,
+    "sha256": "546c7f87dfd06ec5d3aae0cff53e52397f9600c6c6f39a96192af6f746b97d90"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/close_stdin/flow/support.rs": {
+    "bytes": 7441,
+    "sha256": "031a71fda10a888e6ade27e1d333ff0e70c4d45d0ea11f6d31a965f039e26c92"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/close_stdin/flow.rs": {
+    "bytes": 761,
+    "sha256": "bf8551dfd81f796b31059c8da84da0eabb1946d33c6e8f5f78bb63b06956d4a3"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/close_stdin.rs": {
+    "bytes": 11692,
+    "sha256": "86beabff48571535f801fd1b154d934ce7c52fc6e41367085353a39702bae3ac"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/delete/flow/first_owner.rs": {
+    "bytes": 17991,
+    "sha256": "d5e0cd9a67c5668494cf2149568117a839fd58d506eb6a96068285c8979a9ad5"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/delete/flow/replacement.rs": {
+    "bytes": 14352,
+    "sha256": "68e580a7e647583e346e66ba0cbdbe668c91981ff70789daac01f7b0315ad46b"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/delete/flow/support.rs": {
+    "bytes": 2779,
+    "sha256": "f9d84a39d63151d1264a165638003ca8e8b391f7a47596173427ac16f02f4a84"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/delete/flow.rs": {
+    "bytes": 1143,
+    "sha256": "64aac1eb51fa1eeb24e9908d5b1d93d1cd4d96913295737da517501887a96f82"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/delete.rs": {
+    "bytes": 7956,
+    "sha256": "8573a167b8105efbb539803d4ee7103404b2ad7c0d36ede69f69155b517d53ec"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/driver/dispatch.rs": {
+    "bytes": 20169,
+    "sha256": "660b5c2e94644943345a5c98f5c5db5558237f28a1e432955f1885ecd1fc204c"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/driver/evidence.rs": {
+    "bytes": 13671,
+    "sha256": "dd503b6019891820223806b6d48352f19ad95d2f2cd7ec6135e3ae35cb62d4d0"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/driver/guest.rs": {
+    "bytes": 6159,
+    "sha256": "701fdf22676a1619f4efd56b6866ecd4dba63619af75a587a6d754f53ce9c8f1"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/driver/recovery.rs": {
+    "bytes": 33947,
+    "sha256": "9f9ba43b22eb0fa3acbab6fc2396571d0f482c7ae367b37f1986d45ed2efeff5"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/driver.rs": {
+    "bytes": 31241,
+    "sha256": "53c7d4414355f5f153968f69d527bfea6d124efdb6aa086ab6aeda6436d49f29"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/exec/flow/first_owner.rs": {
+    "bytes": 17656,
+    "sha256": "d85dd37a651da852e75cfdabd9c807a51678f0c5a63b436a54c043cfc2042481"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/exec/flow/replacement.rs": {
+    "bytes": 20747,
+    "sha256": "48b71afa8560f9520affa852aae76406fed6efe6e3eccd4c66e5a41bad0097f4"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/exec/flow/support.rs": {
+    "bytes": 12331,
+    "sha256": "53b9230900939c76c33a74bbbffd3c8eb40a2c9bbb8d2ec725c1f761e162aa13"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/exec/flow.rs": {
+    "bytes": 761,
+    "sha256": "bf8551dfd81f796b31059c8da84da0eabb1946d33c6e8f5f78bb63b06956d4a3"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/exec.rs": {
+    "bytes": 10255,
+    "sha256": "b24a04fd68aa7cd801495eed5b7710415412f39434e164b1c3b44ff776006fc1"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/file.rs": {
+    "bytes": 10276,
+    "sha256": "d2a4318f7761ccc32452e8d2bcfae70312c818c4efc6802a1c0aa6a91c3efc6c"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/filesystem.rs": {
+    "bytes": 10415,
+    "sha256": "b585bddca9d20c81bd214a08b2c6cf5926ad467d398cfd7b9071458a6994c837"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/kill/flow/first_owner.rs": {
+    "bytes": 17817,
+    "sha256": "1a4fb377424e7f79e9f4395b7c666587b68f2c8d53e7cbca9f1f9fa79a6ef19a"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/kill/flow/replacement.rs": {
+    "bytes": 15546,
+    "sha256": "b7b16a0bf24f8344e0e8a6c144c5971fd0318447288d20bd48e48ef217b7ed52"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/kill/flow/support.rs": {
+    "bytes": 2199,
+    "sha256": "9bf77f13a08980967138e725012e5d687665808d05fb78e2c33c30de11a9e15a"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/kill/flow.rs": {
+    "bytes": 1143,
+    "sha256": "56f1668203d66592cdc99b91ff187802f3b95c14f811bfa44ec64b3afe0969c8"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/kill.rs": {
+    "bytes": 7772,
+    "sha256": "a864c6d074d1b4cfb7148db5bb1a8559573bdb8b934712108e7dc27d266f0e7e"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/mutation/first_owner.rs": {
+    "bytes": 15117,
+    "sha256": "40979ea34ac4bc9225d04a29e76d16ab824a644a679f0e8cb3c08e44f6d056b7"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/mutation/mod.rs": {
+    "bytes": 5597,
+    "sha256": "8da89736cd4c60ff7c424bce37bc271629cd173a715cb0e0754f90a4c111a759"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/mutation/replacement.rs": {
+    "bytes": 23492,
+    "sha256": "47e809e0c1c528efa5aedfca23b918d08ee9dac94475659cadd54b56ab158767"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/mutation/support.rs": {
+    "bytes": 13025,
+    "sha256": "4e5c7a6397c17a27df740eee031dde810cf48922200401e72f19a3285cb522f3"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/mutation_support.rs": {
+    "bytes": 14367,
+    "sha256": "efd94df0af4f1e46f157e9c19e5df09866b81f86cabf5f77ecd91859d37db3e1"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/pause/flow/first_owner.rs": {
+    "bytes": 16162,
+    "sha256": "6b46cb96487a8b6d94cf308dd2f8cd92903beef6c8fc76752929895dfe448ed9"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/pause/flow/replacement.rs": {
+    "bytes": 20350,
+    "sha256": "22dd87993c27bdc71ea7d685f2b832c3d75cb691b5fe49240c27aba17ecd2eb0"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/pause/flow/support.rs": {
+    "bytes": 3028,
+    "sha256": "f90a1b341a7f2a371ecaa008f239a8e7a01839b9a8be5b4b52337b37df645a64"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/pause/flow.rs": {
+    "bytes": 750,
+    "sha256": "d8e490e2a0d42efb69d3ee321a6819bb7433e4c1464a457073dee14bf564e231"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/pause.rs": {
+    "bytes": 9119,
+    "sha256": "ad3c5f3d17258d55a5db30b7f1e1ab4d94c1aa4ac02eb4e2c3a75c585868e34f"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/processes/flow/first_owner.rs": {
+    "bytes": 21370,
+    "sha256": "acc8a43f4e4c0bb2c13bda8404a92621796c7fdd641b804cdb49ef4b605de3f2"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/processes/flow/replacement.rs": {
+    "bytes": 20221,
+    "sha256": "3ebceb6b8b5d005422467cae2e5404101638dc3b43d81f793284b0d513d2d7ff"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/processes/flow/support.rs": {
+    "bytes": 4329,
+    "sha256": "f2f960c93993b9c292e0d1adaf87f2c7df026eca4751aac53ce2d846ecc365b0"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/processes/flow.rs": {
+    "bytes": 750,
+    "sha256": "d8e490e2a0d42efb69d3ee321a6819bb7433e4c1464a457073dee14bf564e231"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/processes.rs": {
+    "bytes": 10066,
+    "sha256": "73fcf06e1d1a808531ead7e00e9f67a6c67a0b61ef4f5effdf9b031340183251"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/read_output/flow/first_owner.rs": {
+    "bytes": 17029,
+    "sha256": "34301b5f7d9485c46f208fead025b2ad05f8e21ff555e2398c0d8c61ad811945"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/read_output/flow/first_query.rs": {
+    "bytes": 3739,
+    "sha256": "745eb98a304d10646e07859b5f6f7da7cdedea73c426284578912bc2bf45abbf"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/read_output/flow/replacement.rs": {
+    "bytes": 14704,
+    "sha256": "54da135a49a96f34e534ec75c14f1daf836bee68fd22cf55267bce2ec754d1d3"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/read_output/flow/support.rs": {
+    "bytes": 6585,
+    "sha256": "5431c9ef136d8e8da94414921acbf186126e79f94d8e526b023a45bc9b3f3268"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/read_output/flow/validation.rs": {
+    "bytes": 5507,
+    "sha256": "78b787e952eb05d8f16fa4d4a6b5ced0716f7d0da1da2fd3fccc99032b077bfb"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/read_output/flow.rs": {
+    "bytes": 783,
+    "sha256": "1ffc3c4d83a1119229227cfa4f7c58fabb1105353e76e408a725a5619bbf149c"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/read_output.rs": {
+    "bytes": 12954,
+    "sha256": "cd076050fbaed9619706076a26ec456d89f9e898025b9b920ad20b50b8a25dd8"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/resize/flow/first_owner.rs": {
+    "bytes": 21412,
+    "sha256": "9b99968114647881e311035420e12030fa75e2ee3160d7267712f12891f184a5"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/resize/flow/replacement.rs": {
+    "bytes": 23318,
+    "sha256": "f816339eff3ac1bcec1e4254514b6cd8beaf0dbd0ccc95959f5da5ae1a45677b"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/resize/flow/support.rs": {
+    "bytes": 7611,
+    "sha256": "af9974fae13b42ec9b72eee58c15ac65097943926e07ace56ec58679c89cec72"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/resize/flow.rs": {
+    "bytes": 761,
+    "sha256": "bf8551dfd81f796b31059c8da84da0eabb1946d33c6e8f5f78bb63b06956d4a3"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/resize.rs": {
+    "bytes": 11336,
+    "sha256": "bd9ad1e7cff5f06ab597eeb9c0a77d1c0f92e2a72f3773f6d4c75777f2072ced"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/resume/flow/first_owner.rs": {
+    "bytes": 19858,
+    "sha256": "1a3d1364b11f7b5b5d9b7a4d200e0dba80013665f4f779a7e5840d54c8a5cc07"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/resume/flow/replacement.rs": {
+    "bytes": 23507,
+    "sha256": "75ff70727985cbdd9c476739ecbb744c4e36e9265ea36001fdc926db85b104e6"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/resume/flow/support.rs": {
+    "bytes": 3640,
+    "sha256": "1ed90ddc30b549fb7cd0044f9461ea594bf82807c43a85d68051a061dde8aac5"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/resume/flow.rs": {
+    "bytes": 750,
+    "sha256": "d8e490e2a0d42efb69d3ee321a6819bb7433e4c1464a457073dee14bf564e231"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/resume.rs": {
+    "bytes": 9509,
+    "sha256": "b8a06b03997fc7b756b2deaed60846dfb60aaf15e1b757f5f90d59f7def39abf"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/signal_process/flow/first_owner.rs": {
+    "bytes": 21844,
+    "sha256": "4269ee7ce2cc3c1fac30982bb3e28c0776f47ca4a215a2bf6178dd9c4163c080"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/signal_process/flow/replacement.rs": {
+    "bytes": 24228,
+    "sha256": "39c65876cb99e5a4584cd66c4061f8e2bde2f10d5b1856c020421d22254bdf97"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/signal_process/flow/support.rs": {
+    "bytes": 8032,
+    "sha256": "81eef9d49a387c0cbc3ec1165e69c6ecd1555be437eff5a4efc85839ba78dc73"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/signal_process/flow.rs": {
+    "bytes": 761,
+    "sha256": "bf8551dfd81f796b31059c8da84da0eabb1946d33c6e8f5f78bb63b06956d4a3"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/signal_process.rs": {
+    "bytes": 11759,
+    "sha256": "ae537f6df026a4cf9bd0700d2c945a4c055a02f626ae8d27b708dc53cc118bab"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/start/flow/first_owner.rs": {
+    "bytes": 14495,
+    "sha256": "ae97f720c69293c862fe0e1128a7e32c6c313d5ca14d6969610f6bb68144c767"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/start/flow/replacement.rs": {
+    "bytes": 12773,
+    "sha256": "e3ca9d2e913e3b4f4bb25387e6030d47a7ba71c6c8b414ed58660e38a71dce9e"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/start/flow/support.rs": {
+    "bytes": 2016,
+    "sha256": "12eae692ada82b36ba953146be5342675337dacc3ab1a8f4f4b22b386ea8a0e9"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/start/flow.rs": {
+    "bytes": 1079,
+    "sha256": "d448276e4dd2c713e32c40bd2b085236b512fd2a1a2170aadda32267a537fb85"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/start.rs": {
+    "bytes": 7581,
+    "sha256": "9f337eb9964c10f22fa583983e32b9b17c1060f6b836cae0e5b9453fb293c4c3"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/state/flow.rs": {
+    "bytes": 20513,
+    "sha256": "e3fd7be517b864c84204b01b71744a829b799f64ea67d140d621128f66e612ab"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/state.rs": {
+    "bytes": 7544,
+    "sha256": "fafad32547bbf59811e0d25d44c26d8b79084cab665f3231e6c31c5aff0135f8"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/stats/flow/first_owner.rs": {
+    "bytes": 17725,
+    "sha256": "f71f65084483d8d9dfbfd49beb7ca15c67259f8ff2c80bbb96920f2fb538a059"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/stats/flow/replacement.rs": {
+    "bytes": 14629,
+    "sha256": "13319f3cdcbd8f5104beb60fd1c0ee1ecf10415e6468a0e16d8d94b14ca1f84d"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/stats/flow/support.rs": {
+    "bytes": 5381,
+    "sha256": "349cd92a2b1c4bb4ee084de600c8ffe138dc66f762d9496ed9df0b2795ef0d33"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/stats/flow/validation.rs": {
+    "bytes": 4803,
+    "sha256": "f96f51ace5e6b76f447ed0707ba463873c9dd04004f1963f87b259fcc48d82be"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/stats/flow.rs": {
+    "bytes": 766,
+    "sha256": "c5045b20ef50795f979dfcbef7374f239fc778a131474f23e39576cb5db65520"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/stats.rs": {
+    "bytes": 9289,
+    "sha256": "4c2b243321f49e679004a6de982e7f00bb9007b6923624241acaaf30366936bf"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/update/flow/first_owner.rs": {
+    "bytes": 16408,
+    "sha256": "f4b512b5fda6338ad2a0fee1f9957cafcadc3328d92c5c36061960614931a9a4"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/update/flow/replacement.rs": {
+    "bytes": 16926,
+    "sha256": "363c2c0eb684408626b3d9a7f2b8e5c672ea830f94f3a1869be445a99c960fde"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/update/flow/support.rs": {
+    "bytes": 4689,
+    "sha256": "546ef24ebb04076d5ec784564c2289cd4332a3e712c3c1481c5177b22fd12848"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/update/flow/validation.rs": {
+    "bytes": 5501,
+    "sha256": "1d16a556ad021ac97b74beb757c57fec821c40fd72ab187269fd6e3fe42635b7"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/update/flow.rs": {
+    "bytes": 766,
+    "sha256": "c5045b20ef50795f979dfcbef7374f239fc778a131474f23e39576cb5db65520"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/update.rs": {
+    "bytes": 9517,
+    "sha256": "f7f104e8cc5b5586d42aed938dc502acac494183b805dc9b6cacd4c629b262cd"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/wait/flow/first_owner.rs": {
+    "bytes": 19413,
+    "sha256": "7ba18b13b312cd69e06561989ccff005186d5c574dc1c1173f3c31ae04693229"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/wait/flow/replacement.rs": {
+    "bytes": 16700,
+    "sha256": "82fb15106f8f63a7eb91fdc0bf2080bb47eddd70b6764f67e31cde53eba4a5da"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/wait/flow/support.rs": {
+    "bytes": 2564,
+    "sha256": "28dfa7ed973fdca64d32aceea8d7a9952370d1ec28ee72f0b8e98e20599b9d1a"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/wait/flow.rs": {
+    "bytes": 1225,
+    "sha256": "d56bb02f24cb65aa77963c20ad82101cfb35a3ee76b6fe3567bb8f17395108f9"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/wait.rs": {
+    "bytes": 8173,
+    "sha256": "7c34afb1250ce5f425b8b861e6f46805430a1e7a45e4aebdbb2e6c4e0d505bca"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/wait_process/flow/first_owner.rs": {
+    "bytes": 24626,
+    "sha256": "e372c7ec84a7e39d92dab3c29705db03cda987057c37aa44a66909e738a870a4"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/wait_process/flow/replacement.rs": {
+    "bytes": 25124,
+    "sha256": "53814cdb5dd4951d903752833330dd3fbcf71c19507f6bb0553313fdf3280b78"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/wait_process/flow/support.rs": {
+    "bytes": 6998,
+    "sha256": "ccf4425b7526dbc2fc326d0b611912a3a65d8bf76e053fd50c373bf2ce169382"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/wait_process/flow.rs": {
+    "bytes": 761,
+    "sha256": "bf8551dfd81f796b31059c8da84da0eabb1946d33c6e8f5f78bb63b06956d4a3"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/wait_process.rs": {
+    "bytes": 11068,
+    "sha256": "1b10745ca703c1f32c74f888554e2eba41edc01dff03e1277189a5cd5301f46c"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/workload_marker.rs": {
+    "bytes": 4190,
+    "sha256": "cb035f34e6ddc0f6edafe36d300d1dcf3a6ec95f159d0ec900c55785860f3670"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/write_stdin/flow/first_owner.rs": {
+    "bytes": 21722,
+    "sha256": "04166ead59cb4cea99edfa93bb303c7abba6990105bb266109f28d64c5bcac29"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/write_stdin/flow/replacement.rs": {
+    "bytes": 23734,
+    "sha256": "52eefb8ffbfe7790f6da16b50cfdd7f6a25fbcf9e9e45688bd937aad61cc7a32"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/write_stdin/flow/support.rs": {
+    "bytes": 7391,
+    "sha256": "c21cc91d3d991407cbe5966b6cee1c3dd89a76efbc7212a38f47990acb15da57"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/write_stdin/flow.rs": {
+    "bytes": 761,
+    "sha256": "bf8551dfd81f796b31059c8da84da0eabb1946d33c6e8f5f78bb63b06956d4a3"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen/write_stdin.rs": {
+    "bytes": 11465,
+    "sha256": "bd84c5af7a605a1a469eaee83ef9849e516f93976e6b4299a5df2684999f39ac"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/operation_reopen.rs": {
+    "bytes": 27517,
+    "sha256": "84b0e7e1b512b157b9dc066d01cbfd9e3d66c770361fc2a0ddb4dbe56205df96"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/recovery.rs": {
+    "bytes": 21115,
+    "sha256": "080867d556406204e56a273eb6f3488c68c9d1a1d02af2251982bfdb61265403"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/session_lifecycle.rs": {
+    "bytes": 24518,
+    "sha256": "56c70ac56a97e2ff961f06a8e61462b7cdfecc24611de475ab98856d166cf718"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/session_marker.rs": {
+    "bytes": 24880,
+    "sha256": "1a305650a919f4926e0b622c02b281ef562701e229c7e69f177fb9e654181c91"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/session_marker_tests.rs": {
+    "bytes": 11363,
+    "sha256": "6a7fce4177fdd954fe3415237a2521703d0c8d6a5b9207b236c9345b316cee60"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/sessions.rs": {
+    "bytes": 3793,
+    "sha256": "c49519d24fe5e825ba60de55219bfa7df602efb37803aa03634fbe81e7505442"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/tests/external_storage.rs": {
+    "bytes": 7729,
+    "sha256": "638192272f1903a4f2a28a315c7cb08b2e73b21f3f9e0ef5213142699d2a7e06"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/tests/isolation.rs": {
+    "bytes": 10385,
+    "sha256": "93998961f5b3fa40011e54d1b1d4fd6fc284068033625671dc3bbdf2b7817376"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/tests/operations.rs": {
+    "bytes": 5568,
+    "sha256": "7c5709e358b118a39ed2f42530e237bd511a4fc67617986b0d460311150e23ae"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/tests/session_concurrency.rs": {
+    "bytes": 5469,
+    "sha256": "847f246c0c3ba13c5862b3c951776a069e788d698c468baff1e433cbb786c958"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/tests/sessions.rs": {
+    "bytes": 19752,
+    "sha256": "30af8cf342cb088b1618cec5da16376454222ed98b2ab66232efbb76891a56db"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/tests.rs": {
+    "bytes": 39945,
+    "sha256": "3613124b8deb3e816e9c940ac2d34375a48d19a99b8639956ed956e367a94c53"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/vm_attachment_transport.rs": {
+    "bytes": 21643,
+    "sha256": "63c732a8cf27d2d2a8af9448d90414acd8c19cdb6eb5fb250a6247b030163fd4"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/vm_attachment_transport_tests.rs": {
+    "bytes": 10558,
+    "sha256": "64444c202897c8d69b61d88922e8c1ffceab731b000a1af9daecf29c6a6e611c"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver/whpx_live_reattach.rs": {
+    "bytes": 15131,
+    "sha256": "ab06373164385d12b4e6a130bebe91d7f1decdd5e3b44677b604b22c32ac3dd1"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_driver.rs": {
+    "bytes": 41203,
+    "sha256": "b10576c23655e5ee89480d1893ddb0003812697ce1eef6d312dccf8babdc6dbb"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_host_service.rs": {
+    "bytes": 2771,
+    "sha256": "2f278797ac969041c53279883c8743ecc52dd1784bd511179c7ce5f13a90b96d"
+  },
+  "crates/oci-runtime/crates/runtime/src/utility_vm_soak_report.rs": {
+    "bytes": 9733,
+    "sha256": "77feeda6e23bd71e2ec2b9d3d2c691d93e58dc95e36a8e46ee44c3992d94d972"
+  },
+  "crates/oci-runtime/crates/runtime/src/whpx_bootstrap.rs": {
+    "bytes": 8733,
+    "sha256": "0711028c632e9f8c03d768e9effcc1229ad0f0b54f8cea1116d3f8670fb16553"
+  },
+  "crates/oci-runtime/crates/runtime/src/whpx_driver.rs": {
+    "bytes": 182284,
+    "sha256": "105d19bd77fbfefff9a39564dfe3cf49d9c83ecc573810dc2f4e5965157b2ea2"
+  },
+  "crates/oci-runtime/crates/runtime/src/whpx_driver_smoke.rs": {
+    "bytes": 35568,
+    "sha256": "c1b14d9b031089d40cd2f78eaff28a0f0e263b3bd24c265cf14f150c5618f287"
+  },
+  "crates/oci-runtime/crates/runtime/src/whpx_durable_session_owner.rs": {
+    "bytes": 21114,
+    "sha256": "a125b7699ca21d3baa2e266b303c5be7984c33b55effb47daed5f2efc44a1807"
+  },
+  "crates/oci-runtime/crates/runtime/src/whpx_live_session_binding.rs": {
+    "bytes": 12425,
+    "sha256": "64dfb5bf6074a5d0bb561d69f6a45dd917df24239e211ae29d395a46086cb366"
+  },
+  "crates/oci-runtime/crates/runtime/src/whpx_recovery_smoke.rs": {
+    "bytes": 38381,
+    "sha256": "b0cd2bb837de8185f7c9a4c6007fa80080fe6f64756fc4c54ed809820fdda525"
+  },
+  "crates/oci-runtime/crates/runtime/src/windows_host_cleanup.rs": {
+    "bytes": 5246,
+    "sha256": "e097e4a36cb7497f5b0c73fe8f86f79042f92e18b5c97405b41131d7c348ef81"
+  },
+  "crates/oci-runtime/crates/runtime/src/windows_security/path.rs": {
+    "bytes": 16151,
+    "sha256": "c73d04cf46fa36a79de5cc23659e7be980257a7841878f82955846b37f92b18d"
+  },
+  "crates/oci-runtime/crates/runtime/src/windows_security.rs": {
+    "bytes": 19751,
+    "sha256": "07e774bc10c1e3752492e06bb2aa58133150a56142062c3933d96a32f5665d6f"
+  },
+  "crates/oci-runtime/crates/runtime/src/windows_service.rs": {
+    "bytes": 8849,
+    "sha256": "3a2a516c48ea7b0de63644b694abeb46ea8b3f43a4910d7f8668baee701f2a05"
+  },
+  "crates/oci-runtime/crates/sdk/Cargo.toml": {
+    "bytes": 756,
+    "sha256": "1ed505c3d8f564c713ef80ec5a1ffbc0107a3a0775a122f6ba8a874cc1919c96"
+  },
+  "crates/oci-runtime/crates/sdk/src/attachment/guest_session.rs": {
+    "bytes": 6258,
+    "sha256": "cd3815594a54308ffc54b2b3a4be08d80d76f9125e6a41d32cd247efbef8fa0c"
+  },
+  "crates/oci-runtime/crates/sdk/src/attachment/network.rs": {
+    "bytes": 10720,
+    "sha256": "7b4be9106cd5117bdc639e87ff5c4eff1b3dd911e6b9851c4be2bb4e6e68b614"
+  },
+  "crates/oci-runtime/crates/sdk/src/attachment/network_enforcement.rs": {
+    "bytes": 14148,
+    "sha256": "6b9fbe96d2e63db993a2c22bd971832443f92fb6b6501e1f4e0bdf1a0df2bcc4"
+  },
+  "crates/oci-runtime/crates/sdk/src/attachment/storage.rs": {
+    "bytes": 6599,
+    "sha256": "c83b75c552dc60ee84cfcf857570c7277ed7dbf7f7b3804ab67b20fdda5f64ea"
+  },
+  "crates/oci-runtime/crates/sdk/src/attachment/storage_paths.rs": {
+    "bytes": 8908,
+    "sha256": "b8d59e8c3f0c90d3c088242b1632f0058188aa900299743a7a0ce5134252fb1c"
+  },
+  "crates/oci-runtime/crates/sdk/src/attachment/storage_paths_tests.rs": {
+    "bytes": 4589,
+    "sha256": "9ebd05b00e356e474b7b71ba6f0f74ea61304677f2e6e3a7897b687c084ef535"
+  },
+  "crates/oci-runtime/crates/sdk/src/attachment/tee_launch.rs": {
+    "bytes": 2938,
+    "sha256": "34330cceb3166811a51e28116db3ba73d64cba4a54654b59c9fc037f0d93a1c4"
+  },
+  "crates/oci-runtime/crates/sdk/src/attachment/tests.rs": {
+    "bytes": 54570,
+    "sha256": "0a193a2e68f8fc3592610250cabb92a70ef772a9f82d5d852632c8bebf5b53eb"
+  },
+  "crates/oci-runtime/crates/sdk/src/attachment.rs": {
+    "bytes": 48916,
+    "sha256": "c9c74a911f58d45e2f818a5a9d2bbfef6fc7f2373e5931b05b53fbade2f039e6"
+  },
+  "crates/oci-runtime/crates/sdk/src/bundle.rs": {
+    "bytes": 40509,
+    "sha256": "b42f2695257fff2785a7273f2bc4991f4565e8a3826bfc3ea3da609477cc0487"
+  },
+  "crates/oci-runtime/crates/sdk/src/checkpoint/artifact.rs": {
+    "bytes": 5571,
+    "sha256": "aef42e982e06348546fde9613b6c2154f99447dd670a8e15fc4b4b772bc955d0"
+  },
+  "crates/oci-runtime/crates/sdk/src/checkpoint/reference.rs": {
+    "bytes": 10845,
+    "sha256": "7ea8faaa4a7fe0a0e8e519c826c207ca982d0988a32fd1c2ab2c0026b06a5109"
+  },
+  "crates/oci-runtime/crates/sdk/src/checkpoint/request.rs": {
+    "bytes": 5452,
+    "sha256": "3fe246338a0c166c8782831942ccdf9a2b0c9fdb03670c60bfd81c789bc3b1e3"
+  },
+  "crates/oci-runtime/crates/sdk/src/checkpoint/response.rs": {
+    "bytes": 6618,
+    "sha256": "e851ddec9d622e82ffdf77cb577d3f31d1e9a4fc49a88cbb906c175ece3a9951"
+  },
+  "crates/oci-runtime/crates/sdk/src/checkpoint/tests.rs": {
+    "bytes": 15631,
+    "sha256": "03fc95b9f69ab31b0c59c10b4e377852c736c0b619487fb2f1a7c59b3ed2bd03"
+  },
+  "crates/oci-runtime/crates/sdk/src/checkpoint.rs": {
+    "bytes": 1690,
+    "sha256": "b921688901a6857ae523415bf8e730b2acf1239ad6afaa5c648c445a3ba9299e"
+  },
+  "crates/oci-runtime/crates/sdk/src/client.rs": {
+    "bytes": 11663,
+    "sha256": "3c69e7173e97c24a3a94299bf39ddd9edc474ecf5f2d202ab26f8fd1bc32aae7"
+  },
+  "crates/oci-runtime/crates/sdk/src/config_annotation.rs": {
+    "bytes": 2049,
+    "sha256": "5d5489e58b129059660a7af5fffcb5bbc60666e8003f33c412c0aea5c0a50965"
+  },
+  "crates/oci-runtime/crates/sdk/src/conformance/tests.rs": {
+    "bytes": 14582,
+    "sha256": "31c55abbad3322fdc07931098146bb45232c37354a56165e25311113f9728a6e"
+  },
+  "crates/oci-runtime/crates/sdk/src/conformance.rs": {
+    "bytes": 43940,
+    "sha256": "e625dc1a5f125e7dca13f3fc6606b6511b4e82aa30c19e610bdf7985e8f6a23b"
+  },
+  "crates/oci-runtime/crates/sdk/src/error.rs": {
+    "bytes": 2791,
+    "sha256": "5d4ba43894f4facf79783c8840f446434f85492cc8a5945bd5f99bfcd7bc0a62"
+  },
+  "crates/oci-runtime/crates/sdk/src/extension/artifact.rs": {
+    "bytes": 3047,
+    "sha256": "3a119f1c3447ec27167bf6706fe02ce78f83cbdd5eb2cc246c4bae33b03876ff"
+  },
+  "crates/oci-runtime/crates/sdk/src/extension/tests.rs": {
+    "bytes": 5469,
+    "sha256": "4c523378157bcc4bf060033707c18dfc6d92c5c69c4fc13acd02abbdefe7145e"
+  },
+  "crates/oci-runtime/crates/sdk/src/extension.rs": {
+    "bytes": 16685,
+    "sha256": "4bfcea458da78d6ae8fb47016cb3b3ae1cb1c9810a21abc0239c56f0066a2be4"
+  },
+  "crates/oci-runtime/crates/sdk/src/fingerprint.rs": {
+    "bytes": 2607,
+    "sha256": "839b4444a82d9e65f78dc73a2190d25d2f4c95122e8db92ac204ecb1374cae74"
+  },
+  "crates/oci-runtime/crates/sdk/src/handoff.rs": {
+    "bytes": 2712,
+    "sha256": "2721e145f84dead8593285c1291d68c812f7d29794dc94cb682eadfb9cac3b11"
+  },
+  "crates/oci-runtime/crates/sdk/src/id.rs": {
+    "bytes": 8500,
+    "sha256": "188a8ff6a3e609392d1362e2b58a2918243ac11d00f352786d11de13667594d1"
+  },
+  "crates/oci-runtime/crates/sdk/src/image_annotation.rs": {
+    "bytes": 11115,
+    "sha256": "9708b7ab0b9fcdbf40068b53d14756500c1eb6c79ba4441632ac566df8a6fe77"
+  },
+  "crates/oci-runtime/crates/sdk/src/lib.rs": {
+    "bytes": 6689,
+    "sha256": "257c6251ff6bbe3d1b7aac7358f666620ce167db7764dd00f82e83341ea1829b"
+  },
+  "crates/oci-runtime/crates/sdk/src/linux_capability.rs": {
+    "bytes": 3934,
+    "sha256": "902717b76cacaf86e044d1e63841e804e5039ee23237a7cb25ceefeb0d51853e"
+  },
+  "crates/oci-runtime/crates/sdk/src/linux_cgroup_path.rs": {
+    "bytes": 4589,
+    "sha256": "d031b3e720e364142269b5c11c46ce4c83a3ba75c5742b6242681c2f1e89ce72"
+  },
+  "crates/oci-runtime/crates/sdk/src/linux_intel_rdt.rs": {
+    "bytes": 565,
+    "sha256": "3f527683098f2a6b4f6dde0ce274ac9aae9313686cfbe9e7b38a9d6091514aa7"
+  },
+  "crates/oci-runtime/crates/sdk/src/linux_memory_policy.rs": {
+    "bytes": 2507,
+    "sha256": "bc03fec674d401d43ef0b0e6cd2479d04fb132daa1710221fc09fb926e071ffc"
+  },
+  "crates/oci-runtime/crates/sdk/src/linux_mount_option.rs": {
+    "bytes": 6027,
+    "sha256": "2c6e5af17ddee32d5b89f20b00a78d55becbf1ba42449ffee521d449781c98ed"
+  },
+  "crates/oci-runtime/crates/sdk/src/linux_seccomp.rs": {
+    "bytes": 4289,
+    "sha256": "1d115597bb20f4579453bb80ddacc6ad3f40aa0716c0c79f876a2a13e1c65e17"
+  },
+  "crates/oci-runtime/crates/sdk/src/linux_support/resources.rs": {
+    "bytes": 3829,
+    "sha256": "f0c68ace193c6228aeb53ca68076882c9664eda474fb7b8f2639918689462c6f"
+  },
+  "crates/oci-runtime/crates/sdk/src/linux_support/shape.rs": {
+    "bytes": 2810,
+    "sha256": "c44b7fe0e048828aacd733be5a3c96146dc2c50314dbbaeb0f8c25f3e5187cc4"
+  },
+  "crates/oci-runtime/crates/sdk/src/linux_support/validation.rs": {
+    "bytes": 15508,
+    "sha256": "0ad8395a37a208f34253da0e412aa92e74f1b40215295d79f8a91124643c3cb4"
+  },
+  "crates/oci-runtime/crates/sdk/src/linux_support.rs": {
+    "bytes": 7061,
+    "sha256": "8881747408de0c4ba2d6d43fbf382c3c01ec28f29d9b70b1fe093ea420aa4c79"
+  },
+  "crates/oci-runtime/crates/sdk/src/linux_support_tests.rs": {
+    "bytes": 8748,
+    "sha256": "0caaf8687b476841eaf0d707204743e541dd1a7233fba99d41085539b3c37018"
+  },
+  "crates/oci-runtime/crates/sdk/src/linux_sysctl.rs": {
+    "bytes": 8522,
+    "sha256": "8d236b362b9c7bb4c6dc1bf294efe2f60ecd368a2651ccdec4188cfcbb339a13"
+  },
+  "crates/oci-runtime/crates/sdk/src/model.rs": {
+    "bytes": 33230,
+    "sha256": "78fc7a53a71b36fe891266ca5d201889438df90a692c30584090c6d67c3423be"
+  },
+  "crates/oci-runtime/crates/sdk/src/process_io.rs": {
+    "bytes": 6331,
+    "sha256": "8f521e28e737ab158aa1bba6efe9a7d5d6439eda350d94005311dea0561e8413"
+  },
+  "crates/oci-runtime/crates/sdk/src/process_serde.rs": {
+    "bytes": 5911,
+    "sha256": "29dad33bfc01ae80fe1cee9e2e597226e433d4db9a4f138e62a4feedfdf3e9b7"
+  },
+  "crates/oci-runtime/crates/sdk/src/rootfs_metadata.rs": {
+    "bytes": 3544,
+    "sha256": "9b2a8bad5be47a3b96e669049f92a768d6c6b15508a01309bfa7d67b1580b3ac"
+  },
+  "crates/oci-runtime/crates/sdk/src/schema/coverage.rs": {
+    "bytes": 29960,
+    "sha256": "c0328d7a07bcb15f512b0612f958e8af351fc6acf412d281bf6c9a0d4e39e57a"
+  },
+  "crates/oci-runtime/crates/sdk/src/schema/embedded.rs": {
+    "bytes": 2035,
+    "sha256": "fc0c994d0c60f3f84c0605f8d4643a0854c6b4cd83e097a5fdaee99d3a699a83"
+  },
+  "crates/oci-runtime/crates/sdk/src/schema/suite_tests.rs": {
+    "bytes": 8722,
+    "sha256": "12b8870f085fad7d527d7b7e8ca817fb65fc5591c0dd5b2cbbb7fcb37516fd6c"
+  },
+  "crates/oci-runtime/crates/sdk/src/schema.rs": {
+    "bytes": 32547,
+    "sha256": "d753c62648cdb176571284ced1ef34b80919c236c8b882897fba396b61d322a1"
+  },
+  "crates/oci-runtime/crates/sdk/src/semantic/common.rs": {
+    "bytes": 17750,
+    "sha256": "72982574fc44021b60c9af2acb19a0621f7dc010c00ec7e59998112da95cd1a8"
+  },
+  "crates/oci-runtime/crates/sdk/src/semantic/linux.rs": {
+    "bytes": 38258,
+    "sha256": "727a47e4e7ec33ea7bddf8f7a5dad6de342a948b928f8d759aa5098d3d689910"
+  },
+  "crates/oci-runtime/crates/sdk/src/semantic/mod.rs": {
+    "bytes": 9436,
+    "sha256": "bc2d3d0d4e57c3970fdcfe12598c45a9cb314f0adc7a57782db2232876738349"
+  },
+  "crates/oci-runtime/crates/sdk/src/semantic/rules.rs": {
+    "bytes": 9799,
+    "sha256": "34ba89287ca15e470bcf656f47295d79f5ca823fd06eb1703a928c1cbd255ab6"
+  },
+  "crates/oci-runtime/crates/sdk/src/semantic/tests.rs": {
+    "bytes": 30265,
+    "sha256": "0f0db8ae97d2b4a54b4237cc9837dfae4731f370c0f77c09c0f679ae1860fa26"
+  },
+  "crates/oci-runtime/crates/sdk/src/semantic/vm.rs": {
+    "bytes": 2284,
+    "sha256": "ad88757a3e7ec299852d0da8c1a967cccf8a34e244c438119174007af67b8125"
+  },
+  "crates/oci-runtime/crates/sdk/src/service.rs": {
+    "bytes": 5472,
+    "sha256": "e617c0f239e72606fdfc14be2c1d5929cc862d7efc964225f95ef3779b2a6651"
+  },
+  "crates/oci-runtime/crates/sdk/src/tee/tests.rs": {
+    "bytes": 3724,
+    "sha256": "758ea19707b11715ac4ab0f492f9a9f8a841568aecbcc2880eed9b80502dbe9f"
+  },
+  "crates/oci-runtime/crates/sdk/src/tee.rs": {
+    "bytes": 19820,
+    "sha256": "1add834805438dbd8f92e4f9e2a58ce67290dd5eef716180975888f34af309ab"
+  },
+  "crates/oci-runtime/crates/sdk/src/transport/client.rs": {
+    "bytes": 15781,
+    "sha256": "318907cbf425758631a82e18f4beab6e4e0d81890e118e5e19004587b50bf299"
+  },
+  "crates/oci-runtime/crates/sdk/src/transport/local.rs": {
+    "bytes": 15539,
+    "sha256": "fa1ad5efa648625e2bb21b947c6f8fcb21d85af43bc928aec8fe09aae1be4579"
+  },
+  "crates/oci-runtime/crates/sdk/src/transport/mod.rs": {
+    "bytes": 2791,
+    "sha256": "ce37e4640ab7de2f1d955fcfd645bea6db2fbd5131afd1621c8e65adfdf40ab5"
+  },
+  "crates/oci-runtime/crates/sdk/src/transport/server.rs": {
+    "bytes": 8713,
+    "sha256": "7deab1d918304f0262061fd40c1f9240c677f3e99758ca712c4b053bf05250e2"
+  },
+  "crates/oci-runtime/crates/sdk/src/transport/tests.rs": {
+    "bytes": 59184,
+    "sha256": "bdba7ce1043336e14b1ce25e24334765babf3753bc39b95a6a965305c59393c6"
+  },
+  "crates/oci-runtime/crates/sdk/src/transport/wire.rs": {
+    "bytes": 10801,
+    "sha256": "d87e26b5e658903f5e326e3622adb2eb8bd39949d9ec17932f36ddd75967a757"
+  },
+  "crates/oci-runtime/crates/sdk/src/validation.rs": {
+    "bytes": 20746,
+    "sha256": "5e6eafb9f9422e59a37fe21f368259b7a854a4cf446c9a66d6e57373dbbad06f"
+  },
+  "crates/oci-runtime/crates/sdk/src/workspace_path.rs": {
+    "bytes": 3649,
+    "sha256": "74fef8398639278795152e40c5478ff314a95d61b0aa8df71ae9e1eba6a24a35"
+  },
+  "rust-toolchain.toml": {
+    "bytes": 86,
+    "sha256": "279d77167cec5426fa80f457cd066dc74a360fbe4e2816f4f3fa01487a918fdc"
+  }
+}

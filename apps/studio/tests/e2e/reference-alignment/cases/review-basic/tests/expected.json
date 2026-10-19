@@ -1,0 +1,6 @@
+{
+  "name": "review-basic",
+  "required": [["以经", "已经"]],
+  "excluded": ["按排"],
+  "ambiguous": false
+}

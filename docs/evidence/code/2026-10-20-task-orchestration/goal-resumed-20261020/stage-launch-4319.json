@@ -1,0 +1,26 @@
+{
+  "utc": "2026-10-19T22:09:52.917786+00:00",
+  "observed_renderer_url": "http://127.0.0.1:4319/windows/main/index.html",
+  "launch_method": "CUA getApp exact .app path; native AX element actions; no coordinate/mouse input",
+  "host_pid": 45095,
+  "acp_pid": 49288,
+  "signed_files": {
+    "aster-dream": {
+      "path": "/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/AsterDream-TaskOptimization-R2.app/Contents/MacOS/AsterDream",
+      "sha256": "38d5fb968414239072e9c5c99f0106e265f34517c7a43be0194cdd89cfee9842"
+    },
+    "a3s-code-acp": {
+      "path": "/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/AsterDream-TaskOptimization-R2.app/Contents/MacOS/a3s-code-acp",
+      "sha256": "61a06ab66f5f43ea89b2d1a909da5ef146bef2802b9526e75e8792a61d9e09f7"
+    },
+    "a3s-office": {
+      "path": "/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/AsterDream-TaskOptimization-R2.app/Contents/MacOS/a3s-office",
+      "sha256": "31c6caec6406e0aa1039cabff0651583784b642b493d6f1f8d8cfa082fac0a25"
+    }
+  },
+  "native_model": "deepseek/deepseek-flash",
+  "selected_workspace": "/Users/roylin/code/tasks/T01-t032-cua-01",
+  "one_send_action": true,
+  "permission_mode": "ask; exact visible approvals only",
+  "old_apps_preserved": true
+}

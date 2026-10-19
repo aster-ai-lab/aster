@@ -1,0 +1,90 @@
+{
+  "binary_identities": {
+    "work-tests": {
+      "source": "/Users/roylin/code/aster/target/debug/deps/a3s_studio_lib-9c7d06d5a17857ce",
+      "frozen": "/Users/roylin/code/aster/target/qualification/t030-cua-20261020/work-tests",
+      "sha256": "5221893e6ab6d951e477720518ebe0bb8fb6ccbc18b9da661c38e7bb86c3ab22"
+    },
+    "a3s-code-acp": {
+      "source": "/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/AsterDream-TaskOptimization-R2.app/Contents/MacOS/a3s-code-acp",
+      "frozen": "/Users/roylin/code/aster/target/qualification/t030-cua-20261020/a3s-code-acp",
+      "sha256": "61a06ab66f5f43ea89b2d1a909da5ef146bef2802b9526e75e8792a61d9e09f7"
+    },
+    "a3s-office": {
+      "source": "/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/AsterDream-TaskOptimization-R2.app/Contents/MacOS/a3s-office",
+      "frozen": "/Users/roylin/code/aster/target/qualification/t030-cua-20261020/a3s-office",
+      "sha256": "31c6caec6406e0aa1039cabff0651583784b642b493d6f1f8d8cfa082fac0a25"
+    }
+  },
+  "results": [
+    {
+      "name": "program",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t030-cua-20261020/work-tests",
+        "agent_plane::turns::local_acp_tests::delivery::program::",
+        "--test-threads=1",
+        "--nocapture",
+        "--ignored"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 94.82125404199999,
+      "timed_out": false
+    },
+    {
+      "name": "adaptive-grep",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t030-cua-20261020/work-tests",
+        "agent_plane::turns::local_acp_tests::delivery::search::real_acp_adaptive_grep_executes_without_embeddings_and_reaches_provider",
+        "--test-threads=1",
+        "--nocapture",
+        "--ignored",
+        "--exact"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 16.56609433300001,
+      "timed_out": false
+    },
+    {
+      "name": "launcher",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t030-cua-20261020/work-tests",
+        "agent_plane::launcher::execution_capabilities::tests::",
+        "--test-threads=1",
+        "--nocapture"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.02144654199999252,
+      "timed_out": false
+    },
+    {
+      "name": "open-directory",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t030-cua-20261020/work-tests",
+        "workspace_file::tests::opening_a_directory",
+        "--test-threads=1",
+        "--nocapture"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.012517582999990395,
+      "timed_out": false
+    },
+    {
+      "name": "open-directory-authority",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t030-cua-20261020/work-tests",
+        "authority::tests::workspace_directory_open_authenticates_and_preserves_native_refusals",
+        "--test-threads=1",
+        "--nocapture",
+        "--exact"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.23026854100000094,
+      "timed_out": false
+    }
+  ],
+  "binaries_unchanged": {
+    "work-tests": true,
+    "a3s-code-acp": true,
+    "a3s-office": true
+  }
+}

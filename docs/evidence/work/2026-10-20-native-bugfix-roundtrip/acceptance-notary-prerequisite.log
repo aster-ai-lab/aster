@@ -1,3 +1,0 @@
-Error: No Keychain password item found for profile: AsterDream-notary
-
-Run 'notarytool store-credentials' to create another credential profile.

@@ -1,0 +1,31 @@
+{
+  "schema": "aster.final-acp-five-case.v3",
+  "state": "terminal",
+  "command": [
+    "/Users/roylin/code/aster/target/debug/deps/a3s_studio_lib-9c7d06d5a17857ce",
+    "agent_plane::turns::local_acp_tests::delivery::program::",
+    "--ignored",
+    "--test-threads=1",
+    "--nocapture"
+  ],
+  "started_at_utc": "2026-10-19T19:17:30.166750+00:00",
+  "harness": {
+    "path": "/Users/roylin/code/aster/target/debug/deps/a3s_studio_lib-9c7d06d5a17857ce",
+    "sha256": "9f9de0de2324e9c668b246b6e6240a47de9352135f2bb091d7446afdb8a40f92"
+  },
+  "actual_acp_before": {
+    "path": "/Users/roylin/code/aster/target/debug/a3s-code-acp",
+    "sha256": "b5a88347d4e6770d8ef2dc8f348ff6903674aeb30bc7726a38616d99670d72e0"
+  },
+  "note": "Existing protocol harness drives the fresh ACP/Core/Office child. This is not an actual staged-GUI qualification or live model timing.",
+  "fixture_source": {
+    "apps/work/src-tauri/src/agent_plane/local_acp_program_tests.rs": "fc8e4c629461f48547a59efc18e2f8c88903b0e61f1665701094a4292f0c6bc3",
+    "apps/work/src-tauri/src/agent_plane/local_acp_delivery_tests.rs": "6f342522869464c9005ce9d91f53d065413e4bef0196acbd3103fce39e77df91"
+  },
+  "pid": 75446,
+  "exit_code": 101,
+  "wall_seconds": 71.833069709,
+  "ended_at_utc": "2026-10-19T19:18:42.192991+00:00",
+  "actual_acp_after_sha256": "b5a88347d4e6770d8ef2dc8f348ff6903674aeb30bc7726a38616d99670d72e0",
+  "log_sha256": "0935f7699997385c5fa4494e2b9780f15708db71711ed53774fb2560877ee5e8"
+}

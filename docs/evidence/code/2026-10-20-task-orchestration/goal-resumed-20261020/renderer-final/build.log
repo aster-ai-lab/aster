@@ -1,0 +1,91 @@
+Rsbuild v2.2.7
+
+(node:36543) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/roylin/code/aster/apps/work/rsbuild.config.ts?fresh-import-qkpqlcwpy=0,file:///Users/roylin/code/aster/apps/work/rsbuild.config.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/roylin/code/aster/apps/work/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/local-product-scope.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-local-product-scope.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+info    build started...
+warn    Build warnings: 
+File: ./src/renderer/pages/agents/pdfToolsPdf.ts:1:1
+  ⚠ Module parse warning:
+  ╰─▶   ⚠ Critical dependency: Accessing import.meta directly is unsupported (only property access or destructuring is supported)
+           ╭─[99:36]
+        97 │         const { fileURLToPath } = await import(/* @vite-ignore */ 'node:url');
+        98 │         const { dirname, join } = await import(/* @vite-ignore */ 'node:path');
+        99 │         const entry = fileURLToPath(import.meta.resolve('@embedpdf/fonts-sc'));
+           ·                                     ───────────
+       100 │         const fontPath = join(dirname(dirname(entry)), 'fonts', 'NotoSansHans-Regular.otf');
+       101 │         return new Uint8Array(await readFile(fontPath));
+           ╰────
+
+File: ./src/renderer/pages/agents/pdfToolsPdfium.ts:1:1
+  ⚠ Module parse warning:
+  ╰─▶   ⚠ Critical dependency: Accessing import.meta directly is unsupported (only property access or destructuring is supported)
+           ╭─[186:25]
+       184 │ async function packageSpecifierPath(specifier) {
+       185 │     const { fileURLToPath } = await import(/* @vite-ignore */ 'node:url');
+       186 │     return fileURLToPath(import.meta.resolve(specifier));
+           ·                          ───────────
+       187 │ }
+       188 │ export async function pngOf(raster) {
+           ╰────
+
+File: ./src/renderer/pages/agents/pdfToolsPdfium.ts:1:1
+  ⚠ Critical dependency: the request of a dependency is an expression
+     ╭─[164:53]
+ 162 │     const index = await packageSpecifierPath(PDFIUM_INDEX);
+ 163 │     const { pathToFileURL } = await import(/* @vite-ignore */ 'node:url');
+ 164 │     const imported = await import(/* @vite-ignore */ pathToFileURL(index).href);
+     ·                                                      ─────────────────────────
+ 165 │     return imported.init({
+ 166 │         wasmBinary: wasm
+     ╰────
+
+File: ./src/renderer/workers/pyodide.worker.ts:1:1
+  ⚠ Critical dependency: the request of a dependency is an expression
+    ╭─[57:62]
+ 55 │     try {
+ 56 │         // 动态加载 Pyodide 脚本
+ 57 │         const pyodideModule = await import(/* @vite-ignore */ PYODIDE_MODULE_URL);
+    ·                                                               ──────────────────
+ 58 │         // 加载 Pyodide 并捕获标准输出/错误
+ 59 │         return await pyodideModule.loadPyodide({
+    ╰────
+
+ready   built in 9.91s

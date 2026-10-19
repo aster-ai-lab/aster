@@ -1,0 +1,81 @@
+Window: "ToWork", App: ToWork.
+0 standard window ToWork, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content Description: ToWork, URL: 127.0.0.1:4318/windows/main/index.html
+			3 pop up button 林书豪
+			4 button 知识
+			5 button 工作
+			6 button 消息
+			7 button 插件
+			8 button (collapsed) 任务, Secondary Actions: Expand
+			9 button 设置
+			10 container
+				11 button (disabled) 添加智能体
+				12 pop up button 展示方式
+				13 container
+					14 sortable ToWork 工作助手 更多 新任务
+					15 button 法务专家
+					16 button 新任务
+					17 text 暂无任务
+				18 splitter 调整面板宽度, Value: 275
+				19 toggle button 隐藏侧边栏, Value: on
+				20 pop up button (disabled) 选择模型
+				21 button (disabled) 选择工作目录
+				22 text entry area (settable) 输入消息，按 Return 发送，输入 / 搜索路径或命令，输入 @ 引用文件或会话
+					23 text 输入消息，按 Return 发送，输入 / 搜索路径或命令，输入 @ 引用文件或会话
+				24 button 新任务
+				25 pop up button 技能
+				26 pop up button 权限模式
+				27 button 输入快捷面板
+				28 button (disabled) 发送
+				29 button 新建任务
+				30 button (collapsed) 搜索任务, Secondary Actions: Expand
+				31 container 工作导航
+					32 button 智能体
+					33 button 连接器
+					34 button 技能
+					35 button 自动化
+				36 container 项目
+					37 container
+						38 heading 项目, Value: 3
+							39 text 项目
+						40 button 新建项目
+					41 text 还没有项目
+				42 container 任务
+					43 container
+						44 heading 任务, Value: 3
+							45 text 任务
+						46 button 查看全部最近任务
+					47 container 今天
+						48 heading 今天, Value: 3
+							49 text 今天
+						50 button 为一场线上产品演示整理筹备清单。示例：周五14:00开始，时长30分钟。按会前、…
+						51 text 8分钟前
+						52 button 重命名
+						53 toggle button 置顶, Value: off
+						54 button 归档
+				55 toggle button 收起侧边栏, Value: on
+				56 heading 自动化, Value: 1
+					57 text 自动化
+				58 container
+					59 search text field (settable) 搜索定时任务, Placeholder: 搜索任务
+						60 text 搜索任务
+				61 pop up button 新建
+				62 text 设置要执行的内容和运行频率。
+				63 container 按状态筛选
+					64 button 全部状态
+					65 button 活跃
+					66 button 已暂停
+					67 button 已完成
+					68 button 已错过
+				69 heading 全部状态, Value: 2
+					70 text 全部状态
+				71 heading 暂无定时任务, Value: 3
+					72 text 暂无定时任务
+				73 text 创建一个任务，让 Agent 按计划自动运行。
+	74 close button
+	75 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	76 minimize button
+77 menu bar
+	78 ToWork
+	79 Edit

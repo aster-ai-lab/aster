@@ -177,6 +177,52 @@ async fn governed_host_call_obeys_permission_before_side_effects() {
 }
 
 #[tokio::test]
+async fn governed_search_grep_works_without_embeddings_and_obeys_denial() {
+    let (allowed, _, allowed_directory) = runtime(PermissionDecision::Allow, false, None);
+    std::fs::write(
+        allowed_directory.path().join("allowed.txt"),
+        "matchword allowed content\n",
+    )
+    .unwrap();
+    assert!(allowed
+        .tool_context
+        .workspace_services
+        .workspace_retrieval()
+        .is_none());
+
+    let result = allowed
+        .call_governed(
+            "search",
+            serde_json::json!({"mode": "grep", "query": "matchword", "path": "allowed.txt"}),
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(result.exit_code, 0, "{}", result.output);
+    assert!(result.output.contains("allowed.txt"));
+    assert!(result.output.contains("matchword allowed content"));
+    assert_eq!(result.metadata.as_ref().unwrap()["mode"], "grep");
+
+    let (denied, _, denied_directory) = runtime(PermissionDecision::Deny, false, None);
+    std::fs::write(
+        denied_directory.path().join("private.txt"),
+        "matchword this content must stay private\n",
+    )
+    .unwrap();
+    let result = denied
+        .call_governed(
+            "search",
+            serde_json::json!({"mode": "grep", "query": "matchword", "path": "private.txt"}),
+        )
+        .await
+        .unwrap();
+
+    assert_ne!(result.exit_code, 0);
+    assert!(result.output.contains("Permission denied"));
+    assert!(!result.output.contains("this content must stay private"));
+}
+
+#[tokio::test]
 async fn governed_denial_binds_the_request_before_permission_evidence() {
     let (runtime, calls, _directory) = runtime(PermissionDecision::Deny, false, None);
     let arguments = serde_json::json!({"secret": "governed-private-value"});

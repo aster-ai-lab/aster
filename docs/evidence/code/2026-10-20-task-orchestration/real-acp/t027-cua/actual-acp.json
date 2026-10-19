@@ -1,0 +1,10 @@
+{
+  "observed_at_utc": "2026-10-19T20:16:51.142525+00:00",
+  "children": [
+    {
+      "pid": 4033,
+      "actual_mapped_executable": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/MacOS/a3s-code-acp",
+      "sha256": "fe16431112e890f17058b14a5e1b9fe3c933f714638f49d8f681302d5a60bb7c"
+    }
+  ]
+}

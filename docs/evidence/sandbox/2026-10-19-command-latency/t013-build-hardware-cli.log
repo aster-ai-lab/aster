@@ -1,0 +1,15 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling sha2 v0.10.9
+   Compiling a3s-oci-sdk v0.3.2 (/Users/roylin/code/aster/crates/oci-runtime/crates/sdk)
+   Compiling a3s-oci-agent-protocol v0.3.6 (/Users/roylin/code/aster/crates/oci-runtime/crates/agent-protocol)
+   Compiling a3s-oci-runtime v0.3.6 (/Users/roylin/code/aster/crates/oci-runtime/crates/runtime)
+   Compiling a3s-oci-cli v0.3.6 (/Users/roylin/code/aster/crates/oci-runtime/crates/cli)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 17.58s

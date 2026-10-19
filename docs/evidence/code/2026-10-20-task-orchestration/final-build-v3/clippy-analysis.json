@@ -1,0 +1,620 @@
+{
+  "diagnostics": [
+    {
+      "level": "warning",
+      "code": "clippy::manual_range_contains",
+      "message": "manual `!RangeInclusive::contains` implementation",
+      "files": [
+        "crates/oci-runtime/crates/core/src/hardware_vm.rs"
+      ],
+      "primary_spans": [
+        {
+          "byte_end": 7968,
+          "byte_start": 7902,
+          "column_end": 39,
+          "column_start": 8,
+          "expansion": null,
+          "file_name": "crates/oci-runtime/crates/core/src/hardware_vm.rs",
+          "is_primary": true,
+          "label": null,
+          "line_end": 227,
+          "line_start": 226,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 35,
+              "highlight_start": 8,
+              "text": "    if memory_mib < MEMORY_MIN_MIB"
+            },
+            {
+              "highlight_end": 39,
+              "highlight_start": 1,
+              "text": "        || memory_mib > MEMORY_MAX_MIB"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "clippy::manual_is_multiple_of",
+      "message": "manual implementation of `.is_multiple_of()`",
+      "files": [
+        "crates/oci-runtime/crates/core/src/hardware_vm.rs"
+      ],
+      "primary_spans": [
+        {
+          "byte_end": 8014,
+          "byte_start": 7980,
+          "column_end": 46,
+          "column_start": 12,
+          "expansion": null,
+          "file_name": "crates/oci-runtime/crates/core/src/hardware_vm.rs",
+          "is_primary": true,
+          "label": null,
+          "line_end": 228,
+          "line_start": 228,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 46,
+              "highlight_start": 12,
+              "text": "        || memory_mib % MEMORY_ALIGN_MIB != 0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "clippy::derivable_impls",
+      "message": "this `impl` can be derived",
+      "files": [
+        "crates/common/src/privacy.rs"
+      ],
+      "primary_spans": [
+        {
+          "byte_end": 1081,
+          "byte_start": 990,
+          "column_end": 2,
+          "column_start": 1,
+          "expansion": null,
+          "file_name": "crates/common/src/privacy.rs",
+          "is_primary": true,
+          "label": null,
+          "line_end": 42,
+          "line_start": 38,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 36,
+              "highlight_start": 1,
+              "text": "impl Default for SensitivityLevel {"
+            },
+            {
+              "highlight_end": 27,
+              "highlight_start": 1,
+              "text": "    fn default() -> Self {"
+            },
+            {
+              "highlight_end": 21,
+              "highlight_start": 1,
+              "text": "        Self::Normal"
+            },
+            {
+              "highlight_end": 6,
+              "highlight_start": 1,
+              "text": "    }"
+            },
+            {
+              "highlight_end": 2,
+              "highlight_start": 1,
+              "text": "}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "clippy::unnecessary_sort_by",
+      "message": "consider using `sort_by_key`",
+      "files": [
+        "crates/common/src/privacy.rs"
+      ],
+      "primary_spans": [
+        {
+          "byte_end": 4833,
+          "byte_start": 4788,
+          "column_end": 54,
+          "column_start": 9,
+          "expansion": null,
+          "file_name": "crates/common/src/privacy.rs",
+          "is_primary": true,
+          "label": null,
+          "line_end": 171,
+          "line_start": 171,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 54,
+              "highlight_start": 9,
+              "text": "        matches.sort_by(|a, b| b.start.cmp(&a.start));"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "unused_imports",
+      "message": "unused imports: `guest_agent_hello` and `host_runtime_version`",
+      "files": [
+        "crates/code/core/src/sandbox/oci.rs"
+      ],
+      "primary_spans": [
+        {
+          "byte_end": 979,
+          "byte_start": 962,
+          "column_end": 43,
+          "column_start": 26,
+          "expansion": null,
+          "file_name": "crates/code/core/src/sandbox/oci.rs",
+          "is_primary": true,
+          "label": null,
+          "line_end": 25,
+          "line_start": 25,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 43,
+              "highlight_start": 26,
+              "text": "pub(crate) use version::{guest_agent_hello, host_runtime_version};"
+            }
+          ]
+        },
+        {
+          "byte_end": 1001,
+          "byte_start": 981,
+          "column_end": 65,
+          "column_start": 45,
+          "expansion": null,
+          "file_name": "crates/code/core/src/sandbox/oci.rs",
+          "is_primary": true,
+          "label": null,
+          "line_end": 25,
+          "line_start": 25,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 65,
+              "highlight_start": 45,
+              "text": "pub(crate) use version::{guest_agent_hello, host_runtime_version};"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "dead_code",
+      "message": "constant `HOST_MISMATCH` is never used",
+      "files": [
+        "crates/code/core/src/sandbox/oci/version.rs"
+      ],
+      "primary_spans": [
+        {
+          "byte_end": 437,
+          "byte_start": 424,
+          "column_end": 20,
+          "column_start": 7,
+          "expansion": null,
+          "file_name": "crates/code/core/src/sandbox/oci/version.rs",
+          "is_primary": true,
+          "label": null,
+          "line_end": 10,
+          "line_start": 10,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 20,
+              "highlight_start": 7,
+              "text": "const HOST_MISMATCH: &[u8] = b\"guest agent version does not match the host runtime version\";"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "dead_code",
+      "message": "function `host_runtime_version` is never used",
+      "files": [
+        "crates/code/core/src/sandbox/oci/version.rs"
+      ],
+      "primary_spans": [
+        {
+          "byte_end": 619,
+          "byte_start": 599,
+          "column_end": 35,
+          "column_start": 15,
+          "expansion": null,
+          "file_name": "crates/code/core/src/sandbox/oci/version.rs",
+          "is_primary": true,
+          "label": null,
+          "line_end": 13,
+          "line_start": 13,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 35,
+              "highlight_start": 15,
+              "text": "pub(crate) fn host_runtime_version(host: &[u8]) -> Option<&str> {"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "dead_code",
+      "message": "function `guest_agent_hello` is never used",
+      "files": [
+        "crates/code/core/src/sandbox/oci/version.rs"
+      ],
+      "primary_spans": [
+        {
+          "byte_end": 814,
+          "byte_start": 797,
+          "column_end": 32,
+          "column_start": 15,
+          "expansion": null,
+          "file_name": "crates/code/core/src/sandbox/oci/version.rs",
+          "is_primary": true,
+          "label": null,
+          "line_end": 18,
+          "line_start": 18,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 32,
+              "highlight_start": 15,
+              "text": "pub(crate) fn guest_agent_hello<'a>(agent: &'a [u8], architecture: &str) -> Option<&'a str> {"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "dead_code",
+      "message": "function `version_immediately_before` is never used",
+      "files": [
+        "crates/code/core/src/sandbox/oci/version.rs"
+      ],
+      "primary_spans": [
+        {
+          "byte_end": 1069,
+          "byte_start": 1043,
+          "column_end": 30,
+          "column_start": 4,
+          "expansion": null,
+          "file_name": "crates/code/core/src/sandbox/oci/version.rs",
+          "is_primary": true,
+          "label": null,
+          "line_end": 26,
+          "line_start": 26,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 30,
+              "highlight_start": 4,
+              "text": "fn version_immediately_before<'a>(bytes: &'a [u8], marker: &[u8]) -> Option<&'a str> {"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "dead_code",
+      "message": "function `semver_ending_at` is never used",
+      "files": [
+        "crates/code/core/src/sandbox/oci/version.rs"
+      ],
+      "primary_spans": [
+        {
+          "byte_end": 1533,
+          "byte_start": 1517,
+          "column_end": 20,
+          "column_start": 4,
+          "expansion": null,
+          "file_name": "crates/code/core/src/sandbox/oci/version.rs",
+          "is_primary": true,
+          "label": null,
+          "line_end": 44,
+          "line_start": 44,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 20,
+              "highlight_start": 4,
+              "text": "fn semver_ending_at(bytes: &[u8], end: usize) -> Option<&str> {"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "clippy::too_many_arguments",
+      "message": "this function has too many arguments (8/7)",
+      "files": [
+        "crates/code/core/src/agent/tool_completion_runtime.rs"
+      ],
+      "primary_spans": [
+        {
+          "byte_end": 12536,
+          "byte_start": 12128,
+          "column_end": 6,
+          "column_start": 5,
+          "expansion": null,
+          "file_name": "crates/code/core/src/agent/tool_completion_runtime.rs",
+          "is_primary": true,
+          "label": null,
+          "line_end": 324,
+          "line_start": 315,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 55,
+              "highlight_start": 5,
+              "text": "    pub(crate) fn record_native_artifact_verification("
+            },
+            {
+              "highlight_end": 15,
+              "highlight_start": 1,
+              "text": "        &self,"
+            },
+            {
+              "highlight_end": 25,
+              "highlight_start": 1,
+              "text": "        call: &ToolCall,"
+            },
+            {
+              "highlight_end": 52,
+              "highlight_start": 1,
+              "text": "        result: &a3s_effect::ToolExecutionResultV1,"
+            },
+            {
+              "highlight_end": 22,
+              "highlight_start": 1,
+              "text": "        output: &str,"
+            },
+            {
+              "highlight_end": 50,
+              "highlight_start": 1,
+              "text": "        metadata: &mut Option<serde_json::Value>,"
+            },
+            {
+              "highlight_end": 58,
+              "highlight_start": 1,
+              "text": "        ledger: &mut crate::harness_loop::MutationLedger,"
+            },
+            {
+              "highlight_end": 68,
+              "highlight_start": 1,
+              "text": "        reports: &mut Vec<crate::verification::VerificationReport>,"
+            },
+            {
+              "highlight_end": 62,
+              "highlight_start": 1,
+              "text": "        nested: Option<&crate::harness_loop::MutationLedger>,"
+            },
+            {
+              "highlight_end": 6,
+              "highlight_start": 1,
+              "text": "    ) {"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "clippy::too_many_arguments",
+      "message": "this function has too many arguments (8/7)",
+      "files": [
+        "crates/code/core/src/agent/tool_completion_runtime.rs"
+      ],
+      "primary_spans": [
+        {
+          "byte_end": 12536,
+          "byte_start": 12128,
+          "column_end": 6,
+          "column_start": 5,
+          "expansion": null,
+          "file_name": "crates/code/core/src/agent/tool_completion_runtime.rs",
+          "is_primary": true,
+          "label": null,
+          "line_end": 324,
+          "line_start": 315,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 55,
+              "highlight_start": 5,
+              "text": "    pub(crate) fn record_native_artifact_verification("
+            },
+            {
+              "highlight_end": 15,
+              "highlight_start": 1,
+              "text": "        &self,"
+            },
+            {
+              "highlight_end": 25,
+              "highlight_start": 1,
+              "text": "        call: &ToolCall,"
+            },
+            {
+              "highlight_end": 52,
+              "highlight_start": 1,
+              "text": "        result: &a3s_effect::ToolExecutionResultV1,"
+            },
+            {
+              "highlight_end": 22,
+              "highlight_start": 1,
+              "text": "        output: &str,"
+            },
+            {
+              "highlight_end": 50,
+              "highlight_start": 1,
+              "text": "        metadata: &mut Option<serde_json::Value>,"
+            },
+            {
+              "highlight_end": 58,
+              "highlight_start": 1,
+              "text": "        ledger: &mut crate::harness_loop::MutationLedger,"
+            },
+            {
+              "highlight_end": 68,
+              "highlight_start": 1,
+              "text": "        reports: &mut Vec<crate::verification::VerificationReport>,"
+            },
+            {
+              "highlight_end": 62,
+              "highlight_start": 1,
+              "text": "        nested: Option<&crate::harness_loop::MutationLedger>,"
+            },
+            {
+              "highlight_end": 6,
+              "highlight_start": 1,
+              "text": "    ) {"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "clippy::err_expect",
+      "message": "called `.err().expect()` on a `Result` value",
+      "files": [
+        "crates/code/core/src/agent_api/session_sandbox.rs"
+      ],
+      "primary_spans": [
+        {
+          "byte_end": 9733,
+          "byte_start": 9708,
+          "column_end": 20,
+          "column_start": 14,
+          "expansion": null,
+          "file_name": "crates/code/core/src/agent_api/session_sandbox.rs",
+          "is_primary": true,
+          "label": null,
+          "line_end": 246,
+          "line_start": 245,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 19,
+              "highlight_start": 14,
+              "text": "            .err()"
+            },
+            {
+              "highlight_end": 20,
+              "highlight_start": 1,
+              "text": "            .expect(\"this hermetic refusal test has no OCI companions\");"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "clippy::let_unit_value",
+      "message": "this let-binding has unit value",
+      "files": [
+        "crates/code/core/src/sandbox/oci/tests.rs"
+      ],
+      "primary_spans": [
+        {
+          "byte_end": 1506,
+          "byte_start": 1229,
+          "column_end": 69,
+          "column_start": 5,
+          "expansion": null,
+          "file_name": "crates/code/core/src/sandbox/oci/tests.rs",
+          "is_primary": true,
+          "label": null,
+          "line_end": 54,
+          "line_start": 47,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 38,
+              "highlight_start": 5,
+              "text": "    let _ = tracing_subscriber::fmt()"
+            },
+            {
+              "highlight_end": 62,
+              "highlight_start": 1,
+              "text": "        .with_env_filter(\"a3s_code_core::sandbox::oci=debug\")"
+            },
+            {
+              "highlight_end": 27,
+              "highlight_start": 1,
+              "text": "        .with_target(true)"
+            },
+            {
+              "highlight_end": 16,
+              "highlight_start": 1,
+              "text": "        .json()"
+            },
+            {
+              "highlight_end": 24,
+              "highlight_start": 1,
+              "text": "        .without_time()"
+            },
+            {
+              "highlight_end": 26,
+              "highlight_start": 1,
+              "text": "        .with_ansi(false)"
+            },
+            {
+              "highlight_end": 20,
+              "highlight_start": 1,
+              "text": "        .try_init()"
+            },
+            {
+              "highlight_end": 69,
+              "highlight_start": 1,
+              "text": "        .expect(\"timing probe requires its own tracing subscriber\");"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "baseline_ref": "docs/evidence/code/2026-10-20-task-orchestration/ptc/visibility-clippy.json",
+  "baseline_warning_count": 14,
+  "current_warning_count": 14,
+  "signature_multiset_equal": true,
+  "new_signatures": [],
+  "removed_signatures": []
+}

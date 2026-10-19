@@ -52,6 +52,7 @@ fn start_command() -> AgentProtocolCommandV1 {
             request_id: "execution-018f4f86:start".into(),
             identity: identity("run-execution-018f4f86-attempt-1"),
             prompt: "Explain the failing test and fix it.".into(),
+            models: None,
         },
     }
 }

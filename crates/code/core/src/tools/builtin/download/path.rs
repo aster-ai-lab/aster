@@ -239,10 +239,10 @@ pub(super) fn prepare_destination(
         parent.push(component);
         match std::fs::symlink_metadata(&parent) {
             Ok(metadata) if metadata.file_type().is_symlink() => {
-                return Err("file_path crosses a symbolic link".to_string())
+                return Err("file_path crosses a symbolic link".to_string());
             }
             Ok(metadata) if !metadata.is_dir() => {
-                return Err("A file_path parent component is not a directory".to_string())
+                return Err("A file_path parent component is not a directory".to_string());
             }
             Ok(_) => {}
             Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
@@ -263,15 +263,15 @@ pub(super) fn prepare_destination(
     let absolute_path = canonical_parent.join(file_name);
     let existed = match std::fs::symlink_metadata(&absolute_path) {
         Ok(metadata) if metadata.file_type().is_symlink() => {
-            return Err("Download destination cannot be a symbolic link".to_string())
+            return Err("Download destination cannot be a symbolic link".to_string());
         }
         Ok(metadata) if metadata.is_dir() => {
-            return Err("Download destination is a directory".to_string())
+            return Err("Download destination is a directory".to_string());
         }
         Ok(_) if !overwrite => {
             return Err(
                 "Download destination already exists; set overwrite=true to replace it".to_string(),
-            )
+            );
         }
         Ok(_) => true,
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => false,

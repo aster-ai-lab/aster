@@ -12,12 +12,12 @@ use crate::UseError;
 
 /// At most this many texts per request. Mirrors the rerank document cap so
 /// both endpoints share one notion of "one bounded batch".
-const MAX_ITEMS: usize = 256;
+pub(crate) const MAX_ITEMS: usize = 256;
 /// One input string may span at most this many UTF-8 bytes.
-const MAX_ITEM_BYTES: usize = 64 * 1024;
+pub(crate) const MAX_ITEM_BYTES: usize = 64 * 1024;
 /// The model alias is echoed, never routed on; bounded to reject dumping
 /// arbitrary text through it.
-const MAX_MODEL_BYTES: usize = 200;
+pub(crate) const MAX_MODEL_BYTES: usize = 200;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct EmbeddingRequest {

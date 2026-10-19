@@ -1,0 +1,24 @@
+{
+  "command": "NODE_OPTIONS=--max-old-space-size=8192 ./node_modules/.bin/tsc --noEmit -p tsconfig.web.json --composite false",
+  "exit_code": 2,
+  "global_errors": 274,
+  "owned_file_errors": [],
+  "owned_paths": [
+    "apps/work/src/renderer/components/composer/useToolApprovalComposerOverrides.ts",
+    "apps/work/src/renderer/components/composer/ComposerContext.ts",
+    "apps/work/src/renderer/components/composer/ComposerCore.tsx",
+    "apps/work/src/renderer/components/composer/__tests__/useToolApprovalComposerOverrides.test.ts",
+    "apps/work/src/renderer/components/composer/__tests__/ComposerCore.test.tsx",
+    "apps/work/src/renderer/hooks/useTopicStreamStatus.ts",
+    "apps/work/src/renderer/hooks/__tests__/useTopicAwaitingApproval.test.ts",
+    "apps/work/src/renderer/pages/agents/useAgentChatRuntimeState.ts",
+    "apps/work/src/renderer/pages/agents/__tests__/useAgentChatRuntimeState.test.tsx",
+    "apps/work/src/renderer/data/studioAgentPlane.ts",
+    "apps/work/src/renderer/data/__tests__/studioAgentPlane.test.ts",
+    "apps/work/src/shared/ai/transport/stream.ts",
+    "apps/work/src/shared/ipc/schemas/ai.ts",
+    "apps/work/src/shared/ai/transport/index.ts",
+    "apps/work/src/shared/types/studioExecution.ts"
+  ],
+  "baseline_status": "No full pre-change typecheck was executed; unrelated diagnostics are retained without claiming a clean baseline."
+}

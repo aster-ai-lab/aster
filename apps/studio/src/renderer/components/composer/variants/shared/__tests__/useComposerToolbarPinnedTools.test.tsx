@@ -1,0 +1,94 @@
+import { MockUsePreferenceUtils } from '@test-mocks/renderer/usePreference'
+import { act, renderHook, waitFor } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { toast } from '@renderer/services/toast'
+
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string) => key
+  })
+}))
+
+vi.mock('@renderer/data/hooks/usePreference', async () => {
+  const { MockUsePreference } = await import('@test-mocks/renderer/usePreference')
+  return MockUsePreference
+})
+
+import { useComposerToolbarPinnedTools } from '../useComposerToolbarPinnedTools'
+
+describe('useComposerToolbarPinnedTools', () => {
+  beforeEach(() => {
+    MockUsePreferenceUtils.resetMocks()
+  })
+
+  it('exposes the preference value and persists updates', async () => {
+    const setPreference = vi.fn().mockResolvedValue(undefined)
+    MockUsePreferenceUtils.mockPreferenceReturn('chat.input.toolbar.pinned_tools', ['web-search'], setPreference)
+
+    const { result } = renderHook(() => useComposerToolbarPinnedTools('chat.input.toolbar.pinned_tools'))
+
+    expect(result.current.pinnedIds).toEqual(['web-search'])
+
+    act(() => {
+      result.current.setPinnedIds([])
+    })
+
+    expect(setPreference).toHaveBeenCalledWith([])
+  })
+
+  it('resets to the preference default and reports whether the list is already default', () => {
+    const setPreference = vi.fn().mockResolvedValue(undefined)
+    // getDefaultValue includes the persistent new-conversation action first.
+    MockUsePreferenceUtils.mockPreferenceReturn('chat.input.toolbar.pinned_tools', [], setPreference)
+
+    const { result } = renderHook(() => useComposerToolbarPinnedTools('chat.input.toolbar.pinned_tools'))
+
+    expect(result.current.isDefault).toBe(false)
+
+    act(() => {
+      result.current.resetPinnedIds()
+    })
+    expect(setPreference).toHaveBeenCalledWith(['composer:new-conversation', 'web-search'])
+  })
+
+  it('reports isDefault when the pinned list equals the default', () => {
+    MockUsePreferenceUtils.mockPreferenceReturn('chat.input.toolbar.pinned_tools', [
+      'composer:new-conversation',
+      'web-search'
+    ])
+
+    const { result } = renderHook(() => useComposerToolbarPinnedTools('chat.input.toolbar.pinned_tools'))
+
+    expect(result.current.isDefault).toBe(true)
+  })
+
+  it('surfaces a toast when persisting fails', async () => {
+    const setPreference = vi.fn().mockRejectedValue(new Error('persist failed'))
+    MockUsePreferenceUtils.mockPreferenceReturn('agent.input.toolbar.pinned_tools', ['skills'], setPreference)
+
+    const { result } = renderHook(() => useComposerToolbarPinnedTools('agent.input.toolbar.pinned_tools'))
+
+    act(() => {
+      result.current.setPinnedIds([])
+    })
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith('common.error')
+    })
+  })
+
+  it('keeps the customize popover closed until it is opened directly', () => {
+    MockUsePreferenceUtils.mockPreferenceReturn('chat.input.toolbar.pinned_tools', [])
+
+    const { result } = renderHook(() => useComposerToolbarPinnedTools('chat.input.toolbar.pinned_tools'))
+
+    expect(result.current.customizeOpen).toBe(false)
+    expect(result.current).not.toHaveProperty('customizeFooterAction')
+
+    act(() => {
+      result.current.setCustomizeOpen(true)
+    })
+    expect(result.current.customizeOpen).toBe(true)
+  })
+})

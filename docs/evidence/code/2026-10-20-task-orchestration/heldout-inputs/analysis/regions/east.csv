@@ -1,0 +1,5 @@
+id,region,status,units
+e1,East,delivered,12
+e2,East,pending,999
+e3,East,delivered,30
+e4,East,cancelled,100

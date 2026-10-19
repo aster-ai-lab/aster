@@ -1,0 +1,70 @@
+{
+  "schema": "aster.ptc.source.v1",
+  "capturedUtc": "2026-10-19T17:43:57.719626+00:00",
+  "head": "f4734c00425746d3b93298ab06ef562125899d93",
+  "scope": "Current PTC source files; shared working tree contains unrelated edits. No clean-tree or exact whole-workspace rebuild claim.",
+  "files": [
+    {
+      "path": "crates/code/core/src/tools/presentation.rs",
+      "bytes": 17182,
+      "sha256": "44f7bba4eb0d3093aa4850b716a64335d235dd90ab7195de0f8af8d9d9677565"
+    },
+    {
+      "path": "crates/code/core/src/tools/presentation_tests.rs",
+      "bytes": 927,
+      "sha256": "4a95f060dae40a9b38e354f3c49091e5ca4892719c2fc698cf84fb1916860345"
+    },
+    {
+      "path": "crates/code/core/src/tools/program_tool.rs",
+      "bytes": 27908,
+      "sha256": "4715cc5dce76196c10c16a4632ba9c6c938f68e073c821d27b4e3e124e8e258c"
+    },
+    {
+      "path": "crates/code/core/src/tools/program_tool/tests.rs",
+      "bytes": 32074,
+      "sha256": "1fef19502e213d197d4e2be16231c3c4048a5f5eb8034ec6ea0cc1ed51004955"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log/nested_governance.rs",
+      "bytes": 21104,
+      "sha256": "e60f8aa815a462ced107c6bb17d136a93e3b31af43fe2bcf9820d0a783f80dbe"
+    },
+    {
+      "path": "crates/code/core/src/agent/llm_invoker/fact_governance.rs",
+      "bytes": 20938,
+      "sha256": "3a741a980a7cf87702f297ad2dcd3f1995adfca582747c7257fc7f9cf43821c6"
+    },
+    {
+      "path": "crates/code/core/src/agent/llm_invoker/fact_governance/tests.rs",
+      "bytes": 23753,
+      "sha256": "4246b029ce699a88af489bff90b811bbae239cbd0df2ae6b1d02e5178c7b8e11"
+    },
+    {
+      "path": "crates/code/core/src/fact_control/model_call.rs",
+      "bytes": 24156,
+      "sha256": "dc984e1b0c71fd16dc5fb8053fe59ecb40068cf174e82de7371a03c97f685c9e"
+    },
+    {
+      "path": "crates/code/core/src/agent/llm_invoker.rs",
+      "bytes": 50677,
+      "sha256": "44d6965085a3e1fea3bf054c82025300b76f877056bcfc47922b98f212f6571f"
+    },
+    {
+      "path": "crates/code/core/tests/test_extensibility_real_llm.rs",
+      "bytes": 17392,
+      "sha256": "64e762fb922912ed8b498c55e498d22984a28637785b98ea0b7aa7d1bd68b096"
+    },
+    {
+      "path": "crates/code/core/tests/extensibility/metrics.rs",
+      "bytes": 15557,
+      "sha256": "5f77e52a67dd8ee682c2c8196eceec5fcba197da59c440460d3a7476b4f37bc4"
+    }
+  ],
+  "formatCorrection": "Initial formatting used edition2024 incorrectly for the edition2021 Core package. All 11 owned files were reformatted with pinned rustfmt --edition 2021; no intentional logic change.",
+  "integratedFollowup": "After the original PTC checks, runtime_evidence fixed shared permission-visible tool assembly for the SDK main turn (Skill/Ask admission regression). Original source snapshot is source-before-skill-handoff.json; new focused Skill checks are owned by runtime_evidence and final real Work\u2192ACP code-profile checks bind the integrated binary. No claim that earlier logs ran on this later byte snapshot.",
+  "integratedFollowupEvidence": [
+    "visibility-regression.json",
+    "visibility-clippy.json",
+    "../real-acp/qualified.json"
+  ]
+}

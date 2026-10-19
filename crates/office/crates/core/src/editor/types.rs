@@ -441,6 +441,14 @@ impl NativeOfficeImageFormat {
     }
 }
 
+/// An explicit image position on a Presentation slide, in English Metric Units.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct NativeOfficeImagePosition {
+    pub x_emu: u32,
+    pub y_emu: u32,
+}
+
 /// A bounded, base64-serializable raster image for a native Office mutation.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
@@ -455,6 +463,8 @@ pub struct NativeOfficeImage {
     pub(super) width_px: Option<u32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub(super) height_px: Option<u32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub(super) presentation_position: Option<NativeOfficeImagePosition>,
 }
 
 impl NativeOfficeImage {
@@ -479,6 +489,7 @@ impl NativeOfficeImage {
             alt_text: None,
             width_px: None,
             height_px: None,
+            presentation_position: None,
         })
     }
 
@@ -503,6 +514,13 @@ impl NativeOfficeImage {
 
     pub fn with_height_px(mut self, height_px: u32) -> Self {
         self.height_px = Some(height_px);
+        self
+    }
+
+    /// Places a Presentation image on the slide in EMUs; other formats refuse it.
+    /// Explicit placement must keep the complete image inside the slide.
+    pub fn with_presentation_position_emu(mut self, x_emu: u32, y_emu: u32) -> Self {
+        self.presentation_position = Some(NativeOfficeImagePosition { x_emu, y_emu });
         self
     }
 }

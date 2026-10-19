@@ -1,0 +1,9 @@
+{
+  "pid": 40068,
+  "path": "/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/AsterDream-TaskOptimization-R2.app/Contents/MacOS/AsterDream",
+  "paid_task_submitted": false,
+  "reason": "AX and screenshot timed out after first setup view; main thread sample idle event loop; one owned-process restart to refresh GUI attachment",
+  "utc": "2026-10-19T22:00:48.247803+00:00",
+  "action": "SIGTERM exact validated owned process; never name-wide kill",
+  "process_gone": true
+}

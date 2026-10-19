@@ -1,0 +1,305 @@
+--- a/crates/code/core/src/tools/types.rs
++++ b/crates/code/core/src/tools/types.rs
+@@ -255,6 +255,9 @@
+     /// `FileLog` handle over the same directory would race duplicate seqs.
+     /// Absent on plain host-direct contexts, which have no Run to own.
+     pub(crate) fact_log: Option<Arc<a3s_effect::FileLog>>,
++    /// Private evidence owned by one prepared invocation, never tool metadata.
++    pub(crate) native_artifact_verifications:
++        Option<Arc<Mutex<crate::harness_loop::MutationLedger>>>,
+     /// Permission boundary frozen by the agent run that owns this invocation.
+     ///
+     /// Child-run tools consult this value instead of the mutable session
+@@ -421,6 +424,7 @@
+             artifact_store: None,
+             result_budget_bytes: None,
+             fact_log: None,
++            native_artifact_verifications: None,
+             run_permission_checker: None,
+             run_confirmation_manager: None,
+             run_governance_bound: false,
+@@ -744,6 +748,11 @@
+     /// Bind the Run's shared fact-log writer (see [`Self::fact_log`]).
+     pub(crate) fn with_fact_log(mut self, log: Arc<a3s_effect::FileLog>) -> Self {
+         self.fact_log = Some(log);
++        self
++    }
++
++    pub(crate) fn with_native_artifact_verifications(mut self) -> Self {
++        self.native_artifact_verifications = Some(Arc::new(Mutex::new(Default::default())));
+         self
+     }
+ 
+--- a/crates/code/core/src/harness_loop.rs
++++ b/crates/code/core/src/harness_loop.rs
+@@ -832,6 +832,57 @@
+             }) {
+                 self.native_artifact_verifications
+                     .insert(path.clone(), proof.clone());
++            }
++        }
++    }
++
++    pub(crate) fn observe_nested_artifact_effects(
++        &mut self,
++        tool: &str,
++        effects: &a3s_effect::ToolEffectObservationV1,
++    ) {
++        if effects.validate().is_err()
++            || effects.completeness != a3s_effect::ToolObservationCompleteness::Complete
++            || !effects.unresolved_external_operations.is_empty()
++            || self.records.len().saturating_add(effects.changes.len())
++                > a3s_effect::MAX_TOOL_EFFECT_PATHS
++        {
++            self.observation_incomplete = true;
++            return;
++        }
++        for change in &effects.changes {
++            self.observe_receipt_path(tool, &change.path, &change.after);
++        }
++    }
++
++    /// Transfer live child checks only onto this caller's observed final bytes.
++    pub(crate) fn absorb_nested_artifact_verifications(
++        &mut self,
++        child: &Self,
++        tool: &str,
++        effects: &a3s_effect::ToolEffectObservationV1,
++    ) {
++        if child.observation_incomplete || !child.unresolved_tool_effects.is_empty() {
++            return;
++        }
++        for change in &effects.changes {
++            let Some(proof) = child.native_artifact_verifications.get(&change.path) else {
++                continue;
++            };
++            if proof.identity == change.after
++                && self.records.iter().any(|record| {
++                    record.path == change.path
++                        && record.tool == tool
++                        && record.after_identity.as_ref() == Some(&proof.identity)
++                })
++            {
++                self.native_artifact_verifications.insert(
++                    change.path.clone(),
++                    NativeArtifactVerification {
++                        tool: tool.to_owned(),
++                        ..proof.clone()
++                    },
++                );
+             }
+         }
+     }
+--- a/crates/code/core/src/agent/tool_invoker.rs
++++ b/crates/code/core/src/agent/tool_invoker.rs
+@@ -468,6 +468,53 @@
+         }
+         result
+     }
++
++    fn record_nested_artifact_verification(
++        &self,
++        invocation: &ToolInvocation,
++        result: &ToolResult,
++        effects: &a3s_effect::ToolEffectObservationV1,
++        parent: &ToolContext,
++        child: &ToolContext,
++    ) {
++        let Some(scope) = parent.native_artifact_verifications.as_ref() else {
++            return;
++        };
++        let mut ledger = scope
++            .lock()
++            .unwrap_or_else(std::sync::PoisonError::into_inner);
++        ledger.observe_nested_artifact_effects(&invocation.name, effects);
++        if result.exit_code != 0 || child.is_cancelled() {
++            return;
++        }
++        if let Some(tool) = self.agent.tool_executor.registry().get(&invocation.name) {
++            let mut output = crate::tools::ToolOutput::success(&result.output);
++            output.metadata = result.metadata.clone();
++            if let Some(proof) = tool.artifact_verification(&invocation.args, &output) {
++                if let Some(change) = effects
++                    .changes
++                    .iter()
++                    .find(|change| change.path == proof.file_path)
++                {
++                    ledger.record_native_artifact_verification(
++                        &invocation.name,
++                        proof,
++                        &change.after,
++                        &parent.workspace,
++                    );
++                }
++            }
++        }
++        if let Some(nested) = child.native_artifact_verifications.as_ref() {
++            ledger.absorb_nested_artifact_verifications(
++                &nested
++                    .lock()
++                    .unwrap_or_else(std::sync::PoisonError::into_inner),
++                &invocation.name,
++                effects,
++            );
++        }
++    }
+ }
+ 
+ #[async_trait]
+@@ -477,7 +524,7 @@
+         let started = Instant::now();
+         let mut lifecycle = ToolInvocationLifecycle::new();
+         let cancellation = ctx.cancellation_token();
+-        let invocation_ctx = match ctx.enter_tool_invocation(&invocation.name) {
++        let mut invocation_ctx = match ctx.enter_tool_invocation(&invocation.name) {
+             Ok(ctx) => ctx,
+             Err(message) => {
+                 lifecycle.terminal(ToolInvocationTerminal::Failed);
+@@ -493,6 +540,11 @@
+                 return result;
+             }
+         };
++        let nested_artifacts =
++            invocation.origin.is_nested() && ctx.native_artifact_verifications.is_some();
++        if nested_artifacts {
++            invocation_ctx = invocation_ctx.with_native_artifact_verifications();
++        }
+         debug_assert!(lifecycle.transition(ToolInvocationState::Admitted).is_ok());
+         let cancellation = invocation_ctx.cancellation_token();
+         if ctx.verifier_read_only() {
+@@ -543,6 +595,18 @@
+         debug_assert!(lifecycle
+             .transition(ToolInvocationState::GatePending)
+             .is_ok());
++        let read_only = self
++            .agent
++            .tool_executor
++            .registry()
++            .capabilities(&invocation.name, &invocation.args)
++            .is_some_and(|capabilities| capabilities.read_only);
++        let artifact_watch =
++            if nested_artifacts && !read_only && ctx.workspace_services.local_root().is_some() {
++                Some(crate::porcelain::Watch::start(&ctx.workspace).await)
++            } else {
++                None
++            };
+         let decision = tokio::select! {
+             biased;
+             _ = cancellation.cancelled() => {
+@@ -578,6 +642,27 @@
+         let result = self
+             .finish(&invocation, started, normalized, &cancellation)
+             .await;
++        if nested_artifacts {
++            let delta = match artifact_watch {
++                Some(watch) => {
++                    watch
++                        .finish_observed_with_revision(&ctx.workspace, true)
++                        .await
++                }
++                None => crate::porcelain::PathDelta {
++                    paths: vec![],
++                    incomplete: !read_only,
++                },
++            };
++            let effects = crate::porcelain::observe_path_effects(&ctx.workspace, delta);
++            self.record_nested_artifact_verification(
++                &invocation,
++                &result,
++                &effects,
++                ctx,
++                &invocation_ctx,
++            );
++        }
+         // Tools such as `task` emit their terminal high-level event through a
+         // run-owned broadcast channel, while the caller emits `ToolEnd` on the
+         // runtime mpsc channel after this method returns. Acknowledging the
+--- a/crates/code/core/src/fact_control/receipts.rs
++++ b/crates/code/core/src/fact_control/receipts.rs
+@@ -372,6 +372,7 @@
+     }
+     let mut executor = tools.as_ref().clone();
+     executor.pre_tool_hook_resolved = true;
++    executor.context = executor.context.with_native_artifact_verifications();
+     let executor = Arc::new(executor);
+     let execution_prepared = prepared.clone();
+     let consumed = Arc::new(AtomicBool::new(false));
+@@ -533,6 +534,17 @@
+                     &mut envelope.metadata,
+                     &mut projected,
+                     &mut reports,
++                    tools
++                        .context
++                        .native_artifact_verifications
++                        .as_ref()
++                        .map(|scope| {
++                            scope
++                                .lock()
++                                .unwrap_or_else(std::sync::PoisonError::into_inner)
++                                .clone()
++                        })
++                        .as_ref(),
+                 );
+                 if let Some(ledger) = &tools.ledger {
+                     ledger
+--- a/crates/code/core/src/agent/tool_completion_runtime.rs
++++ b/crates/code/core/src/agent/tool_completion_runtime.rs
+@@ -320,6 +320,7 @@
+         metadata: &mut Option<serde_json::Value>,
+         ledger: &mut crate::harness_loop::MutationLedger,
+         reports: &mut Vec<crate::verification::VerificationReport>,
++        nested: Option<&crate::harness_loop::MutationLedger>,
+     ) {
+         if result.validate().is_err()
+             || result.identity.tool_call_id != call.id
+@@ -333,28 +334,28 @@
+         {
+             return;
+         }
+-        let Some(tool) = self.tool_executor.registry().get(&call.name) else {
+-            return;
+-        };
+-        let mut tool_output = crate::tools::ToolOutput::success(output);
+-        tool_output.metadata = metadata.clone();
+-        let Some(proof) = tool.artifact_verification(&call.args, &tool_output) else {
+-            return;
+-        };
+-        let Some(change) = result
+-            .effects
+-            .changes
+-            .iter()
+-            .find(|change| change.path == proof.file_path)
+-        else {
+-            return;
+-        };
+-        ledger.record_native_artifact_verification(
+-            &call.name,
+-            proof,
+-            &change.after,
+-            &self.tool_context.workspace,
+-        );
++        if let Some(tool) = self.tool_executor.registry().get(&call.name) {
++            let mut tool_output = crate::tools::ToolOutput::success(output);
++            tool_output.metadata = metadata.clone();
++            if let Some(proof) = tool.artifact_verification(&call.args, &tool_output) {
++                if let Some(change) = result
++                    .effects
++                    .changes
++                    .iter()
++                    .find(|change| change.path == proof.file_path)
++                {
++                    ledger.record_native_artifact_verification(
++                        &call.name,
++                        proof,
++                        &change.after,
++                        &self.tool_context.workspace,
++                    );
++                }
++            }
++        }
++        if let Some(nested) = nested {
++            ledger.absorb_nested_artifact_verifications(nested, &call.name, &result.effects);
++        }
+         if let Some(report) =
+             ledger.native_artifact_verification_report(&self.tool_context.workspace)
+         {

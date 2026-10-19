@@ -1,0 +1,19 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-code-core",
+    "--features",
+    "advanced-harness",
+    "--test",
+    "test_extensibility_real_llm",
+    "metrics::",
+    "--",
+    "--nocapture"
+  ],
+  "exit_code": 0,
+  "elapsed_ms": 25795.281
+}

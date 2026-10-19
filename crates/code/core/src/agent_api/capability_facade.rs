@@ -142,10 +142,10 @@ impl AgentSession {
 
     /// Add or replace a skill in this live session.
     ///
-    /// The Skill and `search_skills` tools observe the new definition
-    /// immediately, and the model-visible skills catalog observes it on the
-    /// next turn. Removing the live definition restores any session skill it
-    /// shadowed at installation time.
+    /// The Skill tool observes the new definition immediately, and the
+    /// model-visible skills catalog observes it on the next turn. Removing
+    /// the live definition restores any session skill it shadowed at
+    /// installation time.
     pub fn add_skill(&self, skill: Arc<crate::skills::Skill>) -> crate::error::Result<()> {
         self.close_handle.mutate_immediate(|| {
             self.ensure_compatibility_name_available(

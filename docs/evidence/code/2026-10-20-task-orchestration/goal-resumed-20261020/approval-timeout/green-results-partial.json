@@ -1,0 +1,49 @@
+[
+  {
+    "name": "acp-green",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-code-acp",
+      "--lib",
+      "agent::tests::approval_deadline",
+      "--",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 26.380517583000003
+  },
+  {
+    "name": "acp-connected-1",
+    "command": [
+      "/Users/roylin/code/aster/target/qualification/approval-timeout-20261020/acp-tests",
+      "unanswered_asks_fail_closed_at_the_deadline",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 4.254926292
+  },
+  {
+    "name": "acp-connected-2",
+    "command": [
+      "/Users/roylin/code/aster/target/qualification/approval-timeout-20261020/acp-tests",
+      "auto_approval_never_parks_a_tool",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.014119666999999225
+  },
+  {
+    "name": "core-connected-3",
+    "command": [
+      "/Users/roylin/code/aster/target/qualification/approval-timeout-20261020/core-tests",
+      "fact_log_confirm_is_true_only_for_the_pending_tool",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.04378304200000116
+  }
+]

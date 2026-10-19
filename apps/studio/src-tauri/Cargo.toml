@@ -1,0 +1,113 @@
+[package]
+name = "a3s-studio"
+version = "2.1.3"
+description = "Tauri window shell for Cherry Studio"
+authors = ["A3S Lab"]
+edition = "2024"
+rust-version = "1.97.1"
+autotests = true
+publish = false
+
+[[test]]
+name = "applet_titlebar"
+path = "tests/applet_titlebar.rs"
+harness = false
+
+[[test]]
+name = "accessibility_publish"
+path = "tests/accessibility_publish.rs"
+harness = false
+
+[[test]]
+name = "memory_host"
+path = "tests/memory_host.rs"
+harness = false
+
+[[test]]
+name = "workspace_document_stdio"
+path = "tests/workspace_document_stdio.rs"
+harness = false
+test = false
+
+[[test]]
+name = "document_tools_native"
+path = "tests/document_tools_native.rs"
+harness = false
+test = false
+
+[[test]]
+name = "paperloom_native"
+path = "tests/paperloom_native.rs"
+harness = false
+test = false
+
+[[bin]]
+name = "Studio"
+path = "src/main.rs"
+
+[lib]
+name = "a3s_studio_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.6.3", features = [] }
+
+[dependencies]
+a3s-acl = { path = "../../../crates/acl" }
+a3s-studio-data-sqlite = { path = "../native/data-sqlite" }
+a3s-okf = { path = "../../../crates/okf" }
+a3s-use-ocr = { path = "../../../crates/ocr", default-features = false, features = ["ppocr-v6"] }
+tempfile = "3.27"
+a3s-flow = { path = "../../../crates/flow", default-features = false, features = ["native-ts"] }
+a3s-use-reconcile = { path = "../../../crates/use/reconcile" }
+a3s-use-extension = { path = "../../../crates/use/extension" }
+a3s-use-core = { path = "../../../crates/use/core" }
+a3s-vec = { path = "../../../crates/vec" }
+a3s-use-tool-acquire = { path = "../../../crates/use/tool-acquire" }
+a3s-boot = { path = "../../../crates/boot", default-features = false, features = ["axum", "macros", "security"] }
+axum = "0.8"
+base64 = "0.22"
+reqwest = { version = "0.12", default-features = false, features = ["blocking"] }
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+lopdf = "0.42"
+futures-util = "0.3"
+getrandom = "0.2"
+ignore = "0.4"
+notify = "8.2"
+tokio = { version = "1", features = ["io-util", "macros", "net", "process", "rt-multi-thread", "sync", "time"] }
+tokio-stream = { version = "0.1", features = ["sync"] }
+uuid = { version = "1", features = ["v7"] }
+serde = { version = "1", features = ["derive", "rc"] }
+portable-pty = "0.9.0"
+serde_json = "1"
+sha2 = "0.10"
+same-file = "1.0.6"
+thiserror = "2"
+tauri = { version = "2.11.5", features = ["unstable", "image-png", "tray-icon"] }
+url = "2"
+zip = { version = "7.2", default-features = false, features = ["deflate"] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+block2 = "0.6.2"
+objc2 = "0.6.4"
+objc2-app-kit = { version = "0.3.2", features = ["NSApplication", "NSButton", "NSControl", "NSDockTile", "NSEvent", "NSImage", "NSOpenPanel", "NSPanel", "NSResponder", "NSRunningApplication", "NSSavePanel", "NSView", "NSWindow", "block2"] }
+objc2-user-notifications = { version = "0.3.2", default-features = false, features = ["std", "bitflags", "block2", "UNNotification", "UNNotificationContent", "UNNotificationRequest", "UNNotificationResponse", "UNNotificationSound", "UNNotificationTrigger", "UNUserNotificationCenter"] }
+objc2-foundation = { version = "0.3.2", features = ["NSArray", "NSDate", "NSGeometry", "NSObject", "NSProcessInfo", "NSString", "NSURL", "NSURLRequest"] }
+objc2-web-kit = { version = "0.3.2", features = ["objc2-app-kit", "WKFrameInfo", "WKNavigation", "WKScriptMessage", "WKScriptMessageHandler", "WKUserContentController", "WKWebView", "WKWebViewConfiguration"] }
+
+# View assets and installed packages are verified by SHA-256 on every open.
+# Without `asm`, aarch64 builds hash in software even when the CPU has SHA-2.
+[target.'cfg(target_arch = "aarch64")'.dependencies]
+sha2 = { version = "0.10", features = ["asm"] }
+
+[target.'cfg(unix)'.dependencies]
+rustix = { version = "1.1.5", features = ["fs", "process"] }
+
+[dev-dependencies]
+agent-client-protocol = { version = "0.10.4", features = ["unstable"] }
+tauri = { version = "2.11.5", features = ["test"] }
+tokio = { version = "1", features = ["test-util"] }
+
+[features]
+custom-protocol = ["tauri/custom-protocol"]
+

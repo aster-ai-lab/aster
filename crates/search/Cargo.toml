@@ -74,7 +74,6 @@ anyhow = {version = "1.0"}
 tracing = {workspace = true}
 async-trait = {workspace = true}
 futures = {workspace = true}
-a3s-updater = {path = "../updater"}
 a3s-use-browser = {optional = true, path = "../browser"}
 a3s-acl = {path = "../acl"}
 

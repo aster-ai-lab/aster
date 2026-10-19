@@ -136,7 +136,7 @@ impl ExecutionLoopState {
         if self
             .run_watch
             .as_ref()
-            .is_some_and(|watch| watch.stamps_incomplete())
+            .is_some_and(|watch| watch.stamp_read_failed())
         {
             // The run-start read missed. A later successful status cannot
             // turn that missing before-image into an empty mutation.
@@ -513,6 +513,34 @@ mod tests {
             observed.paths
         );
         assert_eq!(observed.paths.len(), 33, "{:?}", observed.paths);
+    }
+
+    #[tokio::test]
+    async fn a_git_tree_past_the_stamp_cap_stays_a_complete_status_read() {
+        let workspace = tempfile::tempdir().unwrap();
+        let root = workspace.path();
+        assert!(std::process::Command::new("git")
+            .args(["init"])
+            .current_dir(root)
+            .status()
+            .unwrap()
+            .success());
+        for index in 0..=crate::porcelain::FILE_WALK_CAP {
+            std::fs::write(root.join(format!("f{index:04}.txt")), "x").unwrap();
+        }
+        let mut state = ExecutionLoopState::new(&[]);
+        state.bind_run_watch(root).await;
+        std::fs::write(root.join("owned.txt"), "owned\n").unwrap();
+        let observed = state.unseen_workspace_paths(root).await;
+        assert!(
+            !observed.incomplete,
+            "stamp-cap overflow was treated as a missed status: {observed:?}"
+        );
+        assert!(
+            observed.paths.iter().any(|path| path == "owned.txt"),
+            "{:?}",
+            observed.paths
+        );
     }
 
     #[tokio::test]

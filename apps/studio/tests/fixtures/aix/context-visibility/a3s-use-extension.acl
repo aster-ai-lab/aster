@@ -1,0 +1,30 @@
+extension "proof/context-visibility" {
+  schema_version = 3
+  version = "1.0.0"
+  requires_use = ">=0.3.0, <0.4.0"
+  route = "proof-context-visibility"
+  actions = ["read"]
+  repository { url = "https://example.org/proof/context-visibility" }
+  skill "workbench" { path = "skills/workbench/SKILL.md" }
+  view_container "resources" {
+    title = "Resources" icon = "database" location = "activitybar"
+    when { theme = "dark" }
+  }
+  view_container "output" {
+    title = "Output" icon = "terminal" location = "panel"
+    when { theme = "light" }
+  }
+  ui "tasks" {
+    title = "Connections" entry = "ui/tasks/index.html" root = "ui/tasks"
+    container = "resources" presentation = "tree"
+    when { locale = "en-US" }
+  }
+  ui "overview" { title = "Preview" entry = "ui/overview/index.html" root = "ui/overview" container = "resources" }
+  ui "output" { title = "Output" entry = "ui/output/index.html" root = "ui/output" container = "output" }
+  ui "editor" { title = "Stable Editor" entry = "ui/editor/index.html" root = "ui/editor" point = "studio.editor" }
+  ui "app" {
+    title = "Conditional App" description = "Inspect conditional data"
+    entry = "ui/app/index.html" root = "ui/app" point = "studio.applets"
+    when { theme = "light" }
+  }
+}

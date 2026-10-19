@@ -162,7 +162,12 @@ async fn exact_run_replay_never_executes_the_same_code_run_twice() {
         .run_snapshot("cloud-execution-1-attempt-1")
         .await
         .unwrap();
-    assert_eq!(completed.status, a3s_code_core::RunStatus::Completed);
+    assert_eq!(
+        completed.status,
+        a3s_code_core::RunStatus::Completed,
+        "exact Run failed: {:?}",
+        completed.error
+    );
     assert!(completed.event_count > 0);
 
     let replay = session
@@ -222,6 +227,7 @@ async fn protocol_host_executes_and_observes_the_code_owned_run() {
             request_id: "cloud-execution-2:start".into(),
             identity: identity.clone(),
             prompt: "explain the protocol".into(),
+            models: None,
         },
     };
 
@@ -313,6 +319,7 @@ async fn protocol_cancellation_targets_only_the_active_code_run() {
             request_id: "cloud-execution-3:start".into(),
             identity: identity.clone(),
             prompt: "wait for cancellation".into(),
+            models: None,
         },
     };
     host.execute(&start).await.unwrap();
@@ -499,6 +506,7 @@ async fn protocol_host_rejects_invalid_release_digest_and_observation_bounds() {
             request_id: "bounds:start".into(),
             identity: foreign_release,
             prompt: "nope".into(),
+            models: None,
         },
     };
     let release_mismatch = host.execute(&start).await.unwrap_err();
@@ -517,6 +525,7 @@ async fn protocol_host_rejects_invalid_release_digest_and_observation_bounds() {
             request_id: "bounds:start-session".into(),
             identity: foreign_session,
             prompt: "nope".into(),
+            models: None,
         },
     };
     let session_mismatch = host.execute(&start_session).await.unwrap_err();
@@ -572,6 +581,7 @@ async fn protocol_host_change_set_pending_until_terminal_without_capture() {
             request_id: "changeset:start".into(),
             identity: identity.clone(),
             prompt: "hang".into(),
+            models: None,
         },
     };
     host.execute(&start).await.unwrap();
@@ -649,6 +659,7 @@ async fn protocol_host_event_page_rejects_bad_limit_and_identity_mismatch() {
             request_id: "page-limit:start".into(),
             identity: identity.clone(),
             prompt: "observe".into(),
+            models: None,
         },
     })
     .await

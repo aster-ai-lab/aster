@@ -1,0 +1,6 @@
+
+running 1 test
+test fact_control::tests::fact_log_confirm_is_true_only_for_the_pending_tool ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5203 filtered out; finished in 0.02s
+

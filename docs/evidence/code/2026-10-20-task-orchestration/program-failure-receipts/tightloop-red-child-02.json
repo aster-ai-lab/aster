@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/Users/roylin/code/aster/target/program-receipt-red/tightloop-red-test",
+    "--exact",
+    "tools::program_tool::failure_receipt_tests::deadline_after_read_preserves_completed_child_receipts",
+    "--nocapture",
+    "--test-threads=1"
+  ],
+  "binary_sha256": "d1d68d553368507a5497b05cfae75b31437a0790266afb2e9c9fbc61248ceb8f",
+  "deadline_12s_exceeded": true,
+  "libtest_started": true,
+  "sample_exit_code": 0,
+  "exit_code": -15,
+  "elapsed_ms": 13360.495,
+  "direct_child_reaped": true
+}

@@ -121,7 +121,7 @@ The workspace backend determines which tools can be registered. Inspect
 | --------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | Workspace | `read`, `write`, `edit`, `patch`, `download`, `search`, `ls`, `bash`, `git` | Each tool is capability-gated; `download` additionally requires a writable local workspace.                |
 | Runtime   | `web_fetch`, `web_search`, `batch`, `program`                               | Nested calls retain the current invocation scope, cancellation, and budgets.                               |
-| Session   | `task`, `generate_object`, `search_skills`, `Skill`                         | Delegation can be disabled. The legacy `parallel_task` alias is callable but hidden from the model schema. |
+| Session   | `task`, `generate_object`, `Skill`                                          | Delegation can be disabled. The legacy `parallel_task` alias is callable but hidden from the model schema. |
 | Dynamic   | MCP and host-registered tools                                               | MCP tools use the `mcp__<server>__<tool>` namespace.                                                       |
 
 `search` is the single model-facing repository search contract. Always pass a

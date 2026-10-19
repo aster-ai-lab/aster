@@ -1,0 +1,18 @@
+{
+  "name": "ToWork task to artifact",
+  "color": {
+    "ground": "#ffffff",
+    "deep": "#f0f5f2",
+    "card": "#ffffff",
+    "line": "#dfe5e1",
+    "mute": "#646d67",
+    "ink": "#171c19",
+    "accent": "#38714f",
+    "accent2": "#82531b"
+  },
+  "type": {
+    "display": { "face": "Instrument Sans", "weight": 600, "tracking": -0.03 },
+    "text": { "face": "Inter", "weight": 500, "tracking": -0.01 },
+    "mono": { "face": "Geist Mono", "weight": 400, "tracking": 0 }
+  }
+}

@@ -1,0 +1,19 @@
+[[permission]]
+identifier = "allow-launch-workspace-browser"
+description = "Opens a workspace browser page inside the main window."
+commands.allow = ["launch_workspace_browser"]
+
+[[permission]]
+identifier = "allow-launch-notice-browser"
+description = "Opens a published notice inside a dialog on the main window."
+commands.allow = ["launch_notice_browser"]
+
+[[permission]]
+identifier = "allow-quark-search-suggestions"
+description = "Reads Quark search suggestions for the workspace address bar."
+commands.allow = ["quark_search_suggestions"]
+
+[[permission]]
+identifier = "allow-workspace-browser-navigate"
+description = "Reads and moves the workspace browser history inside the main window."
+commands.allow = ["workspace_browser_navigate"]

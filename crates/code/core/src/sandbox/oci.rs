@@ -2,7 +2,7 @@
 
 use std::path::{Path, PathBuf};
 use std::process::Stdio;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use a3s_oci_sdk::{
     ContainerTarget, DeleteMode, DeleteRequest, LocalIpcEndpoint, OperationContext, OperationId,
@@ -26,6 +26,17 @@ pub(crate) use version::{guest_agent_hello, host_runtime_version};
 
 /// Explicit asset-directory override for installed or development companions.
 pub const SANDBOX_ASSETS_ENV: &str = "ASTER_SANDBOX_DIR";
+
+/// `ASTER_SANDBOX_DIR` wins. Otherwise companions sit beside the executable.
+pub(crate) fn companion_directory(explicit: Option<&Path>, executable: &Path) -> Result<PathBuf> {
+    if let Some(directory) = explicit {
+        return Ok(directory.to_path_buf());
+    }
+    Ok(executable
+        .parent()
+        .context("executable has no companion directory")?
+        .join("sandbox"))
+}
 const STARTUP_TIMEOUT: Duration = Duration::from_secs(45);
 const SHUTDOWN_TIMEOUT: Duration = Duration::from_secs(30);
 
@@ -82,13 +93,9 @@ pub struct OciBashSandbox {
 
 impl OciBashSandbox {
     pub fn discover(workspace: &Path) -> Result<Self> {
-        let directory = match std::env::var_os(SANDBOX_ASSETS_ENV) {
-            Some(directory) => PathBuf::from(directory),
-            None => std::env::current_exe()?
-                .parent()
-                .context("executable has no companion directory")?
-                .join("sandbox"),
-        };
+        let explicit = std::env::var_os(SANDBOX_ASSETS_ENV).map(PathBuf::from);
+        let executable = std::env::current_exe()?;
+        let directory = companion_directory(explicit.as_deref(), &executable)?;
         Self::from_artifacts(workspace, OciSandboxAssets::from_directory(&directory)?)
     }
 
@@ -109,6 +116,34 @@ impl OciBashSandbox {
     }
 }
 
+#[cfg(test)]
+mod companion_directory_tests {
+    use super::companion_directory;
+    use std::path::Path;
+
+    #[test]
+    fn companion_directory_uses_the_env_and_otherwise_the_executable_sibling() {
+        let root = tempfile::tempdir().unwrap();
+        let explicit = root.path().join("explicit");
+        let executable = root.path().join("bin").join("a3s-code-acp");
+        std::fs::create_dir_all(executable.parent().unwrap().join("sandbox")).unwrap();
+
+        let chosen = companion_directory(Some(&explicit), &executable).unwrap();
+        assert_eq!(chosen, explicit);
+
+        let sibling = companion_directory(None, &executable).unwrap();
+        assert_eq!(sibling, executable.parent().unwrap().join("sandbox"));
+
+        let error = companion_directory(None, Path::new("/")).unwrap_err();
+        assert!(
+            error
+                .to_string()
+                .contains("executable has no companion directory"),
+            "{error}"
+        );
+    }
+}
+
 struct CancelOnDrop(CancellationToken);
 impl Drop for CancelOnDrop {
     fn drop(&mut self) {
@@ -123,6 +158,10 @@ impl Drop for OciBashSandbox {
 
 #[async_trait]
 impl BashSandbox for OciBashSandbox {
+    fn execution_target(&self) -> super::ShellExecutionTarget {
+        super::ShellExecutionTarget::LinuxGuestBash
+    }
+
     fn validate_execution_available(&self) -> Result<()> {
         if self.cancellation.is_cancelled() {
             bail!("OCI sandbox has shut down");
@@ -245,6 +284,7 @@ impl Host {
     }
 }
 
+#[tracing::instrument(name = "oci_command", skip_all)]
 async fn execute(
     workspace: PathBuf,
     assets: OciSandboxAssets,
@@ -263,19 +303,43 @@ async fn execute(
     let mut capture = BoundedCapture::new();
     let mut payload_may_have_started = false;
     let startup = async {
+        let began = Instant::now();
         let client = host.connect(&root_path).await?;
+        tracing::debug!(
+            phase = "host_connect",
+            elapsed_ms = began.elapsed().as_secs_f64() * 1000.0,
+            "OCI command phase completed"
+        );
+        let began = Instant::now();
         let create =
             bundle::prepare(&workspace, &assets, &root_path, &request, &cancellation).await?;
+        tracing::debug!(
+            phase = "bundle_prepare",
+            elapsed_ms = began.elapsed().as_secs_f64() * 1000.0,
+            "OCI command phase completed"
+        );
         let id = create.id.clone();
+        let began = Instant::now();
         let record = client.create(create).await?;
+        tracing::debug!(
+            phase = "vm_create",
+            elapsed_ms = began.elapsed().as_secs_f64() * 1000.0,
+            "OCI command phase completed"
+        );
         let target = ContainerTarget::exact(id, record.generation);
         payload_may_have_started = true;
+        let began = Instant::now();
         client
             .start(StartRequest {
                 context: operation("start")?,
                 target: target.clone(),
             })
             .await?;
+        tracing::debug!(
+            phase = "process_start",
+            elapsed_ms = began.elapsed().as_secs_f64() * 1000.0,
+            "OCI command phase completed"
+        );
         Ok::<_, anyhow::Error>((client, target))
     };
     let prepared = tokio::select! {
@@ -284,6 +348,7 @@ async fn execute(
     };
     let result = match prepared {
         Ok((client, target)) => {
+            let began = Instant::now();
             let execution = collect(
                 &client,
                 &target,
@@ -297,7 +362,13 @@ async fn execute(
                     Err(_) => Ok((124, true)),
                 },
             };
+            tracing::debug!(
+                phase = "collect_wait",
+                elapsed_ms = began.elapsed().as_secs_f64() * 1000.0,
+                "OCI command phase completed"
+            );
             if result.is_ok() {
+                let began = Instant::now();
                 match operation("delete") {
                     Ok(context) => match client
                         .delete(DeleteRequest {
@@ -307,7 +378,14 @@ async fn execute(
                         })
                         .await
                     {
-                        Ok(()) => result,
+                        Ok(()) => {
+                            tracing::debug!(
+                                phase = "vm_delete",
+                                elapsed_ms = began.elapsed().as_secs_f64() * 1000.0,
+                                "OCI command phase completed"
+                            );
+                            result
+                        }
                         Err(error) => Err(error.into()),
                     },
                     Err(error) => Err(error.into()),
@@ -319,9 +397,15 @@ async fn execute(
         Err(error) => Err(error),
     };
     // EOF makes the independent Host await every owned VM before reporting success.
+    let began = Instant::now();
     host.shutdown()
         .await
         .context("OCI command settlement is unknown")?;
+    tracing::debug!(
+        phase = "host_shutdown",
+        elapsed_ms = began.elapsed().as_secs_f64() * 1000.0,
+        "OCI command phase completed"
+    );
     let (exit_code, timed_out) = result.map_err(|error| {
         if payload_may_have_started {
             error
@@ -337,12 +421,20 @@ async fn execute(
         .await
         .context("command observer did not finish")?;
     }
-    Ok(SandboxExecutionOutput {
+    let output = SandboxExecutionOutput {
         stdout: capture.render_stream(CaptureStream::Stdout),
         stderr: capture.render_stream(CaptureStream::Stderr),
         exit_code,
         timed_out,
-    })
+    };
+    let began = Instant::now();
+    drop(root);
+    tracing::debug!(
+        phase = "scratch_remove",
+        elapsed_ms = began.elapsed().as_secs_f64() * 1000.0,
+        "OCI command phase completed"
+    );
+    Ok(output)
 }
 
 async fn collect(

@@ -114,6 +114,40 @@ pub(super) fn render_labeled_section(
 
 fn render_execution(config: &CodeConfig, document: &Document) -> Vec<SingleEntry> {
     vec![
+        block_entry(
+            &["tool_presentation"],
+            config
+                .tool_presentation_profile
+                .as_ref()
+                .map(|profile| Block {
+                    name: "tool_presentation".into(),
+                    labels: Vec::new(),
+                    blocks: Vec::new(),
+                    attributes: [("mode".into(), string(profile.mode().as_str()))]
+                        .into_iter()
+                        .collect(),
+                }),
+        ),
+        block_entry(
+            &["workspace_retrieval"],
+            config.workspace_retrieval.map(|retrieval| Block {
+                name: "workspace_retrieval".into(),
+                labels: Vec::new(),
+                blocks: if retrieval.local_cpu {
+                    vec![Block {
+                        name: "local_cpu".into(),
+                        labels: Vec::new(),
+                        attributes: HashMap::new(),
+                        blocks: Vec::new(),
+                    }]
+                } else {
+                    Vec::new()
+                },
+                attributes: [("enabled".into(), Value::Bool(retrieval.enabled))]
+                    .into_iter()
+                    .collect(),
+            }),
+        ),
         scalar_entry(
             &["skill_dirs", "skills", "skillDirs"],
             "skill_dirs",

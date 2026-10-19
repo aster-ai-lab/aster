@@ -1,0 +1,383 @@
+suite "studio-document-tools-review" {
+    version = 1
+
+    scenario "mixed-import-filter-review" {
+        name = "Keep valid sources, review a real filter, and download accepted bytes"
+        surface = "web"
+        timeout_ms = 90000
+
+        navigate "open-production-applet" {
+            url = "http://127.0.0.1:4325/windows/main/?workbench-applet=pdf"
+        }
+        viewport "desktop-catalogue" {
+            width = 1440
+            height = 1100
+        }
+        wait "permission-ready" { visible = role("button", "允许") }
+        click "allow-applet" { target = role("button", "允许") }
+        expect "pdf-tools" { visible = role("button", "PDF 转 Word") }
+        expect "office-tools" { visible = role("button", "Excel 转 PDF") }
+        expect "image-tools" { visible = role("button", "图片转 Excel") }
+        expect "audio-entry" { visible = role("button", "录音纪要") }
+        expect "scan-entry" { visible = text("扫描件多端同步") }
+        upload "mixed-sources" {
+            target = css("[data-ui='workbench.pdf-tools.input']")
+            paths = ["tests/e2e/document-tools/fixtures/source.png", "tests/e2e/document-tools/fixtures/second.png", "tests/e2e/document-tools/fixtures/unsupported.txt"]
+        }
+        click "choose-filter" { target = role("button", "智能滤镜") }
+        wait "review-ready" { visible = css("[data-ui='document-tools.filter-apply']:not([disabled])") }
+        expect "real-batch-count" { text = "已处理 2 / 2 个文件，失败 0 个。" }
+        expect "refused-file-retained" { visible = role("button", "unsupported.txt 无法导入") }
+        click "view-refusal" { target = role("button", "unsupported.txt 无法导入") }
+        expect "refusal-explained" { text = "此文件不适用于当前工具。" }
+        click "review-valid-file" { target = role("button", "source.png 待确认") }
+        click "grayscale" { target = css("input[name='document-filter'][value='grayscale']") }
+        wait "grayscale-review-ready" { visible = css("[data-ui='document-tools.filter-apply']:not([disabled])") }
+        expect "grayscale-selected" { checked = css("input[name='document-filter'][value='grayscale']") }
+        focus "accept-keyboard-focus" { target = css("[data-ui='document-tools.filter-apply']") }
+        press "accept-with-keyboard" { key = "Enter" }
+        expect "accepted-unsaved" { text = "结果已确认，尚未保存。" }
+        expect "other-result-preserved" { visible = role("button", "second.png 待确认") }
+        download "accepted-png" {
+            target = css("a[download='source.png']")
+            path = "downloads/source-gray.png"
+        }
+        expect "download-is-not-save-receipt" { text = "结果已确认，尚未保存。" }
+        screenshot "desktop-review" { path = "screenshots/desktop-review.png" }
+        viewport "narrow-workspace" {
+            width = 390
+            height = 844
+        }
+        expect "narrow-download-reachable" { visible = role("link", "下载 source.png") }
+        screenshot "narrow-review" { path = "screenshots/narrow-review.png" }
+    }
+    scenario "source-list-edits" {
+        name = "Remove, append and keyboard-sort actual sources without exchanging file bytes"
+        surface = "web"
+        timeout_ms = 90000
+
+        navigate "open-source-workspace" { url = "http://127.0.0.1:4325/windows/main/?workbench-applet=pdf" }
+        viewport "source-desktop" { width = 1440 height = 1100 }
+        wait "source-permission" { visible = role("button", "允许") }
+        click "allow-source-applet" { target = role("button", "允许") }
+        upload "original-sources" {
+            target = css("[data-ui='workbench.pdf-tools.input']")
+            paths = ["tests/e2e/document-tools/fixtures/source.png", "tests/e2e/document-tools/fixtures/second.png"]
+        }
+        click "source-filter" { target = role("button", "智能滤镜") }
+        wait "both-original-results" { text = "已处理 2 / 2 个文件，失败 0 个。" }
+        click "accept-existing-source" { target = role("button", "second.png 待确认") }
+        wait "existing-source-preview-ready" { visible = css("[data-ui='document-tools.filter-apply']:not([disabled])") }
+        click "accept-existing-result" { target = role("button", "应用滤镜") }
+        click "remove-original-source" { target = role("button", "移除 source.png") }
+        expect "accepted-old-result-explained" { text = "这是文件或选项更改前的结果。请重新处理所选文件。" }
+        expect "remaining-valid-source" { visible = role("heading", "second.png") }
+        upload "append-different-pixels" {
+            target = css("[data-ui='document-tools.add-input']")
+            paths = ["tests/e2e/document-tools/fixtures/third.png"]
+        }
+        expect "appended-source-ready" { visible = role("button", "third.png 待处理") }
+        focus "keyboard-sort-control" { target = css("button[aria-label='上移 third.png']") }
+        press "move-new-source-up" { key = "Enter" }
+        expect "new-source-first" { visible = css("li:first-child button[data-source-id][aria-label='third.png 待处理']") }
+        expect "existing-source-second" { visible = css("li:nth-child(2) button[data-source-id][aria-label='second.png 待处理']") }
+        click "process-revised-order" { target = role("button", "处理或重试所选文件") }
+        wait "revised-results" { text = "已处理 2 / 2 个文件，失败 0 个。" }
+        click "review-new-source" { target = role("button", "third.png 待确认") }
+        click "revised-grayscale" { target = css("input[name='document-filter'][value='grayscale']") }
+        wait "revised-gray-results" { visible = css("[data-ui='document-tools.filter-apply']:not([disabled])") }
+        click "accept-new-gray" { target = role("button", "应用滤镜") }
+        wait "reordered-download-ready" { visible = css("a[download='third.png']") }
+        download "reordered-png" {
+            target = css("a[download='third.png']")
+            path = "downloads/third-gray.png"
+        }
+        expect "remaining-result-preserved" { visible = role("button", "second.png 待确认") }
+        expect "new-result-unsaved" { text = "结果已确认，尚未保存。" }
+        screenshot "reordered-review" { path = "screenshots/reordered-review.png" }
+    }
+    scenario "single-conversion-direct-download" {
+        name = "Upload, convert and directly download real PDF pixels without a confirmation step"
+        surface = "web"
+        timeout_ms = 90000
+
+        navigate "open-simple-conversion" { url = "http://127.0.0.1:4325/windows/main/?workbench-applet=pdf" }
+        viewport "simple-desktop" { width = 1440 height = 1000 }
+        wait "simple-permission" { visible = role("button", "允许") }
+        click "allow-simple-applet" { target = role("button", "允许") }
+        upload "simple-pdf" {
+            target = css("[data-ui='workbench.pdf-tools.input']")
+            paths = ["tests/e2e/document-tools/fixtures/colors.pdf"]
+        }
+        click "convert-simple-pdf" { target = role("button", "PDF 转图片") }
+        wait "direct-result" { visible = role("link", "下载 colors-page-1.png") }
+        expect "completed-conversion" { text = "处理完成" }
+        expect "single-flow-controls" {
+            target = css("[data-ui='document-tools.workspace'] input[type='checkbox'], [data-ui='document-tools.accept'], [data-ui='document-tools.workspace'] details[open] [data-ui='document-tools.pdf-pages']")
+            visible_count = 0
+        }
+        expect "actual-output-details" { text = "colors-page-1.png · 200 × 120 px · 源文件第 1 页" }
+        download "direct-conversion-png" {
+            target = css("a[download='colors-page-1.png']")
+            path = "downloads/converted-page-1.png"
+        }
+        screenshot "simple-desktop-result" { path = "screenshots/simple-conversion-desktop.png" }
+        viewport "simple-narrow" { width = 390 height = 844 }
+        expect "simple-download-in-viewport" { in_viewport = role("link", "下载 colors-page-1.png") }
+        screenshot "simple-narrow-result" { path = "screenshots/simple-conversion-narrow.png" }
+    }
+
+    scenario "image-geometry" {
+        name = "Preview reversible original-coordinate crop and perspective; reopen exact exported pixels"
+        surface = "web"
+        timeout_ms = 90000
+
+        navigate "open-geometry" { url = "http://127.0.0.1:4325/windows/main/?workbench-applet=pdf" }
+        viewport "geometry-desktop" { width = 1440 height = 1200 }
+        wait "geometry-permission" { visible = role("button", "允许") }
+        click "allow-geometry" { target = role("button", "允许") }
+        upload "gradient-source" {
+            target = css("[data-ui='workbench.pdf-tools.input']")
+            paths = ["tests/e2e/document-tools/fixtures/geometry-gradient.png"]
+        }
+        click "choose-geometry" { target = role("button", "旋转裁剪") }
+        wait "original-preview" { text = "12 × 8 px" }
+        expect "no-automatic-rotation" { text = "旋转 0°" }
+        click "apply-original" { target = role("button", "应用修改") }
+        wait "original-download" { visible = css("a[download='geometry-gradient.png']") }
+        click "preview-quarter-turn" { target = role("button", "向右旋转") }
+        wait "rotated-preview" { text = "8 × 12 px" }
+        expect "old-download-hidden" { target = css("a[download='geometry-gradient.png']") visible_count = 0 }
+        click "undo-quarter-turn" { target = role("button", "撤销") }
+        wait "restored-preview" { text = "12 × 8 px" }
+        expect "unchanged-result-restored" { visible = role("link", "下载 geometry-gradient.png") }
+        click "open-crop-numbers" { target = css("section[data-ui='document-tools.geometry'] summary") }
+        fill "crop-width" { target = label("宽度（px）") value = "6" }
+        fill "crop-height" { target = label("高度（px）") value = "4" }
+        fill "crop-left" { target = label("左边距（px）") value = "2" }
+        fill "crop-top" { target = label("上边距（px）") value = "1" }
+        wait "crop-preview-ready" { text = "6 × 4 px" }
+        expect "unapplied-crop-explained" { text = "修改尚未应用。请应用后下载。" }
+        click "apply-crop" { target = role("button", "应用修改") }
+        wait "crop-download-ready" { visible = css("a[download='geometry-gradient.png']") }
+        download "crop-pixels" { target = css("a[download='geometry-gradient.png']") path = "downloads/geometry-crop.png" }
+        click "restore-original-for-document" { target = role("button", "恢复原图") }
+        wait "restore-original-dimensions" { text = "12 × 8 px" }
+        click "open-crop-mode" { target = role("button", "裁剪方式") }
+        click "document-corners" { target = role("option", "文档四角") }
+        focus "focus-top-left" { target = css("[data-geometry-corner='0']") }
+        press "move-corner-one-pixel" { key = "ArrowRight" }
+        expect "original-coordinate-corner" { target = label("左上角 X") value = "1" }
+        click "undo-corner" { target = role("button", "撤销") }
+        expect "restored-corner" { target = label("左上角 X") value = "0" }
+        focus "refocus-top-left" { target = css("[data-geometry-corner='0']") }
+        press "move-corner-again" { key = "ArrowRight" }
+        expect "corner-redone" { target = label("左上角 X") value = "1" }
+        wait "perspective-preview-ready" { text = "12 × 8 px" }
+        click "apply-perspective" { target = role("button", "应用修改") }
+        wait "perspective-download-ready" { visible = css("a[download='geometry-gradient.png']") }
+        download "perspective-pixels" { target = css("a[download='geometry-gradient.png']") path = "downloads/geometry-perspective.png" }
+        screenshot "geometry-desktop-result" { path = "screenshots/geometry-desktop.png" }
+        viewport "geometry-narrow" { width = 390 height = 844 }
+        expect "geometry-narrow-download" { in_viewport = role("link", "下载 geometry-gradient.png") }
+        expect "geometry-narrow-rotate" { pointer_reachable = role("button", "向右旋转") }
+        screenshot "geometry-narrow-result" { path = "screenshots/geometry-narrow.png" }
+    }
+
+    scenario "filter-intensity-pages" {
+        name = "Preview intensity and split with keyboard; export exact original and selected PDF page pixels"
+        surface = "web"
+        timeout_ms = 90000
+
+        navigate "open-filter-controls" { url = "http://127.0.0.1:4325/windows/main/?workbench-applet=pdf" }
+        viewport "filter-desktop" { width = 1440 height = 1100 }
+        wait "filter-permission" { visible = role("button", "允许") }
+        click "allow-filter-controls" { target = role("button", "允许") }
+        upload "filter-source" { target = css("[data-ui='workbench.pdf-tools.input']") paths = ["tests/e2e/document-tools/fixtures/source.png"] }
+        click "choose-filter-controls" { target = role("button", "智能滤镜") }
+        wait "filter-original-ready" { visible = css("[data-ui='document-tools.filter-apply']:not([disabled])") }
+        expect "filter-default-original" { checked = css("input[name='document-filter'][value='original']") }
+        click "accept-original-filter" { target = role("button", "应用滤镜") }
+        wait "filter-original-download" { visible = css("a[download='source.png']") }
+        click "choose-gray-preview" { target = css("input[name='document-filter'][value='grayscale']") }
+        wait "filter-local-edit-settled" { visible = css("[data-ui='document-tools.filter-apply']:not([disabled])") }
+        expect "filter-unapplied-download-hidden" { target = css("a[download='source.png']") visible_count = 0 }
+        focus "filter-strength-keyboard" { target = css("input[type='range'][aria-label='强度']") }
+        press "strength-90" { key = "PageDown" }
+        press "strength-80" { key = "PageDown" }
+        press "strength-70" { key = "PageDown" }
+        press "strength-60" { key = "PageDown" }
+        press "strength-50" { key = "PageDown" }
+        expect "half-strength-value" { target = css("input[type='range'][aria-label='强度']") value = "50" }
+        click "undo-filter-strength" { target = role("button", "撤销") }
+        expect "strength-undo-value" { target = css("input[type='range'][aria-label='强度']") value = "60" }
+        focus "refocus-filter-strength" { target = css("input[type='range'][aria-label='强度']") }
+        press "restore-half-strength" { key = "PageDown" }
+        wait "half-comparison-preview-ready" { visible = css("[data-ui='document-tools.filter-apply']:not([disabled])") }
+        click "open-filter-comparison" { target = role("button", "对照方式") }
+        click "filter-split-mode" { target = role("option", "分割线") }
+        focus "original-toggle-keyboard" { target = css("[data-ui='document-tools.filter-editor'] button[aria-pressed]") }
+        press "show-original-keyboard" { key = "Enter" }
+        expect "original-toggle-pressed" { pressed = role("button", "显示原图") }
+        expect "filtered-image-hidden" { target = css("[data-ui='document-tools.filter-preview'] img[alt='滤镜结果']") visible_count = 0 }
+        focus "refocus-original-toggle-keyboard" { target = css("[data-ui='document-tools.filter-editor'] button[aria-pressed]") }
+        press "return-to-result-keyboard" { key = "Enter" }
+        expect "original-toggle-unpressed" { unpressed = role("button", "显示原图") }
+        focus "split-position-keyboard" { target = css("[data-ui='document-tools.filter-preview'] input[type='range']") }
+        press "move-split-position" { key = "ArrowRight" }
+        expect "split-position-value" { target = css("[data-ui='document-tools.filter-preview'] input[type='range']") value = "51" }
+        wait "half-preview-ready" { visible = css("[data-ui='document-tools.filter-apply']:not([disabled])") }
+        click "apply-half-filter" { target = role("button", "应用滤镜") }
+        wait "half-download-ready" { visible = css("a[download='source.png']") }
+        download "half-filter-output" { target = css("a[download='source.png']") path = "downloads/filter-half.png" }
+        screenshot "filter-desktop-result" { path = "screenshots/filter-desktop.png" }
+        viewport "filter-narrow" { width = 390 height = 844 }
+        expect "filter-narrow-download" { in_viewport = role("link", "下载 source.png") }
+        screenshot "filter-narrow-result" { path = "screenshots/filter-narrow.png" }
+        viewport "filter-pdf-desktop" { width = 1440 height = 1100 }
+        click "filter-return-catalogue" { target = role("button", "返回工具首页") }
+        upload "filter-original-pages" { target = css("[data-ui='workbench.pdf-tools.input']") paths = ["tests/e2e/document-tools/fixtures/filter-pages.pdf"] }
+        click "choose-pdf-filter" { target = role("button", "智能滤镜") }
+        wait "filter-pages-ready" { visible = role("button", "第 2 页") }
+        click "filter-second-page" { target = role("button", "第 2 页") }
+        click "filter-second-gray" { target = css("input[name='document-filter'][value='grayscale']") }
+        wait "second-preview-ready" { visible = css("[data-ui='document-tools.filter-apply']:not([disabled])") }
+        click "apply-current-page" { target = role("button", "应用滤镜") }
+        wait "all-filter-pages-exported" { visible = css("a[download='filter-pages-page-2.png']") }
+        expect "active-page-retained" { pressed = role("button", "第 2 页") }
+        download "untouched-filter-page" { target = css("a[download='filter-pages-page-1.png']") path = "downloads/filter-pdf-original.png" }
+        download "addressed-filter-page" { target = css("a[download='filter-pages-page-2.png']") path = "downloads/filter-pdf-gray.png" }
+        check "select-both-filter-pages" { target = css("input[aria-label='选择第 2 页']") }
+        check "explicit-filter-page-scope" { target = css("[data-ui='document-tools.filter-editor'] > label input[type='checkbox']") }
+        wait "selected-filter-scope-ready" { visible = css("[data-ui='document-tools.filter-apply']:not([disabled])") }
+        snapshot "selected-filter-scope" { interactive = true }
+        click "apply-selected-filter-pages" { target = role("button", "应用滤镜") }
+        snapshot "selected-filter-result-state" { interactive = true }
+        wait "selected-page-output-ready" { visible = css("a[download='filter-pages-page-1.png']") }
+        download "explicit-selected-page-output" { target = css("a[download='filter-pages-page-1.png']") path = "downloads/filter-pdf-selected.png" }
+        screenshot "selected-filter-pages-result" { path = "screenshots/filter-pages.png" }
+    }
+
+    scenario "office-options-unavailable-host" {
+        name = "Office range and format controls remain usable after explicit native-host refusal"
+        surface = "web"
+        timeout_ms = 90000
+
+        navigate "open-office-workspace" { url = "http://127.0.0.1:4325/windows/main/?workbench-applet=pdf" }
+        viewport "office-desktop" { width = 1440 height = 1000 }
+        wait "office-permission" { visible = role("button", "允许") }
+        click "allow-office-applet" { target = role("button", "允许") }
+        upload "real-office-source" {
+            target = css("[data-ui='workbench.pdf-tools.input']")
+            paths = ["tests/e2e/document-tools/fixtures/simple.docx"]
+        }
+        click "office-image-conversion" { target = role("button", "Word 转图片") }
+        wait "explicit-native-refusal" { text = "这一步要用办公重绘，当前还没有接上。" }
+        expect "office-options-initially-collapsed" { collapsed = css("[data-ui='document-tools.workspace'] details") }
+        expect "no-synthetic-office-output" {
+            target = css("[data-ui='document-tools.workspace'] a[download]")
+            visible_count = 0
+        }
+        click "open-office-options" { target = css("[data-ui='document-tools.workspace'] details summary") }
+        wait "office-range-visible" { visible = label("预览页范围") }
+        fill "office-page-range" { target = label("预览页范围") value = "1" }
+        click "open-office-format" { target = css("[data-ui='document-tools.office-format'] button[aria-haspopup='listbox']") }
+        click "office-jpeg-format" { target = role("option", "JPEG") }
+        expect "office-format-retained" { target = css("[data-ui='document-tools.office-format'] button[aria-haspopup='listbox']") rendered_text = "JPEG" }
+        expect "office-range-retained" { target = css("[data-ui='document-tools.office-pages']") value = "1" }
+        expect "revised-office-task-ready" { visible = role("button", "开始处理") }
+        expect "honest-office-range-scope" { text = "范围按当前内容预览的顺序计算；不等同于源文件的打印页码。" }
+        viewport "office-mobile" { width = 390 height = 844 }
+        expect "mobile-office-range-reachable" { pointer_reachable = css("[data-ui='document-tools.office-pages']") }
+        expect "mobile-office-format-reachable" { pointer_reachable = css("[data-ui='document-tools.office-format']") }
+        screenshot "office-mobile-options" { path = "screenshots/office-mobile-options.png" }
+        click "collapse-office-options" { target = css("[data-ui='document-tools.workspace'] details summary") }
+        expect "office-options-collapsed-again" { collapsed = css("[data-ui='document-tools.workspace'] details") }
+        expect "office-controls-hidden-again" {
+            target = css("[data-ui='document-tools.workspace'] details[open] [data-ui='document-tools.office-pages'], [data-ui='document-tools.workspace'] details[open] [data-ui='document-tools.office-format']")
+            visible_count = 0
+        }
+    }
+
+    scenario "image-assembly-export" {
+        name = "Reorder images, export bounded segments, and apply image PDF paper margins"
+        surface = "web"
+        timeout_ms = 90000
+
+        navigate "open-assembly" { url = "http://127.0.0.1:4325/windows/main/?workbench-applet=pdf" }
+        viewport "assembly-desktop" { width = 1440 height = 1100 }
+        wait "assembly-permission" { visible = role("button", "允许") }
+        click "allow-assembly" { target = role("button", "允许") }
+        upload "assembly-sources" { target = css("[data-ui='workbench.pdf-tools.input']") paths = ["tests/e2e/document-tools/fixtures/source.png", "tests/e2e/document-tools/fixtures/second.png"] }
+        click "choose-long-image" { target = role("button", "合并长图") }
+        wait "initial-long-download" { visible = css("a[download='long.png']") }
+        expect "assembly-options-collapsed" { collapsed = css("[data-ui='document-tools.assembly-options']") }
+        click "second-image-first" { target = role("button", "上移 second.png") }
+        expect "old-long-result-withdrawn" { target = css("a[download='long.png']") visible_count = 0 }
+        click "open-assembly-options" { target = css("[data-ui='document-tools.assembly-options'] summary") }
+        fill "one-row-gap" { target = css("[data-ui='document-tools.long-gap']") value = "1" }
+        fill "three-row-segments" { target = css("[data-ui='document-tools.long-segment']") value = "3" }
+        click "render-new-long-image" { target = role("button", "开始处理") }
+        wait "new-long-segments" { visible = css("a[download='long-3.png']") }
+        download "segment-one" { target = css("a[download='long-1.png']") path = "downloads/assembly-segment-1.png" }
+        download "segment-two" { target = css("a[download='long-2.png']") path = "downloads/assembly-segment-2.png" }
+        download "segment-three" { target = css("a[download='long-3.png']") path = "downloads/assembly-segment-3.png" }
+        screenshot "assembly-segments" { path = "screenshots/assembly-segments.png" }
+        click "assembly-home" { target = role("button", "回到首页") }
+        upload "pdf-assembly-sources" { target = css("[data-ui='workbench.pdf-tools.input']") paths = ["tests/e2e/document-tools/fixtures/source.png", "tests/e2e/document-tools/fixtures/second.png"] }
+        click "choose-image-pdf" { target = role("button", "图片转 PDF") }
+        wait "natural-image-pdf" { visible = css("a[download='images.pdf'][aria-label]") }
+        download "natural-image-pdf-bytes" { target = css("a[download='images.pdf'][aria-label]") path = "downloads/assembly-natural.pdf" }
+        click "open-image-pdf-options" { target = css("[data-ui='document-tools.assembly-options'] summary") }
+        click "open-image-paper" { target = css("[data-ui='document-tools.image-paper'] button[aria-haspopup='listbox']") }
+        click "letter-paper" { target = role("option", "Letter") }
+        expect "old-pdf-withdrawn" { target = css("a[download='images.pdf'][aria-label]") visible_count = 0 }
+        fill "pdf-margin" { target = css("[data-ui='document-tools.image-margin']") value = "36" }
+        click "apply-image-pdf-options" { target = role("button", "开始处理") }
+        wait "letter-image-pdf" { visible = css("a[download='images.pdf'][aria-label]") }
+        download "letter-image-pdf-bytes" { target = css("a[download='images.pdf'][aria-label]") path = "downloads/assembly-letter.pdf" }
+        viewport "assembly-narrow" { width = 390 height = 844 }
+        click "close-image-pdf-options" { target = css("[data-ui='document-tools.assembly-options'] summary") }
+        expect "narrow-image-pdf-download" { pointer_reachable = css("a[download='images.pdf'][aria-label]") }
+        screenshot "assembly-pdf-narrow" { path = "screenshots/assembly-pdf-narrow.png" }
+    }
+
+    scenario "word-print-layout-export" {
+        name = "Word PDF retains styled text, table, Chinese runs and explicit pagination"
+        surface = "web"
+        timeout_ms = 90000
+        navigate "word-layout-home" { url = "http://127.0.0.1:4325/windows/main/?workbench-applet=pdf" }
+        viewport "word-layout-desktop" { width = 1440 height = 1000 }
+        wait "word-layout-permission" { visible = role("button", "允许") }
+        click "allow-word-layout" { target = role("button", "允许") }
+        upload "formatted-word-source" {
+            target = css("[data-ui='workbench.pdf-tools.input']")
+            paths = ["tests/e2e/document-tools/fixtures/formatted-layout.docx"]
+        }
+        wait "choose-word-layout" { visible = role("button", "Word 转 PDF") }
+        click "convert-word-layout" { target = role("button", "Word 转 PDF") }
+        wait "word-layout-result" { visible = css("[data-ui='document-tools.workspace'] a[download='formatted-layout.pdf']") }
+        wait "office-pdf-page-rendered" { visible = css("[data-ui='document-tools.office-preview'] .work-pdf-embed[data-ready='true']") }
+        expect "office-read-only" { target = css("[data-ui='document-tools.office-preview'] .work-pdf-save") visible_count = 0 }
+        expect "honest-word-pdf" { text = "按文档排版导出，保留页面外观（图片型 PDF）。" }
+        download "word-layout-pdf" { target = css("[data-ui='document-tools.workspace'] a[download='formatted-layout.pdf']") path = "downloads/word-layout.pdf" }
+        click "open-word-pages" { target = css("[data-ui='document-tools.workspace'] details summary") }
+        wait "word-print-page-range" { visible = label("文档页范围") }
+        fill "word-second-page" { target = label("文档页范围") value = "2" }
+        expect "old-word-pdf-withdrawn" { target = css("[data-ui='document-tools.workspace'] a[download='formatted-layout.pdf']") visible_count = 0 }
+        click "export-word-second-page" { target = role("button", "开始处理") }
+        wait "word-second-page-result" { visible = css("[data-ui='document-tools.workspace'] a[download='formatted-layout.pdf']") }
+        wait "office-selected-page-rendered" { visible = css("[data-ui='document-tools.office-preview'] .work-pdf-embed[data-ready='true']") }
+        viewport "word-result-mobile" { width = 390 height = 844 }
+        expect "knowledge-save-reachable" { in_viewport = role("button", "将 formatted-layout.pdf 保存到文档") }
+        expect "word-download-reachable" { in_viewport = role("link", "下载 formatted-layout.pdf") }
+        click "choose-knowledge-folder" { target = role("button", "将 formatted-layout.pdf 保存到文档") }
+        wait "knowledge-folder-dialog" { visible = role("dialog", "保存到文档") }
+        expect "honest-workspace-unavailable" { text = "文档工作区暂不可用，可以先下载转换结果。" }
+        click "dismiss-knowledge-folder" { target = role("button", "取消") }
+        download "word-selected-pdf" { target = css("[data-ui='document-tools.workspace'] a[download='formatted-layout.pdf']") path = "downloads/word-layout-page-2.pdf" }
+        expect "word-layout-owned-host-released" { target = css("[data-ui='document-tools.office-layout']") visible_count = 0 }
+        screenshot "word-layout-result-screen" { path = "screenshots/word-layout-result.png" }
+    }
+
+}

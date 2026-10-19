@@ -679,6 +679,10 @@ fn program_tool_renders_result_summary_and_tool_records() {
             success: true,
             exit_code: 0,
             output_bytes: 8,
+            original_output_bytes: 8,
+            truncated: false,
+            start_offset_ms: 0,
+            duration_ms: 1,
             metadata: Some(serde_json::json!({ "kind": "test" })),
         }],
         "",
@@ -687,4 +691,229 @@ fn program_tool_renders_result_summary_and_tool_records() {
     assert!(output.contains("done"));
     assert!(output.contains("echo (ok"));
     assert!(output.contains("\"items\""));
+}
+
+struct EvidenceTool;
+
+struct ParallelReadEvidence {
+    barrier: Arc<tokio::sync::Barrier>,
+}
+
+#[async_trait]
+impl Tool for ParallelReadEvidence {
+    fn name(&self) -> &str {
+        "parallel_read_evidence"
+    }
+    fn description(&self) -> &str {
+        "Read one controlled fixture after both calls entered"
+    }
+    fn parameters(&self) -> serde_json::Value {
+        serde_json::json!({"type":"object","properties":{"path":{"type":"string"}},"required":["path"]})
+    }
+    fn capabilities(&self, _: &serde_json::Value) -> crate::tools::ToolCapabilities {
+        crate::tools::ToolCapabilities::parallel_safe_read(2)
+    }
+    async fn execute(&self, args: &serde_json::Value, ctx: &ToolContext) -> Result<ToolOutput> {
+        self.barrier.wait().await;
+        tokio::time::sleep(std::time::Duration::from_millis(20)).await;
+        let path = args["path"].as_str().unwrap();
+        Ok(
+            ToolOutput::success(std::fs::read_to_string(ctx.workspace.join(path))?)
+                .with_metadata(serde_json::json!({"source":path})),
+        )
+    }
+}
+
+#[tokio::test(flavor = "multi_thread")]
+async fn program_parallel_reads_record_real_overlapping_intervals_and_sources() {
+    let root = tempfile::tempdir().unwrap();
+    std::fs::write(root.path().join("left.txt"), "left").unwrap();
+    std::fs::write(root.path().join("right.txt"), "right").unwrap();
+    let registry = Arc::new(ToolRegistry::new(root.path().to_owned()));
+    registry.register(Arc::new(ParallelReadEvidence {
+        barrier: Arc::new(tokio::sync::Barrier::new(2)),
+    }));
+    let output = ProgramTool::new(registry).execute(&serde_json::json!({
+        "type":"script", "allowed_tools":["parallel_read_evidence"],
+        "limits":{"maxToolCalls":2,"timeoutMs":2000},
+        "source":r#"async function run(ctx) {
+            const values = await Promise.all(['left.txt','right.txt'].map(path => ctx.tool('parallel_read_evidence', {path})));
+            return {values:values.map(value => value.output)};
+        }"#
+    }), &ToolContext::new(root.path().to_owned())).await.unwrap();
+    assert!(output.success, "{}", output.content);
+    let metadata = output.metadata.unwrap();
+    assert_eq!(
+        metadata["script_result"]["values"],
+        serde_json::json!(["left", "right"])
+    );
+    let calls = metadata["program"]["tool_calls"].as_array().unwrap();
+    assert_eq!(calls.len(), 2);
+    let intervals = calls
+        .iter()
+        .map(|call| {
+            let start = call["start_offset_ms"].as_u64().unwrap();
+            let duration = call["duration_ms"].as_u64().unwrap();
+            assert!(duration >= 10);
+            assert!(call["metadata"]["source"]
+                .as_str()
+                .unwrap()
+                .ends_with(".txt"));
+            (start, start + duration)
+        })
+        .collect::<Vec<_>>();
+    assert!(
+        intervals[0].0.max(intervals[1].0) < intervals[0].1.min(intervals[1].1),
+        "reads did not overlap: {intervals:?}"
+    );
+}
+
+#[async_trait]
+impl Tool for EvidenceTool {
+    fn name(&self) -> &str {
+        "evidence"
+    }
+    fn description(&self) -> &str {
+        "Return a controlled check receipt"
+    }
+    fn parameters(&self) -> serde_json::Value {
+        serde_json::json!({"type":"object"})
+    }
+    async fn execute(&self, args: &serde_json::Value, _: &ToolContext) -> Result<ToolOutput> {
+        let content = args["output"].as_str().unwrap_or("receipt");
+        let output = if args["fail"] == true {
+            ToolOutput::error(content)
+        } else {
+            ToolOutput::success(content)
+        };
+        Ok(output.with_metadata(serde_json::json!({"artifact_uri":"a3s://tool-output/fixture", "source":"controlled-check"})))
+    }
+}
+
+#[tokio::test]
+async fn program_structured_failure_can_be_checked_and_recovered_without_erasing_receipts() {
+    let root = tempfile::tempdir().unwrap();
+    let registry = Arc::new(ToolRegistry::new(root.path().to_owned()));
+    registry.register(Arc::new(EvidenceTool));
+    let output = ProgramTool::new(registry)
+        .execute(
+            &serde_json::json!({
+                "type":"script", "allowed_tools":["evidence"],
+                "source":r#"async function run(ctx) {
+            const failed = await ctx.tool('evidence', {fail:true});
+            if (failed.exitCode === 0) throw new Error('expected failure');
+            const recovered = await ctx.tool('evidence', {});
+            if (recovered.exitCode !== 0) throw new Error('recovery failed');
+            return {failed:failed.exitCode, recovered:recovered.exitCode};
+        }"#
+            }),
+            &ToolContext::new(root.path().to_owned()),
+        )
+        .await
+        .unwrap();
+    assert!(output.success, "{}", output.content);
+    let metadata = output.metadata.unwrap();
+    assert_ne!(metadata["script_result"]["failed"], 0);
+    assert_eq!(metadata["script_result"]["recovered"], 0);
+    let calls = metadata["program"]["tool_calls"].as_array().unwrap();
+    assert_eq!(calls.len(), 2);
+    assert_eq!(calls[0]["success"], false);
+    assert_eq!(calls[1]["success"], true);
+    assert_eq!(calls[0]["metadata"]["source"], "controlled-check");
+}
+
+#[tokio::test]
+async fn program_child_truncation_preserves_structured_flags_original_bytes_and_source() {
+    let root = tempfile::tempdir().unwrap();
+    let registry = Arc::new(ToolRegistry::new(root.path().to_owned()));
+    registry.register(Arc::new(EvidenceTool));
+    let output = ProgramTool::new(registry)
+        .execute(
+            &serde_json::json!({
+                "type":"script", "allowed_tools":["evidence"], "limits":{"maxOutputBytes":1024},
+                "inputs":{"output":"界".repeat(1000)},
+                "source":r#"async function run(ctx, inputs) {
+            const result = await ctx.tool('evidence', inputs);
+            return {truncated:result.truncated, original:result.originalOutputBytes,
+                source:result.metadata.source, outputBytes:result.output.length};
+        }"#
+            }),
+            &ToolContext::new(root.path().to_owned()),
+        )
+        .await
+        .unwrap();
+    assert!(output.success, "{}", output.content);
+    assert!(output.content.len() <= 1024);
+    let metadata = output.metadata.unwrap();
+    assert_eq!(metadata["script_result"]["truncated"], true);
+    assert_eq!(metadata["script_result"]["original"], 3000);
+    assert_eq!(metadata["script_result"]["source"], "controlled-check");
+    let call = &metadata["program"]["tool_calls"][0];
+    assert_eq!(call["truncated"], true);
+    assert_eq!(call["original_output_bytes"], 3000);
+    assert!(call["output_bytes"].as_u64().unwrap() <= 1024);
+    assert_eq!(
+        call["metadata"]["artifact_uri"],
+        "a3s://tool-output/fixture"
+    );
+}
+
+#[test]
+fn program_output_byte_limit_also_bounds_the_truncation_marker() {
+    for limit in [0, 1, 8, 18, 19, 20, 100] {
+        let bounded = bound_program_output("界".repeat(100), limit);
+        assert!(
+            bounded.len() <= limit,
+            "limit={limit}, actual={}",
+            bounded.len()
+        );
+    }
+}
+
+#[tokio::test]
+async fn program_deadline_settles_an_active_child_before_returning() {
+    let root = tempfile::tempdir().unwrap();
+    let started = Arc::new(tokio::sync::Notify::new());
+    let cancellations = Arc::new(std::sync::atomic::AtomicUsize::new(0));
+    let registry = Arc::new(ToolRegistry::new(root.path().to_owned()));
+    registry.register(Arc::new(CancellationAwareTool {
+        started,
+        cancellations: Arc::clone(&cancellations),
+    }));
+    let output = ProgramTool::new(registry).execute(&serde_json::json!({
+        "type":"script", "allowed_tools":["cancellation_aware"],
+        "limits":{"timeoutMs":50},
+        "source":"async function run(ctx) { return await ctx.tool('cancellation_aware', {}); }"
+    }), &ToolContext::new(root.path().to_owned())).await.unwrap();
+    assert!(!output.success, "{}", output.content);
+    assert!(output.content.contains("timed out"));
+    assert_eq!(cancellations.load(std::sync::atomic::Ordering::SeqCst), 1);
+}
+
+#[tokio::test]
+async fn program_dependent_write_then_read_observes_saved_bytes() {
+    let root = tempfile::tempdir().unwrap();
+    let executor = crate::tools::ToolExecutor::new(root.path().to_string_lossy().to_string());
+    let output = ProgramTool::new(Arc::clone(executor.registry()))
+        .execute(
+            &serde_json::json!({
+                "type":"script", "allowed_tools":["write","read"],
+                "source":r#"async function run(ctx) {
+            const written = await ctx.tool('write', {file_path:'saved.txt',content:'saved-marker\n'});
+            if (written.exitCode !== 0) throw new Error(written.output);
+            const text = await ctx.readFile('saved.txt');
+            if (text !== 'saved-marker\n') throw new Error('saved bytes differ');
+            return {checked:true};
+        }"#
+            }),
+            &ToolContext::new(root.path().to_owned()).with_session_id("program-dependent-write"),
+        )
+        .await
+        .unwrap();
+    assert!(output.success, "{}", output.content);
+    assert_eq!(
+        std::fs::read_to_string(root.path().join("saved.txt")).unwrap(),
+        "saved-marker\n"
+    );
+    assert_eq!(output.metadata.unwrap()["script_result"]["checked"], true);
 }

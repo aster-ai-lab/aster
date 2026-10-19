@@ -1,0 +1,48 @@
+.create-board-canvas {
+  touch-action: none;
+  background-color: #f3f4f6;
+  background-image: radial-gradient(circle, #cfcfcf 1px, transparent 1.15px);
+  cursor: default;
+}
+
+.create-board-canvas[data-tool='hand'],
+.create-board-canvas[data-space='true'] {
+  cursor: grab;
+}
+
+.create-board-canvas[data-panning='true'] {
+  cursor: grabbing;
+}
+
+.create-board-canvas[data-tool='pen'],
+.create-board-canvas[data-tool='connector'] {
+  cursor: crosshair;
+}
+
+.create-board-canvas[data-tool='text'] {
+  cursor: text;
+}
+
+.create-board-canvas[data-tool='sticky'],
+.create-board-canvas[data-tool='shape'],
+.create-board-canvas[data-tool='frame'] {
+  cursor: copy;
+}
+
+.create-board-canvas [data-node-id] {
+  cursor: inherit;
+}
+
+.create-board-canvas[data-tool='select'] [data-node-id] {
+  cursor: grab;
+}
+
+.create-board-canvas[data-space='true'] [data-node-id],
+.create-board-canvas[data-panning='true'] [data-node-id] {
+  cursor: inherit;
+}
+
+.create-board-canvas textarea,
+.create-board-canvas input {
+  cursor: text;
+}

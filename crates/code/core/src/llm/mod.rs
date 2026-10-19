@@ -8,6 +8,8 @@ pub mod anthropic;
 pub mod codex_login;
 mod cursor_account;
 mod effort;
+#[cfg(test)]
+mod output_cap_tests;
 pub use effort::{
     deepseek_thinking_top_p, model_sends_native_effort, native_effort_menu,
     TOOL_ROUND_SAFETY_CEILING,
@@ -156,7 +158,8 @@ pub trait LlmClient: Send + Sync {
     }
 
     /// Return a view of this client with a hard output-token cap enforced
-    /// on GENERATION. A sampling bridge must route a server-requested
+    /// on GENERATION, without widening an existing lower cap. A zero cap
+    /// refuses generation. A sampling bridge must route a server-requested
     /// maxTokens through this — never clamp only the reported usage.
     /// Clients that cannot express the cap keep the default `None`, and
     /// the caller REFUSES: unbounded generation is not a substitute

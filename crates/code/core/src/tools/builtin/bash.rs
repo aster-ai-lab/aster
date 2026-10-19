@@ -518,7 +518,7 @@ impl Tool for BashTool {
     }
 
     fn description(&self) -> &str {
-        "Execute a shell command in the workspace directory. On Windows this runs in a hidden PowerShell session, not GNU bash. Use for running commands, installing packages, and running tests."
+        "Execute a workspace command using the Bash execution target in <env>. Its OS/shell can differ from the host. Use for running commands, installing packages, and running tests."
     }
 
     fn parameters(&self) -> serde_json::Value {
@@ -528,7 +528,7 @@ impl Tool for BashTool {
             "properties": {
                 "command": {
                     "type": "string",
-                    "description": "Required. The exact shell command to execute. Always provide this exact field name: 'command'. On Windows the command must be PowerShell-compatible; the tool provides a small compatibility shim for curl, wget, bare HTTP verbs (GET/POST/PUT/PATCH/DELETE/OPTIONS), which, and head."
+                    "description": "Required. The exact shell command to execute. Always provide this exact field name: 'command'. Use the OS/shell of the execution target in <env>; require_escalated uses the separately described workspace command runner only after exact-invocation authorization."
                 },
                 "timeout": {
                     "type": "integer",
@@ -640,7 +640,7 @@ impl Tool for BashTool {
             value => {
                 return Ok(ToolOutput::error(format!(
                     "unsupported sandbox_permissions value: {value}"
-                )))
+                )));
             }
         };
         let request_network_grant = raw_mode == "request_network_grant";
@@ -975,7 +975,7 @@ fn resolve_network_grant(
             Err(_) => {
                 return Err(ToolOutput::error(format!(
                     "network_grant.port {raw} is out of range"
-                )))
+                )));
             }
         },
         None => None,
@@ -1067,7 +1067,7 @@ fn session_shell_control(args: &serde_json::Value, ctx: &ToolContext) -> Option<
         _ => {
             return Some(ToolOutput::error(format!(
                 "unsupported job_action: {action}"
-            )))
+            )));
         }
     };
     Some(match result {

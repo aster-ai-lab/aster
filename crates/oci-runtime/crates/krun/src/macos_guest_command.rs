@@ -202,8 +202,11 @@ pub fn guest_command(
         }
     };
 
+    use std::os::unix::process::CommandExt;
     let mut child = match Command::new(executable.command_path())
         .arg(WORKER_COMMAND)
+        .arg("--owner-pid")
+        .arg(std::process::id().to_string())
         .arg("--system-image-manifest")
         .arg(system_image_manifest)
         .arg("--runtime-share")
@@ -217,6 +220,7 @@ pub fn guest_command(
         .stdin(Stdio::null())
         .stdout(Stdio::piped())
         .stderr(Stdio::null())
+        .process_group(0)
         .spawn()
     {
         Ok(child) => child,
@@ -304,7 +308,6 @@ pub(crate) fn run_worker(
         Ok(console) => console,
         Err(reason) => return fail_worker(&mut evidence, reason),
     };
-    let console_path = prepared_console.pinned_path();
     let api = match MacosKrunApi::load() {
         Ok(api) => api,
         Err(error) => return fail_worker(&mut evidence, error.to_string()),
@@ -351,7 +354,10 @@ pub(crate) fn run_worker(
     if let Err(error) = context.set_exec("/bin/sh", &arguments, &environment) {
         return fail_worker(&mut evidence, error.to_string());
     }
-    if let Err(error) = context.set_console_output(&console_path) {
+    if let Err(error) = context.set_console_output(prepared_console) {
+        return fail_worker(&mut evidence, error.to_string());
+    }
+    if let Err(error) = context.confine() {
         return fail_worker(&mut evidence, error.to_string());
     }
     evidence.enter_attempted = true;

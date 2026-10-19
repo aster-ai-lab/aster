@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="zh-CN">
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ToWork · 从任务到产物 · 180 秒</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: white;
+    }
+    canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  </style>
+  <canvas id="film" width="1920" height="1080"></canvas>
+  <script src="motion.js"></script>
+  <script src="look.js"></script>
+  <script>
+    'use strict'
+    const W = 1920,
+      H = 1080,
+      DUR = 180,
+      g = document.getElementById('film').getContext('2d'),
+      C = LOOK.color
+    const { clamp, lerp } = OM,
+      phase = (t, a, b, e = OM.ease.expoInOut) => e(OM.seg(t, a, b))
+    const FRAME = { x: 452, y: 172, w: 1396, h: 760, r: 14 },
+      LOGO = { x: 810, y: 228, w: 300, h: 300, r: 30 }
+    // The frame and pointer carry across routes; every image is an unmodified native capture.
+    const SHOTS = [
+      [
+        5,
+        12,
+        '30-home-final',
+        [700, 420, 2080, 1132],
+        '01',
+        '任务',
+        '从一个目标开始',
+        '选择模型，描述工作。',
+        [2140, 1060]
+      ],
+      [
+        12,
+        25,
+        '02-task-prompt-clean',
+        [985, 640, 1550, 844],
+        '01',
+        '新建任务',
+        '说清交付内容',
+        'HTML 报告、摘要、CSV。',
+        [2455, 1055]
+      ],
+      [
+        25,
+        34,
+        '14-skill-detail',
+        [845, 350, 1210, 659],
+        '02',
+        '安装技能',
+        '装入设计能力',
+        '先阅读能力说明，再安装。',
+        [1225, 572]
+      ],
+      [
+        34,
+        40,
+        '15-skill-installed',
+        [1170, 205, 1675, 912],
+        '02',
+        '已安装',
+        '能力加入工作台',
+        '回到任务中使用。',
+        [1900, 420]
+      ],
+      [
+        40,
+        46,
+        '16-skill-call',
+        [1100, 350, 1410, 768],
+        '02',
+        '调用技能',
+        '技能进入真实任务',
+        'frontend-design 已实际加载。',
+        [1660, 770]
+      ],
+      [
+        46,
+        60,
+        '04-html-preview',
+        [655, 290, 2170, 1181],
+        '03',
+        '产物预览',
+        '报告就在工作区',
+        '打开实际生成的 HTML。',
+        [1930, 620]
+      ],
+      [
+        60,
+        74,
+        '05-html-funnel',
+        [655, 200, 2170, 1181],
+        '03',
+        '看见结果',
+        '从指标到转化漏斗',
+        '浏览、报名、到场、订单。',
+        [1900, 910]
+      ],
+      [
+        74,
+        86,
+        '06-markdown-preview',
+        [1000, 300, 1690, 920],
+        '03',
+        '切换文档',
+        '同一任务，多种产物',
+        'Markdown 摘要直接预览。',
+        [1520, 410]
+      ],
+      [
+        86,
+        93,
+        '26-csv-source',
+        [640, 85, 2190, 1192],
+        '03',
+        '数据文件',
+        '数据可继续使用',
+        '在源码视图核对 CSV。',
+        [1280, 300]
+      ],
+      [
+        93,
+        97,
+        '07-agent-market',
+        [1170, 210, 1480, 806],
+        '04',
+        '安装智能体',
+        '按职责选择角色',
+        '法务专家：审查 Word 合同。',
+        [1935, 380]
+      ],
+      [
+        97,
+        101,
+        '08-agent-installed',
+        [1170, 210, 1480, 806],
+        '04',
+        '已安装',
+        '角色加入能力库',
+        '安装状态已核验。',
+        [1935, 380]
+      ],
+      [
+        101,
+        105,
+        '09-agent-select',
+        [980, 530, 1620, 882],
+        '04',
+        '选择角色',
+        '输入 @ 选择智能体',
+        '从任务输入框进入。',
+        [1390, 697]
+      ],
+      [
+        105,
+        113,
+        '28-agent-use-prompt',
+        [985, 640, 1550, 844],
+        '04',
+        '使用入口',
+        '带着问题调用专家',
+        '本次发送失败，待修复。',
+        [2455, 1055],
+        '本次发送失败'
+      ],
+      [
+        113,
+        119,
+        '10-connector-detail',
+        [920, 585, 1040, 566],
+        '05',
+        '安装连接器',
+        '把外部工具接进来',
+        'Fetch：公开网页内容抓取。',
+        [1815, 1130]
+      ],
+      [
+        119,
+        124,
+        '11-connector-installed',
+        [920, 570, 1040, 566],
+        '05',
+        '已安装',
+        '检查连接器配置',
+        'Fetch 安装后无需额外配置。',
+        [1690, 1210]
+      ],
+      [
+        124,
+        131,
+        '12-connector-task',
+        [980, 640, 1550, 844],
+        '05',
+        '调用入口',
+        '在任务里使用工具',
+        '本次连接器调用未完成。',
+        [2455, 1055],
+        '调用未完成'
+      ],
+      [
+        131,
+        143,
+        '18-automation-config',
+        [160, 225, 2500, 1361],
+        '06',
+        '配置自动化',
+        '给重复工作一个计划',
+        '提示词、频率、最长运行时间。',
+        [2055, 1488]
+      ],
+      [
+        143,
+        153,
+        '19-automation-result',
+        [1090, 250, 1480, 806],
+        '06',
+        '单次运行',
+        '自动执行，回到会话',
+        '已实际生成复盘提醒。',
+        [1610, 950]
+      ],
+      [
+        153,
+        160,
+        '21-messages',
+        [675, 250, 2190, 1192],
+        '07',
+        '消息',
+        '沟通也在同一处',
+        '查看会话、文件与消息入口。',
+        [1610, 950]
+      ],
+      [
+        160,
+        170,
+        '22-team',
+        [670, 0, 2190, 1192],
+        '08',
+        '团队',
+        '从个人到团队协作',
+        '工作台、日程与组织管理。',
+        [1370, 740]
+      ],
+      [
+        170,
+        174,
+        '24-team-roles',
+        [670, 0, 2190, 1192],
+        '08',
+        '团队角色',
+        '让协作有明确边界',
+        '查看角色与数据范围。',
+        [1650, 390]
+      ],
+      [
+        174,
+        180,
+        '04-html-preview',
+        [655, 290, 2170, 1181],
+        '09',
+        'ToWork',
+        '从任务，走到产物',
+        '让工作在同一个地方继续。',
+        [1930, 620]
+      ]
+    ].map(([t, end, src, crop, n, title, headline, body, hand, note]) => ({
+      t,
+      end,
+      src,
+      crop,
+      n,
+      title,
+      headline,
+      body,
+      hand,
+      note
+    }))
+    const SOURCES = [...new Set(SHOTS.map((s) => s.src))],
+      images = {},
+      tracks = {}
+    const CLICKS = [12, 25, 34, 40, 46, 60, 74, 86, 93, 97, 101, 105, 113, 119, 124, 131, 143, 153, 160, 170]
+    function shotAt(t) {
+      return SHOTS.find((s) => t >= s.t && t < s.end) || SHOTS[t < 5 ? 0 : SHOTS.length - 1]
+    }
+    function rect(r, fill, stroke) {
+      g.beginPath()
+      g.roundRect(r.x, r.y, Math.max(0.01, r.w), Math.max(0.01, r.h), r.r || 0)
+      if (fill) {
+        g.fillStyle = fill
+        g.fill()
+      }
+      if (stroke) {
+        g.strokeStyle = stroke
+        g.lineWidth = 1
+        g.stroke()
+      }
+    }
+    function tx(s, x, y, size, color = C.ink, role = 'text', align = 'left') {
+      g.font = LOOK.font(role, size)
+      g.textBaseline = 'alphabetic'
+      g.textAlign = align
+      g.fillStyle = color
+      g.fillText(s, x, y)
+    }
+    function wrap(s, x, y, width, size, color = C.ink, line = 1.55) {
+      let row = '',
+        yy = y
+      for (const c of s) {
+        g.font = LOOK.font('text', size)
+        if (g.measureText(row + c).width > width) {
+          tx(row, x, yy, size, color)
+          row = c
+          yy += size * line
+        } else row += c
+      }
+      if (row) tx(row, x, yy, size, color)
+      return yy
+    }
+    function track(id, r, op = 1) {
+      tracks[id] = { ...r, op }
+    }
+    function frameAt(t) {
+      if (t < 5) return OM.morphRect(t, 3.2, 5, LOGO, FRAME, { curve: OM.ease.expoInOut })
+      if (t >= 174) return OM.morphRect(t, 174, 176.2, FRAME, LOGO, { curve: OM.ease.expoInOut })
+      return FRAME
+    }
+    function cropAt(t, s) {
+      const r = s.crop.slice()
+      const keys = [{ t: s.t, x: r[0] + r[2] / 2, y: r[1] + r[3] / 2, zoom: 1, curve: OM.ease.sineInOut }]
+      if (s.src === '30-home-final') {
+        r.splice(0, 4, 0, 0, 2880, 1568)
+        keys[0] = { t: 5, x: 1440, y: 784, zoom: 1 }
+        keys.push(
+          { t: 8, x: 1440, y: 784, zoom: 1 },
+          { t: 9, x: 1740, y: 986, zoom: 2880 / 2080, curve: OM.ease.expoInOut }
+        )
+      } else if (s.src === '05-html-funnel') {
+        keys.push({ ...keys[0], t: 64 }, { t: 65.2, x: 1740, y: 1190, zoom: 1, curve: OM.ease.sineInOut })
+      } else if (s.src === '06-markdown-preview') {
+        keys.push({ ...keys[0], t: 79 }, { t: 80.2, x: 1845, y: 1310, zoom: 1, curve: OM.ease.sineInOut })
+      } else if (s.src === '18-automation-config') {
+        keys.push(
+          { ...keys[0], t: 134 },
+          { t: 135, x: 1440, y: 842, zoom: 2500 / 1440, curve: OM.ease.expoInOut },
+          { t: 138.4, x: 1440, y: 842, zoom: 2500 / 1440 },
+          { t: 139.4, x: 1440, y: 1292, zoom: 2500 / 1440, curve: OM.ease.sineInOut }
+        )
+      } else {
+        const z = s.src === '04-html-preview' ? 1.035 : 1
+        keys.push({ ...keys[0], t: s.t + 0.6 }, { ...keys[0], t: s.t + 1.35, zoom: z, curve: OM.ease.sineInOut })
+      }
+      const cam = OM.camera(t, keys),
+        w = r[2] / cam.zoom,
+        h = r[3] / cam.zoom
+      return [cam.x - w / 2, cam.y - h / 2, w, h]
+    }
+    function handAt(t) {
+      const s = shotAt(t),
+        r = cropAt(t, s),
+        f = frameAt(t),
+        u = phase(t, s.t + 0.05, s.t + 0.6, OM.ease.sineInOut)
+      const x = f.x + ((s.hand[0] - r[0]) * f.w) / r[2],
+        y = f.y + ((s.hand[1] - r[1]) * f.h) / r[3]
+      return {
+        x: clamp(lerp(x - 60, x, u), f.x + 20, f.x + f.w - 25),
+        y: clamp(lerp(y + 28, y, u), f.y + 20, f.y + f.h - 35),
+        s: 1 - 0.12 * Math.max(...CLICKS.map((a) => Math.max(0, 1 - Math.abs(t - a) / 0.16)))
+      }
+    }
+    function product(t) {
+      const s = shotAt(t),
+        f = frameAt(t),
+        r = cropAt(t, s)
+      rect(f, '#fff', C.line)
+      g.save()
+      g.beginPath()
+      g.roundRect(f.x, f.y, f.w, f.h, f.r || 0)
+      g.clip()
+      g.drawImage(images[s.src], ...r, f.x, f.y, f.w, f.h)
+      g.restore()
+      track('workspace', f)
+      const logoOpacity = t < 5 ? 1 - phase(t, 3.45, 4.85) : phase(t, 174.4, 176.2)
+      if (logoOpacity > 0) {
+        g.save()
+        g.globalAlpha = logoOpacity
+        rect(f, C.ground)
+        const side = Math.min(f.w, f.h)
+        g.drawImage(images.logo, f.x + (f.w - side) / 2, f.y + (f.h - side) / 2, side, side)
+        g.restore()
+      }
+      if (t >= 5 && t < 174) {
+        const h = handAt(t)
+        g.save()
+        g.translate(h.x, h.y)
+        g.scale(h.s, h.s)
+        g.beginPath()
+        g.moveTo(0, 0)
+        g.lineTo(1, 29)
+        g.lineTo(8, 21)
+        g.lineTo(15, 34)
+        g.lineTo(21, 30)
+        g.lineTo(14, 18)
+        g.lineTo(26, 18)
+        g.closePath()
+        g.fillStyle = C.ink
+        g.fill()
+        g.strokeStyle = '#fff'
+        g.lineWidth = 2
+        g.stroke()
+        for (const a of CLICKS) {
+          if (t >= a && t < a + 0.4) {
+            const p = OM.seg(t, a, a + 0.4)
+            g.globalAlpha = 0.4 * (1 - p)
+            g.beginPath()
+            g.arc(2, 2, lerp(8, 29, OM.ease.expoOut(p)), 0, Math.PI * 2)
+            g.strokeStyle = C.accent
+            g.lineWidth = 2
+            g.stroke()
+          }
+        }
+        g.restore()
+        track('pointer', { x: h.x, y: h.y, w: 30, h: 36 })
+      }
+    }
+    function labels(t) {
+      if (t < 5) {
+        const a = OM.maskRise(Math.min(t, 2.5), 0.4, 0, { dist: 35, zeta: 0.82, omega: 22 })
+        g.save()
+        g.globalAlpha = a.visible ? 1 : 0
+        tx('从任务，走到产物。', 960, 650 + a.y, 56, C.ink, 'display', 'center')
+        tx('ToWork · 真实工作台演示', 960, 715, 25, C.mute, 'text', 'center')
+        g.restore()
+        track('opening', { x: 410, y: 590, w: 1100, h: 145 }, a.visible ? 1 : 0)
+        return
+      }
+      if (t >= 174) {
+        const a = phase(t, 176.2, 176.8, OM.ease.expoOut)
+        g.save()
+        g.globalAlpha = a
+        tx('从任务，走到产物。', 960, 650, 54, C.ink, 'display', 'center')
+        tx('ToWork', 960, 720, 28, C.mute, 'display', 'center')
+        g.restore()
+        track('closing', { x: 440, y: 590, w: 1040, h: 155 }, a)
+        return
+      }
+      const s = shotAt(t),
+        a = OM.maskRise(Math.min(t, s.t + 1.5), s.t + 0.1, 0, { dist: 18, zeta: 0.85, omega: 25 })
+      tx('ToWork', 72, 86, 38, C.ink, 'display')
+      tx('产品介绍 / 03:00', 1848, 82, 17, C.mute, 'mono', 'right')
+      g.save()
+      g.globalAlpha = clamp(a.op ?? 1)
+      rect({ x: 72, y: 188, w: 35, h: 3 }, C.accent)
+      tx(s.n + ' / ' + s.title, 72, 249, 25, C.mute)
+      wrap(s.headline, 72, 340 + a.y, 310, 48)
+      wrap(s.body, 72, 525, 310, 25, C.mute)
+      if (s.note) {
+        rect({ x: 72, y: 655, w: 292, h: 44, r: 8 }, '#f8eee0')
+        tx(s.note, 90, 685, 22, '#82531b')
+      }
+      const notices =
+        s.n === '03' ? '文件已生成；任务完成凭据绑定待修复。' : s.n === '06' ? '会话已有结果；历史状态回写待修复。' : ''
+      if (notices) wrap(notices, 72, 720, 302, 20, C.mute)
+      if (s.src === '26-csv-source') wrap('表格预览的中文编码问题已记录。', 72, 800, 302, 20, C.mute)
+      g.restore()
+      track('copy', { x: 60, y: 180, w: 330, h: 700 })
+      const steps = ['任务', '技能', '产物', '智能体', '连接器', '自动化', '消息', '团队']
+      let active = Number(s.n) - 1
+      if (active >= 8) active = 7
+      const widths = [220, 120, 120, 140, 140, 140, 120, 120],
+        start = 452
+      let x = start
+      steps.forEach((v, i) => {
+        tx(v, x, 1015, 19, i === active ? C.ink : C.mute)
+        if (i === active) rect({ x, y: 1032, w: 46, h: 2 }, C.accent)
+        x += widths[i]
+      })
+      track('navigation', { x: 452, y: 985, w: 1320, h: 58 })
+    }
+    function seek(t) {
+      t = clamp(t, 0, DUR)
+      Object.keys(tracks).forEach((k) => delete tracks[k])
+      g.setTransform(1, 0, 0, 1, 0, 0)
+      g.globalAlpha = 1
+      g.fillStyle = C.ground
+      g.fillRect(0, 0, W, H)
+      product(t)
+      labels(t)
+      g.globalAlpha = 1
+      return true
+    }
+    window.__seek = async (t) => seek(t)
+    window.__track = () => tracks
+    window.__meta = {
+      dur: DUR,
+      fps: 30,
+      w: W,
+      h: H,
+      cuts: [],
+      inFrame: {
+        workspace: [0, 180, 'whole'],
+        opening: [1, 3, 'whole'],
+        closing: [177, 180, 'whole'],
+        copy: [5, 173.9, 'whole'],
+        navigation: [5, 173.9, 'whole']
+      }
+    }
+    window.__motion = (a, b) => {
+      const f = frameAt(a),
+        h = frameAt(b),
+        pa = handAt(a),
+        pb = handAt(b),
+        sa = shotAt(a),
+        sb = shotAt(b)
+      const ca = cropAt(a, sa),
+        cb = cropAt(b, sb)
+      return Math.max(
+        Math.abs(f.x - h.x) + Math.abs(f.w - h.w),
+        Math.abs(f.y - h.y) + Math.abs(f.h - h.h),
+        a >= 5 && b < 174 ? Math.hypot(pa.x - pb.x, pa.y - pb.y) : 0,
+        sa === sb ? Math.abs(ca[2] - cb[2]) + Math.abs(ca[0] - cb[0]) + Math.abs(ca[1] - cb[1]) : 0,
+        ...SHOTS.map((s) =>
+          Math.abs(
+            OM.maskRise(Math.min(a, s.t + 1.5), s.t + 0.1, 0, { dist: 18, zeta: 0.85, omega: 25 }).y -
+              OM.maskRise(Math.min(b, s.t + 1.5), s.t + 0.1, 0, { dist: 18, zeta: 0.85, omega: 25 }).y
+          )
+        )
+      )
+    }
+    window.__events = () => ({
+      T: DUR,
+      events: [
+        [3.2, 'open', 0, 0.6],
+        [12, 'focus', 0.2, 0.3],
+        [25, 'open', 0.15, 0.4],
+        [34, 'run', 0.2, 0.3],
+        [40, 'focus', 0.1, 0.25],
+        [46, 'open', 0.1, 0.5],
+        [60, 'focus', 0.2, 0.3],
+        [74, 'open', 0.1, 0.3],
+        [86, 'focus', -0.1, 0.2],
+        [93, 'open', 0.15, 0.3],
+        [97, 'run', 0.2, 0.3],
+        [101, 'focus', 0.2, 0.2],
+        [113, 'open', 0.1, 0.3],
+        [119, 'run', 0.1, 0.3],
+        [131, 'open', 0.1, 0.4],
+        [143, 'focus', 0.1, 0.3],
+        [153, 'open', -0.2, 0.25],
+        [160, 'open', -0.2, 0.3],
+        [170, 'focus', 0.1, 0.2],
+        [174, 'fold', 0, 0.5],
+        [176.2, 'seal', 0, 0.5]
+      ].map(([t, kind, pan, v]) => ({ t, kind, pan, v }))
+    })
+    window.__ready = Promise.all([
+      LOOK.ready,
+      ...SOURCES.map(
+        (name) =>
+          new Promise((resolve, reject) => {
+            const i = new Image()
+            i.onload = resolve
+            i.onerror = reject
+            i.src = 'capture/' + name + '.png'
+            images[name] = i
+          })
+      ),
+      new Promise((resolve, reject) => {
+        const i = new Image()
+        i.onload = resolve
+        i.onerror = reject
+        i.src = 'brand/towork-logo.png'
+        images.logo = i
+      })
+    ]).then(() => {
+      seek(0)
+      const q = new URLSearchParams(location.search)
+      if (q.has('t')) seek(Number(q.get('t')))
+      if (q.has('play')) {
+        const start = performance.now()
+        function tick() {
+          seek(((performance.now() - start) / 1000) % DUR)
+          requestAnimationFrame(tick)
+        }
+        requestAnimationFrame(tick)
+      }
+    })
+  </script>
+</html>

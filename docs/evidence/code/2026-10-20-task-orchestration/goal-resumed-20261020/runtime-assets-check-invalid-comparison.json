@@ -1,0 +1,1423 @@
+{
+  "root": "/Users/roylin/code/aster/target/t013-assets-hardware",
+  "regular_files": 907,
+  "symlinks": 353,
+  "differences": [
+    [
+      "bundle/rootfs/bin/arch",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/ash",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/base64",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/bbconfig",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/cat",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/chattr",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/chgrp",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/chmod",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/chown",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/cp",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/date",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/dd",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/df",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/dmesg",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/dnsdomainname",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/dumpkmap",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/echo",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/egrep",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/false",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/fatattr",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/fdflush",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/fgrep",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/fsync",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/getopt",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/grep",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/gunzip",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/gzip",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/hostname",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/ionice",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/iostat",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/ipcalc",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/kbd_mode",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/kill",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/link",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/linux32",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/linux64",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/ln",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/login",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/ls",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/lsattr",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/lzop",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/makemime",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/mkdir",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/mknod",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/mktemp",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/more",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/mount",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/mountpoint",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/mpstat",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/mv",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/netstat",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/nice",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/pidof",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/ping",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/ping6",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/pipe_progress",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/printenv",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/ps",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/pwd",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/reformime",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/rev",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/rm",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/rmdir",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/run-parts",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/sed",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/setpriv",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/setserial",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/sh",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/sleep",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/stat",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/stty",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/su",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/sync",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/tar",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/touch",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/true",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/umount",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/uname",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/usleep",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/watch",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/bin/zcat",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/etc/mtab",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/etc/os-release",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/etc/ssl/cert.pem",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/etc/ssl1.1/cert.pem",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/etc/ssl1.1/certs",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/etc/terminfo/v/vt200",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/lib/libc.musl-aarch64.so.1",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/acpid",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/adjtimex",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/arp",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/blkid",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/blockdev",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/depmod",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/fbsplash",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/fdisk",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/findfs",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/fsck",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/fstrim",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/getty",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/halt",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/hwclock",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/ifconfig",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/ifdown",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/ifenslave",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/ifup",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/init",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/inotifyd",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/insmod",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/ip",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/ipaddr",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/iplink",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/ipneigh",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/iproute",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/iprule",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/iptunnel",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/klogd",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/loadkmap",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/logread",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/losetup",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/lsmod",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/mdev",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/mkdosfs",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/mkfs.vfat",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/mkswap",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/modinfo",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/modprobe",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/nameif",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/nologin",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/pivot_root",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/poweroff",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/raidautorun",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/reboot",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/rmmod",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/route",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/setconsole",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/slattach",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/swapoff",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/swapon",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/switch_root",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/sysctl",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/syslogd",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/tunctl",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/udhcpc",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/vconfig",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/watchdog",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/sbin/zcip",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/2to3",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/[",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/[[",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/awk",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/basename",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/bc",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/beep",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/blkdiscard",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/bunzip2",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/bzcat",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/bzip2",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/cal",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/chvt",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/cksum",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/clear",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/cmp",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/comm",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/cpio",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/crontab",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/cryptpw",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/cut",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/dc",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/deallocvt",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/diff",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/dirname",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/dos2unix",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/du",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/eject",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/env",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/expand",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/expr",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/factor",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/fallocate",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/find",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/flock",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/fold",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/free",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/fuser",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/groups",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/hd",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/head",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/hexdump",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/hostid",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/id",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/install",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/ipcrm",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/ipcs",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/killall",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/last",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/less",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/logger",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/lsof",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/lsusb",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/lzcat",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/lzma",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/lzopcat",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/md5sum",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/mesg",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/microcom",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/mkfifo",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/mkpasswd",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/nc",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/nl",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/nmeter",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/nohup",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/nproc",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/nsenter",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/nslookup",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/od",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/openvt",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/passwd",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/paste",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/pgrep",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/pkill",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/pmap",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/printf",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/pscan",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/pstree",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/pwdx",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/pydoc3",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/python",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/python3",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/readlink",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/realpath",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/renice",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/reset",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/resize",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/seq",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/setkeycodes",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/setsid",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/sha1sum",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/sha256sum",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/sha3sum",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/sha512sum",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/showkey",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/shred",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/shuf",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/sort",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/split",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/strings",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/sum",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/tac",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/tail",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/tee",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/test",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/time",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/timeout",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/top",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/tr",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/traceroute",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/traceroute6",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/tree",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/truncate",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/tty",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/ttysize",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/udhcpc6",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/unexpand",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/uniq",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/unix2dos",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/unlink",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/unlzma",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/unlzop",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/unshare",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/unxz",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/unzip",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/uptime",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/uudecode",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/uuencode",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/vi",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/vlock",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/volname",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/wc",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/wget",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/which",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/who",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/whoami",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/whois",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/xargs",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/xxd",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/xzcat",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/bin/yes",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/lib/libbz2.so.1",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/lib/libexpat.so.1",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/lib/libffi.so.8",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/lib/libgdbm.so.6",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/lib/libgdbm_compat.so.4",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/lib/liblzma.so.5",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/lib/libmpdec++.so.4",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/lib/libmpdec.so.4",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/lib/libncursesw.so.6",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/lib/libpanelw.so.6",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/lib/libreadline.so.8",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/lib/libsqlite3.so.0",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/lib/libstdc++.so.6",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/lib/libz.so.1",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/add-shell",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/addgroup",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/adduser",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/arping",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/brctl",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/chpasswd",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/chroot",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/crond",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/delgroup",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/deluser",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/ether-wake",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/fbset",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/killall5",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/loadfont",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/nanddump",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/nandwrite",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/nbd-client",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/ntpd",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/partprobe",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/rdate",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/rdev",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/readahead",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/remove-shell",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/rfkill",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/sendmail",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/setfont",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/sbin/setlogcons",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/share/apk/keys/aarch64/alpine-devel@lists.alpinelinux.org-58199dcc.rsa.pub",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/share/apk/keys/aarch64/alpine-devel@lists.alpinelinux.org-616ae350.rsa.pub",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/share/apk/keys/armhf/alpine-devel@lists.alpinelinux.org-524d27bb.rsa.pub",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/share/apk/keys/armhf/alpine-devel@lists.alpinelinux.org-616a9724.rsa.pub",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/share/apk/keys/armv7/alpine-devel@lists.alpinelinux.org-524d27bb.rsa.pub",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/share/apk/keys/armv7/alpine-devel@lists.alpinelinux.org-616adfeb.rsa.pub",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/share/apk/keys/loongarch64/alpine-devel@lists.alpinelinux.org-66ba20fe.rsa.pub",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/share/apk/keys/mips64/alpine-devel@lists.alpinelinux.org-5e69ca50.rsa.pub",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/share/apk/keys/ppc64le/alpine-devel@lists.alpinelinux.org-58cbb476.rsa.pub",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/share/apk/keys/ppc64le/alpine-devel@lists.alpinelinux.org-616abc23.rsa.pub",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/share/apk/keys/riscv64/alpine-devel@lists.alpinelinux.org-60ac2099.rsa.pub",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/share/apk/keys/riscv64/alpine-devel@lists.alpinelinux.org-616db30d.rsa.pub",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/share/apk/keys/s390x/alpine-devel@lists.alpinelinux.org-58e4f17d.rsa.pub",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/share/apk/keys/s390x/alpine-devel@lists.alpinelinux.org-616ac3bc.rsa.pub",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/share/apk/keys/x86/alpine-devel@lists.alpinelinux.org-4a6a0840.rsa.pub",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/share/apk/keys/x86/alpine-devel@lists.alpinelinux.org-5243ef4b.rsa.pub",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/share/apk/keys/x86/alpine-devel@lists.alpinelinux.org-61666e3f.rsa.pub",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/share/apk/keys/x86_64/alpine-devel@lists.alpinelinux.org-4a6a0840.rsa.pub",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/share/apk/keys/x86_64/alpine-devel@lists.alpinelinux.org-5261cecb.rsa.pub",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/usr/share/apk/keys/x86_64/alpine-devel@lists.alpinelinux.org-6165ee59.rsa.pub",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/var/lock",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/var/run",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/var/spool/cron/crontabs",
+      "symlink differs"
+    ],
+    [
+      "bundle/rootfs/var/spool/mail",
+      "symlink differs"
+    ]
+  ],
+  "extra": [],
+  "missing": [],
+  "wall_seconds": 0.36439195799999996,
+  "passed": false
+}

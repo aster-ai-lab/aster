@@ -1,0 +1,59 @@
+{
+  "frozen_at": "2026-10-19T21:38:10.335078+00:00",
+  "scope": "T005 confirmation authority / observed-state revalidation",
+  "files": [
+    {
+      "path": "crates/code/core/src/agent_api/conversation_runtime/owned_fact.rs",
+      "sha256": "9424861e14d0c884d33ea258dff55910c55fd5f392e357cf246056d0bf8f4fb9"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/conversation_runtime/turn_outcome.rs",
+      "sha256": "997892d13b810aef1673b0f15627fc8371352b08344da6c12d676d09d3528895"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log.rs",
+      "sha256": "220be8a5a38a8990308e2ee31abfd336b0b0882e6d7dcc53cefe522dc34017a0"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log/confirmation_snapshot.rs",
+      "sha256": "029b2498d121790d686e5ffb3721484597011f0bf89adc490354654d5c75732c"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log/revalidation.rs",
+      "sha256": "520899a3ca96da803ae0148c6696ead632e18f79286dfe280f765d8007d19f50"
+    },
+    {
+      "path": "crates/code/core/src/fact_control/receipts.rs",
+      "sha256": "2e0d104e1026aba7625072c77475164f3efc96ae8d6d355f89c2f19677e6f6a6"
+    },
+    {
+      "path": "crates/code/core/src/porcelain.rs",
+      "sha256": "b081ecf4f5cfb9bde5efc4dfa03975984925b2449beac3256672f4b0acf85572"
+    },
+    {
+      "path": "crates/code/core/src/porcelain/receipt_tests.rs",
+      "sha256": "f2bb485064334ca1cbe620d0e58f77330ac8c09cdd30993b816e331191e4c6dc"
+    },
+    {
+      "path": "crates/effect/src/coding.rs",
+      "sha256": "0a9a8d4a2e2fcfed9053fe6c68991711efdd4ee3375e4c07048572ffe7a0d3ce"
+    },
+    {
+      "path": "crates/effect/src/coding/revalidation_tests.rs",
+      "sha256": "b3f24e7694ac44d6101f946e89dbb7e6e0d35ae23848c938a3b1f18957694dc9"
+    },
+    {
+      "path": "crates/effect/tests/tool_effects.rs",
+      "sha256": "33143224f7ba629cb88dad3b6bf4837dde3c69d4187782362146b707d8721cf3"
+    },
+    {
+      "path": "crates/effect/tests/tool_effects/revalidation.rs",
+      "sha256": "3478e96837ae1a4502f5aadd8f7ac386b1b6194a58c6f28d5a1251ad458634e3"
+    }
+  ],
+  "shared_files_note": {
+    "crates/code/core/src/agent_api/tests/fact_log.rs": "Preserves other agents module declarations; only confirmation_snapshot and revalidation added by this slice.",
+    "crates/code/core/src/fact_control/receipts.rs": "Only foreground Watch-to-effects seam changed by this slice; existing argument rejection/native artifact changes preserved.",
+    "crates/effect/src/coding.rs": "Preserves existing with_duplicate_threshold_of change; this slice adds private duplicate window/fold logic and sibling module."
+  }
+}

@@ -1,0 +1,91 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on build directory
+warning: function `sigmoid` is never used
+  --> crates/bge/src/math.rs:18:15
+   |
+18 | pub(crate) fn sigmoid(logit: f32) -> f32 {
+   |               ^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `encode_pairs` is never used
+  --> crates/bge/src/tokenizer.rs:91:19
+   |
+28 | impl PairTokenizer {
+   | ------------------ method in this implementation
+...
+91 |     pub(crate) fn encode_pairs(
+   |                   ^^^^^^^^^^^^
+
+warning: `a3s-use-bge` (lib) generated 2 warnings
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+warning: unused imports: `guest_agent_hello` and `host_runtime_version`
+  --> crates/code/core/src/sandbox/oci.rs:25:26
+   |
+25 | pub(crate) use version::{guest_agent_hello, host_runtime_version};
+   |                          ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `HOST_MISMATCH` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:10:7
+   |
+10 | const HOST_MISMATCH: &[u8] = b"guest agent version does not match the host runtime version";
+   |       ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `host_runtime_version` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:13:15
+   |
+13 | pub(crate) fn host_runtime_version(host: &[u8]) -> Option<&str> {
+   |               ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `guest_agent_hello` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:18:15
+   |
+18 | pub(crate) fn guest_agent_hello<'a>(agent: &'a [u8], architecture: &str) -> Option<&'a str> {
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: function `version_immediately_before` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:26:4
+   |
+26 | fn version_immediately_before<'a>(bytes: &'a [u8], marker: &[u8]) -> Option<&'a str> {
+   |    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `semver_ending_at` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:44:4
+   |
+44 | fn semver_ending_at(bytes: &[u8], end: usize) -> Option<&str> {
+   |    ^^^^^^^^^^^^^^^^
+
+warning: `a3s-code-core` (lib) generated 6 warnings (run `cargo fix --lib -p a3s-code-core` to apply 1 suggestion)
+   Compiling a3s-code-acp v9.1.4 (/Users/roylin/code/aster/crates/code/acp)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-acp` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 54.30s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_acp-2b28f4e6a05bb2da)
+
+running 8 tests
+test agent::session_setup_tests::disk_attestor_is_installed_only_for_opted_in_non_review_sessions ... ok
+test agent::session_setup_tests::durable_collection_stays_closed_until_the_first_recall ... ok
+test agent::session_setup_tests::host_contract_setup_is_scoped_and_refuses_invalid_roots_before_activation ... ok
+test agent::session_setup_tests::host_session_status_names_live_search_and_closed_semantic ... ok
+test agent::session_setup_tests::source_review_has_no_tools_even_after_a_yolo_mode_change ... ok
+test agent::session_setup_tests::trusted_acl_presentation_reaches_the_host_session_without_changing_default ... ok
+test agent::session_setup_tests::trusted_session_hook_runs_and_a_pending_hook_does_not ... ok
+test agent::session_setup_tests::typed_setup_preserves_host_safety_and_context_without_activation ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 329 filtered out; finished in 0.21s
+

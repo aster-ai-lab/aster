@@ -1,0 +1,110 @@
+{
+  "schema": "aster.nested-shell-qualification.v1",
+  "status": "owning_checks_passed_root_integration_pending",
+  "production_diff": "production.diff",
+  "source": "source-final.json",
+  "independent_review": {
+    "reviewer": "runtime_evidence",
+    "kind": "read-only source review",
+    "source": "production-freeze.json",
+    "remaining_blockers": [],
+    "no_cargo_vm_or_model_run_by_reviewer": true
+  },
+  "red": [
+    {
+      "log": "red-program.log",
+      "result": "direct formal check passed; equivalent actual program/governed Bash check lost proof and failed completion",
+      "exit_code": 101
+    },
+    {
+      "log": "red-diagnostic.log",
+      "result": "deleted suffix alias selected for next check",
+      "exit_code": 101
+    },
+    {
+      "log": "red-wrapper.log",
+      "result": "serial wrapper passed; concurrent ancestor writer incorrectly received Verified",
+      "exit_code": 101
+    }
+  ],
+  "green": [
+    {
+      "log": "green-shell-locked-window.log",
+      "passed": 41,
+      "ignored": 1,
+      "seconds": 9.15,
+      "includes": "9 new actual fact/program tests and 5 new ledger/diagnostic tests; remaining existing shell checks; one preexisting ignored test"
+    },
+    {
+      "log": "harness-final.log",
+      "passed": 65,
+      "ignored": 0
+    },
+    {
+      "log": "native-final.log",
+      "passed": 5,
+      "ignored": 0
+    },
+    {
+      "log": "nested-governance-final.log",
+      "passed": 8,
+      "ignored": 0
+    },
+    {
+      "log": "program-final.log",
+      "passed": 39,
+      "ignored": 0
+    }
+  ],
+  "integration_finding": {
+    "log": "fact-control-final.log",
+    "passed": 161,
+    "failed": 1,
+    "isolated_log": "fact-yolo-isolated.log",
+    "test": "fact_control::tests::fact_log_live_completion_yolo_lane_runs_the_tool",
+    "isolated_exit_code": 101,
+    "root_read_only_diagnosis": "open_live uses Yolo LiveCompletion permission while the separately mounted history fixture Surface has no permission or confirmation source. Empty model catalog on that Surface is correct fail-closed behavior; the fixture must use one explicit authority source.",
+    "production_yolo_regression_claimed": false,
+    "root_owned_fixture_repair_pending": true,
+    "assertions_must_remain": [
+      "catalog is nonempty",
+      "actual tool.result exists",
+      "Done",
+      "no confirmation fact"
+    ]
+  },
+  "format": {
+    "argv": [
+      "rustup",
+      "run",
+      "1.97.1",
+      "rustfmt",
+      "--check",
+      "--edition",
+      "2021",
+      "--config",
+      "skip_children=true",
+      "crates/code/core/src/harness_loop.rs",
+      "crates/code/core/src/agent/tool_invoker.rs",
+      "crates/code/core/src/agent/tool_completion_runtime.rs",
+      "crates/code/core/src/agent_api/tests/fact_log.rs",
+      "crates/code/core/src/agent_api/tests/fact_log/nested_shell_verification.rs",
+      "crates/code/core/src/harness_loop/shell_diagnostic_tests.rs"
+    ],
+    "exit_code": 0
+  },
+  "remaining_root_owned": [
+    "Repair and requalify the Yolo test fixture with one explicit authority source.",
+    "Unified Core owning Clippy and final paired build after source integration.",
+    "Fresh artifact identity qualification, controlled Work-to-ACP cases, and development CUA."
+  ],
+  "limits": [
+    "No new model, VM, submitted pipeline execution, or paid attempt occurred in this slice.",
+    "Controlled BashSandbox establishes actual governed wiring and host identity binding, not execution of an actual shell or VM. Existing focused regressions do execute bounded host test processes.",
+    "New descriptor-anchored proof tests are Unix-scoped; diagnostic selection test is platform independent. No non-Unix file observer fallback was introduced.",
+    "Existing completion guards, failed-effect ledger semantics, Work automatic attestation, budgets, profiles and public APIs were not relaxed.",
+    "No current ACP/Work/Office binary identity is qualified by these Core tests.",
+    "No task speed or task completion rate improvement is claimed by these hermetic checks.",
+    "Root workspace format check and full workspace audit are not claimed."
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "binary": "target/qualification/t028-cua-20261020/core-tests",
+  "sha256": "cb8900f887acba37b8fc8fce05986c2c8d6035463a12cc04ed0c9a1c4d0cd06f",
+  "source_artifact": "target/debug/deps/a3s_code_core-3b568ae695dcf868",
+  "results": [
+    {
+      "filter": "agent_api::tests::fact_log::execution_target::",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t028-cua-20261020/core-tests",
+        "agent_api::tests::fact_log::execution_target::",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 4.002100125,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/execution-environment/t028/green-1.log"
+    },
+    {
+      "filter": "agent::turn_context::tests::execution_target::",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t028-cua-20261020/core-tests",
+        "agent::turn_context::tests::execution_target::",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.01142937499999963,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/execution-environment/t028/green-2.log"
+    },
+    {
+      "filter": "agent::turn_context::tests::env_block_",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t028-cua-20261020/core-tests",
+        "agent::turn_context::tests::env_block_",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.009942915999999968,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/execution-environment/t028/green-3.log"
+    },
+    {
+      "filter": "agent_api::tests::fact_log::sandbox_availability::",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t028-cua-20261020/core-tests",
+        "agent_api::tests::fact_log::sandbox_availability::",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.06498566700000019,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/execution-environment/t028/green-4.log"
+    },
+    {
+      "filter": "tools::builtin::bash::tests::default_execution_fails_closed_without_a_sandbox",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t028-cua-20261020/core-tests",
+        "tools::builtin::bash::tests::default_execution_fails_closed_without_a_sandbox",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.010175250000000524,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/execution-environment/t028/green-5.log"
+    },
+    {
+      "filter": "windows_shell::tests::",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t028-cua-20261020/core-tests",
+        "windows_shell::tests::",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.00789895900000026,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/execution-environment/t028/green-6.log"
+    }
+  ]
+}

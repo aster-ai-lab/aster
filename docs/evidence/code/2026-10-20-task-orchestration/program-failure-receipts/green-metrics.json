@@ -1,0 +1,17 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-code-core",
+    "--test",
+    "test_extensibility_real_llm",
+    "metrics::",
+    "--",
+    "--nocapture"
+  ],
+  "exit_code": 101,
+  "elapsed_ms": 314.008
+}

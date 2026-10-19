@@ -1,0 +1,99 @@
+{
+  "schema": "aster.t032.original-submission.v1",
+  "frozen_at_utc": "2026-10-19T22:35:23.162917+00:00",
+  "visible_terminal": "Agent stopped before completion: max_turn_requests",
+  "normal_model_completion": false,
+  "workspace": "/Users/roylin/code/tasks/T01-t032-cua-01",
+  "inputs_and_instruction": [
+    {
+      "path": "instruction.md",
+      "sha256": "0cd971564a0655ae78bdba0ed472b1255ce323db6a19feb6b26b6d4dcd67c22c",
+      "unchanged": true
+    },
+    {
+      "path": "input/Africa_orders.csv",
+      "sha256": "7c0b74268c52b75a9dc0d892e343855775ff2d1bdfe6ea544d77e343699db5bc",
+      "unchanged": true
+    },
+    {
+      "path": "input/Asia_Pacific_orders.csv",
+      "sha256": "8c9aaeae2e3f340247f5c0472a5912cbe6d0d74e5c88e0b1d5efab4b5bfb8d5b",
+      "unchanged": true
+    },
+    {
+      "path": "input/Europe_orders.csv",
+      "sha256": "b132f6dc46fe5894818bf4a85243a122b508a64e0e76b06f8e0834556070fc02",
+      "unchanged": true
+    },
+    {
+      "path": "input/LATAM_orders.csv",
+      "sha256": "546ca18eff9190355307c935f95016bb21f94a07f13ded07b8bf8f4115c62a36",
+      "unchanged": true
+    },
+    {
+      "path": "input/USCA_orders.csv",
+      "sha256": "a0931573a257d766a122bdbb0ad9007fb49bdec18ca25931ec43a5852faa775c",
+      "unchanged": true
+    },
+    {
+      "path": "input/adjustments.jsonl",
+      "sha256": "f6f9c1a604c8531efa63ebf90904a3a90b9f9cbefefdd17dd9254b67b6f654d8",
+      "unchanged": true
+    },
+    {
+      "path": "input/policy.json",
+      "sha256": "471f6e3a27d29b432454deae7223f1927740bdc67a6cb885a55bc90c42ef17c5",
+      "unchanged": true
+    },
+    {
+      "path": "input/priority_codebook.txt",
+      "sha256": "5033d8d25338cd67fd93c72e13b7b036cdaab9bc102325534d6de90e65548e2d",
+      "unchanged": true
+    },
+    {
+      "path": "input/product_info.csv",
+      "sha256": "a508c5c50582a72e741bfed176be8a1dcdf3cbd8914391c57110585c1e5cf8a7",
+      "unchanged": true
+    },
+    {
+      "path": "input/segment_performance.csv",
+      "sha256": "f20fce60c51dc2bdfef77f7bf0b25dee4107c6f4e31cdd8f5e79fa3d01cf1dd2",
+      "unchanged": true
+    },
+    {
+      "path": "input/shipping_by_mode.csv",
+      "sha256": "1922a7d1f651bf42c1ab05275b364a6669d9dd08c6f6c2adf106982d031336eb",
+      "unchanged": true
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "pipeline.py",
+      "source": "/Users/roylin/code/tasks/T01-t032-cua-01/pipeline.py",
+      "frozen": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/goal-resumed-20261020/t032-original-submission/pipeline.py",
+      "bytes": 25088,
+      "sha256": "1a078218164e6a895b4000a0423bef1420e153d97bb1834f470f6b1ade082438"
+    },
+    {
+      "path": "output/results.json",
+      "source": "/Users/roylin/code/tasks/T01-t032-cua-01/output/results.json",
+      "frozen": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/goal-resumed-20261020/t032-original-submission/output/results.json",
+      "bytes": 1439900,
+      "sha256": "dfcc0b13bea1b177aa5af6e9967f2bae42e8bfebdc6046f665fabf94db24ecf7"
+    }
+  ],
+  "static_imports": [
+    "argparse",
+    "csv",
+    "datetime",
+    "decimal",
+    "fractions",
+    "hashlib",
+    "json",
+    "os"
+  ],
+  "oracle_sha256": "36c4db2fb452ef738a228428598e38d567b4b77bf803b925b621078a416496ac",
+  "copied_session_or_input_state": false,
+  "candidate_modified_by_evaluator": false,
+  "oracle_started": false
+}

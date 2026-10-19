@@ -1,0 +1,4 @@
+[[permission]]
+identifier = "allow-message-attention"
+description = "Sets the Dock and menu-bar unread count and posts one message banner."
+commands.allow = ["set_message_attention", "publish_message_notification", "withdraw_message_notification"]

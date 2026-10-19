@@ -1,0 +1,259 @@
+{
+  "schema": "aster.t032.cua-approval-observations.v1",
+  "scope": "CUA observations and attempted allow actions; not a count of accepted authorizations. Receipt outcomes determine acceptance. All UTC on 2026-10-19.",
+  "first_observation": "t032-evaluation.json approval_observations[0]",
+  "observations": [
+    {
+      "index": 2,
+      "before": "22:05:09.172Z",
+      "after": "22:05:09.987Z"
+    },
+    {
+      "index": 3,
+      "before": "22:06:05.456Z",
+      "after": "22:06:05.530Z"
+    },
+    {
+      "index": 4,
+      "before": "22:06:56.151Z",
+      "after": "22:06:56.217Z"
+    },
+    {
+      "index": 5,
+      "before": "22:07:22.125Z",
+      "after": "22:07:22.205Z"
+    },
+    {
+      "index": 6,
+      "before": "22:08:17.619Z",
+      "after": "22:08:17.687Z"
+    },
+    {
+      "index": 7,
+      "before": "22:08:29.852Z",
+      "after": "22:08:29.925Z"
+    },
+    {
+      "index": 8,
+      "before": "22:09:03.966Z",
+      "after": "22:09:04.031Z"
+    },
+    {
+      "index": 9,
+      "before": "22:09:07.488Z",
+      "after": "22:09:07.559Z"
+    },
+    {
+      "index": 10,
+      "before": "22:10:13.916Z",
+      "after": "22:10:13.991Z",
+      "tool": "write"
+    },
+    {
+      "index": 11,
+      "before": "22:11:23.006Z",
+      "after": "22:11:23.083Z",
+      "tool": "edit"
+    },
+    {
+      "index": 12,
+      "before": "22:12:08.652Z",
+      "after": "22:12:08.714Z"
+    },
+    {
+      "index": 13,
+      "before": "22:12:12.037Z",
+      "after": "22:12:12.103Z"
+    },
+    {
+      "index": 14,
+      "before": "22:13:04.733Z",
+      "after": "22:13:04.785Z",
+      "tool": "patch"
+    },
+    {
+      "index": 15,
+      "before": "22:14:08.591Z",
+      "after": "22:14:08.632Z",
+      "tool": "edit",
+      "prior_context_guard_rejection": true
+    },
+    {
+      "index": 16,
+      "before": "22:14:56.858Z",
+      "after": "22:14:56.883Z",
+      "tool": "edit"
+    },
+    {
+      "index": 17,
+      "before": "22:16:09.677Z",
+      "after": "22:16:09.709Z"
+    },
+    {
+      "index": 18,
+      "before": "22:16:36.213Z",
+      "after": "22:16:36.250Z"
+    },
+    {
+      "index": 19,
+      "before": "22:17:15.753Z",
+      "after": "22:17:15.784Z"
+    },
+    {
+      "index": 20,
+      "before": "22:17:21.321Z",
+      "after": "22:17:21.384Z"
+    },
+    {
+      "index": 21,
+      "before": "22:17:58.341Z",
+      "after": "22:17:58.372Z",
+      "tool": "edit"
+    },
+    {
+      "index": 22,
+      "before": "22:19:11.122Z",
+      "after": "22:19:11.149Z"
+    },
+    {
+      "index": 23,
+      "before": "22:19:40.138Z",
+      "after": "22:19:40.168Z"
+    },
+    {
+      "index": 24,
+      "before": "22:20:26.273Z",
+      "after": "22:20:26.302Z"
+    },
+    {
+      "index": 25,
+      "before": "22:20:29.262Z",
+      "after": "22:20:29.296Z"
+    },
+    {
+      "index": 26,
+      "before": "22:21:19.667Z",
+      "after": "22:21:19.719Z"
+    },
+    {
+      "index": 27,
+      "before": "22:21:52.601Z",
+      "after": "22:21:52.634Z",
+      "known_late_inner_answer": true
+    },
+    {
+      "index": 28,
+      "before": "22:22:31.774Z",
+      "after": "22:22:31.831Z"
+    },
+    {
+      "index": 29,
+      "before": "22:22:59.126Z",
+      "after": "22:22:59.157Z"
+    },
+    {
+      "index": 30,
+      "before": "22:25:34.286Z",
+      "after": "22:25:34.326Z"
+    },
+    {
+      "index": 31,
+      "before": "22:25:39.161Z",
+      "after": "22:25:39.204Z"
+    },
+    {
+      "index": 32,
+      "before": "22:26:20.129Z",
+      "after": "22:26:20.189Z"
+    },
+    {
+      "index": 33,
+      "before": "22:26:25.498Z",
+      "after": "22:26:25.528Z"
+    },
+    {
+      "index": 34,
+      "before": "22:27:26.734Z",
+      "after": "22:27:26.773Z"
+    },
+    {
+      "index": 35,
+      "before": "22:28:20.501Z",
+      "after": "22:28:20.535Z",
+      "known_late_inner_answer": true
+    },
+    {
+      "index": 36,
+      "before": "22:30:37.939Z",
+      "after": "22:30:38.772Z"
+    },
+    {
+      "index": 37,
+      "first_attempt": "22:30:41.568Z",
+      "second_attempt": "22:30:51.357Z",
+      "successful_attempt": "22:31:06.227Z",
+      "prior_context_guard_rejections": 2
+    },
+    {
+      "index": 38,
+      "attempt": "22:31:28.228Z"
+    },
+    {
+      "index": 39,
+      "attempt": "22:31:34.324Z"
+    },
+    {
+      "index": 40,
+      "attempt": "22:31:53.511Z"
+    },
+    {
+      "index": 41,
+      "attempt": "22:32:00.993Z"
+    },
+    {
+      "index": 42,
+      "attempt": "22:32:46.888Z",
+      "prior_context_guard_rejection": true
+    },
+    {
+      "index": 43,
+      "attempt": "22:32:49.966Z"
+    },
+    {
+      "index": 44,
+      "attempt": "22:33:11.064Z"
+    },
+    {
+      "index": 45,
+      "attempt": "22:33:17.092Z"
+    },
+    {
+      "index": 46,
+      "attempt": "22:33:36.954Z"
+    },
+    {
+      "index": 47,
+      "attempt": "22:33:43.202Z"
+    },
+    {
+      "index": 48,
+      "attempt": "22:34:20.305Z",
+      "prior_context_guard_rejection": true
+    },
+    {
+      "index": 49,
+      "attempt": "22:34:25.308Z"
+    },
+    {
+      "index": 50,
+      "attempt": "22:34:37.525Z"
+    },
+    {
+      "index": 51,
+      "attempt": "22:34:43.535Z"
+    }
+  ],
+  "limits": "These do not measure full approval wait: persisted parts have no requested/answered timestamps. No pure provider time is available. No reasoning or raw session content copied.",
+  "assessment_terminal_observed": true,
+  "observation_count_including_first": 51
+}

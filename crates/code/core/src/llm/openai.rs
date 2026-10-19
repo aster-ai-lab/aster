@@ -405,6 +405,17 @@ impl OpenAiClient {
         None
     }
 
+    fn request_max_tokens(&self) -> Option<usize> {
+        if super::effort::is_deepseek_model(&self.model) {
+            return self.max_tokens;
+        }
+        let Some(level) = self.request_reasoning_effort() else {
+            return self.max_tokens;
+        };
+        let max = super::effort::resolved_max_tokens(self.max_tokens, 0, level);
+        (self.max_tokens.is_some() || max > 0).then_some(max)
+    }
+
     /// Build a chat-completions request body, optionally applying a directive.
     fn build_chat_request(
         &self,
@@ -428,6 +439,9 @@ impl OpenAiClient {
             "model": self.model,
             "messages": openai_messages,
         });
+        if let Some(max) = self.request_max_tokens() {
+            request["max_tokens"] = serde_json::json!(max);
+        }
 
         if let Some(temp) = self.temperature {
             request["temperature"] = serde_json::json!(temp);
@@ -444,23 +458,8 @@ impl OpenAiClient {
                     request["top_p"] = serde_json::json!(top_p);
                 }
             }
-            if let Some(max) = self.max_tokens {
-                request["max_tokens"] = serde_json::json!(max);
-            }
         } else if let Some(level) = self.request_reasoning_effort() {
             request["reasoning_effort"] = serde_json::json!(level);
-            let floor = super::effort::output_token_floor(level);
-            match self.max_tokens {
-                Some(max) => {
-                    request["max_tokens"] = serde_json::json!(max.max(floor));
-                }
-                None if floor > 0 => {
-                    request["max_tokens"] = serde_json::json!(floor);
-                }
-                None => {}
-            }
-        } else if let Some(max) = self.max_tokens {
-            request["max_tokens"] = serde_json::json!(max);
         }
         if self.logprobs {
             request["logprobs"] = serde_json::json!(true);
@@ -478,6 +477,23 @@ impl OpenAiClient {
         }
 
         request
+    }
+
+    fn zhipu_account_exhausted(&self, status: reqwest::StatusCode, body: &str) -> bool {
+        if self.provider_name != "zhipu" || status != reqwest::StatusCode::TOO_MANY_REQUESTS {
+            return false;
+        }
+        #[derive(Deserialize)]
+        struct ErrorResponse {
+            error: ErrorCode,
+        }
+        #[derive(Deserialize)]
+        struct ErrorCode {
+            code: String,
+        }
+        // BigModel documents 429/error.code "1113" as account arrears, not a rate limit.
+        serde_json::from_str::<ErrorResponse>(body)
+            .is_ok_and(|response| response.error.code == "1113")
     }
 
     /// Execute a fully-built (non-streaming) chat-completions request.
@@ -505,7 +521,9 @@ impl OpenAiClient {
                                 .unwrap_or(reqwest::StatusCode::INTERNAL_SERVER_ERROR);
                             if status.is_success() {
                                 AttemptOutcome::Success(resp.body)
-                            } else if self.retry_config.is_retryable_status(status) {
+                            } else if self.retry_config.is_retryable_status(status)
+                                && !self.zhipu_account_exhausted(status, &resp.body)
+                            {
                                 AttemptOutcome::Retryable {
                                     status,
                                     body: resp.body,
@@ -638,8 +656,14 @@ impl LlmClient for OpenAiClient {
     fn with_output_cap(&self, max_tokens: u32) -> Option<std::sync::Arc<dyn LlmClient>> {
         // The generation-enforced cap for sampling bridges (SEC-SAMPLE1);
         // the request body's max_tokens is set when configured.
+        let max_tokens = self
+            .request_max_tokens()
+            .map_or(max_tokens as usize, |max| max.min(max_tokens as usize));
+        if max_tokens == 0 {
+            return None;
+        }
         Some(std::sync::Arc::new(
-            self.clone().with_max_tokens(max_tokens as usize),
+            self.clone().with_max_tokens(max_tokens),
         ))
     }
 

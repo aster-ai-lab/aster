@@ -1,0 +1,169 @@
+import type { Editor } from '@tiptap/core';
+import { TriangleAlert } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Button, InlineNotice } from '../../../design-system/primitives';
+import type { WorkDocumentEditorInput } from '../work-document-model';
+import {
+  collectDocumentReviewSnapshot,
+  documentReviewConflictKey,
+  reconcileDocumentReviewConflicts,
+  type WorkDocumentReviewConflict,
+  type WorkDocumentReviewConflictEvent,
+} from '../work-document-review-conflicts';
+import { normalizeDocumentHtml } from '../work-document-section';
+import type { WorkDocumentContent } from '../work-types';
+import { applyExternalDocumentContent } from './document-external-content';
+import { officeMessage } from '../../../i18n/office-locale';
+import { useOfficeMessages } from './office-messages-context';
+
+interface MutableValue<T> {
+  current: T;
+}
+
+export interface UseDocumentReviewConflictsOptions {
+  activeConflictsRef: MutableValue<WorkDocumentReviewConflict[]>;
+  appliedSourceKeyRef: MutableValue<string>;
+  artifactId?: string;
+  content: WorkDocumentContent;
+  controlledUpdateRevision?: number;
+  deferControlledUpdates?: boolean;
+  editor: Editor | null;
+  editorInput: WorkDocumentEditorInput;
+  normalizedContent: string;
+  onReviewConflict?: (event: WorkDocumentReviewConflictEvent) => void;
+  publishedDocumentRef: MutableValue<Editor['state']['doc'] | null>;
+  reconcileControlledUpdates?: boolean;
+}
+
+export function useDocumentReviewConflicts({
+  activeConflictsRef,
+  appliedSourceKeyRef,
+  artifactId,
+  content,
+  controlledUpdateRevision = 0,
+  deferControlledUpdates = false,
+  editor,
+  editorInput,
+  normalizedContent,
+  onReviewConflict,
+  publishedDocumentRef,
+  reconcileControlledUpdates = true,
+}: UseDocumentReviewConflictsOptions) {
+  const appliedArtifactIdRef = useRef(artifactId);
+  const onReviewConflictRef = useRef(onReviewConflict);
+  const [visibleConflicts, setVisibleConflicts] = useState<
+    WorkDocumentReviewConflict[]
+  >([]);
+  onReviewConflictRef.current = onReviewConflict;
+
+  useEffect(() => {
+    if (!editor || !reconcileControlledUpdates || deferControlledUpdates)
+      return;
+    const artifactChanged = appliedArtifactIdRef.current !== artifactId;
+    const sourceChanged = appliedSourceKeyRef.current !== editorInput.sourceKey;
+    appliedArtifactIdRef.current = artifactId;
+    if (artifactChanged) {
+      activeConflictsRef.current = [];
+      setVisibleConflicts([]);
+    }
+    const before = collectDocumentReviewSnapshot(editor.state.doc);
+    if (sourceChanged) {
+      const currentContent = normalizeDocumentHtml({
+        ...content,
+        html: editor.getHTML(),
+      });
+      const canReuseCurrentDocument =
+        typeof editorInput.source === 'string' &&
+        currentContent === normalizedContent;
+      appliedSourceKeyRef.current = editorInput.sourceKey;
+      if (!canReuseCurrentDocument) {
+        const result = applyExternalDocumentContent(editor, editorInput.source);
+        if (result === 'unsupported') {
+          editor
+            .chain()
+            .setMeta('addToHistory', false)
+            .setContent(editorInput.source, { emitUpdate: false })
+            .run();
+        }
+      }
+      publishedDocumentRef.current = editor.state.doc;
+    }
+    if (
+      artifactChanged ||
+      (!sourceChanged && activeConflictsRef.current.length === 0)
+    ) {
+      return;
+    }
+    const reconciled = reconcileDocumentReviewConflicts({
+      active: activeConflictsRef.current,
+      before,
+      after: collectDocumentReviewSnapshot(editor.state.doc),
+      comments: content.comments ?? [],
+    });
+    activeConflictsRef.current = reconciled.active;
+    setVisibleConflicts((visible) => {
+      if (reconciled.detected.length) return reconciled.active;
+      const visibleKeys = new Set(visible.map(documentReviewConflictKey));
+      return reconciled.active.filter((conflict) =>
+        visibleKeys.has(documentReviewConflictKey(conflict)),
+      );
+    });
+    if (reconciled.detected.length) {
+      onReviewConflictRef.current?.({
+        artifactId,
+        conflicts: reconciled.detected.map((conflict) => ({ ...conflict })),
+      });
+    }
+  }, [
+    activeConflictsRef,
+    appliedSourceKeyRef,
+    artifactId,
+    content,
+    controlledUpdateRevision,
+    deferControlledUpdates,
+    editor,
+    editorInput,
+    normalizedContent,
+    publishedDocumentRef,
+    reconcileControlledUpdates,
+  ]);
+
+  return {
+    dismiss: () => setVisibleConflicts([]),
+    visibleConflicts,
+  };
+}
+
+export function DocumentReviewConflictNotice({
+  conflicts,
+  onDismiss,
+}: {
+  conflicts: readonly WorkDocumentReviewConflict[];
+  onDismiss: () => void;
+}) {
+  const messages = useOfficeMessages();
+  if (!conflicts.length) return null;
+  return (
+    <InlineNotice
+      className="work-document-review-conflict"
+      icon={<TriangleAlert />}
+      role="alert"
+      title={officeMessage(messages, 'document.review.conflictTitle')}
+      tone="warning"
+      actions={
+        <Button
+          aria-label={officeMessage(messages, 'document.review.conflictCloseAria')}
+          size="compact"
+          tone="quiet"
+          onClick={onDismiss}
+        >
+          {officeMessage(messages, 'document.review.conflictClose')}
+        </Button>
+      }
+    >
+      {officeMessage(messages, 'document.review.conflictBody', {
+        count: String(conflicts.length),
+      })}
+    </InlineNotice>
+  );
+}

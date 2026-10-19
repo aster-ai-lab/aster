@@ -1,0 +1,8 @@
+{
+  "crates/code/acp/src/document_read.rs": "d7a930f1f49bd5989ae7726d23f30b703de7e01f84777b95cbc6ab38bba63291",
+  "crates/code/acp/src/document_read_tests.rs": "bf8aa1f60c38be8ec0a92486ea754a135da17829d3d959bdca39b90ff2ea4a29",
+  "apps/work/src-tauri/src/agent_plane/turns.rs": "15254774bd89b7e00635ee23484d9b3bd5853f948a4e933ded747d711f4626e4",
+  "apps/work/src-tauri/src/agent_plane/document_read_route_tests.rs": "644a69863ce7a1e084e0931a32f1f731f6fc886a8ae95963eba2767664300dba",
+  "apps/studio/src-tauri/src/agent_plane/turns.rs": "ca45f32ffa6e2b0ea3797498710dfa8a6bd4feae868397780eac663aa823f4c7",
+  "apps/studio/src-tauri/src/agent_plane/document_read_route_tests.rs": "ce9c279148792f9884292b1e000f9b6d2a114d81dc90f5909baee5739ce0b0a9"
+}

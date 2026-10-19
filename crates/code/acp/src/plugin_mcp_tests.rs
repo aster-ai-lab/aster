@@ -408,7 +408,13 @@ fn spec(root: &Path, marker: &str) -> PackageSpec {
         PackageFile { path: "server".into(), bytes: server_binary(root, marker) },
         PackageFile { path: "server.json".into(), bytes: serde_json::to_vec(&serde_json::json!({"type":"stdio", "command":"server", "tool_timeout_secs":if marker == "native-one-timeout" {1} else {60}, "env":{"A3S_TEST_MCP_LOG":root.join(format!("{marker}.log"))}})).unwrap() },
     ];
-    let skill = vec![PackageFile { path: "SKILL.md".into(), bytes: format!("---\nname: native-reason\ndescription: {marker} package reasoning\nallowed-tools: search_skills(*)\n---\n# {marker}\n").into_bytes() }];
+    let skill = vec![PackageFile {
+        path: "SKILL.md".into(),
+        bytes: format!(
+            "---\nname: native-reason\ndescription: {marker} package reasoning\n---\n# {marker}\n"
+        )
+        .into_bytes(),
+    }];
     PackageSpec {
         package_id: "acme/cognition".into(),
         surfaces: vec![
@@ -510,8 +516,8 @@ impl LlmClient for Model {
                 vec![
                     ContentBlock::ToolUse {
                         id: format!("search-{call}"),
-                        name: "search_skills".into(),
-                        input: serde_json::json!({"query":"native-reason", "limit":3}),
+                        name: "Skill".into(),
+                        input: serde_json::json!({"skill_name":"native-reason"}),
                     },
                     ContentBlock::ToolUse {
                         id: format!("lookup-{call}"),
@@ -585,7 +591,7 @@ async fn session(root: &Path, model: Arc<Model>) -> Arc<AgentSession> {
         .with_planning_mode(PlanningMode::Disabled)
         .with_permission_policy(
             a3s_code_core::permissions::PermissionPolicy::new()
-                .allow("search_skills")
+                .allow("Skill")
                 .allow("mcp__catalog__lookup"),
         );
     Arc::new(

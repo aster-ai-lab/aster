@@ -1,0 +1,366 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-10-19T17:23:46.395283+00:00",
+  "scope": "T021 Core code intelligence and lexical grep qualification; no model or VM",
+  "production_code_edited_by_this_slice": true,
+  "safety": {
+    "user_workspace_lsp_started": false,
+    "temporary_workspace_only": true,
+    "embedding_provider_or_model_used": false,
+    "credentials_or_user_session_state_recorded": false,
+    "process_observation_fields": [
+      "owned child PID",
+      "owned child PPID",
+      "owned child executable name"
+    ],
+    "process_observation_scope": "pgrep -P test process ID; ps only returned direct child IDs and captured owned native child IDs"
+  },
+  "hermetic_checks": [
+    {
+      "command": "cargo test --locked --offline -p a3s-code-core --lib code_intelligence:: -- --test-threads=1 --skip built_in_clangd_answers_without_writing_into_the_workspace --skip built_in_basedpyright_answers_without_writing_into_the_workspace",
+      "exit_code": 0,
+      "passed": 126,
+      "failed": 0,
+      "ignored": 1,
+      "filtered_out": 5009,
+      "test_seconds": 31.26,
+      "ignored_tests": [
+        "code_intelligence::language_runtime::integration_tests::soak_symbol_queries_fail_closed_after_server_exit"
+      ],
+      "explicitly_excluded_conditional_native_server_tests_not_counted_as_passes": [
+        "code_intelligence::workspace_runtime::integration_tests::built_in_clangd_answers_without_writing_into_the_workspace",
+        "code_intelligence::workspace_runtime::integration_tests::built_in_basedpyright_answers_without_writing_into_the_workspace"
+      ],
+      "coverage": "existing hermetic LSP protocol, fake child lifecycle, local provider, workspace/runtime ownership and builtin code-intelligence tools"
+    },
+    {
+      "command": "cargo test --locked --offline -p a3s-code-core --lib tools::builtin::search::tests -- --test-threads=1",
+      "exit_code": 0,
+      "passed": 11,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 5126,
+      "test_seconds": 0.12
+    },
+    {
+      "command": "cargo test --locked --offline -p a3s-code-core --lib governed_search_grep_works_without_embeddings_and_obeys_denial -- --test-threads=1",
+      "exit_code": 0,
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 5136,
+      "test_seconds": 0.02,
+      "coverage": "actual registered search(mode=grep), no embedding runtime, matching saved line returned with Allow; Deny returns Permission denied without private matched line; UnusedLlm rejects any attempted model call"
+    }
+  ],
+  "official_native_server_preparation": {
+    "before": "PATH rustup shim existed but pinned 1.97.1 rust-analyzer component was absent; --version exited 1",
+    "install_command": "rustup component add rust-analyzer --toolchain 1.97.1",
+    "install_exit_code": 0,
+    "version_command": "rust-analyzer --version",
+    "version_exit_code": 0,
+    "version": "rust-analyzer 1.97.1 (8bab26f4 2026-07-14)",
+    "binary_path": "/Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/bin/rust-analyzer",
+    "binary_sha256": "46c2ee0f0a6b4f05655acfb12bb338e1cfe026e2f0dad9c25895df9391f260af",
+    "default_toolchain_changed": false,
+    "native_test_toolchain_environment": "RUSTUP_TOOLCHAIN=1.97.1 ensures the rustup shim retains the pinned toolchain when child cwd is the temporary workspace",
+    "rust_src_causality": "Actual RA startup INFO loaded the pinned toolchain sysroot sources and 26 sysroot crates successfully. Component-list metadata absence was not evidence of a missing source tree or a cause of empty navigation.",
+    "rust_src_component_listed_installed_at_audit": false,
+    "native_sysroot_sources_actually_loaded": true
+  },
+  "native_smoke": {
+    "test": "tools::builtin::code_intelligence::tests::real_lsp_tests::real_rust_analyzer_tools_start_lazily_navigate_and_reap",
+    "default_state": "explicitly ignored; native-server qualification requires an intentional invocation",
+    "assembly": [
+      "ManifestWorkspaceBackend",
+      "LocalCodeIntelligence",
+      "WorkspaceServices.with_code_intelligence",
+      "ToolRegistry",
+      "register_builtins"
+    ],
+    "temporary_fixture": "one dependency-free Rust crate; Cargo.toml and src/lib.rs with two local functions",
+    "qualified": true,
+    "limits": [
+      "The built-in RA readiness gate is a product qualification policy. Official serverStatus is primarily a user status extension, not a protocol guarantee that arbitrary semantic queries have nonempty results.",
+      "The native process was explicitly pinned with RUSTUP_TOOLCHAIN=1.97.1. The user default toolchain was not changed; an arbitrary unpinned host workspace selecting another toolchain is not qualified by this run.",
+      "Earlier retry-based native passes and the verbose INFO diagnostic run are causal diagnostics, not final qualifications or performance samples."
+    ],
+    "pre_fix_observed_checks": {
+      "provider_dormant_before_query": true,
+      "native_children_before_query": 0,
+      "native_children_after_outline": 1,
+      "outline_returned_expected_answer_symbol": true,
+      "definition_tool_exit_code": 0,
+      "definition_locations_empty": true,
+      "provider_shutdown_idempotent": true,
+      "captured_native_child_pid_absent_after_shutdown": true
+    },
+    "pre_fix_attempts": [
+      {
+        "command": "RUSTUP_TOOLCHAIN=1.97.1 cargo test --locked --offline -p a3s-code-core --lib real_rust_analyzer_tools_start_lazily_navigate_and_reap -- --ignored --exact tools::builtin::code_intelligence::tests::real_lsp_tests::real_rust_analyzer_tools_start_lazily_navigate_and_reap --test-threads=1",
+        "exit_code": 101,
+        "passed": 0,
+        "failed": 1,
+        "ignored": 0,
+        "filtered_out": 5137,
+        "test_seconds": 1.16,
+        "failure": "single immediate definition result did not contain expected local definition"
+      },
+      {
+        "command": "RUSTUP_TOOLCHAIN=1.97.1 cargo test --locked --offline -p a3s-code-core --lib tools::builtin::code_intelligence::tests::real_lsp_tests::real_rust_analyzer_tools_start_lazily_navigate_and_reap -- --ignored --exact --test-threads=1",
+        "exit_code": 101,
+        "passed": 0,
+        "failed": 1,
+        "ignored": 0,
+        "filtered_out": 5137,
+        "test_seconds": 10.9,
+        "retry_policy": "retry only successful empty navigation every 100 milliseconds, at most 10 seconds; errors are not retried",
+        "failure": "definition remained empty for the entire 10-second readiness deadline"
+      }
+    ],
+    "qualification_scope": "Core local provider + shared manifest + WorkspaceServices + registered tool, explicitly pinned official rust-analyzer; a single deterministic local definition request succeeds after typed readiness. No ACP/Work host end-to-end assertion.",
+    "final": {
+      "command": "RUSTUP_TOOLCHAIN=1.97.1 RA_LOG=warn A3S_CODE_LSP_SMOKE_EVIDENCE=/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/code-intelligence/native-qualification.json target/debug/deps/a3s_code_core-3b568ae695dcf868 --ignored --exact tools::builtin::code_intelligence::tests::real_lsp_tests::real_rust_analyzer_tools_start_lazily_navigate_and_reap --test-threads=1",
+      "exit_code": 0,
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 5147,
+      "test_seconds": 3.63,
+      "server_info": {
+        "name": "rust-analyzer",
+        "version": "1.97.1 (8bab26f4 2026-07-14)"
+      },
+      "definition_requests": 1,
+      "definition_locations": 1,
+      "outline_symbols": 2,
+      "generic_retry_or_discarded_warmup_request": false,
+      "lazy_direct_child_count_before": 0,
+      "lazy_direct_child_count_after": 1,
+      "shutdown_idempotence_and_owned_child_reaped": true,
+      "fixture_source_unchanged": true,
+      "ready_observed_micros": 3531594,
+      "outline_request_observed_micros": 3534065,
+      "definition_request_observed_micros": 3562128,
+      "definition_response_observed_micros": 3566352,
+      "ready_before_outline_request_micros": 2471,
+      "ready_before_definition_request_micros": 30534,
+      "time_semantics": "monotonic client IO completion observations, not native processing timestamps or a performance sample",
+      "trace": "native-qualification.json",
+      "all_streams_complete": true,
+      "qualified_source_snapshot": [
+        {
+          "path": "crates/code/core/src/agent_api/direct_tools/governed_tests.rs",
+          "sha256": "8929bbbd7dc760b6ffe080f1f369ce88d3f8ed9d4808d221c9949c4d4f260747"
+        },
+        {
+          "path": "crates/code/core/src/tools/builtin/code_intelligence/tests.rs",
+          "sha256": "c6fe2d22c3a3b80f374f183917233989ca53039407e167e0cd1449db711010f8"
+        },
+        {
+          "path": "crates/code/core/src/tools/builtin/code_intelligence/real_lsp_tests.rs",
+          "sha256": "108d561cc171ee9624d40443b8b78cf247bc6419cd32d4551b1b266492fb286b"
+        },
+        {
+          "path": "crates/code/core/src/code_intelligence/language_profile.rs",
+          "sha256": "53c02d35b0f34e092907f9df0fc52e41e14c7e066c20ecc29a78b7458779625b"
+        },
+        {
+          "path": "crates/code/core/src/code_intelligence/lsp/initialize.rs",
+          "sha256": "3efbf894ac8f0f4ebbea93d39a015c5b9cf30fb6cce75865ce2e0a50f35abcb1"
+        },
+        {
+          "path": "crates/code/core/src/code_intelligence/language_runtime.rs",
+          "sha256": "154ce79beeb93f1449f26e004ecef50abe83bd36eace257a93d1c02f94d535fc"
+        },
+        {
+          "path": "crates/code/core/src/code_intelligence/language_runtime/readiness.rs",
+          "sha256": "85ee1cde0195b1f7338e2b705feda5e68265846b8c7c867207cbb252c96dbaa0"
+        },
+        {
+          "path": "crates/code/core/src/code_intelligence/language_runtime/readiness_integration_tests.rs",
+          "sha256": "0093b00106c0004dcaf411ddd7ea817d083c4d8d1beca23dfa37108c180118bb"
+        },
+        {
+          "path": "crates/code/core/src/code_intelligence/language_runtime/protocol.rs",
+          "sha256": "3818b9673d82d332bd840e1af5f903d7800bc35b65ff2f9b3644ed02ca25065a"
+        },
+        {
+          "path": "crates/code/core/src/code_intelligence/language_runtime/diagnostic_runtime.rs",
+          "sha256": "f4e736985958c8c280e260c22b48752c2000309ec24ec202df6e608e689500da"
+        },
+        {
+          "path": "crates/code/core/src/code_intelligence/workspace_runtime/support.rs",
+          "sha256": "1f00c0979ecc8d55852db0eca5c16c8e1537edf1d2dabda77ab504981c537e4a"
+        },
+        {
+          "path": "crates/code/core/src/code_intelligence/lsp/process.rs",
+          "sha256": "d4ab5914bc3fad3e35e0b99255d39e9509b6b66b71c157aeded9a0ec9b3126d0"
+        },
+        {
+          "path": "crates/code/core/src/code_intelligence/lsp/process/test_trace.rs",
+          "sha256": "88845475c777d35a00e15b14a6b8b393b3afda40c9925735fe8ce1937863c033"
+        },
+        {
+          "path": "crates/code/core/tests/fixtures/code_intelligence_fake_lsp.rs",
+          "sha256": "a263d8c03d1f1a4142cc0e75c6ab26f430819bc862a493094970071250dd4481"
+        }
+      ]
+    }
+  },
+  "formatting": {
+    "edition": "2021",
+    "config": "skip_children=true",
+    "scope": "the 14 explicitly owned source/test files",
+    "scoped_check_exit_code": 0,
+    "git_diff_check_exit_code": 0,
+    "note": "Pinned scoped formatting preserves semantic dirty changes; code_intelligence/tests.rs pre-existing formatting was normalized as requested by root."
+  },
+  "warnings": [
+    "existing non-root workspace profile/patch warnings",
+    "existing linker __eh_frame compact-unwind size warning"
+  ],
+  "source_files": [
+    {
+      "path": "crates/code/core/src/agent_api/direct_tools/governed_tests.rs",
+      "sha256": "8929bbbd7dc760b6ffe080f1f369ce88d3f8ed9d4808d221c9949c4d4f260747"
+    },
+    {
+      "path": "crates/code/core/src/tools/builtin/code_intelligence/tests.rs",
+      "sha256": "c6fe2d22c3a3b80f374f183917233989ca53039407e167e0cd1449db711010f8"
+    },
+    {
+      "path": "crates/code/core/src/tools/builtin/code_intelligence/real_lsp_tests.rs",
+      "sha256": "108d561cc171ee9624d40443b8b78cf247bc6419cd32d4551b1b266492fb286b"
+    },
+    {
+      "path": "crates/code/core/src/code_intelligence/language_profile.rs",
+      "sha256": "53c02d35b0f34e092907f9df0fc52e41e14c7e066c20ecc29a78b7458779625b"
+    },
+    {
+      "path": "crates/code/core/src/code_intelligence/lsp/initialize.rs",
+      "sha256": "3efbf894ac8f0f4ebbea93d39a015c5b9cf30fb6cce75865ce2e0a50f35abcb1"
+    },
+    {
+      "path": "crates/code/core/src/code_intelligence/language_runtime.rs",
+      "sha256": "154ce79beeb93f1449f26e004ecef50abe83bd36eace257a93d1c02f94d535fc"
+    },
+    {
+      "path": "crates/code/core/src/code_intelligence/language_runtime/readiness.rs",
+      "sha256": "85ee1cde0195b1f7338e2b705feda5e68265846b8c7c867207cbb252c96dbaa0"
+    },
+    {
+      "path": "crates/code/core/src/code_intelligence/language_runtime/readiness_integration_tests.rs",
+      "sha256": "0093b00106c0004dcaf411ddd7ea817d083c4d8d1beca23dfa37108c180118bb"
+    },
+    {
+      "path": "crates/code/core/src/code_intelligence/language_runtime/protocol.rs",
+      "sha256": "3818b9673d82d332bd840e1af5f903d7800bc35b65ff2f9b3644ed02ca25065a"
+    },
+    {
+      "path": "crates/code/core/src/code_intelligence/language_runtime/diagnostic_runtime.rs",
+      "sha256": "f4e736985958c8c280e260c22b48752c2000309ec24ec202df6e608e689500da"
+    },
+    {
+      "path": "crates/code/core/src/code_intelligence/workspace_runtime/support.rs",
+      "sha256": "1f00c0979ecc8d55852db0eca5c16c8e1537edf1d2dabda77ab504981c537e4a"
+    },
+    {
+      "path": "crates/code/core/src/code_intelligence/lsp/process.rs",
+      "sha256": "d4ab5914bc3fad3e35e0b99255d39e9509b6b66b71c157aeded9a0ec9b3126d0"
+    },
+    {
+      "path": "crates/code/core/src/code_intelligence/lsp/process/test_trace.rs",
+      "sha256": "88845475c777d35a00e15b14a6b8b393b3afda40c9925735fe8ce1937863c033"
+    },
+    {
+      "path": "crates/code/core/tests/fixtures/code_intelligence_fake_lsp.rs",
+      "sha256": "a263d8c03d1f1a4142cc0e75c6ab26f430819bc862a493094970071250dd4481"
+    }
+  ],
+  "readiness_fix": {
+    "policy": "Only built-in rust-analyzer explicitly opts in to experimental.serverStatusNotification. health=ok and quiescent=true gates semantic startup and typed RPCs; warning/error/malformed/closed/no-signal/cancel are explicit failures.",
+    "official_primary_contract": "https://rust-analyzer.github.io/book/contributing/lsp-extensions.html#server-status",
+    "budget": "RA initialization preparation, initialization handshake and initial readiness share the original startup deadline; RA readiness waiting and each typed RPC share the original per-request timeout. No timeout constants or tool/model budgets increased.",
+    "ownership": "notification receiver exists before initialize; latest typed watch state retains early signals; process and notification closure are checked before Ready; startup failures use the existing shutdown/reap path; lazy WorkspaceRuntime owner remains unchanged.",
+    "other_profiles": "ordinary custom/fake Rust profiles and all other language profiles keep their prior protocol and settle behavior",
+    "red": {
+      "command": "cargo test --locked --offline -p a3s-code-core --lib rust_analyzer_cold_start_does_not_return_empty_success -- --test-threads=1",
+      "exit_code": 101,
+      "passed": 0,
+      "failed": 1,
+      "test_seconds": 2.22,
+      "failure": "successful empty navigation before the fake server emitted its delayed semantic-ready status; capability and process reaping assertions had already passed"
+    },
+    "full_hermetic_before_final_startup_budget_refinement": {
+      "command": "cargo test --locked --offline -p a3s-code-core --lib code_intelligence:: -- --test-threads=1 --skip built_in_clangd_answers_without_writing_into_the_workspace --skip built_in_basedpyright_answers_without_writing_into_the_workspace",
+      "exit_code": 0,
+      "passed": 135,
+      "failed": 0,
+      "ignored": 2,
+      "filtered_out": 5011,
+      "test_seconds": 40.49,
+      "ignored_explained": [
+        "existing fake soak",
+        "explicitly ignored native qualification test"
+      ],
+      "excluded_conditional_native_tests_not_passes": 2
+    },
+    "final_owning": {
+      "command": "cargo test --locked --offline -p a3s-code-core --lib readiness_integration_tests -- --test-threads=1",
+      "exit_code": 0,
+      "passed": 8,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 5140,
+      "test_seconds": 9.54,
+      "cases": [
+        "cold start never returns an early empty success",
+        "early signal retained, one navigation RPC",
+        "warning/error/malformed fail closed and reap",
+        "missing signal uses existing startup deadline and reaps",
+        "cancelled readiness wait reaps",
+        "workspace shutdown cancels pending owned startup and reaps",
+        "Ready cannot survive process exit or lost status channel",
+        "readiness wait and RPC share one request budget"
+      ]
+    },
+    "scope_assertion": {
+      "command": "RUSTUP_TOOLCHAIN=1.97.1 target/debug/deps/a3s_code_core-3b568ae695dcf868 --exact code_intelligence::language_profile::tests::built_in_commands_and_languages_are_explicit --test-threads=1",
+      "exit_code": 0,
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 5147,
+      "test_seconds": 0.02
+    },
+    "missing_status_fixture_note": "An initial 150ms test deadline expired during initialize itself. That test did not prove missing-status handling. It now verifies initialized was logged, uses a 2s fixture deadline, and returns within 3s without any production budget change.",
+    "diagnostic_artifacts": [
+      "native-diagnostics-01.json",
+      "native-diagnostics-02.json"
+    ],
+    "production_frozen": true,
+    "post_native_equivalent_lint_cleanup": {
+      "change": "RA-ready branch OR previously-settled branch share the same single navigation RPC; short-circuit evaluation preserves the original branch behavior",
+      "reason": "remove clippy if_same_then_else warning",
+      "native_not_repeated": true,
+      "focused_command": "cargo test --locked --offline -p a3s-code-core --lib rust_analyzer_cold_start_does_not_return_empty_success -- --test-threads=1",
+      "exit_code": 0,
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 5152,
+      "test_seconds": 3.56
+    }
+  },
+  "test_observation_seam": {
+    "scope": "cfg(test) exact canonical temporary-root registration only",
+    "retention_per_stream_bytes": 65536,
+    "observation_metadata_limit": 512,
+    "backpressure_or_truncation_changes_protocol_bytes": false,
+    "bounded_passthrough_test_passed_in_full_hermetic_suite": true,
+    "raw_stderr_info_run_generated_bytes": 58826127,
+    "info_run_not_a_performance_sample": true
+  },
+  "clippy_result_ref": "clippy.json"
+}

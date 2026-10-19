@@ -1,0 +1,123 @@
+{
+  "timestamp": "2026-10-19T21:12:05.166914+00:00",
+  "frontend_files": 15,
+  "native_files": 12,
+  "source_hash_checks": [
+    {
+      "path": "apps/work/src/renderer/components/composer/useToolApprovalComposerOverrides.ts",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/ComposerContext.ts",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/ComposerCore.tsx",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/__tests__/useToolApprovalComposerOverrides.test.ts",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/__tests__/ComposerCore.test.tsx",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/hooks/useTopicStreamStatus.ts",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/hooks/__tests__/useTopicAwaitingApproval.test.ts",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/pages/agents/useAgentChatRuntimeState.ts",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/pages/agents/__tests__/useAgentChatRuntimeState.test.tsx",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/data/studioAgentPlane.ts",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/data/__tests__/studioAgentPlane.test.ts",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/shared/ai/transport/stream.ts",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/shared/ipc/schemas/ai.ts",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/shared/ai/transport/index.ts",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/shared/types/studioExecution.ts",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/turns.rs",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/controllers.rs",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/events.rs",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/events_tests.rs",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/workbench_turns.rs",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/approval_recovery_tests.rs",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/approval_response_tests.rs",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/workbench_turns_tests.rs",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/turns_form_tests.rs",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/execution_status_tests.rs",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/message_delete_tests.rs",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/scheduled_recovery_tests.rs",
+      "matches": true
+    }
+  ],
+  "native_scoped_rustfmt_exit": 0,
+  "native_scoped_rustfmt_output": "",
+  "owned_diff_check_exit": 0,
+  "owned_diff_check_output": "",
+  "independent_review": "current native binding, stale response isolation, HTTP/SSE ABA, synchronous cached revocation, stop settlement path; cache finding repaired and reviewed",
+  "native_tests": "not executed on production repair: manifest selection failure retained in native-fix/build-blocker.json",
+  "T029_complete": false,
+  "new_model_VM_CUA_runs": 0
+}

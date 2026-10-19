@@ -1,5 +1,7 @@
 #[derive(Debug, thiserror::Error)]
 pub enum SqliteError {
+    #[error("SQL statement is empty")]
+    EmptyStatement,
     #[error("SQLite operation failed: {0}")]
     Database(#[from] tokio_rusqlite::rusqlite::Error),
     #[error("SQLite task failed: {0}")]

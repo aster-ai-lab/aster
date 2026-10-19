@@ -1,0 +1,58 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/event/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 29.53s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-c0d272b9e3c2afca)
+
+running 3 tests
+zhipu quota fixture: provider=openai status=429 streaming=false calls=3
+zhipu quota fixture: provider=zhipu status=429 streaming=false calls=3
+zhipu quota fixture: provider=zhipu status=429 streaming=false calls=1
+zhipu quota fixture: provider=zhipu status=429 streaming=true calls=1
+zhipu quota fixture: provider=openai status=429 streaming=true calls=3
+zhipu quota fixture: provider=zhipu status=429 streaming=true calls=3
+test llm::openai::tests::zhipu_quota::zhipu_1113_stops_both_transports_without_waiting ... ok
+zhipu quota fixture: provider=deepseek status=429 streaming=false calls=3
+zhipu quota fixture: provider=zhipu status=429 streaming=false calls=3
+zhipu quota fixture: provider=deepseek status=429 streaming=true calls=3
+zhipu quota fixture: provider=zhipu status=429 streaming=true calls=3
+zhipu quota fixture: provider=custom-zhipu status=429 streaming=false calls=3
+zhipu quota fixture: provider=zhipu status=429 streaming=false calls=3
+zhipu quota fixture: provider=custom-zhipu status=429 streaming=true calls=3
+zhipu quota fixture: provider=zhipu status=429 streaming=true calls=3
+zhipu quota fixture: provider=zhipu status=503 streaming=false calls=3
+zhipu quota fixture: provider=zhipu status=429 streaming=false calls=3
+zhipu quota fixture: provider=zhipu status=503 streaming=true calls=3
+zhipu quota fixture: provider=zhipu status=400 streaming=false calls=1
+zhipu quota fixture: provider=zhipu status=429 streaming=true calls=3
+zhipu quota fixture: provider=zhipu status=400 streaming=true calls=1
+test llm::openai::tests::zhipu_quota::zhipu_code_does_not_change_other_providers_or_other_statuses ... ok
+zhipu quota fixture: provider=zhipu status=429 streaming=false calls=3
+zhipu quota fixture: provider=zhipu status=429 streaming=true calls=3
+zhipu quota fixture: provider=zhipu status=429 streaming=false calls=3
+zhipu quota fixture: provider=zhipu status=429 streaming=true calls=3
+zhipu quota fixture: provider=zhipu status=429 streaming=false calls=3
+zhipu quota fixture: provider=zhipu status=429 streaming=true calls=3
+zhipu quota fixture: provider=zhipu status=429 streaming=false calls=3
+zhipu quota fixture: provider=zhipu status=429 streaming=true calls=3
+zhipu quota fixture: provider=zhipu status=429 streaming=false calls=3
+zhipu quota fixture: provider=zhipu status=429 streaming=true calls=3
+test llm::openai::tests::zhipu_quota::zhipu_transient_unknown_and_malformed_429_keep_existing_retries ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 5110 filtered out; finished in 0.01s
+

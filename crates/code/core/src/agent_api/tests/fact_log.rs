@@ -14,7 +14,9 @@ use crate::llm::{LlmClient, LlmResponse, Message, StreamEvent, TokenUsage, ToolD
 use tokio_util::sync::CancellationToken;
 
 mod child_policy;
+mod confirmation_snapshot;
 mod durable_source;
+mod execution_target;
 mod final_delivery;
 mod fork_admission;
 mod host_contract_prompt;
@@ -22,6 +24,9 @@ mod host_reports;
 mod loop_source;
 mod navigation;
 mod nested_governance;
+mod nested_shell_verification;
+mod program_failure_receipts;
+mod revalidation;
 mod sandbox_availability;
 mod work_policy;
 

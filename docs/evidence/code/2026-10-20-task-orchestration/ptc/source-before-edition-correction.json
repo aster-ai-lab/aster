@@ -1,0 +1,63 @@
+{
+  "schema": "aster.ptc.source.v1",
+  "capturedUtc": "2026-10-19T16:47:05.389507+00:00",
+  "head": "f4734c00425746d3b93298ab06ef562125899d93",
+  "scope": "Current PTC source files; shared working tree contains unrelated edits. No clean-tree or exact whole-workspace rebuild claim.",
+  "files": [
+    {
+      "path": "crates/code/core/src/tools/presentation.rs",
+      "bytes": 17212,
+      "sha256": "227985041a2e1c94bcc36610cf6260469c2c0bc8f799b52abd1084ad1beb79dd"
+    },
+    {
+      "path": "crates/code/core/src/tools/presentation_tests.rs",
+      "bytes": 957,
+      "sha256": "694ef8e625ad4d287a4c24d3fafdb529aa842937fd7de4b00686c70c681488f7"
+    },
+    {
+      "path": "crates/code/core/src/tools/program_tool.rs",
+      "bytes": 27908,
+      "sha256": "90403fb79f2199f7da7e1137017bbbd0ae344c1ffab4a52bb8693ba099fd99d0"
+    },
+    {
+      "path": "crates/code/core/src/tools/program_tool/tests.rs",
+      "bytes": 32138,
+      "sha256": "dad5cce80d8df7d1e46b78fe24de348ffd9f1dac6010c5901111825da43fd9ce"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log/nested_governance.rs",
+      "bytes": 17080,
+      "sha256": "5ed7d0d0249800f979f3cb3656267799056baf1758d6ae05bbd6e0880b7b67f0"
+    },
+    {
+      "path": "crates/code/core/src/agent/llm_invoker/fact_governance.rs",
+      "bytes": 20861,
+      "sha256": "805917098b0eacb776c9c12f4c1c44a40097507558e36fa6d2c9dafa0914b4a7"
+    },
+    {
+      "path": "crates/code/core/src/agent/llm_invoker/fact_governance/tests.rs",
+      "bytes": 23917,
+      "sha256": "3d83403467029e57e1ee1ddb9f9646d5cac3b10b91d84bcc451f277c8c2c5dff"
+    },
+    {
+      "path": "crates/code/core/src/fact_control/model_call.rs",
+      "bytes": 24156,
+      "sha256": "dc984e1b0c71fd16dc5fb8053fe59ecb40068cf174e82de7371a03c97f685c9e"
+    },
+    {
+      "path": "crates/code/core/src/agent/llm_invoker.rs",
+      "bytes": 50677,
+      "sha256": "f8332c757f9cb54f14a90a5fb7de9f027a2f1a1e178fc40be13534521e0b4bf8"
+    },
+    {
+      "path": "crates/code/core/tests/test_extensibility_real_llm.rs",
+      "bytes": 17334,
+      "sha256": "2f0bce04e88d4b5a66ec26a166f19bc1d897c0fa8ea25c3c8c90b815b8d722f4"
+    },
+    {
+      "path": "crates/code/core/tests/extensibility/metrics.rs",
+      "bytes": 15557,
+      "sha256": "220d66dba16ec2454acbce2b4561b49b13a53d4e2274267a2442769650ceb96b"
+    }
+  ]
+}

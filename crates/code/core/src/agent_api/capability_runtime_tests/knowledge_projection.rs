@@ -165,8 +165,8 @@ impl LlmClient for CheckpointKnowledgeCutoverClient {
                         role: "assistant".to_owned(),
                         content: vec![ContentBlock::ToolUse {
                             id: "checkpoint-search".to_owned(),
-                            name: "search_skills".to_owned(),
-                            input: serde_json::json!({"query": "checkpoint"}),
+                            name: "update_plan".to_owned(),
+                            input: serde_json::json!({"plan":[{"step":"checkpoint","status":"completed"}]}),
                         }],
                         reasoning_content: None,
                         transcript_text: None,

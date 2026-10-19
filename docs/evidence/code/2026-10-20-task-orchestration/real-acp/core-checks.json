@@ -1,0 +1,29 @@
+{
+  "schema": "aster.work-real-acp.core-checks.v1",
+  "checks": [
+    {
+      "command": "cargo test --locked --offline -p a3s-code-core --lib completion_attestor:: -- --nocapture",
+      "exitCode": 0,
+      "passed": 14,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/real-acp/failed-effects-core-final.log",
+      "logSha256": "eeace2a0f157ef05f1c5100066132f8643397889e5ef5950a98ced4567db1a35"
+    },
+    {
+      "command": "cargo test --locked --offline -p a3s-code-core --lib harness_loop:: -- --nocapture",
+      "exitCode": 0,
+      "passed": 60,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/real-acp/failed-effects-ledger-final.log",
+      "logSha256": "2892dd2aed6adae129f5975def4289d96627d03ea9fcd1bad606798b2a18bd23"
+    },
+    {
+      "command": "cargo test --locked --offline -p a3s-code-core --lib fact_control::receipts::tests::cache -- --nocapture",
+      "exitCode": 0,
+      "passed": 11,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/real-acp/failed-effects-fact-cache.log",
+      "logSha256": "1f93866eaaff219a8335bc674cb12c16aa391d637374fa75c8a092a4bcb9ca9f"
+    }
+  ],
+  "red": "failed-effects-cache-red.log",
+  "reviewer": "sandbox_speed",
+  "realIntegration": "pending final stable companion; individual passes retained separately"
+}

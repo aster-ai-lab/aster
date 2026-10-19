@@ -1,0 +1,353 @@
+cargo build --locked -p a3s-code-acp -p a3s-office-cli
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling a3s-effect v0.2.1 (/Users/roylin/code/aster/crates/effect)
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+warning: unused imports: `guest_agent_hello` and `host_runtime_version`
+  --> crates/code/core/src/sandbox/oci.rs:25:26
+   |
+25 | pub(crate) use version::{guest_agent_hello, host_runtime_version};
+   |                          ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `HOST_MISMATCH` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:10:7
+   |
+10 | const HOST_MISMATCH: &[u8] = b"guest agent version does not match the host runtime version";
+   |       ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `host_runtime_version` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:13:15
+   |
+13 | pub(crate) fn host_runtime_version(host: &[u8]) -> Option<&str> {
+   |               ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `guest_agent_hello` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:18:15
+   |
+18 | pub(crate) fn guest_agent_hello<'a>(agent: &'a [u8], architecture: &str) -> Option<&'a str> {
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: function `version_immediately_before` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:26:4
+   |
+26 | fn version_immediately_before<'a>(bytes: &'a [u8], marker: &[u8]) -> Option<&'a str> {
+   |    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `semver_ending_at` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:44:4
+   |
+44 | fn semver_ending_at(bytes: &[u8], end: usize) -> Option<&str> {
+   |    ^^^^^^^^^^^^^^^^
+
+   Compiling a3s-code-acp v9.1.4 (/Users/roylin/code/aster/crates/code/acp)
+warning: `a3s-code-core` (lib) generated 6 warnings (run `cargo fix --lib -p a3s-code-core` to apply 1 suggestion)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-acp` (bin "a3s-code-acp") generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 14.29s
+cargo build --locked -p aster-dream
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling aster-dream v0.1.0 (/Users/roylin/code/aster/apps/work/src-tauri)
+warning: function `upsert_instance_map` is never used
+   --> crates/boot/src/service_discovery/mod.rs:203:15
+    |
+203 | pub(crate) fn upsert_instance_map(
+    |               ^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `remove_instance_map` is never used
+   --> crates/boot/src/service_discovery/mod.rs:215:15
+    |
+215 | pub(crate) fn remove_instance_map(
+    |               ^^^^^^^^^^^^^^^^^^^
+
+warning: `a3s-boot` (lib) generated 2 warnings
+warning: aster-dream@0.1.0: no DOUBAO_/DOCHUB_* in /Users/roylin/code/aster/apps/work/src-tauri/../.env; packaged host will not embed search/document-parse defaults
+warning: unnecessary `unsafe` block
+    --> apps/work/src-tauri/src/workspace_browser.rs:1080:32
+     |
+1080 |                 let absolute = unsafe { request.URL() }.and_then(|url| {
+     |                                ^^^^^^ unnecessary `unsafe` block
+     |
+     = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default
+
+warning: unnecessary `unsafe` block
+    --> apps/work/src-tauri/src/workspace_browser.rs:1114:32
+     |
+1114 |                 let absolute = unsafe { request.URL() }.and_then(|url| {
+     |                                ^^^^^^ unnecessary `unsafe` block
+
+warning: method `ensure_builtin_tobot` is never used
+   --> apps/work/src-tauri/src/agent_plane/catalog.rs:329:12
+    |
+223 | impl SessionCatalog {
+    | ------------------- method in this implementation
+...
+329 |     pub fn ensure_builtin_tobot(&self) -> Result<Session, PlaneError> {
+    |            ^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: struct `PeerState` is never constructed
+  --> apps/work/src-tauri/src/agent_plane/edge_runtime.rs:31:8
+   |
+31 | struct PeerState {
+   |        ^^^^^^^^^
+
+warning: struct `BuiltinPeer` is never constructed
+  --> apps/work/src-tauri/src/agent_plane/edge_runtime.rs:35:12
+   |
+35 | pub struct BuiltinPeer {
+   |            ^^^^^^^^^^^
+
+warning: associated items `start`, `endpoint`, and `stop` are never used
+  --> apps/work/src-tauri/src/agent_plane/edge_runtime.rs:42:18
+   |
+41 | impl BuiltinPeer {
+   | ---------------- associated items in this implementation
+42 |     pub async fn start() -> Result<Self, String> {
+   |                  ^^^^^
+...
+69 |     pub fn endpoint(&self) -> String {
+   |            ^^^^^^^^
+...
+73 |     pub async fn stop(mut self) {
+   |                  ^^^^
+
+warning: function `admit_command` is never used
+  --> apps/work/src-tauri/src/agent_plane/edge_runtime.rs:81:10
+   |
+81 | async fn admit_command(
+   |          ^^^^^^^^^^^^^
+
+warning: function `page_events` is never used
+  --> apps/work/src-tauri/src/agent_plane/edge_runtime.rs:94:10
+   |
+94 | async fn page_events(
+   |          ^^^^^^^^^^^
+
+warning: function `admitted_prompt` is never used
+   --> apps/work/src-tauri/src/agent_plane/edge_runtime.rs:107:4
+    |
+107 | fn admitted_prompt(body: &Value) -> Result<String, ()> {
+    |    ^^^^^^^^^^^^^^^
+
+warning: method `stop` is never used
+   --> apps/work/src-tauri/src/agent_plane/edge_runtime.rs:252:18
+    |
+185 | impl PackageRun {
+    | --------------- method in this implementation
+...
+252 |     pub async fn stop(self) -> Result<(), String> {
+    |                  ^^^^
+
+warning: method `ticker_started` is never used
+  --> apps/work/src-tauri/src/agent_plane/tasks.rs:75:19
+   |
+33 | impl TaskService {
+   | ---------------- method in this implementation
+...
+75 |     pub(super) fn ticker_started(&self) -> bool {
+   |                   ^^^^^^^^^^^^^^
+
+warning: constant `INTERRUPTED_RUN` is never used
+    --> apps/work/src-tauri/src/agent_plane/turns.rs:3478:18
+     |
+3478 | pub(super) const INTERRUPTED_RUN: &str = INTERRUPTED_EXHAUSTED;
+     |                  ^^^^^^^^^^^^^^^
+
+warning: field `name` is never read
+   --> apps/work/src-tauri/src/authority.rs:151:5
+    |
+147 | pub struct StudioAuthority {
+    |            --------------- field in this struct
+...
+151 |     name: String,
+    |     ^^^^
+
+warning: method `name` is never used
+   --> apps/work/src-tauri/src/authority.rs:323:12
+    |
+160 | impl StudioAuthority {
+    | -------------------- method in this implementation
+...
+323 |     pub fn name(&self) -> &str {
+    |            ^^^^
+
+warning: field `http` is never read
+  --> apps/work/src-tauri/src/binary_tools.rs:49:5
+   |
+46 | struct BinaryState {
+   |        ----------- field in this struct
+...
+49 |     http: HttpSource,
+   |     ^^^^
+   |
+   = note: `BinaryState` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: function `installed_agent_entry` is never used
+    --> apps/work/src-tauri/src/capabilities.rs:1580:15
+     |
+1580 | pub(crate) fn installed_agent_entry(caps: &Path, slug: &str) -> io::Result<PathBuf> {
+     |               ^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `acp_session_servers` is never used
+    --> apps/work/src-tauri/src/capabilities.rs:2747:15
+     |
+2747 | pub(crate) fn acp_session_servers(root: &Path) -> Vec<Value> {
+     |               ^^^^^^^^^^^^^^^^^^^
+
+warning: function `installed_flow_specs` is never used
+    --> apps/work/src-tauri/src/capabilities.rs:2804:15
+     |
+2804 | pub(crate) fn installed_flow_specs(root: &Path) -> Vec<Value> {
+     |               ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `source_hash_ok` is never used
+    --> apps/work/src-tauri/src/capabilities.rs:2824:4
+     |
+2824 | fn source_hash_ok(value: &str) -> bool {
+     |    ^^^^^^^^^^^^^^
+
+warning: field `username` is never read
+  --> apps/work/src-tauri/src/crab_user.rs:66:9
+   |
+62 | pub struct IssuedSession {
+   |            ------------- field in this struct
+...
+66 |     pub username: String,
+   |         ^^^^^^^^
+   |
+   = note: `IssuedSession` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+
+warning: function `curl` is never used
+   --> apps/work/src-tauri/src/crab_user.rs:938:4
+    |
+938 | fn curl(
+    |    ^^^^
+
+warning: function `retrieve_passages` is never used
+  --> apps/work/src-tauri/src/local_documents.rs:92:8
+   |
+92 | pub fn retrieve_passages(raw_root: &str, query: &str) -> Vec<String> {
+   |        ^^^^^^^^^^^^^^^^^
+
+warning: function `query_tokens` is never used
+   --> apps/work/src-tauri/src/local_documents.rs:123:4
+    |
+123 | fn query_tokens(query: &str) -> Vec<String> {
+    |    ^^^^^^^^^^^^
+
+warning: function `collect_note_passages` is never used
+   --> apps/work/src-tauri/src/local_documents.rs:135:4
+    |
+135 | fn collect_note_passages(
+    |    ^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated function `open_at` is never used
+  --> apps/work/src-tauri/src/member_session.rs:76:12
+   |
+53 | impl MemberSessionStore {
+   | ----------------------- associated function in this implementation
+...
+76 |     pub fn open_at(path: Option<PathBuf>) -> Self {
+   |            ^^^^^^^
+
+warning: constant `CREATE_NO_WINDOW` is never used
+  --> apps/work/src-tauri/src/no_window.rs:29:7
+   |
+29 | const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+   |       ^^^^^^^^^^^^^^^^
+
+warning: function `search_paths` is never used
+   --> apps/work/src-tauri/src/plugin_okf.rs:436:4
+    |
+436 | fn search_paths(dir: &Path, query: &str) -> io::Result<Vec<String>> {
+    |    ^^^^^^^^^^^^
+
+warning: function `gateway_credentials` is never used
+   --> apps/work/src-tauri/src/providers.rs:617:8
+    |
+617 | pub fn gateway_credentials(token: &str) -> ProviderCredentials {
+    |        ^^^^^^^^^^^^^^^^^^^
+
+warning: function `signed_in_gateway_credentials` is never used
+   --> apps/work/src-tauri/src/providers.rs:626:8
+    |
+626 | pub fn signed_in_gateway_credentials(
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `first_chat_model_for_key` is never used
+   --> apps/work/src-tauri/src/providers.rs:709:15
+    |
+709 | pub(crate) fn first_chat_model_for_key(key: &str) -> Option<String> {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: fields `skill`, `ui`, `title`, and `steps` are never read
+  --> apps/work/src-tauri/src/review_plugin.rs:82:9
+   |
+81 | pub struct ReconcileReport {
+   |            --------------- fields in this struct
+82 |     pub skill: bool,
+   |         ^^^^^
+83 |     pub ui: bool,
+   |         ^^
+84 |     pub title: String,
+   |         ^^^^^
+85 |     pub steps: Vec<&'static str>,
+   |         ^^^^^
+
+warning: function `review_facade_script` is never used
+  --> apps/work/src-tauri/src/review_plugin.rs:97:8
+   |
+97 | pub fn review_facade_script() -> String {
+   |        ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `cached_picker_http` is never used
+   --> apps/work/src-tauri/src/review_plugin.rs:438:4
+    |
+438 | fn cached_picker_http() -> (u16, &'static str, &'static str, Vec<u8>) {
+    |    ^^^^^^^^^^^^^^^^^^
+
+warning: function `verified_picker` is never used
+   --> apps/work/src-tauri/src/review_plugin.rs:462:8
+    |
+462 | pub fn verified_picker() -> Option<(PathBuf, String)> {
+    |        ^^^^^^^^^^^^^^^
+
+warning: function `hit_window_drag` is never used
+  --> apps/work/src-tauri/src/window_drag.rs:14:15
+   |
+14 | pub(crate) fn hit_window_drag(x: f64, y: f64, drag: &[CssRect], block: &[CssRect]) -> bool {
+   |               ^^^^^^^^^^^^^^^
+
+warning: function `hit_window_chrome` is never used
+  --> apps/work/src-tauri/src/window_drag.rs:24:15
+   |
+24 | pub(crate) fn hit_window_chrome(
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: `aster-dream` (lib) generated 36 warnings
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 12.65s

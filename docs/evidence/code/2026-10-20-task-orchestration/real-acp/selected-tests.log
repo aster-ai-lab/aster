@@ -1,0 +1,6 @@
+agent_plane::turns::local_acp_tests::delivery::program::real_acp_program_cancel_after_nested_read_preserves_cancelled_terminal: test
+agent_plane::turns::local_acp_tests::delivery::program::real_acp_program_code_profile_delivers_nested_native_artifact_and_saved_bytes: test
+agent_plane::turns::local_acp_tests::delivery::program::real_acp_program_refused_approval_has_no_nested_write_or_success: test
+agent_plane::turns::local_acp_tests::delivery::program::real_acp_program_required_check_failure_never_certifies_native_write: test
+
+4 tests, 0 benchmarks

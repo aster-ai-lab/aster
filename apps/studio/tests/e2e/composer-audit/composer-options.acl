@@ -1,0 +1,79 @@
+suite "studio-composer-options" {
+  version = 1
+
+  scenario "independent-policies-and-keyboard" {
+    name = "工作页选项独立切换并恢复焦点"
+    surface = "web"
+    timeout_ms = 60000
+
+    navigate "open-work" { url = "http://127.0.0.1:4537/windows/main/index.html" }
+    wait "composer-ready" { visible = css("[data-ui~='workbench.composer'] .composer-tiptap") }
+    fill "draft" {
+      target = css("[data-ui~='workbench.composer'] .composer-tiptap")
+      value = "A3S Test 输入框审查追溯验证"
+    }
+    focus "options-trigger" { target = css("[data-ui~='workbench.composer'] button[aria-label='更多选项']") }
+    press "open-options" { key = "Enter" }
+    wait "options-ready" { visible = css("[data-workbench-menu='options']") }
+    expect "review-default-off" { unchecked = css("input[role='switch'][aria-label='自动审查']") }
+    expect "trace-default-off" { unchecked = css("input[role='switch'][aria-label='产物追溯']") }
+    check "review-on" { target = css("input[role='switch'][aria-label='自动审查']") }
+    expect "review-on-state" { checked = css("input[role='switch'][aria-label='自动审查']") }
+    expect "trace-remains-off" { unchecked = css("input[role='switch'][aria-label='产物追溯']") }
+    check "trace-on" { target = css("input[role='switch'][aria-label='产物追溯']") }
+    expect "trace-on-state" { checked = css("input[role='switch'][aria-label='产物追溯']") }
+    screenshot "both-on" { path = "screenshots/both-on.png" }
+    press "close-menu" { key = "Escape" }
+    expect "trigger-settled-closed" {
+      collapsed = role("button", "更多选项")
+      stable_for_ms = 300
+      sample_interval_ms = 50
+    }
+    expect "menu-closed" { visible = css("body:not(:has([data-workbench-menu='options']))") }
+    expect "focus-restored" { focused = css("[data-ui~='workbench.composer'] button[aria-label='更多选项']") }
+    expect "draft-kept" { text = "A3S Test 输入框审查追溯验证" }
+    focus "options-trigger-again" { target = css("[data-ui~='workbench.composer'] button[aria-label='更多选项']") }
+    press "reopen-options" { key = "Enter" }
+    wait "options-ready-again" { visible = css("[data-workbench-menu='options']") }
+    uncheck "review-off" { target = css("input[role='switch'][aria-label='自动审查']") }
+    expect "review-off-state" { unchecked = css("input[role='switch'][aria-label='自动审查']") }
+    expect "trace-remains-on" { checked = css("input[role='switch'][aria-label='产物追溯']") }
+    uncheck "trace-off" { target = css("input[role='switch'][aria-label='产物追溯']") }
+    expect "trace-off-state" { unchecked = css("input[role='switch'][aria-label='产物追溯']") }
+    press "close-again" { key = "Escape" }
+    expect "reset-trigger-settled-closed" {
+      collapsed = role("button", "更多选项")
+      stable_for_ms = 300
+      sample_interval_ms = 50
+    }
+    expect "reset-menu-closed" { visible = css("body:not(:has([data-workbench-menu='options']))") }
+  }
+
+  scenario "narrow-options" {
+    name = "窄窗选项可见且不丢草稿"
+    surface = "web"
+    timeout_ms = 60000
+
+    viewport "narrow" { width = 960 height = 640 scale = 1 }
+    navigate "open-work" { url = "http://127.0.0.1:4537/windows/main/index.html" }
+    wait "composer-ready" { visible = css("[data-ui~='workbench.composer'] .composer-tiptap") }
+    fill "narrow-draft" {
+      target = css("[data-ui~='workbench.composer'] .composer-tiptap")
+      value = "最小窗口正文"
+    }
+    focus "options-trigger" { target = css("[data-ui~='workbench.composer'] button[aria-label='更多选项']") }
+    press "open-options" { key = "Enter" }
+    wait "options-ready" { visible = css("[data-workbench-menu='options']") }
+    expect "review-visible" { visible = css("[data-composer-option-row]:has(input[aria-label='自动审查'])") }
+    expect "trace-visible" { visible = css("[data-composer-option-row]:has(input[aria-label='产物追溯'])") }
+    screenshot "narrow-menu" { path = "screenshots/narrow-menu.png" }
+    press "close" { key = "Escape" }
+    expect "trigger-settled-closed" {
+      collapsed = role("button", "更多选项")
+      stable_for_ms = 300
+      sample_interval_ms = 50
+    }
+    expect "menu-dismissed" { visible = css("body:not(:has([data-workbench-menu='options']))") }
+    expect "narrow-draft-kept" { text = "最小窗口正文" }
+  }
+}

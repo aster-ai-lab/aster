@@ -1,0 +1,503 @@
+{
+  "schema": "aster.t027.safe-fact-summary.v1",
+  "reviewer": "runtime_evidence",
+  "observed_at_utc": "2026-10-19T20:49:26.158115+00:00",
+  "host_session_id": "01a155cf-02f1-7478-8105-070a97a1507c",
+  "core_session_id": "591d55d3-ea0e-42c5-8036-ae475c7881fc",
+  "source": {
+    "path": "/Users/roylin/code/tasks/T01-t027-cua-01/.a3s/sessions/2026-10-20/591d55d3-ea0e-42c5-8036-ae475c7881fc/591d55d3-ea0e-42c5-8036-ae475c7881fc.jsonl",
+    "bytes": 755932,
+    "sha256": "34e1ea695f145d94d62cb22d03d9221dec0cbe1fe630f9bf163843a033d8c73a",
+    "record_count": 125,
+    "last_sequence": 125,
+    "matches_pre_exit_checkpoint": true
+  },
+  "record_type_counts": {
+    "a3s.standing-context": 2,
+    "a3s.work-policy.admitted": 1,
+    "user.message": 1,
+    "context.sections": 1,
+    "model.turn": 30,
+    "tool.prepared": 33,
+    "tool.result": 33,
+    "confirmation.answered": 24
+  },
+  "model_turns": {
+    "count": 30,
+    "kind_counts": {
+      "tool": 30
+    },
+    "last_sequence": 125,
+    "last_kind": "tool",
+    "last_prompt_tokens": 65077,
+    "request_tool_name_counts": {
+      "ls": 2,
+      "read": 6,
+      "bash": 18,
+      "write": 6,
+      "edit": 2
+    },
+    "final_model_text_recorded": false
+  },
+  "tokens": {
+    "persisted_field": "model.turn.payload.prompt_tokens",
+    "values": [
+      19956,
+      23401,
+      23610,
+      24492,
+      25189,
+      34125,
+      34571,
+      34849,
+      35283,
+      45968,
+      46899,
+      47804,
+      51036,
+      51222,
+      52016,
+      52293,
+      53276,
+      53558,
+      53958,
+      56175,
+      57157,
+      59721,
+      60288,
+      60431,
+      61472,
+      63910,
+      64012,
+      64274,
+      64980,
+      65077
+    ],
+    "sum": 1441003,
+    "last": 65077,
+    "limit": "unknown",
+    "total_reported_or_billed_tokens": null,
+    "output_or_cache_usage": null,
+    "interpretation": "Sum of the persisted prompt_tokens scalars only, including repeated context across turns. This is not the matrix token ledger, a billing total, or proof of a configured cap."
+  },
+  "tool_receipts": {
+    "prepared": 33,
+    "results": 33,
+    "prepared_without_result": 0,
+    "name_counts": {
+      "ls": 2,
+      "read": 6,
+      "bash": 17,
+      "write": 6,
+      "edit": 2
+    },
+    "outcome_counts": {
+      "succeeded": 29,
+      "denied": 2,
+      "failed": 2
+    },
+    "status_distribution": [
+      {
+        "name": "ls",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "sandboxed": null,
+        "count": 2
+      },
+      {
+        "name": "read",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "sandboxed": null,
+        "count": 6
+      },
+      {
+        "name": "bash",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "sandboxed": true,
+        "count": 13
+      },
+      {
+        "name": "bash",
+        "outcome": "denied",
+        "exit_code": null,
+        "sandboxed": null,
+        "count": 2
+      },
+      {
+        "name": "write",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "sandboxed": null,
+        "count": 6
+      },
+      {
+        "name": "bash",
+        "outcome": "failed",
+        "exit_code": 1,
+        "sandboxed": true,
+        "count": 2
+      },
+      {
+        "name": "edit",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "sandboxed": null,
+        "count": 2
+      }
+    ],
+    "all_effect_observations_complete": true,
+    "receipts": [
+      {
+        "sequence": 9,
+        "name": "ls",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": null
+      },
+      {
+        "sequence": 10,
+        "name": "read",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": null
+      },
+      {
+        "sequence": 13,
+        "name": "ls",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": null
+      },
+      {
+        "sequence": 19,
+        "name": "read",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": null
+      },
+      {
+        "sequence": 20,
+        "name": "read",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": null
+      },
+      {
+        "sequence": 21,
+        "name": "read",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": null
+      },
+      {
+        "sequence": 22,
+        "name": "read",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": null
+      },
+      {
+        "sequence": 26,
+        "name": "bash",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": true
+      },
+      {
+        "sequence": 30,
+        "name": "bash",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": true
+      },
+      {
+        "sequence": 33,
+        "name": "bash",
+        "outcome": "denied",
+        "exit_code": null,
+        "ok": false,
+        "effect_completeness": "complete",
+        "sandboxed": null
+      },
+      {
+        "sequence": 37,
+        "name": "bash",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": true
+      },
+      {
+        "sequence": 41,
+        "name": "bash",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": true
+      },
+      {
+        "sequence": 45,
+        "name": "write",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": null
+      },
+      {
+        "sequence": 49,
+        "name": "bash",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": true
+      },
+      {
+        "sequence": 53,
+        "name": "bash",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": true
+      },
+      {
+        "sequence": 57,
+        "name": "write",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": null
+      },
+      {
+        "sequence": 61,
+        "name": "bash",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": true
+      },
+      {
+        "sequence": 65,
+        "name": "write",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": null
+      },
+      {
+        "sequence": 69,
+        "name": "bash",
+        "outcome": "failed",
+        "exit_code": 1,
+        "ok": false,
+        "effect_completeness": "complete",
+        "sandboxed": true
+      },
+      {
+        "sequence": 72,
+        "name": "read",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": null
+      },
+      {
+        "sequence": 76,
+        "name": "edit",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": null
+      },
+      {
+        "sequence": 80,
+        "name": "bash",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": true
+      },
+      {
+        "sequence": 84,
+        "name": "write",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": null
+      },
+      {
+        "sequence": 88,
+        "name": "bash",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": true
+      },
+      {
+        "sequence": 92,
+        "name": "write",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": null
+      },
+      {
+        "sequence": 96,
+        "name": "bash",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": true
+      },
+      {
+        "sequence": 100,
+        "name": "bash",
+        "outcome": "failed",
+        "exit_code": 1,
+        "ok": false,
+        "effect_completeness": "complete",
+        "sandboxed": true
+      },
+      {
+        "sequence": 104,
+        "name": "bash",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": true
+      },
+      {
+        "sequence": 108,
+        "name": "edit",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": null
+      },
+      {
+        "sequence": 112,
+        "name": "bash",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": true
+      },
+      {
+        "sequence": 116,
+        "name": "bash",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": true
+      },
+      {
+        "sequence": 120,
+        "name": "write",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "ok": true,
+        "effect_completeness": "complete",
+        "sandboxed": null
+      },
+      {
+        "sequence": 124,
+        "name": "bash",
+        "outcome": "denied",
+        "exit_code": null,
+        "ok": false,
+        "effect_completeness": "complete",
+        "sandboxed": null
+      }
+    ]
+  },
+  "approvals": {
+    "answers": 24,
+    "answer_values": {
+      "True": 24
+    },
+    "pending_decisions": [
+      {
+        "model_sequence": 125,
+        "name": "bash",
+        "needs_confirmation": true,
+        "has_confirmation_answer": false,
+        "has_prepared": false,
+        "has_result": false
+      }
+    ],
+    "persisted_pending_does_not_prove_live_oneshot": true
+  },
+  "denied_native_tool_error_classification": [
+    {
+      "sequence": 33,
+      "tool": "bash",
+      "classification": "effective_arguments_frozen_permission_refusal",
+      "error_bytes": 106,
+      "error_sha256": "7b6363e8b49dc28e833e0088be4dc991d465b079bc1c6fab0a6c369cbf7fe0ee",
+      "raw_error_copied": false
+    },
+    {
+      "sequence": 124,
+      "tool": "bash",
+      "classification": "duplicate_call_guard",
+      "error_bytes": 114,
+      "error_sha256": "858723d1cdc3dab44843997b2b085c083ed79610ae0238e7e5c83b346a804af9",
+      "raw_error_copied": false
+    }
+  ],
+  "timing": {
+    "native_absolute_record_timestamps": [],
+    "native_task_wall_from_this_log": null
+  },
+  "termination": {
+    "native_log_terminal_or_forced_stop_recorded": false,
+    "host_execution_status_after_reopen": "error",
+    "assistant_status_after_reopen": "error",
+    "normal_model_completion": false,
+    "assessment_outcome": "failed_host_approval_recovery_interrupted"
+  },
+  "scope": {
+    "one_authorized_fact_log_only": true,
+    "prompt_reasoning_inputs_or_full_outputs_copied": false,
+    "raw_denied_error_copied": false,
+    "model_tests_or_vm_executed": false
+  }
+}

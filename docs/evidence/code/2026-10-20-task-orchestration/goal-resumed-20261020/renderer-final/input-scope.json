@@ -1,0 +1,42 @@
+{
+  "source_roots": [
+    "apps/work/src",
+    "apps/work/scripts",
+    "apps/work/packages",
+    "apps/work/vendor/packages/form/src",
+    "apps/work/vendor/packages/office/dist",
+    "crates/flow/packages/ui"
+  ],
+  "explicit_files": [
+    "apps/work/rsbuild.config.ts",
+    "apps/work/package.json",
+    "apps/work/pnpm-lock.yaml",
+    "apps/work/pnpm-workspace.yaml",
+    "apps/work/logo.png",
+    "apps/work/tsconfig.json",
+    "apps/work/tsconfig.web.json",
+    "apps/work/tsconfig.node.json",
+    "apps/work/.studio-renderer/preference-defaults.json",
+    "apps/work/vendor/packages/form/package.json",
+    "apps/work/vendor/packages/office/package.json",
+    "apps/work/node_modules/@rsbuild/core/package.json",
+    "apps/work/node_modules/@rsbuild/core/bin/rsbuild.js",
+    "apps/work/node_modules/@rsbuild/core/dist/626.js",
+    "apps/work/node_modules/@rsbuild/plugin-react/package.json",
+    "apps/work/node_modules/@embedpdf/pdfium/dist/pdfium.wasm",
+    "apps/work/node_modules/@embedpdf/fonts-sc/fonts/NotoSansHans-Regular.otf",
+    "apps/work/patches/monaco-editor@0.56.0.patch"
+  ],
+  "excluded_directories": [
+    ".cache",
+    ".git",
+    ".studio-renderer",
+    ".turbo",
+    "coverage",
+    "node_modules",
+    "playwright-report",
+    "test-results"
+  ],
+  "env_files_excluded": true,
+  "installed_dependencies": "lockfiles plus explicitly listed CLI/plugin/copied-asset inputs; not a whole-node_modules content freeze"
+}

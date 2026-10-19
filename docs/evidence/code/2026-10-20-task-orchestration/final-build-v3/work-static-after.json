@@ -1,0 +1,10 @@
+{
+  "apps/work/logo.png": {
+    "sha256": "f33b3fc51c503065d4199679f3290a6a057aab23c1cf92ab093d133b83c6ccaa",
+    "bytes": 64779
+  },
+  "apps/work/build/icon.icns": {
+    "sha256": "8bb605d6b8e785abf502ba42f7357246812404c2b50830f6dbfb760324a5902c",
+    "bytes": 540535
+  }
+}

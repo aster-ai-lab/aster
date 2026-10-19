@@ -1,0 +1,8 @@
+
+running 3 tests
+test agent_plane::turns::question_route_tests::a_boolean_approval_never_selects_an_unknown_or_question_option ... ok
+test agent_plane::turns::question_route_tests::aborting_a_question_rejects_the_stale_answer_and_preserves_paused_status ... ok
+test agent_plane::turns::question_route_tests::choices_and_free_text_round_trip_without_permission_approval_even_in_bypass_mode ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 840 filtered out; finished in 0.85s
+

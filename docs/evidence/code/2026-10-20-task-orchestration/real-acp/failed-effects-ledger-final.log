@@ -1,0 +1,85 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.33s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 60 tests
+test harness_loop::receipt_restore_tests::an_empty_cache_does_not_invent_debt_or_change_default_projection ... ok
+test harness_loop::background_receipt_tests::background_log_can_reproject_after_conservative_checkpoint_restore ... ok
+test harness_loop::background_receipt_tests::full_log_replay_preserves_later_foreground_after_an_unprojected_background ... ok
+test harness_loop::receipt_tests::observer_provenance_and_receipt_replay_order_do_not_change_workspace_identity ... ok
+test harness_loop::receipt_restore_tests::cached_child_snapshots_and_local_incomplete_flags_need_their_own_provenance ... ok
+test harness_loop::receipt_tests::file_type_mode_and_bytes_each_bind_the_effect_identity ... ok
+test harness_loop::receipt_restore_tests::later_log_uncertainty_and_current_state_survive_a_stale_checkpoint ... ok
+test harness_loop::background_receipt_tests::incomplete_invalid_and_external_background_observations_remain_debt ... ok
+test harness_loop::receipt_restore_tests::child_debt_requires_exact_committed_terminal_and_never_a_local_scan_alone ... ok
+test harness_loop::tests::bash_without_changed_paths_is_not_a_mutation ... ok
+test harness_loop::receipt_restore_tests::exact_durable_terminal_settles_a_cached_nongit_child_without_a_local_registry ... ok
+test harness_loop::tests::bound_step_closure_is_not_rewritten_as_narrative ... ok
+test harness_loop::tests::bound_passed_report_allows_verified_terminal ... ok
+test harness_loop::tests::completion_waiver_rejects_blank_digest_or_reason ... ok
+test harness_loop::tests::attach_observation_wraps_non_object_and_none_metadata ... ok
+test harness_loop::receipt_tests::legacy_cache_retains_its_original_digest_until_typed_observation ... ok
+test harness_loop::receipt_tests::authoritative_after_state_supersedes_stale_bytes_and_survives_cache_round_trip ... ok
+test harness_loop::tests::assistant_prose_does_not_satisfy_a_mutation ... ok
+test harness_loop::receipt_restore_tests::absent_original_log_cannot_forgive_cached_unknown_or_verified_paths ... ok
+test harness_loop::tests::empty_required_checks_are_not_a_pass ... ok
+test harness_loop::tests::failed_write_path_without_changed_paths_is_not_a_mutation ... ok
+test harness_loop::tests::fold_different_digests_is_distinct ... ok
+test harness_loop::receipt_restore_tests::exact_original_unknown_covers_cached_debt_without_claiming_completion ... ok
+test harness_loop::tests::fold_same_digest_prefers_verified_over_waived ... ok
+test harness_loop::receipt_restore_tests::cache_cannot_borrow_unrelated_uncertainty_or_invent_a_missing_claim ... ok
+test harness_loop::background_receipt_tests::background_fact_projection_binds_real_bytes_mode_and_exact_fact_key_once ... ok
+test harness_loop::receipt_restore_tests::cache_coverage_binds_background_fact_identity_and_rejects_legacy_or_bad_digest ... ok
+test harness_loop::receipt_tests::repeated_batch_observation_keeps_a_real_file_verification_bound ... ok
+test harness_loop::tests::fold_same_digest_waivers_keeps_first_bound_terminal ... ok
+test harness_loop::tests::content_digest_for_path_misses_unrelated_records ... ok
+test harness_loop::tests::failed_wrapper_with_changed_paths_opens_the_gate ... ok
+test harness_loop::tests::diagnostic_appears_on_the_next_model_visible_tool_result ... ok
+test harness_loop::tests::incomplete_observation_is_not_closed_by_a_waiver_of_a_partial_digest ... ok
+test harness_loop::tests::model_visible_observation_covers_empty_and_already_tagged_output ... ok
+test harness_loop::tests::nested_program_write_opens_the_gate ... ok
+test harness_loop::tests::nested_batch_write_opens_the_gate ... ok
+test harness_loop::tests::nested_tool_calls_skip_failed_and_nameless_entries ... ok
+test harness_loop::tests::push_ignores_empty_paths ... ok
+test harness_loop::tests::observe_workspace_child_ignores_blank_and_missing_markers ... ok
+test harness_loop::tests::plan_claim_without_digest_is_ordinary ... ok
+test harness_loop::tests::read_only_tool_does_not_open_the_gate ... ok
+test harness_loop::tests::mutation_feedback_gives_a_literal_path_check_without_granting_verification ... ok
+test harness_loop::tests::report_binds_pass_rejects_digest_mismatch_and_empty_required ... ok
+test harness_loop::tests::retrieval_index_stamp_is_not_a_source_mutation ... ok
+test harness_loop::tests::stale_observation_omits_items ... ok
+test harness_loop::tests::skill_changed_paths_open_the_gate ... ok
+test harness_loop::tests::open_external_observation_still_continues_once ... ok
+test harness_loop::receipt_restore_tests::cache_coverage_requires_every_receipt_and_exact_observed_state ... ok
+test harness_loop::tests::unavailable_observation_does_not_satisfy_the_gate ... ok
+test harness_loop::tests::unbound_mutation_does_not_spend_a_continuation_the_model_cannot_close ... ok
+test harness_loop::tests::unbound_mutation_digest_reads_back_the_gate_message ... ok
+test harness_loop::tests::verification_context_disappears_only_after_this_effect_is_verified ... ok
+test harness_loop::tests::waiver_is_distinct_and_does_not_transfer_to_another_digest ... ok
+test harness_loop::tests::unseen_workspace_path_opens_the_gate_without_a_second_digest ... ok
+test harness_loop::tests::unbound_mutation_gate_names_a_bash_check_that_closes_it ... ok
+test harness_loop::tests::absorb_open_children_skips_nongit_without_snapshots ... ok
+test harness_loop::receipt_tests::typed_projection_preserves_real_space_unicode_control_and_backslash_paths ... ok
+Initialized empty Git repository in /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpkVp23z/.git/
+test harness_loop::tests::background_workspace_child_blocks_narrative_until_its_delta_is_observed ... ok
+[main (root-commit) aae14a6] i
+ 1 file changed, 1 insertion(+)
+ create mode 100644 README.md
+test harness_loop::tests::observe_workspace_child_records_settled_paths_and_dedupes_open_markers ... ok
+test harness_loop::tests::absorb_open_children_deltas_git_backed_markers ... ok
+
+test result: ok. 60 passed; 0 failed; 0 ignored; 0 measured; 5094 filtered out; finished in 0.13s
+

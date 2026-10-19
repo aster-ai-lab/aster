@@ -1,0 +1,155 @@
+import { Button, InfoTooltip, Input, RowFlex } from '@a3s-lab/ui'
+import type { FC } from 'react'
+import { useTranslation } from 'react-i18next'
+
+import { usePreference } from '@data/hooks/usePreference'
+import { loggerService } from '@logger'
+import {
+  SettingDivider,
+  SettingGroup,
+  SettingRow,
+  SettingRowTitle,
+  SettingTitle
+} from '@renderer/components/SettingsPrimitives'
+import { useTheme } from '@renderer/hooks/useTheme'
+import { toast } from '@renderer/services/toast'
+import { openExternalWebsite } from '@renderer/services/website'
+
+import { dataCheckButtonClassName, dataFieldClassName } from './dataChrome'
+
+const logger = loggerService.withContext('SiyuanSettings')
+
+const SiyuanSettings: FC = () => {
+  const [siyuanApiUrl, setSiyuanApiUrl] = usePreference('data.integration.siyuan.api_url')
+  const [siyuanToken, setSiyuanToken] = usePreference('data.integration.siyuan.token')
+  const [siyuanBoxId, setSiyuanBoxId] = usePreference('data.integration.siyuan.box_id')
+  const [siyuanRootPath, setSiyuanRootPath] = usePreference('data.integration.siyuan.root_path')
+
+  const { t } = useTranslation()
+  const { theme } = useTheme()
+
+  const handleApiUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    void setSiyuanApiUrl(e.target.value)
+  }
+
+  const handleTokenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    void setSiyuanToken(e.target.value)
+  }
+
+  const handleBoxIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    void setSiyuanBoxId(e.target.value)
+  }
+
+  const handleRootPathChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    void setSiyuanRootPath(e.target.value)
+  }
+
+  const handleSiyuanHelpClick = () => {
+    void openExternalWebsite('https://docs.cherry-ai.com/advanced-basic/siyuan')
+  }
+
+  const handleCheckConnection = async () => {
+    try {
+      if (!siyuanApiUrl || !siyuanToken) {
+        toast.error(t('settings.data.siyuan.check.empty_config'))
+        return
+      }
+
+      const response = await fetch(`${siyuanApiUrl}/api/notebook/lsNotebooks`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Token ${siyuanToken}`
+        }
+      })
+
+      if (!response.ok) {
+        toast.error(t('settings.data.siyuan.check.fail'))
+        return
+      }
+
+      const data = await response.json()
+      if (data.code !== 0) {
+        toast.error(t('settings.data.siyuan.check.fail'))
+        return
+      }
+
+      toast.success(t('settings.data.siyuan.check.success'))
+    } catch (error) {
+      logger.error('Check Siyuan connection failed:', error as Error)
+      toast.error(t('settings.data.siyuan.check.error'))
+    }
+  }
+
+  return (
+    <SettingGroup theme={theme}>
+      <SettingTitle>{t('settings.data.siyuan.title')}</SettingTitle>
+      <SettingDivider />
+      <SettingRow id="setting-data-siyuan-api-url" className="scroll-mt-6">
+        <SettingRowTitle>{t('settings.data.siyuan.api_url')}</SettingRowTitle>
+        <RowFlex className="max-w-full min-w-0 items-center gap-1.25">
+          <Input
+            type="text"
+            value={siyuanApiUrl || ''}
+            onChange={handleApiUrlChange}
+            placeholder={t('settings.data.siyuan.api_url_placeholder')}
+            className={dataFieldClassName}
+          />
+        </RowFlex>
+      </SettingRow>
+      <SettingDivider />
+      <SettingRow id="setting-data-siyuan-token" className="scroll-mt-6">
+        <SettingRowTitle className="flex items-center">
+          <span>{t('settings.data.siyuan.token.label')}</span>
+          <InfoTooltip
+            content={t('settings.data.siyuan.token.help')}
+            placement="left"
+            iconProps={{ className: 'text-text-2 cursor-pointer ml-1' }}
+            onClick={handleSiyuanHelpClick}
+          />
+        </SettingRowTitle>
+        <RowFlex className="max-w-full min-w-0 items-center gap-1.25">
+          <Input
+            type="password"
+            value={siyuanToken || ''}
+            onChange={handleTokenChange}
+            onBlur={handleTokenChange}
+            placeholder={t('settings.data.siyuan.token_placeholder')}
+            className={dataFieldClassName}
+          />
+          <Button onClick={handleCheckConnection} variant="outline" className={dataCheckButtonClassName}>
+            {t('settings.data.siyuan.check.button')}
+          </Button>
+        </RowFlex>
+      </SettingRow>
+      <SettingDivider />
+      <SettingRow>
+        <SettingRowTitle>{t('settings.data.siyuan.box_id')}</SettingRowTitle>
+        <RowFlex className="max-w-full min-w-0 items-center gap-1.25">
+          <Input
+            type="text"
+            value={siyuanBoxId || ''}
+            onChange={handleBoxIdChange}
+            placeholder={t('settings.data.siyuan.box_id_placeholder')}
+            className={dataFieldClassName}
+          />
+        </RowFlex>
+      </SettingRow>
+      <SettingDivider />
+      <SettingRow>
+        <SettingRowTitle>{t('settings.data.siyuan.root_path')}</SettingRowTitle>
+        <RowFlex className="max-w-full min-w-0 items-center gap-1.25">
+          <Input
+            type="text"
+            value={siyuanRootPath || ''}
+            onChange={handleRootPathChange}
+            placeholder={t('settings.data.siyuan.root_path_placeholder')}
+            className={dataFieldClassName}
+          />
+        </RowFlex>
+      </SettingRow>
+    </SettingGroup>
+  )
+}
+
+export default SiyuanSettings

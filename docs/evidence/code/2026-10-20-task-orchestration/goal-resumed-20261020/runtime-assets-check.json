@@ -1,0 +1,12 @@
+{
+  "root": "/Users/roylin/code/aster/target/t013-assets-hardware",
+  "regular_files": 907,
+  "symlinks": 353,
+  "symlink_comparison": "SHA256(os.fsencode(raw readlink target)); no-follow",
+  "differences": [],
+  "extra": [],
+  "missing": [],
+  "wall_seconds": 0.21689704199999998,
+  "passed": true,
+  "previous_invalid_check": "runtime-assets-check-invalid-comparison.json compared raw symlink target against manifest SHA; checker error, no asset mutation"
+}

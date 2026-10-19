@@ -1024,8 +1024,9 @@ fn dispatch(
             root,
             shim,
             system_image_manifest,
+            exit_on_stdin_eof,
         } => command_future!({
-            macos_hvf_service::run(root, shim, system_image_manifest).await?;
+            macos_hvf_service::run(root, shim, system_image_manifest, exit_on_stdin_eof).await?;
             Ok(ExitCode::SUCCESS)
         }),
         #[cfg(all(target_os = "macos", target_arch = "aarch64"))]

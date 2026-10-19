@@ -1,0 +1,17 @@
+extension "a3s/schedule-task" {
+  schema_version = 3
+  version        = "1.0.0"
+  route          = "schedule-task"
+  requires_use   = ">=0.3.0, <0.4.0"
+  actions        = ["read"]
+
+  repository {
+    url      = "https://a3s.dev/packages/skills/schedule-task"
+    revision = "0000000000000000000000000000000000000000"
+  }
+
+  skill "schedule-task" {
+    path     = "SKILL.md"
+    optional = false
+  }
+}

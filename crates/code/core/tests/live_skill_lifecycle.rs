@@ -49,7 +49,7 @@ async fn live_skill_add_remove_is_visible_and_restores_the_session_shadow() {
         .expect("session");
 
     let base = session
-        .tool("search_skills", json!({"query": "report"}))
+        .tool("Skill", json!({"skill_name": "report"}))
         .await
         .expect("base search");
     assert!(base.output.contains("Base report guidance"));
@@ -59,7 +59,7 @@ async fn live_skill_add_remove_is_visible_and_restores_the_session_shadow() {
         .expect("add live skill");
     assert_eq!(session.skill_names(), vec!["report".to_string()]);
     let live = session
-        .tool("search_skills", json!({"query": "report"}))
+        .tool("Skill", json!({"skill_name": "report"}))
         .await
         .expect("live search");
     assert!(live.output.contains("Live report guidance"));
@@ -69,7 +69,7 @@ async fn live_skill_add_remove_is_visible_and_restores_the_session_shadow() {
         .add_skill(skill("report", "Upgraded live report guidance"))
         .expect("upgrade live skill");
     let upgraded = session
-        .tool("search_skills", json!({"query": "report"}))
+        .tool("Skill", json!({"skill_name": "report"}))
         .await
         .expect("upgraded search");
     assert!(upgraded.output.contains("Upgraded live report guidance"));
@@ -77,7 +77,7 @@ async fn live_skill_add_remove_is_visible_and_restores_the_session_shadow() {
 
     session.remove_skill("report").expect("remove live skill");
     let restored = session
-        .tool("search_skills", json!({"query": "report"}))
+        .tool("Skill", json!({"skill_name": "report"}))
         .await
         .expect("restored search");
     assert!(restored.output.contains("Base report guidance"));

@@ -1,0 +1,307 @@
+/*
+ * Anchored popups rise at most 0.5rem on the CSS translate property.
+ * Do not animate transform or filter. transform replaces the popper
+ * position, and filter adds a layer.
+ */
+
+@keyframes a3s-popup-from-above {
+  from {
+    opacity: 0;
+    translate: 0 -0.5rem;
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes a3s-popup-from-below {
+  from {
+    opacity: 0;
+    translate: 0 0.5rem;
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes a3s-popup-from-left {
+  from {
+    opacity: 0;
+    translate: -0.5rem 0;
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes a3s-popup-from-right {
+  from {
+    opacity: 0;
+    translate: 0.5rem 0;
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes a3s-popup-leave-above {
+  from {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  to {
+    opacity: 0;
+    translate: 0 -0.5rem;
+  }
+}
+
+@keyframes a3s-popup-leave-below {
+  from {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  to {
+    opacity: 0;
+    translate: 0 0.5rem;
+  }
+}
+
+@keyframes a3s-popup-leave-left {
+  from {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  to {
+    opacity: 0;
+    translate: -0.5rem 0;
+  }
+}
+
+@keyframes a3s-popup-leave-right {
+  from {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  to {
+    opacity: 0;
+    translate: 0.5rem 0;
+  }
+}
+
+@keyframes a3s-popup-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes a3s-popup-fade-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes a3s-drawer-in {
+  from {
+    opacity: 0;
+    scale: 0.98;
+  }
+
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes a3s-drawer-out {
+  from {
+    opacity: 1;
+    scale: 1;
+  }
+
+  to {
+    opacity: 0;
+    scale: 0.98;
+  }
+}
+
+@layer components {
+  [data-slot='dropdown-menu-content']:not([data-side]),
+  [data-slot='dropdown-menu-sub-content']:not([data-side]),
+  [data-slot='context-menu-content']:not([data-side]),
+  [data-slot='context-menu-sub-content']:not([data-side]),
+  [data-slot='popover-content']:not([data-side]),
+  [data-slot='select-content']:not([data-side]),
+  [data-slot='hover-card-content']:not([data-side]),
+  [data-slot='tooltip-content']:not([data-side]) {
+    visibility: hidden;
+  }
+
+  [data-slot='dropdown-menu-content'][data-side='bottom'][data-state='open'],
+  [data-slot='dropdown-menu-sub-content'][data-side='bottom'][data-state='open'],
+  [data-slot='context-menu-content'][data-side='bottom'][data-state='open'],
+  [data-slot='context-menu-sub-content'][data-side='bottom'][data-state='open'],
+  [data-slot='popover-content'][data-side='bottom'][data-state='open'],
+  [data-slot='select-content'][data-side='bottom'][data-state='open'],
+  [data-slot='hover-card-content'][data-side='bottom'][data-state='open'],
+  [data-slot='tooltip-content'][data-side='bottom'][data-state*='open'] {
+    animation: a3s-popup-from-above 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  [data-slot='dropdown-menu-content'][data-side='top'][data-state='open'],
+  [data-slot='dropdown-menu-sub-content'][data-side='top'][data-state='open'],
+  [data-slot='context-menu-content'][data-side='top'][data-state='open'],
+  [data-slot='context-menu-sub-content'][data-side='top'][data-state='open'],
+  [data-slot='popover-content'][data-side='top'][data-state='open'],
+  [data-slot='select-content'][data-side='top'][data-state='open'],
+  [data-slot='hover-card-content'][data-side='top'][data-state='open'],
+  [data-slot='tooltip-content'][data-side='top'][data-state*='open'] {
+    animation: a3s-popup-from-below 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  [data-slot='dropdown-menu-content'][data-side='right'][data-state='open'],
+  [data-slot='dropdown-menu-sub-content'][data-side='right'][data-state='open'],
+  [data-slot='context-menu-content'][data-side='right'][data-state='open'],
+  [data-slot='context-menu-sub-content'][data-side='right'][data-state='open'],
+  [data-slot='popover-content'][data-side='right'][data-state='open'],
+  [data-slot='select-content'][data-side='right'][data-state='open'],
+  [data-slot='hover-card-content'][data-side='right'][data-state='open'],
+  [data-slot='tooltip-content'][data-side='right'][data-state*='open'] {
+    animation: a3s-popup-from-left 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  [data-slot='dropdown-menu-content'][data-side='left'][data-state='open'],
+  [data-slot='dropdown-menu-sub-content'][data-side='left'][data-state='open'],
+  [data-slot='context-menu-content'][data-side='left'][data-state='open'],
+  [data-slot='context-menu-sub-content'][data-side='left'][data-state='open'],
+  [data-slot='popover-content'][data-side='left'][data-state='open'],
+  [data-slot='select-content'][data-side='left'][data-state='open'],
+  [data-slot='hover-card-content'][data-side='left'][data-state='open'],
+  [data-slot='tooltip-content'][data-side='left'][data-state*='open'] {
+    animation: a3s-popup-from-right 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  [data-slot='dropdown-menu-content'][data-side='bottom'][data-state='closed'],
+  [data-slot='dropdown-menu-sub-content'][data-side='bottom'][data-state='closed'],
+  [data-slot='context-menu-content'][data-side='bottom'][data-state='closed'],
+  [data-slot='context-menu-sub-content'][data-side='bottom'][data-state='closed'],
+  [data-slot='popover-content'][data-side='bottom'][data-state='closed'],
+  [data-slot='select-content'][data-side='bottom'][data-state='closed'],
+  [data-slot='hover-card-content'][data-side='bottom'][data-state='closed'],
+  [data-slot='tooltip-content'][data-side='bottom'][data-state='closed'] {
+    animation: a3s-popup-leave-above 200ms cubic-bezier(0.4, 0, 1, 1) both;
+  }
+
+  [data-slot='dropdown-menu-content'][data-side='top'][data-state='closed'],
+  [data-slot='dropdown-menu-sub-content'][data-side='top'][data-state='closed'],
+  [data-slot='context-menu-content'][data-side='top'][data-state='closed'],
+  [data-slot='context-menu-sub-content'][data-side='top'][data-state='closed'],
+  [data-slot='popover-content'][data-side='top'][data-state='closed'],
+  [data-slot='select-content'][data-side='top'][data-state='closed'],
+  [data-slot='hover-card-content'][data-side='top'][data-state='closed'],
+  [data-slot='tooltip-content'][data-side='top'][data-state='closed'] {
+    animation: a3s-popup-leave-below 200ms cubic-bezier(0.4, 0, 1, 1) both;
+  }
+
+  [data-slot='dropdown-menu-content'][data-side='right'][data-state='closed'],
+  [data-slot='dropdown-menu-sub-content'][data-side='right'][data-state='closed'],
+  [data-slot='context-menu-content'][data-side='right'][data-state='closed'],
+  [data-slot='context-menu-sub-content'][data-side='right'][data-state='closed'],
+  [data-slot='popover-content'][data-side='right'][data-state='closed'],
+  [data-slot='select-content'][data-side='right'][data-state='closed'],
+  [data-slot='hover-card-content'][data-side='right'][data-state='closed'],
+  [data-slot='tooltip-content'][data-side='right'][data-state='closed'] {
+    animation: a3s-popup-leave-left 200ms cubic-bezier(0.4, 0, 1, 1) both;
+  }
+
+  [data-slot='dropdown-menu-content'][data-side='left'][data-state='closed'],
+  [data-slot='dropdown-menu-sub-content'][data-side='left'][data-state='closed'],
+  [data-slot='context-menu-content'][data-side='left'][data-state='closed'],
+  [data-slot='context-menu-sub-content'][data-side='left'][data-state='closed'],
+  [data-slot='popover-content'][data-side='left'][data-state='closed'],
+  [data-slot='select-content'][data-side='left'][data-state='closed'],
+  [data-slot='hover-card-content'][data-side='left'][data-state='closed'],
+  [data-slot='tooltip-content'][data-side='left'][data-state='closed'] {
+    animation: a3s-popup-leave-right 200ms cubic-bezier(0.4, 0, 1, 1) both;
+  }
+
+  [data-slot='drawer-overlay'][data-state='open'] {
+    animation: a3s-popup-fade-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  [data-slot='drawer-overlay'][data-state='closed'] {
+    animation: a3s-popup-fade-out 200ms cubic-bezier(0.4, 0, 1, 1) both;
+  }
+
+  .ui-search-select__panel--shown,
+  .a3s-popup-rise:not([data-state='closed']) {
+    animation: a3s-popup-from-below 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .a3s-popup-rise[data-state='closed'] {
+    animation: a3s-popup-leave-below 200ms cubic-bezier(0.4, 0, 1, 1) both;
+  }
+
+  /* Phone bottom sheets keep the library slide. Every other edge, and desktop, stays put. */
+  [data-slot='drawer-content']:not([data-vaul-drawer-direction='bottom']) {
+    transform: none !important;
+  }
+
+  [data-slot='drawer-content']:not([data-vaul-drawer-direction='bottom'])[data-state='open'] {
+    animation: a3s-drawer-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  [data-slot='drawer-content']:not([data-vaul-drawer-direction='bottom'])[data-state='closed'] {
+    animation: a3s-drawer-out 200ms cubic-bezier(0.4, 0, 1, 1) both;
+  }
+
+  @media (min-width: 640px) {
+    [data-slot='drawer-content'][data-vaul-drawer-direction='bottom'] {
+      transform: none !important;
+    }
+
+    [data-slot='drawer-content'][data-vaul-drawer-direction='bottom'][data-state='open'] {
+      animation: a3s-drawer-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    [data-slot='drawer-content'][data-vaul-drawer-direction='bottom'][data-state='closed'] {
+      animation: a3s-drawer-out 200ms cubic-bezier(0.4, 0, 1, 1) both;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-slot='dropdown-menu-content'],
+    [data-slot='dropdown-menu-sub-content'],
+    [data-slot='context-menu-content'],
+    [data-slot='context-menu-sub-content'],
+    [data-slot='popover-content'],
+    [data-slot='select-content'],
+    [data-slot='hover-card-content'],
+    [data-slot='tooltip-content'],
+    [data-slot='drawer-overlay'],
+    [data-slot='drawer-content'],
+    .ui-search-select__panel--shown,
+    .a3s-popup-rise {
+      animation: none;
+    }
+  }
+}

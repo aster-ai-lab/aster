@@ -1,0 +1,7 @@
+{
+  "name": "review-text-clean",
+  "source": "text",
+  "required": [],
+  "excluded": [],
+  "ambiguous": false
+}

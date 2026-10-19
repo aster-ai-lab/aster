@@ -1,0 +1,148 @@
+{
+  "schema": "aster.ptc-visibility-clippy.v1",
+  "generated_at": "2026-10-19T17:42:29.924496+00:00",
+  "command": [
+    "cargo",
+    "clippy",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-code-core",
+    "--lib",
+    "--tests",
+    "--message-format=json"
+  ],
+  "exit_code": 0,
+  "diagnostics": [
+    {
+      "level": "warning",
+      "code": "clippy::manual_range_contains",
+      "message": "manual `!RangeInclusive::contains` implementation",
+      "files": [
+        "crates/oci-runtime/crates/core/src/hardware_vm.rs"
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "clippy::manual_is_multiple_of",
+      "message": "manual implementation of `.is_multiple_of()`",
+      "files": [
+        "crates/oci-runtime/crates/core/src/hardware_vm.rs"
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "clippy::derivable_impls",
+      "message": "this `impl` can be derived",
+      "files": [
+        "crates/common/src/privacy.rs"
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "clippy::unnecessary_sort_by",
+      "message": "consider using `sort_by_key`",
+      "files": [
+        "crates/common/src/privacy.rs"
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "unused_imports",
+      "message": "unused imports: `guest_agent_hello` and `host_runtime_version`",
+      "files": [
+        "crates/code/core/src/sandbox/oci.rs"
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "dead_code",
+      "message": "constant `HOST_MISMATCH` is never used",
+      "files": [
+        "crates/code/core/src/sandbox/oci/version.rs"
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "dead_code",
+      "message": "function `host_runtime_version` is never used",
+      "files": [
+        "crates/code/core/src/sandbox/oci/version.rs"
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "dead_code",
+      "message": "function `guest_agent_hello` is never used",
+      "files": [
+        "crates/code/core/src/sandbox/oci/version.rs"
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "dead_code",
+      "message": "function `version_immediately_before` is never used",
+      "files": [
+        "crates/code/core/src/sandbox/oci/version.rs"
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "dead_code",
+      "message": "function `semver_ending_at` is never used",
+      "files": [
+        "crates/code/core/src/sandbox/oci/version.rs"
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "clippy::too_many_arguments",
+      "message": "this function has too many arguments (8/7)",
+      "files": [
+        "crates/code/core/src/agent/tool_completion_runtime.rs"
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "clippy::too_many_arguments",
+      "message": "this function has too many arguments (8/7)",
+      "files": [
+        "crates/code/core/src/agent/tool_completion_runtime.rs"
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "clippy::err_expect",
+      "message": "called `.err().expect()` on a `Result` value",
+      "files": [
+        "crates/code/core/src/agent_api/session_sandbox.rs"
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "clippy::let_unit_value",
+      "message": "this let-binding has unit value",
+      "files": [
+        "crates/code/core/src/sandbox/oci/tests.rs"
+      ]
+    }
+  ],
+  "owned_paths": [
+    "crates/code/core/src/agent/llm_turn.rs",
+    "crates/code/core/src/agent/llm_invoker/fact_governance.rs",
+    "crates/code/core/src/agent_api/tests/fact_log/nested_governance.rs"
+  ],
+  "owned_diagnostics": [],
+  "stderr_summary": [
+    "warning: profiles for the non root package will be ignored, specify profiles at the workspace root:",
+    "warning: profiles for the non root package will be ignored, specify profiles at the workspace root:",
+    "warning: patch for the non root package will be ignored, specify patch at the workspace root:",
+    "    Checking a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)",
+    "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 57.13s"
+  ],
+  "source_sha256": {
+    "crates/code/core/src/agent/llm_turn.rs": "9b384b5195637afec7d81fb14b7b5ace647b315e7e9adbcda21624e47a7df639",
+    "crates/code/core/src/agent/llm_invoker/fact_governance.rs": "3a741a980a7cf87702f297ad2dcd3f1995adfca582747c7257fc7f9cf43821c6",
+    "crates/code/core/src/agent_api/tests/fact_log/nested_governance.rs": "e60f8aa815a462ced107c6bb17d136a93e3b31af43fe2bcf9820d0a783f80dbe"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "schema": "aster.t027.owned-runtime-observation.v1",
+  "root_acp_pid": 4033,
+  "observation_seconds": 22.0703794589499,
+  "samples": 213,
+  "observed_binaries": [
+    {
+      "pid": 7097,
+      "path": "/Users/roylin/code/aster/target/t013-assets-hardware/a3s-oci",
+      "first_observed_after_seconds": 4.474877542001195,
+      "sha256": "90e6a3e1c365948a659de6703c47af7f8c0ca413987ed8200aabcd72687e7779"
+    },
+    {
+      "pid": 7116,
+      "path": "/Users/roylin/code/aster/target/t013-assets-hardware/a3s-oci-krun-shim",
+      "first_observed_after_seconds": 5.360328166978434,
+      "sha256": "11d1e608df61b08433b7bb0834953b2cfd517e5a0d0a9c1e93f977301bc7ea0a"
+    }
+  ],
+  "scope": "Bounded read-only observation during the existing approved Bash; no task replay or command injection."
+}

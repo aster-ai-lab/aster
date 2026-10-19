@@ -18,6 +18,7 @@ async-trait = {workspace = true}
 rusqlite = {workspace = true}
 serde_json = {workspace = true}
 serde = "1"
+sha2 = {workspace = true}
 tokio = {version = "1", features = ["rt-multi-thread", "macros", "sync", "io-std", "io-util", "process", "time"]}
 tokio-util = {version = "0.7", features = ["compat"]}
 tracing = {workspace = true}
@@ -26,7 +27,14 @@ uuid = {version = "1", features = ["v4"]}
 url = {workspace = true}
 a3s-okf = {path = "../../okf"}
 a3s-acl = {path = "../../acl"}
+a3s-office = {path = "../../office/crates/core"}
+a3s-code-mermaid = {path = "../../terminal/crates/codegen/a3s-code-mermaid"}
+cap-std = "=4.0.2"
+cap-fs-ext = "=4.0.2"
+quick-xml = "0.38"
+tempfile = {workspace = true}
 a3s-use-reconcile = {path = "../../use/reconcile"}
+a3s-use-bge = {path = "../../bge", default-features = false, features = ["bge-m3"]}
 a3s-code-core = {default-features = true, features = ["headless-search"], path = "../core"}
 
 

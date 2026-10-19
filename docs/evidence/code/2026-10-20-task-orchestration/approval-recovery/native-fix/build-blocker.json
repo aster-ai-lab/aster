@@ -1,0 +1,48 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "aster-dream",
+    "--lib",
+    "approval_recovery_tests",
+    "--",
+    "--test-threads=1"
+  ],
+  "cwd": "/Users/roylin/code/aster",
+  "exit_code": 101,
+  "wall_seconds": 0.255624333,
+  "stdout": "",
+  "stderr": "warning: profiles for the non root package will be ignored, specify profiles at the workspace root:\npackage:   /Users/roylin/code/aster/apps/gateway/Cargo.toml\nworkspace: /Users/roylin/code/aster/Cargo.toml\nwarning: profiles for the non root package will be ignored, specify profiles at the workspace root:\npackage:   /Users/roylin/code/aster/crates/sentry/Cargo.toml\nworkspace: /Users/roylin/code/aster/Cargo.toml\nwarning: patch for the non root package will be ignored, specify patch at the workspace root:\npackage:   /Users/roylin/code/aster/crates/use/Cargo.toml\nworkspace: /Users/roylin/code/aster/Cargo.toml\nerror: no matching package named `a3s-flow` found\nlocation searched: /Users/roylin/code/aster/crates/flow\nrequired by package `aster-dream v0.1.1 (/Users/roylin/code/aster/apps/work/src-tauri)`\nnote: offline mode (via `--offline`) can sometimes cause surprising resolution failures\nhelp: if this error is too confusing you may wish to retry without `--offline`\n",
+  "tests_executed": false,
+  "classification": "build graph failure, not behavioral RED or GREEN",
+  "git_head": "39832b698c544632c7580d9e3a67af4496e36cb9",
+  "manifests": [
+    {
+      "path": "Cargo.toml",
+      "sha256": "c168549adf409c6ac137bc62983c318c4d05ba673d6ca9e145b09e59c8279e72"
+    },
+    {
+      "path": "Cargo.lock",
+      "sha256": "f31c45c0018bc684492cf4917597c3e900d7854c7a125d33d6d6c29e263673a0"
+    },
+    {
+      "path": "apps/work/src-tauri/Cargo.toml",
+      "sha256": "cb22b9244d4d3be92b10ca18b7dc4596e2110b8817b6fa32aed0e38f45231442"
+    },
+    {
+      "path": "apps/studio/src-tauri/Cargo.toml",
+      "sha256": "8a226ac086e9f2e5505b1d9b841f721e08edfb9d9686a748ec433f1983374d3c"
+    },
+    {
+      "path": "crates/flow/Cargo.toml",
+      "sha256": "f68a5d1d0dc2e960644928f7547c2cfdaa65968677507e54acc9599714fdd927"
+    },
+    {
+      "path": "crates/flow-v2/Cargo.toml",
+      "sha256": "da0f9c548c34b746ad75b2aafcd9f1aafe076a6ff9f0b9d0ec8e460581367b03"
+    }
+  ]
+}

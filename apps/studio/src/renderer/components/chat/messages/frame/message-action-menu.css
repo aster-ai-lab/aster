@@ -1,0 +1,199 @@
+/* Message toolbar and its menus. Unlayered so these metrics beat shared button utilities. */
+.message-action-button {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  min-height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #3f3f3f;
+  box-shadow: none;
+  transition:
+    background-color 150ms ease-out,
+    color 150ms ease-out;
+}
+
+.message-action-button svg {
+  width: 14px;
+  height: 14px;
+  color: currentColor;
+}
+
+.message-action-button svg:not([stroke-width='0']) {
+  stroke-width: 1.7;
+}
+
+.message-action-button:not(:disabled) {
+  cursor: pointer;
+}
+
+.message-action-button:not(:disabled):hover,
+.message-action-button:not(:disabled):active,
+.message-action-button.is-active,
+.message-action-button[data-state='open'],
+.message-action-button[aria-expanded='true'] {
+  background: #f2f3f5;
+  color: #171717;
+}
+
+.message-action-button:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.message-action-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.message-action-menu {
+  /* Background WebViews can suspend popup animation and delay menu cleanup indefinitely. */
+  animation: none;
+  -webkit-app-region: no-drag;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border: 1px solid #ececec;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #171717;
+  padding: 4px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.menu-submenu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 28rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.menu-submenu-list::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+  background: transparent;
+}
+
+.message-action-menu [data-slot='dropdown-menu-item'],
+.message-action-menu [data-slot='dropdown-menu-sub-trigger'] {
+  height: 36px;
+  min-height: 36px;
+  border-radius: 8px;
+  padding: 0 10px;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 20px;
+  color: #3f3f3f;
+}
+
+.message-action-menu [data-slot='dropdown-menu-item'] > span,
+.message-action-menu [data-slot='dropdown-menu-sub-trigger'] > span {
+  gap: 10px;
+}
+
+.message-action-menu [data-slot='dropdown-menu-item']:focus,
+.message-action-menu [data-slot='dropdown-menu-item'][data-highlighted],
+.message-action-menu [data-slot='dropdown-menu-sub-trigger']:focus,
+.message-action-menu [data-slot='dropdown-menu-sub-trigger'][data-highlighted] {
+  background: #f7f7f7;
+  color: #171717;
+  font-weight: 400;
+}
+
+.message-action-menu [data-slot='dropdown-menu-sub-trigger'][data-state='open'] {
+  background: #f2f3f5;
+  color: #171717;
+  font-weight: 500;
+}
+
+.message-action-menu [data-slot='dropdown-menu-item'][data-variant='destructive'],
+.message-action-menu [data-slot='dropdown-menu-item'][data-variant='destructive']:focus,
+.message-action-menu [data-slot='dropdown-menu-item'][data-variant='destructive'][data-highlighted] {
+  background: transparent;
+  color: #3f3f3f;
+}
+
+.message-action-menu [data-slot='dropdown-menu-item'][data-variant='destructive']:focus,
+.message-action-menu [data-slot='dropdown-menu-item'][data-variant='destructive'][data-highlighted] {
+  background: #f7f7f7;
+  color: #171717;
+}
+
+.message-action-menu [data-slot='dropdown-menu-item'][data-disabled],
+.message-action-menu [data-slot='dropdown-menu-sub-trigger'][data-disabled] {
+  opacity: 0.4;
+}
+
+.message-action-menu [data-slot='dropdown-menu-item'] svg,
+.message-action-menu [data-slot='dropdown-menu-sub-trigger'] svg {
+  width: 16px;
+  height: 16px;
+  color: currentColor;
+  stroke-width: 1.7;
+}
+
+.message-action-menu [data-slot='dropdown-menu-separator'] {
+  height: 1px;
+  margin: 2px 8px;
+  background: #ececec;
+}
+
+:is(html.dark, body.dark) .message-action-button {
+  color: #d4d4d4;
+}
+
+:is(html.dark, body.dark) .message-action-button:not(:disabled):hover,
+:is(html.dark, body.dark) .message-action-button:not(:disabled):active,
+:is(html.dark, body.dark) .message-action-button.is-active,
+:is(html.dark, body.dark) .message-action-button[data-state='open'],
+:is(html.dark, body.dark) .message-action-button[aria-expanded='true'] {
+  background: #2c2c2c;
+  color: #f5f5f5;
+}
+
+:is(html.dark, body.dark) .message-action-button:focus-visible {
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.16);
+}
+
+:is(html.dark, body.dark) .message-action-menu {
+  border-color: #2a2a2c;
+  background: #171718;
+  color: #f2f2f3;
+}
+
+:is(html.dark, body.dark) .message-action-menu [data-slot='dropdown-menu-item'],
+:is(html.dark, body.dark) .message-action-menu [data-slot='dropdown-menu-sub-trigger'],
+:is(html.dark, body.dark) .message-action-menu [data-slot='dropdown-menu-item'][data-variant='destructive'] {
+  color: #d4d4d4;
+}
+
+:is(html.dark, body.dark) .message-action-menu [data-slot='dropdown-menu-item']:focus,
+:is(html.dark, body.dark) .message-action-menu [data-slot='dropdown-menu-item'][data-highlighted],
+:is(html.dark, body.dark) .message-action-menu [data-slot='dropdown-menu-sub-trigger']:focus,
+:is(html.dark, body.dark) .message-action-menu [data-slot='dropdown-menu-sub-trigger'][data-highlighted],
+:is(html.dark, body.dark) .message-action-menu [data-slot='dropdown-menu-sub-trigger'][data-state='open'],
+:is(html.dark, body.dark) .message-action-menu [data-slot='dropdown-menu-item'][data-variant='destructive']:focus,
+:is(html.dark, body.dark)
+  .message-action-menu
+  [data-slot='dropdown-menu-item'][data-variant='destructive'][data-highlighted] {
+  background: #2c2c2c;
+  color: #f5f5f5;
+}
+
+:is(html.dark, body.dark) .message-action-menu [data-slot='dropdown-menu-separator'] {
+  background: #2a2a2c;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .message-action-button {
+    transition: none;
+  }
+}

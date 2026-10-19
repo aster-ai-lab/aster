@@ -1,0 +1,10 @@
+{
+  "name": "acp-connected-1",
+  "command": [
+    "/Users/roylin/code/aster/target/qualification/approval-timeout-20261020/acp-tests",
+    "unanswered_asks_fail_closed_at_the_deadline",
+    "--test-threads=1"
+  ],
+  "exit_code": 0,
+  "wall_seconds": 4.254926292
+}

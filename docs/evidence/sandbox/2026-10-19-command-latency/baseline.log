@@ -1,0 +1,50 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 32.15s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 1 test
+test sandbox::oci::tests::real_command_phase_timing ... DEBUG oci_command: a3s_code_core::sandbox::oci: OCI command phase completed phase="host_connect" elapsed_ms=2494.7378750000003
+DEBUG oci_command: a3s_code_core::sandbox::oci: OCI command phase completed phase="bundle_prepare" elapsed_ms=456.866667
+DEBUG oci_command: a3s_code_core::sandbox::oci: OCI command phase completed phase="vm_create" elapsed_ms=10754.730500000001
+DEBUG oci_command: a3s_code_core::sandbox::oci: OCI command phase completed phase="process_start" elapsed_ms=62.6105
+DEBUG oci_command: a3s_code_core::sandbox::oci: OCI command phase completed phase="collect_wait" elapsed_ms=71.647666
+DEBUG oci_command: a3s_code_core::sandbox::oci: OCI command phase completed phase="vm_delete" elapsed_ms=163.890625
+DEBUG oci_command: a3s_code_core::sandbox::oci: OCI command phase completed phase="host_shutdown" elapsed_ms=0.890333
+DEBUG oci_command: a3s_code_core::sandbox::oci: OCI command phase completed phase="scratch_remove" elapsed_ms=1.4590409999999998
+OCI_TIMING sample=0 total_ms=14009.798
+DEBUG oci_command: a3s_code_core::sandbox::oci: OCI command phase completed phase="host_connect" elapsed_ms=2425.726375
+DEBUG oci_command: a3s_code_core::sandbox::oci: OCI command phase completed phase="bundle_prepare" elapsed_ms=289.733625
+DEBUG oci_command: a3s_code_core::sandbox::oci: OCI command phase completed phase="vm_create" elapsed_ms=10826.334541
+DEBUG oci_command: a3s_code_core::sandbox::oci: OCI command phase completed phase="process_start" elapsed_ms=59.921457999999994
+DEBUG oci_command: a3s_code_core::sandbox::oci: OCI command phase completed phase="collect_wait" elapsed_ms=70.756292
+DEBUG oci_command: a3s_code_core::sandbox::oci: OCI command phase completed phase="vm_delete" elapsed_ms=163.484916
+DEBUG oci_command: a3s_code_core::sandbox::oci: OCI command phase completed phase="host_shutdown" elapsed_ms=0.935625
+DEBUG oci_command: a3s_code_core::sandbox::oci: OCI command phase completed phase="scratch_remove" elapsed_ms=1.4355419999999999
+OCI_TIMING sample=1 total_ms=13839.698
+DEBUG oci_command: a3s_code_core::sandbox::oci: OCI command phase completed phase="host_connect" elapsed_ms=2461.889542
+DEBUG oci_command: a3s_code_core::sandbox::oci: OCI command phase completed phase="bundle_prepare" elapsed_ms=380.328083
+DEBUG oci_command: a3s_code_core::sandbox::oci: OCI command phase completed phase="vm_create" elapsed_ms=10942.614041
+DEBUG oci_command: a3s_code_core::sandbox::oci: OCI command phase completed phase="process_start" elapsed_ms=61.928416999999996
+DEBUG oci_command: a3s_code_core::sandbox::oci: OCI command phase completed phase="collect_wait" elapsed_ms=72.609708
+DEBUG oci_command: a3s_code_core::sandbox::oci: OCI command phase completed phase="vm_delete" elapsed_ms=159.802417
+DEBUG oci_command: a3s_code_core::sandbox::oci: OCI command phase completed phase="host_shutdown" elapsed_ms=0.968625
+DEBUG oci_command: a3s_code_core::sandbox::oci: OCI command phase completed phase="scratch_remove" elapsed_ms=1.774791
+OCI_TIMING sample=2 total_ms=14083.312
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5117 filtered out; finished in 41.94s
+

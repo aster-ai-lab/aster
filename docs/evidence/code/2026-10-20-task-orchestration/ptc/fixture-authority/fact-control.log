@@ -1,0 +1,184 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.34s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 162 tests
+test fact_control::conversation_history_tests::folded_assistant_text_preserves_the_original_role ... ok
+test fact_control::model_error_tests::identical_untyped_budget_words_remain_retryable_provider_errors ... ok
+test fact_control::model_error_tests::typed_host_budget_denial_is_terminal_even_with_context ... ok
+test fact_control::conversation_history_tests::assistant_header_inside_a_user_body_cannot_change_its_role ... ok
+test fact_control::conversation_history_tests::user_images_and_unmarked_summary_keep_their_existing_projection ... ok
+test fact_control::checkpoints::tests::checkpoint_starts_at_last_compaction_and_does_not_invent_result_ids ... ok
+test fact_control::checkpoints::tests::checkpoint_omits_unexecuted_batch_calls_without_inventing_results ... ok
+test fact_control::checkpoints::tests::checkpoint_does_not_pair_reused_ids_across_model_turns ... ok
+test fact_control::checkpoints::tests::checkpoint_keeps_one_batch_and_pairs_results_by_recorded_identity ... ok
+test fact_control::model_error_tests::detached_cancellation_interrupts_stream_setup_and_nonstreaming_fallback ... ok
+test fact_control::model_error_tests::dropping_a_detached_call_cancels_only_its_provider_attempt ... ok
+test fact_control::checkpoints::tests::checkpoint_preserves_user_and_tool_image_bytes ... ok
+test fact_control::model_error_tests::detached_calls_never_fallback_after_terminal_refusal_or_incomplete_stream ... ok
+test fact_control::receipts::tests::cache_proof::proof_cursor_refuses_invalid_originals_and_regressing_projection_boundaries ... ok
+test fact_control::receipts::tests::a_marker_only_covers_the_receipts_it_explicitly_names ... ok
+test fact_control::receipts::tests::admission_refused_background_settles_without_an_exit_code ... ok
+test fact_control::model_governance_tests::dropping_actual_blocked_public_projection_keeps_real_store_some_and_entered_send ... ok
+test fact_control::model_governance_tests::an_empty_provider_delta_does_not_suppress_the_final_answer ... ok
+test fact_control::model_governance_tests::actual_store_none_and_closed_output_are_retained_without_success_ack ... ok
+test fact_control::receipts::tests::cache_provenance::purely_negative_cache_uses_original_typed_preparation_without_inventing_receipts ... ok
+test fact_control::receipts::tests::cache_provenance::background_terminal_cannot_borrow_a_later_exact_spawn_binding_at_its_earlier_boundary ... ok
+test fact_control::receipts::tests::cache_provenance::cached_preparation_after_last_receipt_requires_the_actual_final_log_boundary ... ok
+test fact_control::receipts::tests::cache_provenance::malformed_and_conflicting_originals_are_integrity_errors_not_honest_unknown ... ok
+test fact_control::receipts::tests::cache_provenance::later_terminal_cannot_erase_the_original_pending_interval_at_a_verified_byte_prefix ... ok
+test fact_control::receipts::tests::cache_provenance::exact_original_unknown_and_incomplete_receipts_prove_cached_uncertainty ... ok
+test fact_control::receipts::tests::cancelled_background_can_settle_without_inventing_complete_output ... ok
+test fact_control::receipts::tests::cache_provenance::selected_prefix_never_imports_future_or_untyped_uncertainty ... ok
+test fact_control::receipts::tests::durable_background_terminal_settles_only_its_exact_child ... ok
+test fact_control::receipts::tests::exact_confirmation_and_budget_refusals_prove_zero_execution ... ok
+test fact_control::model_governance_tests::done_delivers_without_waiting_for_provider_channel_eof ... ok
+test fact_control::receipts::tests::cache_provenance::actual_write_and_host_verifier_provenance_survive_unrelated_prepared_uncertainty ... ok
+test fact_control::model_governance_tests::final_response_fallback_does_not_inherit_earlier_streamed_text ... ok
+test fact_control::receipts::tests::background_evidence_does_not_clear_wrong_run_or_incomplete_terminals ... ok
+test fact_control::model_governance_tests::original_parent_projects_actual_input_usage_and_store_before_public_in_order ... ok
+test fact_control::receipts::tests::failed_and_cancelled_writes_restore_actual_byte_identity_once ... ok
+test fact_control::receipts::tests::incomplete_paths_and_external_unknown_are_distinct_from_a_local_scan ... ok
+test fact_control::receipts::tests::legacy_unsettled_is_unknown_but_settled_legacy_history_stays_readable ... ok
+test fact_control::receipts::tests::malformed_cross_call_and_missing_preparation_results_fail_closed ... ok
+test fact_control::receipts::tests::cache_provenance::typed_background_uncertainty_is_distinct_from_malformed_fields_and_bindings ... ok
+test fact_control::receipts::tests::mixed_background_and_foreground_receipts_project_in_fact_order ... ok
+test fact_control::receipts::tests::byte_receipts_keep_all_paths_and_explicit_deletion ... ok
+test fact_control::receipts::tests::argument_validation::permission_denial_with_invalid_arguments_remains_denied_without_execution ... ok
+test fact_control::receipts::tests::execution_availability::unconfirmed_ask_keeps_a_pre_spawn_refusal ... ok
+test fact_control::receipts::tests::preparation_and_unknown_cannot_be_forgiven_by_a_turn_marker_or_scan ... ok
+test fact_control::receipts::tests::missing_admission_and_permission_refusal_execute_nothing ... ok
+test fact_control::receipts::tests::argument_validation::invalid_original_arguments_fail_before_hook_or_tool_execution ... ok
+test fact_control::receipts::tests::execution_availability::rewritten_unavailable_invocation_retains_the_input_hooks_uncertainty ... ok
+test fact_control::receipts::tests::argument_validation::invalid_rewritten_arguments_preserve_both_inputs_and_hook_uncertainty ... ok
+test fact_control::receipts::tests::execution_availability::hook_without_argument_rewrite_still_rechecks_backend_availability ... ok
+test fact_control::receipts::tests::execution_availability::unavailable_backend_refuses_before_input_hooks_without_creating_debt ... ok
+test fact_control::receipts::tests::protocol_one_unprepared_call_is_proven_unexecuted_but_preparation_opens_debt ... ok
+test fact_control::receipts::tests::native_artifact_scope::parallel_prepared_invocations_never_inherit_or_share_native_evidence ... ok
+test fact_control::receipts::tests::execution_availability::native_refusal_in_an_unobservable_workspace_does_not_poison_later_turns ... ok
+test fact_control::receipts::tests::tool_budget::denied_tool_budget_prevents_execution_and_keeps_original_typed_receipt ... ok
+test fact_control::receipts::tests::tool_budget::permission_refusal_and_precancel_do_not_enter_the_tool_budget ... ok
+test fact_control::receipts::tests::execution_availability::initialization_refusal_in_an_unobservable_workspace_does_not_poison_later_turns ... ok
+test fact_control::receipts::tests::recovery_seed_and_legacy_reset_preserve_the_authoritative_prefix ... ok
+test fact_control::recovery_unproved::tests::actual_frozen_binding_is_retained_and_never_inferred ... ok
+test fact_control::receipts::tests::tool_budget_cancel::cancellation_drops_the_original_pending_budget_future_before_tool_effects ... ok
+test fact_control::receipts::tests::tool_budget_cancel::cancellation_wins_over_a_ready_original_budget_decision ... ok
+test fact_control::recovery_unproved::tests::construction_checks_exact_source_session_and_derived_thread ... ok
+test fact_control::recovery_unproved::tests::empty_unbounded_control_and_mismatched_stored_identities_refuse ... ok
+test fact_control::recovery_unproved::tests::exact_payload_round_trips_without_execution_or_verification_claims ... ok
+test fact_control::recovery_unproved::tests::invalid_digest_and_unloadable_source_schema_refuse ... ok
+test fact_control::recovery_unproved::tests::legacy_content_identity_does_not_upgrade_schema_binding_or_portable_admission ... ok
+test fact_control::recovery_unproved::tests::portable_v1_still_requires_a_real_completed_tool_round_boundary ... ok
+test fact_control::recovery_unproved::tests::source_content_changes_identity_but_object_order_does_not ... ok
+test fact_control::recovery_unproved::tests::every_payload_field_is_required_including_nullable_binding ... ok
+test fact_control::recovery_unproved::tests::stored_kind_key_and_transition_cause_cannot_be_reassigned ... ok
+test fact_control::recovery_unproved::tests::unsupported_schema_and_closed_reason_have_named_refusals ... ok
+test fact_control::recovery_unproved::tests::unknown_field_and_incorrect_wire_types_refuse ... ok
+test fact_control::steer_terminal_tests::actual_file_io_error_is_returned_without_repair_or_another_writer ... ok
+test fact_control::recovery_unproved::tests::negative_contract_is_idempotent_on_memory_and_reopened_original_file_log ... ok
+test fact_control::tests::a_failed_model_summary_keeps_a_normal_task_instruction ... ok
+test fact_control::tests::a_failed_model_summary_still_shrinks_the_prefix ... ok
+test fact_control::receipts::tests::a_call_prepared_before_another_unknown_cannot_mutate_or_run_twice ... ok
+test fact_control::receipts::tests::preparation_binds_the_actual_run_and_refuses_frozen_generation_drift ... ok
+test fact_control::tests::automatic_fallback_reseals_typed_source_twice_without_trusting_summary ... ok
+test fact_control::tests::bash_that_cannot_spawn_does_not_park_for_confirmation ... ok
+test fact_control::tests::compaction_transcript_replays_user_and_assistant ... ok
+test fact_control::receipts::tests::execution_availability::identical_error_after_dispatch_remains_unknown ... ok
+test fact_control::receipts::tests::preparation_resolves_hooks_once_binds_effective_input_and_rechecks_approval ... ok
+test fact_control::tests::effort_tool_rounds_are_the_fact_budget ... ok
+test fact_control::receipts::tests::tool_budget::soft_tool_budget_preserves_execution_and_reports_the_original_limit ... ok
+test fact_control::receipts::tests::executed_error_text_cannot_prove_zero_execution_or_discharge_external_debt ... ok
+test fact_control::receipts::tests::tool_budget::allowed_tool_budget_is_checked_once_before_the_original_effect ... ok
+test fact_control::receipts::tests::argument_validation::valid_unchanged_arguments_still_execute_once ... ok
+test fact_control::tests::configured_duplicate_guard_refuses_the_second_identical_call ... ok
+test fact_control::tests::auto_compact_keeps_the_latest_tool_pair_and_continues ... ok
+test fact_control::steer_terminal_tests::new_namespace_is_disjoint_from_future_digest_old_ids_on_memory_and_reopened_file ... ok
+test fact_control::tests::auto_compact_triggers_on_provider_tokens_and_keeps_a_recent_tail ... ok
+test fact_control::receipts::tests::cache_proof::large_late_pure_negative_proof_visits_original_events_once_and_waits_for_actual_tail ... ok
+test fact_control::tests::effort_ceiling_asks_for_a_final_answer_before_denying ... ok
+test fact_control::receipts::tests::pre_spawn::a_capture_failure_after_the_child_starts_stays_unknown ... ok
+test fact_control::receipts::tests::workspace_boundary::known_workspace_boundary_refusal_does_not_block_a_later_tool_or_completion ... ok
+test fact_control::tests::fact_log_confirm_is_true_only_for_the_pending_tool ... ok
+test fact_control::receipts::tests::prepared_batch_observes_each_actual_execution_boundary_and_failed_bytes ... ok
+test fact_control::tests::fact_log_denial_does_not_run_the_tool ... ok
+test fact_control::tests::fact_log_budget_does_not_call_the_tool_body ... ok
+test fact_control::tests::fact_log_plan_guardrail_denies_a_write_the_default_policy_would_ask ... ok
+test fact_control::tests::fact_log_history_seeds_a_caused_model_turn_and_one_new_call ... ok
+test fact_control::tests::effort_tool_budget_runs_every_round_before_deny ... ok
+test fact_control::tests::fact_log_live_completion_ask_user_parks_with_options ... ok
+test fact_control::tests::fact_log_leaked_dsml_reasoning_is_a_tool_decision ... ok
+test fact_control::tests::fact_log_live_completion_stores_a_tool_call_and_passes_tools ... ok
+test fact_control::tests::fact_log_leaked_dsml_text_is_a_tool_decision ... ok
+test fact_control::tests::fact_log_non_decision_sets_schema_error_without_a_tool_or_parse_retry ... ok
+test fact_control::receipts::tests::unchanged_ask_obeys_the_frozen_host_confirmation_authority ... ok
+test fact_control::tests::fact_log_follow_up_sends_the_recorded_tool_call ... ok
+test fact_control::tests::explicit_stock_compose_keeps_token_compaction ... ok
+test fact_control::tests::fact_log_question_options_and_allow_free_text_survive_reopen ... ok
+test fact_control::receipts::tests::pre_spawn::a_shell_that_never_starts_does_not_block_a_later_tool ... ok
+test fact_control::tests::fact_log_yolo_lane_is_allow_not_a_second_policy ... ok
+test fact_control::tests::fact_log_live_completion_yolo_lane_runs_the_tool ... ok
+test fact_control::tests::fact_log_second_resume_does_not_call_the_model ... ok
+test fact_control::tests::latest_user_text_ignores_assistant_and_tool_lines ... ok
+test fact_control::tests::fact_log_question_cap_rejects_before_a_fourth_fact ... ok
+test fact_control::tests::fact_log_question_stays_parked_until_the_answer_fact ... ok
+test fact_control::tests::fact_log_runner_failure_is_unknown_and_never_reexecuted ... ok
+test fact_control::tests::malformed_batch_does_not_park_for_confirmation ... ok
+test fact_control::tests::one_response_keeps_every_non_question_tool_call ... ok
+test fact_control::tests::fact_log_step_limit_does_not_start_a_pending_transition ... ok
+test fact_control::tests::parallel_safe_names_match_the_registered_tool_registry ... ok
+test fact_control::tests::parallel_batches_are_reads_or_distinct_writes ... ok
+test fact_control::tests::prepared_context_does_not_replace_a_later_answer_or_steer ... ok
+test fact_control::tests::repeated_result_note_counts_identical_text_and_leaves_json_parseable ... ok
+test fact_control::tests::fact_log_steer_is_a_user_message_fact ... ok
+test fact_control::tests::fact_log_recorded_tool_calls_start_after_the_latest_compaction ... ok
+test fact_control::tests::fact_log_tool_round_cap_uses_an_empty_tool_list ... ok
+test fact_control::tests::seam_admission_mutation_still_needs_digest_gate ... ok
+test fact_control::tool_history_tests::actual_folded_entry_point_preserves_assistant_role ... ok
+test fact_control::tool_history_tests::closed_scheduler_tool_batches_are_not_assistant_prose ... ok
+test fact_control::tests::fact_log_sessions_do_not_share_a_thread ... ok
+test fact_control::tests::host_cancel_drops_a_hung_tool_and_records_cancelled ... ok
+ORACLE restored-image media_type=image/png bytes=8
+test fact_control::tool_history_tests::actual_completion_refuses_missing_metadata_before_provider_entry ... ok
+test fact_control::receipts::tests::context_cancellation_after_a_write_is_not_a_pre_execution_denial ... ok
+test fact_control::tests::open_session_writes_the_effect_log_inside_the_session_folder ... ok
+test fact_control::tool_history_tests::compaction_cannot_replace_original_result_bytes ... ok
+test fact_control::tool_history_tests::actual_completion_sends_retained_native_tool_pair_and_assistant_role ... ok
+test fact_control::tests::user_attachment_plan_restores_png_bytes_after_compaction ... ok
+test fact_control::tool_history_tests::missing_original_metadata_never_fabricates_a_tool_call ... ok
+test fact_control::tests::one_generation_keeps_tool_names_and_the_next_admission_sees_the_grant ... ok
+test fact_control::tool_history_tests::scheduler_indexes_cover_each_closed_shape ... ok
+test fact_control::tool_history_tests::cached_prompt_cannot_replace_a_retained_tool_result ... ok
+test fact_control::tool_history_tests::batch_result_order_and_reused_ids_follow_the_original_scheduler ... ok
+test fact_control::tool_history_tests::user_body_cannot_inject_an_assistant_role ... ok
+test fact_control::unsettled_debt_tests::unsettled_mutation_paths_reads_only_past_the_last_settlement ... ok
+test fact_control::tool_history_tests::extra_result_line_refuses_before_the_provider ... ok
+test fact_control::tool_history_tests::closed_batch_of_two_reaches_the_provider_as_structured_calls ... ok
+test fact_control::tests::repeated_tool_call_is_a_nudge_and_the_turn_continues ... ok
+test fact_control::tool_history_tests::compaction_kept_results_retain_original_tool_metadata ... ok
+test fact_control::tool_history_tests::legacy_result_without_id_and_error_role_remain_supported ... ok
+test fact_control::tool_history_tests::scheduler_tool_record_is_not_sent_as_assistant_prose ... ok
+test fact_control::tool_history_tests::repeated_compaction_selects_original_suffix_when_outputs_are_identical ... ok
+test fact_control::tests::fact_log_live_stream_outlasts_the_provider_deadline ... ok
+test fact_control::tool_history_tests::unequal_tool_records_do_not_invent_a_call ... ok
+test fact_control::tool_history_tests::summary_prefix_does_not_reopen_a_closed_record ... ok
+test fact_control::tool_history_tests::malformed_original_call_and_result_identity_are_refused ... ok
+test fact_control::tests::fact_log_model_stream_timeout_stops_at_the_provider_deadline ... ok
+test fact_control::tests::seam_admission_denied_write_under_always_approve_does_not_run ... ok
+test fact_control::tests::fact_log_silent_non_streaming_fallback_still_times_out ... ok
+test fact_control::tests::fact_log_stream_silence_after_a_delta_still_times_out ... ok
+
+test result: ok. 162 passed; 0 failed; 0 ignored; 0 measured; 5017 filtered out; finished in 1.86s
+

@@ -1,0 +1,115 @@
+Window: "ToWork", App: ToWork.
+0 standard window ToWork, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content Description: ToWork, URL: 127.0.0.1:4318/windows/main/index.html
+			3 pop up button RoyLin
+			4 button 工作
+			5 button 消息
+			6 button 知识
+			7 button 插件
+			8 button (collapsed) 任务, Secondary Actions: Expand
+			9 button 设置
+			10 container
+				11 container 消息
+					12 container
+						13 text 根据演示数据：浏览12000、报名860、到场620、订单186，生成一句复盘提醒和三个关键转化率。仅在本次会话回复，不发送消息、不修改文件。
+						14 image
+						15 text 10/12 16:09
+						16 button 复制
+						17 button 编辑重发
+						18 button 删除
+						19 image ToBot
+						20 text ToBot 10/12 16:09
+						21 button (collapsed) 思考过程, Secondary Actions: Expand
+						22 text No tools needed. Output in zh-CN.
+
+Should I use ask_user_form? No, that's for missing info. Everything is provided. Just answer.
+
+Let me write concisely.
+						23 container
+							24 text 复盘提醒  本次整体线索量充足，但漏斗首环节明显偏窄：12000 次浏览仅沉淀 860 人报名，说明活动曝光与报名转化（落地页/表单/权益说明）是最该优先优化的环节；后段到场与成交表现相对健康，属于可放大的强环节。
+						25 text 三个关键转化率
+						26 table
+							27 row (selectable) 环节
+计算
+转化率
+							28 row (selectable)
+								29 cell (selectable) 浏览 → 报名
+								30 cell (selectable) 860 / 12000
+								31 cell (selectable) 7.17%
+							32 row (selectable)
+								33 cell (selectable) 报名 → 到场
+								34 cell (selectable) 620 / 860
+								35 cell (selectable) 72.09%
+							36 row (selectable)
+								37 cell (selectable) 到场 → 订单
+								38 cell (selectable) 186 / 620
+								39 cell (selectable) 30.00%
+						40 container
+							41 text 补充串联口径（便于整体判断）：浏览 → 订单  1.55% ，报名 → 订单  21.63% ；全链路 12000 → 186 的整体成交率约  1.55% 。
+						42 text 小结：报名环节是瓶颈（不足一成），到场率和到场成交率均在良性区间，下一步重点放在提升浏览到报名的转化。
+						43 button 复制
+						44 button 保存到笔记
+						45 button 删除
+						46 pop up button 更多操作
+				47 container 会话导航
+					48 button 跳转到第 1 轮对话
+				49 text entry area (settable) 描述任务，输入 / 使用指令或技能，@ 使用智能体
+					50 text 描述任务，输入 / 使用指令或技能，@ 使用智能体
+				51 pop up button 更多选项
+				52 pop up button 授权模式: 逐次确认
+				53 pop up button Boyue DeepSeek V4 Flash
+				54 button (disabled) 发送
+				55 toolbar 任务范围
+					56 pop up button 工作区文件
+				57 container
+					58 button 打开任务工作区
+					59 container 工作区快捷栏
+						60 button 浏览器
+						61 button 终端
+						62 button 文件
+						63 button (collapsed) 展开工作区快捷菜单, Secondary Actions: Expand
+				64 button 新建任务
+				65 button (collapsed) 搜索任务, Secondary Actions: Expand
+				66 container 工作导航
+					67 button 智能体
+					68 button 连接器
+					69 button 技能
+					70 button 自动化
+				71 container 项目
+					72 container
+						73 heading 项目, Value: 3
+							74 text 项目
+						75 button 新建项目
+					76 text 还没有项目
+				77 container 任务
+					78 container
+						79 heading 任务, Value: 3
+							80 text 任务
+						81 button 查看全部最近任务
+					82 container 今天
+						83 heading 今天, Value: 3
+							84 text 今天
+						85 button 请使用 frontend-design 技能，制作「秋日新品发布」复盘 HTML…
+						86 text 5分钟前
+						87 button 重命名
+						88 toggle button 置顶, Value: off
+						89 button 归档
+						90 button 发布复盘提醒 · 视频演示
+						91 text 6分钟前
+						92 button 重命名
+						93 toggle button 置顶, Value: off
+						94 button 归档
+						95 button 用以下演示数据制作一份「秋日新品发布」复盘：浏览量 12000、报名 860、到…
+						96 text 12分钟前
+						97 button 重命名
+						98 toggle button 置顶, Value: off
+						99 button 归档
+				100 toggle button 收起侧边栏, Value: on
+			101 text 消息
+	102 close button
+	103 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	104 minimize button
+105 menu bar
+	106 ToWork
+	107 Edit

@@ -1,0 +1,435 @@
+{
+  "schema": "aster.orchestration-final-build.v3",
+  "started_at_utc": "2026-10-19T19:13:19.329003+00:00",
+  "environment_overrides": {
+    "RUSTUP_TOOLCHAIN": "1.97.1",
+    "CARGO_NET_OFFLINE": "true"
+  },
+  "source_before_ref": "source-before.json",
+  "clippy_ref": "clippy-analysis.json",
+  "format_ref": "scoped-format.json",
+  "work_static_before_ref": "work-static-before.json",
+  "steps": [
+    {
+      "name": "paired-cli-companions",
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "--offline",
+        "-p",
+        "aster",
+        "-p",
+        "a3s-code-acp",
+        "-p",
+        "a3s-office-cli",
+        "--message-format=json-render-diagnostics"
+      ],
+      "started_at_utc": "2026-10-19T19:13:19.329125+00:00",
+      "state": "complete",
+      "exit_code": 0,
+      "elapsed_ms": 78829.994,
+      "ended_at_utc": "2026-10-19T19:14:38.160123+00:00",
+      "stdout": "docs/evidence/code/2026-10-20-task-orchestration/final-build-v3/paired-cli-companions.jsonl",
+      "stderr": "docs/evidence/code/2026-10-20-task-orchestration/final-build-v3/paired-cli-companions.stderr.log",
+      "compiler_executables": [
+        {
+          "package_id": "path+file:///Users/roylin/code/aster/crates/office/crates/cli#a3s-office-cli@0.45.0",
+          "target": {
+            "kind": [
+              "bin"
+            ],
+            "crate_types": [
+              "bin"
+            ],
+            "name": "a3s-office",
+            "src_path": "/Users/roylin/code/aster/crates/office/crates/cli/src/main.rs",
+            "edition": "2021",
+            "doc": true,
+            "doctest": false,
+            "test": true
+          },
+          "profile": {
+            "opt_level": "0",
+            "debuginfo": "line-tables-only",
+            "debug_assertions": true,
+            "overflow_checks": true,
+            "test": false
+          },
+          "features": [
+            "browser",
+            "default"
+          ],
+          "executable": "/Users/roylin/code/aster/target/debug/a3s-office",
+          "fresh": true
+        },
+        {
+          "package_id": "path+file:///Users/roylin/code/aster/crates/code/acp#a3s-code-acp@9.1.4",
+          "target": {
+            "kind": [
+              "bin"
+            ],
+            "crate_types": [
+              "bin"
+            ],
+            "name": "a3s-code-acp",
+            "src_path": "/Users/roylin/code/aster/crates/code/acp/src/bin/a3s-code-acp.rs",
+            "edition": "2021",
+            "doc": true,
+            "doctest": false,
+            "test": true
+          },
+          "profile": {
+            "opt_level": "0",
+            "debuginfo": "line-tables-only",
+            "debug_assertions": true,
+            "overflow_checks": true,
+            "test": false
+          },
+          "features": [],
+          "executable": "/Users/roylin/code/aster/target/debug/a3s-code-acp",
+          "fresh": false
+        },
+        {
+          "package_id": "path+file:///Users/roylin/code/aster/apps/aster#0.1.1",
+          "target": {
+            "kind": [
+              "bin"
+            ],
+            "crate_types": [
+              "bin"
+            ],
+            "name": "aster",
+            "src_path": "/Users/roylin/code/aster/apps/aster/src/main.rs",
+            "edition": "2024",
+            "doc": true,
+            "doctest": false,
+            "test": true
+          },
+          "profile": {
+            "opt_level": "0",
+            "debuginfo": "line-tables-only",
+            "debug_assertions": true,
+            "overflow_checks": true,
+            "test": false
+          },
+          "features": [
+            "default",
+            "jemalloc",
+            "sandbox-enforce"
+          ],
+          "executable": "/Users/roylin/code/aster/target/debug/aster",
+          "fresh": false
+        }
+      ]
+    },
+    {
+      "name": "build-work",
+      "command": [
+        "just",
+        "build-work"
+      ],
+      "started_at_utc": "2026-10-19T19:14:38.165182+00:00",
+      "state": "complete",
+      "exit_code": 0,
+      "elapsed_ms": 59312.804,
+      "ended_at_utc": "2026-10-19T19:15:37.478721+00:00",
+      "stdout": "docs/evidence/code/2026-10-20-task-orchestration/final-build-v3/build-work.stdout.log",
+      "stderr": "docs/evidence/code/2026-10-20-task-orchestration/final-build-v3/build-work.stderr.log"
+    },
+    {
+      "name": "work-artifact-query",
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "-p",
+        "aster-dream",
+        "--message-format=json-render-diagnostics"
+      ],
+      "started_at_utc": "2026-10-19T19:15:37.479188+00:00",
+      "state": "complete",
+      "exit_code": 0,
+      "elapsed_ms": 5245.026,
+      "ended_at_utc": "2026-10-19T19:15:42.724447+00:00",
+      "stdout": "docs/evidence/code/2026-10-20-task-orchestration/final-build-v3/work-artifact-query.jsonl",
+      "stderr": "docs/evidence/code/2026-10-20-task-orchestration/final-build-v3/work-artifact-query.stderr.log",
+      "compiler_executables": [
+        {
+          "package_id": "path+file:///Users/roylin/code/aster/apps/work/src-tauri#aster-dream@0.1.1",
+          "target": {
+            "kind": [
+              "bin"
+            ],
+            "crate_types": [
+              "bin"
+            ],
+            "name": "aster-dream",
+            "src_path": "/Users/roylin/code/aster/apps/work/src-tauri/src/main.rs",
+            "edition": "2024",
+            "doc": true,
+            "doctest": false,
+            "test": true
+          },
+          "profile": {
+            "opt_level": "0",
+            "debuginfo": "line-tables-only",
+            "debug_assertions": true,
+            "overflow_checks": true,
+            "test": false
+          },
+          "features": [],
+          "executable": "/Users/roylin/code/aster/target/debug/aster-dream",
+          "fresh": false
+        }
+      ]
+    },
+    {
+      "name": "real-llm-test-no-run",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "-p",
+        "a3s-code-core",
+        "--features",
+        "advanced-harness",
+        "--test",
+        "test_extensibility_real_llm",
+        "--no-run",
+        "--message-format=json-render-diagnostics"
+      ],
+      "started_at_utc": "2026-10-19T19:15:42.726702+00:00",
+      "state": "complete",
+      "exit_code": 0,
+      "elapsed_ms": 32840.112,
+      "ended_at_utc": "2026-10-19T19:16:15.567300+00:00",
+      "stdout": "docs/evidence/code/2026-10-20-task-orchestration/final-build-v3/real-llm-test-no-run.jsonl",
+      "stderr": "docs/evidence/code/2026-10-20-task-orchestration/final-build-v3/real-llm-test-no-run.stderr.log",
+      "compiler_executables": [
+        {
+          "package_id": "path+file:///Users/roylin/code/aster/crates/code/core#a3s-code-core@9.1.4",
+          "target": {
+            "kind": [
+              "test"
+            ],
+            "crate_types": [
+              "bin"
+            ],
+            "name": "test_extensibility_real_llm",
+            "src_path": "/Users/roylin/code/aster/crates/code/core/tests/test_extensibility_real_llm.rs",
+            "edition": "2021",
+            "required-features": [
+              "advanced-harness"
+            ],
+            "doc": false,
+            "doctest": false,
+            "test": true
+          },
+          "profile": {
+            "opt_level": "0",
+            "debuginfo": "line-tables-only",
+            "debug_assertions": true,
+            "overflow_checks": true,
+            "test": true
+          },
+          "features": [
+            "a3s-vec-fts",
+            "advanced-harness",
+            "default",
+            "dynamic-workflow",
+            "evaluation",
+            "grep-trigram",
+            "local-code",
+            "research",
+            "state-graph",
+            "web-fetch-pdf"
+          ],
+          "executable": "/Users/roylin/code/aster/target/debug/deps/test_extensibility_real_llm-d4219b08e7cc2f51",
+          "fresh": false
+        }
+      ]
+    }
+  ],
+  "state": "complete",
+  "final_executables": {
+    "a3s-office": {
+      "path": "/Users/roylin/code/aster/target/debug/a3s-office",
+      "sha256": "652d0f04943e4c0c0c0c42dc8c3ffb855bb7fdc0e7740b492733a1a0157af1af",
+      "bytes": 135876984,
+      "compiler_artifact_step": "paired-cli-companions",
+      "fresh": true,
+      "features": [
+        "browser",
+        "default"
+      ],
+      "profile": {
+        "opt_level": "0",
+        "debuginfo": "line-tables-only",
+        "debug_assertions": true,
+        "overflow_checks": true,
+        "test": false
+      },
+      "package_id": "path+file:///Users/roylin/code/aster/crates/office/crates/cli#a3s-office-cli@0.45.0",
+      "target": {
+        "kind": [
+          "bin"
+        ],
+        "crate_types": [
+          "bin"
+        ],
+        "name": "a3s-office",
+        "src_path": "/Users/roylin/code/aster/crates/office/crates/cli/src/main.rs",
+        "edition": "2021",
+        "doc": true,
+        "doctest": false,
+        "test": true
+      }
+    },
+    "a3s-code-acp": {
+      "path": "/Users/roylin/code/aster/target/debug/a3s-code-acp",
+      "sha256": "b5a88347d4e6770d8ef2dc8f348ff6903674aeb30bc7726a38616d99670d72e0",
+      "bytes": 323575968,
+      "compiler_artifact_step": "paired-cli-companions",
+      "fresh": false,
+      "features": [],
+      "profile": {
+        "opt_level": "0",
+        "debuginfo": "line-tables-only",
+        "debug_assertions": true,
+        "overflow_checks": true,
+        "test": false
+      },
+      "package_id": "path+file:///Users/roylin/code/aster/crates/code/acp#a3s-code-acp@9.1.4",
+      "target": {
+        "kind": [
+          "bin"
+        ],
+        "crate_types": [
+          "bin"
+        ],
+        "name": "a3s-code-acp",
+        "src_path": "/Users/roylin/code/aster/crates/code/acp/src/bin/a3s-code-acp.rs",
+        "edition": "2021",
+        "doc": true,
+        "doctest": false,
+        "test": true
+      }
+    },
+    "aster": {
+      "path": "/Users/roylin/code/aster/target/debug/aster",
+      "sha256": "6456151a8330a651b305e007076c3025d3fb0c9846ae41b6c5d2c5d4ca9a469d",
+      "bytes": 809166616,
+      "compiler_artifact_step": "paired-cli-companions",
+      "fresh": false,
+      "features": [
+        "default",
+        "jemalloc",
+        "sandbox-enforce"
+      ],
+      "profile": {
+        "opt_level": "0",
+        "debuginfo": "line-tables-only",
+        "debug_assertions": true,
+        "overflow_checks": true,
+        "test": false
+      },
+      "package_id": "path+file:///Users/roylin/code/aster/apps/aster#0.1.1",
+      "target": {
+        "kind": [
+          "bin"
+        ],
+        "crate_types": [
+          "bin"
+        ],
+        "name": "aster",
+        "src_path": "/Users/roylin/code/aster/apps/aster/src/main.rs",
+        "edition": "2024",
+        "doc": true,
+        "doctest": false,
+        "test": true
+      }
+    },
+    "aster-dream": {
+      "path": "/Users/roylin/code/aster/target/debug/aster-dream",
+      "sha256": "70accee55841c85c309ff3564c4cdcd09402864973817c87c4205df391b27bdb",
+      "bytes": 178620672,
+      "compiler_artifact_step": "work-artifact-query",
+      "fresh": false,
+      "features": [],
+      "profile": {
+        "opt_level": "0",
+        "debuginfo": "line-tables-only",
+        "debug_assertions": true,
+        "overflow_checks": true,
+        "test": false
+      },
+      "package_id": "path+file:///Users/roylin/code/aster/apps/work/src-tauri#aster-dream@0.1.1",
+      "target": {
+        "kind": [
+          "bin"
+        ],
+        "crate_types": [
+          "bin"
+        ],
+        "name": "aster-dream",
+        "src_path": "/Users/roylin/code/aster/apps/work/src-tauri/src/main.rs",
+        "edition": "2024",
+        "doc": true,
+        "doctest": false,
+        "test": true
+      }
+    },
+    "test_extensibility_real_llm": {
+      "path": "/Users/roylin/code/aster/target/debug/deps/test_extensibility_real_llm-d4219b08e7cc2f51",
+      "sha256": "dafcdb08898bbb196b05d4da739229abb81b16a2a9c60382a889e1291fa6b6dd",
+      "bytes": 219892656,
+      "compiler_artifact_step": "real-llm-test-no-run",
+      "fresh": false,
+      "features": [
+        "a3s-vec-fts",
+        "advanced-harness",
+        "default",
+        "dynamic-workflow",
+        "evaluation",
+        "grep-trigram",
+        "local-code",
+        "research",
+        "state-graph",
+        "web-fetch-pdf"
+      ],
+      "profile": {
+        "opt_level": "0",
+        "debuginfo": "line-tables-only",
+        "debug_assertions": true,
+        "overflow_checks": true,
+        "test": true
+      },
+      "package_id": "path+file:///Users/roylin/code/aster/crates/code/core#a3s-code-core@9.1.4",
+      "target": {
+        "kind": [
+          "test"
+        ],
+        "crate_types": [
+          "bin"
+        ],
+        "name": "test_extensibility_real_llm",
+        "src_path": "/Users/roylin/code/aster/crates/code/core/tests/test_extensibility_real_llm.rs",
+        "edition": "2021",
+        "required-features": [
+          "advanced-harness"
+        ],
+        "doc": false,
+        "doctest": false,
+        "test": true
+      }
+    }
+  },
+  "source_after_ref": "source-after.json",
+  "work_static_after_ref": "work-static-after.json",
+  "source_candidates_unchanged": true,
+  "work_static_unchanged": true,
+  "ended_at_utc": "2026-10-19T19:16:17.236431+00:00",
+  "final_hash_observation": "After all build steps; Cargo compiler-artifact provides the executable path, while final bytes may have been rebuilt by subsequent just recipe commands at that same path."
+}

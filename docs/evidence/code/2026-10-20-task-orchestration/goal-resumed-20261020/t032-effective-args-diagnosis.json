@@ -1,0 +1,985 @@
+{
+  "schema": "aster.t032.effective-arguments-diagnosis.v1",
+  "observed_at_utc": "2026-10-19T22:42:47.490535+00:00",
+  "native_session_id": "01a15630-de16-7119-833f-c116faa5e959",
+  "core_session_id": "d34c25c2-f04c-484a-a422-dea0789dae2f",
+  "source": {
+    "path": "/Users/roylin/code/tasks/T01-t032-cua-01/.a3s/sessions/2026-10-20/d34c25c2-f04c-484a-a422-dea0789dae2f/d34c25c2-f04c-484a-a422-dea0789dae2f.jsonl",
+    "snapshot_bytes": 1134532,
+    "snapshot_sha256": "35dab7ca5af67ee7dacf2d4a365baf3606034f95fba677b477201b67f8fe749b",
+    "record_count": 187,
+    "last_sequence": 187
+  },
+  "denied_result_sequences": [
+    142,
+    145,
+    152,
+    159,
+    166,
+    173,
+    184
+  ],
+  "denied_count": 7,
+  "adjacent_success_comparison_count": 8,
+  "comparison_window_model_sequence": [
+    128,
+    182
+  ],
+  "selected_calls": [
+    {
+      "model_sequence": 128,
+      "tool_call_id": "call_00_7jy8ZNCLpQ94uS3ruAEo2178",
+      "name": "bash",
+      "needs_confirmation": true,
+      "args_keys": [
+        "command",
+        "justification",
+        "sandbox_permissions"
+      ],
+      "sandbox_permissions": "require_escalated",
+      "mode": null,
+      "command_is_string": true,
+      "command_nonempty": true,
+      "command_sha256": "ba4559c90526b3f8e3c284e353e6184b46ef4a931585846a36817cabc0ec541e",
+      "command_bytes": 4135,
+      "justification_present": true,
+      "justification_is_string": true,
+      "justification_nonempty_after_trim": true,
+      "prepared": {
+        "sequence": 130,
+        "original_args_digest": "sha256:edcffd2b9eac9367b07a42be7cfc90947697c88ce6096f04c26755912a3dcaaa",
+        "effective_args_digest": "sha256:edcffd2b9eac9367b07a42be7cfc90947697c88ce6096f04c26755912a3dcaaa",
+        "original_equals_effective": true,
+        "baseline_present": true,
+        "baseline_keys": [
+          "git",
+          "nongit"
+        ],
+        "recovery": "never_replay"
+      },
+      "result": {
+        "sequence": 131,
+        "ok": false,
+        "outcome": "denied",
+        "exit_code": null,
+        "effect_completeness": "complete",
+        "effect_changes_count": 0,
+        "is_effective_arguments_unapproved": false
+      },
+      "confirmations": [
+        {
+          "sequence": 129,
+          "approved": true
+        }
+      ]
+    },
+    {
+      "model_sequence": 132,
+      "tool_call_id": "call_00_lDSZ7dvtzbbL62fJTomE5345",
+      "name": "bash",
+      "needs_confirmation": true,
+      "args_keys": [
+        "command",
+        "justification",
+        "sandbox_permissions"
+      ],
+      "sandbox_permissions": "require_escalated",
+      "mode": null,
+      "command_is_string": true,
+      "command_nonempty": true,
+      "command_sha256": "bb1734d94bf12fcab0012587c7177f8d7f44be8d08599148faa8b64d8ea5a0f0",
+      "command_bytes": 3766,
+      "justification_present": true,
+      "justification_is_string": true,
+      "justification_nonempty_after_trim": true,
+      "prepared": {
+        "sequence": 134,
+        "original_args_digest": "sha256:4e9f1d7ae73d439f625084ea2121d369d273e2cab78f53f763560102cc6ada6b",
+        "effective_args_digest": "sha256:4e9f1d7ae73d439f625084ea2121d369d273e2cab78f53f763560102cc6ada6b",
+        "original_equals_effective": true,
+        "baseline_present": true,
+        "baseline_keys": [
+          "git",
+          "nongit"
+        ],
+        "recovery": "never_replay"
+      },
+      "result": {
+        "sequence": 135,
+        "ok": true,
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "effect_completeness": "complete",
+        "effect_changes_count": 0,
+        "is_effective_arguments_unapproved": false
+      },
+      "confirmations": [
+        {
+          "sequence": 133,
+          "approved": true
+        }
+      ]
+    },
+    {
+      "model_sequence": 136,
+      "tool_call_id": "call_00_swIjDFnhkDRDHfUK2pTi3983",
+      "name": "bash",
+      "needs_confirmation": true,
+      "args_keys": [
+        "command",
+        "justification",
+        "sandbox_permissions"
+      ],
+      "sandbox_permissions": "require_escalated",
+      "mode": null,
+      "command_is_string": true,
+      "command_nonempty": true,
+      "command_sha256": "4af7abb530f84ccb609b3a6480fc09b849fd5f37e3a1b80156580b9cc01de35d",
+      "command_bytes": 373,
+      "justification_present": true,
+      "justification_is_string": true,
+      "justification_nonempty_after_trim": true,
+      "prepared": {
+        "sequence": 138,
+        "original_args_digest": "sha256:a4053859f947d56bc77c857763abcc082fcd319f778b73c1c3ad7d9bb887d852",
+        "effective_args_digest": "sha256:a4053859f947d56bc77c857763abcc082fcd319f778b73c1c3ad7d9bb887d852",
+        "original_equals_effective": true,
+        "baseline_present": true,
+        "baseline_keys": [
+          "git",
+          "nongit"
+        ],
+        "recovery": "never_replay"
+      },
+      "result": {
+        "sequence": 139,
+        "ok": true,
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "effect_completeness": "complete",
+        "effect_changes_count": 2,
+        "is_effective_arguments_unapproved": false
+      },
+      "confirmations": [
+        {
+          "sequence": 137,
+          "approved": true
+        }
+      ]
+    },
+    {
+      "model_sequence": 140,
+      "tool_call_id": "call_00_gqkMoWyXbcbm7P5GF03I3182",
+      "name": "bash",
+      "needs_confirmation": false,
+      "args_keys": [
+        "command",
+        "justification",
+        "sandbox_permissions"
+      ],
+      "sandbox_permissions": "require_escalated",
+      "mode": null,
+      "command_is_string": true,
+      "command_nonempty": true,
+      "command_sha256": "e66806889733d3d400327601497b2b5a50f88cd255b8b6aee0e67bda0dcb424c",
+      "command_bytes": 3902,
+      "justification_present": true,
+      "justification_is_string": true,
+      "justification_nonempty_after_trim": true,
+      "prepared": {
+        "sequence": 141,
+        "original_args_digest": "sha256:17b7596f38050ad5bf4546997a5a238db26b1c1a3f41e1204630af1a090f10ee",
+        "effective_args_digest": "sha256:17b7596f38050ad5bf4546997a5a238db26b1c1a3f41e1204630af1a090f10ee",
+        "original_equals_effective": true,
+        "baseline_present": false,
+        "baseline_keys": null,
+        "recovery": "never_replay"
+      },
+      "result": {
+        "sequence": 142,
+        "ok": false,
+        "outcome": "denied",
+        "exit_code": null,
+        "effect_completeness": "complete",
+        "effect_changes_count": 0,
+        "is_effective_arguments_unapproved": true
+      },
+      "confirmations": []
+    },
+    {
+      "model_sequence": 143,
+      "tool_call_id": "call_00_fFlf5GRWGeGYC4zHleZF7796",
+      "name": "bash",
+      "needs_confirmation": false,
+      "args_keys": [
+        "command",
+        "justification",
+        "sandbox_permissions"
+      ],
+      "sandbox_permissions": "require_escalated",
+      "mode": null,
+      "command_is_string": true,
+      "command_nonempty": true,
+      "command_sha256": "1a5b1060211daeff55799a3c09e9636424899c655fdf1283270d41bfbbffc7a2",
+      "command_bytes": 783,
+      "justification_present": true,
+      "justification_is_string": true,
+      "justification_nonempty_after_trim": true,
+      "prepared": {
+        "sequence": 144,
+        "original_args_digest": "sha256:89969294652430c7b07045284dfbb3059fceb223de2d62d34f6c02953bb45d97",
+        "effective_args_digest": "sha256:89969294652430c7b07045284dfbb3059fceb223de2d62d34f6c02953bb45d97",
+        "original_equals_effective": true,
+        "baseline_present": false,
+        "baseline_keys": null,
+        "recovery": "never_replay"
+      },
+      "result": {
+        "sequence": 145,
+        "ok": false,
+        "outcome": "denied",
+        "exit_code": null,
+        "effect_completeness": "complete",
+        "effect_changes_count": 0,
+        "is_effective_arguments_unapproved": true
+      },
+      "confirmations": []
+    },
+    {
+      "model_sequence": 146,
+      "tool_call_id": "call_00_20ON4CnyWyMzECAPZCZZ2635",
+      "name": "bash",
+      "needs_confirmation": true,
+      "args_keys": [
+        "command",
+        "justification",
+        "sandbox_permissions"
+      ],
+      "sandbox_permissions": "require_escalated",
+      "mode": null,
+      "command_is_string": true,
+      "command_nonempty": true,
+      "command_sha256": "efd70baf698ff1f917f1c7e76f4a97ff1bffb1102833262b90f6996d28a9fdbc",
+      "command_bytes": 71,
+      "justification_present": true,
+      "justification_is_string": true,
+      "justification_nonempty_after_trim": true,
+      "prepared": {
+        "sequence": 148,
+        "original_args_digest": "sha256:a97145a040e177d57af760327d0f65825c40cf70d4f565ae863a7d842adc41c7",
+        "effective_args_digest": "sha256:a97145a040e177d57af760327d0f65825c40cf70d4f565ae863a7d842adc41c7",
+        "original_equals_effective": true,
+        "baseline_present": true,
+        "baseline_keys": [
+          "git",
+          "nongit"
+        ],
+        "recovery": "never_replay"
+      },
+      "result": {
+        "sequence": 149,
+        "ok": true,
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "effect_completeness": "complete",
+        "effect_changes_count": 0,
+        "is_effective_arguments_unapproved": false
+      },
+      "confirmations": [
+        {
+          "sequence": 147,
+          "approved": true
+        }
+      ]
+    },
+    {
+      "model_sequence": 150,
+      "tool_call_id": "call_00_8gYnslsVM3LdpXggMzNp8925",
+      "name": "bash",
+      "needs_confirmation": false,
+      "args_keys": [
+        "command",
+        "justification",
+        "sandbox_permissions"
+      ],
+      "sandbox_permissions": "require_escalated",
+      "mode": null,
+      "command_is_string": true,
+      "command_nonempty": true,
+      "command_sha256": "e746c74d82dc94a8f449329ea5b700f24dcb88a2f00f766962add1eef608e92c",
+      "command_bytes": 801,
+      "justification_present": true,
+      "justification_is_string": true,
+      "justification_nonempty_after_trim": true,
+      "prepared": {
+        "sequence": 151,
+        "original_args_digest": "sha256:13954abd7600d51ff4086e37075a1f53d6199287e03d8766a8a40b269bc1f2aa",
+        "effective_args_digest": "sha256:13954abd7600d51ff4086e37075a1f53d6199287e03d8766a8a40b269bc1f2aa",
+        "original_equals_effective": true,
+        "baseline_present": false,
+        "baseline_keys": null,
+        "recovery": "never_replay"
+      },
+      "result": {
+        "sequence": 152,
+        "ok": false,
+        "outcome": "denied",
+        "exit_code": null,
+        "effect_completeness": "complete",
+        "effect_changes_count": 0,
+        "is_effective_arguments_unapproved": true
+      },
+      "confirmations": []
+    },
+    {
+      "model_sequence": 153,
+      "tool_call_id": "call_00_zK9S8OjpfLnJYirls22Z9147",
+      "name": "bash",
+      "needs_confirmation": true,
+      "args_keys": [
+        "command",
+        "justification",
+        "sandbox_permissions"
+      ],
+      "sandbox_permissions": "require_escalated",
+      "mode": null,
+      "command_is_string": true,
+      "command_nonempty": true,
+      "command_sha256": "4f5e8b04546f2a81f56bec424551631f83a42a6e5778af777cccc42797c6b930",
+      "command_bytes": 104,
+      "justification_present": true,
+      "justification_is_string": true,
+      "justification_nonempty_after_trim": true,
+      "prepared": {
+        "sequence": 155,
+        "original_args_digest": "sha256:37dd3695cf946e02b4dd0f571cb46be56254afd6914c9c94124ddec1b5945fb1",
+        "effective_args_digest": "sha256:37dd3695cf946e02b4dd0f571cb46be56254afd6914c9c94124ddec1b5945fb1",
+        "original_equals_effective": true,
+        "baseline_present": true,
+        "baseline_keys": [
+          "git",
+          "nongit"
+        ],
+        "recovery": "never_replay"
+      },
+      "result": {
+        "sequence": 156,
+        "ok": true,
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "effect_completeness": "complete",
+        "effect_changes_count": 0,
+        "is_effective_arguments_unapproved": false
+      },
+      "confirmations": [
+        {
+          "sequence": 154,
+          "approved": true
+        }
+      ]
+    },
+    {
+      "model_sequence": 157,
+      "tool_call_id": "call_00_76lk9N4JKD2eeMCXSRFc0085",
+      "name": "bash",
+      "needs_confirmation": false,
+      "args_keys": [
+        "command",
+        "justification",
+        "sandbox_permissions"
+      ],
+      "sandbox_permissions": "require_escalated",
+      "mode": null,
+      "command_is_string": true,
+      "command_nonempty": true,
+      "command_sha256": "edbd34ea3a22294ea7b199157201c23fd232e5bc6972ad077006ab18aa485e91",
+      "command_bytes": 156,
+      "justification_present": true,
+      "justification_is_string": true,
+      "justification_nonempty_after_trim": true,
+      "prepared": {
+        "sequence": 158,
+        "original_args_digest": "sha256:8d3ae8482fa04ae545cb860394f995b7da2547779c855c9c5390297446e76fb7",
+        "effective_args_digest": "sha256:8d3ae8482fa04ae545cb860394f995b7da2547779c855c9c5390297446e76fb7",
+        "original_equals_effective": true,
+        "baseline_present": false,
+        "baseline_keys": null,
+        "recovery": "never_replay"
+      },
+      "result": {
+        "sequence": 159,
+        "ok": false,
+        "outcome": "denied",
+        "exit_code": null,
+        "effect_completeness": "complete",
+        "effect_changes_count": 0,
+        "is_effective_arguments_unapproved": true
+      },
+      "confirmations": []
+    },
+    {
+      "model_sequence": 160,
+      "tool_call_id": "call_00_xyzVKYIu0CmUrJVA2qMB7833",
+      "name": "bash",
+      "needs_confirmation": true,
+      "args_keys": [
+        "command",
+        "justification",
+        "sandbox_permissions"
+      ],
+      "sandbox_permissions": "require_escalated",
+      "mode": null,
+      "command_is_string": true,
+      "command_nonempty": true,
+      "command_sha256": "e1dd529640ab39d660b68e5bf0f5ed55d1754e7bf7d01c1cd4f317c429beeb87",
+      "command_bytes": 314,
+      "justification_present": true,
+      "justification_is_string": true,
+      "justification_nonempty_after_trim": true,
+      "prepared": {
+        "sequence": 162,
+        "original_args_digest": "sha256:c3a9a36658fb6b39c5816240a68a6223cae788660ccdd27e6abf38f8df92c687",
+        "effective_args_digest": "sha256:c3a9a36658fb6b39c5816240a68a6223cae788660ccdd27e6abf38f8df92c687",
+        "original_equals_effective": true,
+        "baseline_present": true,
+        "baseline_keys": [
+          "git",
+          "nongit"
+        ],
+        "recovery": "never_replay"
+      },
+      "result": {
+        "sequence": 163,
+        "ok": true,
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "effect_completeness": "complete",
+        "effect_changes_count": 0,
+        "is_effective_arguments_unapproved": false
+      },
+      "confirmations": [
+        {
+          "sequence": 161,
+          "approved": true
+        }
+      ]
+    },
+    {
+      "model_sequence": 164,
+      "tool_call_id": "call_00_ovVM6DZP2GnYvC9tWNA77953",
+      "name": "bash",
+      "needs_confirmation": false,
+      "args_keys": [
+        "command",
+        "justification",
+        "sandbox_permissions"
+      ],
+      "sandbox_permissions": "require_escalated",
+      "mode": null,
+      "command_is_string": true,
+      "command_nonempty": true,
+      "command_sha256": "4fe21b3af0fbd214a74234a3dc19e8eb87521e36b05b165668a148dff678bffc",
+      "command_bytes": 791,
+      "justification_present": true,
+      "justification_is_string": true,
+      "justification_nonempty_after_trim": true,
+      "prepared": {
+        "sequence": 165,
+        "original_args_digest": "sha256:4580407b520459473c4b4e7e9f1bcc7bb4cba2c18421486562408a256cd1f8dc",
+        "effective_args_digest": "sha256:4580407b520459473c4b4e7e9f1bcc7bb4cba2c18421486562408a256cd1f8dc",
+        "original_equals_effective": true,
+        "baseline_present": false,
+        "baseline_keys": null,
+        "recovery": "never_replay"
+      },
+      "result": {
+        "sequence": 166,
+        "ok": false,
+        "outcome": "denied",
+        "exit_code": null,
+        "effect_completeness": "complete",
+        "effect_changes_count": 0,
+        "is_effective_arguments_unapproved": true
+      },
+      "confirmations": []
+    },
+    {
+      "model_sequence": 167,
+      "tool_call_id": "call_00_vuKF0flbTTnAjZftBV9v4655",
+      "name": "bash",
+      "needs_confirmation": true,
+      "args_keys": [
+        "command",
+        "justification",
+        "sandbox_permissions"
+      ],
+      "sandbox_permissions": "require_escalated",
+      "mode": null,
+      "command_is_string": true,
+      "command_nonempty": true,
+      "command_sha256": "d187e96a5b16c77005821331d6bbf30b3ba45bc8cf7d8ff34f3c961c5b7e334c",
+      "command_bytes": 391,
+      "justification_present": true,
+      "justification_is_string": true,
+      "justification_nonempty_after_trim": true,
+      "prepared": {
+        "sequence": 169,
+        "original_args_digest": "sha256:8ab295d4d39e7402a40fc9f34694226b95b32fc89c0d54a1ceca063710d5af22",
+        "effective_args_digest": "sha256:8ab295d4d39e7402a40fc9f34694226b95b32fc89c0d54a1ceca063710d5af22",
+        "original_equals_effective": true,
+        "baseline_present": true,
+        "baseline_keys": [
+          "git",
+          "nongit"
+        ],
+        "recovery": "never_replay"
+      },
+      "result": {
+        "sequence": 170,
+        "ok": true,
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "effect_completeness": "complete",
+        "effect_changes_count": 0,
+        "is_effective_arguments_unapproved": false
+      },
+      "confirmations": [
+        {
+          "sequence": 168,
+          "approved": true
+        }
+      ]
+    },
+    {
+      "model_sequence": 171,
+      "tool_call_id": "call_00_BfylDpQ3WJ8YzVpYKCvl6730",
+      "name": "bash",
+      "needs_confirmation": false,
+      "args_keys": [
+        "command",
+        "justification",
+        "sandbox_permissions"
+      ],
+      "sandbox_permissions": "require_escalated",
+      "mode": null,
+      "command_is_string": true,
+      "command_nonempty": true,
+      "command_sha256": "5dd615495e32ebc18af1584788b0506a4399240ae1c35bb505af8806cf084fbd",
+      "command_bytes": 753,
+      "justification_present": true,
+      "justification_is_string": true,
+      "justification_nonempty_after_trim": true,
+      "prepared": {
+        "sequence": 172,
+        "original_args_digest": "sha256:f19b24750e52a2c8e5456b6e8fac2f81663814cf6f34b157e477c83a7c562639",
+        "effective_args_digest": "sha256:f19b24750e52a2c8e5456b6e8fac2f81663814cf6f34b157e477c83a7c562639",
+        "original_equals_effective": true,
+        "baseline_present": false,
+        "baseline_keys": null,
+        "recovery": "never_replay"
+      },
+      "result": {
+        "sequence": 173,
+        "ok": false,
+        "outcome": "denied",
+        "exit_code": null,
+        "effect_completeness": "complete",
+        "effect_changes_count": 0,
+        "is_effective_arguments_unapproved": true
+      },
+      "confirmations": []
+    },
+    {
+      "model_sequence": 174,
+      "tool_call_id": "call_00_GJRzZNQ9ybO4s0aNPV4r3334",
+      "name": "bash",
+      "needs_confirmation": true,
+      "args_keys": [
+        "command",
+        "justification",
+        "sandbox_permissions"
+      ],
+      "sandbox_permissions": "require_escalated",
+      "mode": null,
+      "command_is_string": true,
+      "command_nonempty": true,
+      "command_sha256": "468ad19159ae95cc66181b26feef17f8807753e0105884703af9151e512a245a",
+      "command_bytes": 119,
+      "justification_present": true,
+      "justification_is_string": true,
+      "justification_nonempty_after_trim": true,
+      "prepared": {
+        "sequence": 176,
+        "original_args_digest": "sha256:48a7a2c3a5d91efc9311e2131379cea3ca213123838bd4076718974946b22020",
+        "effective_args_digest": "sha256:48a7a2c3a5d91efc9311e2131379cea3ca213123838bd4076718974946b22020",
+        "original_equals_effective": true,
+        "baseline_present": true,
+        "baseline_keys": [
+          "git",
+          "nongit"
+        ],
+        "recovery": "never_replay"
+      },
+      "result": {
+        "sequence": 177,
+        "ok": true,
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "effect_completeness": "complete",
+        "effect_changes_count": 0,
+        "is_effective_arguments_unapproved": false
+      },
+      "confirmations": [
+        {
+          "sequence": 175,
+          "approved": true
+        }
+      ]
+    },
+    {
+      "model_sequence": 178,
+      "tool_call_id": "call_00_Nm15L6Tl77OcgRIc1lpA5270",
+      "name": "bash",
+      "needs_confirmation": true,
+      "args_keys": [
+        "command",
+        "justification",
+        "sandbox_permissions"
+      ],
+      "sandbox_permissions": "require_escalated",
+      "mode": null,
+      "command_is_string": true,
+      "command_nonempty": true,
+      "command_sha256": "c51d47ddaacf99a1e793ba8cc99a1868c65ab23ca5f5a0be9a4b1fb6bb4ffc07",
+      "command_bytes": 619,
+      "justification_present": true,
+      "justification_is_string": true,
+      "justification_nonempty_after_trim": true,
+      "prepared": {
+        "sequence": 180,
+        "original_args_digest": "sha256:76da4f07c9137df06c9ca2f70e1e8e6284d5ab0e81a7cfcaf7a1b56c92ef7811",
+        "effective_args_digest": "sha256:76da4f07c9137df06c9ca2f70e1e8e6284d5ab0e81a7cfcaf7a1b56c92ef7811",
+        "original_equals_effective": true,
+        "baseline_present": true,
+        "baseline_keys": [
+          "git",
+          "nongit"
+        ],
+        "recovery": "never_replay"
+      },
+      "result": {
+        "sequence": 181,
+        "ok": true,
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "effect_completeness": "complete",
+        "effect_changes_count": 0,
+        "is_effective_arguments_unapproved": false
+      },
+      "confirmations": [
+        {
+          "sequence": 179,
+          "approved": true
+        }
+      ]
+    },
+    {
+      "model_sequence": 182,
+      "tool_call_id": "call_00_zxZyNR0JKtKehYiNIDJX8587",
+      "name": "bash",
+      "needs_confirmation": false,
+      "args_keys": [
+        "command",
+        "justification",
+        "sandbox_permissions"
+      ],
+      "sandbox_permissions": "require_escalated",
+      "mode": null,
+      "command_is_string": true,
+      "command_nonempty": true,
+      "command_sha256": "ab1a9d7073bd0926e95c6f5ba50864075628d53c15de8eb4af5a2f54b0e51ac6",
+      "command_bytes": 2756,
+      "justification_present": true,
+      "justification_is_string": true,
+      "justification_nonempty_after_trim": true,
+      "prepared": {
+        "sequence": 183,
+        "original_args_digest": "sha256:a5ca886d3c7b2ddfe4cadde41a05a49b4d1a0c87ab1e4de66f3178e151eb413a",
+        "effective_args_digest": "sha256:a5ca886d3c7b2ddfe4cadde41a05a49b4d1a0c87ab1e4de66f3178e151eb413a",
+        "original_equals_effective": true,
+        "baseline_present": false,
+        "baseline_keys": null,
+        "recovery": "never_replay"
+      },
+      "result": {
+        "sequence": 184,
+        "ok": false,
+        "outcome": "denied",
+        "exit_code": null,
+        "effect_completeness": "complete",
+        "effect_changes_count": 0,
+        "is_effective_arguments_unapproved": true
+      },
+      "confirmations": []
+    }
+  ],
+  "whole_run_command_equality_checks_for_denied_calls": [
+    {
+      "denied_result_sequence": 142,
+      "command_sha256": "e66806889733d3d400327601497b2b5a50f88cd255b8b6aee0e67bda0dcb424c",
+      "whole_run_exact_command_matches": [
+        {
+          "model_sequence": 140,
+          "tool_call_id": "call_00_gqkMoWyXbcbm7P5GF03I3182",
+          "needs_confirmation": false,
+          "outcome": "denied"
+        }
+      ],
+      "matched_other_call": false
+    },
+    {
+      "denied_result_sequence": 145,
+      "command_sha256": "1a5b1060211daeff55799a3c09e9636424899c655fdf1283270d41bfbbffc7a2",
+      "whole_run_exact_command_matches": [
+        {
+          "model_sequence": 143,
+          "tool_call_id": "call_00_fFlf5GRWGeGYC4zHleZF7796",
+          "needs_confirmation": false,
+          "outcome": "denied"
+        }
+      ],
+      "matched_other_call": false
+    },
+    {
+      "denied_result_sequence": 152,
+      "command_sha256": "e746c74d82dc94a8f449329ea5b700f24dcb88a2f00f766962add1eef608e92c",
+      "whole_run_exact_command_matches": [
+        {
+          "model_sequence": 150,
+          "tool_call_id": "call_00_8gYnslsVM3LdpXggMzNp8925",
+          "needs_confirmation": false,
+          "outcome": "denied"
+        }
+      ],
+      "matched_other_call": false
+    },
+    {
+      "denied_result_sequence": 159,
+      "command_sha256": "edbd34ea3a22294ea7b199157201c23fd232e5bc6972ad077006ab18aa485e91",
+      "whole_run_exact_command_matches": [
+        {
+          "model_sequence": 157,
+          "tool_call_id": "call_00_76lk9N4JKD2eeMCXSRFc0085",
+          "needs_confirmation": false,
+          "outcome": "denied"
+        }
+      ],
+      "matched_other_call": false
+    },
+    {
+      "denied_result_sequence": 166,
+      "command_sha256": "4fe21b3af0fbd214a74234a3dc19e8eb87521e36b05b165668a148dff678bffc",
+      "whole_run_exact_command_matches": [
+        {
+          "model_sequence": 164,
+          "tool_call_id": "call_00_ovVM6DZP2GnYvC9tWNA77953",
+          "needs_confirmation": false,
+          "outcome": "denied"
+        }
+      ],
+      "matched_other_call": false
+    },
+    {
+      "denied_result_sequence": 173,
+      "command_sha256": "5dd615495e32ebc18af1584788b0506a4399240ae1c35bb505af8806cf084fbd",
+      "whole_run_exact_command_matches": [
+        {
+          "model_sequence": 171,
+          "tool_call_id": "call_00_BfylDpQ3WJ8YzVpYKCvl6730",
+          "needs_confirmation": false,
+          "outcome": "denied"
+        }
+      ],
+      "matched_other_call": false
+    },
+    {
+      "denied_result_sequence": 184,
+      "command_sha256": "ab1a9d7073bd0926e95c6f5ba50864075628d53c15de8eb4af5a2f54b0e51ac6",
+      "whole_run_exact_command_matches": [
+        {
+          "model_sequence": 182,
+          "tool_call_id": "call_00_zxZyNR0JKtKehYiNIDJX8587",
+          "needs_confirmation": false,
+          "outcome": "denied"
+        }
+      ],
+      "matched_other_call": false
+    }
+  ],
+  "aggregate": {
+    "all_seven_denied_original_equals_effective": true,
+    "all_seven_denied_needs_confirmation_false": true,
+    "all_seven_denied_have_no_confirmation_answer": true,
+    "all_seven_denied_require_escalated": true,
+    "all_seven_denied_command_string_nonempty": true,
+    "all_seven_denied_justification_string_nonempty": true,
+    "all_adjacent_good_justification_string_nonempty": true,
+    "all_seven_denied_baseline_absent": true,
+    "all_seven_denied_zero_changes_complete": true,
+    "any_denied_command_exactly_repeated_elsewhere_in_run": false,
+    "selected_command_hashes_all_distinct": true
+  },
+  "source_identity": {
+    "current_files": [
+      {
+        "path": "crates/code/core/src/fact_control/receipts.rs",
+        "sha256": "226107d143da7986451083e318aa8b087a947941e87bec1c1c07f220dfda455a"
+      },
+      {
+        "path": "crates/code/core/src/fact_control/tool_results.rs",
+        "sha256": "6f8282212c364a4d7baf0550de87040ffe68a157142847c2e8484b8cf58c6bb0"
+      },
+      {
+        "path": "crates/code/core/src/agent_api/conversation_runtime/owned_fact.rs",
+        "sha256": "9424861e14d0c884d33ea258dff55910c55fd5f392e357cf246056d0bf8f4fb9"
+      },
+      {
+        "path": "crates/code/core/src/agent_api/conversation_runtime/turn_outcome.rs",
+        "sha256": "997892d13b810aef1673b0f15627fc8371352b08344da6c12d676d09d3528895"
+      },
+      {
+        "path": "crates/code/core/src/tools/builtin/bash.rs",
+        "sha256": "b4a91c1b054f90b7ae619b2b3a6e0cb6027688882a977f557f4d5705293bc5ea"
+      },
+      {
+        "path": "crates/code/core/src/tools/registry.rs",
+        "sha256": "084fe829a1af0616852fee660684e1cf14b485b74203fbeb260b1f1cee5342be"
+      }
+    ],
+    "frozen_manifests": [
+      {
+        "manifest": "t005/source-freeze.json",
+        "selected_source_hashes": [
+          {
+            "path": "crates/code/core/src/agent_api/conversation_runtime/owned_fact.rs",
+            "sha256": "9424861e14d0c884d33ea258dff55910c55fd5f392e357cf246056d0bf8f4fb9"
+          },
+          {
+            "path": "crates/code/core/src/agent_api/conversation_runtime/turn_outcome.rs",
+            "sha256": "997892d13b810aef1673b0f15627fc8371352b08344da6c12d676d09d3528895"
+          },
+          {
+            "path": "crates/code/core/src/fact_control/receipts.rs",
+            "sha256": "2e0d104e1026aba7625072c77475164f3efc96ae8d6d355f89c2f19677e6f6a6"
+          }
+        ]
+      },
+      {
+        "manifest": "owned-source-before-build.json",
+        "selected_source_hashes": [
+          {
+            "path": "crates/code/core/src/agent_api/conversation_runtime/owned_fact.rs",
+            "sha256": "9424861e14d0c884d33ea258dff55910c55fd5f392e357cf246056d0bf8f4fb9"
+          },
+          {
+            "path": "crates/code/core/src/agent_api/conversation_runtime/turn_outcome.rs",
+            "sha256": "997892d13b810aef1673b0f15627fc8371352b08344da6c12d676d09d3528895"
+          },
+          {
+            "path": "crates/code/core/src/fact_control/receipts.rs",
+            "sha256": "2e0d104e1026aba7625072c77475164f3efc96ae8d6d355f89c2f19677e6f6a6"
+          },
+          {
+            "path": "crates/code/core/src/tools/builtin/bash.rs",
+            "sha256": "b4a91c1b054f90b7ae619b2b3a6e0cb6027688882a977f557f4d5705293bc5ea"
+          }
+        ]
+      },
+      {
+        "manifest": "owned-source-after-paired-build.json",
+        "selected_source_hashes": [
+          {
+            "path": "crates/code/core/src/agent_api/conversation_runtime/owned_fact.rs",
+            "sha256": "9424861e14d0c884d33ea258dff55910c55fd5f392e357cf246056d0bf8f4fb9"
+          },
+          {
+            "path": "crates/code/core/src/agent_api/conversation_runtime/turn_outcome.rs",
+            "sha256": "997892d13b810aef1673b0f15627fc8371352b08344da6c12d676d09d3528895"
+          },
+          {
+            "path": "crates/code/core/src/fact_control/receipts.rs",
+            "sha256": "2e0d104e1026aba7625072c77475164f3efc96ae8d6d355f89c2f19677e6f6a6"
+          },
+          {
+            "path": "crates/code/core/src/tools/builtin/bash.rs",
+            "sha256": "b4a91c1b054f90b7ae619b2b3a6e0cb6027688882a977f557f4d5705293bc5ea"
+          }
+        ]
+      },
+      {
+        "manifest": "post-canonical-source-before-build.json",
+        "selected_source_hashes": [
+          {
+            "path": "crates/code/core/src/agent_api/conversation_runtime/owned_fact.rs",
+            "sha256": "9424861e14d0c884d33ea258dff55910c55fd5f392e357cf246056d0bf8f4fb9"
+          },
+          {
+            "path": "crates/code/core/src/agent_api/conversation_runtime/turn_outcome.rs",
+            "sha256": "997892d13b810aef1673b0f15627fc8371352b08344da6c12d676d09d3528895"
+          },
+          {
+            "path": "crates/code/core/src/fact_control/receipts.rs",
+            "sha256": "226107d143da7986451083e318aa8b087a947941e87bec1c1c07f220dfda455a"
+          },
+          {
+            "path": "crates/code/core/src/tools/builtin/bash.rs",
+            "sha256": "b4a91c1b054f90b7ae619b2b3a6e0cb6027688882a977f557f4d5705293bc5ea"
+          }
+        ]
+      },
+      {
+        "manifest": "post-canonical-source-after-build.json",
+        "selected_source_hashes": [
+          {
+            "path": "crates/code/core/src/agent_api/conversation_runtime/owned_fact.rs",
+            "sha256": "9424861e14d0c884d33ea258dff55910c55fd5f392e357cf246056d0bf8f4fb9"
+          },
+          {
+            "path": "crates/code/core/src/agent_api/conversation_runtime/turn_outcome.rs",
+            "sha256": "997892d13b810aef1673b0f15627fc8371352b08344da6c12d676d09d3528895"
+          },
+          {
+            "path": "crates/code/core/src/fact_control/receipts.rs",
+            "sha256": "226107d143da7986451083e318aa8b087a947941e87bec1c1c07f220dfda455a"
+          },
+          {
+            "path": "crates/code/core/src/tools/builtin/bash.rs",
+            "sha256": "b4a91c1b054f90b7ae619b2b3a6e0cb6027688882a977f557f4d5705293bc5ea"
+          }
+        ]
+      }
+    ]
+  },
+  "condition_limits": {
+    "actual_permission_decision_persisted": false,
+    "actual_confirmation_provider_recheck_persisted": false,
+    "argument_validation_error_persisted_on_denied_record": false,
+    "same_args_digest_rules_out_changed_effective_digest_arm": true,
+    "remaining_current_source_branches": [
+      "effective_permission == Deny",
+      "effective_permission == Ask && !needs_confirmation && provider_requires_confirmation (including no-agent true fallback)"
+    ],
+    "cache_or_task_local_authority_loss_uniquely_proven": false,
+    "missing_or_empty_justification_supported": false,
+    "semantic_command_equivalence_tested": false
+  },
+  "scope": {
+    "only_named_session_read": true,
+    "ordinary_model_text_or_reasoning_output": false,
+    "command_text_output": false,
+    "justification_text_output": false,
+    "successful_tool_output_copied": false,
+    "source_task_runtime_mutation": false,
+    "tests_run": false
+  }
+}

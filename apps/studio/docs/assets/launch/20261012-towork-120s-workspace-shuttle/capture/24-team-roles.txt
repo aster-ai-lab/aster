@@ -1,0 +1,123 @@
+Window: "ToWork", App: ToWork.
+0 standard window ToWork, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content Description: ToWork, URL: 127.0.0.1:4318/windows/main/index.html
+			3 pop up button RoyLin
+			4 button 工作
+			5 button 消息
+			6 button 知识
+			7 button 团队
+			8 button 插件
+			9 button (collapsed) 任务, Secondary Actions: Expand
+			10 button 设置
+			11 container
+				12 container
+					13 heading Toyou AI Labs, Value: 1
+						14 text Toyou AI Labs
+					15 text 4 名成员
+				16 container Toyou AI Labs
+					17 container 协作
+						18 text 协作
+						19 button 工作台
+						20 button 云盘
+						21 button 日程
+						22 button 邮件
+					23 container 组织
+						24 text 组织
+						25 button 成员
+						26 button 职位
+						27 button 角色
+					28 container 系统
+						29 text 系统
+						30 button 用量
+						31 button 设置
+				32 heading 角色, Value: 2
+					33 text 角色
+				34 text 内置角色不能修改
+				35 container 角色
+					36 text 角色
+					37 button 新建角色
+					38 container 角色
+						39 text 内置
+						40 button 超级管理员
+						41 button 管理员
+						42 button 成员
+						43 text 自定义
+						44 container
+							45 button 财务
+							46 button 编辑 财务
+							47 button 删除角色 财务
+				48 container 角色
+					49 text 超级管理员
+					50 text 组织创建人，拥有全部权限。
+					51 text 1 名成员
+					52 button 变更记录
+					53 container 数据范围
+						54 text 数据范围
+						55 combo box (disabled, collapsed, settable) 数据范围, Secondary Actions: Expand, Value: 全团队
+
+						56 text 操作必须同时具备功能权限和目标数据权限。部门范围随成员当前部门变化。
+					57 text 全团队邀请需要全团队数据范围，且签发人必须有权授予当前的「成员」角色权限。兑换时会重新检查签发人的当前权限。只有团队创建者可以邀请后台管理员。
+					58 text 编辑团队资料需要全团队数据范围。转交和解散仅限创建人。最后一名有效管理员不能退出。
+					59 text 职位定义由整个团队共用。新建、重命名和删除需要全团队数据范围及对应权限。分配职位时，目标成员必须在你的数据范围内。
+					60 text 设置
+					61 text 1 / 1
+					62 button (disabled) 编辑团队资料
+					63 text 邮件
+					64 text 6 / 6
+					65 button (disabled) 选择团队邮件收件人
+					66 button (disabled) 读取邮件
+					67 button (disabled) 保存草稿
+					68 button (disabled) 发送邮件
+					69 button (disabled) 修改邮件状态
+					70 button (disabled) 删除邮件
+					71 text 日程
+					72 text 4 / 4
+					73 button (disabled) 查看日程
+					74 button (disabled) 新建日程
+					75 button (disabled) 编辑日程
+					76 button (disabled) 删除日程
+					77 text 成员
+					78 text 6 / 6
+					79 button (disabled) 修改成员
+					80 button (disabled) 移除成员
+					81 button (disabled) 邀请成员
+					82 button (disabled) 分配部门
+					83 button (disabled) 分配职位
+					84 button (disabled) 分配角色
+					85 text 加入申请
+					86 text 3 / 3
+					87 button (disabled) 配置加入链接
+					88 button (disabled) 通过加入申请
+					89 button (disabled) 拒绝加入申请
+					90 text 部门
+					91 text 3 / 3
+					92 button (disabled) 新建部门
+					93 button (disabled) 重命名部门
+					94 button (disabled) 删除部门
+					95 text 职位
+					96 text 3 / 3
+					97 button (disabled) 新建职位
+					98 button (disabled) 重命名职位
+					99 button (disabled) 删除职位
+					100 text 角色
+					101 text 4 / 4
+					102 button (disabled) 允许新建角色
+					103 button (disabled) 允许编辑角色
+					104 button (disabled) 允许删除角色
+					105 button (disabled) 查看角色变更记录
+					106 text 工作台
+					107 text 5 / 5
+					108 button (disabled) 查看团队申请
+					109 button (disabled) 发起团队申请
+					110 button (disabled) 批准团队申请
+					111 button (disabled) 拒绝团队申请
+					112 button (disabled) 撤回自己的申请
+	113 close button
+	114 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	115 minimize button
+116 menu bar
+	117 ToWork
+	118 Edit
+
+The focused UI element is 2 HTML content Description: ToWork, URL: 127.0.0.1:4318/windows/main/index.html

@@ -125,7 +125,7 @@ fn skill(name: &str, version: &str) -> Arc<Skill> {
     Arc::new(Skill {
         name: name.to_string(),
         description: version.to_string(),
-        allowed_tools: Some("search_skills(*)".to_string()),
+        allowed_tools: None,
         disable_model_invocation: false,
         kind: SkillKind::Instruction,
         content: format!("Pinned instructions for {version}."),
@@ -511,14 +511,14 @@ impl SkillCutoverClient {
         }
     }
 
-    fn search_call(id: &str, query: &str) -> LlmResponse {
+    fn skill_call(id: &str, skill_name: &str) -> LlmResponse {
         LlmResponse {
             message: Message {
                 role: "assistant".to_string(),
                 content: vec![ContentBlock::ToolUse {
                     id: id.to_string(),
-                    name: "search_skills".to_string(),
-                    input: serde_json::json!({"query": query}),
+                    name: "Skill".to_string(),
+                    input: serde_json::json!({"skill_name": skill_name}),
                 }],
                 reasoning_content: None,
                 transcript_text: None,
@@ -546,7 +546,7 @@ impl SkillCutoverClient {
                 ContentBlock::ToolResult { content, .. } => Some(content.as_text()),
                 _ => None,
             })
-            .ok_or_else(|| anyhow::anyhow!("search_skills result is missing"))
+            .ok_or_else(|| anyhow::anyhow!("Skill result is missing"))
     }
 }
 
@@ -558,10 +558,7 @@ impl LlmClient for SkillCutoverClient {
         _system: Option<&str>,
         tools: &[ToolDefinition],
     ) -> anyhow::Result<LlmResponse> {
-        if !tools
-            .iter()
-            .any(|definition| definition.name == "search_skills")
-        {
+        if !tools.iter().any(|definition| definition.name == "Skill") {
             return Ok(CutoverClient::final_text("auxiliary completion"));
         }
 
@@ -569,13 +566,13 @@ impl LlmClient for SkillCutoverClient {
             0 => {
                 self.old_surface_observed.add_permits(1);
                 self.release_old_call.acquire().await?.forget();
-                Ok(Self::search_call("search-generation-one", "pinned-skill"))
+                Ok(Self::skill_call("skill-generation-one", "pinned-skill"))
             }
             1 => {
                 let result = Self::latest_tool_result(messages)?;
                 anyhow::ensure!(
                     result.contains("generation-one"),
-                    "first Run search_skills resolved another generation: {result}"
+                    "first Run Skill resolved another generation: {result}"
                 );
                 self.observed_search_versions
                     .lock()
@@ -583,12 +580,12 @@ impl LlmClient for SkillCutoverClient {
                     .push("generation-one".to_string());
                 Ok(CutoverClient::final_text("skill generation one complete"))
             }
-            2 => Ok(Self::search_call("search-generation-two", "pinned")),
+            2 => Ok(Self::skill_call("skill-generation-two", "pinned-skill")),
             3 => {
                 let result = Self::latest_tool_result(messages)?;
                 anyhow::ensure!(
                     result.contains("generation-two"),
-                    "second Run search_skills resolved another generation: {result}"
+                    "second Run Skill resolved another generation: {result}"
                 );
                 self.observed_search_versions
                     .lock()
@@ -1767,8 +1764,7 @@ async fn withheld_skill_does_not_stop_the_session() {
         run_registry.get("kept-skill").unwrap().description.as_str(),
         "kept-generation"
     );
-    let sentence =
-        "skill 'shared-skill' is withheld because the discovered file and the admitted generation differ";
+    let sentence = "skill 'shared-skill' is withheld because the discovered file and the admitted generation differ";
     assert_eq!(
         run_registry.withheld_reason("shared-skill").as_deref(),
         Some(sentence)

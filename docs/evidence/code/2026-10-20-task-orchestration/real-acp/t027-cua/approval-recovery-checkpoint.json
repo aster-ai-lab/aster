@@ -1,0 +1,33 @@
+{
+  "schema": "aster.t027.approval-recovery-checkpoint.v1",
+  "observed_at_utc": "2026-10-19T20:41:35.316350+00:00",
+  "native_session_id": "01a155cf-02f1-7478-8105-070a97a1507c",
+  "core_session_id": "591d55d3-ea0e-42c5-8036-ae475c7881fc",
+  "host_execution": {
+    "status": "awaiting-approval",
+    "executionId": "01a155cf-04b9-75e8-82ca-5d5371faeb6d",
+    "anchorMessageId": "01a155cf-04b9-75e8-82ca-5d5371faeb6d",
+    "observedAt": "2026-10-19T20:36:58.652Z"
+  },
+  "assistant_metadata": {
+    "id": "01a155cf-04b9-75e8-82ca-5d5371faeb6d",
+    "role": "assistant",
+    "status": "pending",
+    "createdAt": "2026-10-19T20:16:32.953Z",
+    "updatedAt": "2026-10-19T20:36:58.647Z",
+    "modelId": "deepseek::deepseek-flash"
+  },
+  "native_fact_count": 125,
+  "native_fact_last_seq": 125,
+  "native_fact_last_type": "model.turn",
+  "native_fact_sha256": "34e1ea695f145d94d62cb22d03d9221dec0cbe1fe630f9bf163843a033d8c73a",
+  "ui_observation": {
+    "composer": "idle; disabled send; no pause control",
+    "last_tool_cards": "two awaiting confirmation",
+    "approval_modal_present": false,
+    "ordinary_navigation_recovery": "home then reopen exact same task; still no approval controls",
+    "prompt_resent": false,
+    "model_final_observed": false
+  },
+  "conclusion": "Native persisted approval wait and idle UI disagree. Not certified terminal; no new task, config change or model-answer repair."
+}

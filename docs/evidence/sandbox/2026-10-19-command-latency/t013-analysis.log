@@ -1,0 +1,242 @@
+{
+  "qualified": true,
+  "samples": 76,
+  "variants": {
+    "software": {
+      "allSamples": {
+        "count": 38,
+        "meanMs": 10179.999790578948,
+        "p50Ms": 9706.218208,
+        "p95Ms": 13042.650166,
+        "minMs": 9512.744583,
+        "maxMs": 13432.907292,
+        "populationStdDevMs": 988.0383308484784
+      },
+      "subsequentSamples": {
+        "count": 36,
+        "meanMs": 10211.525466444444,
+        "p50Ms": 9755.979166500001,
+        "p95Ms": 13042.650166,
+        "minMs": 9512.744583,
+        "maxMs": 13432.907292,
+        "populationStdDevMs": 1005.7060293429579
+      },
+      "firstSamplesMs": [
+        9564.902875,
+        9660.172375
+      ],
+      "roundDistributions": {
+        "software-1": {
+          "count": 19,
+          "meanMs": 10056.13627194737,
+          "p50Ms": 9723.215458,
+          "p95Ms": 12321.610666999999,
+          "minMs": 9512.744583,
+          "maxMs": 12321.610666999999,
+          "populationStdDevMs": 755.2522466126965
+        },
+        "software-2": {
+          "count": 19,
+          "meanMs": 10303.863309210526,
+          "p50Ms": 9689.220958,
+          "p95Ms": 13432.907292,
+          "minMs": 9537.657458,
+          "maxMs": 13432.907292,
+          "populationStdDevMs": 1162.4754569205227
+        }
+      },
+      "phases": {
+        "host_connect": {
+          "count": 38,
+          "meanMs": 1666.5614352894736,
+          "p50Ms": 1583.8214584999998,
+          "p95Ms": 2131.0429160000003,
+          "minMs": 1546.302708,
+          "maxMs": 2610.033,
+          "populationStdDevMs": 206.24809651026098
+        },
+        "bundle_prepare": {
+          "count": 38,
+          "meanMs": 344.6283135263158,
+          "p50Ms": 313.35964550000006,
+          "p95Ms": 578.402833,
+          "minMs": 281.757917,
+          "maxMs": 718.0037080000001,
+          "populationStdDevMs": 87.60506777832165
+        },
+        "vm_create": {
+          "count": 38,
+          "meanMs": 7856.201433236843,
+          "p50Ms": 7458.1863335,
+          "p95Ms": 10698.302542000001,
+          "minMs": 7361.277958,
+          "maxMs": 10872.370667000001,
+          "populationStdDevMs": 836.4794096056506
+        },
+        "process_start": {
+          "count": 38,
+          "meanMs": 66.59457671052631,
+          "p50Ms": 62.868624499999996,
+          "p95Ms": 78.70366700000001,
+          "minMs": 60.825833,
+          "maxMs": 163.102959,
+          "populationStdDevMs": 16.364767716267263
+        },
+        "collect_wait": {
+          "count": 38,
+          "meanMs": 76.5957060263158,
+          "p50Ms": 72.558729,
+          "p95Ms": 125.62104199999999,
+          "minMs": 62.770624999999995,
+          "maxMs": 129.668167,
+          "populationStdDevMs": 13.269493363409605
+        },
+        "vm_delete": {
+          "count": 38,
+          "meanMs": 164.84951644736842,
+          "p50Ms": 159.63262500000002,
+          "p95Ms": 232.99075,
+          "minMs": 137.531958,
+          "maxMs": 249.713667,
+          "populationStdDevMs": 22.328902100594753
+        },
+        "host_shutdown": {
+          "count": 38,
+          "meanMs": 1.0910186578947367,
+          "p50Ms": 1.041417,
+          "p95Ms": 1.3545,
+          "minMs": 0.8975409999999999,
+          "maxMs": 2.025125,
+          "populationStdDevMs": 0.18840817484656697
+        },
+        "scratch_remove": {
+          "count": 38,
+          "meanMs": 1.739799447368421,
+          "p50Ms": 1.565854,
+          "p95Ms": 2.654791,
+          "minMs": 1.4175419999999999,
+          "maxMs": 2.770125,
+          "populationStdDevMs": 0.3375017174732673
+        }
+      }
+    },
+    "hardware": {
+      "allSamples": {
+        "count": 38,
+        "meanMs": 3438.224541657895,
+        "p50Ms": 3425.6227499999995,
+        "p95Ms": 3925.770125,
+        "minMs": 3137.513125,
+        "maxMs": 4178.84325,
+        "populationStdDevMs": 221.56816382504246
+      },
+      "subsequentSamples": {
+        "count": 36,
+        "meanMs": 3446.5680231388887,
+        "p50Ms": 3425.6227499999995,
+        "p95Ms": 3925.770125,
+        "minMs": 3161.623875,
+        "maxMs": 4178.84325,
+        "populationStdDevMs": 221.8970968910478
+      },
+      "firstSamplesMs": [
+        3137.513125,
+        3438.5706250000003
+      ],
+      "roundDistributions": {
+        "hardware-1": {
+          "count": 19,
+          "meanMs": 3463.4401995263156,
+          "p50Ms": 3480.534666,
+          "p95Ms": 3822.9849590000003,
+          "minMs": 3137.513125,
+          "maxMs": 3822.9849590000003,
+          "populationStdDevMs": 165.24251081345207
+        },
+        "hardware-2": {
+          "count": 19,
+          "meanMs": 3413.0088837894737,
+          "p50Ms": 3377.896292,
+          "p95Ms": 4178.84325,
+          "minMs": 3161.623875,
+          "maxMs": 4178.84325,
+          "populationStdDevMs": 263.83357682105844
+        }
+      },
+      "phases": {
+        "host_connect": {
+          "count": 38,
+          "meanMs": 451.72783989473686,
+          "p50Ms": 448.717334,
+          "p95Ms": 510.923291,
+          "minMs": 406.73966700000005,
+          "maxMs": 641.378291,
+          "populationStdDevMs": 40.089444296730875
+        },
+        "bundle_prepare": {
+          "count": 38,
+          "meanMs": 350.37651207894737,
+          "p50Ms": 340.844354,
+          "p95Ms": 448.696041,
+          "minMs": 284.111375,
+          "maxMs": 562.168416,
+          "populationStdDevMs": 49.379263978309055
+        },
+        "vm_create": {
+          "count": 38,
+          "meanMs": 2316.7668727368423,
+          "p50Ms": 2301.603729,
+          "p95Ms": 2461.397834,
+          "minMs": 2124.5159999999996,
+          "maxMs": 3106.959667,
+          "populationStdDevMs": 168.22931250200185
+        },
+        "process_start": {
+          "count": 38,
+          "meanMs": 64.08225005263158,
+          "p50Ms": 63.676542,
+          "p95Ms": 69.91225,
+          "minMs": 59.988375,
+          "maxMs": 75.917834,
+          "populationStdDevMs": 2.659136969498057
+        },
+        "collect_wait": {
+          "count": 38,
+          "meanMs": 75.45520839473684,
+          "p50Ms": 73.7131045,
+          "p95Ms": 79.429416,
+          "minMs": 70.55116699999999,
+          "maxMs": 136.60775,
+          "populationStdDevMs": 10.233052905420738
+        },
+        "vm_delete": {
+          "count": 38,
+          "meanMs": 174.76188818421053,
+          "p50Ms": 166.893083,
+          "p95Ms": 250.804959,
+          "minMs": 144.540875,
+          "maxMs": 395.94487499999997,
+          "populationStdDevMs": 40.34103151377643
+        },
+        "host_shutdown": {
+          "count": 38,
+          "meanMs": 1.1291436052631578,
+          "p50Ms": 1.0797505,
+          "p95Ms": 1.660625,
+          "minMs": 0.9291250000000001,
+          "maxMs": 1.8694169999999999,
+          "populationStdDevMs": 0.19108839622700102
+        },
+        "scratch_remove": {
+          "count": 38,
+          "meanMs": 2.0289670789473684,
+          "p50Ms": 1.6620415,
+          "p95Ms": 2.50025,
+          "minMs": 1.454167,
+          "maxMs": 12.934332999999999,
+          "populationStdDevMs": 1.8095898662379182
+        }
+      }
+    }
+  }
+}

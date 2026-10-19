@@ -1,0 +1,129 @@
+{
+  "schema": "aster.sandbox.t013.round-execution.v1",
+  "rounds": [
+    {
+      "name": "software-1",
+      "variant": "software",
+      "command": [
+        "/Users/roylin/code/aster/target/t013-probe/core-command-timing-probe",
+        "--exact",
+        "sandbox::oci::tests::real_command_phase_timing",
+        "--ignored",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "environmentOverride": {
+        "ASTER_TEST_OCI_ASSETS": "/Users/roylin/code/aster/target/t013-assets-software"
+      },
+      "startUtc": "2026-10-19T16:28:58.373974+00:00",
+      "loadAverageStart": [
+        5.44677734375,
+        6.94970703125,
+        6.236328125
+      ],
+      "expectedSamples": 19,
+      "roundDeadlineSeconds": 1800,
+      "exitCode": 0,
+      "wallSeconds": 191.1199403339997,
+      "endUtc": "2026-10-19T16:32:09.520455+00:00",
+      "loadAverageEnd": [
+        5.82763671875,
+        7.24365234375,
+        6.54638671875
+      ]
+    },
+    {
+      "name": "hardware-1",
+      "variant": "hardware",
+      "command": [
+        "/Users/roylin/code/aster/target/t013-probe/core-command-timing-probe",
+        "--exact",
+        "sandbox::oci::tests::real_command_phase_timing",
+        "--ignored",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "environmentOverride": {
+        "ASTER_TEST_OCI_ASSETS": "/Users/roylin/code/aster/target/t013-assets-hardware"
+      },
+      "startUtc": "2026-10-19T16:32:09.644330+00:00",
+      "loadAverageStart": [
+        5.82763671875,
+        7.24365234375,
+        6.54638671875
+      ],
+      "expectedSamples": 19,
+      "roundDeadlineSeconds": 1800,
+      "exitCode": 0,
+      "wallSeconds": 65.83096454199404,
+      "endUtc": "2026-10-19T16:33:15.481509+00:00",
+      "loadAverageEnd": [
+        9.05517578125,
+        8.00341796875,
+        6.88525390625
+      ]
+    },
+    {
+      "name": "hardware-2",
+      "variant": "hardware",
+      "command": [
+        "/Users/roylin/code/aster/target/t013-probe/core-command-timing-probe",
+        "--exact",
+        "sandbox::oci::tests::real_command_phase_timing",
+        "--ignored",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "environmentOverride": {
+        "ASTER_TEST_OCI_ASSETS": "/Users/roylin/code/aster/target/t013-assets-hardware"
+      },
+      "startUtc": "2026-10-19T16:33:15.604226+00:00",
+      "loadAverageStart": [
+        9.05517578125,
+        8.00341796875,
+        6.88525390625
+      ],
+      "expectedSamples": 19,
+      "roundDeadlineSeconds": 1800,
+      "exitCode": 0,
+      "wallSeconds": 64.89555491600186,
+      "endUtc": "2026-10-19T16:34:20.500120+00:00",
+      "loadAverageEnd": [
+        9.24658203125,
+        8.4248046875,
+        7.134765625
+      ]
+    },
+    {
+      "name": "software-2",
+      "variant": "software",
+      "command": [
+        "/Users/roylin/code/aster/target/t013-probe/core-command-timing-probe",
+        "--exact",
+        "sandbox::oci::tests::real_command_phase_timing",
+        "--ignored",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "environmentOverride": {
+        "ASTER_TEST_OCI_ASSETS": "/Users/roylin/code/aster/target/t013-assets-software"
+      },
+      "startUtc": "2026-10-19T16:34:20.717387+00:00",
+      "loadAverageStart": [
+        9.24658203125,
+        8.4248046875,
+        7.134765625
+      ],
+      "expectedSamples": 19,
+      "roundDeadlineSeconds": 1800,
+      "exitCode": 0,
+      "wallSeconds": 195.8203889579745,
+      "endUtc": "2026-10-19T16:37:36.538422+00:00",
+      "loadAverageEnd": [
+        9.64111328125,
+        9.3642578125,
+        7.8154296875
+      ]
+    }
+  ]
+}

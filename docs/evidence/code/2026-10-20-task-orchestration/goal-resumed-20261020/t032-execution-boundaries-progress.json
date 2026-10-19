@@ -1,0 +1,63 @@
+[
+  {
+    "seq": 26,
+    "id": "call_00_pKTht2vqir253wNffh017882",
+    "mode": "use_default",
+    "command_sha256": "9ab810fb4fb8f5027729990e673949ee44255a677eb77851c8956d9dcf37779e",
+    "argument_keys": [
+      "command"
+    ]
+  },
+  {
+    "seq": 42,
+    "id": "call_00_gpN0ALzo2KfuVyPF4FQs8397",
+    "mode": "use_default",
+    "command_sha256": "0304ddf58f255cb287ab9bc129ab91bfe99ed07293a128b1fe65360c5a3f8ee0",
+    "argument_keys": [
+      "command"
+    ]
+  },
+  {
+    "seq": 46,
+    "id": "call_00_cdawGN4Sx1x94IpsphUW9087",
+    "mode": "use_default",
+    "command_sha256": "56a79f3b115448072387c2480044bfa2cf8f90e4f5fddd8c943b4e051b81f80b",
+    "argument_keys": [
+      "command",
+      "timeout"
+    ]
+  },
+  {
+    "seq": 50,
+    "id": "call_00_Af7FueygyoSXuIbyXeEP3745",
+    "mode": "require_escalated",
+    "command_sha256": "1f8958f39aa4416d2d5dc58e812e3a28e35723b96a20f9493d7c28c3dca5d0a5",
+    "argument_keys": [
+      "command",
+      "sandbox_permissions",
+      "justification"
+    ]
+  },
+  {
+    "seq": 54,
+    "id": "call_00_Xj7KK4W2K06IbTDd6KY29018",
+    "mode": "require_escalated",
+    "command_sha256": "2303e177a1e784562642712e509e4a83c4b4d3e50c4dc0fd3d3f40b3a02749bf",
+    "argument_keys": [
+      "command",
+      "sandbox_permissions",
+      "justification"
+    ]
+  },
+  {
+    "seq": 58,
+    "id": "call_00_mApMIRM7tTau1e4LIBuL6802",
+    "mode": "require_escalated",
+    "command_sha256": "d3f740c7e2afa3ae84e26ee8d545a608936f12c19146bbd2a1fab2f279cf6ee5",
+    "argument_keys": [
+      "command",
+      "sandbox_permissions",
+      "justification"
+    ]
+  }
+]

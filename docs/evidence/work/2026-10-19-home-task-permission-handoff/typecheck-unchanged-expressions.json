@@ -1,0 +1,20 @@
+[
+  {
+    "file": "apps/work/src/renderer/pages/agents/__tests__/AgentPage.test.tsx",
+    "expression": "expect(toast.error.mock.calls.some((call) => String(call[0]).includes('workspace not found'))).toBe(false)",
+    "headContains": true,
+    "currentContains": true
+  },
+  {
+    "file": "apps/work/src/renderer/pages/agents/useWorkbenchDefaultAgent.ts",
+    "expression": "modelId: string",
+    "headContains": true,
+    "currentContains": true
+  },
+  {
+    "file": "apps/work/src/renderer/pages/agents/useWorkbenchDefaultAgent.ts",
+    "expression": "model: input.modelId,",
+    "headContains": true,
+    "currentContains": true
+  }
+]

@@ -1,0 +1,4 @@
+[[permission]]
+identifier = "allow-preferences"
+description = "Reads and commits the signed-in member's native preferences from the owned renderer."
+commands.allow = ["preference_read", "preference_commit"]

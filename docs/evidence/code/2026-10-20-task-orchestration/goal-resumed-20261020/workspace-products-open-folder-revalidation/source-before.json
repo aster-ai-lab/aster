@@ -1,0 +1,57 @@
+[
+  {
+    "path": "apps/work/src/renderer/pages/agents/taskConversation/turn.ts",
+    "sha256": "d75bcbd01cefcf7495f299116fd27838b9fdf706f4a6ef7eb1f84a37675fb377",
+    "bytes": 40532
+  },
+  {
+    "path": "apps/work/src/renderer/pages/agents/taskConversation/TaskConversationMessage.tsx",
+    "sha256": "ca1dd2831ffe477601437bb3b245f4f1ed1c8a57d587b4fdbff9bff4425d58c2",
+    "bytes": 50843
+  },
+  {
+    "path": "apps/work/src/renderer/pages/agents/components/AgentSessionMessages.tsx",
+    "sha256": "0b621715ecb0f38b20bfe4c878e915582a09a0743203318457113b6203629bc6",
+    "bytes": 8067
+  },
+  {
+    "path": "apps/work/src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+    "sha256": "9a657e7eb6fa27cb54bd8fb2362b56c126c47238692ae31d30c746aa59fce67e",
+    "bytes": 98686
+  },
+  {
+    "path": "apps/work/src/renderer/pages/agents/WorkbenchSessionFiles.tsx",
+    "sha256": "2109cab514dd4d68d71fd4ba256162fcfb98025451a96af6adc02bafa6db37da",
+    "bytes": 117062
+  },
+  {
+    "path": "apps/work/src/renderer/pages/agents/__tests__/WorkbenchSessionFiles.openFolder.test.tsx",
+    "sha256": "0f2600a5faca302ba8668f7ae0df00c86a6ce20c57a399f06b345c57c9b9fa8c",
+    "bytes": 4335
+  },
+  {
+    "path": "apps/work/src/renderer/shell/studioMainBridge.js",
+    "sha256": "78892437347d09e70a41de34c9cb1862a177d556dc86806cc87f16c4e6495dd8",
+    "bytes": 75326
+  },
+  {
+    "path": "apps/work/src/renderer/shell/studioMainBridge.test.ts",
+    "sha256": "0887a6f0b18c8ba536f6ae1957276bad0bcab3c757942f3adb33b9ce59a047bd",
+    "bytes": 30692
+  },
+  {
+    "path": "apps/work/src-tauri/src/workspace_file.rs",
+    "sha256": "d88370f843be4a7535524af913bbc84f5864fd834716e5b2a96248fa567f1889",
+    "bytes": 20118
+  },
+  {
+    "path": "apps/work/src-tauri/src/authority.rs",
+    "sha256": "1b5c050da76d1d070790ec803a481c644e668401d03b2a9e2488dae560368623",
+    "bytes": 220746
+  },
+  {
+    "path": "apps/work/src-tauri/src/no_window.rs",
+    "sha256": "b60d0b5d7972cc7bddb31090dab6fc7ca42bc0ce6f51e9e194a9198749846bd0",
+    "bytes": 8066
+  }
+]

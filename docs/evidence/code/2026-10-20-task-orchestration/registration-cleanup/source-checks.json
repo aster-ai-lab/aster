@@ -1,0 +1,14 @@
+{
+  "ownedFunctionMatchesRustfmt": true,
+  "siblingTestRustfmtExit": 0,
+  "focusedDiffCheckExit": 0,
+  "productionFunctionSha256": "d0dfdebb01741f659fcae310ea21c206598124a1061658c95d66fdff21e2f4bf",
+  "testSha256": "edbc656fc1564d8406f350c6c809e5ab1a898ca0075ce919ed9eb86b2ec1e027",
+  "review": {
+    "reviewer": "/root/runtime_speed",
+    "kind": "independent read-only source review",
+    "result": "no blocking findings",
+    "reviewerBuiltOrModifiedFiles": false
+  },
+  "output": ""
+}

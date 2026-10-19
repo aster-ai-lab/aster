@@ -1,0 +1,16 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-code-core",
+    "--lib",
+    "agent_api::tests::fact_log::nested_governance",
+    "--",
+    "--nocapture"
+  ],
+  "exit_code": 0,
+  "elapsed_ms": 1144.819
+}

@@ -131,6 +131,52 @@ impl From<SandboxOutput> for SandboxExecutionOutput {
 // BashSandbox trait
 // ============================================================================
 
+/// OS/shell selected by a bound command executor, without granting execution.
+/// Custom executors that do not report this fact remain unknown.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+#[non_exhaustive]
+pub enum ShellExecutionTarget {
+    #[default]
+    Unknown,
+    HostBash,
+    HostPowerShell,
+    LinuxGuestBash,
+    LinuxGuestSh,
+}
+
+impl ShellExecutionTarget {
+    pub fn parse(value: &str) -> anyhow::Result<Self> {
+        match value {
+            "unknown" => Ok(Self::Unknown),
+            "host_bash" => Ok(Self::HostBash),
+            "host_powershell" => Ok(Self::HostPowerShell),
+            "linux_guest_bash" => Ok(Self::LinuxGuestBash),
+            "linux_guest_sh" => Ok(Self::LinuxGuestSh),
+            _ => anyhow::bail!(
+                "shell execution target must be one of [unknown, host_bash, host_powershell, linux_guest_bash, linux_guest_sh]; got {value:?}"
+            ),
+        }
+    }
+
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Unknown => "unknown",
+            Self::HostBash => "host_bash",
+            Self::HostPowerShell => "host_powershell",
+            Self::LinuxGuestBash => "linux_guest_bash",
+            Self::LinuxGuestSh => "linux_guest_sh",
+        }
+    }
+
+    pub(crate) const fn local_host_shell() -> Self {
+        if cfg!(windows) {
+            Self::HostPowerShell
+        } else {
+            Self::HostBash
+        }
+    }
+}
+
 /// Abstraction over sandbox bash execution used by the `bash` built-in tool.
 ///
 /// Implement this trait to replace the native sandbox with a custom backend.
@@ -138,6 +184,12 @@ impl From<SandboxOutput> for SandboxExecutionOutput {
 /// session via [`crate::SessionOptions::with_sandbox_handle`].
 #[async_trait]
 pub trait BashSandbox: Send + Sync {
+    /// Report the configured execution target without executing or probing it.
+    /// This fact does not establish availability or permission to run a command.
+    fn execution_target(&self) -> ShellExecutionTarget {
+        ShellExecutionTarget::Unknown
+    }
+
     /// Check whether this backend can admit command execution without starting
     /// a process or producing effects. A refusal is a known unexecuted call,
     /// rather than an execution whose terminal state is unknown. Implementations

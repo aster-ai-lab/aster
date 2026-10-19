@@ -1,0 +1,11 @@
+{
+  "schema": "aster.t023.process.v1",
+  "run_id": "t023-v2-hc-01",
+  "pid": 33787,
+  "exe": "/Users/roylin/code/aster/target/t023-frozen-event-window-v2/t023-real-llm",
+  "runner_sha256": "33de605e83617a2e850778a2308832610697b1bcc95c0ffd227ec0ad1d9f130a",
+  "started_at_utc": "2026-10-19T18:05:03.074843+00:00",
+  "manifest_sha256": "f2a8bf1fb780ff591d16d9bd4de1fa93dc0bce2f422d04dfec52be2c78774ed4",
+  "log": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/process/t023-v2-hc-01.log",
+  "state": "running"
+}

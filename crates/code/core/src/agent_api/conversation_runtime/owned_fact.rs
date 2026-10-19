@@ -193,6 +193,7 @@ pub(super) async fn prepare_owned_fact(
         Some(agent.scoped_llm_client_for_parts(Some(&session_id), &event_tx, &cancellation));
     parts.executor = agent.tool_executor_handle();
     parts.original_model = Some(original.model_call_port());
+    let confirmation = agent.confirmation_provider();
     parts.surface = Some(crate::fact_control::SessionSurface {
         agent,
         session_id,
@@ -205,7 +206,7 @@ pub(super) async fn prepare_owned_fact(
         cancel: cancellation,
         transcript: Arc::new(std::sync::Mutex::new(Vec::new())),
         usage: Arc::new(std::sync::Mutex::new(crate::llm::TokenUsage::default())),
-        confirmation: config.confirmation_manager,
+        confirmation,
         run_store: Some(Arc::clone(&finish.run_store)),
         run_id: Some(run_id.clone()),
         goal_tick: None,

@@ -1,0 +1,174 @@
+{
+  "schema": "aster.completion-failure-diagnosis.v1",
+  "run_id": "run-55928ecc-45ab-44c7-86ff-2fb8a91c9e53",
+  "run_json": "docs/evidence/code/2026-10-20-task-orchestration/matrix/runs/t023-2m-hc-01/run.json",
+  "original_fact_log": "/Users/roylin/code/tasks/T01-t023-2m-hc-01/.a3s/effect-log/t023-2m-hc-01.jsonl",
+  "original_fact_log_sha256_recorded_by_runner": "dcad714fdab28548c9ed60b1c21e9a40deb2e5a181a8c2cf9b61869ff9c1da7f",
+  "method": "Read-only typed receipt metadata projection using frozen source canonicalization; public host gate template hash equality. No model body, reasoning, script-result body, credentials, submitted code execution, test, shell, VM or model execution.",
+  "counts": {
+    "fact_kinds": {
+      "a3s.standing-context": 1,
+      "user.message": 1,
+      "context.sections": 1,
+      "model.turn": 29,
+      "tool.prepared": 28,
+      "tool.result": 28
+    },
+    "parent_outcomes": {
+      "failed": 8,
+      "succeeded": 20
+    },
+    "final_paths": 37,
+    "final_kinds": {
+      "missing": 34,
+      "file": 2,
+      "directory": 1
+    },
+    "failed_paths_final": 0,
+    "top_level_verification_reports": 0
+  },
+  "failure_transitions": [
+    {
+      "sequence": 27,
+      "path": ".tmp_inspect.py",
+      "action": "failed_after_recorded",
+      "kind": "file"
+    },
+    {
+      "sequence": 45,
+      "path": ".tmp_verify.py",
+      "action": "failed_after_recorded",
+      "kind": "file"
+    },
+    {
+      "sequence": 48,
+      "path": ".tmp_verify.py",
+      "action": "failed_after_cleared_by_new_successful_after",
+      "kind": "file"
+    },
+    {
+      "sequence": 84,
+      "path": ".tmp_inspect.py",
+      "action": "failed_after_cleared_by_new_successful_after",
+      "kind": "missing"
+    }
+  ],
+  "final_effect_digest": "fc3a2a92c99bf1e5f3f24cb0d0e82d421d9e38797f9abb40795705df7d3bf8f9",
+  "gate_error": {
+    "bytes": 631,
+    "sha256": "7022e3531312ba1a7d02c56e2c21d40b11f38be89bed23e42a8ea562ed0ed7ca",
+    "exact_match_recorded_run_error": true,
+    "reason": "Current effect digest has no bound Passed report or host waiver; completion refused."
+  },
+  "actual_nested_formal_checks": [
+    {
+      "parent_sequence": 81,
+      "tool": "bash",
+      "success": true,
+      "exit_code": 0,
+      "host_command_bytes": 207,
+      "host_command_sha256": "c04050766269424c1937a6054acb68a5e69a5a2edbe4c53ea73e337691f53b26",
+      "has_verification_report": false,
+      "closed_parser_recognized_paths": [
+        ".tmp_case/input/Africa_orders.csv",
+        "pipeline.py",
+        "output/results.json"
+      ]
+    },
+    {
+      "parent_sequence": 87,
+      "tool": "bash",
+      "success": true,
+      "exit_code": 0,
+      "host_command_bytes": 336,
+      "host_command_sha256": "fb538c088e89e9ebb7833f3dbd7deb13e8689113c3b4e81ff0f5233c427b3fdd",
+      "has_verification_report": false,
+      "closed_parser_recognized_paths": [
+        "pipeline.py",
+        "output/results.json"
+      ]
+    }
+  ],
+  "diagnostic_suffix_alias": {
+    "advised_path": ".tmp_case/output/results.json",
+    "advised_path_actual_typed_kind": "missing",
+    "nonempty_digest_wrongly_matched_from": [
+      "output/results.json"
+    ],
+    "scope": "Diagnostic next-step selection only; this does not make the fail-closed gate decision unsafe."
+  },
+  "classification": {
+    "budget_exhaustion": false,
+    "reported_token_ledger": 1631144,
+    "experimental_soft_cap": 2000000,
+    "unrecovered_failed_effects": false,
+    "nested_formal_bash_proof_propagation_missing": true,
+    "matrix_installs_disk_content_attestor": false,
+    "adding_existing_disk_attestor_sufficient": false,
+    "disk_attestor_reason": "Existing attestor refuses empty file content digest or missing paths; final ledger also contains 34 Missing paths and one Directory.",
+    "completion_gate_decision": "Correctly refused absent accepted proof; actual nested check was not promoted through the trusted host path."
+  },
+  "source": [
+    {
+      "path": "crates/code/core/src/harness_loop.rs",
+      "sha256": "4e4f031ebf183678f5e29ffd7ef49c7021eb26aa81d5924c93a2f4e477ffdef2",
+      "matches_paid_run_manifest": true
+    },
+    {
+      "path": "crates/code/core/src/completion_attestor.rs",
+      "sha256": "b6cb8f6e9d512b25f350630eb35ec5588e127f76852516e9552704f18694a56f",
+      "matches_paid_run_manifest": true
+    },
+    {
+      "path": "crates/code/core/src/agent/tool_completion_runtime.rs",
+      "sha256": "4154f99a4faab00a31ef07099307410175be155a6dcb6f2f69c5a750cdcd4be8",
+      "matches_paid_run_manifest": true
+    },
+    {
+      "path": "crates/code/core/src/agent/tool_invoker.rs",
+      "sha256": "0fafb77f563b7d6952f60a864431748061f2d6d1e5800db643e65f6b2fa6f23d",
+      "matches_paid_run_manifest": true
+    },
+    {
+      "path": "crates/code/core/src/fact_control/receipts.rs",
+      "sha256": "2ff17826c260f61fc62864d8cc62656279cbf2bc0548420ffa41a5f31a49f6fb",
+      "matches_paid_run_manifest": true
+    },
+    {
+      "path": "crates/code/core/src/fact_control/turn_facts.rs",
+      "sha256": "5bfbebd5006d0f2503735cda223f383e748ec87e581f743bae0eb63241c6097b",
+      "matches_paid_run_manifest": true
+    },
+    {
+      "path": "crates/code/core/src/verification.rs",
+      "sha256": "004abf9dcdbb8c956660e99adba89c3c0a2b041c851da18f589e2375d3b7c5d2",
+      "matches_paid_run_manifest": true
+    },
+    {
+      "path": "crates/code/core/src/agent_api/conversation_runtime/turn_outcome.rs",
+      "sha256": "0cc69356afbef9b97642aa07ef0a7be0e4e0840196222a30ae916255f95f3232",
+      "matches_paid_run_manifest": true
+    },
+    {
+      "path": "crates/code/core/src/agent_api/conversation_runtime/owned_fact.rs",
+      "sha256": "eb48ebb2fda7153d16afd77593b7df6727267b99a7900f12ed46f2b6ec6ad06d",
+      "matches_paid_run_manifest": true
+    },
+    {
+      "path": "crates/code/core/src/agent.rs",
+      "sha256": "5ffec0c963a7f34e677933e5b7d1146e0f2f0721d87fd93487b4d25ee9ae5aaa",
+      "matches_paid_run_manifest": true
+    },
+    {
+      "path": "crates/code/core/src/agent_api/session_builder.rs",
+      "sha256": "beb5a35e661fac650c920bf428f4bb9675e9d03b8246c18d3d442ad9de5bbea7",
+      "matches_paid_run_manifest": true
+    }
+  ],
+  "not_claimed": [
+    "No independent oracle result is asserted here.",
+    "Missing failed-program child receipts are a separate confirmed issue owned by another slice; absent metadata is not counted as zero child calls.",
+    "This diagnostic does not backfill, relabel or repair the paid sample.",
+    "No production change or new execution is represented by this JSON."
+  ]
+}

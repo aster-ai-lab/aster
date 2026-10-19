@@ -652,7 +652,7 @@ impl Tool for WebSearchTool {
                 _ => {
                     return Ok(ToolOutput::error(format!(
                         "full_text_bytes must be an integer between {MIN_FULL_TEXT_BYTES} and {MAX_FULL_TEXT_BYTES}"
-                    )))
+                    )));
                 }
             },
         };
@@ -696,7 +696,7 @@ impl Tool for WebSearchTool {
             Ok(plan) => plan,
             Err(message) => {
                 return Ok(ToolOutput::error(&message)
-                    .with_error_kind(ToolErrorKind::InvalidArgument { message }))
+                    .with_error_kind(ToolErrorKind::InvalidArgument { message }));
             }
         };
         let selected_engines = selected_engines.unwrap_or_else(|| plan.shortcuts());

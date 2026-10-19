@@ -1,0 +1,18 @@
+[
+  {
+    "path": "apps/work/src/renderer/pages/agents/workbenchPermissionPostures.ts",
+    "currentSha256": "fe37c2175dcd2035f09041806835ab9e6bc07070dd069778439a02cdd5f24f09",
+    "mtimeLocal": "2026-10-19T07:54:48.206660",
+    "frozenSha256": "181f961ac7aa0cf35d3e4339cee93f67cb0aa804a04b2b0a115e5fbb5688686c",
+    "inMemoryReconstructedFrozenSha256": "181f961ac7aa0cf35d3e4339cee93f67cb0aa804a04b2b0a115e5fbb5688686c",
+    "exactFrozenMatch": true
+  },
+  {
+    "path": "apps/work/src/renderer/pages/agents/WorkbenchPermissionPicker.tsx",
+    "currentSha256": "9011c21162bf44ec2fb6b19636b845250667701e6f957a61e3ae64f90e72a23c",
+    "mtimeLocal": "2026-10-19T07:55:07.886083",
+    "frozenSha256": "ee09dff155ea94898fbc45076f62e4bef269f52e96d831bfe61c3554c9d669fc",
+    "inMemoryReconstructedFrozenSha256": "ee09dff155ea94898fbc45076f62e4bef269f52e96d831bfe61c3554c9d669fc",
+    "exactFrozenMatch": true
+  }
+]

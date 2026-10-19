@@ -1,0 +1,225 @@
+{
+  "schema": "aster.t01.timing-analysis.v1",
+  "sessionId": "01a154b3-fd4c-70c3-ad72-48c14a36e920",
+  "executionId": "01a154b3-ff6b-7141-80f2-977d147830f4",
+  "window": {
+    "startUtc": "2026-10-19T15:07:24.907Z",
+    "endUtc": "2026-10-19T15:15:27.763Z",
+    "startChina": "2026-10-19T23:07:24.907+08:00",
+    "endChina": "2026-10-19T23:15:27.763+08:00",
+    "wallSeconds": 482.856,
+    "meaning": "Complete agent wall time from persisted assistant start to successful completion. Includes model calls, tools, network waits, sandbox lifecycle and coordination; not pure model generation time."
+  },
+  "sources": {
+    "toolLifecycleLog": "/Users/roylin/.a3s/logs/a3s-code-acp.20745.log",
+    "effectLog": "/Users/roylin/code/tasks/T01-workspace/.a3s/sessions/2026-10-19/3aa279d3-a60c-4b82-832a-0cadcecb59a6/3aa279d3-a60c-4b82-832a-0cadcecb59a6.jsonl",
+    "hostRuntimeSummary": "runtime/formal-run-completed.json"
+  },
+  "matchingMethod": {
+    "filter": "Only a3s_code_core::tools records whose UTC timestamps fall within the formal-run window; only Executing tool and Tool completed lifecycle markers are extracted. ANSI color sequences are removed before timestamp parsing.",
+    "pairing": "Pair each completion with the earliest unmatched start for that exact tool name. No call arguments, output contents or source text are extracted.",
+    "crossCheck": "Exactly 26 starts and 26 completions matched. Tool-name counts equal all 26 tool.prepared records in the formal effect log. The effect sequence shows only the first ls/read pair simultaneously unsettled; same-name tools are serial.",
+    "boundaryLimit": "The effect log has no timestamps. These elapsed times measure logged tool execution start to completion, not independently timestamped effect tool.prepared to tool.result boundaries."
+  },
+  "toolCount": 26,
+  "toolElapsedSumSeconds": 270.021875,
+  "toolUnionSeconds": 270.021578,
+  "toolOverlapSeconds": 0.000297,
+  "otherWallSeconds": 212.834422,
+  "otherWallMeaning": "Residual complete-agent wall time. Includes 26 model requests/generation/network wait and agent coordination. It is not independently measured pure inference time.",
+  "byTool": {
+    "ls": {
+      "count": 2,
+      "sumElapsedSeconds": 0.001962
+    },
+    "read": {
+      "count": 3,
+      "sumElapsedSeconds": 0.004197
+    },
+    "bash": {
+      "count": 19,
+      "sumElapsedSeconds": 270.01151
+    },
+    "write": {
+      "count": 1,
+      "sumElapsedSeconds": 0.001175
+    },
+    "edit": {
+      "count": 1,
+      "sumElapsedSeconds": 0.003031
+    }
+  },
+  "bash": {
+    "count": 19,
+    "sumElapsedSeconds": 270.01151,
+    "meanElapsedSeconds": 14.211132105263157,
+    "maxElapsedSeconds": 14.504245,
+    "phaseBreakdown": "Unavailable from the collected tool lifecycle metadata. The recorded begin/end span includes OCI preparation, command execution, and settlement; no independent phase durations are available in this evidence. Do not attribute the whole span to Python execution.",
+    "independentValidationTiming": "The reported 0.719 seconds belongs to 16 ordinary Python subprocess executions during separate independent validation. It is outside this agent run and must not be mixed into this breakdown."
+  },
+  "longestTool": {
+    "name": "bash",
+    "startUtc": "2026-10-19T15:12:12.331094+00:00",
+    "endUtc": "2026-10-19T15:12:26.835339+00:00",
+    "elapsedSeconds": 14.504245
+  },
+  "tools": [
+    {
+      "name": "ls",
+      "startUtc": "2026-10-19T15:07:27.857766+00:00",
+      "endUtc": "2026-10-19T15:07:27.858501+00:00",
+      "elapsedSeconds": 0.000735
+    },
+    {
+      "name": "read",
+      "startUtc": "2026-10-19T15:07:27.858204+00:00",
+      "endUtc": "2026-10-19T15:07:27.859683+00:00",
+      "elapsedSeconds": 0.001479
+    },
+    {
+      "name": "ls",
+      "startUtc": "2026-10-19T15:07:29.255895+00:00",
+      "endUtc": "2026-10-19T15:07:29.257122+00:00",
+      "elapsedSeconds": 0.001227
+    },
+    {
+      "name": "read",
+      "startUtc": "2026-10-19T15:07:30.590739+00:00",
+      "endUtc": "2026-10-19T15:07:30.592691+00:00",
+      "elapsedSeconds": 0.001952
+    },
+    {
+      "name": "bash",
+      "startUtc": "2026-10-19T15:07:32.447715+00:00",
+      "endUtc": "2026-10-19T15:07:46.719873+00:00",
+      "elapsedSeconds": 14.272158
+    },
+    {
+      "name": "bash",
+      "startUtc": "2026-10-19T15:07:49.352174+00:00",
+      "endUtc": "2026-10-19T15:08:03.243339+00:00",
+      "elapsedSeconds": 13.891165
+    },
+    {
+      "name": "read",
+      "startUtc": "2026-10-19T15:08:04.457711+00:00",
+      "endUtc": "2026-10-19T15:08:04.458477+00:00",
+      "elapsedSeconds": 0.000766
+    },
+    {
+      "name": "bash",
+      "startUtc": "2026-10-19T15:08:35.086044+00:00",
+      "endUtc": "2026-10-19T15:08:49.030660+00:00",
+      "elapsedSeconds": 13.944616
+    },
+    {
+      "name": "write",
+      "startUtc": "2026-10-19T15:09:38.207927+00:00",
+      "endUtc": "2026-10-19T15:09:38.209102+00:00",
+      "elapsedSeconds": 0.001175
+    },
+    {
+      "name": "bash",
+      "startUtc": "2026-10-19T15:09:40.209150+00:00",
+      "endUtc": "2026-10-19T15:09:54.193328+00:00",
+      "elapsedSeconds": 13.984178
+    },
+    {
+      "name": "edit",
+      "startUtc": "2026-10-19T15:09:55.415783+00:00",
+      "endUtc": "2026-10-19T15:09:55.418814+00:00",
+      "elapsedSeconds": 0.003031
+    },
+    {
+      "name": "bash",
+      "startUtc": "2026-10-19T15:09:57.975838+00:00",
+      "endUtc": "2026-10-19T15:10:12.202229+00:00",
+      "elapsedSeconds": 14.226391
+    },
+    {
+      "name": "bash",
+      "startUtc": "2026-10-19T15:10:15.210428+00:00",
+      "endUtc": "2026-10-19T15:10:29.315936+00:00",
+      "elapsedSeconds": 14.105508
+    },
+    {
+      "name": "bash",
+      "startUtc": "2026-10-19T15:10:35.071372+00:00",
+      "endUtc": "2026-10-19T15:10:49.224928+00:00",
+      "elapsedSeconds": 14.153556
+    },
+    {
+      "name": "bash",
+      "startUtc": "2026-10-19T15:11:02.000187+00:00",
+      "endUtc": "2026-10-19T15:11:16.180618+00:00",
+      "elapsedSeconds": 14.180431
+    },
+    {
+      "name": "bash",
+      "startUtc": "2026-10-19T15:11:22.904373+00:00",
+      "endUtc": "2026-10-19T15:11:37.383488+00:00",
+      "elapsedSeconds": 14.479115
+    },
+    {
+      "name": "bash",
+      "startUtc": "2026-10-19T15:11:51.551210+00:00",
+      "endUtc": "2026-10-19T15:12:05.912157+00:00",
+      "elapsedSeconds": 14.360947
+    },
+    {
+      "name": "bash",
+      "startUtc": "2026-10-19T15:12:12.331094+00:00",
+      "endUtc": "2026-10-19T15:12:26.835339+00:00",
+      "elapsedSeconds": 14.504245
+    },
+    {
+      "name": "bash",
+      "startUtc": "2026-10-19T15:12:31.423961+00:00",
+      "endUtc": "2026-10-19T15:12:45.514891+00:00",
+      "elapsedSeconds": 14.09093
+    },
+    {
+      "name": "bash",
+      "startUtc": "2026-10-19T15:12:52.850910+00:00",
+      "endUtc": "2026-10-19T15:13:07.248764+00:00",
+      "elapsedSeconds": 14.397854
+    },
+    {
+      "name": "bash",
+      "startUtc": "2026-10-19T15:13:20.858278+00:00",
+      "endUtc": "2026-10-19T15:13:34.979457+00:00",
+      "elapsedSeconds": 14.121179
+    },
+    {
+      "name": "bash",
+      "startUtc": "2026-10-19T15:13:47.259913+00:00",
+      "endUtc": "2026-10-19T15:14:01.367204+00:00",
+      "elapsedSeconds": 14.107291
+    },
+    {
+      "name": "bash",
+      "startUtc": "2026-10-19T15:14:06.353913+00:00",
+      "endUtc": "2026-10-19T15:14:20.717856+00:00",
+      "elapsedSeconds": 14.363943
+    },
+    {
+      "name": "bash",
+      "startUtc": "2026-10-19T15:14:26.766427+00:00",
+      "endUtc": "2026-10-19T15:14:41.086175+00:00",
+      "elapsedSeconds": 14.319748
+    },
+    {
+      "name": "bash",
+      "startUtc": "2026-10-19T15:14:42.727568+00:00",
+      "endUtc": "2026-10-19T15:14:57.156998+00:00",
+      "elapsedSeconds": 14.42943
+    },
+    {
+      "name": "bash",
+      "startUtc": "2026-10-19T15:15:07.442906+00:00",
+      "endUtc": "2026-10-19T15:15:21.521731+00:00",
+      "elapsedSeconds": 14.078825
+    }
+  ],
+  "privacy": "Timing/type/name metadata only. No call arguments, result/source content, model reasoning, credentials, environment, or headers retained."
+}

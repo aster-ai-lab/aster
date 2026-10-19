@@ -220,7 +220,21 @@ impl crate::agent::TurnEngine {
         // Permission visibility is an authorization-derived upper bound. The
         // presentation profile receives only that subset, so code-mode catalog
         // rephrasing cannot leak or restore a permission-hidden Tool name.
-        let mut visible_source = self.config.tools.clone();
+        let mut visible_source = self.permission_visible_tools(&self.config.tools);
+        if verifier_role {
+            visible_source.retain(|tool| crate::read_only_verifier::presentable(&tool.name));
+        }
+        self.config
+            .tool_presentation_profile
+            .present_for_messages(&visible_source, messages)
+            .map_err(Into::into)
+    }
+
+    pub(super) fn permission_visible_tools(
+        &self,
+        source: &[ToolDefinition],
+    ) -> Vec<ToolDefinition> {
+        let mut visible_source = source.to_vec();
         if let Some(permission_checker) = &self.config.permission_checker {
             visible_source.retain(|tool| permission_checker.expose_to_model(&tool.name));
         } else if self.config.confirmation_manager.is_none() {
@@ -229,13 +243,7 @@ impl crate::agent::TurnEngine {
             // runtime can prove are impossible to execute.
             visible_source.clear();
         }
-        if verifier_role {
-            visible_source.retain(|tool| crate::read_only_verifier::presentable(&tool.name));
-        }
-        self.config
-            .tool_presentation_profile
-            .present_for_messages(&visible_source, messages)
-            .map_err(Into::into)
+        visible_source
     }
 
     async fn ensure_turn_can_start(

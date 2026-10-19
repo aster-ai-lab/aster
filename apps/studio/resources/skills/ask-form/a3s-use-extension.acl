@@ -1,0 +1,17 @@
+extension "a3s/ask-form" {
+  schema_version = 3
+  version        = "1.0.0"
+  route          = "ask-form"
+  requires_use   = ">=0.3.0, <0.4.0"
+  actions        = ["read"]
+
+  repository {
+    url      = "https://a3s.dev/packages/skills/ask-form"
+    revision = "0000000000000000000000000000000000000000"
+  }
+
+  skill "ask-form" {
+    path     = "SKILL.md"
+    optional = false
+  }
+}

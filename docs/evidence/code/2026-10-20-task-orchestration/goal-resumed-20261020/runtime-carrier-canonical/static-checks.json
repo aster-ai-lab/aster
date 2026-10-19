@@ -1,0 +1,38 @@
+{
+  "at_utc": "2026-10-19T22:10:32.497953+00:00",
+  "checks": [
+    {
+      "command": [
+        "rustup",
+        "run",
+        "1.97.1",
+        "rustfmt",
+        "--edition",
+        "2021",
+        "--config",
+        "skip_children=true",
+        "--check",
+        "crates/oci-runtime/crates/sdk/src/attachment.rs",
+        "crates/oci-runtime/crates/sdk/src/attachment/tests.rs"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "crates/oci-runtime/crates/sdk/src/attachment.rs",
+        "crates/oci-runtime/crates/sdk/src/attachment/tests.rs"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "source_freeze": "source-freeze-green.json",
+  "cargo_run_by_this_agent": false
+}

@@ -1,0 +1,29 @@
+{
+  "cwd": "/Users/roylin/code/aster/apps/work",
+  "command": [
+    "node",
+    "./node_modules/@rsbuild/core/bin/rsbuild.js",
+    "build",
+    "--no-env"
+  ],
+  "environment_overrides": {
+    "removed": [
+      "RENDERER_VITE_PPIO_APP_SECRET",
+      "RENDERER_VITE_AIHUBMIX_SECRET"
+    ],
+    "STUDIO_RENDERER_DIST": "/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/renderer"
+  },
+  "started_at_utc": "2026-10-19T21:25:06.753067+00:00",
+  "state": "built",
+  "preview_started": false,
+  "host_started": false,
+  "ended_at_utc": "2026-10-19T21:25:15.583106+00:00",
+  "elapsed_seconds": 8.829734792,
+  "exit_code": 0,
+  "owned_sources_unchanged": true,
+  "dist_files": 2639,
+  "dist_bytes": 76760505,
+  "dist_symlinks": 0,
+  "dist_manifest_sha256": "6b4d6a428761166411228daaec42dc63b201cd8d702d11f05840d883027ca62e",
+  "main_document_exists": true
+}

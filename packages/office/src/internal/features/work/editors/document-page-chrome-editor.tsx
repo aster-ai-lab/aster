@@ -1,0 +1,636 @@
+import type { Editor, Extensions } from '@tiptap/core';
+import Color from '@tiptap/extension-color';
+import Placeholder from '@tiptap/extension-placeholder';
+import { TableKit } from '@tiptap/extension-table';
+import TextAlign from '@tiptap/extension-text-align';
+import FontSize from '@tiptap/extension-text-style/font-size';
+import { EditorContent, useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import {
+  AlignCenter,
+  AlignJustify,
+  AlignLeft,
+  AlignRight,
+  Bold,
+  Image as ImageIcon,
+  Italic,
+  Link2,
+  Redo2,
+  Strikethrough,
+  Subscript as SubscriptIcon,
+  Superscript as SuperscriptIcon,
+  Underline as UnderlineIcon,
+  Undo2,
+} from 'lucide-react';
+import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  DocumentCharacterFormatting,
+  DocumentSubscript,
+  DocumentSuperscript,
+} from '../work-document-character-formatting';
+import {
+  DocumentFontFamily,
+  DocumentHighlight,
+  DocumentTextStyle,
+} from '../work-document-word-line-metrics';
+import { DocumentScriptFontFormatting } from '../work-document-script-font-extension';
+import { DocumentEquation } from '../work-document-equations';
+import { DocumentEquationOpaque } from '../work-document-equation-opaque';
+import { DocumentField } from '../work-document-field-node';
+import { DocumentImage } from '../work-document-image-layout';
+import { DOCUMENT_LINK_VALIDATION_MESSAGE } from '../work-document-links';
+import { sanitizeDocumentPageChromeHtml } from '../work-document-page-chrome';
+import {
+  DocumentPageChromeCommands,
+  normalizeDocumentPageChromeHref,
+} from '../work-document-page-chrome-commands';
+import { DocumentParagraphFormatting } from '../work-document-paragraph-formatting';
+import { moveOfficeToolbarFocus } from './office-toolbar-keyboard';
+import { DocumentParagraphIdentity } from '../work-document-paragraph-identity';
+import { DocumentTableRowIdentity } from '../work-document-table-row-identity';
+import {
+  DocumentUnderline,
+  documentUnderlineColor,
+  documentUnderlineStyle,
+  type WorkDocumentUnderlineStyle,
+} from '../work-document-underline';
+import {
+  DocumentStrike,
+  documentStrikeStyle,
+  type WorkDocumentStrikeStyle,
+} from '../work-document-strike';
+import { DocumentPageChromeWpsShortcuts } from './document-page-chrome-wps-shortcuts';
+import {
+  OfficeColorPicker,
+  OfficeFileInput,
+  useOfficeDialog,
+} from './office-controls';
+import { readOfficeFileAsDataUrl } from './office-file-data';
+import { useOfficeMessages } from './office-messages-context';
+import {
+  officeMessage,
+  resolveOfficeMessages,
+} from '../../../i18n/office-locale';
+import type {
+  OfficeMessageCatalog,
+  OfficeMessageKey,
+} from '../../../i18n/office-messages';
+
+export type DocumentPageChromeAlignment =
+  | 'center'
+  | 'justify'
+  | 'left'
+  | 'right';
+
+export interface DocumentPageChromeEditorState {
+  alignment: DocumentPageChromeAlignment;
+  bold: boolean;
+  canRedo: boolean;
+  canUndo: boolean;
+  color: string;
+  italic: boolean;
+  link: string | null;
+  strike: boolean;
+  strikeStyle: WorkDocumentStrikeStyle;
+  subscript: boolean;
+  superscript: boolean;
+  underline: boolean;
+  underlineColor: string | null;
+  underlineStyle: WorkDocumentUnderlineStyle;
+}
+
+export interface DocumentPageChromeRichTextEditorProps {
+  autoFocus?: boolean;
+  className?: string;
+  label: string;
+  value: string;
+  onChange: (html: string) => void;
+  onEditorChange?: (editor: Editor | null) => void;
+  onExit?: () => void;
+  showToolbar?: boolean;
+}
+
+const MAX_PAGE_CHROME_IMAGE_BYTES = 4 * 1024 * 1024;
+const DEFAULT_PAGE_CHROME_COLOR = '#4d5668';
+const PAGE_CHROME_IMAGE_TYPES = new Set([
+  'image/bmp',
+  'image/gif',
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+]);
+
+export function DocumentPageChromeRichTextEditor({
+  autoFocus = false,
+  className = '',
+  label,
+  value,
+  onChange,
+  onEditorChange,
+  onExit,
+  showToolbar = true,
+}: DocumentPageChromeRichTextEditorProps) {
+  const messages = useOfficeMessages();
+  const chromeLabel = (key: OfficeMessageKey) =>
+    officeMessage(messages, key, { label });
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const onChangeRef = useRef(onChange);
+  const onEditorChangeRef = useRef(onEditorChange);
+  const onExitRef = useRef(onExit);
+  const initialHtmlRef = useRef(sanitizeDocumentPageChromeHtml(value));
+  const appliedHtmlRef = useRef(initialHtmlRef.current);
+  const [, setEditorRevision] = useState(0);
+  const officeDialog = useOfficeDialog();
+  onChangeRef.current = onChange;
+  onEditorChangeRef.current = onEditorChange;
+  onExitRef.current = onExit;
+  const extensions = useMemo(
+    () =>
+      createDocumentPageChromeEditorExtensions(
+        officeMessage(messages, 'document.pageChrome.editor.placeholder', {
+          label,
+        }),
+      ),
+    [label, messages],
+  );
+  const editor = useEditor({
+    extensions,
+    content: initialHtmlRef.current,
+    editorProps: {
+      attributes: {
+        'aria-label': label,
+        'aria-multiline': 'true',
+        class: 'work-document-page-chrome-content',
+        'data-document-page-chrome-engine': 'tiptap',
+        role: 'textbox',
+        spellcheck: 'true',
+      },
+      handleKeyDown: (_view, event) => {
+        if (event.key !== 'Escape' || !onExitRef.current) return false;
+        event.preventDefault();
+        onExitRef.current();
+        return true;
+      },
+    },
+    onTransaction: () => setEditorRevision((revision) => revision + 1),
+    onUpdate: ({ editor: current }) => {
+      const html = sanitizeDocumentPageChromeHtml(current.getHTML());
+      if (html === appliedHtmlRef.current) return;
+      appliedHtmlRef.current = html;
+      onChangeRef.current(html);
+    },
+  });
+
+  useEffect(() => {
+    if (!editor) return;
+    onEditorChangeRef.current?.(editor);
+    return () => onEditorChangeRef.current?.(null);
+  }, [editor]);
+
+  useEffect(() => {
+    if (!editor || editor.isDestroyed) return;
+    const html = sanitizeDocumentPageChromeHtml(value);
+    if (html === appliedHtmlRef.current) return;
+    appliedHtmlRef.current = html;
+    editor.commands.setContent(html, { emitUpdate: false });
+  }, [editor, value]);
+
+  useEffect(() => {
+    if (!autoFocus || !editor || editor.isDestroyed) return;
+    editor.commands.focus('end');
+  }, [autoFocus, editor]);
+
+  const state = editor ? documentPageChromeEditorState(editor) : null;
+  const editLink = async () => {
+    if (!editor) return;
+    if (documentPageChromeEditorState(editor).link) {
+      // Keep chrome focus on the link trigger. chain().focus() schedules into
+      // the editor and breaks L2 loops.
+      editor.commands.setDocumentPageChromeLink(null);
+      return;
+    }
+    const href = await officeDialog.prompt({
+      title: officeMessage(
+        messages,
+        'document.pageChrome.editor.linkDialog.title',
+      ),
+      fieldLabel: officeMessage(
+        messages,
+        'document.pageChrome.editor.linkDialog.field',
+      ),
+      initialValue: 'https://',
+      placeholder: 'https://',
+      inputMode: 'url',
+      confirmLabel: officeMessage(
+        messages,
+        'document.pageChrome.editor.linkDialog.confirm',
+      ),
+      required: officeMessage(
+        messages,
+        'document.pageChrome.editor.linkDialog.required',
+      ),
+      validate: (value) =>
+        normalizeDocumentPageChromeHref(value)
+          ? null
+          : DOCUMENT_LINK_VALIDATION_MESSAGE,
+      restoreFocusTarget: () => editor.view.dom,
+    });
+    if (href === null) return;
+    const normalized = normalizeDocumentPageChromeHref(href);
+    if (normalized && !editor.isDestroyed) {
+      // Dialog restore targets the chrome editor; focus there after apply.
+      editor.chain().focus().setDocumentPageChromeLink(normalized).run();
+    }
+  };
+  const insertImage = async (file: File | undefined) => {
+    if (!file || !editor) return;
+    const image = await loadDocumentPageChromeImage(file, messages);
+    if (!image.ok) {
+      await officeDialog.notice({
+        title: image.title,
+        description: image.description,
+      });
+      return;
+    }
+    if (!editor.isDestroyed) {
+      editor
+        .chain()
+        .focus()
+        .insertDocumentPageChromeImage({
+          alt: image.alt,
+          source: image.source,
+        })
+        .run();
+    }
+  };
+
+  return (
+    <>
+      <section
+        className={`work-document-page-chrome-editor ${className}`.trim()}
+        aria-label={label}
+      >
+        {showToolbar && (
+          <>
+            <div
+              className="work-document-page-chrome-toolbar"
+              role="toolbar"
+              aria-label={chromeLabel('document.pageChrome.editor.formatAria')}
+              onKeyDown={moveOfficeToolbarFocus}
+            >
+              <fieldset
+                className="work-document-page-chrome-toolbar-row"
+                aria-label={chromeLabel('document.pageChrome.editor.textFormatAria')}
+              >
+                <PageChromeButton
+                  label={chromeLabel('document.pageChrome.editor.undo')}
+                  disabled={!state?.canUndo}
+                  onClick={() => {
+                    // Keep chrome focus on the undo trigger.
+                    // chain().focus() schedules into the editor and breaks L2 loops.
+                    editor?.commands.undo();
+                  }}
+                >
+                  <Undo2 size={14} />
+                </PageChromeButton>
+                <PageChromeButton
+                  label={chromeLabel('document.pageChrome.editor.redo')}
+                  disabled={!state?.canRedo}
+                  onClick={() => {
+                    // Keep chrome focus on the redo trigger.
+                    // chain().focus() schedules into the editor and breaks L2 loops.
+                    editor?.commands.redo();
+                  }}
+                >
+                  <Redo2 size={14} />
+                </PageChromeButton>
+                <PageChromeButton
+                  label={chromeLabel('document.pageChrome.editor.bold')}
+                  active={state?.bold}
+                  onClick={() => {
+                    // Keep chrome focus on the bold trigger.
+                    // chain().focus() schedules into the editor and breaks L2 loops.
+                    editor?.commands.toggleBold();
+                  }}
+                >
+                  <Bold size={14} />
+                </PageChromeButton>
+                <PageChromeButton
+                  label={chromeLabel('document.pageChrome.editor.italic')}
+                  active={state?.italic}
+                  onClick={() => {
+                    // Keep chrome focus on the italic trigger.
+                    // chain().focus() schedules into the editor and breaks L2 loops.
+                    editor?.commands.toggleItalic();
+                  }}
+                >
+                  <Italic size={14} />
+                </PageChromeButton>
+                <PageChromeButton
+                  label={chromeLabel('document.pageChrome.editor.underline')}
+                  active={state?.underline}
+                  onClick={() => {
+                    // Keep chrome focus on the underline trigger.
+                    // chain().focus() schedules into the editor and breaks L2 loops.
+                    editor?.commands.toggleUnderline();
+                  }}
+                >
+                  <UnderlineIcon size={14} />
+                </PageChromeButton>
+                <PageChromeButton
+                  label={chromeLabel('document.pageChrome.editor.strike')}
+                  active={state?.strike}
+                  onClick={() => {
+                    // Keep chrome focus on the strike trigger.
+                    // chain().focus() schedules into the editor and breaks L2 loops.
+                    editor?.commands.toggleStrike();
+                  }}
+                >
+                  <Strikethrough size={14} />
+                </PageChromeButton>
+                <PageChromeButton
+                  label={chromeLabel('document.pageChrome.editor.subscript')}
+                  active={state?.subscript}
+                  onClick={() => {
+                    // Keep chrome focus on the subscript trigger.
+                    // chain().focus() schedules into the editor and breaks L2 loops.
+                    editor?.commands.toggleDocumentSubscript();
+                  }}
+                >
+                  <SubscriptIcon size={14} />
+                </PageChromeButton>
+                <PageChromeButton
+                  label={chromeLabel('document.pageChrome.editor.superscript')}
+                  active={state?.superscript}
+                  onClick={() => {
+                    // Keep chrome focus on the superscript trigger.
+                    // chain().focus() schedules into the editor and breaks L2 loops.
+                    editor?.commands.toggleDocumentSuperscript();
+                  }}
+                >
+                  <SuperscriptIcon size={14} />
+                </PageChromeButton>
+              </fieldset>
+              <fieldset
+                className="work-document-page-chrome-toolbar-row"
+                aria-label={chromeLabel('document.pageChrome.editor.alignInsertAria')}
+              >
+                <PageChromeButton
+                  label={chromeLabel('document.pageChrome.editor.alignLeft')}
+                  active={state?.alignment === 'left'}
+                  onClick={() => {
+                    // Keep chrome focus on the alignment trigger.
+                    // chain().focus() schedules into the editor and breaks L2 loops.
+                    editor?.commands.setTextAlign('left');
+                  }}
+                >
+                  <AlignLeft size={14} />
+                </PageChromeButton>
+                <PageChromeButton
+                  label={chromeLabel('document.pageChrome.editor.alignCenter')}
+                  active={state?.alignment === 'center'}
+                  onClick={() => {
+                    // Keep chrome focus on the alignment trigger.
+                    // chain().focus() schedules into the editor and breaks L2 loops.
+                    editor?.commands.setTextAlign('center');
+                  }}
+                >
+                  <AlignCenter size={14} />
+                </PageChromeButton>
+                <PageChromeButton
+                  label={chromeLabel('document.pageChrome.editor.alignRight')}
+                  active={state?.alignment === 'right'}
+                  onClick={() => {
+                    // Keep chrome focus on the alignment trigger.
+                    // chain().focus() schedules into the editor and breaks L2 loops.
+                    editor?.commands.setTextAlign('right');
+                  }}
+                >
+                  <AlignRight size={14} />
+                </PageChromeButton>
+                <PageChromeButton
+                  label={chromeLabel('document.pageChrome.editor.alignJustify')}
+                  active={state?.alignment === 'justify'}
+                  onClick={() => {
+                    // Keep chrome focus on the alignment trigger.
+                    // chain().focus() schedules into the editor and breaks L2 loops.
+                    editor?.commands.setTextAlign('justify');
+                  }}
+                >
+                  <AlignJustify size={14} />
+                </PageChromeButton>
+                <PageChromeButton
+                  label={chromeLabel(state?.link ? 'document.pageChrome.editor.removeLink' : 'document.pageChrome.editor.addLink')}
+                  active={Boolean(state?.link)}
+                  onClick={() => void editLink()}
+                >
+                  <Link2 size={14} />
+                </PageChromeButton>
+                <OfficeColorPicker
+                  compact
+                  className="work-document-page-chrome-color"
+                  ariaLabel={chromeLabel('document.pageChrome.editor.textColor')}
+                  value={pageChromePickerColor(state?.color)}
+                  onValueChange={(color) => {
+                    // Keep chrome focus on the color trigger via Popover restore.
+                    // chain().focus() schedules into the editor and breaks L2 loops.
+                    editor?.commands.setColor(color);
+                  }}
+                />
+                <PageChromeButton
+                  label={chromeLabel('document.pageChrome.editor.insertImage')}
+                  onClick={() => imageInputRef.current?.click()}
+                >
+                  <ImageIcon size={14} />
+                </PageChromeButton>
+              </fieldset>
+            </div>
+            <OfficeFileInput
+              ref={imageInputRef}
+              accept="image/bmp,image/gif,image/jpeg,image/png,image/webp"
+              aria-label={chromeLabel('document.pageChrome.editor.imageFileAria')}
+              onFileSelect={insertImage}
+            />
+          </>
+        )}
+        {editor ? (
+          <EditorContent editor={editor} />
+        ) : (
+          <div
+            className="work-document-page-chrome-content"
+            role="status"
+            aria-label={chromeLabel('document.pageChrome.editor.preparingAria')}
+          />
+        )}
+      </section>
+      {officeDialog.dialog}
+    </>
+  );
+}
+
+export function createDocumentPageChromeEditorExtensions(
+  placeholder = resolveOfficeMessages()['document.pageChrome.editor.placeholderDefault'],
+): Extensions {
+  return [
+    StarterKit.configure({
+      code: false,
+      codeBlock: false,
+      heading: false,
+      horizontalRule: false,
+      link: {
+        autolink: false,
+        defaultProtocol: 'https',
+        openOnClick: false,
+      },
+      underline: false,
+      strike: false,
+    }),
+    TableKit.configure({
+      table: {
+        allowTableNodeSelection: true,
+        resizable: false,
+      },
+    }),
+    DocumentImage.configure({ allowBase64: true, inline: true }),
+    DocumentEquation,
+    DocumentEquationOpaque,
+    DocumentField,
+    DocumentTextStyle,
+    DocumentScriptFontFormatting,
+    DocumentFontFamily,
+    FontSize,
+    Color,
+    DocumentHighlight.configure({ multicolor: true }),
+    DocumentUnderline,
+    DocumentStrike,
+    DocumentCharacterFormatting,
+    DocumentSubscript,
+    DocumentSuperscript,
+    DocumentPageChromeCommands,
+    DocumentParagraphFormatting,
+    TextAlign.configure({ types: ['paragraph'] }),
+    DocumentParagraphIdentity.configure({ types: ['paragraph'] }),
+    DocumentTableRowIdentity,
+    DocumentPageChromeWpsShortcuts,
+    Placeholder.configure({ placeholder }),
+  ];
+}
+
+export function documentPageChromeEditorState(
+  editor: Editor,
+): DocumentPageChromeEditorState {
+  const textStyle = editor.getAttributes('textStyle') as Record<
+    string,
+    unknown
+  >;
+  const link = editor.getAttributes('link') as Record<string, unknown>;
+  const underlineStyle = documentUnderlineStyle(editor);
+  const strikeStyle = documentStrikeStyle(editor);
+  return {
+    alignment: editor.isActive('paragraph', { textAlign: 'center' })
+      ? 'center'
+      : editor.isActive('paragraph', { textAlign: 'right' })
+        ? 'right'
+        : editor.isActive('paragraph', { textAlign: 'justify' })
+          ? 'justify'
+          : 'left',
+    bold: editor.isActive('bold'),
+    canRedo: editor.can().chain().redo().run(),
+    canUndo: editor.can().chain().undo().run(),
+    color:
+      typeof textStyle.color === 'string'
+        ? textStyle.color
+        : DEFAULT_PAGE_CHROME_COLOR,
+    italic: editor.isActive('italic'),
+    link: typeof link.href === 'string' ? link.href : null,
+    strike: strikeStyle !== 'none',
+    strikeStyle,
+    subscript: editor.isActive('subscript'),
+    superscript: editor.isActive('superscript'),
+    underline: underlineStyle !== 'none',
+    underlineColor: documentUnderlineColor(editor),
+    underlineStyle,
+  };
+}
+
+export { normalizeDocumentPageChromeHref };
+
+export type DocumentPageChromeImageLoadResult =
+  | { ok: true; alt: string; source: string }
+  | { ok: false; title: string; description: string };
+
+export async function loadDocumentPageChromeImage(
+  file: File,
+  messages: OfficeMessageCatalog = resolveOfficeMessages(),
+): Promise<DocumentPageChromeImageLoadResult> {
+  if (
+    file.size > MAX_PAGE_CHROME_IMAGE_BYTES ||
+    !PAGE_CHROME_IMAGE_TYPES.has(file.type)
+  ) {
+    return {
+      ok: false,
+      title: officeMessage(
+        messages,
+        'document.pageChrome.editor.imageTooLarge.title',
+      ),
+      description: officeMessage(
+        messages,
+        'document.pageChrome.editor.imageTooLarge.description',
+      ),
+    };
+  }
+  try {
+    return {
+      ok: true,
+      alt: file.name,
+      source: await readOfficeFileAsDataUrl(file),
+    };
+  } catch {
+    return {
+      ok: false,
+      title: officeMessage(
+        messages,
+        'document.pageChrome.editor.imageReadFailed.title',
+      ),
+      description: officeMessage(
+        messages,
+        'document.pageChrome.editor.imageReadFailed.description',
+      ),
+    };
+  }
+}
+
+function pageChromePickerColor(color: string | undefined): string {
+  return color && /^#[\da-f]{6}$/i.test(color)
+    ? color
+    : DEFAULT_PAGE_CHROME_COLOR;
+}
+
+function PageChromeButton({
+  label,
+  active,
+  disabled = false,
+  onClick,
+  children,
+}: {
+  label: string;
+  active?: boolean;
+  disabled?: boolean;
+  onClick: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      className={active ? 'active' : undefined}
+      aria-label={label}
+      aria-pressed={active === undefined ? undefined : active}
+      title={label}
+      disabled={disabled}
+      onMouseDown={(event) => event.preventDefault()}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+}

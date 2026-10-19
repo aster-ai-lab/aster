@@ -1,0 +1,384 @@
+.a3s-bot-avatar {
+  --a3s-bot-avatar-color: var(--foreground, #171717);
+  --a3s-bot-avatar-eye-color: var(--background, #ffffff);
+  --a3s-bot-avatar-gaze-x: 0px;
+  --a3s-bot-avatar-gaze-y: 0px;
+  --a3s-bot-avatar-head-rotate-x: 0deg;
+  --a3s-bot-avatar-head-rotate-y: 0deg;
+  --a3s-bot-avatar-head-lift: 0px;
+  --a3s-bot-avatar-head-scale: 1;
+  --a3s-bot-avatar-lid: 1;
+  --a3s-bot-avatar-body-x: 0px;
+  --a3s-bot-avatar-body-y: 0px;
+  --a3s-bot-avatar-spin: 0deg;
+  --a3s-bot-avatar-squash-x: 1;
+  --a3s-bot-avatar-squash-y: 1;
+  --a3s-bot-avatar-glasses-color: color-mix(
+    in srgb,
+    var(--a3s-bot-avatar-eye-color) 82%,
+    var(--a3s-bot-avatar-color) 18%
+  );
+  --a3s-bot-avatar-size: 4rem;
+
+  position: relative;
+  width: var(--a3s-bot-avatar-size);
+  aspect-ratio: 1;
+  flex: 0 0 auto;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  animation: a3s-bot-avatar-breathe 5.8s ease-in-out infinite;
+  /* Keep the idle breathing on the avatar's own compositor layer. This stops
+   * sibling SVG shortcuts from being re-rasterized in lockstep with the Bot. */
+  will-change: transform;
+  isolation: isolate;
+  perspective: calc(var(--a3s-bot-avatar-size) * 5);
+  pointer-events: none;
+  transform-style: preserve-3d;
+}
+
+.a3s-bot-avatar[data-character-motion='spring'] {
+  animation: none;
+}
+
+/* Scientist is intentionally a single, calm material rather than another
+ * rainbow accent. The deep-blue face reads as a specialist at small sizes,
+ * while the cool-white frame remains legible in both themes. */
+.a3s-bot-avatar[data-avatar-variant='scientist'] {
+  --a3s-bot-avatar-eye-color: #f4f8ff;
+  --a3s-bot-avatar-glasses-color: #d9e9ff;
+}
+
+/* ToBoss keeps one fixed identity. The navy face, gold crown, and tie do not
+ * follow the ToBot shape, color, or eye pickers. */
+.a3s-bot-avatar[data-avatar-variant='boss'] {
+  --a3s-bot-avatar-color: #1a2740;
+  --a3s-bot-avatar-fill: #1a2740;
+  --a3s-bot-avatar-eye-color: #f6f1e8;
+  --a3s-bot-avatar-crown-color: #e2b15a;
+}
+
+.a3s-bot-avatar__motion,
+.a3s-bot-avatar__face {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.a3s-bot-avatar__face {
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  transform: translate3d(var(--a3s-bot-avatar-body-x), var(--a3s-bot-avatar-body-y, var(--a3s-bot-avatar-head-lift)), 0)
+    rotate(var(--a3s-bot-avatar-spin)) rotateX(var(--a3s-bot-avatar-head-rotate-x))
+    rotateY(var(--a3s-bot-avatar-head-rotate-y))
+    scale(
+      var(--a3s-bot-avatar-squash-x, var(--a3s-bot-avatar-head-scale)),
+      var(--a3s-bot-avatar-squash-y, var(--a3s-bot-avatar-head-scale))
+    );
+  transform-style: preserve-3d;
+  transition:
+    box-shadow 180ms ease,
+    transform 360ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+}
+
+.a3s-bot-avatar[data-character-motion='spring'] .a3s-bot-avatar__face {
+  transition: box-shadow 180ms ease;
+}
+
+.a3s-bot-avatar__blob {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  border: 0;
+  background: var(--a3s-bot-avatar-fill, var(--a3s-bot-avatar-color));
+  /* Explicit SVG size: a viewBox-only mask is treated as 300×150 and leaves a frame. */
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 1 1'%3E%3Cpath fill='white' d='M0.5 0.02C0.765 0.02 0.98 0.235 0.98 0.5C0.98 0.765 0.765 0.98 0.5 0.98C0.235 0.98 0.02 0.765 0.02 0.5C0.02 0.235 0.235 0.02 0.5 0.02Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 1 1'%3E%3Cpath fill='white' d='M0.5 0.02C0.765 0.02 0.98 0.235 0.98 0.5C0.98 0.765 0.765 0.98 0.5 0.98C0.235 0.98 0.02 0.765 0.02 0.5C0.02 0.235 0.235 0.02 0.5 0.02Z'/%3E%3C/svg%3E");
+  -webkit-mask-mode: alpha;
+  mask-mode: alpha;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  filter: none;
+  pointer-events: none;
+}
+
+.a3s-bot-avatar[data-flowing-fill='true'] .a3s-bot-avatar__blob {
+  background-size: 260% 260%;
+  animation: a3s-bot-avatar-siri-flow 6.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+.a3s-bot-avatar[data-animation-enabled='false'] {
+  animation: none;
+}
+
+.a3s-bot-avatar[data-animation-enabled='false'] .a3s-bot-avatar__face,
+.a3s-bot-avatar[data-animation-enabled='false'] .a3s-bot-avatar__eyes {
+  transition: none;
+}
+
+.a3s-bot-avatar[data-animation-enabled='false'][data-flowing-fill='true'] .a3s-bot-avatar__blob {
+  animation: none;
+  background-position: 50% 50%;
+}
+
+.a3s-bot-avatar__blob::before,
+.a3s-bot-avatar__blob::after {
+  position: absolute;
+  pointer-events: none;
+  content: '';
+}
+
+.a3s-bot-avatar__blob::before {
+  z-index: 1;
+  inset: 0;
+  background:
+    radial-gradient(circle at 32% 24%, rgb(255 255 255 / 28%), transparent 36%),
+    radial-gradient(circle at 70% 78%, rgb(0 0 0 / 22%), transparent 56%);
+  mix-blend-mode: soft-light;
+}
+
+.a3s-bot-avatar__blob::after {
+  z-index: 1;
+  inset-block-start: 14%;
+  inset-inline-start: 24%;
+  width: 22%;
+  height: 10%;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 20%);
+  filter: blur(calc(var(--a3s-bot-avatar-size) * 0.03));
+  opacity: 0.7;
+  transform: rotate(-16deg);
+}
+
+.a3s-bot-avatar[data-pointer-tracking='true'] .a3s-bot-avatar__face {
+  box-shadow: none;
+}
+
+.a3s-bot-avatar[data-gaze-direction='up'] .a3s-bot-avatar__face {
+  --a3s-bot-avatar-head-lift: -0.075rem;
+  --a3s-bot-avatar-head-scale: 1.01;
+}
+
+.a3s-bot-avatar__eyes {
+  color: var(--a3s-bot-avatar-eye-color);
+  position: absolute;
+  inset-block-start: 42%;
+  inset-inline-start: 50%;
+  z-index: 2;
+  width: calc(var(--a3s-bot-avatar-size) * 0.52);
+  height: calc(var(--a3s-bot-avatar-size) * 0.3);
+  overflow: visible;
+  transform: translate(-50%, -50%)
+    translate3d(var(--a3s-bot-avatar-gaze-x), var(--a3s-bot-avatar-gaze-y), calc(var(--a3s-bot-avatar-size) * 0.055));
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.a3s-bot-avatar[data-character-motion='spring'] .a3s-bot-avatar__eyes {
+  transition: none;
+}
+
+.a3s-bot-avatar__eye-mark {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform: scaleY(var(--a3s-bot-avatar-lid));
+  transform-origin: 50% 54%;
+}
+
+/* The scientist identity is an accessory on the shared eye layer. Keeping
+ * the frames inside that layer means they follow the same gaze, head turn,
+ * breathing and reduced-motion rules as every other Bot avatar. */
+.a3s-bot-avatar[data-avatar-variant='scientist'] .a3s-bot-avatar__glasses {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--a3s-bot-avatar-size) * 0.04);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.a3s-bot-avatar[data-avatar-variant='scientist'] .a3s-bot-avatar__glasses-lens {
+  display: block;
+  box-sizing: border-box;
+  width: calc(var(--a3s-bot-avatar-size) * 0.3);
+  height: calc(var(--a3s-bot-avatar-size) * 0.26);
+  border: max(1px, calc(var(--a3s-bot-avatar-size) * 0.0275)) solid var(--a3s-bot-avatar-glasses-color);
+  border-radius: 42%;
+  background: color-mix(in srgb, #d9e9ff 14%, transparent);
+  box-shadow:
+    inset 0 0 0 max(0.5px, calc(var(--a3s-bot-avatar-size) * 0.0125)) rgb(255 255 255 / 18%),
+    0 0 0 max(0.5px, calc(var(--a3s-bot-avatar-size) * 0.00625)) rgb(217 233 255 / 24%);
+}
+
+.a3s-bot-avatar[data-avatar-variant='scientist'] .a3s-bot-avatar__glasses-bridge {
+  display: block;
+  width: calc(var(--a3s-bot-avatar-size) * 0.08);
+  height: max(1px, calc(var(--a3s-bot-avatar-size) * 0.0275));
+  margin-inline: calc(var(--a3s-bot-avatar-size) * -0.02);
+  border-radius: 999px;
+  background: var(--a3s-bot-avatar-glasses-color);
+}
+
+/* The crown and tie sit on the face, inside the blob, so a 11px group cell
+ * still shows them after the cell clips overflow. They follow head motion
+ * and stay still when the eyes look around. */
+.a3s-bot-avatar[data-avatar-variant='boss'] .a3s-bot-avatar__crown {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: 5%;
+  inset-inline-start: 50%;
+  width: 56%;
+  height: 24%;
+  overflow: visible;
+  color: var(--a3s-bot-avatar-crown-color);
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.a3s-bot-avatar[data-avatar-variant='boss'] .a3s-bot-avatar__tie {
+  position: absolute;
+  z-index: 1;
+  inset-block-end: 11%;
+  inset-inline-start: 50%;
+  width: 14%;
+  height: 18%;
+  background: var(--a3s-bot-avatar-crown-color);
+  clip-path: polygon(32% 0, 68% 0, 100% 100%, 0 100%);
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.a3s-bot-avatar[data-gaze-mode='pointer'] .a3s-bot-avatar__eyes {
+  transition-duration: 96ms;
+  transition-timing-function: ease-out;
+}
+
+.a3s-bot-avatar[data-character-motion='spring'][data-gaze-mode='pointer'] .a3s-bot-avatar__eyes {
+  transition: none;
+}
+
+.a3s-bot-avatar__eye {
+  fill: var(--a3s-bot-avatar-eye-color);
+}
+
+.a3s-bot-avatar[data-blinking='true'] .a3s-bot-avatar__eye,
+.a3s-bot-avatar[data-blinking='true'] .a3s-bot-avatar__eye-mark {
+  --a3s-bot-avatar-lid: 0.14;
+}
+
+.a3s-bot-avatar[data-character-motion='spring'] [data-blinking='true'] .a3s-bot-avatar__eye-mark {
+  --a3s-bot-avatar-lid: inherit;
+}
+
+/* Status faces are a shape, not a blink. Keep the mark open so a smile or
+ * frown is not crushed by the lid variable the motion loop writes. */
+.a3s-bot-avatar[data-bot-activity='paused'] .a3s-bot-avatar__eye-mark,
+.a3s-bot-avatar[data-bot-activity='completed'] .a3s-bot-avatar__eye-mark,
+.a3s-bot-avatar[data-bot-activity='failed'] .a3s-bot-avatar__eye-mark {
+  transform: none;
+}
+
+.a3s-bot-avatar[data-bot-activity='working'] .a3s-bot-avatar__eyes {
+  transform: translate(-58%, -62%);
+}
+
+.a3s-bot-avatar[data-bot-activity='working'][data-animation-enabled='true'] .a3s-bot-avatar__eyes {
+  animation: a3s-bot-avatar-working-look 1.35s ease-in-out infinite alternate;
+}
+
+.a3s-bot-avatar[data-bot-activity='paused'] .a3s-bot-avatar__eyes {
+  transform: translate(-50%, -38%);
+}
+
+.a3s-bot-avatar[data-bot-activity='paused'] .a3s-bot-avatar__face {
+  transform: translateY(8%) scale(0.96, 0.92);
+}
+
+.a3s-bot-avatar[data-bot-activity='completed'] .a3s-bot-avatar__eyes {
+  transform: translate(-50%, -66%);
+}
+
+.a3s-bot-avatar[data-bot-activity='completed'] .a3s-bot-avatar__face {
+  transform: translateY(-7%) scale(1.02, 1.06);
+}
+
+.a3s-bot-avatar[data-bot-activity='failed'] .a3s-bot-avatar__eyes {
+  transform: translate(-50%, -32%) rotate(-7deg);
+}
+
+.a3s-bot-avatar[data-bot-activity='failed'] .a3s-bot-avatar__face {
+  transform: rotate(-8deg) scale(1.04, 0.94);
+}
+
+@keyframes a3s-bot-avatar-working-look {
+  from {
+    transform: translate(-68%, -64%);
+  }
+
+  to {
+    transform: translate(-32%, -44%);
+  }
+}
+
+@keyframes a3s-bot-avatar-breathe {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(-0.1rem) scale(1.012);
+  }
+}
+
+@keyframes a3s-bot-avatar-siri-flow {
+  0%,
+  100% {
+    background-position: 0% 46%;
+  }
+
+  35% {
+    background-position: 54% 8%;
+  }
+
+  68% {
+    background-position: 100% 74%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a3s-bot-avatar {
+    animation: none;
+  }
+
+  .a3s-bot-avatar__face,
+  .a3s-bot-avatar__eyes,
+  .a3s-bot-avatar__glasses,
+  .a3s-bot-avatar__eye {
+    transition: none;
+  }
+
+  .a3s-bot-avatar[data-flowing-fill='true'] .a3s-bot-avatar__blob {
+    animation: none;
+    background-position: 50% 50%;
+  }
+
+  .a3s-bot-avatar[data-bot-activity='working'] .a3s-bot-avatar__eyes {
+    animation: none;
+  }
+}

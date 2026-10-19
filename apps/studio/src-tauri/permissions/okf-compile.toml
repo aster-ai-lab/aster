@@ -1,0 +1,4 @@
+[[permission]]
+identifier = "allow-compile-personal-okf"
+description = "Compiles the personal note directory wiki/local, plans notes that still need a concept page, pins the files an agent must leave unchanged, records generation, and accepts an index for pages already on disk."
+commands.allow = ["compile_personal_okf", "accept_personal_okf", "plan_personal_okf", "pin_personal_okf", "release_personal_okf", "remember_personal_okf"]

@@ -1,0 +1,142 @@
+Analysis of sampling tightloop-red-test (pid 48334) every 1 millisecond
+Process:         tightloop-red-test [48334]
+Path:            /Users/USER/*/tightloop-red-test
+Load Address:    0x1006ec000
+Identifier:      tightloop-red-test
+Version:         ???
+Code Type:       ARM64
+Parent Process:  Python [48333]
+Target Type:     live task
+
+Date/Time:       2026-10-20 02:38:00.993 +0800
+Launch Time:     2026-10-20 02:37:58.964 +0800
+OS Version:      macOS 26.6.2 (25G83)
+Report Version:  7
+Analysis Tool:   /usr/bin/sample
+
+Physical footprint:         7808K
+Physical footprint (peak):  7808K
+Idle exit:                  untracked
+----
+
+Call graph:
+    160 Thread_49422449: Main Thread
+    + 141 _dyld_start  (in dyld) + 0  [0x1162c89c0]
+    + 18 start  (in dyld) + 6904  [0x18f65048c]
+    + ! 18 dyld4::start(dyld4::KernelArgs*, void*, void*, unsigned long long)::$_1::operator()() const  (in dyld) + 320  [0x18f650b30]
+    + !   14 dyld4::prepare(dyld4::APIs&, mach_o::UnsafeHeader const*)  (in dyld) + 3996  [0x18f651ae8]
+    + !   : 14 dyld4::RuntimeState::notifyDebuggerLoad(std::span<dyld4::Loader const*, 18446744073709551615ul> const&)  (in dyld) + 528  [0x18f660c8c]
+    + !   :   14 dyld4::ExternallyViewableState::addImages(lsl::Allocator&, lsl::Allocator&, std::span<dyld4::ExternallyViewableState::ImageInfo, 18446744073709551615ul> const&)  (in dyld) + 1084  [0x18f66bc80]
+    + !   :     14 dyld4::ExternallyViewableState::triggerNotifications(dyld_image_mode, unsigned int, dyld_image_info const*)  (in dyld) + 296  [0x18f66b524]
+    + !   :       14 dyld4::RemoteNotificationResponder::blockOnSynchronousEvent(unsigned int)  (in dyld) + 48  [0x18f6b1c90]
+    + !   :         14 dyld4::RemoteNotificationResponder::sendMessage(int, unsigned int, mach_msg_header_t*)  (in dyld) + 244  [0x18f6b1904]
+    + !   :           14 mach_msg_overwrite  (in dyld) + 244  [0x18f6cb18c]
+    + !   :             14 mach_msg2_internal  (in dyld) + 76  [0x18f6cafe4]
+    + !   :               14 mach_msg2_trap  (in dyld) + 8  [0x18f63172c]
+    + !   3 dyld4::prepare(dyld4::APIs&, mach_o::UnsafeHeader const*)  (in dyld) + 2116  [0x18f651390]
+    + !   : 2 dyld4::JustInTimeLoader::applyFixups(Diagnostics&, dyld4::RuntimeState&, dyld4::DyldCacheDataConstLazyScopedWriter&, bool, lsl::Vector<std::pair<dyld4::Loader const*, char const*>>*) const  (in dyld) + 676  [0x18f671564]
+    + !   : | 2 dyld4::Loader::applyFixupsGeneric(Diagnostics&, dyld4::RuntimeState&, unsigned long long, dyld3::Array<void const*> const&, dyld3::Array<void const*> const&, bool, dyld3::Array<dyld4::Loader::MissingFlatLazySymbol> const&) const  (in dyld) + 472  [0x18f67854c]
+    + !   : |   2 dyld3::MachOAnalyzer::forEachRebaseLocation_Opcodes(Diagnostics&, void (unsigned long long, bool&) block_pointer) const  (in dyld) + 440  [0x18f68d4d8]
+    + !   : |     2 dyld3::MachOAnalyzer::forEachRebase_Opcodes(Diagnostics&, dyld3::MachOLoaded::LinkEditInfo const&, mach_o::UnsafeHeader::SegmentInfo const*, void (char const*, dyld3::MachOLoaded::LinkEditInfo const&, mach_o::UnsafeHeader::SegmentInfo const*, bool, unsigned int, unsigned char, unsigned long long, dyld3::MachOAnalyzer::Rebase, bool&) block_pointer) const  (in dyld) + 984  [0x18f68d8ec]
+    + !   : |       2 invocation function for block in dyld4::Loader::applyFixupsGeneric(Diagnostics&, dyld4::RuntimeState&, unsigned long long, dyld3::Array<void const*> const&, dyld3::Array<void const*> const&, bool, dyld3::Array<dyld4::Loader::MissingFlatLazySymbol> const&) const  (in dyld) + 28  [0x18f678b88]
+    + !   : 1 dyld4::JustInTimeLoader::applyFixups(Diagnostics&, dyld4::RuntimeState&, dyld4::DyldCacheDataConstLazyScopedWriter&, bool, lsl::Vector<std::pair<dyld4::Loader const*, char const*>>*) const  (in dyld) + 616  [0x18f671528]
+    + !   :   1 dyld4::Loader::forEachBindTarget(Diagnostics&, dyld4::RuntimeState&, void (unsigned int, unsigned int, dyld4::Loader::ResolvedSymbol const&) block_pointer, bool, void (dyld4::Loader::ResolvedSymbol const&, bool&) block_pointer, void (dyld4::Loader::ResolvedSymbol const&, bool&) block_pointer) const  (in dyld) + 108  [0x18f679e58]
+    + !   :     1 dyld3::MachOAnalyzer::withVMLayout(Diagnostics&, void (mach_o::Layout const&) block_pointer) const  (in dyld) + 672  [0x18f6861b4]
+    + !   :       1 invocation function for block in dyld4::Loader::forEachBindTarget(Diagnostics&, dyld4::RuntimeState&, void (unsigned int, unsigned int, dyld4::Loader::ResolvedSymbol const&) block_pointer, bool, void (dyld4::Loader::ResolvedSymbol const&, bool&) block_pointer, void (dyld4::Loader::ResolvedSymbol const&, bool&) block_pointer) const  (in dyld) + 280  [0x18f679f7c]
+    + !   :         1 mach_o::Fixups::forEachBindTarget_Opcodes(Diagnostics&, bool, void (mach_o::Fixups::BindTargetInfo const&, bool&) block_pointer, void (mach_o::Fixups::BindTargetInfo const&, bool&) block_pointer) const  (in dyld) + 208  [0x18f692900]
+    + !   :           1 mach_o::Fixups::forEachBindUnified_Opcodes(Diagnostics&, bool, void (unsigned long long, unsigned int, mach_o::Fixups::BindTargetInfo const&, bool&) block_pointer, void (unsigned long long, unsigned int, mach_o::Fixups::BindTargetInfo const&, bool&) block_pointer) const  (in dyld) + 244  [0x18f692f48]
+    + !   :             1 mach_o::Fixups::forEachBind_OpcodesLazy(Diagnostics&, void (char const*, bool, bool, unsigned int, int, unsigned int, unsigned int, unsigned long long, unsigned char, char const*, bool, bool, unsigned long long, bool, bool&) block_pointer) const  (in dyld) + 444  [0x18f6937bc]
+    + !   :               1 invocation function for block in mach_o::Fixups::forEachBindTarget_Opcodes(Diagnostics&, bool, void (mach_o::Fixups::BindTargetInfo const&, bool&) block_pointer, void (mach_o::Fixups::BindTargetInfo const&, bool&) block_pointer) const  (in dyld) + 72  [0x18f693eac]
+    + !   :                 1 invocation function for block in dyld4::Loader::forEachBindTarget(Diagnostics&, dyld4::RuntimeState&, void (unsigned int, unsigned int, dyld4::Loader::ResolvedSymbol const&) block_pointer, bool, void (dyld4::Loader::ResolvedSymbol const&, bool&) block_pointer, void (dyld4::Loader::ResolvedSymbol const&, bool&) block_pointer) const  (in dyld) + 96  [0x18f67a008]
+    + !   :                   1 dyld4::Loader::resolveSymbol(Diagnostics&, dyld4::RuntimeState&, int, char const*, bool, bool, void (unsigned int, unsigned int, dyld4::Loader::ResolvedSymbol const&) block_pointer, bool) const  (in dyld) + 544  [0x18f67a290]
+    + !   :                     1 dyld4::Loader::hasExportedSymbol(Diagnostics&, dyld4::RuntimeState&, char const*, dyld4::Loader::ExportedSymbolMode, dyld4::Loader::ResolverMode, dyld4::Loader::ResolvedSymbol*, dyld3::Array<dyld4::Loader const*>*) const  (in dyld) + 1340  [0x18f67b620]
+    + !   :                       1 dyld4::Loader::hasExportedSymbol(Diagnostics&, dyld4::RuntimeState&, char const*, dyld4::Loader::ExportedSymbolMode, dyld4::Loader::ResolverMode, dyld4::Loader::ResolvedSymbol*, dyld3::Array<dyld4::Loader const*>*) const  (in dyld) + 1356  [0x18f67b630]
+    + !   1 dyld4::prepare(dyld4::APIs&, mach_o::UnsafeHeader const*)  (in dyld) + 4184  [0x18f651ba4]
+    + !     1 dyld4::APIs::runAllInitializersForMain()  (in dyld) + 100  [0x18f644870]
+    + !       1 dyld4::PrebuiltLoader::runInitializers(dyld4::RuntimeState&) const  (in dyld) + 44  [0x18f6a3d44]
+    + !         1 dyld4::Loader::findAndRunAllInitializers(dyld4::RuntimeState&) const  (in dyld) + 528  [0x18f679394]
+    + !           1 dyld3::MachOAnalyzer::forEachInitializer(Diagnostics&, dyld3::MachOAnalyzer::VMAddrConverter const&, void (unsigned int) block_pointer, void const*) const  (in dyld) + 516  [0x18f689580]
+    + !             1 mach_o::UnsafeHeader::forEachSection(void (mach_o::UnsafeHeader::SectionInfo const&, bool&) block_pointer) const  (in dyld) + 124  [0x18f6c824c]
+    + !               1 mach_o::UnsafeHeader::forEachLoadCommand(void (load_command const*, bool&) block_pointer) const  (in dyld) + 208  [0x18f6c69a4]
+    + !                 1 invocation function for block in mach_o::UnsafeHeader::forEachSection(void (mach_o::UnsafeHeader::SectionInfo const&, bool&) block_pointer) const  (in dyld) + 312  [0x18f6c9fac]
+    + !                   1 invocation function for block in dyld3::MachOAnalyzer::forEachInitializer(Diagnostics&, dyld3::MachOAnalyzer::VMAddrConverter const&, void (unsigned int) block_pointer, void const*) const  (in dyld) + 320  [0x18f689a8c]
+    + !                     1 invocation function for block in dyld4::Loader::findAndRunAllInitializers(dyld4::RuntimeState&) const::$_0::operator()() const  (in dyld) + 180  [0x18f67ea28]
+    + !                       1 libSystem_initializer  (in libSystem.B.dylib) + 204  [0x19f877328]
+    + !                         1 __malloc_init  (in libsystem_malloc.dylib) + 2524  [0x18f81b8a0]
+    + !                           1 xzm_main_malloc_zone_create  (in libsystem_malloc.dylib) + 8424  [0x18f83b394]
+    + !                             1 _xzm_initialize_xzone_data  (in libsystem_malloc.dylib) + 784  [0x18f83c180]
+    + 1 start  (in dyld) + 6008  [0x1162e410c]
+    +   1 dyld4::ExternallyViewableState::createMinimalInfo(lsl::Allocator&, unsigned long long, char const*, unsigned long long, char const*, DyldSharedCache const*)  (in dyld) + 2116  [0x1162fec54]
+    +     1 dyld4::ExternallyViewableState::triggerNotifications(dyld_image_mode, unsigned int, dyld_image_info const*)  (in dyld) + 296  [0x1162ff524]
+    +       1 dyld4::RemoteNotificationResponder::blockOnSynchronousEvent(unsigned int)  (in dyld) + 48  [0x116345c90]
+    +         1 dyld4::RemoteNotificationResponder::sendMessage(int, unsigned int, mach_msg_header_t*)  (in dyld) + 244  [0x116345904]
+    +           1 mach_msg_overwrite  (in dyld) + 244  [0x11635f18c]
+    +             1 mach_msg2_internal  (in dyld) + 76  [0x11635efe4]
+    +               1 mach_msg2_trap  (in dyld) + 8  [0x1162c572c]
+    3 Thread_49422449   DispatchQueue_1: com.apple.main-thread  (serial)
+    + 3 start  (in dyld) + 6992  [0x18f6504e4]
+    +   3 main  (in tightloop-red-test) + 36  [0x1037f5a8c]
+    +     3 _RINvNtCsa9BKTri5B3M_3std2rt10lang_startuECs7tRUYucFOK8_13a3s_code_core  (in tightloop-red-test) + 60  [0x1015e29d4]  rt.rs:205
+    +       2 _RNvNtCsa9BKTri5B3M_3std2rt19lang_start_internal  (in tightloop-red-test) + 952  [0x106c55eb8]
+    +       ! 2 _RNCINvNtCsa9BKTri5B3M_3std2rt10lang_startuE0Cs7tRUYucFOK8_13a3s_code_core  (in tightloop-red-test) + 16  [0x1015f3af8]  rt.rs:206
+    +       !   2 _RINvNtNtCsa9BKTri5B3M_3std3sys9backtrace28___rust_begin_short_backtraceFEuuECs7tRUYucFOK8_13a3s_code_core  (in tightloop-red-test) + 12  [0x1027cae5c]  backtrace.rs:166
+    +       !     2 _RNvYFEuINtNtNtCsgtPOCBgevO_4core3ops8function6FnOnceuE9call_onceCs7tRUYucFOK8_13a3s_code_core  (in tightloop-red-test) + 16  [0x104921414]  function.rs:250
+    +       !       2 _RNvCs7tRUYucFOK8_13a3s_code_core4main  (in tightloop-red-test) + 28  [0x1037e023c]  lib.rs:1
+    +       !         2 _RNvCs3O4ZRUMviTO_4test16test_main_static  (in tightloop-red-test) + 300  [0x104f203ec]
+    +       !           2 _RNvNtCs3O4ZRUMviTO_4test7console17run_tests_console  (in tightloop-red-test) + 3216  [0x104f2f7fc]
+    +       !             2 _RNvMs1_NtNtNtCsa9BKTri5B3M_3std4sync4mpmc4listINtB5_7ChannelNtNtCs3O4ZRUMviTO_4test5event13CompletedTestE4recvB10_  (in tightloop-red-test) + 432  [0x104f262fc]
+    +       !               2 _RNCNvMs1_NtNtNtCsa9BKTri5B3M_3std4sync4mpmc4listINtB7_7ChannelNtNtCs3O4ZRUMviTO_4test5event13CompletedTestE4recvs_0B12_  (in tightloop-red-test) + 228  [0x104f1d394]
+    +       !                 2 _RNvMs_NtNtCsa9BKTri5B3M_3std6thread6threadNtB4_6Thread4park  (in tightloop-red-test) + 48  [0x106c4c0e8]
+    +       !                   2 _dispatch_semaphore_wait_slow  (in libdispatch.dylib) + 132  [0x18f861b20]
+    +       !                     2 _dispatch_sema4_wait  (in libdispatch.dylib) + 28  [0x18f861490]
+    +       !                       2 semaphore_wait_trap  (in libsystem_kernel.dylib) + 8  [0x18f9d7bb0]
+    +       1 _RNvNtCsa9BKTri5B3M_3std2rt19lang_start_internal  (in tightloop-red-test) + 528  [0x106c55d10]
+    +         1 pthread_get_stacksize_np  (in libsystem_pthread.dylib) + 340  [0x18fa19118]
+    2 Thread_49422568: tools::program_tool::failure_receipt_tests::deadline_after_read
+      2 thread_start  (in libsystem_pthread.dylib) + 8  [0x18fa16c1c]
+        2 _pthread_start  (in libsystem_pthread.dylib) + 136  [0x18fa1bc58]
+          2 _RNvNvMs0_NtNtNtCsa9BKTri5B3M_3std3sys6thread4unixNtB7_6Thread3new12thread_start  (in tightloop-red-test) + 408  [0x106c5f18c]
+            2 _RNSNvYNCINvNtNtCsa9BKTri5B3M_3std6thread9lifecycle15spawn_uncheckedNCNvCs3O4ZRUMviTO_4test8run_tests_0uEs_0INtNtNtCsgtPOCBgevO_4core3ops8function6FnOnceuE9call_once6vtableB17_  (in tightloop-red-test) + 64  [0x104f1ee84]
+              2 _RINvNtNtCsa9BKTri5B3M_3std3sys9backtrace28___rust_begin_short_backtraceNCNvCs3O4ZRUMviTO_4test8run_tests_0uEB1b_  (in tightloop-red-test) + 132  [0x104f177b4]
+                2 _RNCNvCs3O4ZRUMviTO_4test8run_test0B3_  (in tightloop-red-test) + 908  [0x104f1c92c]
+                  2 _RINvCs3O4ZRUMviTO_4test28___rust_begin_short_backtraceINtNtCsgtPOCBgevO_4core6result6ResultuNtNtCslJsSqIQKwiA_5alloc6string6StringEFEBQ_EB2_  (in tightloop-red-test) + 24  [0x104f114e4]
+                    2 _RNvYNCNvNtNtNtCs7tRUYucFOK8_13a3s_code_core5tools12program_tool21failure_receipt_tests54deadline_after_read_preserves_completed_child_receipts0INtNtNtCsgtPOCBgevO_4core3ops8function6FnOnceuE9call_onceBc_  (in tightloop-red-test) + 20  [0x1049b5acc]  function.rs:250
+                      2 _RNCNvNtNtNtCs7tRUYucFOK8_13a3s_code_core5tools12program_tool21failure_receipt_tests54deadline_after_read_preserves_completed_child_receipts0B9_  (in tightloop-red-test) + 20  [0x100f374b8]  failure_receipt_tests.rs:92
+                        2 _RNvNtNtNtCs7tRUYucFOK8_13a3s_code_core5tools12program_tool21failure_receipt_testss_54deadline_after_read_preserves_completed_child_receipts  (in tightloop-red-test) + 252  [0x101521a4c]  failure_receipt_tests.rs:100
+                          2 _RINvMNtNtCseGL3715tDM3_5tokio7runtime7runtimeNtB3_7Runtime8block_onINtNtCsgtPOCBgevO_4core3pin3PinQDNtNtNtB18_6future6future6Futurep6OutputuEL_EECs7tRUYucFOK8_13a3s_code_core  (in tightloop-red-test) + 268  [0x102cd15b0]  runtime.rs:343
+                            2 _RINvMNtNtCseGL3715tDM3_5tokio7runtime7runtimeNtB3_7Runtime14block_on_innerINtNtCsgtPOCBgevO_4core3pin3PinQDNtNtNtB1f_6future6future6Futurep6OutputuEL_EECs7tRUYucFOK8_13a3s_code_core  (in tightloop-red-test) + 160  [0x102cd08d4]  runtime.rs:374
+                              2 _RINvMNtNtNtCseGL3715tDM3_5tokio7runtime9scheduler14current_threadNtB3_13CurrentThread8block_onINtNtCsgtPOCBgevO_4core3pin3PinQDNtNtNtB1z_6future6future6Futurep6OutputuEL_EECs7tRUYucFOK8_13a3s_code_core  (in tightloop-red-test) + 108  [0x103efecf4]  mod.rs:206
+                                2 _RINvNtNtNtCseGL3715tDM3_5tokio7runtime7context7runtime13enter_runtimeNCINvMNtNtB6_9scheduler14current_threadNtB1b_13CurrentThread8block_onINtNtCsgtPOCBgevO_4core3pin3PinQDNtNtNtB2h_6future6future6Futurep6OutputuEL_EE0uECs7tRUYucFOK8_13a3s_code_core  (in tightloop-red-test) + 180  [0x100b24b20]  runtime.rs:65
+                                  1 _RNCINvMNtNtNtCseGL3715tDM3_5tokio7runtime9scheduler14current_threadNtB5_13CurrentThread8block_onINtNtCsgtPOCBgevO_4core3pin3PinQDNtNtNtB1B_6future6future6Futurep6OutputuEL_EE0Cs7tRUYucFOK8_13a3s_code_core  (in tightloop-red-test) + 228  [0x103f72590]  mod.rs:217
+                                  ! 1 _RNvMs_NtNtCsa9BKTri5B3M_3std6thread6threadNtB4_6Thread2idCs7tRUYucFOK8_13a3s_code_core  (in tightloop-red-test) + 0  [0x103d1a3a4]  thread.rs:204
+                                  1 _RNCINvMNtNtNtCseGL3715tDM3_5tokio7runtime9scheduler14current_threadNtB5_13CurrentThread8block_onINtNtCsgtPOCBgevO_4core3pin3PinQDNtNtNtB1B_6future6future6Futurep6OutputuEL_EE0Cs7tRUYucFOK8_13a3s_code_core  (in tightloop-red-test) + 344  [0x103f72604]  mod.rs:218
+                                    1 _RINvMs7_NtNtNtCseGL3715tDM3_5tokio7runtime9scheduler14current_threadNtB6_9CoreGuard8block_onINtNtCsgtPOCBgevO_4core3pin3PinQIB1t_QDNtNtNtB1x_6future6future6Futurep6OutputuEL_EEECs7tRUYucFOK8_13a3s_code_core  (in tightloop-red-test) + 64  [0x103f708c0]  mod.rs:820
+                                      1 _RINvMs7_NtNtNtCseGL3715tDM3_5tokio7runtime9scheduler14current_threadNtB6_9CoreGuard5enterNCINvB2_8block_onINtNtCsgtPOCBgevO_4core3pin3PinQIB1H_QDNtNtNtB1L_6future6future6Futurep6OutputuEL_EEE0INtNtB1L_6option6OptionuEECs7tRUYucFOK8_13a3s_code_core  (in tightloop-red-test) + 340  [0x103f6ec38]  mod.rs:909
+                                        1 _RINvNtNtCseGL3715tDM3_5tokio7runtime7context13set_schedulerTINtNtCslJsSqIQKwiA_5alloc5boxed3BoxNtNtNtB4_9scheduler14current_thread4CoreEINtNtCsgtPOCBgevO_4core6option6OptionuEENCINvMs7_B1x_NtB1x_9CoreGuard5enterNCINvB2T_8block_onINtNtB2f_3pin3PinQIB3G_QDNtNtNtB2f_6future6future6Futurep6OutputuEL_EEE0B2a_E0ECs7tRUYucFOK8_13a3s_code_core  (in tightloop-red-test) + 52  [0x1018f7a98]  context.rs:187
+                                          1 _RINvMs2_NtNtCsa9BKTri5B3M_3std6thread5localINtB6_8LocalKeyNtNtNtCseGL3715tDM3_5tokio7runtime7context7ContextE4withNCINvBW_13set_schedulerTINtNtCslJsSqIQKwiA_5alloc5boxed3BoxNtNtNtBY_9scheduler14current_thread4CoreEINtNtCsgtPOCBgevO_4core6option6OptionuEENCINvMs7_B2N_NtB2N_9CoreGuard5enterNCINvB49_8block_onINtNtB3v_3pin3PinQIB4W_QDNtNtNtB3v_6future6future6Futurep6OutputuEL_EEE0B3q_E0E0B2b_ECs7tRUYucFOK8_13a3s_code_core  (in tightloop-red-test) + 16  [0x103c9e5fc]  local.rs:426
+                                            1 _RINvMs2_NtNtCsa9BKTri5B3M_3std6thread5localINtB6_8LocalKeyNtNtNtCseGL3715tDM3_5tokio7runtime7context7ContextE8try_withNCINvBW_13set_schedulerTINtNtCslJsSqIQKwiA_5alloc5boxed3BoxNtNtNtBY_9scheduler14current_thread4CoreEINtNtCsgtPOCBgevO_4core6option6OptionuEENCINvMs7_B2R_NtB2R_9CoreGuard5enterNCINvB4d_8block_onINtNtB3z_3pin3PinQIB50_QDNtNtNtB3z_6future6future6Futurep6OutputuEL_EEE0B3u_E0E0B2f_ECs7tRUYucFOK8_13a3s_code_core  (in tightloop-red-test) + 172  [0x103ca02b0]  local.rs:462
+                                              1 _RNCINvNtNtCseGL3715tDM3_5tokio7runtime7context13set_schedulerTINtNtCslJsSqIQKwiA_5alloc5boxed3BoxNtNtNtB6_9scheduler14current_thread4CoreEINtNtCsgtPOCBgevO_4core6option6OptionuEENCINvMs7_B1z_NtB1z_9CoreGuard5enterNCINvB2V_8block_onINtNtB2h_3pin3PinQIB3I_QDNtNtNtB2h_6future6future6Futurep6OutputuEL_EEE0B2c_E0E0Cs7tRUYucFOK8_13a3s_code_core  (in tightloop-red-test) + 48  [0x1018f8d34]  context.rs:187
+                                                1 _RINvMNtNtNtCseGL3715tDM3_5tokio7runtime7context6scopedINtB3_6ScopedNtNtB7_9scheduler7ContextE3setNCINvMs7_NtB15_14current_threadNtB1G_9CoreGuard5enterNCINvB1C_8block_onINtNtCsgtPOCBgevO_4core3pin3PinQIB2H_QDNtNtNtB2L_6future6future6Futurep6OutputuEL_EEE0INtNtB2L_6option6OptionuEE0TINtNtCslJsSqIQKwiA_5alloc5boxed3BoxNtB1G_4CoreEB44_EECs7tRUYucFOK8_13a3s_code_core  (in tightloop-red-test) + 140  [0x104afe8e8]  scoped.rs:40
+                                                  1 _RNCINvMs7_NtNtNtCseGL3715tDM3_5tokio7runtime9scheduler14current_threadNtB8_9CoreGuard5enterNCINvB4_8block_onINtNtCsgtPOCBgevO_4core3pin3PinQIB1J_QDNtNtNtB1N_6future6future6Futurep6OutputuEL_EEE0INtNtB1N_6option6OptionuEE0Cs7tRUYucFOK8_13a3s_code_core  (in tightloop-red-test) + 28  [0x103f7394c]  mod.rs:909
+                                                    1 _RNCINvMs7_NtNtNtCseGL3715tDM3_5tokio7runtime9scheduler14current_threadNtB8_9CoreGuard8block_onINtNtCsgtPOCBgevO_4core3pin3PinQIB1v_QDNtNtNtB1z_6future6future6Futurep6OutputuEL_EEE0Cs7tRUYucFOK8_13a3s_code_core  (in tightloop-red-test) + 388  [0x103f78c6c]  mod.rs:832
+                                                      1 _RINvMs1_NtNtNtCseGL3715tDM3_5tokio7runtime9scheduler14current_threadNtB6_7Context5enterINtNtNtCsgtPOCBgevO_4core4task4poll4PolluENCNCINvMs7_B6_NtB6_9CoreGuard8block_onINtNtB1u_3pin3PinQIB2G_QDNtNtNtB1u_6future6future6Futurep6OutputuEL_EEE00ECs7tRUYucFOK8_13a3s_code_core  (in tightloop-red-test) + 288  [0x103f015a8]  mod.rs:488
+                                                        1 _RNCNCINvMs7_NtNtNtCseGL3715tDM3_5tokio7runtime9scheduler14current_threadNtBa_9CoreGuard8block_onINtNtCsgtPOCBgevO_4core3pin3PinQIB1x_QDNtNtNtB1B_6future6future6Futurep6OutputuEL_EEE00Cs7tRUYucFOK8_13a3s_code_core  (in tightloop-red-test) + 208  [0x103f7e6e0]  mod.rs:833
+                                                          1 _RNCNCNCINvMs7_NtNtNtCseGL3715tDM3_5tokio7runtime9scheduler14current_threadNtBc_9CoreGuard8block_onINtNtCsgtPOCBgevO_4core3pin3PinQIB1z_QDNtNtNtB1D_6future6future6Futurep6OutputuEL_EEE000Cs7tRUYucFOK8_13a3s_code_core  (in tightloop-red-test) + 28  [0x103f7f18c]  mod.rs:833
+                                                            1 _RNvXs_NtNtCsgtPOCBgevO_4core6future6futureINtNtB8_3pin3PinQIBF_QDNtB4_6Futurep6OutputuEL_EEB11_4pollCs7tRUYucFOK8_13a3s_code_core  (in tightloop-red-test) + 28  [0x101a74d78]  future.rs:133
+                                                              1 _RNvXs_NtNtCsgtPOCBgevO_4core6future6futureINtNtB8_3pin3PinQDNtB4_6Futurep6OutputuEL_EBW_4pollCs7tRUYucFOK8_13a3s_code_core  (in tightloop-red-test) + 36  [0x101a74b08]  future.rs:133
+                                                                1 _RNCNvNtNtNtCs7tRUYucFOK8_13a3s_code_core5tools12program_tool21failure_receipt_testss_54deadline_after_read_preserves_completed_child_receipts0B9_  (in tightloop-red-test) + 840  [0x100f38d34]  failure_receipt_tests.rs:96
+                                                                  1 _RNCNvNtNtNtCs7tRUYucFOK8_13a3s_code_core5tools12program_tool21failure_receipt_tests7execute0B9_  (in tightloop-red-test) + 812  [0x100f37898]  failure_receipt_tests.rs:27
+                                                                    1 _RNvMs0_NtCs7tRUYucFOK8_13a3s_code_core5toolsNtB5_12ToolExecutor3new  (in tightloop-red-test) + 252  [0x103816fa4]  mod.rs:559
+                                                                      1 _RNvMs0_NtCs7tRUYucFOK8_13a3s_code_core5toolsNtB5_12ToolExecutor5build  (in tightloop-red-test) + 388  [0x1038171e8]  mod.rs:640
+                                                                        1 _RNvMs_NtNtCs7tRUYucFOK8_13a3s_code_core5tools8registryNtB4_12ToolRegistry69with_workspace_services_artifact_limits_and_immutable_content_adapter  (in tightloop-red-test) + 96  [0x1033bcc00]  registry.rs:117
+                                                                          1 _RNvMs6_NtNtCs7tRUYucFOK8_13a3s_code_core5tools5typesNtB5_11ToolContext3new  (in tightloop-red-test) + 440  [0x10338aee4]  types.rs:420
+                                                                            1 _RNvXs3_NtCs5dIxVhCKGZL_10a3s_search9coalescerNtB5_15SearchCoalescerNtNtCsgtPOCBgevO_4core7default7Default7default  (in tightloop-red-test) + 0  [0x105128c68]
+
+Total number in stack (recursive counted multiple, when >=5):
+
+Sort by top of stack, same collapsed (when >= 5):
+        _dyld_start  (in dyld)        141
+        mach_msg2_trap  (in dyld)        15
+
+Binary images description not available
+

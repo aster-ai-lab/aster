@@ -1,0 +1,30 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 56.51s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 8 tests
+test agent_api::tests::fact_log::nested_shell_verification::failed_parent_cannot_promote_its_earlier_successful_nested_shell_check ... ok
+test agent_api::tests::fact_log::nested_shell_verification::same_bytes_in_a_different_directory_do_not_prove_the_mutated_path ... ok
+test agent_api::tests::fact_log::nested_shell_verification::a_concurrent_mutator_cannot_hide_behind_a_later_checker_return ... ok
+test agent_api::tests::fact_log::nested_shell_verification::a_later_formal_check_can_recover_the_current_failed_effect_without_erasing_its_receipt ... ok
+test agent_api::tests::fact_log::nested_shell_verification::script_results_and_non_bash_metadata_cannot_manufacture_a_private_shell_proof ... ok
+test agent_api::tests::fact_log::nested_shell_verification::a_later_parent_write_cannot_reuse_a_previously_bound_program_report ... ok
+test agent_api::tests::fact_log::nested_shell_verification::direct_and_program_formal_bash_checks_bind_the_actual_parent_effect ... ok
+test agent_api::tests::fact_log::nested_shell_verification::a_write_after_the_check_invalidates_the_private_proof_for_any_path ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 5166 filtered out; finished in 1.51s
+

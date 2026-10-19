@@ -1,0 +1,196 @@
+
+running 1 test
+test sandbox::oci::tests::real_command_phase_timing ... OCI_TIMING_BEGIN {"sample":0,"timeout_ms":5000}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_connect","elapsed_ms":407.03216599999996},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"bundle_prepare","elapsed_ms":317.844292},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_create","elapsed_ms":2127.835083},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"process_start","elapsed_ms":59.988375},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"collect_wait","elapsed_ms":70.69191599999999},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_delete","elapsed_ms":150.31245900000002},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_shutdown","elapsed_ms":0.9291250000000001},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"scratch_remove","elapsed_ms":1.454167},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+OCI_TIMING {"error":null,"exit_code":0,"sample":0,"stderr":"","stdout":"phase-probe","timed_out":false,"total_ms":3137.513125}
+OCI_TIMING_BEGIN {"sample":1,"timeout_ms":5000}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_connect","elapsed_ms":406.73966700000005},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"bundle_prepare","elapsed_ms":291.71529200000003},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_create","elapsed_ms":2124.5159999999996},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"process_start","elapsed_ms":75.917834},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"collect_wait","elapsed_ms":136.60775},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_delete","elapsed_ms":187.500834},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_shutdown","elapsed_ms":1.660625},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"scratch_remove","elapsed_ms":1.5697910000000002},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+OCI_TIMING {"error":null,"exit_code":0,"sample":1,"stderr":"","stdout":"phase-probe","timed_out":false,"total_ms":3227.794833}
+OCI_TIMING_BEGIN {"sample":2,"timeout_ms":5000}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_connect","elapsed_ms":510.923291},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"bundle_prepare","elapsed_ms":350.96879199999995},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_create","elapsed_ms":2222.969417},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"process_start","elapsed_ms":60.981791},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"collect_wait","elapsed_ms":70.55116699999999},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_delete","elapsed_ms":153.052625},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_shutdown","elapsed_ms":1.0529160000000002},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"scratch_remove","elapsed_ms":1.478667},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+OCI_TIMING {"error":null,"exit_code":0,"sample":2,"stderr":"","stdout":"phase-probe","timed_out":false,"total_ms":3373.624667}
+OCI_TIMING_BEGIN {"sample":3,"timeout_ms":5000}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_connect","elapsed_ms":413.008542},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"bundle_prepare","elapsed_ms":284.111375},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_create","elapsed_ms":2199.880375},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"process_start","elapsed_ms":63.00625},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"collect_wait","elapsed_ms":73.55725000000001},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_delete","elapsed_ms":172.81750000000002},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_shutdown","elapsed_ms":1.013458},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"scratch_remove","elapsed_ms":1.575334},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+OCI_TIMING {"error":null,"exit_code":0,"sample":3,"stderr":"","stdout":"phase-probe","timed_out":false,"total_ms":3210.3864999999996}
+OCI_TIMING_BEGIN {"sample":4,"timeout_ms":5000}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_connect","elapsed_ms":425.703917},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"bundle_prepare","elapsed_ms":329.85170800000003},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_create","elapsed_ms":2459.785875},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"process_start","elapsed_ms":69.91225},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"collect_wait","elapsed_ms":76.520292},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_delete","elapsed_ms":162.076625},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_shutdown","elapsed_ms":1.8694169999999999},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"scratch_remove","elapsed_ms":1.634042},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+OCI_TIMING {"error":null,"exit_code":0,"sample":4,"stderr":"","stdout":"phase-probe","timed_out":false,"total_ms":3540.278584}
+OCI_TIMING_BEGIN {"sample":5,"timeout_ms":5000}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_connect","elapsed_ms":491.971958},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"bundle_prepare","elapsed_ms":448.696041},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_create","elapsed_ms":2300.7222079999997},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"process_start","elapsed_ms":64.79670899999999},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"collect_wait","elapsed_ms":74.46770799999999},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_delete","elapsed_ms":169.70333300000001},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_shutdown","elapsed_ms":1.411625},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"scratch_remove","elapsed_ms":1.970083},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+OCI_TIMING {"error":null,"exit_code":0,"sample":5,"stderr":"","stdout":"phase-probe","timed_out":false,"total_ms":3555.1183330000003}
+OCI_TIMING_BEGIN {"sample":6,"timeout_ms":5000}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_connect","elapsed_ms":453.62904199999997},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"bundle_prepare","elapsed_ms":370.767209},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_create","elapsed_ms":2448.103917},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"process_start","elapsed_ms":65.877333},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"collect_wait","elapsed_ms":73.451583},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_delete","elapsed_ms":177.25225},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_shutdown","elapsed_ms":1.2299579999999999},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"scratch_remove","elapsed_ms":1.903208},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+OCI_TIMING {"error":null,"exit_code":0,"sample":6,"stderr":"","stdout":"phase-probe","timed_out":false,"total_ms":3593.725458}
+OCI_TIMING_BEGIN {"sample":7,"timeout_ms":5000}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_connect","elapsed_ms":468.849542},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"bundle_prepare","elapsed_ms":369.47724999999997},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_create","elapsed_ms":2399.750375},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"process_start","elapsed_ms":65.946333},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"collect_wait","elapsed_ms":75.658417},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_delete","elapsed_ms":184.94387500000002},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_shutdown","elapsed_ms":1.194},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"scratch_remove","elapsed_ms":2.097917},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+OCI_TIMING {"error":null,"exit_code":0,"sample":7,"stderr":"","stdout":"phase-probe","timed_out":false,"total_ms":3569.562625}
+OCI_TIMING_BEGIN {"sample":8,"timeout_ms":5000}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_connect","elapsed_ms":472.89300000000003},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"bundle_prepare","elapsed_ms":396.861792},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_create","elapsed_ms":2412.837875},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"process_start","elapsed_ms":63.86283399999999},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"collect_wait","elapsed_ms":75.72758400000001},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_delete","elapsed_ms":395.94487499999997},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_shutdown","elapsed_ms":1.170917},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"scratch_remove","elapsed_ms":2.134708},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+OCI_TIMING {"error":null,"exit_code":0,"sample":8,"stderr":"","stdout":"phase-probe","timed_out":false,"total_ms":3822.9849590000003}
+OCI_TIMING_BEGIN {"sample":9,"timeout_ms":5000}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_connect","elapsed_ms":475.12741600000004},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"bundle_prepare","elapsed_ms":391.290709},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_create","elapsed_ms":2450.27075},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"process_start","elapsed_ms":66.76383399999999},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"collect_wait","elapsed_ms":74.5985},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_delete","elapsed_ms":183.072917},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_shutdown","elapsed_ms":1.180333},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"scratch_remove","elapsed_ms":1.659167},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+OCI_TIMING {"error":null,"exit_code":0,"sample":9,"stderr":"","stdout":"phase-probe","timed_out":false,"total_ms":3645.5429160000003}
+OCI_TIMING_BEGIN {"sample":10,"timeout_ms":5000}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_connect","elapsed_ms":470.442792},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"bundle_prepare","elapsed_ms":370.77125},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_create","elapsed_ms":2427.949875},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"process_start","elapsed_ms":63.927834000000004},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"collect_wait","elapsed_ms":76.581},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_delete","elapsed_ms":181.64749999999998},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_shutdown","elapsed_ms":1.285083},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"scratch_remove","elapsed_ms":2.50025},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+OCI_TIMING {"error":null,"exit_code":0,"sample":10,"stderr":"","stdout":"phase-probe","timed_out":false,"total_ms":3596.793792}
+OCI_TIMING_BEGIN {"sample":11,"timeout_ms":5000}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_connect","elapsed_ms":468.19475},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"bundle_prepare","elapsed_ms":377.60541600000005},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_create","elapsed_ms":2415.709708},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"process_start","elapsed_ms":65.632792},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"collect_wait","elapsed_ms":74.543584},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_delete","elapsed_ms":162.024834},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_shutdown","elapsed_ms":1.278125},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"scratch_remove","elapsed_ms":2.0655},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+OCI_TIMING {"error":null,"exit_code":0,"sample":11,"stderr":"","stdout":"phase-probe","timed_out":false,"total_ms":3568.7054169999997}
+OCI_TIMING_BEGIN {"sample":12,"timeout_ms":5000}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_connect","elapsed_ms":470.310041},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"bundle_prepare","elapsed_ms":387.831792},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_create","elapsed_ms":2381.5201660000002},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"process_start","elapsed_ms":62.932874999999996},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"collect_wait","elapsed_ms":74.729208},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_delete","elapsed_ms":165.96800000000002},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_shutdown","elapsed_ms":1.108875},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"scratch_remove","elapsed_ms":1.725333},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+OCI_TIMING {"error":null,"exit_code":0,"sample":12,"stderr":"","stdout":"phase-probe","timed_out":false,"total_ms":3547.601708}
+OCI_TIMING_BEGIN {"sample":13,"timeout_ms":5000}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_connect","elapsed_ms":458.523416},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"bundle_prepare","elapsed_ms":348.895584},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_create","elapsed_ms":2347.196333},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"process_start","elapsed_ms":63.8605},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"collect_wait","elapsed_ms":72.70475},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_delete","elapsed_ms":175.611625},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_shutdown","elapsed_ms":1.053375},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"scratch_remove","elapsed_ms":1.664916},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+OCI_TIMING {"error":null,"exit_code":0,"sample":13,"stderr":"","stdout":"phase-probe","timed_out":false,"total_ms":3471.0731250000003}
+OCI_TIMING_BEGIN {"sample":14,"timeout_ms":5000}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_connect","elapsed_ms":451.301209},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"bundle_prepare","elapsed_ms":334.10087500000003},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_create","elapsed_ms":2302.48525},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"process_start","elapsed_ms":63.709666999999996},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"collect_wait","elapsed_ms":73.837375},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_delete","elapsed_ms":154.051167},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_shutdown","elapsed_ms":1.127917},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"scratch_remove","elapsed_ms":1.5310840000000001},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+OCI_TIMING {"error":null,"exit_code":0,"sample":14,"stderr":"","stdout":"phase-probe","timed_out":false,"total_ms":3383.700958}
+OCI_TIMING_BEGIN {"sample":15,"timeout_ms":5000}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_connect","elapsed_ms":482.569833},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"bundle_prepare","elapsed_ms":354.690458},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_create","elapsed_ms":2326.736458},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"process_start","elapsed_ms":63.834625},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"collect_wait","elapsed_ms":73.78283400000001},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_delete","elapsed_ms":174.904583},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_shutdown","elapsed_ms":1.0466250000000001},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"scratch_remove","elapsed_ms":1.5074999999999998},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+OCI_TIMING {"error":null,"exit_code":0,"sample":15,"stderr":"","stdout":"phase-probe","timed_out":false,"total_ms":3480.534666}
+OCI_TIMING_BEGIN {"sample":16,"timeout_ms":5000}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_connect","elapsed_ms":457.60925000000003},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"bundle_prepare","elapsed_ms":324.964292},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_create","elapsed_ms":2308.412666},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"process_start","elapsed_ms":62.664750000000005},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"collect_wait","elapsed_ms":74.58225},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_delete","elapsed_ms":170.09275},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_shutdown","elapsed_ms":1.095459},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"scratch_remove","elapsed_ms":1.815791},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+OCI_TIMING {"error":null,"exit_code":0,"sample":16,"stderr":"","stdout":"phase-probe","timed_out":false,"total_ms":3402.6960000000004}
+OCI_TIMING_BEGIN {"sample":17,"timeout_ms":5000}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_connect","elapsed_ms":438.80775},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"bundle_prepare","elapsed_ms":401.934208},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_create","elapsed_ms":2235.427959},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"process_start","elapsed_ms":61.920542000000005},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"collect_wait","elapsed_ms":72.55191699999999},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_delete","elapsed_ms":160.00120800000002},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_shutdown","elapsed_ms":0.9784579999999999},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"scratch_remove","elapsed_ms":1.6447079999999998},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+OCI_TIMING {"error":null,"exit_code":0,"sample":17,"stderr":"","stdout":"phase-probe","timed_out":false,"total_ms":3374.728583}
+OCI_TIMING_BEGIN {"sample":18,"timeout_ms":5000}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_connect","elapsed_ms":430.2065},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"bundle_prepare","elapsed_ms":324.39829199999997},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_create","elapsed_ms":2242.6557080000002},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"process_start","elapsed_ms":64.857833},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"collect_wait","elapsed_ms":74.227708},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"vm_delete","elapsed_ms":162.363958},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"host_shutdown","elapsed_ms":0.95875},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+{"level":"DEBUG","fields":{"message":"OCI command phase completed","phase":"scratch_remove","elapsed_ms":1.838625},"target":"a3s_code_core::sandbox::oci","span":{"name":"oci_command"},"spans":[{"name":"oci_command"}]}
+OCI_TIMING {"error":null,"exit_code":0,"sample":18,"stderr":"","stdout":"phase-probe","timed_out":false,"total_ms":3302.997542}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5118 filtered out; finished in 65.81s
+

@@ -51,6 +51,11 @@ pub(crate) struct PreparedConsoleOutput {
 }
 
 impl PreparedConsoleOutput {
+    #[cfg(target_os = "macos")]
+    pub(crate) fn path(&self) -> &Path {
+        &self.path
+    }
+
     pub(crate) fn pinned_path(&self) -> PathBuf {
         #[cfg(target_os = "linux")]
         let root = "/proc/self/fd";

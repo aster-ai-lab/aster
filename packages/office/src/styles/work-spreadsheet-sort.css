@@ -1,0 +1,507 @@
+.work-spreadsheet-sort-options-dialog {
+  inline-size: min(420px, calc(100vw - 32px));
+}
+
+.work-spreadsheet-sort-options-form {
+  display: grid;
+  gap: 16px;
+}
+
+.work-spreadsheet-sort-options {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.work-spreadsheet-sort-options legend {
+  margin-block-end: 8px;
+  color: var(--a3s-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.work-spreadsheet-sort-options-lock-note {
+  margin: 0 0 2px;
+  color: var(--a3s-muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.work-spreadsheet-sort-options > label {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--a3s-line);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.work-spreadsheet-sort-options > label:has(input:checked) {
+  border-color: var(--work-spreadsheet-accent, #159469);
+  background: color-mix(
+    in srgb,
+    var(--work-spreadsheet-accent, #159469) 10%,
+    var(--a3s-panel)
+  );
+}
+
+.work-spreadsheet-sort-options input {
+  margin-block-start: 3px;
+  accent-color: var(--work-spreadsheet-accent, #159469);
+}
+
+.work-spreadsheet-sort-options label > span {
+  display: grid;
+  gap: 3px;
+}
+
+.work-spreadsheet-sort-options small {
+  color: var(--a3s-muted);
+  line-height: 1.4;
+}
+
+.work-spreadsheet-sort-dialog {
+  --work-office-control-accent: var(--work-spreadsheet-accent, #159469);
+
+  width: min(820px, 100%);
+}
+
+.work-spreadsheet-sort-dialog form {
+  display: grid;
+  gap: 14px;
+}
+
+.work-spreadsheet-sort-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.work-spreadsheet-sort-toolbar .ds-button {
+  gap: 6px;
+}
+
+.work-spreadsheet-sort-toolbar-actions {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 6px;
+}
+
+.work-spreadsheet-sort-toolbar .work-office-checkbox {
+  min-height: 34px;
+  padding: 6px 9px;
+}
+
+.work-spreadsheet-sort-levels {
+  display: grid;
+  max-height: min(430px, 52vh);
+  gap: 9px;
+  overflow: auto;
+  padding: 1px 3px 1px 1px;
+}
+
+.work-spreadsheet-sort-level {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(140px, 0.7fr) minmax(370px, 1.8fr) auto;
+  align-items: end;
+  gap: 9px;
+  padding: 10px;
+  border: 1px solid var(--a3s-line);
+  border-radius: 8px;
+  background: var(--a3s-panel-soft);
+}
+
+.work-spreadsheet-sort-level legend {
+  padding: 0 5px;
+  color: var(--work-spreadsheet-accent, #159469);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.work-spreadsheet-sort-level > .work-office-field,
+.work-spreadsheet-sort-order-controls > .work-office-field {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+}
+
+.work-spreadsheet-sort-level > .work-office-field > span,
+.work-spreadsheet-sort-order-controls > .work-office-field > span {
+  color: var(--a3s-muted);
+  font-size: 9px;
+}
+
+.work-spreadsheet-sort-order-controls {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(110px, 0.75fr) minmax(170px, 1.25fr);
+  align-items: end;
+  gap: 9px;
+}
+
+.work-spreadsheet-sort-order-controls[data-appearance="true"] {
+  grid-template-columns:
+    minmax(105px, 0.75fr) minmax(155px, 1.25fr)
+    minmax(92px, 0.65fr);
+}
+
+.work-spreadsheet-sort-appearance-preview {
+  display: flex;
+  grid-column: 1 / -1;
+  min-width: 0;
+  align-items: center;
+  gap: 6px;
+  color: var(--a3s-muted);
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+.work-spreadsheet-sort-appearance-preview > span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.work-spreadsheet-sort-color-swatch {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+  border: 1px solid var(--a3s-line-strong);
+  border-radius: 3px;
+}
+
+.work-spreadsheet-sort-color-swatch[data-empty="true"] {
+  background:
+    linear-gradient(
+      135deg,
+      transparent 43%,
+      var(--a3s-danger, #b42318) 44%,
+      var(--a3s-danger, #b42318) 56%,
+      transparent 57%
+    ),
+    var(--a3s-panel);
+}
+
+.work-spreadsheet-sort-level-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.work-spreadsheet-sort-level-actions .ds-button {
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+  padding: 0;
+}
+
+.work-spreadsheet-sort-custom-list-editor,
+.work-spreadsheet-sort-custom-list-preview {
+  grid-column: 1 / -1;
+  min-width: 0;
+  padding-top: 1px;
+}
+
+.work-spreadsheet-sort-custom-list-editor {
+  display: grid;
+  gap: 6px;
+}
+
+.work-spreadsheet-sort-custom-list-editor > label {
+  display: grid;
+  gap: 4px;
+}
+
+.work-spreadsheet-sort-custom-list-editor > label > span,
+.work-spreadsheet-sort-custom-list-editor > p {
+  margin: 0;
+  color: var(--a3s-muted);
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.work-spreadsheet-sort-custom-list-editor textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 88px;
+  resize: vertical;
+  padding: 7px 8px;
+  border: 1px solid var(--a3s-line-strong);
+  border-radius: 5px;
+  background: var(--a3s-panel);
+  color: var(--a3s-ink);
+  font: inherit;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.work-spreadsheet-sort-custom-list-editor textarea:focus-visible {
+  border-color: var(--work-spreadsheet-accent, #159469);
+  outline: 2px solid
+    color-mix(in srgb, var(--work-spreadsheet-accent, #159469) 24%, transparent);
+  outline-offset: 1px;
+}
+
+.work-spreadsheet-sort-custom-list-editor
+  > .work-spreadsheet-sort-custom-list-error {
+  color: var(--a3s-danger, #b42318);
+}
+
+.work-spreadsheet-sort-custom-list-actions,
+.work-spreadsheet-sort-custom-list-preview {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.work-spreadsheet-sort-custom-list-actions {
+  justify-content: flex-end;
+}
+
+.work-spreadsheet-sort-custom-list-preview code {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--work-spreadsheet-accent, #159469);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.work-spreadsheet-sort-note {
+  margin: 0;
+  color: var(--a3s-muted);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.work-spreadsheet-sort-custom-list-manager {
+  --work-office-control-accent: var(--work-spreadsheet-accent, #159469);
+
+  width: min(720px, 100%);
+}
+
+.work-spreadsheet-sort-custom-list-manager-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.85fr) minmax(280px, 1.15fr);
+  gap: 14px;
+}
+
+.work-spreadsheet-sort-custom-list-manager-layout > section,
+.work-spreadsheet-sort-custom-list-manager-layout label {
+  display: grid;
+  min-width: 0;
+  gap: 7px;
+}
+
+.work-spreadsheet-sort-custom-list-manager-layout > section {
+  align-content: start;
+}
+
+.work-spreadsheet-sort-custom-list-manager-layout label > span {
+  color: var(--a3s-muted);
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.work-spreadsheet-sort-custom-list-manager select,
+.work-spreadsheet-sort-custom-list-manager textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 252px;
+  padding: 8px;
+  border: 1px solid var(--a3s-line-strong);
+  border-radius: 6px;
+  background: var(--a3s-panel);
+  color: var(--a3s-ink);
+  font: inherit;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.work-spreadsheet-sort-custom-list-manager textarea {
+  resize: vertical;
+}
+
+.work-spreadsheet-sort-custom-list-manager textarea[readonly] {
+  background: var(--a3s-panel-soft);
+  color: var(--a3s-muted);
+}
+
+.work-spreadsheet-sort-custom-list-manager select:focus-visible,
+.work-spreadsheet-sort-custom-list-manager textarea:focus-visible {
+  border-color: var(--work-spreadsheet-accent, #159469);
+  outline: 2px solid
+    color-mix(in srgb, var(--work-spreadsheet-accent, #159469) 24%, transparent);
+  outline-offset: 1px;
+}
+
+.work-spreadsheet-sort-custom-list-manager-layout section > p,
+.work-spreadsheet-sort-custom-list-manager-note {
+  margin: 0;
+  color: var(--a3s-muted);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.work-spreadsheet-sort-custom-list-manager-layout
+  section
+  > .work-spreadsheet-sort-custom-list-error {
+  color: var(--a3s-danger, #b42318);
+}
+
+.work-spreadsheet-sort-custom-list-manager-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.work-spreadsheet-sort-custom-list-manager-actions .ds-button {
+  gap: 6px;
+}
+
+.work-spreadsheet-sort-custom-list-manager-actions .ds-button[aria-label] {
+  width: 34px;
+  min-width: 34px;
+  padding-inline: 0;
+}
+
+.work-spreadsheet-sort-custom-list-manager-note {
+  margin-block-start: 12px;
+}
+
+.work-spreadsheet-sort-range-dialog {
+  --work-office-control-accent: var(--work-spreadsheet-accent, #159469);
+
+  width: min(500px, 100%);
+}
+
+.work-spreadsheet-sort-range-options {
+  display: grid;
+  gap: 9px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.work-spreadsheet-sort-range-options legend {
+  margin-bottom: 8px;
+  color: var(--a3s-muted);
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.work-spreadsheet-sort-range-options > label {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  padding: 11px;
+  border: 1px solid var(--a3s-line);
+  border-radius: 8px;
+  background: var(--a3s-panel-soft);
+  cursor: pointer;
+}
+
+.work-spreadsheet-sort-range-options > label:has(input:checked) {
+  border-color: var(--work-spreadsheet-accent, #159469);
+  box-shadow: 0 0 0 1px
+    color-mix(in srgb, var(--work-spreadsheet-accent, #159469) 22%, transparent);
+}
+
+.work-spreadsheet-sort-range-options > label:has(input:disabled) {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.work-spreadsheet-sort-range-options input {
+  margin: 2px 0 0;
+  accent-color: var(--work-spreadsheet-accent, #159469);
+}
+
+.work-spreadsheet-sort-range-options label > span {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.work-spreadsheet-sort-range-options strong {
+  color: var(--a3s-ink);
+  font-size: 11px;
+}
+
+.work-spreadsheet-sort-range-options small {
+  color: var(--a3s-muted);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.work-spreadsheet-sort-range-options code {
+  width: fit-content;
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--work-spreadsheet-accent, #159469);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  .work-spreadsheet-sort-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .work-spreadsheet-sort-toolbar-actions {
+    flex-wrap: wrap;
+  }
+
+  .work-spreadsheet-sort-custom-list-manager-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .work-spreadsheet-sort-custom-list-manager select,
+  .work-spreadsheet-sort-custom-list-manager textarea {
+    min-height: 180px;
+  }
+
+  .work-spreadsheet-sort-level {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .work-spreadsheet-sort-order-controls,
+  .work-spreadsheet-sort-order-controls[data-appearance="true"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .work-spreadsheet-sort-order-controls[data-appearance="true"]
+    > .work-spreadsheet-sort-position-field {
+    grid-column: 1 / -1;
+  }
+
+  .work-spreadsheet-sort-level-actions {
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 430px) {
+  .work-spreadsheet-sort-order-controls,
+  .work-spreadsheet-sort-order-controls[data-appearance="true"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .work-spreadsheet-sort-order-controls[data-appearance="true"]
+    > .work-spreadsheet-sort-position-field {
+    grid-column: auto;
+  }
+}

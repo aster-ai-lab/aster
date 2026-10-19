@@ -1,0 +1,41 @@
+{
+  "observedAt": "2026-10-19T15:07:59.840133+00:00",
+  "session": {
+    "id": "01a154b3-fd4c-70c3-ad72-48c14a36e920",
+    "createdAt": "2026-10-19T15:07:24.364Z",
+    "updatedAt": "2026-10-19T15:07:24.907Z",
+    "workspace": "/Users/roylin/code/tasks/T01-workspace"
+  },
+  "processes": [
+    {
+      "pid": 72473,
+      "ppid": 1,
+      "path": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/AsterDream.app/Contents/MacOS/AsterDream",
+      "fileSha256": "c3e278a268048f5fecb5351ccaa9ee4811314c0b80e6c6ac07bcc0ef7544f668"
+    },
+    {
+      "pid": 73382,
+      "ppid": 72473,
+      "path": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/AsterDream.app/Contents/MacOS/a3s-code-acp",
+      "fileSha256": "128588d3b0aee9e3700c497500a3bfb5b1ca75aee228c0f332184f8a04e49ad8"
+    },
+    {
+      "pid": 74050,
+      "ppid": 73382,
+      "path": "/Users/roylin/Library/Caches/aster/sandbox/dev-20261018-core-bash/a3s-oci",
+      "fileSha256": "62cec8830c735e6df9c9a5a8e51a62417d831bd685ba6bf780ae2f8a790ba689"
+    },
+    {
+      "pid": 74064,
+      "ppid": 74050,
+      "path": "/Users/roylin/Library/Caches/aster/sandbox/dev-20261018-core-bash/a3s-oci-krun-shim",
+      "fileSha256": "283634f567ec98aacbbd223367dc2f23e163a3305d080d6af6dc5636f6c4228d"
+    },
+    {
+      "pid": 74065,
+      "ppid": 74064,
+      "path": "/Users/roylin/Library/Caches/aster/sandbox/dev-20261018-core-bash/a3s-oci-krun-shim",
+      "fileSha256": "283634f567ec98aacbbd223367dc2f23e163a3305d080d6af6dc5636f6c4228d"
+    }
+  ]
+}

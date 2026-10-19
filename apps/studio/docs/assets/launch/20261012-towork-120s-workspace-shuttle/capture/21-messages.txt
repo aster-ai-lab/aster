@@ -1,0 +1,42 @@
+Window: "ToWork", App: ToWork.
+0 standard window ToWork, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content Description: ToWork, URL: 127.0.0.1:4318/windows/main/index.html
+			3 pop up button RoyLin
+			4 button 工作
+			5 button 消息
+			6 button 知识
+			7 button 插件
+			8 button (collapsed) 任务, Secondary Actions: Expand
+			9 button 设置
+			10 container
+				11 container
+					12 search text field (settable) 搜索
+						13 text 搜索
+				14 button ToBot ToBot
+				15 splitter 调整列表宽度
+				16 heading ToBot, Value: 1
+					17 text ToBot
+				18 button 查找聊天内容
+				19 button (collapsed) 更多, Secondary Actions: Expand
+				20 image ToBot
+				21 heading 这是 ToBot, Value: 3
+					22 text 这是 ToBot
+				23 text 7x24小时运行的长期个人智能体
+				24 splitter 调整输入框高度
+				25 text entry area (settable) 输入消息
+					26 text 输入消息
+				27 toggle button 表情, Value: off
+				28 toggle button 文件, Value: off
+				29 toggle button 图片, Value: off
+				30 button 直接截图, Help: 保留当前窗口并选择截图区域
+				31 pop up button 截图选项
+				32 button (disabled) 发送
+	33 close button
+	34 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	35 minimize button
+36 menu bar
+	37 ToWork
+	38 Edit
+
+The focused UI element is 2 HTML content Description: ToWork, URL: 127.0.0.1:4318/windows/main/index.html

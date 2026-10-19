@@ -1,0 +1,21 @@
+{
+  "original_model_output_matches_oracle": true,
+  "differences": [],
+  "input_row_count": 1000,
+  "active_row_count": 987,
+  "cancelled_row_count": 13,
+  "candidate_count": 252,
+  "selected_action_count": 16,
+  "budget_units": 64,
+  "spent_units": 64,
+  "gain_milli": 3165191,
+  "event_status_counts": {
+    "applied": 37,
+    "duplicate_event": 6,
+    "invalid_amount": 2,
+    "order_cancelled": 1,
+    "unknown_row": 1,
+    "unknown_type": 1
+  },
+  "results_sha256": "dfcc0b13bea1b177aa5af6e9967f2bae42e8bfebdc6046f665fabf94db24ecf7"
+}

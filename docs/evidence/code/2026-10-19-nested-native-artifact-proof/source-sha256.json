@@ -1,0 +1,62 @@
+{
+  "baselineNote": "Before bytes reconstructed after editing from HEAD plus the independently preserved pre-existing hunk; not a hash observed before the edit. No workspace source/index was reverted.",
+  "production": [
+    {
+      "path": "crates/code/core/src/tools/types.rs",
+      "beforeSha256": "96b3fb9c4fc8f79e4e31e30504c33ec2be7c253e8c6da6c1dfb48901b96986cb",
+      "afterSha256": "770a457312322412db2b404a770fa6f3bdf718f62681e00893abcc83f24fd112",
+      "beforeBackup": "/tmp/aster-nested-native-artifact-proof-before-20261019/crates/code/core/src/tools/types.rs",
+      "beforeReconstruction": "HEAD; current diff contains only this repair"
+    },
+    {
+      "path": "crates/code/core/src/harness_loop.rs",
+      "beforeSha256": "dea59ef069f76c19c74e8f39a5b904518398b76b1904d823b5604e09b61998ee",
+      "afterSha256": "e15833efe25ba1b75c45eac0af0945769a3ae9434f735c2fb72778fcd0ecc1bb",
+      "beforeBackup": "/tmp/aster-nested-native-artifact-proof-before-20261019/crates/code/core/src/harness_loop.rs",
+      "beforeReconstruction": "HEAD; current diff contains only this repair"
+    },
+    {
+      "path": "crates/code/core/src/agent/tool_invoker.rs",
+      "beforeSha256": "98e9b25aa6d28d9bc9abb76e6150d98c34c91bc527fb00d09cd6a4c1a7d2df90",
+      "afterSha256": "0fafb77f563b7d6952f60a864431748061f2d6d1e5800db643e65f6b2fa6f23d",
+      "beforeBackup": "/tmp/aster-nested-native-artifact-proof-before-20261019/crates/code/core/src/agent/tool_invoker.rs",
+      "beforeReconstruction": "HEAD; current diff contains only this repair"
+    },
+    {
+      "path": "crates/code/core/src/fact_control/receipts.rs",
+      "beforeSha256": "d2bce7c268ff59b5ced1c073639dbaae872495cb8c20a263c34cf75e39cd81a9",
+      "afterSha256": "2ff17826c260f61fc62864d8cc62656279cbf2bc0548420ffa41a5f31a49f6fb",
+      "beforeBackup": "/tmp/aster-nested-native-artifact-proof-before-20261019/crates/code/core/src/fact_control/receipts.rs",
+      "beforeReconstruction": "HEAD plus pre-existing argument-error ToolEnd hunk, preserved unchanged"
+    },
+    {
+      "path": "crates/code/core/src/agent/tool_completion_runtime.rs",
+      "beforeSha256": "e4961f446d68f8077611d12fa111e096c13ab48b3174fa1aa601febbdd638591",
+      "afterSha256": "4154f99a4faab00a31ef07099307410175be155a6dcb6f2f69c5a750cdcd4be8",
+      "beforeBackup": "/tmp/aster-nested-native-artifact-proof-before-20261019/crates/code/core/src/agent/tool_completion_runtime.rs",
+      "beforeReconstruction": "HEAD; current diff contains only this repair"
+    }
+  ],
+  "tests": [
+    {
+      "path": "crates/code/acp/src/office_file_tests.rs",
+      "sha256": "95f9deadda4725541613e3c7aafd4406a9f43aeda35da9cb531e5698ac0bf525"
+    },
+    {
+      "path": "crates/code/acp/src/office_file_tests/nested_verification.rs",
+      "sha256": "def40b1047916e4815f9d8325fb436e796bcec7f1a6d5d8d15d8b922d4b02fdb"
+    },
+    {
+      "path": "crates/code/core/src/agent/tool_completion_runtime/native_artifact_verification_tests.rs",
+      "sha256": "07e3661579069964adc06af28d5bdae3554db5ec9e86f8441377f401486b8b76"
+    },
+    {
+      "path": "crates/code/core/src/fact_control/receipts/tests.rs",
+      "sha256": "03b77dad4cedcf03921028929c3ca2cc62ece07a488c444deb5f6d574bfd33f3"
+    },
+    {
+      "path": "crates/code/core/src/fact_control/receipts/tests/native_artifact_scope.rs",
+      "sha256": "a61b35c9cf5f32c8ad49e6d2a82ec17e78cb4df9e57d477198f1c596fcf56e11"
+    }
+  ]
+}

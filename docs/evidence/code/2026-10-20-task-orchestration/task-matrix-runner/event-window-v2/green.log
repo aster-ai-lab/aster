@@ -1,0 +1,69 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: unused imports: `guest_agent_hello` and `host_runtime_version`
+  --> crates/code/core/src/sandbox/oci.rs:25:26
+   |
+25 | pub(crate) use version::{guest_agent_hello, host_runtime_version};
+   |                          ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `HOST_MISMATCH` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:10:7
+   |
+10 | const HOST_MISMATCH: &[u8] = b"guest agent version does not match the host runtime version";
+   |       ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `host_runtime_version` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:13:15
+   |
+13 | pub(crate) fn host_runtime_version(host: &[u8]) -> Option<&str> {
+   |               ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `guest_agent_hello` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:18:15
+   |
+18 | pub(crate) fn guest_agent_hello<'a>(agent: &'a [u8], architecture: &str) -> Option<&'a str> {
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: function `version_immediately_before` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:26:4
+   |
+26 | fn version_immediately_before<'a>(bytes: &'a [u8], marker: &[u8]) -> Option<&'a str> {
+   |    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `semver_ending_at` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:44:4
+   |
+44 | fn semver_ending_at(bytes: &[u8], end: usize) -> Option<&str> {
+   |    ^^^^^^^^^^^^^^^^
+
+warning: `a3s-code-core` (lib) generated 6 warnings (run `cargo fix --lib -p a3s-code-core` to apply 1 suggestion)
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.79s
+     Running tests/test_extensibility_real_llm.rs (target/debug/deps/test_extensibility_real_llm-d4219b08e7cc2f51)
+
+running 11 tests
+test task_matrix::asset_manifest_hashes_guest_symlink_identity_without_following_host_paths ... ok
+test task_matrix::evidence_reservation_rejects_workspace_mutation_before_manifest_validation ... ok
+test task_matrix::exact_original_parent_receipts_recover_metrics_without_guessing_unknown_origins ... ok
+test task_matrix::failure_metadata_is_written_without_raw_model_or_reasoning_content ... ok
+test task_matrix::failure_receipts_bind_original_log_without_copying_private_plaintext ... ok
+test task_matrix::frozen_task_matrix_single_run ... ignored, one frozen T023 Run; requires ASTER_T023_MANIFEST, explicit DeepSeek ACL and signed OCI assets; --exact --test-threads=1
+test task_matrix::model_selection_rejects_fallback_and_effective_endpoint_override ... ok
+test task_matrix::only_explicit_submission_paths_may_change_initial_input_bytes ... ok
+test task_matrix::strict_manifest_and_frozen_paths_refuse_ambiguity ... ok
+test task_matrix::trimmed_event_windows_cannot_certify_otherwise_complete_metrics ... ok
+test task_matrix::vm_observation_requires_complete_closed_spans_and_never_infers_from_tool_count ... ok
+
+test result: ok. 10 passed; 0 failed; 1 ignored; 0 measured; 12 filtered out; finished in 0.26s
+

@@ -1,0 +1,1882 @@
+.work-markdown-editor {
+  --work-office-accent: #171717;
+  --work-office-control-accent: #171717;
+  --work-markdown-reading-width: 760px;
+  --work-markdown-zoom: 100;
+
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  /* Named container so compact layout follows the editor, not the viewport. */
+  container-name: work-markdown;
+  container-type: inline-size;
+  background: #ffffff;
+  color: #171717;
+}
+
+.work-markdown-ribbon {
+  --work-office-accent: #171717;
+  --work-office-control-accent: #171717;
+}
+
+.markdown-toolbar .work-office-select {
+  align-self: center;
+}
+
+.markdown-paragraph-style-select {
+  width: 104px;
+  flex: 0 0 104px;
+}
+
+.markdown-paragraph-style-select > button[role="combobox"] {
+  width: 104px;
+  min-width: 0;
+}
+
+.work-markdown-insert-form {
+  display: grid;
+  gap: 14px;
+}
+
+.work-markdown-workspace {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.work-markdown-workspace.split {
+  --work-markdown-min-source: 240px;
+  --work-markdown-min-preview: 280px;
+  --work-markdown-splitter: 8px;
+
+  display: grid;
+  grid-template-columns:
+    minmax(
+      var(--work-markdown-min-source),
+      min(
+        calc(
+          var(--work-markdown-source-pane, 50%) -
+            var(--work-markdown-splitter) / 2
+        ),
+        calc(
+          100% - var(--work-markdown-min-preview) -
+            var(--work-markdown-splitter)
+        )
+      )
+    )
+    var(--work-markdown-splitter)
+    minmax(var(--work-markdown-min-preview), 1fr);
+}
+
+.work-markdown-workspace[data-split-resizing="true"],
+.work-markdown-workspace[data-split-resizing="true"] * {
+  cursor: col-resize;
+  user-select: none;
+}
+
+.work-markdown-compact-switch {
+  display: none;
+}
+
+.work-markdown-pane {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+.work-markdown-pane + .work-markdown-pane {
+  border-left: 1px solid var(--a3s-line);
+}
+
+.work-markdown-splitter {
+  position: relative;
+  z-index: 4;
+  width: var(--work-markdown-splitter, 8px);
+  height: 100%;
+  align-self: stretch;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.work-markdown-splitter::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: #e5e5e5;
+  content: "";
+  transform: translateX(-0.5px);
+}
+
+.work-markdown-splitter:hover::before,
+.work-markdown-splitter:focus-visible::before,
+.work-markdown-workspace[data-split-resizing="true"]
+  .work-markdown-splitter::before {
+  width: 2px;
+  background: #171717;
+  transform: translateX(-1px);
+}
+
+.work-markdown-splitter:focus-visible {
+  outline: 2px solid rgb(0 0 0 / 10%);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+.work-markdown-pane-label {
+  position: sticky;
+  z-index: 2;
+  top: 0;
+  display: flex;
+  height: 32px;
+  flex: 0 0 32px;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: 1px solid #ececec;
+  background: #ffffff;
+  color: #8a8a8a;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.work-markdown-pane.source {
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.work-markdown-pane.source textarea {
+  box-sizing: border-box;
+  width: 100%;
+  /* Bound the flex child so long documents scroll inside the textarea.
+   * min-height: 100% grew the control past the pane and made the pane the
+   * scroller, which broke proportional sync (onScroll is on the textarea). */
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow: auto;
+  resize: none;
+  padding: 38px clamp(28px, 5vw, 72px) 80px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #171717;
+  font-family: var(--font-mono);
+  font-size: calc(16px * var(--work-markdown-zoom) / 100);
+  line-height: 1.8;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  tab-size: 2;
+}
+
+.work-markdown-pane.source textarea::placeholder {
+  color: var(--a3s-faint);
+}
+
+.work-markdown-pane.source textarea::selection {
+  background: color-mix(in srgb, var(--work-office-accent) 18%, transparent);
+}
+
+.work-markdown-source-presence-layer {
+  position: absolute;
+  z-index: 3;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+
+.work-markdown-source-presence-mirror {
+  position: absolute;
+  box-sizing: border-box;
+  top: 0;
+  left: 0;
+  min-height: 100%;
+  margin: 0;
+  padding: 38px clamp(28px, 5vw, 72px) 80px;
+  color: transparent;
+  font-family: var(--font-mono);
+  font-size: calc(14px * var(--work-markdown-zoom) / 100);
+  line-height: 1.8;
+  overflow-wrap: break-word;
+  tab-size: 2;
+  white-space: pre-wrap;
+}
+
+.work-markdown-workspace.split .work-markdown-source-presence-mirror {
+  padding: 32px clamp(24px, 3.5vw, 46px) 72px;
+}
+
+.work-markdown-source-remote-range {
+  position: relative;
+  border-radius: 2px;
+  background: color-mix(
+    in srgb,
+    var(--work-office-presence-color) 22%,
+    transparent
+  );
+  box-decoration-break: clone;
+  box-shadow: inset 0 -1px 0
+    color-mix(in srgb, var(--work-office-presence-color) 66%, transparent);
+  -webkit-box-decoration-break: clone;
+}
+
+.work-markdown-source-remote-range[data-collapsed="true"] {
+  border-left: 2px solid var(--work-office-presence-color);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.work-markdown-source-remote-range::after {
+  position: absolute;
+  z-index: 1;
+  bottom: 100%;
+  left: -2px;
+  max-width: 160px;
+  padding: 3px 6px;
+  overflow: hidden;
+  border-radius: 4px 4px 4px 0;
+  background: var(--work-office-presence-color);
+  box-shadow: 0 3px 8px rgb(15 23 42 / 16%);
+  color: #fff;
+  content: attr(data-participant-name);
+  font: 650 9px / 1.25 var(--a3s-ui-font);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.work-markdown-source-presence-mirror[data-activity="idle"] {
+  opacity: 0.68;
+}
+
+.work-markdown-source-presence-mirror[data-activity="away"] {
+  opacity: 0.42;
+}
+
+.work-markdown-workspace.split .work-markdown-pane.source textarea {
+  padding: 32px clamp(24px, 3.5vw, 46px) 72px;
+}
+
+.work-markdown-pane.visual {
+  align-self: stretch;
+  min-height: 100%;
+  background: #ffffff;
+}
+
+.work-markdown-canvas {
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.work-markdown-workspace.split .work-markdown-canvas {
+  flex: 1 0 auto;
+  align-self: stretch;
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.work-markdown-canvas > div {
+  min-height: 100%;
+}
+
+.work-markdown-canvas .tiptap {
+  min-height: 100%;
+  max-width: var(--work-markdown-reading-width);
+  margin: 0 auto;
+  padding: 56px clamp(42px, 7vw, 86px) 96px;
+  outline: 0;
+  color: #171717;
+  font-family: var(--a3s-ui-font);
+  font-size: calc(16px * var(--work-markdown-zoom) / 100);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.work-markdown-workspace.split .work-markdown-canvas .tiptap {
+  padding: 42px clamp(28px, 4vw, 52px) 80px;
+}
+
+.work-markdown-canvas .tiptap > :first-child {
+  margin-top: 0;
+}
+
+.work-markdown-canvas .tiptap > :last-child {
+  margin-bottom: 0;
+}
+
+.work-markdown-canvas .tiptap h1,
+.work-markdown-canvas .tiptap h2,
+.work-markdown-canvas .tiptap h3,
+.work-markdown-canvas .tiptap h4,
+.work-markdown-canvas .tiptap h5,
+.work-markdown-canvas .tiptap h6 {
+  margin: 1.65em 0 0.6em;
+  color: var(--a3s-ink);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.work-markdown-canvas .tiptap h1 {
+  font-size: 1.9em;
+}
+
+.work-markdown-canvas .tiptap h2 {
+  font-size: 1.45em;
+}
+
+.work-markdown-canvas .tiptap h3 {
+  font-size: 1.2em;
+}
+
+.work-markdown-canvas .tiptap p {
+  margin: 0.85em 0;
+}
+
+.work-markdown-canvas .tiptap ul,
+.work-markdown-canvas .tiptap ol {
+  margin: 0.8em 0;
+  padding-left: 1.7em;
+}
+
+.work-markdown-canvas .tiptap li + li {
+  margin-top: 0.25em;
+}
+
+.work-markdown-canvas .tiptap li > p {
+  margin: 0;
+}
+
+.work-markdown-canvas .tiptap ul[data-type="taskList"] {
+  padding-left: 0;
+  list-style: none;
+}
+
+.work-markdown-canvas .tiptap li[data-type="taskItem"] {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.work-markdown-canvas .tiptap li[data-type="taskItem"] + li {
+  margin-top: 0.35em;
+}
+
+.work-markdown-canvas .tiptap li[data-type="taskItem"] > label {
+  display: inline-flex;
+  width: 18px;
+  height: calc(1.75em - 1px);
+  flex: 0 0 18px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.work-markdown-editor.preview
+  .work-markdown-canvas
+  .tiptap
+  li[data-type="taskItem"]
+  > label,
+.work-markdown-pane.visual[data-readonly="true"]
+  .work-markdown-canvas
+  .tiptap
+  li[data-type="taskItem"]
+  > label {
+  cursor: default;
+}
+
+.work-markdown-canvas .tiptap li[data-type="taskItem"] > label input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  border: 1px solid var(--a3s-line-strong);
+  border-radius: 4px;
+  appearance: none;
+  background-color: var(--a3s-panel);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 12px;
+  opacity: 1;
+  transition:
+    border-color 120ms ease,
+    background-color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.work-markdown-canvas .tiptap li[data-type="taskItem"] > label input:checked {
+  border-color: var(--work-office-accent);
+  background-color: var(--work-office-accent);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='m2.5 6 2.1 2.1L9.5 3.5' fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8'/%3E%3C/svg%3E");
+}
+
+.work-markdown-canvas
+  .tiptap
+  li[data-type="taskItem"]
+  > label
+  input:not(:disabled):hover {
+  border-color: color-mix(
+    in srgb,
+    var(--work-office-accent) 72%,
+    var(--a3s-line)
+  );
+}
+
+.work-markdown-canvas .tiptap li[data-type="taskItem"] > div {
+  min-width: 0;
+  flex: 1;
+}
+
+.work-markdown-canvas .tiptap li[data-type="taskItem"] > div > p {
+  margin: 0;
+}
+
+.work-markdown-canvas
+  .tiptap
+  li[data-type="taskItem"][data-checked="true"]
+  > div {
+  color: var(--a3s-muted);
+}
+
+.work-markdown-canvas
+  .tiptap
+  li[data-type="taskItem"]
+  ul[data-type="taskList"] {
+  margin: 0.35em 0 0;
+  padding-left: 1.6em;
+}
+
+.work-markdown-canvas .tiptap blockquote {
+  margin: 1.25em 0;
+  padding: 0.7em 1em;
+  border-left: 3px solid
+    color-mix(in srgb, var(--work-office-accent) 68%, var(--a3s-line));
+  border-radius: 0 7px 7px 0;
+  background: color-mix(in srgb, var(--a3s-panel-soft) 82%, transparent);
+  color: var(--a3s-muted);
+}
+
+.work-markdown-canvas .tiptap blockquote > :first-child {
+  margin-top: 0;
+}
+
+.work-markdown-canvas .tiptap blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+.work-markdown-canvas .tiptap code {
+  padding: 0.16em 0.38em;
+  border-radius: 4px;
+  background: var(--a3s-panel-soft);
+  color: color-mix(in srgb, var(--work-office-accent) 76%, var(--a3s-ink));
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+.work-markdown-canvas .tiptap pre {
+  margin: 1.3em 0;
+  padding: 18px 20px;
+  overflow: auto;
+  border: 1px solid var(--a3s-line);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--a3s-panel-soft) 90%, var(--a3s-bg));
+  color: var(--a3s-ink);
+  line-height: 1.6;
+}
+
+.work-markdown-canvas .tiptap pre code {
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 0.88em;
+}
+
+.work-markdown-canvas .tiptap a {
+  color: var(--a3s-blue);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.work-markdown-canvas .tiptap hr {
+  margin: 2em 0;
+  border: 0;
+  border-top: 1px solid var(--a3s-line-strong);
+}
+
+.work-markdown-canvas .tiptap img {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+  margin: 0.5em 0;
+  border-radius: 7px;
+  vertical-align: middle;
+}
+
+.work-markdown-canvas .tiptap table {
+  width: 100%;
+  margin: 1.5em 0;
+  overflow: hidden;
+  border: 1px solid var(--a3s-line-strong);
+  border-radius: 8px;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: auto;
+}
+
+.work-markdown-canvas .tiptap th,
+.work-markdown-canvas .tiptap td {
+  position: relative;
+  min-width: 80px;
+  padding: 9px 12px;
+  border: 0;
+  border-right: 1px solid var(--a3s-line);
+  border-bottom: 1px solid var(--a3s-line);
+  vertical-align: top;
+}
+
+.work-markdown-canvas .tiptap tr > :last-child {
+  border-right: 0;
+}
+
+.work-markdown-canvas .tiptap tr:last-child > * {
+  border-bottom: 0;
+}
+
+.work-markdown-canvas .tiptap th {
+  background: color-mix(in srgb, var(--a3s-panel-soft) 84%, var(--a3s-panel));
+  font-weight: 660;
+  text-align: left;
+}
+
+.work-markdown-canvas .tiptap th > p,
+.work-markdown-canvas .tiptap td > p {
+  margin: 0;
+}
+
+.work-markdown-canvas .tiptap .selectedCell::after {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--a3s-blue) 10%, transparent);
+  content: "";
+  pointer-events: none;
+}
+
+.work-markdown-canvas .tiptap p.is-editor-empty:first-child::before {
+  float: left;
+  height: 0;
+  color: var(--a3s-faint);
+  content: attr(data-placeholder);
+  pointer-events: none;
+}
+
+.work-markdown-editor.preview .work-markdown-canvas {
+  border-color: transparent;
+}
+
+.work-markdown-editor.preview .work-markdown-canvas .tiptap,
+.work-markdown-pane.visual[data-readonly="true"] .work-markdown-canvas .tiptap {
+  cursor: default;
+}
+
+.work-markdown-status .work-office-status-info {
+  gap: 14px;
+}
+
+/* Compact layout follows the editor container so a narrow host pane gets
+   the same source padding and full-height preview as a phone viewport.
+   Keep the viewport query as a fallback when the container has not resolved. */
+@media (max-width: 640px) {
+  .work-markdown-workspace.split {
+    display: grid;
+    grid-template-rows: 56px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .work-markdown-compact-switch {
+    z-index: 3;
+    display: grid;
+    min-width: 0;
+    margin: 0;
+    grid-row: 1;
+    grid-column: 1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+    padding: 6px 12px;
+    border: 0;
+    border-bottom: 1px solid var(--a3s-line);
+    background: color-mix(in srgb, var(--a3s-panel) 97%, var(--a3s-bg));
+  }
+
+  .work-markdown-compact-switch button {
+    min-width: 0;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--a3s-muted);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 640;
+    cursor: pointer;
+  }
+
+  .work-markdown-compact-switch button[aria-pressed="true"] {
+    border-color: var(--a3s-line);
+    background: var(--a3s-panel);
+    box-shadow: 0 1px 2px rgb(22 28 40 / 6%);
+    color: var(--a3s-ink);
+  }
+
+  .work-markdown-compact-switch button:focus-visible {
+    outline: 2px solid
+      color-mix(in srgb, var(--work-office-accent) 48%, transparent);
+    outline-offset: 1px;
+  }
+
+  .work-markdown-workspace.split .work-markdown-pane {
+    grid-row: 2;
+    grid-column: 1;
+  }
+
+  .work-markdown-workspace.split[data-compact-pane="source"]
+    .work-markdown-pane.visual,
+  .work-markdown-workspace.split[data-compact-pane="preview"]
+    .work-markdown-pane.source {
+    display: none;
+  }
+
+  .work-markdown-workspace.split .work-markdown-pane-label {
+    display: none;
+  }
+
+  .work-markdown-splitter {
+    display: none;
+  }
+
+  .work-markdown-pane + .work-markdown-pane {
+    border-left: 0;
+  }
+
+  .work-markdown-canvas {
+    width: calc(100% - 24px);
+    margin: 12px;
+  }
+
+  .work-markdown-canvas .tiptap {
+    padding-right: 24px;
+    padding-left: 24px;
+  }
+
+  .work-markdown-workspace.split .work-markdown-pane.source textarea {
+    min-height: 0;
+    padding: 28px 20px 64px;
+  }
+
+  .work-markdown-workspace.split .work-markdown-source-presence-mirror {
+    padding: 28px 20px 64px;
+  }
+
+  .work-markdown-workspace.split .work-markdown-canvas {
+    min-height: 100%;
+  }
+
+  .work-markdown-workspace.split .work-markdown-canvas .tiptap {
+    padding: 30px 22px 68px;
+  }
+
+  .work-markdown-workspace.split[data-compact-pane="preview"] {
+    background: color-mix(in srgb, var(--a3s-bg) 82%, var(--a3s-panel));
+  }
+
+  .work-markdown-workspace.split[data-compact-pane="preview"]
+    .work-markdown-pane.visual,
+  .work-markdown-workspace.split[data-compact-pane="preview"]
+    .work-markdown-canvas {
+    flex: 1 0 auto;
+    align-self: stretch;
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    background: color-mix(in srgb, var(--a3s-bg) 82%, var(--a3s-panel));
+  }
+
+  .work-markdown-workspace.split[data-compact-pane="preview"]
+    .work-markdown-canvas
+    > div,
+  .work-markdown-workspace.split[data-compact-pane="preview"]
+    .work-markdown-canvas
+    .tiptap {
+    min-height: 100%;
+  }
+
+  .work-markdown-status .work-office-save-status {
+    display: none;
+  }
+}
+
+@container work-markdown (max-width: 640px) {
+  .work-markdown-workspace.split {
+    display: grid;
+    grid-template-rows: 56px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .work-markdown-compact-switch {
+    z-index: 3;
+    display: grid;
+    min-width: 0;
+    margin: 0;
+    grid-row: 1;
+    grid-column: 1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+    padding: 6px 12px;
+    border: 0;
+    border-bottom: 1px solid var(--a3s-line);
+    background: color-mix(in srgb, var(--a3s-panel) 97%, var(--a3s-bg));
+  }
+
+  .work-markdown-compact-switch button {
+    min-width: 0;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--a3s-muted);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 640;
+    cursor: pointer;
+  }
+
+  .work-markdown-compact-switch button[aria-pressed="true"] {
+    border-color: var(--a3s-line);
+    background: var(--a3s-panel);
+    box-shadow: 0 1px 2px rgb(22 28 40 / 6%);
+    color: var(--a3s-ink);
+  }
+
+  .work-markdown-compact-switch button:focus-visible {
+    outline: 2px solid
+      color-mix(in srgb, var(--work-office-accent) 48%, transparent);
+    outline-offset: 1px;
+  }
+
+  .work-markdown-workspace.split .work-markdown-pane {
+    grid-row: 2;
+    grid-column: 1;
+  }
+
+  .work-markdown-workspace.split[data-compact-pane="source"]
+    .work-markdown-pane.visual,
+  .work-markdown-workspace.split[data-compact-pane="preview"]
+    .work-markdown-pane.source {
+    display: none;
+  }
+
+  .work-markdown-workspace.split .work-markdown-pane-label {
+    display: none;
+  }
+
+  .work-markdown-splitter {
+    display: none;
+  }
+
+  .work-markdown-pane + .work-markdown-pane {
+    border-left: 0;
+  }
+
+  .work-markdown-canvas {
+    width: calc(100% - 24px);
+    margin: 12px;
+  }
+
+  .work-markdown-canvas .tiptap {
+    padding-right: 24px;
+    padding-left: 24px;
+  }
+
+  .work-markdown-workspace.split .work-markdown-pane.source textarea {
+    min-height: 0;
+    padding: 28px 20px 64px;
+  }
+
+  .work-markdown-workspace.split .work-markdown-source-presence-mirror {
+    padding: 28px 20px 64px;
+  }
+
+  .work-markdown-workspace.split .work-markdown-canvas {
+    min-height: 100%;
+  }
+
+  .work-markdown-workspace.split .work-markdown-canvas .tiptap {
+    padding: 30px 22px 68px;
+  }
+
+  .work-markdown-workspace.split[data-compact-pane="preview"] {
+    background: color-mix(in srgb, var(--a3s-bg) 82%, var(--a3s-panel));
+  }
+
+  .work-markdown-workspace.split[data-compact-pane="preview"]
+    .work-markdown-pane.visual,
+  .work-markdown-workspace.split[data-compact-pane="preview"]
+    .work-markdown-canvas {
+    flex: 1 0 auto;
+    align-self: stretch;
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    background: color-mix(in srgb, var(--a3s-bg) 82%, var(--a3s-panel));
+  }
+
+  .work-markdown-workspace.split[data-compact-pane="preview"]
+    .work-markdown-canvas
+    > div,
+  .work-markdown-workspace.split[data-compact-pane="preview"]
+    .work-markdown-canvas
+    .tiptap {
+    min-height: 100%;
+  }
+
+  .work-markdown-status .work-office-save-status {
+    display: none;
+  }
+}
+
+/* Studio writing surface. Scoped to the markdown editor so other office
+   editors keep their own chrome. Light only. */
+.a3s-office:has(.work-markdown-editor) {
+  color-scheme: light;
+  --a3s-bg: #ffffff;
+  --a3s-panel: #ffffff;
+  --a3s-panel-soft: #f5f5f5;
+  --a3s-panel-strong: #f2f3f5;
+  --a3s-ink: #171717;
+  --a3s-muted: #8a8a8a;
+  --a3s-subtle: #6f6f6f;
+  --a3s-faint: #c5c5c5;
+  --a3s-line: #ececec;
+  --a3s-line-strong: #e5e5e5;
+  --a3s-action: #171717;
+  --a3s-action-hover: #171717;
+  --a3s-action-ink: #ffffff;
+  --a3s-blue: #171717;
+  --work-office-accent: #171717;
+  --work-office-control-accent: #171717;
+  --a3s-radius-sm: 8px;
+}
+
+.a3s-office:has(.work-markdown-editor)
+  :where(button, input, textarea, select, a):focus-visible {
+  outline: 2px solid rgb(0 0 0 / 10%);
+  outline-offset: 2px;
+}
+
+.work-markdown-editor .work-markdown-ribbon,
+.a3s-office:has(.work-markdown-editor) .work-office-ribbon {
+  border-bottom: 1px solid #ececec;
+  background: #ffffff;
+  box-shadow: none;
+  --work-office-accent: #171717;
+  --work-office-control-accent: #171717;
+}
+
+.a3s-office:has(.work-markdown-editor) .work-office-ribbon .work-office-toolbar {
+  height: 44px;
+  min-height: 44px;
+  border-bottom: 0;
+  background: #ffffff;
+}
+
+.a3s-office:has(.work-markdown-editor) .work-office-ribbon-group {
+  height: auto;
+  padding: 0 8px;
+  border-right-color: transparent;
+}
+
+.a3s-office:has(.work-markdown-editor) .work-office-ribbon-group > span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+  white-space: nowrap;
+}
+
+.a3s-office:has(.work-markdown-editor) .work-office-toolbar button {
+  height: 32px;
+  min-width: 32px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #3f3f3f;
+  font-size: 13px;
+}
+
+.a3s-office:has(.work-markdown-editor)
+  .work-office-toolbar
+  button:hover:not(:disabled) {
+  background: #f5f5f5;
+  color: #171717;
+}
+
+.a3s-office:has(.work-markdown-editor) .work-office-toolbar button.active,
+.a3s-office:has(.work-markdown-editor)
+  .work-office-ribbon
+  .work-office-toolbar
+  button.active {
+  background: #f2f3f5;
+  color: #171717;
+}
+
+.a3s-office:has(.work-markdown-editor)
+  .work-office-ribbon
+  .work-office-toolbar
+  button.with-label {
+  width: auto;
+  min-width: 0;
+  height: 32px;
+  flex-direction: row;
+  gap: 6px;
+  padding: 0 8px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.a3s-office:has(.work-markdown-editor)
+  .work-office-ribbon
+  .work-office-toolbar
+  button.with-label
+  > span {
+  max-width: none;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.a3s-office:has(.work-markdown-editor) .work-office-ribbon-tabs > button {
+  border-radius: 8px;
+  color: #6f6f6f;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.a3s-office:has(.work-markdown-editor)
+  .work-office-ribbon-tabs.ds-tabs
+  > button[aria-selected="true"],
+.a3s-office:has(.work-markdown-editor)
+  .work-office-ribbon-tabs.ds-tabs
+  > button[aria-selected="true"]:hover:not(:disabled) {
+  background: #f5f5f5;
+  box-shadow: none;
+  color: #171717;
+  font-weight: 500;
+}
+
+.a3s-office:has(.work-markdown-editor)
+  .work-office-ribbon-tabs.ds-tabs
+  > button[aria-selected="true"]::after {
+  background: transparent;
+}
+
+.a3s-office:has(.work-markdown-editor)
+  .work-office-ribbon-tabs
+  > button:focus-visible,
+.a3s-office:has(.work-markdown-editor)
+  .work-office-ribbon-collapse:focus-visible,
+.a3s-office:has(.work-markdown-editor)
+  .work-office-ribbon-tab-navigation
+  > button:focus-visible,
+.a3s-office:has(.work-markdown-editor)
+  .work-office-select
+  > button[role="combobox"]:focus-visible,
+.a3s-office:has(.work-markdown-editor) .work-office-text-field:focus-visible,
+.a3s-office:has(.work-markdown-editor) .work-office-text-area:focus-visible {
+  border-color: #e5e5e5;
+  border-radius: 8px;
+  outline: 2px solid rgb(0 0 0 / 10%);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+.a3s-office:has(.work-markdown-editor)
+  .work-office-ribbon
+  .work-office-toolbar
+  .work-office-select
+  > button[role="combobox"] {
+  height: 30px;
+  border: 0;
+  border-radius: 8px;
+  background: #f5f5f5;
+  color: #171717;
+  font-size: 13px;
+}
+
+.a3s-office:has(.work-markdown-editor)
+  .work-office-select
+  > button[role="combobox"]:hover:not(:disabled) {
+  border-color: transparent;
+  background: #ececec;
+}
+
+.work-markdown-ribbon {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 40px;
+  min-height: 40px;
+  padding: 0 8px;
+  border-bottom: 1px solid #efefef;
+  background: #ffffff;
+  color: #171717;
+  font-size: 13px;
+}
+
+.work-markdown-ribbon .work-office-file-menu {
+  border-right: 0;
+}
+
+.work-markdown-ribbon .work-office-file-trigger {
+  height: 32px;
+  min-width: 0;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #3f3f3f;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.work-markdown-ribbon .work-office-file-trigger:hover,
+.work-markdown-ribbon .work-office-file-trigger[aria-expanded='true'] {
+  background: #f5f5f5;
+  color: #171717;
+}
+
+.work-markdown-ribbon .work-office-file-trigger:focus-visible {
+  outline: 2px solid rgb(0 0 0 / 10%);
+  outline-offset: 2px;
+}
+
+.work-markdown-commands {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+  gap: 2px;
+  height: 40px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+/* The mode switch is a sibling and stays a 22px pill.
+   Icon buttons sit in a tooltip span, so a direct > button rule misses them. */
+.work-markdown-commands > .work-markdown-align {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.work-markdown-commands > .work-office-tooltip,
+.work-markdown-commands > .work-markdown-align > .work-office-tooltip {
+  flex: 0 0 auto;
+}
+
+.work-markdown-commands > button,
+.work-markdown-commands > .work-office-tooltip > button,
+.work-markdown-commands > .work-markdown-align > button,
+.work-markdown-commands > .work-markdown-align > .work-office-tooltip > button {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  flex: 0 0 32px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  appearance: none;
+  background: transparent;
+  box-shadow: none;
+  color: #3f3f3f;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.work-markdown-commands > button > svg,
+.work-markdown-commands > .work-office-tooltip > button > svg,
+.work-markdown-commands > .work-markdown-align > button > svg,
+.work-markdown-commands > .work-markdown-align > .work-office-tooltip > button > svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+}
+
+.work-markdown-commands > button:hover:not(:disabled),
+.work-markdown-commands > .work-office-tooltip > button:hover:not(:disabled),
+.work-markdown-commands > .work-markdown-align > button:hover:not(:disabled),
+.work-markdown-commands > .work-markdown-align > .work-office-tooltip > button:hover:not(:disabled) {
+  background: #f5f5f5;
+  color: #171717;
+}
+
+.work-markdown-commands > button.active,
+.work-markdown-commands > button[aria-pressed='true'],
+.work-markdown-commands > .work-office-tooltip > button.active,
+.work-markdown-commands > .work-office-tooltip > button[aria-pressed='true'],
+.work-markdown-commands > .work-markdown-align > button.active,
+.work-markdown-commands > .work-markdown-align > button[aria-checked='true'],
+.work-markdown-commands > .work-markdown-align > .work-office-tooltip > button.active,
+.work-markdown-commands > .work-markdown-align > .work-office-tooltip > button[aria-checked='true'] {
+  background: #f2f3f5;
+  color: #171717;
+}
+
+.work-markdown-commands > button:disabled,
+.work-markdown-commands > .work-office-tooltip > button:disabled,
+.work-markdown-commands > .work-markdown-align > button:disabled,
+.work-markdown-commands > .work-markdown-align > .work-office-tooltip > button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.work-markdown-commands > button:focus-visible,
+.work-markdown-commands > .work-office-tooltip > button:focus-visible,
+.work-markdown-commands > .work-markdown-align > button:focus-visible,
+.work-markdown-commands > .work-markdown-align > .work-office-tooltip > button:focus-visible,
+.work-markdown-commands > .markdown-paragraph-style-select > button[role='combobox']:focus-visible {
+  border-color: transparent;
+  outline: 2px solid rgb(0 0 0 / 10%);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+.work-markdown-commands > .markdown-paragraph-style-select > button[role='combobox'],
+.work-markdown-commands > .markdown-paragraph-style-select > button[role='combobox']:hover:not(:disabled),
+.work-markdown-commands > .markdown-paragraph-style-select.open > button[role='combobox'] {
+  height: 30px;
+  min-height: 30px;
+  border: 0;
+  border-radius: 8px;
+  background: #f5f5f5;
+  box-shadow: none;
+  color: #171717;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 18px;
+}
+
+.work-markdown-commands > .markdown-paragraph-style-select > button[role='combobox']:hover:not(:disabled),
+.work-markdown-commands > .markdown-paragraph-style-select.open > button[role='combobox'] {
+  border-color: transparent;
+  background: #ececec;
+}
+
+.work-markdown-commands > .markdown-paragraph-style-select > button[role='combobox'] > svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  color: #8a8a8a;
+}
+
+.work-markdown-toolbar-rule {
+  width: 1px;
+  height: 16px;
+  flex: 0 0 1px;
+  margin: 0 4px;
+  background: #ececec;
+}
+
+.work-markdown-mode-switch {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  flex: 0 0 auto;
+  height: 30px;
+  margin-right: 0;
+  padding: 4px;
+  border-radius: 8px;
+  background: #f5f5f5;
+}
+
+.work-markdown-commands .work-markdown-mode-switch button,
+.work-markdown-editor .work-markdown-mode-switch button,
+.a3s-office:has(.work-markdown-editor) .work-office-toolbar .work-markdown-mode-switch button {
+  width: auto;
+  height: 22px;
+  min-width: 0;
+  flex: 0 0 auto;
+  flex-direction: row;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  box-shadow: none;
+  color: #6f6f6f;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 22px;
+}
+
+.work-markdown-commands .work-markdown-mode-switch button:hover:not(:disabled),
+.work-markdown-editor .work-markdown-mode-switch button:hover:not(:disabled),
+.a3s-office:has(.work-markdown-editor)
+  .work-office-toolbar
+  .work-markdown-mode-switch
+  button:hover:not(:disabled) {
+  background: transparent;
+  color: #171717;
+}
+
+.work-markdown-commands .work-markdown-mode-switch button[aria-pressed='true'],
+.work-markdown-editor .work-markdown-mode-switch button[aria-pressed='true'],
+.a3s-office:has(.work-markdown-editor)
+  .work-office-toolbar
+  .work-markdown-mode-switch
+  button[aria-pressed='true'],
+.a3s-office:has(.work-markdown-editor)
+  .work-office-ribbon
+  .work-office-toolbar
+  .work-markdown-mode-switch
+  button.with-label[aria-pressed='true'] {
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  color: #171717;
+  font-weight: 500;
+}
+
+.work-markdown-mode-switch button:focus-visible {
+  outline: 2px solid rgb(0 0 0 / 10%);
+  outline-offset: -2px;
+}
+
+.work-markdown-commands .work-markdown-mode-switch button.with-label,
+.work-markdown-editor .work-markdown-mode-switch button.with-label,
+.a3s-office:has(.work-markdown-editor)
+  .work-office-ribbon
+  .work-office-toolbar
+  .work-markdown-mode-switch
+  button.with-label {
+  width: auto;
+  height: 22px;
+  min-width: 0;
+  flex-direction: row;
+  gap: 0;
+  padding: 0 12px;
+}
+
+.work-markdown-mode-switch button.with-label > span {
+  max-width: none;
+  font-size: 13px;
+  line-height: 22px;
+}
+
+.work-markdown-view-note {
+  margin: 0;
+  padding: 0 4px;
+  color: #8a8a8a;
+  font-size: 13px;
+}
+
+/* Knowledge note. The page is the paper. */
+.work-markdown-editor.note .work-office-ribbon-tab-strip,
+.work-markdown-editor.note .work-office-ribbon-collapse,
+.work-markdown-editor.note .work-markdown-status {
+  display: none;
+}
+
+.a3s-office:has(.work-markdown-editor.note) {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
+.a3s-office:has(.work-markdown-editor.note) .work-office-ribbon,
+.work-markdown-editor.note .work-markdown-ribbon {
+  align-self: stretch;
+  width: 100%;
+  border-bottom: 1px solid #efefef;
+  background: #ffffff;
+}
+
+.work-markdown-editor.note .work-office-ribbon-tabs-row {
+  height: 32px;
+  flex-basis: 32px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.a3s-office:has(.work-markdown-editor.note) .work-office-ribbon .work-office-toolbar,
+.work-markdown-editor.note .work-office-toolbar {
+  height: 40px;
+  min-height: 40px;
+  border-bottom: 0;
+  background: transparent;
+}
+
+.work-markdown-editor.note {
+  align-self: stretch;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  min-height: 0;
+  flex: 1 1 auto;
+  /* inline-size containment shrink-wraps this flex item in WKWebView. */
+  container-type: normal;
+}
+
+.work-markdown-editor.note .work-markdown-workspace,
+.work-markdown-editor.note .work-markdown-workspace.split {
+  width: 100%;
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+.work-markdown-editor.note .work-markdown-pane.visual,
+.work-markdown-editor.note .work-markdown-pane.source,
+.work-markdown-editor.note .work-markdown-workspace.split .work-markdown-pane {
+  width: 100%;
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow: auto;
+  scrollbar-gutter: auto;
+  scrollbar-width: none;
+}
+
+.work-markdown-editor.note .work-markdown-workspace.split > .work-markdown-pane {
+  width: auto;
+  min-width: 0;
+}
+
+.work-markdown-editor.note .work-markdown-pane.source textarea {
+  scrollbar-gutter: auto;
+  scrollbar-width: none;
+}
+
+.work-markdown-editor.note .work-markdown-pane::-webkit-scrollbar,
+.work-markdown-editor.note .work-markdown-pane.source textarea::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+  background: transparent;
+}
+
+.work-markdown-editor.note .work-markdown-pane::-webkit-scrollbar-thumb,
+.work-markdown-editor.note .work-markdown-pane.source textarea::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+.work-markdown-overlay-thumb {
+  position: absolute;
+  z-index: 5;
+  top: 8px;
+  right: 3px;
+  width: 4px;
+  height: 36px;
+  border-radius: 999px;
+  background: rgb(23 23 23 / 28%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+}
+
+.work-markdown-overlay-thumb[data-visible='true'] {
+  opacity: 1;
+}
+
+.work-markdown-editor.note .work-markdown-canvas {
+  display: flex;
+  width: 100%;
+  min-height: 100%;
+  flex: 1 1 auto;
+  flex-direction: column;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.work-markdown-editor.note .work-markdown-canvas > div {
+  display: flex;
+  width: 100%;
+  min-height: 100%;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* Width stays 100% so auto margins cannot shrink-wrap a short line.
+   The measure is padding, so the words sit in a page instead of on the gutter. */
+.work-markdown-editor.note .work-markdown-canvas .tiptap {
+  width: 100%;
+  max-width: none;
+  align-self: stretch;
+  margin: 0;
+  text-align: start;
+  min-height: 100%;
+  flex: 1 1 auto;
+  padding: 64px max(48px, calc((100% - 40rem) / 2)) 96px;
+  color: #171717;
+  font-family: var(--a3s-ui-font, ui-sans-serif), "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  font-synthesis: none;
+  font-kerning: normal;
+  font-optical-sizing: auto;
+  line-height: 1.75;
+  text-rendering: optimizeLegibility;
+  text-wrap: pretty;
+  text-autospace: normal;
+  text-spacing-trim: space-all;
+  line-break: strict;
+  overflow-wrap: break-word;
+  word-break: normal;
+  hanging-punctuation: first allow-end;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.work-markdown-editor.note .work-markdown-pane.source textarea,
+.work-markdown-editor.note .work-markdown-source-presence-mirror {
+  max-width: none;
+  min-height: 0;
+  flex: 1 1 auto;
+  padding: 64px max(48px, calc((100% - 40rem) / 2)) 96px;
+  color: #171717;
+  font-family: var(--a3s-ui-font, ui-sans-serif), "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  font-synthesis: none;
+  font-kerning: normal;
+  line-height: 1.75;
+  text-rendering: optimizeLegibility;
+  text-autospace: normal;
+  line-break: strict;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.work-markdown-editor.note .work-markdown-canvas .tiptap p {
+  margin: 0.75em 0;
+}
+
+.work-markdown-editor.note .work-markdown-canvas .tiptap h1,
+.work-markdown-editor.note .work-markdown-canvas .tiptap h2,
+.work-markdown-editor.note .work-markdown-canvas .tiptap h3,
+.work-markdown-editor.note .work-markdown-canvas .tiptap h4 {
+  margin: 1.35em 0 0.4em;
+  color: #171717;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+
+.work-markdown-editor.note .work-markdown-canvas .tiptap h1 {
+  font-size: 1.55em;
+}
+
+.work-markdown-editor.note .work-markdown-canvas .tiptap h2 {
+  font-size: 1.28em;
+}
+
+.work-markdown-editor.note .work-markdown-canvas .tiptap h3,
+.work-markdown-editor.note .work-markdown-canvas .tiptap h4 {
+  font-size: 1.12em;
+}
+
+.work-markdown-editor.note .work-markdown-canvas .tiptap strong {
+  font-weight: 600;
+}
+
+.work-markdown-editor.note .work-markdown-canvas .tiptap ul,
+.work-markdown-editor.note .work-markdown-canvas .tiptap ol {
+  margin: 0.35em 0 0.85em;
+  padding-left: 1.25em;
+}
+
+.work-markdown-editor.note .work-markdown-canvas .tiptap li {
+  margin: 0.22em 0;
+  padding-left: 0.15em;
+}
+
+.work-markdown-editor.note .work-markdown-canvas .tiptap li::marker {
+  color: #8a8a8a;
+}
+
+.work-markdown-editor.note .work-markdown-canvas .tiptap li > p,
+.work-markdown-editor.note .work-markdown-canvas .tiptap li > p + p {
+  margin: 0;
+}
+
+.work-markdown-editor.note .work-markdown-canvas .tiptap > :first-child {
+  margin-top: 0;
+}
+
+.work-markdown-editor .work-markdown-canvas .tiptap a {
+  color: #171717;
+}
+
+.work-markdown-editor .work-markdown-canvas .tiptap code {
+  border-radius: 8px;
+  background: #f5f5f5;
+  color: #171717;
+}
+
+.work-markdown-editor .work-markdown-canvas .tiptap pre {
+  border: 1px solid #ececec;
+  border-radius: 8px;
+  background: #f5f5f5;
+  color: #171717;
+}
+
+.work-markdown-editor.note .work-markdown-canvas .tiptap :not(pre) > code {
+  padding: 0.05em 0.32em;
+  border-radius: 4px;
+  background: #f5f5f5;
+  color: #171717;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.84em;
+  font-weight: 400;
+  font-synthesis: none;
+  line-height: 1.45;
+  letter-spacing: 0;
+  vertical-align: baseline;
+  -webkit-font-smoothing: antialiased;
+}
+
+.work-markdown-editor.note .work-markdown-canvas .tiptap pre {
+  margin: 1.1em 0;
+  padding: 14px 16px;
+  border-radius: 8px;
+  line-height: 1.65;
+}
+
+.work-markdown-editor.note .work-markdown-canvas .tiptap pre code {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.84em;
+  line-height: inherit;
+  -webkit-font-smoothing: antialiased;
+}
+
+.work-markdown-insert-dialog {
+  border: 1px solid #ececec;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  color: #171717;
+}
+
+.work-markdown-insert-dialog > header h2 {
+  color: #171717;
+  font-size: 14px;
+}
+
+.work-markdown-insert-dialog > footer {
+  border-top-color: #ececec;
+  background: #ffffff;
+}
+
+.work-markdown-insert-dialog .ds-button {
+  min-height: 36px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.work-markdown-insert-dialog .ds-button.primary {
+  background: #171717;
+  color: #ffffff;
+}
+
+.work-markdown-insert-dialog .ds-button.quiet {
+  border: 1px solid #e5e5e5;
+  background: #ffffff;
+  color: #171717;
+}
+
+.work-markdown-insert-dialog .ds-button.quiet:hover:not(:disabled) {
+  background: #fafafa;
+  color: #171717;
+}
+
+.work-markdown-insert-dialog .work-office-dialog-field-label {
+  color: #8a8a8a;
+  font-size: 13px;
+}
+
+.work-markdown-insert-dialog .work-office-text-field {
+  height: 36px;
+  border: 0;
+  border-radius: 8px;
+  background: #f5f5f5;
+  color: #171717;
+  font-size: 13px;
+}
+
+.work-markdown-insert-dialog .work-office-text-field:focus-visible {
+  outline: 2px solid rgb(0 0 0 / 10%);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+.ds-dialog-backdrop:has(.work-markdown-insert-dialog) {
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: none;
+}
+
+.work-markdown-compact-switch button {
+  border-radius: 8px;
+  color: #8a8a8a;
+  font-size: 13px;
+}
+
+.work-markdown-compact-switch button[aria-pressed="true"] {
+  border-color: #e5e5e5;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  color: #171717;
+}
+
+.work-markdown-compact-switch button:focus-visible {
+  outline: 2px solid rgb(0 0 0 / 10%);
+  outline-offset: 2px;
+}
+
+/* Workspace file tab. The pane is the page, including when it is narrow.
+   Phone viewports keep the 44px compact targets in the queries above. */
+.work-markdown-editor.workspace {
+  height: 100%;
+  min-height: 0;
+}
+
+.work-markdown-editor.workspace .work-markdown-pane.source textarea,
+.work-markdown-editor.workspace .work-markdown-workspace.split .work-markdown-pane.source textarea,
+.work-markdown-editor.workspace .work-markdown-source-presence-mirror,
+.work-markdown-editor.workspace .work-markdown-workspace.split .work-markdown-source-presence-mirror {
+  padding: 16px 20px 24px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.work-markdown-editor.workspace .work-markdown-commands {
+  scrollbar-width: thin;
+}
+
+/* The tab already names the file. Source is the file, so formatting stays
+   off that row and only appears for visual or split editing. */
+.work-markdown-editor.workspace .work-markdown-ribbon {
+  flex-wrap: wrap;
+  height: auto;
+  min-height: 40px;
+  align-items: center;
+}
+
+.work-markdown-editor.workspace .work-markdown-mode-switch {
+  margin-left: auto;
+}
+
+.work-markdown-editor.workspace .work-markdown-commands {
+  flex: 1 0 100%;
+  order: 3;
+  height: 36px;
+}
+
+.work-markdown-editor.workspace[data-markdown-view='source'] .work-markdown-commands {
+  display: none;
+}
+
+@container work-markdown (max-width: 640px) {
+  .work-markdown-editor.workspace .work-markdown-workspace.split {
+    grid-template-rows: 36px minmax(0, 1fr);
+  }
+
+  .work-markdown-editor.workspace .work-markdown-compact-switch {
+    min-height: 0;
+    padding: 4px 8px;
+  }
+
+  .work-markdown-editor.workspace .work-markdown-compact-switch button {
+    height: 24px;
+    min-height: 24px;
+    padding: 0 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 400;
+  }
+
+  .work-markdown-editor.workspace .work-markdown-canvas {
+    width: 100%;
+    margin: 0;
+  }
+
+  .work-markdown-editor.workspace .work-markdown-workspace.split .work-markdown-canvas .tiptap {
+    padding: 16px 20px 32px;
+  }
+}
+
+.work-markdown-editor .work-office-status {
+  border-top: 1px solid #ececec;
+  background: #ffffff;
+  color: #8a8a8a;
+  font-size: 12px;
+}
+
+/* Portaled paragraph menu. It leaves .a3s-office, so these values are literals. */
+.markdown-paragraph-style-menu.work-office-select-menu,
+.markdown-paragraph-style-menu.work-office-select-menu[data-floating='true'] {
+  width: max-content;
+  min-width: 160px;
+  max-width: 240px;
+  padding: 4px;
+  border: 1px solid #ececec;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  backdrop-filter: none;
+  color: #171717;
+}
+
+.markdown-paragraph-style-menu.work-office-select-menu > button {
+  height: 36px;
+  min-height: 36px;
+  padding: 0 10px;
+  border-radius: 8px;
+  background: transparent;
+  color: #3f3f3f;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 18px;
+}
+
+.markdown-paragraph-style-menu.work-office-select-menu > button:hover:not(:disabled),
+.markdown-paragraph-style-menu.work-office-select-menu > button:focus-visible {
+  outline: 0;
+  background: #f7f7f7;
+  color: #171717;
+}
+
+.markdown-paragraph-style-menu.work-office-select-menu > button:focus-visible {
+  outline: 2px solid rgb(0 0 0 / 10%);
+  outline-offset: -2px;
+}
+
+.markdown-paragraph-style-menu.work-office-select-menu > button[aria-selected='true'],
+.markdown-paragraph-style-menu.work-office-select-menu > button[aria-selected='true']:hover:not(:disabled) {
+  background: #f2f3f5;
+  color: #171717;
+  font-weight: 500;
+}
+
+.markdown-paragraph-style-menu.work-office-select-menu > button > svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  color: #171717;
+}
+
+.work-markdown-context-menu.work-office-context-menu {
+  --work-office-menu-accent: #171717;
+  --a3s-blue: #171717;
+  --a3s-ink: #171717;
+  --a3s-muted: #8a8a8a;
+  --a3s-red: #b42318;
+
+  min-width: 220px;
+  padding: 4px;
+  border: 1px solid #ececec;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  backdrop-filter: none;
+  color: #171717;
+  font-size: 13px;
+}
+
+.work-markdown-context-menu.work-office-context-menu > button {
+  min-height: 36px;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  gap: 10px;
+  padding: 0 10px;
+  border-radius: 8px;
+  color: #3f3f3f;
+  font-size: 13px;
+}
+
+.work-markdown-context-menu.work-office-context-menu > button:hover:not(:disabled),
+.work-markdown-context-menu.work-office-context-menu > button:focus-visible {
+  background: #f7f7f7;
+  color: #171717;
+  box-shadow: none;
+}
+
+.work-markdown-context-menu.work-office-context-menu > button:focus-visible {
+  outline: 2px solid rgb(0 0 0 / 10%);
+  outline-offset: -2px;
+}
+
+.work-markdown-context-menu.work-office-context-menu > button:disabled {
+  opacity: 0.4;
+}
+
+.work-markdown-context-menu.work-office-context-menu > button.danger,
+.work-markdown-context-menu.work-office-context-menu > button.danger > svg {
+  color: #b42318;
+}
+
+.work-markdown-context-menu.work-office-context-menu > button > svg {
+  width: 16px;
+  height: 16px;
+  color: #3f3f3f;
+}
+
+.work-markdown-context-menu.work-office-context-menu kbd {
+  color: #8a8a8a;
+  font-size: 12px;
+}
+
+.work-markdown-context-menu .workspace-context-menu-separator {
+  margin: 4px 10px;
+  background: #ececec;
+}
+
+.work-markdown-editor .work-markdown-canvas .tiptap blockquote {
+  border-left: 3px solid #e5e5e5;
+  border-radius: 0;
+  background: transparent;
+  color: #3f3f3f;
+}

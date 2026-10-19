@@ -33,6 +33,22 @@ fn returns_none_when_no_child_exists() {
 }
 
 #[test]
+fn returns_none_for_a_local_fork_of_the_requested_id() {
+    let tmp = TempDir::new().unwrap();
+    let root = tmp.path().join("sessions");
+    let encoded = crate::util::grok_home::encode_cwd_dirname("/work");
+    let dir = root.join(&encoded).join("fork-child");
+    fs::create_dir_all(&dir).unwrap();
+    fs::write(
+        dir.join("summary.json"),
+        r#"{"parent_session_id":"origin","forked_at":"2026-01-01T00:00:00Z","session_kind":"fork"}"#,
+    )
+    .unwrap();
+
+    let found = find_local_child_for_remote_in_root("origin", "/work", &root);
+    assert!(found.is_none());
+}
+
 fn returns_none_for_different_parent() {
     let tmp = TempDir::new().unwrap();
     let root = tmp.path().join("sessions");

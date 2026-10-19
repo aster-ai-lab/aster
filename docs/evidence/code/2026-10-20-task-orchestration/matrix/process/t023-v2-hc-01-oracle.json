@@ -1,0 +1,251 @@
+{
+  "pipeline_sha256": "d313aaab087565f7bf0a34b05a21e72bd21a84b5558340f9e6ad82714dc482ce",
+  "oracle_self_test": "270 DP versus brute-force cases passed",
+  "static_imports": [
+    "argparse",
+    "csv",
+    "datetime",
+    "decimal",
+    "hashlib",
+    "json",
+    "os"
+  ],
+  "non_stdlib_static_imports": [],
+  "original_input_unchanged": true,
+  "passed_cases": 9,
+  "total_cases": 9,
+  "cases": [
+    {
+      "case": "public",
+      "passed": true,
+      "input_rows": 1000,
+      "expected_gain_milli": 3165191,
+      "runs": [
+        {
+          "exit_code": 0,
+          "seconds": 0.106,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.103,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "deterministic": true,
+      "input_unchanged": true,
+      "results_sha256": "dfcc0b13bea1b177aa5af6e9967f2bae42e8bfebdc6046f665fabf94db24ecf7"
+    },
+    {
+      "case": "zero_budget",
+      "passed": true,
+      "input_rows": 1000,
+      "expected_gain_milli": 0,
+      "runs": [
+        {
+          "exit_code": 0,
+          "seconds": 0.102,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.101,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "deterministic": true,
+      "input_unchanged": true,
+      "results_sha256": "435aeda520825bf92acf2f7fbef5e2cbe3b66c7f7344360dc3aa939e4cae8d08"
+    },
+    {
+      "case": "changed_policy",
+      "passed": true,
+      "input_rows": 1000,
+      "expected_gain_milli": 6122991,
+      "runs": [
+        {
+          "exit_code": 0,
+          "seconds": 0.105,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.108,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "deterministic": true,
+      "input_unchanged": true,
+      "results_sha256": "ed98f6cb5e98c322ace49d03a7e2aa07ee7cfd0e74e135f097a1a5adb4956699"
+    },
+    {
+      "case": "changed_data_and_references",
+      "passed": true,
+      "input_rows": 1001,
+      "expected_gain_milli": 3165191,
+      "runs": [
+        {
+          "exit_code": 0,
+          "seconds": 0.106,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.105,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "deterministic": true,
+      "input_unchanged": true,
+      "results_sha256": "f20f9053d3a12dd43ea787358a78fce575a1db0d81f1239c266cdd0bcbba18d4"
+    },
+    {
+      "case": "synthetic_row_exclusivity",
+      "passed": true,
+      "input_rows": 5,
+      "expected_gain_milli": 10000,
+      "runs": [
+        {
+          "exit_code": 0,
+          "seconds": 0.072,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.071,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "deterministic": true,
+      "input_unchanged": true,
+      "results_sha256": "fe8706524d85f0e9b47dc9244fa9104710044172a28056c475494c3b25740a52"
+    },
+    {
+      "case": "synthetic_lex_tie_budget_one",
+      "passed": true,
+      "input_rows": 5,
+      "expected_gain_milli": 5000,
+      "runs": [
+        {
+          "exit_code": 0,
+          "seconds": 0.069,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.072,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "deterministic": true,
+      "input_unchanged": true,
+      "results_sha256": "6a525068a2cd0777d308dfa5c8550ed3fbfd7a3f3f98a6b49f25a75756004771"
+    },
+    {
+      "case": "synthetic_cost_tie",
+      "passed": true,
+      "input_rows": 5,
+      "expected_gain_milli": 10000,
+      "runs": [
+        {
+          "exit_code": 0,
+          "seconds": 0.07,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.07,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "deterministic": true,
+      "input_unchanged": true,
+      "results_sha256": "3a568ee26649b3b62c0de69c10d01d0efd9f0a1867911a27ab755f8140c19475"
+    },
+    {
+      "case": "synthetic_non_greedy",
+      "passed": true,
+      "input_rows": 3,
+      "expected_gain_milli": 6000,
+      "runs": [
+        {
+          "exit_code": 0,
+          "seconds": 0.071,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.07,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "deterministic": true,
+      "input_unchanged": true,
+      "results_sha256": "e3a744f016fae0802355fe56e82617c62661ff7464385c9edae89eea675202e0"
+    },
+    {
+      "case": "negative_zero",
+      "passed": true,
+      "input_rows": 1,
+      "expected_gain_milli": 0,
+      "runs": [
+        {
+          "exit_code": 0,
+          "seconds": 0.07,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.069,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "deterministic": true,
+      "input_unchanged": true,
+      "results_sha256": "7a09d58b8ee2e690789d611763a2887e578f772e80315a89e4624e6dfaf7a248"
+    }
+  ],
+  "passed": true,
+  "independent_oracle_execution": {
+    "schema": "aster.t023-independent-oracle-execution.v1",
+    "command": [
+      "python3",
+      "/Users/roylin/code/aster/docs/evidence/studio/2026-10-19-t01-deepseek-flash/oracle/evaluate.py",
+      "--pipeline",
+      "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/runs/t023-v2-hc-01/submission/pipeline.py",
+      "--input",
+      "/Users/roylin/code/tasks/T01/input",
+      "--report",
+      "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/process/t023-v2-hc-01-oracle.json"
+    ],
+    "started_at_utc": "2026-10-19T18:11:27.262650+00:00",
+    "ended_at_utc": "2026-10-19T18:11:29.090756+00:00",
+    "wall_seconds": 1.827850292,
+    "exit_code": 0,
+    "pipeline_sha256_before": "d313aaab087565f7bf0a34b05a21e72bd21a84b5558340f9e6ad82714dc482ce",
+    "pipeline_sha256_after": "d313aaab087565f7bf0a34b05a21e72bd21a84b5558340f9e6ad82714dc482ce",
+    "pipeline_unchanged": true,
+    "original_input_unchanged_independent_check": true,
+    "original_run_status": "failed",
+    "run_status_not_rewritten": true,
+    "limits": "Existing evaluator per-pipeline subprocess timeout90s; exact full JSON and 2 repeated runs per passing case; no new CPU/RSS/output bound. Oracle artifact result does not change failed Run/task cap."
+  }
+}

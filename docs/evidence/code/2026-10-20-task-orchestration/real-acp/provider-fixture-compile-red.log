@@ -1,0 +1,67 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on build directory
+warning: function `upsert_instance_map` is never used
+   --> crates/boot/src/service_discovery/mod.rs:203:15
+    |
+203 | pub(crate) fn upsert_instance_map(
+    |               ^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `remove_instance_map` is never used
+   --> crates/boot/src/service_discovery/mod.rs:215:15
+    |
+215 | pub(crate) fn remove_instance_map(
+    |               ^^^^^^^^^^^^^^^^^^^
+
+   Compiling aster-dream v0.1.1 (/Users/roylin/code/aster/apps/work/src-tauri)
+warning: `a3s-boot` (lib) generated 2 warnings
+warning: aster-dream@0.1.1: no DOUBAO_/DOCHUB_* in /Users/roylin/code/aster/apps/work/src-tauri/../.env; packaged host will not embed search/document-parse defaults
+warning: unused import: `Ordering`
+ --> apps/work/src-tauri/src/desktop_settings.rs:8:36
+  |
+8 | use std::sync::atomic::{AtomicU32, Ordering};
+  |                                    ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+error[E0282]: type annotations needed
+  --> apps/work/src-tauri/src/agent_plane/local_acp_delivery_tests.rs:32:44
+   |
+32 |         let requests = Arc::new(Mutex::new(Vec::new()));
+   |                                            ^^^^^^^^ cannot infer type of the type parameter `T` declared on the struct `Vec`
+...
+82 |                         .filter(|request| request["stream"] == true)
+   |                                           ------- type must be known at this point
+   |
+help: consider specifying a concrete type for the type parameter `T`
+   |
+32 |         let requests = Arc::new(Mutex::new(Vec::</* Type */>::new()));
+   |                                               ++++++++++++++
+
+warning: unnecessary `unsafe` block
+    --> apps/work/src-tauri/src/workspace_browser.rs:1080:32
+     |
+1080 |                 let absolute = unsafe { request.URL() }.and_then(|url| {
+     |                                ^^^^^^ unnecessary `unsafe` block
+     |
+     = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default
+
+warning: unnecessary `unsafe` block
+    --> apps/work/src-tauri/src/workspace_browser.rs:1114:32
+     |
+1114 |                 let absolute = unsafe { request.URL() }.and_then(|url| {
+     |                                ^^^^^^ unnecessary `unsafe` block
+
+For more information about this error, try `rustc --explain E0282`.
+warning: `aster-dream` (lib test) generated 3 warnings
+warning: aster-dream@0.1.1: no DOUBAO_/DOCHUB_* in /Users/roylin/code/aster/apps/work/src-tauri/../.env; packaged host will not embed search/document-parse defaults
+error: could not compile `aster-dream` (lib test) due to 1 previous error; 3 warnings emitted

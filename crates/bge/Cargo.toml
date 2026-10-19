@@ -2,6 +2,7 @@
 name = "a3s-use-bge"
 version = "0.1.0"
 edition = "2021"
+publish = false
 license = "MIT"
 authors = ["A3S Lab"]
 rust-version = "1.82"
@@ -25,7 +26,7 @@ bge-reranker-v2-m3 = ["dep:ort", "dep:tokenizers"]
 cli = ["dep:clap"]
 
 [dependencies]
-a3s-use-core = "0.2.0"
+a3s-use-core = { path = "../use/core" }
 clap = { version = "4", features = ["derive"], optional = true }
 fs2 = "0.4"
 ort = { version = "=2.0.0-rc.10", default-features = false, features = ["copy-dylibs", "download-binaries", "ndarray", "std"], optional = true }
@@ -34,7 +35,7 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 sha2 = "0.10"
 tokenizers = { version = "0.21", optional = true }
-tokio = { version = "1", features = ["fs", "io-util", "macros", "rt-multi-thread", "sync"] }
+tokio = { version = "1", features = ["fs", "io-util", "macros", "rt-multi-thread", "sync", "time"] }
 
 [dev-dependencies]
 tempfile = "3"

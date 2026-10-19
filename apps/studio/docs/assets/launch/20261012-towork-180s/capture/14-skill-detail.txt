@@ -1,0 +1,26 @@
+Window: "ToWork", App: ToWork.
+0 standard window ToWork, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content Description: ToWork, URL: 127.0.0.1:4318/windows/main/index.html
+			3 container
+				4 container frontend-design
+					5 heading frontend-design, Value: 2
+						6 text frontend-design
+					7 button 安装
+					8 text 创建具有高设计质量的独特、生产级前端界面。当用户要求构建Web组件、页面或应用程序时使用此技能。生成富有创意且精致的代码，避免通用的人工智能美学。
+					9 heading 试试这样用, Value: 3
+						10 text 试试这样用
+					11 button 做一个有明确品牌感的产品落地页
+					12 button 把这个页面重做成更精致的界面
+					13 button 为这个产品定一套配色、字体和布局
+					14 heading 基本信息, Value: 3
+						15 text 基本信息
+					16 text 版本
+					17 text —
+					18 button 关闭
+	19 close button
+	20 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	21 minimize button
+22 menu bar
+	23 ToWork
+	24 Edit

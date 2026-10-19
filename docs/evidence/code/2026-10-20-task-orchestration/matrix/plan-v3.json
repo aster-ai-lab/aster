@@ -1,0 +1,128 @@
+{
+  "schema": "aster.t023.matrix-plan.v3",
+  "prepared_at_utc": "2026-10-19T19:11:10.561476+00:00",
+  "status": "frozen_before_any_v3_model_access; final-acp-five-case still pending",
+  "prior_terminal_attempts": [
+    "t023-sa-01",
+    "t023-v2-hc-01",
+    "t023-v2-sa-01",
+    "t023-2m-hc-01"
+  ],
+  "conditional_pair_order_only_if_all_four_qualify": [
+    "t023-v3-sa-02",
+    "t023-v3-hc-02"
+  ],
+  "budget": {
+    "max_execution_ms": 900000,
+    "llm_api_timeout_ms": 180000,
+    "tool_timeout_ms": 120000,
+    "max_tool_rounds": 128,
+    "max_continuation_turns": 4,
+    "max_parallel_tasks": 4,
+    "thinking_budget": 8192,
+    "reasoning_effort": "medium",
+    "reported_token_limit": 2000000
+  },
+  "prompt_sha256": "a55ceb23267a36b6aea90fa14c399621546a0223c551afa106ec5411b11cc6f5",
+  "route": "deepseek/deepseek-flash",
+  "endpoint": "https://api.deepseek.com",
+  "retrieval": "disabled",
+  "permissions": [
+    "*"
+  ],
+  "sample_caps": {
+    "previous_attempts": 4,
+    "remaining_core": 6,
+    "final_cua": 1,
+    "maximum_total_t01": 11,
+    "conditional_heldouts": 8
+  },
+  "source_rule": "New source cohort after owning repairs; do not pool old runs. Bind actual final executable/source/assets and verify before model access. No final build or manifest identity is claimed yet.",
+  "qualification_rule": "Every cell needs ordinary completion, all nine independent oracle scenarios, complete metrics, identity/input integrity and governance. PTC claims additionally require actual program adoption and complete child receipts. Failure stops promotion/expansion; identity/governance failure also stops the initial wave.",
+  "timing_rule": "No Cargo/tests/other models/source edits during a timed Run. Keep preflight, Core task, outer process and independent oracle timing separate.",
+  "promotion_rule": "Runtime and PTC decisions remain separate. These sparse samples cannot establish stable tail latency. Never change prompt, answers or the fixed 2M budget to rescue an outcome. Final CUA is separate desktop integration, not a matrix repeat.",
+  "frozen_at_utc": "2026-10-19T19:19:22.903293+00:00",
+  "order": [
+    {
+      "run_id": "t023-v3-hc-01",
+      "variant": "hardware",
+      "profile": "code",
+      "workspace": "/Users/roylin/code/tasks/T01-t023-v3-hc-01",
+      "inputs": 12,
+      "model_run_started": false,
+      "manifest": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-v3-hc-01.json",
+      "manifest_sha256": "2ba752fdf1c2804aa568ed526b9f6a28199b6dcd4a3d0356c1e0c56ae885c24a"
+    },
+    {
+      "run_id": "t023-v3-sa-01",
+      "variant": "software",
+      "profile": "adaptive",
+      "workspace": "/Users/roylin/code/tasks/T01-t023-v3-sa-01",
+      "inputs": 12,
+      "model_run_started": false,
+      "manifest": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-v3-sa-01.json",
+      "manifest_sha256": "04a5884d99c498b8fda5250d0963c4ae47f640fd6d51b266874ba87183aafe8b"
+    },
+    {
+      "run_id": "t023-v3-ha-01",
+      "variant": "hardware",
+      "profile": "adaptive",
+      "workspace": "/Users/roylin/code/tasks/T01-t023-v3-ha-01",
+      "inputs": 12,
+      "model_run_started": false,
+      "manifest": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-v3-ha-01.json",
+      "manifest_sha256": "a50622b729cd3524c4115bbe9a8be7fc04bfc7a41f6c8d0077b2bb2279c625e7"
+    },
+    {
+      "run_id": "t023-v3-sc-01",
+      "variant": "software",
+      "profile": "code",
+      "workspace": "/Users/roylin/code/tasks/T01-t023-v3-sc-01",
+      "inputs": 12,
+      "model_run_started": false,
+      "manifest": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-v3-sc-01.json",
+      "manifest_sha256": "a980ed95db2e5a31976d4f6f885bffd48ceca700386992d027c9acb4ec1a675f"
+    }
+  ],
+  "runner": "/Users/roylin/code/aster/target/t023-frozen-native-proof-v3/t023-real-llm",
+  "runner_sha256": "dafcdb08898bbb196b05d4da739229abb81b16a2a9c60382a889e1291fa6b6dd",
+  "runner_features": [
+    "a3s-vec-fts",
+    "advanced-harness",
+    "default",
+    "dynamic-workflow",
+    "evaluation",
+    "grep-trigram",
+    "local-code",
+    "research",
+    "state-graph",
+    "web-fetch-pdf"
+  ],
+  "core_source_ref": "../core-source-v3-candidate.json",
+  "core_source_files": 2824,
+  "paired_build_ref": "../final-build-v3/builds.json",
+  "asset_verification": [
+    {
+      "variant": "software",
+      "files": 907,
+      "symlinks": 353,
+      "matched": true
+    },
+    {
+      "variant": "hardware",
+      "files": 907,
+      "symlinks": 353,
+      "matched": true
+    }
+  ],
+  "oracle": {
+    "path": "/Users/roylin/code/aster/docs/evidence/studio/2026-10-19-t01-deepseek-flash/oracle/evaluate.py",
+    "sha256": "36c4db2fb452ef738a228428598e38d567b4b77bf803b925b621078a416496ac",
+    "cases": 9
+  },
+  "recording_limits": {
+    "events_per_run": 262144,
+    "event_bytes_per_run": 67108864
+  },
+  "final_acp_gate": "../real-acp/final-binary-v3/result.json must be terminal exit0, all five identity rows must match final ACP hash, before any model attempt"
+}

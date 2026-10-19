@@ -1,0 +1,33 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+error[E0382]: borrow of moved value: `cancellation`
+   --> crates/code/core/src/tools/program_tool.rs:526:8
+    |
+479 |       cancellation: tokio_util::sync::CancellationToken,
+    |       ------------ move occurs because `cancellation` has type `tokio_util::sync::CancellationToken`, which does not implement the `Copy` trait
+...
+497 |       let result_json = async_with!(context => |ctx| {
+    |  _______________________-
+498 | |         let state = Arc::clone(&state);
+499 | |         let host_tool = move |tool: String, args_json: String| {
+500 | |             let state = Arc::clone(&state);
+...   |
+518 | |             _ = cancellation.cancelled() => Err("program VM interrupted by cancellation".to_string()),
+    | |                 ------------ variable moved due to use in closure
+...   |
+524 | |     })
+    | |______- value moved into closure here
+525 |       .await;
+526 |       if cancellation.is_cancelled() {
+    |          ^^^^^^^^^^^^ value borrowed here after move
+
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `a3s-code-core` (lib test) due to 1 previous error

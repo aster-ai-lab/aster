@@ -1,0 +1,4 @@
+[[permission]]
+identifier = "allow-data-sqlite-query"
+description = "Runs one SQLite statement through a3s-orm for the data page."
+commands.allow = ["data_sqlite_query"]

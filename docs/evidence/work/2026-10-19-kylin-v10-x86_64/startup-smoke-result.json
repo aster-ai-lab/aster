@@ -1,0 +1,12 @@
+{
+  "started": "2026-10-19T03:58:44.946199+00:00",
+  "duration_seconds": 61.233764,
+  "exit_code": 124,
+  "markers": {
+    "kylin-native-dependencies-ok": true,
+    "kylin-helper-binaries-ok": true,
+    "studio-webview-url": true,
+    "studio-page-load": true
+  },
+  "single_instance_socket_path_error": false
+}

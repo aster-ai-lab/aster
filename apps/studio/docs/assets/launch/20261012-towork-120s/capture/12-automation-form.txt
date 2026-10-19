@@ -1,0 +1,17 @@
+Window: "ToWork", App: ToWork.
+0 standard window ToWork, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content Description: ToWork, URL: 127.0.0.1:4318/windows/main/index.html
+			3 container
+				4 menu 新建, Secondary Actions: Cancel
+					5 container
+						6 (selected) 手动创建
+						7 通过 Agent 创建
+	8 close button
+	9 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	10 minimize button
+11 menu bar
+	12 ToWork
+	13 Edit
+
+The focused UI element is 6 (selected) 手动创建

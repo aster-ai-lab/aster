@@ -1,0 +1,13 @@
+{
+  "network": "disconnected",
+  "host_glibc": "2.31",
+  "flatpak": "1.6.5",
+  "xz_present": false,
+  "runtimes_preexisting": true,
+  "app_preexisting": false,
+  "first_exit_code": 0,
+  "repeat_exit_code": 0,
+  "user_data_preserved": true,
+  "duration_seconds": 17.35607,
+  "macos_xattr_warnings": false
+}

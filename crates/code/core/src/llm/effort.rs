@@ -2,7 +2,7 @@
 //!
 //! Effort selects how deeply one completion thinks. It is not a tool-round
 //! or step budget. Each provider receives its own parameter. `max_tokens`
-//! stays large enough that thinking does not consume the visible answer.
+//! defaults leave room for the visible answer; an explicit output cap wins.
 
 /// Output window used at every effort level.
 ///
@@ -64,7 +64,7 @@ pub(crate) fn glm_reasoning_effort(token: &str) -> Option<&'static str> {
     }
 }
 
-/// Minimum `max_tokens` so any effort level can still write a full answer.
+/// Default output-window floor; an explicit `max_tokens` may be smaller.
 pub(crate) fn output_token_floor(level: &str) -> usize {
     match level {
         "none" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max" => {
@@ -74,8 +74,8 @@ pub(crate) fn output_token_floor(level: &str) -> usize {
     }
 }
 
-pub(crate) fn lifted_max_tokens(current: usize, level: &str) -> usize {
-    current.max(output_token_floor(level))
+pub(crate) fn resolved_max_tokens(explicit: Option<usize>, default: usize, level: &str) -> usize {
+    explicit.unwrap_or_else(|| default.max(output_token_floor(level)))
 }
 
 pub(crate) fn is_glm_model(model: &str) -> bool {
@@ -189,13 +189,20 @@ mod tests {
 
     #[test]
     fn high_effort_lifts_the_output_window() {
-        assert_eq!(lifted_max_tokens(8_192, "high"), HIGH_EFFORT_OUTPUT_TOKENS);
-        assert_eq!(lifted_max_tokens(8_192, "low"), HIGH_EFFORT_OUTPUT_TOKENS);
         assert_eq!(
-            lifted_max_tokens(8_192, "medium"),
+            resolved_max_tokens(None, 8_192, "high"),
             HIGH_EFFORT_OUTPUT_TOKENS
         );
-        assert_eq!(lifted_max_tokens(128_000, "max"), 128_000);
+        assert_eq!(
+            resolved_max_tokens(None, 8_192, "low"),
+            HIGH_EFFORT_OUTPUT_TOKENS
+        );
+        assert_eq!(
+            resolved_max_tokens(None, 8_192, "medium"),
+            HIGH_EFFORT_OUTPUT_TOKENS
+        );
+        assert_eq!(resolved_max_tokens(None, 128_000, "max"), 128_000);
+        assert_eq!(resolved_max_tokens(Some(2_048), 8_192, "high"), 2_048);
     }
 
     #[test]

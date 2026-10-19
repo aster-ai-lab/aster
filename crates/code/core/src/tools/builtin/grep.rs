@@ -189,7 +189,7 @@ impl Tool for GrepTool {
                 return Ok(ToolOutput::error(format!(
                     "Invalid regex pattern '{}': {}",
                     pattern_str, e
-                )))
+                )));
             }
         };
 

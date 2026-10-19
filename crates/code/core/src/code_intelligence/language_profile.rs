@@ -66,6 +66,7 @@ pub(crate) struct LanguageServerProfile {
     launch_resolution: LaunchResolution,
     initialization_settle_delay: Duration,
     navigation_settle_delay: Duration,
+    rust_analyzer_readiness: bool,
 }
 
 impl LanguageServerProfile {
@@ -77,7 +78,18 @@ impl LanguageServerProfile {
             launch_resolution: LaunchResolution::Static,
             initialization_settle_delay: DEFAULT_INITIALIZATION_SETTLE_DELAY,
             navigation_settle_delay: DEFAULT_NAVIGATION_SETTLE_DELAY,
+            rust_analyzer_readiness: false,
         }
+    }
+
+    pub(crate) fn rust_analyzer(program: impl Into<PathBuf>) -> Self {
+        let mut profile = Self::rust(program);
+        profile.rust_analyzer_readiness = true;
+        profile
+    }
+
+    pub(crate) fn requires_server_status(&self) -> bool {
+        self.rust_analyzer_readiness
     }
 
     pub(crate) fn typescript_javascript(program: impl Into<PathBuf>) -> Self {
@@ -88,6 +100,7 @@ impl LanguageServerProfile {
             launch_resolution: LaunchResolution::Static,
             initialization_settle_delay: DEFAULT_INITIALIZATION_SETTLE_DELAY,
             navigation_settle_delay: DEFAULT_NAVIGATION_SETTLE_DELAY,
+            rust_analyzer_readiness: false,
         }
     }
 
@@ -99,6 +112,7 @@ impl LanguageServerProfile {
             launch_resolution: LaunchResolution::Static,
             initialization_settle_delay: DEFAULT_INITIALIZATION_SETTLE_DELAY,
             navigation_settle_delay: DEFAULT_NAVIGATION_SETTLE_DELAY,
+            rust_analyzer_readiness: false,
         }
     }
 
@@ -112,6 +126,7 @@ impl LanguageServerProfile {
             launch_resolution: LaunchResolution::Static,
             initialization_settle_delay: DEFAULT_INITIALIZATION_SETTLE_DELAY,
             navigation_settle_delay: DEFAULT_NAVIGATION_SETTLE_DELAY,
+            rust_analyzer_readiness: false,
         }
     }
 
@@ -119,7 +134,7 @@ impl LanguageServerProfile {
         let mut python = Self::python(BASEDPYRIGHT);
         python.launch_resolution = LaunchResolution::PyrightFamily;
         vec![
-            Self::rust("rust-analyzer"),
+            Self::rust_analyzer("rust-analyzer"),
             Self::typescript_javascript("typescript-language-server")
                 .with_workspace_typescript_resolution(),
             python,
@@ -477,6 +492,11 @@ mod tests {
         let [rust, web, python, native] = &profiles[..] else {
             panic!("four built-in profiles");
         };
+        assert!(rust.requires_server_status());
+        assert!([web, python, native]
+            .iter()
+            .all(|profile| !profile.requires_server_status()));
+        assert!(!LanguageServerProfile::rust("custom-rust-server").requires_server_status());
 
         assert_eq!(
             python.command().program,

@@ -1,0 +1,1000 @@
+diff --git a/packages/ui/scripts/__tests__/validate-theme-contract.test.ts b/packages/ui/scripts/__tests__/validate-theme-contract.test.ts
+index 9b5b2ad67f..87c6714c0f 100644
+--- a/packages/ui/scripts/__tests__/validate-theme-contract.test.ts
++++ b/packages/ui/scripts/__tests__/validate-theme-contract.test.ts
+@@ -48,7 +48,7 @@ describe('validateThemeContractSources', () => {
+   it('rejects an upward dependency from the foundation layer', async () => {
+     const sources = await loadSources()
+     sources.providerColors = sources.providerColors.replace(
+-      '--cs-primary: var(--cs-brand-500);',
++      '--cs-primary: var(--a3s-tenant-brand, var(--cs-brand-500));',
+       '--cs-primary: var(--background);'
+     )
+ 
+@@ -58,7 +58,7 @@ describe('validateThemeContractSources', () => {
+   it('rejects a product dependency from the foundation layer', async () => {
+     const sources = await loadSources()
+     sources.providerColors = sources.providerColors.replace(
+-      '--cs-primary: var(--cs-brand-500);',
++      '--cs-primary: var(--a3s-tenant-brand, var(--cs-brand-500));',
+       '--cs-primary: var(--success);'
+     )
+ 
+@@ -84,7 +84,7 @@ describe('validateThemeContractSources', () => {
+   it('resolves references with whitespace after var opening', async () => {
+     const sources = await loadSources()
+     sources.providerColors = sources.providerColors.replace(
+-      '--cs-primary: var(--cs-brand-500);',
++      '--cs-primary: var(--a3s-tenant-brand, var(--cs-brand-500));',
+       '--cs-primary: var( --cs-missing-primary);'
+     )
+ 
+diff --git a/packages/ui/src/components/composites/composite-input/composite-input.tsx b/packages/ui/src/components/composites/composite-input/composite-input.tsx
+index 660f6cbcfb..b6c8574747 100644
+--- a/packages/ui/src/components/composites/composite-input/composite-input.tsx
++++ b/packages/ui/src/components/composites/composite-input/composite-input.tsx
+@@ -24,7 +24,7 @@ import { cn } from '@cherrystudio/ui/lib/utils'
+ import { toUndefinedIfNull } from '@cherrystudio/ui/utils/index'
+ 
+ const inputGroupVariants = cva(
+-  ['h-auto', 'rounded-md', 'has-[[data-slot=input-group-control]:focus-visible]:border-ring'],
++  ['h-auto', 'rounded-lg', 'has-[[data-slot=input-group-control]:focus-visible]:border-input'],
+   {
+     variants: {
+       disabled: {
+diff --git a/packages/ui/src/components/composites/confirm-dialog/index.tsx b/packages/ui/src/components/composites/confirm-dialog/index.tsx
+index 705691cd71..a1ba155161 100644
+--- a/packages/ui/src/components/composites/confirm-dialog/index.tsx
++++ b/packages/ui/src/components/composites/confirm-dialog/index.tsx
+@@ -77,12 +77,13 @@ function ConfirmDialog({
+         {content}
+         <DialogFooter>
+           <DialogClose asChild>
+-            <Button variant="outline" disabled={cancelDisabled}>
++            <Button variant="outline" className="rounded-[8px]" disabled={cancelDisabled}>
+               {cancelText}
+             </Button>
+           </DialogClose>
+           <Button
+             variant={destructive ? 'destructive' : 'default'}
++            className="rounded-[8px]"
+             onClick={handleConfirm}
+             loading={confirmLoading}
+             disabled={confirmDisabled}>
+diff --git a/packages/ui/src/components/composites/image-preview/__tests__/image-preview.test.tsx b/packages/ui/src/components/composites/image-preview/__tests__/image-preview.test.tsx
+index df2beb9d3d..d22b014d0a 100644
+--- a/packages/ui/src/components/composites/image-preview/__tests__/image-preview.test.tsx
++++ b/packages/ui/src/components/composites/image-preview/__tests__/image-preview.test.tsx
+@@ -203,7 +203,9 @@ describe('ImagePreviewDialog', () => {
+     const closeButton = screen.getByRole('button', { name: LABELS.close })
+     expect(closeButton).toHaveClass('rounded-none', 'bg-transparent', 'shadow-none', 'transition-none')
+     expect(closeButton).not.toHaveClass('rounded-full')
+-    expect(screen.getByTestId('image-preview-dialog')).toHaveClass('data-[state=open]:animate-none')
++    const preview = screen.getByTestId('image-preview-dialog')
++    expect(preview).toHaveClass('rounded-none', 'data-[state=open]:animate-none')
++    expect(preview).not.toHaveClass('rounded-[12px]')
+     expect(document.querySelector('[data-slot="dialog-overlay"]')).toHaveClass(
+       'data-[state=closed]:animate-none',
+       'data-[state=open]:animate-none'
+diff --git a/packages/ui/src/components/composites/page-side-panel/index.tsx b/packages/ui/src/components/composites/page-side-panel/index.tsx
+index 91f07279b8..06c592b1c8 100644
+--- a/packages/ui/src/components/composites/page-side-panel/index.tsx
++++ b/packages/ui/src/components/composites/page-side-panel/index.tsx
+@@ -152,10 +152,10 @@ function PageSidePanel({
+                     aria-label={closeLabel}
+                     data-slot="page-side-panel-close"
+                     className={cn(
+-                      'ml-3 shrink-0 rounded-md opacity-70 shadow-none transition-opacity hover:bg-transparent hover:opacity-100',
++                      'ml-3 size-6 shrink-0 appearance-none rounded-md p-0 text-[#8a8a8a] shadow-none transition-colors hover:bg-[#f2f3f5] hover:text-[#171717] focus-visible:bg-[#f2f3f5] focus-visible:text-[#171717] dark:text-[#a3a3a3] dark:hover:bg-[#2c2c2c] dark:hover:text-[#f5f5f5] dark:focus-visible:bg-[#2c2c2c] dark:focus-visible:text-[#f5f5f5]',
+                       closeButtonClassName
+                     )}>
+-                    <XIcon size={16} />
++                    <XIcon size={16} strokeWidth={1.7} />
+                   </Button>
+                 )}
+               </div>
+diff --git a/packages/ui/src/components/composites/select-dropdown/index.tsx b/packages/ui/src/components/composites/select-dropdown/index.tsx
+index 0fd726abad..cd99a0c6e0 100644
+--- a/packages/ui/src/components/composites/select-dropdown/index.tsx
++++ b/packages/ui/src/components/composites/select-dropdown/index.tsx
+@@ -147,7 +147,7 @@ export function SelectDropdown<T extends { id: string }>({
+         <div
+           className={cn(
+             'flex items-center gap-1 rounded-md pr-1 transition-colors',
+-            isSelected && 'bg-primary/10 text-primary'
++            isSelected && 'bg-[#f5f5f5] text-[#171717] dark:bg-[#2c2c2c] dark:text-[#f5f5f5]'
+           )}>
+           <button
+             type="button"
+@@ -177,7 +177,7 @@ export function SelectDropdown<T extends { id: string }>({
+         }}
+         className={cn(
+           'w-full rounded-md px-2.5 py-1.5 text-left text-sm transition-colors',
+-          isSelected ? 'bg-primary/10 text-primary' : 'text-foreground hover:bg-muted'
++          isSelected ? 'bg-[#f5f5f5] text-[#171717] dark:bg-[#2c2c2c] dark:text-[#f5f5f5]' : 'text-foreground hover:bg-muted'
+         )}>
+         {renderItem(item, isSelected)}
+       </button>
+@@ -190,8 +190,8 @@ export function SelectDropdown<T extends { id: string }>({
+         <button
+           type="button"
+           className={cn(
+-            'flex h-9 w-full items-center justify-between rounded-md border bg-transparent px-3 text-sm transition-colors hover:bg-muted/30',
+-            open ? 'border-primary/40 ring-1 ring-primary/15' : 'border-border-subtle',
++            'flex h-9 w-full items-center justify-between rounded-lg border bg-transparent px-3 text-sm transition-colors hover:bg-muted/30',
++            open ? 'border-input' : 'border-border-subtle',
+             triggerClassName
+           )}>
+           <div className="flex min-w-0 flex-1 items-center gap-2 text-left">
+diff --git a/packages/ui/src/components/primitives/__tests__/combobox.test.tsx b/packages/ui/src/components/primitives/__tests__/combobox.test.tsx
+index aff826d8f4..74d9453f90 100644
+--- a/packages/ui/src/components/primitives/__tests__/combobox.test.tsx
++++ b/packages/ui/src/components/primitives/__tests__/combobox.test.tsx
+@@ -50,7 +50,7 @@ describe('Combobox', () => {
+     render(<Combobox options={options} placeholder="Pick one" emptyText="No results" />)
+ 
+     const trigger = screen.getByRole('button')
+-    expect(trigger).toHaveClass('focus-visible:border-ring')
++    expect(trigger).toHaveClass('focus-visible:border-input')
+     expect(trigger).not.toHaveClass('aria-expanded:border-primary')
+   })
+ 
+diff --git a/packages/ui/src/components/primitives/__tests__/dialog.test.tsx b/packages/ui/src/components/primitives/__tests__/dialog.test.tsx
+index 23c7577dd6..1aff8cf5bc 100644
+--- a/packages/ui/src/components/primitives/__tests__/dialog.test.tsx
++++ b/packages/ui/src/components/primitives/__tests__/dialog.test.tsx
+@@ -48,6 +48,30 @@ function DialogWithSelect({ onOpenChange }: { onOpenChange: (open: boolean) => v
+ }
+ 
+ describe('Dialog primitive', () => {
++  it('uses the 12px dialog panel and lets a square override replace it', () => {
++    render(
++      <>
++        <Dialog open>
++          <DialogContent aria-describedby={undefined}>
++            <DialogTitle>Default panel</DialogTitle>
++          </DialogContent>
++        </Dialog>
++        <Dialog open>
++          <DialogContent aria-describedby={undefined} className="rounded-none">
++            <DialogTitle>Square panel</DialogTitle>
++          </DialogContent>
++        </Dialog>
++      </>
++    )
++
++    const panel = screen.getByText('Default panel').closest('[data-slot="dialog-content"]')
++    const square = screen.getByText('Square panel').closest('[data-slot="dialog-content"]')
++    expect(panel).toHaveClass('rounded-[12px]')
++    expect(panel).not.toHaveClass('rounded-3xl')
++    expect(square).toHaveClass('rounded-none')
++    expect(square).not.toHaveClass('rounded-[12px]')
++  })
++
+   it('keeps nested dialogs in the page dialog portal instead of the parent dialog content', () => {
+     const pagePortalContainer = document.createElement('div')
+     document.body.appendChild(pagePortalContainer)
+@@ -381,7 +405,11 @@ describe('Dialog primitive', () => {
+       </Dialog>
+     )
+ 
+-    expect(screen.getByRole('button', { name: 'Close' })).toBeInTheDocument()
++    const close = screen.getByRole('button', { name: 'Close' })
++    expect(close).toBeInTheDocument()
++    expect(close.className).toContain('hover:bg-[#f2f3f5]')
++    expect(close.className).toContain('dark:hover:bg-[#2c2c2c]')
++    expect(close.className).not.toContain('hover:opacity-100')
+   })
+ 
+   it('uses a caller-provided closeLabel as the close control name', () => {
+diff --git a/packages/ui/src/components/primitives/__tests__/input.test.tsx b/packages/ui/src/components/primitives/__tests__/input.test.tsx
+index b02a27f4a9..898abec5b5 100644
+--- a/packages/ui/src/components/primitives/__tests__/input.test.tsx
++++ b/packages/ui/src/components/primitives/__tests__/input.test.tsx
+@@ -10,7 +10,7 @@ describe('Input', () => {
+     render(<Input aria-label="Name" />)
+ 
+     const input = screen.getByRole('textbox', { name: 'Name' })
+-    expect(input.className).toContain('focus-visible:border-primary')
++    expect(input.className).toContain('focus-visible:border-input')
+     expect(input.className).not.toMatch(/focus-visible:ring-(?!0)/)
+     expect(input.className).not.toContain('focus-visible:outline-')
+   })
+diff --git a/packages/ui/src/components/primitives/__tests__/select.test.tsx b/packages/ui/src/components/primitives/__tests__/select.test.tsx
+index dac0ab1b84..68ce156237 100644
+--- a/packages/ui/src/components/primitives/__tests__/select.test.tsx
++++ b/packages/ui/src/components/primitives/__tests__/select.test.tsx
+@@ -42,7 +42,7 @@ describe('SelectContent', () => {
+     )
+ 
+     const trigger = screen.getByRole('combobox', { name: 'Mode' })
+-    expect(trigger).toHaveClass('focus-visible:border-primary')
++    expect(trigger).toHaveClass('focus-visible:border-input')
+     expect(trigger).not.toHaveClass('aria-expanded:border-primary')
+   })
+ 
+diff --git a/packages/ui/src/components/primitives/__tests__/tree-select.test.tsx b/packages/ui/src/components/primitives/__tests__/tree-select.test.tsx
+index 15dcc407dc..256f7f2acc 100644
+--- a/packages/ui/src/components/primitives/__tests__/tree-select.test.tsx
++++ b/packages/ui/src/components/primitives/__tests__/tree-select.test.tsx
+@@ -46,7 +46,7 @@ describe('TreeSelect', () => {
+     render(<TreeSelect treeData={treeData} />)
+ 
+     const trigger = screen.getByRole('combobox')
+-    expect(trigger).toHaveClass('focus-visible:border-primary')
++    expect(trigger).toHaveClass('focus-visible:border-input')
+     expect(trigger).not.toHaveClass('aria-expanded:border-primary')
+   })
+ 
+diff --git a/packages/ui/src/components/primitives/avatar.tsx b/packages/ui/src/components/primitives/avatar.tsx
+index eba2d4212b..721afd09b3 100644
+--- a/packages/ui/src/components/primitives/avatar.tsx
++++ b/packages/ui/src/components/primitives/avatar.tsx
+@@ -64,7 +64,7 @@ function AvatarBadge({ className, ...props }: React.ComponentProps<'span'>) {
+     <span
+       data-slot="avatar-badge"
+       className={cn(
+-        'absolute right-0 bottom-0 z-10 inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground ring-2 ring-background select-none',
++        'absolute right-0 bottom-0 z-10 inline-flex items-center justify-center rounded-full bg-neutral-900 text-white ring-2 ring-background select-none dark:bg-neutral-100 dark:text-neutral-900',
+         'group-data-[size=sm]/avatar:size-2 group-data-[size=sm]/avatar:[&>svg]:hidden',
+         'group-data-[size=default]/avatar:size-2.5 group-data-[size=default]/avatar:[&>svg]:size-2',
+         'group-data-[size=lg]/avatar:size-3 group-data-[size=lg]/avatar:[&>svg]:size-2',
+diff --git a/packages/ui/src/components/primitives/badge.tsx b/packages/ui/src/components/primitives/badge.tsx
+index 4d3908e86a..d00d7ed942 100644
+--- a/packages/ui/src/components/primitives/badge.tsx
++++ b/packages/ui/src/components/primitives/badge.tsx
+@@ -5,11 +5,11 @@ import * as React from 'react'
+ import { cn } from '@cherrystudio/ui/lib/utils'
+ 
+ const badgeVariants = cva(
+-  'inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-full border px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:border-primary aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3',
++  'inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-[6px] border px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:border-border aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3',
+   {
+     variants: {
+       variant: {
+-        default: 'border-transparent bg-background-subtle text-secondary-foreground [a&]:hover:bg-primary/90',
++        default: 'border-transparent bg-[#f5f5f5] text-[#171717] dark:bg-[#2c2c2c] dark:text-[#f5f5f5] [a&]:hover:bg-[#ececec] dark:[a&]:hover:bg-[#343434]',
+         secondary: 'border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90',
+         destructive:
+           'border-transparent bg-[red]/10 text-destructive focus-visible:border-destructive dark:bg-destructive/60 [a&]:hover:bg-destructive/90',
+diff --git a/packages/ui/src/components/primitives/button-group.tsx b/packages/ui/src/components/primitives/button-group.tsx
+index 1db20afaf4..9177dd993b 100644
+--- a/packages/ui/src/components/primitives/button-group.tsx
++++ b/packages/ui/src/components/primitives/button-group.tsx
+@@ -5,7 +5,7 @@ import { Separator } from '@cherrystudio/ui/components/primitives/separator'
+ import { cn } from '@cherrystudio/ui/lib/utils'
+ 
+ const buttonGroupVariants = cva(
+-  "flex w-fit items-stretch *:focus-visible:relative *:focus-visible:z-10 has-[>[data-slot=button-group]]:gap-2 [&>[data-slot=button-group-item]>[data-slot=button][data-variant=default]]:relative [&>[data-slot=button-group-item]>[data-slot=button][data-variant=default]]:z-1 [&>[data-slot=button-group-item]>[data-slot=button][data-variant=default]]:bg-primary/10 [&>[data-slot=button-group-item]>[data-slot=button][data-variant=default]]:text-primary [&>[data-slot=button-group-item]>[data-slot=button][data-variant=default]]:shadow-[inset_0_0_0_1px_var(--primary)]/20 [&>[data-slot=button-group-item]>[data-slot=button][data-variant=default]]:hover:bg-primary/15 [&>[data-slot=button][data-variant=default]]:relative [&>[data-slot=button][data-variant=default]]:z-1 [&>[data-slot=button][data-variant=default]]:bg-primary/10 [&>[data-slot=button][data-variant=default]]:text-primary [&>[data-slot=button][data-variant=default]]:shadow-[inset_0_0_0_1px_var(--primary)]/20 [&>[data-slot=button][data-variant=default]]:hover:bg-primary/15 has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-md [&>[data-slot=select-trigger]:not([class*='w-'])]:w-fit [&>input]:flex-1",
++  "flex w-fit items-stretch *:focus-visible:relative *:focus-visible:z-10 has-[>[data-slot=button-group]]:gap-2 [&>[data-slot=button-group-item]>[data-slot=button][data-variant=default]]:relative [&>[data-slot=button-group-item]>[data-slot=button][data-variant=default]]:z-1 [&>[data-slot=button-group-item]>[data-slot=button][data-variant=default]]:bg-[#f5f5f5] [&>[data-slot=button-group-item]>[data-slot=button][data-variant=default]]:text-[#171717] [&>[data-slot=button-group-item]>[data-slot=button][data-variant=default]]:shadow-none [&>[data-slot=button-group-item]>[data-slot=button][data-variant=default]]:hover:bg-[#ececec] dark:[&>[data-slot=button-group-item]>[data-slot=button][data-variant=default]]:bg-[#2c2c2c] dark:[&>[data-slot=button-group-item]>[data-slot=button][data-variant=default]]:text-[#f5f5f5] dark:[&>[data-slot=button-group-item]>[data-slot=button][data-variant=default]]:hover:bg-[#343434] [&>[data-slot=button][data-variant=default]]:relative [&>[data-slot=button][data-variant=default]]:z-1 [&>[data-slot=button][data-variant=default]]:bg-[#f5f5f5] [&>[data-slot=button][data-variant=default]]:text-[#171717] [&>[data-slot=button][data-variant=default]]:shadow-none [&>[data-slot=button][data-variant=default]]:hover:bg-[#ececec] dark:[&>[data-slot=button][data-variant=default]]:bg-[#2c2c2c] dark:[&>[data-slot=button][data-variant=default]]:text-[#f5f5f5] dark:[&>[data-slot=button][data-variant=default]]:hover:bg-[#343434] has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-md [&>[data-slot=select-trigger]:not([class*='w-'])]:w-fit [&>input]:flex-1",
+   {
+     variants: {
+       orientation: {
+diff --git a/packages/ui/src/components/primitives/button.tsx b/packages/ui/src/components/primitives/button.tsx
+index e2f8367b63..809155466e 100644
+--- a/packages/ui/src/components/primitives/button.tsx
++++ b/packages/ui/src/components/primitives/button.tsx
+@@ -12,7 +12,7 @@ const buttonVariants = cva(
+     'disabled:pointer-events-none disabled:opacity-40',
+     "shrink-0 outline-none aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_.lucide:not(.lucide-custom)]:text-current [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+     'data-[busy=true]:cursor-progress data-[busy=true]:opacity-40',
+-    'shadow-xs'
++    'shadow-none'
+   ),
+   {
+     variants: {
+@@ -21,12 +21,12 @@ const buttonVariants = cva(
+           'bg-neutral-900 text-white hover:bg-neutral-800 focus-visible:bg-neutral-800 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-200 dark:focus-visible:bg-neutral-200',
+         destructive: 'bg-destructive text-white hover:bg-destructive-hover focus-visible:bg-destructive-hover',
+         outline:
+-          'border border-border bg-transparent text-foreground shadow-none hover:bg-accent focus-visible:border-primary focus-visible:bg-accent',
++          'border border-border bg-transparent text-foreground shadow-none hover:bg-accent focus-visible:border-border focus-visible:bg-accent',
+         secondary:
+-          'rounded-lg bg-secondary text-secondary-foreground shadow-none hover:bg-secondary-hover focus-visible:bg-secondary-hover',
+-        /** Dialog primary action style: same color hierarchy as default, with a flatter v2 shell. */
++          'bg-[#f5f5f5] text-[#171717] shadow-none hover:bg-[#ececec] focus-visible:bg-[#ececec] dark:bg-[#2c2c2c] dark:text-[#f5f5f5] dark:hover:bg-[#343434] dark:focus-visible:bg-[#343434]',
++        /** Dialog primary action style: same color hierarchy as default, with the 8px control radius. */
+         emphasis:
+-          'rounded-lg bg-neutral-900 text-white shadow-none hover:bg-neutral-800 focus-visible:bg-neutral-800 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-200 dark:focus-visible:bg-neutral-200',
++          'bg-neutral-900 text-white shadow-none hover:bg-neutral-800 focus-visible:bg-neutral-800 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-200 dark:focus-visible:bg-neutral-200',
+         ghost:
+           'text-neutral-900 shadow-none hover:bg-accent hover:text-accent-foreground focus-visible:bg-accent focus-visible:text-accent-foreground dark:text-neutral-100',
+         link: 'text-neutral-900 underline-offset-4 hover:text-neutral-700 hover:underline focus-visible:text-neutral-700 focus-visible:underline dark:text-neutral-100 dark:hover:text-neutral-300 dark:focus-visible:text-neutral-300'
+diff --git a/packages/ui/src/components/primitives/calendar.tsx b/packages/ui/src/components/primitives/calendar.tsx
+index 9915d9ad8d..1fd63b8d6d 100644
+--- a/packages/ui/src/components/primitives/calendar.tsx
++++ b/packages/ui/src/components/primitives/calendar.tsx
+@@ -41,7 +41,7 @@ function Calendar({
+         dropdown_root: cn(defaultClassNames.dropdown_root, 'relative'),
+         dropdown: cn(
+           defaultClassNames.dropdown,
+-          'h-8 rounded-md border border-border bg-background px-2 text-sm transition-colors outline-none focus-visible:border-primary'
++          'h-8 rounded-lg border border-border bg-background px-2 text-sm transition-colors outline-none focus-visible:border-input'
+         ),
+         nav: cn(defaultClassNames.nav, 'absolute inset-x-0 top-3 flex items-center justify-between px-3'),
+         button_previous: cn(
+@@ -63,14 +63,20 @@ function Calendar({
+         ),
+         selected: cn(
+           defaultClassNames.selected,
+-          'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground'
++          'bg-neutral-900 text-white hover:bg-neutral-900 hover:text-white focus:bg-neutral-900 focus:text-white dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-100 dark:hover:text-neutral-900 dark:focus:bg-neutral-100 dark:focus:text-neutral-900'
+         ),
+         today: cn(defaultClassNames.today, 'bg-accent text-accent-foreground'),
+         outside: cn(defaultClassNames.outside, 'text-muted-foreground opacity-50'),
+         disabled: cn(defaultClassNames.disabled, 'text-muted-foreground opacity-40'),
+         range_middle: cn(defaultClassNames.range_middle, 'rounded-none bg-accent text-accent-foreground'),
+-        range_start: cn(defaultClassNames.range_start, 'rounded-l-md bg-primary text-primary-foreground'),
+-        range_end: cn(defaultClassNames.range_end, 'rounded-r-md bg-primary text-primary-foreground'),
++        range_start: cn(
++          defaultClassNames.range_start,
++          'rounded-l-md bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900'
++        ),
++        range_end: cn(
++          defaultClassNames.range_end,
++          'rounded-r-md bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900'
++        ),
+         hidden: cn(defaultClassNames.hidden, 'invisible'),
+         ...classNames
+       }}
+diff --git a/packages/ui/src/components/primitives/checkbox.tsx b/packages/ui/src/components/primitives/checkbox.tsx
+index 312f1cda91..12ae13f4c0 100644
+--- a/packages/ui/src/components/primitives/checkbox.tsx
++++ b/packages/ui/src/components/primitives/checkbox.tsx
+@@ -16,7 +16,7 @@ const checkboxVariants = cva(
+     'data-[state=checked]:border-foreground data-[state=checked]:text-foreground',
+     'data-[state=indeterminate]:border-foreground data-[state=indeterminate]:text-foreground',
+     'data-[state=checked]:animate-checkbox-bounce',
+-    'focus-visible:border-primary',
++    'focus-visible:border-foreground',
+     'aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
+     'disabled:cursor-not-allowed disabled:border-gray-500/10 disabled:bg-background-subtle',
+     // A fixed tick must read as fixed: same glyph in the DISABLED role (DESIGN.md's
+diff --git a/packages/ui/src/components/primitives/circular-progress.tsx b/packages/ui/src/components/primitives/circular-progress.tsx
+index 878956c708..ce66946cba 100644
+--- a/packages/ui/src/components/primitives/circular-progress.tsx
++++ b/packages/ui/src/components/primitives/circular-progress.tsx
+@@ -57,7 +57,7 @@ const CircularProgress = ({
+           strokeWidth={resolvedCircleWidth}
+           strokeDasharray={circumference}
+           strokeDashoffset="0"
+-          className={cn('stroke-primary/25', className)}
++          className={cn('stroke-foreground/25', className)}
+         />
+         <circle
+           r={radius}
+@@ -68,7 +68,7 @@ const CircularProgress = ({
+           strokeDashoffset={offset}
+           fill="transparent"
+           strokeDasharray={circumference}
+-          className={cn('stroke-primary', progressClassName)}
++          className={cn('stroke-foreground', progressClassName)}
+         />
+       </svg>
+       {showLabel && (
+diff --git a/packages/ui/src/components/primitives/combobox.tsx b/packages/ui/src/components/primitives/combobox.tsx
+index 381ddff4d3..dfb5633ecb 100644
+--- a/packages/ui/src/components/primitives/combobox.tsx
++++ b/packages/ui/src/components/primitives/combobox.tsx
+@@ -21,14 +21,14 @@ import { cn } from '@cherrystudio/ui/lib/utils'
+ 
+ const comboboxTriggerVariants = cva(
+   cn(
+-    'inline-flex items-center justify-between rounded-md border-1 text-sm font-normal transition-colors outline-none',
++    'inline-flex items-center justify-between rounded-lg border-1 text-sm font-normal transition-colors outline-none',
+     'bg-muted/20',
+     'text-foreground'
+   ),
+   {
+     variants: {
+       state: {
+-        default: 'border-border focus-visible:border-ring',
++        default: 'border-border focus-visible:border-input',
+         error: 'border border-destructive!',
+         disabled: 'pointer-events-none cursor-not-allowed opacity-50'
+       },
+@@ -51,7 +51,7 @@ const comboboxItemVariants = cva(
+     variants: {
+       state: {
+         default: 'hover:bg-accent data-[selected=true]:bg-accent',
+-        selected: 'bg-primary/10 text-primary',
++        selected: 'bg-[#f5f5f5] text-[#171717] dark:bg-[#2c2c2c] dark:text-[#f5f5f5]',
+         disabled: 'pointer-events-none cursor-not-allowed opacity-50'
+       }
+     },
+@@ -446,7 +446,7 @@ export function Combobox<TExtra extends object = Record<never, never>>({
+             <span
+               key={option.value}
+               className={cn(
+-                'bg-primary/10 text-primary',
++                'bg-[#f5f5f5] text-[#171717] dark:bg-[#2c2c2c] dark:text-[#f5f5f5]',
+                 'gap-1 px-2 py-0.5',
+                 'inline-flex items-center rounded',
+                 'text-xs'
+@@ -508,8 +508,8 @@ export function Combobox<TExtra extends object = Record<never, never>>({
+               onKeyDown={handleTriggerInputKeyDown}
+               style={triggerStyle}
+               className={cn(
+-                'w-full rounded-md border-1 bg-muted/20 pr-8 shadow-none transition-colors',
+-                'focus-visible:border-ring',
++                'w-full rounded-lg border-1 bg-muted/20 pr-8 shadow-none transition-colors',
++                'focus-visible:border-input',
+                 error && 'border-destructive!',
+                 disabled && 'cursor-not-allowed opacity-50',
+                 comboboxInputSizeClasses[inputSize],
+@@ -574,7 +574,7 @@ export function Combobox<TExtra extends object = Record<never, never>>({
+           <div className="truncate">{option.label}</div>
+           {option.description && <div className="truncate text-xs text-muted-foreground">{option.description}</div>}
+         </div>
+-        {isSelected(option.value) && <Check className="size-4 shrink-0 text-primary" />}
++        {isSelected(option.value) && <Check className="size-4 shrink-0 text-foreground" />}
+       </>
+     )
+   }
+diff --git a/packages/ui/src/components/primitives/custom-tag.tsx b/packages/ui/src/components/primitives/custom-tag.tsx
+index 54089a051d..66516340e4 100644
+--- a/packages/ui/src/components/primitives/custom-tag.tsx
++++ b/packages/ui/src/components/primitives/custom-tag.tsx
+@@ -41,7 +41,7 @@ const CustomTag: FC<CustomTagProps> = ({
+   const tagContent = useMemo(
+     () => (
+       <div
+-        className={`relative inline-flex items-center gap-1 rounded-full whitespace-nowrap transition-opacity duration-200 ${
++        className={`relative inline-flex items-center gap-1 rounded-[6px] whitespace-nowrap transition-opacity duration-200 ${
+           !disabled && onClick ? 'cursor-pointer hover:opacity-80' : disabled ? 'cursor-not-allowed' : 'cursor-auto'
+         } ${className}`}
+         style={{
+diff --git a/packages/ui/src/components/primitives/dialog.tsx b/packages/ui/src/components/primitives/dialog.tsx
+index 12cb891a72..3366c8bc21 100644
+--- a/packages/ui/src/components/primitives/dialog.tsx
++++ b/packages/ui/src/components/primitives/dialog.tsx
+@@ -124,7 +124,7 @@ function DialogContent({
+         className={cn(
+           // no-drag punches the dialog's area out of any titlebar drag region it overlaps,
+           // so the close button stays clickable when the dialog reaches max height (Electron).
+-          'fixed top-[50%] left-[50%] z-[80] grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-3xl border-0 bg-card p-6 text-card-foreground shadow-xl [-webkit-app-region:no-drag]',
++          'fixed top-[50%] left-[50%] z-[80] grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-[12px] border-0 bg-card p-6 text-card-foreground shadow-xl [-webkit-app-region:no-drag]',
+           'data-[state=open]:animate-in data-[state=open]:ease-[cubic-bezier(0.16,1,0.3,1)] data-[state=open]:animation-duration-[260ms] data-[state=open]:fade-in-0 data-[state=open]:zoom-in-99',
+           'data-[state=closed]:animate-out data-[state=closed]:ease-[cubic-bezier(0.4,0,1,1)] data-[state=closed]:animation-duration-[200ms] data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-99',
+           motion === 'directional' &&
+@@ -142,8 +142,8 @@ function DialogContent({
+           {showCloseButton && (
+             <DialogPrimitive.Close
+               data-slot="dialog-close"
+-              className="absolute top-4 right-4 rounded-md opacity-70 transition-opacity hover:opacity-100 focus:outline-hidden focus-visible:bg-accent focus-visible:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">
+-              <XIcon />
++              className="absolute top-4 right-4 inline-flex size-6 appearance-none items-center justify-center rounded-md border-0 bg-transparent p-0 text-[#8a8a8a] transition-colors hover:bg-[#f2f3f5] hover:text-[#171717] focus:outline-hidden focus-visible:bg-[#f2f3f5] focus-visible:text-[#171717] disabled:pointer-events-none dark:text-[#a3a3a3] dark:hover:bg-[#2c2c2c] dark:hover:text-[#f5f5f5] dark:focus-visible:bg-[#2c2c2c] dark:focus-visible:text-[#f5f5f5] [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">
++              <XIcon strokeWidth={1.7} />
+               <span className="sr-only">{closeLabel}</span>
+             </DialogPrimitive.Close>
+           )}
+diff --git a/packages/ui/src/components/primitives/field.tsx b/packages/ui/src/components/primitives/field.tsx
+index f9bf12da02..75100e5176 100644
+--- a/packages/ui/src/components/primitives/field.tsx
++++ b/packages/ui/src/components/primitives/field.tsx
+@@ -101,7 +101,7 @@ function FieldLabel({ className, ...props }: React.ComponentProps<typeof Label>)
+       className={cn(
+         'group/field-label peer/field-label flex w-fit gap-2 leading-snug group-data-[disabled=true]/field:opacity-50',
+         'has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col has-[>[data-slot=field]]:rounded-md has-[>[data-slot=field]]:border [&>*]:data-[slot=field]:p-4',
+-        'has-data-[state=checked]:border-border-selected has-data-[state=checked]:bg-primary/5 dark:has-data-[state=checked]:bg-primary/10',
++        'has-data-[state=checked]:border-border has-data-[state=checked]:bg-[#f5f5f5] dark:has-data-[state=checked]:bg-[#2c2c2c]',
+         className
+       )}
+       {...props}
+diff --git a/packages/ui/src/components/primitives/input-group.tsx b/packages/ui/src/components/primitives/input-group.tsx
+index b8e19bd359..b24a3db4ba 100644
+--- a/packages/ui/src/components/primitives/input-group.tsx
++++ b/packages/ui/src/components/primitives/input-group.tsx
+@@ -12,7 +12,7 @@ import { cn } from '@cherrystudio/ui/lib/utils'
+ 
+ const inputGroupVariants = cva(
+   [
+-    'group/input-group relative flex w-full items-center rounded-md border border-input bg-background transition-[color,box-shadow] outline-none',
++    'group/input-group relative flex w-full items-center rounded-lg border border-input bg-background transition-[color,box-shadow] outline-none',
+     'min-w-0 has-[>textarea]:h-auto',
+ 
+     // Variants based on alignment.
+@@ -22,7 +22,7 @@ const inputGroupVariants = cva(
+     'has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-end]]:[&>input]:pt-3',
+ 
+     // Focus state.
+-    'has-[[data-slot=input-group-control]:focus-visible]:border-primary',
++    'has-[[data-slot=input-group-control]:focus-visible]:border-input',
+ 
+     // Error state.
+     'has-[[data-slot][aria-invalid=true]]:border-destructive has-[[data-slot][aria-invalid=true]]:ring-destructive/20 dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40'
+diff --git a/packages/ui/src/components/primitives/input.tsx b/packages/ui/src/components/primitives/input.tsx
+index db6450f9dd..29c645cce2 100644
+--- a/packages/ui/src/components/primitives/input.tsx
++++ b/packages/ui/src/components/primitives/input.tsx
+@@ -10,8 +10,8 @@ function Input({ className, type, ...props }: InputProps) {
+       type={type}
+       data-slot="input"
+       className={cn(
+-        'h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 py-1 text-base transition-[color,box-shadow] outline-none selection:bg-primary selection:text-primary-foreground file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed md:text-sm dark:bg-input/30',
+-        'focus-visible:border-primary',
++        'h-9 w-full min-w-0 rounded-lg border border-input bg-transparent px-3 py-1 text-base transition-[color,box-shadow] outline-none selection:bg-foreground selection:text-background file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed md:text-sm dark:bg-input/30',
++        'focus-visible:border-input',
+         'disabled:opacity-50',
+         'aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
+         className
+diff --git a/packages/ui/src/components/primitives/item.tsx b/packages/ui/src/components/primitives/item.tsx
+index a5b8981cc4..decee1e9b4 100644
+--- a/packages/ui/src/components/primitives/item.tsx
++++ b/packages/ui/src/components/primitives/item.tsx
+@@ -16,7 +16,7 @@ function ItemSeparator({ className, ...props }: React.ComponentProps<typeof Sepa
+ }
+ 
+ const itemVariants = cva(
+-  'group/item flex flex-wrap items-center rounded-md border border-transparent text-sm transition-colors duration-100 outline-none focus-visible:border-primary [a]:transition-colors [a]:hover:bg-accent/50 [a]:focus-visible:bg-accent/50',
++  'group/item flex flex-wrap items-center rounded-md border border-transparent text-sm transition-colors duration-100 outline-none focus-visible:border-border [a]:transition-colors [a]:hover:bg-accent/50 [a]:focus-visible:bg-accent/50',
+   {
+     variants: {
+       variant: {
+diff --git a/packages/ui/src/components/primitives/kbd.tsx b/packages/ui/src/components/primitives/kbd.tsx
+index 9c04e9985c..470607635a 100644
+--- a/packages/ui/src/components/primitives/kbd.tsx
++++ b/packages/ui/src/components/primitives/kbd.tsx
+@@ -5,7 +5,7 @@ function Kbd({ className, ...props }: React.ComponentProps<'kbd'>) {
+     <kbd
+       data-slot="kbd"
+       className={cn(
+-        'pointer-events-none inline-flex w-fit min-w-5 items-center justify-center gap-1 rounded-md bg-primary/10 p-1 font-sans text-xs font-medium text-primary select-none',
++        'pointer-events-none inline-flex w-fit min-w-5 items-center justify-center gap-1 rounded-[6px] bg-[#f5f5f5] p-1 font-sans text-xs font-medium text-[#171717] select-none dark:bg-[#2c2c2c] dark:text-[#f5f5f5]',
+         "[&_svg:not([class*='size-'])]:size-3",
+         '[[data-slot=tooltip-content]_&]:bg-background/20 [[data-slot=tooltip-content]_&]:text-background dark:[[data-slot=tooltip-content]_&]:bg-background/10',
+         className
+diff --git a/packages/ui/src/components/primitives/pagination.tsx b/packages/ui/src/components/primitives/pagination.tsx
+index fda2a431b1..04c633b22d 100644
+--- a/packages/ui/src/components/primitives/pagination.tsx
++++ b/packages/ui/src/components/primitives/pagination.tsx
+@@ -41,8 +41,8 @@ function PaginationLink({ className, isActive, size = 'icon', ...props }: Pagina
+           variant: isActive ? 'outline' : 'ghost',
+           size
+         }),
+-        'rounded-md text-foreground hover:bg-primary/10 hover:text-primary hover:shadow-none',
+-        isActive && 'bg-background text-primary',
++        'rounded-[6px] text-foreground hover:bg-[#f5f5f5] hover:text-[#171717] hover:shadow-none dark:hover:bg-[#2c2c2c] dark:hover:text-[#f5f5f5]',
++        isActive && 'bg-[#f5f5f5] text-[#171717] dark:bg-[#2c2c2c] dark:text-[#f5f5f5]',
+         className
+       )}
+       {...props}
+diff --git a/packages/ui/src/components/primitives/radio-group.tsx b/packages/ui/src/components/primitives/radio-group.tsx
+index 6b700fff6f..1e685501c4 100644
+--- a/packages/ui/src/components/primitives/radio-group.tsx
++++ b/packages/ui/src/components/primitives/radio-group.tsx
+@@ -6,9 +6,9 @@ import { cn } from '@cherrystudio/ui/lib/utils'
+ 
+ const radioGroupItemVariants = cva(
+   cn(
+-    'aspect-square shrink-0 rounded-full border border-input bg-transparent text-primary shadow-none transition-[color,border-color,box-shadow] outline-none',
+-    'data-[state=checked]:border-2 data-[state=checked]:border-primary',
+-    'focus-visible:border-primary',
++    'aspect-square shrink-0 rounded-full border border-input bg-transparent text-foreground shadow-none transition-[color,border-color,box-shadow] outline-none',
++    'data-[state=checked]:border-2 data-[state=checked]:border-foreground',
++    'focus-visible:border-foreground',
+     'aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
+     'disabled:cursor-not-allowed disabled:opacity-50'
+   ),
+diff --git a/packages/ui/src/components/primitives/resizable.tsx b/packages/ui/src/components/primitives/resizable.tsx
+index e6f713db14..47dd63fd91 100644
+--- a/packages/ui/src/components/primitives/resizable.tsx
++++ b/packages/ui/src/components/primitives/resizable.tsx
+@@ -71,7 +71,7 @@ function ResizableHandle({ children, className, withHandle, ...props }: Resizabl
+         'group relative flex h-full w-px shrink-0 items-center justify-center bg-border transition-colors',
+         'after:absolute after:inset-y-0 after:left-1/2 after:w-3 after:-translate-x-1/2',
+         'hover:bg-border-strong focus-visible:bg-border-strong focus-visible:outline-none',
+-        'data-[separator=active]:bg-primary/50 data-[separator=focus]:bg-border-strong',
++        'data-[separator=active]:bg-foreground/40 data-[separator=focus]:bg-border-strong',
+         'aria-[orientation=horizontal]:h-px aria-[orientation=horizontal]:w-full',
+         'aria-[orientation=horizontal]:after:inset-x-0 aria-[orientation=horizontal]:after:top-1/2',
+         'aria-[orientation=horizontal]:after:h-3 aria-[orientation=horizontal]:after:w-full',
+diff --git a/packages/ui/src/components/primitives/segmented-control.tsx b/packages/ui/src/components/primitives/segmented-control.tsx
+index 8ce5b2a262..65dc7da4db 100644
+--- a/packages/ui/src/components/primitives/segmented-control.tsx
++++ b/packages/ui/src/components/primitives/segmented-control.tsx
+@@ -51,7 +51,7 @@ function SegmentedControl<TValue extends string = string>({
+       data-size={size}
+       aria-disabled={disabled}
+       className={cn(
+-        'inline-flex items-center rounded-full border border-border/60 bg-muted/60 p-0.5',
++        'inline-flex items-center rounded-[8px] border-0 bg-[#f5f5f5] p-1 dark:bg-[#2c2c2c]',
+         disabled && 'pointer-events-none opacity-50',
+         className
+       )}
+@@ -68,10 +68,12 @@ function SegmentedControl<TValue extends string = string>({
+             disabled={disabled || option.disabled}
+             onClick={() => handleSelect(option)}
+             className={cn(
+-              'inline-flex shrink-0 items-center justify-center rounded-full font-medium whitespace-nowrap text-muted-foreground transition-[background-color,color,box-shadow] outline-none',
+-              'hover:text-foreground focus-visible:bg-accent focus-visible:text-foreground disabled:pointer-events-none disabled:opacity-50',
+-              size === 'sm' ? 'h-7 gap-1.5 px-2.5 text-xs' : 'h-8 gap-2 px-3 text-sm',
+-              selected && 'bg-background text-foreground shadow-xs'
++              'inline-flex shrink-0 items-center justify-center rounded-[6px] font-medium whitespace-nowrap transition-[background-color,color,box-shadow] outline-none',
++              'focus-visible:ring-2 focus-visible:ring-black/10 focus-visible:ring-inset disabled:pointer-events-none disabled:opacity-50',
++              size === 'sm' ? 'h-[22px] gap-1.5 px-3 text-[13px]' : 'h-8 gap-2 px-3 text-sm',
++              selected
++                ? 'bg-white text-[#171717] shadow-[0_1px_2px_rgba(0,0,0,0.06)] dark:bg-[#3a3a3a] dark:text-[#f5f5f5]'
++                : 'text-[#6f6f6f] hover:text-[#171717] dark:text-[#9a9a9a] dark:hover:text-[#f5f5f5]'
+             )}>
+             {option.label}
+           </button>
+diff --git a/packages/ui/src/components/primitives/select.tsx b/packages/ui/src/components/primitives/select.tsx
+index 59b6186d96..78155fa325 100644
+--- a/packages/ui/src/components/primitives/select.tsx
++++ b/packages/ui/src/components/primitives/select.tsx
+@@ -28,14 +28,14 @@ function assignRef<T>(ref: React.Ref<T> | undefined, value: T | null) {
+ 
+ const selectTriggerVariants = cva(
+   cn(
+-    'inline-flex items-center justify-between rounded-md border-1 text-sm font-normal transition-colors outline-none',
++    'inline-flex items-center justify-between rounded-lg border-1 text-sm font-normal transition-colors outline-none',
+     'bg-transparent dark:bg-input/30',
+     'text-foreground'
+   ),
+   {
+     variants: {
+       state: {
+-        default: 'border-border focus-visible:border-primary',
++        default: 'border-border focus-visible:border-input',
+         error: 'border border-destructive!',
+         disabled: 'pointer-events-none cursor-not-allowed opacity-50'
+       },
+@@ -241,13 +241,13 @@ function SelectItem({ className, children, ...props }: React.ComponentProps<type
+     <SelectPrimitive.Item
+       data-slot="select-item"
+       className={cn(
+-        "relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[state=checked]:bg-primary/10 data-[state=checked]:text-primary [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
++        "relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[state=checked]:bg-[#f5f5f5] data-[state=checked]:text-[#171717] dark:data-[state=checked]:bg-[#2c2c2c] dark:data-[state=checked]:text-[#f5f5f5] [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
+         className
+       )}
+       {...props}>
+       <span className="absolute right-2 flex size-3.5 items-center justify-center">
+         <SelectPrimitive.ItemIndicator>
+-          <CheckIcon className="size-4 text-primary" />
++          <CheckIcon className="size-4 text-foreground" />
+         </SelectPrimitive.ItemIndicator>
+       </span>
+       <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+diff --git a/packages/ui/src/components/primitives/shadcn-io/dropzone/index.tsx b/packages/ui/src/components/primitives/shadcn-io/dropzone/index.tsx
+index 7544889a28..2b3ffa3cd9 100644
+--- a/packages/ui/src/components/primitives/shadcn-io/dropzone/index.tsx
++++ b/packages/ui/src/components/primitives/shadcn-io/dropzone/index.tsx
+@@ -86,7 +86,7 @@ export const Dropzone = ({
+         data-ui={dataUi}
+         className={cn(
+           'relative h-auto w-full flex-col overflow-hidden p-8',
+-          isDragActive && 'ring-1 ring-primary/40 outline-none',
++          isDragActive && 'ring-1 ring-foreground/25 outline-none',
+           className
+         )}
+         disabled={disabled}
+diff --git a/packages/ui/src/components/primitives/slider.tsx b/packages/ui/src/components/primitives/slider.tsx
+index d6bc7cf68a..965ec756bb 100644
+--- a/packages/ui/src/components/primitives/slider.tsx
++++ b/packages/ui/src/components/primitives/slider.tsx
+@@ -11,7 +11,7 @@ type SliderMark = {
+ 
+ const sliderTrackVariants = cva(
+   cn(
+-    'relative grow overflow-hidden rounded-full bg-primary/10',
++    'relative grow overflow-hidden rounded-full bg-foreground/10',
+     'data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full'
+   ),
+   {
+@@ -30,8 +30,8 @@ const sliderTrackVariants = cva(
+ 
+ const sliderThumbVariants = cva(
+   cn(
+-    'block shrink-0 rounded-full border border-background bg-primary shadow-xs transition-[color,box-shadow]',
+-    'ring-primary/30 hover:ring-4 focus-visible:ring-2 focus-visible:outline-hidden focus-visible:ring-inset',
++    'block shrink-0 rounded-full border border-background bg-neutral-900 shadow-none transition-[color,box-shadow] dark:bg-neutral-100',
++    'ring-foreground/20 hover:ring-4 focus-visible:ring-2 focus-visible:outline-hidden focus-visible:ring-inset',
+     'disabled:pointer-events-none disabled:opacity-50'
+   ),
+   {
+@@ -64,7 +64,7 @@ const sliderMarkLabelVariants = cva('absolute top-0 leading-none whitespace-nowr
+ const sliderValueLabelVariants = cva(
+   cn(
+     'pointer-events-none absolute left-1/2 -translate-x-1/2 -translate-y-full',
+-    'rounded bg-primary px-1.5 py-0.5 text-primary-foreground',
++    'rounded-[6px] bg-neutral-900 px-1.5 py-0.5 text-white dark:bg-neutral-100 dark:text-neutral-900',
+     'scale-0 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100'
+   ),
+   {
+@@ -137,7 +137,9 @@ function Slider({
+       <SliderPrimitive.Track data-slot="slider-track" className={sliderTrackVariants({ size })}>
+         <SliderPrimitive.Range
+           data-slot="slider-range"
+-          className={cn('absolute bg-primary data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full')}
++          className={cn(
++            'absolute bg-neutral-900 dark:bg-neutral-100 data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full'
++          )}
+         />
+       </SliderPrimitive.Track>
+       {localValues.map((val, index) => (
+diff --git a/packages/ui/src/components/primitives/switch.tsx b/packages/ui/src/components/primitives/switch.tsx
+index ae9cec2cba..3da17246b8 100644
+--- a/packages/ui/src/components/primitives/switch.tsx
++++ b/packages/ui/src/components/primitives/switch.tsx
+@@ -9,7 +9,7 @@ const switchRootVariants = cva(
+   [
+     'cs-switch cs-switch-root',
+     'group peer relative inline-flex shrink-0 cursor-pointer items-center rounded-full shadow-xs transition-all outline-none',
+-    'data-[state=checked]:bg-brand-600 data-[state=unchecked]:bg-gray-500/20',
++    'data-[state=checked]:bg-neutral-900 data-[state=unchecked]:bg-gray-500/20 dark:data-[state=checked]:bg-neutral-100',
+     'disabled:cursor-not-allowed disabled:opacity-40',
+     'focus-visible:[box-shadow:inset_0_0_0_1px_var(--ring)]'
+   ],
+@@ -23,7 +23,7 @@ const switchRootVariants = cva(
+       },
+       loading: {
+         false: null,
+-        true: ['bg-brand-300!']
++        true: ['bg-neutral-400! dark:bg-neutral-500!']
+       }
+     },
+     defaultVariants: {
+@@ -48,7 +48,7 @@ const switchThumbVariants = cva(
+       },
+       loading: {
+         false: null,
+-        true: ['bg-brand-300!']
++        true: ['bg-transparent!']
+       }
+     },
+     compoundVariants: [
+@@ -113,10 +113,14 @@ function Switch({ loading = false, size = 'md', className, classNames, ...props
+           viewBox="0 0 19 19"
+           fill="none"
+           xmlns="http://www.w3.org/2000/svg"
+-          className={cn(switchThumbSvgVariants({ loading }), classNames?.thumbSvg)}>
++          className={cn(
++            'text-white group-data-[state=checked]:text-white dark:group-data-[state=checked]:text-[#171717]',
++            switchThumbSvgVariants({ loading }),
++            classNames?.thumbSvg
++          )}>
+           <path
+             d="M9.5 0C14.7467 0 19 4.25329 19 9.5C19 14.7467 14.7467 19 9.5 19C4.25329 19 0 14.7467 0 9.5C0 4.25329 4.25329 0 9.5 0ZM9.5 6.33301C8.91711 6.33301 8.44445 6.8058 8.44434 7.38867V11.6113C8.44445 12.1942 8.91711 12.667 9.5 12.667C10.0829 12.667 10.5555 12.1942 10.5557 11.6113V7.38867C10.5555 6.8058 10.0829 6.33301 9.5 6.33301Z"
+-            fill="white"
++            fill="currentColor"
+           />
+         </svg>
+       </SwitchPrimitive.Thumb>
+diff --git a/packages/ui/src/components/primitives/tabs.tsx b/packages/ui/src/components/primitives/tabs.tsx
+index 702bbf54c2..1f3b6001a3 100644
+--- a/packages/ui/src/components/primitives/tabs.tsx
++++ b/packages/ui/src/components/primitives/tabs.tsx
+@@ -35,7 +35,7 @@ function Tabs({
+ const tabsListVariants = cva('inline-flex items-center justify-center', {
+   variants: {
+     variant: {
+-      default: 'h-9 w-fit rounded-lg bg-muted p-[3px] text-muted-foreground',
++      default: 'h-9 w-fit rounded-[8px] bg-[#f5f5f5] p-1 text-[#6f6f6f] dark:bg-[#2c2c2c] dark:text-[#9a9a9a]',
+       line: 'justify-start gap-4 border-b-0 bg-transparent p-0',
+       underline: 'justify-start gap-0 border-b-0 bg-transparent p-0',
+       workflow: 'justify-start gap-3 border-b-0 bg-transparent p-0'
+@@ -85,20 +85,20 @@ const tabsTriggerVariants = cva(
+     variants: {
+       variant: {
+         default: [
+-          'h-[calc(100%-1px)] flex-1 gap-1.5 rounded-md px-2 py-1',
++          'h-[calc(100%-1px)] flex-1 gap-1.5 rounded-[6px] px-2 py-1',
+           'border border-transparent text-foreground',
+           'dark:text-muted-foreground',
+-          'focus-visible:border-primary focus-visible:bg-accent',
+-          'data-[state=active]:bg-background data-[state=active]:shadow-sm',
+-          'dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 dark:data-[state=active]:text-foreground'
++          'focus-visible:border-transparent focus-visible:bg-accent',
++          'data-[state=active]:bg-white data-[state=active]:text-[#171717] data-[state=active]:shadow-[0_1px_2px_rgba(0,0,0,0.06)]',
++          'dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-[#3a3a3a] dark:data-[state=active]:text-[#f5f5f5]'
+         ],
+         line: [
+           'relative gap-2 px-2 py-2',
+           'font-normal text-muted-foreground hover:text-foreground',
+           'focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4',
+-          'data-[state=active]:text-primary',
++          'data-[state=active]:text-foreground',
+           'after:absolute after:rounded-full after:bg-transparent',
+-          'data-[state=active]:after:bg-primary'
++          'data-[state=active]:after:bg-foreground'
+         ],
+         underline: [
+           'relative gap-1.5 px-2.5 py-2',
+@@ -106,7 +106,7 @@ const tabsTriggerVariants = cva(
+           'focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4',
+           'data-[state=active]:text-foreground',
+           'after:absolute after:rounded-none after:bg-transparent',
+-          'data-[state=active]:after:bg-primary'
++          'data-[state=active]:after:bg-foreground'
+         ],
+         workflow: [
+           'relative gap-1.5 px-1 py-1.5 text-sm font-normal',
+@@ -122,7 +122,7 @@ const tabsTriggerVariants = cva(
+       },
+       orientation: {
+         horizontal: '',
+-        vertical: 'rounded-full'
++        vertical: 'rounded-[6px]'
+       }
+     },
+     compoundVariants: [
+@@ -135,8 +135,8 @@ const tabsTriggerVariants = cva(
+         variant: 'line',
+         orientation: 'vertical',
+         class: [
+-          'justify-center after:bottom-0 after:left-0 after:h-[4px] after:w-full after:bg-transparent data-[state=active]:after:bg-primary',
+-          'hover:bg-primary/10 hover:text-primary'
++          'justify-center after:bottom-0 after:left-0 after:h-[4px] after:w-full after:bg-transparent data-[state=active]:after:bg-foreground',
++          'hover:bg-[#f5f5f5] hover:text-[#171717] dark:hover:bg-[#2c2c2c] dark:hover:text-[#f5f5f5]'
+         ]
+       },
+       {
+diff --git a/packages/ui/src/components/primitives/textarea.tsx b/packages/ui/src/components/primitives/textarea.tsx
+index 1add22c356..9f2675c445 100644
+--- a/packages/ui/src/components/primitives/textarea.tsx
++++ b/packages/ui/src/components/primitives/textarea.tsx
+@@ -13,9 +13,9 @@ import { cn } from '@cherrystudio/ui/lib/utils'
+ const textareaVariants = cva(
+   cn(
+     'flex field-sizing-content min-h-16 w-full resize-y border bg-transparent px-4 py-3 text-lg transition-[color,box-shadow] outline-none',
+-    'rounded-md',
++    'rounded-lg',
+     'border-input text-foreground placeholder:text-muted-foreground',
+-    'focus-visible:border-primary',
++    'focus-visible:border-input',
+     'disabled:cursor-not-allowed disabled:opacity-50',
+     'md:text-sm'
+   ),
+diff --git a/packages/ui/src/components/primitives/toast.tsx b/packages/ui/src/components/primitives/toast.tsx
+index 2341c7e976..3195d05842 100644
+--- a/packages/ui/src/components/primitives/toast.tsx
++++ b/packages/ui/src/components/primitives/toast.tsx
+@@ -25,6 +25,8 @@ export interface ToastConfig {
+   onClose?: () => void
+   className?: string
+   style?: React.CSSProperties
++  /** `pill` is a compact inverse toast: title only, no icon, no close button. */
++  appearance?: 'card' | 'pill'
+ }
+ 
+ export interface LoadingToastConfig<T = unknown> extends ToastConfig {
+@@ -369,6 +371,21 @@ const ToastItem = ({ labels, store, toast }: { labels: ToastLabels; store: Toast
+   const icon = toast.icon ?? typeIconMap[toast.type]
+   const a11yProps = getToastA11yProps(toast.type)
+ 
++  if (toast.appearance === 'pill') {
++    return (
++      <div
++        {...a11yProps}
++        className={cn(
++          'pointer-events-auto max-w-[min(420px,calc(100vw-2rem))] truncate rounded-full bg-[#171717] px-4 py-2 text-[13px] leading-5 text-white shadow-lg [-webkit-app-region:no-drag]',
++          toast.className
++        )}
++        style={toast.style}
++        onClick={toast.onClick}>
++        {toast.title}
++      </div>
++    )
++  }
++
+   return (
+     <div
+       {...a11yProps}
+diff --git a/packages/ui/src/components/primitives/tree-select.tsx b/packages/ui/src/components/primitives/tree-select.tsx
+index 6fd6b31b9b..339b7e9440 100644
+--- a/packages/ui/src/components/primitives/tree-select.tsx
++++ b/packages/ui/src/components/primitives/tree-select.tsx
+@@ -11,14 +11,14 @@ import { Popover, PopoverContent, PopoverTrigger } from './popover'
+ 
+ const treeSelectTriggerVariants = cva(
+   cn(
+-    'inline-flex items-center justify-between rounded-md border-1 text-sm font-normal transition-colors outline-none',
++    'inline-flex items-center justify-between rounded-lg border-1 text-sm font-normal transition-colors outline-none',
+     'bg-input',
+     'text-foreground'
+   ),
+   {
+     variants: {
+       state: {
+-        default: 'border-border focus-visible:border-primary',
++        default: 'border-border focus-visible:border-input',
+         error: 'border border-destructive',
+         disabled: 'pointer-events-none cursor-not-allowed opacity-50'
+       },
+@@ -287,7 +287,7 @@ export function TreeSelect({
+       <>
+         {option.icon && <span className="shrink-0">{option.icon}</span>}
+         <span className="min-w-0 flex-1 truncate">{getOptionLabel(option)}</span>
+-        {renderState.selected && <Check className="size-4 shrink-0 text-primary" />}
++        {renderState.selected && <Check className="size-4 shrink-0 text-foreground" />}
+       </>
+     )
+   }
+@@ -323,7 +323,9 @@ export function TreeSelect({
+               onClick={() => handleSelect(option)}
+               className={cn(
+                 'flex min-w-0 flex-1 items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-colors outline-none',
+-                selected ? 'bg-primary/10 text-primary' : 'text-foreground hover:bg-accent/60',
++                selected
++                  ? 'bg-[#f5f5f5] text-[#171717] dark:bg-[#2c2c2c] dark:text-[#f5f5f5]'
++                  : 'text-foreground hover:bg-accent/60',
+                 option.disabled && 'pointer-events-none opacity-50',
+                 option.selectable === false && 'text-muted-foreground'
+               )}>
+diff --git a/packages/ui/src/styles/tokens/colors/providers.css b/packages/ui/src/styles/tokens/colors/providers.css
+index 961ba4f498..cdb79d8c71 100644
+--- a/packages/ui/src/styles/tokens/colors/providers.css
++++ b/packages/ui/src/styles/tokens/colors/providers.css
+@@ -11,8 +11,10 @@
+  */
+ 
+ :root {
+-  /* Brand Colors */
+-  --cs-primary: var(--cs-brand-500);
++  /* Brand Colors. A stamped tenant brand replaces the stock green in every theme.
++   * `initial` is guaranteed-invalid, so an unstamped build still uses the stock primary. */
++  --a3s-tenant-brand: initial;
++  --cs-primary: var(--a3s-tenant-brand, var(--cs-brand-500));
+   --cs-destructive: var(--cs-red-500);
+   --cs-destructive-hover: var(--cs-red-400);
+   --cs-success: var(--cs-green-500);
+@@ -37,13 +39,13 @@
+   --cs-border-strong: oklch(0 0 0 / 0.2);
+   --cs-border-selected: oklch(0 0 0 / 0.3);
+ 
+-  /* Ring (Focus) */
+-  --cs-ring: color-mix(in srgb, var(--cs-primary) 40%, transparent);
++  /* Ring (Focus) — neutral hairline, same family as field borders. */
++  --cs-ring: color-mix(in srgb, #171717 16%, transparent);
+ 
+   /* UI Element Colors */
+-  --cs-secondary: oklch(0 0 0 / 0.05); /* Secondary Button Background */
+-  --cs-secondary-hover: oklch(0 0 0 / 0.1);
+-  --cs-secondary-active: oklch(0 0 0 / 0.15);
++  --cs-secondary: #f5f5f5; /* Secondary Button Background */
++  --cs-secondary-hover: #ececec;
++  --cs-secondary-active: #e4e4e4;
+   --cs-muted: oklch(0 0 0 / 0.05); /* Muted/Subtle Background */
+   --cs-accent: oklch(0 0 0 / 0.05); /* Accent Background */
+   --cs-ghost-active: oklch(0 0 0 / 0.1); /* Ghost Button Active */
+@@ -62,8 +64,8 @@
+   --cs-primary-foreground: oklch(0.985 0 0);
+   --cs-destructive-foreground: var(--cs-white);
+ 
+-  /* Input border */
+-  --cs-input: oklch(0.922 0 0);
++  /* Input border — capabilities search hairline */
++  --cs-input: #ebebeb;
+ 
+   /* Sidebar sub-palette */
+   --cs-sidebar-foreground: oklch(0.145 0 0);
+@@ -117,8 +119,8 @@
+   --cs-border-strong: oklch(1 0 0 / 0.2);
+   --cs-border-selected: oklch(1 0 0 / 0.3);
+ 
+-  /* Ring (Focus) - 保持不变 */
+-  --cs-ring: oklch(0.76 0.204 131 / 0.4);
++  /* Ring (Focus) — neutral hairline. */
++  --cs-ring: color-mix(in srgb, #f5f5f5 28%, transparent);
+ 
+   /* UI Element Colors - Dark Mode */
+   --cs-secondary: oklch(1 0 0 / 0.1); /* Secondary Button Background */
+@@ -142,13 +144,13 @@
+   --cs-primary-foreground: oklch(0.205 0 0);
+   --cs-destructive-foreground: var(--cs-white);
+ 
+-  /* Input border */
+-  --cs-input: oklch(0.269 0 0);
++  /* Input border — capabilities search hairline */
++  --cs-input: oklch(1 0 0 / 0.15);
+ 
+   /* Sidebar sub-palette */
+   --cs-sidebar-foreground: oklch(0.985 0 0);
+-  --cs-sidebar-primary: oklch(0.488 0.243 264.376);
+-  --cs-sidebar-primary-foreground: oklch(0.985 0 0);
++  --cs-sidebar-primary: oklch(0.985 0 0);
++  --cs-sidebar-primary-foreground: oklch(0.205 0 0);
+   --cs-sidebar-accent-foreground: oklch(0.985 0 0);
+   --cs-sidebar-border: oklch(0.269 0 0);
+   --cs-sidebar-ring: oklch(0.439 0 0);

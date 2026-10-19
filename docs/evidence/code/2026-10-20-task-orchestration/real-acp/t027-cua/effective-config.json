@@ -1,0 +1,14 @@
+{
+  "observed_at_utc": "2026-10-19T20:17:40.623368+00:00",
+  "config_path": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/agent-plane/runtime/01a155cf-02f1-7478-8105-070a97a1507c.acl",
+  "config_sha256": "0c91f9b2dadd59bc32c2f4ccdaa6c7f2537025e8e9927ab87a36954b86c9f37e",
+  "non_secret_generated_declarations": [
+    "default_model = \"deepseek/deepseek-flash\"",
+    "base_url = \"https://api.deepseek.com\"",
+    "tool_presentation { mode = \"adaptive\" }",
+    "workspace_retrieval { enabled = false }"
+  ],
+  "credential_lines_copied": false,
+  "actual_workspace_visible_in_cua": "/Users/roylin/code/tasks/T01-t027-cua-01",
+  "native_session_id": "01a155cf-02f1-7478-8105-070a97a1507c"
+}

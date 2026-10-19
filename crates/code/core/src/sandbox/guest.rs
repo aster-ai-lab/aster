@@ -395,6 +395,10 @@ impl Drop for GuestLifetimeSandbox {
 
 #[async_trait]
 impl BashSandbox for GuestLifetimeSandbox {
+    fn execution_target(&self) -> super::ShellExecutionTarget {
+        super::ShellExecutionTarget::LinuxGuestSh
+    }
+
     fn validate_execution_available(&self) -> anyhow::Result<()> {
         self.prepare()
     }

@@ -1,0 +1,18 @@
+{
+  "target/debug/aster-dream": {
+    "mtime_ns": 1792421945374567093,
+    "sha256": "326cee6cd041380a222d002f237bef7fe0cbc4c2c72bc7cbfffb02ed62d02fa6"
+  },
+  "target/debug/a3s-code-acp": {
+    "mtime_ns": 1792421932647830285,
+    "sha256": "128588d3b0aee9e3700c497500a3bfb5b1ca75aee228c0f332184f8a04e49ad8"
+  },
+  "crates/effect/src/compose.rs": {
+    "mtime_ns": 1792421812708213397,
+    "sha256": "718376047e1aaa2a3c36da9186c0a81aa840b87b185a46c323b45c15236a965b"
+  },
+  "apps/work/src-tauri/src/agent_plane/project_files.rs": {
+    "mtime_ns": 1792421646095252593,
+    "sha256": "8aba2ef82947c69f21523d0f65b1ee659e92202342800b5647ea21df4bbc7300"
+  }
+}

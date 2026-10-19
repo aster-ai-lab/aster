@@ -261,12 +261,20 @@ impl LanguageRuntime {
         P: Serialize,
         R: DeserializeOwned,
     {
+        let deadline = tokio::time::Instant::now() + self.timeout;
         let params = serde_json::to_value(params)
             .map_err(|source| LanguageRuntimeError::Serde { operation, source })?;
+        let timeout = if let Some(status) = &self.readiness {
+            super::readiness::wait(status, &self.process, &cancellation, deadline, self.timeout)
+                .await?;
+            deadline.saturating_duration_since(tokio::time::Instant::now())
+        } else {
+            self.timeout
+        };
         let response = self
             .process
             .client()
-            .request(method, Some(params), cancellation, self.timeout)
+            .request(method, Some(params), cancellation, timeout)
             .await
             .map_err(|source| LanguageRuntimeError::Client { operation, source })?;
         serde_json::from_value(response)

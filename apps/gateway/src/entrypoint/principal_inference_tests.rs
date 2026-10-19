@@ -308,35 +308,15 @@ async fn signed_in_users_reach_providers_on_the_native_wire() {
         .send()
         .await
         .unwrap();
-    assert_eq!(response.status(), 200);
-    let (headers, body) = split_request(
-        tokio::time::timeout(Duration::from_secs(2), anthropic_request)
-            .await
-            .unwrap()
-            .unwrap(),
-    );
-    assert!(headers.contains("x-api-key: sk-upstream-anthropic"));
-    assert!(headers.contains("anthropic-version: 2023-06-01"));
-    assert!(!headers.contains("authorization:"));
-    assert!(!headers.contains(&PERSONAL_KEY.to_ascii_lowercase()));
-    assert_eq!(body["model"], "claude-sonnet-4-5");
-    assert!(body.get("stream_options").is_none());
-
-    let response = client
-        .post(format!("http://{address}/v1/messages"))
-        .header("x-api-key", PERSONAL_KEY)
-        .json(&serde_json::json!({"model": "qwen", "max_tokens": 16, "messages": []}))
-        .send()
-        .await
-        .unwrap();
-    assert_eq!(
-        response.status(),
-        503,
-        "qwen has no Anthropic-speaking target"
-    );
+    assert_eq!(response.status(), 404);
     let body: serde_json::Value = response.json().await.unwrap();
-    assert_eq!(body["type"], "error");
-    assert_eq!(body["error"]["type"], "overloaded_error");
+    assert_eq!(body["error"], "standard_not_admitted");
+    assert!(
+        tokio::time::timeout(Duration::from_millis(200), anthropic_request)
+            .await
+            .is_err(),
+        "a reserved Anthropic path must not reach the upstream"
+    );
 
     stop_test_entrypoint(shutdown_tx, handle).await;
     std::env::remove_var(&openai_env);

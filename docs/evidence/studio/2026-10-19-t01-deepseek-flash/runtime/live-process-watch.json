@@ -1,0 +1,25 @@
+{
+  "schema": "aster.t01.live-process-watch.v1",
+  "start": "2026-10-19T15:07:26.710750+00:00",
+  "windowSeconds": 45,
+  "observations": [
+    {
+      "pid": 72473,
+      "ppid": 1,
+      "comm": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/AsterDream.app/Contents/MacOS/AsterDream",
+      "procPidPath": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/AsterDream.app/Contents/MacOS/AsterDream",
+      "observedAt": "2026-10-19T15:07:26.739600+00:00",
+      "sha256": "c3e278a268048f5fecb5351ccaa9ee4811314c0b80e6c6ac07bcc0ef7544f668"
+    },
+    {
+      "pid": 73382,
+      "ppid": 72473,
+      "comm": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/AsterDream.app/Contents/MacOS/a3s-code-acp",
+      "procPidPath": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/AsterDream.app/Contents/MacOS/a3s-code-acp",
+      "observedAt": "2026-10-19T15:07:26.810188+00:00",
+      "sha256": "128588d3b0aee9e3700c497500a3bfb5b1ca75aee228c0f332184f8a04e49ad8"
+    }
+  ],
+  "capturePolicy": "Only ps PID/PPID/comm and libproc proc_pidpath plus executable hash. No arguments, environment or credentials read.",
+  "unrelatedProcessIdentitiesExcluded": true
+}

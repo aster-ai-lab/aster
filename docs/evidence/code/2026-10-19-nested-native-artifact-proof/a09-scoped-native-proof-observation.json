@@ -1,0 +1,141 @@
+{
+  "sessionId": "01a151b6-9b7c-712c-9fad-b16a90e27a9e",
+  "anchorMessageId": "01a151b6-9c35-7277-a89c-09266011f65b",
+  "runtimeSessionId": "10ccc202-9f9f-4257-8b2a-061f6296c654",
+  "assistantStatus": "error",
+  "sourceMessagesSha256": "422ac8312c4789527e28bec2f34f2316df3f0aa48b7d751a2ae6a95643009b1c",
+  "sourceFactLogSha256": "51c6ba3741a5a5b1fe2a86dd33a6535d23d392ed98483f3132f67caa6d895c3a",
+  "projectionPolicy": "Only exact requested assistant identity, tool names/outcomes, effect paths/file identities, native validation metadata and verification reports. No tool args, source bodies, prompts, provider configuration or credentials.",
+  "mutatingReceipts": [
+    {
+      "sequence": 31,
+      "tool": "office_file",
+      "outcome": "succeeded",
+      "exitCode": 0,
+      "effects": {
+        "changes": [
+          {
+            "after": {
+              "content_digest": "sha256:69c65702f9cd9feea14d4d397b2eb7b40fb2c1be821eb01aa9064cbaf5528b58",
+              "kind": "file",
+              "mode": 33188
+            },
+            "path": "_font_probe.png"
+          }
+        ],
+        "completeness": "complete"
+      },
+      "verificationMetadata": {
+        "kind": "png",
+        "bytes": 9394,
+        "validated": true,
+        "artifact_relative_path": "_font_probe.png",
+        "artifact_content_digest": "69c65702f9cd9feea14d4d397b2eb7b40fb2c1be821eb01aa9064cbaf5528b58",
+        "verification_report": {
+          "checks": [
+            {
+              "description": "Native png structure and persisted bytes were validated",
+              "id": "artifact:_font_probe.png",
+              "kind": "native_artifact",
+              "required": true,
+              "status": "passed"
+            }
+          ],
+          "effect_digest": "bf9921b69ebcbee6f1af4c6b07796454d3fb0da01c9064d12264142685ff990f",
+          "schema": "a3s.verification_report.v1",
+          "status": "passed",
+          "subject": "native-artifacts"
+        }
+      },
+      "nestedCalls": []
+    },
+    {
+      "sequence": 46,
+      "tool": "program",
+      "outcome": "succeeded",
+      "exitCode": 0,
+      "effects": {
+        "changes": [
+          {
+            "after": {
+              "content_digest": "sha256:317fd72590073279fc8055a23467acdb8616469d1d19831c4fa6e9747daf10a6",
+              "kind": "file",
+              "mode": 33188
+            },
+            "path": "_probe2.png"
+          }
+        ],
+        "completeness": "complete"
+      },
+      "verificationMetadata": {},
+      "nestedCalls": [
+        {
+          "tool": "office_file",
+          "success": true,
+          "exitCode": 0,
+          "verificationMetadata": {
+            "kind": "png",
+            "bytes": 1087,
+            "validated": true,
+            "artifact_relative_path": "_probe2.png",
+            "artifact_content_digest": "317fd72590073279fc8055a23467acdb8616469d1d19831c4fa6e9747daf10a6"
+          }
+        }
+      ]
+    },
+    {
+      "sequence": 49,
+      "tool": "program",
+      "outcome": "succeeded",
+      "exitCode": 0,
+      "effects": {
+        "changes": [
+          {
+            "after": {
+              "content_digest": "sha256:b4e53f155c8ab17ba8927d44057b767b013407bcb4a210db22e66f0827215045",
+              "kind": "file",
+              "mode": 33188
+            },
+            "path": "TC08_区域销售对比图.png"
+          },
+          {
+            "after": {
+              "content_digest": "sha256:17bcd67227c5fa489d3b8607ff6eabc7c3c94332fe5f778853474bf274679e73",
+              "kind": "file",
+              "mode": 33188
+            },
+            "path": "TC08_月度销售趋势图.png"
+          }
+        ],
+        "completeness": "complete"
+      },
+      "verificationMetadata": {},
+      "nestedCalls": [
+        {
+          "tool": "office_file",
+          "success": true,
+          "exitCode": 0,
+          "verificationMetadata": {
+            "kind": "png",
+            "bytes": 38952,
+            "validated": true,
+            "artifact_relative_path": "TC08_月度销售趋势图.png",
+            "artifact_content_digest": "17bcd67227c5fa489d3b8607ff6eabc7c3c94332fe5f778853474bf274679e73"
+          }
+        },
+        {
+          "tool": "office_file",
+          "success": true,
+          "exitCode": 0,
+          "verificationMetadata": {
+            "kind": "png",
+            "bytes": 26794,
+            "validated": true,
+            "artifact_relative_path": "TC08_区域销售对比图.png",
+            "artifact_content_digest": "b4e53f155c8ab17ba8927d44057b767b013407bcb4a210db22e66f0827215045"
+          }
+        }
+      ]
+    }
+  ]
+}

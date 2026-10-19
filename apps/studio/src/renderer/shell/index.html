@@ -1,0 +1,1351 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <link rel="icon" href="/favicon.ico" />
+    <title></title>
+    <style>
+      html {
+        visibility: hidden;
+      }
+      html[data-shell-ready] {
+        visibility: visible;
+      }
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background-color: #f4f5f7;
+        color: #171717;
+        color-scheme: light;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      }
+      body {
+        background-image:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.58)), url('/login-bg.jpg');
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+      }
+      #drag {
+        display: none;
+      }
+      html[data-overlay-titlebar='true'] #drag {
+        display: block;
+        position: fixed;
+        z-index: 2;
+        top: 0;
+        left: var(--a3s-traffic-light-inset, 0px);
+        right: 0;
+        height: var(--a3s-titlebar-height, 56px);
+        user-select: none;
+        -webkit-user-select: none;
+        cursor: default;
+      }
+      #login {
+        min-height: 100%;
+        display: grid;
+        align-content: center;
+        justify-items: center;
+        gap: 28px;
+        box-sizing: border-box;
+        padding: 32px 20px 48px;
+      }
+      html[data-overlay-titlebar='true'] #login {
+        padding-top: var(--a3s-titlebar-height, 56px);
+      }
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 11px;
+        line-height: 1;
+      }
+      #product {
+        margin: 0;
+        min-height: 40px;
+        font-size: 36px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        line-height: 1.2;
+        color: #1a1a1a;
+      }
+      #product svg {
+        display: block;
+        height: 40px;
+        width: auto;
+      }
+      .card {
+        display: grid;
+        grid-template-columns: minmax(240px, 0.78fr) minmax(0, 1.25fr);
+        grid-template-areas: 'wechat form';
+        width: min(100%, 736px);
+        border: 1px solid #ececec;
+        border-radius: 14px;
+        background: #ffffff;
+        overflow: hidden;
+        box-shadow: 0 16px 40px rgba(30, 40, 60, 0.08);
+      }
+      #login-form {
+        grid-area: form;
+        display: grid;
+        align-content: start;
+        gap: 0.85rem;
+        min-width: 0;
+        margin: 0;
+        padding: 2.25rem 2.5rem 2rem;
+      }
+      #sms-fields,
+      #password-fields {
+        display: grid;
+        gap: 0.85rem;
+      }
+      .field {
+        display: grid;
+        gap: 0.3rem;
+        min-width: 0;
+      }
+      .wechat {
+        grid-area: wechat;
+        display: grid;
+        gap: 11px;
+        align-content: start;
+        justify-items: center;
+        padding: 36px 32px 32px;
+        border-right: 1px solid #ececec;
+        text-align: center;
+      }
+      .wechat h2 {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin: 0;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 36px;
+        color: #171717;
+      }
+      .qr {
+        position: relative;
+        display: grid;
+        place-items: center;
+        width: 172px;
+        height: 172px;
+        padding: 7px;
+        border: 1px solid #ececec;
+        border-radius: 12px;
+        background: #ffffff;
+      }
+      .qr img {
+        width: 152px;
+        height: 152px;
+        border-radius: 0.25rem;
+      }
+      .wx-badge {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        display: grid;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 0.35rem;
+        background: #ffffff;
+        box-shadow: 0 0 0 3px #ffffff;
+        transform: translate(-50%, -50%);
+      }
+      .wechat p {
+        margin: 0;
+        max-width: 200px;
+        font-size: 12px;
+        line-height: 20px;
+        color: #8a8a8a;
+      }
+      .tabs {
+        position: relative;
+        width: fit-content;
+      }
+      [role='tablist'] {
+        display: flex;
+        gap: 0;
+        width: fit-content;
+        margin: 0;
+        padding: 4px;
+        border-radius: 0.5rem;
+        background: #f5f5f5;
+      }
+      [role='tab'] {
+        height: 22px;
+        padding: 0 12px;
+        border: 0;
+        border-radius: 6px;
+        background: transparent;
+        color: #6f6f6f;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 400;
+        cursor: pointer;
+      }
+      [role='tab']:hover {
+        color: #171717;
+      }
+      [role='tab'][aria-selected='true'] {
+        background: #ffffff;
+        color: #171717;
+        font-weight: 500;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+      }
+      #tab-indicator {
+        display: none;
+      }
+      .combo {
+        display: flex;
+        align-items: stretch;
+        min-height: 36px;
+        border-radius: 0.5rem;
+        background: #f5f5f5;
+      }
+      .combo:hover {
+        background: #ececec;
+      }
+      .combo:focus-within {
+        background: #f5f5f5;
+        box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.1);
+      }
+      .prefix,
+      #send-code,
+      #eye {
+        display: inline-flex;
+        align-items: center;
+        border: 0;
+        background: transparent;
+        color: #171717;
+        font: inherit;
+      }
+      .prefix {
+        padding: 0 12px;
+        font-size: 13px;
+        border-right: 1px solid #ececec;
+      }
+      .combo-input {
+        flex: 1;
+        min-width: 0;
+      }
+      .combo input {
+        box-sizing: border-box;
+        width: 100%;
+        height: 36px;
+        padding: 0 0.75rem;
+        border: 0;
+        background: transparent;
+        color: #171717;
+        caret-color: #171717;
+        font: inherit;
+        font-size: 13px;
+        line-height: 20px;
+        outline: none;
+        cursor: text;
+      }
+      input::placeholder {
+        color: #8a8a8a;
+      }
+      #send-code,
+      #provider-add-model {
+        padding: 0 12px;
+        border-left: 1px solid #ececec;
+        color: #171717;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      #send-code:disabled,
+      #provider-add-model:disabled {
+        color: #8a8a8a;
+        cursor: not-allowed;
+      }
+      #eye {
+        justify-content: center;
+        width: 36px;
+        border-left: 1px solid #ececec;
+        color: #6f6f6f;
+        cursor: pointer;
+      }
+      #eye:hover {
+        color: #171717;
+      }
+      .field-clear {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        flex: none;
+        margin-right: 2px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: #a3a3a3;
+        cursor: pointer;
+      }
+      .field-clear:hover,
+      .field-clear:focus-visible {
+        color: #525252;
+      }
+      .field-clear svg {
+        display: block;
+      }
+      #submit {
+        height: 36px;
+        margin-top: 0.15rem;
+        border: 0;
+        border-radius: 0.5rem;
+        background: #171717;
+        color: #ffffff;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+      #agree {
+        min-height: 39px;
+      }
+      #agree label {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        font-size: 12px;
+        line-height: 20px;
+        color: #8a8a8a;
+        cursor: pointer;
+      }
+      #agree input {
+        flex: none;
+        width: 15px;
+        height: 15px;
+        margin-top: 2px;
+        accent-color: #171717;
+      }
+      .lead,
+      .note {
+        display: block;
+      }
+      .note {
+        margin-top: 2px;
+        color: #8a8a8a;
+      }
+      .field-error {
+        margin: 0;
+        font-size: 12px;
+        line-height: 20px;
+        color: #b42318;
+      }
+      #submit:disabled {
+        cursor: not-allowed;
+        opacity: 0.4;
+      }
+      #signed-in {
+        display: grid;
+        align-content: center;
+        gap: 0.35rem;
+        min-height: 8rem;
+      }
+      #signed-in-name {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 600;
+      }
+      .card:has(#signed-in:not([hidden])) {
+        grid-template-columns: 1fr;
+        grid-template-areas: 'form';
+      }
+      #toasts {
+        position: fixed;
+        z-index: 20;
+        top: 0;
+        right: 0;
+        box-sizing: border-box;
+        width: min(100%, 24rem);
+        padding: 1rem;
+        pointer-events: none;
+      }
+      html[data-overlay-titlebar='true'] #toasts {
+        padding-top: 36px;
+      }
+      .toast {
+        display: flex;
+        gap: 0.65rem;
+        align-items: flex-start;
+        padding: 12px;
+        border: 1px solid #ececec;
+        border-radius: 12px;
+        background: #ffffff;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+        pointer-events: auto;
+      }
+      .toast-mark {
+        flex: none;
+        margin-top: 1px;
+        color: #3d6b8c;
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1.4;
+      }
+      .toast p {
+        flex: 1;
+        margin: 0;
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 20px;
+        color: #171717;
+      }
+      .toast button {
+        flex: none;
+        width: 24px;
+        height: 24px;
+        margin: -2px 0 0;
+        border: 0;
+        border-radius: 6px;
+        background: transparent;
+        color: #8a8a8a;
+        font: inherit;
+        font-size: 16px;
+        line-height: 1;
+        cursor: pointer;
+      }
+      .toast button:hover {
+        background: #f7f7f7;
+        color: #171717;
+      }
+      #provider-setup,
+      #model-setup {
+        min-height: 100%;
+        box-sizing: border-box;
+        display: grid;
+        align-content: center;
+        justify-items: center;
+        padding: 32px 20px 48px;
+      }
+      html[data-overlay-titlebar='true'] #provider-setup,
+      html[data-overlay-titlebar='true'] #model-setup {
+        padding-top: var(--a3s-titlebar-height, 56px);
+      }
+      .setup {
+        display: flex;
+        flex-direction: column;
+        width: min(100%, 960px);
+        height: min(720px, calc(100vh - 96px));
+        border: 1px solid #ececec;
+        border-radius: 14px;
+        background: #ffffff;
+        overflow: hidden;
+        box-shadow: 0 8px 22px rgba(20, 40, 80, 0.04);
+      }
+      .setup-narrow {
+        width: min(100%, 440px);
+        height: auto;
+      }
+      .setup-bar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: none;
+        min-height: 48px;
+        padding: 0 16px;
+        border-bottom: 1px solid #efefef;
+      }
+      .setup-bar h2 {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 500;
+        color: #171717;
+      }
+      .setup-body {
+        display: grid;
+        grid-template-columns: 280px minmax(0, 1fr);
+        flex: 1;
+        min-height: 0;
+      }
+      .provider-pane,
+      .provider-detail,
+      .model-body {
+        min-width: 0;
+        min-height: 0;
+      }
+      .provider-pane {
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+        padding: 12px;
+        border-right: 1px solid #efefef;
+      }
+      #provider-items,
+      .provider-detail,
+      #provider-models {
+        overflow: auto;
+      }
+      #provider-items {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .provider-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        width: 100%;
+        min-height: 36px;
+        padding: 0 10px;
+        border: 0;
+        border-radius: 0.5rem;
+        background: transparent;
+        color: #3f3f3f;
+        font: inherit;
+        font-size: 13px;
+        text-align: left;
+        cursor: pointer;
+      }
+      .provider-item:hover {
+        background: #f7f7f7;
+        color: #171717;
+      }
+      .provider-item[aria-selected='true'] {
+        background: #f2f3f5;
+        color: #171717;
+        font-weight: 500;
+      }
+      .provider-on {
+        flex: none;
+        color: #8a8a8a;
+        font-size: 12px;
+        font-weight: 400;
+      }
+      .provider-detail,
+      .model-body {
+        display: grid;
+        align-content: start;
+        gap: 0.85rem;
+        padding: 1.5rem;
+      }
+      .provider-detail h2,
+      .model-body h2 {
+        margin: 0;
+        font-size: 18px;
+      }
+      .text-input {
+        box-sizing: border-box;
+        width: 100%;
+        height: 36px;
+        padding: 0 0.75rem;
+        border: 0;
+        border-radius: 0.5rem;
+        background: #f5f5f5;
+        color: #171717;
+        caret-color: #171717;
+        font: inherit;
+        font-size: 13px;
+        outline: none;
+        cursor: text;
+      }
+      .text-input:focus {
+        box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.1);
+      }
+      .setup .field {
+        display: grid;
+        gap: 0.3rem;
+        color: #8a8a8a;
+        font-size: 12px;
+      }
+      .picker {
+        position: relative;
+      }
+      .picker-trigger {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-sizing: border-box;
+        width: 100%;
+        height: 36px;
+        padding: 0 0.75rem;
+        border: 0;
+        border-radius: 0.5rem;
+        background: #f5f5f5;
+        color: #171717;
+        font: inherit;
+        font-size: 13px;
+        text-align: left;
+        outline: none;
+        cursor: pointer;
+        transition:
+          background-color 150ms ease,
+          box-shadow 150ms ease;
+      }
+      .picker-trigger:hover {
+        background: #efefef;
+      }
+      .picker-trigger:focus-visible,
+      .picker-trigger[aria-expanded='true'] {
+        box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.1);
+      }
+      .picker-text {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .picker-text:empty::before {
+        content: attr(data-placeholder);
+        color: #8a8a8a;
+      }
+      .picker-chevron {
+        flex: none;
+        color: #8a8a8a;
+        transition: transform 150ms ease;
+      }
+      .picker-trigger[aria-expanded='true'] .picker-chevron {
+        transform: rotate(180deg);
+      }
+      .picker-panel {
+        position: absolute;
+        z-index: 20;
+        top: calc(100% + 6px);
+        left: 0;
+        right: 0;
+        display: grid;
+        gap: 2px;
+        box-sizing: border-box;
+        max-height: 280px;
+        padding: 6px;
+        overflow-y: auto;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 12px;
+        background: #ffffff;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+        transform-origin: top;
+        animation: picker-in 150ms ease-out;
+      }
+      .picker-panel[hidden] {
+        display: none;
+      }
+      .picker-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 32px;
+        padding: 0 8px;
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+        color: #171717;
+        font: inherit;
+        font-size: 13px;
+        text-align: left;
+        cursor: pointer;
+        outline: none;
+      }
+      .picker-option:hover,
+      .picker-option:focus-visible {
+        background: #f5f5f5;
+      }
+      .picker-option[aria-selected='true'] {
+        font-weight: 500;
+      }
+      .picker-option span {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .picker-check {
+        flex: none;
+        visibility: hidden;
+      }
+      .picker-option[aria-selected='true'] .picker-check {
+        visibility: visible;
+      }
+      @keyframes picker-in {
+        from {
+          opacity: 0;
+          transform: scale(0.97);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .picker-panel,
+        .picker-chevron,
+        .picker-trigger {
+          animation: none;
+          transition: none;
+        }
+      }
+      .setup label {
+        display: grid;
+        gap: 0.3rem;
+        color: #8a8a8a;
+        font-size: 12px;
+      }
+      .setup .enable,
+      .setup .model-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #171717;
+        font-size: 14px;
+      }
+      .enable input,
+      .model-row input {
+        width: 15px;
+        height: 15px;
+        accent-color: #171717;
+      }
+      .setup-actions,
+      .setup-foot {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .setup-foot {
+        flex: none;
+        justify-content: flex-end;
+        min-height: 56px;
+        padding: 0 16px;
+        border-top: 1px solid #efefef;
+      }
+      #provider-hint {
+        margin: 0 auto 0 0;
+        color: #8a8a8a;
+        font-size: 12px;
+      }
+      .primary,
+      .ghost {
+        height: 36px;
+        padding: 0 14px;
+        border-radius: 0.5rem;
+        font: inherit;
+        font-size: 13px;
+        cursor: pointer;
+      }
+      .primary {
+        border: 0;
+        background: #171717;
+        color: #ffffff;
+      }
+      .ghost {
+        border: 1px solid #e5e5e5;
+        background: #ffffff;
+        color: #171717;
+      }
+      .ghost:hover {
+        background: #fafafa;
+      }
+      #provider-next[aria-disabled='true'] {
+        cursor: not-allowed;
+        opacity: 0.4;
+      }
+      .captcha-dialog {
+        position: fixed;
+        z-index: 30;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: rgba(0, 0, 0, 0.2);
+      }
+      .captcha-card {
+        display: grid;
+        gap: 0.75rem;
+        width: min(26rem, 100%);
+        padding: 16px;
+        border-radius: 12px;
+        background: #ffffff;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+      }
+      .captcha-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+      }
+      .captcha-head h2 {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 500;
+        color: #171717;
+      }
+      .captcha-close {
+        display: grid;
+        place-items: center;
+        width: 2rem;
+        height: 2rem;
+        border: 0;
+        border-radius: 0.5rem;
+        background: transparent;
+        color: #3f3f3f;
+        font: inherit;
+        font-size: 16px;
+        line-height: 1;
+        cursor: pointer;
+      }
+      .captcha-close:hover {
+        background: #f7f7f7;
+        color: #171717;
+      }
+      .captcha {
+        display: grid;
+        gap: 0.75rem;
+      }
+      .captcha-stage {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        border: 1px solid #ececec;
+        border-radius: 12px;
+        background: #f5f5f5;
+        aspect-ratio: 600 / 340;
+        user-select: none;
+      }
+      .captcha-stage .bg,
+      .captcha-piece {
+        position: absolute;
+        user-select: none;
+        -webkit-user-drag: none;
+        pointer-events: none;
+      }
+      .captcha-stage .bg {
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: fill;
+      }
+      .captcha-piece {
+        object-fit: fill;
+        filter: drop-shadow(0 1px 2px rgb(0 0 0 / 50%));
+      }
+      .captcha-piece.is-fail {
+        animation: captcha-shake 0.35s;
+      }
+      @keyframes captcha-shake {
+        20% {
+          transform: translateX(-4px);
+        }
+        40% {
+          transform: translateX(4px);
+        }
+        60% {
+          transform: translateX(-3px);
+        }
+        80% {
+          transform: translateX(2px);
+        }
+      }
+      .captcha-veil {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        color: #171717;
+        font-size: 13px;
+        background: rgb(255 255 255 / 86%);
+      }
+      .captcha-veil.is-success {
+        background: rgb(22 128 61 / 88%);
+        color: #ffffff;
+        font-weight: 650;
+      }
+      .captcha-spinner {
+        width: 1.25rem;
+        height: 1.25rem;
+        border: 2px solid #e5e7eb;
+        border-top-color: #171717;
+        border-radius: 50%;
+        animation: captcha-spin 0.7s linear infinite;
+      }
+      .captcha-veil.is-success .captcha-spinner {
+        display: none;
+      }
+      @keyframes captcha-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .captcha-track {
+        position: relative;
+        height: 36px;
+        border-radius: 0.5rem;
+        background: #f5f5f5;
+        touch-action: none;
+      }
+      .captcha-track.is-busy .captcha-handle {
+        pointer-events: none;
+        opacity: 0.45;
+      }
+      .captcha-track.is-success {
+        background: #e5f2ea;
+      }
+      .captcha-hint {
+        position: absolute;
+        inset: 0 0.75rem 0 4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #8a8a8a;
+        font-size: 13px;
+        pointer-events: none;
+        user-select: none;
+      }
+      .captcha-handle {
+        position: absolute;
+        z-index: 1;
+        top: 0.25rem;
+        left: 0.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.125rem;
+        width: 3.5rem;
+        height: 28px;
+        border: 0;
+        border-radius: 6px;
+        background: #171717;
+        color: #ffffff;
+        cursor: grab;
+        touch-action: none;
+      }
+      .captcha-handle:focus {
+        outline: none;
+      }
+      .captcha-handle:focus-visible {
+        box-shadow:
+          0 0 0 2px #ffffff,
+          0 0 0 4px #171717;
+      }
+      .captcha-handle.is-success {
+        background: #17803d;
+      }
+      .captcha-handle span {
+        width: 2px;
+        height: 0.75rem;
+        border-radius: 1px;
+        background: currentColor;
+        opacity: 0.85;
+      }
+      .captcha-caption {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+      }
+      .captcha-caption p {
+        margin: 0;
+        color: #8a8a8a;
+        font-size: 12px;
+        line-height: 1.45;
+      }
+      #captcha-refresh {
+        height: 2rem;
+        padding: 0 0.75rem;
+        border: 0;
+        background: transparent;
+        color: #171717;
+        font: inherit;
+        font-size: 13px;
+        cursor: pointer;
+      }
+      #captcha-refresh:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+      #model-start {
+        height: 36px;
+        margin-top: 0.15rem;
+      }
+      .setup .model-row {
+        min-height: 2.25rem;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      @media (max-width: 760px) {
+        .captcha-dialog {
+          padding: 0.75rem;
+        }
+        .captcha-card {
+          padding: 1rem 0.9rem 0.85rem;
+        }
+        .card {
+          grid-template-columns: 1fr;
+          grid-template-areas:
+            'form'
+            'wechat';
+        }
+        .wechat {
+          border-right: 0;
+          border-top: 1px solid #ececec;
+        }
+        #login-form,
+        .wechat {
+          padding: 28px 22px 24px;
+        }
+        .setup-body {
+          grid-template-columns: 1fr;
+        }
+        .provider-pane {
+          max-height: 220px;
+          border-right: 0;
+          border-bottom: 1px solid #efefef;
+        }
+      }
+      #presentation-deck {
+        box-sizing: border-box;
+        min-height: 100%;
+        padding: 72px 28px 24px;
+        background: #f4f5f7;
+      }
+      #presentation-deck[hidden] {
+        display: none;
+      }
+      #presentation-deck h1 {
+        margin: 0 0 14px;
+        font-size: 22px;
+        line-height: 1.3;
+        color: #171717;
+      }
+      #presentation-deck ol {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      #presentation-deck li {
+        min-height: 132px;
+        padding: 14px 16px;
+        border: 1px solid #ececec;
+        border-radius: 12px;
+        background: #ffffff;
+      }
+      #presentation-deck h2 {
+        margin: 0 0 8px;
+        font-size: 18px;
+        line-height: 1.35;
+        color: #171717;
+      }
+      #presentation-deck p {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.45;
+        color: #3f3f3f;
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="drag" data-tauri-drag-region data-window-drag-region aria-hidden="true"></div>
+    <div id="toasts" aria-live="polite"></div>
+    <main id="presentation-deck" hidden></main>
+    <main id="login" hidden>
+      <div class="brand">
+        <h1 id="product"></h1>
+      </div>
+      <section class="card">
+        <form id="login-form" novalidate>
+          <div class="tabs">
+            <div role="tablist" aria-label="登录方式">
+              <button type="button" role="tab" data-mode="sms" aria-selected="true">手机号登录</button>
+              <button type="button" role="tab" data-mode="password" aria-selected="false">密码登录</button>
+            </div>
+            <span id="tab-indicator" aria-hidden="true"></span>
+          </div>
+          <div id="sms-fields">
+            <div class="field">
+              <div class="combo">
+                <span class="prefix">+86</span>
+                <div class="combo-input">
+                  <input
+                    id="phone"
+                    type="tel"
+                    inputmode="numeric"
+                    autocomplete="tel"
+                    aria-label="手机号"
+                    placeholder="11 位手机号" />
+                </div>
+                <button type="button" class="field-clear" hidden aria-label="清空">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <circle cx="8" cy="8" r="7" fill="currentColor" />
+                    <path
+                      d="M5.5 5.5 10.5 10.5M10.5 5.5 5.5 10.5"
+                      stroke="#fff"
+                      stroke-width="1.4"
+                      stroke-linecap="round" />
+                  </svg>
+                </button>
+              </div>
+              <p id="phone-error" class="field-error" hidden></p>
+            </div>
+            <div class="field">
+              <div class="combo">
+                <div class="combo-input">
+                  <input
+                    id="code"
+                    type="text"
+                    inputmode="numeric"
+                    autocomplete="one-time-code"
+                    aria-label="短信验证码"
+                    placeholder="6 位验证码" />
+                </div>
+                <button type="button" class="field-clear" hidden aria-label="清空">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <circle cx="8" cy="8" r="7" fill="currentColor" />
+                    <path
+                      d="M5.5 5.5 10.5 10.5M10.5 5.5 5.5 10.5"
+                      stroke="#fff"
+                      stroke-width="1.4"
+                      stroke-linecap="round" />
+                  </svg>
+                </button>
+                <button type="button" id="send-code" disabled>发送验证码</button>
+              </div>
+              <p id="code-error" class="field-error" hidden></p>
+            </div>
+          </div>
+          <div id="password-fields" hidden>
+            <div class="field">
+              <div class="combo">
+                <span class="prefix">+86</span>
+                <div class="combo-input">
+                  <input
+                    id="password-phone"
+                    type="tel"
+                    inputmode="numeric"
+                    autocomplete="tel"
+                    aria-label="手机号"
+                    placeholder="11 位手机号" />
+                </div>
+                <button type="button" class="field-clear" hidden aria-label="清空">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <circle cx="8" cy="8" r="7" fill="currentColor" />
+                    <path
+                      d="M5.5 5.5 10.5 10.5M10.5 5.5 5.5 10.5"
+                      stroke="#fff"
+                      stroke-width="1.4"
+                      stroke-linecap="round" />
+                  </svg>
+                </button>
+              </div>
+              <p id="password-phone-error" class="field-error" hidden></p>
+            </div>
+            <div class="field">
+              <div class="combo">
+                <div class="combo-input">
+                  <input
+                    id="password"
+                    type="password"
+                    autocomplete="current-password"
+                    aria-label="密码"
+                    placeholder="至少 8 位密码" />
+                </div>
+                <button type="button" class="field-clear" hidden aria-label="清空">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <circle cx="8" cy="8" r="7" fill="currentColor" />
+                    <path
+                      d="M5.5 5.5 10.5 10.5M10.5 5.5 5.5 10.5"
+                      stroke="#fff"
+                      stroke-width="1.4"
+                      stroke-linecap="round" />
+                  </svg>
+                </button>
+                <button type="button" id="eye" aria-label="显示密码" aria-pressed="false">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path
+                      d="M2.5 12S6.5 5.5 12 5.5 21.5 12 21.5 12 17.5 18.5 12 18.5 2.5 12 2.5 12Z"
+                      stroke="currentColor"
+                      stroke-width="1.6" />
+                    <circle cx="12" cy="12" r="2.6" stroke="currentColor" stroke-width="1.6" />
+                  </svg>
+                </button>
+              </div>
+              <p id="password-error" class="field-error" hidden></p>
+            </div>
+          </div>
+          <button type="submit" id="submit">登录 / 注册</button>
+          <div id="agree">
+            <label>
+              <input id="agree-box" type="checkbox" checked />
+              <span>
+                <span class="lead">我已阅读并同意用户协议与隐私政策</span>
+                <span class="note">未注册的手机号将自动创建账号</span>
+              </span>
+            </label>
+          </div>
+          <div id="signed-in" hidden>
+            <p id="signed-in-name"></p>
+            <p id="signed-in-phone" class="note"></p>
+          </div>
+          <p id="form-error" class="field-error" hidden></p>
+        </form>
+        <aside class="wechat" aria-label="微信扫码登录">
+          <h2>
+            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="#07C160"
+                d="M9.5 3.8c-4.1 0-7.4 2.8-7.4 6.3 0 2 1.1 3.8 2.9 5l-.7 2.2 2.5-1.3c.8.2 1.6.4 2.5.4.3 0 .5 0 .8-.1-.2-.6-.3-1.2-.3-1.8 0-3.6 3.3-6.5 7.4-6.5.3 0 .5 0 .8.1C17.2 5.4 13.7 3.8 9.5 3.8Zm-2.5 3.6c.5 0 .9.4.9.9s-.4.9-.9.9-.9-.4-.9-.9.4-.9.9-.9Zm4.8 0c.5 0 .9.4.9.9s-.4.9-.9.9-.9-.4-.9-.9.4-.9.9-.9Z" />
+              <path
+                fill="#07C160"
+                d="M21.6 12.2c0-3-2.9-5.4-6.5-5.4s-6.5 2.4-6.5 5.4 2.9 5.4 6.5 5.4c.7 0 1.3-.1 1.9-.2l2.1 1-.6-1.8c1.8-1 2.6-2.6 2.6-4.4Zm-8.6-.8c.4 0 .8.3.8.8s-.3.8-.8.8-.8-.3-.8-.8.4-.8.8-.8Zm4.1 0c.4 0 .8.3.8.8s-.3.8-.8.8-.8-.3-.8-.8.4-.8.8-.8Z" />
+            </svg>
+            微信扫码登录
+          </h2>
+          <div class="qr">
+            <img src="/wechat-qr.png" alt="" />
+            <span class="wx-badge" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24">
+                <path
+                  fill="#07C160"
+                  d="M9.5 3.8c-4.1 0-7.4 2.8-7.4 6.3 0 2 1.1 3.8 2.9 5l-.7 2.2 2.5-1.3c.8.2 1.6.4 2.5.4.3 0 .5 0 .8-.1-.2-.6-.3-1.2-.3-1.8 0-3.6 3.3-6.5 7.4-6.5.3 0 .5 0 .8.1C17.2 5.4 13.7 3.8 9.5 3.8Zm-2.5 3.6c.5 0 .9.4.9.9s-.4.9-.9.9-.9-.4-.9-.9.4-.9.9-.9Zm4.8 0c.5 0 .9.4.9.9s-.4.9-.9.9-.9-.4-.9-.9.4-.9.9-.9Z" />
+                <path
+                  fill="#07C160"
+                  d="M21.6 12.2c0-3-2.9-5.4-6.5-5.4s-6.5 2.4-6.5 5.4 2.9 5.4 6.5 5.4c.7 0 1.3-.1 1.9-.2l2.1 1-.6-1.8c1.8-1 2.6-2.6 2.6-4.4Zm-8.6-.8c.4 0 .8.3.8.8s-.3.8-.8.8-.8-.3-.8-.8.4-.8.8-.8Zm4.1 0c.4 0 .8.3.8.8s-.3.8-.8.8-.8-.3-.8-.8.4-.8.8-.8Z" />
+              </svg>
+            </span>
+          </div>
+          <p>请使用微信扫描二维码登录</p>
+        </aside>
+      </section>
+    </main>
+    <div id="captcha-dialog" class="captcha-dialog" hidden>
+      <div class="captcha-card" role="dialog" aria-modal="true" aria-labelledby="captcha-title">
+        <div class="captcha-head">
+          <h2 id="captcha-title">请完成安全验证</h2>
+          <button type="button" class="captcha-close" id="captcha-close" aria-label="关闭">×</button>
+        </div>
+        <div id="captcha" class="captcha" aria-label="滑块验证">
+          <div class="captcha-stage" id="captcha-stage">
+            <img id="captcha-bg" class="bg" alt="验证背景" draggable="false" hidden />
+            <img id="captcha-piece" class="captcha-piece" alt="验证拼图" draggable="false" hidden />
+            <div id="captcha-veil" class="captcha-veil" hidden>
+              <span class="captcha-spinner" aria-hidden="true"></span>
+              <span id="captcha-veil-text">正在准备拼图</span>
+            </div>
+          </div>
+          <div class="captcha-track" id="captcha-track">
+            <span id="captcha-hint" class="captcha-hint">向右拖动滑块完成拼图</span>
+            <div
+              id="captcha-handle"
+              class="captcha-handle"
+              role="slider"
+              tabindex="0"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow="0"
+              aria-orientation="horizontal"
+              aria-label="向右拖动滑块完成拼图">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="captcha-caption">
+            <p id="captcha-status" aria-live="polite"></p>
+            <button type="button" id="captcha-refresh">换一张</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <section id="provider-setup" hidden>
+      <div class="setup">
+        <div class="setup-bar">
+          <button type="button" class="ghost" id="provider-back">返回</button>
+          <h2 id="provider-title">选择服务商</h2>
+        </div>
+        <div class="setup-body">
+          <div class="provider-pane">
+            <input
+              id="provider-search"
+              class="text-input"
+              type="search"
+              aria-label="搜索模型平台"
+              placeholder="搜索模型平台..." />
+            <div id="provider-items" role="listbox" aria-label="服务商"></div>
+          </div>
+          <div class="provider-detail">
+            <h2 id="provider-name"></h2>
+            <p id="provider-key-link" class="note" hidden></p>
+            <label>
+              API 地址
+              <input id="provider-host" class="text-input" type="url" autocomplete="off" placeholder="未配置" />
+            </label>
+            <label>
+              API 密钥
+              <input
+                id="provider-key"
+                class="text-input"
+                type="password"
+                autocomplete="off"
+                placeholder="输入 API 密钥" />
+            </label>
+            <label class="enable">
+              <input id="provider-enabled" type="checkbox" />
+              启用
+            </label>
+            <div class="setup-actions">
+              <button type="button" class="primary" id="provider-save">保存</button>
+              <button type="button" class="ghost" id="provider-sync">同步模型</button>
+            </div>
+            <label>
+              模型 ID
+              <div class="combo">
+                <div class="combo-input">
+                  <input id="provider-model-id" type="text" autocomplete="off" placeholder="例如：gpt-4o" />
+                </div>
+                <button type="button" id="provider-add-model">添加</button>
+              </div>
+            </label>
+            <div id="provider-models"></div>
+            <p id="provider-error" class="field-error" hidden></p>
+          </div>
+        </div>
+        <div class="setup-foot">
+          <p id="provider-hint" hidden></p>
+          <button type="button" class="ghost" id="provider-cancel">返回</button>
+          <button type="button" class="primary" id="provider-next" aria-disabled="true">下一步</button>
+        </div>
+      </div>
+    </section>
+    <section id="model-setup" hidden>
+      <div class="setup setup-narrow">
+        <div class="setup-bar">
+          <button type="button" class="ghost" id="model-back">返回</button>
+          <h2 id="model-title">选择默认模型</h2>
+        </div>
+        <div class="model-body">
+          <div class="field">
+            <span id="model-default-label">默认助手模型</span>
+            <div class="picker" id="model-default" aria-labelledby="model-default-label"></div>
+          </div>
+          <div class="field">
+            <span id="model-quick-label">快速模型</span>
+            <div class="picker" id="model-quick" aria-labelledby="model-quick-label"></div>
+          </div>
+          <div class="field">
+            <span id="model-translate-label">翻译模型</span>
+            <div class="picker" id="model-translate" aria-labelledby="model-translate-label"></div>
+          </div>
+          <button type="button" class="primary" id="model-start">开始使用</button>
+          <p class="note">您可以随时在设置中更改</p>
+          <p id="model-error" class="field-error" hidden></p>
+        </div>
+      </div>
+    </section>
+    <script type="module" src="/studioClient.mjs"></script>
+  </body>
+</html>

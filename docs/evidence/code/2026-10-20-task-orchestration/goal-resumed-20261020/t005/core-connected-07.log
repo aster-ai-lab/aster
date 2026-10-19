@@ -1,0 +1,9 @@
+
+running 4 tests
+test agent_api::tests::fact_log::execution_target::fact_model_input_keeps_required_target_after_optional_context_timeout ... ok
+test agent_api::tests::fact_log::execution_target::fact_model_input_preserves_unknown_bound_execution_target ... ok
+test agent_api::tests::fact_log::execution_target::fact_model_inputs_keep_parent_and_delegated_targets_in_adaptive_mode ... ok
+test agent_api::tests::fact_log::execution_target::fact_model_inputs_keep_parent_and_delegated_targets_in_code_mode ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 5193 filtered out; finished in 1.66s
+

@@ -1650,3 +1650,6 @@ pub fn attach_observation(metadata: &mut Option<Value>, observation: &MutationOb
 
 #[cfg(test)]
 mod tests;
+
+#[cfg(test)]
+mod shell_diagnostic_tests;

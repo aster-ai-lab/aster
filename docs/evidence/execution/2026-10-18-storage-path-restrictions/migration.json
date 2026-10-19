@@ -1,0 +1,132 @@
+{
+  "producer_revision": "dc30d18352b521da7e69eb5b0918b56408f9812e",
+  "files": [
+    {
+      "path": "crates/oci-runtime/ROADMAP.md",
+      "sha256": "e9b657c94a59066d0d8ba496198fb2a4c058998ec181def9c81358873482099e"
+    },
+    {
+      "path": "crates/oci-runtime/crates/agent-protocol/src/lib.rs",
+      "sha256": "db0a9cdaccb71bb7e6a9d304b99da350070f052adc5bc950977a06a2783e463b"
+    },
+    {
+      "path": "crates/oci-runtime/crates/agent-protocol/src/vm_attachment.rs",
+      "sha256": "31095f1792ce40657fb497e5e9cfe6f3f4877ea56265e6ad58a131495da7d726"
+    },
+    {
+      "path": "crates/oci-runtime/crates/agent-protocol/src/vm_attachment/directory_tests.rs",
+      "sha256": "c69f0b1ad7ba425c55c99fad3f39be829ff430c7368fa9520ef72d730b840957"
+    },
+    {
+      "path": "crates/oci-runtime/crates/agent/src/vm_attachment.rs",
+      "sha256": "b8977556881aeb02b65d57edeec54cc43bbba47515094ff7a3224ef902a8e80b"
+    },
+    {
+      "path": "crates/oci-runtime/crates/krun/src/macos_agent_smoke.rs",
+      "sha256": "a976c0f5f31ea90d5b73e2bd77041bd777e57a3e46f8ee06331244868fba3f15"
+    },
+    {
+      "path": "crates/oci-runtime/crates/krun/src/macos_context.rs",
+      "sha256": "2ed5a880b01e505eb85ca42e99f99f9732f4a414da4302044660626f89104cbb"
+    },
+    {
+      "path": "crates/oci-runtime/crates/krun/src/macos_vm_attachment.rs",
+      "sha256": "3d5a23d58ae38d28d9328d0f7fb491fd4847991928112dd88489d4617360d1cb"
+    },
+    {
+      "path": "crates/oci-runtime/crates/krun/src/macos_vm_attachment_tests.rs",
+      "sha256": "a16ea1acab266d4a36d630da39a4c2be287d546bddb0d304d6d5812dec45bbc4"
+    },
+    {
+      "path": "crates/oci-runtime/crates/krun/src/macos_worker_sandbox.rs",
+      "sha256": "c3bc85e5fd1cdff297b7cbbcacb84e53f94bbdc01bbd56232bcfbfb107b3d4d6"
+    },
+    {
+      "path": "crates/oci-runtime/crates/krun/src/macos_worker_sandbox_tests.rs",
+      "sha256": "a4ff72b8473e443acc844c451e3c0509fe65599e26a368ee05c720541f4ab3ad"
+    },
+    {
+      "path": "crates/oci-runtime/crates/krun/src/main.rs",
+      "sha256": "2b9fbeb64bf270d7644d15ecf5e33871147b2f78de8578b8df4ae590ed2fc3fd"
+    },
+    {
+      "path": "crates/oci-runtime/crates/runtime/src/hvf_driver.rs",
+      "sha256": "a86a431b3fc6d6fba381d151e4a126856a37fdba73e9c53b5f6de9a7dc37e7c5"
+    },
+    {
+      "path": "crates/oci-runtime/crates/runtime/src/utility_vm_driver/hvf_directory.rs",
+      "sha256": "98d7f6f61e72e68112c54f96c3a20bf75fcbb529a3ec5c70c299ba05c978a7a5"
+    },
+    {
+      "path": "crates/oci-runtime/crates/runtime/src/utility_vm_driver/hvf_directory_tests.rs",
+      "sha256": "77af4c52e4fb16e8ce4210327c4c9f0ea7bc5d2c37d363fbd59ea864b24f6119"
+    },
+    {
+      "path": "crates/oci-runtime/crates/sdk/examples/qualify_hvf_workspace.rs",
+      "sha256": "9b95545a21213249b59ce14afdd04e54d56c2b527f8ebfb83cee4aedd35c1a34"
+    },
+    {
+      "path": "crates/oci-runtime/crates/sdk/src/attachment.rs",
+      "sha256": "c9c74a911f58d45e2f818a5a9d2bbfef6fc7f2373e5931b05b53fbade2f039e6"
+    },
+    {
+      "path": "crates/oci-runtime/crates/sdk/src/attachment/storage_paths.rs",
+      "sha256": "205f2b9134693ff119dee62ef26f3e665e4ad445db3b3bf49062bdd379a4662a"
+    },
+    {
+      "path": "crates/oci-runtime/crates/sdk/src/attachment/storage_paths_tests.rs",
+      "sha256": "9ebd05b00e356e474b7b71ba6f0f74ea61304677f2e6e3a7897b687c084ef535"
+    },
+    {
+      "path": "crates/oci-runtime/crates/sdk/src/lib.rs",
+      "sha256": "6152abd2bd95859aee86435ff37220dcfc9c05ba021f5b76069080d46fbe8d50"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-storage-path-restrictions/OUTCOME.md",
+      "sha256": "6ef09e2e7f2e3f80f7737336c4f37e68568e2e797fcd41ada520597bedfff544"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-storage-path-restrictions/checks.log.gz",
+      "sha256": "3b786bbd570dc3909a1298f9105353c0e1984fe54fdb1c8477bab4cc82565806"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-storage-path-restrictions/diagnostic-failures.log.gz",
+      "sha256": "4dabeb7fc607cfae931dc67944146d66dc313539118d53276f9c733e0cb10aed"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-storage-path-restrictions/diagnostic-invocation.json",
+      "sha256": "5b906e50cdf60bb5da1c05c88073a6b5a3f84f7c2a4222eb0f5caefff8861ff1"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-storage-path-restrictions/diagnostic-output.json",
+      "sha256": "938b5336145f5b70b5e0c6db5b0e75848afec78c8bc0f0be9bf048b5b631e19b"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-storage-path-restrictions/diagnostic-report.json",
+      "sha256": "2937b8135d410599e399018517af676706cf6b6ccaaccd627b2a06a64a568d48"
+    },
+    {
+      "path": "crates/oci-runtime/docs/evidence/2026-10-18-storage-path-restrictions/diagnostic-system-image.json",
+      "sha256": "51c53e16a2bf860a06df435bf00219f1c0ed1af4b292a09dc8a77c1cee434ded"
+    },
+    {
+      "path": "crates/sandbox/src/lib.rs",
+      "sha256": "4c2d66ac9675dfc6695d50c1e152a145d0a19633fa6da7d17b4aa4e7e2965103"
+    },
+    {
+      "path": "crates/sandbox/src/policy/mod.rs",
+      "sha256": "59e587c4dc08623c750bcaddfca9b49dec13144bbac53de247e999995cf79cf6"
+    },
+    {
+      "path": "crates/sandbox/src/policy/workspace_boundary.rs",
+      "sha256": "304d3173415c07e313321e6121b1b85f5b83cdec19ffa74695dd457fdadd493d"
+    },
+    {
+      "path": "crates/sandbox/src/policy/workspace_boundary_tests.rs",
+      "sha256": "1c009341524c190d38945f08714d20babc9fb0163df71f1a443fc5c01cf77864"
+    }
+  ],
+  "product_default_bash_integrated": false,
+  "evidence_revision": "77b9a3d83",
+  "sandbox_source_scope": "Snapshot implementation, tests and policy compiler match producer; public exports patched locally, preserving existing lifecycle API differences."
+}

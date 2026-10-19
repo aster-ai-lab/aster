@@ -1,0 +1,14 @@
+{
+  "utc": "2026-10-19T21:49:58.700965+00:00",
+  "url": "http://127.0.0.1:4322/windows/main/index.html",
+  "status": 200,
+  "index_bytes": 98190,
+  "index_sha256": "a616b16f7675a074b97f9cb1ec8fcbf7a298e6ea0678db4a1857f27982ac3192",
+  "matches_frozen_index": true,
+  "preview_pid": 36948,
+  "exec_session": 87804,
+  "only_loopback": true,
+  "dotenv_disabled": true,
+  "two_secret_environment_keys_removed": true,
+  "renderer_root": "/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/renderer-final"
+}

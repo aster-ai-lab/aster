@@ -1,0 +1,63 @@
+{
+  "schema": "aster.t023.pre-model-admission.v3",
+  "admitted_at_utc": "2026-10-19T19:34:20.881981+00:00",
+  "original_plan": {
+    "path": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/plan-v3.json",
+    "sha256": "debcf7fae26d6e7a13731dc1daa93eca7f61218bee11bbbae712da0c767aa81c"
+  },
+  "gate_pointer_addendum": "Replace only the pre-model final_acp_gate reference to the failed v3 protocol record with qualified v4 after the test-only socket fixture correction. All correctness, governance, identity and settlement conditions remain unchanged. Original v3 failure is preserved.",
+  "failed_protocol_ref": "../real-acp/final-binary-v3/result.json",
+  "qualified_protocol": {
+    "result": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/final-binary-v4/result.json",
+    "result_sha256": "39a5fcacf04cf58b83bf43e89dfd857e40db677b20cb5072f6746d7343b00a92",
+    "qualified": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/real-acp/final-binary-v4/qualified.json",
+    "qualified_sha256": "d1b56393cae9074a6c29b34b95f523b16b2196854cd8040448195d1c11fa359f",
+    "passed": 5,
+    "failed": 0,
+    "harness": {
+      "path": "/Users/roylin/code/aster/target/debug/deps/a3s_studio_lib-9c7d06d5a17857ce",
+      "sha256": "be22e239bfb23b4269340492c84abdad4e22904e8ba38cd26ac9f6e9f8ad246e",
+      "compiler_artifact_observation": "cargo test --locked --offline -p aster-dream --lib provider_socket --no-run --message-format=json-render-diagnostics; terminal exit0, lib-test artifact fresh=false, features=[], test profile opt0/line-tables-only"
+    },
+    "fixture_source": {
+      "apps/work/src-tauri/src/agent_plane/local_acp_delivery_tests.rs": "6810301c86e355676e5735739e759df0854e1b97b6f17090a8a3d85cd8a3d579",
+      "apps/work/src-tauri/src/agent_plane/local_acp_provider_tests.rs": "2225ae7ad0731e7ce946f36637460fe03506498cb0e12d4ceabee0aff79b1da3",
+      "apps/work/src-tauri/src/agent_plane/local_acp_program_tests.rs": "fc8e4c629461f48547a59efc18e2f8c88903b0e61f1665701094a4292f0c6bc3"
+    }
+  },
+  "manifests": [
+    {
+      "run_id": "t023-v3-hc-01",
+      "manifest": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-v3-hc-01.json",
+      "manifest_sha256": "2ba752fdf1c2804aa568ed526b9f6a28199b6dcd4a3d0356c1e0c56ae885c24a"
+    },
+    {
+      "run_id": "t023-v3-sa-01",
+      "manifest": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-v3-sa-01.json",
+      "manifest_sha256": "04a5884d99c498b8fda5250d0963c4ae47f640fd6d51b266874ba87183aafe8b"
+    },
+    {
+      "run_id": "t023-v3-ha-01",
+      "manifest": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-v3-ha-01.json",
+      "manifest_sha256": "a50622b729cd3524c4115bbe9a8be7fc04bfc7a41f6c8d0077b2bb2279c625e7"
+    },
+    {
+      "run_id": "t023-v3-sc-01",
+      "manifest": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-v3-sc-01.json",
+      "manifest_sha256": "a980ed95db2e5a31976d4f6f885bffd48ceca700386992d027c9acb4ec1a675f"
+    }
+  ],
+  "runner": "/Users/roylin/code/aster/target/t023-frozen-native-proof-v3/t023-real-llm",
+  "runner_sha256": "dafcdb08898bbb196b05d4da739229abb81b16a2a9c60382a889e1291fa6b6dd",
+  "core_source_files_verified": 2824,
+  "asset_files_per_variant": 907,
+  "asset_symlinks_per_variant": 353,
+  "input_files_per_workspace": 12,
+  "source_and_experiment_conditions_unchanged": true,
+  "core_attempts_already_started": 4,
+  "remaining_core_cap": 6,
+  "reserved_final_cua": 1,
+  "max_total_t01": 11,
+  "independent_readonly_audit": "runtime_evidence verified exact Core source file set+hashes, both complete asset trees, four exact input trees, runner, prompt, budgets, features and oracle before model access. grep/Core native Rust LSP retain their measured scope; ONNX and platform gates remain open.",
+  "model_run_admitted": true
+}

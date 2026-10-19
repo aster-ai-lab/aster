@@ -1,0 +1,4 @@
+﻿Segment,Order_Count,Total_Sales,Total_Profit,Profit_Margin,Avg_Discount
+Consumer,505,873512.42,158231.63,18.11,0.0901
+Corporate,300,524287.05,88901.38,16.96,0.0947
+Home Office,195,313172.0,41787.43,13.34,0.0971

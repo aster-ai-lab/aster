@@ -5,7 +5,11 @@
 //! because they consume provider quota. Select any model declared in the same
 //! ACL file with `A3S_TEST_MODEL=provider/model`.
 
+#[path = "extensibility/metrics.rs"]
+mod metrics;
 mod support;
+#[path = "extensibility/task_matrix.rs"]
+mod task_matrix;
 
 use std::sync::Arc;
 use std::time::Duration;
@@ -109,6 +113,22 @@ fn successful_tool_end<'a>(
         .unwrap_or_else(|| panic!("missing successful {expected_name} ToolEnd: {events:?}"))
 }
 
+fn measured_run(
+    result: &a3s_code_core::AgentResult,
+    events: &[a3s_code_core::run::RunEventRecord],
+) -> Value {
+    let parents = result
+        .messages
+        .iter()
+        .flat_map(|message| message.content.iter())
+        .filter_map(|block| match block {
+            a3s_code_core::llm::ContentBlock::ToolUse { id, .. } => Some(id.clone()),
+            _ => None,
+        })
+        .collect::<Vec<_>>();
+    metrics::summarize(events, &parents, None)
+}
+
 #[tokio::test(flavor = "multi_thread")]
 #[ignore = "requires a real provider configured in .a3s/config.acl"]
 async fn real_model_discovers_and_invokes_a_scoped_skill() {
@@ -132,21 +152,16 @@ async fn real_model_discovers_and_invokes_a_scoped_skill() {
     }));
 
     let (agent, model) = real_agent().await;
-    let options = governed_options(
-        &model,
-        "real-skill-extensibility",
-        &["search_skills(*)", "Skill(*)", "read(*)"],
-    )
-    .with_skill_registry(skills);
+    let options = governed_options(&model, "real-skill-extensibility", &["Skill(*)", "read(*)"])
+        .with_skill_registry(skills);
     let session = agent
         .session_async(workspace.path().display().to_string(), Some(options))
         .await
         .expect("create skill session");
 
     let prompt = r#"Run this exact skill protocol:
-1. Call search_skills with query "local conformance evidence marker".
-2. From its result, call Skill with skill_name "evidence-reader" and ask it to read and return the marker. Do not call read directly from the parent.
-3. After the Skill result, return exactly the marker value and no other text."#;
+1. Call Skill with skill_name "evidence-reader" and ask it to read and return the marker. Do not call read directly from the parent.
+2. After the Skill result, return exactly the marker value and no other text."#;
     let (result, events) = run_and_events(&session, prompt).await;
 
     // Require the planted marker token; exact whole-text equality overfits Flash
@@ -156,7 +171,6 @@ async fn real_model_discovers_and_invokes_a_scoped_skill() {
         "final text must surface the skill marker, got {:?}",
         result.text
     );
-    let _ = successful_tool_end(&events, "search_skills");
     let (skill_args, skill_metadata) = successful_tool_end(&events, "Skill");
     assert_eq!(skill_args["skill_name"], "evidence-reader");
     assert_eq!(skill_metadata["skill_name"], "evidence-reader");
@@ -195,6 +209,10 @@ Inside the function, call ctx.readFile with string paths only (for example ctx.r
 Run both reads concurrently with Promise.all, trim both strings, and return {"marker":"<left>|<right>"}.
 Do not call read outside program. After observing the program result, return exactly its marker and no other text."#;
     let (result, events) = run_and_events(&session, prompt).await;
+    eprintln!(
+        "{}",
+        json!({"fixture":"forced-mechanism", "metrics":measured_run(&result,&events)})
+    );
 
     assert!(
         result.text.contains("PTC_LEFT|PTC_RIGHT"),
@@ -211,6 +229,67 @@ Do not call read outside program. After observing the program result, return exa
         .expect("program tool-call evidence");
     assert_eq!(calls.len(), 2, "PTC must perform exactly two nested reads");
     assert!(calls.iter().all(|call| call["tool_name"] == "read"));
+}
+
+#[tokio::test(flavor = "multi_thread")]
+#[ignore = "requires a real provider; fixed unforced task across adaptive/code sessions"]
+async fn real_model_unforced_fixed_task_compares_adaptive_and_code_profiles() {
+    use a3s_code_core::{ToolPresentationModeV1, ToolPresentationProfileV1};
+    let (agent, model) = real_agent().await;
+    let prompt = "Read left.txt and right.txt. Return their trimmed contents joined by |. Inspect the actual files and do not invent their contents.";
+    for mode in [
+        ToolPresentationModeV1::Adaptive,
+        ToolPresentationModeV1::Code,
+    ] {
+        let root = tempfile::tempdir().unwrap();
+        std::fs::write(root.path().join("left.txt"), "FIXED_LEFT\n").unwrap();
+        std::fs::write(root.path().join("right.txt"), "FIXED_RIGHT\n").unwrap();
+        let profile = ToolPresentationProfileV1::for_mode(mode);
+        let options = governed_options(
+            &model,
+            &format!("unforced-ptc-{}", mode.as_str()),
+            &["program(*)", "read(*)"],
+        )
+        .with_prompt_slots(SystemPromptSlots::default())
+        .with_tool_presentation_profile(profile.clone());
+        let session = agent
+            .session_async(root.path().display().to_string(), Some(options))
+            .await
+            .unwrap();
+        let started = std::time::Instant::now();
+        let (result, events) = run_and_events(&session, prompt).await;
+        assert!(
+            result.text.contains("FIXED_LEFT|FIXED_RIGHT"),
+            "fixed task result differs"
+        );
+        assert!(events.iter().any(|event| {
+            match &event.event {
+                AgentEvent::ToolEnd {
+                    name,
+                    exit_code: 0,
+                    metadata,
+                    ..
+                } => {
+                    name == "read"
+                        || metadata
+                            .as_ref()
+                            .and_then(|value| value.pointer("/program/tool_calls"))
+                            .and_then(Value::as_array)
+                            .is_some_and(|calls| {
+                                calls.iter().any(|call| {
+                                    call["tool_name"] == "read" && call["exit_code"] == 0
+                                })
+                            })
+                }
+                _ => false,
+            }
+        }));
+        eprintln!(
+            "{}",
+            json!({"fixture":"unforced-fixed-task", "profile":profile,
+                "elapsed_ms":started.elapsed().as_millis(), "metrics":measured_run(&result,&events)})
+        );
+    }
 }
 
 #[tokio::test(flavor = "multi_thread")]

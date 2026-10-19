@@ -1,0 +1,11 @@
+{
+  "command": [
+    "/Users/roylin/code/aster/target/qualification/t005-cua-20261020/core-tests",
+    "two_actual_policy_sessions_share_original_owner_exclusion_and_legacy_refusal",
+    "--test-threads=1"
+  ],
+  "exit_code": 101,
+  "wall_seconds": 5.214549708,
+  "binary_sha256": "92486c70ac258c5e1c43b889818e0b00b3438ba27b7ef0cbd42551284db0e3a3",
+  "source_scope": "prior frozen T005 Core artifact, before the approval deadline/stale-answer production change"
+}

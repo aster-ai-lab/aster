@@ -1,0 +1,103 @@
+Window: "ToWork", App: ToWork.
+0 standard window ToWork, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content Description: ToWork, URL: 127.0.0.1:4318/windows/main/index.html
+			3 pop up button 林书豪
+			4 button 知识
+			5 button 工作
+			6 button 消息
+			7 button 插件
+			8 button (collapsed) 任务, Secondary Actions: Expand
+			9 button 设置
+			10 container
+				11 heading 知识, Value: 1
+					12 text 知识
+				13 text 编写本地工作区里的笔记
+				14 search text field (settable) 搜索笔记, Value: 清单
+					15 text (settable) 清单
+				16 button 刷新
+				17 container 笔记
+					18 container
+						19 button 笔记
+						20 button 新建文件
+						21 button 新建文件夹
+						22 text field (settable) 名称, Value: ToWork演示-发布会筹备.md
+						23 text 这个操作没有完成。
+						24 button (expanded) 测试样本, Secondary Actions: Collapse
+						25 button (expanded) 阅读, Secondary Actions: Collapse
+						26 button 清单
+				27 heading 设计笔记, Value: 2
+					28 text 设计笔记
+				29 toolbar Markdown 功能区
+					30 toggle button (disabled) 撤销, Help: 撤销（Cmd/Ctrl+Z）, Value: off
+					31 toggle button (disabled) 重做, Help: 重做（Cmd/Ctrl+Shift+Z 或 Cmd/Ctrl+Y）, Value: off
+					32 combo box (collapsed, settable) 段落样式, Secondary Actions: Expand, Value: 标题 1
+
+						33 text 标题 1
+					34 toggle button 加粗, Help: 加粗（Cmd/Ctrl+B）, Value: off
+					35 toggle button 斜体, Help: 斜体（Cmd/Ctrl+I）, Value: off
+					36 toggle button 删除线, Help: 删除线（Cmd/Ctrl+Shift+S）, Value: off
+					37 toggle button 行内代码, Help: 行内代码（Cmd/Ctrl+E）, Value: off
+					38 toggle button 项目列表, Help: 项目列表（Cmd/Ctrl+Shift+8）, Value: off
+					39 toggle button 编号列表, Help: 编号列表（Cmd/Ctrl+Shift+7）, Value: off
+					40 toggle button 任务列表, Help: 任务列表（Cmd/Ctrl+Shift+9）, Value: off
+					41 toggle button 引用, Help: 引用（Cmd/Ctrl+Shift+B）, Value: off
+					42 (settable, unknown) 对齐
+						43 radio button 左对齐, Value: 1
+						44 radio button 居中, Value: 0
+						45 radio button 右对齐, Value: 0
+						46 radio button 两端对齐, Value: 0
+					47 toggle button 添加链接, Help: 添加链接（Cmd/Ctrl+K）, Value: off
+					48 toggle button (disabled) 移除链接, Value: off
+					49 toggle button 插入图片, Value: off
+					50 toggle button 代码块, Help: 代码块（Cmd/Ctrl+Alt+C）, Value: off
+					51 toggle button 分隔线, Value: off
+					52 toggle button 表格, Value: off
+				53 container 编辑方式
+					54 toggle button 可视化编辑, Value: on
+					55 toggle button 分屏编辑, Value: off
+					56 toggle button 源码编辑, Value: off
+				57 container Markdown 编辑窗格
+					58 text entry area (settable) Markdown 编辑区, Value: **设计笔记**
+工作区代码用词法检索。笔记单独放在 wiki/local，等索引发布后再查。
+
+**为什么分开**
+代码树用 search 的 bm25，按工作区文件打分。笔记用 search_wiki，只扫 wiki/，手写内容在 wiki/local。两边不进同一次排序。
+
+语义检索要有 embedding 才开。没有向量模型时，只做全文。
+
+**演示时可以问**
+• 「桂花糖藕怎么做」应落到 [[家常]]。
+• 「杭州会议几点」应落到 [[出差]]。
+• 「接口约定写在哪」应落到 [[项目/接口约定]]。
+索引刚写入的头几秒会是 not-ready，正文不会提前漏出来。
+
+检索口令：词法笔记边界只写在测试笔记3f90。
+						59 heading (settable, integer) 设计笔记, Value: 1
+							60 text (settable) 设计笔记
+						61 text (settable) 工作区代码用词法检索。笔记单独放在 wiki/local，等索引发布后再查。
+						62 heading (settable, integer) 为什么分开, Value: 2
+							63 text (settable) 为什么分开
+						64 container (settable)
+							65 text (settable) 代码树用  search  的 bm25，按工作区文件打分。笔记用  search_wiki ，只扫  wiki/ ，手写内容在  wiki/local 。两边不进同一次排序。
+						66 text (settable) 语义检索要有 embedding 才开。没有向量模型时，只做全文。
+						67 heading (settable, integer) 演示时可以问, Value: 2
+							68 text (settable) 演示时可以问
+						69 content list (settable)
+							70 container (settable) 「桂花糖藕怎么做」应落到 [[家常]]。
+								71 list marker •
+								72 text (settable) 「桂花糖藕怎么做」应落到 [[家常]]。
+							73 container (settable) 「杭州会议几点」应落到 [[出差]]。
+								74 list marker •
+								75 text (settable) 「杭州会议几点」应落到 [[出差]]。
+							76 container (settable) 「接口约定写在哪」应落到 [[项目/接口约定]]。
+								77 list marker •
+								78 text (settable) 「接口约定写在哪」应落到 [[项目/接口约定]]。
+						79 text (settable) 索引刚写入的头几秒会是 not-ready，正文不会提前漏出来。
+						80 text (settable) 检索口令：词法笔记边界只写在测试笔记3f90。
+	81 close button
+	82 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	83 minimize button
+84 menu bar
+	85 ToWork
+	86 Edit

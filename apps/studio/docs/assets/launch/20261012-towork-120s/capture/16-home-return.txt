@@ -1,0 +1,66 @@
+Window: "ToWork", App: ToWork.
+0 standard window ToWork, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content Description: ToWork, URL: 127.0.0.1:4318/windows/main/index.html
+			3 pop up button 林书豪
+			4 button 知识
+			5 button 工作
+			6 button 消息
+			7 button 插件
+			8 button (collapsed) 任务, Secondary Actions: Expand
+			9 button 设置
+			10 container
+				11 button (disabled) 添加智能体
+				12 pop up button 展示方式
+				13 container
+					14 sortable ToWork 工作助手 更多 新任务
+					15 button 法务专家
+					16 button 新任务
+					17 text 暂无任务
+				18 splitter 调整面板宽度, Value: 275
+				19 toggle button 隐藏侧边栏, Value: on
+				20 button 新建任务
+				21 button (collapsed) 搜索任务, Secondary Actions: Expand
+				22 container 工作导航
+					23 button 智能体
+					24 button 连接器
+					25 button 技能
+					26 button 自动化
+				27 container 项目
+					28 container
+						29 heading 项目, Value: 3
+							30 text 项目
+						31 button 新建项目
+					32 text 还没有项目
+				33 container 任务
+					34 container
+						35 heading 任务, Value: 3
+							36 text 任务
+						37 button 查看全部最近任务
+					38 container 今天
+						39 heading 今天, Value: 3
+							40 text 今天
+						41 button 为一场线上产品演示整理筹备清单。示例：周五14:00开始，时长30分钟。按会前、…
+						42 text 9分钟前
+						43 button 重命名
+						44 toggle button 置顶, Value: off
+						45 button 归档
+				46 toggle button 收起侧边栏, Value: on
+				47 heading ToWork, Value: 1
+				48 text entry area (settable) 描述任务，输入 / 使用指令或技能，@ 使用智能体
+					49 text 描述任务，输入 / 使用指令或技能，@ 使用智能体
+				50 pop up button 更多选项
+				51 pop up button 授权模式: 逐次确认
+				52 pop up button 自动
+				53 button (disabled) 发送
+				54 toolbar 任务范围
+					55 pop up button 项目文件夹
+					56 pop up button 工作区文件
+	57 close button
+	58 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	59 minimize button
+60 menu bar
+	61 ToWork
+	62 Edit
+
+The focused UI element is 2 HTML content Description: ToWork, URL: 127.0.0.1:4318/windows/main/index.html

@@ -125,7 +125,7 @@ impl Tool for CodeSymbolsTool {
                 Err(error) => {
                     return Ok(invalid_argument(format!(
                         "failed to resolve workspace path: {error}"
-                    )))
+                    )));
                 }
             };
             match provider
@@ -149,7 +149,7 @@ impl Tool for CodeSymbolsTool {
                     _ => {
                         return Ok(invalid_argument(format!(
                             "limit must be an integer between 1 and {MAX_SEARCH_LIMIT}"
-                        )))
+                        )));
                     }
                 },
                 None => DEFAULT_SEARCH_LIMIT,

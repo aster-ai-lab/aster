@@ -1,0 +1,17 @@
+{
+  "schema": "aster.t027.oracle-process.v1",
+  "started_at_utc": "2026-10-19T20:44:29.869575+00:00",
+  "wall_seconds": 0.9604281669016927,
+  "exit_code": 1,
+  "outer_timeout": false,
+  "pid": 12961,
+  "process_reaped": true,
+  "pipeline_sha256_after": "ad1be2d94cc2b9987e0c1ac4ff2c0483fe56765d7dc1493c1b5e241b800a9581",
+  "pipeline_unchanged": true,
+  "evaluator_sha256": "36c4db2fb452ef738a228428598e38d567b4b77bf803b925b621078a416496ac",
+  "log_sha256": "6c16bdcf5594afac68784dc176c91bce1ff96b24754acdfcd9c79ddf4e5da85b",
+  "saved_results_sha256": "1410d96bf12818691780e94e03e6c58001060c9af862d092736f255b58c097e8",
+  "public_regenerated_results_sha256": "1410d96bf12818691780e94e03e6c58001060c9af862d092736f255b58c097e8",
+  "saved_results_match_public_regeneration": true,
+  "scope": "Independent evaluation of saved interrupted artifacts after original app/ACP exit; not a completed model submission or task-performance sample."
+}

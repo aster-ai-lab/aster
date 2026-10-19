@@ -10,6 +10,7 @@ mod argument_validation;
 mod cache_proof;
 mod cache_provenance;
 mod execution_availability;
+mod native_artifact_scope;
 mod pre_spawn;
 mod tool_budget;
 mod tool_budget_cancel;

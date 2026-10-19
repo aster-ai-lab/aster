@@ -1,0 +1,465 @@
+import * as Y from 'yjs';
+import type { WorkSlideElement } from '../features/work/work-types';
+import { WorkOfficeCollaborationError } from './office-collaboration';
+import {
+  cloneWorkOfficeCollaborationJson as cloneJsonValue,
+  workOfficeCollaborationJsonEqual as jsonEqual,
+} from './office-collaboration-json';
+import { invalidWorkOfficePresentationShared as invalidSharedPresentation } from './office-presentation-collaboration-validation';
+
+export const PRESENTATION_RECORD_ELEMENTS = 'elements';
+export const PRESENTATION_RECORD_ELEMENT_ORDER = 'elementOrder';
+export const PRESENTATION_RECORD_COMMENTS = 'comments';
+export const PRESENTATION_RECORD_COMMENT_ORDER = 'commentOrder';
+export const PRESENTATION_RECORD_COMMENTS_PRESENT = 'commentsPresent';
+export const PRESENTATION_RECORD_TOMBSTONE = 'tombstone';
+
+export type WorkOfficePresentationRecord = {
+  id: string;
+  elements: WorkSlideElement[];
+};
+
+export function nestedPresentationMap(
+  parent: Y.Map<unknown>,
+  key: string,
+  label: string,
+): Y.Map<unknown> {
+  const existing = parent.get(key);
+  if (existing instanceof Y.Map) return existing;
+  if (existing !== undefined) invalidSharedPresentation(label);
+  const value = new Y.Map<unknown>();
+  parent.set(key, value);
+  return value;
+}
+
+export function nestedPresentationArray(
+  parent: Y.Map<unknown>,
+  key: string,
+  label: string,
+): Y.Array<string> {
+  const existing = parent.get(key);
+  if (existing instanceof Y.Array) return existing as Y.Array<string>;
+  if (existing !== undefined) invalidSharedPresentation(label);
+  const value = new Y.Array<string>();
+  parent.set(key, value);
+  return value;
+}
+
+export function requiredPresentationMap(
+  parent: Y.Map<unknown>,
+  key: string,
+  label: string,
+): Y.Map<unknown> {
+  const value = parent.get(key);
+  if (!(value instanceof Y.Map)) invalidSharedPresentation(label);
+  return value as Y.Map<unknown>;
+}
+
+export function requiredPresentationArray(
+  parent: Y.Map<unknown>,
+  key: string,
+  label: string,
+): Y.Array<string> {
+  const value = parent.get(key);
+  if (!(value instanceof Y.Array)) invalidSharedPresentation(label);
+  return value as Y.Array<string>;
+}
+
+export function validatedPresentationOrder(
+  order: Y.Array<string>,
+  records: Y.Map<unknown>,
+  label: string,
+  allowTombstones = false,
+): string[] {
+  const seen = new Set<string>();
+  const values: string[] = [];
+  for (const value of order.toArray()) {
+    if (typeof value !== 'string' || !value.trim()) {
+      invalidSharedPresentation(`${label} order`);
+    }
+    // Concurrent idempotent inserts may duplicate only the order entry.
+    if (seen.has(value)) continue;
+    seen.add(value);
+    values.push(value);
+  }
+  for (const id of seen) {
+    const record = records.get(id);
+    if (!(record instanceof Y.Map)) {
+      invalidSharedPresentation(`${label} order and record set`);
+    }
+    if (record.get(PRESENTATION_RECORD_TOMBSTONE) !== undefined) {
+      invalidSharedPresentation(`${label} order and record set`);
+    }
+  }
+  for (const [id, value] of records.entries()) {
+    if (!(value instanceof Y.Map)) {
+      invalidSharedPresentation(`${label} order and record set`);
+    }
+    const tombstone = value.get(PRESENTATION_RECORD_TOMBSTONE);
+    if (tombstone === undefined) {
+      if (!seen.has(id)) {
+        invalidSharedPresentation(`${label} order and record set`);
+      }
+      continue;
+    }
+    if (!allowTombstones || tombstone !== true || seen.has(id)) {
+      invalidSharedPresentation(`${label} order and record set`);
+    }
+  }
+  return values;
+}
+
+export function readPresentationCollection(
+  records: Y.Map<unknown>,
+  order: Y.Array<string>,
+  label: string,
+): WorkOfficePresentationRecord[] {
+  return validatedPresentationOrder(order, records, label).map((id) => {
+    const record = requiredPresentationMap(records, id, label);
+    assertCommentRootsMatchRecordKind(record, label);
+    const value: Record<string, unknown> = {};
+    for (const [key, item] of record.entries()) {
+      if (key === PRESENTATION_RECORD_COMMENTS_PRESENT) {
+        if (label !== 'slide' || item !== true) {
+          invalidSharedPresentation(`${label} comment presence`);
+        }
+        continue;
+      }
+      if (isNestedPresentationField(key)) continue;
+      if (item instanceof Y.AbstractType) {
+        invalidSharedPresentation(`${label} field '${key}'`);
+      }
+      value[key] = cloneJsonValue(item);
+    }
+    if (value.id !== id) invalidSharedPresentation(`${label} identity`);
+    value.elements = readIdRecords(
+      requiredPresentationMap(
+        record,
+        PRESENTATION_RECORD_ELEMENTS,
+        `${label} elements`,
+      ),
+      requiredPresentationArray(
+        record,
+        PRESENTATION_RECORD_ELEMENT_ORDER,
+        `${label} element order`,
+      ),
+      `${label} element`,
+      true,
+    );
+    if (label === 'slide') readSlideComments(record, value);
+    return value as WorkOfficePresentationRecord;
+  });
+}
+
+export function patchPresentationElements(
+  records: Y.Map<unknown>,
+  order: Y.Array<string>,
+  previous: WorkSlideElement[],
+  next: WorkSlideElement[],
+  parentLabel: string,
+): void {
+  patchPresentationIdRecords(
+    records,
+    order,
+    previous,
+    next,
+    `${parentLabel} element`,
+    true,
+  );
+}
+
+export function patchPresentationIdRecords<T extends { id: string }>(
+  records: Y.Map<unknown>,
+  order: Y.Array<string>,
+  previous: T[],
+  next: T[],
+  label: string,
+  durableTombstones = false,
+): void {
+  const previousById = new Map(previous.map((value) => [value.id, value]));
+  const nextById = new Map(next.map((value) => [value.id, value]));
+  const omitGroupIds = groupFrameIsStale(records, previousById, next);
+  for (const value of previous) {
+    if (nextById.has(value.id)) continue;
+    if (!durableTombstones) {
+      records.delete(value.id);
+      continue;
+    }
+    const record = records.get(value.id);
+    if (record === undefined) continue;
+    if (!(record instanceof Y.Map)) invalidSharedPresentation(label);
+    const tombstone = record.get(PRESENTATION_RECORD_TOMBSTONE);
+    if (tombstone !== undefined && tombstone !== true) {
+      invalidSharedPresentation(`${label} tombstone`);
+    }
+    record.set(PRESENTATION_RECORD_TOMBSTONE, true);
+  }
+  for (const value of next) {
+    const before = previousById.get(value.id);
+    if (before && jsonEqual(before, value)) continue;
+    let record = records.get(value.id);
+    if (record === undefined) {
+      record = new Y.Map<unknown>();
+      records.set(value.id, record);
+    }
+    if (!(record instanceof Y.Map)) invalidSharedPresentation(label);
+    const tombstone = record.get(PRESENTATION_RECORD_TOMBSTONE);
+    if (tombstone !== undefined) {
+      if (tombstone !== true) invalidSharedPresentation(`${label} tombstone`);
+      if (!before) {
+        throw new WorkOfficeCollaborationError(
+          'office.collaboration.content_invalid',
+          `The deleted scene element ID '${value.id}' cannot be reused.`,
+        );
+      }
+      continue;
+    }
+    if (
+      durableTombstones &&
+      before &&
+      (before as unknown as Record<string, unknown>).type !==
+        (value as unknown as Record<string, unknown>).type
+    ) {
+      throw new WorkOfficeCollaborationError(
+        'office.collaboration.content_invalid',
+        `The scene element ID '${value.id}' cannot change type.`,
+      );
+    }
+    patchPresentationJsonMap(
+      record as Y.Map<unknown>,
+      (before ?? {}) as unknown as Record<string, unknown>,
+      value as unknown as Record<string, unknown>,
+      omitGroupIds ? GROUP_PATH_FIELD : undefined,
+    );
+  }
+  const previousIds = previous.map((value) => value.id);
+  const nextIds = next.map((value) => value.id);
+  if (
+    durableTombstones &&
+    presentationOrderPermutationIsStale(order, previousIds, nextIds)
+  ) {
+    return;
+  }
+  patchPresentationOrder(order, previousIds, nextIds);
+}
+
+/** Same element set, but the live order is no longer the observed order. */
+export function presentationOrderPermutationIsStale(
+  order: Y.Array<string>,
+  previousIds: readonly string[],
+  nextIds: readonly string[],
+): boolean {
+  if (previousIds.length !== nextIds.length) return false;
+  const next = new Set(nextIds);
+  if (next.size !== nextIds.length) return false;
+  if (!previousIds.every((id) => next.has(id))) return false;
+  return !jsonEqual(order.toArray(), previousIds);
+}
+
+export function patchPresentationOrder(
+  order: Y.Array<string>,
+  previous: string[],
+  next: string[],
+): void {
+  if (jsonEqual(previous, next)) return;
+  const nextIds = new Set(next);
+  for (const id of previous) {
+    if (!nextIds.has(id)) removeAll(order, id);
+  }
+  const previousIds = new Set(previous);
+  for (const id of next) {
+    if (previousIds.has(id) || order.toArray().includes(id)) continue;
+    insertRelative(order, next, id);
+  }
+  if (!sameRelativeOrder(previous, next)) {
+    const changedIds = next.filter((id) => previousIds.has(id));
+    for (const id of changedIds) removeAll(order, id);
+    for (const id of next) {
+      if (!order.toArray().includes(id)) insertRelative(order, next, id);
+    }
+  }
+}
+
+function assertCommentRootsMatchRecordKind(
+  record: Y.Map<unknown>,
+  label: string,
+): void {
+  if (
+    label !== 'slide' &&
+    (record.has(PRESENTATION_RECORD_COMMENTS) ||
+      record.has(PRESENTATION_RECORD_COMMENT_ORDER) ||
+      record.has(PRESENTATION_RECORD_COMMENTS_PRESENT))
+  ) {
+    invalidSharedPresentation(`${label} comments`);
+  }
+}
+
+function isNestedPresentationField(key: string): boolean {
+  return (
+    key === PRESENTATION_RECORD_ELEMENTS ||
+    key === PRESENTATION_RECORD_ELEMENT_ORDER ||
+    key === PRESENTATION_RECORD_COMMENTS ||
+    key === PRESENTATION_RECORD_COMMENT_ORDER
+  );
+}
+
+function readSlideComments(
+  record: Y.Map<unknown>,
+  value: Record<string, unknown>,
+): void {
+  const commentRecords = requiredPresentationMap(
+    record,
+    PRESENTATION_RECORD_COMMENTS,
+    'slide comments',
+  );
+  const commentOrder = requiredPresentationArray(
+    record,
+    PRESENTATION_RECORD_COMMENT_ORDER,
+    'slide comment order',
+  );
+  if (commentRecords.size > 0 || commentOrder.length > 0) {
+    value.comments = readIdRecords(
+      commentRecords,
+      commentOrder,
+      'slide comment',
+    );
+  } else if (record.get(PRESENTATION_RECORD_COMMENTS_PRESENT) === true) {
+    value.comments = [];
+  }
+}
+
+function readIdRecords(
+  records: Y.Map<unknown>,
+  order: Y.Array<string>,
+  label: string,
+  allowTombstones = false,
+): Record<string, unknown>[] {
+  const activeIds = validatedPresentationOrder(
+    order,
+    records,
+    label,
+    allowTombstones,
+  );
+  if (allowTombstones) {
+    for (const [id, value] of records.entries()) {
+      if (!(value instanceof Y.Map)) invalidSharedPresentation(label);
+      if (value.get(PRESENTATION_RECORD_TOMBSTONE) === true) {
+        readJsonMap(value, id, label, true);
+      }
+    }
+  }
+  return activeIds.map((id) =>
+    readJsonMap(requiredPresentationMap(records, id, label), id, label),
+  );
+}
+
+function readJsonMap(
+  record: Y.Map<unknown>,
+  expectedId: string,
+  label: string,
+  tombstoned = false,
+): Record<string, unknown> {
+  const value: Record<string, unknown> = {};
+  for (const [key, item] of record.entries()) {
+    if (key === PRESENTATION_RECORD_TOMBSTONE) {
+      if (!tombstoned || item !== true) {
+        invalidSharedPresentation(`${label} tombstone`);
+      }
+      continue;
+    }
+    if (item instanceof Y.AbstractType) {
+      invalidSharedPresentation(`${label} field '${key}'`);
+    }
+    value[key] = cloneJsonValue(item);
+  }
+  if (value.id !== expectedId) invalidSharedPresentation(`${label} identity`);
+  return value;
+}
+
+const GROUP_PATH_FIELD = 'groupIds';
+
+function groupFrameIsStale<T extends { id: string }>(
+  records: Y.Map<unknown>,
+  previousById: ReadonlyMap<string, T>,
+  next: readonly T[],
+): boolean {
+  for (const value of next) {
+    const before = previousById.get(value.id);
+    if (!before) continue;
+    const observed = groupPath(before);
+    if (jsonEqual(observed, groupPath(value))) continue;
+    const record = records.get(value.id);
+    if (
+      !(record instanceof Y.Map) ||
+      record.get(PRESENTATION_RECORD_TOMBSTONE) === true
+    ) {
+      return true;
+    }
+    if (!jsonEqual(observed, groupPath(liveGroupRecord(record)))) return true;
+  }
+  return false;
+}
+
+function groupPath(value: unknown): unknown {
+  if (!value || typeof value !== 'object') return [];
+  const groupIds = (value as { groupIds?: unknown }).groupIds;
+  return groupIds === undefined ? [] : groupIds;
+}
+
+function liveGroupRecord(record: Y.Map<unknown>): { groupIds?: unknown } {
+  if (!record.has(GROUP_PATH_FIELD)) return {};
+  return { groupIds: record.get(GROUP_PATH_FIELD) };
+}
+
+function patchPresentationJsonMap(
+  target: Y.Map<unknown>,
+  previous: Record<string, unknown>,
+  next: Record<string, unknown>,
+  omitKey?: string,
+): void {
+  const keys = new Set([...Object.keys(previous), ...Object.keys(next)]);
+  for (const key of keys) {
+    if (key === omitKey) continue;
+    if (jsonEqual(previous[key], next[key])) continue;
+    if (next[key] === undefined) target.delete(key);
+    else target.set(key, cloneJsonValue(next[key]));
+  }
+}
+
+function insertRelative(
+  order: Y.Array<string>,
+  desired: string[],
+  id: string,
+): void {
+  const desiredIndex = desired.indexOf(id);
+  for (let index = desiredIndex - 1; index >= 0; index -= 1) {
+    const currentIndex = order.toArray().indexOf(desired[index]);
+    if (currentIndex >= 0) {
+      order.insert(currentIndex + 1, [id]);
+      return;
+    }
+  }
+  for (let index = desiredIndex + 1; index < desired.length; index += 1) {
+    const currentIndex = order.toArray().indexOf(desired[index]);
+    if (currentIndex >= 0) {
+      order.insert(currentIndex, [id]);
+      return;
+    }
+  }
+  order.push([id]);
+}
+
+function sameRelativeOrder(previous: string[], next: string[]): boolean {
+  const nextIds = new Set(next);
+  const previousIds = new Set(previous);
+  return jsonEqual(
+    previous.filter((id) => nextIds.has(id)),
+    next.filter((id) => previousIds.has(id)),
+  );
+}
+
+function removeAll(order: Y.Array<string>, id: string): void {
+  for (let index = order.length - 1; index >= 0; index -= 1) {
+    if (order.get(index) === id) order.delete(index, 1);
+  }
+}

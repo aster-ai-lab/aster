@@ -1,0 +1,17 @@
+{
+  "name": "core-green",
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-code-core",
+    "--lib",
+    "agent_api::tests::fact_log::work_policy::confirmation",
+    "--",
+    "--test-threads=1"
+  ],
+  "exit_code": 0,
+  "wall_seconds": 36.54397425
+}

@@ -1,0 +1,23 @@
+{
+  "schema": "aster.t023.input-freeze.v1",
+  "source_task_root": "/Users/roylin/code/tasks/T01",
+  "inputs": {
+    "instruction.md": "0cd971564a0655ae78bdba0ed472b1255ce323db6a19feb6b26b6d4dcd67c22c",
+    "input/Africa_orders.csv": "7c0b74268c52b75a9dc0d892e343855775ff2d1bdfe6ea544d77e343699db5bc",
+    "input/Asia_Pacific_orders.csv": "8c9aaeae2e3f340247f5c0472a5912cbe6d0d74e5c88e0b1d5efab4b5bfb8d5b",
+    "input/Europe_orders.csv": "b132f6dc46fe5894818bf4a85243a122b508a64e0e76b06f8e0834556070fc02",
+    "input/LATAM_orders.csv": "546ca18eff9190355307c935f95016bb21f94a07f13ded07b8bf8f4115c62a36",
+    "input/USCA_orders.csv": "a0931573a257d766a122bdbb0ad9007fb49bdec18ca25931ec43a5852faa775c",
+    "input/adjustments.jsonl": "f6f9c1a604c8531efa63ebf90904a3a90b9f9cbefefdd17dd9254b67b6f654d8",
+    "input/policy.json": "471f6e3a27d29b432454deae7223f1927740bdc67a6cb885a55bc90c42ef17c5",
+    "input/priority_codebook.txt": "5033d8d25338cd67fd93c72e13b7b036cdaab9bc102325534d6de90e65548e2d",
+    "input/product_info.csv": "a508c5c50582a72e741bfed176be8a1dcdf3cbd8914391c57110585c1e5cf8a7",
+    "input/segment_performance.csv": "f20fce60c51dc2bdfef77f7bf0b25dee4107c6f4e31cdd8f5e79fa3d01cf1dd2",
+    "input/shipping_by_mode.csv": "1922a7d1f651bf42c1ab05275b364a6669d9dd08c6f6c2adf106982d031336eb"
+  },
+  "prompt": "请严格按照工作区 instruction.md 的全部要求完成任务，读取 input/，提交 pipeline.py，并实际运行生成 output/results.json。完成后说明产物的相对路径和实际验证结果。",
+  "prompt_sha256": "a55ceb23267a36b6aea90fa14c399621546a0223c551afa106ec5411b11cc6f5",
+  "scope": "Fixed across all matrix cells; no oracle data or preferred tool choreography included. Source/binary/budget manifests are frozen separately after qualification.",
+  "historical_inputs_match": true,
+  "historical_workspace_instruction_matches": true
+}

@@ -1,0 +1,713 @@
+{
+  "client_to_server": [
+    {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "initialize",
+      "params": {
+        "capabilities": {
+          "experimental": {
+            "serverStatusNotification": true
+          },
+          "general": {
+            "positionEncodings": [
+              "utf-16"
+            ]
+          },
+          "textDocument": {
+            "declaration": {
+              "dynamicRegistration": false,
+              "linkSupport": true
+            },
+            "definition": {
+              "dynamicRegistration": false,
+              "linkSupport": true
+            },
+            "diagnostic": {
+              "dynamicRegistration": false,
+              "relatedDocumentSupport": false
+            },
+            "documentSymbol": {
+              "dynamicRegistration": false,
+              "hierarchicalDocumentSymbolSupport": true
+            },
+            "implementation": {
+              "dynamicRegistration": false,
+              "linkSupport": true
+            },
+            "publishDiagnostics": {
+              "codeDescriptionSupport": true,
+              "dataSupport": false,
+              "relatedInformation": true,
+              "versionSupport": true
+            },
+            "references": {
+              "dynamicRegistration": false
+            },
+            "synchronization": {
+              "didSave": true,
+              "dynamicRegistration": false,
+              "willSave": false,
+              "willSaveWaitUntil": false
+            }
+          },
+          "workspace": {
+            "applyEdit": false,
+            "configuration": true,
+            "symbol": {
+              "dynamicRegistration": false
+            },
+            "workspaceFolders": true
+          }
+        },
+        "clientInfo": {
+          "name": "a3s-code-core",
+          "version": "9.1.4"
+        },
+        "initializationOptions": {
+          "cargo": {
+            "buildScripts": {
+              "enable": false
+            }
+          },
+          "checkOnSave": false,
+          "linkedProjects": [
+            "/private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpYAmRwk/Cargo.toml"
+          ],
+          "procMacro": {
+            "enable": false
+          }
+        },
+        "processId": 16689,
+        "rootUri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpYAmRwk/",
+        "workspaceFolders": [
+          {
+            "name": ".tmpYAmRwk",
+            "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpYAmRwk/"
+          }
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "method": "textDocument/definition",
+      "params": {
+        "position": {
+          "character": 31,
+          "line": 1
+        },
+        "textDocument": {
+          "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpYAmRwk/src/lib.rs"
+        }
+      }
+    }
+  ],
+  "io_observations": [
+    {
+      "elapsed_micros": 163051,
+      "offset_end": 1452,
+      "offset_start": 0,
+      "stream": 0
+    },
+    {
+      "elapsed_micros": 175042,
+      "offset_end": 2814,
+      "offset_start": 0,
+      "stream": 1
+    },
+    {
+      "elapsed_micros": 183771,
+      "offset_end": 1526,
+      "offset_start": 1452,
+      "stream": 0
+    },
+    {
+      "elapsed_micros": 214249,
+      "offset_end": 2949,
+      "offset_start": 2814,
+      "stream": 1
+    },
+    {
+      "elapsed_micros": 844849,
+      "offset_end": 157,
+      "offset_start": 0,
+      "stream": 2
+    },
+    {
+      "elapsed_micros": 3531594,
+      "offset_end": 3083,
+      "offset_start": 2949,
+      "stream": 1
+    },
+    {
+      "elapsed_micros": 3534053,
+      "offset_end": 1834,
+      "offset_start": 1526,
+      "stream": 0
+    },
+    {
+      "elapsed_micros": 3534060,
+      "offset_end": 2028,
+      "offset_start": 1834,
+      "stream": 0
+    },
+    {
+      "elapsed_micros": 3534065,
+      "offset_end": 2236,
+      "offset_start": 2028,
+      "stream": 0
+    },
+    {
+      "elapsed_micros": 3540112,
+      "offset_end": 3623,
+      "offset_start": 3083,
+      "stream": 1
+    },
+    {
+      "elapsed_micros": 3562118,
+      "offset_end": 2430,
+      "offset_start": 2236,
+      "stream": 0
+    },
+    {
+      "elapsed_micros": 3562128,
+      "offset_end": 2671,
+      "offset_start": 2430,
+      "stream": 0
+    },
+    {
+      "elapsed_micros": 3566352,
+      "offset_end": 4045,
+      "offset_start": 3623,
+      "stream": 1
+    },
+    {
+      "elapsed_micros": 3570552,
+      "offset_end": 2866,
+      "offset_start": 2671,
+      "stream": 0
+    },
+    {
+      "elapsed_micros": 3570558,
+      "offset_end": 2932,
+      "offset_start": 2866,
+      "stream": 0
+    },
+    {
+      "elapsed_micros": 3571447,
+      "offset_end": 4310,
+      "offset_start": 4045,
+      "stream": 1
+    },
+    {
+      "elapsed_micros": 3571788,
+      "offset_end": 2987,
+      "offset_start": 2932,
+      "stream": 0
+    },
+    {
+      "elapsed_micros": 3606170,
+      "offset_end": 157,
+      "offset_start": 157,
+      "stream": 2
+    },
+    {
+      "elapsed_micros": 3606265,
+      "offset_end": 4310,
+      "offset_start": 4310,
+      "stream": 1
+    }
+  ],
+  "io_observations_truncated": false,
+  "protocol_metadata": [
+    {
+      "end_offset": 1452,
+      "frame_index": 0,
+      "health": null,
+      "id": 1,
+      "method": "initialize",
+      "observed_complete_micros": 163051,
+      "quiescent": null,
+      "result_count": null,
+      "stream": 0
+    },
+    {
+      "end_offset": 1526,
+      "frame_index": 1,
+      "health": null,
+      "id": null,
+      "method": "initialized",
+      "observed_complete_micros": 183771,
+      "quiescent": null,
+      "result_count": null,
+      "stream": 0
+    },
+    {
+      "end_offset": 1834,
+      "frame_index": 2,
+      "health": null,
+      "id": null,
+      "method": "textDocument/didOpen",
+      "observed_complete_micros": 3534053,
+      "quiescent": null,
+      "result_count": null,
+      "stream": 0
+    },
+    {
+      "end_offset": 2028,
+      "frame_index": 3,
+      "health": null,
+      "id": null,
+      "method": "textDocument/didSave",
+      "observed_complete_micros": 3534060,
+      "quiescent": null,
+      "result_count": null,
+      "stream": 0
+    },
+    {
+      "end_offset": 2236,
+      "frame_index": 4,
+      "health": null,
+      "id": 2,
+      "method": "textDocument/documentSymbol",
+      "observed_complete_micros": 3534065,
+      "quiescent": null,
+      "result_count": null,
+      "stream": 0
+    },
+    {
+      "end_offset": 2430,
+      "frame_index": 5,
+      "health": null,
+      "id": null,
+      "method": "textDocument/didSave",
+      "observed_complete_micros": 3562118,
+      "quiescent": null,
+      "result_count": null,
+      "stream": 0
+    },
+    {
+      "end_offset": 2671,
+      "frame_index": 6,
+      "health": null,
+      "id": 3,
+      "method": "textDocument/definition",
+      "observed_complete_micros": 3562128,
+      "quiescent": null,
+      "result_count": null,
+      "stream": 0
+    },
+    {
+      "end_offset": 2866,
+      "frame_index": 7,
+      "health": null,
+      "id": null,
+      "method": "textDocument/didClose",
+      "observed_complete_micros": 3570552,
+      "quiescent": null,
+      "result_count": null,
+      "stream": 0
+    },
+    {
+      "end_offset": 2932,
+      "frame_index": 8,
+      "health": null,
+      "id": 4,
+      "method": "shutdown",
+      "observed_complete_micros": 3570558,
+      "quiescent": null,
+      "result_count": null,
+      "stream": 0
+    },
+    {
+      "end_offset": 2987,
+      "frame_index": 9,
+      "health": null,
+      "id": null,
+      "method": "exit",
+      "observed_complete_micros": 3571788,
+      "quiescent": null,
+      "result_count": null,
+      "stream": 0
+    },
+    {
+      "end_offset": 2814,
+      "frame_index": 0,
+      "health": null,
+      "id": 1,
+      "method": null,
+      "observed_complete_micros": 175042,
+      "quiescent": null,
+      "result_count": null,
+      "stream": 1
+    },
+    {
+      "end_offset": 2949,
+      "frame_index": 1,
+      "health": "ok",
+      "id": null,
+      "method": "experimental/serverStatus",
+      "observed_complete_micros": 214249,
+      "quiescent": false,
+      "result_count": null,
+      "stream": 1
+    },
+    {
+      "end_offset": 3083,
+      "frame_index": 2,
+      "health": "ok",
+      "id": null,
+      "method": "experimental/serverStatus",
+      "observed_complete_micros": 3531594,
+      "quiescent": true,
+      "result_count": null,
+      "stream": 1
+    },
+    {
+      "end_offset": 3623,
+      "frame_index": 3,
+      "health": null,
+      "id": 2,
+      "method": null,
+      "observed_complete_micros": 3540112,
+      "quiescent": null,
+      "result_count": 2,
+      "stream": 1
+    },
+    {
+      "end_offset": 4045,
+      "frame_index": 4,
+      "health": null,
+      "id": 3,
+      "method": null,
+      "observed_complete_micros": 3566352,
+      "quiescent": null,
+      "result_count": 1,
+      "stream": 1
+    },
+    {
+      "end_offset": 4250,
+      "frame_index": 5,
+      "health": null,
+      "id": null,
+      "method": "textDocument/publishDiagnostics",
+      "observed_complete_micros": 3571447,
+      "quiescent": null,
+      "result_count": null,
+      "stream": 1
+    },
+    {
+      "end_offset": 4310,
+      "frame_index": 6,
+      "health": null,
+      "id": 4,
+      "method": null,
+      "observed_complete_micros": 3571447,
+      "quiescent": null,
+      "result_count": null,
+      "stream": 1
+    }
+  ],
+  "scope": "only this self-authored temporary Rust fixture; no user workspace or model",
+  "server_to_client": [
+    {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": true,
+          "codeLensProvider": {
+            "resolveProvider": true
+          },
+          "completionProvider": {
+            "completionItem": {
+              "labelDetailsSupport": false
+            },
+            "resolveProvider": false,
+            "triggerCharacters": [
+              ":",
+              ".",
+              "'",
+              "("
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "diagnosticProvider": {
+            "identifier": "rust-analyzer",
+            "interFileDependencies": true,
+            "workspaceDiagnostics": false
+          },
+          "documentFormattingProvider": true,
+          "documentHighlightProvider": true,
+          "documentOnTypeFormattingProvider": {
+            "firstTriggerCharacter": ".",
+            "moreTriggerCharacter": [
+              "=",
+              "<",
+              ">",
+              "{",
+              "(",
+              "|",
+              "+"
+            ]
+          },
+          "documentRangeFormattingProvider": false,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "childModules": true,
+            "externalDocs": true,
+            "hoverRange": true,
+            "joinLines": true,
+            "matchingBrace": true,
+            "moveItem": true,
+            "onEnter": true,
+            "openCargoToml": true,
+            "parentModule": true,
+            "runnables": {
+              "kinds": [
+                "cargo"
+              ]
+            },
+            "ssr": true,
+            "workspaceSymbolScopeKindFiltering": true
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "implementationProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false
+          },
+          "positionEncoding": "utf-16",
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "selectionRangeProvider": true,
+          "semanticTokensProvider": {
+            "full": {
+              "delta": true
+            },
+            "legend": {
+              "tokenModifiers": [
+                "async",
+                "documentation",
+                "declaration",
+                "static",
+                "defaultLibrary",
+                "deprecated",
+                "associated",
+                "attribute",
+                "callable",
+                "constant",
+                "consuming",
+                "controlFlow",
+                "crateRoot",
+                "injected",
+                "intraDocLink",
+                "library",
+                "macro",
+                "mutable",
+                "procMacro",
+                "public",
+                "reference",
+                "trait",
+                "unsafe"
+              ],
+              "tokenTypes": [
+                "comment",
+                "decorator",
+                "enumMember",
+                "enum",
+                "function",
+                "interface",
+                "keyword",
+                "macro",
+                "method",
+                "namespace",
+                "number",
+                "operator",
+                "parameter",
+                "property",
+                "string",
+                "struct",
+                "typeParameter",
+                "variable",
+                "type",
+                "angle",
+                "arithmetic",
+                "attributeBracket",
+                "attribute",
+                "bitwise",
+                "boolean",
+                "brace",
+                "bracket",
+                "builtinAttribute",
+                "builtinType",
+                "character",
+                "colon",
+                "comma",
+                "comparison",
+                "constParameter",
+                "const",
+                "deriveHelper",
+                "derive",
+                "dot",
+                "escapeSequence",
+                "formatSpecifier",
+                "generic",
+                "invalidEscapeSequence",
+                "label",
+                "lifetime",
+                "logical",
+                "macroBang",
+                "negation",
+                "parenthesis",
+                "procMacro",
+                "punctuation",
+                "selfKeyword",
+                "selfTypeKeyword",
+                "semicolon",
+                "static",
+                "toolModule",
+                "typeAlias",
+                "union",
+                "unresolvedReference"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              "(",
+              ",",
+              "<"
+            ]
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {}
+          },
+          "typeDefinitionProvider": true,
+          "workspace": {
+            "fileOperations": {
+              "willRename": {
+                "filters": [
+                  {
+                    "pattern": {
+                      "glob": "**/*.rs",
+                      "matches": "file"
+                    },
+                    "scheme": "file"
+                  },
+                  {
+                    "pattern": {
+                      "glob": "**",
+                      "matches": "folder"
+                    },
+                    "scheme": "file"
+                  }
+                ]
+              }
+            },
+            "workspaceFolders": {
+              "changeNotifications": true,
+              "supported": true
+            }
+          },
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "rust-analyzer",
+          "version": "1.97.1 (8bab26f4 2026-07-14)"
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "experimental/serverStatus",
+      "params": {
+        "health": "ok",
+        "message": null,
+        "quiescent": false
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "experimental/serverStatus",
+      "params": {
+        "health": "ok",
+        "message": null,
+        "quiescent": true
+      }
+    },
+    {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": [
+        {
+          "originSelectionRange": {
+            "end": {
+              "character": 35,
+              "line": 1
+            },
+            "start": {
+              "character": 29,
+              "line": 1
+            }
+          },
+          "targetRange": {
+            "end": {
+              "character": 29,
+              "line": 0
+            },
+            "start": {
+              "character": 0,
+              "line": 0
+            }
+          },
+          "targetSelectionRange": {
+            "end": {
+              "character": 13,
+              "line": 0
+            },
+            "start": {
+              "character": 7,
+              "line": 0
+            }
+          },
+          "targetUri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpYAmRwk/src/lib.rs"
+        }
+      ]
+    }
+  ],
+  "stderr": "2026-10-20T01:21:38.617802+08:00  WARN notify error: No path was found. about [\"/Users/roylin/Library/Application Support/rust-analyzer/rust-analyzer.toml\"]\n",
+  "stream_limit_bytes": 65536,
+  "stream_order": [
+    "stdin",
+    "stdout",
+    "stderr"
+  ],
+  "streams": [
+    {
+      "retained_bytes": 2987,
+      "total_bytes": 2987,
+      "truncated": false
+    },
+    {
+      "retained_bytes": 4310,
+      "total_bytes": 4310,
+      "truncated": false
+    },
+    {
+      "retained_bytes": 157,
+      "total_bytes": 157,
+      "truncated": false
+    }
+  ],
+  "temp_root": "/private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpYAmRwk",
+  "time_semantics": "monotonic client IO completion observations, not native processing timestamps or a performance sample"
+}

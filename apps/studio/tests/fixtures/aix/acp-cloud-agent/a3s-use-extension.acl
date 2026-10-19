@@ -1,0 +1,9 @@
+extension "a3s/acp-cloud" {
+  schema_version = 3
+  version = "1.0.0"
+  requires_use = ">=0.3.0, <0.4.0"
+  route = "acp-cloud"
+  actions = ["read"]
+  repository { url = "https://example.org/a3s/acp-cloud" }
+  skill "acp-cloud" { path = "skills/acp-cloud/SKILL.md" }
+}

@@ -1,0 +1,210 @@
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/work
+
+ ❯ |renderer| src/renderer/components/composer/__tests__/composerInputAdapter.test.ts (5 tests | 1 failed | 4 skipped) 52ms
+   ❯ createComposerInputAdapter (5)
+     × ignores queued focus restoration after its real editor is destroyed 32ms
+stdout | src/renderer/pages/agents/__tests__/WorkbenchComposerAttachmentPipeline.test.tsx > actual bridge to managed composer file token > reports a failed upload and allows a successful retry through the same runtime
+Global paste handler initialized
+
+ ❯ |renderer| src/renderer/pages/agents/__tests__/WorkbenchComposerAttachmentPipeline.test.tsx (4 tests | 1 failed | 3 skipped) 1234ms
+   ❯ actual bridge to managed composer file token (4)
+     × reports a failed upload and allows a successful retry through the same runtime 1176ms
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 7 skipped (9)
+     Errors  1 error
+   Start at  15:38:29
+   Duration  2.17s (import 36%, tests 33%, transform 20%, environment 8%, setup 2%)
+
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:63967) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/local-product-scope.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-local-product-scope.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/composerInputAdapter.test.ts > createComposerInputAdapter > ignores queued focus restoration after its real editor is destroyed
+AssertionError: promise rejected "TypeError: Cannot read properties of null…" instead of resolving
+ ❯ src/renderer/components/composer/__tests__/composerInputAdapter.test.ts:35:27
+     33|     })
+     34|     currentEditor.destroy()
+     35|     await expect(restored).resolves.toBeUndefined()
+       |                           ^
+     36|   })
+     37|
+
+Caused by: TypeError: Cannot read properties of null (reading 'commands')
+ ❯ Editor.get commands [as commands] node_modules/.pnpm/@tiptap+core@3.31.3_@tiptap+pm@3.31.3/node_modules/@tiptap/core/dist/index.js:6272:30
+ ❯ focus src/renderer/components/composer/composerInputAdapter.ts:98:14
+ ❯ src/renderer/components/composer/__tests__/composerInputAdapter.test.ts:27:11
+ ❯ invokeTheCallbackFunction node_modules/.pnpm/jsdom@26.1.0_supports-color@8.1.1/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26
+ ❯ runAnimationFrameCallbacks node_modules/.pnpm/jsdom@26.1.0_supports-color@8.1.1/node_modules/jsdom/lib/jsdom/browser/Window.js:662:13
+ ❯ Timeout.<anonymous> node_modules/.pnpm/jsdom@26.1.0_supports-color@8.1.1/node_modules/jsdom/lib/jsdom/browser/Window.js:640:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/WorkbenchComposerAttachmentPipeline.test.tsx > actual bridge to managed composer file token > reports a failed upload and allows a successful retry through the same runtime
+AssertionError: expected "vi.fn()" to be called with arguments: [ '文件处理出错' ]
+
+Number of calls: 0
+
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<output[39m
+        [33mdata-testid[39m=[32m"staged-count"[39m
+      [36m>[39m
+        [0m0[0m
+      [36m</output>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"narrow-mode relative mx-auto w-full transition-[max-width] duration-300 ease-in-out active max-w-[calc(800px+3rem)] box-border px-6 pointer-events-auto"[39m
+        [33mdata-ui[39m=[32m"chat.narrow-layout"[39m
+        [33mstyle[39m=[32m"width: 100%;"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"w-full"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"inputbar relative z-2 flex flex-col pt-0"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"relative"[39m
+              [33mdata-ui[39m=[32m"chat.composer-surface"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"inputbar-container relative rounded-[20px] border-[0.5px] border-border bg-card shadow-sm transition-all duration-200 ease-in-out pt-2 mb-3"[39m
+                [33mdata-composer-inputbar[39m=[32m""[39m
+                [33mdata-composer-presentation[39m=[32m"regular"[39m
+                [33mdata-ui[39m=[32m"chat.composer"[39m
+                [33mid[39m=[32m"inputbar"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33maria-label[39m=[32m"调整输入框高度"[39m
+                  [33maria-orientation[39m=[32m"horizontal"[39m
+                  [33maria-valuemax[39m=[32m"384"[39m
+                  [33maria-valuemin[39m=[32m"46"[39m
+                  [33maria-valuenow[39m=[32m"46"[39m
+                  [33mclass[39m=[32m"group/composer-resize-handle absolute top-0 right-4 left-4 z-3 h-2 cursor-row-resize [-webkit-app-region:no-drag] focus-visible:bg-foreground/40 focus-visible:outline-none"[39m
+                  [33mdata-composer-resize-handle[39m=[32m""[39m
+                  [33mdata-ui[39m=[32m"chat.composer-surface.separator"[39m
+                  [33mrole[39m=[32m"separator"[39m
+                  [33mtabindex[39m=[32m"0"[39m
+                [36m>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"absolute top-0 right-0 left-0 h-0.5 rounded-full bg-foreground/20 opacity-0 transition-opacity group-hover/composer-resize-handle:opacity-100 group-focus/composer-resize-handle:opacity-100 group-data-[resizing=true]/composer-resize-handle:bg-primary/35 group-data-[resizing=true]/composer-resize-handle:opacity-100"[39m
+                  [36m/>[39m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"group/expand-corner absolute top-px right-px z-4 size-8"[39m
+                  [33mdata-composer-expand-corner[39m=[32m""[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33maria-hidden[39m=[32m"true"[39m
+                    [33mclass[39m=[32m"pointer-events-none absolute top-1 right-1 size-3 origin-top-right scale-100 rounded-tr-[16px] border-t-[1.5px] border-r-[1.5px] border-foreground/60 opacity-70 transition-[opacity,scale] duration-200 ease-out group-focus-within/expand-corner:scale-50 group-focus-within/expand-corner:opacity-0 group-hover/expand-corner:scale-50 group-hover/expand-corner:opacity-0"[39m
+                    [33mdata-composer-expand-corner-line[39m=[32m""[39m
+                  [36m/>[39m
+                  [36m<button[39m
+                    [33maria-label[39m=[32m"展开"[39m
+                    [33maria-pressed[39m=[32m"false"[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 whitespace-nowrap font-normal disabled:pointer-events-none disabled:opacity-40 shrink-0 outline-none aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_.lucide:not(.lucide-custom)]:text-current [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 data-[busy=true]:cursor-progress data-[busy=true]:opacity-40 dark:text-[#f5f5f5] dark:hover:bg-[#2c2c2c] dark:hover:text-[#f5f5f5] dark:focus-visible:bg-[#2c2c2c] dark:focus-visible:text-[#f5f5f5] pointer-events-none absolute top-1 right-1 size-5.5 translate-x-2.5 -translate-y-2.5 scale-80 rotate-[-8deg] rounded-full bg-transparent text-muted-foreground opacity-0 shadow-none transition-[opacity,translate,scale,rotate,color,background-color] duration-300 ease-out group-focus-within/expand-corner:pointer-events-auto group-focus-within/expand-corner:translate-x-0 group-focus-within/expand-corner:translate-y-0 group-focus-within/expand-corner:scale-100 group-focus-within/expand-corner:rotate-0 group-focus-within/expand-corner:bg-accent/80 group-focus-within/expand-corner:text-foreground group-focus-within/expand-corner:opacity-100 group-hover/expand-corner:pointer-events-auto group-hover/expand-corner:translate-x-0 group-hover/expand-corner:translate-y-0 group-hover/expand-corner:scale-100 group-hover/expand-corner:rotate-0 group-hover/expand-corner:bg-accent/80 group-hover/expand-corner:text-foreground group-hover/expand-corner:opacity-100 hover:bg-accent hover:text-foreground focus-visible:pointer-events-auto focus-visible:translate-x-0 focus-visible:translate-y-0 focus-visible:scale-100 focus-visible:rotate-0 focus-visible:bg-accent focus-visible:text-foreground focus-visible:opacity-100 [&_svg]:!size-3"[39m
+                    [33mdata-slot[39m=[32m"button"[39m
+                    [33mdata-ui[39m=[32m"part:button"[39m
+                    [33mdata-variant[39m=[32m"ghost"[39m
+                    [33mtype[39m=[32m"button"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33maria-hidden[39m=[32m"true"[39m
+                      [33mclass[39m=[32m"lucide lucide-maximize2 lucide-maximize-2 transition-[scale] duration-300 ease-out group-focus-within/expand-corner:scale-110 group-hover/expand-corner:scale-110"[39m
+                      [33mfill[39m=[32m"none"[39m
+                      [33mheight[39m=[32m"24"[39m
+                      [33mstroke[39m=[32m"currentColor"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                      [33mstroke-width[39m=[32m"2"[39m
+                      [33mviewBox[39m=[32m"0 0 24 24"[39m
+                      [33mwidth[39m=[32m"24"[39m
+                      [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                    [36m>[39m
+                      [36m<path[39m
+                        [33md[39m=[32m"M15 3h6v6"[39m
+                      [36m/>[39m
+                      [36m<path[39m
+                        [33md[39m=[32m"m21 3-7 7"[39m
+                      [36m/>[39m
+                    ...
+ ❯ src/renderer/pages/agents/__tests__/WorkbenchComposerAttachmentPipeline.test.tsx:236:45
+    234|       fireEvent.change(failedInput)
+    235|     })
+    236|     await waitFor(() => expect(toast.error).toHaveBeenCalledWith(i18n.…
+       |                                             ^
+    237|     expect(screen.getByTestId('staged-count')).toHaveTextContent('0')
+    238|     expect(actions?.getDraft().tokens).toEqual([])
+ ❯ runWithExpensiveErrorDiagnosticsDisabled node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+Error: composer file 403
+ ❯ postFile src/renderer/pages/agents/__tests__/WorkbenchComposerAttachmentPipeline.test.tsx:163:3
+ ❯ Object.write src/renderer/pages/agents/__tests__/WorkbenchComposerAttachmentPipeline.test.tsx:163:3
+ ❯ HTMLInputElement.eval src/renderer/pages/agents/__tests__/WorkbenchComposerAttachmentPipeline.test.tsx:163:3
+
+This error originated in "src/renderer/pages/agents/__tests__/WorkbenchComposerAttachmentPipeline.test.tsx" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The last test to run before this error was "reports a failed upload and allows a successful retry through the same runtime". This means either:
+- the error was thrown while Vitest was running this test, or
+- the error was thrown after the test completed, and this was the most recent test at that point.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+

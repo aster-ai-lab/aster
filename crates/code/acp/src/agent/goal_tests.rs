@@ -825,7 +825,9 @@ async fn session_scoped_legacy_goal_reaches_real_model_after_new_host_reopen() {
         .session
         .clone();
     let marker = format!("SCOPED-{}", uuid::Uuid::new_v4());
-    let objective = format!("The selected objective marker is {marker}. When asked, quote the marker exactly. Do not use tools.");
+    let objective = format!(
+        "The selected objective marker is {marker}. When asked, quote the marker exactly. Do not use tools."
+    );
     crate::goal::apply_session_goal(&first, crate::goal::GoalOp::Set(objective.clone()))
         .await
         .unwrap();
@@ -904,6 +906,10 @@ async fn session_scoped_legacy_goal_reaches_real_model_after_new_host_reopen() {
         .contains("UNOWNED-WORKSPACE-MARKER"));
     assert_eq!(std::fs::read(&root_source).unwrap(), unowned);
     assert!(next.recorded_usage_tokens().2 > before.2);
-    eprintln!("SCOPED-GOAL-REOPEN model=boyue/deepseek-v4-flash elapsed_ms={} before={before:?} after={:?}", started.elapsed().as_millis(), next.recorded_usage_tokens());
+    eprintln!(
+        "SCOPED-GOAL-REOPEN model=boyue/deepseek-v4-flash elapsed_ms={} before={before:?} after={:?}",
+        started.elapsed().as_millis(),
+        next.recorded_usage_tokens()
+    );
     next.close().await;
 }

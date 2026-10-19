@@ -1,0 +1,74 @@
+{
+  "schema": "aster.controlled-provider-checks.v1",
+  "checks": [
+    {
+      "phase": "RED",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "-p",
+        "aster-dream",
+        "--lib",
+        "provider_socket",
+        "--",
+        "--test-threads=1",
+        "--nocapture"
+      ],
+      "exit_code": 101,
+      "passed": 1,
+      "failed": 1,
+      "test_seconds": 0.01,
+      "build_seconds": 11.8,
+      "log": "red.log",
+      "failure": "accepted Darwin socket read returned Resource temporarily unavailable (os error 35) before client sent request bytes"
+    },
+    {
+      "phase": "GREEN",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "-p",
+        "aster-dream",
+        "--lib",
+        "provider_socket",
+        "--",
+        "--test-threads=1",
+        "--nocapture"
+      ],
+      "exit_code": 0,
+      "passed": 2,
+      "failed": 0,
+      "test_seconds": 0.32,
+      "build_seconds": 6.43,
+      "log": "green.log"
+    },
+    {
+      "phase": "format",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--config",
+        "skip_children=true",
+        "--check",
+        "apps/work/src-tauri/src/agent_plane/local_acp_delivery_tests.rs",
+        "apps/work/src-tauri/src/agent_plane/local_acp_provider_tests.rs"
+      ],
+      "exit_code": 0,
+      "log": "fmt.log"
+    }
+  ],
+  "boundary": {
+    "acp_processes_started": 0,
+    "model_calls": 0,
+    "vm_starts": 0,
+    "production_source_changed": false,
+    "binary_replacement": false,
+    "final_five_case_rerun": false,
+    "historical_v3_failure_preserved": true
+  }
+}

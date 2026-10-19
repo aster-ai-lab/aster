@@ -1,0 +1,11 @@
+{
+  "name": "review-security",
+  "required": [
+    ["账号", ""],
+    ["身份证", ""],
+    ["备份", ""],
+    ["日志", ""]
+  ],
+  "excluded": [],
+  "ambiguous": false
+}

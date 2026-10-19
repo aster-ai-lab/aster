@@ -1,0 +1,27 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.35s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 6 tests
+test fact_control::model_governance_tests::dropping_actual_blocked_public_projection_keeps_real_store_some_and_entered_send ... ok
+test fact_control::model_governance_tests::an_empty_provider_delta_does_not_suppress_the_final_answer ... ok
+test fact_control::model_governance_tests::actual_store_none_and_closed_output_are_retained_without_success_ack ... ok
+test fact_control::model_governance_tests::final_response_fallback_does_not_inherit_earlier_streamed_text ... ok
+test fact_control::model_governance_tests::done_delivers_without_waiting_for_provider_channel_eof ... ok
+test fact_control::model_governance_tests::original_parent_projects_actual_input_usage_and_store_before_public_in_order ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 5129 filtered out; finished in 0.00s
+

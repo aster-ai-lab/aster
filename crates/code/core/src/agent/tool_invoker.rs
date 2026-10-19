@@ -28,6 +28,35 @@ struct ScopedToolInvoker {
     event_tx: Option<mpsc::WeakSender<AgentEvent>>,
 }
 
+struct NestedMutationFence {
+    ledger: Arc<std::sync::Mutex<crate::harness_loop::MutationLedger>>,
+    started: Option<u64>,
+}
+
+impl NestedMutationFence {
+    fn new(ledger: Arc<std::sync::Mutex<crate::harness_loop::MutationLedger>>) -> Self {
+        let started = ledger
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .begin_nested_mutation();
+        Self { ledger, started }
+    }
+
+    fn finish(&mut self) -> Option<u64> {
+        let started = self.started.take()?;
+        self.ledger
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .finish_nested_mutation(started)
+    }
+}
+
+impl Drop for NestedMutationFence {
+    fn drop(&mut self) {
+        let _ = self.finish();
+    }
+}
+
 impl ScopedToolInvoker {
     fn new(
         agent: &AgentLoop,
@@ -468,6 +497,69 @@ impl ScopedToolInvoker {
         }
         result
     }
+
+    fn record_nested_artifact_verification(
+        &self,
+        invocation: &ToolInvocation,
+        result: &ToolResult,
+        effects: &a3s_effect::ToolEffectObservationV1,
+        parent: &ToolContext,
+        child: &ToolContext,
+        shell_window: Option<u64>,
+    ) {
+        let Some(scope) = parent.native_artifact_verifications.as_ref() else {
+            return;
+        };
+        let mut ledger = scope
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        ledger.observe_nested_artifact_effects(&invocation.name, effects);
+        if result.exit_code != 0 || child.is_cancelled() {
+            return;
+        }
+        if invocation.name == "bash" {
+            if let (Some(epoch), Some(command)) = (
+                shell_window,
+                result
+                    .metadata
+                    .as_ref()
+                    .and_then(|metadata| metadata.get("verification_shell_command"))
+                    .and_then(serde_json::Value::as_str),
+            ) {
+                ledger.record_nested_shell_verification(command, epoch, &parent.workspace);
+            }
+        }
+        if let Some(tool) = self.agent.tool_executor.registry().get(&invocation.name) {
+            let mut output = crate::tools::ToolOutput::success(&result.output);
+            output.metadata = result.metadata.clone();
+            if let Some(proof) = tool.artifact_verification(&invocation.args, &output) {
+                if let Some(change) = effects
+                    .changes
+                    .iter()
+                    .find(|change| change.path == proof.file_path)
+                {
+                    ledger.record_native_artifact_verification(
+                        &invocation.name,
+                        proof,
+                        &change.after,
+                        &parent.workspace,
+                    );
+                }
+            }
+        }
+        if let Some(nested) = child.native_artifact_verifications.as_ref() {
+            let allow_shell =
+                shell_window.is_some_and(|epoch| ledger.nested_mutation_window_is_current(epoch));
+            ledger.absorb_nested_artifact_verifications(
+                &nested
+                    .lock()
+                    .unwrap_or_else(std::sync::PoisonError::into_inner),
+                &invocation.name,
+                effects,
+                allow_shell,
+            );
+        }
+    }
 }
 
 #[async_trait]
@@ -477,7 +569,7 @@ impl ToolInvoker for ScopedToolInvoker {
         let started = Instant::now();
         let mut lifecycle = ToolInvocationLifecycle::new();
         let cancellation = ctx.cancellation_token();
-        let invocation_ctx = match ctx.enter_tool_invocation(&invocation.name) {
+        let mut invocation_ctx = match ctx.enter_tool_invocation(&invocation.name) {
             Ok(ctx) => ctx,
             Err(message) => {
                 lifecycle.terminal(ToolInvocationTerminal::Failed);
@@ -493,6 +585,11 @@ impl ToolInvoker for ScopedToolInvoker {
                 return result;
             }
         };
+        let nested_artifacts =
+            invocation.origin.is_nested() && ctx.native_artifact_verifications.is_some();
+        if nested_artifacts {
+            invocation_ctx = invocation_ctx.with_native_artifact_verifications();
+        }
         debug_assert!(lifecycle.transition(ToolInvocationState::Admitted).is_ok());
         let cancellation = invocation_ctx.cancellation_token();
         if ctx.verifier_read_only() {
@@ -543,6 +640,25 @@ impl ToolInvoker for ScopedToolInvoker {
         debug_assert!(lifecycle
             .transition(ToolInvocationState::GatePending)
             .is_ok());
+        let read_only = self
+            .agent
+            .tool_executor
+            .registry()
+            .capabilities(&invocation.name, &invocation.args)
+            .is_some_and(|capabilities| capabilities.read_only);
+        let artifact_watch =
+            if nested_artifacts && !read_only && ctx.workspace_services.local_root().is_some() {
+                Some(crate::porcelain::Watch::start(&ctx.workspace).await)
+            } else {
+                None
+            };
+        let mut mutation_fence = (nested_artifacts && !read_only)
+            .then(|| {
+                ctx.native_artifact_verifications
+                    .as_ref()
+                    .map(|scope| NestedMutationFence::new(Arc::clone(scope)))
+            })
+            .flatten();
         let decision = tokio::select! {
             biased;
             _ = cancellation.cancelled() => {
@@ -578,6 +694,31 @@ impl ToolInvoker for ScopedToolInvoker {
         let result = self
             .finish(&invocation, started, normalized, &cancellation)
             .await;
+        if nested_artifacts {
+            let delta = match artifact_watch {
+                Some(watch) => {
+                    watch
+                        .finish_observed_with_revision(&ctx.workspace, true)
+                        .await
+                }
+                None => crate::porcelain::PathDelta {
+                    paths: vec![],
+                    incomplete: !read_only,
+                },
+            };
+            let effects = crate::porcelain::observe_path_effects(&ctx.workspace, delta);
+            let shell_window = mutation_fence
+                .as_mut()
+                .and_then(NestedMutationFence::finish);
+            self.record_nested_artifact_verification(
+                &invocation,
+                &result,
+                &effects,
+                ctx,
+                &invocation_ctx,
+                shell_window,
+            );
+        }
         // Tools such as `task` emit their terminal high-level event through a
         // run-owned broadcast channel, while the caller emits `ToolEnd` on the
         // runtime mpsc channel after this method returns. Acknowledging the

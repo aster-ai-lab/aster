@@ -1,0 +1,36 @@
+{
+  "cwd": "/Users/roylin/code/aster/apps/work",
+  "command": [
+    "./node_modules/.bin/vitest",
+    "run",
+    "--project",
+    "renderer",
+    "src/renderer/components/composer/__tests__/useToolApprovalComposerOverrides.test.ts",
+    "src/renderer/components/composer/__tests__/ComposerCore.test.tsx",
+    "src/renderer/hooks/__tests__/useTopicAwaitingApproval.test.ts",
+    "src/renderer/pages/agents/__tests__/useAgentChatRuntimeState.test.tsx",
+    "src/renderer/data/__tests__/studioAgentPlane.test.ts",
+    "src/renderer/services/aiTransport/__tests__/IpcChatTransport.test.ts",
+    "src/renderer/services/aiTransport/__tests__/TopicStreamSubscription.test.ts",
+    "src/renderer/hooks/__tests__/useChatWithHistory.test.ts",
+    "src/renderer/components/composer/__tests__/ComposerCore.insertion.test.tsx",
+    "src/renderer/components/composer/__tests__/ComposerSurface.lazy.test.tsx",
+    "src/renderer/pages/home/__tests__/ChatContent.test.tsx"
+  ],
+  "started_at_utc": "2026-10-19T21:17:40.911773+00:00",
+  "prior_frontend_manifest": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/approval-recovery/frontend-fix/source-final.json",
+  "prior_frontend_hashes_match": true,
+  "native_contract_source_review": "six-field response; attach pending; synchronous revocation; owner+execution guard unchanged",
+  "environment_overrides": {
+    "A3S_CLOUD_TEST_AIX_EXECUTION_SSE_INPUT": "removed for hermetic conditional skip"
+  },
+  "ended_at_utc": "2026-10-19T21:17:47.953527+00:00",
+  "elapsed_seconds": 7.041499666,
+  "exit_code": 0,
+  "sources_unchanged": true,
+  "test_files_passed": 11,
+  "tests_passed": 182,
+  "tests_skipped": 1,
+  "vitest_duration_seconds": 5.86,
+  "skip_reason": "Existing conditional retained-SSE replay test requires an external fixture; its ambient input path was removed for this hermetic revalidation."
+}

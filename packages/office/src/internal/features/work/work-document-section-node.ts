@@ -1,0 +1,321 @@
+import { mergeAttributes, Node } from '@tiptap/core';
+import {
+  documentSectionDomAttributes,
+  documentSectionLayoutFromNodeAttributes,
+  type DocumentSectionNodeAttributes,
+} from './work-document-section';
+import {
+  activeDocumentSection,
+  documentSectionById,
+  insertDocumentSection as insertSection,
+  mergeDocumentSectionWithPrevious as mergeSectionWithPrevious,
+  updateActiveDocumentSection as updateActiveSection,
+  updateDocumentSection as updateSection,
+} from './work-document-section-editor';
+import { documentPageMetrics } from './work-document-pagination-measurement';
+import { normalizeDocumentPaperSize } from './work-document-page-size';
+import type {
+  WorkDocumentSectionBreakType,
+  WorkDocumentSectionLayout,
+} from './work-types';
+
+declare module '@tiptap/core' {
+  interface Commands<ReturnType> {
+    documentSection: {
+      insertDocumentSection: (
+        breakAfter?: WorkDocumentSectionBreakType,
+      ) => ReturnType;
+      mergeDocumentSectionWithPrevious: () => ReturnType;
+      updateActiveDocumentSection: (
+        layout: WorkDocumentSectionLayout,
+      ) => ReturnType;
+      updateDocumentSection: (
+        sectionId: string,
+        layout: WorkDocumentSectionLayout,
+      ) => ReturnType;
+    };
+  }
+}
+
+export const DocumentSection = Node.create({
+  name: 'documentSection',
+  group: 'block',
+  content: 'block+',
+  defining: true,
+  isolating: true,
+
+  addAttributes() {
+    return {
+      id: hiddenAttribute(''),
+      pageSize: hiddenAttribute('a4'),
+      orientation: hiddenAttribute('portrait'),
+      marginTop: hiddenAttribute(25),
+      marginRight: hiddenAttribute(23),
+      marginBottom: hiddenAttribute(25),
+      marginLeft: hiddenAttribute(23),
+      columnCount: hiddenAttribute(1),
+      columnSpacing: hiddenAttribute(12),
+      columnSeparator: hiddenAttribute(false),
+      columnLayout: hiddenAttribute(''),
+      breakAfter: hiddenAttribute('nextPage'),
+      headerText: hiddenAttribute(''),
+      footerText: hiddenAttribute(''),
+      showPageNumbers: hiddenAttribute(false),
+      pageNumberStart: hiddenAttribute(null),
+      pageChrome: hiddenAttribute(''),
+      pageBorders: hiddenAttribute(''),
+      pageMargins: hiddenAttribute(''),
+      pageGeometry: hiddenAttribute(''),
+      paperSource: hiddenAttribute(''),
+      documentGridType: hiddenAttribute(''),
+      documentGridLinePitch: hiddenAttribute(null),
+      documentGridCharSpace: hiddenAttribute(null),
+      lnNumCountBy: hiddenAttribute(null),
+      lnNumStart: hiddenAttribute(null),
+      lnNumDistance: hiddenAttribute(null),
+      lnNumRestart: hiddenAttribute(''),
+      pgNumFmt: hiddenAttribute(''),
+      pgNumStart: hiddenAttribute(null),
+      pgNumChapStyle: hiddenAttribute(null),
+      pgNumChapSep: hiddenAttribute(''),
+      formProt: hiddenAttribute(null),
+      noEndnote: hiddenAttribute(null),
+      verticalAlign: hiddenAttribute(''),
+      textDirection: hiddenAttribute(''),
+      bidi: hiddenAttribute(null),
+      footnotePr: hiddenAttribute(''),
+      endnotePr: hiddenAttribute(''),
+      propertyRevisionOmml: hiddenAttribute(''),
+      sectionChangeKind: hiddenAttribute(null),
+      sectionChangeId: hiddenAttribute(''),
+      sectionChangeAuthor: hiddenAttribute(''),
+      sectionChangeDate: hiddenAttribute(''),
+      sectionChangeBefore: hiddenAttribute(''),
+    };
+  },
+
+  addCommands() {
+    return {
+      insertDocumentSection:
+        (breakAfter = 'nextPage') =>
+        ({ dispatch, editor, state, tr }) => {
+          const section = activeDocumentSection(editor);
+          if (
+            !section ||
+            !editor.schema.nodes.documentSection ||
+            !editor.schema.nodes.paragraph
+          )
+            return false;
+          return dispatch
+            ? insertSection(editor, breakAfter, { state, tr })
+            : true;
+        },
+      mergeDocumentSectionWithPrevious:
+        () =>
+        ({ dispatch, editor, state, tr }) => {
+          const section = activeDocumentSection(editor);
+          if (!section || section.index === 0) return false;
+          return dispatch
+            ? mergeSectionWithPrevious(editor, { state, tr })
+            : true;
+        },
+      updateActiveDocumentSection:
+        (layout) =>
+        ({ dispatch, editor, state, tr }) => {
+          if (!activeDocumentSection(editor)) return false;
+          return dispatch ? updateActiveSection(layout, { state, tr }) : true;
+        },
+      updateDocumentSection:
+        (sectionId, layout) =>
+        ({ dispatch, editor, state, tr }) => {
+          if (!documentSectionById(editor, sectionId)) return false;
+          return dispatch
+            ? updateSection(sectionId, layout, {
+                state,
+                tr,
+              })
+            : true;
+        },
+    };
+  },
+
+  parseHTML() {
+    return [
+      {
+        tag: 'section[data-document-section]',
+        getAttrs: (node) => {
+          if (!(node instanceof HTMLElement)) return false;
+          return {
+            id: node.dataset.sectionId ?? '',
+            pageSize: normalizeDocumentPaperSize(node.dataset.sectionPageSize),
+            orientation:
+              node.dataset.sectionOrientation === 'landscape'
+                ? 'landscape'
+                : 'portrait',
+            marginTop: numberAttribute(node, 'sectionMarginTop', 25),
+            marginRight: numberAttribute(node, 'sectionMarginRight', 23),
+            marginBottom: numberAttribute(node, 'sectionMarginBottom', 25),
+            marginLeft: numberAttribute(node, 'sectionMarginLeft', 23),
+            columnCount: numberAttribute(node, 'sectionColumnCount', 1),
+            columnSpacing: numberAttribute(node, 'sectionColumnSpacing', 12),
+            columnSeparator: node.dataset.sectionColumnSeparator === 'true',
+            columnLayout: node.dataset.sectionColumnLayout ?? '',
+            breakAfter: sectionBreakAttribute(node.dataset.sectionBreakAfter),
+            headerText: node.dataset.sectionHeaderText ?? '',
+            footerText: node.dataset.sectionFooterText ?? '',
+            showPageNumbers: node.dataset.sectionShowPageNumbers === 'true',
+            pageNumberStart: nullableNumberAttribute(
+              node,
+              'sectionPageNumberStart',
+            ),
+            pageChrome: node.dataset.sectionPageChrome ?? '',
+            pageBorders: node.dataset.sectionPageBorders ?? '',
+            pageMargins: node.dataset.sectionPageMargins ?? '',
+            pageGeometry: node.dataset.sectionPageGeometry ?? '',
+            paperSource: node.dataset.sectionPaperSource ?? '',
+            documentGridType: (node.dataset.sectionDocumentGridType ??
+              '') as DocumentSectionNodeAttributes['documentGridType'],
+            documentGridLinePitch: nullableNumberAttribute(
+              node,
+              'sectionDocumentGridLinePitch',
+            ),
+            documentGridCharSpace: nullableNumberAttribute(
+              node,
+              'sectionDocumentGridCharSpace',
+            ),
+            lnNumCountBy: nullableNumberAttribute(node, 'sectionLnNumCountBy'),
+            lnNumStart: nullableNumberAttribute(node, 'sectionLnNumStart'),
+            lnNumDistance: nullableNumberAttribute(
+              node,
+              'sectionLnNumDistance',
+            ),
+            lnNumRestart: (node.dataset.sectionLnNumRestart ??
+              '') as DocumentSectionNodeAttributes['lnNumRestart'],
+            pgNumFmt: (node.dataset.sectionPgNumFmt ??
+              '') as DocumentSectionNodeAttributes['pgNumFmt'],
+            pgNumStart: nullableNumberAttribute(node, 'sectionPgNumStart'),
+            pgNumChapStyle: nullableNumberAttribute(
+              node,
+              'sectionPgNumChapStyle',
+            ),
+            pgNumChapSep: (node.dataset.sectionPgNumChapSep ??
+              '') as DocumentSectionNodeAttributes['pgNumChapSep'],
+            formProt:
+              node.dataset.sectionFormProt === 'true'
+                ? true
+                : node.dataset.sectionFormProt === 'false'
+                  ? false
+                  : null,
+            noEndnote:
+              node.dataset.sectionNoEndnote === 'true'
+                ? true
+                : node.dataset.sectionNoEndnote === 'false'
+                  ? false
+                  : null,
+            verticalAlign: (node.dataset.sectionVerticalAlign ??
+              '') as DocumentSectionNodeAttributes['verticalAlign'],
+            textDirection: (node.dataset.sectionTextDirection ??
+              '') as DocumentSectionNodeAttributes['textDirection'],
+            bidi:
+              node.dataset.sectionBidi === 'true'
+                ? true
+                : node.dataset.sectionBidi === 'false'
+                  ? false
+                  : null,
+            footnotePr: node.dataset.sectionFootnotePr ?? '',
+            endnotePr: node.dataset.sectionEndnotePr ?? '',
+            propertyRevisionOmml:
+              node.dataset.sectionPropertyRevisionOmml ?? '',
+            sectionChangeKind:
+              node.getAttribute('data-document-change') === 'true' &&
+              node.getAttribute('data-change-kind') === 'section-formatting'
+                ? 'section-formatting'
+                : null,
+            sectionChangeId: node.getAttribute('data-change-id') ?? '',
+            sectionChangeAuthor: node.getAttribute('data-change-author') ?? '',
+            sectionChangeDate: node.getAttribute('data-change-date') ?? '',
+            sectionChangeBefore: node.getAttribute('data-change-before') ?? '',
+          } satisfies DocumentSectionNodeAttributes;
+        },
+      },
+    ];
+  },
+
+  renderHTML({ node, HTMLAttributes }) {
+    const layout = documentSectionLayoutFromNodeAttributes(node.attrs);
+    const id =
+      typeof node.attrs.id === 'string' && node.attrs.id
+        ? node.attrs.id
+        : 'document-section';
+    const columns = layout.columns;
+    const page = documentPageMetrics(layout);
+    const style = [
+      `--work-document-column-count:${columns.count}`,
+      `--work-document-column-gap:${columns.spacing}mm`,
+      `--work-document-column-rule:${columns.separator ? '1px solid var(--a3s-line-strong)' : 'none'}`,
+      `--work-document-section-page-width:${page.width}px`,
+      `--work-document-section-page-height:${page.height}px`,
+      `--work-document-section-body-width:${page.width - page.marginLeft - page.marginRight}px`,
+      `--work-document-section-margin-top:${page.marginTop}px`,
+      `--work-document-section-margin-right:${page.marginRight}px`,
+      `--work-document-section-margin-bottom:${page.marginBottom}px`,
+      `--work-document-section-margin-left:${page.marginLeft}px`,
+      ...(layout.documentGrid
+        ? [
+            `--work-document-word-grid-line-pitch:${layout.documentGrid.linePitch}pt`,
+          ]
+        : []),
+    ].join(';');
+    return [
+      'section',
+      mergeAttributes(
+        HTMLAttributes,
+        documentSectionDomAttributes(layout, id),
+        {
+          class: 'work-document-section',
+          style,
+        },
+      ),
+      0,
+    ];
+  },
+});
+
+function hiddenAttribute(defaultValue: unknown) {
+  return {
+    default: defaultValue,
+    rendered: false,
+  };
+}
+
+function numberAttribute(
+  element: HTMLElement,
+  name: keyof DOMStringMap,
+  fallback: number,
+): number {
+  const value = Number(element.dataset[name]);
+  return Number.isFinite(value) ? value : fallback;
+}
+
+function nullableNumberAttribute(
+  element: HTMLElement,
+  name: keyof DOMStringMap,
+): number | null {
+  const source = element.dataset[name];
+  if (!source?.trim()) return null;
+  const value = Number(source);
+  return Number.isFinite(value) ? value : null;
+}
+
+function sectionBreakAttribute(
+  value: string | undefined,
+): WorkDocumentSectionBreakType {
+  if (
+    value === 'continuous' ||
+    value === 'evenPage' ||
+    value === 'oddPage' ||
+    value === 'nextColumn'
+  )
+    return value;
+  return 'nextPage';
+}

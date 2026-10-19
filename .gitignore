@@ -17,3 +17,6 @@ __pycache__/
 # Local snapshots taken before refreshing Cargo.lock
 *.lock.bak
 *.lock.tag
+
+# Local frontend installations.
+**/node_modules/

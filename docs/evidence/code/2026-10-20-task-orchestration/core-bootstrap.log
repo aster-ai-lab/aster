@@ -1,0 +1,26 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 20.43s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 4 tests
+test agent_api::agent_bootstrap::tests::expand_home_leaves_non_home_sources_unchanged ... ok
+test agent_api::agent_bootstrap::tests::load_code_config_rejects_json_inline_config ... ok
+test agent_api::agent_bootstrap::tests::agent_bootstrap_allows_a_host_supplied_session_client ... ok
+test agent_api::agent_bootstrap::tests::agent_bootstrap_preserves_the_acl_tool_presentation_default ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 5133 filtered out; finished in 0.01s
+

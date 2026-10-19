@@ -1,0 +1,23 @@
+Executable=/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app/Contents/MacOS/a3s-office
+Identifier=dev.a3s.studio.aster.task-orchestration-dev.office
+Format=Mach-O thin (arm64)
+CodeDirectory v=20400 size=263531 flags=0x2(adhoc) hashes=8229+2 location=embedded
+VersionPlatform=1
+VersionMin=720896
+VersionSDK=1705216
+Hash type=sha256 size=32
+CandidateCDHash sha256=07a9c75eb9b7a6e13f91d4aa19d17f6f0199c461
+CandidateCDHashFull sha256=07a9c75eb9b7a6e13f91d4aa19d17f6f0199c4613d12dd994f54ed38fcf58d04
+Hash choices=sha256
+CMSDigest=07a9c75eb9b7a6e13f91d4aa19d17f6f0199c4613d12dd994f54ed38fcf58d04
+CMSDigestType=2
+Executable Segment base=0
+Executable Segment limit=53526528
+Executable Segment flags=0x1
+Page size=16384
+CDHash=07a9c75eb9b7a6e13f91d4aa19d17f6f0199c461
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Sealed Resources=none
+Internal requirements count=0 size=12

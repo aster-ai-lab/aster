@@ -1,0 +1,246 @@
+@font-face {
+  font-family: 'Figtree';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../../assets/fonts/figtree/Figtree-Bold.woff2') format('woff2');
+}
+
+.workbench-wordmark {
+  font-family: 'Figtree', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+/* The live composer card. The dark rules below replace the light fill. */
+[data-ui~='workbench.composer'] .narrow-mode {
+  width: 100%;
+  max-width: none;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+[data-ui~='workbench.composer.scope']:empty {
+  display: none;
+}
+
+/* The card sits on top of the gray project tray. z-index matches the model
+   picker popover (z-80) so the slash panel paints over the home applet row
+   and the feature cards. Mode-control menus use COMPOSER_CONTROL_MENU_Z (90)
+   so they paint over this card. app.workspace-layer is isolated, so settings stay above. */
+[data-ui~='workbench.composer'] {
+  z-index: 80;
+}
+
+[data-ui~='workbench.composer.scope']:not(:empty) {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  margin-top: -14px;
+}
+
+[data-ui~='workbench.composer'] [data-ui='chat.composer.action.send'] {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  margin: 0 !important;
+  border-radius: 999px;
+  background: #ececec;
+  color: #8a8a8a !important;
+  font-size: 0 !important;
+  line-height: 0;
+}
+
+[data-ui~='workbench.composer'] [data-ui='chat.composer.action.send']::before {
+  content: '' !important;
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-top: 1.8px solid currentColor;
+  border-right: 1.8px solid currentColor;
+  font-family: inherit !important;
+  transform: translateY(1px) rotate(-45deg);
+}
+
+[data-ui~='workbench.composer'] [data-ui='chat.composer.action.send'][aria-disabled='false'] {
+  background: #3a3a3a;
+  color: #fff !important;
+}
+
+[data-ui~='workbench.composer'] [data-composer-inputbar] {
+  position: relative;
+  margin-bottom: 0;
+  border-width: 1px;
+  border-color: #ececec;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 12px 28px rgba(32, 42, 68, 0.08);
+}
+
+:is(html.dark, body.dark) [data-ui~='workbench.composer'] [data-composer-inputbar] {
+  border-color: #2a2a2c;
+  background: #171717;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+:is(html.dark, body.dark) [data-ui~='workbench.composer'] [data-ui='chat.composer.action.send'] {
+  background: #2c2c2c;
+  color: #b0b4ba !important;
+}
+
+:is(html.dark, body.dark) [data-ui~='workbench.composer'] [data-ui='chat.composer.action.send'][aria-disabled='false'] {
+  background: #f5f5f5;
+  color: #111112 !important;
+}
+
+:is(html.dark, body.dark) [data-ui~='workbench.composer'] button[data-workbench-chip],
+:is(html.dark, body.dark) [data-ui~='workbench.composer'] [data-composer-toolbar] > div:first-child button {
+  color: #b0b4ba;
+}
+
+:is(html.dark, body.dark) [data-ui~='workbench.composer'] button[data-workbench-chip]:hover,
+:is(html.dark, body.dark) [data-ui~='workbench.composer'] [data-composer-toolbar] > div:first-child button:hover {
+  background: #2c2c2c;
+  color: #f5f5f5;
+}
+
+[data-ui~='workbench.composer'] button[data-workbench-chip] {
+  height: 30px;
+  border-radius: 8px;
+  color: #3f3f3f;
+}
+
+[data-ui~='workbench.composer'] button[data-workbench-chip]:hover {
+  background: #f7f7f7;
+  color: #171717;
+}
+
+[data-ui~='workbench.composer'] [data-composer-toolbar] > div:first-child button {
+  height: 30px;
+  min-width: 30px;
+  border-radius: 8px;
+  color: #3f3f3f;
+}
+
+[data-ui~='workbench.composer'] [data-composer-toolbar] > div:first-child button:hover {
+  background: #f7f7f7;
+  color: #171717;
+}
+
+[data-ui~='workbench.composer'] .inputbar > .text-center {
+  display: none;
+}
+
+/* Chat rests at two lines. The home card starts about four lines tall.
+   The fallback textarea's inline height is set to the same 88px, because WebKit
+   keeps a specified height even when min-height is larger. */
+[data-ui~='workbench.composer'] [data-composer-editor-frame],
+[data-ui~='workbench.composer'] .composer-tiptap.tiptap {
+  min-height: 88px !important;
+}
+
+[data-ui~='workbench.composer'] textarea[data-ui~='part:composer-input'] {
+  height: 88px !important;
+  min-height: 88px !important;
+}
+
+@keyframes workbench-applet-load {
+  0% {
+    transform: translateX(-2.5rem);
+  }
+  100% {
+    transform: translateX(7.5rem);
+  }
+}
+
+.workbench-applet-load-bar {
+  animation: workbench-applet-load 0.9s ease-in-out infinite;
+}
+
+/* The rail opens in place. Hover color on the seam button can still ease. */
+.workbench-sidebar-slide {
+  transition-property: rotate, color, box-shadow;
+  transition-duration: 360ms;
+  transition-timing-function: ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workbench-applet-load-bar {
+    animation: none;
+    transform: translateX(2.5rem);
+  }
+
+  .workbench-sidebar-slide {
+    transition: none;
+  }
+}
+
+/* The grid grows from the add button. The sheet stays until that exit ends. */
+.workbench-launchpad {
+  animation: workbench-launchpad-fade-in 220ms ease-out;
+}
+
+.workbench-launchpad-stage {
+  animation: workbench-launchpad-in 320ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+.workbench-launchpad[data-state='closing'],
+.workbench-launchpad[data-state='closing'] * {
+  pointer-events: none;
+}
+
+.workbench-launchpad[data-state='closing'] {
+  animation: workbench-launchpad-fade-out 180ms ease-in forwards;
+}
+
+.workbench-launchpad[data-state='closing'] .workbench-launchpad-stage {
+  animation: workbench-launchpad-out 200ms cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@keyframes workbench-launchpad-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes workbench-launchpad-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes workbench-launchpad-in {
+  from {
+    opacity: 0;
+    scale: 0.98;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes workbench-launchpad-out {
+  from {
+    opacity: 1;
+    scale: 1;
+  }
+  to {
+    opacity: 0;
+    scale: 0.98;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workbench-launchpad,
+  .workbench-launchpad-stage {
+    animation: none;
+  }
+}

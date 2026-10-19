@@ -590,10 +590,14 @@ mod tests {
             let error = error.expect("mediated posture must not run the command");
             let message = error.to_string();
             assert!(
-                message.contains("native_process_lifetime_unqualified")
-                    || message.contains("process-host fallback was NOT installed"),
+                message.contains("native_process_lifetime_unqualified"),
                 "{error:#}"
             );
+            assert!(
+                !message.contains("OCI companion discovery:"),
+                "mediated posture does not ask OCI for companions: {error:#}"
+            );
+            assert!(crate::sandbox::native::is_native_process_lifetime_unqualified(&error));
         }
         assert!(!sentinel.exists());
         eprintln!(
@@ -602,6 +606,157 @@ mod tests {
             mediated.execution_overhead_ms(),
             mediated.policy_digest().is_some()
         );
+    }
+
+    #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
+    fn write_stub_companions(assets: &std::path::Path, skip: Option<&str>) {
+        for relative in [
+            "a3s-oci",
+            "a3s-oci-krun-shim",
+            "system-image.json",
+            "bundle/config.json",
+            "bundle/rootfs/bin/bash",
+        ] {
+            if skip == Some(relative) {
+                continue;
+            }
+            let path = assets.join(relative);
+            std::fs::create_dir_all(path.parent().unwrap()).unwrap();
+            std::fs::write(&path, b"stub").unwrap();
+        }
+    }
+
+    #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
+    #[tokio::test]
+    async fn each_missing_companion_file_stays_a_typed_refusal() {
+        use std::sync::atomic::{AtomicUsize, Ordering};
+        use std::sync::Arc;
+
+        use crate::sandbox::SandboxCommandRequest;
+        use crate::workspace::{CommandOutputObserver, CommandOutputSummary};
+
+        struct Observer(AtomicUsize);
+
+        #[async_trait::async_trait]
+        impl CommandOutputObserver for Observer {
+            async fn on_output_delta(&self, _delta: &str) {
+                self.0.fetch_add(1, Ordering::SeqCst);
+            }
+
+            async fn on_output_complete(&self, _summary: &CommandOutputSummary) {
+                self.0.fetch_add(1, Ordering::SeqCst);
+            }
+        }
+
+        for skip in [
+            "a3s-oci",
+            "a3s-oci-krun-shim",
+            "system-image.json",
+            "bundle/config.json",
+            "bundle/rootfs/bin/bash",
+        ] {
+            let root = tempfile::tempdir().unwrap();
+            let assets = root.path().join("assets");
+            write_stub_companions(&assets, Some(skip));
+            let workspace = root.path().join("work");
+            std::fs::create_dir(&workspace).unwrap();
+            let _env = AssetsEnv::set(&assets);
+            let discovered = crate::sandbox::oci::OciBashSandbox::discover(&workspace)
+                .expect_err("one missing companion file must fail discovery");
+            let discovered = discovered.to_string();
+            assert!(
+                discovered.contains("sandbox companion is missing:"),
+                "{skip}: {discovered}"
+            );
+            assert!(discovered.contains(skip), "{skip}: {discovered}");
+
+            let mut opts = SessionOptions::new();
+            install_default_local_sandbox(&workspace, &mut opts);
+            let sandbox = opts.sandbox_handle.as_ref().unwrap();
+            assert_ne!(sandbox.execution_overhead_ms(), 90_000, "{skip}");
+            let observer = Arc::new(Observer(AtomicUsize::new(0)));
+            let sentinel = workspace.join("missing-file-sentinel");
+            let command = format!("printf leaked > '{}'", sentinel.display());
+            let exec_command = sandbox.exec_command(&command, "/workspace").await;
+            let exec = sandbox
+                .exec(SandboxCommandRequest {
+                    command,
+                    guest_workspace: "/workspace".into(),
+                    timeout_ms: 1_000,
+                    output_observer: Some(observer.clone()),
+                    env: None,
+                })
+                .await;
+            for error in [exec_command.err(), exec.err()] {
+                let error = error.expect("a missing companion file must not run the command");
+                let message = error.to_string();
+                assert!(
+                    message.contains("native_process_lifetime_unqualified"),
+                    "{skip}: {error:#}"
+                );
+                assert!(
+                    message.contains("OCI companion discovery:"),
+                    "{skip}: {error:#}"
+                );
+                assert!(message.contains(skip), "{skip}: {error:#}");
+                assert!(crate::sandbox::native::is_native_process_lifetime_unqualified(&error));
+            }
+            assert_eq!(observer.0.load(Ordering::SeqCst), 0, "{skip}");
+            assert!(!sentinel.exists(), "{skip}");
+        }
+    }
+
+    #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
+    #[tokio::test]
+    async fn companions_inside_the_workspace_are_rejected() {
+        use crate::sandbox::SandboxCommandRequest;
+
+        async fn assert_rejected(assets: &std::path::Path, workspace: &std::path::Path) {
+            let _env = AssetsEnv::set(assets);
+            let discovered = crate::sandbox::oci::OciBashSandbox::discover(workspace)
+                .expect_err("companions inside the workspace must not be discovered");
+            assert!(
+                discovered
+                    .to_string()
+                    .contains("outside the writable workspace"),
+                "{discovered:#}"
+            );
+            let mut opts = SessionOptions::new();
+            install_default_local_sandbox(workspace, &mut opts);
+            let sandbox = opts.sandbox_handle.as_ref().unwrap();
+            assert_ne!(sandbox.execution_overhead_ms(), 90_000);
+            let sentinel = workspace.join("containment-sentinel");
+            let command = format!("printf leaked > '{}'", sentinel.display());
+            let exec_command = sandbox.exec_command(&command, "/workspace").await;
+            let exec = sandbox
+                .exec(SandboxCommandRequest {
+                    command,
+                    guest_workspace: "/workspace".into(),
+                    timeout_ms: 1_000,
+                    output_observer: None,
+                    env: None,
+                })
+                .await;
+            for error in [exec_command.err(), exec.err()] {
+                let error = error.expect("contained companions must not run the command");
+                assert!(crate::sandbox::native::is_native_process_lifetime_unqualified(&error));
+            }
+            assert!(!sentinel.exists());
+        }
+
+        let nested = tempfile::tempdir().unwrap();
+        let workspace = nested.path().join("work");
+        std::fs::create_dir(&workspace).unwrap();
+        let inside = workspace.join("sandbox");
+        write_stub_companions(&inside, None);
+        assert_rejected(&inside, &workspace).await;
+
+        let containing = tempfile::tempdir().unwrap();
+        let assets = containing.path().join("assets");
+        write_stub_companions(&assets, None);
+        let child = assets.join("work");
+        std::fs::create_dir(&child).unwrap();
+        assert_rejected(&assets, &child).await;
     }
 
     /// Real companions: Deny plus the process-host opt-in executes on the OCI

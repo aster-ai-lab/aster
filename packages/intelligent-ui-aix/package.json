@@ -1,0 +1,13 @@
+{
+  "name": "@a3s-lab/intelligent-ui-aix",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Optional AIX distribution adapter for Intelligent UI",
+  "scripts": {
+    "build": "node scripts/build.mjs"
+  },
+  "dependencies": {
+    "@a3s-lab/intelligent-ui": "file:../intelligent-ui"
+  }
+}

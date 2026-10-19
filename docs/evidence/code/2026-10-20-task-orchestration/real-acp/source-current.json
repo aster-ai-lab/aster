@@ -1,0 +1,34 @@
+{
+  "schema": "aster.work-real-acp.source.v1",
+  "capturedUtc": "2026-10-19T17:37:35.047291+00:00",
+  "rootHead": "b7649210286c2bd8e15974441326611118b62be5",
+  "workHead": "e95e97a89021447673cad2477619b219084bee37",
+  "scope": "Owned failed-effect contract and controlled Work fixture in a shared dirty tree; parent files also contain other-owner changes. This is not an exact whole-tree rebuild claim. Final binary identity is per actual test log.",
+  "files": [
+    {
+      "path": "crates/code/core/src/harness_loop.rs",
+      "bytes": 53819,
+      "sha256": "4e4f031ebf183678f5e29ffd7ef49c7021eb26aa81d5924c93a2f4e477ffdef2"
+    },
+    {
+      "path": "crates/code/core/src/completion_attestor.rs",
+      "bytes": 12109,
+      "sha256": "b6cb8f6e9d512b25f350630eb35ec5588e127f76852516e9552704f18694a56f"
+    },
+    {
+      "path": "crates/code/core/src/completion_attestor_failure_tests.rs",
+      "bytes": 9596,
+      "sha256": "234de49cc5fa2d0f041eefb512132792e4a18de28e31f3b7839700e77fd1d7ff"
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/local_acp_delivery_tests.rs",
+      "bytes": 24010,
+      "sha256": "6f342522869464c9005ce9d91f53d065413e4bef0196acbd3103fce39e77df91"
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/local_acp_program_tests.rs",
+      "bytes": 31259,
+      "sha256": "fc8e4c629461f48547a59efc18e2f8c88903b0e61f1665701094a4292f0c6bc3"
+    }
+  ]
+}

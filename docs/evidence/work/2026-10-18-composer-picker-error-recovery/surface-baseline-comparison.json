@@ -1,0 +1,26 @@
+{
+  "withFixes": 18,
+  "withoutFixes": 18,
+  "exactSameFailedTestNames": true,
+  "productionSourceRestoredExactly": true,
+  "failedNames": [
+    "ComposerSurface commits IME composition to a selected prompt variable once composition ends",
+    "ComposerSurface does not swallow composing Enter while the QuickPanel is visible",
+    "ComposerSurface does not swallow composing NumpadEnter while the QuickPanel is visible",
+    "ComposerSurface input history navigation does NOT preventDefault or call onInputHistoryNavigate when the guard rejects (non-empty, cursor in the middle)",
+    "ComposerSurface input history navigation does not handle history direction keys with the Alt modifier",
+    "ComposerSurface input history navigation does not handle history direction keys with the Control modifier",
+    "ComposerSurface input history navigation does not handle history direction keys with the Meta modifier",
+    "ComposerSurface input history navigation does not handle history direction keys with the Shift modifier",
+    "ComposerSurface input history navigation does not prevent default when input history navigation returns false",
+    "ComposerSurface input history navigation does not treat the cursor one position before the document end as history-eligible",
+    "ComposerSurface input history navigation keeps ArrowUp in the editor when a soft-wrapped line remains above the cursor",
+    "ComposerSurface input history navigation keeps ArrowUp in the editor when the cursor is in a later top-level text block",
+    "ComposerSurface input history navigation skips input history navigation while the QuickPanel is visible",
+    "ComposerSurface lets composer token shortcuts handle Backspace before removing attachments",
+    "ComposerSurface never reads   as the send shortcut",
+    "ComposerSurface never reads ArrowLeft as the send shortcut",
+    "ComposerSurface never reads Backspace as the send shortcut",
+    "ComposerSurface never reads a as the send shortcut"
+  ]
+}

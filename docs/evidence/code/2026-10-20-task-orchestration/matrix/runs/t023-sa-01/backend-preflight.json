@@ -1,0 +1,47 @@
+{
+  "elapsed_ms": 9516,
+  "error": false,
+  "observations": {
+    "cause": null,
+    "commands": {
+      "0": {
+        "closed": true,
+        "phases_ms": {
+          "bundle_prepare": [
+            311.17079199999995
+          ],
+          "collect_wait": [
+            70.80575
+          ],
+          "host_connect": [
+            1556.512583
+          ],
+          "host_shutdown": [
+            0.8042499999999999
+          ],
+          "process_start": [
+            59.979333000000004
+          ],
+          "scratch_remove": [
+            1.564667
+          ],
+          "vm_create": [
+            7364.045667
+          ],
+          "vm_delete": [
+            147.922834
+          ]
+        }
+      }
+    },
+    "complete": true,
+    "source": "OCI execute span and successful vm_create event; complete phases and closed spans required; never inferred from Bash calls",
+    "vm_count": 1
+  },
+  "settled_receipt": {
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "t023-preflight",
+    "timed_out": false
+  }
+}

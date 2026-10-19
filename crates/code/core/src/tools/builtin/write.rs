@@ -83,7 +83,7 @@ impl Tool for WriteTool {
             Some(other) => {
                 return Ok(ToolOutput::error(format!(
                     "mode must be 'overwrite' or 'append', got '{other}'"
-                )))
+                )));
             }
         };
 
@@ -93,14 +93,16 @@ impl Tool for WriteTool {
                 .and_then(|offset| usize::try_from(offset).ok())
             {
                 Some(offset) => Some(offset),
-                None => return Ok(ToolOutput::error(
-                    "expected_offset must be a non-negative byte offset that fits this platform",
-                )),
+                None => {
+                    return Ok(ToolOutput::error(
+                        "expected_offset must be a non-negative byte offset that fits this platform",
+                    ));
+                }
             },
             ("append", None) => {
                 return Ok(ToolOutput::error(
                     "expected_offset parameter is required in append mode",
-                ))
+                ));
             }
             // Some model providers materialize every optional integer field in
             // a tool schema with its minimum value. Accepting the neutral value
@@ -110,7 +112,7 @@ impl Tool for WriteTool {
             ("overwrite", Some(_)) => {
                 return Ok(ToolOutput::error(
                     "expected_offset must be omitted or 0 in overwrite mode",
-                ))
+                ));
             }
             _ => None,
         };
@@ -122,23 +124,26 @@ impl Tool for WriteTool {
 
         if let Some(expected_offset) = expected_offset {
             let display_path = ctx.workspace_services.display_path(&workspace_path);
-            let (mut current, version) =
-                match ctx.workspace_services.read_for_edit(&workspace_path).await {
-                    Ok(pair) => pair,
-                    Err(error) => {
-                        return Ok(ToolOutput::error(format!(
-                            "Failed to append to file {}: {}. Start a segmented write with mode='overwrite'.",
-                            display_path, error
-                        )))
-                    }
-                };
+            let (mut current, version) = match ctx
+                .workspace_services
+                .read_for_edit(&workspace_path)
+                .await
+            {
+                Ok(pair) => pair,
+                Err(error) => {
+                    return Ok(ToolOutput::error(format!(
+                        "Failed to append to file {}: {}. Start a segmented write with mode='overwrite'.",
+                        display_path, error
+                    )));
+                }
+            };
 
             let resulting_size = match expected_offset.checked_add(content.len()) {
                 Some(size) => size,
                 None => {
                     return Ok(ToolOutput::error(
                         "append size exceeds the supported byte range",
-                    ))
+                    ));
                 }
             };
             if current.len() != expected_offset {

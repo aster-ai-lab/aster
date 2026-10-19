@@ -1,0 +1,7 @@
+{
+  "apps/work/src/renderer/pages/agents/AgentComposer.tsx": "459e8c5e850cdf83d5352287e84273ed38f5c38e24b1bc7af80c38bd79f3558c",
+  "apps/work/src/renderer/pages/agents/AgentPage.tsx": "b2734e5a5b2c94c44e16e142e54c44117c2b7a8a98394ba2639ccac0166140a1",
+  "apps/work/src/renderer/pages/agents/WorkbenchPermissionPicker.tsx": "ee09dff155ea94898fbc45076f62e4bef269f52e96d831bfe61c3554c9d669fc",
+  "apps/work/src/renderer/pages/agents/workbenchPermissionPostures.ts": "181f961ac7aa0cf35d3e4339cee93f67cb0aa804a04b2b0a115e5fbb5688686c",
+  "apps/work/src/renderer/pages/agents/useWorkbenchDefaultAgent.ts": "ffffa6353a997d996a8a059389fd79ac1038e63d2c9c33dbfb7b952bb87c2a2a"
+}

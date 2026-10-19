@@ -1,0 +1,20 @@
+{
+  "run_id": "t023-v3-sa-01",
+  "pid": 84493,
+  "command": [
+    "/Users/roylin/code/aster/target/t023-frozen-native-proof-v3/t023-real-llm",
+    "task_matrix::frozen_task_matrix_single_run",
+    "--exact",
+    "--ignored",
+    "--test-threads=1",
+    "--nocapture"
+  ],
+  "cwd": "/Users/roylin/code/tasks/T01-t023-v3-sa-01",
+  "started_at_utc": "2026-10-19T19:43:51.356650+00:00",
+  "executable": "/Users/roylin/code/aster/target/t023-frozen-native-proof-v3/t023-real-llm",
+  "executable_sha256": "dafcdb08898bbb196b05d4da739229abb81b16a2a9c60382a889e1291fa6b6dd",
+  "manifest": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-v3-sa-01.json",
+  "manifest_sha256": "04a5884d99c498b8fda5250d0963c4ae47f640fd6d51b266874ba87183aafe8b",
+  "admission_sha256": "37e9df5f945cc89b9db8714e5dc1be98c2d4f041bafdfd991c88f1b943eb75bb",
+  "assets_root": "/Users/roylin/code/aster/target/t013-assets-software"
+}

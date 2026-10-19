@@ -1,0 +1,1161 @@
+diff --git a/src/renderer/components/composer/ComposerContext.ts b/src/renderer/components/composer/ComposerContext.ts
+index 2bf40f8..c8c6552 100644
+--- a/src/renderer/components/composer/ComposerContext.ts
++++ b/src/renderer/components/composer/ComposerContext.ts
+@@ -13,6 +13,8 @@ export type ComposerOverride = {
+ 
+ export type ComposerContextValue = {
+   overrides?: readonly ComposerOverride[]
++  /** Current host-owned wait. Keep reachable independently of replacement composer layers. */
++  stop?: () => Promise<void>
+ }
+ 
+ const ComposerContext = createContext<ComposerContextValue | null>(null)
+diff --git a/src/renderer/components/composer/ComposerCore.tsx b/src/renderer/components/composer/ComposerCore.tsx
+index ae5113f..0d567e2 100644
+--- a/src/renderer/components/composer/ComposerCore.tsx
++++ b/src/renderer/components/composer/ComposerCore.tsx
+@@ -1,7 +1,14 @@
++import { Square } from 'lucide-react'
+ import type { ReactNode } from 'react'
+ import { useLayoutEffect, useRef } from 'react'
++import { useTranslation } from 'react-i18next'
+ 
+-import { ComposerLayerActiveProvider, useActiveComposerOverride, useComposerLayerActive } from './ComposerContext'
++import {
++  ComposerLayerActiveProvider,
++  useActiveComposerOverride,
++  useComposerContext,
++  useComposerLayerActive
++} from './ComposerContext'
+ 
+ type ComposerCoreProps = {
+   fallback: ReactNode
+@@ -9,6 +16,8 @@ type ComposerCoreProps = {
+ }
+ 
+ export default function ComposerCore({ fallback, className }: ComposerCoreProps) {
++  const { t } = useTranslation()
++  const stop = useComposerContext()?.stop
+   const activeOverride = useActiveComposerOverride()
+   const layerActive = useComposerLayerActive()
+   const primaryLayerRef = useRef<HTMLDivElement>(null)
+@@ -51,6 +60,19 @@ export default function ComposerCore({ fallback, className }: ComposerCoreProps)
+       data-composer-core=""
+       data-composer-active-override={activeOverrideId ?? undefined}
+       className="relative w-full">
++      {stop && layerActive ? (
++        <div className="pointer-events-auto flex justify-end pb-1">
++          <button
++            data-ui="chat.composer.action.stop-wait"
++            type="button"
++            className="flex h-7.5 items-center justify-center gap-1.5 rounded-full px-2.5 text-xs text-error hover:bg-accent"
++            aria-label={t('common.stop')}
++            onClick={() => void stop()}>
++            <Square size={14} />
++            {t('common.stop')}
++          </button>
++        </div>
++      ) : null}
+       <div
+         ref={primaryLayerRef}
+         data-composer-primary-layer=""
+diff --git a/src/renderer/components/composer/__tests__/ComposerCore.test.tsx b/src/renderer/components/composer/__tests__/ComposerCore.test.tsx
+index ab7e2f1..7a6f9f9 100644
+--- a/src/renderer/components/composer/__tests__/ComposerCore.test.tsx
++++ b/src/renderer/components/composer/__tests__/ComposerCore.test.tsx
+@@ -5,6 +5,8 @@ import { describe, expect, it, vi } from 'vitest'
+ import { ComposerContextProvider, type ComposerOverride } from '../ComposerContext'
+ import ComposerCore from '../ComposerCore'
+ 
++vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }))
++
+ function StatefulComposer({ onMount, onUnmount }: { onMount: () => void; onUnmount: () => void }) {
+   const [text, setText] = useState('')
+   const [attachments, setAttachments] = useState<string[]>([])
+@@ -51,6 +53,31 @@ function renderComposer(overrides: readonly ComposerOverride[], onMount: () => v
+ }
+ 
+ describe('ComposerCore', () => {
++  it.each([
++    { name: 'missing approval card', overrides: [] },
++    { name: 'permission card', overrides: [permissionOverride] },
++    { name: 'question card', overrides: [askUserQuestionOverride] }
++  ])('keeps a scoped Stop reachable through $name', async ({ overrides }) => {
++    const stop = vi.fn(async () => undefined)
++    const view = render(
++      <ComposerContextProvider value={{ overrides, stop }}>
++        <ComposerCore fallback={<textarea aria-label="waiting input" />} />
++      </ComposerContextProvider>
++    )
++    const button = screen.getByRole('button', { name: 'common.stop' })
++    expect(button.closest('[inert]')).toBeNull()
++    fireEvent.click(button)
++    expect(stop).toHaveBeenCalledOnce()
++    // An abort acknowledgement is not native terminal settlement.
++    expect(screen.getByRole('button', { name: 'common.stop' })).toBeInTheDocument()
++    view.rerender(
++      <ComposerContextProvider value={{ overrides: [] }}>
++        <ComposerCore fallback={<textarea aria-label="waiting input" />} />
++      </ComposerContextProvider>
++    )
++    expect(screen.queryByRole('button', { name: 'common.stop' })).not.toBeInTheDocument()
++  })
++
+   it('keeps the primary composer instance and editor state mounted across approval overrides', () => {
+     const onMount = vi.fn()
+     const onUnmount = vi.fn()
+diff --git a/src/renderer/components/composer/__tests__/useToolApprovalComposerOverrides.test.ts b/src/renderer/components/composer/__tests__/useToolApprovalComposerOverrides.test.ts
+index 275f74f..0902400 100644
+--- a/src/renderer/components/composer/__tests__/useToolApprovalComposerOverrides.test.ts
++++ b/src/renderer/components/composer/__tests__/useToolApprovalComposerOverrides.test.ts
+@@ -121,6 +121,93 @@ describe('useToolApprovalComposerOverrides', () => {
+     expect(result.current).toEqual([])
+   })
+ 
++  it('recovers only the current native approval when an older same-anchor overlay hides its persisted part', () => {
++    const previous = makePermissionPart({ state: 'approval-responded' })
++    const pending = makePermissionPart({ toolCallId: 'call-next', approval: { id: 'approval-next' } })
++    const { result } = renderHook(() =>
++      useToolApprovalComposerOverrides({
++        persistedPartsByMessageId: { 'message-1': [previous, pending] },
++        partsByMessageId: { 'message-1': [previous] },
++        streamingLayers: {
++          historyPartsByMessageId: { 'message-1': [previous, pending] },
++          liveMessageIds: ['message-1']
++        },
++        pendingApprovals: [
++          {
++            executionId: 'run-current',
++            anchorMessageId: 'message-1',
++            messageId: 'message-1',
++            approvalId: 'approval-next',
++            toolCallId: 'call-next'
++          }
++        ],
++        onRespond: vi.fn()
++      })
++    )
++
++    expect(result.current.map((override) => override.id)).toEqual(['tool-permission:approval-next'])
++  })
++
++  it('does not revive a persisted pending approval without a current native receiver', () => {
++    const { result } = renderHook(() =>
++      useToolApprovalComposerOverrides({
++        persistedPartsByMessageId: { 'message-1': [makePermissionPart()] },
++        partsByMessageId: { 'message-1': [makePermissionPart()] },
++        pendingApprovals: [],
++        onRespond: vi.fn()
++      })
++    )
++    expect(result.current).toEqual([])
++  })
++
++  it('recovers a captured question from its actual message while keeping settled persisted answers settled', () => {
++    const pending = makeAskUserQuestionPart()
++    const binding = {
++      executionId: 'run-current',
++      anchorMessageId: 'main-anchor',
++      messageId: 'repair-message',
++      approvalId: 'approval-ask',
++      toolCallId: 'call-ask'
++    }
++    const { result, rerender } = renderHook(
++      ({ persistedPart }) =>
++        useToolApprovalComposerOverrides({
++          persistedPartsByMessageId: { 'repair-message': [persistedPart] },
++          partsByMessageId: {
++            'main-anchor': [makePermissionPart({ state: 'approval-responded' })],
++            'repair-message': [pending]
++          },
++          pendingApprovals: [binding],
++          onRespond: vi.fn()
++        }),
++      { initialProps: { persistedPart: pending } }
++    )
++    expect(result.current.map((override) => override.id)).toEqual(['ask-user-question:approval-ask'])
++    rerender({ persistedPart: makeAskUserQuestionPart({ state: 'approval-responded' }) })
++    expect(result.current).toEqual([])
++  })
++
++  it('does not recover a pending approval from another message or tool call', () => {
++    const pending = makePermissionPart()
++    const { result } = renderHook(() =>
++      useToolApprovalComposerOverrides({
++        persistedPartsByMessageId: { 'message-other': [pending] },
++        partsByMessageId: { 'message-other': [pending] },
++        pendingApprovals: [
++          {
++            executionId: 'run-current',
++            anchorMessageId: 'message-1',
++            messageId: 'message-1',
++            approvalId: 'approval-read',
++            toolCallId: 'call-other'
++          }
++        ],
++        onRespond: vi.fn()
++      })
++    )
++    expect(result.current).toEqual([])
++  })
++
+   it('keeps the queue head until refreshed parts advance to the next permission', async () => {
+     let resolveResponse: (() => void) | undefined
+     const onRespond = vi.fn(
+diff --git a/src/renderer/components/composer/useToolApprovalComposerOverrides.ts b/src/renderer/components/composer/useToolApprovalComposerOverrides.ts
+index 6561d8c..ccd9b9f 100644
+--- a/src/renderer/components/composer/useToolApprovalComposerOverrides.ts
++++ b/src/renderer/components/composer/useToolApprovalComposerOverrides.ts
+@@ -3,6 +3,7 @@ import { useEffect, useMemo } from 'react'
+ 
+ import { isAskUserQuestionToolName } from '@renderer/components/chat/messages/tools/shared/agentToolTypes'
+ import type { MessageStreamingLayers, MessageToolApprovalInput } from '@renderer/components/chat/messages/types'
++import type { PendingToolApproval } from '@shared/ai/transport'
+ import type { CherryMessagePart } from '@shared/data/types/message'
+ 
+ import type { ComposerOverride } from './ComposerContext'
+@@ -19,6 +20,8 @@ type ToolApprovalComposerOverridesOptions = {
+   streamingLayers?: MessageStreamingLayers
+   /** Approvals the route already accepted. The card must not wait on a transcript reload. */
+   dismissedApprovalIds?: ReadonlySet<string>
++  /** Undefined for legacy transports; an empty native set must hide historical pending parts. */
++  pendingApprovals?: readonly PendingToolApproval[]
+   onRespond: (input: MessageToolApprovalInput) => void | Promise<void>
+ }
+ 
+@@ -27,6 +30,7 @@ export function useToolApprovalComposerOverrides({
+   persistedPartsByMessageId,
+   streamingLayers,
+   dismissedApprovalIds,
++  pendingApprovals,
+   onRespond
+ }: ToolApprovalComposerOverridesOptions): readonly ComposerOverride[] {
+   useEffect(() => {
+@@ -65,13 +69,31 @@ export function useToolApprovalComposerOverrides({
+     }
+     return liveParts
+   }, [streamingLayers, partsByMessageId])
++  const nativeParts = useMemo(() => {
++    if (!pendingApprovals) return null
++    const parts: Record<string, CherryMessagePart[]> = {}
++    for (const approval of pendingApprovals) {
++      const matches = (part: CherryMessagePart) =>
++        isToolUIPart(part) && part.toolCallId === approval.toolCallId && part.approval?.id === approval.approvalId
++      // A newer persisted request can be absent from an older execution overlay.
++      const part =
++        persistedPartsByMessageId[approval.messageId]?.find(matches) ??
++        partsByMessageId[approval.messageId]?.find(matches)
++      if (part && isToolUIPart(part) && part.state === 'approval-requested') {
++        const messageParts = (parts[approval.messageId] ??= [])
++        messageParts.push(part)
++      }
++    }
++    return parts
++  }, [pendingApprovals, partsByMessageId, persistedPartsByMessageId])
+   const historyAskUserQuestionRequest = useMemo(
+-    () => (settledHistoryParts ? findLatestPendingAskUserQuestionRequest(settledHistoryParts) : null),
+-    [settledHistoryParts]
++    () =>
++      nativeParts === null && settledHistoryParts ? findLatestPendingAskUserQuestionRequest(settledHistoryParts) : null,
++    [nativeParts, settledHistoryParts]
+   )
+   const currentAskUserQuestionRequest = useMemo(
+-    () => findLatestPendingAskUserQuestionRequest(currentParts),
+-    [currentParts]
++    () => findLatestPendingAskUserQuestionRequest(nativeParts ?? currentParts),
++    [nativeParts, currentParts]
+   )
+   const askUserQuestionRequestRaw = currentAskUserQuestionRequest ?? historyAskUserQuestionRequest
+   const askUserQuestionRequest =
+@@ -79,10 +101,13 @@ export function useToolApprovalComposerOverrides({
+       ? askUserQuestionRequestRaw
+       : null
+   const historyPermissionRequest = useMemo(
+-    () => (settledHistoryParts ? findNextPendingPermissionRequest(settledHistoryParts) : null),
+-    [settledHistoryParts]
++    () => (nativeParts === null && settledHistoryParts ? findNextPendingPermissionRequest(settledHistoryParts) : null),
++    [nativeParts, settledHistoryParts]
++  )
++  const currentPermissionRequest = useMemo(
++    () => findNextPendingPermissionRequest(nativeParts ?? currentParts),
++    [nativeParts, currentParts]
+   )
+-  const currentPermissionRequest = useMemo(() => findNextPendingPermissionRequest(currentParts), [currentParts])
+   const permissionRequestRaw = currentPermissionRequest ?? historyPermissionRequest
+   const permissionRequest =
+     permissionRequestRaw && !dismissedApprovalIds?.has(permissionRequestRaw.approvalId) ? permissionRequestRaw : null
+diff --git a/src/renderer/data/__tests__/studioAgentPlane.test.ts b/src/renderer/data/__tests__/studioAgentPlane.test.ts
+index 906e6a1..6863d07 100644
+--- a/src/renderer/data/__tests__/studioAgentPlane.test.ts
++++ b/src/renderer/data/__tests__/studioAgentPlane.test.ts
+@@ -378,6 +378,24 @@ describe('studioAgentPlane', () => {
+       bridge.request('ai.stream.open', { topicId: 'agent-session:s1', trigger: 'submit-message', userMessageParts: [] })
+     ).resolves.toEqual({ ok: true, data: { mode: 'started' } })
+     await expect(bridge.request('ai.tool.respond_approval', { approvalId: 'ap1', approved: true })).resolves.toEqual({
++      ok: true,
++      data: { ok: false }
++    })
++    await expect(bridge.request('ai.tool.respond_approval', { approvalId: '', approved: true })).resolves.toEqual({
++      ok: true,
++      data: { ok: false }
++    })
++    await expect(
++      bridge.request('ai.tool.respond_approval', {
++        approvalId: 'ap1',
++        approved: true,
++        topicId: 'agent-session:s1',
++        executionId: 'run',
++        anchorMessageId: 'main',
++        messageId: 'repair',
++        toolCallId: 'tool'
++      })
++    ).resolves.toEqual({
+       ok: true,
+       data: { ok: true }
+     })
+@@ -398,7 +416,14 @@ describe('studioAgentPlane', () => {
+     expect(calls.map((call) => call.body)).toEqual([
+       { type: 'claude-code', name: 'x' },
+       { topicId: 'agent-session:s1', trigger: 'submit-message', userMessageParts: [] },
+-      { approved: true },
++      {
++        approved: true,
++        sessionId: 's1',
++        executionId: 'run',
++        anchorMessageId: 'main',
++        messageId: 'repair',
++        toolCallId: 'tool'
++      },
+       { messageId: '22222222-2222-4222-8222-222222222222' },
+       { sessionIds: ['s1'] },
+       { sessionIds: ['s1'] }
+@@ -493,7 +518,8 @@ describe('studioAgentPlane', () => {
+     expect(chunks).toEqual([{ topicId: 'agent-session:s1', chunk: {} }])
+     expect(cacheService.getShared('topic.stream.statuses.agent-session:s1')).toEqual({
+       status: 'pending',
+-      activeExecutions: []
++      activeExecutions: [],
++      pendingApprovals: []
+     })
+     expect(effects).toContainEqual({
+       endpoint: '/agent-sessions/:sessionId/messages',
+@@ -532,7 +558,10 @@ describe('studioAgentPlane', () => {
+       }
+     })
+     expect(cacheService.get(executionCache)?.['agent-session:s1']?.modelTurn).toBeNull()
+-    expect(cacheService.getShared('topic.stream.statuses.agent-session:s1')).toEqual({ status: 'streaming' })
++    expect(cacheService.getShared('topic.stream.statuses.agent-session:s1')).toEqual({
++      status: 'streaming',
++      pendingApprovals: []
++    })
+ 
+     source.disconnect()
+     expect(cacheService.get(executionCache)).toBeNull()
+@@ -588,11 +617,152 @@ describe('studioAgentPlane', () => {
+     })
+     expect(cacheService.getShared('topic.stream.statuses.agent-session:s1')).toEqual({
+       status: 'streaming',
+-      activeExecutions: [{ executionId: 'm' }]
++      activeExecutions: [{ executionId: 'm' }],
++      pendingApprovals: []
+     })
+     expect(cacheService.get(executionCache)).toEqual({})
+   })
+ 
++  it('recovers only current receiver identities from snapshots and withdraws them on disconnect', async () => {
++    const source = await connectEvents()
++    const approval = {
++      executionId: 'run',
++      anchorMessageId: 'main',
++      messageId: 'repair',
++      approvalId: 'approval',
++      toolCallId: 'tool'
++    }
++    const status = {
++      status: 'awaiting-approval',
++      turnId: 'run',
++      activeExecutions: [{ executionId: 'run', anchorMessageId: 'main' }],
++      awaitingApprovalAnchors: [],
++      pendingApprovals: [approval]
++    }
++    source.send({
++      channel: 'execution.snapshot',
++      payload: { protocolVersion: 1, topics: [], liveStatuses: [{ topicId: 'agent-session:s1', status }] }
++    })
++    expect(cacheService.getShared('topic.stream.statuses.agent-session:s1')?.pendingApprovals).toEqual([approval])
++    source.send({
++      channel: 'topic.status',
++      payload: {
++        topicId: 'agent-session:s1',
++        status: { ...status, activeExecutions: [{ executionId: 'run', anchorMessageId: 'foreign-anchor' }] }
++      }
++    })
++    expect(cacheService.getShared('topic.stream.statuses.agent-session:s1')?.pendingApprovals).toEqual([])
++    source.disconnect()
++    expect(cacheService.getShared('topic.stream.statuses.agent-session:s1')?.pendingApprovals).toEqual([])
++    source.open()
++    source.send({
++      channel: 'execution.snapshot',
++      payload: { protocolVersion: 1, topics: [], liveStatuses: [{ topicId: 'agent-session:s1', status }] }
++    })
++    expect(cacheService.getShared('topic.stream.statuses.agent-session:s1')?.pendingApprovals).toEqual([approval])
++    source.send({
++      channel: 'topic.status',
++      payload: { topicId: 'agent-session:s1', status: { ...status, turnId: 'another-run' } }
++    })
++    expect(cacheService.getShared('topic.stream.statuses.agent-session:s1')?.pendingApprovals).toEqual([])
++  })
++
++  it('does not let an older attach snapshot replace a newer same-Run or other-Run SSE status', async () => {
++    const source = await connectEvents()
++    let resolveAttach: ((response: globalThis.Response) => void) | undefined
++    vi.stubGlobal(
++      'fetch',
++      vi.fn(
++        () =>
++          new Promise<globalThis.Response>((resolve) => {
++            resolveAttach = resolve
++          })
++      )
++    )
++    const request = globalThis.api!.ipcApi.request('ai.stream.attach', { topicId: 'agent-session:s1' })
++    await vi.waitFor(() => expect(resolveAttach).toBeDefined())
++    const newer = { status: 'awaiting-approval', turnId: 'new-run', pendingApprovals: [] }
++    source.send({ channel: 'topic.status', payload: { topicId: 'agent-session:s1', status: newer } })
++    resolveAttach!(
++      json({
++        status: 'attached',
++        bufferedChunks: [],
++        streamStatus: {
++          status: 'awaiting-approval',
++          turnId: 'old-run',
++          pendingApprovals: [
++            {
++              executionId: 'old-run',
++              anchorMessageId: 'old-message',
++              messageId: 'old-message',
++              approvalId: 'old-approval',
++              toolCallId: 'old-tool'
++            }
++          ]
++        }
++      })
++    )
++    await request
++    expect(cacheService.getShared('topic.stream.statuses.agent-session:s1')).toEqual(newer)
++  })
++
++  it.each(['cleared-status', 'disconnect'])(
++    'does not revive an old attach approval across %s from an initially empty cache',
++    async (boundary) => {
++      const source = await connectEvents()
++      source.send({ channel: 'execution.snapshot', payload: { protocolVersion: 1, topics: [] } })
++      const key = 'topic.stream.statuses.agent-session:aba' as const
++      cacheService.deleteShared(key)
++      let resolveAttach: ((response: globalThis.Response) => void) | undefined
++      vi.stubGlobal(
++        'fetch',
++        vi.fn(
++          () =>
++            new Promise<globalThis.Response>((resolve) => {
++              resolveAttach = resolve
++            })
++        )
++      )
++      const request = globalThis.api!.ipcApi.request('ai.stream.attach', { topicId: 'agent-session:aba' })
++      await vi.waitFor(() => expect(resolveAttach).toBeDefined())
++      if (boundary === 'cleared-status') {
++        source.send({
++          channel: 'topic.status',
++          payload: {
++            topicId: 'agent-session:aba',
++            status: { status: 'awaiting-approval', turnId: 'new-run', pendingApprovals: [] }
++          }
++        })
++        source.send({ channel: 'topic.status', payload: { topicId: 'agent-session:aba', status: null } })
++        cacheService.deleteShared(key)
++      } else {
++        source.disconnect()
++      }
++      resolveAttach!(
++        json({
++          status: 'attached',
++          bufferedChunks: [],
++          streamStatus: {
++            status: 'awaiting-approval',
++            turnId: 'old-run',
++            activeExecutions: [{ executionId: 'old-run', anchorMessageId: 'old-message' }],
++            pendingApprovals: [
++              {
++                executionId: 'old-run',
++                anchorMessageId: 'old-message',
++                messageId: 'old-message',
++                approvalId: 'old-approval',
++                toolCallId: 'old-tool'
++              }
++            ]
++          }
++        })
++      )
++      await request
++      expect(cacheService.getSharedSnapshot(key)).toBeUndefined()
++    }
++  )
++
+   // Catch malformed bootstrap selecting an arbitrary owner, and one malformed delta withdrawing a healthy sibling.
+   it('refuses incompatible or ambiguous snapshots and contains malformed topic observations', async () => {
+     const source = await connectEvents()
+diff --git a/src/renderer/data/studioAgentPlane.ts b/src/renderer/data/studioAgentPlane.ts
+index a823254..75c09aa 100644
+--- a/src/renderer/data/studioAgentPlane.ts
++++ b/src/renderer/data/studioAgentPlane.ts
+@@ -8,7 +8,11 @@ import {
+   agentSessionArchiveReceiptSchema,
+   agentSessionArchiveLookupSchema
+ } from '@shared/types/agentSessionArchive'
+-import { studioExecutionObservationSchema, studioExecutionSnapshotSchema } from '@shared/types/studioExecution'
++import {
++  pendingToolApprovalsSchema,
++  studioExecutionObservationSchema,
++  studioExecutionSnapshotSchema
++} from '@shared/types/studioExecution'
+ import {
+   workbenchProofSchema,
+   workbenchProofActionSchema,
+@@ -45,6 +49,8 @@ let eventsConnected = false
+ let eventsOpened = false
+ let queuedEvents: string[] = []
+ let executionReady = false
++let approvalGeneration = 0
++const nativeStatusRevisions = new Map<string, number>()
+ const listeners = new Map<string, Set<Listener>>()
+ const dataChangeListeners = new Set<DataChangeListener>()
+ 
+@@ -134,6 +140,7 @@ export function resetStudioAgentPlaneForTests() {
+   eventsOpened = false
+   queuedEvents = []
+   invalidateExecutions()
++  nativeStatusRevisions.clear()
+   listeners.clear()
+   dataChangeListeners.clear()
+ }
+@@ -422,10 +429,28 @@ function routeIpc(route: string, input: unknown): Promise<unknown> | null {
+   }
+   if (route === 'ai.tool.respond_approval') {
+     const approvalId = field(input, 'approvalId')
+-    if (typeof approvalId !== 'string') return null
++    if (typeof approvalId !== 'string' || !approvalId.trim()) return Promise.resolve({ ok: true, data: { ok: false } })
++    const session = sessionOf(input)
++    const executionId = field(input, 'executionId')
++    const anchorMessageId = field(input, 'anchorMessageId')
++    const messageId = field(input, 'messageId')
++    const toolCallId = field(input, 'toolCallId')
++    if (
++      !session ||
++      ![executionId, anchorMessageId, messageId, toolCallId].every(
++        (value) => typeof value === 'string' && value.length > 0
++      )
++    ) {
++      return Promise.resolve({ ok: true, data: { ok: false } })
++    }
+     return ipcResult(
+       planeJson('POST', `/api/agent-approvals/${encodeURIComponent(approvalId)}`, {
+-        approved: field(input, 'approved') === true
++        approved: field(input, 'approved') === true,
++        sessionId: decodeURIComponent(session),
++        executionId,
++        anchorMessageId,
++        messageId,
++        toolCallId
+       })
+     )
+   }
+@@ -436,7 +461,33 @@ function routeIpc(route: string, input: unknown): Promise<unknown> | null {
+   if (route === 'ai.stream.open') {
+     return ipcResult(planeJson('POST', `/api/agent-sessions/${session}/turns`, input))
+   }
+-  if (route === 'ai.stream.attach') return ipcResult(planeJson('GET', `/api/agent-sessions/${session}/turn`))
++  if (route === 'ai.stream.attach') {
++    const topicId = `${TOPIC_PREFIX}${decodeURIComponent(session)}`
++    const key = `topic.stream.statuses.${topicId}` as const
++    const before = cacheService.getSharedSnapshot(key)
++    const generation = approvalGeneration
++    const revision = nativeStatusRevisions.get(topicId)
++    return ipcResult(
++      planeJson('GET', `/api/agent-sessions/${session}/turn`).then((result) => {
++        // A newer SSE update, including another Run, wins over this HTTP snapshot.
++        if (
++          approvalGeneration === generation &&
++          nativeStatusRevisions.get(topicId) === revision &&
++          cacheService.getSharedSnapshot(key) === before &&
++          result &&
++          typeof result === 'object'
++        ) {
++          const response = result as Record<string, unknown>
++          if (response.status === 'attached' && response.streamStatus && typeof response.streamStatus === 'object') {
++            storeNativeStatus(topicId, response.streamStatus as Record<string, unknown>, true)
++          } else if (response.status === 'not-found' && before) {
++            cacheService.setShared(key, { ...before, pendingApprovals: [] })
++          }
++        }
++        return result
++      })
++    )
++  }
+   if (route === 'ai.stream.abort') {
+     return ipcResult(planeJson('POST', `/api/agent-sessions/${session}/turn/abort`).then(() => undefined))
+   }
+@@ -542,8 +593,39 @@ function sessionsChanged(sessionIds: readonly string[]) {
+ }
+ 
+ function invalidateExecutions() {
++  approvalGeneration += 1
+   executionReady = false
+   cacheService.set('studio.execution.observations', null)
++  for (const topicId of nativeStatusRevisions.keys()) {
++    const key = `topic.stream.statuses.${topicId}` as const
++    const status = cacheService.getSharedSnapshot(key)
++    if (status) cacheService.setShared(key, { ...status, pendingApprovals: [] })
++  }
++}
++
++function storeNativeStatus(topicId: string, rawStatus: Record<string, unknown>, authoritative = executionReady) {
++  const { nativeExecution: _, pendingApprovals: rawApprovals, ...status } = rawStatus
++  const parsed = pendingToolApprovalsSchema.safeParse(rawApprovals)
++  const pendingApprovals =
++    authoritative &&
++    status.status === 'awaiting-approval' &&
++    parsed.success &&
++    parsed.data.every(
++      (approval) =>
++        approval.executionId === status.turnId &&
++        Array.isArray(status.activeExecutions) &&
++        status.activeExecutions.some(
++          (execution: unknown) =>
++            !!execution &&
++            typeof execution === 'object' &&
++            (execution as Record<string, unknown>).executionId === approval.executionId &&
++            (execution as Record<string, unknown>).anchorMessageId === approval.anchorMessageId
++        )
++    )
++      ? parsed.data
++      : []
++  nativeStatusRevisions.set(topicId, (nativeStatusRevisions.get(topicId) ?? 0) + 1)
++  cacheService.setShared(`topic.stream.statuses.${topicId}` as never, { ...status, pendingApprovals } as never)
+ }
+ 
+ function handleEvent(raw: string) {
+@@ -576,9 +658,7 @@ function applyEvent(raw: string) {
+       Object.fromEntries(parsed.data.topics.map((topic) => [topic.topicId, topic.execution]))
+     )
+     for (const row of parsed.data.liveStatuses ?? []) {
+-      const status = { ...row.status }
+-      delete status.nativeExecution
+-      cacheService.setShared(`topic.stream.statuses.${row.topicId}` as never, status as never)
++      storeNativeStatus(row.topicId, row.status, true)
+     }
+     executionReady = true
+     return
+@@ -598,8 +678,9 @@ function applyEvent(raw: string) {
+           else delete observations[topicId]
+           cacheService.set('studio.execution.observations', observations)
+         }
+-        cacheService.setShared(`topic.stream.statuses.${topicId}` as never, status as never)
++        storeNativeStatus(topicId, status)
+       } else {
++        nativeStatusRevisions.set(topicId, (nativeStatusRevisions.get(topicId) ?? 0) + 1)
+         if (executionReady) {
+           const observations = { ...cacheService.get('studio.execution.observations') }
+           delete observations[topicId]
+diff --git a/src/renderer/hooks/__tests__/useTopicAwaitingApproval.test.ts b/src/renderer/hooks/__tests__/useTopicAwaitingApproval.test.ts
+index 2282327..ca87663 100644
+--- a/src/renderer/hooks/__tests__/useTopicAwaitingApproval.test.ts
++++ b/src/renderer/hooks/__tests__/useTopicAwaitingApproval.test.ts
+@@ -1,7 +1,7 @@
+ import { act, renderHook } from '@testing-library/react'
+ import { beforeEach, describe, expect, it, vi } from 'vitest'
+ 
+-import type { TopicStreamStatus } from '@shared/ai/transport'
++import type { PendingToolApproval, TopicStreamStatus } from '@shared/ai/transport'
+ 
+ const mockEntry = vi.fn<
+   () =>
+@@ -10,6 +10,7 @@ const mockEntry = vi.fn<
+         lastCompletedAt?: number
+         activeExecutions: []
+         awaitingApprovalAnchors: []
++        pendingApprovals?: PendingToolApproval[]
+       }
+     | undefined
+ >()
+@@ -122,6 +123,36 @@ describe('useTopicAwaitingApproval', () => {
+     }
+   )
+ 
++  it('refreshes a current native pending approval on mount and when the receiver changes at the same status', async () => {
++    const refresh = vi.fn(async () => {})
++    const pending = {
++      executionId: 'run',
++      anchorMessageId: 'message',
++      messageId: 'message',
++      approvalId: 'approval-1',
++      toolCallId: 'call-1'
++    }
++    const entry = {
++      status: 'awaiting-approval' as const,
++      activeExecutions: [] as [],
++      awaitingApprovalAnchors: [] as [],
++      pendingApprovals: [pending]
++    }
++    mockEntry.mockReturnValue(entry)
++    const { rerender } = renderHook(() => useTopicDbRefreshOnAwaitingApproval('t', refresh))
++    expect(refresh).toHaveBeenCalledTimes(1)
++    rerender()
++    expect(refresh).toHaveBeenCalledTimes(1)
++    mockEntry.mockReturnValue({
++      ...entry,
++      pendingApprovals: [{ ...pending, approvalId: 'approval-2', toolCallId: 'call-2' }]
++    })
++    await act(async () => {
++      rerender()
++    })
++    expect(refresh).toHaveBeenCalledTimes(2)
++  })
++
+   it('does not carry a live edge across topic identities', async () => {
+     const refresh = vi.fn(async () => {})
+     setEntry('streaming')
+diff --git a/src/renderer/hooks/useTopicStreamStatus.ts b/src/renderer/hooks/useTopicStreamStatus.ts
+index 9df4a69..8eb1769 100644
+--- a/src/renderer/hooks/useTopicStreamStatus.ts
++++ b/src/renderer/hooks/useTopicStreamStatus.ts
+@@ -6,9 +6,16 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
+ 
+ import { loggerService } from '@logger'
+ import { useSharedCache, useSharedCacheValue } from '@renderer/data/hooks/useCache'
+-import { type ActiveExecution, classifyTurn, type TopicStreamStatus } from '@shared/ai/transport'
++import {
++  type ActiveExecution,
++  classifyTurn,
++  type PendingToolApproval,
++  type TopicStreamStatus
++} from '@shared/ai/transport'
++import { readStudioRuntime } from '@shared/studioRuntime'
+ 
+ const logger = loggerService.withContext('useTopicStreamStatus')
++const NO_APPROVALS: readonly PendingToolApproval[] = Object.freeze([])
+ 
+ interface TopicStreamStatusView {
+   status: TopicStreamStatus | undefined
+@@ -20,6 +27,8 @@ interface TopicStreamStatusView {
+    */
+   awaitingApprovalAnchors: ActiveExecution[]
+   isPending: boolean
++  isTurnActive: boolean
++  pendingApprovals?: readonly PendingToolApproval[]
+   /**
+    * `done` AND this window's `lastSeenCompletion` does not match the
+    * authoritative `lastCompletedAt`. Read-receipt model: per-completion
+@@ -46,6 +55,7 @@ export function useTopicStreamStatus(topicId: string): TopicStreamStatusView {
+ 
+   const flags = classifyTurn(status)
+   const isPending = flags.isStreamLive
++  const pendingApprovals = readStudioRuntime() ? (entry?.pendingApprovals ?? NO_APPROVALS) : undefined
+   const isFulfilled = status === 'done' && lastCompletedAt !== lastSeenCompletion
+ 
+   const markSeen = useCallback(() => {
+@@ -54,7 +64,16 @@ export function useTopicStreamStatus(topicId: string): TopicStreamStatusView {
+     }
+   }, [lastCompletedAt, lastSeenCompletion, setLastSeenCompletion])
+ 
+-  return { status, activeExecutions, awaitingApprovalAnchors, isPending, isFulfilled, markSeen }
++  return {
++    status,
++    activeExecutions,
++    awaitingApprovalAnchors,
++    isPending,
++    isTurnActive: flags.isTurnActive,
++    pendingApprovals,
++    isFulfilled,
++    markSeen
++  }
+ }
+ 
+ export function useTopicAwaitingApproval(topicId: string): boolean {
+@@ -68,19 +87,26 @@ export function useTopicAwaitingApproval(topicId: string): boolean {
+ export function useTopicDbRefreshOnAwaitingApproval(topicId: string, refresh: () => Promise<unknown>): void {
+   const entry = useSharedCacheValue(`topic.stream.statuses.${topicId}` as const)
+   const status = entry?.status
++  const pendingApprovalKey = entry?.pendingApprovals?.map((approval) => approval.approvalId).join('\0')
+   const refreshRef = useRef(refresh)
+   refreshRef.current = refresh
+-  const prevRef = useRef<{ status: typeof status; topicId: string } | undefined>(undefined)
++  const prevRef = useRef<
++    { status: typeof status; topicId: string; pendingApprovalKey: typeof pendingApprovalKey } | undefined
++  >(undefined)
+   useEffect(() => {
+     const previous = prevRef.current
+     const prev = previous?.topicId === topicId ? previous.status : undefined
+-    prevRef.current = { status, topicId }
+-    if (classifyTurn(prev).isStreamLive && classifyTurn(status).isAwaitingApproval) {
++    prevRef.current = { status, topicId, pendingApprovalKey }
++    const nativePendingChanged =
++      pendingApprovalKey !== undefined &&
++      pendingApprovalKey !== '' &&
++      (previous?.topicId !== topicId || previous.pendingApprovalKey !== pendingApprovalKey)
++    if ((classifyTurn(prev).isStreamLive || nativePendingChanged) && classifyTurn(status).isAwaitingApproval) {
+       void refreshRef.current().catch(() => {
+         // Caller logs; the invalidation signal must not throw out of the effect.
+       })
+     }
+-  }, [status, topicId])
++  }, [status, topicId, pendingApprovalKey])
+ }
+ 
+ /**
+diff --git a/src/renderer/pages/agents/__tests__/useAgentChatRuntimeState.test.tsx b/src/renderer/pages/agents/__tests__/useAgentChatRuntimeState.test.tsx
+index 71c06a3..f462a44 100644
+--- a/src/renderer/pages/agents/__tests__/useAgentChatRuntimeState.test.tsx
++++ b/src/renderer/pages/agents/__tests__/useAgentChatRuntimeState.test.tsx
+@@ -1,10 +1,10 @@
+-import { dataApiService } from '@data/DataApiService'
+ import { MockCacheUtils } from '@test-mocks/renderer/CacheService'
+ import { MockUseDataApiUtils } from '@test-mocks/renderer/useDataApi'
+ import { act, render, renderHook } from '@testing-library/react'
+ import { Activity } from 'react'
+ import { beforeEach, describe, expect, it, vi } from 'vitest'
+ 
++import { dataApiService } from '@data/DataApiService'
+ import {
+   readAskUserQuestionDraftCache,
+   writeAskUserQuestionDraftCache
+@@ -37,7 +37,8 @@ const mocks = vi.hoisted(() => ({
+   invalidateMessages: vi.fn(),
+   toastWarning: vi.fn(),
+   scrollLatest: vi.fn(),
+-  worktrees: vi.fn()
++  worktrees: vi.fn(),
++  streamStatus: vi.fn()
+ }))
+ 
+ // respondToolApproval now goes through ipcApi.request('ai.tool.respond_approval', …).
+@@ -81,7 +82,7 @@ vi.mock('@renderer/hooks/useConversationTurnController', () => ({
+ }))
+ 
+ vi.mock('@renderer/hooks/useTopicStreamStatus', () => ({
+-  useTopicStreamStatus: () => ({ isPending: false }),
++  useTopicStreamStatus: () => mocks.streamStatus(),
+   useTopicOverlayHandoffOnTerminal: mocks.useTopicOverlayHandoffOnTerminal
+ }))
+ 
+@@ -475,6 +476,7 @@ describe('useAgentChatRuntimeState', () => {
+     mocks.worktrees.mockResolvedValue(undefined)
+     MockCacheUtils.resetMocks()
+     mocks.respondToolApproval.mockResolvedValue({ ok: true })
++    mocks.streamStatus.mockReturnValue({ isPending: false, isTurnActive: false })
+     mocks.refresh.mockResolvedValue([assistantMessage])
+     mocks.seedReservedMessages.mockResolvedValue(undefined)
+     mocks.deleteSessionMessage.mockResolvedValue(undefined)
+@@ -659,6 +661,79 @@ describe('useAgentChatRuntimeState', () => {
+     })
+   })
+ 
++  it('binds a recovered approval to the native Run and rejects it after the receiver disappears', async () => {
++    const binding = {
++      executionId: 'run-current',
++      anchorMessageId: 'main-anchor',
++      messageId: 'assistant-1',
++      approvalId: 'approval-ask',
++      toolCallId: 'call-ask'
++    }
++    mocks.streamStatus.mockReturnValue({
++      status: 'awaiting-approval',
++      isPending: false,
++      isTurnActive: true,
++      pendingApprovals: [binding]
++    })
++    const { result, rerender } = renderHook(() =>
++      useAgentChatRuntimeState({ sessionId: 'session-1', sessionMessagesEnabled: true, reservedMessages: [] })
++    )
++    await act(async () => {
++      await result.current.respondToolApproval(makeAskUserQuestionApproval())
++    })
++    expect(mocks.respondToolApproval).toHaveBeenCalledWith(
++      expect.objectContaining({
++        topicId: 'agent-session:session-1',
++        executionId: 'run-current',
++        anchorMessageId: 'main-anchor',
++        messageId: 'assistant-1',
++        toolCallId: 'call-ask'
++      })
++    )
++    mocks.respondToolApproval.mockClear()
++    mocks.streamStatus.mockReturnValue({
++      status: 'awaiting-approval',
++      isPending: false,
++      isTurnActive: true,
++      pendingApprovals: []
++    })
++    rerender()
++    await expect(result.current.respondToolApproval(makeAskUserQuestionApproval())).rejects.toThrow(
++      'no longer available'
++    )
++    expect(mocks.respondToolApproval).not.toHaveBeenCalled()
++  })
++
++  it.each(['awaiting-approval', 'awaiting-form'])(
++    'keeps Stop exposed during %s until the native terminal',
++    async (status) => {
++      mocks.streamStatus.mockReturnValue({
++        status,
++        isPending: status === 'awaiting-form',
++        isTurnActive: true,
++        pendingApprovals: []
++      })
++      const { result, rerender } = renderHook(() =>
++        useAgentChatRuntimeState({ sessionId: 'session-1', sessionMessagesEnabled: true, reservedMessages: [] })
++      )
++      expect(result.current.composerContext.stop).toBeTypeOf('function')
++      expect(result.current.editBusy).toBe(true)
++      await act(async () => {
++        await result.current.composerContext.stop?.()
++      })
++      expect(mocks.chatStop).toHaveBeenCalledOnce()
++      expect(result.current.composerContext.stop).toBeTypeOf('function')
++      mocks.streamStatus.mockReturnValue({
++        status: 'aborted',
++        isPending: false,
++        isTurnActive: false,
++        pendingApprovals: []
++      })
++      rerender()
++      expect(result.current.composerContext.stop).toBeUndefined()
++    }
++  )
++
+   it('removes the temporary AskUserQuestion input when approval delivery fails', async () => {
+     mocks.respondToolApproval.mockRejectedValueOnce(new Error('ipc boom'))
+     const part = makeAskUserQuestionPart()
+diff --git a/src/renderer/pages/agents/useAgentChatRuntimeState.ts b/src/renderer/pages/agents/useAgentChatRuntimeState.ts
+index fc324c6..6ad8200 100644
+--- a/src/renderer/pages/agents/useAgentChatRuntimeState.ts
++++ b/src/renderer/pages/agents/useAgentChatRuntimeState.ts
+@@ -2,6 +2,7 @@ import { isToolUIPart } from 'ai'
+ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+ import { useTranslation } from 'react-i18next'
+ 
++import { dataApiService } from '@data/DataApiService'
+ import {
+   createOverlayRefreshHandoff,
+   useMessageStreamingLayers
+@@ -25,7 +26,6 @@ import {
+ } from '@renderer/hooks/useConversationTurnController'
+ import { useExecutionOverlay } from '@renderer/hooks/useExecutionOverlay'
+ import { useTopicOverlayHandoffOnTerminal, useTopicStreamStatus } from '@renderer/hooks/useTopicStreamStatus'
+-import { dataApiService } from '@data/DataApiService'
+ import { ipcApi } from '@renderer/ipc'
+ import type { AgentComposerSendOptions } from '@renderer/pages/agents/AgentComposer'
+ import { requestWorktrees } from '@renderer/pages/settings/aligned/worktreeStore'
+@@ -46,7 +46,7 @@ import { IpcError } from '@shared/ipc/errors/IpcError'
+ import { scrollAgentMessageListToLatest } from './messages/agentMessageListAdapter'
+ import { agentSessionForkReasonLabel } from './messages/agentSessionFork'
+ import { turnFileEdits } from './taskConversation/turn'
+-import { admitWorkbenchMessages, releaseWorkbenchRun } from './taskConversation/workbenchRunHost'
++import { admitWorkbenchMessages, releaseWorkbenchRun, stopWorkbenchSession } from './taskConversation/workbenchRunHost'
+ 
+ type AskUserQuestionApprovalPart = CherryMessagePart & {
+   type?: string
+@@ -249,6 +249,7 @@ export function useAgentChatRuntimeState({
+   }, [reservedMessages, seedReservedMessages, sessionMessagesEnabled])
+ 
+   const { activeExecutions, setMessages, stop } = useChatWithHistory(sessionTopicId, uiMessages, refresh)
++  const { status: streamStatus, isPending, isTurnActive, pendingApprovals } = useTopicStreamStatus(sessionTopicId)
+   const historyAdapter = useMemo<ConversationHistoryAdapter>(
+     () => ({
+       seedReservedMessages,
+@@ -393,6 +394,13 @@ export function useAgentChatRuntimeState({
+     async (input: MessageToolApprovalInput) => {
+       const { match, approved, reason, updatedInput } = input
+       const approvalId = match.approvalId
++      const binding = pendingApprovals?.find(
++        (approval) =>
++          approval.approvalId === approvalId &&
++          approval.messageId === match.messageId &&
++          approval.toolCallId === match.toolCallId
++      )
++      if (pendingApprovals && !binding) throw new Error('Tool approval is no longer available')
+       const optimisticToolCallId = isAskUserQuestionApprovalResponse(input) ? match.toolCallId : undefined
+ 
+       if (optimisticToolCallId) {
+@@ -410,7 +418,15 @@ export function useAgentChatRuntimeState({
+           reason,
+           updatedInput,
+           topicId: sessionTopicId,
+-          anchorId: match.messageId
++          anchorId: match.messageId,
++          ...(binding
++            ? {
++                executionId: binding.executionId,
++                anchorMessageId: binding.anchorMessageId,
++                messageId: binding.messageId,
++                toolCallId: binding.toolCallId
++              }
++            : {})
+         })
+       } catch (error) {
+         if (optimisticToolCallId) removeOptimisticAskUserQuestionInput(optimisticToolCallId)
+@@ -431,17 +447,17 @@ export function useAgentChatRuntimeState({
+       })
+       void Promise.resolve(refresh()).catch(() => undefined)
+     },
+-    [refresh, removeOptimisticAskUserQuestionInput, sessionTopicId]
++    [pendingApprovals, refresh, removeOptimisticAskUserQuestionInput, sessionTopicId]
+   )
+   const toolApprovalComposerOverrides = useToolApprovalComposerOverrides({
+     partsByMessageId,
+     persistedPartsByMessageId,
+     streamingLayers,
+     dismissedApprovalIds,
++    pendingApprovals,
+     onRespond: respondToolApproval
+   })
+-  const { isPending } = useTopicStreamStatus(sessionTopicId)
+-  const editBusy = isPending || editPending || toolApprovalComposerOverrides.length > 0
++  const editBusy = isTurnActive || isPending || editPending || toolApprovalComposerOverrides.length > 0
+   const cancelEditing = useCallback(() => {
+     if (!editRequestRef.current) setEditDraft(undefined)
+   }, [])
+@@ -514,11 +530,19 @@ export function useAgentChatRuntimeState({
+     [editBusy, editing, partsByMessageId, reportEditError, send, sessionId, t, uiMessages]
+   )
+ 
++  const stopWaitingTurn = useCallback(async () => {
++    try {
++      await stopWorkbenchSession(sessionTopicId, stop)
++    } catch (error) {
++      toast.error(formatErrorMessage(error))
++    }
++  }, [sessionTopicId, stop])
+   const composerContext = useMemo<ComposerContextValue>(
+     () => ({
+-      overrides: toolApprovalComposerOverrides
++      overrides: toolApprovalComposerOverrides,
++      stop: streamStatus === 'awaiting-approval' || streamStatus === 'awaiting-form' ? stopWaitingTurn : undefined
+     }),
+-    [toolApprovalComposerOverrides]
++    [stopWaitingTurn, streamStatus, toolApprovalComposerOverrides]
+   )
+ 
+   return {
+diff --git a/src/shared/ai/transport/index.ts b/src/shared/ai/transport/index.ts
+index 1be9a07..cd2c8d1 100644
+--- a/src/shared/ai/transport/index.ts
++++ b/src/shared/ai/transport/index.ts
+@@ -32,6 +32,7 @@ export type {
+   ApprovalDecision,
+   ComposerChatTarget,
+   ComposerQueuedMessagePayload,
++  PendingToolApproval,
+   StudioHostContext,
+   StudioTurnContext,
+   StreamChunkPayload,
+diff --git a/src/shared/ai/transport/stream.ts b/src/shared/ai/transport/stream.ts
+index 8deb26b..7ac16d9 100644
+--- a/src/shared/ai/transport/stream.ts
++++ b/src/shared/ai/transport/stream.ts
+@@ -192,6 +192,15 @@ export interface ComposerQueuedMessagePayload {
+  * approval anchor's identity; no message-parts scanning, no SWR-lagged DB
+  * status proxy.
+  */
++/** A current native approval receiver; persisted tool parts alone carry no authority. */
++export interface PendingToolApproval {
++  executionId: string
++  anchorMessageId: string
++  messageId: string
++  approvalId: string
++  toolCallId: string
++}
++
+ export interface TopicStatusSnapshotEntry {
+   status: TopicStreamStatus
+   /**
+@@ -202,6 +211,7 @@ export interface TopicStatusSnapshotEntry {
+   turnId?: string
+   activeExecutions: ActiveExecution[]
+   awaitingApprovalAnchors: ActiveExecution[]
++  pendingApprovals?: readonly PendingToolApproval[]
+   lastCompletedAt?: number
+ }
+ 
+@@ -320,6 +330,10 @@ export interface ApprovalDecision {
+ export interface AiToolApprovalRespondRequest extends ApprovalDecision {
+   topicId?: string
+   anchorId?: string
++  executionId?: string
++  anchorMessageId?: string
++  messageId?: string
++  toolCallId?: string
+ }
+ 
+ export interface AiToolApprovalRespondResponse {
+@@ -374,7 +388,7 @@ export interface AiStreamAttachTerminal {
+ }
+ export type AiStreamAttachResponse =
+   | { status: 'not-found' }
+-  | { status: 'attached'; bufferedChunks: StreamChunkPayload[] }
++  | { status: 'attached'; bufferedChunks: StreamChunkPayload[]; streamStatus?: TopicStatusSnapshotEntry }
+   | ({ status: 'done' } & AiStreamAttachTerminal)
+   | ({ status: 'paused' } & AiStreamAttachTerminal)
+   | { status: 'error'; error?: SerializedError }
+diff --git a/src/shared/ipc/schemas/ai.ts b/src/shared/ipc/schemas/ai.ts
+index 6a6682b..5cf658c 100644
+--- a/src/shared/ipc/schemas/ai.ts
++++ b/src/shared/ipc/schemas/ai.ts
+@@ -382,7 +382,11 @@ export const aiRequestSchemas = {
+       reason: z.string().optional(),
+       updatedInput: z.record(z.string(), z.unknown()).optional(),
+       topicId: z.string().optional(),
+-      anchorId: z.string().optional()
++      anchorId: z.string().optional(),
++      executionId: z.string().optional(),
++      anchorMessageId: z.string().optional(),
++      messageId: z.string().optional(),
++      toolCallId: z.string().optional()
+     }) satisfies z.ZodType<AiToolApprovalRespondRequest>,
+     output: z.object({ ok: z.boolean() })
+   }),
+diff --git a/src/shared/types/studioExecution.ts b/src/shared/types/studioExecution.ts
+index 4897044..58fe44f 100644
+--- a/src/shared/types/studioExecution.ts
++++ b/src/shared/types/studioExecution.ts
+@@ -1,5 +1,7 @@
+ import * as z from 'zod'
+ 
++import type { PendingToolApproval } from '@shared/ai/transport'
++
+ const identity = z
+   .string()
+   .min(1)
+@@ -8,6 +10,21 @@ const identity = z
+   .refine((value) => value.trim().length > 0 && new globalThis.TextEncoder().encode(value).byteLength <= 128)
+ const ordinal = z.number().int().min(1).max(Number.MAX_SAFE_INTEGER)
+ 
++export const pendingToolApprovalsSchema = z
++  .array(
++    z
++      .object({
++        executionId: identity,
++        anchorMessageId: identity,
++        messageId: identity,
++        approvalId: identity,
++        toolCallId: identity
++      })
++      .strict() satisfies z.ZodType<PendingToolApproval>
++  )
++  .max(256)
++  .refine((approvals) => new Set(approvals.map((approval) => approval.approvalId)).size === approvals.length)
++
+ /** Readonly native observation; modelTurn is a model-call ordinal, not a Tool Turn grant. */
+ export const studioExecutionObservationSchema = z
+   .object({

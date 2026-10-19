@@ -1,0 +1,16 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-code-core",
+    "--lib",
+    "owned_fact_confirmation_uses_the_original_run_snapshot_after_session_mode_changes",
+    "--",
+    "--test-threads=1"
+  ],
+  "exit_code": 101,
+  "wall_seconds": 151.449189166
+}

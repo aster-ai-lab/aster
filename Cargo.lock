@@ -305,15 +305,22 @@ version = "9.1.4"
 dependencies = [
  "a3s-acl 0.3.0",
  "a3s-code-core",
+ "a3s-code-mermaid",
+ "a3s-office",
  "a3s-okf",
+ "a3s-use-bge",
  "a3s-use-reconcile",
  "agent-client-protocol",
  "anyhow",
  "async-trait",
+ "cap-fs-ext",
+ "cap-std",
  "portable-pty",
+ "quick-xml 0.38.4",
  "rusqlite",
  "serde",
  "serde_json",
+ "sha2 0.10.9",
  "tempfile",
  "tokio",
  "tokio-util",
@@ -2512,6 +2519,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "a3s-libkrun-sys"
+version = "3.2.7"
+dependencies = [
+ "libc",
+ "num_cpus",
+ "pkg-config",
+ "sha2 0.10.9",
+ "tempfile",
+ "windows-sys 0.59.0",
+]
+
+[[package]]
 name = "a3s-memory"
 version = "0.1.5"
 dependencies = [
@@ -2548,12 +2567,109 @@ dependencies = [
 ]
 
 [[package]]
+name = "a3s-oci-agent"
+version = "0.3.6"
+dependencies = [
+ "a3s-oci-agent-protocol",
+ "a3s-oci-sdk",
+ "base64 0.22.1",
+ "libc",
+ "nix 0.29.0",
+ "seccompiler",
+ "serde",
+ "serde_json",
+ "sha2 0.10.9",
+ "syscalls",
+ "tempfile",
+ "tokio",
+ "zeroize",
+]
+
+[[package]]
+name = "a3s-oci-agent-protocol"
+version = "0.3.6"
+dependencies = [
+ "a3s-oci-sdk",
+ "async-trait",
+ "base64 0.22.1",
+ "getrandom 0.3.4",
+ "serde",
+ "serde_json",
+ "sha2 0.10.9",
+ "tokio",
+ "zeroize",
+]
+
+[[package]]
+name = "a3s-oci-cli"
+version = "0.3.6"
+dependencies = [
+ "a3s-oci-core",
+ "a3s-oci-runtime",
+ "a3s-oci-sdk",
+ "async-trait",
+ "clap",
+ "fs2",
+ "libc",
+ "serde",
+ "serde_json",
+ "sha2 0.10.9",
+ "tempfile",
+ "thiserror 2.0.20",
+ "tokio",
+]
+
+[[package]]
 name = "a3s-oci-core"
 version = "0.3.2"
 dependencies = [
  "serde",
  "sha2 0.10.9",
  "thiserror 2.0.20",
+]
+
+[[package]]
+name = "a3s-oci-krun"
+version = "0.3.6"
+dependencies = [
+ "a3s-libkrun-sys",
+ "a3s-oci-agent-protocol",
+ "a3s-oci-core",
+ "a3s-oci-sdk",
+ "clap",
+ "libc",
+ "libloading 0.8.9",
+ "serde",
+ "serde_json",
+ "sha2 0.10.9",
+ "tar",
+ "tempfile",
+ "windows-sys 0.59.0",
+ "xz2",
+ "zeroize",
+]
+
+[[package]]
+name = "a3s-oci-runtime"
+version = "0.3.6"
+dependencies = [
+ "a3s-oci-agent",
+ "a3s-oci-agent-protocol",
+ "a3s-oci-core",
+ "a3s-oci-sdk",
+ "base64 0.22.1",
+ "cap-fs-ext",
+ "cap-std",
+ "fs2",
+ "getrandom 0.3.4",
+ "libc",
+ "serde",
+ "serde_json",
+ "sha2 0.10.9",
+ "tempfile",
+ "thiserror 2.0.20",
+ "tokio",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -2583,7 +2699,7 @@ name = "a3s-office"
 version = "0.45.0"
 dependencies = [
  "a3s-office-formula-parser",
- "a3s-use-core 0.2.4",
+ "a3s-use-core",
  "async-trait",
  "base64 0.22.1",
  "fs2",
@@ -2610,7 +2726,7 @@ version = "0.45.0"
 dependencies = [
  "a3s-office",
  "a3s-use-browser",
- "a3s-use-core 0.2.4",
+ "a3s-use-core",
  "async-trait",
  "axum 0.8.6",
  "base64 0.22.1",
@@ -2652,7 +2768,7 @@ dependencies = [
 name = "a3s-okf"
 version = "0.1.0"
 dependencies = [
- "a3s-use-core 0.2.4",
+ "a3s-use-core",
  "lopdf",
  "pdf-inspector",
  "sha2 0.10.9",
@@ -2789,7 +2905,6 @@ name = "a3s-search"
 version = "3.4.0"
 dependencies = [
  "a3s-acl 0.3.0",
- "a3s-updater 0.3.0",
  "a3s-use-browser",
  "anyhow",
  "async-trait",
@@ -2881,7 +2996,7 @@ dependencies = [
  "a3s-flow",
  "a3s-okf",
  "a3s-studio-data-sqlite",
- "a3s-use-core 0.2.4",
+ "a3s-use-core",
  "a3s-use-extension",
  "a3s-use-ocr",
  "a3s-use-reconcile",
@@ -3083,7 +3198,7 @@ name = "a3s-use"
 version = "0.3.3"
 dependencies = [
  "a3s-runtime",
- "a3s-use-core 0.2.4",
+ "a3s-use-core",
  "a3s-use-extension",
  "a3s-use-reconcile",
  "a3s-use-tool-acquire",
@@ -3117,7 +3232,7 @@ dependencies = [
 name = "a3s-use-bge"
 version = "0.1.0"
 dependencies = [
- "a3s-use-core 0.2.10",
+ "a3s-use-core",
  "clap",
  "fs2",
  "ort",
@@ -3134,7 +3249,7 @@ dependencies = [
 name = "a3s-use-browser"
 version = "0.3.2"
 dependencies = [
- "a3s-use-core 0.2.4",
+ "a3s-use-core",
  "async-trait",
  "chromiumoxide",
  "fs2",
@@ -3170,30 +3285,11 @@ dependencies = [
 ]
 
 [[package]]
-name = "a3s-use-core"
-version = "0.2.10"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7f87fb53addcfecc5e5110c46f1b531889089cae382359139e31df0f651613d7"
-dependencies = [
- "async-trait",
- "olpc-cjson",
- "percent-encoding",
- "pulldown-cmark",
- "semver",
- "serde",
- "serde_json",
- "serde_yaml_ng",
- "sha2 0.10.9",
- "thiserror 2.0.20",
- "url",
-]
-
-[[package]]
 name = "a3s-use-extension"
 version = "0.3.3"
 dependencies = [
  "a3s-acl 0.3.0",
- "a3s-use-core 0.2.4",
+ "a3s-use-core",
  "async-trait",
  "flate2",
  "fs2",
@@ -3218,7 +3314,7 @@ dependencies = [
 name = "a3s-use-ocr"
 version = "0.3.2"
 dependencies = [
- "a3s-use-core 0.2.4",
+ "a3s-use-core",
  "async-trait",
  "clap",
  "clipper2",
@@ -3243,7 +3339,7 @@ dependencies = [
 name = "a3s-use-reconcile"
 version = "0.2.10"
 dependencies = [
- "a3s-use-core 0.2.4",
+ "a3s-use-core",
  "fs2",
  "serde",
  "serde_json",
@@ -3258,7 +3354,7 @@ dependencies = [
 name = "a3s-use-tool-acquire"
 version = "0.2.4"
 dependencies = [
- "a3s-use-core 0.2.4",
+ "a3s-use-core",
  "base64 0.22.1",
  "flate2",
  "fs2",
@@ -3989,6 +4085,56 @@ dependencies = [
  "tokio-util",
  "tracing",
  "tracing-subscriber",
+]
+
+[[package]]
+name = "aster-dream"
+version = "0.1.1"
+dependencies = [
+ "a3s-acl 0.3.0",
+ "a3s-boot",
+ "a3s-flow",
+ "a3s-form-core",
+ "a3s-okf",
+ "a3s-use-extension",
+ "a3s-use-ocr",
+ "a3s-use-reconcile",
+ "a3s-use-tool-acquire",
+ "a3s-vec",
+ "agent-client-protocol",
+ "aster-work-pty",
+ "axum 0.8.6",
+ "base64 0.22.1",
+ "block2 0.6.2",
+ "chrono",
+ "futures-util",
+ "getrandom 0.2.16",
+ "ignore",
+ "md-5 0.10.6",
+ "notify",
+ "objc2 0.6.5",
+ "objc2-app-kit",
+ "objc2-foundation 0.3.2",
+ "objc2-user-notifications",
+ "objc2-web-kit",
+ "regex",
+ "reqwest 0.12.24",
+ "rustix 1.1.5",
+ "same-file",
+ "serde",
+ "serde_json",
+ "sha2 0.10.9",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-updater",
+ "tempfile",
+ "thiserror 2.0.20",
+ "tokio",
+ "tokio-stream",
+ "url",
+ "uuid",
+ "windows-sys 0.61.2",
+ "zip 7.2.0",
 ]
 
 [[package]]
@@ -11213,9 +11359,11 @@ dependencies = [
  "percent-encoding",
  "pin-project-lite",
  "socket2 0.6.4",
+ "system-configuration",
  "tokio",
  "tower-service",
  "tracing",
+ "windows-registry",
 ]
 
 [[package]]
@@ -13301,6 +13449,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "68354c5c6bd36d73ff3feceb05efa59b6acb7626617f4962be322a825e61f79a"
 
 [[package]]
+name = "minisign-verify"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "871285dc19d8d0ebe0eef3d0e99a205f2a71363b122632cbbfa4a6c370a960ce"
+
+[[package]]
 name = "miniz_oxide"
 version = "0.8.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -14225,6 +14379,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "objc2-osa-kit"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f112d1746737b0da274ef79a23aac283376f335f4095a083a267a082f21db0c0"
+dependencies = [
+ "bitflags 2.13.0",
+ "objc2 0.6.5",
+ "objc2-app-kit",
+ "objc2-foundation 0.3.2",
+]
+
+[[package]]
 name = "objc2-quartz-core"
 version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -14818,6 +14984,20 @@ checksum = "7d8fae84b431384b68627d0f9b3b1245fcf9f46f6c0e3dc902e9dce64edd1967"
 dependencies = [
  "libc",
  "windows-sys 0.61.2",
+]
+
+[[package]]
+name = "osakit"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "732c71caeaa72c065bb69d7ea08717bd3f4863a4f451402fc9513e29dbd5261b"
+dependencies = [
+ "objc2 0.6.5",
+ "objc2-foundation 0.3.2",
+ "objc2-osa-kit",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.20",
 ]
 
 [[package]]
@@ -17934,6 +18114,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "seccompiler"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a4ae55de56877481d112a559bbc12667635fdaf5e005712fd4e2b2fa50ffc884"
+dependencies = [
+ "libc",
+]
+
+[[package]]
 name = "secrecy"
 version = "0.10.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -19483,6 +19672,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "syscalls"
+version = "0.8.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "81c645a4de0d803ced6ef0388a2646aa1ef8467173b5d59a2c33c88de4ab76e7"
+
+[[package]]
 name = "sysctl"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -19745,6 +19940,56 @@ dependencies = [
  "syn 2.0.117",
  "tauri-codegen",
  "tauri-utils",
+]
+
+[[package]]
+name = "tauri-plugin"
+version = "2.7.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "67fb21a77e8f94e8beb3325e583102488659365af0a3948b7ea244c5b779c291"
+dependencies = [
+ "anyhow",
+ "glob",
+ "plist",
+ "schemars 0.8.22",
+ "serde",
+ "serde_json",
+ "tauri-utils",
+ "walkdir",
+]
+
+[[package]]
+name = "tauri-plugin-updater"
+version = "2.14.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7259989d4fe11b2bf51f7d671642249b1837c4ae2da1430dc713ae38f98ceeec"
+dependencies = [
+ "base64 0.22.1",
+ "dirs 7.0.0",
+ "flate2",
+ "futures-util",
+ "http 1.4.0",
+ "infer 0.22.0",
+ "libc",
+ "log",
+ "minisign-verify",
+ "osakit",
+ "percent-encoding",
+ "reqwest 0.13.5",
+ "rustls 0.23.46",
+ "semver",
+ "serde",
+ "serde_json",
+ "tar",
+ "tauri",
+ "tauri-plugin",
+ "tempfile",
+ "thiserror 2.0.20",
+ "time",
+ "tokio",
+ "url",
+ "windows-sys 0.61.2",
+ "zip 4.2.0",
 ]
 
 [[package]]
@@ -23871,6 +24116,18 @@ dependencies = [
  "zeroize",
  "zopfli",
  "zstd",
+]
+
+[[package]]
+name = "zip"
+version = "4.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "95ab361742de920c5535880f89bbd611ee62002bf11341d16a5f057bb8ba6899"
+dependencies = [
+ "arbitrary",
+ "crc32fast",
+ "indexmap 2.14.0",
+ "memchr",
 ]
 
 [[package]]

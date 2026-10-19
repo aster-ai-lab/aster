@@ -1,0 +1,30 @@
+{
+  "name": "ToWork workspace shuttle",
+  "color": {
+    "ground": "#f1f2f0",
+    "deep": "#e7eae6",
+    "card": "#ffffff",
+    "line": "#d6dcd5",
+    "mute": "#626a62",
+    "ink": "#202720",
+    "accent": "#233e2c",
+    "accent2": "#758c79"
+  },
+  "type": {
+    "display": {
+      "face": "Geist",
+      "weight": 600,
+      "tracking": -0.025
+    },
+    "text": {
+      "face": "Inter",
+      "weight": 500,
+      "tracking": -0.01
+    },
+    "mono": {
+      "face": "Geist Mono",
+      "weight": 400,
+      "tracking": 0
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "schema": "aster.t032.native-metadata.v1",
+  "observed_at_utc": "2026-10-19T22:06:30.341578+00:00",
+  "host_pid": 45095,
+  "acp_pid": 49288,
+  "workspace": "/Users/roylin/code/tasks/T01-t032-cua-01",
+  "native_session_id": "01a15630-de16-7119-833f-c116faa5e959",
+  "core_session_id": "d34c25c2-f04c-484a-a422-dea0789dae2f",
+  "parameters": {
+    "provider_model": "deepseek/deepseek-flash",
+    "provider": "deepseek",
+    "model": "deepseek-flash",
+    "source": "whitelisted --model of specified ACP 49288; nativeId from --config basename, not ACL contents"
+  },
+  "core_session_metadata": {
+    "schema": "a3s.code.session-folder.v1",
+    "id": "d34c25c2-f04c-484a-a422-dea0789dae2f",
+    "created_at": "2026-10-20T06:03:25.969686+08:00",
+    "workspace": "/Users/roylin/code/tasks/T01-t032-cua-01",
+    "effect_log": "d34c25c2-f04c-484a-a422-dea0789dae2f.jsonl"
+  },
+  "host_execution": {
+    "status": "awaiting-approval",
+    "executionId": "01a15630-df2c-70ae-add1-df5cbc6f2b06",
+    "anchorMessageId": "01a15630-df2c-70ae-add1-df5cbc6f2b06",
+    "observedAt": "2026-10-19T22:06:08.993Z"
+  },
+  "messages_metadata": [
+    {
+      "id": "01a15630-df2c-70ae-add1-df5b6fc5a8b2",
+      "sessionId": "01a15630-de16-7119-833f-c116faa5e959",
+      "role": "user",
+      "status": "success",
+      "modelId": null,
+      "createdAt": "2026-10-19T22:03:25.868Z",
+      "updatedAt": "2026-10-19T22:03:25.868Z"
+    },
+    {
+      "id": "01a15630-df2c-70ae-add1-df5cbc6f2b06",
+      "sessionId": "01a15630-de16-7119-833f-c116faa5e959",
+      "role": "assistant",
+      "status": "pending",
+      "modelId": "deepseek::deepseek-flash",
+      "createdAt": "2026-10-19T22:03:25.868Z",
+      "updatedAt": "2026-10-19T22:06:08.990Z"
+    }
+  ],
+  "anchor_assistant_metadata": {
+    "id": "01a15630-df2c-70ae-add1-df5cbc6f2b06",
+    "sessionId": "01a15630-de16-7119-833f-c116faa5e959",
+    "role": "assistant",
+    "status": "pending",
+    "modelId": "deepseek::deepseek-flash",
+    "createdAt": "2026-10-19T22:03:25.868Z",
+    "updatedAt": "2026-10-19T22:06:08.990Z"
+  },
+  "normal_host_completion_observed": false,
+  "scope": {
+    "queried_session_ids": [
+      "01a15630-de16-7119-833f-c116faa5e959",
+      "d34c25c2-f04c-484a-a422-dea0789dae2f"
+    ],
+    "other_session_records_output": false,
+    "session_catalog_read": false,
+    "generated_config_content_read": false,
+    "credentials_read": false,
+    "message_bodies_output": false,
+    "reasoning_output": false,
+    "fact_log_read": false,
+    "tokens_output": false,
+    "projection": "jq exact execution map key and exact per-session message file; whitelist scalar metadata only"
+  },
+  "terminal_revalidation": "root will request a separate terminal capture after settlement"
+}

@@ -264,10 +264,29 @@ fn init_tracing_simple(app_entrypoint: &'static str) {
     );
 }
 /// `a3s setup`: rendering and exit codes only; fetch logic lives in `a3s_code_shell::managed_config`.
-/// `json` prints the served configuration instead of installing it.
+/// `json` prints the served configuration instead of installing it, including when no principal is present.
 #[tracing::instrument(level = "debug", skip_all)]
 async fn run_setup_command(json: bool) {
     use a3s_code_shell::managed_config::{self, SetupOutcome};
+    if json {
+        match managed_config::fetch_setup_report().await {
+            Ok(report) => {
+                let out = serde_json::to_string_pretty(&report)
+                    .expect("setup report has no non-serializable values");
+                println!("{out}");
+                if !report.configured {
+                    eprintln!(
+                        "Your team doesn't have a managed configuration yet. A team admin can set one up at docs.a3s.ai."
+                    );
+                }
+            }
+            Err(e) => {
+                eprintln!("Couldn't fetch managed configuration. {e}");
+                std::process::exit(1);
+            }
+        }
+        return;
+    }
     if !managed_config::has_principal() {
         eprintln!("No deployment key or team sign-in found.");
         eprintln!();
@@ -290,25 +309,6 @@ async fn run_setup_command(json: bool) {
             "If you don't have a deployment key, contact your organization's Aster administrator."
         );
         std::process::exit(1);
-    }
-    if json {
-        match managed_config::fetch_setup_report().await {
-            Ok(report) => {
-                let out = serde_json::to_string_pretty(&report)
-                    .expect("setup report has no non-serializable values");
-                println!("{out}");
-                if !report.configured {
-                    eprintln!(
-                        "Your team doesn't have a managed configuration yet. A team admin can set one up at docs.a3s.ai."
-                    );
-                }
-            }
-            Err(e) => {
-                eprintln!("Couldn't fetch managed configuration. {e}");
-                std::process::exit(1);
-            }
-        }
-        return;
     }
     match managed_config::run_setup().await {
         SetupOutcome::Installed => eprintln!("Applied managed configuration."),

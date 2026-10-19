@@ -1,0 +1,27 @@
+{
+  "schema": "aster.controlled-provider-review.v1",
+  "reviewer": "/root/runtime_evidence",
+  "recorded_by": "/root/runtime_speed",
+  "method": "independent read-only source review reported through collaboration message; no reviewer test execution",
+  "result": "no blocking findings",
+  "checks": [
+    "accepted socket explicitly blocking",
+    "existing 5-second read timeout retained; 5-second write timeout added",
+    "2 MiB/path/Content-Length/JSON/EOF checks retained",
+    "strict auxiliary validation unchanged",
+    "program_turn and refusal assertions unchanged",
+    "accepted handshake and delayed first-byte/body regression targets actual old os35 RED",
+    "normal completed regression joins reader",
+    "Provider Drop logs thread failure during panic and retains normal-path assertion"
+  ],
+  "limitations": [
+    "Regression exceptional unwrap/panic paths do not all explicitly join the reader; client Drop and bounded read timeout limit its exit. No claim of all-exception-path join proof.",
+    "No exact historical server errno recovered.",
+    "No five-case rerun or final-binary requalification performed."
+  ],
+  "reviewed_sources": {
+    "apps/work/src-tauri/src/agent_plane/local_acp_delivery_tests.rs": "6810301c86e355676e5735739e759df0854e1b97b6f17090a8a3d85cd8a3d579",
+    "apps/work/src-tauri/src/agent_plane/local_acp_provider_tests.rs": "2225ae7ad0731e7ce946f36637460fe03506498cb0e12d4ceabee0aff79b1da3",
+    "apps/work/src-tauri/src/agent_plane/local_acp_program_tests.rs": "fc8e4c629461f48547a59efc18e2f8c88903b0e61f1665701094a4292f0c6bc3"
+  }
+}

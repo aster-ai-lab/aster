@@ -20,6 +20,7 @@ mod emit;
 mod extensions;
 mod goal_ext;
 mod host_methods;
+mod local_embedding;
 mod models;
 mod permission_ask;
 mod resume;
@@ -782,7 +783,12 @@ impl A3sCodeAgent {
             .with_prompt_slots(slots.clone())
             .with_verification_contracts(contracts)
             .with_permission_checker(Arc::new(guardrail))
-            .with_confirmation_policy(a3s_code_core::hitl::ConfirmationPolicy::enabled())
+            .with_confirmation_policy(
+                a3s_code_core::hitl::ConfirmationPolicy::enabled().with_timeout(
+                    u64::try_from(permission_ask::ask_deadline().as_millis()).unwrap_or(u64::MAX),
+                    a3s_code_core::hitl::TimeoutAction::Reject,
+                ),
+            )
             .with_sandbox_network_mode(config.sandbox_network)
             .with_sandbox_network_allow(config.sandbox_network_allow.clone())
             .with_code_intelligence();
@@ -1491,6 +1497,9 @@ mod session_setup_tests;
 
 #[cfg(test)]
 mod retrieval_seam_tests;
+
+#[cfg(test)]
+mod registration_cleanup_tests;
 
 #[cfg(test)]
 mod engineering_tests;

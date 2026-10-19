@@ -1,0 +1,17 @@
+extension "a3s/stc-answer" {
+  schema_version = 3
+  version        = "1.0.0"
+  route          = "stc-answer"
+  requires_use   = ">=0.3.0, <0.4.0"
+  actions        = ["read"]
+
+  repository {
+    url      = "https://a3s.dev/packages/skills/stc-answer"
+    revision = "0000000000000000000000000000000000000000"
+  }
+
+  skill "stc-answer" {
+    path     = "SKILL.md"
+    optional = false
+  }
+}

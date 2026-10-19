@@ -1,0 +1,17 @@
+{
+  "started_at_utc": "2026-10-19T22:16:10.423081+00:00",
+  "cwd": "/Users/roylin/code/aster",
+  "argv": [
+    "rustfmt",
+    "--edition",
+    "2024",
+    "--check",
+    "--config",
+    "skip_children=true",
+    "apps/work/src-tauri/src/agent_plane/local_acp_delivery_tests.rs",
+    "apps/work/src-tauri/src/agent_plane/local_acp_sandbox_tests.rs"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 0.035139125,
+  "execution_status": "source-format-only; no Cargo/VM/model/GUI/test"
+}

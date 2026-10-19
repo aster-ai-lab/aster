@@ -320,6 +320,7 @@ Aster CLI / Aster Work
 | Harness 组合、权限与完成门禁 | [crates/code/core](crates/code/core) |
 | 组件投影、效果执行和事实重放 | [crates/effect](crates/effect) |
 | 扩展能力、检索与持久化记忆 | [Use](crates/use)、[Search](crates/search)、[Memory](crates/memory)、[Vec](crates/vec) |
+| Studio 界面与原生宿主 | [apps/studio](apps/studio) |
 | 桌面界面与原生宿主 | [apps/work](apps/work) |
 | Office 引擎与编辑器 | [crates/office](crates/office)、[Office 编辑器源码](apps/work/vendor/packages/office) |
 
@@ -341,20 +342,24 @@ just build-work
 ```
 
 `just build-work` 先构建 ACP、Office，再构建桌面宿主并放入配套程序。
-开发窗口在 `apps/work` 中运行 `pnpm dev`；macOS 安装包与启动入口为：
+`just dev` 启动带前端热更新的开发窗口，页面在 `http://127.0.0.1:4320`。`just studio` 使用 `4318`。macOS 安装包：
 
 ```sh
 just build-work-release
-just work
 ```
 
-`just work` 启动修改时间最新的 Aster Work。候选包括 `just build-work` 生成的可执行程序，以及 `just build-work-release` 的 `.app`。仍在运行的旧进程会被替换。Office 编辑器随前端依赖安装从源码构建；
-WASM 内核的重建方法见 [Office 说明](apps/work/vendor/packages/office/README.md)。
+`just work` 会先执行 `just build-work`，再启动这次构建的 debug `aster-dream`。构建失败时不会启动。仍在运行的旧主实例会被替换。Office 编辑器和 `a3s-office` 都从本仓库的 [crates/office](crates/office) 构建。`pnpm build:office` 会在内核源码更新后重编 WASM。说明见 [Office 编辑器](apps/work/vendor/packages/office/README.md)。
+
+Studio 同样接入根 Rust 工作区。先在 `apps/studio` 中运行
+`pnpm install --frozen-lockfile`，再在根目录运行 `just build-studio` 和
+`just studio`。macOS 打包使用 `just build-studio-release`。
+范围与来源见 [Studio 迁移记录](docs/migration.md#studio-import)。
 
 ## 参与开发
 
 先找到行为的拥有者和调用方，再修改最小的完整路径。保持权限、配置的信任边界和完成门禁；
-用工具结果、文件内容或状态断言验证行为。仓库约定见 [AGENTS.md](AGENTS.md)。
+用工具结果、文件内容或状态断言验证行为。仓库约定见 [Agents.md](Agents.md)。
+工程规则、宪法和 spec-kit 阶段见 [开发规范](docs/development-standards.md)。
 
 从根目录运行与变更对应的检查：
 

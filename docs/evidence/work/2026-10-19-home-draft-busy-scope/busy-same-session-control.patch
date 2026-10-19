@@ -1,0 +1,13 @@
+--- current/AgentComposer.tsx
++++ control/AgentComposer.tsx
+@@ -2137,10 +2137,6 @@
+         try {
+           const created = await homeTask.create()
+           if (!created || memberIdRef.current !== memberId) return
+-          if (homeDraft && created.id === sessionId && (sessionHasMessages || isStreaming || reviewActive)) {
+-            toast.error(t('agent.session.create.error.failed'))
+-            return
+-          }
+           if (created.id !== sessionId) {
+             writeAgentDraftCache(getAgentDraftCacheKey(created.id), {
+               text: outgoing.text,

@@ -1,0 +1,55 @@
+{
+  "schema": "aster.t023.event-window-runner.v2",
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-code-core",
+    "--features",
+    "advanced-harness",
+    "--test",
+    "test_extensibility_real_llm",
+    "--no-run",
+    "--message-format=json"
+  ],
+  "exit_code": 0,
+  "seconds": 0.48103408300000006,
+  "scope": "test runner build only; no model/VM; no product/source/budget changes beyond runner event retention and completeness fix",
+  "source": "/Users/roylin/code/aster/crates/code/core/tests/extensibility/task_matrix.rs",
+  "source_before": "996b60461d683374646d43a3765928576886b1578eb664cfa9f869284fa5c893",
+  "source_after": "996b60461d683374646d43a3765928576886b1578eb664cfa9f869284fa5c893",
+  "cargo_executable": "/Users/roylin/code/aster/target/debug/deps/test_extensibility_real_llm-d4219b08e7cc2f51",
+  "copied_executable": "/Users/roylin/code/aster/target/t023-frozen-event-window-v2/t023-real-llm",
+  "runner_sha256": "33de605e83617a2e850778a2308832610697b1bcc95c0ffd227ec0ad1d9f130a",
+  "cargo_executable_sha256": "33de605e83617a2e850778a2308832610697b1bcc95c0ffd227ec0ad1d9f130a",
+  "artifact_features": [
+    "a3s-vec-fts",
+    "advanced-harness",
+    "default",
+    "dynamic-workflow",
+    "evaluation",
+    "grep-trigram",
+    "local-code",
+    "research",
+    "state-graph",
+    "web-fetch-pdf"
+  ],
+  "retention": {
+    "max_events_per_run": 262144,
+    "max_event_bytes_per_run": 67108864
+  },
+  "reported_token_limit_unchanged": 1000000,
+  "legacy_before": {
+    "/Users/roylin/code/aster/target/t023-frozen/t023-real-llm": "fa8dea5c20ea447352ec72d228462adedd5e0ba56738a6d870e9eced4c8a8165",
+    "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-sa-01.json": "b48374b34d10724f1d38cecfaa52b910b3e8f8c80302a6dedd2dbc616837b378",
+    "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/runs/t023-sa-01/run.json": "700d3fa7cbeb3b1e37310b1a8cd06fd4ecb135ff82e575d1322c78e41c678031"
+  },
+  "legacy_after": {
+    "/Users/roylin/code/aster/target/t023-frozen/t023-real-llm": "fa8dea5c20ea447352ec72d228462adedd5e0ba56738a6d870e9eced4c8a8165",
+    "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-sa-01.json": "b48374b34d10724f1d38cecfaa52b910b3e8f8c80302a6dedd2dbc616837b378",
+    "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/runs/t023-sa-01/run.json": "700d3fa7cbeb3b1e37310b1a8cd06fd4ecb135ff82e575d1322c78e41c678031"
+  },
+  "legacy_unchanged": true
+}

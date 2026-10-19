@@ -1,0 +1,277 @@
+import type { Editor } from '@tiptap/core';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import type { WorkOfficeCollaborationActor } from '../../../collaboration/office-collaboration';
+import { officeMessage } from '../../../i18n/office-locale';
+import type { OfficeMessageCatalog } from '../../../i18n/office-messages';
+import {
+  canInsertDocumentComment,
+  collectDocumentCommentAnchors,
+  documentCommentDraftRange,
+  documentCommentViews,
+  type WorkDocumentCommentView,
+} from '../work-document-comments';
+import { createWorkId } from '../work-templates';
+import type { WorkDocumentContent } from '../work-types';
+import type { DocumentCommentDraft } from './document-comment-composer';
+import { useOfficeMessages } from './office-messages-context';
+
+export interface DocumentCommentsController {
+  canDeleteComment: (id: string) => boolean;
+  canInsert: boolean;
+  close: () => void;
+  closeDraft: (restoreEditorFocus?: boolean) => void;
+  comments: WorkDocumentCommentView[];
+  deleteComment: (id: string) => void;
+  draft: DocumentCommentDraft | null;
+  open: boolean;
+  reply: (id: string, text: string) => void;
+  setOpen: (open: boolean) => void;
+  startDraft: () => void;
+  submitDraft: (text: string) => string | null;
+  acceptComment: (preferredId?: string | null) => boolean;
+  processComment: (preferredId?: string | null) => boolean;
+  withdrawComment: (preferredId?: string | null) => boolean;
+  toggleOpen: () => void;
+  toggleResolved: (id: string) => void;
+}
+
+export function useDocumentComments({
+  actor,
+  contentRef,
+  defaultOpen = false,
+  deleteOwnOnly = false,
+  editor,
+  enabled = true,
+  onBeforeDraft,
+}: {
+  actor?: WorkOfficeCollaborationActor;
+  contentRef: { current: WorkDocumentContent };
+  defaultOpen?: boolean;
+  deleteOwnOnly?: boolean;
+  editor: Editor | null;
+  enabled?: boolean;
+  onBeforeDraft?: () => void;
+}): DocumentCommentsController {
+  const messages = useOfficeMessages();
+  const [open, setOpen] = useState(defaultOpen);
+  const [draft, setDraft] = useState<DocumentCommentDraft | null>(null);
+  const lastDecidedCommentId = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (defaultOpen) setOpen(true);
+  }, [defaultOpen]);
+
+  useEffect(
+    () => () => {
+      if (editor && !editor.isDestroyed) {
+        editor.commands.clearDocumentCommentDraft();
+      }
+    },
+    [editor],
+  );
+
+  const reply = useCallback(
+    (id: string, text: string) => {
+      if (!enabled) return;
+      editor?.commands.addDocumentCommentReply(id, {
+        id: createWorkId('comment-reply'),
+        ...commentActor(actor, messages),
+        date: new Date().toISOString(),
+        text,
+      });
+    },
+    [actor, editor, enabled, messages],
+  );
+
+  const toggleResolved = useCallback(
+    (id: string) => {
+      if (!enabled) return;
+      editor?.commands.toggleDocumentCommentResolved(id);
+    },
+    [editor, enabled],
+  );
+
+  const decideComment = useCallback(
+    (id: string, decision: 'accepted' | 'processed' | null) => {
+      if (!enabled || !editor) return false;
+      const applied = editor.commands.setDocumentCommentDecision(id, decision);
+      if (!applied) return false;
+      if (decision) lastDecidedCommentId.current = id;
+      else if (lastDecidedCommentId.current === id) {
+        lastDecidedCommentId.current = null;
+      }
+      return true;
+    },
+    [editor, enabled],
+  );
+
+  const canDeleteComment = useCallback(
+    (id: string) => {
+      if (!enabled) return false;
+      if (!deleteOwnOnly) return true;
+      return Boolean(
+        actor &&
+          contentRef.current.comments?.some(
+            (comment) => comment.id === id && comment.actorId === actor.id,
+          ),
+      );
+    },
+    [actor, contentRef, deleteOwnOnly, enabled],
+  );
+
+  const deleteComment = useCallback(
+    (id: string) => {
+      if (!canDeleteComment(id)) return;
+      editor?.commands.deleteDocumentComment(id);
+    },
+    [canDeleteComment, editor],
+  );
+
+  const closeDraft = useCallback(
+    (restoreEditorFocus = true) => {
+      editor?.commands.clearDocumentCommentDraft();
+      setDraft(null);
+      if (restoreEditorFocus && editor) {
+        requestAnimationFrame(() => {
+          if (!editor.isDestroyed) editor.commands.focus();
+        });
+      }
+    },
+    [editor],
+  );
+
+  const close = useCallback(() => {
+    closeDraft();
+    setOpen(false);
+  }, [closeDraft]);
+
+  const startDraft = useCallback(() => {
+    if (!editor || !enabled) return;
+    const { from, to } = editor.state.selection;
+    const range = { from, to };
+    if (!canInsertDocumentComment(editor, range)) return;
+    const nextDraft: DocumentCommentDraft = {
+      id: createWorkId('comment'),
+      from,
+      to,
+      anchorText: editor.state.doc.textBetween(from, to, '\n'),
+    };
+    if (!editor.commands.showDocumentCommentDraft(range)) return;
+    onBeforeDraft?.();
+    setDraft(nextDraft);
+    setOpen(true);
+  }, [editor, enabled, onBeforeDraft]);
+
+  const submitDraft = useCallback(
+    (text: string): string | null => {
+      if (!enabled || !editor || !draft) {
+        return officeMessage(messages, 'document.comment.error.draftClosed');
+      }
+      const range = documentCommentDraftRange(editor);
+      if (!range) {
+        return officeMessage(
+          messages,
+          'document.comment.error.selectionChanged',
+        );
+      }
+      const anchorText = editor.state.doc.textBetween(
+        range.from,
+        range.to,
+        '\n',
+      );
+      if (anchorText !== draft.anchorText) {
+        return officeMessage(
+          messages,
+          'document.comment.error.selectionChanged',
+        );
+      }
+      const comment = {
+        id: draft.id,
+        ...commentActor(actor, messages),
+        date: new Date().toISOString(),
+        text,
+        resolved: false,
+      };
+      if (!editor.commands.insertDocumentCommentThread(comment, range)) {
+        return officeMessage(
+          messages,
+          'document.comment.error.alreadyCommented',
+        );
+      }
+      setDraft(null);
+      setOpen(true);
+      return null;
+    },
+    [actor, draft, editor, enabled, messages],
+  );
+
+  const comments = editor
+    ? documentCommentViews(
+        contentRef.current.comments ?? [],
+        collectDocumentCommentAnchors(editor.state.doc),
+      )
+    : [];
+  const canInsert = Boolean(
+    enabled && editor && canInsertDocumentComment(editor),
+  );
+  const toggleOpen = useCallback(() => {
+    if (open) close();
+    else setOpen(true);
+  }, [close, open]);
+
+  const pendingCommentId = (preferredId?: string | null) =>
+    comments.find((comment) => comment.id === preferredId && !comment.resolved)
+      ?.id ?? comments.find((comment) => !comment.resolved)?.id;
+
+  const decidedCommentId = (preferredId?: string | null) =>
+    comments.find((comment) => comment.id === preferredId && comment.resolved)
+      ?.id ??
+    comments.find(
+      (comment) =>
+        comment.id === lastDecidedCommentId.current && comment.resolved,
+    )?.id ??
+    [...comments].reverse().find((comment) => comment.resolved)?.id;
+
+  return {
+    canDeleteComment,
+    canInsert,
+    close,
+    closeDraft,
+    comments,
+    deleteComment,
+    draft,
+    open,
+    reply,
+    setOpen,
+    startDraft,
+    submitDraft,
+    acceptComment: (preferredId) => {
+      const id = pendingCommentId(preferredId);
+      return id ? decideComment(id, 'accepted') : false;
+    },
+    processComment: (preferredId) => {
+      const id = pendingCommentId(preferredId);
+      return id ? decideComment(id, 'processed') : false;
+    },
+    withdrawComment: (preferredId) => {
+      const id = decidedCommentId(preferredId);
+      return id ? decideComment(id, null) : false;
+    },
+    toggleOpen,
+    toggleResolved,
+  };
+}
+
+function commentActor(
+  actor: WorkOfficeCollaborationActor | undefined,
+  messages: OfficeMessageCatalog,
+): {
+  actorId?: string;
+  author: string;
+} {
+  return actor
+    ? { actorId: actor.id, author: actor.name }
+    : {
+        author: officeMessage(messages, 'document.comment.defaultAuthor'),
+      };
+}

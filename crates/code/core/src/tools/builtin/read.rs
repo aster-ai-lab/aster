@@ -290,7 +290,7 @@ impl Tool for ReadTool {
                     "Failed to read file {}: {}",
                     ctx.workspace_services.display_path(&workspace_path),
                     e
-                )))
+                )));
             }
         };
         if range.lines.is_empty()
@@ -355,12 +355,12 @@ async fn execute_batch_read(args: &serde_json::Value, ctx: &ToolContext) -> Resu
     let raw_entries = match args.get("files").and_then(serde_json::Value::as_array) {
         Some(entries) if !entries.is_empty() && entries.len() <= MAX_BATCH_READ_FILES => entries,
         Some(entries) if entries.is_empty() => {
-            return Ok(ToolOutput::error("files must contain at least one entry"))
+            return Ok(ToolOutput::error("files must contain at least one entry"));
         }
         Some(_) => {
             return Ok(ToolOutput::error(format!(
                 "files accepts at most {MAX_BATCH_READ_FILES} entries"
-            )))
+            )));
         }
         None => return Ok(ToolOutput::error("files parameter must be an array")),
     };

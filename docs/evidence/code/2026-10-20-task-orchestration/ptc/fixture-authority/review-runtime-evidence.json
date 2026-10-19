@@ -1,0 +1,53 @@
+{
+  "schema": "aster.fixture-authority-review.v1",
+  "reviewer": "runtime_evidence",
+  "reviewed_at_utc": "2026-10-19T19:12:26.577869+00:00",
+  "verdict": "no_blocking_findings",
+  "scope": {
+    "files": {
+      "crates/code/core/src/fact_control_tests.rs": {
+        "sha256": "aee5a7e0b93824820c012eeadc2f86023472978fdc52f5a5e114ea36f5615367"
+      },
+      "crates/code/core/src/fact_control/tool_history_tests.rs": {
+        "sha256": "c80599836a4048af300048f4a0099067cfdff4b1f0ddabfcb75c055bd97dc8f0"
+      }
+    },
+    "hunks": [
+      "open_live permission-policy assembly",
+      "surface_with_config extraction and surface_with_budget delegation"
+    ],
+    "source_edited_by_reviewer": false,
+    "cargo_tests_models_or_vms_started_by_reviewer": false
+  },
+  "findings": [],
+  "observations": [
+    "open_live clones the same input PermissionPolicy into LiveCompletion and passes the original value as the borrowed surface AgentConfig.permission_checker; it adds no allow rule or confirmation provider.",
+    "Only the original-log-mounted branch receives the aligned surface; bare single-step Ask fixtures preserve their existing branch.",
+    "The Yolo test retains all four assertions: Done, original tool.result, no confirmation.answered, and a nonempty model-visible tool catalog.",
+    "surface_with_budget still forwards its exact optional BudgetGuard and PlanningMode::Disabled with other fields defaulted. surface remains surface_with_budget(..., None).",
+    "The existing budget and budget-cancellation fixture callers still use surface_with_budget and retain the same guard Arc and configuration values.",
+    "The extraction changes only cfg(test) fixture assembly; production permission visibility and execution paths were inspected but not changed."
+  ],
+  "validation_read_only": {
+    "source": "checks.json and terminal test-summary lines in existing owner logs",
+    "yolo_exact": {
+      "exit_code": 0,
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "log": "yolo-exact.log"
+    },
+    "fact_control": {
+      "exit_code": 0,
+      "passed": 162,
+      "failed": 0,
+      "ignored": 0,
+      "log": "fact-control.log"
+    },
+    "tests_rerun_by_reviewer": false
+  },
+  "limits": [
+    "This is a scoped source review with existing owner-produced test evidence, not an independent test execution.",
+    "The older read-only-evidence test deletion visible in the repository-wide dirty diff is outside these two fixture-authority hunks and is not reviewed or changed here."
+  ]
+}

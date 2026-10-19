@@ -1,0 +1,300 @@
+import { ChevronDown } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { Popover } from '../../../design-system/primitives';
+import { officeMessage } from '../../../i18n/office-locale';
+import { OfficeColorPicker, OfficeSelect } from './office-controls';
+import { moveOfficeGridMenuFocus } from './office-menu-keyboard';
+import { useOfficeMessages } from './office-messages-context';
+import type {
+  SpreadsheetCellBorderFormat,
+  SpreadsheetCellBorderStyle,
+  SpreadsheetCellBorderTarget,
+} from './spreadsheet-cell-border';
+import { spreadsheetCommandCatalog } from './spreadsheet-command-catalog';
+import type {
+  SpreadsheetEditorCanCommands,
+  SpreadsheetEditorCommands,
+} from './spreadsheet-command-controller';
+
+const BORDER_STYLE_KEYS = {
+  thin: 'spreadsheet.border.style.thin',
+  dotted: 'spreadsheet.border.style.dotted',
+  dashed: 'spreadsheet.border.style.dashed',
+  'dash-dot': 'spreadsheet.border.style.dashDot',
+  'dash-dot-dot': 'spreadsheet.border.style.dashDotDot',
+  medium: 'spreadsheet.border.style.medium',
+  'medium-dashed': 'spreadsheet.border.style.mediumDashed',
+  'medium-dash-dot': 'spreadsheet.border.style.mediumDashDot',
+  'medium-dash-dot-dot': 'spreadsheet.border.style.mediumDashDotDot',
+  thick: 'spreadsheet.border.style.thick',
+} as const satisfies Record<SpreadsheetCellBorderStyle, string>;
+
+const spreadsheetBorderTargetOptions: readonly {
+  target: SpreadsheetCellBorderTarget;
+  definition:
+    | (typeof spreadsheetCommandCatalog)['borderTop']
+    | (typeof spreadsheetCommandCatalog)['borderBottom']
+    | (typeof spreadsheetCommandCatalog)['borderLeft']
+    | (typeof spreadsheetCommandCatalog)['borderRight']
+    | (typeof spreadsheetCommandCatalog)['borderNone']
+    | (typeof spreadsheetCommandCatalog)['borderAll']
+    | (typeof spreadsheetCommandCatalog)['borderOutside']
+    | (typeof spreadsheetCommandCatalog)['borderInside']
+    | (typeof spreadsheetCommandCatalog)['borderHorizontal']
+    | (typeof spreadsheetCommandCatalog)['borderVertical']
+    | (typeof spreadsheetCommandCatalog)['borderDiagonalDown']
+    | (typeof spreadsheetCommandCatalog)['borderDiagonalUp'];
+}[] = [
+  { target: 'top', definition: spreadsheetCommandCatalog.borderTop },
+  { target: 'bottom', definition: spreadsheetCommandCatalog.borderBottom },
+  { target: 'left', definition: spreadsheetCommandCatalog.borderLeft },
+  { target: 'right', definition: spreadsheetCommandCatalog.borderRight },
+  { target: 'none', definition: spreadsheetCommandCatalog.borderNone },
+  { target: 'all', definition: spreadsheetCommandCatalog.borderAll },
+  { target: 'outside', definition: spreadsheetCommandCatalog.borderOutside },
+  { target: 'inside', definition: spreadsheetCommandCatalog.borderInside },
+  {
+    target: 'horizontal',
+    definition: spreadsheetCommandCatalog.borderHorizontal,
+  },
+  {
+    target: 'vertical',
+    definition: spreadsheetCommandCatalog.borderVertical,
+  },
+  {
+    target: 'diagonalDown',
+    definition: spreadsheetCommandCatalog.borderDiagonalDown,
+  },
+  {
+    target: 'diagonalUp',
+    definition: spreadsheetCommandCatalog.borderDiagonalUp,
+  },
+];
+
+export function SpreadsheetBorderRibbon({
+  can,
+  commands,
+}: {
+  can: SpreadsheetEditorCanCommands;
+  commands: SpreadsheetEditorCommands;
+}) {
+  const messages = useOfficeMessages();
+  const [open, setOpen] = useState(false);
+  const [target, setTarget] = useState<SpreadsheetCellBorderTarget>('all');
+  const [style, setStyle] = useState<SpreadsheetCellBorderStyle>('thin');
+  const [color, setColor] = useState('#000000');
+  const [baseline, setBaseline] = useState({
+    target: 'all' as SpreadsheetCellBorderTarget,
+    style: 'thin' as SpreadsheetCellBorderStyle,
+    color: '#000000',
+  });
+  const appliedRef = useRef(false);
+  const format = { target, style, color } satisfies SpreadsheetCellBorderFormat;
+  const dirty =
+    target !== baseline.target ||
+    style !== baseline.style ||
+    color !== baseline.color;
+  const focusIndex = Math.max(
+    0,
+    spreadsheetBorderTargetOptions.findIndex(
+      (option) => option.target === target,
+    ),
+  );
+  const currentDefinition = spreadsheetBorderTargetOptions.find(
+    (option) => option.target === target,
+  )?.definition;
+  const currentShortcut =
+    currentDefinition && 'shortcut' in currentDefinition
+      ? currentDefinition.shortcut
+      : undefined;
+  const currentLabel =
+    currentDefinition?.label ??
+    officeMessage(messages, 'spreadsheet.border.defaultAll');
+  const spreadsheetBorderStyleOptions = (
+    Object.keys(BORDER_STYLE_KEYS) as SpreadsheetCellBorderStyle[]
+  ).map((value) => ({
+    value,
+    label: officeMessage(messages, BORDER_STYLE_KEYS[value]),
+  }));
+  const styleLabel = spreadsheetBorderStyleOptions.find(
+    (option) => option.value === style,
+  )?.label;
+  const menuDisabled = spreadsheetBorderTargetOptions.every(
+    (option) =>
+      !can.setSelectedCellBorders({ ...format, target: option.target }),
+  );
+
+  const restoreBaseline = () => {
+    setTarget(baseline.target);
+    setStyle(baseline.style);
+    setColor(baseline.color);
+  };
+
+  return (
+    <Popover
+      label={officeMessage(messages, 'spreadsheet.border.more')}
+      panelLabel={officeMessage(messages, 'spreadsheet.border.panel')}
+      panelRole="dialog"
+      portal
+      placement="bottom-end"
+      open={open}
+      onOpenChange={(nextOpen) => {
+        setOpen(nextOpen);
+        if (nextOpen) {
+          appliedRef.current = false;
+          setBaseline({ target, style, color });
+          return;
+        }
+        if (!appliedRef.current) {
+          setTarget(baseline.target);
+          setStyle(baseline.style);
+          setColor(baseline.color);
+        }
+      }}
+      className="work-spreadsheet-border-split-root"
+      panelClassName="work-spreadsheet-border-panel"
+      disabled={menuDisabled}
+      focusFirstOnOpen
+      trigger={(triggerProps, { open: popoverOpen }) => (
+        <>
+          <button
+            type="button"
+            className="work-spreadsheet-border-primary"
+            aria-label={currentLabel}
+            aria-keyshortcuts={currentShortcut?.aria}
+            title={
+              currentShortcut
+                ? officeMessage(
+                    messages,
+                    'spreadsheet.border.primaryTitleWithShortcut',
+                    {
+                      label: currentLabel,
+                      style: styleLabel ?? '',
+                      color: color.toUpperCase(),
+                      shortcut: currentShortcut.label,
+                    },
+                  )
+                : officeMessage(messages, 'spreadsheet.border.primaryTitle', {
+                    label: currentLabel,
+                    style: styleLabel ?? '',
+                    color: color.toUpperCase(),
+                  })
+            }
+            disabled={!can.setSelectedCellBorders(format)}
+            onClick={() => commands.setSelectedCellBorders(format)}
+          >
+            <SpreadsheetBorderGlyph target={target} />
+          </button>
+          <button
+            {...triggerProps}
+            className={`work-spreadsheet-border-disclosure${popoverOpen ? ' active' : ''}`}
+            title={officeMessage(messages, 'spreadsheet.border.more')}
+          >
+            <ChevronDown size={12} aria-hidden="true" />
+          </button>
+        </>
+      )}
+    >
+      {(close) => (
+        <fieldset
+          data-office-escape-consumer={dirty || undefined}
+          onKeyDown={(event) => {
+            if (event.key !== 'Escape' || !dirty) return;
+            event.preventDefault();
+            event.stopPropagation();
+            restoreBaseline();
+          }}
+        >
+          <legend className="sr-only">
+            {officeMessage(messages, 'spreadsheet.border.more')}
+          </legend>
+          <div className="work-spreadsheet-border-section-label">
+            {officeMessage(messages, 'spreadsheet.border.position')}
+          </div>
+          <div
+            className="work-spreadsheet-border-targets"
+            role="radiogroup"
+            aria-label={officeMessage(messages, 'spreadsheet.border.position')}
+            onKeyDown={(event) => moveOfficeGridMenuFocus(event, 2)}
+          >
+            {spreadsheetBorderTargetOptions.map(
+              ({ target: option, definition }, index) => {
+                const next = { ...format, target: option };
+                const shortcut =
+                  'shortcut' in definition ? definition.shortcut : undefined;
+                return (
+                  // biome-ignore lint/a11y/useSemanticElements: styled border radios; native input cannot host glyph and shortcut kbd.
+                  <button
+                    key={definition.id}
+                    type="button"
+                    role="radio"
+                    tabIndex={index === focusIndex ? 0 : -1}
+                    aria-checked={option === target}
+                    aria-label={definition.label}
+                    aria-keyshortcuts={shortcut?.aria}
+                    disabled={!can.setSelectedCellBorders(next)}
+                    onClick={() => {
+                      appliedRef.current = true;
+                      setTarget(option);
+                      close();
+                      commands.setSelectedCellBorders(next);
+                    }}
+                  >
+                    <SpreadsheetBorderGlyph target={option} />
+                    <span className="work-spreadsheet-border-target-label">
+                      {definition.label}
+                    </span>
+                    {shortcut ? <kbd>{shortcut.label}</kbd> : null}
+                  </button>
+                );
+              },
+            )}
+          </div>
+          <div className="work-spreadsheet-border-settings">
+            <div className="work-office-field">
+              <span>
+                {officeMessage(messages, 'spreadsheet.border.lineStyle')}
+              </span>
+              <OfficeSelect<SpreadsheetCellBorderStyle>
+                ariaLabel={officeMessage(
+                  messages,
+                  'spreadsheet.border.lineStyleAria',
+                )}
+                value={style}
+                options={spreadsheetBorderStyleOptions}
+                onValueChange={setStyle}
+              />
+            </div>
+            <div className="work-office-field">
+              <span>
+                {officeMessage(messages, 'spreadsheet.border.color')}
+              </span>
+              <OfficeColorPicker
+                ariaLabel={officeMessage(
+                  messages,
+                  'spreadsheet.border.colorAria',
+                )}
+                value={color}
+                onValueChange={setColor}
+              />
+            </div>
+          </div>
+        </fieldset>
+      )}
+    </Popover>
+  );
+}
+
+function SpreadsheetBorderGlyph({
+  target,
+}: {
+  target: SpreadsheetCellBorderTarget;
+}) {
+  return (
+    <span
+      className="work-spreadsheet-border-glyph"
+      data-border-target={target}
+      aria-hidden="true"
+    />
+  );
+}

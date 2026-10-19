@@ -1,0 +1,30 @@
+{
+  "name": "ToWork workspace tour",
+  "color": {
+    "ground": "#f3f3f1",
+    "deep": "#e9e9e6",
+    "card": "#ffffff",
+    "line": "#d7d7d2",
+    "mute": "#6c6c67",
+    "ink": "#252525",
+    "accent": "#171717",
+    "accent2": "#64645e"
+  },
+  "type": {
+    "display": {
+      "face": "Geist",
+      "weight": 600,
+      "tracking": -0.03
+    },
+    "text": {
+      "face": "Inter",
+      "weight": 500,
+      "tracking": -0.01
+    },
+    "mono": {
+      "face": "Geist Mono",
+      "weight": 400,
+      "tracking": 0
+    }
+  }
+}

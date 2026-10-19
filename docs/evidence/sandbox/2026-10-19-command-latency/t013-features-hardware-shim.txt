@@ -1,0 +1,26 @@
+sha2 v0.10.9
+├── sha2 feature "asm"
+│   └── a3s-oci-krun v0.3.6 (/Users/roylin/code/aster/crates/oci-runtime/crates/krun)
+│       └── a3s-oci-krun feature "default" (command-line)
+├── sha2 feature "default"
+│   ├── a3s-oci-agent-protocol v0.3.6 (/Users/roylin/code/aster/crates/oci-runtime/crates/agent-protocol)
+│   │   └── a3s-oci-agent-protocol feature "default"
+│   │       └── a3s-oci-krun v0.3.6 (/Users/roylin/code/aster/crates/oci-runtime/crates/krun) (*)
+│   ├── a3s-oci-krun v0.3.6 (/Users/roylin/code/aster/crates/oci-runtime/crates/krun) (*)
+│   └── a3s-oci-sdk v0.3.2 (/Users/roylin/code/aster/crates/oci-runtime/crates/sdk)
+│       └── a3s-oci-sdk feature "default"
+│           ├── a3s-oci-agent-protocol v0.3.6 (/Users/roylin/code/aster/crates/oci-runtime/crates/agent-protocol) (*)
+│           └── a3s-oci-krun v0.3.6 (/Users/roylin/code/aster/crates/oci-runtime/crates/krun) (*)
+│   [dev-dependencies]
+│   └── a3s-oci-krun v0.3.6 (/Users/roylin/code/aster/crates/oci-runtime/crates/krun) (*)
+├── sha2 feature "sha2-asm"
+│   └── sha2 feature "asm" (*)
+└── sha2 feature "std"
+    └── sha2 feature "default" (*)
+
+sha2 v0.10.9
+├── sha2 feature "default"
+│   [build-dependencies]
+│   └── a3s-oci-krun v0.3.6 (/Users/roylin/code/aster/crates/oci-runtime/crates/krun) (*)
+└── sha2 feature "std"
+    └── sha2 feature "default" (*)

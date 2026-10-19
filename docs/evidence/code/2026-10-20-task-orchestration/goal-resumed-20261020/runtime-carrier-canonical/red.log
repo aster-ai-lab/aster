@@ -1,0 +1,42 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling serde_json v1.0.154
+   Compiling indexmap v2.14.0
+   Compiling referencing v0.48.5
+   Compiling jsonschema-value v0.48.5
+   Compiling oci-spec v0.10.0 (/Users/roylin/code/aster/crates/oci-runtime/vendor/oci-spec-0.10.0)
+   Compiling jsonschema v0.48.5
+   Compiling a3s-oci-sdk v0.3.2 (/Users/roylin/code/aster/crates/oci-runtime/crates/sdk)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 29.38s
+     Running unittests src/lib.rs (target/debug/deps/a3s_oci_sdk-9c274619334b2954)
+
+running 3 tests
+
+thread 'attachment::tests::canonical_attachment_value_digest_matches_legacy_sorted_objects' (49900303) panicked at crates/oci-runtime/crates/sdk/src/attachment/tests.rs:73:9:
+assertion `left == right` failed
+  left: "sha256:b814b12d3330f833749202ed7daba6d1f88b1b6586fbd266df1d11f4b8fce490"
+ right: "sha256:8adf2c963c026174b21882c9e238db9088be15cde862c6b4dd858aff7ad2e5df"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test attachment::tests::canonical_attachment_value_digest_matches_legacy_sorted_objects ... FAILED
+
+thread 'attachment::tests::canonical_attachment_wire_accepts_legacy_sorted_inventory_across_object_order' (49900304) panicked at crates/oci-runtime/crates/sdk/src/attachment/tests.rs:101:10:
+legacy sorted inventory must survive object-key reordering across peers: Error { code: InvalidArgument, operation: Some("validate-attachments"), message: "rootfs, mount, or process I/O attachment inventory differs from config.json", retryable: false }
+test attachment::tests::canonical_attachment_wire_accepts_legacy_sorted_inventory_across_object_order ... FAILED
+test attachment::tests::canonical_attachment_inventory_rejects_value_array_order_and_raw_digest_drift ... ok
+
+failures:
+
+failures:
+    attachment::tests::canonical_attachment_value_digest_matches_legacy_sorted_objects
+    attachment::tests::canonical_attachment_wire_accepts_legacy_sorted_inventory_across_object_order
+
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 203 filtered out; finished in 0.02s
+
+error: test failed, to rerun pass `-p a3s-oci-sdk --lib`

@@ -1,0 +1,4 @@
+[[permission]]
+identifier = "allow-set-main-traffic-lights-hidden"
+description = "Hides the main window traffic lights while a page covers that chrome."
+commands.allow = ["set_main_traffic_lights_hidden"]

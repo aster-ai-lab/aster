@@ -1,0 +1,45 @@
+{
+  "schema": "aster.sandbox.t013.governance.v1",
+  "checks": [
+    {
+      "variant": "software",
+      "command": [
+        "target/t013-probe/core-command-timing-probe",
+        "sandbox::oci::tests::real_",
+        "--ignored",
+        "--nocapture",
+        "--test-threads=1",
+        "--skip",
+        "real_command_phase_timing"
+      ],
+      "environmentOverride": {
+        "ASTER_TEST_OCI_ASSETS": "/Users/roylin/code/aster/target/t013-assets-software"
+      },
+      "exitCode": 0,
+      "passed": 3,
+      "failed": 0,
+      "log": "t013-governance-software.log",
+      "timingMeaning": "Qualification only; preparation overlapped unrelated compilation, so these elapsed times are excluded from performance summaries."
+    },
+    {
+      "variant": "hardware",
+      "command": [
+        "target/t013-probe/core-command-timing-probe",
+        "sandbox::oci::tests::real_",
+        "--ignored",
+        "--nocapture",
+        "--test-threads=1",
+        "--skip",
+        "real_command_phase_timing"
+      ],
+      "environmentOverride": {
+        "ASTER_TEST_OCI_ASSETS": "/Users/roylin/code/aster/target/t013-assets-hardware"
+      },
+      "exitCode": 0,
+      "passed": 3,
+      "failed": 0,
+      "log": "t013-governance-hardware.log",
+      "timingMeaning": "Qualification only; preparation overlapped unrelated compilation, so these elapsed times are excluded from performance summaries."
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "schema": "aster.t023.process.v1",
+  "run_id": "t023-sa-01",
+  "pid": 30600,
+  "exe": "/Users/roylin/code/aster/target/t023-frozen/t023-real-llm",
+  "runner_sha256": "fa8dea5c20ea447352ec72d228462adedd5e0ba56738a6d870e9eced4c8a8165",
+  "started_at_utc": "2026-10-19T17:52:50.090113+00:00",
+  "manifest_sha256": "b48374b34d10724f1d38cecfaa52b910b3e8f8c80302a6dedd2dbc616837b378",
+  "log": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/process/t023-sa-01.log",
+  "state": "running"
+}

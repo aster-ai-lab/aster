@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "software": {
+      "regular_files": 907,
+      "symlinks": 353,
+      "prior_regular_file_hashes_match": true,
+      "additional_links_vs_previous_is_file_inventory": 310
+    },
+    "hardware": {
+      "regular_files": 907,
+      "symlinks": 353,
+      "prior_regular_file_hashes_match": true,
+      "additional_links_vs_previous_is_file_inventory": 310
+    }
+  },
+  "variant_file_differences": [
+    "a3s-oci",
+    "a3s-oci-krun-shim"
+  ],
+  "all_raw_symlink_targets_equal": true,
+  "scope": "The earlier 950-entry is_file inventory omitted 310 dangling guest links. This full matrix inventory records 907 regular files and 353 raw symlink targets without following guest links on the host. Existing regular-file hashes match; no assets changed."
+}

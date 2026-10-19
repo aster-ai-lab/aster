@@ -228,12 +228,12 @@ impl MetaHarnessSpec {
         Ok(config)
     }
 
-    /// The recipe's fields over a session config. Token compaction, which a
-    /// recipe cannot name, stays from `base`; a character threshold that
-    /// differs from `base` is an explicit choice and replaces it.
+    /// The recipe's fields over a session config. The duplicate guard stays
+    /// from `base`. Token compaction stays unless a different character
+    /// threshold explicitly replaces it.
     pub fn into_config_over(self, base: &HarnessConfig) -> Result<HarnessConfig, ActorError> {
         let keeps_token_compact = self.compact_after_chars == base.compact_after_chars();
-        let config = self.into_config()?;
+        let config = self.into_config()?.with_duplicate_threshold_of(base);
         Ok(if keeps_token_compact {
             config.with_token_compact_of(base)
         } else {
@@ -445,9 +445,10 @@ mod tests {
     }
 
     #[test]
-    fn spec_over_a_session_config_keeps_token_compaction_unless_chars_are_explicit() {
+    fn spec_over_a_session_config_keeps_duplicate_guard_and_token_compaction() {
         let base = HarnessConfig::new(4, 100, 8, 1, Vec::new(), Vec::new())
             .unwrap()
+            .with_duplicate_threshold(2)
             .with_token_compact(800, 200);
         let spec = |chars| MetaHarnessSpec {
             budget: 4,
@@ -465,7 +466,9 @@ mod tests {
         let explicit = spec(5_000).into_config_over(&base).unwrap();
         assert_eq!(
             explicit,
-            HarnessConfig::new(4, 5_000, 8, 1, Vec::new(), Vec::new()).unwrap()
+            HarnessConfig::new(4, 5_000, 8, 1, Vec::new(), Vec::new())
+                .unwrap()
+                .with_duplicate_threshold(2)
         );
     }
 

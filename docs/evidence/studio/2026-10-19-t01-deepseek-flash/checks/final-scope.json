@@ -1,0 +1,29 @@
+{
+  "edited_or_added_paths": [
+    "crates/code/core/src/agent.rs",
+    "crates/code/core/src/agent/execution_state.rs",
+    "crates/code/core/src/agent/loop_runtime.rs",
+    "crates/code/core/src/agent/tests.rs",
+    "crates/code/core/src/agent_api/tests/long_horizon_capabilities.rs",
+    "crates/code/core/src/fact_control.rs",
+    "crates/code/core/src/fact_control/tool_results.rs",
+    "crates/code/core/src/fact_control_tests.rs",
+    "crates/code/core/src/loop_checkpoint.rs",
+    "crates/code/core/src/harness_loop.rs",
+    "crates/effect/src/coding.rs",
+    "crates/effect/src/compose.rs",
+    "crates/code/acp/tests/shipped_tui_e2e.rs",
+    "apps/work/src-tauri/src/agent_plane/catalog.rs",
+    "apps/work/src-tauri/src/agent_plane/mod.rs",
+    "apps/work/src-tauri/src/agent_plane/project_files.rs",
+    "apps/work/src-tauri/src/agent_plane/project_files_tests.rs",
+    "apps/work/src/renderer/pages/agents/AgentComposer.tsx",
+    "apps/work/src/renderer/pages/agents/AgentPage.tsx",
+    "apps/work/src/renderer/pages/agents/WorkbenchProjectTray.tsx",
+    "apps/work/src/renderer/pages/agents/sessionWorkspace.ts",
+    "apps/work/src/renderer/pages/agents/__tests__/AgentPage.test.tsx",
+    "apps/work/src/renderer/pages/agents/__tests__/WorkbenchProjectTray.test.tsx",
+    "apps/work/src/renderer/pages/agents/__tests__/sessionWorkspace.test.ts"
+  ],
+  "note": "This list identifies this task scope; some files already had user changes before the task. No commit or wholesale staging was performed."
+}

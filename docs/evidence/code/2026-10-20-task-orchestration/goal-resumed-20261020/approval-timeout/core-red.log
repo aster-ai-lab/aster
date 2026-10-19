@@ -1,0 +1,38 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on build directory
+   Compiling a3s-oci-sdk v0.3.2 (/Users/roylin/code/aster/crates/oci-runtime/crates/sdk)
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 41.64s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 1 test
+test agent_api::tests::fact_log::work_policy::confirmation::missing_or_withdrawn_confirmation_with_bound_policy_is_a_non_execution ... FAILED
+
+failures:
+
+---- agent_api::tests::fact_log::work_policy::confirmation::missing_or_withdrawn_confirmation_with_bound_policy_is_a_non_execution stdout ----
+
+thread 'agent_api::tests::fact_log::work_policy::confirmation::missing_or_withdrawn_confirmation_with_bound_policy_is_a_non_execution' (49950678) panicked at crates/code/core/src/agent_api/tests/fact_log/work_policy/confirmation.rs:59:5:
+missing id is not a new legacy owner: Err(Internal(work_policy.invalid: bound policy requires the original session owner))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    agent_api::tests::fact_log::work_policy::confirmation::missing_or_withdrawn_confirmation_with_bound_policy_is_a_non_execution
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5201 filtered out; finished in 0.11s
+
+error: test failed, to rerun pass `-p a3s-code-core --lib`

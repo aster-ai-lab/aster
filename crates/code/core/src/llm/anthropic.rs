@@ -31,6 +31,7 @@ pub struct AnthropicClient {
     pub(crate) model: String,
     pub(crate) base_url: String,
     pub(crate) max_tokens: usize,
+    max_tokens_explicit: bool,
     pub(crate) temperature: Option<f32>,
     pub(crate) thinking_budget: Option<usize>,
     pub(crate) reasoning_effort: Option<String>,
@@ -46,6 +47,7 @@ impl AnthropicClient {
             model,
             base_url: "https://api.anthropic.com".to_string(),
             max_tokens: DEFAULT_MAX_TOKENS,
+            max_tokens_explicit: false,
             temperature: None,
             thinking_budget: None,
             reasoning_effort: None,
@@ -66,6 +68,7 @@ impl AnthropicClient {
 
     pub fn with_max_tokens(mut self, max_tokens: usize) -> Self {
         self.max_tokens = max_tokens;
+        self.max_tokens_explicit = true;
         self
     }
 
@@ -103,6 +106,28 @@ impl AnthropicClient {
         }
     }
 
+    fn request_max_tokens(&self) -> usize {
+        let effort = if glm_reasoning_model(&self.model) {
+            Some(
+                self.reasoning_effort
+                    .as_deref()
+                    .and_then(super::effort::glm_reasoning_effort)
+                    .unwrap_or_else(|| glm_budget_effort(self.thinking_budget)),
+            )
+        } else {
+            self.reasoning_effort
+                .as_deref()
+                .and_then(super::effort::anthropic_effort)
+        };
+        effort.map_or(self.max_tokens, |level| {
+            super::effort::resolved_max_tokens(
+                self.max_tokens_explicit.then_some(self.max_tokens),
+                self.max_tokens,
+                level,
+            )
+        })
+    }
+
     pub(crate) fn build_request(
         &self,
         messages: &[Message],
@@ -111,7 +136,7 @@ impl AnthropicClient {
     ) -> serde_json::Value {
         let mut request = serde_json::json!({
             "model": self.model,
-            "max_tokens": self.max_tokens,
+            "max_tokens": self.request_max_tokens(),
             "messages": messages,
         });
 
@@ -193,8 +218,6 @@ impl AnthropicClient {
             request["thinking"] = serde_json::json!({ "type": "enabled" });
             request["reasoning_effort"] = serde_json::json!(level);
             request["temperature"] = serde_json::json!(1.0);
-            request["max_tokens"] =
-                serde_json::json!(super::effort::lifted_max_tokens(self.max_tokens, level));
         } else if let Some(level) = self
             .reasoning_effort
             .as_deref()
@@ -206,8 +229,6 @@ impl AnthropicClient {
             request["thinking"] = serde_json::json!({ "type": "adaptive" });
             request["output_config"] = serde_json::json!({ "effort": level });
             request["temperature"] = serde_json::json!(1.0);
-            request["max_tokens"] =
-                serde_json::json!(super::effort::lifted_max_tokens(self.max_tokens, level));
         } else if let Some(budget) = fitted_thinking_budget(self.max_tokens, self.thinking_budget) {
             // A budget that does not leave room for the answer is omitted.
             // Raising max_tokens to fit it makes the model think for the whole
@@ -403,8 +424,12 @@ impl LlmClient for AnthropicClient {
     fn with_output_cap(&self, max_tokens: u32) -> Option<std::sync::Arc<dyn LlmClient>> {
         // The generation-enforced cap for sampling bridges (SEC-SAMPLE1);
         // Anthropic's request body carries max_tokens natively.
+        let max_tokens = self.request_max_tokens().min(max_tokens as usize);
+        if max_tokens == 0 {
+            return None;
+        }
         Some(std::sync::Arc::new(
-            self.clone().with_max_tokens(max_tokens as usize),
+            self.clone().with_max_tokens(max_tokens),
         ))
     }
 

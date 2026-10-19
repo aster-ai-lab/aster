@@ -1,0 +1,33 @@
+{
+  "schema": "aster.t023.cell-checkpoint.v1",
+  "run_id": "t023-v2-hc-01",
+  "ordinary_completion": false,
+  "task_ms": 276034,
+  "event_window_complete": true,
+  "retained_events": 33334,
+  "metrics_complete": true,
+  "reported_token_ledger": 1028497,
+  "soft_token_limit": 1000000,
+  "model_calls": 28,
+  "parent_tool_calls": 28,
+  "program_receipt_child_calls": 0,
+  "real_vm_count": 17,
+  "all_presentations_profiled_code": true,
+  "presented_tool_counts": [
+    1
+  ],
+  "model_input_tool_counts": [
+    1
+  ],
+  "immutable_inputs": true,
+  "frozen_identity": true,
+  "scope": "Failed bounded Run with complete observations and independently 9/9-correct submitted bytes. Definition-only code profile did not cause program adoption. No completed-task speed or PTC-promotion claim.",
+  "oracle": {
+    "passed": true,
+    "passed_cases": 9,
+    "total_cases": 9,
+    "report": "process/t023-v2-hc-01-oracle.json",
+    "pipeline_sha256": "d313aaab087565f7bf0a34b05a21e72bd21a84b5558340f9e6ad82714dc482ce",
+    "original_input_unchanged": true
+  }
+}

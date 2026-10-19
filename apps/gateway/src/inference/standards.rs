@@ -2,8 +2,8 @@
 //!
 //! The gateway owns every path, method, and body shape for model, API, and
 //! MCP calls. A supplier checks which entries it supports. A signed-in user
-//! may call every entry in this catalog. This catalog is not consulted while
-//! a request is dispatched.
+//! may call only the admitted entries. Dispatch consults this catalog:
+//! reserved entries are refused before ordinary routing.
 
 /// Which kind of supplier service a standard calls.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -52,6 +52,17 @@ impl DecisionQuestionType {
 pub(crate) struct StandardRoute {
     pub method: &'static str,
     pub path: &'static str,
+}
+
+/// Whether a catalog entry may be dispatched now.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub(crate) enum StandardAdmission {
+    /// OpenAI core paths named by `I0.2b`.
+    Admitted,
+    /// Platform OCR and System One. They never enter chat or embeddings.
+    Platform,
+    /// Named in the catalog, refused until its own gate admits it.
+    Reserved,
 }
 
 /// Industry-standard model route owned by the gateway.
@@ -180,6 +191,40 @@ impl ModelStandard {
         }
     }
 
+    pub(crate) const fn admission(self) -> StandardAdmission {
+        match self {
+            Self::OpenaiModels
+            | Self::OpenaiChat
+            | Self::OpenaiCompletions
+            | Self::OpenaiEmbeddings => StandardAdmission::Admitted,
+            Self::Ocr | Self::DecisionSystemOne => StandardAdmission::Platform,
+            Self::OpenaiResponses
+            | Self::AnthropicMessages
+            | Self::Rerank
+            | Self::GeminiGenerate
+            | Self::GeminiEmbed
+            | Self::OpenaiImages
+            | Self::OpenaiAudio
+            | Self::Api
+            | Self::Mcp => StandardAdmission::Reserved,
+        }
+    }
+
+    /// Exact method and path match against the catalog, including `{model}`.
+    pub(crate) fn match_route(method: &str, path: &str) -> Option<Self> {
+        Self::ALL.into_iter().find(|standard| {
+            standard
+                .routes()
+                .iter()
+                .any(|route| route.method == method && route_matches(route.path, path))
+        })
+    }
+
+    pub(crate) fn is_reserved_route(method: &str, path: &str) -> bool {
+        Self::match_route(method, path)
+            .is_some_and(|standard| standard.admission() == StandardAdmission::Reserved)
+    }
+
     pub(crate) const fn routes(self) -> &'static [StandardRoute] {
         match self {
             Self::OpenaiModels => &[StandardRoute {
@@ -262,6 +307,19 @@ impl ModelStandard {
             ],
         }
     }
+}
+
+fn route_matches(pattern: &str, path: &str) -> bool {
+    let Some((prefix, suffix)) = pattern.split_once("{model}") else {
+        return pattern == path;
+    };
+    let Some(rest) = path.strip_prefix(prefix) else {
+        return false;
+    };
+    let Some(model) = rest.strip_suffix(suffix) else {
+        return false;
+    };
+    !model.is_empty() && !model.contains('/')
 }
 
 fn expected_standards() -> String {

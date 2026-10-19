@@ -1,0 +1,109 @@
+diff --git a/dist/html2canvas.esm.js b/dist/html2canvas.esm.js
+--- a/dist/html2canvas.esm.js
++++ b/dist/html2canvas.esm.js
+@@ -5193,6 +5193,18 @@
+ };
+ 
+ var IGNORE_ATTRIBUTE = 'data-html2canvas-ignore';
++var waitForFontLoading = function (ready, timeout) {
++    if (typeof timeout !== 'number' || !Number.isFinite(timeout)) {
++        return ready;
++    }
++    if (timeout <= 0) {
++        return Promise.resolve();
++    }
++    return Promise.race([
++        ready,
++        new Promise(function (resolve) { return setTimeout(resolve, timeout); })
++    ]);
++};
+ var DocumentCloner = /** @class */ (function () {
+     function DocumentCloner(context, element, options) {
+         this.context = context;
+@@ -5239,7 +5251,7 @@
+                             return [2 /*return*/, Promise.reject("Error finding the " + this.referenceElement.nodeName + " in the cloned document")];
+                         }
+                         if (!(documentClone.fonts && documentClone.fonts.ready)) return [3 /*break*/, 2];
+-                        return [4 /*yield*/, documentClone.fonts.ready];
++                        return [4 /*yield*/, waitForFontLoading(documentClone.fonts.ready, this.options.fontReadyTimeout)];
+                     case 1:
+                         _a.sent();
+                         _a.label = 2;
+@@ -6573,6 +6585,9 @@
+         img.style.margin = '0';
+         img.style.padding = '0';
+         img.style.verticalAlign = 'baseline';
++            // Font probes must remain inline even under host CSS image resets.
++            img.style.display = 'inline';
++            img.style.maxWidth = 'none';
+         span.style.fontFamily = fontFamily;
+         span.style.fontSize = fontSize;
+         span.style.margin = '0';
+@@ -7739,6 +7754,7 @@
+                     allowTaint: (_l = opts.allowTaint) !== null && _l !== void 0 ? _l : false,
+                     onclone: opts.onclone,
+                     ignoreElements: opts.ignoreElements,
++                    fontReadyTimeout: opts.fontReadyTimeout,
+                     inlineImages: foreignObjectRendering,
+                     copyStyles: foreignObjectRendering
+                 };
+diff --git a/dist/html2canvas.js b/dist/html2canvas.js
+--- a/dist/html2canvas.js
++++ b/dist/html2canvas.js
+@@ -5199,6 +5199,18 @@
+     };
+ 
+     var IGNORE_ATTRIBUTE = 'data-html2canvas-ignore';
++    var waitForFontLoading = function (ready, timeout) {
++        if (typeof timeout !== 'number' || !Number.isFinite(timeout)) {
++            return ready;
++        }
++        if (timeout <= 0) {
++            return Promise.resolve();
++        }
++        return Promise.race([
++            ready,
++            new Promise(function (resolve) { return setTimeout(resolve, timeout); })
++        ]);
++    };
+     var DocumentCloner = /** @class */ (function () {
+         function DocumentCloner(context, element, options) {
+             this.context = context;
+@@ -5245,7 +5257,7 @@
+                                 return [2 /*return*/, Promise.reject("Error finding the " + this.referenceElement.nodeName + " in the cloned document")];
+                             }
+                             if (!(documentClone.fonts && documentClone.fonts.ready)) return [3 /*break*/, 2];
+-                            return [4 /*yield*/, documentClone.fonts.ready];
++                            return [4 /*yield*/, waitForFontLoading(documentClone.fonts.ready, this.options.fontReadyTimeout)];
+                         case 1:
+                             _a.sent();
+                             _a.label = 2;
+@@ -6579,6 +6591,9 @@
+             img.style.margin = '0';
+             img.style.padding = '0';
+             img.style.verticalAlign = 'baseline';
++                // Font probes must remain inline even under host CSS image resets.
++                img.style.display = 'inline';
++                img.style.maxWidth = 'none';
+             span.style.fontFamily = fontFamily;
+             span.style.fontSize = fontSize;
+             span.style.margin = '0';
+@@ -7745,6 +7760,7 @@
+                         allowTaint: (_l = opts.allowTaint) !== null && _l !== void 0 ? _l : false,
+                         onclone: opts.onclone,
+                         ignoreElements: opts.ignoreElements,
++                        fontReadyTimeout: opts.fontReadyTimeout,
+                         inlineImages: foreignObjectRendering,
+                         copyStyles: foreignObjectRendering
+                     };
+diff --git a/dist/types/dom/document-cloner.d.ts b/dist/types/dom/document-cloner.d.ts
+--- a/dist/types/dom/document-cloner.d.ts
++++ b/dist/types/dom/document-cloner.d.ts
+@@ -4,6 +4,7 @@
+     ignoreElements?: (element: Element) => boolean;
+     onclone?: (document: Document, element: HTMLElement) => void;
+     allowTaint?: boolean;
++    fontReadyTimeout?: number;
+ }
+ export interface WindowOptions {
+     scrollX: number;

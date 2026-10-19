@@ -1,0 +1,69 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 25.64s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... 
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... 
+thread 'tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle' (49428617) panicked at crates/code/core/src/tools/program_tool/worker_deadline_tests.rs:65:14:
+native stop must settle the VM worker: Elapsed(())
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... 
+thread 'tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle' (49428648) panicked at crates/code/core/src/tools/program_tool/worker_deadline_tests.rs:65:14:
+native stop must settle the VM worker: Elapsed(())
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... 
+thread 'tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle' (49428670) panicked at crates/code/core/src/tools/program_tool/worker_deadline_tests.rs:88:6:
+VM context and native callback must release after caller stop: Elapsed(())
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... 
+thread 'tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle' (49428706) panicked at crates/code/core/src/tools/program_tool/worker_deadline_tests.rs:65:14:
+native stop must settle the VM worker: Elapsed(())
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... 
+thread 'tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle' (49428753) panicked at crates/code/core/src/tools/program_tool/worker_deadline_tests.rs:65:14:
+native stop must settle the VM worker: Elapsed(())
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... 
+thread 'tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle' (49428888) panicked at crates/code/core/src/tools/program_tool/worker_deadline_tests.rs:88:6:
+VM context and native callback must release after caller stop: Elapsed(())
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle' (49428615) panicked at crates/code/core/src/tools/program_tool/worker_deadline_tests.rs:151:5:
+single:deadline: owned child exceeded bound, reaped signal: 9 (SIGKILL); single:cancel: owned child exceeded bound, reaped signal: 9 (SIGKILL); single:drop: owned child exceeded bound, reaped signal: 9 (SIGKILL); multi:deadline: owned child exceeded bound, reaped signal: 9 (SIGKILL); multi:cancel: owned child exceeded bound, reaped signal: 9 (SIGKILL); multi:drop: owned child exceeded bound, reaped signal: 9 (SIGKILL)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5163 filtered out; finished in 24.14s
+
+error: test failed, to rerun pass `-p a3s-code-core --lib`

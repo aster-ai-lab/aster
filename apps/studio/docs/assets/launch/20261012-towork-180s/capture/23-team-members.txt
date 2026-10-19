@@ -1,0 +1,121 @@
+Window: "ToWork", App: ToWork.
+0 standard window ToWork, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content Description: ToWork, URL: 127.0.0.1:4318/windows/main/index.html
+			3 pop up button RoyLin
+			4 button 工作
+			5 button 消息
+			6 button 知识
+			7 button 团队
+			8 button 插件
+			9 button (collapsed) 任务, Secondary Actions: Expand
+			10 button 设置
+			11 container
+				12 container
+					13 heading Toyou AI Labs, Value: 1
+						14 text Toyou AI Labs
+					15 text 4 名成员
+				16 container Toyou AI Labs
+					17 container 协作
+						18 text 协作
+						19 button 工作台
+						20 button 云盘
+						21 button 日程
+						22 button 邮件
+					23 container 组织
+						24 text 组织
+						25 button 成员
+						26 button 职位
+						27 button 角色
+					28 container 系统
+						29 text 系统
+						30 button 用量
+						31 button 设置
+				32 heading 成员, Value: 2
+					33 text 成员
+				34 text 全员
+				35 button 邀请
+				36 container 组织架构
+					37 text 组织架构
+					38 outline (selectable) 组织架构
+						39 row (selected, expanded) 全员, Secondary Actions: Collapse
+						40 row (selectable) 财务部
+						41 row (selectable) 研发部
+				42 container 成员
+					43 container
+						44 search text field (settable) 搜索成员…
+							45 text 搜索成员…
+					46 (settable, unknown) 状态
+						47 radio button 全部 4, Value: 1
+						48 radio button 成员 4, Value: 0
+						49 radio button 待审批 0, Value: 0
+					50 button 刷新
+					51 table 成员
+						52 row (selectable) 成员
+手机
+邮箱
+部门
+职位
+角色
+状态
+加入时间
+						53 row (selectable)
+							54 cell (selectable) 编辑
+角色分配历史
+更多, Value: 温
+温和的风筝
+							55 cell (selectable) 19116506182
+							56 cell (selectable) —
+							57 cell (selectable) 全员
+							58 cell (selectable) —
+							59 cell (selectable) 成员
+							60 cell (selectable) 活跃
+							61 cell (selectable) 2026-10-07
+						62 row (selectable)
+							63 cell (selectable) 编辑
+角色分配历史
+更多, Value: 林
+林书豪
+							64 cell (selectable) 19165061825
+							65 cell (selectable) —
+							66 cell (selectable) 全员
+							67 cell (selectable) 财务总监
+							68 cell (selectable) 成员
+							69 cell (selectable) 活跃
+							70 cell (selectable) 2026-09-27
+						71 row (selectable)
+							72 cell (selectable) 编辑
+角色分配历史
+更多, Value: L
+Leon
+							73 cell (selectable) 17370859985
+							74 cell (selectable) —
+							75 cell (selectable) 全员
+							76 cell (selectable) —
+							77 cell (selectable) 成员
+							78 cell (selectable) 活跃
+							79 cell (selectable) 2026-10-07
+						80 row (selectable)
+							81 cell (selectable) 编辑
+角色分配历史, Value: R
+RoyLin
+							82 cell (selectable) 18770221825
+							83 cell (selectable) —
+							84 cell (selectable) 全员
+							85 cell (selectable) —
+							86 cell (selectable) 超级管理员
+							87 cell (selectable) 活跃
+							88 cell (selectable) 2026-09-27
+					89 container
+						90 text 每页条数
+						91 pop up button 每页条数, Value: 50
+					92 container 分页
+						93 text 第 1–4 条，共 4 条
+	94 close button
+	95 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	96 minimize button
+97 menu bar
+	98 ToWork
+	99 Edit
+
+The focused UI element is 2 HTML content Description: ToWork, URL: 127.0.0.1:4318/windows/main/index.html

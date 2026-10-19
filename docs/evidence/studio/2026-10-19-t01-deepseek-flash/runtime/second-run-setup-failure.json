@@ -1,0 +1,88 @@
+{
+  "schema": "aster.t01.runtime-evidence.v1",
+  "observedAt": "2026-10-19T15:04:40.289467+00:00",
+  "sessionId": "01a154ad-a2b3-7468-a8d0-07cf414ca3b0",
+  "executionId": "01a154ad-a41b-71d7-9283-ccee4c385a23",
+  "workspace": "/Users/roylin/.a3s/sessions/2026-10-19/01a154ad-a2b3-7468-a8d0-07cf414ca3b0",
+  "start": "2026-10-19T15:00:28.315Z",
+  "end": "2026-10-19T15:00:44.303Z",
+  "durationSeconds": 15.988,
+  "modelId": "deepseek::deepseek-flash",
+  "endpointEvidence": {
+    "runtimeConfigPath": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/agent-plane/runtime/01a154ad-a2b3-7468-a8d0-07cf414ca3b0.acl",
+    "safeSelectedFields": [
+      "default_model = \"deepseek/deepseek-flash\"",
+      "providers \"deepseek\" {",
+      "base_url = \"https://api.deepseek.com\"",
+      "models \"deepseek-flash\" {}"
+    ]
+  },
+  "hostExecution": {
+    "status": "error",
+    "executionId": "01a154ad-a41b-71d7-9283-ccee4c385a23",
+    "anchorMessageId": "01a154ad-a41b-71d7-9283-ccee4c385a23",
+    "observedAt": "2026-10-19T15:00:44.306Z"
+  },
+  "toolResultCount": 12,
+  "toolCounts": {
+    "search": 2,
+    "ls": 7,
+    "read": 1,
+    "bash": 1,
+    "search_wiki": 1
+  },
+  "toolSuccessCount": 10,
+  "toolFailureCount": 2,
+  "toolFailures": [
+    {
+      "name": "bash",
+      "state": "error",
+      "output": "native_process_lifetime_unqualified: macOS native command execution is unavailable until descendant lifetime and settlement are qualified. Full access or a permission change cannot enable it. Do not retry this process tool while this reason remains; use in-process native Office/file tools for artifacts, or install a qualified v2 guest backend with A3S_CODE_GUEST_SYSTEM_IMAGE and A3S_CODE_KRUN_SHIM; OCI companion discovery: sandbox companion directory is unavailable: No such file or directory (os error 2)"
+    },
+    {
+      "name": "ls",
+      "state": "error",
+      "output": "Workspace boundary check failed for tool 'ls' path '/Users/roylin/code/a3s': Workspace boundary violation: path '/Users/roylin/code/a3s' escapes workspace '/Users/roylin/.a3s/sessions/2026-10-19/01a154ad-a2b3-7468-a8d0-07cf414ca3b0'"
+    }
+  ],
+  "hostErrors": [
+    {
+      "message": "Agent stopped before completion: max_turn_requests",
+      "name": "Error"
+    }
+  ],
+  "effectLog": {
+    "path": "/Users/roylin/.a3s/sessions/2026-10-19/01a154ad-a2b3-7468-a8d0-07cf414ca3b0/.a3s/sessions/2026-10-19/da6d8360-67a0-40cf-b6a7-a44ccb33a047/da6d8360-67a0-40cf-b6a7-a44ccb33a047.jsonl",
+    "eventCount": 41,
+    "modelTurnCount": 11,
+    "toolResultCount": 12,
+    "lastModelKind": "text",
+    "lastModelText": "Read-only evidence gathering has no further effect on the task. Stop gathering evidence and return the best complete final answer now using only the tool results already present. Do not call any tool.",
+    "terminal": "narrative"
+  },
+  "hostIdentity": {
+    "pid": 71818,
+    "path": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/AsterDream.app/Contents/MacOS/AsterDream",
+    "sha256": "c3e278a268048f5fecb5351ccaa9ee4811314c0b80e6c6ac07bcc0ef7544f668",
+    "machOUuid": "40EBE80D-5FD3-3F7B-B58D-4BD69187AD88",
+    "targetDebugMachOUuid": "40EBE80D-5FD3-3F7B-B58D-4BD69187AD88",
+    "assessment": "Host binary UUID matches the final target/debug host. Bundling/signing changes SHA and size, so the differing SHA is not evidence of an old host."
+  },
+  "acpIdentity": {
+    "liveProcessCaptured": false,
+    "expectedOldSiblingPath": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/AsterDream.app/Contents/MacOS/a3s-code-acp",
+    "oldSiblingObservedAtAudit": {
+      "sha256": "0739de0789989e2c90143d97bc537e3a2a96a37f11aa5717daa81706a8b977f1",
+      "mtimeLocal": "2026-10-19T10:00:34.973169"
+    },
+    "targetDebugSha256AtRun": "128588d3b0aee9e3700c497500a3bfb5b1ca75aee228c0f332184f8a04e49ad8",
+    "selectorEvidence": "apps/work/src-tauri/src/agent_plane/launcher.rs dev_agent_binary first selects an ACP sibling of the current desktop executable. That existing old sibling shadowed target/debug. The old 12-result read-only fallback and missing sibling sandbox are consistent with this selection. The child process itself exited before observation, so its exact loaded executable was not directly captured."
+  },
+  "setupFailures": [
+    "GET /agent-workspaces/9ceb541a-da63-423f-a73a-688f71d997ac returned 404 at 23:00:27.918; renderer logged Failed to reuse remembered workspace for new agent session. The run therefore used a system inbox rather than T01.",
+    "macOS OCI Host sandbox companion discovery failed for this system workspace; one bash call was refused. target/debug/sandbox existed, but the old dev-bundle ACP sibling had no corresponding sandbox directory."
+  ],
+  "projectRegistryExplanation": "The bridge stores project rows in origin-local localStorage. The dev renderer origin differs from the installed app origin. A historical session row can still display T01 while that old id is absent from the current origin registry.",
+  "classification": "Invalid setup for model programming evaluation. No T01 instructions/inputs were available in the effective workspace, and Python execution was unavailable.",
+  "privacy": "No model reasoning, credentials, authorization headers or resume tokens are retained."
+}

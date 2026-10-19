@@ -1,0 +1,13 @@
+{
+  "name": "@a3s-lab/ce",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The archived library's self-contained web-component runtimes (basecoat custom-element framework, select, code-editor) — extracted verbatim as built bundles so flow-ui's widget layer can run without the legacy tree. Frozen artifacts: behavior-identical copies, not maintained source.",
+  "type": "module",
+  "exports": {
+    "./basecoat": "./dist/js/basecoat.js",
+    "./select": "./dist/js/select.js",
+    "./code-editor": "./dist/js/code-editor.js",
+    "./components/code-editor.css": "./dist/components/code-editor.css"
+  }
+}

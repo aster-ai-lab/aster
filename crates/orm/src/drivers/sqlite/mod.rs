@@ -7,7 +7,7 @@ mod savepoint;
 mod transaction;
 
 pub use error::{SqliteError, SqliteMigrationError, SqliteSavepointError, SqliteTransactionError};
-pub use executor::SqliteExecutor;
+pub use executor::{SqliteExecutor, SqliteGrid};
 pub use options::{SqliteJournalMode, SqliteOptions};
 pub use row::SqliteRow;
 pub use savepoint::SqliteSavepoint;

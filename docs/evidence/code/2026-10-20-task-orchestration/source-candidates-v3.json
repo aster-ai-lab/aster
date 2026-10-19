@@ -1,0 +1,23 @@
+{
+  "schema": "aster.optimization-source-candidates.v3",
+  "frozen_at_utc": "2026-10-19T19:08:52.941154+00:00",
+  "outputs": [
+    {
+      "label": "core-source-v3-candidate",
+      "packages": 20,
+      "files": 2824,
+      "symlinks": 0,
+      "manifest": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/core-source-v3-candidate.json",
+      "sha256": "af729aa0608ccd912f24e3182dbfaa2036716defadb1f9ee0acb75aa3a1638c8"
+    },
+    {
+      "label": "paired-source-v3-candidate",
+      "packages": 131,
+      "files": 7558,
+      "symlinks": 0,
+      "manifest": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/paired-source-v3-candidate.json",
+      "sha256": "981020a35d39c230eb89a2d02d1d5c6f7609083fab72eca880a9ba9bad31b8ec"
+    }
+  ],
+  "scope": "All rg-visible files, including hidden fixtures, in transitive local dependency closures plus root build inputs. Source hashes only; no user credentials/session copies. Production is frozen; test-fixture authority alignment passed exact and 162-case group."
+}

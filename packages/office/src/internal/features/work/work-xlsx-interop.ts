@@ -1,0 +1,923 @@
+import type { Sheet } from '@fortune-sheet/core';
+import JSZip from 'jszip';
+import { sparseArrayEntries } from './spreadsheet-sparse';
+import {
+  attribute,
+  directChild,
+  directChildren,
+  firstDescendant,
+  OoxmlPackage,
+  parseXml,
+  xmlContainsAnyElement,
+} from './work-ooxml-package';
+import { sheetHasProtectionState } from './work-spreadsheet-protection';
+import { workSpreadsheetAutoFilterCriteriaEntries } from './work-spreadsheet-auto-filter';
+import {
+  boundedSpreadsheetDataValidationText,
+  normalizeSpreadsheetDataValidationErrorStyle,
+  normalizeSpreadsheetDateValidationBoundary,
+  SPREADSHEET_DATA_VALIDATION_ERROR_LIMIT,
+  SPREADSHEET_DATA_VALIDATION_HINT_LIMIT,
+  SPREADSHEET_DATA_VALIDATION_TITLE_LIMIT,
+  spreadsheetDateValidationFormula,
+} from './work-spreadsheet-data-validation';
+import { isSpreadsheetDependentListFormula } from './editors/spreadsheet-data-validation-list';
+import type {
+  WorkSpreadsheetContent,
+  WorkSpreadsheetDataValidationItem,
+  WorkSpreadsheetDataValidationRange,
+} from './work-types';
+import {
+  readXlsxWorksheetCharts,
+  type XlsxWorksheetChart,
+} from './work-xlsx-charts';
+import {
+  readXlsxDirectCellStyles,
+  sheetHasDirectCellStyles,
+  type XlsxDirectCellStyle,
+  writeXlsxDirectCellStyles,
+  XlsxDirectCellStyleWriter,
+} from './work-xlsx-cell-styles';
+import {
+  prepareXlsxSemanticPalette,
+  xlsxCellStyleOrigin,
+  xlsxCellStyleOriginSemanticColors,
+  type XlsxSemanticColorOrigin,
+} from './work-xlsx-cell-style-origin';
+import {
+  activeXlsxNativeFill,
+  xlsxNativeFillSemanticColors,
+} from './work-xlsx-native-fill';
+import {
+  type FortuneConditionalFormatRule,
+  readXlsxConditionalFormats,
+  readXlsxDifferentialFormats,
+  writeXlsxConditionalFormats,
+  XlsxDifferentialFormatWriter,
+} from './work-xlsx-conditional-format';
+import {
+  readXlsxWorksheetImages,
+  type XlsxWorksheetImage,
+} from './work-xlsx-images';
+import {
+  readXlsxManualPageBreaks,
+  writeXlsxManualPageBreaks,
+  type XlsxManualPageBreaks,
+} from './work-xlsx-page-breaks';
+import {
+  readXlsxPageSetup,
+  writeXlsxPageSetup,
+  type XlsxPageSetup,
+} from './work-xlsx-page-setup';
+import {
+  readXlsxProtection,
+  writeXlsxProtection,
+  XlsxCellProtectionWriter,
+  type XlsxProtectionFeatures,
+} from './work-xlsx-protection';
+import {
+  scanXlsxWorksheetXml,
+  type XlsxWorksheetXmlScan,
+} from './work-xlsx-worksheet-scan';
+import {
+  createXlsxRichTextReadContext,
+  readXlsxRichTextCells,
+  sheetHasXlsxRichTextCells,
+  writeXlsxRichTextCells,
+  xlsxRichTextStyleOrigins,
+  type XlsxRichTextCell,
+} from './work-xlsx-rich-text';
+import { readXlsxWorksheetTables } from './work-xlsx-tables';
+import type { WorkSpreadsheetFilter, WorkSpreadsheetTable } from './work-types';
+import {
+  readXlsxAutoFilterColumns,
+  xlsxAutoFilterXml,
+} from './work-xlsx-table-filters';
+
+type FrozenPane = NonNullable<Sheet['frozen']>;
+
+export interface XlsxDataValidation {
+  references: string[];
+  item: FortuneDataValidationItem;
+}
+
+export interface XlsxSheetFeatures {
+  autoFilterCriteria: WorkSpreadsheetFilter[];
+  directCellStyles: XlsxDirectCellStyle[];
+  frozen?: FrozenPane;
+  validations: XlsxDataValidation[];
+  conditionalFormats: FortuneConditionalFormatRule[];
+  protection: XlsxProtectionFeatures;
+  pageBreaks: XlsxManualPageBreaks;
+  pageSetup?: XlsxPageSetup;
+  images: XlsxWorksheetImage[];
+  charts: XlsxWorksheetChart[];
+  tables: WorkSpreadsheetTable[];
+  richTextCells: XlsxRichTextCell[];
+}
+
+export type FortuneDataValidationItem = WorkSpreadsheetDataValidationItem;
+
+export async function readXlsxSheetFeatures(
+  buffer: ArrayBuffer,
+): Promise<Map<string, XlsxSheetFeatures>> {
+  return readXlsxSheetFeaturesFromPackage(await OoxmlPackage.load(buffer));
+}
+
+export async function readXlsxSheetFeaturesFromPackage(
+  archive: OoxmlPackage,
+  worksheetScans?: Readonly<Record<string, XlsxWorksheetXmlScan>>,
+): Promise<Map<string, XlsxSheetFeatures>> {
+  const workbook = archive.has('xl/workbook.xml')
+    ? await archive.xml('xl/workbook.xml')
+    : null;
+  const worksheetParts = await readWorksheetParts(archive, workbook);
+  const uses1904DateSystem = xlsxUses1904DateSystem(workbook);
+  const styles = archive.has('xl/styles.xml')
+    ? await archive.xml('xl/styles.xml')
+    : null;
+  const theme = archive.has('xl/theme/theme1.xml')
+    ? await archive.xml('xl/theme/theme1.xml')
+    : null;
+  const sharedStringsSource = archive.has('xl/sharedStrings.xml')
+    ? await archive.text('xl/sharedStrings.xml')
+    : null;
+  const sharedStrings =
+    sharedStringsSource && xmlContainsAnyElement(sharedStringsSource, ['r'])
+      ? parseXml(sharedStringsSource, 'xl/sharedStrings.xml')
+      : null;
+  const richText = createXlsxRichTextReadContext({
+    sharedStrings,
+    styles,
+    theme,
+  });
+  const differentialFormats = readXlsxDifferentialFormats(styles);
+  const features = new Map<string, XlsxSheetFeatures>();
+  const imageBudget = { bytes: 0 };
+  for (const [sheetName, partPath] of worksheetParts) {
+    if (!archive.has(partPath)) continue;
+    const scan = worksheetScans?.[partPath];
+    if (
+      scan &&
+      !scan.hasImportedFeatures &&
+      !scan.hasDirectCellStyles &&
+      !scan.hasRichTextCells &&
+      !richText.hasRichSharedStrings
+    ) {
+      features.set(sheetName, emptyXlsxSheetFeatures());
+      continue;
+    }
+    const source = await archive.text(partPath);
+    const detected = scan ?? scanXlsxWorksheetXml(source);
+    const mayReferenceRichSharedString =
+      richText.hasRichSharedStrings &&
+      xlsxWorksheetMayReferenceSharedStrings(source);
+    if (
+      !detected.hasImportedFeatures &&
+      !detected.hasDirectCellStyles &&
+      !detected.hasRichTextCells &&
+      !mayReferenceRichSharedString
+    ) {
+      features.set(sheetName, emptyXlsxSheetFeatures());
+      continue;
+    }
+    const document = parseXml(source, partPath);
+    features.set(sheetName, {
+      autoFilterCriteria: readWorksheetAutoFilterCriteria(document),
+      directCellStyles: readXlsxDirectCellStyles(document, styles, theme),
+      frozen: parseFrozenPane(document) ?? undefined,
+      validations: parseDataValidations(document, uses1904DateSystem),
+      conditionalFormats: readXlsxConditionalFormats(
+        document,
+        differentialFormats,
+      ),
+      protection: readXlsxProtection(document, styles),
+      pageBreaks: readXlsxManualPageBreaks(document),
+      pageSetup: readXlsxPageSetup(document),
+      images: await readXlsxWorksheetImages(
+        archive,
+        partPath,
+        document,
+        imageBudget,
+      ),
+      charts: await readXlsxWorksheetCharts(archive, partPath, document),
+      tables: await readXlsxWorksheetTables(archive, partPath),
+      richTextCells: readXlsxRichTextCells(document, richText),
+    });
+  }
+  return features;
+}
+
+function xlsxWorksheetMayReferenceSharedStrings(source: string): boolean {
+  return /<(?:[A-Za-z_][\w.-]*:)?c(?=[\s/>])[^>]*\bt\s*=\s*(?:"s"|'s')/.test(
+    source,
+  );
+}
+
+function emptyXlsxSheetFeatures(): XlsxSheetFeatures {
+  return {
+    autoFilterCriteria: [],
+    directCellStyles: [],
+    validations: [],
+    conditionalFormats: [],
+    protection: { cellProtectionRanges: [] },
+    pageBreaks: { rows: [], columns: [] },
+    images: [],
+    charts: [],
+    tables: [],
+    richTextCells: [],
+  };
+}
+
+export async function patchXlsxSheetFeatures(
+  buffer: ArrayBuffer,
+  content: WorkSpreadsheetContent,
+): Promise<ArrayBuffer> {
+  const { sheets } = content;
+  const pageBreaksBySheetId = new Map(
+    (content.pageBreaks ?? []).map((pageBreaks) => [
+      pageBreaks.sheetId,
+      pageBreaks,
+    ]),
+  );
+  const pageSetupsBySheetId = new Map(
+    (content.pageSetups ?? []).map((pageSetup) => [
+      pageSetup.sheetId,
+      pageSetup,
+    ]),
+  );
+  if (
+    !sheets.some(
+      (sheet) =>
+        sheet.frozen ||
+        Object.keys(sheet.dataVerification ?? {}).length ||
+        sheet.dataValidationRanges?.length ||
+        sheet.luckysheet_conditionformat_save?.length ||
+        workSpreadsheetAutoFilterCriteriaEntries(sheet).length ||
+        sheetHasXlsxRichTextCells(sheet) ||
+        sheetHasDirectCellStyles(sheet) ||
+        sheetHasProtectionState(sheet) ||
+        Boolean(
+          sheet.id &&
+            (pageBreaksBySheetId.get(sheet.id)?.rows?.length ?? 0) +
+              (pageBreaksBySheetId.get(sheet.id)?.columns?.length ?? 0),
+        ) ||
+        Boolean(sheet.id && pageSetupsBySheetId.has(sheet.id)),
+    )
+  ) {
+    return buffer;
+  }
+  const archive = await OoxmlPackage.load(buffer);
+  const worksheetParts = await readWorksheetParts(archive);
+  const zip = await JSZip.loadAsync(buffer);
+  const styles = archive.has('xl/styles.xml')
+    ? await archive.xml('xl/styles.xml')
+    : null;
+  const theme = archive.has('xl/theme/theme1.xml')
+    ? await archive.xml('xl/theme/theme1.xml')
+    : null;
+  const semanticPalette = styles
+    ? prepareXlsxSemanticPalette(
+        styles,
+        theme,
+        spreadsheetXlsxSemanticColors(content),
+      )
+    : undefined;
+  const differentialFormats = styles
+    ? new XlsxDifferentialFormatWriter(styles)
+    : undefined;
+  const directCellStyles = styles
+    ? new XlsxDirectCellStyleWriter(styles, theme, semanticPalette?.palette)
+    : undefined;
+  const cellProtection = styles
+    ? new XlsxCellProtectionWriter(styles)
+    : undefined;
+
+  for (const sheet of sheets) {
+    const pageBreaks = sheet.id ? pageBreaksBySheetId.get(sheet.id) : undefined;
+    const pageSetup = sheet.id ? pageSetupsBySheetId.get(sheet.id) : undefined;
+    if (
+      !sheet.frozen &&
+      !Object.keys(sheet.dataVerification ?? {}).length &&
+      !sheet.dataValidationRanges?.length &&
+      !sheet.luckysheet_conditionformat_save?.length &&
+      !workSpreadsheetAutoFilterCriteriaEntries(sheet).length &&
+      !sheetHasXlsxRichTextCells(sheet) &&
+      !sheetHasDirectCellStyles(sheet) &&
+      !sheetHasProtectionState(sheet) &&
+      !(pageBreaks?.rows?.length || pageBreaks?.columns?.length) &&
+      !pageSetup
+    ) {
+      continue;
+    }
+    const exportedName = sheet.name.slice(0, 31) || '工作表';
+    const partPath = worksheetParts.get(exportedName);
+    const entry = partPath ? zip.file(partPath) : null;
+    if (!partPath || !entry) continue;
+    const document = parseXml(await entry.async('text'), partPath);
+    if (sheet.frozen) writeFrozenPane(document, sheet.frozen);
+    writeDataValidations(
+      document,
+      sheet.dataVerification,
+      sheet.dataValidationRanges,
+      new Set(
+        (content.namedRanges ?? [])
+          .filter(
+            (namedRange) =>
+              !namedRange.scopeSheetId || namedRange.scopeSheetId === sheet.id,
+          )
+          .map((namedRange) => namedRange.name.trim().toLocaleLowerCase()),
+      ),
+    );
+    writeXlsxConditionalFormats(
+      document,
+      sheet.luckysheet_conditionformat_save,
+      differentialFormats,
+    );
+    writeWorksheetAutoFilterCriteria(
+      document,
+      workSpreadsheetAutoFilterCriteriaEntries(sheet),
+    );
+    if (directCellStyles)
+      writeXlsxDirectCellStyles(document, sheet, directCellStyles);
+    writeXlsxRichTextCells(document, sheet, semanticPalette?.palette);
+    writeXlsxProtection(document, sheet, cellProtection);
+    writeXlsxPageSetup(document, pageSetup);
+    writeXlsxManualPageBreaks(document, pageBreaks);
+    zip.file(partPath, new XMLSerializer().serializeToString(document));
+  }
+  if (
+    styles &&
+    (differentialFormats?.changed ||
+      directCellStyles?.changed ||
+      cellProtection?.changed ||
+      semanticPalette?.stylesChanged)
+  ) {
+    zip.file('xl/styles.xml', new XMLSerializer().serializeToString(styles));
+  }
+  if (theme && semanticPalette?.themeChanged) {
+    zip.file(
+      'xl/theme/theme1.xml',
+      new XMLSerializer().serializeToString(theme),
+    );
+  }
+
+  return zip.generateAsync({ type: 'arraybuffer', compression: 'DEFLATE' });
+}
+
+function readWorksheetAutoFilterCriteria(
+  document: Document,
+): WorkSpreadsheetFilter[] {
+  const autoFilter = directChild(document.documentElement, 'autoFilter');
+  return autoFilter ? readXlsxAutoFilterColumns(autoFilter, 16_384) : [];
+}
+
+function writeWorksheetAutoFilterCriteria(
+  document: Document,
+  filters: readonly WorkSpreadsheetFilter[],
+): void {
+  if (!filters.length) return;
+  const current = directChild(document.documentElement, 'autoFilter');
+  const reference = current ? attribute(current, 'ref') : null;
+  if (!current || !reference) return;
+  const namespace = document.documentElement.namespaceURI;
+  const source = xlsxAutoFilterXml(filters, reference).replace(
+    '<autoFilter ',
+    `<autoFilter xmlns="${namespace ?? ''}" `,
+  );
+  const replacement = document.importNode(
+    parseXml(source, 'worksheet AutoFilter').documentElement,
+    true,
+  );
+  current.parentNode?.replaceChild(replacement, current);
+}
+
+function spreadsheetXlsxSemanticColors(
+  content: WorkSpreadsheetContent,
+): XlsxSemanticColorOrigin[] {
+  const colors: XlsxSemanticColorOrigin[] = [];
+  for (const sheet of content.sheets) {
+    for (const [, row] of sparseArrayEntries(sheet.data)) {
+      for (const [, cell] of sparseArrayEntries(row)) {
+        const origin = xlsxCellStyleOrigin(cell);
+        if (origin) colors.push(...xlsxCellStyleOriginSemanticColors(origin));
+        colors.push(
+          ...xlsxNativeFillSemanticColors(activeXlsxNativeFill(cell)),
+        );
+      }
+    }
+    for (const origin of xlsxRichTextStyleOrigins(sheet)) {
+      colors.push(...xlsxCellStyleOriginSemanticColors(origin));
+    }
+  }
+  return colors;
+}
+
+async function readWorksheetParts(
+  archive: OoxmlPackage,
+  workbookDocument?: Document | null,
+): Promise<Map<string, string>> {
+  if (!archive.has('xl/workbook.xml')) return new Map();
+  const workbook = workbookDocument ?? (await archive.xml('xl/workbook.xml'));
+  const relationships = await archive.relationships('xl/workbook.xml');
+  const parts = new Map<string, string>();
+  for (const sheet of firstDescendant(workbook, 'sheets')?.children ?? []) {
+    if (!(sheet instanceof Element) || sheet.localName !== 'sheet') continue;
+    const name = attribute(sheet, 'name');
+    const relationship = relationships.get(attribute(sheet, 'r:id') ?? '');
+    if (name && relationship?.type.endsWith('/worksheet'))
+      parts.set(name, relationship.target);
+  }
+  return parts;
+}
+
+function parseFrozenPane(document: Document): FrozenPane | null {
+  const pane = firstDescendant(document, 'pane');
+  const state = attribute(
+    pane ?? document.documentElement,
+    'state',
+  )?.toLowerCase();
+  if (!pane || (state !== 'frozen' && state !== 'frozensplit')) return null;
+  const columns = frozenCount(attribute(pane, 'xSplit'));
+  const rows = frozenCount(attribute(pane, 'ySplit'));
+  if (!rows && !columns) return null;
+  return {
+    type: rows && columns ? 'rangeBoth' : rows ? 'rangeRow' : 'rangeColumn',
+    range: {
+      row_focus: Math.max(0, rows - 1),
+      column_focus: Math.max(0, columns - 1),
+    },
+  };
+}
+
+function parseDataValidations(
+  document: Document,
+  uses1904DateSystem: boolean,
+): XlsxDataValidation[] {
+  const validations = firstDescendant(document, 'dataValidations');
+  if (!validations) return [];
+  return directChildren(validations, 'dataValidation').flatMap((element) => {
+    const type = fortuneValidationType(attribute(element, 'type'));
+    const references = (attribute(element, 'sqref') ?? '')
+      .split(/\s+/)
+      .map((value) => value.trim())
+      .filter(Boolean);
+    if (!type || !references.length) return [];
+    const formula1 =
+      firstDescendant(element, 'formula1')?.textContent?.trim() ?? '';
+    const formula2 =
+      firstDescendant(element, 'formula2')?.textContent?.trim() ?? '';
+    const item: FortuneDataValidationItem = {
+      type,
+      type2: fortuneValidationOperator(
+        attribute(element, 'operator'),
+        type === 'date',
+      ),
+      rangeTxt: references.join(','),
+      value1:
+        type === 'dropdown'
+          ? parseListFormula(formula1)
+          : type === 'date'
+            ? (normalizeSpreadsheetDateValidationBoundary(
+                formula1,
+                uses1904DateSystem,
+              ) ?? formula1)
+            : formula1,
+      value2:
+        type === 'date'
+          ? (normalizeSpreadsheetDateValidationBoundary(
+              formula2,
+              uses1904DateSystem,
+            ) ?? formula2)
+          : formula2,
+      validity: '',
+      remote: false,
+      allowBlank: booleanAttribute(element, 'allowBlank'),
+      showDropdownArrow:
+        type === 'dropdown' ? !booleanAttribute(element, 'showDropDown') : true,
+      prohibitInput: booleanAttribute(element, 'showErrorMessage'),
+      errorStyle: normalizeSpreadsheetDataValidationErrorStyle(
+        attribute(element, 'errorStyle'),
+      ),
+      errorTitle: boundedSpreadsheetDataValidationText(
+        attribute(element, 'errorTitle'),
+        SPREADSHEET_DATA_VALIDATION_TITLE_LIMIT,
+      ),
+      errorMessage: boundedSpreadsheetDataValidationText(
+        attribute(element, 'error'),
+        SPREADSHEET_DATA_VALIDATION_ERROR_LIMIT,
+      ),
+      hintShow: booleanAttribute(element, 'showInputMessage'),
+      hintTitle: boundedSpreadsheetDataValidationText(
+        attribute(element, 'promptTitle'),
+        SPREADSHEET_DATA_VALIDATION_TITLE_LIMIT,
+      ),
+      hintValue: boundedSpreadsheetDataValidationText(
+        attribute(element, 'prompt'),
+        SPREADSHEET_DATA_VALIDATION_HINT_LIMIT,
+      ),
+      checked: false,
+    };
+    return [{ references, item }];
+  });
+}
+
+function writeDataValidations(
+  document: Document,
+  source: unknown,
+  compact: WorkSpreadsheetDataValidationRange[] | undefined,
+  namedListSources: ReadonlySet<string>,
+): void {
+  const root = document.documentElement;
+  for (const existing of directChildren(root, 'dataValidations'))
+    existing.remove();
+  const grouped = groupDataValidations(source, compact);
+  if (!grouped.length) return;
+
+  const namespace = root.namespaceURI;
+  const container = document.createElementNS(namespace, 'dataValidations');
+  container.setAttribute('count', String(grouped.length));
+  for (const { item, references } of grouped) {
+    const validationType = xlsxValidationType(item.type);
+    if (!validationType) continue;
+    const element = document.createElementNS(namespace, 'dataValidation');
+    element.setAttribute('type', validationType);
+    const operator = xlsxValidationOperator(item.type2);
+    if (operator && validationType !== 'list')
+      element.setAttribute('operator', operator);
+    element.setAttribute('allowBlank', item.allowBlank ? '1' : '0');
+    if (validationType === 'list')
+      element.setAttribute('showDropDown', item.showDropdownArrow ? '0' : '1');
+    element.setAttribute('showErrorMessage', item.prohibitInput ? '1' : '0');
+    element.setAttribute('errorStyle', item.errorStyle ?? 'stop');
+    if (item.errorTitle)
+      element.setAttribute(
+        'errorTitle',
+        boundedSpreadsheetDataValidationText(
+          item.errorTitle,
+          SPREADSHEET_DATA_VALIDATION_TITLE_LIMIT,
+        ),
+      );
+    if (item.errorMessage)
+      element.setAttribute(
+        'error',
+        boundedSpreadsheetDataValidationText(
+          item.errorMessage,
+          SPREADSHEET_DATA_VALIDATION_ERROR_LIMIT,
+        ),
+      );
+    element.setAttribute('showInputMessage', item.hintShow ? '1' : '0');
+    if (item.hintTitle)
+      element.setAttribute(
+        'promptTitle',
+        boundedSpreadsheetDataValidationText(
+          item.hintTitle,
+          SPREADSHEET_DATA_VALIDATION_TITLE_LIMIT,
+        ),
+      );
+    if (item.hintValue)
+      element.setAttribute(
+        'prompt',
+        boundedSpreadsheetDataValidationText(
+          item.hintValue,
+          SPREADSHEET_DATA_VALIDATION_HINT_LIMIT,
+        ),
+      );
+    element.setAttribute('sqref', references.join(' '));
+    appendFormula(
+      document,
+      element,
+      'formula1',
+      xlsxValidationFormula(item, item.value1, namedListSources),
+    );
+    if (item.value2) {
+      appendFormula(
+        document,
+        element,
+        'formula2',
+        xlsxValidationFormula(item, item.value2, namedListSources),
+      );
+    }
+    container.append(element);
+  }
+  if (!container.children.length) return;
+  container.setAttribute('count', String(container.children.length));
+  const anchor = directChildren(root).find((child) =>
+    [
+      'hyperlinks',
+      'printOptions',
+      'pageMargins',
+      'pageSetup',
+      'headerFooter',
+      'drawing',
+      'legacyDrawing',
+      'ignoredErrors',
+      'extLst',
+    ].includes(child.localName),
+  );
+  root.insertBefore(container, anchor ?? null);
+}
+
+function groupDataValidations(
+  source: unknown,
+  compact: WorkSpreadsheetDataValidationRange[] | undefined,
+): Array<{ item: FortuneDataValidationItem; references: string[] }> {
+  const groups = new Map<
+    string,
+    { item: FortuneDataValidationItem; references: string[] }
+  >();
+  const append = (item: FortuneDataValidationItem, references: string[]) => {
+    const signature = validationSignature(item);
+    const group = groups.get(signature) ?? { item, references: [] };
+    for (const reference of references) {
+      if (!group.references.includes(reference))
+        group.references.push(reference);
+    }
+    groups.set(signature, group);
+  };
+  for (const entry of compact ?? []) {
+    const item = fortuneDataValidationItem(entry.item);
+    if (!item || !xlsxValidationType(item.type)) continue;
+    append(
+      item,
+      entry.ranges.map(
+        (range) =>
+          `${encodeCell(range.row[0], range.column[0])}:${encodeCell(
+            range.row[1],
+            range.column[1],
+          )}`,
+      ),
+    );
+  }
+  if (!source || typeof source !== 'object') return Array.from(groups.values());
+  for (const [key, value] of Object.entries(source)) {
+    const match = /^(\d+)_(\d+)$/.exec(key);
+    const item = fortuneDataValidationItem(value);
+    if (!match || !item || !xlsxValidationType(item.type)) continue;
+    append(item, [encodeCell(Number(match[1]), Number(match[2]))]);
+  }
+  return Array.from(groups.values());
+}
+
+function validationSignature(item: FortuneDataValidationItem): string {
+  return JSON.stringify({
+    type: item.type,
+    type2: item.type2,
+    value1: item.value1,
+    value2: item.value2,
+    allowBlank: item.allowBlank,
+    showDropdownArrow: item.showDropdownArrow,
+    prohibitInput: item.prohibitInput,
+    errorStyle: item.errorStyle,
+    errorTitle: item.errorTitle,
+    errorMessage: item.errorMessage,
+    hintShow: item.hintShow,
+    hintTitle: item.hintTitle,
+    hintValue: item.hintValue,
+  });
+}
+
+function fortuneDataValidationItem(
+  value: unknown,
+): FortuneDataValidationItem | null {
+  if (!value || typeof value !== 'object') return null;
+  const item = value as Partial<FortuneDataValidationItem>;
+  if (typeof item.type !== 'string') return null;
+  return {
+    type: item.type,
+    type2: typeof item.type2 === 'string' ? item.type2 : '',
+    rangeTxt: typeof item.rangeTxt === 'string' ? item.rangeTxt : '',
+    value1:
+      typeof item.value1 === 'string' ? item.value1 : String(item.value1 ?? ''),
+    value2:
+      typeof item.value2 === 'string' ? item.value2 : String(item.value2 ?? ''),
+    validity: typeof item.validity === 'string' ? item.validity : '',
+    remote: Boolean(item.remote),
+    allowBlank: typeof item.allowBlank === 'boolean' ? item.allowBlank : true,
+    showDropdownArrow:
+      typeof item.showDropdownArrow === 'boolean'
+        ? item.showDropdownArrow
+        : true,
+    prohibitInput: Boolean(item.prohibitInput),
+    errorStyle: normalizeSpreadsheetDataValidationErrorStyle(item.errorStyle),
+    errorTitle: boundedSpreadsheetDataValidationText(
+      item.errorTitle,
+      SPREADSHEET_DATA_VALIDATION_TITLE_LIMIT,
+    ),
+    errorMessage: boundedSpreadsheetDataValidationText(
+      item.errorMessage,
+      SPREADSHEET_DATA_VALIDATION_ERROR_LIMIT,
+    ),
+    hintShow: Boolean(item.hintShow),
+    hintTitle: boundedSpreadsheetDataValidationText(
+      item.hintTitle,
+      SPREADSHEET_DATA_VALIDATION_TITLE_LIMIT,
+    ),
+    hintValue: boundedSpreadsheetDataValidationText(
+      item.hintValue,
+      SPREADSHEET_DATA_VALIDATION_HINT_LIMIT,
+    ),
+    checked: Boolean(item.checked),
+  };
+}
+
+function appendFormula(
+  document: Document,
+  parent: Element,
+  name: string,
+  value: string,
+): void {
+  if (!value) return;
+  const formula = document.createElementNS(
+    document.documentElement.namespaceURI,
+    name,
+  );
+  formula.textContent = value.replace(/^=/, '');
+  parent.append(formula);
+}
+
+function xlsxValidationFormula(
+  item: FortuneDataValidationItem,
+  source: string,
+  namedListSources: ReadonlySet<string>,
+): string {
+  const value = source.trim();
+  if (item.type === 'date') return spreadsheetDateValidationFormula(value);
+  if (item.type !== 'dropdown') return value;
+  const formula = value.replace(/^=/, '');
+  if (isSpreadsheetDependentListFormula(value)) return formula;
+  if (
+    /^=?[^,]+![A-Z]+\d+(?::[A-Z]+\d+)?$/i.test(value) ||
+    /^=?\$?[A-Z]+\$?\d+(?::\$?[A-Z]+\$?\d+)?$/i.test(value) ||
+    namedListSources.has(formula.toLocaleLowerCase())
+  ) {
+    return formula;
+  }
+  return `"${value.replaceAll('"', '""')}"`;
+}
+
+function parseListFormula(value: string): string {
+  if (value.startsWith('"') && value.endsWith('"'))
+    return value.slice(1, -1).replaceAll('""', '"');
+  const formula = value.replace(/^=/, '');
+  return isSpreadsheetDependentListFormula(formula) ? `=${formula}` : formula;
+}
+
+function fortuneValidationType(value: string | null): string | null {
+  const types: Record<string, string> = {
+    custom: 'custom',
+    list: 'dropdown',
+    whole: 'number_integer',
+    decimal: 'number',
+    textLength: 'text_length',
+    date: 'date',
+  };
+  return value ? (types[value] ?? null) : null;
+}
+
+function xlsxValidationType(value: string): string | null {
+  const types: Record<string, string> = {
+    custom: 'custom',
+    dropdown: 'list',
+    number: 'decimal',
+    number_integer: 'whole',
+    number_decimal: 'decimal',
+    text_length: 'textLength',
+    date: 'date',
+  };
+  return types[value] ?? null;
+}
+
+function fortuneValidationOperator(
+  value: string | null,
+  date: boolean,
+): string {
+  if (date) {
+    const dateOperators: Record<string, string> = {
+      lessThan: 'earlierThan',
+      lessThanOrEqual: 'noLaterThan',
+      greaterThan: 'laterThan',
+      greaterThanOrEqual: 'noEarlierThan',
+    };
+    if (value && dateOperators[value]) return dateOperators[value];
+  }
+  const operators: Record<string, string> = {
+    between: 'between',
+    notBetween: 'notBetween',
+    equal: 'equal',
+    notEqual: 'notEqualTo',
+    greaterThan: 'moreThanThe',
+    lessThan: 'lessThan',
+    greaterThanOrEqual: 'greaterOrEqualTo',
+    lessThanOrEqual: 'lessThanOrEqualTo',
+  };
+  return value ? (operators[value] ?? '') : '';
+}
+
+function xlsxValidationOperator(value: string): string | null {
+  const operators: Record<string, string> = {
+    between: 'between',
+    notBetween: 'notBetween',
+    equal: 'equal',
+    notEqualTo: 'notEqual',
+    moreThanThe: 'greaterThan',
+    lessThan: 'lessThan',
+    greaterOrEqualTo: 'greaterThanOrEqual',
+    lessThanOrEqualTo: 'lessThanOrEqual',
+    earlierThan: 'lessThan',
+    noEarlierThan: 'greaterThanOrEqual',
+    laterThan: 'greaterThan',
+    noLaterThan: 'lessThanOrEqual',
+  };
+  return operators[value] ?? null;
+}
+
+function xlsxUses1904DateSystem(workbook: Document | null): boolean {
+  if (!workbook) return false;
+  const workbookProperties = firstDescendant(workbook, 'workbookPr');
+  return workbookProperties
+    ? booleanAttribute(workbookProperties, 'date1904')
+    : false;
+}
+
+function booleanAttribute(element: Element, name: string): boolean {
+  const value = attribute(element, name)?.toLowerCase();
+  return value === '1' || value === 'true';
+}
+
+function writeFrozenPane(document: Document, frozen: FrozenPane): void {
+  const root = document.documentElement;
+  const namespace = root.namespaceURI;
+  let sheetViews = directChild(root, 'sheetViews');
+  if (!sheetViews) {
+    sheetViews = document.createElementNS(namespace, 'sheetViews');
+    const anchor = directChildren(root).find((child) =>
+      [
+        'sheetFormatPr',
+        'cols',
+        'sheetData',
+        'sheetCalcPr',
+        'sheetProtection',
+      ].includes(child.localName),
+    );
+    root.insertBefore(sheetViews, anchor ?? null);
+  }
+  let sheetView = directChild(sheetViews, 'sheetView');
+  if (!sheetView) {
+    sheetView = document.createElementNS(namespace, 'sheetView');
+    sheetView.setAttribute('workbookViewId', '0');
+    sheetViews.append(sheetView);
+  }
+  for (const existing of directChildren(sheetView, 'pane')) existing.remove();
+
+  const { rows, columns } = frozenCounts(frozen);
+  if (!rows && !columns) return;
+  const activePane =
+    rows && columns ? 'bottomRight' : rows ? 'bottomLeft' : 'topRight';
+  const pane = document.createElementNS(namespace, 'pane');
+  if (columns) pane.setAttribute('xSplit', String(columns));
+  if (rows) pane.setAttribute('ySplit', String(rows));
+  pane.setAttribute('topLeftCell', encodeCell(rows, columns));
+  pane.setAttribute('activePane', activePane);
+  pane.setAttribute('state', 'frozen');
+  sheetView.insertBefore(pane, directChildren(sheetView)[0] ?? null);
+  for (const selection of directChildren(sheetView, 'selection')) {
+    selection.setAttribute('pane', activePane);
+  }
+}
+
+function frozenCounts(frozen: FrozenPane): { rows: number; columns: number } {
+  const freezesRows = ['row', 'both', 'rangeRow', 'rangeBoth'].includes(
+    frozen.type,
+  );
+  const freezesColumns = [
+    'column',
+    'both',
+    'rangeColumn',
+    'rangeBoth',
+  ].includes(frozen.type);
+  return {
+    rows: freezesRows ? Math.max(1, (frozen.range?.row_focus ?? 0) + 1) : 0,
+    columns: freezesColumns
+      ? Math.max(1, (frozen.range?.column_focus ?? 0) + 1)
+      : 0,
+  };
+}
+
+function frozenCount(value: string | null): number {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0
+    ? Math.max(1, Math.trunc(parsed))
+    : 0;
+}
+
+function encodeCell(row: number, column: number): string {
+  let value = column + 1;
+  let label = '';
+  while (value > 0) {
+    value -= 1;
+    label = String.fromCharCode(65 + (value % 26)) + label;
+    value = Math.floor(value / 26);
+  }
+  return `${label}${row + 1}`;
+}

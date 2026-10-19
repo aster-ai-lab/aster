@@ -1,0 +1,19 @@
+{
+  "identifier": "aix-applet-capability",
+  "description": "AIX mini app windows. Only minimize, zoom, close, and dragging.",
+  "local": true,
+  "remote": {
+    "urls": ["http://127.0.0.1:*"]
+  },
+  "windows": ["aix-applet-*"],
+  "webviews": ["aix-applet-*"],
+  "permissions": [
+    "allow-log-to-host",
+    "core:window:allow-start-dragging",
+    "core:window:allow-minimize",
+    "core:window:allow-toggle-maximize",
+    "core:window:allow-close",
+    "allow-serve-aix-applet-home-seed",
+    "allow-aix-applet-recovery"
+  ]
+}

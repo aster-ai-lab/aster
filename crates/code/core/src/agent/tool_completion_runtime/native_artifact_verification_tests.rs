@@ -124,6 +124,7 @@ fn bind(
         metadata,
         ledger,
         reports,
+        None,
     );
 }
 

@@ -1,0 +1,4 @@
+[[permission]]
+identifier = "allow-set-window-drag-regions"
+description = "Publishes the top-chrome rectangles that start a native window drag."
+commands.allow = ["set_window_drag_regions"]

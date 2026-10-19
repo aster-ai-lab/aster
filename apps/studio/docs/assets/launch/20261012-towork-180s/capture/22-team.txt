@@ -1,0 +1,74 @@
+Window: "ToWork", App: ToWork.
+0 standard window ToWork, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content Description: ToWork, URL: 127.0.0.1:4318/windows/main/index.html
+			3 pop up button RoyLin
+			4 button 工作
+			5 button 消息
+			6 button 知识
+			7 button 团队
+			8 button 插件
+			9 button (collapsed) 任务, Secondary Actions: Expand
+			10 button 设置
+			11 container
+				12 container
+					13 heading Toyou AI Labs, Value: 1
+						14 text Toyou AI Labs
+					15 text 4 名成员
+				16 container Toyou AI Labs
+					17 container 协作
+						18 text 协作
+						19 button 工作台
+						20 button 云盘
+						21 button 日程
+						22 button 邮件
+					23 container 组织
+						24 text 组织
+						25 button 成员
+						26 button 职位
+						27 button 角色
+					28 container 系统
+						29 text 系统
+						30 button 用量
+						31 button 设置
+				32 heading 工作台, Value: 2
+					33 text 工作台
+				34 text 从常用和分区进入申请，在待办里查看进度并处理审批。
+				35 container 我的常用
+					36 container
+						37 heading 我的常用, Value: 3
+							38 text 我的常用
+						39 button (collapsed) 添加, Secondary Actions: Expand
+					40 container
+						41 button 待办
+						42 button 审批
+						43 button 请假
+						44 button 出差
+						45 button 报销
+						46 button 会议
+						47 button 用印
+				48 container 人事专区
+					49 heading 人事专区, Value: 3
+						50 text 人事专区
+					51 button 请假
+				52 container 财务专区
+					53 heading 财务专区, Value: 3
+						54 text 财务专区
+					55 container
+						56 button 出差
+						57 button 报销
+				58 container 行政专区
+					59 heading 行政专区, Value: 3
+						60 text 行政专区
+					61 container
+						62 button 审批
+						63 button 会议
+						64 button 用印
+	65 close button
+	66 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	67 minimize button
+68 menu bar
+	69 ToWork
+	70 Edit
+
+The focused UI element is 2 HTML content Description: ToWork, URL: 127.0.0.1:4318/windows/main/index.html

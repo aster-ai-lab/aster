@@ -48,7 +48,13 @@ pub(crate) struct Snapshot {
     porcelain: Option<Vec<String>>,
     head: Option<String>,
     stamps: Vec<ContentStamp>,
+    /// Stamps do not cover every dirty path. A stamp budget or a failed
+    /// identity read sets this. It is not, by itself, a missed status list.
     stamps_incomplete: bool,
+    /// Status or the hidden-index query failed. A list that only exceeded
+    /// the stamp budget stays false: the status diff is still the command delta.
+    #[serde(default)]
+    stamp_read_failed: bool,
     /// This directory is a git worktree, including when `status` itself
     /// failed. A failed git read must not fall through to the file walk.
     git_worktree: bool,
@@ -57,6 +63,22 @@ pub(crate) struct Snapshot {
 impl Snapshot {
     pub(crate) fn observes_git(&self) -> bool {
         self.git_worktree || self.porcelain.is_some()
+    }
+
+    /// Digest, counts, and read flags. The prepared fact is bounded at 1 MiB.
+    /// The status list and stamps stay in memory for the command delta.
+    fn receipt_summary(&self) -> Value {
+        serde_json::json!({
+            "head": self.head,
+            "git_worktree": self.git_worktree,
+            "status_count": self.porcelain.as_ref().map(Vec::len),
+            "status_digest": self.porcelain.as_ref().map(|lines| digest_status(lines)),
+            "status_complete": self.porcelain.is_some(),
+            "stamp_count": self.stamps.len(),
+            "stamp_digest": digest_stamps(&self.stamps),
+            "stamps_incomplete": self.stamps_incomplete,
+            "stamp_read_failed": self.stamp_read_failed,
+        })
     }
 }
 
@@ -68,13 +90,32 @@ pub(crate) struct Watch {
     files: Option<FileIndex>,
 }
 
+fn digest_status(lines: &[String]) -> String {
+    let mut digest = Sha256::new();
+    digest.update(b"status\0");
+    for line in lines {
+        digest.update(line.as_bytes());
+        digest.update([0]);
+    }
+    format!("sha256:{:x}", digest.finalize())
+}
+
+fn digest_stamps(stamps: &[ContentStamp]) -> String {
+    let mut digest = Sha256::new();
+    digest.update(b"stamps\0");
+    for stamp in stamps {
+        digest.update(serde_json::to_vec(stamp).unwrap_or_default());
+        digest.update([0]);
+    }
+    format!("sha256:{:x}", digest.finalize())
+}
+
 impl Watch {
-    /// The bounded authority baseline, without the model's display truncation.
-    /// The durable fact writer applies its own serialized-size limit before
-    /// execution is authorized.
+    /// Authority baseline for the prepared fact. A dirty status list is not
+    /// copied in: the fact keeps its digest, and the watch keeps the lines.
     pub(crate) fn receipt_baseline(&self) -> Value {
         serde_json::json!({
-            "git": self.snapshot,
+            "git": self.snapshot.receipt_summary(),
             "nongit": self.files.as_ref().map(FileIndex::summary),
         })
     }
@@ -113,7 +154,58 @@ impl Watch {
         root: &Path,
         attribute_revision: bool,
     ) -> PathDelta {
-        let mut observed = command_delta(root, self.snapshot, attribute_revision).await;
+        self.observe_delta(root, attribute_revision).await
+    }
+
+    /// Bind after-images to byte identities already captured by this watch.
+    /// An uncaptured pre-image stays unknown; no second baseline read is made.
+    /// A clean Git path absent from dirty stamps is not evidence of absence.
+    pub(crate) async fn finish_effects_with_revision(
+        self,
+        root: &Path,
+        attribute_revision: bool,
+    ) -> a3s_effect::ToolEffectObservationV1 {
+        let delta = self.observe_delta(root, attribute_revision).await;
+        let mut effects = observe_path_effects(root, delta);
+        let stamps = self
+            .files
+            .as_ref()
+            .and_then(|files| files.content.as_deref())
+            .unwrap_or(&self.snapshot.stamps);
+        let before: HashMap<&str, &ContentStamp> = stamps
+            .iter()
+            .map(|stamp| (stamp.path.as_str(), stamp))
+            .collect();
+        for change in &mut effects.changes {
+            change.before = match before.get(change.path.as_str()) {
+                Some(stamp) => tool_file_identity(stamp),
+                None if self.files.as_ref().is_some_and(|files| {
+                    !files.incomplete
+                        && files
+                            .entries
+                            .binary_search_by(|entry| entry.path.cmp(&change.path))
+                            .is_err()
+                }) =>
+                {
+                    Some(a3s_effect::ToolFileIdentityV1 {
+                        kind: a3s_effect::ToolFileKind::Missing,
+                        content_digest: None,
+                        mode: None,
+                    })
+                }
+                None => None,
+            };
+        }
+        if effects.validate().is_err() {
+            return a3s_effect::ToolEffectObservationV1::incomplete(
+                "tool_effect_observation_incomplete: pre-image identity or canonical size bound failed",
+            );
+        }
+        effects
+    }
+
+    async fn observe_delta(&self, root: &Path, attribute_revision: bool) -> PathDelta {
+        let mut observed = command_delta(root, &self.snapshot, attribute_revision).await;
         if let Some(files) = self.files.as_ref() {
             let files = file_delta(root, files);
             observed.paths.extend(files.paths);
@@ -183,23 +275,10 @@ fn observe_path_effects_within(
             delta.incomplete = true;
             continue;
         }
-        let after = match observe_file_identity(root, &path, &mut budget) {
-            Some(stamp) => ToolFileIdentityV1 {
-                kind: if !stamp.present {
-                    ToolFileKind::Missing
-                } else {
-                    match stamp.kind {
-                        0 => ToolFileKind::File,
-                        1 => ToolFileKind::Directory,
-                        2 => ToolFileKind::Symlink,
-                        _ => ToolFileKind::Unknown,
-                    }
-                },
-                content_digest: stamp
-                    .content_digest
-                    .map(|digest| format!("sha256:{digest}")),
-                mode: stamp.present.then_some(stamp.mode),
-            },
+        let after = match observe_file_identity(root, &path, &mut budget)
+            .and_then(|stamp| tool_file_identity(&stamp))
+        {
+            Some(identity) => identity,
             None => {
                 delta.incomplete = true;
                 ToolFileIdentityV1 {
@@ -238,11 +317,18 @@ pub(crate) async fn snapshot(root: &Path) -> Snapshot {
     let (mut stamps, mut stamps_incomplete) = match &porcelain {
         Some(lines) => stamp_lines(root, lines, &mut byte_budget, &mut path_budget),
         // Status missed inside a worktree. That is not an empty non-git tree.
-        None => (Vec::new(), git_worktree),
+        None => (Vec::new(), false),
     };
+    // A missed status or a broken hidden-index query cannot prove an empty
+    // delta. Hitting the stamp budget on a fully read status list cannot
+    // either be treated as a missed read: that froze every later mutating
+    // call on a worktree that was already dirtier than FILE_WALK_CAP.
+    let mut stamp_read_failed = porcelain.is_none() && git_worktree;
     if porcelain.is_some() {
         match hidden_index_paths(root).await {
             Some((paths, parse_incomplete)) => {
+                let hidden_budget = parse_incomplete && paths.len() == FILE_WALK_CAP;
+                stamp_read_failed |= parse_incomplete && !hidden_budget;
                 stamps_incomplete |= parse_incomplete;
                 let (extra, extra_incomplete) =
                     stamp_paths(root, &paths, &mut byte_budget, &mut path_budget);
@@ -251,14 +337,19 @@ pub(crate) async fn snapshot(root: &Path) -> Snapshot {
                 stamps.sort_by(|left, right| left.path.cmp(&right.path));
                 stamps.dedup_by(|left, right| left.path == right.path);
             }
-            None => stamps_incomplete = true,
+            None => {
+                stamp_read_failed = true;
+                stamps_incomplete = true;
+            }
         }
     }
+    stamps_incomplete |= stamp_read_failed;
     Snapshot {
         porcelain,
         head: revision(root).await,
         stamps,
         stamps_incomplete,
+        stamp_read_failed,
         git_worktree,
     }
 }
@@ -324,10 +415,10 @@ fn scope_porcelain_records(records: Vec<String>, prefix: &str) -> Option<Vec<Str
 }
 
 pub(crate) async fn delta(root: &Path, before: Snapshot) -> PathDelta {
-    command_delta(root, before, true).await
+    command_delta(root, &before, true).await
 }
 
-async fn command_delta(root: &Path, before: Snapshot, attribute_revision: bool) -> PathDelta {
+async fn command_delta(root: &Path, before: &Snapshot, attribute_revision: bool) -> PathDelta {
     let after = snapshot(root).await;
     let names = match (&before.head, &after.head) {
         (Some(before_head), Some(after_head)) if before_head != after_head => {
@@ -348,7 +439,9 @@ async fn command_delta(root: &Path, before: Snapshot, attribute_revision: bool) 
         after.head.as_deref(),
         names_for_combine,
     );
-    observed.incomplete |= before.stamps_incomplete || after.stamps_incomplete;
+    // Stamp-budget overflow still leaves stamps_incomplete on the snapshot.
+    // It must not turn a fully read status diff into an unresolved command.
+    observed.incomplete |= before.stamp_read_failed || after.stamp_read_failed;
     observed
         .paths
         .extend(content_changes(&before.stamps, &after.stamps));
@@ -455,7 +548,12 @@ fn diff_porcelain(before: &[String], after: &[String]) -> PathDelta {
     PathDelta { paths, incomplete }
 }
 
-const FILE_WALK_CAP: usize = 4_096;
+pub(crate) const FILE_WALK_CAP: usize = 4_096;
+/// Status lines kept from one `git status`. The stamp cap stays smaller.
+/// A dirty worktree past FILE_WALK_CAP is still a complete status read as
+/// long as it fits here and in the git output byte cap. Past this bound the
+/// read is missed, not a silent prefix.
+const STATUS_RECORD_CAP: usize = 65_536;
 /// Entries a non-git walk may stat. Stat-only, so a dependency tree fits.
 const NONGIT_WALK_CAP: usize = 1 << 18;
 const OBSERVATION_PATH_BYTE_CAP: usize = 4_096;
@@ -673,8 +771,10 @@ impl RunWatch {
         self.snapshot.porcelain.clone()
     }
 
-    pub(crate) fn stamps_incomplete(&self) -> bool {
-        self.snapshot.stamps_incomplete
+    /// Status itself was not read. A stamp budget on an already-dirty tree
+    /// is not this failure.
+    pub(crate) fn stamp_read_failed(&self) -> bool {
+        self.snapshot.stamp_read_failed
     }
 
     pub(crate) fn head(&self) -> Option<String> {
@@ -828,6 +928,32 @@ pub(crate) fn observe_file_identity(
         let _ = (root, relative, budget);
         None
     }
+}
+
+fn tool_file_identity(stamp: &ContentStamp) -> Option<a3s_effect::ToolFileIdentityV1> {
+    use a3s_effect::{ToolFileIdentityV1, ToolFileKind};
+    let kind = if !stamp.present {
+        ToolFileKind::Missing
+    } else {
+        match stamp.kind {
+            0 => ToolFileKind::File,
+            1 => ToolFileKind::Directory,
+            2 => ToolFileKind::Symlink,
+            _ => return None,
+        }
+    };
+    if matches!(kind, ToolFileKind::File | ToolFileKind::Symlink) && stamp.content_digest.is_none()
+    {
+        return None;
+    }
+    Some(ToolFileIdentityV1 {
+        kind,
+        content_digest: stamp
+            .content_digest
+            .as_ref()
+            .map(|digest| format!("sha256:{digest}")),
+        mode: stamp.present.then_some(stamp.mode),
+    })
 }
 
 #[cfg(unix)]
@@ -1262,6 +1388,9 @@ fn directory_entries(
 
 /// Paths present on both sides whose stat changed. A stable status line is
 /// not proof the file is unchanged.
+/// shortcut: a dirty path past FILE_WALK_CAP is not stamped, so a content-only
+/// edit there is absent from the delta; raise the stamp cap when that edit
+/// must be attributed.
 fn content_changes(before: &[ContentStamp], after: &[ContentStamp]) -> Vec<String> {
     let before_map: HashMap<&str, &ContentStamp> = before
         .iter()
@@ -1404,7 +1533,7 @@ fn porcelain_records(output: &[u8]) -> (Vec<String>, bool) {
         .split(|byte| *byte == 0)
         .filter(|part| !part.is_empty());
     while let Some(part) = parts.next() {
-        if records.len() == FILE_WALK_CAP {
+        if records.len() == STATUS_RECORD_CAP {
             incomplete = true;
             break;
         }
@@ -1430,7 +1559,7 @@ fn porcelain_records(output: &[u8]) -> (Vec<String>, bool) {
         };
         let renamed = status.contains('R') || status.contains('C');
         if renamed {
-            if records.len() + 2 > FILE_WALK_CAP {
+            if records.len() + 2 > STATUS_RECORD_CAP {
                 incomplete = true;
                 break;
             }
@@ -1920,6 +2049,7 @@ pub(crate) fn snapshot_from_parts(
         head,
         stamps,
         stamps_incomplete,
+        stamp_read_failed: stamps_incomplete,
         git_worktree,
     }
 }

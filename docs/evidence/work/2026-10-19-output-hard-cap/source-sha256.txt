@@ -1,0 +1,6 @@
+60c645063ba12f8b68ded92d3d93997fe6992a143df8339308c5a037f6ba80c8  crates/code/core/src/llm/anthropic.rs
+967f4be90a7964258fd4773ad9148710d5c57fea72d0d028b8ad33ced0d42bdc  crates/code/core/src/llm/effort.rs
+ff33cbfb3cf62d7e73dba2e3169717dfeabbb081e98050832377de31791e1eba  crates/code/core/src/llm/mod.rs
+585f56f6100d34c7335a31b953dec8fe5103076501c32a9e3fd8574a32617f30  crates/code/core/src/llm/openai.rs
+c6b493db9f77a363060b8501b945066c25ab40af5faca5942356a62234cc1763  crates/code/core/src/llm/output_cap_tests.rs
+8ea70c95ca0fe03280f09e780e4ba876cf9555c2e01c4738684e4268caf14579  crates/code/core/src/llm/zhipu.rs

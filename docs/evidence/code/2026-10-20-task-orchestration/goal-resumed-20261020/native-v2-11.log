@@ -1,0 +1,14 @@
+
+running 9 tests
+test agent_plane::turns::scheduled_recovery_tests::a_failed_once_run_is_not_started_again ... ok
+test agent_plane::turns::scheduled_recovery_tests::a_second_interruption_in_a_row_does_not_start_another_run ... ok
+test agent_plane::turns::scheduled_recovery_tests::a_stale_turn_records_the_interruption_without_waiting_for_the_ticker ... ok
+test agent_plane::turns::scheduled_recovery_tests::interrupted_once_task_runs_again_without_a_manual_retry ... ok
+test agent_plane::turns::scheduled_recovery_tests::once_task_is_consumed_only_after_the_run_succeeds ... ok
+test agent_plane::turns::scheduled_recovery_tests::scheduled_recovery_allows_manual_retry_without_waiting_for_ticker ... ok
+test agent_plane::turns::scheduled_recovery_tests::scheduled_recovery_live_scheduler_finishes_real_acp_turn ... ignored, uses the signed-in gateway and the real local ACP executable
+test agent_plane::turns::scheduled_recovery_tests::scheduled_recovery_preserves_live_and_other_session_turns ... ok
+test agent_plane::turns::scheduled_recovery_tests::scheduled_recovery_settles_interrupted_turn_and_run_after_restart ... ok
+
+test result: ok. 8 passed; 0 failed; 1 ignored; 0 measured; 834 filtered out; finished in 0.12s
+

@@ -208,14 +208,7 @@ async fn main() -> Result<()> {
             .await
             .map_err(anyhow::Error::from),
         Some(Commands::Update) => {
-            a3s_updater::run_update(&a3s_updater::UpdateConfig {
-                binary_name: "a3s-search",
-                crate_name: "a3s-search",
-                current_version: env!("CARGO_PKG_VERSION"),
-                github_owner: "A3S-Lab",
-                github_repo: "Search",
-            })
-            .await
+            anyhow::bail!("Aster is built from source; rebuild this workspace to update it")
         }
         None => {
             if let Some(query) = cli.query {

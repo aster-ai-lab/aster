@@ -1,0 +1,6 @@
+{
+  "first_preflight": "rejected before any stage/ACL/report write because /Applications app declares another CFBundleExecutable",
+  "correction": "Read each public old Info.plist CFBundleExecutable, validate basename, require declared binary",
+  "second_preflight_and_stage": "success; stage.json",
+  "old_application_files_modified": false
+}

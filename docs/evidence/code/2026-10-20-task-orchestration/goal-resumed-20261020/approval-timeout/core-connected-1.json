@@ -1,0 +1,10 @@
+{
+  "name": "core-connected-1",
+  "command": [
+    "/Users/roylin/code/aster/target/qualification/approval-timeout-20261020/core-tests",
+    "test_session_confirmation_api",
+    "--test-threads=1"
+  ],
+  "exit_code": 0,
+  "wall_seconds": 2.339853583
+}

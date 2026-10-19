@@ -1,0 +1,23 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-code-core",
+    "--features",
+    "advanced-harness",
+    "--test",
+    "test_extensibility_real_llm",
+    "task_matrix::",
+    "--",
+    "--test-threads=1",
+    "--nocapture"
+  ],
+  "exit_code": 0,
+  "seconds": 4.8403610839999995,
+  "scope": "runner hermetic tests only; live model/VM fixture ignored",
+  "source_before": "996b60461d683374646d43a3765928576886b1578eb664cfa9f869284fa5c893",
+  "source_after": "996b60461d683374646d43a3765928576886b1578eb664cfa9f869284fa5c893"
+}

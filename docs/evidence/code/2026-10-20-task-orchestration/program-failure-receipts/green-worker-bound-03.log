@@ -1,0 +1,204 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 28.27s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 38 tests
+test tools::program_tool::failure_receipt_tests::child_panic_keeps_prior_receipts_without_claiming_an_exact_count ... 
+thread 'tools::program_tool::failure_receipt_tests::child_panic_keeps_prior_receipts_without_claiming_an_exact_count' (49433655) panicked at crates/code/core/src/tools/program_tool/failure_receipt_tests.rs:20:9:
+assertion `left != right` failed: controlled child panic
+  left: Bool(true)
+ right: true
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'tools::program_tool::failure_receipt_tests::child_panic_keeps_prior_receipts_without_claiming_an_exact_count' (49433655) panicked at crates/code/core/src/tools/program_tool/failure_receipt_tests.rs:20:9:
+assertion `left != right` failed: controlled child panic
+  left: Bool(true)
+ right: true
+ok
+test tools::program_tool::failure_receipt_tests::deadline_after_read_preserves_completed_child_receipts ... ok
+test tools::program_tool::failure_receipt_tests::pre_worker_rejections_publish_native_empty_child_receipts ... ok
+test tools::program_tool::failure_receipt_tests::read_then_js_throw_preserves_the_real_child_receipt_and_parent_failure ... ok
+test tools::program_tool::failure_receipt_tests::write_then_failed_check_and_throw_preserves_both_child_receipts ... ok
+test tools::program_tool::tests::program_child_truncation_preserves_structured_flags_original_bytes_and_source ... ok
+test tools::program_tool::tests::program_deadline_settles_an_active_child_before_returning ... ok
+test tools::program_tool::tests::program_dependent_write_then_read_observes_saved_bytes ... ok
+test tools::program_tool::tests::program_output_byte_limit_also_bounds_the_truncation_marker ... ok
+test tools::program_tool::tests::program_parallel_reads_record_real_overlapping_intervals_and_sources ... ok
+test tools::program_tool::tests::program_read_text_rejects_malformed_anchors_and_none_metadata ... ok
+test tools::program_tool::tests::program_read_text_uses_range_metadata_not_content_heuristics ... ok
+test tools::program_tool::tests::program_structured_failure_can_be_checked_and_recovered_without_erasing_receipts ... ok
+test tools::program_tool::tests::program_tool_accepts_auditable_workflow_above_legacy_limit ... ok
+test tools::program_tool::tests::program_tool_accepts_plain_function_run_entrypoint ... ok
+test tools::program_tool::tests::program_tool_cancellation_stops_vm_and_settles_nested_call ... ok
+test tools::program_tool::tests::program_tool_ctx_read_file_passes_offset_and_limit ... ok
+test tools::program_tool::tests::program_tool_ctx_tools_proxy_respects_allowed_tools ... ok
+test tools::program_tool::tests::program_tool_default_allowed_tools_include_registry_tools_except_program ... ok
+test tools::program_tool::tests::program_tool_enforces_max_tool_calls ... ok
+test tools::program_tool::tests::program_tool_explicit_allowed_tools_restrict_default_tools ... ok
+test tools::program_tool::tests::program_tool_exposes_ctx_tools_proxy_for_named_tools ... ok
+test tools::program_tool::tests::program_tool_forbids_recursive_or_legacy_orchestrators_in_scripts ... ok
+test tools::program_tool::tests::program_tool_loads_script_from_workspace_js_path ... ok
+test tools::program_tool::tests::program_tool_rejects_fetch_source_access ... ok
+test tools::program_tool::tests::program_tool_rejects_forbidden_script_constructs ... ok
+test tools::program_tool::tests::program_tool_rejects_missing_script_source_and_path ... ok
+test tools::program_tool::tests::program_tool_rejects_non_script_type ... ok
+test tools::program_tool::tests::program_tool_rejects_parallel_task_even_when_explicitly_allowed ... ok
+test tools::program_tool::tests::program_tool_rejects_source_above_engineered_workflow_limit ... ok
+test tools::program_tool::tests::program_tool_rejects_unified_task_fanout_but_keeps_single_delegation ... ok
+test tools::program_tool::tests::program_tool_rejects_unsupported_language ... ok
+test tools::program_tool::tests::program_tool_rejects_unsupported_script_path ... ok
+test tools::program_tool::tests::program_tool_renders_result_summary_and_tool_records ... ok
+test tools::program_tool::tests::program_tool_source_uses_default_all_registered_tools ... ok
+test tools::program_tool::tests::script_allowed_tools_strips_orchestrators_even_when_explicit ... ok
+test tools::program_tool::tests::script_limits_defaults_when_missing_or_invalid ... ok
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... 
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5163 filtered out; finished in 0.10s
+
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5163 filtered out; finished in 0.00s
+
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5163 filtered out; finished in 0.01s
+
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... 
+thread 'tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle' (49433772) panicked at crates/code/core/src/tools/program_tool/worker_deadline_tests.rs:30:9:
+assertion `left == right` failed: controlled native tool must succeed
+  left: 1
+ right: 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle' (49433772) panicked at crates/code/core/src/tools/program_tool/worker_deadline_tests.rs:93:9:
+assertion `left == right` failed
+  left: Bool(false)
+ right: true
+FAILED
+
+failures:
+
+failures:
+    tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5163 filtered out; finished in 0.05s
+
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... 
+thread 'tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle' (49433777) panicked at crates/code/core/src/tools/program_tool/worker_deadline_tests.rs:30:9:
+assertion `left == right` failed: controlled native tool must succeed
+  left: 1
+ right: 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle' (49433777) panicked at crates/code/core/src/tools/program_tool/worker_deadline_tests.rs:93:9:
+assertion `left == right` failed
+  left: Bool(false)
+ right: true
+FAILED
+
+failures:
+
+failures:
+    tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5163 filtered out; finished in 0.06s
+
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5163 filtered out; finished in 0.11s
+
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5163 filtered out; finished in 0.00s
+
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5163 filtered out; finished in 0.01s
+
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... 
+thread 'tokio-rt-worker' (49433802) panicked at crates/code/core/src/tools/program_tool/worker_deadline_tests.rs:30:9:
+assertion `left == right` failed: controlled native tool must succeed
+  left: 1
+ right: 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle' (49433800) panicked at crates/code/core/src/tools/program_tool/worker_deadline_tests.rs:93:9:
+assertion `left == right` failed
+  left: Bool(false)
+ right: true
+FAILED
+
+failures:
+
+failures:
+    tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5163 filtered out; finished in 0.06s
+
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... 
+thread 'tokio-rt-worker' (49433808) panicked at crates/code/core/src/tools/program_tool/worker_deadline_tests.rs:30:9:
+assertion `left == right` failed: controlled native tool must succeed
+  left: 1
+ right: 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle' (49433806) panicked at crates/code/core/src/tools/program_tool/worker_deadline_tests.rs:93:9:
+assertion `left == right` failed
+  left: Bool(false)
+ right: true
+FAILED
+
+failures:
+
+failures:
+    tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5163 filtered out; finished in 0.05s
+
+
+thread 'tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle' (49433756) panicked at crates/code/core/src/tools/program_tool/worker_deadline_tests.rs:180:5:
+single:return: exit status: 101; single:throw: exit status: 101; multi:return: exit status: 101; multi:throw: exit status: 101
+FAILED
+
+failures:
+
+failures:
+    tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle
+
+test result: FAILED. 37 passed; 1 failed; 0 ignored; 0 measured; 5126 filtered out; finished in 0.82s
+
+error: test failed, to rerun pass `-p a3s-code-core --lib`

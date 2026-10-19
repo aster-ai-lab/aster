@@ -1,0 +1,6 @@
+{
+  "model": "boyue/deepseek-v4-flash",
+  "sourceSha256": "95637480c69af06b132dbfb192e989aa54fe83beb91265c25b52a21d6e8ea984",
+  "response": "```a3s-review-finding\n{\"id\":\"basic-1\",\"title\":\"基础校核：错字（一般）\",\"evidenceQuote\":\"以经\",\"summary\":\"“以经”为错字，正确写法应为“已经”，属于基础校核范围内的明显用字错误。\",\"guidance\":\"将“以经”改为“已经”；白名单“按排”保持原样不动。\"}\n```",
+  "originAttempt": "docs/evidence/studio/20261015-reference-alignment/attempts/source-review-constraints-b-001"
+}

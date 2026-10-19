@@ -172,6 +172,9 @@ pub(super) fn map_language_error(
             ),
         },
         LanguageRuntimeError::Cancelled => CodeIntelligenceError::Cancelled,
+        LanguageRuntimeError::Readiness { reason } => CodeIntelligenceError::Unavailable {
+            message: reason.to_owned(),
+        },
         LanguageRuntimeError::Timeout {
             operation,
             duration,

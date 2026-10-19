@@ -1,0 +1,580 @@
+import {
+  type DocumentManagerCapability,
+  DocumentManagerPlugin,
+  type ExportCapability,
+  ExportPlugin,
+  type HistoryCapability,
+  HistoryPlugin,
+  type PluginRegistry,
+  type ScrollCapability,
+  ScrollPlugin,
+  type SearchCapability,
+  SearchPlugin,
+  type ZoomCapability,
+  ZoomMode,
+  ZoomPlugin,
+} from '@embedpdf/react-pdf-viewer';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+
+const PDF_PAGE_NAVIGATION_RETRY_MS = 500;
+
+export interface PdfSearchState {
+  active: boolean;
+  activeResultIndex: number;
+  error: boolean;
+  loading: boolean;
+  query: string;
+  total: number;
+}
+
+export interface PdfViewerFeatures {
+  export: boolean;
+  history: boolean;
+  navigation: boolean;
+  search: boolean;
+  zoom: boolean;
+}
+
+export interface PdfViewerControllerState {
+  canRedo: boolean;
+  canUndo: boolean;
+  currentPage: number;
+  documentOpen: boolean;
+  error: string | null;
+  features: PdfViewerFeatures;
+  ready: boolean;
+  search: PdfSearchState;
+  totalPages: number;
+  zoomMode: ZoomMode | null;
+  zoomPercent: number;
+}
+
+export interface PdfViewerController {
+  state: PdfViewerControllerState;
+  actualSize: () => void;
+  clearSearch: () => void;
+  fitPage: () => void;
+  fitWidth: () => void;
+  goToPage: (page: number) => void;
+  nextPage: () => void;
+  nextSearchResult: () => void;
+  previousPage: () => void;
+  previousSearchResult: () => void;
+  redo: () => void;
+  saveAsCopy: () => Promise<Blob>;
+  search: (query: string) => void;
+  undo: () => void;
+  zoomIn: () => void;
+  zoomOut: () => void;
+}
+
+export interface PdfViewerHistoryOverride {
+  canRedo: boolean;
+  canUndo: boolean;
+  redo: () => void;
+  undo: () => void;
+}
+
+interface PdfViewerCapabilities {
+  documentManager: DocumentManagerCapability | null;
+  export: ExportCapability | null;
+  history: HistoryCapability | null;
+  search: SearchCapability | null;
+  scroll: ScrollCapability | null;
+  zoom: ZoomCapability | null;
+}
+
+interface PendingPdfPageNavigation {
+  page: number | null;
+  retryTimer: ReturnType<typeof setTimeout> | null;
+}
+
+const EMPTY_FEATURES: PdfViewerFeatures = {
+  export: false,
+  history: false,
+  navigation: false,
+  search: false,
+  zoom: false,
+};
+
+const EMPTY_SEARCH: PdfSearchState = {
+  active: false,
+  activeResultIndex: -1,
+  error: false,
+  loading: false,
+  query: '',
+  total: 0,
+};
+
+export const initialPdfViewerControllerState: PdfViewerControllerState = {
+  canRedo: false,
+  canUndo: false,
+  currentPage: 0,
+  documentOpen: false,
+  error: null,
+  features: EMPTY_FEATURES,
+  ready: false,
+  search: EMPTY_SEARCH,
+  totalPages: 0,
+  zoomMode: null,
+  zoomPercent: 100,
+};
+
+export function usePdfViewerController(
+  registry: PluginRegistry | null,
+  historyOverride?: PdfViewerHistoryOverride,
+): PdfViewerController {
+  const capabilitiesRef = useRef<PdfViewerCapabilities | null>(null);
+  const stateRegistryRef = useRef<PluginRegistry | null>(null);
+  const pendingPageRef = useRef<PendingPdfPageNavigation>({
+    page: null,
+    retryTimer: null,
+  });
+  const [state, setState] = useState<PdfViewerControllerState>(
+    initialPdfViewerControllerState,
+  );
+  const historyOverrideRef = useRef(historyOverride);
+  historyOverrideRef.current = historyOverride;
+
+  useEffect(() => {
+    let disposed = false;
+    const unsubscribe: Array<() => void> = [];
+    capabilitiesRef.current = null;
+    stateRegistryRef.current = null;
+    clearPendingPdfPageNavigation(pendingPageRef);
+    setState(initialPdfViewerControllerState);
+    if (!registry) return;
+
+    void registry
+      .pluginsReady()
+      .then(() => {
+        if (disposed) return;
+        const capabilities = readCapabilities(registry);
+        capabilitiesRef.current = capabilities;
+        stateRegistryRef.current = registry;
+
+        const sync = () => {
+          if (!disposed) {
+            setState(readControllerState(capabilities));
+          }
+        };
+        const syncDocument = () => {
+          clearPendingPdfPageNavigation(pendingPageRef);
+          sync();
+        };
+
+        subscribe(
+          unsubscribe,
+          capabilities.documentManager?.onActiveDocumentChanged,
+          syncDocument,
+        );
+        subscribe(
+          unsubscribe,
+          capabilities.documentManager?.onDocumentOpened,
+          syncDocument,
+        );
+        subscribe(
+          unsubscribe,
+          capabilities.documentManager?.onDocumentClosed,
+          syncDocument,
+        );
+        subscribe(unsubscribe, capabilities.scroll?.onPageChange, sync);
+        subscribe(unsubscribe, capabilities.scroll?.onLayoutReady, sync);
+        const stopPageChangeState = safely(() =>
+          capabilities.scroll?.onPageChangeState((event) => {
+            if (disposed || event.state.isChanging) return;
+            const pendingPage = pendingPageRef.current.page;
+            if (pendingPage === null) return;
+            withActiveDocument(capabilities, ({ scroll }, documentId) => {
+              if (event.documentId !== documentId) return;
+              const scope = scroll?.forDocument(documentId);
+              if (scope) {
+                requestPdfPageNavigation(scope, pendingPage, pendingPageRef);
+              }
+            });
+          }),
+        );
+        if (stopPageChangeState) unsubscribe.push(stopPageChangeState);
+        subscribe(unsubscribe, capabilities.zoom?.onStateChange, sync);
+        subscribe(unsubscribe, capabilities.search?.onStateChange, sync);
+        subscribe(unsubscribe, capabilities.history?.onHistoryChange, sync);
+        sync();
+      })
+      .catch((error: unknown) => {
+        if (disposed) return;
+        stateRegistryRef.current = registry;
+        setState({
+          ...initialPdfViewerControllerState,
+          error: errorMessage(error),
+        });
+      });
+
+    return () => {
+      disposed = true;
+      capabilitiesRef.current = null;
+      stateRegistryRef.current = null;
+      clearPendingPdfPageNavigation(pendingPageRef);
+      for (const stop of unsubscribe) stop();
+    };
+  }, [registry]);
+
+  const previousPage = useCallback(() => {
+    withActiveDocument(capabilitiesRef.current, ({ scroll }, documentId) => {
+      scroll?.forDocument(documentId).scrollToPreviousPage('smooth');
+    });
+  }, []);
+
+  const nextPage = useCallback(() => {
+    withActiveDocument(capabilitiesRef.current, ({ scroll }, documentId) => {
+      scroll?.forDocument(documentId).scrollToNextPage('smooth');
+    });
+  }, []);
+
+  const goToPage = useCallback((page: number) => {
+    withActiveDocument(capabilitiesRef.current, ({ scroll }, documentId) => {
+      const scope = scroll?.forDocument(documentId);
+      if (!scope) return;
+      requestPdfPageNavigation(scope, page, pendingPageRef);
+    });
+  }, []);
+
+  const zoomOut = useCallback(() => {
+    withActiveDocument(capabilitiesRef.current, ({ zoom }, documentId) => {
+      zoom?.forDocument(documentId).zoomOut();
+    });
+  }, []);
+
+  const zoomIn = useCallback(() => {
+    withActiveDocument(capabilitiesRef.current, ({ zoom }, documentId) => {
+      zoom?.forDocument(documentId).zoomIn();
+    });
+  }, []);
+
+  const actualSize = useCallback(() => {
+    withActiveDocument(capabilitiesRef.current, ({ zoom }, documentId) => {
+      zoom?.forDocument(documentId).requestZoom(1);
+    });
+  }, []);
+
+  const fitPage = useCallback(() => {
+    withActiveDocument(capabilitiesRef.current, ({ zoom }, documentId) => {
+      zoom?.forDocument(documentId).requestZoom(ZoomMode.FitPage);
+    });
+  }, []);
+
+  const fitWidth = useCallback(() => {
+    withActiveDocument(capabilitiesRef.current, ({ zoom }, documentId) => {
+      zoom?.forDocument(documentId).requestZoom(ZoomMode.FitWidth);
+    });
+  }, []);
+
+  const search = useCallback((query: string) => {
+    const trimmedQuery = query.trim();
+    withActiveDocument(
+      capabilitiesRef.current,
+      ({ search: searchCapability }, documentId) => {
+        const scope = searchCapability?.forDocument(documentId);
+        if (!scope) return;
+        if (!trimmedQuery) {
+          scope.searchAllPages('');
+          scope.stopSearch();
+          setState((previous) => ({
+            ...previous,
+            search: EMPTY_SEARCH,
+          }));
+          return;
+        }
+        setState((previous) => ({
+          ...previous,
+          search: {
+            ...previous.search,
+            error: false,
+            loading: true,
+            query: trimmedQuery,
+          },
+        }));
+        void scope
+          .searchAllPages(trimmedQuery)
+          .toPromise()
+          .catch(() => {
+            setState((previous) =>
+              previous.search.query !== trimmedQuery
+                ? previous
+                : {
+                    ...previous,
+                    search: {
+                      ...previous.search,
+                      error: true,
+                      loading: false,
+                    },
+                  },
+            );
+          });
+      },
+    );
+  }, []);
+
+  const clearSearch = useCallback(() => {
+    search('');
+  }, [search]);
+
+  const previousSearchResult = useCallback(() => {
+    withActiveDocument(
+      capabilitiesRef.current,
+      ({ search: searchCapability }, documentId) => {
+        searchCapability?.forDocument(documentId).previousResult();
+      },
+    );
+  }, []);
+
+  const nextSearchResult = useCallback(() => {
+    withActiveDocument(
+      capabilitiesRef.current,
+      ({ search: searchCapability }, documentId) => {
+        searchCapability?.forDocument(documentId).nextResult();
+      },
+    );
+  }, []);
+
+  const undo = useCallback(() => {
+    const collaborationHistory = historyOverrideRef.current;
+    if (collaborationHistory) {
+      collaborationHistory.undo();
+      return;
+    }
+    withActiveDocument(capabilitiesRef.current, ({ history }, documentId) => {
+      history?.forDocument(documentId).undo();
+    });
+  }, []);
+
+  const redo = useCallback(() => {
+    const collaborationHistory = historyOverrideRef.current;
+    if (collaborationHistory) {
+      collaborationHistory.redo();
+      return;
+    }
+    withActiveDocument(capabilitiesRef.current, ({ history }, documentId) => {
+      history?.forDocument(documentId).redo();
+    });
+  }, []);
+
+  const saveAsCopy = useCallback(async () => {
+    const capabilities = capabilitiesRef.current;
+    const documentId = activeDocumentId(capabilities);
+    if (!capabilities?.export || !documentId) {
+      throw new Error('PDF export is unavailable.');
+    }
+    const buffer = await capabilities.export
+      .forDocument(documentId)
+      .saveAsCopy()
+      .toPromise();
+    return new Blob([buffer], { type: 'application/pdf' });
+  }, []);
+
+  // A registry replacement invalidates the previous snapshot immediately. The
+  // effect above resets the controller asynchronously, so bind the exposed
+  // state to the registry that produced it to keep an old document from being
+  // treated as ready while a new PDF source is loading.
+  const boundState =
+    stateRegistryRef.current === registry
+      ? state
+      : initialPdfViewerControllerState;
+  const projectedState = useMemo(
+    () =>
+      historyOverride
+        ? {
+            ...boundState,
+            canRedo: historyOverride.canRedo,
+            canUndo: historyOverride.canUndo,
+            features: { ...boundState.features, history: true },
+          }
+        : boundState,
+    [boundState, historyOverride],
+  );
+
+  return useMemo(
+    () => ({
+      state: projectedState,
+      actualSize,
+      clearSearch,
+      fitPage,
+      fitWidth,
+      goToPage,
+      nextPage,
+      nextSearchResult,
+      previousPage,
+      previousSearchResult,
+      redo,
+      saveAsCopy,
+      search,
+      undo,
+      zoomIn,
+      zoomOut,
+    }),
+    [
+      projectedState,
+      actualSize,
+      clearSearch,
+      fitPage,
+      fitWidth,
+      goToPage,
+      nextPage,
+      nextSearchResult,
+      previousPage,
+      previousSearchResult,
+      redo,
+      saveAsCopy,
+      search,
+      undo,
+      zoomIn,
+      zoomOut,
+    ],
+  );
+}
+
+function readCapabilities(registry: PluginRegistry): PdfViewerCapabilities {
+  return {
+    documentManager:
+      registry
+        .getPlugin<DocumentManagerPlugin>(DocumentManagerPlugin.id)
+        ?.provides() ?? null,
+    export:
+      registry.getPlugin<ExportPlugin>(ExportPlugin.id)?.provides() ?? null,
+    history:
+      registry.getPlugin<HistoryPlugin>(HistoryPlugin.id)?.provides() ?? null,
+    search:
+      registry.getPlugin<SearchPlugin>(SearchPlugin.id)?.provides() ?? null,
+    scroll:
+      registry.getPlugin<ScrollPlugin>(ScrollPlugin.id)?.provides() ?? null,
+    zoom: registry.getPlugin<ZoomPlugin>(ZoomPlugin.id)?.provides() ?? null,
+  };
+}
+
+function readControllerState(
+  capabilities: PdfViewerCapabilities,
+): PdfViewerControllerState {
+  const documentId = activeDocumentId(capabilities);
+  const features = {
+    export: Boolean(capabilities.export),
+    history: Boolean(capabilities.history),
+    navigation: Boolean(capabilities.scroll),
+    search: Boolean(capabilities.search),
+    zoom: Boolean(capabilities.zoom),
+  };
+  if (!documentId) {
+    return {
+      ...initialPdfViewerControllerState,
+      features,
+      ready: true,
+    };
+  }
+
+  const scroll = safely(() => capabilities.scroll?.forDocument(documentId));
+  const zoom = safely(() => capabilities.zoom?.forDocument(documentId));
+  const search = safely(() => capabilities.search?.forDocument(documentId));
+  const history = safely(() => capabilities.history?.forDocument(documentId));
+  const zoomState = safely(() => zoom?.getState());
+  const searchState = safely(() => search?.getState());
+
+  return {
+    canRedo: safely(() => history?.canRedo()) ?? false,
+    canUndo: safely(() => history?.canUndo()) ?? false,
+    currentPage: safely(() => scroll?.getCurrentPage()) ?? 1,
+    documentOpen: true,
+    error: null,
+    features,
+    ready: true,
+    search: searchState
+      ? {
+          active: searchState.active,
+          activeResultIndex: searchState.activeResultIndex,
+          error: false,
+          loading: searchState.loading,
+          query: searchState.query,
+          total: searchState.total,
+        }
+      : EMPTY_SEARCH,
+    totalPages: safely(() => scroll?.getTotalPages()) ?? 0,
+    zoomMode:
+      typeof zoomState?.zoomLevel === 'string' ? zoomState.zoomLevel : null,
+    zoomPercent: Math.round((zoomState?.currentZoomLevel ?? 1) * 100),
+  };
+}
+
+function activeDocumentId(
+  capabilities: PdfViewerCapabilities | null,
+): string | null {
+  return (
+    safely(() => capabilities?.documentManager?.getActiveDocumentId()) ?? null
+  );
+}
+
+function withActiveDocument(
+  capabilities: PdfViewerCapabilities | null,
+  action: (capabilities: PdfViewerCapabilities, documentId: string) => void,
+): void {
+  const documentId = activeDocumentId(capabilities);
+  if (!capabilities || !documentId) return;
+  safely(() => action(capabilities, documentId));
+}
+
+function requestPdfPageNavigation(
+  scope: ReturnType<ScrollCapability['forDocument']>,
+  page: number,
+  pendingPage: { current: PendingPdfPageNavigation },
+  force = false,
+): void {
+  const totalPages = scope.getTotalPages();
+  if (totalPages < 1 || !Number.isFinite(page)) return;
+  const nextPage = Math.min(totalPages, Math.max(1, Math.round(page)));
+  const pageChangeInProgress =
+    safely(() => scope.getPageChangeState().isChanging) ?? false;
+  if (pageChangeInProgress && !force) {
+    pendingPage.current.page = nextPage;
+    pendingPage.current.retryTimer ??= setTimeout(() => {
+      const queuedPage = pendingPage.current.page;
+      if (queuedPage === null) return;
+      requestPdfPageNavigation(scope, queuedPage, pendingPage, true);
+    }, PDF_PAGE_NAVIGATION_RETRY_MS);
+    return;
+  }
+  clearPendingPdfPageNavigation(pendingPage);
+  scope.scrollToPage({
+    pageNumber: nextPage,
+    behavior: force ? 'instant' : 'auto',
+  });
+}
+
+function clearPendingPdfPageNavigation(pendingPage: {
+  current: PendingPdfPageNavigation;
+}): void {
+  if (pendingPage.current.retryTimer !== null) {
+    clearTimeout(pendingPage.current.retryTimer);
+  }
+  pendingPage.current.page = null;
+  pendingPage.current.retryTimer = null;
+}
+
+function subscribe<T>(
+  unsubscribe: Array<() => void>,
+  event: ((listener: (value: T) => void) => () => void) | undefined,
+  listener: () => void,
+): void {
+  if (!event) return;
+  const stop = safely(() => event(() => listener()));
+  if (stop) unsubscribe.push(stop);
+}
+
+function safely<T>(read: () => T): T | undefined {
+  try {
+    return read();
+  } catch {
+    return undefined;
+  }
+}
+
+function errorMessage(error: unknown): string {
+  return error instanceof Error && error.message
+    ? error.message
+    : 'PDF viewer initialization failed.';
+}

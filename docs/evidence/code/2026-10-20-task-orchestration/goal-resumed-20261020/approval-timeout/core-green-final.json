@@ -1,0 +1,9 @@
+{
+  "command": [
+    "/Users/roylin/code/aster/target/qualification/approval-timeout-20261020/core-tests-final",
+    "agent_api::tests::fact_log::work_policy::confirmation",
+    "--test-threads=1"
+  ],
+  "exit_code": 0,
+  "wall_seconds": 2.44286975
+}

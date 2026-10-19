@@ -3,6 +3,7 @@ use crate::llm::types::{Message, ToolDefinition};
 use futures::StreamExt;
 
 mod stream_text;
+mod zhipu_quota;
 
 fn make_client() -> OpenAiClient {
     OpenAiClient::new("test-key".to_string(), "gpt-test".to_string())

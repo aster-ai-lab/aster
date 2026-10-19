@@ -1,0 +1,64 @@
+suite "studio-plugin-composition" {
+    version = 1
+
+    scenario "workspace-generation-and-cleanup" {
+        name = "Plugin UI contributions retain workspace identity and release effects"
+        surface = "web"
+        timeout_ms = 60000
+
+        navigate "open" { url = "http://127.0.0.1:4323/" }
+        expect "alpha-sidebar" { text = "Sidebar: alpha" }
+        expect "beta-workspace" { text = "Workspace: /work/beta" }
+
+        click "alpha-page" { target = css("[aria-label='Workspace alpha'] nav button") }
+        expect "page" { visible = role("heading", "Review page: alpha") }
+        expect "namespaced-route" {
+            target = css("output[aria-label='Route alpha']")
+            rendered_text = "/app/plugin?page=review%2Fpage"
+        }
+        click "beta-page" { target = css("[aria-label='Workspace beta'] nav button") }
+        expect "isolated-second-router" { visible = role("heading", "Review page: beta") }
+
+        click "alpha-composer" { target = css("[aria-label='Workspace alpha'] > button") }
+        expect "alpha-edit" { target = label("Draft alpha") value = "draft [alpha:1]" }
+        expect "beta-unchanged" { target = label("Draft beta") value = "draft" }
+
+        click "emit-old" { target = role("button", "Emit event") }
+        expect "both-old-listeners" {
+            target = css("output[aria-label='Lifecycle evidence']")
+            rendered_text = "alpha:1,beta:1"
+        }
+        click "upgrade" { target = role("button", "Upgrade plugin") }
+        click "beta-composer" { target = css("[aria-label='Workspace beta'] > button") }
+        expect "new-generation-edit" { target = label("Draft beta") value = "draft [beta:2]" }
+
+        click "close-alpha" { target = role("button", "Close alpha") }
+        expect "alpha-page-removed" { hidden = role("heading", "Review page: alpha") }
+        expect "alpha-action-removed" {
+            target = css("[aria-label='Workspace alpha'] > button")
+            visible_count = 0
+        }
+        expect "beta-action-survives" { visible = css("[aria-label='Workspace beta'] > button") }
+
+        click "emit-current" { target = role("button", "Emit event") }
+        expect "old-and-closed-events-fenced" {
+            target = css("output[aria-label='Lifecycle evidence']")
+            rendered_text = "alpha:1,beta:1,closed:alpha:1,closed:beta:1,closed:alpha:2,beta:2"
+        }
+        click "remove" { target = role("button", "Remove plugin") }
+        expect "all-activities-removed" { hidden = role("button", "Review") }
+        expect "all-actions-removed" { hidden = role("button", "Append marker") }
+        expect "sidebar-removed" { hidden = text("Sidebar: beta", true) }
+        expect "workspace-removed" { hidden = text("Workspace: /work/beta", true) }
+        expect "open-route-removed" { hidden = role("heading", "Review page: beta") }
+        click "emit-after-remove" { target = role("button", "Emit event") }
+        expect "all-resources-closed" {
+            target = css("output[aria-label='Lifecycle evidence']")
+            rendered_text = "alpha:1,beta:1,closed:alpha:1,closed:beta:1,closed:alpha:2,beta:2,closed:beta:2"
+            stable_for_ms = 100
+            sample_interval_ms = 25
+        }
+        screenshot "final" { path = "screenshots/removed-contributions.png" }
+        page_errors "errors" { path = "evidence/page-errors.json" clear = false }
+    }
+}

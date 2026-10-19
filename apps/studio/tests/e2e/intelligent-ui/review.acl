@@ -1,0 +1,27 @@
+suite "intelligent-ui-message" {
+  version = 1
+  scenario "stream-and-submit" {
+    name = "OpenUI streams in the session tree and preserves interactive state"
+    surface = "web"
+    timeout_ms = 30000
+    navigate "open" { url = "http://127.0.0.1:4338" }
+    wait "controls-ready" { visible = css("input[aria-label='每天预算']") }
+    expect "early-control" { target = css("input[aria-label='每天预算']") value = "300" }
+    fill "change-budget" { target = css("input[aria-label='每天预算']") value = "400" }
+    expect "immediate-result" { target = css("output[aria-label='合计']") rendered_text = "2,000元" }
+    click "append" { target = role("button", "Append content") }
+    wait "append-rendered" { text = "已追加内容" }
+    expect "input-survives" { target = css("input[aria-label='每天预算']") value = "400" }
+    expect "new-content" { visible = text("已追加内容", true) }
+    click "settle" { target = role("button", "Finish response") }
+    wait "submit-ready" { visible = css("button[aria-label='使用这个预算']") }
+    expect "fence-submit-disabled" { disabled = role("button", "使用这个预算") }
+    expect "fence-unavailable" { visible = text("Form unavailable", true) }
+    screenshot "interactive" { path = "screenshots/intelligent-ui-submitted.png" }
+    expect "answer" { target = css("pre[aria-label='User continuation']") rendered_text = "" }
+    click "unsafe" { target = role("button", "Unsafe source") }
+    wait "invalid-ready" { text = "alert(1)" }
+    expect "no-executable-source" { visible = text("root = Metric(\"Total\", {alert(1)})", true) }
+    expect "no-iframe" { target = css("iframe") visible_count = 0 }
+  }
+}

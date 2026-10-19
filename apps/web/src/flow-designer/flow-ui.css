@@ -1,6 +1,0 @@
-@import '@a3s-lab/ui/form/styles.css';
-@import '@a3s-lab/ui/components/code-editor.css';
-@import '../../../../crates/flow/packages/ui/src/styles/workflow-node.css';
-@import '../../../../crates/flow/packages/ui/src/styles/a3s-flow-node.css';
-@import '../../../../crates/flow/packages/ui/src/styles/workflow-code-editor.css';
-@import '../../../../crates/flow/packages/ui/src/styles/a3s-flow-designer-extensions.css';

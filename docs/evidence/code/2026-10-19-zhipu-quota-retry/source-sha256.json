@@ -1,0 +1,6 @@
+{
+  "crates/code/core/src/llm/openai.rs": "4acec2e99f9ad765c904b831654cb2cad8afad0a861cc6635d80a28446deb720",
+  "crates/code/core/src/llm/openai/streaming.rs": "1badefecffe8c2d365397d6673af3ae48cda20aaba52c3669b443d1cdf076f9a",
+  "crates/code/core/src/llm/openai/tests.rs": "a9f543ad880066e2dd4ecbfb28ec9893bb4b5954dd6611bdd50ef9d82d3c9271",
+  "crates/code/core/src/llm/openai/tests/zhipu_quota.rs": "2e5c44f25c0b41b9f5d371e52317845949389e5cc4426c7046b4afa5a739370f"
+}

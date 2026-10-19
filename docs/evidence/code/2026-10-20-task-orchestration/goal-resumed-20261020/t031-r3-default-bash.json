@@ -1,0 +1,69 @@
+{
+  "command": [
+    "/Users/roylin/code/aster/target/qualification/t031-r3-cua-20261020/work-tests",
+    "agent_plane::turns::local_acp_tests::delivery::sandbox::real_acp_default_bash_runs_in_linux_guest_and_reaches_provider",
+    "--ignored",
+    "--exact",
+    "--test-threads=1",
+    "--nocapture"
+  ],
+  "exit_code": 0,
+  "wall_seconds": 23.66289425,
+  "timed_out": false,
+  "binary_identities": {
+    "work-tests": {
+      "source": "/Users/roylin/code/aster/target/debug/deps/a3s_studio_lib-9c7d06d5a17857ce",
+      "frozen": "/Users/roylin/code/aster/target/qualification/t031-r3-cua-20261020/work-tests",
+      "sha256": "fb2efde6fa4dad819991821194be5ad37470d27fb1bd74c6a8fa304e064c8aa0"
+    },
+    "a3s-code-acp": {
+      "source": "/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/AsterDream-TaskOptimization-R3.app/Contents/MacOS/a3s-code-acp",
+      "frozen": "/Users/roylin/code/aster/target/qualification/t031-r3-cua-20261020/a3s-code-acp",
+      "sha256": "7df56d80d617722e4e3afa92335c0a853fd6ce7cb6b5e3d3b8c889aa6edabeb2"
+    },
+    "a3s-office": {
+      "source": "/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/AsterDream-TaskOptimization-R3.app/Contents/MacOS/a3s-office",
+      "frozen": "/Users/roylin/code/aster/target/qualification/t031-r3-cua-20261020/a3s-office",
+      "sha256": "6c0a3f3a2821a88433b0c9002234c088d456fab95a0e1064445b4ddb325e4d03"
+    }
+  },
+  "observed_owned_processes": [
+    {
+      "pid": 54900,
+      "parent": 54790,
+      "command": "/Users/roylin/code/aster/target/qualification/t031-r3-cua-20261020/a3s-code-acp",
+      "first_observed_seconds": 9.756
+    },
+    {
+      "pid": 55035,
+      "parent": 54900,
+      "command": "/Users/roylin/code/aster/target/t013-assets-hardware/a3s-oci",
+      "first_observed_seconds": 12.09
+    },
+    {
+      "pid": 55040,
+      "parent": 54900,
+      "command": "/usr/bin/ditto",
+      "first_observed_seconds": 12.633
+    },
+    {
+      "pid": 55051,
+      "parent": 55035,
+      "command": "/Users/roylin/code/aster/target/t013-assets-hardware/a3s-oci-krun-shim",
+      "first_observed_seconds": 13.174
+    },
+    {
+      "pid": 55052,
+      "parent": 55051,
+      "command": "/Users/roylin/code/aster/target/t013-assets-hardware/a3s-oci-krun-shim",
+      "first_observed_seconds": 13.174
+    }
+  ],
+  "owned_processes_remaining": [],
+  "binaries_unchanged": {
+    "work-tests": true,
+    "a3s-code-acp": true,
+    "a3s-office": true
+  },
+  "paid_model_calls": 0
+}

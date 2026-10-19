@@ -1,0 +1,51 @@
+Window: "ToWork", App: ToWork.
+0 standard window ToWork, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content Description: ToWork, URL: 127.0.0.1:4318/windows/main/index.html
+			3 container
+				4 container 新建定时任务
+					5 container
+						6 heading 新建定时任务, Value: 2
+							7 text 新建定时任务
+						8 text 设置要执行的内容和运行频率。 名称
+						9 text field (settable) 名称, Value: 每日工作简报, Placeholder: 例如：每日代码审查
+						10 text 提示词
+						11 container 提示词
+							12 text entry area (settable) 整理今天的工作进展、待办事项与需要关注的问题，生成一份简明工作简报。
+								13 text (settable) 整理今天的工作进展、待办事项与需要关注的问题，生成一份简明工作简报。
+							14 pop up button 模型
+							15 combo box (collapsed, settable) 技能, Secondary Actions: Expand, Value: 技能
+
+								16 text 技能
+							17 combo box (collapsed, settable) 工作区文件, Secondary Actions: Expand, Value: 工作区文件
+
+								18 text 工作区文件
+							19 pop up button 工作目录
+						20 text 执行频率
+						21 combo box (collapsed, settable) 执行频率, Secondary Actions: Expand, Value: 每天
+
+							22 text 每天
+						23 container 时间
+							24 combo box (collapsed, settable) 小时, Secondary Actions: Expand, Value: 09
+
+								25 text 09
+							26 combo box (collapsed, settable) 分钟, Secondary Actions: Expand, Value: 00
+
+								27 text 00
+						28 text 最长执行时间
+						29 container
+							30 text field (settable) 最长执行时间, Placeholder: 无限制
+							31 text 分钟
+						32 text 复用会话 每次执行都在同一个会话中继续，而不是新建会话。
+						33 switch (settable, boolean) 复用会话, Value: off
+						34 button 取消
+						35 button 保存
+					36 button Close
+	37 close button
+	38 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	39 minimize button
+40 menu bar
+	41 ToWork
+	42 Edit
+
+The focused UI element is 12 text entry area (settable) 整理今天的工作进展、待办事项与需要关注的问题，生成一份简明工作简报。

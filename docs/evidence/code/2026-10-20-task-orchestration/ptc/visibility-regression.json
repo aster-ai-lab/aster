@@ -1,0 +1,174 @@
+{
+  "schema": "aster.ptc-visibility-regression.v1",
+  "generated_at": "2026-10-19T17:42:38.180607+00:00",
+  "cause": {
+    "scope": "Core direct SDK and fact model presentation",
+    "error": "Tool presentation projected unknown Tool Skill",
+    "source_boundary": "Run evidence and regular main-turn presentation clear definitions when both permission checker and confirmation provider are absent.",
+    "mismatch": "Fact completion previously projected its fallback Ask-policy catalog without applying that same permission/confirmation visibility boundary. Skill was the lexically first unknown definition, not an unregistered virtual tool.",
+    "assembly_review": "Run assembly registers/rebinds Skill and refreshes executor definitions before invocation evidence capture. No Skill name exception or unknown-definition acceptance was added."
+  },
+  "change": {
+    "production_files": [
+      "crates/code/core/src/agent/llm_turn.rs",
+      "crates/code/core/src/agent/llm_invoker/fact_governance.rs"
+    ],
+    "method": "Extract existing llm_turn permission visibility into permission_visible_tools; fact main-turn presentation filters the actual supplied catalog through that same helper before applying its frozen profile.",
+    "preserved": [
+      "UnknownProjectedTool/schema/order rejection",
+      "Registered Skill capability and child execution",
+      "Profiled main/child versus Auxiliary presentation identity",
+      "Existing explicit Ask policy without confirmation manager uses the fact runtime disabled-HITL execution contract"
+    ]
+  },
+  "checks": [
+    {
+      "command": "cargo test --locked --offline -p a3s-code-core --test agent_exact_run_host exact_run_replay_never_executes_the_same_code_run_twice -- --exact --test-threads=1",
+      "phase": "red_before_fix",
+      "exit_code": 101,
+      "passed": 0,
+      "failed": 1,
+      "ignored": 0,
+      "filtered_out": 9,
+      "test_seconds": 0.08,
+      "failure": "Completed expected; Failed with unknown Skill"
+    },
+    {
+      "command": "cargo test --locked --offline -p a3s-code-core --lib fact_run_without_permission_or_confirmation_presents_no_tools -- --test-threads=1",
+      "phase": "owning_red_before_fix",
+      "exit_code": 101,
+      "passed": 0,
+      "failed": 1,
+      "ignored": 0,
+      "filtered_out": 5155,
+      "test_seconds": 0.09,
+      "failure": "Session unknown Skill"
+    },
+    {
+      "command": "cargo test --locked --offline -p a3s-code-core --lib agent_api::tests::fact_log::nested_governance:: -- --test-threads=1",
+      "phase": "green",
+      "exit_code": 0,
+      "passed": 8,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 5148,
+      "test_seconds": 2.01,
+      "new_tests": 2,
+      "skill_subcases": {
+        "allow": {
+          "visible": true,
+          "body_returned": true
+        },
+        "deny": {
+          "visible": false,
+          "body_returned": false
+        },
+        "ask_without_confirmation": {
+          "visible": true,
+          "body_returned": true,
+          "contract": "existing fact disabled-HITL behavior, preserved"
+        },
+        "ask_with_confirmation": {
+          "visible": true,
+          "body_returned": true,
+          "provider": "explicit AutoApproveConfirmation fixture"
+        },
+        "confirmation_only": {
+          "visible": true,
+          "body_returned": true,
+          "provider": "explicit AutoApproveConfirmation fixture"
+        }
+      },
+      "no_governance": "Skill remains registered; coding model receives no tool definitions; auxiliary memory extraction is not assumed absent."
+    },
+    {
+      "command": "target/debug/deps/a3s_code_core-3b568ae695dcf868 agent::llm_invoker::fact_governance::tests:: --test-threads=1",
+      "phase": "green_existing_binary_built_by_preceding_cargo_test",
+      "exit_code": 0,
+      "passed": 10,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 5146,
+      "test_seconds": 0.01,
+      "includes": "foreign definition rejected before provider; auxiliary surface preserved; managed binding and accounting regressions"
+    },
+    {
+      "command": "target/debug/deps/a3s_code_core-3b568ae695dcf868 harness_evidence::tests:: --test-threads=1",
+      "phase": "green_existing_binary_built_by_preceding_cargo_test",
+      "exit_code": 0,
+      "passed": 26,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 5130,
+      "test_seconds": 0.02,
+      "includes": "unknown/schema/tampered presentation fail closed"
+    },
+    {
+      "command": "cargo test --locked --offline -p a3s-code-core --test agent_exact_run_host --test agent_protocol_v1 --test agent_protocol_harness --test agent_portable_checkpoint_recovery_v1 -- --test-threads=1",
+      "phase": "green",
+      "exit_code": 0,
+      "targets": [
+        {
+          "name": "agent_exact_run_host",
+          "passed": 10,
+          "failed": 0,
+          "ignored": 0,
+          "test_seconds": 0.32
+        },
+        {
+          "name": "agent_portable_checkpoint_recovery_v1",
+          "passed": 20,
+          "failed": 0,
+          "ignored": 0,
+          "test_seconds": 0.86
+        },
+        {
+          "name": "agent_protocol_harness",
+          "passed": 17,
+          "failed": 0,
+          "ignored": 0,
+          "test_seconds": 2.75
+        },
+        {
+          "name": "agent_protocol_v1",
+          "passed": 12,
+          "failed": 0,
+          "ignored": 0,
+          "test_seconds": 0.02
+        }
+      ],
+      "total_passed": 59
+    },
+    {
+      "command": "rustfmt --edition 2021 --config skip_children=true --check crates/code/core/src/agent/llm_turn.rs crates/code/core/src/agent/llm_invoker/fact_governance.rs crates/code/core/src/agent_api/tests/fact_log/nested_governance.rs",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check -- crates/code/core/src/agent/llm_turn.rs crates/code/core/src/agent/llm_invoker/fact_governance.rs crates/code/core/src/agent_api/tests/fact_log/nested_governance.rs",
+      "exit_code": 0
+    }
+  ],
+  "non_green_attempts_not_counted": [
+    {
+      "description": "First post-fix new-test run: 6 passed, 2 failed assertions (auxiliary memory extraction caused two provider observations; existing fact Ask-without-manager executes). Test expectations corrected to actual existing contract; no production governance changes."
+    },
+    {
+      "command": "cargo test --locked --offline -p a3s-code-core --test agent_exact_run_host --test agent_protocol_v1 --test agent_protocol_harness_v1 --test agent_portable_checkpoint_recovery_v1 -- --test-threads=1",
+      "exit_code": 101,
+      "description": "Mistyped nonexistent target agent_protocol_harness_v1; no tests ran; corrected target is agent_protocol_harness."
+    }
+  ],
+  "source_sha256": {
+    "crates/code/core/src/agent/llm_turn.rs": "9b384b5195637afec7d81fb14b7b5ace647b315e7e9adbcda21624e47a7df639",
+    "crates/code/core/src/agent/llm_invoker/fact_governance.rs": "3a741a980a7cf87702f297ad2dcd3f1995adfca582747c7257fc7f9cf43821c6",
+    "crates/code/core/src/agent_api/tests/fact_log/nested_governance.rs": "e60f8aa815a462ced107c6bb17d136a93e3b31af43fe2bcf9820d0a783f80dbe"
+  },
+  "clippy_evidence": "visibility-clippy.json",
+  "explicitly_not_claimed": [
+    "No real model, T01, VM, or native language-server execution occurred in this qualification.",
+    "Existing explicit Ask without confirmation behavior was not changed or qualified as a general deny-on-Ask policy.",
+    "This correction does not qualify T022 or assert all workspace checks are green.",
+    "No binary was replaced by this agent."
+  ],
+  "privacy": "Only commands, counts, named behavior, source hashes, and compiler metadata; no user session text, credentials, model reasoning, or private source output retained."
+}

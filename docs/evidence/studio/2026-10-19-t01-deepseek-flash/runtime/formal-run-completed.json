@@ -1,0 +1,94 @@
+{
+  "schema": "aster.t01.completed-runtime.v1",
+  "sessionId": "01a154b3-fd4c-70c3-ad72-48c14a36e920",
+  "executionId": "01a154b3-ff6b-7141-80f2-977d147830f4",
+  "coreSessionId": "3aa279d3-a60c-4b82-832a-0cadcecb59a6",
+  "workspace": "/Users/roylin/code/tasks/T01-workspace",
+  "start": "2026-10-19T15:07:24.907Z",
+  "end": "2026-10-19T15:15:27.763Z",
+  "durationSeconds": 482.856,
+  "modelId": "deepseek::deepseek-flash",
+  "configuredProvider": "deepseek",
+  "configuredModelIdentifier": "deepseek-flash",
+  "configuredEndpoint": "https://api.deepseek.com",
+  "hostStatus": "success",
+  "hostExecution": {
+    "status": "done",
+    "executionId": "01a154b3-ff6b-7141-80f2-977d147830f4",
+    "anchorMessageId": "01a154b3-ff6b-7141-80f2-977d147830f4",
+    "observedAt": "2026-10-19T15:15:27.786Z"
+  },
+  "finalRuntimeMetrics": {
+    "observedAt": "2026-10-19T15:15:30.393946+00:00",
+    "hostExecution": {
+      "status": "done",
+      "executionId": "01a154b3-ff6b-7141-80f2-977d147830f4",
+      "anchorMessageId": "01a154b3-ff6b-7141-80f2-977d147830f4",
+      "observedAt": "2026-10-19T15:15:27.786Z"
+    },
+    "modelId": "deepseek::deepseek-flash",
+    "messageStatus": "success",
+    "messageStart": "2026-10-19T15:07:24.907Z",
+    "messageUpdatedAt": "2026-10-19T15:15:27.763Z",
+    "modelTurnCount": 26,
+    "toolPreparedCount": 26,
+    "toolCounts": {
+      "ls": 2,
+      "read": 3,
+      "bash": 19,
+      "write": 1,
+      "edit": 1
+    },
+    "toolResultCount": 26,
+    "toolSuccessCount": 23,
+    "toolFailureCount": 3,
+    "terminal": "verified",
+    "hostErrors": []
+  },
+  "workbenchProof": {
+    "schema": "a3s.studio.workbench-proof.v1",
+    "model": "deepseek::deepseek-flash",
+    "producerStatus": "completed",
+    "policy": {
+      "artifactTrace": false,
+      "reviewMode": false
+    }
+  },
+  "review": {
+    "status": "off",
+    "reviewer": "independent-model",
+    "finishedAt": "2026-10-19T15:15:27.754Z",
+    "error": null
+  },
+  "artifacts": [
+    {
+      "path": "/Users/roylin/code/tasks/T01-workspace/pipeline.py",
+      "bytes": 21838,
+      "sha256": "a0f468639ddac231ba38fb8452ab7946b4651a2ee62ead69341bac042d5b7b4b",
+      "mtimeUtc": "2026-10-19T15:09:55.417332+00:00"
+    },
+    {
+      "path": "/Users/roylin/code/tasks/T01-workspace/output/results.json",
+      "bytes": 1439900,
+      "sha256": "dfcc0b13bea1b177aa5af6e9967f2bae42e8bfebdc6046f665fabf94db24ecf7",
+      "mtimeUtc": "2026-10-19T15:15:21.234860+00:00"
+    }
+  ],
+  "postRunProcessObservation": {
+    "observedAt": "2026-10-19T15:16:04.545075+00:00",
+    "knownPrimaryTreeProcessesStillPresent": [
+      {
+        "pid": 72473,
+        "ppid": 1,
+        "comm": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/AsterDream.app/Contents/MacOS/AsterDream"
+      },
+      {
+        "pid": 73382,
+        "ppid": 72473,
+        "comm": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/AsterDream.app/Contents/MacOS/a3s-code-acp"
+      }
+    ]
+  },
+  "assessment": "Runtime completed without a host error, with core terminal verified. This is lifecycle/execution evidence; T01 semantic correctness must be evaluated independently against instruction.md.",
+  "privacy": "No model reasoning, source text, command arguments, credentials, authorization headers or resume tokens retained."
+}

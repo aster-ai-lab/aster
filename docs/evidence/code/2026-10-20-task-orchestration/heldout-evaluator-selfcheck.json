@@ -1,0 +1,317 @@
+{
+  "schema": "aster.heldout-evaluator-selfcheck.v1",
+  "scope": "tool self-check only; temporary correct reference and original bug, no model Run or model score",
+  "passed": true,
+  "strict_json_types_and_keys": true,
+  "fixture_sources_unchanged": true,
+  "synthetic_report_valid": {
+    "schema": "aster.heldout-evaluation.v1",
+    "case": "analysis",
+    "passed": true,
+    "artifact_passed": true,
+    "workspace": "/private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/heldout evaluator selfcheck 6w3zcj9z/workspace",
+    "run_report_sha256": "d822ce6109b86f185d06d16ade644c456af6d68399ac45eedeff30bdbd9045f7",
+    "run_gates_passed": true,
+    "immutable_inputs_before": {
+      "matched": true,
+      "checked": 4,
+      "changed": []
+    },
+    "source_before": {
+      "matched": true,
+      "checked": 1,
+      "changed": []
+    },
+    "submission_sha256": "cb3ea11b069c8357ea452a4ad59ee89d53fa7fb2d6f3b66468d1d5926aa46efc",
+    "cases": [
+      {
+        "case": "complete_typed_json",
+        "passed": true,
+        "differences": [],
+        "exit_code": null
+      }
+    ],
+    "submission_snapshot_unchanged": true,
+    "fixture_sources_unchanged": true,
+    "immutable_inputs_after": {
+      "matched": true,
+      "checked": 4,
+      "changed": []
+    },
+    "source_after": {
+      "matched": true,
+      "checked": 1,
+      "changed": []
+    },
+    "seconds": 0.001173
+  },
+  "synthetic_immutable_mutation": {
+    "schema": "aster.heldout-evaluation.v1",
+    "case": "analysis",
+    "passed": false,
+    "artifact_passed": true,
+    "workspace": "/private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/heldout evaluator selfcheck 6w3zcj9z/workspace",
+    "run_report_sha256": "d822ce6109b86f185d06d16ade644c456af6d68399ac45eedeff30bdbd9045f7",
+    "run_gates_passed": true,
+    "immutable_inputs_before": {
+      "matched": false,
+      "checked": 4,
+      "changed": [
+        "regions/east.csv"
+      ]
+    },
+    "source_before": {
+      "matched": true,
+      "checked": 1,
+      "changed": []
+    },
+    "submission_sha256": "cb3ea11b069c8357ea452a4ad59ee89d53fa7fb2d6f3b66468d1d5926aa46efc",
+    "cases": [
+      {
+        "case": "complete_typed_json",
+        "passed": true,
+        "differences": [],
+        "exit_code": null
+      }
+    ],
+    "submission_snapshot_unchanged": true,
+    "fixture_sources_unchanged": true,
+    "immutable_inputs_after": {
+      "matched": false,
+      "checked": 4,
+      "changed": [
+        "regions/east.csv"
+      ]
+    },
+    "source_after": {
+      "matched": true,
+      "checked": 1,
+      "changed": []
+    },
+    "seconds": 0.001446
+  },
+  "correct_reference": [
+    {
+      "case": "original_unittest_suite",
+      "passed": true,
+      "exit_code": 0,
+      "timed_out": false,
+      "process_settled": true,
+      "seconds": 0.128904,
+      "stdout": "HELDOUT_RESULT={\"passed\": true, \"tests_run\": 3, \"failures\": 0, \"errors\": 0}\n",
+      "stdout_bytes": 76,
+      "stdout_truncated": false,
+      "stderr": "test_empty (test_pricing.PricingTests) ... ok\ntest_multiple (test_pricing.PricingTests) ... ok\ntest_negative (test_pricing.PricingTests) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nOK\n",
+      "stderr_bytes": 242,
+      "stderr_truncated": false,
+      "result": {
+        "passed": true,
+        "tests_run": 3,
+        "failures": 0,
+        "errors": 0
+      },
+      "isolated_submission_unchanged": true,
+      "isolated_test_unchanged": true
+    },
+    {
+      "case": "independent_1",
+      "passed": true,
+      "exit_code": 0,
+      "timed_out": false,
+      "process_settled": true,
+      "seconds": 0.048911,
+      "stdout": "HELDOUT_RESULT={\"passed\": true, \"actual\": 0, \"expected\": 0, \"actual_type\": \"int\"}\n",
+      "stdout_bytes": 82,
+      "stdout_truncated": false,
+      "stderr": "",
+      "stderr_bytes": 0,
+      "stderr_truncated": false,
+      "result": {
+        "passed": true,
+        "actual": 0,
+        "expected": 0,
+        "actual_type": "int"
+      },
+      "isolated_submission_unchanged": true,
+      "isolated_test_unchanged": true
+    },
+    {
+      "case": "independent_2",
+      "passed": true,
+      "exit_code": 0,
+      "timed_out": false,
+      "process_settled": true,
+      "seconds": 0.08172,
+      "stdout": "HELDOUT_RESULT={\"passed\": true, \"actual\": 10, \"expected\": 10, \"actual_type\": \"int\"}\n",
+      "stdout_bytes": 84,
+      "stdout_truncated": false,
+      "stderr": "",
+      "stderr_bytes": 0,
+      "stderr_truncated": false,
+      "result": {
+        "passed": true,
+        "actual": 10,
+        "expected": 10,
+        "actual_type": "int"
+      },
+      "isolated_submission_unchanged": true,
+      "isolated_test_unchanged": true
+    },
+    {
+      "case": "independent_3",
+      "passed": true,
+      "exit_code": 0,
+      "timed_out": false,
+      "process_settled": true,
+      "seconds": 0.082836,
+      "stdout": "HELDOUT_RESULT={\"passed\": true, \"actual\": -9, \"expected\": -9, \"actual_type\": \"int\"}\n",
+      "stdout_bytes": 84,
+      "stdout_truncated": false,
+      "stderr": "",
+      "stderr_bytes": 0,
+      "stderr_truncated": false,
+      "result": {
+        "passed": true,
+        "actual": -9,
+        "expected": -9,
+        "actual_type": "int"
+      },
+      "isolated_submission_unchanged": true,
+      "isolated_test_unchanged": true
+    },
+    {
+      "case": "independent_4",
+      "passed": true,
+      "exit_code": 0,
+      "timed_out": false,
+      "process_settled": true,
+      "seconds": 0.074486,
+      "stdout": "HELDOUT_RESULT={\"passed\": true, \"actual\": 19, \"expected\": 19, \"actual_type\": \"int\"}\n",
+      "stdout_bytes": 84,
+      "stdout_truncated": false,
+      "stderr": "",
+      "stderr_bytes": 0,
+      "stderr_truncated": false,
+      "result": {
+        "passed": true,
+        "actual": 19,
+        "expected": 19,
+        "actual_type": "int"
+      },
+      "isolated_submission_unchanged": true,
+      "isolated_test_unchanged": true
+    }
+  ],
+  "original_bug": [
+    {
+      "case": "original_unittest_suite",
+      "passed": false,
+      "exit_code": 1,
+      "timed_out": false,
+      "process_settled": true,
+      "seconds": 0.073109,
+      "stdout": "HELDOUT_RESULT={\"passed\": false, \"tests_run\": 3, \"failures\": 3, \"errors\": 0}\n",
+      "stdout_bytes": 77,
+      "stdout_truncated": false,
+      "stderr": "test_empty (test_pricing.PricingTests) ... FAIL\ntest_multiple (test_pricing.PricingTests) ... FAIL\ntest_negative (test_pricing.PricingTests) ... FAIL\n\n======================================================================\nFAIL: test_empty (test_pricing.PricingTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/heldout independent eval 8odeg2vg/0/test_pricing.py\", line 8, in test_empty\n    self.assertEqual(total_price([], 7), 7)\nAssertionError: 0 != 7\n\n======================================================================\nFAIL: test_multiple (test_pricing.PricingTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/heldout independent eval 8odeg2vg/0/test_pricing.py\", line 6, in test_multiple\n    self.assertEqual(total_price([10, 20], 3), 33)\nAssertionError: 90 != 33\n\n======================================================================\nFAIL: test_negative (test_pricing.PricingTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/heldout independent eval 8odeg2vg/0/test_pricing.py\", line 10, in test_negative\n    self.assertEqual(total_price([-4, 9], -2), 3)\nAssertionError: -10 != 3\n\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nFAILED (failures=3)\n",
+      "stderr_bytes": 1588,
+      "stderr_truncated": false,
+      "result": {
+        "passed": false,
+        "tests_run": 3,
+        "failures": 3,
+        "errors": 0
+      },
+      "isolated_submission_unchanged": true,
+      "isolated_test_unchanged": true
+    },
+    {
+      "case": "independent_1",
+      "passed": true,
+      "exit_code": 0,
+      "timed_out": false,
+      "process_settled": true,
+      "seconds": 0.081585,
+      "stdout": "HELDOUT_RESULT={\"passed\": true, \"actual\": 0, \"expected\": 0, \"actual_type\": \"int\"}\n",
+      "stdout_bytes": 82,
+      "stdout_truncated": false,
+      "stderr": "",
+      "stderr_bytes": 0,
+      "stderr_truncated": false,
+      "result": {
+        "passed": true,
+        "actual": 0,
+        "expected": 0,
+        "actual_type": "int"
+      },
+      "isolated_submission_unchanged": true,
+      "isolated_test_unchanged": true
+    },
+    {
+      "case": "independent_2",
+      "passed": false,
+      "exit_code": 1,
+      "timed_out": false,
+      "process_settled": true,
+      "seconds": 0.07018,
+      "stdout": "HELDOUT_RESULT={\"passed\": false, \"actual\": 0, \"expected\": 10, \"actual_type\": \"int\"}\n",
+      "stdout_bytes": 84,
+      "stdout_truncated": false,
+      "stderr": "",
+      "stderr_bytes": 0,
+      "stderr_truncated": false,
+      "result": {
+        "passed": false,
+        "actual": 0,
+        "expected": 10,
+        "actual_type": "int"
+      },
+      "isolated_submission_unchanged": true,
+      "isolated_test_unchanged": true
+    },
+    {
+      "case": "independent_3",
+      "passed": false,
+      "exit_code": 1,
+      "timed_out": false,
+      "process_settled": true,
+      "seconds": 0.079707,
+      "stdout": "HELDOUT_RESULT={\"passed\": false, \"actual\": -52, \"expected\": -9, \"actual_type\": \"int\"}\n",
+      "stdout_bytes": 86,
+      "stdout_truncated": false,
+      "stderr": "",
+      "stderr_bytes": 0,
+      "stderr_truncated": false,
+      "result": {
+        "passed": false,
+        "actual": -52,
+        "expected": -9,
+        "actual_type": "int"
+      },
+      "isolated_submission_unchanged": true,
+      "isolated_test_unchanged": true
+    },
+    {
+      "case": "independent_4",
+      "passed": false,
+      "exit_code": 1,
+      "timed_out": false,
+      "process_settled": true,
+      "seconds": 0.044503,
+      "stdout": "HELDOUT_RESULT={\"passed\": false, \"actual\": 90, \"expected\": 19, \"actual_type\": \"int\"}\n",
+      "stdout_bytes": 85,
+      "stdout_truncated": false,
+      "stderr": "",
+      "stderr_bytes": 0,
+      "stderr_truncated": false,
+      "result": {
+        "passed": false,
+        "actual": 90,
+        "expected": 19,
+        "actual_type": "int"
+      },
+      "isolated_submission_unchanged": true,
+      "isolated_test_unchanged": true
+    }
+  ]
+}

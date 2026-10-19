@@ -66,7 +66,9 @@ impl OpenAiClient {
                             .retry_after
                             .as_deref()
                             .and_then(|v| RetryConfig::parse_retry_after(Some(v)));
-                        if self.retry_config.is_retryable_status(status) {
+                        if self.retry_config.is_retryable_status(status)
+                            && !self.zhipu_account_exhausted(status, &resp.error_body)
+                        {
                             AttemptOutcome::Retryable {
                                 status,
                                 body: resp.error_body,

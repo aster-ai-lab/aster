@@ -1,0 +1,6 @@
+
+running 1 test
+test llm::openai::tests::non_retryable_http_status_preserves_provider_and_status ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5112 filtered out; finished in 0.00s
+

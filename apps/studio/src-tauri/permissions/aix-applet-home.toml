@@ -1,0 +1,9 @@
+[[permission]]
+identifier = "allow-read-aix-applet-home-deck"
+description = "The main window reads whether an AIX mini app view still holds a deck."
+commands.allow = ["read_aix_applet_home_deck"]
+
+[[permission]]
+identifier = "allow-serve-aix-applet-home-seed"
+description = "An AIX mini app window takes its homepage seed and reports whether its deck holds work."
+commands.allow = ["take_aix_applet_home_seed", "report_aix_applet_home_deck"]

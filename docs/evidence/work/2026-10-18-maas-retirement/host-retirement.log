@@ -1,0 +1,123 @@
+warning: function `upsert_instance_map` is never used
+   --> crates/boot/src/service_discovery/mod.rs:203:15
+    |
+203 | pub(crate) fn upsert_instance_map(
+    |               ^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `remove_instance_map` is never used
+   --> crates/boot/src/service_discovery/mod.rs:215:15
+    |
+215 | pub(crate) fn remove_instance_map(
+    |               ^^^^^^^^^^^^^^^^^^^
+
+warning: `a3s-boot` (lib) generated 2 warnings
+   Compiling aster-dream v0.1.0 (/Users/roylin/code/aster/apps/work/src-tauri)
+warning: unused import: `Ordering`
+ --> apps/work/src-tauri/src/desktop_settings.rs:8:36
+  |
+8 | use std::sync::atomic::{AtomicU32, Ordering};
+  |                                    ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unnecessary `unsafe` block
+    --> apps/work/src-tauri/src/workspace_browser.rs:1080:32
+     |
+1080 |                 let absolute = unsafe { request.URL() }.and_then(|url| {
+     |                                ^^^^^^ unnecessary `unsafe` block
+     |
+     = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default
+
+warning: unnecessary `unsafe` block
+    --> apps/work/src-tauri/src/workspace_browser.rs:1114:32
+     |
+1114 |                 let absolute = unsafe { request.URL() }.and_then(|url| {
+     |                                ^^^^^^ unnecessary `unsafe` block
+
+warning: field `tool_call_id` is never read
+   --> apps/work/src-tauri/src/agent_plane/local_acp_tests.rs:845:5
+    |
+843 | struct Approval {
+    |        -------- field in this struct
+844 |     id: String,
+845 |     tool_call_id: String,
+    |     ^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `boot` is never used
+  --> apps/work/src-tauri/src/channel_gateway.rs:22:8
+   |
+22 | pub fn boot(token: &str, plane_url: &str) {
+   |        ^^^^
+
+warning: field `username` is never read
+  --> apps/work/src-tauri/src/crab_user.rs:66:9
+   |
+62 | pub struct IssuedSession {
+   |            ------------- field in this struct
+...
+66 |     pub username: String,
+   |         ^^^^^^^^
+   |
+   = note: `IssuedSession` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+
+warning: function `curl` is never used
+   --> apps/work/src-tauri/src/crab_user.rs:938:4
+    |
+938 | fn curl(
+    |    ^^^^
+
+warning: function `allow_test_upstream` is never used
+    --> apps/work/src-tauri/src/crab_user.rs:1088:15
+     |
+1088 | pub(crate) fn allow_test_upstream(origin: &str) {
+     |               ^^^^^^^^^^^^^^^^^^^
+
+warning: static `SLEEP_ASSERTION` is never used
+  --> apps/work/src-tauri/src/desktop_settings.rs:58:8
+   |
+58 | static SLEEP_ASSERTION: AtomicU32 = AtomicU32::new(0);
+   |        ^^^^^^^^^^^^^^^
+
+warning: function `boot` is never used
+   --> apps/work/src-tauri/src/desktop_settings.rs:397:8
+    |
+397 | pub fn boot(slug: &str, product: &str, logo: &Path) {
+    |        ^^^^
+
+warning: constant `CREATE_NO_WINDOW` is never used
+  --> apps/work/src-tauri/src/no_window.rs:29:7
+   |
+29 | const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+   |       ^^^^^^^^^^^^^^^^
+
+warning: function `verified_picker` is never used
+   --> apps/work/src-tauri/src/review_plugin.rs:462:8
+    |
+462 | pub fn verified_picker() -> Option<(PathBuf, String)> {
+    |        ^^^^^^^^^^^^^^^
+
+warning: `aster-dream` (lib test) generated 12 warnings (run `cargo fix --lib -p aster-dream --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 34.62s
+     Running unittests src/lib.rs (target/debug/deps/a3s_studio_lib-82f280e0b4f5f7ce)
+
+running 13 tests
+test agent_plane::tests::retired_maas_rpc_is_unreachable ... ok
+test authority::tests::crab_login_rejects_an_empty_account_without_calling_maas ... ok
+test authority::tests::maas_session_can_read_the_local_agent_plane ... ok
+test authority::tests::maas_session_can_sign_out_and_sign_in_again ... ok
+test authority::tests::remembered_account_stays_reachable_while_a_maas_session_is_stored ... ok
+test capabilities::tests::opening_capabilities_removes_a_maas_market_install ... ok
+test crab_user::tests::a_padded_maas_token_still_opens_a_session ... ok
+test crab_user::tests::login_forwards_the_form_and_keeps_the_maas_token ... ok
+test crab_user::tests::the_default_origin_is_the_documented_maas_host ... ok
+test maas_platform::tests::rejects_paths_and_keeps_defaults_on_bad_save ... ok
+test maas_platform::tests::round_trips_through_a_file ... ok
+test maas_platform::tests::saves_valid_origins_in_memory ... ok
+test workspace_browser::tests::portal_home_url_rejects_anything_except_a_maas_jwt ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 717 filtered out; finished in 0.82s
+

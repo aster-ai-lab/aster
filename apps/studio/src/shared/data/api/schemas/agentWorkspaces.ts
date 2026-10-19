@@ -1,0 +1,104 @@
+import * as z from 'zod'
+
+import type { OrderEndpoints } from './_endpointHelpers'
+
+export const AgentWorkspaceNameSchema = z.string().trim().min(1)
+export const AgentWorkspacePathSchema = z.string().min(1)
+export const AGENT_WORKSPACE_TYPES = ['user', 'system'] as const
+export type AgentWorkspaceType = (typeof AGENT_WORKSPACE_TYPES)[number]
+export const AGENT_WORKSPACE_TYPE = {
+  USER: 'user',
+  SYSTEM: 'system'
+} as const satisfies Record<string, AgentWorkspaceType>
+export const AgentWorkspaceTypeSchema = z.enum(AGENT_WORKSPACE_TYPES)
+
+export const AgentSessionWorkspaceSourceSchema = z.discriminatedUnion('type', [
+  z.strictObject({
+    type: z.literal('user'),
+    workspaceId: z.string().min(1),
+    /**
+     * Workbench project placement. The session folder moves with the task, and
+     * the binding may change after messages. Ordinary workspace switches omit this.
+     */
+    place: z.literal('project').optional()
+  }),
+  z.strictObject({
+    type: z.literal('system'),
+    /**
+     * Workbench return to the inbox. `path` is `sessions/<local date>/<session id>`.
+     * Ordinary system binds omit both fields.
+     */
+    place: z.literal('inbox').optional(),
+    path: z.string().min(1).optional()
+  })
+])
+export type AgentSessionWorkspaceSource = z.infer<typeof AgentSessionWorkspaceSourceSchema>
+
+export const AgentWorkspaceEntitySchema = z.strictObject({
+  id: z.string(),
+  name: AgentWorkspaceNameSchema,
+  path: AgentWorkspacePathSchema,
+  type: AgentWorkspaceTypeSchema,
+  orderKey: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string()
+})
+export type AgentWorkspaceEntity = z.infer<typeof AgentWorkspaceEntitySchema>
+
+// `name` is optional — the service derives it from the path basename when omitted.
+export const CreateAgentWorkspaceSchema = AgentWorkspaceEntitySchema.pick({ path: true, name: true }).partial({
+  name: true
+})
+export type CreateAgentWorkspaceDto = z.infer<typeof CreateAgentWorkspaceSchema>
+
+export const UpdateAgentWorkspaceSchema = AgentWorkspaceEntitySchema.pick({ name: true })
+export type UpdateAgentWorkspaceDto = z.infer<typeof UpdateAgentWorkspaceSchema>
+
+export interface AgentWorkspaceReferenceItem {
+  id: string
+  name: string
+}
+
+export interface AgentWorkspaceReferenceList {
+  items: AgentWorkspaceReferenceItem[]
+  total: number
+}
+
+export interface AgentWorkspaceReferences {
+  sessions: AgentWorkspaceReferenceList
+  channels: AgentWorkspaceReferenceList
+  tasks: AgentWorkspaceReferenceList
+}
+
+export type AgentWorkspaceSchemas = {
+  '/agent-workspaces': {
+    GET: {
+      response: AgentWorkspaceEntity[]
+    }
+    // find-or-create by path: idempotent on the `agent_workspace.path` unique index.
+    POST: {
+      body: CreateAgentWorkspaceDto
+      response: AgentWorkspaceEntity
+    }
+  }
+
+  '/agent-workspaces/:workspaceId': {
+    GET: {
+      params: { workspaceId: string }
+      response: AgentWorkspaceEntity
+    }
+    PATCH: {
+      params: { workspaceId: string }
+      body: UpdateAgentWorkspaceDto
+      response: AgentWorkspaceEntity
+    }
+  }
+
+  /** List sessions and resource configurations that reference a user workspace. */
+  '/agent-workspaces/:workspaceId/references': {
+    GET: {
+      params: { workspaceId: string }
+      response: AgentWorkspaceReferences
+    }
+  }
+} & OrderEndpoints<'/agent-workspaces'>

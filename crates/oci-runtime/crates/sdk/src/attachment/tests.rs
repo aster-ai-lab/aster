@@ -51,6 +51,89 @@ fn bundle() -> OciBundle {
     .expect("attachment fixture bundle")
 }
 
+fn canonical_attachment_bundle(root: &str, mount: &str) -> OciBundle {
+    OciBundle::from_json(
+        std::env::temp_dir().join("a3s-canonical-attachment-bundle"),
+        format!(
+            r#"{{"ociVersion":"1.3.0","root":{root},"process":{{"cwd":"/","args":["/bin/true"],"user":{{"uid":0,"gid":0}}}},"mounts":[{mount}]}}"#
+        ),
+    )
+    .expect("canonical attachment fixture")
+}
+
+#[test]
+fn canonical_attachment_value_digest_matches_legacy_sorted_objects() {
+    // Literal bytes and digest match the original BTreeMap-backed encoding.
+    let expected = "sha256:8adf2c963c026174b21882c9e238db9088be15cde862c6b4dd858aff7ad2e5df";
+    for encoded in [
+        r#"{"a":[{"a":1,"z":2},3,1],"z":{"a":true,"z":null}}"#,
+        r#"{"z":{"z":null,"a":true},"a":[{"z":2,"a":1},3,1]}"#,
+    ] {
+        let value = serde_json::from_str(encoded).expect("nested object fixture");
+        assert_eq!(super::digest_json(&value).unwrap(), expected);
+    }
+}
+
+#[test]
+fn canonical_attachment_wire_accepts_legacy_sorted_inventory_across_object_order() {
+    let sorted = canonical_attachment_bundle(
+        r#"{"path":"rootfs","readonly":false}"#,
+        r#"{"destination":"/data","options":["rbind","rw"],"source":"data","type":"bind"}"#,
+    );
+    let reordered = canonical_attachment_bundle(
+        r#"{"readonly":false,"path":"rootfs"}"#,
+        r#"{"source":"data","destination":"/data","type":"bind","options":["rbind","rw"]}"#,
+    );
+    let attachments = CreateAttachments::from_bundle(&sorted, ProcessIo::default()).unwrap();
+    assert_eq!(attachments.schema_version(), ATTACHMENT_SCHEMA_V1);
+    assert_eq!(
+        attachments.rootfs.as_ref().unwrap().value_digest(),
+        "sha256:2f9b36d930ecf25ea5df68f77c368b53f750ca0bd8e82afff17dca1941d1fee4"
+    );
+    assert_eq!(
+        attachments.mounts[0].value_digest(),
+        "sha256:862e273bb512559f843584d35eee6dc7ed2028df88fb7f42cd7f84979cbe052e"
+    );
+    let wire = serde_json::to_vec(&attachments).unwrap();
+    let restored: CreateAttachments = serde_json::from_slice(&wire).unwrap();
+    restored
+        .validate(&reordered)
+        .expect("legacy sorted inventory must survive object-key reordering across peers");
+    assert_eq!(
+        restored,
+        CreateAttachments::from_bundle(&reordered, ProcessIo::default()).unwrap()
+    );
+}
+
+#[test]
+fn canonical_attachment_inventory_rejects_value_array_order_and_raw_digest_drift() {
+    let sorted = canonical_attachment_bundle(
+        r#"{"path":"rootfs","readonly":false}"#,
+        r#"{"destination":"/data","options":["rbind","rw"],"source":"data","type":"bind"}"#,
+    );
+    let attachments = CreateAttachments::from_bundle(&sorted, ProcessIo::default()).unwrap();
+    for (root, mount) in [
+        (
+            r#"{"path":"rootfs","readonly":true}"#,
+            r#"{"destination":"/data","options":["rbind","rw"],"source":"data","type":"bind"}"#,
+        ),
+        (
+            r#"{"path":"rootfs","readonly":false}"#,
+            r#"{"destination":"/data","options":["rw","rbind"],"source":"data","type":"bind"}"#,
+        ),
+    ] {
+        let drifted = canonical_attachment_bundle(root, mount);
+        assert!(attachments.validate(&drifted).is_err());
+    }
+
+    // Do not accept a second raw-order digest as a compatibility fallback.
+    let mut raw_order = serde_json::to_value(&attachments).unwrap();
+    raw_order["rootfs"]["valueDigest"] =
+        json!("sha256:07a2d1479c4863dbf85fe2563b5065077b60d8355b2a53160fa65da5297310ba");
+    let raw_order: CreateAttachments = serde_json::from_value(raw_order).unwrap();
+    assert!(raw_order.validate(&sorted).is_err());
+}
+
 fn handoff_bundle() -> OciBundle {
     let mut configuration: serde_json::Value =
         serde_json::from_str(bundle().config_json()).expect("fixture configuration");

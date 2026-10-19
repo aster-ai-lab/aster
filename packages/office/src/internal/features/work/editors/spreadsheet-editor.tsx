@@ -1,0 +1,3026 @@
+import type { Hooks, Op, Selection } from '@fortune-sheet/core';
+import { Workbook, type WorkbookInstance } from '@fortune-sheet/react';
+import { Cloud, Grid3X3 } from 'lucide-react';
+import {
+  memo,
+  type ClipboardEvent as ReactClipboardEvent,
+  type PointerEvent as ReactPointerEvent,
+  useCallback,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import type { WorkOfficeCollaborationSession } from '../../../collaboration/office-collaboration';
+import type {
+  WorkOfficeCollaborationParticipant,
+  WorkOfficeSpreadsheetPresenceCell,
+  WorkOfficeSpreadsheetPresenceRange,
+} from '../../../collaboration/office-collaboration-presence';
+import {
+  officeMessage,
+  resolveOfficeMessages,
+} from '../../../i18n/office-locale';
+import { showToast } from '../../../state/app-state';
+import { useOfficeMessages } from './office-messages-context';
+import {
+  isWorkspaceContextMenuKeyboardEvent,
+  WorkspaceContextMenu,
+  type WorkspaceContextMenuEvent,
+  workspaceContextMenuPosition,
+} from '../../workspace/components/workspace-context-menu';
+import { spreadsheetAgentMenuItems } from '../components/work-editor-agent-menus';
+import { bindSpreadsheetPaneResize } from './spreadsheet-pane-resize';
+import { spreadsheetGridSize } from '../spreadsheet-sparse';
+import { applySpreadsheetAgentProposalChanges } from '../work-spreadsheet-agent-proposal-apply';
+import type { WorkEditorAgentRequest } from '../work-agent-request';
+import {
+  spreadsheetAgentSelection,
+  type WorkSpreadsheetAgentSelection,
+} from '../work-spreadsheet-agent-context';
+import {
+  reconcileSpreadsheetChartPreviews,
+  spreadsheetSheetsWithChartPreviews,
+} from '../work-spreadsheet-charts';
+import {
+  drawSpreadsheetCommentMarker,
+  drawSpreadsheetConditionalDataBar,
+} from '../work-spreadsheet-conditional-canvas';
+import { spreadsheetConditionalFormatStyles } from '../work-spreadsheet-conditional-format';
+import { drawSpreadsheetConditionalIcon } from '../work-spreadsheet-conditional-icons';
+import {
+  drawSpreadsheetDiagonalDownBorder,
+  drawSpreadsheetDiagonalUpBorder,
+} from '../work-spreadsheet-diagonal-border-canvas';
+import { spreadsheetMatrixProfile } from '../work-spreadsheet-matrix-profile';
+import {
+  beginSpreadsheetNativeFillRender,
+  finishSpreadsheetNativeFillRender,
+} from '../work-spreadsheet-native-fill-canvas';
+import {
+  reconcileSpreadsheetPivots,
+  refreshSpreadsheetPivotTables,
+  spreadsheetPivotIntersects,
+  spreadsheetPivotOutputContains,
+} from '../work-spreadsheet-pivots';
+import { spreadsheetProtectionKey } from '../work-spreadsheet-protection';
+import type {
+  WorkSpreadsheetContent,
+  WorkSpreadsheetDataValidationItem,
+} from '../work-types';
+import { activeXlsxNativeFill } from '../work-xlsx-native-fill';
+import { useOfficeCollaborationLocationNavigator } from './office-collaboration-presence-context';
+import { useOfficePublishPresenceLocation } from './office-collaboration-presence-ui';
+import { useOfficeDialog } from './office-dialog';
+import { useOfficeEditorFocusOrigin } from './office-editor-focus-handoff';
+import { SPREADSHEET_AUTO_FILTER_MENU_ITEMS } from './spreadsheet-auto-filter-menu';
+import {
+  spreadsheetCellBordersAt,
+  spreadsheetRenderableDiagonalBorders,
+} from './spreadsheet-cell-border';
+import {
+  type SpreadsheetFrameCell,
+  useSpreadsheetCollaborationPresenceProjection,
+} from './spreadsheet-collaboration-presence';
+import { SpreadsheetFrameCaretMark } from './spreadsheet-frame-caret';
+import { spreadsheetCommandCatalog } from './spreadsheet-command-catalog';
+import {
+  createSpreadsheetEditorExtensions,
+  type SpreadsheetCommandRange,
+  type SpreadsheetCommandSelection,
+  type SpreadsheetEditorCommands,
+  type SpreadsheetFormatCellsOpenRequest,
+  type SpreadsheetStructureAxis,
+} from './spreadsheet-command-controller';
+import {
+  acceptSpreadsheetSelectionChange,
+  releaseSpreadsheetSelectionRequest,
+} from './spreadsheet-command-selection';
+import {
+  spreadsheetCoreContextMenuItems,
+  spreadsheetSortContextMenuItems,
+  spreadsheetStructureContextMenuItems,
+} from './spreadsheet-context-menu';
+import { spreadsheetDataValidationItemAt } from './spreadsheet-data-validation';
+import { evaluateSpreadsheetCustomValidation } from './spreadsheet-data-validation-custom';
+import {
+  cloneSpreadsheetDataValidationItem,
+  type SpreadsheetDataValidationEditRequest,
+  spreadsheetDataValidationConfirmLabels,
+  spreadsheetDataValidationDialogDescription,
+  spreadsheetDataValidationDialogTitle,
+  spreadsheetDataValidationErrorStyle,
+  spreadsheetDataValidationInteraction,
+} from './spreadsheet-data-validation-interaction';
+import {
+  SpreadsheetEditorRibbon,
+  type SpreadsheetRibbonTabId,
+} from './spreadsheet-editor-ribbon';
+import {
+  finiteSpreadsheetSelection,
+  isSpreadsheetCellEditingTarget,
+  isSpreadsheetCellEditorTarget,
+  isSpreadsheetNativeTextUndoTarget,
+  sameSpreadsheetHistoryContent,
+  sameSpreadsheetWorkbookState,
+  sameSpreadsheetWorkbookStateAfterOperations,
+  spreadsheetCellAt,
+  spreadsheetContentWithSelection,
+  spreadsheetContentWithSelections,
+  spreadsheetFormulaResultText,
+  spreadsheetSelectionReference,
+  spreadsheetSelectionSummary,
+  spreadsheetSheetsForFortune,
+  spreadsheetSheetsFromFortune,
+  spreadsheetSheetsWithFiniteSelections,
+  spreadsheetSingleRange,
+} from './spreadsheet-editor-support';
+import type { SpreadsheetFindMatch } from './spreadsheet-find';
+import { SpreadsheetFindBar } from './spreadsheet-find-bar';
+import { DEFAULT_SPREADSHEET_FONT_SIZE } from './spreadsheet-font-size';
+import { SpreadsheetFormatCellsDialog } from './spreadsheet-format-cells-dialog';
+import {
+  createSpreadsheetFormatCellsDialogSource,
+  type SpreadsheetFormatCellsDialogSource,
+} from './spreadsheet-format-cells-dialog-model';
+import { spreadsheetFreezePanesStatus } from './spreadsheet-freeze-panes';
+import {
+  resolveSpreadsheetGoToTarget,
+  spreadsheetGoToValidationMessage,
+} from './spreadsheet-go-to';
+import { synchronizeSpreadsheetWorkbookInPlace } from './spreadsheet-in-place-workbook-sync';
+import { spreadsheetActiveCellAnnouncement } from './spreadsheet-active-cell-announcement';
+import { spreadsheetSelectionContainsFocus } from './spreadsheet-keyboard-navigation';
+import { SpreadsheetVirtualGrid } from './spreadsheet-virtual-grid';
+import { spreadsheetVirtualGridCommitCell } from './spreadsheet-virtual-grid-commit';
+import { MAX_SPREADSHEET_PASTE_SPECIAL_CELLS } from './spreadsheet-paste-special';
+import { SpreadsheetPasteSpecialDialog } from './spreadsheet-paste-special-dialog';
+import { captureSpreadsheetRichTextPaste } from './spreadsheet-rich-text-paste';
+import {
+  isSpreadsheetRichTextFormatPointerTarget,
+  SpreadsheetRichTextSelectionController,
+} from './spreadsheet-rich-text-selection-controller';
+import { SpreadsheetSheetBar } from './spreadsheet-sheet-bar';
+import { projectSpreadsheetSheetsShowingFormulas } from './spreadsheet-show-formulas';
+import type { SpreadsheetSortCustomListStore } from './spreadsheet-sort-custom-list-store';
+import { spreadsheetTableAtCell } from './spreadsheet-table';
+import {
+  beginSpreadsheetTableCellRender,
+  finishSpreadsheetTableCellRender,
+} from './spreadsheet-table-render';
+import { createSpreadsheetTableRenderResolver } from './spreadsheet-table-style';
+import {
+  SpreadsheetWorkbookPanel,
+  type SpreadsheetWorkbookPanelView,
+} from './spreadsheet-workbook-panel';
+import { useOfficeEditorKeyboardShortcuts } from './use-office-editor-keyboard-shortcuts';
+import { useOfficeEditorRuntime } from './use-office-editor-runtime';
+import {
+  stepOfficeZoom,
+  useOfficeEditorWheelZoom,
+} from './use-office-editor-wheel-zoom';
+import { useOfficeHistory } from './use-office-history';
+import { useSpreadsheetAutoFilter } from './use-spreadsheet-auto-filter';
+import { useSpreadsheetCalculation } from './use-spreadsheet-calculation';
+import {
+  type SpreadsheetClipboardSelectionSource,
+  useSpreadsheetClipboard,
+} from './use-spreadsheet-clipboard';
+import {
+  type SpreadsheetCollaborationHistory,
+  type SpreadsheetCollaborationViewController,
+  useSpreadsheetCollaboration,
+} from './use-spreadsheet-collaboration';
+import { useSpreadsheetDataValidation } from './use-spreadsheet-data-validation';
+import {
+  type SpreadsheetFormatPainterMode,
+  useSpreadsheetFormatPainter,
+} from './use-spreadsheet-format-painter';
+import { useSpreadsheetHyperlink } from './use-spreadsheet-hyperlink';
+import { useSpreadsheetSort } from './use-spreadsheet-sort';
+import { useSpreadsheetTable } from './use-spreadsheet-table';
+import { useSpreadsheetWorkbookSync } from './use-spreadsheet-workbook-sync';
+import {
+  type WorkOfficeFileAction,
+  WorkOfficePreviewBar,
+  WorkOfficeStatusBar,
+  WorkOfficeZoomControls,
+} from './work-office-chrome';
+
+export interface SpreadsheetEditorProps {
+  autoFocus?: boolean;
+  collaboration?: WorkOfficeCollaborationSession;
+  content: WorkSpreadsheetContent;
+  kernelWasmUrl?: string;
+  preview: boolean;
+  saveStatus?: string;
+  sortCustomListStore?: SpreadsheetSortCustomListStore;
+  fileActions?: readonly WorkOfficeFileAction[];
+  onChange: (content: WorkSpreadsheetContent) => void;
+  onAgentRequest?: (request: WorkEditorAgentRequest) => void | Promise<void>;
+/**
+ * Opt-in A3S virtual grid for Spreadsheet (`virtualGrid` / playground
+ * `?virtualGrid=1`). Owns viewport paint, `role="grid"`, and literal cell
+ * edits. Fortune remains mounted underneath for the command port during
+ * migration.
+ */
+virtualGrid?: boolean;
+}
+
+const spreadsheetFocusRetryFrames = 12;
+const spreadsheetFocusObservationMs = 5_000;
+const spreadsheetFocusCleanups = new WeakMap<HTMLElement, () => void>();
+const ControlledWorkbook = memo(Workbook, (previous, next) => {
+  const previousProps = previous as Record<string, unknown>;
+  const nextProps = next as Record<string, unknown>;
+  const previousKeys = Object.keys(previousProps).filter(
+    (key) => key !== 'data',
+  );
+  const nextKeys = Object.keys(nextProps).filter((key) => key !== 'data');
+  return (
+    previousKeys.length === nextKeys.length &&
+    previousKeys.every(
+      (key) =>
+        Object.hasOwn(nextProps, key) && previousProps[key] === nextProps[key],
+    )
+  );
+});
+
+interface SpreadsheetSelectionState {
+  sheetId: string;
+  selection: Selection;
+}
+
+interface SpreadsheetContextMenuState {
+  kind: 'cells' | SpreadsheetStructureAxis;
+  range: SpreadsheetCommandRange;
+  x: number;
+  y: number;
+  selection: WorkSpreadsheetAgentSelection;
+}
+
+export function SpreadsheetEditor(props: SpreadsheetEditorProps) {
+  if (props.collaboration) {
+    return (
+      <CollaborativeSpreadsheetEditor
+        {...props}
+        collaboration={props.collaboration}
+      />
+    );
+  }
+  return <SpreadsheetEditorSurface {...props} />;
+}
+
+function CollaborativeSpreadsheetEditor(
+  props: SpreadsheetEditorProps & {
+    collaboration: WorkOfficeCollaborationSession;
+  },
+) {
+  const { collaboration } = props;
+  const shared = useSpreadsheetCollaboration({
+    initialContent: props.content,
+    onChange: props.onChange,
+    session: collaboration,
+  });
+  return (
+    <SpreadsheetEditorSurface
+      {...props}
+      content={shared.content}
+      collaborationHistory={shared.history}
+      collaborationView={shared.view}
+      collaborationWrittenCell={shared.writtenCell}
+      onChange={shared.onChange}
+      onDerivedChange={shared.onDerivedChange}
+      preview={props.preview || shared.readOnly}
+    />
+  );
+}
+
+interface SpreadsheetEditorSurfaceProps extends SpreadsheetEditorProps {
+  collaborationHistory?: SpreadsheetCollaborationHistory;
+  collaborationView?: SpreadsheetCollaborationViewController;
+  collaborationWrittenCell?: SpreadsheetFrameCell | null;
+  onDerivedChange?: (content: WorkSpreadsheetContent) => void;
+}
+
+function SpreadsheetEditorSurface({
+  autoFocus = true,
+  content,
+  collaborationHistory,
+  collaborationView,
+  collaborationWrittenCell = null,
+  kernelWasmUrl,
+  preview,
+  saveStatus = officeMessage(
+    resolveOfficeMessages(),
+    'spreadsheet.editor.saveStatus.autoSaved',
+  ),
+  sortCustomListStore,
+  fileActions,
+  onChange,
+  onDerivedChange,
+  onAgentRequest,
+  virtualGrid = false,
+}: SpreadsheetEditorSurfaceProps) {
+  const messages = useOfficeMessages();
+  const materializedContent = useMemo(
+    () => refreshSpreadsheetPivotTables(content),
+    [content],
+  );
+  const contentRef = useRef(materializedContent);
+  const spreadsheetCommandsRef = useRef<SpreadsheetEditorCommands | null>(null);
+  const richTextSelectionRef =
+    useRef<SpreadsheetRichTextSelectionController>(null);
+  if (!richTextSelectionRef.current) {
+    richTextSelectionRef.current = new SpreadsheetRichTextSelectionController();
+  }
+  const previewRef = useRef(preview);
+  const spreadsheetRootRef = useRef<HTMLElement>(null);
+  const spreadsheetCanvasRef = useRef<HTMLDivElement>(null);
+  const spreadsheetEditingEscapePendingRef = useRef(false);
+  const editorFocusOrigin = useOfficeEditorFocusOrigin();
+  const workbookRef = useRef<WorkbookInstance>(null);
+  const projectedWorkbookSheetsRef = useRef<WorkSpreadsheetContent['sheets']>(
+    [],
+  );
+  useLayoutEffect(() => {
+    const container = spreadsheetCanvasRef.current;
+    if (!container || preview) return;
+
+    let pendingEditor: HTMLElement | null = null;
+    let pointerEnteredEditor = false;
+
+    const moveEditorCaretToEnd = (editor: HTMLElement): boolean => {
+      if (
+        document.activeElement !== editor ||
+        !editor.isConnected ||
+        !editor.textContent
+      ) {
+        return false;
+      }
+      const selection = document.getSelection();
+      if (!selection) return false;
+      const range = document.createRange();
+      range.selectNodeContents(editor);
+      range.collapse(false);
+      selection.removeAllRanges();
+      selection.addRange(range);
+      return true;
+    };
+
+    const handlePointerDown = (event: PointerEvent): void => {
+      pointerEnteredEditor =
+        event.target instanceof Element &&
+        Boolean(event.target.closest('.luckysheet-cell-input'));
+    };
+    const handleFocusIn = (event: FocusEvent): void => {
+      const target = event.target;
+      const editor =
+        target instanceof Element
+          ? target.closest<HTMLElement>('.luckysheet-cell-input')
+          : null;
+      if (!editor || pointerEnteredEditor) {
+        pendingEditor = null;
+        pointerEnteredEditor = false;
+        return;
+      }
+      pendingEditor = editor;
+      queueMicrotask(() => {
+        if (pendingEditor === editor && moveEditorCaretToEnd(editor)) {
+          pendingEditor = null;
+        }
+      });
+    };
+    const observer = new MutationObserver(() => {
+      const editor = pendingEditor;
+      if (!editor || document.activeElement !== editor) return;
+      if (!editor.textContent) return;
+      moveEditorCaretToEnd(editor);
+      pendingEditor = null;
+    });
+
+    container.addEventListener('pointerdown', handlePointerDown, true);
+    container.addEventListener('focusin', handleFocusIn, true);
+    observer.observe(container, {
+      characterData: true,
+      childList: true,
+      subtree: true,
+    });
+    return () => {
+      container.removeEventListener('pointerdown', handlePointerDown, true);
+      container.removeEventListener('focusin', handleFocusIn, true);
+      observer.disconnect();
+    };
+  }, [preview]);
+  useEffect(() => {
+    const container = spreadsheetCanvasRef.current;
+    if (!container) return undefined;
+    return bindSpreadsheetPaneResize(container);
+  }, []);
+  useEffect(() => {
+    const container = spreadsheetCanvasRef.current;
+    if (!container || preview) return;
+
+    const restoreGridFocus = () =>
+      requestAnimationFrame(() =>
+        focusSpreadsheetGrid(container, { forceCellEditingExit: true }),
+      );
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (
+        event.key !== 'Escape' ||
+        !isSpreadsheetCellEditorTarget(event.target)
+      )
+        return;
+      spreadsheetEditingEscapePendingRef.current = true;
+      restoreGridFocus();
+    };
+    const handleKeyUp = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape' || !spreadsheetEditingEscapePendingRef.current)
+        return;
+      spreadsheetEditingEscapePendingRef.current = false;
+      restoreGridFocus();
+    };
+
+    container.addEventListener('keydown', handleKeyDown, true);
+    container.addEventListener('keyup', handleKeyUp, true);
+    return () => {
+      container.removeEventListener('keydown', handleKeyDown, true);
+      container.removeEventListener('keyup', handleKeyUp, true);
+      spreadsheetEditingEscapePendingRef.current = false;
+    };
+  }, [preview]);
+  const spreadsheetZoomRef = useRef(100);
+  const [workbookInstance, setWorkbookInstance] =
+    useState<WorkbookInstance | null>(null);
+  const bindWorkbookInstance = useCallback(
+    (instance: WorkbookInstance | null) => {
+      workbookRef.current = instance;
+      setWorkbookInstance((current) =>
+        Object.is(current, instance) ? current : instance,
+      );
+    },
+    [],
+  );
+  const synchronizeExternalWorkbook = useCallback(
+    (previous: WorkSpreadsheetContent, next: WorkSpreadsheetContent) =>
+      synchronizeSpreadsheetWorkbookInPlace(
+        workbookRef.current,
+        previous,
+        next,
+        projectedWorkbookSheetsRef.current,
+        previewRef.current,
+      ),
+    [],
+  );
+  const {
+    acceptContent: acceptWorkbookContent,
+    ignoreChangeDuringExternalSync,
+    mountRevision: workbookMountRevision,
+    recordOperations: recordWorkbookOperations,
+    takeOperations: takeWorkbookOperations,
+  } = useSpreadsheetWorkbookSync(
+    materializedContent,
+    synchronizeExternalWorkbook,
+  );
+  const calculation = useSpreadsheetCalculation({
+    content: materializedContent,
+    kernelWasmUrl,
+    workbookRef,
+  });
+  const panelId = useId();
+  const [ribbonTab, setRibbonTab] = useState<SpreadsheetRibbonTabId>('home');
+  const [panel, setPanel] = useState<SpreadsheetWorkbookPanelView | null>(null);
+  const panelTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const [selectionState, setSelectionState] =
+    useState<SpreadsheetSelectionState | null>(null);
+  const selectionStateRef = useRef<{
+    current: SpreadsheetCommandSelection | null;
+    requested: SpreadsheetCommandSelection | null;
+  }>({ current: null, requested: null });
+  const formatPainterSelectionHandlerRef = useRef(
+    (_sheetId: string, _selection: Selection) => undefined,
+  );
+  const [contextMenu, setContextMenu] =
+    useState<SpreadsheetContextMenuState | null>(null);
+  const [formatCellsDialog, setFormatCellsDialog] = useState<{
+    source: SpreadsheetFormatCellsDialogSource;
+    intent: SpreadsheetFormatCellsOpenRequest['intent'];
+  } | null>(null);
+  const formatCellsInvokerRef = useRef<HTMLElement | null>(null);
+  const formatCellsSelectionRef = useRef<SpreadsheetSelectionState | null>(
+    null,
+  );
+  const formatCellsApplyingRef = useRef(false);
+  useEffect(() => {
+    const container = spreadsheetCanvasRef.current;
+    if (!container || preview || !selectionState) return;
+
+    const frame = requestAnimationFrame(() => {
+      const button = container.querySelector<HTMLElement>(
+        '#luckysheet-dataVerification-dropdown-btn',
+      );
+      const selectedCell = container.querySelector<HTMLElement>(
+        '#luckysheet-cell-selected',
+      );
+      const cellArea = selectedCell?.closest<HTMLElement>('.fortune-cell-area');
+      const sheet = materializedContent.sheets.find(
+        (candidate) => candidate.id === selectionState.sheetId,
+      );
+      const row = selectionState.selection.row[0];
+      const column = selectionState.selection.column[0];
+      const item =
+        sheet && row != null && column != null
+          ? spreadsheetDataValidationItemAt(sheet, row, column)
+          : null;
+      if (
+        !button ||
+        !selectedCell ||
+        !cellArea ||
+        !item ||
+        item.type !== 'dropdown' ||
+        item.showDropdownArrow === false
+      ) {
+        if (button) button.style.display = 'none';
+        return;
+      }
+
+      button.setAttribute('role', 'button');
+      button.setAttribute(
+        'aria-label',
+        officeMessage(
+          resolveOfficeMessages(),
+          'spreadsheet.editor.dropdown.openAria',
+        ),
+      );
+      button.setAttribute('aria-haspopup', 'listbox');
+      button.setAttribute(
+        'title',
+        officeMessage(
+          resolveOfficeMessages(),
+          'spreadsheet.editor.dropdown.openTitle',
+        ),
+      );
+      const cellBounds = selectedCell.getBoundingClientRect();
+      const areaBounds = cellArea.getBoundingClientRect();
+      const buttonWidth = 20;
+      const buttonHeight = 20;
+      const maxLeft = Math.max(0, areaBounds.width - buttonWidth);
+      const maxTop = Math.max(0, areaBounds.height - buttonHeight);
+      const left = Math.max(
+        0,
+        Math.min(cellBounds.right - areaBounds.left - buttonWidth, maxLeft),
+      );
+      const top = Math.max(
+        0,
+        Math.min(
+          cellBounds.top -
+            areaBounds.top +
+            (cellBounds.height - buttonHeight) / 2 -
+            2,
+          maxTop,
+        ),
+      );
+      button.style.display = 'block';
+      button.style.maxWidth = `${Math.max(0, cellBounds.width)}px`;
+      button.style.maxHeight = `${Math.max(0, cellBounds.height)}px`;
+      button.style.left = `${left}px`;
+      button.style.top = `${top}px`;
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [materializedContent, preview, selectionState, workbookMountRevision]);
+  const focusSpreadsheetDialogGrid = useCallback(
+    (focusOrigin: Element | null) =>
+      focusSpreadsheetGrid(spreadsheetCanvasRef.current, { focusOrigin }),
+    [],
+  );
+  const getSpreadsheetDialogGridFocusTarget = useCallback(
+    () => spreadsheetGridFocusTarget(spreadsheetCanvasRef.current),
+    [],
+  );
+  const getSpreadsheetHyperlinkLiveSelection = useCallback(
+    () => workbookRef.current?.getSelection()?.at(-1),
+    [],
+  );
+  const spreadsheetHyperlink = useSpreadsheetHyperlink({
+    commandsRef: spreadsheetCommandsRef,
+    contentRef,
+    focusGrid: focusSpreadsheetDialogGrid,
+    getGridFocusTarget: getSpreadsheetDialogGridFocusTarget,
+    getLiveSelection: getSpreadsheetHyperlinkLiveSelection,
+    preview,
+    selectionState,
+  });
+  const getSpreadsheetDataValidationLiveSelections = useCallback(
+    () => workbookRef.current?.getSelection(),
+    [],
+  );
+  const spreadsheetDataValidation = useSpreadsheetDataValidation({
+    commandsRef: spreadsheetCommandsRef,
+    contentRef,
+    focusGrid: focusSpreadsheetDialogGrid,
+    getGridFocusTarget: getSpreadsheetDialogGridFocusTarget,
+    getLiveSelections: getSpreadsheetDataValidationLiveSelections,
+    preview,
+  });
+  const getSpreadsheetSortRows = useCallback(
+    (request: {
+      range: { row: [number, number]; column: [number, number] };
+      sheetId: string;
+    }) => {
+      try {
+        return (
+          workbookRef.current?.getCellsByRange(request.range, {
+            id: request.sheetId,
+          }) ?? null
+        );
+      } catch {
+        return null;
+      }
+    },
+    [],
+  );
+  const spreadsheetSort = useSpreadsheetSort({
+    commandsRef: spreadsheetCommandsRef,
+    contentRef,
+    focusGrid: focusSpreadsheetDialogGrid,
+    getGridFocusTarget: getSpreadsheetDialogGridFocusTarget,
+    getRows: getSpreadsheetSortRows,
+    preview,
+    customListStore: sortCustomListStore,
+  });
+  const spreadsheetTable = useSpreadsheetTable({
+    commandsRef: spreadsheetCommandsRef,
+    contentRef,
+    focusGrid: focusSpreadsheetDialogGrid,
+    getGridFocusTarget: getSpreadsheetDialogGridFocusTarget,
+    getLiveSelection: getSpreadsheetHyperlinkLiveSelection,
+    preview,
+  });
+  const officeDialog = useOfficeDialog();
+  const [findOpen, setFindOpen] = useState(false);
+  const [findFocusRequest, setFindFocusRequest] = useState(0);
+  const [formulaBarVisible, setFormulaBarVisible] = useState(true);
+  const [showFormulas, setShowFormulas] = useState(false);
+  const toggleSpreadsheetShowFormulasRef = useRef<() => boolean>(() => false);
+  const [headingsVisible, setHeadingsVisible] = useState(true);
+  const [navigationActiveSheetId, setNavigationActiveSheetId] = useState<
+    string | null
+  >(null);
+  const [previewZoom, setPreviewZoom] = useState(100);
+  const [previewActiveSheetId, setPreviewActiveSheetId] = useState<
+    string | null
+  >(null);
+  const contentActiveSheetId =
+    content.sheets.find((sheet) => sheet.status === 1)?.id ??
+    content.sheets.find((sheet) => !sheet.hide)?.id ??
+    '';
+  const viewActiveSheetId = preview
+    ? previewActiveSheetId
+    : navigationActiveSheetId;
+  const activeSheetId =
+    viewActiveSheetId &&
+    content.sheets.some(
+      (sheet) => sheet.id === viewActiveSheetId && sheet.hide !== 1,
+    )
+      ? viewActiveSheetId
+      : contentActiveSheetId;
+  const activeSheetIdRef = useRef(activeSheetId);
+  const focusedSheetIdRef = useRef<string | null>(null);
+  const pendingDataValidationRef =
+    useRef<SpreadsheetDataValidationEditRequest | null>(null);
+  const [pendingDataValidation, setPendingDataValidation] =
+    useState<SpreadsheetDataValidationEditRequest | null>(null);
+  const queueDataValidationEdit = useCallback(
+    (
+      row: number,
+      column: number,
+      value: unknown,
+      item: unknown,
+      failureText: string,
+      sheetId?: string,
+    ): boolean | undefined => {
+      const requestSheetId = sheetId ?? activeSheetIdRef.current;
+      if (
+        !requestSheetId ||
+        !item ||
+        typeof item !== 'object' ||
+        pendingDataValidationRef.current
+      ) {
+        return pendingDataValidationRef.current ? false : undefined;
+      }
+      const validationItem = item as WorkSpreadsheetDataValidationItem;
+      if (validationItem.type === 'custom') {
+        const evaluation = evaluateSpreadsheetCustomValidation(
+          contentRef.current,
+          requestSheetId,
+          row,
+          column,
+          validationItem,
+          value,
+        );
+        if (evaluation.supported && evaluation.valid) return true;
+        const displayItem = cloneSpreadsheetDataValidationItem(validationItem);
+        if (!displayItem.errorMessage?.trim() && evaluation.message) {
+          displayItem.errorMessage = evaluation.message;
+        }
+        const style = spreadsheetDataValidationErrorStyle(displayItem);
+        const request: SpreadsheetDataValidationEditRequest = {
+          column,
+          failureText: evaluation.message ?? failureText,
+          interaction: spreadsheetDataValidationInteraction(style),
+          item: displayItem,
+          row,
+          sheetId: requestSheetId,
+          value,
+        };
+        pendingDataValidationRef.current = request;
+        queueMicrotask(() => {
+          if (pendingDataValidationRef.current === request)
+            setPendingDataValidation(request);
+        });
+        return false;
+      }
+      const style = spreadsheetDataValidationErrorStyle(validationItem);
+      const request: SpreadsheetDataValidationEditRequest = {
+        column,
+        failureText,
+        interaction: spreadsheetDataValidationInteraction(style),
+        item: cloneSpreadsheetDataValidationItem(validationItem),
+        row,
+        sheetId: requestSheetId,
+        value,
+      };
+      pendingDataValidationRef.current = request;
+      queueMicrotask(() => {
+        if (pendingDataValidationRef.current === request)
+          setPendingDataValidation(request);
+      });
+      return false;
+    },
+    [],
+  );
+  contentRef.current = materializedContent;
+  previewRef.current = preview;
+  const controlledHistory = useOfficeHistory({
+    content,
+    onChange: (next) => {
+      const liveSelection = workbookRef.current?.getSelection()?.at(-1);
+      onChange(
+        spreadsheetContentWithSelection(
+          next,
+          selectionState?.sheetId ?? activeSheetIdRef.current,
+          liveSelection ?? selectionState?.selection,
+        ),
+      );
+    },
+    sameValue: collaborationHistory
+      ? ignoreSpreadsheetControlledHistory
+      : sameSpreadsheetHistoryContent,
+  });
+  const history = collaborationHistory ?? controlledHistory;
+  const conditionalStylesBySheet = useMemo(
+    () =>
+      new Map(
+        materializedContent.sheets.flatMap((sheet) =>
+          sheet.id
+            ? [
+                [
+                  sheet.id,
+                  spreadsheetConditionalFormatStyles(
+                    sheet,
+                    materializedContent.sheets,
+                  ),
+                ] as const,
+              ]
+            : [],
+        ),
+      ),
+    [materializedContent.sheets],
+  );
+  const conditionalStylesBySheetRef = useRef(conditionalStylesBySheet);
+  conditionalStylesBySheetRef.current = conditionalStylesBySheet;
+  const tableStylesBySheet = useMemo(
+    () =>
+      new Map(
+        materializedContent.sheets.flatMap((sheet) =>
+          sheet.id
+            ? [
+                [
+                  sheet.id,
+                  createSpreadsheetTableRenderResolver(sheet.tables ?? []),
+                ] as const,
+              ]
+            : [],
+        ),
+      ),
+    [materializedContent.sheets],
+  );
+  const tableStylesBySheetRef = useRef(tableStylesBySheet);
+  tableStylesBySheetRef.current = tableStylesBySheet;
+  const diagonalBordersBySheet = useMemo(
+    () =>
+      new Map(
+        materializedContent.sheets.flatMap((sheet) =>
+          sheet.id
+            ? [[sheet.id, spreadsheetRenderableDiagonalBorders(sheet)] as const]
+            : [],
+        ),
+      ),
+    [materializedContent.sheets],
+  );
+  const diagonalBordersBySheetRef = useRef(diagonalBordersBySheet);
+  diagonalBordersBySheetRef.current = diagonalBordersBySheet;
+  useEffect(() => {
+    setPreviewActiveSheetId(preview ? contentActiveSheetId : null);
+  }, [contentActiveSheetId, preview]);
+  useEffect(() => {
+    setNavigationActiveSheetId(null);
+  }, [contentActiveSheetId]);
+  useEffect(() => {
+    activeSheetIdRef.current = activeSheetId;
+  }, [activeSheetId]);
+  useEffect(() => {
+    const request = pendingDataValidation;
+    if (!request) return;
+    let cancelled = false;
+    const style = spreadsheetDataValidationErrorStyle(request.item);
+    const description = spreadsheetDataValidationDialogDescription(
+      request.failureText,
+      request.value,
+      request.item,
+    );
+    const restoreValidationSelection = (): void => {
+      const selection = {
+        row: [request.row, request.row],
+        column: [request.column, request.column],
+        row_focus: request.row,
+        column_focus: request.column,
+      };
+      const nextSelection = {
+        sheetId: request.sheetId,
+        selection,
+      };
+      selectionStateRef.current.current = nextSelection;
+      selectionStateRef.current.requested = {
+        sheetId: request.sheetId,
+        selection: {
+          ...selection,
+          row: [...selection.row],
+          column: [...selection.column],
+        },
+      };
+      setSelectionState(nextSelection);
+      try {
+        workbookRef.current?.setSelection(
+          [{ row: selection.row, column: selection.column }],
+          { id: request.sheetId },
+        );
+      } catch {
+        // Focus restoration remains useful even when the imperative selection
+        // API is unavailable during a controlled workbook remount.
+      }
+    };
+    const finish = (accepted: boolean): void => {
+      if (cancelled || pendingDataValidationRef.current !== request) return;
+      pendingDataValidationRef.current = null;
+      setPendingDataValidation(null);
+      if (accepted) {
+        try {
+          workbookRef.current?.setCellValue(
+            request.row,
+            request.column,
+            request.value,
+            {
+              id: request.sheetId,
+              skipDataValidation: true,
+            },
+          );
+        } catch {
+          showToast(
+            officeMessage(
+              resolveOfficeMessages(),
+              'spreadsheet.editor.commitFailed',
+            ),
+            'error',
+          );
+        }
+      }
+      restoreValidationSelection();
+    };
+    const showValidationDialog = async (): Promise<void> => {
+      if (request.interaction === 'notice') {
+        await officeDialog.notice({
+          title: spreadsheetDataValidationDialogTitle(request.item),
+          description,
+          confirmLabel: officeMessage(
+            resolveOfficeMessages(),
+            'spreadsheet.editor.ack',
+          ),
+          restoreFocusTarget: getSpreadsheetDialogGridFocusTarget,
+        });
+        finish(false);
+        return;
+      }
+      const labels = spreadsheetDataValidationConfirmLabels(style);
+      const accepted = await officeDialog.confirm({
+        title: spreadsheetDataValidationDialogTitle(request.item),
+        description,
+        confirmLabel: labels.confirmLabel,
+        cancelLabel: labels.cancelLabel,
+        confirmTone: style === 'warning' ? 'primary' : 'secondary',
+        restoreFocusTarget: getSpreadsheetDialogGridFocusTarget,
+      });
+      finish(accepted);
+    };
+    void showValidationDialog();
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    getSpreadsheetDialogGridFocusTarget,
+    officeDialog.confirm,
+    officeDialog.notice,
+    pendingDataValidation,
+  ]);
+  useEffect(() => {
+    if (
+      preview ||
+      !activeSheetId ||
+      focusedSheetIdRef.current === activeSheetId
+    )
+      return;
+    const initialFocus = focusedSheetIdRef.current === null;
+    if (initialFocus && !autoFocus) {
+      focusedSheetIdRef.current = activeSheetId;
+      return;
+    }
+    focusedSheetIdRef.current = activeSheetId;
+    const frame = requestAnimationFrame(() =>
+      focusSpreadsheetGrid(spreadsheetCanvasRef.current, {
+        focusOrigin: initialFocus ? editorFocusOrigin : document.activeElement,
+        forceInitial: !initialFocus,
+      }),
+    );
+    return () => cancelAnimationFrame(frame);
+  }, [activeSheetId, autoFocus, editorFocusOrigin, preview]);
+  useEffect(() => {
+    const container = spreadsheetCanvasRef.current;
+    if (!container || preview) return;
+    const enhanceTriggers = () => {
+      for (const trigger of container.querySelectorAll<HTMLElement>(
+        '.header-arrow',
+      )) {
+        trigger.setAttribute('role', 'button');
+        trigger.setAttribute(
+          'aria-label',
+          officeMessage(
+            resolveOfficeMessages(),
+            'spreadsheet.editor.columnActionsAria',
+          ),
+        );
+        trigger.setAttribute('aria-haspopup', 'menu');
+        trigger.setAttribute(
+          'title',
+          officeMessage(
+            resolveOfficeMessages(),
+            'spreadsheet.editor.columnActionsTitle',
+          ),
+        );
+      }
+    };
+    enhanceTriggers();
+    if (typeof MutationObserver === 'undefined') return;
+    const observer = new MutationObserver(enhanceTriggers);
+    observer.observe(container, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, [preview, workbookMountRevision]);
+  useEffect(() => {
+    if (!preview) return;
+    panelTriggerRef.current = null;
+    setPanel(null);
+    setContextMenu(null);
+    setFormatCellsDialog(null);
+    formatCellsInvokerRef.current = null;
+    formatCellsSelectionRef.current = null;
+    formatCellsApplyingRef.current = false;
+  }, [preview]);
+  const closeWorkbookPanel = useCallback(() => {
+    const trigger = panelTriggerRef.current;
+    setPanel(null);
+    requestAnimationFrame(() => {
+      if (trigger?.isConnected) trigger.focus({ preventScroll: true });
+      if (panelTriggerRef.current === trigger) panelTriggerRef.current = null;
+    });
+  }, []);
+  const workbookHooks = useMemo<Hooks>(
+    () => ({
+      afterActivateSheet: (id) => {
+        activeSheetIdRef.current = id;
+        collaborationView?.activateSheet(id);
+        if (previewRef.current) setPreviewActiveSheetId(id);
+        else setNavigationActiveSheetId(id);
+        selectionStateRef.current.current = null;
+        releaseSpreadsheetSelectionRequest(selectionStateRef.current);
+        setSelectionState(null);
+      },
+      afterSelectionChange: (sheetId, selection) => {
+        const next = acceptSpreadsheetSelectionChange(
+          selectionStateRef.current,
+          sheetId,
+          selection,
+        );
+        if (!next) {
+          // Fortune can flush an older React state update after a newer
+          // keyboard command. Do not let that stale callback roll back the
+          // synchronous selection shadow.
+          return;
+        }
+        // Keep the request as a guard until a new user interaction arrives.
+        // Fortune can emit one or more delayed callbacks for the previous
+        // React state after the requested callback has already been delivered.
+        // Clearing the guard here would let that stale state roll back the
+        // synchronous selection shadow.
+        collaborationView?.select(sheetId, next.selection);
+        setSelectionState(next);
+        formatPainterSelectionHandlerRef.current(sheetId, next.selection);
+      },
+      beforeUpdateCell: (row, column) => {
+        const sheet = contentRef.current.sheets.find(
+          (candidate) => candidate.id === activeSheetIdRef.current,
+        );
+        return !sheet || !spreadsheetPivotOutputContains(sheet, row, column);
+      },
+      beforeDataValidation: queueDataValidationEdit,
+      beforePaste: (selections) => {
+        const sheet = contentRef.current.sheets.find(
+          (candidate) => candidate.id === activeSheetIdRef.current,
+        );
+        if (!sheet) return true;
+        return !(selections ?? []).some(
+          (selection) =>
+            spreadsheetPivotIntersects(sheet, {
+              startRow: Math.min(selection.row[0], selection.row[1]),
+              endRow: Math.max(selection.row[0], selection.row[1]),
+              startColumn: Math.min(selection.column[0], selection.column[1]),
+              endColumn: Math.max(selection.column[0], selection.column[1]),
+            }).length,
+        );
+      },
+      beforeRenderCell: (cell, cellInfo, context) => {
+        const tableStyle =
+          tableStylesBySheetRef.current.get(activeSheetIdRef.current)?.(
+            cellInfo.row,
+            cellInfo.column,
+          ) ?? null;
+        const style = conditionalStylesBySheetRef.current
+          .get(activeSheetIdRef.current)
+          ?.get(`${cellInfo.row}_${cellInfo.column}`);
+        beginSpreadsheetTableCellRender(cell, tableStyle, style, context);
+        beginSpreadsheetNativeFillRender(
+          tableStyle || style?.cellColor
+            ? undefined
+            : activeXlsxNativeFill(cell),
+          context,
+        );
+        return true;
+      },
+      afterRenderCell: (cell, cellInfo, context) => {
+        const tableStyle =
+          tableStylesBySheetRef.current.get(activeSheetIdRef.current)?.(
+            cellInfo.row,
+            cellInfo.column,
+          ) ?? null;
+        const style = conditionalStylesBySheetRef.current
+          .get(activeSheetIdRef.current)
+          ?.get(`${cellInfo.row}_${cellInfo.column}`);
+        try {
+          if (style?.icon || style?.dataBar) {
+            const background =
+              style.cellColor ??
+              tableStyle?.background ??
+              (typeof cell?.bg === 'string' ? cell.bg : '#ffffff');
+            if (style.dataBar) {
+              drawSpreadsheetConditionalDataBar(
+                context,
+                cellInfo,
+                {
+                  ...style.dataBar,
+                  showValue:
+                    style.dataBar.showValue && (style.icon?.showValue ?? true),
+                },
+                cell,
+                background,
+                style.textColor,
+              );
+            }
+            if (style.icon) {
+              drawSpreadsheetConditionalIcon(
+                context,
+                cellInfo,
+                style.icon,
+                background,
+                style.dataBar ? false : !style.icon.showValue,
+              );
+            }
+            if (cell?.ps) drawSpreadsheetCommentMarker(context, cellInfo);
+          }
+        } finally {
+          finishSpreadsheetNativeFillRender(context);
+          finishSpreadsheetTableCellRender(cell, cellInfo, tableStyle, context);
+          const diagonal = diagonalBordersBySheetRef.current
+            .get(activeSheetIdRef.current)
+            ?.get(`${cellInfo.row}_${cellInfo.column}`);
+          if (diagonal?.down) {
+            drawSpreadsheetDiagonalDownBorder(context, cellInfo, diagonal.down);
+          }
+          if (diagonal?.up) {
+            drawSpreadsheetDiagonalUpBorder(context, cellInfo, diagonal.up);
+          }
+        }
+      },
+    }),
+    [collaborationView, queueDataValidationEdit],
+  );
+  const conditionalFormatKey = useMemo(
+    () =>
+      content.sheets
+        .map(
+          (sheet) =>
+            `${sheet.id}:${JSON.stringify(sheet.luckysheet_conditionformat_save ?? [])}`,
+        )
+        .join('|'),
+    [content.sheets],
+  );
+  const protectionKey = useMemo(
+    () => spreadsheetProtectionKey(content.sheets),
+    [content.sheets],
+  );
+  const requestedWorkbookSelection = selectionStateRef.current.requested;
+  const renderedWorkbookSheets = useMemo(() => {
+    // A controlled content update can schedule Fortune's remount after a
+    // keyboard command has already moved the live selection. Seed that
+    // replacement from the synchronous request instead of the older selection
+    // embedded in the controlled snapshot.
+    const renderedContent = requestedWorkbookSelection
+      ? spreadsheetContentWithSelection(
+          materializedContent,
+          requestedWorkbookSelection.sheetId,
+          requestedWorkbookSelection.selection,
+        )
+      : materializedContent;
+    return spreadsheetSheetsWithFiniteSelections(
+      spreadsheetSheetsWithChartPreviews(renderedContent),
+    );
+  }, [materializedContent, requestedWorkbookSelection]);
+  const workbookSheets = useMemo(
+    () =>
+      spreadsheetSheetsForFortune(
+        renderedWorkbookSheets,
+        materializedContent.namedRanges,
+      ),
+    [materializedContent.namedRanges, renderedWorkbookSheets],
+  );
+  const displayedWorkbookSheets = useMemo(() => {
+    const base = preview
+      ? workbookSheets.map((sheet) => ({
+          ...sheet,
+          status: sheet.id === activeSheetId ? 1 : 0,
+          zoomRatio: previewZoom / 100,
+        }))
+      : workbookSheets;
+    return showFormulas ? projectSpreadsheetSheetsShowingFormulas(base) : base;
+  }, [activeSheetId, preview, previewZoom, showFormulas, workbookSheets]);
+  projectedWorkbookSheetsRef.current = displayedWorkbookSheets;
+  const handleWorkbookChange = useCallback(
+    (sheets: WorkSpreadsheetContent['sheets']) => {
+      const operations = takeWorkbookOperations();
+      const matchesRenderedWorkbook =
+        sameSpreadsheetWorkbookStateAfterOperations(
+          sheets,
+          projectedWorkbookSheetsRef.current,
+          operations,
+        ) ??
+        sameSpreadsheetWorkbookState(
+          sheets,
+          projectedWorkbookSheetsRef.current,
+        );
+      if (ignoreChangeDuringExternalSync(matchesRenderedWorkbook)) {
+        return;
+      }
+      const hasPendingResultPatches = calculation.hasPendingResultPatches();
+      if (
+        previewRef.current ||
+        (matchesRenderedWorkbook && !hasPendingResultPatches)
+      )
+        return;
+      const controlledSheets = spreadsheetSheetsFromFortune(
+        sheets,
+        contentRef.current.sheets,
+        operations,
+        contentRef.current.dateSystem,
+      );
+      const withCharts = reconcileSpreadsheetChartPreviews(
+        contentRef.current,
+        controlledSheets,
+      );
+      const next = reconcileSpreadsheetPivots(
+        contentRef.current,
+        withCharts.sheets,
+      );
+      const isHistoryNoop = sameSpreadsheetHistoryContent(
+        contentRef.current,
+        next,
+      );
+      contentRef.current = next;
+      acceptWorkbookContent(next);
+      calculation.synchronizeWorkbook(next, operations);
+      if (matchesRenderedWorkbook && onDerivedChange) onDerivedChange(next);
+      else if (!isHistoryNoop) {
+        spreadsheetCommandsRef.current?.setSpreadsheetContent(next);
+      }
+    },
+    [
+      acceptWorkbookContent,
+      calculation,
+      ignoreChangeDuringExternalSync,
+      onDerivedChange,
+      takeWorkbookOperations,
+    ],
+  );
+  const handleWorkbookOperations = useCallback(
+    (operations: Op[]) => {
+      recordWorkbookOperations(operations);
+      calculation.notifyWorkbookOperations(operations);
+    },
+    [calculation, recordWorkbookOperations],
+  );
+  const chartPreviewKey = useMemo(
+    () =>
+      workbookSheets
+        .flatMap((sheet) =>
+          (sheet.images ?? [])
+            .filter((image) => image.id.startsWith('work-chart-preview-'))
+            .map(
+              (image) =>
+                `${image.id}:${image.src}:${image.left}:${image.top}:${image.width}:${image.height}`,
+            ),
+        )
+        .join('|'),
+    [workbookSheets],
+  );
+  const panelSheetId =
+    selectionState?.sheetId ?? activeSheetIdRef.current ?? activeSheetId;
+  const activeSheet = materializedContent.sheets.find(
+    (sheet) => sheet.id === activeSheetId,
+  );
+  const activeSheetProfile = spreadsheetMatrixProfile(activeSheet?.data);
+  const zoom = Math.round((activeSheet?.zoomRatio ?? 1) * 100);
+  spreadsheetZoomRef.current = preview ? previewZoom : zoom;
+  useEffect(() => {
+    if (preview) setPreviewZoom(zoom);
+  }, [preview, zoom]);
+  const gridLinesVisible =
+    activeSheet?.showGridLines !== false && activeSheet?.showGridLines !== 0;
+  const toolbarSheetId = selectionState?.sheetId ?? activeSheetId;
+  const targetSheetGridSize = useMemo(() => {
+    const sheet = materializedContent.sheets.find(
+      (candidate) => candidate.id === toolbarSheetId,
+    );
+    const profile = spreadsheetMatrixProfile(sheet?.data);
+    return profile
+      ? {
+          columnCount: Math.max(sheet?.column ?? 0, profile.columnCount),
+          rowCount: Math.max(sheet?.row ?? 0, profile.rowCount),
+        }
+      : spreadsheetGridSize(sheet);
+  }, [materializedContent.sheets, toolbarSheetId]);
+  const toolbarSheet = workbookSheets.find(
+    (sheet) => sheet.id === toolbarSheetId,
+  );
+  const toolbarSelection = finiteSpreadsheetSelection(
+    selectionState?.selection ?? toolbarSheet?.luckysheet_select_save?.at(-1),
+  );
+  const spreadsheetPresenceLocation = useMemo(() => {
+    if (!toolbarSheetId) return null;
+    const liveSelections = workbookRef.current?.getSelection();
+    const ranges = (
+      liveSelections?.length ? liveSelections : [toolbarSelection]
+    )
+      .slice(0, 64)
+      .map((selection) => ({
+        startRow: Math.min(selection.row[0] ?? 0, selection.row[1] ?? 0),
+        startColumn: Math.min(
+          selection.column[0] ?? 0,
+          selection.column[1] ?? 0,
+        ),
+        endRow: Math.max(selection.row[0] ?? 0, selection.row[1] ?? 0),
+        endColumn: Math.max(selection.column[0] ?? 0, selection.column[1] ?? 0),
+      }));
+    const activeCell = {
+      row: toolbarSelection.row_focus ?? toolbarSelection.row[0] ?? 0,
+      column: toolbarSelection.column_focus ?? toolbarSelection.column[0] ?? 0,
+    };
+    return {
+      kind: 'spreadsheet' as const,
+      sheetId: toolbarSheetId,
+      ranges,
+      activeCell,
+    };
+  }, [selectionState, toolbarSelection, toolbarSheetId]);
+  useOfficePublishPresenceLocation(spreadsheetPresenceLocation);
+  const workbookMountKey = `spreadsheet:${workbookMountRevision}:${preview ? `preview-${previewZoom}` : 'edit'}:${conditionalFormatKey}:${protectionKey}:${chartPreviewKey}:fx-${formulaBarVisible ? 1 : 0}:hd-${headingsVisible ? 1 : 0}:sf-${showFormulas ? 1 : 0}`;
+  useSpreadsheetCollaborationPresenceProjection({
+    content: materializedContent,
+    frameCell: collaborationWrittenCell,
+    mountKey: workbookMountKey,
+    workbook: workbookInstance,
+    workbookRef,
+  });
+  const toolbarRow = toolbarSelection.row_focus ?? toolbarSelection.row[0];
+  const toolbarColumn =
+    toolbarSelection.column_focus ?? toolbarSelection.column[0];
+  const toolbarCell = spreadsheetCellAt(
+    toolbarSheet,
+    toolbarRow,
+    toolbarColumn,
+  );
+  const formulaResultText = spreadsheetFormulaResultText(toolbarCell);
+  const toolbarCellBorders = spreadsheetCellBordersAt(
+    toolbarSheet,
+    toolbarRow,
+    toolbarColumn,
+  );
+  const toolbarContentSheet = materializedContent.sheets.find(
+    (sheet) => sheet.id === toolbarSheetId,
+  );
+  const activeTable = spreadsheetTableAtCell(
+    toolbarContentSheet,
+    toolbarRow,
+    toolbarColumn,
+  );
+  const activeTableId = activeTable?.id ?? null;
+  useEffect(() => {
+    setRibbonTab((current) => {
+      if (activeTableId) {
+        return current === 'tableDesign' ? current : 'tableDesign';
+      }
+      return current === 'tableDesign' ? 'home' : current;
+    });
+  }, [activeTableId]);
+  const selectedRange = spreadsheetSingleRange(toolbarSelection);
+  const multipleCellsSelected =
+    selectedRange.row[0] !== selectedRange.row[1] ||
+    selectedRange.column[0] !== selectedRange.column[1];
+  const selectionSummary = multipleCellsSelected
+    ? spreadsheetSelectionSummary(toolbarSheet, toolbarSelection)
+    : null;
+  const { commandPort: formatPainter, mode: formatPainterMode } =
+    useSpreadsheetFormatPainter({
+      content: materializedContent,
+      editable: !preview,
+      onError: (message) => showToast(message, 'error'),
+      sourceRange: selectedRange,
+      sourceSheetId: toolbarSheetId,
+      workbook: workbookInstance,
+    });
+  const {
+    active: autoFilterActive,
+    commandPort: autoFilter,
+    dialog: autoFilterDialog,
+    reserveAltKey: reserveAutoFilterAltKey,
+    selectionForChange: autoFilterSelectionForChange,
+    status: autoFilterStatus,
+  } = useSpreadsheetAutoFilter({
+    canvasRef: spreadsheetCanvasRef,
+    commandsRef: spreadsheetCommandsRef,
+    content: materializedContent,
+    editable: !preview,
+    mountRevision: workbookMountRevision,
+    onChange: (next) => {
+      contentRef.current = next;
+      onChange(next);
+    },
+    selection: toolbarSelection,
+    sheetId: toolbarSheetId,
+    workbook: workbookInstance,
+  });
+  const currentClipboardSelection =
+    useCallback((): SpreadsheetClipboardSelectionSource | null => {
+      if (previewRef.current) return null;
+      if (contextMenu) {
+        return {
+          sheetId: contextMenu.selection.sheetId,
+          range: {
+            row: [
+              contextMenu.range.row[0] ?? 0,
+              contextMenu.range.row[1] ?? contextMenu.range.row[0] ?? 0,
+            ],
+            column: [
+              contextMenu.range.column[0] ?? 0,
+              contextMenu.range.column[1] ?? contextMenu.range.column[0] ?? 0,
+            ],
+          },
+          plainText: contextMenu.selection.clipboard,
+        };
+      }
+      const sheetId = selectionState?.sheetId ?? activeSheetIdRef.current;
+      const sheet = contentRef.current.sheets.find(
+        (candidate) => candidate.id === sheetId,
+      );
+      const selection =
+        selectionState?.selection ?? sheet?.luckysheet_select_save?.at(-1);
+      if (!selection) return null;
+      const range = spreadsheetSingleRange(selection);
+      const maximumCells =
+        (range.row[1] - range.row[0] + 1) *
+        (range.column[1] - range.column[0] + 1);
+      if (maximumCells > MAX_SPREADSHEET_PASTE_SPECIAL_CELLS) return null;
+      const agentSelection = spreadsheetAgentSelection(
+        contentRef.current,
+        sheetId,
+        selection,
+        maximumCells,
+      );
+      return agentSelection
+        ? {
+            sheetId,
+            range: {
+              row: [range.row[0] ?? 0, range.row[1] ?? range.row[0] ?? 0],
+              column: [
+                range.column[0] ?? 0,
+                range.column[1] ?? range.column[0] ?? 0,
+              ],
+            },
+            plainText: agentSelection.clipboard,
+          }
+        : null;
+    }, [contextMenu, selectionState]);
+  const spreadsheetClipboard = useSpreadsheetClipboard({
+    canAccessSelection: Boolean(toolbarSheet && workbookInstance),
+    clearSelection: () =>
+      spreadsheetCommandsRef.current?.clearSelectedCells() ?? false,
+    commit: (next) =>
+      spreadsheetCommandsRef.current?.setSpreadsheetContent(next) ?? false,
+    contentRef,
+    editable: !preview,
+    fallbackFocusTarget: () =>
+      spreadsheetGridFocusTarget(spreadsheetCanvasRef.current),
+    getSelection: currentClipboardSelection,
+  });
+  const openSpreadsheetFormatCells = useCallback(
+    (request: SpreadsheetFormatCellsOpenRequest): boolean => {
+      if (previewRef.current) return false;
+      const source = createSpreadsheetFormatCellsDialogSource(
+        contentRef.current,
+        request.sheetId,
+        request.range,
+        request.cells,
+        request.activeCell,
+      );
+      if (!source) return false;
+      formatCellsInvokerRef.current =
+        document.activeElement instanceof HTMLElement
+          ? document.activeElement
+          : spreadsheetGridFocusTarget(spreadsheetCanvasRef.current);
+      formatCellsSelectionRef.current = {
+        sheetId: request.sheetId,
+        selection: {
+          row: [...request.range.row],
+          column: [...request.range.column],
+          row_focus: request.activeCell.row,
+          column_focus: request.activeCell.column,
+        },
+      };
+      setFormatCellsDialog({ source, intent: request.intent });
+      return true;
+    },
+    [],
+  );
+  const closeSpreadsheetFormatCells = useCallback(() => {
+    const invoker = formatCellsInvokerRef.current;
+    const canvas = spreadsheetCanvasRef.current;
+    const openedFromGrid = Boolean(invoker && canvas?.contains(invoker));
+    setFormatCellsDialog(null);
+    requestAnimationFrame(() => {
+      if (openedFromGrid || !invoker?.isConnected) {
+        focusSpreadsheetGrid(canvas, { focusOrigin: invoker });
+      } else {
+        invoker.focus({ preventScroll: true });
+      }
+      if (formatCellsInvokerRef.current === invoker) {
+        formatCellsInvokerRef.current = null;
+      }
+      formatCellsSelectionRef.current = null;
+    });
+  }, []);
+  const activateLocalSpreadsheetSheet = useCallback(
+    (sheetId: string) => {
+      if (!previewRef.current && !collaborationView) return false;
+      const sheet = contentRef.current.sheets.find(
+        (candidate) => candidate.id === sheetId && candidate.hide !== 1,
+      );
+      if (!sheet) return false;
+      activeSheetIdRef.current = sheetId;
+      if (collaborationView && !collaborationView.activateSheet(sheetId)) {
+        return false;
+      }
+      selectionStateRef.current.current = null;
+      releaseSpreadsheetSelectionRequest(selectionStateRef.current);
+      setSelectionState(null);
+      if (previewRef.current) setPreviewActiveSheetId(sheetId);
+      try {
+        workbookRef.current?.activateSheet({ id: sheetId });
+      } catch {
+        return false;
+      }
+      return true;
+    },
+    [collaborationView],
+  );
+  const navigateToSpreadsheetRange = useCallback(
+    (
+      sheetId: string,
+      ranges: SpreadsheetCommandRange[],
+      activeCell: { column: number; row: number },
+      focusGrid = true,
+    ): boolean => {
+      const workbook = workbookRef.current;
+      const sheet = contentRef.current.sheets.find(
+        (candidate) => candidate.id === sheetId && candidate.hide !== 1,
+      );
+      if (!workbook || !sheet || !ranges.length) return false;
+      const focusedRange =
+        ranges.find((range) =>
+          spreadsheetSelectionContainsFocus(range, activeCell),
+        ) ?? ranges[0];
+      if (!focusedRange) return false;
+      try {
+        if (collaborationView && !collaborationView.activateSheet(sheetId)) {
+          return false;
+        }
+        activeSheetIdRef.current = sheetId;
+        if (previewRef.current) setPreviewActiveSheetId(sheetId);
+        else setNavigationActiveSheetId(sheetId);
+        workbook.activateSheet({ id: sheetId });
+        workbook.setSelection(ranges, { id: sheetId });
+        workbook.scroll({
+          targetRow: activeCell.row,
+          targetColumn: activeCell.column,
+        });
+        const nextSelection = {
+          sheetId,
+          selection: {
+            row: [...focusedRange.row],
+            column: [...focusedRange.column],
+            row_focus: activeCell.row,
+            column_focus: activeCell.column,
+          },
+        };
+        selectionStateRef.current.current = nextSelection;
+        selectionStateRef.current.requested = {
+          sheetId,
+          selection: {
+            ...nextSelection.selection,
+            row: [...nextSelection.selection.row],
+            column: [...nextSelection.selection.column],
+          },
+        };
+        setSelectionState(nextSelection);
+      } catch {
+        return false;
+      }
+      if (focusGrid) {
+        requestAnimationFrame(() =>
+          focusSpreadsheetGrid(spreadsheetCanvasRef.current),
+        );
+      }
+      return true;
+    },
+    [collaborationView],
+  );
+  const openSpreadsheetFind = useCallback((): boolean => {
+    if (previewRef.current) return false;
+    setFindOpen(true);
+    setFindFocusRequest((current) => current + 1);
+    return true;
+  }, []);
+  const openSpreadsheetGoTo = useCallback((): boolean => {
+    if (previewRef.current) return false;
+    const sourceSheetId = activeSheetIdRef.current;
+    const sourceSheet = contentRef.current.sheets.find(
+      (sheet) => sheet.id === sourceSheetId && sheet.hide !== 1,
+    );
+    if (!sourceSheet) return false;
+    const invoker =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : spreadsheetGridFocusTarget(spreadsheetCanvasRef.current);
+    const selection = workbookRef.current?.getSelection()?.at(-1) ??
+      sourceSheet.luckysheet_select_save?.at(-1) ?? {
+        row: [0, 0],
+        column: [0, 0],
+      };
+    let navigated = false;
+    void officeDialog
+      .prompt({
+        title: spreadsheetCommandCatalog.goTo.label,
+        description: officeMessage(
+          resolveOfficeMessages(),
+          'spreadsheet.editor.goTo.description',
+        ),
+        fieldLabel: officeMessage(
+          resolveOfficeMessages(),
+          'spreadsheet.editor.goTo.fieldLabel',
+        ),
+        initialValue: spreadsheetSelectionReference(selection),
+        placeholder: officeMessage(
+          resolveOfficeMessages(),
+          'spreadsheet.editor.goTo.placeholder',
+        ),
+        confirmLabel: spreadsheetCommandCatalog.goTo.label,
+        required: officeMessage(
+          resolveOfficeMessages(),
+          'spreadsheet.editor.goTo.required',
+        ),
+        validate: (candidate) =>
+          spreadsheetGoToValidationMessage(
+            contentRef.current,
+            sourceSheetId,
+            candidate,
+          ),
+        restoreFocusTarget: () =>
+          navigated
+            ? spreadsheetGridFocusTarget(spreadsheetCanvasRef.current)
+            : invoker?.isConnected
+              ? invoker
+              : spreadsheetGridFocusTarget(spreadsheetCanvasRef.current),
+      })
+      .then((value) => {
+        if (value === null) return;
+        const resolution = resolveSpreadsheetGoToTarget(
+          contentRef.current,
+          sourceSheetId,
+          value,
+        );
+        if (!resolution.ok) {
+          showToast(resolution.message, 'error');
+          return;
+        }
+        navigated = navigateToSpreadsheetRange(
+          resolution.target.sheetId,
+          [resolution.target.selection],
+          {
+            row: resolution.target.selection.row_focus,
+            column: resolution.target.selection.column_focus,
+          },
+        );
+        if (!navigated)
+          showToast(
+            officeMessage(
+              resolveOfficeMessages(),
+              'spreadsheet.editor.goTo.failed',
+            ),
+            'error',
+          );
+      });
+    return true;
+  }, [navigateToSpreadsheetRange, officeDialog]);
+  const spreadsheetExtensions = useMemo(createSpreadsheetEditorExtensions, []);
+  const acceptSpreadsheetCommandChange = (
+    next: WorkSpreadsheetContent,
+  ): void => {
+    const formatCellsSelection = formatCellsApplyingRef.current
+      ? formatCellsSelectionRef.current
+      : null;
+    const dataValidationSelection =
+      spreadsheetDataValidation.selectionForChange();
+    const autoFilterSelection = autoFilterSelectionForChange();
+    const tableSelection = spreadsheetTable.selectionForChange();
+    const hyperlinkSelection = spreadsheetHyperlink.selectionForChange();
+    const preservedSelection = formatCellsSelection
+      ? {
+          sheetId: formatCellsSelection.sheetId,
+          selections: [formatCellsSelection.selection],
+        }
+      : tableSelection
+        ? {
+            sheetId: tableSelection.sheetId,
+            selections: [tableSelection.selection],
+          }
+        : (autoFilterSelection ??
+          dataValidationSelection ??
+          (hyperlinkSelection
+            ? {
+                sheetId: hyperlinkSelection.sheetId,
+                selections: [hyperlinkSelection.selection],
+              }
+            : null));
+    const controlled =
+      preservedSelection && !collaborationView
+        ? spreadsheetContentWithSelections(
+            next,
+            preservedSelection.sheetId,
+            preservedSelection.selections,
+          )
+        : next;
+    contentRef.current = controlled;
+    onChange(controlled);
+  };
+  const spreadsheetEditor = useOfficeEditorRuntime(
+    {
+      activeSheetId,
+      autoFilter,
+      calculation,
+      clipboard: spreadsheetClipboard.commandPort,
+      content: contentRef.current,
+      dataValidation: spreadsheetDataValidation.commandPort,
+      editable: !preview,
+      fallbackRange: selectedRange,
+      formulaBar: {
+        setValue: (value) => {
+          const formulaBar =
+            spreadsheetCanvasRef.current?.querySelector<HTMLElement>(
+              '.fortune-fx-input',
+            );
+          if (formulaBar)
+            formulaBar.textContent = value == null ? '' : String(value);
+        },
+      },
+      formatPainter,
+      formatCells: {
+        canOpen: !preview && formatCellsDialog === null,
+        open: openSpreadsheetFormatCells,
+      },
+      hyperlink: spreadsheetHyperlink.commandPort,
+      history,
+      navigation: {
+        canOpenFind: !preview,
+        canOpenGoTo: !preview,
+        openFind: openSpreadsheetFind,
+        openGoTo: openSpreadsheetGoTo,
+      },
+      onChange: acceptSpreadsheetCommandChange,
+      richTextFormat: {
+        apply: (attribute, value) =>
+          richTextSelectionRef.current?.apply(
+            contentRef.current,
+            acceptSpreadsheetCommandChange,
+            attribute,
+            value,
+          ) ?? false,
+        canApply: (attribute, value) =>
+          richTextSelectionRef.current?.canApply(
+            contentRef.current,
+            attribute,
+            value,
+          ) ?? false,
+        canToggle: (attribute) =>
+          richTextSelectionRef.current?.canToggle(
+            contentRef.current,
+            attribute,
+          ) ?? false,
+        toggle: (attribute) =>
+          richTextSelectionRef.current?.toggle(
+            contentRef.current,
+            acceptSpreadsheetCommandChange,
+            attribute,
+          ) ?? false,
+      },
+      selection: selectionState,
+      selectionRef: selectionStateRef.current,
+      showFormulas: preview
+        ? null
+        : {
+            toggle: () => toggleSpreadsheetShowFormulasRef.current(),
+          },
+      sort: spreadsheetSort.commandPort,
+      table: spreadsheetTable.commandPort,
+      targetSheetGridSize,
+      targetSheetId: toolbarSheetId,
+      toolbarCell,
+      view:
+        preview || collaborationView
+          ? { activateSheet: activateLocalSpreadsheetSheet }
+          : null,
+      // The callback ref changes synchronously during a controlled remount,
+      // before workbookInstance's state render can publish the replacement.
+      // Resolve it at command time so a key cannot target the detached API.
+      get workbook() {
+        return workbookRef.current;
+      },
+    },
+    spreadsheetExtensions,
+  );
+  const spreadsheetCommands = spreadsheetEditor.commands;
+  spreadsheetCommandsRef.current = spreadsheetCommands;
+  formatPainterSelectionHandlerRef.current = (sheetId, selection) => {
+    spreadsheetCommandsRef.current?.applyFormatPainter({
+      sheetId,
+      selection,
+    });
+  };
+  const spreadsheetCan = spreadsheetEditor.can();
+  const navigateToSpreadsheetParticipant = useCallback(
+    (participant: WorkOfficeCollaborationParticipant): boolean => {
+      const location = participant.location;
+      const workbook = workbookRef.current;
+      if (!workbook || location?.kind !== 'spreadsheet') return false;
+      const sheet = materializedContent.sheets.find(
+        (candidate) =>
+          candidate.id === location.sheetId && candidate.hide !== 1,
+      );
+      if (!sheet) return false;
+      const ranges = location.ranges
+        .filter((range) => spreadsheetPresenceRangeExists(sheet, range))
+        .map((range) => ({
+          row: [range.startRow, range.endRow],
+          column: [range.startColumn, range.endColumn],
+        }));
+      if (!ranges.length) return false;
+      const activeCell = location.activeCell ?? {
+        row: ranges[0]?.row[0] ?? 0,
+        column: ranges[0]?.column[0] ?? 0,
+      };
+      if (!spreadsheetPresenceCellExists(sheet, activeCell)) return false;
+      return navigateToSpreadsheetRange(location.sheetId, ranges, activeCell);
+    },
+    [materializedContent.sheets, navigateToSpreadsheetRange],
+  );
+  useOfficeCollaborationLocationNavigator(navigateToSpreadsheetParticipant);
+  const restoreSpreadsheetGridFocus = useCallback(() => {
+    if (richTextSelectionRef.current?.restore()) return;
+    focusSpreadsheetGrid(spreadsheetCanvasRef.current);
+  }, []);
+  const toggleSpreadsheetFormulaBar = useCallback(() => {
+    setFormulaBarVisible((value) => !value);
+  }, []);
+  const toggleSpreadsheetShowFormulas = useCallback(() => {
+    setShowFormulas((value) => !value);
+    return true;
+  }, []);
+  toggleSpreadsheetShowFormulasRef.current = toggleSpreadsheetShowFormulas;
+  const toggleSpreadsheetHeadings = useCallback(() => {
+    setHeadingsVisible((value) => !value);
+  }, []);
+  const spreadsheetViewChromeFocusReady = useRef(false);
+  useEffect(() => {
+    if (!spreadsheetViewChromeFocusReady.current) {
+      spreadsheetViewChromeFocusReady.current = true;
+      return;
+    }
+    restoreSpreadsheetGridFocus();
+  }, [
+    formulaBarVisible,
+    headingsVisible,
+    restoreSpreadsheetGridFocus,
+    showFormulas,
+  ]);
+  const closeSpreadsheetFind = useCallback(() => {
+    setFindOpen(false);
+    focusSpreadsheetGrid(spreadsheetCanvasRef.current);
+  }, []);
+  const selectSpreadsheetFindMatch = useCallback(
+    (match: SpreadsheetFindMatch) => {
+      navigateToSpreadsheetRange(
+        match.sheetId,
+        [
+          {
+            row: [match.row, match.row],
+            column: [match.column, match.column],
+          },
+        ],
+        { row: match.row, column: match.column },
+        false,
+      );
+    },
+    [navigateToSpreadsheetRange],
+  );
+  const spreadsheetRibbonCommands = useMemo(
+    () =>
+      spreadsheetCommandsWithGridFocus(
+        spreadsheetCommands,
+        restoreSpreadsheetGridFocus,
+      ),
+    [restoreSpreadsheetGridFocus, spreadsheetCommands],
+  );
+  const restoreSpreadsheetShortcutFocus = useCallback(
+    (event: KeyboardEvent) => {
+      event.stopPropagation();
+      if (spreadsheetNavigationShortcutOwnsFocus(event)) return;
+      if (
+        (event.metaKey || event.ctrlKey) &&
+        !event.altKey &&
+        !event.shiftKey &&
+        event.key === '1'
+      ) {
+        return;
+      }
+      if (!isSpreadsheetCellEditingTarget(event.target)) {
+        focusSpreadsheetGrid(spreadsheetCanvasRef.current);
+      }
+    },
+    [],
+  );
+  useOfficeEditorKeyboardShortcuts(spreadsheetEditor, {
+    capture: true,
+    onHandled: restoreSpreadsheetShortcutFocus,
+    scopeRef: spreadsheetRootRef,
+  });
+  const changeSpreadsheetWheelZoom = (direction: 'in' | 'out') => {
+    const current = spreadsheetZoomRef.current;
+    const next = stepOfficeZoom(current, direction);
+    if (next === current) return;
+    spreadsheetZoomRef.current = next;
+    const sheetId = activeSheetIdRef.current;
+    if (sheetId) collaborationView?.setZoom(sheetId, next / 100);
+    if (previewRef.current) setPreviewZoom(next);
+    else spreadsheetCommandsRef.current?.setZoom(next);
+  };
+  useOfficeEditorWheelZoom({
+    scopeRef: spreadsheetRootRef,
+    onZoomIn: () => changeSpreadsheetWheelZoom('in'),
+    onZoomOut: () => changeSpreadsheetWheelZoom('out'),
+  });
+  const handleSpreadsheetKeyDownCapture = (
+    event: React.KeyboardEvent<HTMLElement>,
+  ) => {
+    // A key that reaches the workbook without our command handler is a fresh
+    // native Fortune interaction (for example, Enter while editing a cell).
+    // It is allowed to replace a pending programmatic selection guard.
+    releaseSpreadsheetSelectionRequest(selectionStateRef.current);
+    if (
+      event.key === 'Alt' &&
+      !event.repeat &&
+      event.target instanceof Element &&
+      event.target.closest('.fortune-sheet-overlay') &&
+      reserveAutoFilterAltKey()
+    ) {
+      // Fortune moves focus into its hidden cell editor on a bare Alt keydown.
+      // Keep the header grid focused so the following ArrowDown reaches the
+      // WPS-compatible AutoFilter shortcut.
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+  };
+  const handleSpreadsheetPointerDownCapture = (
+    event: ReactPointerEvent<HTMLElement>,
+  ): void => {
+    // A pointer interaction is a fresh user intent and may legitimately
+    // supersede a pending programmatic selection request.
+    releaseSpreadsheetSelectionRequest(selectionStateRef.current);
+    const controller = richTextSelectionRef.current;
+    if (!controller) return;
+    if (!isSpreadsheetRichTextFormatPointerTarget(event.target)) {
+      controller.clear();
+      return;
+    }
+    const sheetId = activeSheetIdRef.current;
+    if (!sheetId) {
+      controller.clear();
+      return;
+    }
+    const liveSelection = workbookRef.current?.getSelection()?.at(-1);
+    controller.capture({
+      content: contentRef.current,
+      root: spreadsheetRootRef.current,
+      selection: liveSelection
+        ? ({ ...toolbarSelection, ...liveSelection } as Selection)
+        : toolbarSelection,
+      sheetId,
+    });
+  };
+  const handleSpreadsheetCopy = (
+    event: ReactClipboardEvent<HTMLElement>,
+    cut: boolean,
+  ) => {
+    if (isSpreadsheetNativeTextUndoTarget(event.target)) return;
+    if (!spreadsheetClipboard.copyToDataTransfer(event.clipboardData, cut)) {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+    if (cut) {
+      focusSpreadsheetGrid(spreadsheetCanvasRef.current);
+    }
+  };
+  const handleSpreadsheetPaste = (event: ReactClipboardEvent<HTMLElement>) => {
+    if (previewRef.current) {
+      return;
+    }
+    if (isSpreadsheetNativeTextUndoTarget(event.target)) {
+      const sheetId = activeSheetIdRef.current;
+      const liveSelection = workbookRef.current?.getSelection()?.at(-1);
+      if (sheetId) {
+        captureSpreadsheetRichTextPaste({
+          clipboardData: event.clipboardData,
+          content: contentRef.current,
+          root: spreadsheetRootRef.current,
+          selection: liveSelection
+            ? ({ ...toolbarSelection, ...liveSelection } as Selection)
+            : toolbarSelection,
+          sheetId,
+          target: event.target,
+        });
+      }
+      return;
+    }
+    if (
+      !spreadsheetClipboard.pasteText(
+        event.clipboardData.getData('text/plain'),
+        'all',
+        false,
+      )
+    ) {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+    focusSpreadsheetGrid(spreadsheetCanvasRef.current);
+  };
+  const runSheetCommand = (command: () => boolean) => {
+    command();
+    focusSpreadsheetGrid(spreadsheetCanvasRef.current);
+  };
+  const openSpreadsheetContextMenu = (
+    event: WorkspaceContextMenuEvent,
+    requestedKind?: SpreadsheetStructureAxis,
+  ): boolean => {
+    if (preview) return false;
+    const sheetId = selectionState?.sheetId ?? activeSheetIdRef.current;
+    const sheet = contentRef.current.sheets.find(
+      (candidate) => candidate.id === sheetId,
+    );
+    const savedSelection =
+      selectionState?.selection ?? sheet?.luckysheet_select_save?.at(-1);
+    const liveSelection = workbookRef.current?.getSelection()?.at(-1);
+    const selection = liveSelection
+      ? ({ ...savedSelection, ...liveSelection } as Selection)
+      : savedSelection;
+    if (!selection) return false;
+    const agentSelection = spreadsheetAgentSelection(
+      contentRef.current,
+      sheetId,
+      selection,
+    );
+    if (!agentSelection) return false;
+    event.preventDefault();
+    event.stopPropagation();
+    const position = workspaceContextMenuPosition(
+      event,
+      spreadsheetSelectionContextMenuBounds(spreadsheetCanvasRef.current),
+    );
+    setContextMenu({
+      kind:
+        requestedKind ?? spreadsheetContextMenuKind(event.target, selection),
+      range: spreadsheetSingleRange(selection),
+      x: position.x,
+      y: position.y,
+      selection: agentSelection,
+    });
+    return true;
+  };
+  const requestSpreadsheetStructureSize = async (
+    axis: SpreadsheetStructureAxis,
+  ) => {
+    const menu = contextMenu;
+    if (!menu) return;
+    const row = axis === 'row';
+    const catalog = resolveOfficeMessages();
+    const label = officeMessage(
+      catalog,
+      row
+        ? 'spreadsheet.editor.resize.rowHeight'
+        : 'spreadsheet.editor.resize.columnWidth',
+    );
+    const maximum = row ? 545 : 2_038;
+    const currentSize = spreadsheetStructureSize(
+      workbookRef.current,
+      axis,
+      menu.range,
+      menu.selection.sheetId,
+    );
+    const value = await officeDialog.prompt({
+      title: officeMessage(catalog, 'spreadsheet.editor.resize.title', {
+        label,
+      }),
+      fieldLabel: officeMessage(catalog, 'spreadsheet.editor.resize.fieldLabel', {
+        label,
+        maximum: String(maximum),
+      }),
+      initialValue: currentSize === null ? '' : String(currentSize),
+      inputMode: 'numeric',
+      confirmLabel: officeMessage(catalog, 'spreadsheet.editor.resize.confirm'),
+      restoreFocusTarget: () =>
+        spreadsheetGridFocusTarget(spreadsheetCanvasRef.current),
+      required: officeMessage(catalog, 'spreadsheet.editor.resize.required', {
+        label,
+      }),
+      validate: (candidate) => {
+        const size = Number(candidate);
+        return Number.isInteger(size) && size >= 1 && size <= maximum
+          ? null
+          : officeMessage(catalog, 'spreadsheet.editor.resize.invalid', {
+              label,
+              maximum: String(maximum),
+            });
+      },
+    });
+    if (value === null) return;
+    if (!spreadsheetCommands.setSelectedStructureSize(axis, Number(value))) {
+      showToast(
+        officeMessage(catalog, 'spreadsheet.editor.resize.failed', { label }),
+        'error',
+      );
+    }
+  };
+  return (
+    <section
+      ref={spreadsheetRootRef}
+      className={`work-spreadsheet-editor ${preview ? 'preview' : ''}`}
+      data-auto-filter={autoFilterActive ? 'active' : undefined}
+      data-cell-vt={
+        toolbarCell?.vt === undefined || toolbarCell?.vt === null
+          ? '0'
+          : String(toolbarCell.vt)
+      }
+      data-column-count={targetSheetGridSize?.columnCount}
+      data-format-painter={formatPainterMode ?? undefined}
+      data-formula-bar={formulaBarVisible ? 'visible' : 'hidden'}
+      data-freeze-panes={toolbarSheet?.frozen ? 'active' : undefined}
+      data-grid-lines={gridLinesVisible ? 'visible' : 'hidden'}
+      data-populated-cell-count={activeSheetProfile?.populatedCellCount}
+      data-profile-column-count={activeSheetProfile?.columnCount}
+      data-profile-row-count={activeSheetProfile?.rowCount}
+      data-row-count={targetSheetGridSize?.rowCount}
+      data-sheet-headings={headingsVisible ? 'visible' : 'hidden'}
+      data-show-formulas={showFormulas ? 'visible' : 'hidden'}
+      data-spreadsheet-profile={
+        activeSheetProfile?.fortuneReady ? 'ready' : undefined
+      }
+      aria-label={officeMessage(messages, 'spreadsheet.editor.workspaceAria')}
+      onKeyDownCapture={handleSpreadsheetKeyDownCapture}
+      onPointerDownCapture={handleSpreadsheetPointerDownCapture}
+      onCopyCapture={(event) => handleSpreadsheetCopy(event, false)}
+      onCutCapture={(event) => handleSpreadsheetCopy(event, true)}
+      onPasteCapture={handleSpreadsheetPaste}
+    >
+      {preview && (
+        <WorkOfficePreviewBar
+          ariaLabel={officeMessage(
+            messages,
+            'spreadsheet.editor.previewToolbarAria',
+          )}
+          label={officeMessage(messages, 'spreadsheet.editor.previewLabel')}
+          detail={officeMessage(messages, 'spreadsheet.editor.previewDetail', {
+            count: String(content.sheets.length),
+          })}
+          fileActions={fileActions}
+          className="work-spreadsheet-ribbon"
+        />
+      )}
+      {!preview && (
+        <SpreadsheetEditorRibbon
+          activeTab={ribbonTab}
+          activeTable={activeTable}
+          activeTableSheetId={activeTable ? toolbarSheetId : undefined}
+          autoFilterActive={autoFilterActive}
+          can={spreadsheetCan}
+          commands={spreadsheetRibbonCommands}
+          content={content}
+          fileActions={fileActions}
+          findOpen={findOpen}
+          formatPainterMode={formatPainterMode}
+          freezePanesActive={Boolean(toolbarSheet?.frozen)}
+          freezePanesSelection={toolbarSelection}
+          formulaBarVisible={formulaBarVisible}
+          showFormulas={showFormulas}
+          gridLinesVisible={gridLinesVisible}
+          headingsVisible={headingsVisible}
+          panelId={panelId}
+          onTabChange={(tab) => {
+            setRibbonTab(tab);
+            if (panel) closeWorkbookPanel();
+          }}
+          onToggleFormulaBar={toggleSpreadsheetFormulaBar}
+          onToggleShowFormulas={toggleSpreadsheetShowFormulas}
+          onToggleHeadings={toggleSpreadsheetHeadings}
+          onTogglePanel={(nextPanel, trigger) => {
+            if (panel === nextPanel) {
+              closeWorkbookPanel();
+              return;
+            }
+            panelTriggerRef.current = trigger;
+            setPanel(nextPanel);
+          }}
+          panel={panel}
+          toolbarCell={toolbarCell}
+          toolbarCellBorders={toolbarCellBorders}
+        />
+      )}
+      <output className="sr-only" aria-live="polite" aria-atomic="true">
+        {[
+          spreadsheetActiveCellAnnouncement({
+            row: toolbarRow,
+            column: toolbarColumn,
+            displayValue:
+              typeof toolbarCell?.m === 'string'
+                ? toolbarCell.m
+                : toolbarCell?.v === undefined || toolbarCell?.v === null
+                  ? null
+                  : String(toolbarCell.v),
+            formula:
+              typeof toolbarCell?.f === 'string' ? toolbarCell.f : null,
+          }),
+          spreadsheetFormatPainterStatus(formatPainterMode),
+          autoFilterStatus,
+          spreadsheetFreezePanesStatus(toolbarSheet?.frozen),
+        ]
+          .filter(Boolean)
+          .join(' ')}
+      </output>
+      <div className="work-spreadsheet-workspace">
+        <div
+          ref={spreadsheetCanvasRef}
+          className="work-spreadsheet-canvas"
+          data-virtual-grid={virtualGrid ? 'a3s' : undefined}
+          onFocusCapture={(event) =>
+            preserveSpreadsheetGridFocus(
+              spreadsheetCanvasRef.current,
+              event.target,
+            )
+          }
+          onClickCapture={(event) => {
+            if (!spreadsheetHeaderMenuTrigger(event.target)) return;
+            openSpreadsheetContextMenu(event, 'column');
+          }}
+          onContextMenuCapture={openSpreadsheetContextMenu}
+          onKeyDownCapture={(event) => {
+            if (
+              spreadsheetHeaderMenuTrigger(event.target) &&
+              (event.key === 'Enter' || event.key === ' ')
+            ) {
+              openSpreadsheetContextMenu(event, 'column');
+              return;
+            }
+            if (!isWorkspaceContextMenuKeyboardEvent(event)) return;
+            openSpreadsheetContextMenu(event);
+          }}
+        >
+          <div
+            className="work-spreadsheet-fortune-host"
+            aria-hidden={virtualGrid ? true : undefined}
+          >
+            <ControlledWorkbook
+              ref={bindWorkbookInstance}
+              key={workbookMountKey}
+              data={displayedWorkbookSheets}
+              lang="zh"
+              allowEdit={!preview && !showFormulas}
+              showToolbar={false}
+              showFormulaBar={!preview && formulaBarVisible}
+              showSheetTabs={false}
+              row={60}
+              column={26}
+              rowHeaderWidth={headingsVisible ? 44 : 0}
+              columnHeaderHeight={headingsVisible ? 24 : 0}
+              defaultRowHeight={24}
+              defaultColWidth={96}
+              defaultFontSize={DEFAULT_SPREADSHEET_FONT_SIZE}
+              filterContextMenu={SPREADSHEET_AUTO_FILTER_MENU_ITEMS}
+              hooks={workbookHooks}
+              onChange={handleWorkbookChange}
+              onOp={handleWorkbookOperations}
+            />
+          </div>
+          {virtualGrid ? (
+            <SpreadsheetVirtualGrid
+              sheetName={toolbarSheet?.name ?? 'Sheet'}
+              data={toolbarSheet?.data}
+              rowCount={
+                targetSheetGridSize?.rowCount ?? toolbarSheet?.row ?? 60
+              }
+              columnCount={
+                targetSheetGridSize?.columnCount ?? toolbarSheet?.column ?? 26
+              }
+              activeRow={toolbarRow ?? 0}
+              activeColumn={toolbarColumn ?? 0}
+              editable={!preview && !showFormulas}
+              merges={Object.values(toolbarSheet?.config?.merge ?? {})}
+              onActiveCellChange={(row, column) => {
+                const sheetId = toolbarSheetId ?? activeSheetIdRef.current;
+                if (!sheetId) return;
+                const selection = {
+                  row: [row, row],
+                  column: [column, column],
+                  row_focus: row,
+                  column_focus: column,
+                };
+                const nextSelection = { sheetId, selection };
+                selectionStateRef.current.current = nextSelection;
+                selectionStateRef.current.requested = {
+                  sheetId,
+                  selection: {
+                    ...selection,
+                    row: [...selection.row],
+                    column: [...selection.column],
+                  },
+                };
+                setSelectionState(nextSelection);
+                try {
+                  workbookRef.current?.setSelection(
+                    [{ row: selection.row, column: selection.column }],
+                    { id: sheetId },
+                  );
+                } catch {
+                  // Selection state remains authoritative for the A3S grid.
+                }
+              }}
+              onCommitCell={(row, column, raw) => {
+                const sheetId = toolbarSheetId ?? activeSheetIdRef.current;
+                if (!sheetId || preview) return;
+                acceptWorkbookContent(
+                  spreadsheetVirtualGridCommitCell(
+                    contentRef.current,
+                    sheetId,
+                    row,
+                    column,
+                    raw,
+                  ),
+                );
+              }}
+            />
+          ) : null}
+          {findOpen && (
+            <SpreadsheetFindBar
+              sheet={activeSheet}
+              focusRequest={findFocusRequest}
+              onClose={closeSpreadsheetFind}
+              onSelectMatch={selectSpreadsheetFindMatch}
+            />
+          )}
+            {collaborationWrittenCell ? (
+              <SpreadsheetFrameCaretMark
+                cell={collaborationWrittenCell}
+                columnHeaderHeight={headingsVisible ? 24 : 0}
+                content={materializedContent}
+                rowHeaderWidth={headingsVisible ? 44 : 0}
+              />
+            ) : null}
+        </div>
+        {!preview && panel && (
+          <SpreadsheetWorkbookPanel
+            id={panelId}
+            content={materializedContent}
+            view={panel}
+            activeSheetId={panelSheetId}
+            selection={
+              selectionState?.sheetId === panelSheetId
+                ? selectionState.selection
+                : undefined
+            }
+            can={spreadsheetCan}
+            commands={spreadsheetCommands}
+            restoreFocusTarget={() => panelTriggerRef.current}
+            onClose={closeWorkbookPanel}
+          />
+        )}
+      </div>
+      <div className="work-spreadsheet-footer">
+        <SpreadsheetSheetBar
+          activeSheetId={activeSheetId}
+          editable={!preview}
+          sheets={materializedContent.sheets}
+          onActivate={(sheetId) =>
+            runSheetCommand(() => spreadsheetCommands.activateSheet(sheetId))
+          }
+          onCreate={() => runSheetCommand(() => spreadsheetCommands.addSheet())}
+          onDelete={(sheetId) =>
+            runSheetCommand(() => spreadsheetCommands.deleteSheet(sheetId))
+          }
+          onDuplicate={(sheetId) =>
+            runSheetCommand(() => spreadsheetCommands.duplicateSheet(sheetId))
+          }
+          onHide={(sheetId) =>
+            runSheetCommand(() => spreadsheetCommands.hideSheet(sheetId))
+          }
+          onMove={(sheetId, direction) =>
+            runSheetCommand(() =>
+              spreadsheetCommands.moveSheet(sheetId, direction),
+            )
+          }
+          onRename={(sheetId, name) =>
+            runSheetCommand(() =>
+              spreadsheetCommands.renameSheet(sheetId, name),
+            )
+          }
+          onSetColor={(sheetId, color) =>
+            runSheetCommand(() =>
+              spreadsheetCommands.setSheetColor(sheetId, color),
+            )
+          }
+          onShow={(sheetId) =>
+            runSheetCommand(() => spreadsheetCommands.activateSheet(sheetId))
+          }
+        />
+        <WorkOfficeStatusBar
+          className="work-spreadsheet-status"
+          controls={
+            <>
+              <span
+                className="work-spreadsheet-view-mode"
+                role="img"
+                aria-label={officeMessage(
+                  messages,
+                  'spreadsheet.editor.normalViewAria',
+                )}
+                title={officeMessage(
+                  messages,
+                  'spreadsheet.editor.normalViewTitle',
+                )}
+              >
+                <Grid3X3 size={13} />
+              </span>
+              <span className="work-office-status-divider" />
+              <WorkOfficeZoomControls
+                zoom={preview ? previewZoom : zoom}
+                decreaseLabel={officeMessage(
+                  messages,
+                  'spreadsheet.editor.zoomOut',
+                )}
+                increaseLabel={officeMessage(
+                  messages,
+                  'spreadsheet.editor.zoomIn',
+                )}
+                outputLabel={officeMessage(
+                  messages,
+                  'spreadsheet.editor.zoomOutput',
+                )}
+                sliderLabel={officeMessage(
+                  messages,
+                  'spreadsheet.editor.zoomSlider',
+                )}
+                onChange={(nextZoom) => {
+                  const sheetId = activeSheetIdRef.current;
+                  if (sheetId)
+                    collaborationView?.setZoom(sheetId, nextZoom / 100);
+                  if (preview) setPreviewZoom(nextZoom);
+                  else spreadsheetCommands.setZoom(nextZoom);
+                }}
+              />
+            </>
+          }
+        >
+          <output
+            aria-label={officeMessage(
+              messages,
+              'spreadsheet.editor.selectionStatusAria',
+            )}
+          >
+            {selectionState
+              ? spreadsheetSelectionReference(selectionState.selection)
+              : officeMessage(messages, 'spreadsheet.editor.noSelection')}
+          </output>
+          {formulaResultText && (
+            <output
+              aria-label={officeMessage(
+                messages,
+                'spreadsheet.editor.cellResultAria',
+              )}
+            >
+              {formulaResultText}
+            </output>
+          )}
+          {selectionSummary && selectionSummary.nonEmptyCount > 0 && (
+            <output
+              aria-label={officeMessage(
+                messages,
+                'spreadsheet.editor.selectionStatsAria',
+              )}
+            >
+              {spreadsheetSelectionSummaryText(selectionSummary)}
+            </output>
+          )}
+          {!preview && (
+            <output
+              aria-label={officeMessage(
+                messages,
+                'spreadsheet.editor.saveStatusAria',
+              )}
+              className="work-office-save-status"
+            >
+              <Cloud size={12} />
+              {saveStatus}
+            </output>
+          )}
+        </WorkOfficeStatusBar>
+      </div>
+      {contextMenu && (
+        <WorkspaceContextMenu
+          label={spreadsheetContextMenuLabel(contextMenu)}
+          className="work-spreadsheet-context-menu"
+          x={contextMenu.x}
+          y={contextMenu.y}
+          items={[
+            ...spreadsheetCoreContextMenuItems({
+              can: spreadsheetCan,
+              commands: spreadsheetCommands,
+              selection: contextMenu.selection,
+            }),
+            ...(contextMenu.kind === 'cells'
+              ? spreadsheetSortContextMenuItems({
+                  can: spreadsheetCan,
+                  commands: spreadsheetCommands,
+                  separatorBefore: true,
+                })
+              : spreadsheetStructureContextMenuItems({
+                  axis: contextMenu.kind,
+                  can: spreadsheetCan,
+                  commands: spreadsheetCommands,
+                  onResize: (axis) => {
+                    void requestSpreadsheetStructureSize(axis);
+                  },
+                }).map((item, index) =>
+                  index === 0 ? { ...item, separatorBefore: true } : item,
+                )),
+            ...(contextMenu.kind === 'cells' && onAgentRequest
+              ? spreadsheetAgentMenuItems(
+                  contextMenu.selection,
+                  onAgentRequest,
+                  (changes) => {
+                    const outcome = applySpreadsheetAgentProposalChanges(
+                      contentRef.current,
+                      contextMenu.selection.sheetId,
+                      changes,
+                    );
+                    if (outcome.result.appliedTargetIds.length)
+                      spreadsheetCommands.setSpreadsheetContent(
+                        outcome.content,
+                      );
+                    return outcome.result;
+                  },
+                ).map((item, index) =>
+                  index === 0 ? { ...item, separatorBefore: true } : item,
+                )
+              : []),
+          ]}
+          onClose={() => setContextMenu(null)}
+          onRestoreFocus={() =>
+            focusSpreadsheetGrid(spreadsheetCanvasRef.current)
+          }
+        />
+      )}
+      {formatCellsDialog && (
+        <SpreadsheetFormatCellsDialog
+          source={formatCellsDialog.source}
+          openIntent={formatCellsDialog.intent}
+          restoreFocusTarget={() =>
+            formatCellsInvokerRef.current?.isConnected
+              ? formatCellsInvokerRef.current
+              : spreadsheetGridFocusTarget(spreadsheetCanvasRef.current)
+          }
+          onApply={(patch) => {
+            formatCellsApplyingRef.current = true;
+            let handled = false;
+            try {
+              handled = spreadsheetCommands.applyCellFormat({
+                sheetId: formatCellsDialog.source.sheetId,
+                range: formatCellsDialog.source.range,
+                patch,
+              });
+            } finally {
+              formatCellsApplyingRef.current = false;
+            }
+            if (!handled)
+              showToast(
+                officeMessage(
+                  resolveOfficeMessages(),
+                  'spreadsheet.editor.formatFailed',
+                ),
+                'error',
+              );
+            return handled;
+          }}
+          onClose={closeSpreadsheetFormatCells}
+        />
+      )}
+      {spreadsheetDataValidation.dialog}
+      {autoFilterDialog}
+      {spreadsheetSort.dialog}
+      {spreadsheetHyperlink.dialog}
+      {spreadsheetTable.dialog}
+      {spreadsheetClipboard.dialogSource && (
+        <SpreadsheetPasteSpecialDialog
+          source={spreadsheetClipboard.dialogSource}
+          restoreFocusTarget={spreadsheetClipboard.restoreDialogFocusTarget}
+          onApply={spreadsheetClipboard.applyDialog}
+          onClose={spreadsheetClipboard.closeDialog}
+          onValidate={spreadsheetClipboard.validateDialog}
+        />
+      )}
+      {officeDialog.dialog}
+    </section>
+  );
+}
+
+export function focusSpreadsheetGrid(
+  container: HTMLElement | null,
+  {
+    focusOrigin = document.activeElement,
+    forceCellEditingExit = false,
+    forceInitial = true,
+  }: {
+    focusOrigin?: Element | null;
+    forceCellEditingExit?: boolean;
+    forceInitial?: boolean;
+  } = {},
+): void {
+  if (!container) return;
+  spreadsheetFocusCleanups.get(container)?.();
+
+  let remainingFrames = spreadsheetFocusRetryFrames;
+  let lastFocusedTarget: HTMLElement | null = null;
+  const commandTrigger = focusOrigin;
+  const initialFocusTarget = spreadsheetGridFocusTarget(container);
+  const initialFocusTargetReady =
+    spreadsheetGridFocusTargetReady(initialFocusTarget);
+  let focusObserver: MutationObserver | null = null;
+  let focusObservationTimeout: number | null = null;
+  let focusOutHandler: ((event: FocusEvent) => void) | null = null;
+  let pointerDownHandler: ((event: PointerEvent) => void) | null = null;
+  let tabKeyHandler: ((event: KeyboardEvent) => void) | null = null;
+  let focusRestorationStopped = false;
+
+  const stopObservingFocusTarget = () => {
+    focusRestorationStopped = true;
+    focusObserver?.disconnect();
+    focusObserver = null;
+    if (focusOutHandler) {
+      container.removeEventListener('focusout', focusOutHandler);
+      focusOutHandler = null;
+    }
+    if (pointerDownHandler) {
+      document.removeEventListener('pointerdown', pointerDownHandler, true);
+      pointerDownHandler = null;
+    }
+    if (tabKeyHandler) {
+      document.removeEventListener('keydown', tabKeyHandler, true);
+      tabKeyHandler = null;
+    }
+    if (focusObservationTimeout !== null) {
+      window.clearTimeout(focusObservationTimeout);
+      focusObservationTimeout = null;
+    }
+    if (spreadsheetFocusCleanups.get(container) === stopObservingFocusTarget) {
+      spreadsheetFocusCleanups.delete(container);
+    }
+  };
+
+  const restoreFocus = (force: boolean) => {
+    if (focusRestorationStopped) return;
+    const activeElement = document.activeElement;
+    const activeCellEditor = isSpreadsheetCellEditorTarget(activeElement);
+    if (
+      !force &&
+      !forceCellEditingExit &&
+      isSpreadsheetCellEditingTarget(activeElement)
+    ) {
+      stopObservingFocusTarget();
+      return;
+    }
+    if (
+      !force &&
+      !(forceCellEditingExit && activeCellEditor) &&
+      activeElement !== document.body &&
+      activeElement !== document.documentElement &&
+      activeElement !== commandTrigger &&
+      activeElement !== lastFocusedTarget
+    ) {
+      stopObservingFocusTarget();
+      return;
+    }
+
+    const focusTarget = spreadsheetGridFocusTarget(container);
+    if (focusTarget) {
+      focusTarget.focus({ preventScroll: true });
+      lastFocusedTarget = focusTarget;
+    }
+    if (remainingFrames <= 0) return;
+    remainingFrames -= 1;
+    requestAnimationFrame(() => restoreFocus(false));
+  };
+
+  focusOutHandler = (event) => {
+    if (event.target !== lastFocusedTarget) return;
+    requestAnimationFrame(() => restoreFocus(false));
+  };
+  container.addEventListener('focusout', focusOutHandler);
+
+  pointerDownHandler = (event) => {
+    if (event.target instanceof Node && !container.contains(event.target)) {
+      stopObservingFocusTarget();
+    }
+  };
+  tabKeyHandler = (event) => {
+    if (event.key === 'Tab') stopObservingFocusTarget();
+  };
+  document.addEventListener('pointerdown', pointerDownHandler, true);
+  document.addEventListener('keydown', tabKeyHandler, true);
+
+  if (typeof MutationObserver !== 'undefined') {
+    focusObserver = new MutationObserver(() => {
+      const focusTarget = spreadsheetGridFocusTarget(container);
+      const focusTargetReady = spreadsheetGridFocusTargetReady(focusTarget);
+      const mountedOrReplaced = focusTarget !== initialFocusTarget;
+      const initialTargetBecameReady =
+        focusTarget === initialFocusTarget &&
+        !initialFocusTargetReady &&
+        focusTargetReady;
+      if (!focusTarget || (!mountedOrReplaced && !initialTargetBecameReady)) {
+        return;
+      }
+      restoreFocus(false);
+    });
+    focusObserver.observe(container, {
+      attributes: true,
+      attributeFilter: ['style'],
+      childList: true,
+      subtree: true,
+    });
+  }
+  focusObservationTimeout = window.setTimeout(
+    stopObservingFocusTarget,
+    spreadsheetFocusObservationMs,
+  );
+  spreadsheetFocusCleanups.set(container, stopObservingFocusTarget);
+
+  restoreFocus(forceInitial);
+}
+
+export function preserveSpreadsheetGridFocus(
+  container: HTMLElement | null,
+  target: EventTarget | null,
+): void {
+  if (
+    !(target instanceof Element) ||
+    !target.matches('.fortune-sheet-overlay, .fortune-cell-area')
+  ) {
+    return;
+  }
+  focusSpreadsheetGrid(container, {
+    focusOrigin: target,
+    forceInitial: false,
+  });
+}
+
+export function spreadsheetCommandsWithGridFocus(
+  commands: SpreadsheetEditorCommands,
+  restoreFocus: () => void,
+): SpreadsheetEditorCommands {
+  const afterSuccessfulCommand =
+    <Arguments extends unknown[]>(command: (...args: Arguments) => boolean) =>
+    (...args: Arguments): boolean => {
+      const handled = command(...args);
+      if (handled) restoreFocus();
+      return handled;
+    };
+
+  return {
+    ...commands,
+    adjustDecimalPlaces: afterSuccessfulCommand(commands.adjustDecimalPlaces),
+    adjustFontSize: afterSuccessfulCommand(commands.adjustFontSize),
+    applyAutoSum: afterSuccessfulCommand(commands.applyAutoSum),
+    activateFormatPainter: afterSuccessfulCommand(
+      commands.activateFormatPainter,
+    ),
+    cancelFormatPainter: afterSuccessfulCommand(commands.cancelFormatPainter),
+    clearSelectedCells: afterSuccessfulCommand(commands.clearSelectedCells),
+    copyCellFromAbove: afterSuccessfulCommand(commands.copyCellFromAbove),
+    copySelection: afterSuccessfulCommand(commands.copySelection),
+    convertTableToRange: afterSuccessfulCommand(commands.convertTableToRange),
+    cutSelection: afterSuccessfulCommand(commands.cutSelection),
+    deleteSelectedStructure: afterSuccessfulCommand(
+      commands.deleteSelectedStructure,
+    ),
+    fillSelectedCells: afterSuccessfulCommand(commands.fillSelectedCells),
+    insertSelectedStructure: afterSuccessfulCommand(
+      commands.insertSelectedStructure,
+    ),
+    insertCurrentDateTime: afterSuccessfulCommand(
+      commands.insertCurrentDateTime,
+    ),
+    mergeSelectedCells: afterSuccessfulCommand(commands.mergeSelectedCells),
+    openPasteSpecial: afterSuccessfulCommand(commands.openPasteSpecial),
+    pasteSelection: afterSuccessfulCommand(commands.pasteSelection),
+    pasteSpecial: afterSuccessfulCommand(commands.pasteSpecial),
+    redo: afterSuccessfulCommand(commands.redo),
+    setCellFormat: afterSuccessfulCommand(commands.setCellFormat),
+    setFreezePanes: afterSuccessfulCommand(commands.setFreezePanes),
+    setGridLines: afterSuccessfulCommand(commands.setGridLines),
+    setSelectedCellBorders: afterSuccessfulCommand(
+      commands.setSelectedCellBorders,
+    ),
+    setSelectedStructureHidden: afterSuccessfulCommand(
+      commands.setSelectedStructureHidden,
+    ),
+    setTextOrientation: afterSuccessfulCommand(commands.setTextOrientation),
+    toggleCellFormat: afterSuccessfulCommand(commands.toggleCellFormat),
+    toggleAutoFilter: afterSuccessfulCommand(commands.toggleAutoFilter),
+    undo: afterSuccessfulCommand(commands.undo),
+  };
+}
+
+function ignoreSpreadsheetControlledHistory(): boolean {
+  return true;
+}
+
+function spreadsheetNavigationShortcutOwnsFocus(event: KeyboardEvent): boolean {
+  if (event.altKey || event.shiftKey) return false;
+  const key = event.key.toLocaleLowerCase();
+  if ((event.metaKey || event.ctrlKey) && key === 'f') return true;
+  if (event.ctrlKey && !event.metaKey && key === 'g') return true;
+  return !event.ctrlKey && !event.metaKey && event.key === 'F5';
+}
+
+function spreadsheetFormatPainterStatus(
+  mode: SpreadsheetFormatPainterMode | null,
+): string {
+  const catalog = resolveOfficeMessages();
+  if (mode === 'locked') {
+    return officeMessage(catalog, 'spreadsheet.editor.formatPainter.locked');
+  }
+  if (mode === 'once') {
+    return officeMessage(catalog, 'spreadsheet.editor.formatPainter.active');
+  }
+  return '';
+}
+
+function spreadsheetGridFocusTarget(
+  container: HTMLElement | null,
+): HTMLElement | null {
+  return (
+    container?.querySelector<HTMLElement>('.work-spreadsheet-virtual-grid') ??
+    container?.querySelector<HTMLElement>('.fortune-sheet-overlay') ??
+    container?.querySelector<HTMLElement>('.fortune-cell-area') ??
+    null
+  );
+}
+
+function spreadsheetHeaderMenuTrigger(target: EventTarget | null) {
+  return target instanceof Element
+    ? target.closest<HTMLElement>('.header-arrow')
+    : null;
+}
+
+function spreadsheetContextMenuKind(
+  target: EventTarget | null,
+  selection: Selection,
+): SpreadsheetContextMenuState['kind'] {
+  if (target instanceof Element) {
+    if (target.closest('.fortune-col-header')) return 'column';
+    if (target.closest('.fortune-row-header')) return 'row';
+  }
+  if (selection.column_select) return 'column';
+  if (selection.row_select) return 'row';
+  return 'cells';
+}
+
+function spreadsheetContextMenuLabel({
+  kind,
+  selection,
+}: SpreadsheetContextMenuState): string {
+  const catalog = resolveOfficeMessages();
+  const subject = officeMessage(
+    catalog,
+    kind === 'row'
+      ? 'spreadsheet.editor.structure.row'
+      : kind === 'column'
+        ? 'spreadsheet.editor.structure.column'
+        : 'spreadsheet.editor.structure.selection',
+  );
+  return officeMessage(catalog, 'spreadsheet.editor.structure.action', {
+    subject,
+    reference: selection.reference,
+  });
+}
+
+function spreadsheetStructureSize(
+  workbook: WorkbookInstance | null,
+  axis: SpreadsheetStructureAxis,
+  range: SpreadsheetCommandRange,
+  sheetId: string,
+): number | null {
+  if (!workbook) return null;
+  const values = axis === 'row' ? range.row : range.column;
+  const start = Math.min(values[0] ?? 0, values[1] ?? 0);
+  const end = Math.max(values[0] ?? 0, values[1] ?? 0);
+  const indices = Array.from(
+    { length: end - start + 1 },
+    (_, offset) => start + offset,
+  );
+  try {
+    const sizes =
+      axis === 'row'
+        ? workbook.getRowHeight(indices, { id: sheetId })
+        : workbook.getColumnWidth(indices, { id: sheetId });
+    const unique = new Set(
+      indices.map((index) => sizes[index]).filter(Number.isFinite),
+    );
+    return unique.size === 1 ? (unique.values().next().value ?? null) : null;
+  } catch {
+    return null;
+  }
+}
+
+function spreadsheetSelectionContextMenuBounds(
+  container: HTMLElement | null,
+): DOMRect | null {
+  const selections = [
+    ...(container?.querySelectorAll<HTMLElement>('.luckysheet-cell-selected') ??
+      []),
+  ];
+  for (let index = selections.length - 1; index >= 0; index -= 1) {
+    const bounds = selections[index]?.getBoundingClientRect();
+    if (bounds && bounds.width > 0 && bounds.height > 0) return bounds;
+  }
+  return null;
+}
+
+function spreadsheetGridFocusTargetReady(target: HTMLElement | null): boolean {
+  if (!target) return false;
+  const bounds = target.getBoundingClientRect();
+  return bounds.width > 0 && bounds.height > 0;
+}
+
+function spreadsheetPresenceRangeExists(
+  sheet: WorkSpreadsheetContent['sheets'][number],
+  range: WorkOfficeSpreadsheetPresenceRange,
+): boolean {
+  const { columns, rows } = spreadsheetPresenceSheetSize(sheet);
+  return (
+    range.startRow >= 0 &&
+    range.startColumn >= 0 &&
+    range.endRow < rows &&
+    range.endColumn < columns
+  );
+}
+
+function spreadsheetPresenceCellExists(
+  sheet: WorkSpreadsheetContent['sheets'][number],
+  cell: WorkOfficeSpreadsheetPresenceCell,
+): boolean {
+  const { columns, rows } = spreadsheetPresenceSheetSize(sheet);
+  return (
+    cell.row >= 0 &&
+    cell.column >= 0 &&
+    cell.row < rows &&
+    cell.column < columns
+  );
+}
+
+function spreadsheetPresenceSheetSize(
+  sheet: WorkSpreadsheetContent['sheets'][number],
+): { columns: number; rows: number } {
+  return {
+    rows: Math.max(sheet.row ?? 60, sheet.data?.length ?? 0),
+    columns: Math.max(
+      sheet.column ?? 26,
+      sheet.data?.reduce(
+        (maximum, row) => Math.max(maximum, row?.length ?? 0),
+        0,
+      ) ?? 0,
+    ),
+  };
+}
+
+function spreadsheetSelectionSummaryText(
+  summary: ReturnType<typeof spreadsheetSelectionSummary>,
+): string {
+  const catalog = resolveOfficeMessages();
+  const parts = [
+    officeMessage(catalog, 'spreadsheet.editor.stats.count', {
+      count: String(summary.nonEmptyCount),
+    }),
+  ];
+  if (summary.average !== null && summary.sum !== null) {
+    parts.push(
+      officeMessage(catalog, 'spreadsheet.editor.stats.average', {
+        value: formatSpreadsheetStatistic(summary.average),
+      }),
+    );
+    parts.push(
+      officeMessage(catalog, 'spreadsheet.editor.stats.sum', {
+        value: formatSpreadsheetStatistic(summary.sum),
+      }),
+    );
+  }
+  return parts.join(' · ');
+}
+
+function formatSpreadsheetStatistic(value: number): string {
+  return new Intl.NumberFormat('zh-CN', {
+    maximumFractionDigits: 6,
+  }).format(value);
+}

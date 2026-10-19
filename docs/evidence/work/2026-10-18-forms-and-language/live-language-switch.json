@@ -1,0 +1,36 @@
+{
+  "surface": "Real ACP and configured model, one session with language switches",
+  "host_output_language_fallback": "zh-CN",
+  "acp_sha256": "65501d66e5e5545271dd6bd762fe0921db6a03b4346a49765cdef0d41bda2970",
+  "results": [
+    {
+      "case": "chinese",
+      "prompt": "你好，请用一句话介绍你自己。",
+      "reply": "你好！我是 Aster，你在 `/private/tmp/aster-flow-unify-20261018/live-language-switch/workspace` 工作区里的 AI 编程助手。\n\n我可以帮你：\n- 阅读、搜索和修改代码，追踪调用链与影响范围\n- 运行测试与构建、做代码审查和验证\n- 制定实现方案、拆解多步骤任务\n\n需要注意：本次会话的沙箱命令执行能力不可用（macOS 原生执行未就绪），因此涉及构建/测试的命令暂时无法实际运行，文件读写与检索工具仍可正常使用。\n\n告诉我你想做什么吧。",
+      "stop_reason": "end_turn"
+    },
+    {
+      "case": "english-short",
+      "prompt": "Hi",
+      "reply": "Hi! I'm Aster, your AI coding assistant working inside `/private/tmp/aster-flow-unify-20261018/live-language-switch/workspace`.\n\nI can help you with:\n- Reading, searching, and editing code while tracing callers and impact\n- Running tests and build commands (note: command execution is currently unavailable in this session's sandbox)\n- Planning, reviewing, and verifying changes end to end\n\nWhat would you like to work on?",
+      "stop_reason": "end_turn"
+    },
+    {
+      "case": "french",
+      "prompt": "Bonjour, présentez-vous en une phrase.",
+      "reply": "Bonjour, je suis Aster, ton assistant de programmation IA travaillant dans l'espace de projet `/private/tmp/aster-flow-unify-20261018/live-language-switch/workspace`, prêt à lire, modifier, tester et expliquer ton code.",
+      "stop_reason": "end_turn"
+    },
+    {
+      "case": "chinese-again",
+      "prompt": "请用一句话说明你能做什么。",
+      "reply": "我是 Aster，运行于 `/private/tmp/aster-flow-unify-20261018/live-language-switch/workspace` 工作区的 AI 编程助手，可以帮你检索、理解、修改并验证代码。",
+      "stop_reason": "end_turn"
+    }
+  ],
+  "review": "Manual review confirmed Chinese, English for the short greeting Hi, French, and Chinese again in the same session. This probes language selection only; the initial reply did not obey the requested single-sentence brevity. It does not establish full model instruction conformance, GUI completion, or Bash availability.",
+  "source_sha256": {
+    "crates/code/core/src/prompts.rs": "fa40ae94cce3eb3877a930016ece6d11d7cf2b6e9f9492fa7cb53a3f2bb95dca",
+    "crates/code/core/src/prompts/tests.rs": "331881d10aebe316bedde2036311c7cd584cf8fbd3a652a88eadc0e73da7eb62"
+  }
+}

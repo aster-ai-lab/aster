@@ -1,0 +1,25 @@
+extension "a3s/intelligent-ui" {
+  schema_version = 3
+  version = "0.1.0"
+  route = "intelligent-ui"
+  requires_use = ">=0.3.0, <0.4.0"
+  actions = ["read"]
+
+  repository {
+    url = "https://github.com/A3S-Lab/A3S"
+  }
+
+  skill "intelligent-ui" {
+    path = "skills/intelligent-ui/SKILL.md"
+    optional = false
+  }
+
+  ui "message" {
+    title = "Intelligent UI"
+    description = "OpenUI Lang interactions inside conversation messages"
+    entry = "ui/message/index.html"
+    root = "ui/message"
+    skill = "intelligent-ui"
+    optional = false
+  }
+}

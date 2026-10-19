@@ -1,0 +1,33 @@
+{
+  "original_input_sha256": {
+    "Africa_orders.csv": "7c0b74268c52b75a9dc0d892e343855775ff2d1bdfe6ea544d77e343699db5bc",
+    "Asia_Pacific_orders.csv": "8c9aaeae2e3f340247f5c0472a5912cbe6d0d74e5c88e0b1d5efab4b5bfb8d5b",
+    "Europe_orders.csv": "b132f6dc46fe5894818bf4a85243a122b508a64e0e76b06f8e0834556070fc02",
+    "LATAM_orders.csv": "546ca18eff9190355307c935f95016bb21f94a07f13ded07b8bf8f4115c62a36",
+    "USCA_orders.csv": "a0931573a257d766a122bdbb0ad9007fb49bdec18ca25931ec43a5852faa775c",
+    "adjustments.jsonl": "f6f9c1a604c8531efa63ebf90904a3a90b9f9cbefefdd17dd9254b67b6f654d8",
+    "policy.json": "471f6e3a27d29b432454deae7223f1927740bdc67a6cb885a55bc90c42ef17c5",
+    "priority_codebook.txt": "5033d8d25338cd67fd93c72e13b7b036cdaab9bc102325534d6de90e65548e2d",
+    "product_info.csv": "a508c5c50582a72e741bfed176be8a1dcdf3cbd8914391c57110585c1e5cf8a7",
+    "segment_performance.csv": "f20fce60c51dc2bdfef77f7bf0b25dee4107c6f4e31cdd8f5e79fa3d01cf1dd2",
+    "shipping_by_mode.csv": "1922a7d1f651bf42c1ab05275b364a6669d9dd08c6f6c2adf106982d031336eb"
+  },
+  "evaluated_input_sha256": {
+    "Africa_orders.csv": "7c0b74268c52b75a9dc0d892e343855775ff2d1bdfe6ea544d77e343699db5bc",
+    "Asia_Pacific_orders.csv": "8c9aaeae2e3f340247f5c0472a5912cbe6d0d74e5c88e0b1d5efab4b5bfb8d5b",
+    "Europe_orders.csv": "b132f6dc46fe5894818bf4a85243a122b508a64e0e76b06f8e0834556070fc02",
+    "LATAM_orders.csv": "546ca18eff9190355307c935f95016bb21f94a07f13ded07b8bf8f4115c62a36",
+    "USCA_orders.csv": "a0931573a257d766a122bdbb0ad9007fb49bdec18ca25931ec43a5852faa775c",
+    "adjustments.jsonl": "f6f9c1a604c8531efa63ebf90904a3a90b9f9cbefefdd17dd9254b67b6f654d8",
+    "policy.json": "471f6e3a27d29b432454deae7223f1927740bdc67a6cb885a55bc90c42ef17c5",
+    "priority_codebook.txt": "5033d8d25338cd67fd93c72e13b7b036cdaab9bc102325534d6de90e65548e2d",
+    "product_info.csv": "a508c5c50582a72e741bfed176be8a1dcdf3cbd8914391c57110585c1e5cf8a7",
+    "segment_performance.csv": "f20fce60c51dc2bdfef77f7bf0b25dee4107c6f4e31cdd8f5e79fa3d01cf1dd2",
+    "shipping_by_mode.csv": "1922a7d1f651bf42c1ab05275b364a6669d9dd08c6f6c2adf106982d031336eb"
+  },
+  "input_equal": true,
+  "instruction_equal": true,
+  "pipeline_sha256": "a0f468639ddac231ba38fb8452ab7946b4651a2ee62ead69341bac042d5b7b4b",
+  "results_sha256": "dfcc0b13bea1b177aa5af6e9967f2bae42e8bfebdc6046f665fabf94db24ecf7",
+  "results_bytes": 1439900
+}

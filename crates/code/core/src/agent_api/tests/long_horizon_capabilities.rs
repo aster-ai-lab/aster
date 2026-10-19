@@ -5,6 +5,8 @@
 //! one decision folds into call + also (the batch shape), a failing tool
 //! result does not end the run, and the success cycle completes.
 
+#![cfg(test)]
+
 use super::*;
 use std::sync::atomic::{AtomicUsize, Ordering};
 
@@ -249,6 +251,129 @@ async fn plan_batch_and_recovery_choreography_survives_the_fact_spine() {
 }
 
 mod plan_heavy;
+
+#[tokio::test]
+async fn distinct_read_only_sources_do_not_force_an_incomplete_answer() {
+    let workspace = tempfile::tempdir().unwrap();
+    let root = workspace.path();
+    let mut responses = Vec::new();
+    for index in 0..16 {
+        let name = format!("source-{index}.txt");
+        std::fs::write(root.join(&name), format!("evidence-{index}")).unwrap();
+        responses.push(scripted_tool_call_response(
+            &format!("read-{index}"),
+            "read",
+            serde_json::json!({"file_path": name}),
+        ));
+    }
+    responses.push(scripted_text_response("All sixteen sources reviewed."));
+    let agent = Agent::from_config(test_config()).await.unwrap();
+    let session = agent
+        .build_session(
+            root.to_string_lossy().into_owned(),
+            Arc::new(ScriptedStreamingClient::new(responses)),
+            &SessionOptions::new()
+                .with_session_id("sixteen-read-only-sources")
+                .with_permission_policy(crate::permissions::PermissionPolicy::new().allow("read"))
+                .with_planning_mode(crate::prompts::PlanningMode::Disabled)
+                .with_auto_delegation_enabled(false)
+                .with_manual_delegation_enabled(false),
+        )
+        .unwrap();
+    let result = session
+        .send("Review all sixteen sources.", None)
+        .await
+        .unwrap();
+    assert_eq!(result.text, "All sixteen sources reviewed.");
+    assert_eq!(result.tool_calls_count, 16);
+    assert_eq!(result.forced_stop, None);
+    let facts = crate::fact_control::read_workspace_facts(
+        root,
+        &crate::fact_control::thread_for_session("sixteen-read-only-sources"),
+    )
+    .unwrap();
+    let results = facts
+        .iter()
+        .filter(|fact| fact.kind == "tool.result")
+        .collect::<Vec<_>>();
+    assert_eq!(results.len(), 16);
+    assert!(results.iter().all(|fact| fact.payload["ok"] == true));
+    for (index, result) in results.iter().enumerate() {
+        assert!(result.payload["output"]
+            .as_str()
+            .unwrap()
+            .contains(&format!("evidence-{index}")));
+    }
+    session.close().await;
+}
+
+#[tokio::test]
+async fn failed_read_calls_still_exhaust_the_total_tool_budget() {
+    // Failed reads must consume the budget even when no usable evidence is collected.
+    let workspace = tempfile::tempdir().unwrap();
+    let root = workspace.path();
+    let mut responses = (0..4)
+        .map(|index| {
+            scripted_tool_call_response(
+                &format!("missing-{index}"),
+                "read",
+                serde_json::json!({"file_path": format!("missing-{index}.txt")}),
+            )
+        })
+        .collect::<Vec<_>>();
+    responses.push(scripted_text_response("No references were readable."));
+    let agent = Agent::from_config(test_config()).await.unwrap();
+    let session = agent
+        .build_session(
+            root.to_string_lossy().into_owned(),
+            Arc::new(ScriptedStreamingClient::new(responses)),
+            &SessionOptions::new()
+                .with_session_id("failed-read-round-budget")
+                .with_permission_policy(crate::permissions::PermissionPolicy::new().allow("read"))
+                .with_planning_mode(crate::prompts::PlanningMode::Disabled)
+                .with_auto_delegation_enabled(false)
+                .with_manual_delegation_enabled(false)
+                .with_max_tool_rounds(3),
+        )
+        .unwrap();
+    let (mut events, worker) = session.stream("Read the references.", None).await.unwrap();
+    let mut observed = Vec::new();
+    let forced = tokio::time::timeout(std::time::Duration::from_secs(5), async {
+        let mut forced = None;
+        while let Some(event) = events.recv().await {
+            if let crate::agent::AgentEvent::End { forced_stop, .. } = &event {
+                forced = *forced_stop;
+            }
+            observed.push(event);
+        }
+        forced
+    })
+    .await
+    .unwrap();
+    worker.await.unwrap();
+    let facts = crate::fact_control::read_workspace_facts(
+        root,
+        &crate::fact_control::thread_for_session("failed-read-round-budget"),
+    )
+    .unwrap();
+    let results = facts
+        .iter()
+        .filter(|fact| fact.kind == "tool.result")
+        .collect::<Vec<_>>();
+    assert_eq!(
+        forced,
+        Some(crate::harness_loop::ForcedStop::ToolBudget),
+        "events: {observed:?}; tool receipts: {:?}",
+        results.iter().map(|fact| &fact.payload).collect::<Vec<_>>()
+    );
+    assert_eq!(results.len(), 3, "the fourth failed read must not execute");
+    assert!(results.iter().all(|fact| fact.payload["ok"] == false));
+    assert!(results.iter().all(|fact| fact.payload["output"]
+        .as_str()
+        .unwrap()
+        .contains("Failed to read file")));
+    session.close().await;
+}
 
 #[tokio::test]
 async fn plan_management_does_not_exhaust_the_read_only_ceiling() {
@@ -1672,6 +1797,7 @@ async fn budget_denial_names_the_forced_stop() {
             Arc::clone(&client) as Arc<dyn crate::llm::LlmClient>,
             &SessionOptions::new()
                 .with_session_id("lh4-budget-forced-stop")
+                .with_permission_policy(crate::permissions::PermissionPolicy::new().allow("bash"))
                 .with_sandbox_handle(Arc::clone(&sandbox) as Arc<dyn crate::sandbox::BashSandbox>)
                 .with_planning_mode(crate::prompts::PlanningMode::Disabled)
                 .with_auto_delegation_enabled(false)
@@ -1694,6 +1820,20 @@ async fn budget_denial_names_the_forced_stop() {
     );
     assert_eq!(sandbox.calls(), 1, "the second tool round must not execute");
     assert!(sandbox.was_released());
+    let facts = crate::fact_control::read_workspace_facts(
+        &root,
+        &crate::fact_control::thread_for_session("lh4-budget-forced-stop"),
+    )
+    .unwrap();
+    let complete = facts
+        .iter()
+        .rev()
+        .find(|fact| fact.kind == crate::fact_control::TURN_COMPLETE_FACT_KIND)
+        .unwrap();
+    assert_eq!(
+        complete.payload["forced_stop"], "tool_budget",
+        "the retained turn.complete fact must explain the stop"
+    );
 }
 
 /// Final response arrives length-cut (stop_reason `length`, no tool call):

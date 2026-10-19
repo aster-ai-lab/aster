@@ -1,0 +1,32 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.36s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 11 tests
+test fact_control::receipts::tests::cache_proof::proof_cursor_refuses_invalid_originals_and_regressing_projection_boundaries ... ok
+test fact_control::receipts::tests::cache_provenance::selected_prefix_never_imports_future_or_untyped_uncertainty ... ok
+test fact_control::receipts::tests::cache_provenance::purely_negative_cache_uses_original_typed_preparation_without_inventing_receipts ... ok
+test fact_control::receipts::tests::cache_provenance::malformed_and_conflicting_originals_are_integrity_errors_not_honest_unknown ... ok
+test fact_control::receipts::tests::cache_provenance::cached_preparation_after_last_receipt_requires_the_actual_final_log_boundary ... ok
+test fact_control::receipts::tests::cache_provenance::later_terminal_cannot_erase_the_original_pending_interval_at_a_verified_byte_prefix ... ok
+test fact_control::receipts::tests::cache_provenance::exact_original_unknown_and_incomplete_receipts_prove_cached_uncertainty ... ok
+test fact_control::receipts::tests::cache_provenance::background_terminal_cannot_borrow_a_later_exact_spawn_binding_at_its_earlier_boundary ... ok
+test fact_control::receipts::tests::cache_provenance::actual_write_and_host_verifier_provenance_survive_unrelated_prepared_uncertainty ... ok
+test fact_control::receipts::tests::cache_provenance::typed_background_uncertainty_is_distinct_from_malformed_fields_and_bindings ... ok
+test fact_control::receipts::tests::cache_proof::large_late_pure_negative_proof_visits_original_events_once_and_waits_for_actual_tail ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 5143 filtered out; finished in 0.18s
+

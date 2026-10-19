@@ -1,0 +1,15 @@
+
+running 1 test
+test agent_plane::turns::local_acp_tests::delivery::search::real_acp_adaptive_grep_executes_without_embeddings_and_reaches_provider ... a3s-code-acp: 2026-10-19T21:58:29.367243Z  WARN a3s_code_core::agent_api::session_sandbox: macOS OCI Host sandbox is unavailable; native execution remains refused workspace=/private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/a3s-studio-task-adaptive-grep-39963/state/workspace/01a1562c-580f-72b2-8980-26f6020ce77f error=sandbox companion directory is unavailable: No such file or directory (os error 2)
+a3s-code-acp: 2026-10-19T21:58:29.380714Z  WARN a3s_code_core::skills::registry: Duplicate skill name encountered during directory load — overriding previous definition skill=a3s-test path=/Users/roylin/.claude/skills/a3s-test/SKILL.md
+a3s-code-acp: 2026-10-19T21:58:29.384137Z  WARN a3s_code_core::skills::registry: Duplicate skill name encountered during directory load — overriding previous definition skill=skill-creator path=/Users/roylin/.codex/skills/.system/skill-creator/SKILL.md
+a3s-code-acp: 2026-10-19T21:58:29.384487Z  WARN a3s_code_core::skills::registry: Duplicate skill name encountered during directory load — overriding previous definition skill=a3s-test path=/Users/roylin/.codex/skills/a3s-test/SKILL.md
+a3s-code-acp: 2026-10-19T21:58:29.385338Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /Users/roylin/.claude/agents
+a3s-code-acp: 2026-10-19T21:58:29.385372Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /Users/roylin/.a3s/agents
+a3s-code-acp: 2026-10-19T21:58:29.385407Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/a3s-studio-task-adaptive-grep-39963/state/workspace/01a1562c-580f-72b2-8980-26f6020ce77f/.claude/agents
+a3s-code-acp: 2026-10-19T21:58:29.385443Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/a3s-studio-task-adaptive-grep-39963/state/workspace/01a1562c-580f-72b2-8980-26f6020ce77f/.a3s/agents
+WORK_REAL_ACP_ADAPTIVE_GREP_PASS {"binary":"/Users/roylin/code/aster/target/qualification/t030-cua-20261020/a3s-code-acp","code_intelligence":"registered only; no LSP query","main_requests":2,"pid":39964,"presented_tools":25,"provider":"controlled loopback","search_modes":["grep","glob","bm25"],"sha256":"61a06ab66f5f43ea89b2d1a909da5ef146bef2802b9526e75e8792a61d9e09f7","vm_started":false}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 843 filtered out; finished in 16.51s
+

@@ -1,0 +1,18 @@
+{
+  "command": [
+    "cargo",
+    "build",
+    "--locked",
+    "--offline",
+    "-p",
+    "aster",
+    "-p",
+    "a3s-code-acp",
+    "-p",
+    "a3s-office-cli",
+    "-p",
+    "aster-dream"
+  ],
+  "exit_code": 0,
+  "wall_seconds": 445.135695625
+}

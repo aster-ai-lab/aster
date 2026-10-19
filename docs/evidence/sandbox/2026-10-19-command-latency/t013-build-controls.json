@@ -1,0 +1,94 @@
+{
+  "schema": "aster.sandbox.t013.controls.v1",
+  "runtimeSourceSha256": "421543348bca4fc6c2809db0b19b39fd4d1e1d2156a52a97bcbd5a2a00f625a7",
+  "sameBuildTargetDirectory": "/Users/roylin/code/aster/target/t013-sha-build",
+  "buildProfile": "dev (unoptimized + debuginfo)",
+  "rustToolchain": "rustc 1.97.1 (8bab26f4f 2026-07-14)",
+  "os": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "cargoConfigSha256": "5a9eab9030c2ee7bf8819203bb55beb869ff6401f311aedcf0137334cdbc050f",
+  "explicitFlagEnvironment": {
+    "RUSTFLAGS": null,
+    "CARGO_ENCODED_RUSTFLAGS": null,
+    "CARGO_BUILD_TARGET": null,
+    "CARGO_PROFILE_DEV_OPT_LEVEL": null
+  },
+  "assetFileCount": 950,
+  "assetFilesDifferent": [
+    "a3s-oci",
+    "a3s-oci-krun-shim"
+  ],
+  "originalCandidatePreserved": true,
+  "sha2BackendSelection": "sha2 0.10.9 checks force-soft before asm; cpufeatures 0.2.17 Apple aarch64 sha2 branch returns true. The software build adds force-soft; hardware omits it.",
+  "roundOrder": [
+    "software-1",
+    "hardware-1",
+    "hardware-2",
+    "software-2"
+  ],
+  "roundSamples": 19,
+  "plannedRoundCount": 4,
+  "buildOrder": [
+    "software CLI",
+    "software shim",
+    "snapshot and sign software",
+    "hardware CLI",
+    "hardware shim",
+    "snapshot and sign hardware"
+  ],
+  "timingScope": "Fresh Host+DedicatedVm per command; first sample in each round separate. Filesystem cache is not flushed and no cold-boot/disk-cache claim is made. All rounds use the same frozen Core test executable.",
+  "buildCommands": [
+    [
+      "cargo",
+      "build",
+      "--locked",
+      "--offline",
+      "--target-dir",
+      "target/t013-sha-build",
+      "-p",
+      "a3s-oci-cli",
+      "--bin",
+      "a3s-oci",
+      "--features",
+      "sha2/force-soft"
+    ],
+    [
+      "cargo",
+      "build",
+      "--locked",
+      "--offline",
+      "--target-dir",
+      "target/t013-sha-build",
+      "-p",
+      "a3s-oci-krun",
+      "--bin",
+      "a3s-oci-krun-shim",
+      "--features",
+      "sha2/force-soft"
+    ],
+    [
+      "cargo",
+      "build",
+      "--locked",
+      "--offline",
+      "--target-dir",
+      "target/t013-sha-build",
+      "-p",
+      "a3s-oci-cli",
+      "--bin",
+      "a3s-oci"
+    ],
+    [
+      "cargo",
+      "build",
+      "--locked",
+      "--offline",
+      "--target-dir",
+      "target/t013-sha-build",
+      "-p",
+      "a3s-oci-krun",
+      "--bin",
+      "a3s-oci-krun-shim"
+    ]
+  ]
+}

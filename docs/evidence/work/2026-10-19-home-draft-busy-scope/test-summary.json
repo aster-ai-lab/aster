@@ -1,0 +1,52 @@
+[
+  {
+    "run": "before-fix",
+    "passed": 0,
+    "failed": 3,
+    "skipped": 158,
+    "failedTests": [
+      "AgentComposer keeps a new home draft idle while the hidden conversation runs",
+      "AgentComposer hides the hidden conversation form and queue while preserving them when returning",
+      "AgentComposer keeps the home draft when creation returns the busy source session"
+    ]
+  },
+  {
+    "run": "before-reselect",
+    "passed": 0,
+    "failed": 1,
+    "skipped": 80,
+    "failedTests": [
+      "AgentPage leaves the home overlay when the already active session is selected again"
+    ]
+  },
+  {
+    "run": "before-fix-busy-handoff-control",
+    "passed": 0,
+    "failed": 1,
+    "skipped": 160,
+    "failedTests": [
+      "AgentComposer keeps the home draft when creation returns the busy source session"
+    ]
+  },
+  {
+    "run": "composer-regressions",
+    "passed": 161,
+    "failed": 0,
+    "skipped": 0,
+    "failedTests": []
+  },
+  {
+    "run": "caller-regressions",
+    "passed": 170,
+    "failed": 6,
+    "skipped": 0,
+    "failedTests": [
+      "AgentPage shows both agent and session panes by default when sessions are on the right",
+      "AgentPage keeps a sidebar toggle beside agent resource search so a collapsed pane can be reopened",
+      "AgentPage collapses the agent sidebar when the shared shell requests it",
+      "AgentPage temporarily hides and restores the agent sidebar for responsive auto-collapse without changing the user preference",
+      "AgentPage keeps the agent sidebar open after selecting a session from the sidebar",
+      "AgentPage keeps detached session sidebar state local, default-closed, and fixed on the left"
+    ]
+  }
+]

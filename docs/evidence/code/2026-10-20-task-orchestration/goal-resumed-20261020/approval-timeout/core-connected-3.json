@@ -1,0 +1,10 @@
+{
+  "name": "core-connected-3",
+  "command": [
+    "/Users/roylin/code/aster/target/qualification/approval-timeout-20261020/core-tests",
+    "fact_log_confirm_is_true_only_for_the_pending_tool",
+    "--test-threads=1"
+  ],
+  "exit_code": 0,
+  "wall_seconds": 0.04378304200000116
+}

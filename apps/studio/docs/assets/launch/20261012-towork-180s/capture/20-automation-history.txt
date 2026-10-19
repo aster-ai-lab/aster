@@ -1,0 +1,128 @@
+Window: "ToWork", App: ToWork.
+0 standard window ToWork, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content Description: ToWork, URL: 127.0.0.1:4318/windows/main/index.html
+			3 pop up button RoyLin
+			4 button 工作
+			5 button 消息
+			6 button 知识
+			7 button 插件
+			8 button (collapsed) 任务, Secondary Actions: Expand
+			9 button 设置
+			10 container
+				11 button (disabled) 添加智能体
+				12 pop up button 展示方式
+				13 container
+					14 sortable ToWork 工作助手 更多 新任务
+					15 button 法务专家
+					16 button 新任务
+					17 text 暂无任务
+				18 splitter 调整面板宽度, Value: 275
+				19 toggle button 隐藏侧边栏, Value: on
+				20 pop up button Boyue DeepSeek V4 Flash | ToGateway
+				21 button (disabled) 不使用工作目录
+				22 toggle button 文件, Value: off
+				23 toggle button 浏览器, Value: off
+				24 toggle button 状态, Value: off
+				25 container 消息
+					26 container
+						27 text 根据演示数据：浏览12000、报名860、到场620、订单186，生成一句复盘提醒和三个关键转化率。仅在本次会话回复，不发送消息、不修改文件。
+						28 image
+						29 text 10/12 16:09
+						30 button 复制
+						31 button 编辑重发
+						32 button 删除
+						33 text ToWork 工作助手 deepseek-v4-flash 10/12 16:09
+						34 heading 已处理, Value: 3
+							35 button (collapsed) 已处理, Secondary Actions: Expand
+						36 text 复盘提醒  本次整体线索量充足，但漏斗首环节明显偏窄：12000 次浏览仅沉淀 860 人报名，说明活动曝光与报名转化（落地页/表单/权益说明）是最该优先优化的环节；后段到场与成交表现相对健康，属于可放大的强环节。 三个关键转化率
+						37 table
+							38 row (selectable) 环节
+计算
+转化率
+							39 row (selectable)
+								40 cell (selectable) 浏览 → 报名
+								41 cell (selectable) 860 / 12000
+								42 cell (selectable) 7.17%
+							43 row (selectable)
+								44 cell (selectable) 报名 → 到场
+								45 cell (selectable) 620 / 860
+								46 cell (selectable) 72.09%
+							47 row (selectable)
+								48 cell (selectable) 到场 → 订单
+								49 cell (selectable) 186 / 620
+								50 cell (selectable) 30.00%
+						51 button 复制
+						52 button 导出为 Excel
+						53 text 补充串联口径（便于整体判断）：浏览 → 订单  1.55% ，报名 → 订单  21.63% ；全链路 12000 → 186 的整体成交率约  1.55% 。 小结：报名环节是瓶颈（不足一成），到场率和到场成交率均在良性区间，下一步重点放在提升浏览到报名的转化。
+						54 button 复制
+						55 button 保存到笔记
+						56 button 删除
+						57 pop up button 更多操作
+				58 text entry area (settable) 输入消息，按 Return 发送，输入 / 搜索路径或命令，输入 @ 引用文件或会话
+					59 text 输入消息，按 Return 发送，输入 / 搜索路径或命令，输入 @ 引用文件或会话
+				60 button 新任务
+				61 pop up button 技能
+				62 pop up button 权限模式
+				63 button 输入快捷面板
+				64 button (disabled) 发送
+				65 button 新建任务
+				66 button (collapsed) 搜索任务, Secondary Actions: Expand
+				67 container 工作导航
+					68 button 智能体
+					69 button 连接器
+					70 button 技能
+					71 button 自动化
+				72 container 项目
+					73 container
+						74 heading 项目, Value: 3
+							75 text 项目
+						76 button 新建项目
+					77 text 还没有项目
+				78 container 任务
+					79 container
+						80 heading 任务, Value: 3
+							81 text 任务
+						82 button 查看全部最近任务
+					83 container 今天
+						84 heading 今天, Value: 3
+							85 text 今天
+						86 button 请使用 frontend-design 技能，制作「秋日新品发布」复盘 HTML…
+						87 text 5分钟前
+						88 button 重命名
+						89 toggle button 置顶, Value: off
+						90 button 归档
+						91 button 发布复盘提醒 · 视频演示
+						92 text 6分钟前
+						93 button 重命名
+						94 toggle button 置顶, Value: off
+						95 button 归档
+						96 button 用以下演示数据制作一份「秋日新品发布」复盘：浏览量 12000、报名 860、到…
+						97 text 12分钟前
+						98 button 重命名
+						99 toggle button 置顶, Value: off
+						100 button 归档
+				101 toggle button 收起侧边栏, Value: on
+				102 button 返回
+				103 heading 发布复盘提醒 · 视频演示, Value: 1
+					104 text 发布复盘提醒 · 视频演示
+				105 text 已完成 · 2026/10/12 16:15:00 · 下次运行 16:15
+				106 pop up button 更多
+				107 (settable, unknown) 发布复盘提醒 · 视频演示
+					108 radio button 提示词, Value: 0
+					109 radio button 常规设置, Value: 0
+					110 radio button 运行历史, Value: 1
+				111 container
+					112 search text field (settable) 搜索运行记录...
+						113 text 搜索运行记录...
+				114 container
+					115 text 运行中... 10/12 16:09 运行中...
+					116 button 查看会话
+	117 close button
+	118 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	119 minimize button
+120 menu bar
+	121 ToWork
+	122 Edit
+
+The focused UI element is 2 HTML content Description: ToWork, URL: 127.0.0.1:4318/windows/main/index.html

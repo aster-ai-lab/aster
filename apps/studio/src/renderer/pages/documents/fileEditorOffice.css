@@ -1,0 +1,247 @@
+/* Office chrome inside the Studio file editor. DESIGN.md: white surfaces, ink selection, flat hairlines. */
+
+[data-workspace-file-editor] .a3s-office {
+  --a3s-bg: #e6e6e6;
+  --a3s-panel: #ffffff;
+  --a3s-panel-soft: #f5f5f5;
+  --a3s-panel-strong: #f2f3f5;
+  --a3s-ink: #171717;
+  --a3s-muted: #8a8a8a;
+  --a3s-subtle: #8a8a8a;
+  --a3s-faint: #8a8a8a;
+  --a3s-line: #efefef;
+  --a3s-line-strong: #ececec;
+  --work-office-accent: #171717;
+  --work-office-control-accent: #171717;
+  color: #171717;
+  font-size: 13px;
+}
+
+[data-workspace-file-editor] .work-pdf-save,
+[data-workspace-file-editor] .work-markdown-mode-switch {
+  display: none !important;
+}
+
+/* Note presentation uses height:auto. In WKWebView that resolves against this
+   flex item as 0, so the visual pane never appears. */
+[data-workspace-file-editor] .a3s-office:has(.work-markdown-editor.note),
+[data-workspace-file-editor] .work-markdown-editor.note,
+[data-workspace-file-editor] .work-markdown-editor.note .work-markdown-workspace,
+[data-workspace-file-editor] .work-markdown-editor.note .work-markdown-pane.visual {
+  height: 100%;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+[data-workspace-file-editor] .work-pdf-viewer {
+  --work-pdf-accent: #171717;
+  --work-office-control-accent: #171717;
+  background: #e6e6e6;
+}
+
+[data-workspace-file-editor] .work-pdf-toolbar {
+  height: 36px;
+  flex-basis: 36px;
+  gap: 4px;
+  padding: 0 8px;
+  border-bottom: 1px solid #ececec;
+  background: #ffffff;
+  color: #3f3f3f;
+  font-size: 13px;
+  box-shadow: none;
+}
+
+[data-workspace-file-editor] .work-pdf-toolbar-group {
+  flex-shrink: 0;
+}
+
+[data-workspace-file-editor] .work-pdf-toolbar .ds-icon-button,
+[data-workspace-file-editor] .work-pdf-fit-button {
+  height: 24px;
+  border-radius: 6px;
+  color: #3f3f3f;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+[data-workspace-file-editor] .work-pdf-toolbar .ds-icon-button {
+  width: 24px;
+  flex-basis: 24px;
+}
+
+[data-workspace-file-editor] .work-pdf-fit-button {
+  width: auto;
+  padding: 0 8px;
+}
+
+[data-workspace-file-editor] .work-pdf-toolbar .ds-icon-button:hover,
+[data-workspace-file-editor] .work-pdf-fit-button:hover:not(:disabled) {
+  background: #f5f5f5;
+  color: #171717;
+}
+
+[data-workspace-file-editor] .work-pdf-toolbar .ds-icon-button.selected,
+[data-workspace-file-editor] .work-pdf-fit-button[aria-pressed='true'] {
+  background: #f2f3f5;
+  color: #171717;
+}
+
+[data-workspace-file-editor] .work-pdf-toolbar .ds-icon-button:focus-visible,
+[data-workspace-file-editor] .work-pdf-fit-button:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px rgb(0 0 0 / 10%);
+}
+
+[data-workspace-file-editor] .work-pdf-history,
+[data-workspace-file-editor] .work-pdf-annotation,
+[data-workspace-file-editor] .work-pdf-zoom-controls {
+  border-color: #ececec;
+}
+
+[data-workspace-file-editor] .work-pdf-thumbnail-rail {
+  border-right: 1px solid #efefef;
+  background: #ffffff;
+}
+
+[data-workspace-file-editor] .work-pdf-thumbnail-list > button {
+  border-radius: 8px;
+}
+
+[data-workspace-file-editor] .work-pdf-thumbnail-list > button:hover {
+  background: #f7f7f7;
+}
+
+[data-workspace-file-editor] .work-pdf-thumbnail-list > button.active {
+  border-color: transparent;
+  background: #f2f3f5;
+}
+
+[data-workspace-file-editor] .work-pdf-thumbnail-list > button.active .work-pdf-thumbnail-number {
+  color: #171717;
+  font-weight: 500;
+}
+
+[data-workspace-file-editor] .work-pdf-thumbnail-number {
+  color: #8a8a8a;
+  font-size: 12px;
+}
+
+[data-workspace-file-editor] .work-pdf-thumbnail-preview {
+  border: 1px solid #ececec;
+  border-radius: 4px;
+  box-shadow: none;
+}
+
+[data-workspace-file-editor] .work-pdf-thumbnail-list > button.active .work-pdf-thumbnail-preview {
+  border-color: #171717;
+}
+
+[data-workspace-file-editor] .work-pdf-embed:focus-visible {
+  outline: 2px solid rgb(0 0 0 / 10%);
+}
+
+[data-workspace-file-editor] .work-office-ribbon,
+[data-workspace-file-editor] .work-office-preview-bar,
+[data-workspace-file-editor] .work-presentation-editor,
+[data-workspace-file-editor] .work-presentation-ribbon {
+  --work-office-accent: #171717;
+  --work-office-control-accent: #171717;
+  border-bottom-color: #ececec;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+[data-workspace-file-editor] .work-office-ribbon-tabs > button {
+  color: #3f3f3f;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+[data-workspace-file-editor] .work-office-ribbon-tabs > button:hover:not(:disabled) {
+  color: #171717;
+}
+
+[data-workspace-file-editor] .work-office-ribbon-tabs.ds-tabs > button[aria-selected='true'],
+[data-workspace-file-editor] .work-office-ribbon-tabs.ds-tabs > button[aria-selected='true']:hover:not(:disabled) {
+  background: #f2f3f5;
+  color: #171717;
+  font-weight: 500;
+}
+
+[data-workspace-file-editor] .work-office-ribbon-tabs.ds-tabs > button[aria-selected='true']::after {
+  background: transparent;
+}
+
+[data-workspace-file-editor] .work-office-preview-summary {
+  color: #8a8a8a;
+  font-size: 13px;
+}
+
+[data-workspace-file-editor] .work-office-ribbon-tabs > button:focus-visible {
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 2px rgb(0 0 0 / 10%);
+}
+
+[data-workspace-file-editor] .work-office-ribbon .work-office-toolbar {
+  background: #ffffff;
+}
+
+[data-workspace-file-editor] .work-office-ribbon .work-office-toolbar button:hover:not(:disabled) {
+  background: #f5f5f5;
+  color: #171717;
+}
+
+[data-workspace-file-editor] .work-office-ribbon .work-office-toolbar button.active,
+[data-workspace-file-editor] .work-office-ribbon .work-office-toolbar button[aria-pressed='true'] {
+  background: #f2f3f5;
+  color: #171717;
+}
+
+[data-workspace-file-editor] .work-document-scroll,
+[data-workspace-file-editor] .work-presentation-sorter {
+  background: #e6e6e6;
+}
+
+[data-workspace-file-editor] .work-document-ruler-shell {
+  border-color: #efefef;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: none;
+  color: #8a8a8a;
+}
+
+[data-workspace-file-editor] .work-document-page-navigation > ol > li > button:hover {
+  background: #f7f7f7;
+  color: #171717;
+}
+
+[data-workspace-file-editor] .work-document-page-navigation > ol > li > button.active,
+[data-workspace-file-editor] .work-presentation-sorter-grid > button.active {
+  border-color: #171717;
+  background: #f2f3f5;
+  color: #171717;
+}
+
+[data-workspace-file-editor] .work-document-page-navigation > ol > li > button:focus-visible,
+[data-workspace-file-editor] .work-presentation-sorter-grid > button:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px rgb(0 0 0 / 10%);
+}
+
+[data-workspace-file-editor] .work-presentation-design-editing {
+  background: #ffffff;
+}
+
+[data-workspace-file-editor] .work-presentation-chart-panel button:hover:not(:disabled) {
+  border-color: #ececec;
+  color: #171717;
+}
+
+[data-workspace-file-editor] .work-office-status,
+[data-workspace-file-editor] .work-presentation-status {
+  border-top: 1px solid #ececec;
+  background: #ffffff;
+  color: #8a8a8a;
+  font-size: 12px;
+  box-shadow: none;
+}

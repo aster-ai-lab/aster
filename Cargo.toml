@@ -34,6 +34,11 @@ members = [
     "crates/okf",
     "crates/sandbox",
     "crates/search",
+    "crates/oci-runtime/crates/agent",
+    "crates/oci-runtime/crates/agent-protocol",
+    "crates/oci-runtime/crates/cli",
+    "crates/oci-runtime/crates/krun",
+    "crates/oci-runtime/crates/runtime",
     "crates/terminal/crates/build/a3s-proto-build",
     "crates/terminal/crates/codegen/a3s-acp-lib",
     "crates/terminal/crates/codegen/a3s-agent-lifecycle",
@@ -138,6 +143,7 @@ members = [
     "crates/use/core",
     "crates/use/reconcile",
     "crates/vec",
+    "apps/work/src-tauri",
     "crates/boot",
     "crates/boot/macros",
     "crates/event",
@@ -332,7 +338,7 @@ olpc-cjson = "0.1"
 rmcp = { version = "=0.8.5", default-features = false, features = ["base64", "client", "macros", "server", "transport-io", "transport-streamable-http-client-reqwest", "transport-streamable-http-server"] }
 tonic-build = "0.11"
 
-a3s-libkrun-sys = "=3.1.0"
+a3s-libkrun-sys = { path = "crates/box/deps/libkrun-sys" }
 cap-fs-ext = "=4.0.2"
 cap-std = "=4.0.2"
 libloading = "0.8"

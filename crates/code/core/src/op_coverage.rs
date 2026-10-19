@@ -1201,6 +1201,7 @@ async fn opcov_protocol_cancel() {
             request_id: "opcov-protocol-cancel-start".into(),
             identity: identity.clone(),
             prompt: "wait for protocol cancel".into(),
+            models: None,
         },
     };
     let start_receipt = host.execute(&start).await.expect("protocol start");

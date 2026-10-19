@@ -364,3 +364,38 @@ async fn applies_safe_sqlite_connection_defaults() {
         .await;
     assert!(violation.is_err());
 }
+
+#[tokio::test]
+async fn query_statement_returns_the_inserted_rows() {
+    let path = std::env::temp_dir().join(format!(
+        "a3s-orm-grid-{}-{}.sqlite",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .expect("clock")
+            .as_nanos()
+    ));
+    let executor = SqliteExecutor::open(&path).await.expect("open");
+    executor
+        .query_statement("CREATE TABLE sales (sku TEXT, amount INTEGER)")
+        .await
+        .expect("create");
+    executor
+        .query_statement("INSERT INTO sales (sku, amount) VALUES ('pen', 10), ('book', 32)")
+        .await
+        .expect("insert");
+    let grid = executor
+        .query_statement("SELECT sku, amount FROM sales ORDER BY sku")
+        .await
+        .expect("select");
+    drop(executor);
+    let _ = std::fs::remove_file(&path);
+    assert_eq!(grid.columns, vec!["sku".to_owned(), "amount".to_owned()]);
+    assert_eq!(
+        grid.rows,
+        vec![
+            vec![Value::String("book".to_owned()), Value::I64(32)],
+            vec![Value::String("pen".to_owned()), Value::I64(10)],
+        ]
+    );
+}

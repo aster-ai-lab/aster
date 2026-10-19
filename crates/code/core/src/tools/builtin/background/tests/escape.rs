@@ -134,7 +134,9 @@ time.sleep(30)
         assert!(!owned.workspace.path().join("escape-ready.tmp").exists());
         assert!(!owned.workspace.path().join("escape-late.txt").exists());
         assert!(tool.runs.0.lock().unwrap().is_empty());
-        eprintln!("setsid qualification=unsupported; native macOS background refused before task, fact, or process admission; no containment-support claim");
+        eprintln!(
+            "setsid qualification=unsupported; native macOS background refused before task, fact, or process admission; no containment-support claim"
+        );
         return;
     }
     assert!(started.success, "{}", started.content);

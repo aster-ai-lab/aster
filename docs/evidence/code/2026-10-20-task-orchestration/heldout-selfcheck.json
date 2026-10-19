@@ -1,0 +1,9 @@
+{
+  "scope": "oracle/fixture self-check only; no model Run",
+  "analysis_expected_matches_recomputed_data": true,
+  "repair_original_suite_exit": 1,
+  "repair_original_expected_failed_tests": 3,
+  "repair_temporary_correct_reference_suite_exit": 0,
+  "repair_reference_independent_cases": 4,
+  "source_fixture_preserved": true
+}

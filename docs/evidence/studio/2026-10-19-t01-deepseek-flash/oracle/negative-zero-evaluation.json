@@ -1,0 +1,34 @@
+{
+  "pipeline_sha256": "a0f468639ddac231ba38fb8452ab7946b4651a2ee62ead69341bac042d5b7b4b",
+  "probe": "valid one-row input with profit -0.001 and a -0.00 reference cell",
+  "exit_code": 0,
+  "matches_independent_oracle": false,
+  "differences": [
+    "$.reconciliation[3].reference: '0.00', expected '-0.00'",
+    "$.reconciliation[3].actual: '0.00', expected '-0.00'"
+  ],
+  "submission_unchanged": true,
+  "oracle": "reference.py expected(), using Decimal.quantize(ROUND_HALF_UP) and fixed precision formatting",
+  "input_construction": "Copy public input into a temporary directory. Keep one Africa order and only headers in other order files; set Sales=1.000, Profit=-0.001, Shipping Cost=0, Discount=0, Quantity=1; empty adjustments. Replace the segment reference with the Consumer group, Total_Profit=-0.00. All monetary inputs have at most three fractional digits.",
+  "affected_output": {
+    "source_file": "segment_performance.csv",
+    "group": "Consumer",
+    "field": "Total_Profit",
+    "expected": {
+      "actual": "-0.00",
+      "reference": "-0.00",
+      "match": true
+    },
+    "submitted": {
+      "actual": "0.00",
+      "reference": "0.00",
+      "match": true
+    }
+  },
+  "comparison_scope": "All structured output; exactly the two string differences listed",
+  "baseline_scenarios_passed": 8,
+  "baseline_scenarios_total": 8,
+  "combined_scenarios_passed": 8,
+  "combined_scenarios_total": 9,
+  "temporary_copy_only": true
+}

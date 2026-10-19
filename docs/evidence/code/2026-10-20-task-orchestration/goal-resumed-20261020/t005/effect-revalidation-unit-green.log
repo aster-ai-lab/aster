@@ -1,0 +1,20 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling a3s-effect v0.2.1 (/Users/roylin/code/aster/crates/effect)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.26s
+     Running unittests src/lib.rs (target/debug/deps/a3s_effect-5499a9d6c3821ed5)
+
+running 3 tests
+test coding::revalidation_tests::compaction_translates_only_a_known_retained_suffix ... ok
+test coding::revalidation_tests::progress_requires_comparable_byte_or_object_identity ... ok
+test coding::revalidation_tests::progress_waits_for_the_whole_model_tool_batch ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 73 filtered out; finished in 0.00s
+

@@ -1,0 +1,183 @@
+{
+  "files": [
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/approval_recovery_tests.rs",
+      "sha256": "883b94d803dd42a2673754cb98d8f2a6e3649b210d51654602063a4a953c7c8e"
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/approval_response_tests.rs",
+      "sha256": "0ab30f81db334356e335b46866b7fac7ebc2158e7f08ed4d908656d3b9e54222"
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/controllers.rs",
+      "sha256": "69902055dde43e1856512a11ed507db72cab86e40cffa10870e5d54024b789a8"
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/events.rs",
+      "sha256": "f550427e740166bb58e2591f0701a08c66940c2af0fbb134bde604f7b53c9087"
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/events_tests.rs",
+      "sha256": "4fc43ebe6a41e4b4d5ccc4023f1083a2116ccd9881594a2df52f91dfaffc3e3c"
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/execution_status_tests.rs",
+      "sha256": "66365c367a2df3d980082c7bdbc3c0646b5783bb94c584ef26965171a2417984"
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/local_acp_delivery_tests.rs",
+      "sha256": "ba84be21210f2308a085a0e35470caddfe7fb8227eca3f126a9cf627e2792939"
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/local_acp_program_tests.rs",
+      "sha256": "fc8e4c629461f48547a59efc18e2f8c88903b0e61f1665701094a4292f0c6bc3"
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/local_acp_provider_tests.rs",
+      "sha256": "2225ae7ad0731e7ce946f36637460fe03506498cb0e12d4ceabee0aff79b1da3"
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/local_acp_search_tests.rs",
+      "sha256": "2b3a5969d7e609340e71ec97060dd4ff26981f0c14880ff1f79aecdc858c2fbe"
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/message_delete_tests.rs",
+      "sha256": "9c31037615245d9973c24b7ce63d7d6c9ca54a3fe2fe811a3929a170388e1035"
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/scheduled_recovery_tests.rs",
+      "sha256": "217e725a57b832c0f4793995c91e7ef8149e152ce86b8f7dcb0d2d471ad13683"
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/turns.rs",
+      "sha256": "5e4598b7448ac8fc3945b4e216f9f89a45c62b40a45870c1daad4e546361526d"
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/turns_form_tests.rs",
+      "sha256": "a7fbd35a275c84766861681e0cedca187ff23436ede34abfdf22b50ead9705ad"
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/workbench_turns.rs",
+      "sha256": "2c5fd28697c806b0381697dd191eeb0eb982f94de6f0cad0edea0587d2014de0"
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/workbench_turns_tests.rs",
+      "sha256": "a885f2c16b7efc0e8724904b5d004615669e333663ac3595ac616c2da1eb4ced"
+    },
+    {
+      "path": "crates/code/core/src/agent/turn_context.rs",
+      "sha256": "3f8cd7a29290ea1d45d2cb236c65852530e8a75f164fb9f3e430d0704e23f960"
+    },
+    {
+      "path": "crates/code/core/src/agent/turn_context/execution_target_tests.rs",
+      "sha256": "891549c975a19a39ead18d299bec1deb939d7d9eb645f885e0341bcdecdf8686"
+    },
+    {
+      "path": "crates/code/core/src/agent/turn_context/tests.rs",
+      "sha256": "4b7a16a8f636b6591860544b6aa33f2dd3c70a96bb52b1b864636c726c4d9e91"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/conversation_runtime/owned_fact.rs",
+      "sha256": "9424861e14d0c884d33ea258dff55910c55fd5f392e357cf246056d0bf8f4fb9"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/conversation_runtime/turn_outcome.rs",
+      "sha256": "997892d13b810aef1673b0f15627fc8371352b08344da6c12d676d09d3528895"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log.rs",
+      "sha256": "220be8a5a38a8990308e2ee31abfd336b0b0882e6d7dcc53cefe522dc34017a0"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log/confirmation_snapshot.rs",
+      "sha256": "029b2498d121790d686e5ffb3721484597011f0bf89adc490354654d5c75732c"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log/execution_target.rs",
+      "sha256": "0e6051590af7ecd3651f0ba90194c916a906a48ffd7ba97dd17300a474031f0d"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log/revalidation.rs",
+      "sha256": "520899a3ca96da803ae0148c6696ead632e18f79286dfe280f765d8007d19f50"
+    },
+    {
+      "path": "crates/code/core/src/fact_control/model_call.rs",
+      "sha256": "2919ceb092d086304d036478582a22d715d2709cfb450428f714b30ff23d40a8"
+    },
+    {
+      "path": "crates/code/core/src/fact_control/receipts.rs",
+      "sha256": "2e0d104e1026aba7625072c77475164f3efc96ae8d6d355f89c2f19677e6f6a6"
+    },
+    {
+      "path": "crates/code/core/src/porcelain.rs",
+      "sha256": "0372c33a9515668a549364eeee4ab64ef48cf02866483374ee0d881658e9199c"
+    },
+    {
+      "path": "crates/code/core/src/porcelain/receipt_tests.rs",
+      "sha256": "f2bb485064334ca1cbe620d0e58f77330ac8c09cdd30993b816e331191e4c6dc"
+    },
+    {
+      "path": "crates/code/core/src/sandbox.rs",
+      "sha256": "2fe21c7f1de11d5b6eacc238fc37be33cccfef9cf4231029de08c9272a2e1c6e"
+    },
+    {
+      "path": "crates/code/core/src/sandbox/guest.rs",
+      "sha256": "a32f89b4c1921db85132a5246cf4440f538d1cd09ee2c03e99eb1538a653f70e"
+    },
+    {
+      "path": "crates/code/core/src/sandbox/native.rs",
+      "sha256": "9c51f09bdcfeb254823ec072805b87b6ffc12fd794742aeee562c04fbd6554d6"
+    },
+    {
+      "path": "crates/code/core/src/sandbox/oci.rs",
+      "sha256": "33119139a3346a08210f31a83ec3ca479ae445dcec2aeb799312ef847bf4359e"
+    },
+    {
+      "path": "crates/code/core/src/sandbox/process_host.rs",
+      "sha256": "3e140230961ec50b995de0745ca08cffab6c63e8c45eb972bb64841972fea3f3"
+    },
+    {
+      "path": "crates/code/core/src/tools/builtin/bash.rs",
+      "sha256": "b4a91c1b054f90b7ae619b2b3a6e0cb6027688882a977f557f4d5705293bc5ea"
+    },
+    {
+      "path": "crates/code/core/src/tools/builtin/bash/windows_shell.rs",
+      "sha256": "46c1fb33b197d47849e4964e1136801eaafabb94de087b8ee243497acbf52988"
+    },
+    {
+      "path": "crates/code/core/src/workspace/local.rs",
+      "sha256": "5ff3788ba8656de6b9f09f2188b383aff134a73124ca65d1ce53b12300c452d7"
+    },
+    {
+      "path": "crates/code/core/src/workspace/manifest.rs",
+      "sha256": "825058fb2e2c610246b869b8f012af19854abf99febb5566ffed23e7b9947804"
+    },
+    {
+      "path": "crates/code/core/src/workspace/mod.rs",
+      "sha256": "afc062f3954e77ef614027232a18e7c3b77790d3a9603b05ef4c597d5f4ce1ed"
+    },
+    {
+      "path": "crates/effect/src/coding.rs",
+      "sha256": "0a9a8d4a2e2fcfed9053fe6c68991711efdd4ee3375e4c07048572ffe7a0d3ce"
+    },
+    {
+      "path": "crates/effect/src/coding/revalidation_tests.rs",
+      "sha256": "b3f24e7694ac44d6101f946e89dbb7e6e0d35ae23848c938a3b1f18957694dc9"
+    },
+    {
+      "path": "crates/effect/tests/tool_effects.rs",
+      "sha256": "33143224f7ba629cb88dad3b6bf4837dde3c69d4187782362146b707d8721cf3"
+    },
+    {
+      "path": "crates/effect/tests/tool_effects/revalidation.rs",
+      "sha256": "3478e96837ae1a4502f5aadd8f7ac386b1b6194a58c6f28d5a1251ad458634e3"
+    }
+  ],
+  "differences": [
+    {
+      "path": "crates/code/core/src/porcelain.rs",
+      "old": "b081ecf4f5cfb9bde5efc4dfa03975984925b2449beac3256672f4b0acf85572",
+      "new": "0372c33a9515668a549364eeee4ab64ef48cf02866483374ee0d881658e9199c"
+    }
+  ]
+}

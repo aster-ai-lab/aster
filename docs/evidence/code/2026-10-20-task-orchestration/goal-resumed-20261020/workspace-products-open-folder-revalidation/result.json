@@ -1,0 +1,20 @@
+{
+  "cwd": "/Users/roylin/code/aster/apps/work",
+  "argv": [
+    "node",
+    "./node_modules/vitest/vitest.mjs",
+    "run",
+    "--project",
+    "renderer",
+    "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+    "src/renderer/pages/agents/__tests__/WorkbenchSessionFiles.openFolder.test.tsx",
+    "src/renderer/shell/studioMainBridge.test.ts",
+    "-t",
+    "counts workspace-relative|keeps distinct references|uses exact file names|opening the session workspace in the file manager|opens the workspace directory through the authenticated host|rejects an unconfirmed directory open"
+  ],
+  "started_at_utc": "2026-10-19T21:44:30.238484+00:00",
+  "purpose": "separate existing-product revalidation, excluded from T01 speed measurements",
+  "exit_code": 0,
+  "elapsed_seconds": 5.751431041,
+  "source_unchanged": true
+}

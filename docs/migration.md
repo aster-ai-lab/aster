@@ -98,7 +98,7 @@ not launch. It replaces an older running primary AsterDream, including one
 under `apps/work/src-tauri/target` or the primary Application Support app,
 so the new build is not asked to show the old window. `just dev` starts the
 same desktop through `apps/work`'s launcher with Rsbuild dev on
-127.0.0.1:4318, so renderer edits hot-reload. Work is included in
+127.0.0.1:4320, so renderer edits hot-reload. Studio keeps 4318. Work is included in
 the same Rust workspace. Its former Git metadata is preserved locally under
 `.git/imported-work.git`; its source files are part of this repository.
 
@@ -261,3 +261,16 @@ and `crates/oci-runtime` (from the pinned A3S-Lab/OCI-Runtime source), the
   for the single native sqlite3 linkage.
 - Validation: `cargo check` on contracts, node-agent, runtime, sms,
   form-core, and box-runtime, plus workspace-wide `cargo fmt --check`.
+
+## Gateway, runner, and the full-module state
+
+`apps/gateway` registers with the bge embedding crate and the vendored
+updater and sentry sources; `apps/runner` registers. The science, web,
+and official content trees are no longer in this checkout. crates/vec loosens its rayon pins
+from exact 1.10.0 to ^1.10 so the gateway's image/ravif chain resolves
+beside the vec index pin wall. apps/runtime (the Gateway /v1 data-plane
+binary) shares the a3s-runtime package name with the copied exec
+runtime and stays a standalone tree pending its rename decision. The
+registry-builder tool ships unregistered against the pinned extension
+0.1.3 for the same reason. Validation: vec 459, runner 33, gateway
+compile-plus-tests, and the terminal product still compile.

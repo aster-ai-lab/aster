@@ -1,0 +1,9 @@
+b3f26a2e4988ed382dd25b3ab2188a2116bea7f993daed2631662cd6a61a63c4  apps/work/src-tauri/src/agent_plane/mod.rs
+2de186acb9429f60aa97758d9c4aa64cb04e30489a1dead9c1e2207394cafa00  apps/work/src-tauri/src/agent_plane/turns.rs
+eb2caeda002334501f84324ffe48c1835ba2c878f87f6a24b616bbb8e519b65d  apps/work/src-tauri/src/capabilities.rs
+76ae9264f7157ebe93d5d0180e32796426f9cbeff6e08d822462a41eb7e328bb  apps/work/src/renderer/hooks/useAssistantCatalogPresets.ts
+11d95d260b9e9c7747980b84f7193f98db4196952143f013ef37e986f2de007b  apps/work/src/renderer/pages/agents/expertRow.tsx
+202518df65e1481ed88e10ab8112a56f10ab466430902a567913ed8e393f1bf3  apps/work/src/renderer/pages/agents/homeAgentCatalog.tsx
+c45209e7716d331510a2e0975fc2d72adba9897ae74e660b333d983f2390b54d  apps/work/src/renderer/pages/capabilities/capabilityMark.tsx
+f0f1d2b49a0916b0e96ae8da922c75a73fe44f8a82efd6d6bdc1e20480f3a595  apps/work/src/renderer/i18n/locales/en-us.json
+72699d078253ef060859d49167cfe19f1373dc8cc5c7b4cd816121d414a922b8  apps/work/src/renderer/i18n/locales/zh-cn.json

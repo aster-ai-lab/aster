@@ -1,0 +1,17 @@
+{
+  "identifier": "notice-capability",
+  "description": "Published About notice windows. Only minimize, zoom, close, dragging, and host logs. The page does not receive the shell token.",
+  "local": true,
+  "remote": {
+    "urls": ["http://127.0.0.1:*"]
+  },
+  "windows": ["notice-*"],
+  "webviews": ["notice-*"],
+  "permissions": [
+    "allow-log-to-host",
+    "core:window:allow-start-dragging",
+    "core:window:allow-minimize",
+    "core:window:allow-toggle-maximize",
+    "core:window:allow-close"
+  ]
+}

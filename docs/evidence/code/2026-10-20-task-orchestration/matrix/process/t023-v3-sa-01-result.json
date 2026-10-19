@@ -1,0 +1,12 @@
+{
+  "run_id": "t023-v3-sa-01",
+  "pid": 84493,
+  "exit_code": 101,
+  "outer_wall_seconds": 488.6450906250393,
+  "started_at_utc": "2026-10-19T19:43:51.356650+00:00",
+  "ended_at_utc": "2026-10-19T19:52:00.004280+00:00",
+  "supervisor_deadline_exceeded": false,
+  "executable_sha256": "dafcdb08898bbb196b05d4da739229abb81b16a2a9c60382a889e1291fa6b6dd",
+  "manifest_sha256": "04a5884d99c498b8fda5250d0963c4ae47f640fd6d51b266874ba87183aafe8b",
+  "log_sha256": "ea28399390429b608f481247717a2f9822c94c1695ce42588a4b0ae13ae93a38"
+}

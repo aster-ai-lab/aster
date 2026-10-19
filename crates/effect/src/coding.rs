@@ -22,6 +22,8 @@ use crate::error::ActorError;
 use crate::exit::Exit;
 use crate::fact::{Fact, NewFact};
 
+#[cfg(test)]
+mod revalidation_tests;
 mod tool_effects;
 pub use tool_effects::{
     tool_args_digest, ToolAdmissionIdentityV1, ToolEffectObservationV1, ToolExecutionOutcome,
@@ -290,6 +292,11 @@ impl HarnessConfig {
         self
     }
 
+    pub(crate) fn with_duplicate_threshold_of(mut self, base: &HarnessConfig) -> Self {
+        self.duplicate_threshold = base.duplicate_threshold;
+        self
+    }
+
     /// Delay before a failed model call is tried again.
     pub fn with_model_retry_delay(mut self, delay: std::time::Duration) -> Self {
         self.model_retry_delay = delay;
@@ -421,6 +428,8 @@ struct SchedulerState {
     cycle: u64,
     phase: CodingPhase,
     messages: Vec<String>,
+    duplicate_start: usize,
+    duplicate_reset_pending: bool,
     summary: String,
     tool_runs: u32,
     /// A compaction landed and no model call has reported since. Pressure is
@@ -461,6 +470,8 @@ impl SchedulerState {
             cycle: 0,
             phase: CodingPhase::Idle,
             messages: Vec::new(),
+            duplicate_start: 0,
+            duplicate_reset_pending: false,
             summary: String::new(),
             tool_runs: 0,
             compacted_awaiting_model: false,
@@ -761,6 +772,11 @@ fn tool_result_line(ok: bool, output: &str) -> String {
 fn promote_queued(mut state: SchedulerState) -> SchedulerState {
     if state.queued.is_empty() {
         state.pending_call = None;
+        // Keep all calls in this model batch protected, including later Ask groups.
+        if state.duplicate_reset_pending {
+            state.duplicate_start = state.messages.len();
+            state.duplicate_reset_pending = false;
+        }
         return state;
     }
     let next = state.queued.remove(0);
@@ -864,6 +880,21 @@ fn duplicate_nudge(messages: &[String], call: &ToolCall, threshold: Option<u32>)
     ))
 }
 
+fn known_identity_changed(change: &ToolPathChangeV1) -> bool {
+    let Some(before) = &change.before else {
+        return false;
+    };
+    let after = &change.after;
+    before.kind != after.kind
+        || (matches!(before.kind, ToolFileKind::File | ToolFileKind::Symlink)
+            && before.content_digest != after.content_digest)
+        || (before.kind != ToolFileKind::Missing
+            && before
+                .mode
+                .zip(after.mode)
+                .is_some_and(|(before, after)| before != after))
+}
+
 #[derive(Deserialize)]
 struct ConfirmationPayload {
     tool_call_id: String,
@@ -914,6 +945,13 @@ fn step(mut state: SchedulerState, fact: &Fact, config: &HarnessConfig) -> Sched
         },
         "compaction.done" => match serde_json::from_value::<SummaryPayload>(fact.payload.clone()) {
             Ok(payload) => SchedulerState {
+                duplicate_start: if state.messages.ends_with(&payload.kept) {
+                    state
+                        .duplicate_start
+                        .saturating_sub(state.messages.len() - payload.kept.len())
+                } else {
+                    0
+                },
                 summary: payload.summary,
                 compacted_awaiting_model: true,
                 // The count before compaction no longer describes the prompt.
@@ -943,6 +981,7 @@ fn step(mut state: SchedulerState, fact: &Fact, config: &HarnessConfig) -> Sched
                 }
                 Ok(payload) if payload.tool_call_id == call.id => {
                     if state.queued.is_empty() {
+                        let state = promote_queued(state);
                         SchedulerState {
                             phase: CodingPhase::Done,
                             assistant: Some("denied".into()),
@@ -1059,6 +1098,10 @@ fn step(mut state: SchedulerState, fact: &Fact, config: &HarnessConfig) -> Sched
                     return state;
                 }
                 if let Some(receipt) = &payload.receipt {
+                    state.duplicate_reset_pending |= receipt.effects.completeness
+                        == ToolObservationCompleteness::Complete
+                        && receipt.effects.unresolved_external_operations.is_empty()
+                        && receipt.effects.changes.iter().any(known_identity_changed);
                     state
                         .preparations
                         .retain(|prepared| prepared.identity != receipt.identity);
@@ -1299,7 +1342,7 @@ fn transitions_of(
                     }).collect()).into(),
                 }];
             }
-            let messages = state.messages.clone();
+            let messages = state.messages[state.duplicate_start..].to_vec();
             let threshold = config.duplicate_threshold;
             let key = batch
                 .iter()

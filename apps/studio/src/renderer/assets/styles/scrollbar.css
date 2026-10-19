@@ -1,0 +1,57 @@
+:root {
+  --scrollbar-thumb-dark: rgba(255, 255, 255, 0.15);
+  --scrollbar-thumb-dark-hover: rgba(255, 255, 255, 0.2);
+  --scrollbar-thumb-light: rgba(0, 0, 0, 0.15);
+  --scrollbar-thumb-light-hover: rgba(0, 0, 0, 0.2);
+  --scrollbar-quiet-dark: rgb(255 255 255 / 32%);
+  --scrollbar-quiet-dark-hover: rgb(255 255 255 / 48%);
+  --scrollbar-quiet-light: rgb(23 23 23 / 28%);
+  --scrollbar-quiet-light-hover: rgb(23 23 23 / 46%);
+
+  --scrollbar-thumb: var(--scrollbar-thumb-dark);
+  --scrollbar-thumb-hover: var(--scrollbar-thumb-dark-hover);
+  --scrollbar-quiet: var(--scrollbar-quiet-dark);
+  --scrollbar-quiet-hover: var(--scrollbar-quiet-dark-hover);
+
+  --scrollbar-width: 6px;
+  --scrollbar-height: 6px;
+  --scrollbar-thumb-radius: 10px;
+}
+
+body.light {
+  --scrollbar-thumb: var(--scrollbar-thumb-light);
+  --scrollbar-thumb-hover: var(--scrollbar-thumb-light-hover);
+  --scrollbar-quiet: var(--scrollbar-quiet-light);
+  --scrollbar-quiet-hover: var(--scrollbar-quiet-light-hover);
+}
+
+.shiki-dark {
+  --scrollbar-thumb: var(--scrollbar-thumb-dark);
+  --scrollbar-thumb-hover: var(--scrollbar-thumb-dark-hover);
+  --scrollbar-quiet: var(--scrollbar-quiet-dark);
+  --scrollbar-quiet-hover: var(--scrollbar-quiet-dark-hover);
+}
+
+.shiki-light {
+  --scrollbar-thumb: var(--scrollbar-thumb-light);
+  --scrollbar-thumb-hover: var(--scrollbar-thumb-light-hover);
+  --scrollbar-quiet: var(--scrollbar-quiet-light);
+  --scrollbar-quiet-hover: var(--scrollbar-quiet-light-hover);
+}
+
+/* Overlay hosts paint their own thumb. These rules live in @layer app so they
+   beat the quiet classic bar in scrollbar-quiet.css. Do not add scrollbar-color
+   here: it would bring the thick system bar back on this scroller. */
+
+[data-scrollbar='overlay'] {
+  scrollbar-color: auto;
+  scrollbar-gutter: auto;
+  scrollbar-width: none;
+}
+
+[data-scrollbar='overlay']::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+  background: transparent;
+}

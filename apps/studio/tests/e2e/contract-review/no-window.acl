@@ -1,0 +1,15 @@
+suite "contract-review-composer-route" {
+  version = 1
+  scenario "retired-window" {
+    name = "The contract-review plugin cannot open as a standalone applet"
+    surface = "web"
+    timeout_ms = 30000
+    navigate "old-url" { url = "http://127.0.0.1:4537/windows/main/index.html?workbench-applet=review" }
+    expect "normal-composer" { visible = role("textbox", "描述任务，输入 / 使用指令或技能，@ 使用智能体") }
+    expect "no-review-window" {
+      target = css("[data-ui='workbench.review'], [data-ui='workbench.review.input'], [data-applet='review']")
+      visible_count = 0
+    }
+    screenshot "workbench" { path = "screenshots/no-standalone-review.png" }
+  }
+}

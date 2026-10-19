@@ -1,0 +1,7 @@
+
+running 2 tests
+test agent_api::tests::fact_log::work_policy::confirmation::missing_or_withdrawn_confirmation_with_bound_policy_is_a_non_execution ... ok
+test agent_api::tests::fact_log::work_policy::confirmation::unbound_legacy_fact_confirmation_survives_a_missing_manager_receiver ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 5202 filtered out; finished in 0.12s
+

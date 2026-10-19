@@ -1,5 +1,6 @@
 //! Closed OpenAI endpoint matching and bounded JSON request collection.
 
+use super::standards::{ModelStandard, StandardAdmission};
 use bytes::Bytes;
 use http::header::{CONTENT_LENGTH, CONTENT_TYPE};
 use http::{HeaderMap, Method, Response, StatusCode};
@@ -44,22 +45,42 @@ pub(crate) enum OpenAiRequestProfile {
 }
 
 impl OpenAiRequestProfile {
-    /// Match only the method and exact path combinations owned by the native
-    /// OpenAI data plane. Query parameters do not affect the path match.
+    /// Match admitted and platform catalog routes. Reserved catalog routes
+    /// return `None` here and are refused by [`Self::is_reserved_route`]
+    /// before ordinary routing. Query parameters do not affect the path match.
     pub(crate) fn match_request(method: &Method, path: &str) -> Option<Self> {
-        match (method, path) {
-            (&Method::GET, "/v1/models") => Some(Self::Models),
-            (&Method::POST, "/v1/chat/completions") => Some(Self::ChatCompletions),
-            (&Method::POST, "/v1/completions") => Some(Self::Completions),
-            (&Method::POST, "/v1/embeddings") => Some(Self::Embeddings),
-            (&Method::POST, "/v1/messages") => Some(Self::Messages),
-            (&Method::POST, "/v1/messages/count_tokens") => Some(Self::CountTokens),
-            (&Method::POST, "/v1/ocr") => Some(Self::Ocr),
-            (&Method::POST, "/v1/systemone") => Some(Self::SystemOne),
-            (&Method::POST, "/v1/rerank") => Some(Self::Rerank),
-            (&Method::POST, "/v1/responses") => Some(Self::Responses),
-            _ => None,
+        let standard = ModelStandard::match_route(method.as_str(), path)?;
+        match standard.admission() {
+            StandardAdmission::Admitted | StandardAdmission::Platform => {
+                Self::from_standard(standard)
+            }
+            StandardAdmission::Reserved => None,
         }
+    }
+
+    /// A catalog path whose gate has not admitted dispatch.
+    pub(crate) fn is_reserved_route(method: &Method, path: &str) -> bool {
+        ModelStandard::is_reserved_route(method.as_str(), path)
+    }
+
+    fn from_standard(standard: ModelStandard) -> Option<Self> {
+        Some(match standard {
+            ModelStandard::OpenaiModels => Self::Models,
+            ModelStandard::OpenaiChat => Self::ChatCompletions,
+            ModelStandard::OpenaiCompletions => Self::Completions,
+            ModelStandard::OpenaiEmbeddings => Self::Embeddings,
+            ModelStandard::Ocr => Self::Ocr,
+            ModelStandard::DecisionSystemOne => Self::SystemOne,
+            ModelStandard::OpenaiResponses
+            | ModelStandard::AnthropicMessages
+            | ModelStandard::Rerank
+            | ModelStandard::GeminiGenerate
+            | ModelStandard::GeminiEmbed
+            | ModelStandard::OpenaiImages
+            | ModelStandard::OpenaiAudio
+            | ModelStandard::Api
+            | ModelStandard::Mcp => return None,
+        })
     }
 
     /// OCR and System One are served by a platform model or a bound supplier.
@@ -727,11 +748,6 @@ mod tests {
                 "/v1/systemone",
                 OpenAiRequestProfile::SystemOne,
             ),
-            (
-                Method::POST,
-                "/v1/responses",
-                OpenAiRequestProfile::Responses,
-            ),
         ];
 
         for (method, path, expected) in supported {
@@ -753,9 +769,27 @@ mod tests {
             (Method::GET, "/v1/systemone"),
             (Method::POST, "/v1/ocr/extra"),
             (Method::POST, "/v1/systemone/extra"),
+            (Method::POST, "/v1/responses"),
+            (Method::POST, "/v1/messages"),
+            (Method::POST, "/v1/messages/count_tokens"),
+            (Method::POST, "/v1/rerank"),
+            (Method::POST, "/v1/mcp"),
+            (Method::POST, "/v1/service"),
         ] {
             assert_eq!(OpenAiRequestProfile::match_request(&method, path), None);
         }
+        assert!(OpenAiRequestProfile::is_reserved_route(
+            &Method::POST,
+            "/v1/responses"
+        ));
+        assert!(!OpenAiRequestProfile::is_reserved_route(
+            &Method::POST,
+            "/v1/chat/completions"
+        ));
+        assert!(!OpenAiRequestProfile::is_reserved_route(
+            &Method::POST,
+            "/v1/ocr"
+        ));
     }
 
     #[test]

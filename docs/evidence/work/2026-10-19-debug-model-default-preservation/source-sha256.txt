@@ -1,0 +1,2 @@
+9cbd2692ab9a7bd7d526b76e8017a81b227b45cb855952e9bcb65bb22d1b1350  apps/work/src-tauri/src/providers.rs
+3d5a0e5f00e0500d021dff532965111dd7a3bb13c48de95beaa67a65af4f42b9  apps/work/src-tauri/src/providers_seed_tests.rs

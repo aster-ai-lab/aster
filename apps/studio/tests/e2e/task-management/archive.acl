@@ -1,0 +1,32 @@
+suite "studio-native-task-archive" {
+    version = 1
+
+    scenario "restore-original-task" {
+        name = "Restore a native archived task into the ordinary task list"
+        surface = "web"
+        timeout_ms = 60000
+
+        navigate "production-workbench" { url = "http://127.0.0.1:4596/" }
+        viewport "desktop" { width = 1440 height = 1000 }
+        expect "active-task" { visible = role("button", "正在使用的报告") }
+        expect "archive-hidden-from-active" { hidden = role("button", "待恢复的报告") }
+        click "settings" { target = role("button", "设置") }
+        wait "settings-ready" { visible = role("button", "返回应用") }
+        click "archive-navigation" {
+            target = css("[data-ui='settings.navigation'] [data-slot='menu-item']:nth-of-type(9)")
+        }
+        expect "archive-heading" { visible = role("heading", "归档") }
+        expect "archived-task" { text = "待恢复的报告" }
+        screenshot "before-restore" { path = "screenshots/archived-task.png" }
+        click "restore" { target = role("button", "恢复") }
+        wait "restore-confirmation" { visible = css(".ui-popconfirm__actions") }
+        click "confirm-restore" { target = css(".ui-popconfirm__actions button:last-child") }
+        expect "archive-empty" { text = "暂无已归档任务" }
+        click "back-to-tasks" { target = role("button", "返回应用") }
+        wait "task-list-refreshed" { visible = role("button", "待恢复的报告") }
+        expect "same-task-restored" { visible = role("button", "待恢复的报告") }
+        expect "other-task-preserved" { visible = role("button", "正在使用的报告") }
+        screenshot "restored-task" { path = "screenshots/restored-task.png" }
+        page_errors "page-errors" { path = "evidence/page-errors.json" }
+    }
+}

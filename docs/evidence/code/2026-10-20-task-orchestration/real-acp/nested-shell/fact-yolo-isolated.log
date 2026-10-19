@@ -1,0 +1,32 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.33s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 1 test
+
+thread 'fact_control::tests::fact_log_live_completion_yolo_lane_runs_the_tool' (49474140) panicked at crates/code/core/src/fact_control_tests.rs:1951:5:
+assertion failed: client.tools.lock().unwrap().iter().any(|tools| !tools.is_empty())
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test fact_control::tests::fact_log_live_completion_yolo_lane_runs_the_tool ... FAILED
+
+failures:
+
+failures:
+    fact_control::tests::fact_log_live_completion_yolo_lane_runs_the_tool
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5178 filtered out; finished in 0.06s
+
+error: test failed, to rerun pass `-p a3s-code-core --lib`

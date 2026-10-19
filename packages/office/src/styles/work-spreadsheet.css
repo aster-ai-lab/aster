@@ -1,0 +1,851 @@
+.work-spreadsheet-editor {
+  --work-spreadsheet-accent: var(--a3s-green);
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.work-spreadsheet-workspace {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.work-spreadsheet-canvas {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.work-spreadsheet-fortune-host {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  flex: 1;
+}
+
+.work-spreadsheet-frame-caret {
+  position: absolute;
+  z-index: 6;
+  background: #6d28d9;
+  pointer-events: none;
+}
+
+.work-spreadsheet-canvas[data-virtual-grid='a3s'] .work-spreadsheet-fortune-host {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.work-spreadsheet-virtual-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: auto;
+  outline: none;
+  background: #ffffff;
+}
+
+.work-spreadsheet-virtual-grid:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--a3s-green, #0f7b3b);
+}
+
+.work-spreadsheet-virtual-grid-spacer {
+  pointer-events: none;
+}
+
+.work-spreadsheet-virtual-grid-canvas {
+  display: block;
+  pointer-events: auto;
+}
+
+.work-spreadsheet-virtual-grid-editor {
+  position: absolute;
+  z-index: 2;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0 6px;
+  border: 2px solid #1a73e8;
+  background: #ffffff;
+  color: #222222;
+  font: 12px var(--a3s-ui-font, system-ui, sans-serif);
+  outline: none;
+}
+
+.work-spreadsheet-canvas > .fortune-container,
+.work-spreadsheet-fortune-host > .fortune-container {
+  height: 100%;
+  color: #222222;
+  font-family: var(--a3s-ui-font);
+  font-size: 12px;
+}
+
+.work-spreadsheet-editor[data-format-painter]
+  .work-spreadsheet-canvas
+  :is(.fortune-container, .fortune-sheet-overlay, canvas) {
+  cursor: copy !important;
+}
+
+.work-spreadsheet-find-bar {
+  position: absolute;
+  z-index: 30;
+  top: 60px;
+  right: 10px;
+  display: flex;
+  width: min(350px, calc(100% - 20px));
+  min-height: 36px;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 5px 4px 9px;
+  border: 1px solid var(--a3s-line-strong);
+  border-radius: 7px;
+  background: var(--a3s-panel);
+  box-shadow: 0 8px 22px rgb(26 35 52 / 14%);
+  color: var(--a3s-muted);
+}
+
+.work-spreadsheet-find-bar > .work-office-text-field {
+  width: 0;
+  height: 27px;
+  min-width: 96px;
+  flex: 1 1 auto;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.work-spreadsheet-find-bar > .work-office-text-field:focus {
+  box-shadow: none;
+}
+
+.work-spreadsheet-find-bar > output {
+  min-width: 54px;
+  color: var(--a3s-faint);
+  font-size: 10px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.work-spreadsheet-find-actions {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 1px;
+}
+
+.work-spreadsheet-find-actions .ds-icon-button {
+  width: 25px;
+  height: 25px;
+  min-height: 25px;
+  border-radius: 5px;
+}
+
+@media (max-width: 600px) {
+  .work-spreadsheet-find-bar {
+    right: 8px;
+    left: 8px;
+    width: auto;
+    min-height: 50px;
+    gap: 4px;
+    padding: 4px;
+  }
+
+  .work-spreadsheet-find-bar > svg {
+    display: none;
+  }
+
+  .work-spreadsheet-find-bar > .work-office-text-field {
+    height: 40px;
+    min-width: 96px;
+    min-height: 40px;
+    padding-inline: 9px;
+  }
+
+  .work-spreadsheet-find-bar > output {
+    min-width: 42px;
+  }
+
+  .work-spreadsheet-find-actions .ds-icon-button {
+    width: 40px;
+    height: 40px;
+    min-height: 40px;
+    border-radius: 7px;
+  }
+}
+
+.work-spreadsheet-ribbon-toolbar .work-office-select {
+  width: auto;
+  min-width: 0;
+  flex: 0 0 auto;
+}
+
+.work-spreadsheet-ribbon-toolbar .work-office-select > button {
+  width: auto;
+  min-width: 0;
+}
+
+.work-spreadsheet-ribbon-toolbar
+  .work-office-select.work-spreadsheet-font-family,
+.work-spreadsheet-ribbon-toolbar
+  .work-office-select.work-spreadsheet-font-family
+  > button {
+  width: 112px;
+  min-width: 112px;
+  flex-basis: 112px;
+}
+
+.work-spreadsheet-ribbon-toolbar .work-office-select.work-spreadsheet-font-size,
+.work-spreadsheet-ribbon-toolbar
+  .work-office-select.work-spreadsheet-font-size
+  > button {
+  width: 64px;
+  min-width: 64px;
+  flex-basis: 64px;
+}
+
+.work-spreadsheet-ribbon-toolbar
+  .work-office-select.work-spreadsheet-number-format,
+.work-spreadsheet-ribbon-toolbar
+  .work-office-select.work-spreadsheet-number-format
+  > button {
+  width: 112px;
+  min-width: 112px;
+  flex-basis: 112px;
+}
+
+.work-spreadsheet-number-format-stack {
+  display: flex;
+  width: 112px;
+  height: 51px;
+  flex: 0 0 112px;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.work-spreadsheet-number-format-stack > .work-spreadsheet-ribbon-menu-root {
+  width: 112px;
+  min-width: 0;
+}
+
+.work-office-ribbon
+  .work-office-toolbar
+  .work-spreadsheet-number-format-stack
+  .work-spreadsheet-date-time-trigger.with-label {
+  width: 112px;
+  min-width: 112px;
+  height: 21px;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 4px;
+  padding: 0 6px;
+}
+
+.work-office-ribbon
+  .work-office-toolbar
+  .work-spreadsheet-number-format-stack
+  .work-spreadsheet-date-time-trigger.with-label
+  > svg {
+  width: 14px;
+  height: 14px;
+}
+
+.work-office-ribbon
+  .work-office-toolbar
+  .work-spreadsheet-number-format-stack
+  .work-spreadsheet-date-time-trigger.with-label
+  > span {
+  max-width: 84px;
+  font-size: 9px;
+  line-height: 11px;
+}
+
+.work-spreadsheet-workbook-panel {
+  position: relative;
+  z-index: 8;
+  display: flex;
+  width: clamp(340px, 31vw, 420px);
+  min-width: 320px;
+  min-height: 0;
+  max-height: none;
+  flex: 0 0 auto;
+  flex-direction: column;
+  overflow: hidden;
+  border-left: 1px solid var(--a3s-line);
+  background: var(--a3s-panel);
+  box-shadow: -10px 0 28px rgb(26 35 52 / 7%);
+  color: var(--a3s-ink);
+}
+
+.work-spreadsheet-workbook-panel > header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  min-height: 50px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 10px 7px 14px;
+  border-bottom: 1px solid var(--a3s-line);
+  background: var(--a3s-panel);
+}
+
+.work-spreadsheet-workbook-panel > header > div {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.work-spreadsheet-workbook-panel > header strong {
+  overflow: hidden;
+  color: var(--a3s-ink);
+  font-size: 12px;
+  font-weight: 680;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.work-spreadsheet-workbook-panel > header span,
+.work-spreadsheet-workbook-panel form > p {
+  color: var(--a3s-faint);
+  font-size: 9px;
+}
+
+.work-spreadsheet-workbook-panel > header span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.work-spreadsheet-workbook-panel > header > button {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  min-height: 28px;
+  flex: 0 0 28px;
+  place-items: center;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--a3s-muted);
+  cursor: pointer;
+}
+
+.work-spreadsheet-workbook-panel > header > button:hover {
+  background: var(--a3s-panel-soft);
+  color: var(--a3s-ink);
+}
+
+.work-spreadsheet-workbook-panel-body {
+  min-width: 0;
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+.work-spreadsheet-workbook-panel-body .actions {
+  position: sticky;
+  z-index: 3;
+  bottom: 0;
+  min-height: 39px;
+  padding: 6px 0 5px;
+  border-top: 1px solid var(--a3s-line);
+  background: var(--a3s-panel);
+  box-shadow: 0 -8px 14px rgb(26 35 52 / 5%);
+}
+
+.work-spreadsheet-name-manager {
+  display: grid;
+  grid-template-columns: minmax(160px, 220px) minmax(420px, 1fr);
+  min-height: 178px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.work-spreadsheet-name-manager > aside {
+  padding: 8px;
+  border-right: 1px solid var(--a3s-line);
+}
+
+.work-spreadsheet-name-manager .create {
+  display: inline-flex;
+  width: 100%;
+  height: 27px;
+  min-height: 27px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 1px solid var(--a3s-line);
+  border-radius: 5px;
+  background: var(--a3s-bg);
+  color: var(--a3s-muted);
+  font-size: 9px;
+  cursor: pointer;
+}
+
+.work-spreadsheet-name-list {
+  display: grid;
+  max-height: 132px;
+  gap: 3px;
+  margin-top: 6px;
+  overflow: auto;
+}
+
+.work-spreadsheet-name-list > button {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 7px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--a3s-ink);
+  font-size: 9px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.work-spreadsheet-name-list > button:hover,
+.work-spreadsheet-name-list > button.active {
+  background: var(--a3s-panel-soft);
+}
+
+.work-spreadsheet-name-list > button strong {
+  overflow: hidden;
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.work-spreadsheet-name-list > button span,
+.work-spreadsheet-name-list > p {
+  color: var(--a3s-faint);
+  font-size: 8px;
+}
+
+.work-spreadsheet-name-list > p {
+  margin: 12px 4px;
+  text-align: center;
+}
+
+.work-spreadsheet-name-manager > form,
+.work-spreadsheet-conditional-manager > form,
+.work-spreadsheet-protection-manager > form,
+.work-spreadsheet-print-area-form {
+  display: grid;
+  grid-template-columns: minmax(140px, 0.7fr) minmax(150px, 0.8fr) minmax(
+      240px,
+      1.4fr
+    );
+  align-content: start;
+  gap: 8px 10px;
+  padding: 10px 12px;
+}
+
+.work-spreadsheet-name-manager .reference,
+.work-spreadsheet-conditional-manager .reference {
+  grid-column: 3;
+}
+
+.work-spreadsheet-name-manager .comment {
+  grid-column: 1 / 3;
+}
+
+.work-spreadsheet-name-manager .actions,
+.work-spreadsheet-chart-manager .actions,
+.work-spreadsheet-conditional-manager .actions,
+.work-spreadsheet-protection-manager .actions,
+.work-spreadsheet-print-area-form .actions {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.work-spreadsheet-workbook-panel .actions button {
+  display: inline-flex;
+  height: 27px;
+  min-height: 27px;
+  align-items: center;
+  gap: 5px;
+  padding: 0 9px;
+  border: 1px solid var(--a3s-line);
+  border-radius: 5px;
+  background: var(--a3s-bg);
+  color: var(--a3s-muted);
+  font-size: 9px;
+  cursor: pointer;
+}
+
+.work-spreadsheet-workbook-panel .actions button.primary {
+  border-color: var(--a3s-blue);
+  background: var(--a3s-blue);
+  color: #ffffff;
+}
+
+.work-spreadsheet-workbook-panel .actions button.danger {
+  color: var(--a3s-red);
+}
+
+.work-spreadsheet-workbook-panel .actions button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.work-spreadsheet-print-area-form {
+  grid-template-columns: minmax(150px, 0.6fr) minmax(280px, 1.4fr) minmax(
+      250px,
+      1fr
+    );
+  align-items: end;
+  min-height: 118px;
+}
+
+.work-spreadsheet-print-area-form > p {
+  align-self: center;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.work-spreadsheet-page-setup-fields,
+.work-spreadsheet-header-footer-fields {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(3, minmax(170px, 1fr));
+  gap: 8px 10px;
+  margin: 2px 0;
+  padding: 8px 10px 10px;
+  border: 1px solid var(--a3s-line);
+  border-radius: 6px;
+}
+
+.work-spreadsheet-page-setup-fields legend,
+.work-spreadsheet-header-footer-fields legend {
+  padding: 0 5px;
+  color: var(--a3s-muted);
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.work-spreadsheet-page-setup-fields .work-office-checkbox.toggle,
+.work-spreadsheet-header-footer-fields .work-office-checkbox.toggle {
+  display: flex;
+  min-height: 27px;
+  align-items: center;
+  gap: 6px;
+}
+
+.work-spreadsheet-header-footer-fields .tokens {
+  grid-column: 2 / -1;
+  align-self: center;
+  margin: 0;
+  color: var(--a3s-faint);
+  font-size: 8px;
+  line-height: 1.5;
+}
+
+.work-spreadsheet-conditional-manager {
+  display: grid;
+  grid-template-columns: minmax(180px, 240px) minmax(560px, 1fr);
+  min-height: 178px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.work-spreadsheet-conditional-manager > aside {
+  padding: 8px;
+  border-right: 1px solid var(--a3s-line);
+}
+
+.work-spreadsheet-conditional-manager .create {
+  display: inline-flex;
+  width: 100%;
+  height: 27px;
+  min-height: 27px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 1px solid var(--a3s-line);
+  border-radius: 5px;
+  background: var(--a3s-bg);
+  color: var(--a3s-muted);
+  font-size: 9px;
+  cursor: pointer;
+}
+
+.work-spreadsheet-conditional-list {
+  display: grid;
+  max-height: 132px;
+  gap: 3px;
+  margin-top: 6px;
+  overflow: auto;
+}
+
+.work-spreadsheet-conditional-list > button {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1px 8px;
+  padding: 5px 7px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--a3s-ink);
+  font-size: 9px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.work-spreadsheet-conditional-list > button:hover,
+.work-spreadsheet-conditional-list > button.active {
+  background: var(--a3s-panel-soft);
+}
+
+.work-spreadsheet-conditional-list > button strong {
+  font-size: 9px;
+}
+
+.work-spreadsheet-conditional-list > button span,
+.work-spreadsheet-conditional-list > button small,
+.work-spreadsheet-conditional-list > p {
+  color: var(--a3s-faint);
+  font-size: 8px;
+}
+
+.work-spreadsheet-conditional-list > button small {
+  grid-column: 1 / -1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.work-spreadsheet-conditional-list > p {
+  margin: 12px 4px;
+  text-align: center;
+}
+
+.work-spreadsheet-conditional-manager > form {
+  grid-template-columns: repeat(4, minmax(110px, 1fr));
+}
+
+.work-spreadsheet-conditional-manager .reference {
+  grid-column: span 2;
+}
+
+.work-spreadsheet-conditional-manager .work-office-checkbox.toggle {
+  display: flex;
+  min-height: 27px;
+  align-self: end;
+  align-items: center;
+  gap: 6px;
+  padding: 0 4px;
+}
+
+.work-spreadsheet-conditional-thresholds {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 5px;
+  margin: 0;
+  padding: 6px 8px 8px;
+  border: 1px solid var(--a3s-line);
+  border-radius: 6px;
+}
+
+.work-spreadsheet-conditional-thresholds legend {
+  padding: 0 4px;
+  color: var(--a3s-muted);
+  font-size: 9px;
+}
+
+.work-spreadsheet-conditional-thresholds > div {
+  display: grid;
+  grid-template-columns: minmax(82px, 0.65fr) minmax(110px, 0.9fr) minmax(
+      90px,
+      0.75fr
+    ) minmax(88px, 0.7fr);
+  align-items: center;
+  gap: 6px;
+  color: var(--a3s-muted);
+  font-size: 9px;
+}
+
+.work-spreadsheet-conditional-thresholds .work-office-checkbox.threshold-gte {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.work-spreadsheet-conditional-manager form > p {
+  grid-column: 1 / -1;
+  align-self: center;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.work-spreadsheet-protection-manager {
+  display: grid;
+  grid-template-columns: minmax(180px, 240px) minmax(660px, 1fr);
+  min-height: 190px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.work-spreadsheet-protection-manager > aside {
+  padding: 8px;
+  border-right: 1px solid var(--a3s-line);
+}
+
+.work-spreadsheet-protection-manager .create {
+  display: inline-flex;
+  width: 100%;
+  height: 27px;
+  min-height: 27px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 1px solid var(--a3s-line);
+  border-radius: 5px;
+  background: var(--a3s-bg);
+  color: var(--a3s-muted);
+  font-size: 9px;
+  cursor: pointer;
+}
+
+.work-spreadsheet-protection-list {
+  display: grid;
+  max-height: 142px;
+  gap: 3px;
+  margin-top: 6px;
+  overflow: auto;
+}
+
+.work-spreadsheet-protection-list > button {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1px 8px;
+  padding: 5px 7px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--a3s-ink);
+  font-size: 9px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.work-spreadsheet-protection-list > button:hover,
+.work-spreadsheet-protection-list > button.active {
+  background: var(--a3s-panel-soft);
+}
+
+.work-spreadsheet-protection-list > button strong {
+  overflow: hidden;
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.work-spreadsheet-protection-list > button small {
+  grid-column: 1 / -1;
+  overflow: hidden;
+  color: var(--a3s-faint);
+  font-size: 8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.work-spreadsheet-protection-list .credential {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--a3s-warning);
+  font-size: 8px;
+}
+
+.work-spreadsheet-protection-list > p {
+  margin: 12px 4px;
+  color: var(--a3s-faint);
+  font-size: 8px;
+  text-align: center;
+}
+
+.work-spreadsheet-protection-manager > form {
+  grid-template-columns: minmax(130px, 0.7fr) minmax(190px, 1fr) minmax(
+      230px,
+      1.2fr
+    );
+  align-items: start;
+}
+
+.work-spreadsheet-protection-manager .work-office-checkbox.toggle {
+  display: flex;
+  height: 27px;
+  align-items: center;
+  gap: 6px;
+  padding: 0 7px;
+  border: 1px solid var(--a3s-line);
+  border-radius: 5px;
+  background: var(--a3s-bg);
+}
+
+.work-spreadsheet-protection-manager fieldset {
+  display: flex;
+  min-width: 0;
+  min-height: 50px;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 4px 8px 6px;
+  border: 1px solid var(--a3s-line);
+  border-radius: 5px;
+}
+
+.work-spreadsheet-protection-manager legend {
+  padding: 0 3px;
+  color: var(--a3s-muted);
+  font-size: 8px;
+}
+
+.work-spreadsheet-protection-manager .work-office-checkbox.check {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.work-spreadsheet-protection-manager .reference {
+  grid-column: span 2;
+}
+
+.work-spreadsheet-protection-manager form > p {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--a3s-faint);
+  font-size: 8px;
+  line-height: 1.45;
+}

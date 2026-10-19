@@ -1,0 +1,25 @@
+{
+  "pipeline_sha256": "936c0d09201bde64ab7f965a183afb544e9a1821a0d7189e1c889a235b346dd7",
+  "oracle_self_test": "270 DP versus brute-force cases passed",
+  "static_imports": [
+    "argparse",
+    "json",
+    "pathlib",
+    "runpy"
+  ],
+  "non_stdlib_static_imports": [],
+  "original_input_unchanged": true,
+  "passed_cases": 9,
+  "total_cases": 9,
+  "passed": true
+}
+public: PASS
+zero_budget: PASS
+changed_policy: PASS
+changed_data_and_references: PASS
+synthetic_row_exclusivity: PASS
+synthetic_lex_tie_budget_one: PASS
+synthetic_cost_tie: PASS
+synthetic_non_greedy: PASS
+negative_zero: PASS
+SELF-CHECK ONLY: oracle wrapper, not a model submission

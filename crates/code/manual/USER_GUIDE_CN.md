@@ -115,7 +115,7 @@ Workspace Backend 决定哪些工具能够注册。应检查 `toolNames()` 与 `
 | --------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
 | Workspace | `read`、`write`、`edit`、`patch`、`download`、`search`、`ls`、`bash`、`git` | 每个工具都由 Capability 控制；`download` 还要求可写的 Local Workspace。         |
 | Runtime   | `web_fetch`、`web_search`、`batch`、`program`                               | Nested Call 会继承 Invocation Scope、Cancellation 与 Budget。                   |
-| Session   | `task`、`generate_object`、`search_skills`、`Skill`                         | Delegation 可以关闭；兼容别名 `parallel_task` 可直接调用，但不进入模型 Schema。 |
+| Session   | `task`、`generate_object`、`Skill`                                          | Delegation 可以关闭；兼容别名 `parallel_task` 可直接调用，但不进入模型 Schema。 |
 | Dynamic   | MCP 与 Host-registered Tool                                                 | MCP 工具使用 `mcp__<server>__<tool>` Namespace。                                |
 
 `search` 是唯一面向模型的仓库检索合同，每次调用都必须传入 Mode 和 Query。

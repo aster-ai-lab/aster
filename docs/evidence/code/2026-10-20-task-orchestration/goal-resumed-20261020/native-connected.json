@@ -1,0 +1,85 @@
+{
+  "test_binary": "target/qualification/t029-cua-20261020/native-tests",
+  "sha256": "446b4e4fe0632087ecb629179e5a4b198baf93d933955aaf12df6d758926ab35",
+  "source_binary": "target/debug/deps/a3s_studio_lib-490d64dc118cfd69",
+  "sha256_after": "446b4e4fe0632087ecb629179e5a4b198baf93d933955aaf12df6d758926ab35",
+  "results": [
+    {
+      "filter": "approval_response_tests",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t029-cua-20261020/native-tests",
+        "approval_response_tests",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 1.177416791,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/goal-resumed-20261020/native-connected-01.log"
+    },
+    {
+      "filter": "workbench_repair_permission_is_visible_on_its_own_message_and_keeps_the_original_owner",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t029-cua-20261020/native-tests",
+        "workbench_repair_permission_is_visible_on_its_own_message_and_keeps_the_original_owner",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.39319704099999986,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/goal-resumed-20261020/native-connected-02.log"
+    },
+    {
+      "filter": "status_publication_requires_the_current_live_owner_and_withdraws_at_settlement",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t029-cua-20261020/native-tests",
+        "status_publication_requires_the_current_live_owner_and_withdraws_at_settlement",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.010338208999999932,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/goal-resumed-20261020/native-connected-03.log"
+    },
+    {
+      "filter": "synchronous_approval_withdrawal_cannot_replace_a_newer_cached_execution",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t029-cua-20261020/native-tests",
+        "synchronous_approval_withdrawal_cannot_replace_a_newer_cached_execution",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.00874783300000015,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/goal-resumed-20261020/native-connected-04.log"
+    },
+    {
+      "filter": "question_recovery_tests",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t029-cua-20261020/native-tests",
+        "question_recovery_tests",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.640886125,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/goal-resumed-20261020/native-connected-05.log"
+    },
+    {
+      "filter": "question_route_tests",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t029-cua-20261020/native-tests",
+        "question_route_tests",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.8658966660000003,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/goal-resumed-20261020/native-connected-06.log"
+    },
+    {
+      "filter": "turns_form_tests",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t029-cua-20261020/native-tests",
+        "turns_form_tests",
+        "--test-threads=1"
+      ],
+      "exit_code": -15,
+      "wall_seconds": 72.826748375,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/goal-resumed-20261020/native-connected-07.log"
+    }
+  ]
+}

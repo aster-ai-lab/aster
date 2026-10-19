@@ -1,0 +1,559 @@
+src/renderer/components/__tests__/ProviderAvatar.test.tsx(35,7): error TS6133: 'queryByDataSlot' is declared but its value is never read.
+src/renderer/components/chat/messages/list/MessageAnchorLine.tsx(424,19): error TS2367: This comparison appears to be unintentional because the types '"end"' and '"start"' have no overlap.
+src/renderer/components/composer/__tests__/composerEditingCaret.test.ts(94,35): error TS2353: Object literal may only specify known properties, and 'defaultPrevented' does not exist in type 'Partial<KeyboardEventInit>'.
+src/renderer/components/composer/AgentParameterForm.tsx(138,9): error TS2322: Type 'string | number | boolean' is not assignable to type 'string | number | readonly string[] | undefined'.
+  Type 'false' is not assignable to type 'string | number | readonly string[] | undefined'.
+src/renderer/components/composer/agentParameterPrefill.ts(23,7): error TS2322: Type 'string' is not assignable to type '`${string}::${string}`'.
+src/renderer/components/composer/ComposerSurfaceRuntime.tsx(2471,32): error TS2322: Type 'boolean | undefined' is not assignable to type 'boolean'.
+  Type 'undefined' is not assignable to type 'boolean'.
+src/renderer/components/composer/tokenView/ComposerToken.tsx(411,10): error TS2532: Object is possibly 'undefined'.
+src/renderer/components/composer/tokenView/ComposerToken.tsx(1092,37): error TS2345: Argument of type 'ChatTokenView' is not assignable to parameter of type '{ icon?: string | undefined; }'.
+  Types of property 'icon' are incompatible.
+    Type 'ReactNode' is not assignable to type 'string | undefined'.
+      Type 'null' is not assignable to type 'string | undefined'.
+src/renderer/components/layout/__tests__/AppShell.test.tsx(273,49): error TS2345: Argument of type 'Element | null' is not assignable to parameter of type 'HTMLElement | SVGElement | null'.
+  Type 'Element' is not assignable to type 'HTMLElement | SVGElement | null'.
+    Type 'Element' is missing the following properties from type 'SVGElement': ownerSVGElement, viewportElement, attributeStyleMap, style, and 101 more.
+src/renderer/components/layout/__tests__/AppShell.test.tsx(276,44): error TS2345: Argument of type 'Element | null' is not assignable to parameter of type 'HTMLElement | SVGElement | null'.
+  Type 'Element' is not assignable to type 'HTMLElement | SVGElement | null'.
+    Type 'Element' is missing the following properties from type 'SVGElement': ownerSVGElement, viewportElement, attributeStyleMap, style, and 101 more.
+src/renderer/components/layout/__tests__/AppShell.test.tsx(424,40): error TS2345: Argument of type 'Element | null' is not assignable to parameter of type 'HTMLElement | SVGElement | null'.
+  Type 'Element' is not assignable to type 'HTMLElement | SVGElement | null'.
+    Type 'Element' is missing the following properties from type 'SVGElement': ownerSVGElement, viewportElement, attributeStyleMap, style, and 101 more.
+src/renderer/components/layout/__tests__/AppShell.test.tsx(425,92): error TS2345: Argument of type 'Element | null' is not assignable to parameter of type 'HTMLElement | SVGElement | null'.
+  Type 'Element' is not assignable to type 'HTMLElement | SVGElement | null'.
+    Type 'Element' is missing the following properties from type 'SVGElement': ownerSVGElement, viewportElement, attributeStyleMap, style, and 101 more.
+src/renderer/components/layout/__tests__/AppShell.test.tsx(476,40): error TS2345: Argument of type '{ homePath: string; resourcesPath: string; pendingNotifications: never[]; }' is not assignable to parameter of type 'boolean'.
+src/renderer/components/plugins/__tests__/presentonCatalogue.test.ts(7,1): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+src/renderer/components/plugins/__tests__/presentonCatalogue.test.ts(38,3): error TS2304: Cannot find name 'expect'.
+src/renderer/components/plugins/__tests__/presentonCatalogue.test.ts(39,3): error TS2304: Cannot find name 'expect'.
+src/renderer/components/plugins/__tests__/presentonCatalogue.test.ts(40,3): error TS2304: Cannot find name 'expect'.
+src/renderer/components/plugins/__tests__/presentonCatalogue.test.ts(41,3): error TS2304: Cannot find name 'expect'.
+src/renderer/components/QuickPanel/__tests__/list.test.ts(20,41): error TS2353: Object literal may only specify known properties, and 'id' does not exist in type '{ disabled?: boolean | undefined; alwaysVisible?: boolean | undefined; }'.
+src/renderer/components/QuickPanel/__tests__/list.test.ts(20,78): error TS2353: Object literal may only specify known properties, and 'id' does not exist in type '{ disabled?: boolean | undefined; alwaysVisible?: boolean | undefined; }'.
+src/renderer/components/QuickPanel/__tests__/list.test.ts(24,46): error TS2353: Object literal may only specify known properties, and 'id' does not exist in type '{ disabled?: boolean | undefined; alwaysVisible?: boolean | undefined; }'.
+src/renderer/components/QuickPanel/QuickPanelView.tsx(1074,30): error TS2339: Property 'width' does not exist on type 'DOMRect | QuickPanelRect'.
+  Property 'width' does not exist on type 'QuickPanelRect'.
+src/renderer/components/workInbox/WorkInboxPopup.test.tsx(137,90): error TS2322: Type 'Mock<(_id: string, decision: WorkDecision, _comment: string) => Promise<void>>' is not assignable to type '((id: string, decision: WorkDecision, comment: string, fetchImpl?: { (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }) =>...'.
+  Type 'Mock<(_id: string, decision: WorkDecision, _comment: string) => Promise<void>>' is not assignable to type '(id: string, decision: WorkDecision, comment: string, fetchImpl?: { (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }) => ...'.
+    Type 'Promise<void>' is not assignable to type 'Promise<WorkItem>'.
+      Type 'void' is not assignable to type 'WorkItem'.
+src/renderer/components/workInbox/WorkInboxPopup.test.tsx(305,62): error TS2493: Tuple type '[]' of length '0' has no element at index '0'.
+src/renderer/components/workInbox/WorkInboxPopup.test.tsx(308,62): error TS2493: Tuple type '[]' of length '0' has no element at index '0'.
+src/renderer/components/workInbox/WorkInboxPopup.test.tsx(311,62): error TS2493: Tuple type '[]' of length '0' has no element at index '0'.
+src/renderer/components/workInbox/WorkInboxPopup.test.tsx(314,44): error TS2493: Tuple type '[]' of length '0' has no element at index '0'.
+src/renderer/data/CacheService.ts(976,13): error TS18046: 'entry' is of type 'unknown'.
+src/renderer/data/CacheService.ts(976,44): error TS18046: 'entry' is of type 'unknown'.
+src/renderer/data/CacheService.ts(983,80): error TS18046: 'entry' is of type 'unknown'.
+src/renderer/data/CacheService.ts(984,81): error TS18046: 'entry' is of type 'unknown'.
+src/renderer/data/CacheService.ts(988,37): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'CacheEntry<any>'.
+src/renderer/data/shellModelDefault.ts(8,57): error TS2304: Cannot find name 'ShellModelChoice'.
+src/renderer/drive/TaskFindingSave.tsx(72,45): error TS2322: Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'BlobPart'.
+  Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+    Types of property 'buffer' are incompatible.
+      Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+        Type 'SharedArrayBuffer' is missing the following properties from type 'ArrayBuffer': resizable, resize, detached, transfer, transferToFixedLength
+src/renderer/hooks/__tests__/useWebviewNavigation.test.tsx(50,19): error TS2339: Property 'goForward' does not exist on type 'HTMLElement'.
+src/renderer/hooks/__tests__/useWebviewNavigation.test.tsx(51,18): error TS2339: Property 'goForward' does not exist on type 'HTMLElement'.
+src/renderer/hooks/__tests__/useWindowRuntime.editing.test.tsx(15,82): error TS2554: Expected 1 arguments, but got 2.
+src/renderer/pages/agents/__tests__/AgentPage.test.tsx(2371,26): error TS2339: Property 'mock' does not exist on type '(arg: string | ToastConfig) => string'.
+src/renderer/pages/agents/__tests__/aixAgentRuntime.test.ts(160,41): error TS2345: Argument of type '(url: string, init: { method: string; body: string; }) => Promise<{ ok: boolean; json: () => Promise<{ result: { text: string; }; }>; } | { ok: boolean; json: () => Promise<{ events: ({ sequence: number; type: string; text: string; } | { ...; })[]; }>; }>' is not assignable to parameter of type 'FetchLike'.
+  Types of parameters 'init' and 'init' are incompatible.
+    Type '{ method: string; body?: string | undefined; }' is not assignable to type '{ method: string; body: string; }'.
+      Types of property 'body' are incompatible.
+        Type 'string | undefined' is not assignable to type 'string'.
+          Type 'undefined' is not assignable to type 'string'.
+src/renderer/pages/agents/__tests__/aixAgentRuntime.test.ts(169,67): error TS2345: Argument of type '(url: string, init: { method: string; body: string; }) => Promise<{ ok: boolean; json: () => Promise<{ result: { text: string; }; }>; } | { ok: boolean; json: () => Promise<{ events: ({ sequence: number; type: string; text: string; } | { ...; })[]; }>; }>' is not assignable to parameter of type 'FetchLike'.
+  Types of parameters 'init' and 'init' are incompatible.
+    Type '{ method: string; body?: string | undefined; }' is not assignable to type '{ method: string; body: string; }'.
+      Types of property 'body' are incompatible.
+        Type 'string | undefined' is not assignable to type 'string'.
+          Type 'undefined' is not assignable to type 'string'.
+src/renderer/pages/agents/__tests__/aixAgentRuntime.test.ts(180,122): error TS2345: Argument of type '(url: string, init: { method: string; body: string; }) => Promise<{ ok: boolean; json: () => Promise<{ result: { text: string; }; }>; } | { ok: boolean; json: () => Promise<{ events: ({ sequence: number; type: string; text: string; } | { ...; })[]; }>; }>' is not assignable to parameter of type 'FetchLike'.
+  Types of parameters 'init' and 'init' are incompatible.
+    Type '{ method: string; body?: string | undefined; }' is not assignable to type '{ method: string; body: string; }'.
+      Types of property 'body' are incompatible.
+        Type 'string | undefined' is not assignable to type 'string'.
+          Type 'undefined' is not assignable to type 'string'.
+src/renderer/pages/agents/__tests__/ExpertsPage.test.tsx(37,31): error TS5097: An import path can only end with a '.tsx' extension when 'allowImportingTsExtensions' is enabled.
+src/renderer/pages/agents/__tests__/ExpertsPage.test.tsx(38,30): error TS5097: An import path can only end with a '.tsx' extension when 'allowImportingTsExtensions' is enabled.
+src/renderer/pages/agents/__tests__/ExpertsPage.test.tsx(209,71): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+src/renderer/pages/agents/__tests__/ExpertsPage.test.tsx(224,9): error TS2322: Type '{ actions: string[]; config: { key: string; description: string; required: false; secret: false; }[]; id: string; name: string; description: string; prompt: string; emoji: string; group: string[]; } | { actions: string[]; ... 6 more ...; emoji?: undefined; }' is not assignable to type '{ id: string; name: string; description: string; prompt: string; emoji: string; group: string[]; } | { id: string; name: string; description: string; prompt: string; group: string[]; emoji?: undefined; }'.
+  Object literal may only specify known properties, and 'actions' does not exist in type '{ id: string; name: string; description: string; prompt: string; emoji: string; group: string[]; }'.
+src/renderer/pages/agents/__tests__/ExpertsPage.test.tsx(252,25): error TS2322: Type '{ actions: string[]; config: never[]; id: string; name: string; description: string; prompt: string; emoji: string; group: string[]; } | { actions: string[]; config: never[]; id: string; name: string; description: string; prompt: string; group: string[]; emoji?: undefined; }' is not assignable to type '{ id: string; name: string; description: string; prompt: string; emoji: string; group: string[]; } | { id: string; name: string; description: string; prompt: string; group: string[]; emoji?: undefined; }'.
+  Object literal may only specify known properties, and 'actions' does not exist in type '{ id: string; name: string; description: string; prompt: string; emoji: string; group: string[]; }'.
+src/renderer/pages/agents/__tests__/ExpertsPage.test.tsx(253,25): error TS2322: Type '{ actions: never[]; config: never[]; id: string; name: string; description: string; prompt: string; emoji: string; group: string[]; } | { actions: never[]; config: never[]; id: string; name: string; description: string; prompt: string; group: string[]; emoji?: undefined; }' is not assignable to type '{ id: string; name: string; description: string; prompt: string; emoji: string; group: string[]; } | { id: string; name: string; description: string; prompt: string; group: string[]; emoji?: undefined; }'.
+  Object literal may only specify known properties, and 'actions' does not exist in type '{ id: string; name: string; description: string; prompt: string; emoji: string; group: string[]; }'.
+src/renderer/pages/agents/__tests__/homeAgentCatalog.test.tsx(251,12): error TS2532: Object is possibly 'undefined'.
+src/renderer/pages/agents/__tests__/homeAgentCatalog.test.tsx(321,40): error TS2322: Type 'ComposerDraftToken' is not assignable to type 'ChatTokenView'.
+  Types of property 'kind' are incompatible.
+    Type '"file" | "link" | "command" | "knowledge" | "quote" | "skill" | "reference" | "folder" | "webviewAnnotation" | "promptVariable" | "messagePart"' is not assignable to type 'ComposerInputTokenKind'.
+      Type '"command"' is not assignable to type 'ComposerInputTokenKind'.
+src/renderer/pages/agents/__tests__/homeShelfGrid.test.tsx(85,9): error TS2719: Type '{ slug: string; packageId: string; generation: number; revision: string; containers: { id: string; title: string; icon: string; order: number; location: "panel" | "activitybar"; when?: Readonly<{ all?: readonly ("run" | ... 4 more ... | "conversation")[] | undefined; none?: readonly ("run" | ... 4 more ... | "conver...' is not assignable to type '{ slug: string; packageId: string; generation: number; revision: string; containers: { id: string; title: string; icon: string; order: number; location: "panel" | "activitybar"; when?: Readonly<{ all?: readonly ("run" | ... 4 more ... | "conversation")[] | undefined; none?: readonly ("run" | ... 4 more ... | "conver...'. Two different types with this name exist, but they are unrelated.
+  Type '{ slug: string; packageId: string; generation: number; revision: string; containers: never[]; views: { id: string; title: string; point: "studio.sidebar"; order: number; }[]; home: undefined; }' is not assignable to type '{ slug: string; packageId: string; generation: number; revision: string; containers: { id: string; title: string; icon: string; order: number; location: "panel" | "activitybar"; when?: Readonly<{ all?: readonly ("run" | ... 4 more ... | "conversation")[] | undefined; none?: readonly ("run" | ... 4 more ... | "conver...'.
+    Types of property 'views' are incompatible.
+      Type '{ id: string; title: string; point: "studio.sidebar"; order: number; }[]' is not assignable to type '{ id: string; title: string; description: string; point: "studio.applets" | "studio.composer.actions" | "studio.editor.custom" | "studio.editor" | "studio.panel" | "studio.sidebar" | "studio.workspace"; ... 11 more ...; priority?: "default" | ... 1 more ... | undefined; }[]'.
+        Type '{ id: string; title: string; point: "studio.sidebar"; order: number; }' is missing the following properties from type '{ id: string; title: string; description: string; point: "studio.applets" | "studio.composer.actions" | "studio.editor.custom" | "studio.editor" | "studio.panel" | "studio.sidebar" | "studio.workspace"; ... 11 more ...; priority?: "default" | ... 1 more ... | undefined; }': description, icon, container
+src/renderer/pages/agents/__tests__/homeShelfGrid.test.tsx(92,19): error TS2739: Type '{ id: string; title: string; point: "studio.sidebar"; order: number; }' is missing the following properties from type '{ id: string; title: string; description: string; point: "studio.applets" | "studio.composer.actions" | "studio.editor.custom" | "studio.editor" | "studio.panel" | "studio.sidebar" | "studio.workspace"; ... 11 more ...; priority?: "default" | ... 1 more ... | undefined; }': description, icon, container
+src/renderer/pages/agents/__tests__/loadAppletPackage.test.ts(56,53): error TS2345: Argument of type 'Mock<(url: string, init?: RequestInit | undefined) => Promise<Response>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; } | undefined'.
+  Type 'Mock<(url: string, init?: RequestInit | undefined) => Promise<Response>>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+    Types of parameters 'url' and 'input' are incompatible.
+      Type 'URL | RequestInfo' is not assignable to type 'string'.
+        Type 'URL' is not assignable to type 'string'.
+src/renderer/pages/agents/__tests__/loadAppletPackage.test.ts(99,53): error TS2345: Argument of type 'Mock<(url: string) => Promise<Response>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; } | undefined'.
+  Type 'Mock<(url: string) => Promise<Response>>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+    Types of parameters 'url' and 'input' are incompatible.
+      Type 'URL | RequestInfo' is not assignable to type 'string'.
+        Type 'URL' is not assignable to type 'string'.
+src/renderer/pages/agents/__tests__/loadAppletPackage.test.ts(137,45): error TS2345: Argument of type 'Mock<(url: string) => Promise<Response>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; } | undefined'.
+  Type 'Mock<(url: string) => Promise<Response>>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+    Types of parameters 'url' and 'input' are incompatible.
+      Type 'URL | RequestInfo' is not assignable to type 'string'.
+        Type 'URL' is not assignable to type 'string'.
+src/renderer/pages/agents/__tests__/officialWritingPreviewSync.test.ts(103,5): error TS2353: Object literal may only specify known properties, and 'immediatelyRender' does not exist in type 'Partial<EditorOptions>'.
+src/renderer/pages/agents/__tests__/officialWritingWorkspaceFile.test.tsx(44,51): error TS2345: Argument of type '(error: unknown) => number' is not assignable to parameter of type '() => number'.
+  Target signature provides too few arguments. Expected 1 or more, but got 0.
+src/renderer/pages/agents/__tests__/officialWritingWorkspaceFile.test.tsx(116,22): error TS2352: Conversion of type 'undefined' to type '{ title: string; content: { type: string; html: string; model?: unknown; }; }' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+src/renderer/pages/agents/__tests__/officialWritingWorkspaceFile.test.tsx(116,64): error TS2493: Tuple type '[]' of length '0' has no element at index '0'.
+src/renderer/pages/agents/__tests__/pdfToolsRun.test.ts(283,9): error TS2322: Type 'Mock<(url: string, init?: RequestInit | undefined) => Promise<Response>>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; } | undefined'.
+  Type 'Mock<(url: string, init?: RequestInit | undefined) => Promise<Response>>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+    Types of parameters 'url' and 'input' are incompatible.
+      Type 'URL | RequestInfo' is not assignable to type 'string'.
+        Type 'URL' is not assignable to type 'string'.
+src/renderer/pages/agents/__tests__/pdfToolsRun.test.ts(496,47): error TS2493: Tuple type '[]' of length '0' has no element at index '0'.
+src/renderer/pages/agents/__tests__/pdfToolsRun.test.ts(549,18): error TS2352: Conversion of type 'undefined' to type 'ToolBytes' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+src/renderer/pages/agents/__tests__/pdfToolsRun.test.ts(549,41): error TS2493: Tuple type '[]' of length '0' has no element at index '0'.
+src/renderer/pages/agents/__tests__/pdfToolsRun.test.ts(571,27): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'BodyInit | null | undefined'.
+  Type 'Uint8Array<ArrayBufferLike>' is missing the following properties from type 'URLSearchParams': size, append, delete, get, and 2 more.
+src/renderer/pages/agents/__tests__/pdfToolsRun.test.ts(577,7): error TS2322: Type 'Mock<(url: string) => Promise<Response>>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; } | undefined'.
+  Type 'Mock<(url: string) => Promise<Response>>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+    Types of parameters 'url' and 'input' are incompatible.
+      Type 'URL | RequestInfo' is not assignable to type 'string'.
+        Type 'URL' is not assignable to type 'string'.
+src/renderer/pages/agents/__tests__/pdfToolsRun.test.ts(588,9): error TS2322: Type 'Mock<(url: string) => Promise<Response>>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; } | undefined'.
+  Type 'Mock<(url: string) => Promise<Response>>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+    Types of parameters 'url' and 'input' are incompatible.
+      Type 'URL | RequestInfo' is not assignable to type 'string'.
+        Type 'URL' is not assignable to type 'string'.
+src/renderer/pages/agents/__tests__/pdfToolsRun.test.ts(638,27): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'BodyInit | null | undefined'.
+  Type 'Uint8Array<ArrayBufferLike>' is missing the following properties from type 'URLSearchParams': size, append, delete, get, and 2 more.
+src/renderer/pages/agents/__tests__/pdfToolsRun.test.ts(647,7): error TS2322: Type 'Mock<(url: string, init?: RequestInit | undefined) => Promise<Response>>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; } | undefined'.
+  Type 'Mock<(url: string, init?: RequestInit | undefined) => Promise<Response>>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+    Types of parameters 'url' and 'input' are incompatible.
+      Type 'URL | RequestInfo' is not assignable to type 'string'.
+        Type 'URL' is not assignable to type 'string'.
+src/renderer/pages/agents/__tests__/pdfToolsRun.test.ts(658,9): error TS2322: Type 'Mock<(url: string, init?: RequestInit | undefined) => Promise<Response>>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; } | undefined'.
+  Type 'Mock<(url: string, init?: RequestInit | undefined) => Promise<Response>>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+    Types of parameters 'url' and 'input' are incompatible.
+      Type 'URL | RequestInfo' is not assignable to type 'string'.
+        Type 'URL' is not assignable to type 'string'.
+src/renderer/pages/agents/__tests__/WorkbenchComposerOptions.test.tsx(6,10): error TS2305: Module '"../WorkbenchHomeComposerExtras"' has no exported member 'WorkbenchComposerOptions'.
+src/renderer/pages/agents/__tests__/WorkbenchHome.test.tsx(1456,27): error TS2322: Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'BlobPart'.
+  Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+    Types of property 'buffer' are incompatible.
+      Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+        Type 'SharedArrayBuffer' is missing the following properties from type 'ArrayBuffer': resizable, resize, detached, transfer, transferToFixedLength
+src/renderer/pages/agents/__tests__/WorkbenchHome.test.tsx(1457,29): error TS2322: Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'BlobPart'.
+  Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+    Types of property 'buffer' are incompatible.
+      Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+        Type 'SharedArrayBuffer' is missing the following properties from type 'ArrayBuffer': resizable, resize, detached, transfer, transferToFixedLength
+src/renderer/pages/agents/__tests__/WorkbenchHome.test.tsx(1549,29): error TS2322: Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'BlobPart'.
+  Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+    Types of property 'buffer' are incompatible.
+      Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+        Type 'SharedArrayBuffer' is missing the following properties from type 'ArrayBuffer': resizable, resize, detached, transfer, transferToFixedLength
+src/renderer/pages/agents/__tests__/WorkbenchHome.test.tsx(2593,14): error TS2532: Object is possibly 'undefined'.
+src/renderer/pages/agents/__tests__/WorkbenchSessionFiles.test.tsx(367,20): error TS6133: 'input' is declared but its value is never read.
+src/renderer/pages/agents/__tests__/WorkbenchSessionFiles.test.tsx(439,20): error TS2322: Type '{ name: string; path: string; kind: "file"; sizeBytes: number; modifiedMs: number; } | { path: string; name: string; kind: "directory"; sizeBytes: number; modifiedMs: number; } | { path: string; name: string; kind: "file"; sizeBytes: number; modifiedMs: number; }' is not assignable to type '{ name: string; path: string; kind: "file"; sizeBytes: number; modifiedMs: number; }'.
+  Type '{ path: string; name: string; kind: "directory"; sizeBytes: number; modifiedMs: number; }' is not assignable to type '{ name: string; path: string; kind: "file"; sizeBytes: number; modifiedMs: number; }'.
+    Types of property 'kind' are incompatible.
+      Type '"directory"' is not assignable to type '"file"'.
+src/renderer/pages/agents/__tests__/WorkbenchSessionFiles.test.tsx(439,30): error TS2322: Type '{ path: string; name: string; kind: "directory"; sizeBytes: number; modifiedMs: number; } | { path: string; name: string; kind: "file"; sizeBytes: number; modifiedMs: number; }' is not assignable to type '{ name: string; path: string; kind: "file"; sizeBytes: number; modifiedMs: number; }'.
+  Type '{ path: string; name: string; kind: "directory"; sizeBytes: number; modifiedMs: number; }' is not assignable to type '{ name: string; path: string; kind: "file"; sizeBytes: number; modifiedMs: number; }'.
+    Types of property 'kind' are incompatible.
+      Type '"directory"' is not assignable to type '"file"'.
+src/renderer/pages/agents/__tests__/WorkbenchSessionFiles.test.tsx(670,40): error TS2345: Argument of type 'AbortSignal | null | undefined' is not assignable to parameter of type 'AbortSignal | undefined'.
+  Type 'null' is not assignable to type 'AbortSignal | undefined'.
+src/renderer/pages/agents/__tests__/WorkbenchSessionFiles.test.tsx(719,38): error TS2345: Argument of type 'AbortSignal | null | undefined' is not assignable to parameter of type 'AbortSignal | undefined'.
+  Type 'null' is not assignable to type 'AbortSignal | undefined'.
+src/renderer/pages/agents/__tests__/WorkbenchSessionFiles.test.tsx(933,39): error TS2345: Argument of type 'AbortSignal | null | undefined' is not assignable to parameter of type 'AbortSignal | undefined'.
+  Type 'null' is not assignable to type 'AbortSignal | undefined'.
+src/renderer/pages/agents/__tests__/WorkbenchSessionFiles.test.tsx(996,39): error TS2345: Argument of type 'AbortSignal | null | undefined' is not assignable to parameter of type 'AbortSignal | undefined'.
+  Type 'null' is not assignable to type 'AbortSignal | undefined'.
+src/renderer/pages/agents/__tests__/workbenchWorkspace.test.ts(28,5): error TS2322: Type '(dirPath: string) => Promise<unknown>' is not assignable to type '((dirPath: string) => Promise<unknown>) & Mock<Procedure | Constructable>'.
+  Type '(dirPath: string) => Promise<unknown>' is not assignable to type '((dirPath: string) => Promise<unknown>) & MockInstance<Procedure | Constructable> & { (...args: any[]): any; new (...args: any[]): any; } & {}'.
+    Type '(dirPath: string) => Promise<unknown>' is not assignable to type 'MockInstance<Procedure | Constructable>'.
+src/renderer/pages/agents/__tests__/workbenchWorkspace.test.ts(29,5): error TS2322: Type '(filePath: string, data: string) => Promise<unknown>' is not assignable to type '((filePath: string, data: string) => Promise<unknown>) & Mock<Procedure | Constructable>'.
+  Type '(filePath: string, data: string) => Promise<unknown>' is not assignable to type '((filePath: string, data: string) => Promise<unknown>) & MockInstance<Procedure | Constructable> & { (...args: any[]): any; new (...args: any[]): any; } & {}'.
+    Type '(filePath: string, data: string) => Promise<unknown>' is not assignable to type 'MockInstance<Procedure | Constructable>'.
+src/renderer/pages/agents/__tests__/workbenchWorkspace.test.ts(30,5): error TS2322: Type '(dirPath: string, newDirPath: string) => Promise<unknown>' is not assignable to type '((dirPath: string, newDirPath: string) => Promise<unknown>) & Mock<Procedure | Constructable>'.
+  Type '(dirPath: string, newDirPath: string) => Promise<unknown>' is not assignable to type '((dirPath: string, newDirPath: string) => Promise<unknown>) & MockInstance<Procedure | Constructable> & { (...args: any[]): any; new (...args: any[]): any; } & {}'.
+    Type '(dirPath: string, newDirPath: string) => Promise<unknown>' is not assignable to type 'MockInstance<Procedure | Constructable>'.
+src/renderer/pages/agents/AgentPage.tsx(147,10): error TS6133: 'getWorkspaceSourceFromSession' is declared but its value is never read.
+src/renderer/pages/agents/aixAgentRuntime.ts(199,3): error TS2322: Type '{ packageId: unknown; digest: unknown; agentAssetId: unknown; agentAssetReleaseId: unknown; }' is not assignable to type 'AixCloudBinding'.
+  Types of property 'packageId' are incompatible.
+    Type 'unknown' is not assignable to type 'string'.
+src/renderer/pages/agents/homeSlashCatalog.tsx(194,89): error TS2339: Property 'uiControlled' does not exist on type '{ readonly command: "/goal"; readonly description: "Set a durable goal: <objective> | status | pause | resume | clear"; } | { readonly command: "/help"; readonly description: "List available commands"; } | ... 6 more ... | { ...; }'.
+  Property 'uiControlled' does not exist on type '{ readonly command: "/goal"; readonly description: "Set a durable goal: <objective> | status | pause | resume | clear"; }'.
+src/renderer/pages/agents/loadAppletPackage.ts(110,56): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(algorithm: AlgorithmIdentifier, data: BufferSource): Promise<ArrayBuffer>', gave the following error.
+    Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'BufferSource'.
+      Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+        Types of property 'buffer' are incompatible.
+          Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+            Type 'SharedArrayBuffer' is missing the following properties from type 'ArrayBuffer': resizable, resize, detached, transfer, transferToFixedLength
+  Overload 2 of 2, '(algorithm: AlgorithmIdentifier, data: BufferSource): Promise<ArrayBuffer>', gave the following error.
+    Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'BufferSource'.
+      Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+        Types of property 'buffer' are incompatible.
+          Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+            Type 'SharedArrayBuffer' is missing the following properties from type 'ArrayBuffer': resizable, resize, detached, transfer, transferToFixedLength
+src/renderer/pages/agents/loadAppletSession.ts(20,44): error TS2322: Type 'string' is not assignable to type 'AppletSessionLoad'.
+src/renderer/pages/agents/officialWritingPreviewSync.ts(243,22): error TS2345: Argument of type 'PreviewSlot[] | null' is not assignable to parameter of type 'PreviewSlot[]'.
+  Type 'null' is not assignable to type 'PreviewSlot[]'.
+src/renderer/pages/agents/pdfToolHandoff.ts(56,24): error TS2322: Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'BlobPart'.
+  Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+    Types of property 'buffer' are incompatible.
+      Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+        Type 'SharedArrayBuffer' is missing the following properties from type 'ArrayBuffer': resizable, resize, detached, transfer, transferToFixedLength
+src/renderer/pages/agents/pdfToolsPdfium.ts(227,20): error TS2352: Conversion of type 'typeof import("/Users/roylin/code/aster/apps/work/node_modules/.pnpm/@embedpdf+pdfium@2.14.3/node_modules/@embedpdf/pdfium/dist/index")' to type '{ init: (options: { wasmBinary: ArrayBuffer; locateFile?: ((file: string) => string) | undefined; }) => Promise<Pdfium>; }' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  The types returned by 'init(...)' are incompatible between these types.
+    Type 'Promise<WrappedPdfiumModule>' is not comparable to type 'Promise<Pdfium>'.
+      Type 'WrappedPdfiumModule' is not comparable to type 'Pdfium'.
+        Types of property 'pdfium' are incompatible.
+          Property 'HEAPU8' is missing in type 'PdfiumModule & PdfiumRuntimeMethods' but required in type '{ HEAPU8: Uint8Array<ArrayBufferLike>; wasmExports: { malloc: (size: number) => number; free: (ptr: number) => void; }; getValue: (ptr: number, type: string) => number; }'.
+src/renderer/pages/agents/planExport.ts(32,105): error TS2322: Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'BlobPart'.
+  Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+    Types of property 'buffer' are incompatible.
+      Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+        Type 'SharedArrayBuffer' is missing the following properties from type 'ArrayBuffer': resizable, resize, detached, transfer, transferToFixedLength
+src/renderer/pages/agents/planSource.tsx(8,8): error TS2459: Module '"@codemirror/view"' declares 'Extension' locally, but it is not exported.
+src/renderer/pages/agents/planSource.tsx(45,54): error TS2345: Argument of type 'Range<Decoration>' is not assignable to parameter of type 'never'.
+src/renderer/pages/agents/taskConversation/__tests__/jsonRender.test.tsx(234,25): error TS2352: Conversion of type '[]' to type '[string, RequestInit]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Source has 0 element(s) but target requires 2.
+src/renderer/pages/agents/taskConversation/__tests__/jsonRender.test.tsx(249,31): error TS2352: Conversion of type '[]' to type '[string, RequestInit]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Source has 0 element(s) but target requires 2.
+src/renderer/pages/agents/taskConversation/__tests__/jsonRender.test.tsx(279,25): error TS2352: Conversion of type '[]' to type '[string, RequestInit]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Source has 0 element(s) but target requires 2.
+src/renderer/pages/agents/taskConversation/__tests__/jsonRender.test.tsx(441,24): error TS2352: Conversion of type '(input: RequestInfo, init?: RequestInit | undefined) => Promise<Response>' to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'Promise<import("/Users/roylin/code/aster/apps/work/node_modules/undici/types/fetch").Response>' is not comparable to type 'Promise<Response>'.
+    Property 'bytes' is missing in type 'import("/Users/roylin/code/aster/apps/work/node_modules/undici/types/fetch").Response' but required in type 'Response'.
+src/renderer/pages/agents/taskConversation/__tests__/reviewAnchors.test.ts(85,43): error TS2345: Argument of type '{ isDestroyed: boolean; state: { doc: { descendants(visitor: (node: { isText: boolean; text?: string | undefined; }, pos: number) => void): void; }; }; commands: { insertDocumentCommentThread: Mock<...>; }; chain(): { ...; }; }' is not assignable to parameter of type 'CommentEditor'.
+  The types of 'chain().command' are incompatible between these types.
+    Type '(command: (props: unknown) => boolean) => { run(): boolean; }' is not assignable to type '(command: (props: ReviewMarkCommand) => boolean) => { run: () => boolean; }'.
+      Types of parameters 'command' and 'command' are incompatible.
+        Types of parameters 'props' and 'props' are incompatible.
+          Type 'unknown' is not assignable to type 'ReviewMarkCommand'.
+src/renderer/pages/agents/taskConversation/__tests__/reviewAnchors.test.ts(94,26): error TS2345: Argument of type '{ isDestroyed: boolean; state: { doc: { descendants(visitor: (node: { isText: boolean; text?: string | undefined; }, pos: number) => void): void; }; }; commands: { insertDocumentCommentThread: Mock<...>; }; chain(): { ...; }; }' is not assignable to parameter of type 'CommentEditor'.
+  The types of 'chain().command' are incompatible between these types.
+    Type '(command: (props: unknown) => boolean) => { run(): boolean; }' is not assignable to type '(command: (props: ReviewMarkCommand) => boolean) => { run: () => boolean; }'.
+      Types of parameters 'command' and 'command' are incompatible.
+        Types of parameters 'props' and 'props' are incompatible.
+          Type 'unknown' is not assignable to type 'ReviewMarkCommand'.
+src/renderer/pages/agents/taskConversation/__tests__/taskConversationCases.test.tsx(156,51): error TS2493: Tuple type '[]' of length '0' has no element at index '0'.
+src/renderer/pages/agents/taskConversation/__tests__/taskConversationCases.test.tsx(185,62): error TS2493: Tuple type '[]' of length '0' has no element at index '1'.
+src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx(187,25): error TS2352: Conversion of type '[]' to type '[string, RequestInit]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Source has 0 element(s) but target requires 2.
+src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx(350,9): error TS2352: Conversion of type '{ type: "dynamic-tool"; toolName: string; toolCallId: string; state: "output-available"; input: {}; output: string; files: string[]; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Object literal may only specify known properties, and 'files' does not exist in type '{ type: "dynamic-tool"; toolName: string; toolCallId: string; title?: string | undefined; toolMetadata?: JSONObject | undefined; providerExecuted?: boolean | undefined; } & { ...; }'.
+src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx(1104,61): error TS2493: Tuple type '[]' of length '0' has no element at index '1'.
+src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx(1115,61): error TS2493: Tuple type '[]' of length '0' has no element at index '1'.
+src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx(1152,65): error TS2493: Tuple type '[]' of length '0' has no element at index '1'.
+src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx(1427,9): error TS2352: Conversion of type '{ type: "dynamic-tool"; toolName: string; toolCallId: string; state: "output-available"; input: { file_path: string; }; files: string[]; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Object literal may only specify known properties, and 'files' does not exist in type '{ type: "dynamic-tool"; toolName: string; toolCallId: string; title?: string | undefined; toolMetadata?: JSONObject | undefined; providerExecuted?: boolean | undefined; } & { ...; }'.
+src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx(1442,111): error TS2352: Conversion of type '{ type: "dynamic-tool"; toolName: string; toolCallId: string; state: "output-available"; input: {}; files: readonly ["report.md", "report.md.", "report.md:1", "a\\b.md", "a/b.md", "../report.md"] | readonly [...] | readonly [...]; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Object literal may only specify known properties, and 'files' does not exist in type '{ type: "dynamic-tool"; toolName: string; toolCallId: string; title?: string | undefined; toolMetadata?: JSONObject | undefined; providerExecuted?: boolean | undefined; } & { ...; }'.
+src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx(1571,11): error TS2352: Conversion of type '{ type: "dynamic-tool"; toolName: string; toolCallId: string; state: "output-available"; input: {}; files: string[]; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Object literal may only specify known properties, and 'files' does not exist in type '{ type: "dynamic-tool"; toolName: string; toolCallId: string; title?: string | undefined; toolMetadata?: JSONObject | undefined; providerExecuted?: boolean | undefined; } & { ...; }'.
+src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx(1649,31): error TS2352: Conversion of type '{ type: "dynamic-tool"; toolName: string; toolCallId: string; state: "output-error"; input: { file_path: string; }; output: { filePath: string; }; errorText: string; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ type: "dynamic-tool"; toolName: string; toolCallId: string; state: "output-error"; input: { file_path: string; }; output: { filePath: string; }; errorText: string; }' is not comparable to type 'CherryMessagePart'.
+    Types of property 'output' are incompatible.
+      Type '{ filePath: string; }' is not comparable to type 'undefined'.
+src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx(1729,11): error TS2352: Conversion of type '{ type: "dynamic-tool"; toolName: string; toolCallId: string; state: "output-available"; input: {}; output: string; files: string[]; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Object literal may only specify known properties, and 'files' does not exist in type '{ type: "dynamic-tool"; toolName: string; toolCallId: string; title?: string | undefined; toolMetadata?: JSONObject | undefined; providerExecuted?: boolean | undefined; } & { ...; }'.
+src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx(1765,9): error TS2352: Conversion of type '{ type: "dynamic-tool"; toolName: string; toolCallId: string; state: "output-error"; input: {}; errorText: string; files: string[]; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Object literal may only specify known properties, and 'files' does not exist in type '{ type: "dynamic-tool"; toolName: string; toolCallId: string; title?: string | undefined; toolMetadata?: JSONObject | undefined; providerExecuted?: boolean | undefined; } & { ...; }'.
+src/renderer/pages/agents/taskConversation/__tests__/workbenchRun.test.ts(178,33): error TS2493: Tuple type '[]' of length '0' has no element at index '0'.
+src/renderer/pages/agents/taskConversation/__tests__/workbenchRun.test.ts(178,43): error TS18048: 'call' is possibly 'undefined'.
+src/renderer/pages/agents/taskConversation/__tests__/workbenchRun.test.ts(201,12): error TS2532: Object is possibly 'undefined'.
+src/renderer/pages/agents/taskConversation/__tests__/workbenchRun.test.ts(201,35): error TS2493: Tuple type '[]' of length '0' has no element at index '0'.
+src/renderer/pages/agents/taskConversation/highlightTaskCode.ts(45,5): error TS2502: 'highlighterPromise' is referenced directly or indirectly in its own type annotation.
+src/renderer/pages/agents/taskConversation/TaskConversationMessage.tsx(159,3): error TS1360: Type '{ a: ({ children, href }: { children?: ReactNode; href?: string; }) => JSX.Element; code: ({ children, className }: { children?: ReactNode; className?: string; }) => JSX.Element; inlineCode: ({ children, className }: { children?: ReactNode; className?: string; }) => JSX.Element; p: ({ children }: { children?: ReactN...' does not satisfy the expected type 'Partial<Components>'.
+  Property 'a' is incompatible with index signature.
+    Type '({ children, href }: { children?: ReactNode; href?: string | undefined; }) => Element' is not assignable to type 'keyof IntrinsicElements | ComponentType<Record<string, unknown> & ExtraProps> | undefined'.
+      Type '({ children, href }: { children?: ReactNode; href?: string | undefined; }) => Element' is not assignable to type 'FunctionComponent<Record<string, unknown> & ExtraProps>'.
+        Types of parameters '__0' and 'props' are incompatible.
+          Type 'Record<string, unknown> & ExtraProps' has no properties in common with type '{ children?: ReactNode; href?: string | undefined; }'.
+src/renderer/pages/agents/taskConversation/taskDiff.ts(217,14): error TS2339: Property 'length' does not exist on type '{ left: Set<number>; right: Set<number>; }'.
+src/renderer/pages/agents/taskConversation/turn.ts(777,30): error TS2345: Argument of type 'CherryMessagePart' is not assignable to parameter of type 'DynamicToolUIPart | ({ type: `tool-${string}`; } & UIToolInvocation<UITool>)'.
+  Type 'TextUIPart' is not assignable to type 'DynamicToolUIPart | ({ type: `tool-${string}`; } & UIToolInvocation<UITool>)'.
+    Type 'TextUIPart' is not assignable to type '{ type: `tool-${string}`; } & { toolCallId: string; title?: string | undefined; toolMetadata?: JSONObject | undefined; providerExecuted?: boolean | undefined; } & { state: "output-denied"; ... 4 more ...; approval: { ...; }; }'.
+      Type 'TextUIPart' is not assignable to type '{ type: `tool-${string}`; }'.
+        Types of property 'type' are incompatible.
+          Type '"text"' is not assignable to type '`tool-${string}`'.
+src/renderer/pages/agents/useWorkbenchDefaultAgent.ts(101,7): error TS2322: Type 'string' is not assignable to type '`${string}::${string}`'.
+src/renderer/pages/agents/WorkbenchFeatureStrip.tsx(716,78): error TS2339: Property 'id' does not exist on type 'never'.
+src/renderer/pages/agents/WorkbenchHome.tsx(1036,18): error TS2353: Object literal may only specify known properties, and 'WebkitUserDrag' does not exist in type 'Properties<string | number, string & {}>'.
+src/renderer/pages/agents/WorkbenchModelPicker.tsx(530,54): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/renderer/pages/agents/WorkbenchModelPicker.tsx(532,40): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/renderer/pages/agents/WorkbenchSessionFiles.tsx(1287,17): error TS2339: Property 'parent' does not exist on type 'InlineEdit'.
+  Property 'parent' does not exist on type '{ mode: "rename"; path: string; name: string; error: string; busy: boolean; touched: boolean; }'.
+src/renderer/pages/agents/WorkbenchSessionFiles.tsx(1775,29): error TS2353: Object literal may only specify known properties, and ''data-workspace-session-search'' does not exist in type 'Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "value" | "spellCheck" | "onChange" | "placeholder">'.
+src/renderer/pages/agents/WorkbenchSessionFiles.tsx(1776,31): error TS2353: Object literal may only specify known properties, and ''data-workspace-files-action'' does not exist in type 'Omit<ButtonHTMLAttributes<HTMLButtonElement>, "type" | "aria-busy" | "aria-label" | "onClick">'.
+src/renderer/pages/agents/WorkbenchSessionFiles.tsx(2501,68): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/renderer/pages/agents/WorkbenchSessionFiles.tsx(2515,76): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/renderer/pages/agents/WorkbenchTaskWorkspace.tsx(330,36): error TS2339: Property 'toggleMaximized' does not exist on type 'RightPanelActions'.
+src/renderer/pages/agents/workSchedule.ts(318,7): error TS2322: Type 'string | { hour: number; minute: number; }' is not assignable to type 'string'.
+  Type '{ hour: number; minute: number; }' is not assignable to type 'string'.
+src/renderer/pages/agents/workSchedule.ts(341,7): error TS2322: Type 'string | { hour: number; minute: number; }' is not assignable to type 'string'.
+  Type '{ hour: number; minute: number; }' is not assignable to type 'string'.
+src/renderer/pages/agents/workspaceImagePreview.ts(32,46): error TS2322: Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'BlobPart'.
+  Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+    Types of property 'buffer' are incompatible.
+      Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+        Type 'SharedArrayBuffer' is missing the following properties from type 'ArrayBuffer': resizable, resize, detached, transfer, transferToFixedLength
+src/renderer/pages/capabilities/__tests__/CapabilitiesPage.test.tsx(34,31): error TS5097: An import path can only end with a '.tsx' extension when 'allowImportingTsExtensions' is enabled.
+src/renderer/pages/capabilities/__tests__/CapabilitiesPage.test.tsx(35,30): error TS5097: An import path can only end with a '.tsx' extension when 'allowImportingTsExtensions' is enabled.
+src/renderer/pages/capabilities/__tests__/CapabilitiesPage.test.tsx(89,3): error TS2322: Type '{ packageType?: "native" | "aix" | undefined; available?: boolean | undefined; slug: string; kind: CapabilityKind; category: CapabilitiesData.CapabilityCategoryId; ... 15 more ...; agentRuntime?: AixAgentDeclaration | undefined; }' is not assignable to type 'CapabilityEntry'.
+  Types of property 'surfaces' are incompatible.
+    Type 'string[] | undefined' is not assignable to type 'string[]'.
+      Type 'undefined' is not assignable to type 'string[]'.
+src/renderer/pages/capabilities/__tests__/capabilityMark.test.tsx(12,3): error TS2322: Type '{ packageType?: "native" | "aix" | undefined; available?: boolean | undefined; slug: string; kind: CapabilityKind; category: CapabilityCategoryId; ... 15 more ...; agentRuntime?: AixAgentDeclaration | undefined; }' is not assignable to type 'CapabilityEntry'.
+  Types of property 'surfaces' are incompatible.
+    Type 'string[] | undefined' is not assignable to type 'string[]'.
+      Type 'undefined' is not assignable to type 'string[]'.
+src/renderer/pages/documents/__tests__/DocumentOpenView.test.tsx(649,43): error TS2339: Property 'presentation' does not exist on type 'OfficeMount'.
+  Property 'presentation' does not exist on type '{ editor: "PdfViewer"; fileName?: string | undefined; sourceKey?: string | undefined; loadSource: () => Promise<Blob>; onSave?: ((pdf: Blob) => Promise<boolean>) | undefined; }'.
+src/renderer/pages/documents/__tests__/OfficeDocumentSurface.test.tsx(220,50): error TS2322: Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'BlobPart'.
+  Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+    Types of property 'buffer' are incompatible.
+      Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+        Type 'SharedArrayBuffer' is missing the following properties from type 'ArrayBuffer': resizable, resize, detached, transfer, transferToFixedLength
+src/renderer/pages/documents/DocumentOpenView.tsx(63,28): error TS2322: Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'BlobPart'.
+  Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+    Types of property 'buffer' are incompatible.
+      Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+        Type 'SharedArrayBuffer' is missing the following properties from type 'ArrayBuffer': resizable, resize, detached, transfer, transferToFixedLength
+src/renderer/pages/documents/monacoCodeEditor.tsx(121,41): error TS2345: Argument of type '{ wordWrap: "off"; language: string; folding: false; links: false; occurrencesHighlight: "off"; selectionHighlight: false; matchBrackets: "never"; wordBasedSuggestions: "off"; quickSuggestions: false; ... 22 more ...; largeFileOptimizations: true; } | { ...; }' is not assignable to parameter of type 'IStandaloneEditorConstructionOptions | undefined'.
+  Type '{ wordWrap: "off"; language: string; folding: false; links: false; occurrencesHighlight: "off"; selectionHighlight: false; matchBrackets: "never"; wordBasedSuggestions: "off"; quickSuggestions: false; ... 22 more ...; largeFileOptimizations: true; }' is not assignable to type 'IStandaloneEditorConstructionOptions'.
+    The types of 'hover.enabled' are incompatible between these types.
+      Type 'false' is not assignable to type '"off" | "on" | "onKeyboardModifier" | undefined'.
+src/renderer/pages/documents/OfficeDocumentSurface.tsx(50,10): error TS6133: 'officeCore' is declared but its value is never read.
+src/renderer/pages/documents/OfficeDocumentSurface.tsx(161,85): error TS2322: Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'BlobPart'.
+  Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+    Types of property 'buffer' are incompatible.
+      Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+        Type 'SharedArrayBuffer' is missing the following properties from type 'ArrayBuffer': resizable, resize, detached, transfer, transferToFixedLength
+src/renderer/pages/home/__tests__/HomeComposerModelPopup.test.tsx(71,19): error TS2352: Conversion of type '{ id: "lab::bare"; providerId: string; name: string; supportsStreaming: true; isEnabled: true; isHidden: false; }' to type '{ id: `${string}::${string}`; providerId: string; name: string; capabilities: ("function-call" | "reasoning" | "image-recognition" | "image-generation" | "audio-recognition" | "audio-generation" | ... 9 more ... | "computer-use")[]; ... 23 more ...; notes?: string | undefined; }' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Property 'capabilities' is missing in type '{ id: "lab::bare"; providerId: string; name: string; supportsStreaming: true; isEnabled: true; isHidden: false; }' but required in type '{ id: `${string}::${string}`; providerId: string; name: string; capabilities: ("function-call" | "reasoning" | "image-recognition" | "image-generation" | "audio-recognition" | "audio-generation" | ... 9 more ... | "computer-use")[]; ... 23 more ...; notes?: string | undefined; }'.
+src/renderer/pages/launchpad/LaunchpadPage.tsx(51,7): error TS2741: Property 'home' is missing in type '{ assistants: string; agents: string; messages: string; schedule: string; mail: string; org: string; mini_app: string; knowledge: string; files: string; code_tools: string; notes: string; capabilities: string; plugins: string; documents: string; }' but required in type 'Record<"files" | "messages" | "capabilities" | "notes" | "home" | "assistants" | "agents" | "schedule" | "mail" | "org" | "mini_app" | "knowledge" | "code_tools" | "documents" | "plugins", string>'.
+src/renderer/pages/settings/__tests__/settingsAlign.test.tsx(75,62): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+src/renderer/pages/settings/__tests__/settingsAlign.test.tsx(311,62): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+src/renderer/pages/settings/__tests__/settingsAlign.test.tsx(322,62): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+src/renderer/pages/settings/ArchiveSettings/AllArchiveSection.tsx(30,46): error TS2339: Property 'paintings' does not exist on type '{ home: SidebarIconComponent; assistants: SidebarIconComponent; agents: SidebarIconComponent; messages: SidebarIconComponent; ... 10 more ...; documents: SidebarIconComponent; }'.
+src/renderer/pages/settings/ArchiveSettings/ArchiveDomainSections.tsx(126,7): error TS2741: Property '$$typeof' is missing in type 'SidebarIconComponent' but required in type 'ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>'.
+src/renderer/pages/settings/ArchiveSettings/ArchiveDomainSections.tsx(231,7): error TS2741: Property '$$typeof' is missing in type 'SidebarIconComponent' but required in type 'ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>'.
+src/renderer/pages/settings/ArchiveSettings/ArchiveDomainSections.tsx(307,37): error TS2339: Property 'paintings' does not exist on type '{ home: SidebarIconComponent; assistants: SidebarIconComponent; agents: SidebarIconComponent; messages: SidebarIconComponent; ... 10 more ...; documents: SidebarIconComponent; }'.
+src/renderer/pages/settings/ArchiveSettings/ArchiveDomainSections.tsx(352,7): error TS2741: Property '$$typeof' is missing in type 'SidebarIconComponent' but required in type 'ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>'.
+src/renderer/pages/settings/DocumentParseSettings/__tests__/DocumentParseSettings.test.tsx(107,37): error TS2322: Type '"txt"' is not assignable to type '"md"'.
+src/renderer/pages/settings/McpSettings/__tests__/QuickCreateMcpServerDialog.test.tsx(44,11): error TS6133: 'user' is declared but its value is never read.
+src/renderer/pages/settings/ProviderSettings/ProviderSettingsPage.tsx(41,33): error TS2339: Property 'filter' does not exist on type '{ topicId?: string | undefined; sessionId?: string | undefined; path?: (string & $brand<"AbsoluteFilePath">) | undefined; assistantId?: string | undefined; agentId?: string | undefined; ... 16 more ...; focus?: ModelSettingsFocus | undefined; }'.
+src/renderer/pages/settings/ProviderSettings/ProviderSettingsPage.tsx(68,36): error TS2339: Property 'addProviderData' does not exist on type '{ topicId?: string | undefined; sessionId?: string | undefined; path?: (string & $brand<"AbsoluteFilePath">) | undefined; assistantId?: string | undefined; agentId?: string | undefined; ... 16 more ...; focus?: ModelSettingsFocus | undefined; }'.
+src/renderer/pages/settings/ProviderSettings/ProviderSettingsPage.tsx(73,16): error TS2339: Property 'filter' does not exist on type '{ topicId?: string | undefined; sessionId?: string | undefined; path?: (string & $brand<"AbsoluteFilePath">) | undefined; assistantId?: string | undefined; agentId?: string | undefined; ... 16 more ...; focus?: ModelSettingsFocus | undefined; }'.
+src/renderer/pages/settings/ProviderSettings/ProviderSettingsPage.tsx(77,16): error TS2339: Property 'id' does not exist on type '{ topicId?: string | undefined; sessionId?: string | undefined; path?: (string & $brand<"AbsoluteFilePath">) | undefined; assistantId?: string | undefined; agentId?: string | undefined; ... 16 more ...; focus?: ModelSettingsFocus | undefined; }'.
+src/renderer/pages/settings/ProviderSettings/ProviderSettingsPage.tsx(78,75): error TS2339: Property 'id' does not exist on type '{ topicId?: string | undefined; sessionId?: string | undefined; path?: (string & $brand<"AbsoluteFilePath">) | undefined; assistantId?: string | undefined; agentId?: string | undefined; ... 16 more ...; focus?: ModelSettingsFocus | undefined; }'.
+src/renderer/pages/settings/ProviderSettings/ProviderSettingsPage.tsx(102,16): error TS2339: Property 'id' does not exist on type '{ topicId?: string | undefined; sessionId?: string | undefined; path?: (string & $brand<"AbsoluteFilePath">) | undefined; assistantId?: string | undefined; agentId?: string | undefined; ... 16 more ...; focus?: ModelSettingsFocus | undefined; }'.
+src/renderer/pages/settings/ProviderSettings/ProviderSettingsPage.tsx(111,14): error TS2339: Property 'id' does not exist on type '{ topicId?: string | undefined; sessionId?: string | undefined; path?: (string & $brand<"AbsoluteFilePath">) | undefined; assistantId?: string | undefined; agentId?: string | undefined; ... 16 more ...; focus?: ModelSettingsFocus | undefined; }'.
+src/renderer/pages/settings/ProviderSettings/ProviderSpecific/A3sOauth.tsx(304,10): error TS2304: Cannot find name 'serviceName'.
+src/renderer/pages/settings/SettingsPage.tsx(79,46): error TS2322: Type 'string' is not assignable to type '"data" | "local_backup" | "webdav" | "nutstore" | "s3" | "import_settings" | "export_menu" | "markdown_export" | "notion" | "yuque" | "joplin" | "obsidian" | "siyuan" | undefined'.
+src/renderer/pages/settings/SettingsPage.tsx(85,19): error TS2322: Type 'string' is not assignable to type 'ShortcutSettingsGroup | KnowledgeSection | undefined'.
+src/renderer/services/plugins/aixApplets.ts(53,72): error TS18046: 'mode' is of type 'unknown'.
+src/renderer/services/plugins/presentonHomepage.ts(174,38): error TS2339: Property 'editor' does not exist on type '{}'.
+src/renderer/services/plugins/presentonHomepage.ts(175,46): error TS2339: Property 'keptNotice' does not exist on type '{}'.
+src/renderer/services/plugins/presentonHomepage.ts(212,5): error TS2345: Argument of type '(mode: Readonly<{ id: string; contractVersion: 1; title: string; description: string; icon: string; agent: string; scope: "workspace" | "session"; context: readonly ("run" | "harness" | "workspace" | "document" | "turn" | "conversation")[]; ... 5 more ...; prompt?: string | undefined; }>) => Readonly<...> & { ...; }' is not assignable to parameter of type '(value: unknown, index: number, array: readonly unknown[]) => Readonly<{ id: string; contractVersion: 1; title: string; description: string; icon: string; agent: string; scope: "workspace" | "session"; context: readonly ("run" | ... 4 more ... | "conversation")[]; ... 5 more ...; prompt?: string | undefined; }> & { ...'.
+  Types of parameters 'mode' and 'value' are incompatible.
+    Type 'unknown' is not assignable to type 'Readonly<{ id: string; contractVersion: 1; title: string; description: string; icon: string; agent: string; scope: "workspace" | "session"; context: readonly ("run" | "harness" | "workspace" | "document" | "turn" | "conversation")[]; ... 5 more ...; prompt?: string | undefined; }>'.
+src/renderer/services/PyodideService.ts(290,7): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/services/PyodideService.ts(290,7): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/services/PyodideService.ts(296,7): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/services/PyodideService.ts(296,7): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/shell/studioClient.test.ts(136,28): error TS2345: Argument of type 'Mock<(url: string, init?: { method?: string | undefined; body?: string | undefined; } | undefined) => Promise<{ ok: boolean; text: () => Promise<string>; }>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+  Types of parameters 'url' and 'input' are incompatible.
+    Type 'URL | RequestInfo' is not assignable to type 'string'.
+      Type 'URL' is not assignable to type 'string'.
+src/renderer/shell/studioClient.test.ts(213,28): error TS2345: Argument of type 'Mock<(url: string, init?: { body?: string | undefined; headers?: { authorization?: string | undefined; } | undefined; } | undefined) => Promise<{ ok: boolean; text: () => Promise<string>; }>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+  Types of parameters 'url' and 'input' are incompatible.
+    Type 'URL | RequestInfo' is not assignable to type 'string'.
+      Type 'URL' is not assignable to type 'string'.
+src/renderer/shell/studioClient.test.ts(254,28): error TS2345: Argument of type 'Mock<(url: string) => Promise<{ ok: boolean; text: () => Promise<string>; }>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+  Types of parameters 'url' and 'input' are incompatible.
+    Type 'URL | RequestInfo' is not assignable to type 'string'.
+      Type 'URL' is not assignable to type 'string'.
+src/renderer/shell/studioClient.test.ts(286,28): error TS2345: Argument of type 'Mock<(url: string) => Promise<{ ok: boolean; text: () => Promise<string>; }>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+  Types of parameters 'url' and 'input' are incompatible.
+    Type 'URL | RequestInfo' is not assignable to type 'string'.
+      Type 'URL' is not assignable to type 'string'.
+src/renderer/shell/studioClient.test.ts(306,22): error TS2345: Argument of type 'Mock<() => Promise<unknown>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+  Type 'Promise<unknown>' is not assignable to type 'Promise<Response>'.
+    Type 'unknown' is not assignable to type 'Response'.
+src/renderer/shell/studioClient.test.ts(327,28): error TS2345: Argument of type 'Mock<() => Promise<{ ok: boolean; text: () => Promise<string>; }>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+  Type 'Promise<{ ok: boolean; text: () => Promise<string>; }>' is not assignable to type 'Promise<Response>'.
+    Type '{ ok: boolean; text: () => Promise<string>; }' is missing the following properties from type 'Response': headers, redirected, status, statusText, and 10 more.
+src/renderer/shell/studioClient.test.ts(347,28): error TS2345: Argument of type 'Mock<() => Promise<{ ok: boolean; text: () => Promise<string>; }>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+  Type 'Promise<{ ok: boolean; text: () => Promise<string>; }>' is not assignable to type 'Promise<Response>'.
+    Type '{ ok: boolean; text: () => Promise<string>; }' is missing the following properties from type 'Response': headers, redirected, status, statusText, and 10 more.
+src/renderer/shell/studioClient.test.ts(372,28): error TS2345: Argument of type 'Mock<(url: string) => Promise<{ ok: boolean; text: () => Promise<string>; }>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+  Types of parameters 'url' and 'input' are incompatible.
+    Type 'URL | RequestInfo' is not assignable to type 'string'.
+      Type 'URL' is not assignable to type 'string'.
+src/renderer/shell/studioClient.test.ts(387,42): error TS2493: Tuple type '[url: string]' of length '1' has no element at index '1'.
+src/renderer/shell/studioClient.test.ts(387,46): error TS2339: Property 'body' does not exist on type 'never'.
+src/renderer/shell/studioClient.test.ts(411,28): error TS2345: Argument of type 'Mock<(url: string) => Promise<{ ok: boolean; text: () => Promise<string>; }>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+  Types of parameters 'url' and 'input' are incompatible.
+    Type 'URL | RequestInfo' is not assignable to type 'string'.
+      Type 'URL' is not assignable to type 'string'.
+src/renderer/shell/studioClient.test.ts(437,28): error TS2345: Argument of type 'Mock<(url: string) => Promise<{ ok: boolean; text: () => Promise<string>; } | { ok: boolean; status: number; text: () => Promise<string>; }>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+  Types of parameters 'url' and 'input' are incompatible.
+    Type 'URL | RequestInfo' is not assignable to type 'string'.
+      Type 'URL' is not assignable to type 'string'.
+src/renderer/shell/studioClient.test.ts(459,28): error TS2345: Argument of type 'Mock<(url: string) => Promise<{ ok: boolean; text: () => Promise<string>; }>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+  Types of parameters 'url' and 'input' are incompatible.
+    Type 'URL | RequestInfo' is not assignable to type 'string'.
+      Type 'URL' is not assignable to type 'string'.
+src/renderer/shell/studioClient.test.ts(476,28): error TS2345: Argument of type 'Mock<() => Promise<{ ok: boolean; text: () => Promise<string>; }>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+  Type 'Promise<{ ok: boolean; text: () => Promise<string>; }>' is not assignable to type 'Promise<Response>'.
+    Type '{ ok: boolean; text: () => Promise<string>; }' is missing the following properties from type 'Response': headers, redirected, status, statusText, and 10 more.
+src/renderer/shell/studioClient.test.ts(483,60): error TS2493: Tuple type '[]' of length '0' has no element at index '0'.
+src/renderer/shell/studioClient.test.ts(494,28): error TS2345: Argument of type 'Mock<(url: string, init?: { body?: string | undefined; } | undefined) => Promise<{ ok: boolean; text: () => Promise<string>; }>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+  Types of parameters 'url' and 'input' are incompatible.
+    Type 'URL | RequestInfo' is not assignable to type 'string'.
+      Type 'URL' is not assignable to type 'string'.
+src/renderer/shell/studioClient.test.ts(522,28): error TS2345: Argument of type 'Mock<(url: string) => Promise<{ ok: boolean; text: () => Promise<string>; }>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+  Types of parameters 'url' and 'input' are incompatible.
+    Type 'URL | RequestInfo' is not assignable to type 'string'.
+      Type 'URL' is not assignable to type 'string'.
+src/renderer/shell/studioClient.test.ts(582,37): error TS2493: Tuple type '[url: string]' of length '1' has no element at index '1'.
+src/renderer/shell/studioMainBridge.test.ts(446,6): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/renderer/shell/studioMainBridge.test.ts(451,6): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/renderer/utils/installEditingKeyGuard.ts(109,5): error TS2345: Argument of type '"ignore" | "left" | "right" | "up" | "down" | "lineStart" | "lineEnd" | "docStart" | "docEnd" | "pageUp" | "pageDown"' is not assignable to parameter of type '"left" | "right" | "up" | "down" | "lineStart" | "lineEnd" | "docStart" | "docEnd" | "pageUp" | "pageDown"'.
+  Type '"ignore"' is not assignable to type '"left" | "right" | "up" | "down" | "lineStart" | "lineEnd" | "docStart" | "docEnd" | "pageUp" | "pageDown"'.
+src/renderer/utils/installEditingKeyGuard.ts(139,51): error TS2345: Argument of type '"ignore" | "left" | "right" | "up" | "down" | "lineStart" | "lineEnd" | "docStart" | "docEnd" | "pageUp" | "pageDown"' is not assignable to parameter of type '"left" | "right" | "up" | "down" | "lineStart" | "lineEnd" | "docStart" | "docEnd" | "pageUp" | "pageDown"'.
+  Type '"ignore"' is not assignable to type '"left" | "right" | "up" | "down" | "lineStart" | "lineEnd" | "docStart" | "docEnd" | "pageUp" | "pageDown"'.
+src/renderer/utils/platform.ts(5,46): error TS2367: This comparison appears to be unintentional because the types '"darwin" | "linux" | undefined' and '"win64"' have no overlap.
+src/renderer/utils/shiki.ts(282,7): error TS2820: Type '"text"' is not assignable to type 'BundledLanguage | LanguageInput | undefined'. Did you mean '"tex"'?
+src/renderer/windows/migrationV2/components/MigrationWindowControls.tsx(25,10): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/migrationV2/components/MigrationWindowControls.tsx(25,10): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/migrationV2/components/MigrationWindowControls.tsx(29,10): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/migrationV2/components/MigrationWindowControls.tsx(29,10): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/migrationV2/exporters/DexieExporter.ts(58,11): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/migrationV2/exporters/DexieExporter.ts(58,11): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/migrationV2/exporters/LocalStorageExporter.ts(17,11): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/migrationV2/exporters/LocalStorageExporter.ts(17,11): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/migrationV2/exporters/LocalStorageExporter.ts(40,13): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/migrationV2/exporters/LocalStorageExporter.ts(40,13): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/migrationV2/exporters/LocalStorageExporter.ts(50,11): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/migrationV2/exporters/LocalStorageExporter.ts(50,11): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/migrationV2/exporters/ReduxExporter.ts(121,11): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/migrationV2/exporters/ReduxExporter.ts(121,11): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/migrationV2/hooks/useMigrationProgress.ts(74,37): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/migrationV2/hooks/useMigrationProgress.ts(74,37): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/migrationV2/hooks/useMigrationProgress.ts(77,5): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/migrationV2/hooks/useMigrationProgress.ts(77,5): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/migrationV2/hooks/useMigrationProgress.ts(89,5): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/migrationV2/hooks/useMigrationProgress.ts(89,5): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/migrationV2/hooks/useMigrationProgress.ts(114,12): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/migrationV2/hooks/useMigrationProgress.ts(114,12): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/migrationV2/hooks/useMigrationProgress.ts(118,12): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/migrationV2/hooks/useMigrationProgress.ts(118,12): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/migrationV2/hooks/useMigrationProgress.ts(122,12): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/migrationV2/hooks/useMigrationProgress.ts(122,12): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/migrationV2/hooks/useMigrationProgress.ts(126,12): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/migrationV2/hooks/useMigrationProgress.ts(126,12): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/migrationV2/hooks/useMigrationProgress.ts(130,12): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/migrationV2/hooks/useMigrationProgress.ts(130,12): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/migrationV2/hooks/useMigrationProgress.ts(139,14): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/migrationV2/hooks/useMigrationProgress.ts(139,14): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/migrationV2/hooks/useMigrationProgress.ts(145,12): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/migrationV2/hooks/useMigrationProgress.ts(145,12): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/migrationV2/hooks/useMigrationProgress.ts(150,12): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/migrationV2/hooks/useMigrationProgress.ts(150,12): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/migrationV2/MigrationApp.tsx(424,21): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/migrationV2/MigrationApp.tsx(424,21): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/migrationV2/MigrationApp.tsx(450,34): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/migrationV2/MigrationApp.tsx(450,34): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/migrationV2/MigrationApp.tsx(456,13): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/migrationV2/MigrationApp.tsx(456,13): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/migrationV2/MigrationApp.tsx(470,17): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/migrationV2/MigrationApp.tsx(470,17): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/migrationV2/MigrationApp.tsx(481,13): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/migrationV2/MigrationApp.tsx(481,13): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/migrationV2/MigrationApp.tsx(499,12): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/migrationV2/MigrationApp.tsx(499,12): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/migrationV2/MigrationApp.tsx(932,20): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/migrationV2/MigrationApp.tsx(932,20): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/migrationV2/MigrationApp.tsx(939,36): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/migrationV2/MigrationApp.tsx(939,36): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/selection/action/components/ActionTranslate.tsx(51,5): error TS2367: This comparison appears to be unintentional because the types 'LanguageVarious | null' and '"zh-TW"' have no overlap.
+src/renderer/windows/userDataRelocation/hooks/useRelocationProgress.ts(18,25): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/userDataRelocation/hooks/useRelocationProgress.ts(18,25): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/userDataRelocation/hooks/useRelocationProgress.ts(19,5): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/userDataRelocation/hooks/useRelocationProgress.ts(19,5): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/windows/userDataRelocation/hooks/useRelocationProgress.ts(32,10): error TS18048: 'window.electron' is possibly 'undefined'.
+src/renderer/windows/userDataRelocation/hooks/useRelocationProgress.ts(32,10): error TS18048: 'window.electron.ipcRenderer' is possibly 'undefined'.
+src/renderer/workInbox/client.test.ts(63,34): error TS2345: Argument of type 'Mock<(url: string) => Promise<Response>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; } | undefined'.
+  Type 'Mock<(url: string) => Promise<Response>>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+    Types of parameters 'url' and 'input' are incompatible.
+      Type 'URL | RequestInfo' is not assignable to type 'string'.
+        Type 'URL' is not assignable to type 'string'.
+src/renderer/workInbox/client.test.ts(64,76): error TS2345: Argument of type 'Mock<(url: string) => Promise<Response>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; } | undefined'.
+  Type 'Mock<(url: string) => Promise<Response>>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+    Types of parameters 'url' and 'input' are incompatible.
+      Type 'URL | RequestInfo' is not assignable to type 'string'.
+        Type 'URL' is not assignable to type 'string'.
+src/renderer/workInbox/client.test.ts(67,24): error TS2493: Tuple type '[url: string]' of length '1' has no element at index '1'.
+src/renderer/workInbox/client.test.ts(68,21): error TS2493: Tuple type '[url: string]' of length '1' has no element at index '1'.
+src/renderer/workInbox/client.test.ts(73,25): error TS2339: Property 'headers' does not exist on type 'never'.
+src/renderer/workInbox/client.test.ts(74,22): error TS2339: Property 'headers' does not exist on type 'never'.
+src/renderer/workInbox/client.test.ts(82,43): error TS2493: Tuple type '[]' of length '0' has no element at index '0'.
+src/renderer/workInbox/client.test.ts(83,36): error TS2493: Tuple type '[]' of length '0' has no element at index '1'.
+src/renderer/workInbox/client.test.ts(83,40): error TS2339: Property 'headers' does not exist on type 'never'.
+src/renderer/workInbox/client.test.ts(104,33): error TS2345: Argument of type 'Mock<(url: string, init?: RequestInit | undefined) => Promise<Response>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; } | undefined'.
+  Type 'Mock<(url: string, init?: RequestInit | undefined) => Promise<Response>>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+    Types of parameters 'url' and 'input' are incompatible.
+      Type 'URL | RequestInfo' is not assignable to type 'string'.
+        Type 'URL' is not assignable to type 'string'.
+src/renderer/workInbox/client.test.ts(112,9): error TS2345: Argument of type 'Mock<(url: string, init?: RequestInit | undefined) => Promise<Response>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; } | undefined'.
+  Type 'Mock<(url: string, init?: RequestInit | undefined) => Promise<Response>>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+    Types of parameters 'url' and 'input' are incompatible.
+      Type 'URL | RequestInfo' is not assignable to type 'string'.
+        Type 'URL' is not assignable to type 'string'.
+src/renderer/workInbox/client.test.ts(118,49): error TS2345: Argument of type 'Mock<(url: string, init?: RequestInit | undefined) => Promise<Response>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; } | undefined'.
+  Type 'Mock<(url: string, init?: RequestInit | undefined) => Promise<Response>>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+    Types of parameters 'url' and 'input' are incompatible.
+      Type 'URL | RequestInfo' is not assignable to type 'string'.
+        Type 'URL' is not assignable to type 'string'.
+src/renderer/workInbox/client.test.ts(137,43): error TS2493: Tuple type '[]' of length '0' has no element at index '0'.
+src/renderer/workInbox/client.test.ts(140,36): error TS2493: Tuple type '[]' of length '0' has no element at index '1'.
+src/renderer/workInbox/client.test.ts(140,40): error TS2339: Property 'body' does not exist on type 'never'.
+src/renderer/workInbox/workToBot.ts(2,10): error TS2724: '"@renderer/data/studioAgentPlane"' has no exported member named 'publishWorkToBotPolicy'. Did you mean 'publishMailToBotPolicy'?

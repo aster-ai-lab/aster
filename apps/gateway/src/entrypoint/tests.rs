@@ -1318,6 +1318,53 @@ async fn no_route_emits_terminal_access_log() {
 }
 
 #[tokio::test]
+async fn reserved_catalog_paths_do_not_fall_through_to_an_ordinary_route() {
+    let (backend, captured_request) = spawn_capturing_http_backend().await;
+    let config = routed_config(backend);
+    let (log_tx, _log_rx) = tokio::sync::mpsc::unbounded_channel();
+    let (address, shutdown_tx, handle) =
+        start_test_entrypoint(gateway_state(&config, log_tx, true)).await;
+    let client = reqwest::Client::new();
+
+    for (method, path) in [
+        ("POST", "/v1/responses"),
+        ("POST", "/v1/messages"),
+        ("POST", "/v1/messages/count_tokens"),
+        ("POST", "/v1/rerank"),
+        ("POST", "/v1/mcp"),
+        ("POST", "/v1/service"),
+        ("POST", "/v1/images/generations"),
+        ("POST", "/v1/audio/speech"),
+        ("POST", "/v1/audio/transcriptions"),
+        ("POST", "/v1beta/models/gemma:generateContent"),
+        ("POST", "/v1beta/models/gemma:streamGenerateContent"),
+        ("POST", "/v1beta/models/gemma:embedContent"),
+    ] {
+        let response = client
+            .request(method.parse().unwrap(), format!("http://{address}{path}"))
+            .header("content-type", "application/json")
+            .body("{}")
+            .send()
+            .await
+            .unwrap();
+        assert_eq!(response.status(), 404, "{method} {path}");
+        let body: serde_json::Value = response.json().await.unwrap();
+        assert_eq!(body["error"], "standard_not_admitted", "{method} {path}");
+    }
+
+    let ordinary = client
+        .get(format!("http://{address}/ordinary"))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(ordinary.status(), 200);
+    let captured = captured_request.await.unwrap();
+    assert!(captured.headers.contains("GET /ordinary"));
+
+    stop_test_entrypoint(shutdown_tx, handle).await;
+}
+
+#[tokio::test]
 async fn middleware_rejection_emits_router_without_backend() {
     let backend = free_address().await;
     let mut config = routed_config(backend);

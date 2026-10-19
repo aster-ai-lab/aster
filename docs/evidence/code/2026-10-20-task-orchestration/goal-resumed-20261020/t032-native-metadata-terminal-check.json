@@ -1,0 +1,48 @@
+{
+  "schema": "aster.t032.native-terminal-check.v1",
+  "observed_at_utc": "2026-10-19T22:28:18.617476+00:00",
+  "native_session_id": "01a15630-de16-7119-833f-c116faa5e959",
+  "host_execution": {
+    "status": "awaiting-approval",
+    "executionId": "01a15630-df2c-70ae-add1-df5cbc6f2b06",
+    "anchorMessageId": "01a15630-df2c-70ae-add1-df5cbc6f2b06",
+    "observedAt": "2026-10-19T22:27:27.070Z"
+  },
+  "host_execution_before_projection": {
+    "status": "awaiting-approval",
+    "executionId": "01a15630-df2c-70ae-add1-df5cbc6f2b06",
+    "anchorMessageId": "01a15630-df2c-70ae-add1-df5cbc6f2b06",
+    "observedAt": "2026-10-19T22:27:27.070Z"
+  },
+  "execution_stable_during_projection": true,
+  "anchor_assistant_metadata": {
+    "id": "01a15630-df2c-70ae-add1-df5cbc6f2b06",
+    "sessionId": "01a15630-de16-7119-833f-c116faa5e959",
+    "role": "assistant",
+    "status": "pending",
+    "modelId": "deepseek::deepseek-flash",
+    "createdAt": "2026-10-19T22:03:25.868Z",
+    "updatedAt": "2026-10-19T22:27:27.065Z",
+    "error": null,
+    "error_parts": []
+  },
+  "normal_host_completion_observed": false,
+  "host_terminal_observed": false,
+  "structured_error_classification": {
+    "max_turn_requests": false,
+    "confirmation_owner_error": false,
+    "confirmation_error_mentioned": false,
+    "structured_error_part_count": 0,
+    "ordinary_text_and_reasoning_excluded": true
+  },
+  "scope": {
+    "exact_native_session": true,
+    "exact_anchor_only": true,
+    "other_session_records_output": false,
+    "ordinary_text_output": false,
+    "reasoning_output": false,
+    "tool_inputs_outputs_read": false,
+    "config_credentials_or_tokens_read": false,
+    "gui_or_app_mutation": false
+  }
+}

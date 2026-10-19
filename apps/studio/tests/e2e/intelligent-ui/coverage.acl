@@ -1,0 +1,27 @@
+suite "intelligent-ui-coverage" {
+  version = 1
+  scenario "decision-surfaces" {
+    name = "View, form, chart, controls, raw JSON, and invalid OpenUI"
+    surface = "web"
+    timeout_ms = 45000
+    navigate "open" { url = "http://127.0.0.1:4339" }
+    wait "view-ready" { text = "cm_content: 去医院" }
+    expect "view-copy" { visible = text("cm_type: 病假", true) }
+    expect "view-metric" { target = css("[data-case=view] output[aria-label=days]") rendered_text = "2" }
+    expect "view-has-no-submit" { target = css("[data-case=view] button") visible_count = 0 }
+    expect "form-reason" { target = css("[data-case=form] input[aria-label=cm_content]") value = "去医院" }
+    fill "edit-reason" { target = css("[data-case=form] input[aria-label=cm_content]") value = "复查" }
+    expect "form-submit-disabled" { disabled = css("[data-case=form] button[aria-label=提交]") }
+    expect "form-unavailable" { visible = text("暂时不能提交", true) }
+    expect "form-answer" { target = css("pre[aria-label='User continuation']") rendered_text = "" }
+    expect "chart-label" { visible = text("note: 已汇总完成", true) }
+    expect "chart-day" { target = css("[data-case=chart]") rendered_text = "图表 本周 一 1 二 2 note: 已汇总完成" }
+    expect "slider" { visible = text("天数", true) }
+    expect "shift" { visible = text("班次", true) }
+    expect "json-stays-text" { target = css("pre[aria-label='raw json']") rendered_text = "说明\n```json\n{\"root\":\"leave_card\",\"state\":{\"form\":{\"cm_content\":\"去医院\"}}}\n```\n" }
+    expect "json-has-no-field" { target = css("[data-case=json] input") visible_count = 0 }
+    expect "invalid-stays-source" { visible = text("root = Metric(\"Total\", {alert(1)})", true) }
+    expect "invalid-not-ready" { target = css("[data-case=invalid] [data-openui=ready]") visible_count = 0 }
+    screenshot "coverage" { path = "screenshots/intelligent-ui-coverage.png" }
+  }
+}

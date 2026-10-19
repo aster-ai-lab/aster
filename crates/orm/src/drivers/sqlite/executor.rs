@@ -13,6 +13,8 @@ use crate::{
 
 use super::{SqliteError, SqliteOptions, SqliteRow, SqliteTransaction, SqliteTransactionError};
 
+pub use crate::drivers::StatementGrid as SqliteGrid;
+
 #[derive(Clone)]
 pub struct SqliteExecutor {
     pub(super) connection: tokio_rusqlite::Connection,
@@ -95,6 +97,23 @@ impl SqliteExecutor {
                 }),
             },
         }
+    }
+
+    /// Run one statement and return its result grid.
+    ///
+    /// A statement with no columns, such as `CREATE` or `INSERT`, returns an
+    /// empty grid after it runs. Application values still go through typed
+    /// queries. This entry is the ad-hoc statement the data console sends.
+    pub async fn query_statement(&self, sql: impl Into<String>) -> Result<SqliteGrid, SqliteError> {
+        let sql = sql.into();
+        if sql.trim().is_empty() {
+            return Err(SqliteError::EmptyStatement);
+        }
+        let _guard = self.transaction_lock.lock().await;
+        self.connection
+            .call(move |connection| statement_grid(connection, &sql))
+            .await
+            .map_err(SqliteError::from)
     }
 
     /// Execute trusted schema SQL. Application values should use typed queries.
@@ -187,6 +206,32 @@ impl TransactionManager for SqliteExecutor {
         self.execute_control("BEGIN IMMEDIATE").await?;
         Ok(SqliteTransaction::new(self.clone(), guard))
     }
+}
+
+fn statement_grid(connection: &rusqlite::Connection, sql: &str) -> rusqlite::Result<SqliteGrid> {
+    let mut statement = connection.prepare(sql)?;
+    let column_count = statement.column_count();
+    if column_count == 0 {
+        statement.execute(rusqlite::params![])?;
+        return Ok(SqliteGrid {
+            columns: Vec::new(),
+            rows: Vec::new(),
+        });
+    }
+    let mut columns = Vec::with_capacity(column_count);
+    for index in 0..column_count {
+        columns.push(statement.column_name(index)?.to_owned());
+    }
+    let mut cursor = statement.query(rusqlite::params![])?;
+    let mut rows = Vec::new();
+    while let Some(row) = cursor.next()? {
+        let mut values = Vec::with_capacity(column_count);
+        for index in 0..column_count {
+            values.push(value_from_ref(row.get_ref(index)?)?);
+        }
+        rows.push(values);
+    }
+    Ok(SqliteGrid { columns, rows })
 }
 
 fn sqlite_parameters(values: &[Value]) -> Result<Vec<SqliteValue>, SqliteError> {

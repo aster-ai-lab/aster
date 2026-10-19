@@ -1,0 +1,77 @@
+{
+  "schema": "aster.t023.matrix-plan.v1",
+  "status": "frozen_before_first_model_run",
+  "order": [
+    {
+      "run_id": "t023-sa-01",
+      "variant": "software",
+      "profile": "adaptive",
+      "draft_manifest": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-sa-01.draft.json",
+      "workspace": "/Users/roylin/code/tasks/T01-t023-sa-01",
+      "manifest": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-sa-01.json",
+      "manifest_sha256": "b48374b34d10724f1d38cecfaa52b910b3e8f8c80302a6dedd2dbc616837b378"
+    },
+    {
+      "run_id": "t023-hc-01",
+      "variant": "hardware",
+      "profile": "code",
+      "draft_manifest": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-hc-01.draft.json",
+      "workspace": "/Users/roylin/code/tasks/T01-t023-hc-01",
+      "manifest": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-hc-01.json",
+      "manifest_sha256": "d3e8a1b7d95859f5d002b7e91a12609626a59e053ded2e4dc4a3315c5c084027"
+    },
+    {
+      "run_id": "t023-sc-01",
+      "variant": "software",
+      "profile": "code",
+      "draft_manifest": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-sc-01.draft.json",
+      "workspace": "/Users/roylin/code/tasks/T01-t023-sc-01",
+      "manifest": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-sc-01.json",
+      "manifest_sha256": "700e251536b05f422e1bf87f311e3169cc2652728e39a6b13a414250598bd235"
+    },
+    {
+      "run_id": "t023-ha-01",
+      "variant": "hardware",
+      "profile": "adaptive",
+      "draft_manifest": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-ha-01.draft.json",
+      "workspace": "/Users/roylin/code/tasks/T01-t023-ha-01",
+      "manifest": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-ha-01.json",
+      "manifest_sha256": "baea877a44e03359f68e3fa496fce70280d732b54c6da3e4deef7f879690de8d"
+    }
+  ],
+  "budget": {
+    "max_execution_ms": 900000,
+    "llm_api_timeout_ms": 180000,
+    "tool_timeout_ms": 120000,
+    "max_tool_rounds": 128,
+    "max_continuation_turns": 4,
+    "max_parallel_tasks": 4,
+    "thinking_budget": 8192,
+    "reasoning_effort": "medium",
+    "reported_token_limit": 1000000
+  },
+  "permissions": [
+    "*"
+  ],
+  "permission_scope": "Explicit allow over default Deny, with normal default security and workspace sandbox. Identical in all cells; delegation disabled.",
+  "sample_limit": {
+    "initial_cells": 4,
+    "maximum_t01_runs": 12,
+    "maximum_heldout_runs": 8
+  },
+  "fixed_retrieval": "disabled",
+  "prompt_sha256": "a55ceb23267a36b6aea90fa14c399621546a0223c551afa106ec5411b11cc6f5",
+  "correctness": "Independent nine-case T01 oracle; preserve signed-zero case and all failed runs. Runtime and profile promotion are separate.",
+  "concurrency": "No Cargo builds/tests, model tasks or config edits during any measured cell.",
+  "timing": "Outer process wall retained separately from backend preflight, Core task_ms and external oracle wall.",
+  "frozen_at_utc": "2026-10-19T17:52:20.130414+00:00",
+  "runner": "/Users/roylin/code/aster/target/t023-frozen/t023-real-llm",
+  "runner_sha256": "fa8dea5c20ea447352ec72d228462adedd5e0ba56738a6d870e9eced4c8a8165",
+  "source_files": 2819,
+  "build_evidence": "../../final-build/builds.json",
+  "oracle": {
+    "path": "/Users/roylin/code/aster/docs/evidence/studio/2026-10-19-t01-deepseek-flash/oracle/evaluate.py",
+    "sha256": "36c4db2fb452ef738a228428598e38d567b4b77bf803b925b621078a416496ac",
+    "cases": 9
+  }
+}

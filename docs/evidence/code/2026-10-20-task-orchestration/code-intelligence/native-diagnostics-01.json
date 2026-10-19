@@ -1,0 +1,803 @@
+{
+  "client_to_server": [
+    {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "initialize",
+      "params": {
+        "capabilities": {
+          "general": {
+            "positionEncodings": [
+              "utf-16"
+            ]
+          },
+          "textDocument": {
+            "declaration": {
+              "dynamicRegistration": false,
+              "linkSupport": true
+            },
+            "definition": {
+              "dynamicRegistration": false,
+              "linkSupport": true
+            },
+            "diagnostic": {
+              "dynamicRegistration": false,
+              "relatedDocumentSupport": false
+            },
+            "documentSymbol": {
+              "dynamicRegistration": false,
+              "hierarchicalDocumentSymbolSupport": true
+            },
+            "implementation": {
+              "dynamicRegistration": false,
+              "linkSupport": true
+            },
+            "publishDiagnostics": {
+              "codeDescriptionSupport": true,
+              "dataSupport": false,
+              "relatedInformation": true,
+              "versionSupport": true
+            },
+            "references": {
+              "dynamicRegistration": false
+            },
+            "synchronization": {
+              "didSave": true,
+              "dynamicRegistration": false,
+              "willSave": false,
+              "willSaveWaitUntil": false
+            }
+          },
+          "workspace": {
+            "applyEdit": false,
+            "configuration": true,
+            "symbol": {
+              "dynamicRegistration": false
+            },
+            "workspaceFolders": true
+          }
+        },
+        "clientInfo": {
+          "name": "a3s-code-core",
+          "version": "9.1.4"
+        },
+        "initializationOptions": {
+          "cargo": {
+            "buildScripts": {
+              "enable": false
+            }
+          },
+          "checkOnSave": false,
+          "linkedProjects": [
+            "/private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/Cargo.toml"
+          ],
+          "procMacro": {
+            "enable": false
+          }
+        },
+        "processId": 11412,
+        "rootUri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/",
+        "workspaceFolders": [
+          {
+            "name": ".tmpzjoAOL",
+            "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/"
+          }
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "method": "textDocument/definition",
+      "params": {
+        "position": {
+          "character": 31,
+          "line": 1
+        },
+        "textDocument": {
+          "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/src/lib.rs"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "method": "textDocument/definition",
+      "params": {
+        "position": {
+          "character": 31,
+          "line": 1
+        },
+        "textDocument": {
+          "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/src/lib.rs"
+        }
+      }
+    },
+    {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "method": "textDocument/definition",
+      "params": {
+        "position": {
+          "character": 31,
+          "line": 1
+        },
+        "textDocument": {
+          "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/src/lib.rs"
+        }
+      }
+    },
+    {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "method": "textDocument/definition",
+      "params": {
+        "position": {
+          "character": 31,
+          "line": 1
+        },
+        "textDocument": {
+          "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/src/lib.rs"
+        }
+      }
+    },
+    {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "method": "textDocument/definition",
+      "params": {
+        "position": {
+          "character": 31,
+          "line": 1
+        },
+        "textDocument": {
+          "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/src/lib.rs"
+        }
+      }
+    },
+    {
+      "id": 8,
+      "jsonrpc": "2.0",
+      "method": "textDocument/definition",
+      "params": {
+        "position": {
+          "character": 31,
+          "line": 1
+        },
+        "textDocument": {
+          "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/src/lib.rs"
+        }
+      }
+    },
+    {
+      "id": 9,
+      "jsonrpc": "2.0",
+      "method": "textDocument/definition",
+      "params": {
+        "position": {
+          "character": 31,
+          "line": 1
+        },
+        "textDocument": {
+          "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/src/lib.rs"
+        }
+      }
+    },
+    {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "method": "textDocument/definition",
+      "params": {
+        "position": {
+          "character": 31,
+          "line": 1
+        },
+        "textDocument": {
+          "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/src/lib.rs"
+        }
+      }
+    },
+    {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "method": "textDocument/definition",
+      "params": {
+        "position": {
+          "character": 31,
+          "line": 1
+        },
+        "textDocument": {
+          "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/src/lib.rs"
+        }
+      }
+    },
+    {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "method": "textDocument/definition",
+      "params": {
+        "position": {
+          "character": 31,
+          "line": 1
+        },
+        "textDocument": {
+          "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/src/lib.rs"
+        }
+      }
+    },
+    {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "method": "textDocument/definition",
+      "params": {
+        "position": {
+          "character": 31,
+          "line": 1
+        },
+        "textDocument": {
+          "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/src/lib.rs"
+        }
+      }
+    },
+    {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "method": "textDocument/definition",
+      "params": {
+        "position": {
+          "character": 31,
+          "line": 1
+        },
+        "textDocument": {
+          "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/src/lib.rs"
+        }
+      }
+    },
+    {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "method": "textDocument/definition",
+      "params": {
+        "position": {
+          "character": 31,
+          "line": 1
+        },
+        "textDocument": {
+          "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/src/lib.rs"
+        }
+      }
+    },
+    {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "method": "textDocument/definition",
+      "params": {
+        "position": {
+          "character": 31,
+          "line": 1
+        },
+        "textDocument": {
+          "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/src/lib.rs"
+        }
+      }
+    },
+    {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "method": "textDocument/definition",
+      "params": {
+        "position": {
+          "character": 31,
+          "line": 1
+        },
+        "textDocument": {
+          "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/src/lib.rs"
+        }
+      }
+    },
+    {
+      "id": 18,
+      "jsonrpc": "2.0",
+      "method": "textDocument/definition",
+      "params": {
+        "position": {
+          "character": 31,
+          "line": 1
+        },
+        "textDocument": {
+          "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/src/lib.rs"
+        }
+      }
+    },
+    {
+      "id": 19,
+      "jsonrpc": "2.0",
+      "method": "textDocument/definition",
+      "params": {
+        "position": {
+          "character": 31,
+          "line": 1
+        },
+        "textDocument": {
+          "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/src/lib.rs"
+        }
+      }
+    },
+    {
+      "id": 20,
+      "jsonrpc": "2.0",
+      "method": "textDocument/definition",
+      "params": {
+        "position": {
+          "character": 31,
+          "line": 1
+        },
+        "textDocument": {
+          "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/src/lib.rs"
+        }
+      }
+    },
+    {
+      "id": 21,
+      "jsonrpc": "2.0",
+      "method": "textDocument/definition",
+      "params": {
+        "position": {
+          "character": 31,
+          "line": 1
+        },
+        "textDocument": {
+          "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/src/lib.rs"
+        }
+      }
+    },
+    {
+      "id": 22,
+      "jsonrpc": "2.0",
+      "method": "textDocument/definition",
+      "params": {
+        "position": {
+          "character": 31,
+          "line": 1
+        },
+        "textDocument": {
+          "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/src/lib.rs"
+        }
+      }
+    },
+    {
+      "id": 23,
+      "jsonrpc": "2.0",
+      "method": "textDocument/definition",
+      "params": {
+        "position": {
+          "character": 31,
+          "line": 1
+        },
+        "textDocument": {
+          "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/src/lib.rs"
+        }
+      }
+    },
+    {
+      "id": 24,
+      "jsonrpc": "2.0",
+      "method": "textDocument/definition",
+      "params": {
+        "position": {
+          "character": 31,
+          "line": 1
+        },
+        "textDocument": {
+          "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/src/lib.rs"
+        }
+      }
+    },
+    {
+      "id": 25,
+      "jsonrpc": "2.0",
+      "method": "textDocument/definition",
+      "params": {
+        "position": {
+          "character": 31,
+          "line": 1
+        },
+        "textDocument": {
+          "uri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/src/lib.rs"
+        }
+      }
+    }
+  ],
+  "scope": "only this self-authored temporary Rust fixture; no user workspace or model",
+  "server_to_client": [
+    {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": true,
+          "codeLensProvider": {
+            "resolveProvider": true
+          },
+          "completionProvider": {
+            "completionItem": {
+              "labelDetailsSupport": false
+            },
+            "resolveProvider": false,
+            "triggerCharacters": [
+              ":",
+              ".",
+              "'",
+              "("
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "diagnosticProvider": {
+            "identifier": "rust-analyzer",
+            "interFileDependencies": true,
+            "workspaceDiagnostics": false
+          },
+          "documentFormattingProvider": true,
+          "documentHighlightProvider": true,
+          "documentOnTypeFormattingProvider": {
+            "firstTriggerCharacter": ".",
+            "moreTriggerCharacter": [
+              "=",
+              "<",
+              ">",
+              "{",
+              "(",
+              "|",
+              "+"
+            ]
+          },
+          "documentRangeFormattingProvider": false,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "childModules": true,
+            "externalDocs": true,
+            "hoverRange": true,
+            "joinLines": true,
+            "matchingBrace": true,
+            "moveItem": true,
+            "onEnter": true,
+            "openCargoToml": true,
+            "parentModule": true,
+            "runnables": {
+              "kinds": [
+                "cargo"
+              ]
+            },
+            "ssr": true,
+            "workspaceSymbolScopeKindFiltering": true
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "implementationProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false
+          },
+          "positionEncoding": "utf-16",
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "selectionRangeProvider": true,
+          "semanticTokensProvider": {
+            "full": {
+              "delta": true
+            },
+            "legend": {
+              "tokenModifiers": [
+                "async",
+                "documentation",
+                "declaration",
+                "static",
+                "defaultLibrary",
+                "deprecated",
+                "associated",
+                "attribute",
+                "callable",
+                "constant",
+                "consuming",
+                "controlFlow",
+                "crateRoot",
+                "injected",
+                "intraDocLink",
+                "library",
+                "macro",
+                "mutable",
+                "procMacro",
+                "public",
+                "reference",
+                "trait",
+                "unsafe"
+              ],
+              "tokenTypes": [
+                "comment",
+                "decorator",
+                "enumMember",
+                "enum",
+                "function",
+                "interface",
+                "keyword",
+                "macro",
+                "method",
+                "namespace",
+                "number",
+                "operator",
+                "parameter",
+                "property",
+                "string",
+                "struct",
+                "typeParameter",
+                "variable",
+                "type",
+                "angle",
+                "arithmetic",
+                "attributeBracket",
+                "attribute",
+                "bitwise",
+                "boolean",
+                "brace",
+                "bracket",
+                "builtinAttribute",
+                "builtinType",
+                "character",
+                "colon",
+                "comma",
+                "comparison",
+                "constParameter",
+                "const",
+                "deriveHelper",
+                "derive",
+                "dot",
+                "escapeSequence",
+                "formatSpecifier",
+                "generic",
+                "invalidEscapeSequence",
+                "label",
+                "lifetime",
+                "logical",
+                "macroBang",
+                "negation",
+                "parenthesis",
+                "procMacro",
+                "punctuation",
+                "selfKeyword",
+                "selfTypeKeyword",
+                "semicolon",
+                "static",
+                "toolModule",
+                "typeAlias",
+                "union",
+                "unresolvedReference"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              "(",
+              ",",
+              "<"
+            ]
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {}
+          },
+          "typeDefinitionProvider": true,
+          "workspace": {
+            "fileOperations": {
+              "willRename": {
+                "filters": [
+                  {
+                    "pattern": {
+                      "glob": "**/*.rs",
+                      "matches": "file"
+                    },
+                    "scheme": "file"
+                  },
+                  {
+                    "pattern": {
+                      "glob": "**",
+                      "matches": "folder"
+                    },
+                    "scheme": "file"
+                  }
+                ]
+              }
+            },
+            "workspaceFolders": {
+              "changeNotifications": true,
+              "supported": true
+            }
+          },
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "rust-analyzer",
+          "version": "1.97.1 (8bab26f4 2026-07-14)"
+        }
+      }
+    },
+    {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": []
+    },
+    {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "result": []
+    },
+    {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "result": []
+    },
+    {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "result": []
+    },
+    {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "result": []
+    },
+    {
+      "id": 8,
+      "jsonrpc": "2.0",
+      "result": []
+    },
+    {
+      "id": 9,
+      "jsonrpc": "2.0",
+      "result": []
+    },
+    {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": []
+    },
+    {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": []
+    },
+    {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": []
+    },
+    {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": []
+    },
+    {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "result": []
+    },
+    {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "result": []
+    },
+    {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "result": []
+    },
+    {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "result": []
+    },
+    {
+      "id": 18,
+      "jsonrpc": "2.0",
+      "result": []
+    },
+    {
+      "id": 19,
+      "jsonrpc": "2.0",
+      "result": []
+    },
+    {
+      "id": 20,
+      "jsonrpc": "2.0",
+      "result": []
+    },
+    {
+      "id": 21,
+      "jsonrpc": "2.0",
+      "result": []
+    },
+    {
+      "id": 22,
+      "jsonrpc": "2.0",
+      "result": []
+    },
+    {
+      "id": 23,
+      "jsonrpc": "2.0",
+      "result": []
+    },
+    {
+      "id": 24,
+      "jsonrpc": "2.0",
+      "result": []
+    },
+    {
+      "id": 25,
+      "jsonrpc": "2.0",
+      "result": [
+        {
+          "originSelectionRange": {
+            "end": {
+              "character": 35,
+              "line": 1
+            },
+            "start": {
+              "character": 29,
+              "line": 1
+            }
+          },
+          "targetRange": {
+            "end": {
+              "character": 29,
+              "line": 0
+            },
+            "start": {
+              "character": 0,
+              "line": 0
+            }
+          },
+          "targetSelectionRange": {
+            "end": {
+              "character": 13,
+              "line": 0
+            },
+            "start": {
+              "character": 7,
+              "line": 0
+            }
+          },
+          "targetUri": "file:///private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL/src/lib.rs"
+        }
+      ]
+    }
+  ],
+  "stderr": "2026-10-20T01:01:35.315092+08:00  WARN notify error: No path was found. about [\"/Users/roylin/Library/Application Support/rust-analyzer/rust-analyzer.toml\"]\n",
+  "stream_limit_bytes": 65536,
+  "stream_order": [
+    "stdin",
+    "stdout",
+    "stderr"
+  ],
+  "streams": [
+    {
+      "retained_bytes": 12331,
+      "total_bytes": 12331,
+      "truncated": false
+    },
+    {
+      "retained_bytes": 5334,
+      "total_bytes": 5334,
+      "truncated": false
+    },
+    {
+      "retained_bytes": 157,
+      "total_bytes": 157,
+      "truncated": false
+    }
+  ],
+  "temp_root": "/private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpzjoAOL"
+}

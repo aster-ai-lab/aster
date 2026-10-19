@@ -1,0 +1,404 @@
+--- before/crates/code/core/src/harness_loop.rs
++++ after/crates/code/core/src/harness_loop.rs
+@@ -211,6 +211,12 @@
+     /// cannot manufacture verification authority after recovery.
+     #[serde(skip)]
+     native_artifact_verifications: std::collections::BTreeMap<String, NativeArtifactVerification>,
++    #[serde(skip)]
++    nested_shell_verifications: std::collections::BTreeMap<String, NestedShellVerification>,
++    #[serde(skip)]
++    nested_mutation_epoch: u64,
++    #[serde(skip)]
++    active_nested_mutations: u32,
+ }
+ 
+ #[derive(Debug, Clone, PartialEq, Eq)]
+@@ -218,6 +224,14 @@
+     tool: String,
+     identity: a3s_effect::ToolFileIdentityV1,
+     check: String,
++}
++
++#[derive(Debug, Clone, PartialEq, Eq)]
++struct NestedShellVerification {
++    identity: a3s_effect::ToolFileIdentityV1,
++    command: String,
++    scope_digest: String,
++    epoch: u64,
+ }
+ 
+ /// Normalize a mutation path to its workspace-relative form: a model may
+@@ -901,12 +915,177 @@
+         }
+     }
+ 
++    pub(crate) fn begin_nested_mutation(&mut self) -> Option<u64> {
++        let Some(active) = self.active_nested_mutations.checked_add(1) else {
++            self.observation_incomplete = true;
++            self.nested_shell_verifications.clear();
++            return None;
++        };
++        let epoch = self.advance_nested_mutation_epoch()?;
++        self.active_nested_mutations = active;
++        Some(epoch)
++    }
++
++    pub(crate) fn finish_nested_mutation(&mut self, started: u64) -> Option<u64> {
++        let exclusive = self.nested_mutation_epoch == started && self.active_nested_mutations == 1;
++        let Some(active) = self.active_nested_mutations.checked_sub(1) else {
++            self.observation_incomplete = true;
++            self.nested_shell_verifications.clear();
++            return None;
++        };
++        self.active_nested_mutations = active;
++        let epoch = self.advance_nested_mutation_epoch()?;
++        exclusive.then_some(epoch)
++    }
++
++    fn advance_nested_mutation_epoch(&mut self) -> Option<u64> {
++        self.nested_shell_verifications.clear();
++        let Some(epoch) = self.nested_mutation_epoch.checked_add(1) else {
++            self.observation_incomplete = true;
++            return None;
++        };
++        self.nested_mutation_epoch = epoch;
++        Some(epoch)
++    }
++
++    pub(crate) fn nested_mutation_window_is_current(&self, epoch: u64) -> bool {
++        epoch == self.nested_mutation_epoch && self.active_nested_mutations == 0
++    }
++
++    /// Only the governed native Bash lifecycle calls this with its actual
++    /// result metadata. Script results and checkpoint metadata never do.
++    pub(crate) fn record_nested_shell_verification(
++        &mut self,
++        command: &str,
++        epoch: u64,
++        workspace: &std::path::Path,
++    ) {
++        if !self.nested_mutation_window_is_current(epoch)
++            || self.observation_incomplete
++            || !self.unresolved_tool_effects.is_empty()
++            || command.len() > a3s_effect::MAX_TOOL_EFFECT_CANONICAL_BYTES
++        {
++            return;
++        }
++        let checks = crate::verification::existence_checks(command);
++        if checks.len() > a3s_effect::MAX_TOOL_EFFECT_PATHS {
++            return;
++        }
++        let checks = checks
++            .into_iter()
++            .filter_map(|check| {
++                let path = std::path::Path::new(&check.path);
++                let relative = if path.is_absolute() {
++                    path.strip_prefix(workspace).ok()?
++                } else {
++                    path
++                };
++                let mut normalized = std::path::PathBuf::new();
++                for component in relative.components() {
++                    match component {
++                        std::path::Component::Normal(part) => normalized.push(part),
++                        std::path::Component::CurDir => {}
++                        _ => return None,
++                    }
++                }
++                let path = normalized.to_str()?.to_owned();
++                (!path.is_empty()).then_some((path, check.segment))
++            })
++            .collect::<Vec<_>>();
++        let observed = crate::porcelain::observe_path_effects(
++            workspace,
++            crate::porcelain::PathDelta {
++                paths: checks.iter().map(|(path, _)| path.clone()).collect(),
++                incomplete: false,
++            },
++        );
++        if observed.completeness != a3s_effect::ToolObservationCompleteness::Complete {
++            return;
++        }
++        let mut bytes = 0usize;
++        for (path, command) in checks {
++            let Some(change) = observed.changes.iter().find(|change| change.path == path) else {
++                continue;
++            };
++            if change.after.kind != a3s_effect::ToolFileKind::File
++                || change
++                    .after
++                    .content_digest
++                    .as_ref()
++                    .is_none_or(String::is_empty)
++            {
++                continue;
++            }
++            bytes = bytes
++                .saturating_add(path.len())
++                .saturating_add(command.len())
++                .saturating_add(256);
++            if bytes > a3s_effect::MAX_TOOL_EFFECT_CANONICAL_BYTES {
++                self.nested_shell_verifications.clear();
++                return;
++            }
++            self.nested_shell_verifications.insert(
++                path,
++                NestedShellVerification {
++                    identity: change.after.clone(),
++                    command,
++                    scope_digest: self.digest.clone(),
++                    epoch,
++                },
++            );
++        }
++    }
++
++    pub(crate) fn nested_shell_verification_report(
++        &self,
++        workspace: &std::path::Path,
++    ) -> Option<crate::verification::VerificationReport> {
++        if self.is_empty()
++            || self.observation_incomplete
++            || self.has_open_children()
++            || !self.unresolved_tool_effects.is_empty()
++            || self.active_nested_mutations != 0
++            || self.nested_shell_verifications.is_empty()
++            || !self.observes_current_workspace(workspace)
++        {
++            return None;
++        }
++        for (path, proof) in &self.nested_shell_verifications {
++            if proof.epoch != self.nested_mutation_epoch
++                || proof.scope_digest != self.digest
++                || !self.records.iter().any(|record| {
++                    record.path == *path && record.after_identity.as_ref() == Some(&proof.identity)
++                })
++            {
++                continue;
++            }
++            let digest = proof
++                .identity
++                .content_digest
++                .as_deref()?
++                .strip_prefix("sha256:")?;
++            if let Some(report) =
++                crate::verification::host_report_for_verified_mutation_path_with_content(
++                    &proof.command,
++                    0,
++                    &self.paths().map(str::to_owned).collect::<Vec<_>>(),
++                    self.digest(),
++                    Some((digest, digest)),
++                )
++            {
++                return Some(report);
++            }
++        }
++        None
++    }
++
+     /// Transfer live child checks only onto this caller's observed final bytes.
+     pub(crate) fn absorb_nested_artifact_verifications(
+         &mut self,
+         child: &Self,
+         tool: &str,
+         effects: &a3s_effect::ToolEffectObservationV1,
++        allow_shell: bool,
+     ) {
+         if child.observation_incomplete || !child.unresolved_tool_effects.is_empty() {
+             return;
+@@ -926,6 +1105,39 @@
+                     change.path.clone(),
+                     NativeArtifactVerification {
+                         tool: tool.to_owned(),
++                        ..proof.clone()
++                    },
++                );
++            }
++        }
++        // A checker covers this exact settled child boundary, including no
++        // new changes. Rebinding after a later or concurrent writer is refused.
++        if !allow_shell
++            || child.has_open_children()
++            || child.active_nested_mutations != 0
++            || effects.validate().is_err()
++            || effects.completeness != a3s_effect::ToolObservationCompleteness::Complete
++            || !effects.unresolved_external_operations.is_empty()
++            || effects
++                .changes
++                .iter()
++                .filter(|change| !crate::porcelain::is_harness_path(&change.path))
++                .any(|change| {
++                    !child.records.iter().any(|record| {
++                        record.path == change.path
++                            && record.after_identity.as_ref() == Some(&change.after)
++                    })
++                })
++        {
++            return;
++        }
++        for (path, proof) in &child.nested_shell_verifications {
++            if proof.epoch == child.nested_mutation_epoch && proof.scope_digest == child.digest {
++                self.nested_shell_verifications.insert(
++                    path.clone(),
++                    NestedShellVerification {
++                        scope_digest: self.digest.clone(),
++                        epoch: self.nested_mutation_epoch,
+                         ..proof.clone()
+                     },
+                 );
+@@ -1254,8 +1466,16 @@
+ /// recorded. Without such a file only a declared suite or a host waiver binds.
+ fn unbound_mutation_next_step(ledger: &MutationLedger) -> String {
+     let Some(path) = ledger
+-        .paths()
+-        .filter(|path| ledger.has_content_digest(path))
++        .records
++        .iter()
++        .filter(|record| {
++            !record.content_digest.is_empty()
++                && record
++                    .after_identity
++                    .as_ref()
++                    .is_none_or(|after| after.kind == a3s_effect::ToolFileKind::File)
++        })
++        .map(|record| record.path.as_str())
+         .min()
+     else {
+         return String::new();
+@@ -1430,3 +1650,6 @@
+ 
+ #[cfg(test)]
+ mod tests;
++
++#[cfg(test)]
++mod shell_diagnostic_tests;
+--- before/crates/code/core/src/agent/tool_invoker.rs
++++ after/crates/code/core/src/agent/tool_invoker.rs
+@@ -26,6 +26,35 @@
+     /// Weak so a tool context retained after the call cannot keep the host
+     /// channel open. The run's own senders keep it alive while the call runs.
+     event_tx: Option<mpsc::WeakSender<AgentEvent>>,
++}
++
++struct NestedMutationFence {
++    ledger: Arc<std::sync::Mutex<crate::harness_loop::MutationLedger>>,
++    started: Option<u64>,
++}
++
++impl NestedMutationFence {
++    fn new(ledger: Arc<std::sync::Mutex<crate::harness_loop::MutationLedger>>) -> Self {
++        let started = ledger
++            .lock()
++            .unwrap_or_else(std::sync::PoisonError::into_inner)
++            .begin_nested_mutation();
++        Self { ledger, started }
++    }
++
++    fn finish(&mut self) -> Option<u64> {
++        let started = self.started.take()?;
++        self.ledger
++            .lock()
++            .unwrap_or_else(std::sync::PoisonError::into_inner)
++            .finish_nested_mutation(started)
++    }
++}
++
++impl Drop for NestedMutationFence {
++    fn drop(&mut self) {
++        let _ = self.finish();
++    }
+ }
+ 
+ impl ScopedToolInvoker {
+@@ -476,6 +505,7 @@
+         effects: &a3s_effect::ToolEffectObservationV1,
+         parent: &ToolContext,
+         child: &ToolContext,
++        shell_window: Option<u64>,
+     ) {
+         let Some(scope) = parent.native_artifact_verifications.as_ref() else {
+             return;
+@@ -486,6 +516,18 @@
+         ledger.observe_nested_artifact_effects(&invocation.name, effects);
+         if result.exit_code != 0 || child.is_cancelled() {
+             return;
++        }
++        if invocation.name == "bash" {
++            if let (Some(epoch), Some(command)) = (
++                shell_window,
++                result
++                    .metadata
++                    .as_ref()
++                    .and_then(|metadata| metadata.get("verification_shell_command"))
++                    .and_then(serde_json::Value::as_str),
++            ) {
++                ledger.record_nested_shell_verification(command, epoch, &parent.workspace);
++            }
+         }
+         if let Some(tool) = self.agent.tool_executor.registry().get(&invocation.name) {
+             let mut output = crate::tools::ToolOutput::success(&result.output);
+@@ -506,12 +548,15 @@
+             }
+         }
+         if let Some(nested) = child.native_artifact_verifications.as_ref() {
++            let allow_shell =
++                shell_window.is_some_and(|epoch| ledger.nested_mutation_window_is_current(epoch));
+             ledger.absorb_nested_artifact_verifications(
+                 &nested
+                     .lock()
+                     .unwrap_or_else(std::sync::PoisonError::into_inner),
+                 &invocation.name,
+                 effects,
++                allow_shell,
+             );
+         }
+     }
+@@ -607,6 +652,13 @@
+             } else {
+                 None
+             };
++        let mut mutation_fence = (nested_artifacts && !read_only)
++            .then(|| {
++                ctx.native_artifact_verifications
++                    .as_ref()
++                    .map(|scope| NestedMutationFence::new(Arc::clone(scope)))
++            })
++            .flatten();
+         let decision = tokio::select! {
+             biased;
+             _ = cancellation.cancelled() => {
+@@ -655,12 +707,16 @@
+                 },
+             };
+             let effects = crate::porcelain::observe_path_effects(&ctx.workspace, delta);
++            let shell_window = mutation_fence
++                .as_mut()
++                .and_then(NestedMutationFence::finish);
+             self.record_nested_artifact_verification(
+                 &invocation,
+                 &result,
+                 &effects,
+                 ctx,
+                 &invocation_ctx,
++                shell_window,
+             );
+         }
+         // Tools such as `task` emit their terminal high-level event through a
+--- before/crates/code/core/src/agent/tool_completion_runtime.rs
++++ after/crates/code/core/src/agent/tool_completion_runtime.rs
+@@ -354,10 +354,11 @@
+             }
+         }
+         if let Some(nested) = nested {
+-            ledger.absorb_nested_artifact_verifications(nested, &call.name, &result.effects);
+-        }
+-        if let Some(report) =
+-            ledger.native_artifact_verification_report(&self.tool_context.workspace)
++            ledger.absorb_nested_artifact_verifications(nested, &call.name, &result.effects, true);
++        }
++        if let Some(report) = ledger
++            .native_artifact_verification_report(&self.tool_context.workspace)
++            .or_else(|| ledger.nested_shell_verification_report(&self.tool_context.workspace))
+         {
+             metadata.get_or_insert_with(|| serde_json::json!({}))["verification_report"] =
+                 report.to_value();

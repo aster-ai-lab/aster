@@ -1,0 +1,112 @@
+Window: "ToWork", App: ToWork.
+0 standard window ToWork, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content Description: ToWork, URL: 127.0.0.1:4318/windows/main/index.html
+			3 pop up button 林书豪
+			4 button 知识
+			5 button 工作
+			6 button 消息
+			7 button 插件
+			8 button (collapsed) 任务, Secondary Actions: Expand
+			9 button 设置
+			10 container
+				11 container 消息
+					12 container
+						13 text 为一场线上产品演示整理筹备清单。示例：周五14:00开始，时长30分钟。按会前、会中、会后三阶段列出事项，每阶段两条，使用清晰的小标题。
+						14 image
+						15 text 10/12 14:31
+						16 button 复制
+						17 button 编辑重发
+						18 button 删除
+						19 image ToBot
+						20 text ToBot 10/12 14:31
+						21 button (collapsed) 思考过程, Secondary Actions: Expand
+						22 text 我提供会前/会中/会后小标题（三级或加粗），每条有加粗要点+说明。
+
+让我写最终版本。可以加一个一句的总览：以周五14:00–14:30、时长30分钟为基准。
+
+要不要问用户问题？不必，示例已足够。直接产出。
+						23 text 以下清单以「周五 14:00 开始、时长 30 分钟（14:00–14:30）」为基准。
+						24 heading 会前, Value: 2
+							25 text 会前
+						26 content list
+							27 container 设备与彩排：周四前完成一次全流程彩排，逐一验证麦克风、摄像头、屏幕共享与演示账号登录，并准备好手机热点作为备用网络。
+								28 list marker •
+								29 text 设备与彩排 ：周四前完成一次全流程彩排，逐一验证麦克风、摄像头、屏幕共享与演示账号登录，并准备好手机热点作为备用网络。
+							30 container 物料与接入：定稿演示文稿和演示用数据，周五 13:30 提前开启会议室，向参会者发送议程、接入链接与开始时间提醒。
+								31 list marker •
+								32 text 物料与接入 ：定稿演示文稿和演示用数据，周五 13:30 提前开启会议室，向参会者发送议程、接入链接与开始时间提醒。
+						33 heading 会中, Value: 2
+							34 text 会中
+						35 content list
+							36 container 开场与控场：14:00 准点开场，用 2 分钟说明议程与总时长，指定一名同事负责计时和节奏提醒。
+								37 list marker •
+								38 text 开场与控场 ：14:00 准点开场，用 2 分钟说明议程与总时长，指定一名同事负责计时和节奏提醒。
+							39 container 演示与互动：按主线推进演示并预留每段问答时间，全程留出收尾缓冲，实时记录参会者提出的关键问题。
+								40 list marker •
+								41 text 演示与互动 ：按主线推进演示并预留每段问答时间，全程留出收尾缓冲，实时记录参会者提出的关键问题。
+						42 heading 会后, Value: 2
+							43 text 会后
+						44 content list
+							45 container 纪要闭环：会后当天整理待办事项与未答问题，24 小时内发出会议纪要并明确负责人与截止时间。
+								46 list marker •
+								47 text 纪要闭环 ：会后当天整理待办事项与未答问题，24 小时内发出会议纪要并明确负责人与截止时间。
+							48 container 资料与跟进：将录屏与演示文稿归档共享，48 小时内对重点参会方做一次意向跟进。
+								49 list marker •
+								50 text 资料与跟进 ：将录屏与演示文稿归档共享，48 小时内对重点参会方做一次意向跟进。
+						51 text 如需，我可以把这份清单改造成带确切钟点的时间轴表，或按角色（主讲 / 控场 / 记录）拆成分工表。
+						52 button 复制
+						53 button 保存到笔记
+						54 button 删除
+						55 pop up button 更多操作
+				56 container 会话导航
+					57 button 跳转到第 1 轮对话
+				58 text entry area (settable) 
+
+					59 text 描述任务，输入 / 使用指令或技能，@ 使用智能体
+				60 pop up button 更多选项
+				61 pop up button 授权模式: 逐次确认
+				62 pop up button 自动
+				63 button (disabled) 发送
+				64 toolbar 任务范围
+					65 pop up button 工作区文件
+				66 container
+					67 button 打开任务工作区
+					68 container 工作区快捷栏
+						69 button 浏览器
+						70 button 终端
+						71 button 文件
+						72 button (collapsed) 展开工作区快捷菜单, Secondary Actions: Expand
+				73 button 新建任务
+				74 button (collapsed) 搜索任务, Secondary Actions: Expand
+				75 container 工作导航
+					76 button 智能体
+					77 button 连接器
+					78 button 技能
+					79 button 自动化
+				80 container 项目
+					81 container
+						82 heading 项目, Value: 3
+							83 text 项目
+						84 button 新建项目
+					85 text 还没有项目
+				86 container 任务
+					87 container
+						88 heading 任务, Value: 3
+							89 text 任务
+						90 button 查看全部最近任务
+					91 container 今天
+						92 heading 今天, Value: 3
+							93 text 今天
+						94 button 为一场线上产品演示整理筹备清单。示例：周五14:00开始，时长30分钟。按会前、…
+						95 text 13分钟前
+						96 button 重命名
+						97 toggle button 置顶, Value: off
+						98 button 归档
+				99 toggle button 收起侧边栏, Value: on
+	100 close button
+	101 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	102 minimize button
+103 menu bar
+	104 ToWork
+	105 Edit

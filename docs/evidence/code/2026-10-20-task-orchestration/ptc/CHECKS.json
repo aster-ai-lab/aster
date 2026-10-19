@@ -1,0 +1,72 @@
+{
+  "schema": "aster.ptc.checks.v1",
+  "checks": [
+    {
+      "command": "cargo test --locked --offline -p a3s-code-core --lib agent_api::tests::fact_log::nested_governance -- --nocapture",
+      "exitCode": 0,
+      "passed": 6,
+      "testSeconds": 0.5,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/ptc/nested-governance-green.log"
+    },
+    {
+      "command": "cargo test --locked --offline -p a3s-code-core --lib tools::program_tool::tests -- --nocapture",
+      "exitCode": 0,
+      "passed": 32,
+      "testSeconds": 0.05,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/ptc/program-tool-green.log"
+    },
+    {
+      "command": "cargo test --locked --offline -p a3s-code-core --lib tools::presentation -- --nocapture",
+      "exitCode": 0,
+      "passed": 6,
+      "testSeconds": 0.0,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/ptc/presentation.log"
+    },
+    {
+      "command": "cargo test --locked --offline -p a3s-code-core --lib agent::llm_invoker::fact_governance::tests -- --nocapture",
+      "exitCode": 0,
+      "passed": 10,
+      "testSeconds": 0.01,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/ptc/fact-governance.log"
+    },
+    {
+      "command": "cargo test --locked --offline -p a3s-code-core --lib fact_control::model_governance_tests -- --nocapture",
+      "exitCode": 0,
+      "passed": 6,
+      "testSeconds": 0.0,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/ptc/model-governance.log"
+    },
+    {
+      "command": "cargo test --locked --offline -p a3s-code-core --lib native_artifact -- --nocapture",
+      "exitCode": 0,
+      "passed": 5,
+      "testSeconds": 0.01,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/ptc/native-artifact.log"
+    },
+    {
+      "command": "cargo test --locked --offline -p a3s-code-core --features advanced-harness --test test_extensibility_real_llm metrics:: -- --nocapture",
+      "exitCode": 0,
+      "passed": 7,
+      "testSeconds": 0.0,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/ptc/metrics-green.log"
+    }
+  ],
+  "distinctPassingTests": 72,
+  "isolatedRerunsNotAdded": [
+    "dependent-write-isolated.log",
+    "metrics-overlap-isolated.log"
+  ],
+  "retainedRedLogs": [
+    "program-tool.log",
+    "metrics.log",
+    "metrics-feature-red.log"
+  ],
+  "initialRedCapture": "Initial 31-test program and 5-test nested Run outputs were observed in tool results only; see AUDIT.md.",
+  "notRun": [
+    "real model fixtures (ignored)",
+    "VM batches",
+    "optimized T01",
+    "whole-workspace CI/format owned by root"
+  ],
+  "format": "Corrected scoped rustfmt --check --edition 2021 on all 11 source files passed (format-edition2021.log). Prior edition2024 pass did not satisfy the Core package format; old snapshot retained as source-before-edition-correction.json."
+}

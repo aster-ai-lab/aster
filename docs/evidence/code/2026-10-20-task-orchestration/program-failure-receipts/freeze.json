@@ -1,0 +1,36 @@
+{
+  "schema": "aster.program-failure-receipts-freeze.v1",
+  "files": {
+    "crates/code/core/src/tools/program_tool.rs": {
+      "sha256": "a0ea9cf0deebb358403a1009757256232a0995fb5c7916824179593414d3dd56",
+      "lines": 862
+    },
+    "crates/code/core/src/tools/program_tool/failure_receipt_tests.rs": {
+      "sha256": "15d244266bfdf377779ab130ec00d157af2bb36a0ac255a2fcd1d5cd02e67ede",
+      "lines": 177
+    },
+    "crates/code/core/src/tools/program_tool/worker_deadline_tests.rs": {
+      "sha256": "7c9812bbb4a0a379a432f9f915c168f971d6aab01c6803870b000613e0582513",
+      "lines": 208
+    },
+    "crates/code/core/src/agent_api/tests/fact_log.rs": {
+      "sha256": "e6bef135b0100fd3d03626a3beb77fe96a33a57d8705b7214b08dfb16048dc7c",
+      "lines": 1722
+    },
+    "crates/code/core/src/agent_api/tests/fact_log/program_failure_receipts.rs": {
+      "sha256": "f58f13ac17d9bc1de6800ca037b1e67967edbb2c0d808c77032bdff84e8de5bf",
+      "lines": 138
+    },
+    "crates/code/core/tests/extensibility/metrics.rs": {
+      "sha256": "444d0511db3115aaf0282563e4adf6454f789dc62809f9e2d435eecc316c0920",
+      "lines": 427
+    }
+  },
+  "format_workspace_outside_scope_files": 62,
+  "format_workspace_owned_conflicts": [],
+  "binary": {
+    "path": "/Users/roylin/code/aster/target/debug/deps/a3s_code_core-3b568ae695dcf868",
+    "sha256": "16f51bdaaaac7e44e86ab92941e09ac346398ee8c62feab485968c5f59432752",
+    "purpose": "Hermetic lib test binary; not a paid matrix runner freeze"
+  }
+}

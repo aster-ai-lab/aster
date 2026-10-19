@@ -1,0 +1,774 @@
+import type { Cell, Selection } from '@fortune-sheet/core';
+import {
+  officeMessage,
+  resolveOfficeMessages,
+} from '../../../i18n/office-locale';
+import { OFFICE_KERNEL_SPREADSHEET_MAX_ROWS } from '../../../kernel/office-kernel-spreadsheet-protocol';
+import { sparseArrayEntries, sparseArrayIndexes } from '../spreadsheet-sparse';
+import {
+  formatSpreadsheetCellRanges,
+  isValidSpreadsheetDefinedName,
+  parseSpreadsheetCellRanges,
+} from '../work-spreadsheet-ranges';
+import { createWorkId } from '../work-id';
+import type {
+  WorkSpreadsheetContent,
+  WorkSpreadsheetSheet,
+  WorkSpreadsheetTable,
+  WorkSpreadsheetTableStyle,
+} from '../work-types';
+import { spreadsheetSelectionOrCurrentRegion } from './spreadsheet-auto-filter';
+import { canMutateSpreadsheetCellRanges } from './spreadsheet-cell-mutation-guard';
+import {
+  normalizeSpreadsheetCellRange,
+  type SpreadsheetCellRange,
+  spreadsheetCellRangeArea,
+  spreadsheetCellRangeContains,
+  spreadsheetCellRangesIntersect,
+} from './spreadsheet-cell-range';
+import { spreadsheetSheetBounds } from './spreadsheet-keyboard-navigation';
+import { reconcileSpreadsheetTableCalculatedColumns } from './spreadsheet-table-calculated-columns';
+import { materializeSpreadsheetTableAppearance } from './spreadsheet-table-conversion';
+import { MAX_SPREADSHEET_TABLE_CELLS } from './spreadsheet-table-limits';
+import {
+  type SpreadsheetTableTotalsColumnPatch,
+  spreadsheetTableTotalsColumnPatch,
+  spreadsheetTableTotalsRowHasContent,
+  synchronizeSpreadsheetTableTotalsRow,
+  withDefaultSpreadsheetTableTotalsLabel,
+} from './spreadsheet-table-totals';
+
+export { MAX_SPREADSHEET_TABLE_CELLS } from './spreadsheet-table-limits';
+
+export interface SpreadsheetTableTarget {
+  sheetId: string;
+  selection: Selection;
+}
+
+export interface SpreadsheetTableDialogValue {
+  headerRow: boolean;
+  rangeReference: string;
+  totalsRow?: boolean;
+}
+
+export interface SpreadsheetTableDialogSource {
+  name: string;
+  range: SpreadsheetCellRange;
+  rangeReference: string;
+  sheetId: string;
+  sheetName: string;
+  value: SpreadsheetTableDialogValue;
+}
+
+export interface SpreadsheetTableRequest {
+  headerRow: boolean;
+  name: string;
+  range: SpreadsheetCellRange;
+  sheetId: string;
+  style?: WorkSpreadsheetTableStyle;
+  /** Create the table with a native totals row appended to the range. */
+  totalsRow?: boolean;
+  /** Initial per-column totals metadata, keyed by zero-based table offset. */
+  totalsColumns?:
+    | Readonly<Record<string, SpreadsheetTableTotalsColumnPatch>>
+    | readonly (SpreadsheetTableTotalsColumnPatch | null | undefined)[];
+}
+
+export type SpreadsheetTableValidation =
+  | {
+      columns: string[];
+      name: string;
+      ok: true;
+      range: SpreadsheetCellRange;
+      sheet: WorkSpreadsheetSheet;
+    }
+  | {
+      code: SpreadsheetTableErrorCode;
+      message: string;
+      ok: false;
+    };
+
+export type SpreadsheetTableErrorCode =
+  | 'auto-filter-overlap'
+  | 'invalid-column-name'
+  | 'invalid-name'
+  | 'invalid-range'
+  | 'invalid-style'
+  | 'invalid-totals'
+  | 'merged-range'
+  | 'name-conflict'
+  | 'out-of-bounds'
+  | 'protected-range'
+  | 'pivot-table'
+  | 'range-too-large'
+  | 'sheet-not-found'
+  | 'table-overlap'
+  | 'totals-row-content';
+
+export interface SpreadsheetTableDesignPatch {
+  name?: string;
+  showColumnStripes?: boolean;
+  showFirstColumn?: boolean;
+  showLastColumn?: boolean;
+  showRowStripes?: boolean;
+  style?: WorkSpreadsheetTableStyle;
+  /** Toggle the native totals row. Enabling appends one row to the table. */
+  totalsRow?: boolean;
+  /** Update per-column totals function, label, or custom formula. */
+  totalsColumns?:
+    | Readonly<Record<string, SpreadsheetTableTotalsColumnPatch>>
+    | readonly (SpreadsheetTableTotalsColumnPatch | null | undefined)[];
+}
+
+export function createSpreadsheetTableDialogSource(
+  content: WorkSpreadsheetContent,
+  target: SpreadsheetTableTarget,
+): SpreadsheetTableDialogSource | null {
+  const sheet = content.sheets.find(
+    (candidate) => candidate.id === target.sheetId,
+  );
+  if (!sheet) return null;
+  const range = spreadsheetSelectionOrCurrentRegion(sheet, target.selection);
+  if (!range) return null;
+  let request: SpreadsheetTableRequest = {
+    headerRow: true,
+    name: nextSpreadsheetTableName(content),
+    range,
+    sheetId: target.sheetId,
+  };
+  if (!validateSpreadsheetTableRequest(content, request).ok) {
+    request = { ...request, headerRow: false };
+    if (!validateSpreadsheetTableRequest(content, request).ok) return null;
+  }
+  const rangeReference = formatSpreadsheetCellRanges([range]);
+  return {
+    name: request.name,
+    range,
+    rangeReference,
+    sheetId: target.sheetId,
+    sheetName: sheet.name,
+    value: {
+      headerRow: request.headerRow,
+      rangeReference,
+      totalsRow: false,
+    },
+  };
+}
+
+export function spreadsheetTableRangeFromText(
+  value: string,
+): SpreadsheetCellRange | null {
+  const ranges = parseSpreadsheetCellRanges(value);
+  return ranges?.length === 1 ? (ranges[0] ?? null) : null;
+}
+
+export function validateSpreadsheetTableRequest(
+  content: WorkSpreadsheetContent,
+  request: SpreadsheetTableRequest,
+): SpreadsheetTableValidation {
+  const sheet = content.sheets.find(
+    (candidate) => candidate.id === request.sheetId,
+  );
+  if (!sheet) return tableError('sheet-not-found');
+  if (sheet.isPivotTable || sheet.pivotTables?.length) {
+    return tableError('pivot-table');
+  }
+  const bodyRange = normalizeSpreadsheetCellRange(request.range);
+  if (!bodyRange) return tableError('invalid-range');
+  const totalsRow = request.totalsRow === true;
+  const range = totalsRow
+    ? {
+        row: [bodyRange.row[0], bodyRange.row[1] + 1] as [number, number],
+        column: [...bodyRange.column] as [number, number],
+      }
+    : bodyRange;
+  const name = request.name.trim();
+  if (!validSpreadsheetTableName(name)) return tableError('invalid-name');
+  if (spreadsheetTableNameExists(content, name)) {
+    return tableError('name-conflict');
+  }
+  const bounds = spreadsheetSheetBounds(sheet);
+  const configuredRows = Number(sheet.row);
+  const lastAllowedRow =
+    Number.isFinite(configuredRows) && configuredRows > 0
+      ? bounds.lastRow
+      : Math.max(bounds.lastRow, range.row[1]);
+  if (
+    bodyRange.row[0] > lastAllowedRow ||
+    bodyRange.row[1] > lastAllowedRow ||
+    bodyRange.column[0] > bounds.lastColumn ||
+    bodyRange.column[1] > bounds.lastColumn ||
+    range.row[1] >= OFFICE_KERNEL_SPREADSHEET_MAX_ROWS
+  ) {
+    return tableError('out-of-bounds');
+  }
+  const height = range.row[1] - range.row[0] + 1;
+  if (height <= Number(request.headerRow)) return tableError('invalid-range');
+  if (spreadsheetCellRangeArea(range) > MAX_SPREADSHEET_TABLE_CELLS) {
+    return tableError('range-too-large');
+  }
+  if (spreadsheetTableIntersectsMerge(sheet, range)) {
+    return tableError('merged-range');
+  }
+  if (
+    (sheet.tables ?? []).some((table) =>
+      spreadsheetCellRangesIntersect(table.range, range),
+    )
+  ) {
+    return tableError('table-overlap');
+  }
+  const autoFilter = normalizeSpreadsheetCellRange(
+    sheet.filter_select ?? { row: [], column: [] },
+  );
+  if (autoFilter && spreadsheetCellRangesIntersect(autoFilter, range)) {
+    return tableError('auto-filter-overlap');
+  }
+  if (!canMutateSpreadsheetCellRanges(sheet, [range])) {
+    return tableError('protected-range');
+  }
+  const style = request.style ?? { family: 'medium', number: 2 };
+  if (!validSpreadsheetTableStyle(style)) return tableError('invalid-style');
+  const columns = spreadsheetTableColumnNames(
+    sheet,
+    bodyRange,
+    request.headerRow,
+  );
+  if (
+    !columns.length ||
+    columns.some((column) => !validTableColumnName(column))
+  ) {
+    return tableError('invalid-column-name');
+  }
+  const totalsColumns = spreadsheetTableTotalsColumnPatch(
+    columns.map((name) => ({ name })),
+    request.totalsColumns,
+  );
+  if (!totalsColumns) return tableError('invalid-totals');
+  const candidate: WorkSpreadsheetTable = {
+    id: '__validation__',
+    name,
+    range,
+    columns: withDefaultSpreadsheetTableTotalsLabel(totalsColumns, totalsRow),
+    filters: [],
+    headerRow: request.headerRow,
+    totalsRow,
+    style,
+    showFirstColumn: false,
+    showLastColumn: false,
+    showRowStripes: style.family !== 'none',
+    showColumnStripes: false,
+  };
+  if (totalsRow && spreadsheetTableTotalsRowHasContent(sheet, candidate)) {
+    return tableError('totals-row-content');
+  }
+  return { columns, name, ok: true, range, sheet };
+}
+
+export function applySpreadsheetTable(
+  content: WorkSpreadsheetContent,
+  request: SpreadsheetTableRequest,
+): WorkSpreadsheetContent | null {
+  const validation = validateSpreadsheetTableRequest(content, request);
+  if (!validation.ok) return null;
+  const style = request.style ?? { family: 'medium', number: 2 };
+  const totalsRow = request.totalsRow === true;
+  const totalsColumns = spreadsheetTableTotalsColumnPatch(
+    validation.columns.map((name) => ({ name })),
+    request.totalsColumns,
+  );
+  if (!totalsColumns) return null;
+  const tableWithoutCalculatedColumns: WorkSpreadsheetTable = {
+    id: createWorkId('spreadsheet-table'),
+    name: validation.name,
+    range: cloneRange(validation.range),
+    columns: withDefaultSpreadsheetTableTotalsLabel(totalsColumns, totalsRow),
+    filters: [],
+    headerRow: request.headerRow,
+    totalsRow,
+    style,
+    showFirstColumn: false,
+    showLastColumn: false,
+    showRowStripes: style.family !== 'none',
+    showColumnStripes: false,
+  };
+  const table: WorkSpreadsheetTable = {
+    ...tableWithoutCalculatedColumns,
+    columns: reconcileSpreadsheetTableCalculatedColumns(
+      validation.sheet,
+      tableWithoutCalculatedColumns,
+    ),
+  };
+  const nextSheet = request.headerRow
+    ? stampSpreadsheetTableHeaders(
+        validation.sheet,
+        validation.range,
+        validation.columns,
+      )
+    : validation.sheet;
+  const sizedSheet = ensureSpreadsheetTableRowCapacity(
+    nextSheet,
+    rangeEndRow(table),
+  );
+  const synchronizedSheet = synchronizeSpreadsheetTableTotalsRow(
+    sizedSheet,
+    undefined,
+    table,
+    { force: totalsRow },
+  );
+  return replaceSpreadsheetTableSheet(content, {
+    ...synchronizedSheet,
+    tables: [...(synchronizedSheet.tables ?? []), table],
+  });
+}
+
+export function updateSpreadsheetTable(
+  content: WorkSpreadsheetContent,
+  sheetId: string,
+  tableId: string,
+  patch: SpreadsheetTableDesignPatch,
+): WorkSpreadsheetContent | null {
+  const sheet = content.sheets.find((candidate) => candidate.id === sheetId);
+  const table = sheet?.tables?.find((candidate) => candidate.id === tableId);
+  if (!sheet || !table) return null;
+  const name = patch.name?.trim() ?? table.name;
+  if (
+    !validSpreadsheetTableName(name) ||
+    spreadsheetTableNameExists(content, name, tableId)
+  ) {
+    return null;
+  }
+  const style = patch.style ?? table.style;
+  if (!validSpreadsheetTableStyle(style)) return null;
+  const showFirstColumn = patch.showFirstColumn ?? table.showFirstColumn;
+  const showLastColumn = patch.showLastColumn ?? table.showLastColumn;
+  const showRowStripes = patch.showRowStripes ?? table.showRowStripes;
+  const showColumnStripes = patch.showColumnStripes ?? table.showColumnStripes;
+  if (
+    style.family === 'none' &&
+    (showFirstColumn || showLastColumn || showRowStripes || showColumnStripes)
+  ) {
+    return null;
+  }
+  const totalsRow = patch.totalsRow ?? table.totalsRow;
+  const range = cloneRange(table.range);
+  if (totalsRow !== table.totalsRow) {
+    range.row[1] += totalsRow ? 1 : -1;
+  }
+  if (
+    range.row[0] < 0 ||
+    range.row[1] < range.row[0] ||
+    range.row[1] >= OFFICE_KERNEL_SPREADSHEET_MAX_ROWS ||
+    range.row[1] - range.row[0] + 1 <=
+      Number(table.headerRow) + Number(totalsRow)
+  ) {
+    return null;
+  }
+  const totalsColumns = spreadsheetTableTotalsColumnPatch(
+    table.columns,
+    patch.totalsColumns,
+  );
+  if (!totalsColumns) return null;
+  const nextColumns = withDefaultSpreadsheetTableTotalsLabel(
+    totalsColumns,
+    totalsRow,
+  );
+  const nextTable: WorkSpreadsheetTable = {
+    ...table,
+    name,
+    ...(patch.name === undefined ? {} : { displayName: undefined }),
+    range,
+    columns: nextColumns,
+    totalsRow,
+    style,
+    showFirstColumn,
+    showLastColumn,
+    showRowStripes,
+    showColumnStripes,
+  };
+  if (
+    totalsRow &&
+    !table.totalsRow &&
+    spreadsheetTableTotalsRowHasContent(sheet, nextTable)
+  ) {
+    return null;
+  }
+  if (totalsRow && !table.totalsRow) {
+    const totalsGrowthRange: SpreadsheetCellRange = {
+      row: [table.range.row[1] + 1, range.row[1]],
+      column: [...range.column] as [number, number],
+    };
+    if (
+      spreadsheetCellRangeArea(range) > MAX_SPREADSHEET_TABLE_CELLS ||
+      spreadsheetTableGrowthConflicts(sheet, tableId, totalsGrowthRange)
+    ) {
+      return null;
+    }
+  }
+  const tables = sheet.tables?.map((candidate) =>
+    candidate.id === tableId ? nextTable : candidate,
+  );
+  const sizedSheet = ensureSpreadsheetTableRowCapacity(
+    sheet,
+    rangeEndRow(nextTable),
+  );
+  const synchronizedSheet = synchronizeSpreadsheetTableTotalsRow(
+    sizedSheet,
+    table,
+    nextTable,
+  );
+  return replaceSpreadsheetTableSheet(content, {
+    ...synchronizedSheet,
+    tables,
+  });
+}
+
+export function convertSpreadsheetTableToRange(
+  content: WorkSpreadsheetContent,
+  sheetId: string,
+  tableId: string,
+): WorkSpreadsheetContent | null {
+  const sheet = content.sheets.find((candidate) => candidate.id === sheetId);
+  const table = sheet?.tables?.find((candidate) => candidate.id === tableId);
+  if (
+    !sheet ||
+    !table ||
+    spreadsheetTableHasStructuredReferences(content, table)
+  ) {
+    return null;
+  }
+  const remaining = sheet.tables?.filter(
+    (candidate) => candidate.id !== tableId,
+  );
+  const withoutTable = replaceSpreadsheetTableSheet(content, {
+    ...sheet,
+    tables: remaining?.length ? remaining : undefined,
+  });
+  return materializeSpreadsheetTableAppearance(withoutTable, sheetId, table);
+}
+
+export function spreadsheetTableAtCell(
+  sheet: WorkSpreadsheetSheet | undefined,
+  row: number,
+  column: number,
+): WorkSpreadsheetTable | null {
+  if (!sheet) return null;
+  return (
+    (sheet.tables ?? []).find((table) =>
+      spreadsheetCellRangeContains(table.range, row, column),
+    ) ?? null
+  );
+}
+
+export function spreadsheetTableFailureMessage(
+  content: WorkSpreadsheetContent,
+  request: SpreadsheetTableRequest,
+): string | null {
+  const validation = validateSpreadsheetTableRequest(content, request);
+  return validation.ok ? null : validation.message;
+}
+
+function nextSpreadsheetTableName(content: WorkSpreadsheetContent): string {
+  for (let index = 1; index <= 65_536; index += 1) {
+    const candidate = `Table${index}`;
+    if (!spreadsheetTableNameExists(content, candidate)) return candidate;
+  }
+  return 'Table65536';
+}
+
+function spreadsheetTableNameExists(
+  content: WorkSpreadsheetContent,
+  name: string,
+  exceptTableId?: string,
+): boolean {
+  const normalized = name.toLocaleLowerCase();
+  return (
+    content.sheets.some((sheet) =>
+      (sheet.tables ?? []).some(
+        (table) =>
+          table.id !== exceptTableId &&
+          [table.name, table.displayName].some(
+            (candidate) => candidate?.toLocaleLowerCase() === normalized,
+          ),
+      ),
+    ) ||
+    (content.namedRanges ?? []).some(
+      (range) => range.name.trim().toLocaleLowerCase() === normalized,
+    )
+  );
+}
+
+function validSpreadsheetTableName(name: string): boolean {
+  return (
+    isValidSpreadsheetDefinedName(name) &&
+    !name.startsWith('_xlnm.') &&
+    !['r', 'c'].includes(name.toLocaleLowerCase())
+  );
+}
+
+function validSpreadsheetTableStyle(style: WorkSpreadsheetTableStyle): boolean {
+  if (style.family === 'none') return true;
+  if (!Number.isInteger(style.number)) return false;
+  if (style.family === 'light') return style.number >= 1 && style.number <= 21;
+  if (style.family === 'medium') return style.number >= 1 && style.number <= 28;
+  return style.number >= 1 && style.number <= 11;
+}
+
+function spreadsheetTableColumnNames(
+  sheet: WorkSpreadsheetSheet,
+  range: SpreadsheetCellRange,
+  headerRow: boolean,
+): string[] {
+  const observed = new Set<string>();
+  const names: string[] = [];
+  for (let column = range.column[0]; column <= range.column[1]; column += 1) {
+    const raw = headerRow
+      ? spreadsheetCellText(sheet, range.row[0], column).trim()
+      : '';
+    const base = validTableColumnName(raw)
+      ? raw
+      : `Column${column - range.column[0] + 1}`;
+    let candidate = base;
+    let suffix = 2;
+    while (observed.has(candidate.toLocaleLowerCase())) {
+      const suffixText = String(suffix);
+      candidate = `${truncateTableColumnName(
+        base,
+        255 - suffixText.length,
+      )}${suffixText}`;
+      suffix += 1;
+    }
+    observed.add(candidate.toLocaleLowerCase());
+    names.push(candidate);
+  }
+  return names;
+}
+
+function validTableColumnName(name: string): boolean {
+  const characters = Array.from(name);
+  return (
+    name.trim() === name &&
+    characters.length >= 1 &&
+    characters.length <= 255 &&
+    !characters.some(
+      (character) =>
+        /\p{Cc}/u.test(character) ||
+        character === '\uFFFE' ||
+        character === '\uFFFF',
+    )
+  );
+}
+
+function truncateTableColumnName(value: string, maximum: number): string {
+  return Array.from(value).slice(0, maximum).join('');
+}
+
+function spreadsheetCellText(
+  sheet: WorkSpreadsheetSheet,
+  row: number,
+  column: number,
+): string {
+  const cell =
+    sheet.data?.[row]?.[column] ??
+    sheet.celldata?.find(
+      (candidate) => candidate.r === row && candidate.c === column,
+    )?.v;
+  const value = cell?.m ?? cell?.v;
+  return value === undefined || value === null ? '' : String(value);
+}
+
+function stampSpreadsheetTableHeaders(
+  sheet: WorkSpreadsheetSheet,
+  range: SpreadsheetCellRange,
+  names: readonly string[],
+): WorkSpreadsheetSheet {
+  if (sheet.data !== undefined) {
+    const data = cloneSparseMatrixShell(sheet.data);
+    const sourceRow = sheet.data[range.row[0]];
+    const row = cloneSparseRow(sourceRow);
+    for (const [offset, name] of names.entries()) {
+      const column = range.column[0] + offset;
+      row[column] = stampHeaderCell(sourceRow?.[column], name);
+    }
+    data[range.row[0]] = row;
+    return { ...sheet, data };
+  }
+  const byCoordinate = new Map(
+    (sheet.celldata ?? []).map((entry) => [`${entry.r}_${entry.c}`, entry]),
+  );
+  for (const [offset, name] of names.entries()) {
+    const column = range.column[0] + offset;
+    const key = `${range.row[0]}_${column}`;
+    const source = byCoordinate.get(key);
+    byCoordinate.set(key, {
+      r: range.row[0],
+      c: column,
+      v: stampHeaderCell(source?.v, name),
+    });
+  }
+  return { ...sheet, celldata: [...byCoordinate.values()] };
+}
+
+function cloneSparseMatrixShell(
+  source: NonNullable<WorkSpreadsheetSheet['data']>,
+): NonNullable<WorkSpreadsheetSheet['data']> {
+  const data: NonNullable<WorkSpreadsheetSheet['data']> = [];
+  data.length = source.length;
+  for (const [row, value] of sparseArrayEntries(source)) data[row] = value;
+  return data;
+}
+
+function cloneSparseRow(
+  source: NonNullable<WorkSpreadsheetSheet['data']>[number] | undefined,
+): NonNullable<WorkSpreadsheetSheet['data']>[number] {
+  const row: NonNullable<WorkSpreadsheetSheet['data']>[number] = [];
+  if (!source) return row;
+  row.length = source.length;
+  for (const column of sparseArrayIndexes(source)) row[column] = source[column];
+  return row;
+}
+
+function stampHeaderCell(source: Cell | null | undefined, name: string): Cell {
+  return { ...(source ?? {}), m: name, v: name };
+}
+
+function spreadsheetTableIntersectsMerge(
+  sheet: WorkSpreadsheetSheet,
+  range: SpreadsheetCellRange,
+): boolean {
+  return Object.values(sheet.config?.merge ?? {}).some((merge) =>
+    spreadsheetCellRangesIntersect(range, {
+      row: [merge.r, merge.r + Math.max(1, merge.rs) - 1],
+      column: [merge.c, merge.c + Math.max(1, merge.cs) - 1],
+    }),
+  );
+}
+
+function spreadsheetTableGrowthConflicts(
+  sheet: WorkSpreadsheetSheet,
+  tableId: string,
+  growthRange: SpreadsheetCellRange,
+): boolean {
+  if (
+    spreadsheetTableIntersectsMerge(sheet, growthRange) ||
+    (sheet.tables ?? []).some(
+      (candidate) =>
+        candidate.id !== tableId &&
+        spreadsheetCellRangesIntersect(candidate.range, growthRange),
+    ) ||
+    !canMutateSpreadsheetCellRanges(sheet, [growthRange])
+  ) {
+    return true;
+  }
+  const autoFilter = normalizeSpreadsheetCellRange(
+    sheet.filter_select ?? { row: [], column: [] },
+  );
+  return Boolean(
+    autoFilter && spreadsheetCellRangesIntersect(autoFilter, growthRange),
+  );
+}
+
+function replaceSpreadsheetTableSheet(
+  content: WorkSpreadsheetContent,
+  nextSheet: WorkSpreadsheetSheet,
+): WorkSpreadsheetContent {
+  return {
+    ...content,
+    sheets: content.sheets.map((sheet) =>
+      sheet.id === nextSheet.id ? nextSheet : sheet,
+    ),
+  };
+}
+
+function spreadsheetTableHasStructuredReferences(
+  content: WorkSpreadsheetContent,
+  table: WorkSpreadsheetTable,
+): boolean {
+  const aliases = [table.name, table.displayName].filter(
+    (value): value is string => Boolean(value),
+  );
+  const patterns = aliases.map(
+    (alias) => new RegExp(`${escapeRegExp(alias)}\\s*\\[`, 'i'),
+  );
+  const matches = (value: unknown) =>
+    typeof value === 'string' &&
+    patterns.some((pattern) => pattern.test(value));
+  for (const sheet of content.sheets) {
+    for (const [, row] of sparseArrayEntries(sheet.data)) {
+      for (const [, cell] of sparseArrayEntries(row)) {
+        if (matches(cell?.f)) return true;
+      }
+    }
+    for (const entry of sheet.celldata ?? []) {
+      if (matches(entry.v?.f)) return true;
+    }
+    if (
+      Object.values(sheet.formulaMetadata?.sourceFormulas ?? {}).some(
+        matches,
+      ) ||
+      matches(JSON.stringify(sheet.dataValidationRanges ?? [])) ||
+      matches(JSON.stringify(sheet.luckysheet_conditionformat_save ?? [])) ||
+      matches(JSON.stringify(sheet.charts ?? []))
+    ) {
+      return true;
+    }
+  }
+  return (content.namedRanges ?? []).some((range) => matches(range.reference));
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function cloneRange(range: SpreadsheetCellRange): SpreadsheetCellRange {
+  return { row: [...range.row], column: [...range.column] };
+}
+
+function tableError(
+  code: SpreadsheetTableErrorCode,
+): Extract<SpreadsheetTableValidation, { ok: false }> {
+  const catalog = resolveOfficeMessages();
+  const messageKeys = {
+    'auto-filter-overlap': 'spreadsheet.table.error.autoFilterOverlap',
+    'invalid-column-name': 'spreadsheet.table.error.invalidColumnName',
+    'invalid-name': 'spreadsheet.table.error.invalidName',
+    'invalid-range': 'spreadsheet.table.error.invalidRange',
+    'invalid-style': 'spreadsheet.table.error.invalidStyle',
+    'invalid-totals': 'spreadsheet.table.error.invalidTotals',
+    'merged-range': 'spreadsheet.table.error.mergedRange',
+    'name-conflict': 'spreadsheet.table.error.nameConflict',
+    'out-of-bounds': 'spreadsheet.table.error.outOfBounds',
+    'pivot-table': 'spreadsheet.table.error.pivotTable',
+    'protected-range': 'spreadsheet.table.error.protectedRange',
+    'range-too-large': 'spreadsheet.table.error.rangeTooLarge',
+    'sheet-not-found': 'spreadsheet.table.error.sheetNotFound',
+    'table-overlap': 'spreadsheet.table.error.tableOverlap',
+    'totals-row-content': 'spreadsheet.table.error.totalsRowContent',
+  } as const satisfies Record<SpreadsheetTableErrorCode, string>;
+  const message =
+    code === 'range-too-large'
+      ? officeMessage(catalog, messageKeys[code], {
+          max: MAX_SPREADSHEET_TABLE_CELLS.toLocaleString(),
+        })
+      : officeMessage(catalog, messageKeys[code]);
+  return { code, message, ok: false };
+}
+
+function rangeEndRow(table: WorkSpreadsheetTable): number {
+  return table.range.row[1];
+}
+
+/** Grow the declared Fortune sheet dimension only when the totals row needs it. */
+function ensureSpreadsheetTableRowCapacity(
+  sheet: WorkSpreadsheetSheet,
+  lastRow: number,
+): WorkSpreadsheetSheet {
+  if (!Number.isSafeInteger(lastRow) || lastRow < 0) return sheet;
+  const configured = Number(sheet.row);
+  if (!Number.isFinite(configured) || configured <= 0) return sheet;
+  const required = lastRow + 1;
+  if (required <= configured) return sheet;
+  return {
+    ...sheet,
+    row: Math.min(OFFICE_KERNEL_SPREADSHEET_MAX_ROWS, required),
+  };
+}

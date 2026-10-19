@@ -1,0 +1,14 @@
+
+running 1 test
+test agent_plane::turns::local_acp_tests::delivery::sandbox::real_acp_default_bash_runs_in_linux_guest_and_reaches_provider ... a3s-code-acp: 2026-10-19T22:19:07.255354Z  WARN a3s_code_core::skills::registry: Duplicate skill name encountered during directory load — overriding previous definition skill=a3s-test path=/Users/roylin/.claude/skills/a3s-test/SKILL.md
+a3s-code-acp: 2026-10-19T22:19:07.260086Z  WARN a3s_code_core::skills::registry: Duplicate skill name encountered during directory load — overriding previous definition skill=skill-creator path=/Users/roylin/.codex/skills/.system/skill-creator/SKILL.md
+a3s-code-acp: 2026-10-19T22:19:07.260454Z  WARN a3s_code_core::skills::registry: Duplicate skill name encountered during directory load — overriding previous definition skill=a3s-test path=/Users/roylin/.codex/skills/a3s-test/SKILL.md
+a3s-code-acp: 2026-10-19T22:19:07.261320Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /Users/roylin/.claude/agents
+a3s-code-acp: 2026-10-19T22:19:07.261351Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /Users/roylin/.a3s/agents
+a3s-code-acp: 2026-10-19T22:19:07.261385Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/a3s-studio-task-default-bash-sandbox-54790/state/workspace/01a1563f-33cd-756d-bb4d-5cf33582ff53/.claude/agents
+a3s-code-acp: 2026-10-19T22:19:07.261480Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/a3s-studio-task-default-bash-sandbox-54790/state/workspace/01a1563f-33cd-756d-bb4d-5cf33582ff53/.a3s/agents
+WORK_REAL_ACP_DEFAULT_BASH_SANDBOX_PASS {"binary":"/Users/roylin/code/aster/target/qualification/t031-r3-cua-20261020/a3s-code-acp","guest_kernel":"Linux","host_escalation_requested":false,"host_platform":"macos","main_requests":2,"pid":54900,"provider":"controlled loopback","sandbox_assets":"/Users/roylin/code/aster/target/t013-assets-hardware","sandbox_permissions":"use_default (field omitted)","sha256":"7df56d80d617722e4e3afa92335c0a853fd6ce7cb6b5e3d3b8c889aa6edabeb2","vm_exercised":true,"vm_start_boundary":"the sole default Bash invocation"}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 844 filtered out; finished in 21.74s
+

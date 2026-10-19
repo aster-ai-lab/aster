@@ -1,0 +1,39 @@
+{
+  "native": {
+    "project_files": {
+      "passed": 7,
+      "failed": 0
+    },
+    "agent_plane_catalog": {
+      "passed": 14,
+      "failed": 0
+    }
+  },
+  "renderer": {
+    "sessionWorkspace_WorkbenchProjectTray_studioMainBridge": {
+      "passed": 52,
+      "failed": 0
+    },
+    "AgentPage_project_workspace_review_task_filter": {
+      "passed": 12,
+      "failed": 0,
+      "skipped": 73
+    },
+    "format_check": {
+      "files": 8,
+      "exit": 0
+    }
+  },
+  "scope": [
+    "Project input snapshot in private app-project task directory",
+    "No overwrite, symlink following, other registered task copying, or harness-state copying",
+    "Cleanup of only newly published entries and exact moved-item rollback",
+    "Home project selection survives hidden bound panes and precedes stale remembered workspace",
+    "Explicit missing project stops creation instead of falling back to an empty system directory",
+    "An explicit no-project home selection starts a system session instead of inheriting an old project."
+  ],
+  "limitations": [
+    "Current development HTTP origin requires its own explicit project registration; no cross-origin state migration was performed.",
+    "Windows runtime was not exercised."
+  ]
+}

@@ -1,0 +1,7 @@
+
+running 2 tests
+test agent::turn_context::tests::env_block_contains_grounding_facts ... ok
+test agent::turn_context::tests::env_block_date_is_iso_yyyy_mm_dd ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 5189 filtered out; finished in 0.00s
+

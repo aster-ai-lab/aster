@@ -163,7 +163,7 @@ impl Tool for Bm25Tool {
             Err(error) => {
                 return Ok(ToolOutput::error(format!(
                     "Failed to resolve path: {error}"
-                )))
+                )));
             }
         };
         let glob = args
@@ -211,7 +211,7 @@ impl Tool for Bm25Tool {
             Err(error) => {
                 return Ok(ToolOutput::error(format!(
                     "BM25 candidate search failed: {error}"
-                )))
+                )));
             }
         };
         if candidates.paths.is_empty() {
@@ -241,7 +241,7 @@ impl Tool for Bm25Tool {
                 return Ok(
                     ToolOutput::error(format!("BM25 lexical index failed: {error}"))
                         .with_metadata(search_metadata(&terms, &candidates, &scan)),
-                )
+                );
             }
         };
         let mut ranked = lexical
@@ -468,7 +468,7 @@ async fn search_incremental_catalog(
         Err(error) => {
             return Some(ToolOutput::error(format!(
                 "BM25 catalog search failed: {error}"
-            )))
+            )));
         }
     };
     if verify_sources {

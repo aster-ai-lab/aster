@@ -196,7 +196,7 @@ async fn probe_response(
                 return Err(DownloadFailure::new(
                     FailureKind::Protocol,
                     "Range probe did not describe bytes 0-0 of a known resource",
-                ))
+                ));
             }
         };
         enforce_size(total, max_bytes)?;

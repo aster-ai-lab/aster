@@ -1,0 +1,136 @@
+.sidebar-activity {
+  box-shadow: none;
+  background-color: #e6e6e6;
+}
+
+/* The traffic-light spacer sits above this column. Paint the same gray behind it. */
+.sidebar-activity::before {
+  content: '';
+  position: absolute;
+  top: -2.75rem;
+  right: 0;
+  left: 0;
+  height: 2.75rem;
+  background-color: inherit;
+  pointer-events: none;
+}
+
+.dark .sidebar-activity {
+  background-color: #242424;
+}
+
+/* Field under the icon-rail content card. Same gray as the rail, so the 4px gutter reads as one surface. */
+.activity-bar-canvas {
+  background-color: #e6e6e6;
+}
+
+.dark .activity-bar-canvas {
+  background-color: #242424;
+}
+
+.activity-bar-item {
+  color: var(--muted-foreground);
+}
+
+.activity-bar-item:hover,
+.activity-bar-item[aria-current='page'] {
+  background: var(--accent);
+  color: var(--foreground);
+}
+
+/* Icon rail. The avatar stays a 36px tile with a 4px corner. Menu plates are rounder. */
+.sidebar-activity .activity-bar-avatar,
+.sidebar-activity .activity-bar-avatar * {
+  border-radius: 4px;
+}
+
+.sidebar-activity .activity-bar-item {
+  border-radius: 12px;
+  background: transparent;
+  color: #666666;
+}
+
+/* Lucide sets its own muted color in the base layer. The rail color has to land on the glyph. */
+.sidebar-activity .activity-bar-item svg {
+  color: inherit;
+}
+
+.sidebar-activity .activity-bar-item:hover {
+  background: #d4d4d4;
+  color: #3d3d3d;
+}
+
+.dark .sidebar-activity .activity-bar-item {
+  color: #d0d0d0;
+}
+
+.dark .sidebar-activity .activity-bar-item:hover {
+  background: #3a3a3a;
+  color: #f5f5f5;
+}
+
+/* Selected menu: gray plate, black filled glyph. Hover keeps the same plate. */
+.sidebar-activity .activity-bar-item[aria-current='page'],
+.sidebar-activity .activity-bar-item[aria-current='page']:hover {
+  background: #d4d4d4;
+  color: #171717;
+}
+
+.dark .sidebar-activity .activity-bar-item[aria-current='page'],
+.dark .sidebar-activity .activity-bar-item[aria-current='page']:hover {
+  background: #3a3a3a;
+  color: #f5f5f5;
+}
+
+.sidebar-activity .activity-bar-item[aria-current='page'] svg,
+.sidebar-activity .activity-bar-item[aria-current='page'] svg * {
+  fill: currentColor;
+  stroke: none;
+}
+
+.activity-bar-item--nav {
+  position: relative;
+}
+
+.activity-bar-item--nav::after {
+  position: absolute;
+  inset-block: 0.5rem;
+  inset-inline-start: -0.375rem;
+  width: 0.1875rem;
+  border-radius: 0 999px 999px 0;
+  background: transparent;
+  content: '';
+  pointer-events: none;
+}
+
+.activity-bar-item--nav[aria-current='page']::after {
+  background: var(--foreground);
+}
+
+.sidebar-activity .activity-bar-item--nav::after {
+  content: none;
+}
+
+.sidebar-full-item[data-active='true']::before {
+  position: absolute;
+  z-index: 1;
+  inset-block: 0.375rem;
+  inset-inline-start: -0.125rem;
+  width: 0.1875rem;
+  border-radius: 0 999px 999px 0;
+  background: var(--foreground);
+  content: '';
+  pointer-events: none;
+}
+
+button.activity-bar-item:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--foreground) 48%, transparent);
+  outline-offset: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .activity-bar-item,
+  .sidebar-full-item {
+    transition: none;
+  }
+}

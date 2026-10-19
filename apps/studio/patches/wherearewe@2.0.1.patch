@@ -1,0 +1,36 @@
+diff --git a/package.json b/package.json
+index b673de6155a5e8cfb08b33a66bf001afde901ffd..860816fda6dfd09b65826756dde1a370461a3ae6 100644
+--- a/package.json
++++ b/package.json
+@@ -151,9 +151,7 @@
+     "test:electron-main": "aegir test -t electron-main",
+     "dep-check": "aegir dep-check"
+   },
+-  "dependencies": {
+-    "is-electron": "^2.2.0"
+-  },
++  "dependencies": {},
+   "devDependencies": {
+     "aegir": "^37.5.1"
+   }
+diff --git a/src/index.js b/src/index.js
+index a03831ba2b19dbafee355a832b488ea94eb62f8f..3d0a8b2b467bd7133c95a4c750dcb7fb9c56105e 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -1,4 +1,15 @@
+-import detectElectron from 'is-electron'
++function detectElectron() {
++  if (typeof window !== 'undefined' && typeof window.process === 'object' && window.process.type === 'renderer') {
++    return true
++  }
++  if (typeof process !== 'undefined' && typeof process.versions === 'object' && !!process.versions.electron) {
++    return true
++  }
++  if (typeof navigator === 'object' && typeof navigator.userAgent === 'string' && navigator.userAgent.indexOf('Electron') >= 0) {
++    return true
++  }
++  return false
++}
+ 
+ export const isEnvWithDom = typeof window === 'object' && typeof document === 'object' && document.nodeType === 9
+ export const isElectron = detectElectron()

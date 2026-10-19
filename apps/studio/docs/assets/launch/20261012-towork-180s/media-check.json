@@ -1,0 +1,17 @@
+{
+  "duration_seconds": 180.0,
+  "frames": 5400,
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "video_codec": "h264",
+  "audio_codec": "aac",
+  "sample_rate": 48000,
+  "channels": 2,
+  "full_decode_exit_code": 0,
+  "oracle_verdict": "PASS",
+  "peak_dbfs": -5.0,
+  "sha256": "99e119f957a030c5664a2bb9eb3c685e990d3f578f05e1ddb66bfd79151b8c53",
+  "bytes": 9649495,
+  "inspected_encoded_seconds": [14, 53, 69, 83, 108, 127, 141, 148, 156, 165, 172, 178]
+}

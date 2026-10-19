@@ -1,0 +1,98 @@
+/* xl, xxl, default style */
+:root {
+  --app-top-chrome-height: 44px;
+  --navbar-height: var(--app-top-chrome-height);
+  --sidebar-width: 200px;
+  --assistants-width: 275px;
+  --topic-list-width: 275px;
+  --settings-width: 260px;
+  --settings-nav-background: #ffffff;
+  --settings-nav-selected: #f2f3f5;
+  --settings-nav-muted: #8a8a8a;
+  --settings-nav-search-border: transparent;
+  --settings-back-foreground: #3f3f3f;
+  --settings-content-background: #ffffff;
+  --settings-nav-item: #3f3f3f;
+  --settings-nav-item-active: #171717;
+  --settings-nav-hover: #f7f7f7;
+  --app-chat-max-width: 768px;
+  --app-density-gap: 12px;
+}
+
+html[data-theme-pack='ocean'] {
+  --cs-background: #f3f7fb;
+  --background: #f3f7fb;
+  --cs-accent: #e6f0f8;
+  --accent: #e6f0f8;
+}
+
+html[data-theme-pack='paper'] {
+  --cs-background: #f7f4ee;
+  --background: #f7f4ee;
+  --cs-accent: #efe8dc;
+  --accent: #efe8dc;
+}
+
+html[data-density='compact'] {
+  --app-density-gap: 8px;
+}
+
+html[data-density='comfortable'] {
+  --app-density-gap: 12px;
+}
+
+html[data-density='airy'] {
+  --app-density-gap: 18px;
+}
+
+html[data-chat-width='standard'] .messages-container {
+  max-width: var(--app-chat-max-width, 768px);
+  margin-inline: auto;
+}
+
+html[data-chat-width='full'] .messages-container {
+  max-width: none;
+}
+
+html[data-contrast='high'] {
+  --cs-foreground: #000000;
+  --foreground: #000000;
+  --cs-border: #111111;
+  --border: #111111;
+}
+
+.dark {
+  --settings-nav-background: #171717;
+  --settings-nav-selected: #2c2c2c;
+  --settings-nav-muted: #8b8b90;
+  --settings-nav-search-border: transparent;
+  --settings-back-foreground: #b0b4ba;
+  --settings-content-background: #111112;
+  --settings-nav-item: #b0b4ba;
+  --settings-nav-item-active: #f5f5f5;
+  --settings-nav-hover: #2c2c2c;
+}
+
+/* The 260px settings nav would leave the appearance grid a sliver on a phone. */
+@media (max-width: 759px) {
+  [data-ui='settings.view'] > div {
+    flex-direction: column;
+  }
+
+  [data-ui='settings.navigation'] {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-height: 10rem;
+    border-right-width: 0;
+    border-bottom: 1px solid var(--color-hairline, #efefef);
+  }
+}
+
+/* lg */
+@media (max-width: 1080px) {
+  :root {
+    --assistants-width: 210px;
+    --topic-list-width: 210px;
+    --settings-width: 260px;
+  }
+}

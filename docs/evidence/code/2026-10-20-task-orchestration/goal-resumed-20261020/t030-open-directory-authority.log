@@ -1,0 +1,7 @@
+
+running 1 test
+test authority::tests::workspace_directory_open_authenticates_and_preserves_native_refusals ... studio: scheduled task ticker needs the application runtime
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 843 filtered out; finished in 0.17s
+

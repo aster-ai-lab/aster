@@ -698,9 +698,9 @@ async fn platform_aliases_fail_closed_without_weights_but_proxy_aliases_still_ro
         .send()
         .await
         .unwrap();
-    assert_eq!(refused.status(), 503);
-    let body = refused.text().await.unwrap();
-    assert!(body.contains("a3s-use-bge install"), "{body}");
+    assert_eq!(refused.status(), 404);
+    let body: serde_json::Value = refused.json().await.unwrap();
+    assert_eq!(body["error"], "standard_not_admitted");
 
     // The reserved alias cannot be hijacked through the grant either: an
     // unknown ordinary alias stays a plain model-not-granted refusal.
@@ -784,9 +784,9 @@ async fn embedding_and_rerank_suppliers_replace_the_platform_model() {
         .send()
         .await
         .unwrap();
-    assert_eq!(served.status(), 200);
+    assert_eq!(served.status(), 404);
     let body: serde_json::Value = served.json().await.unwrap();
-    assert_eq!(body["model"], "supplier-rerank-model", "{body}");
+    assert_eq!(body["error"], "standard_not_admitted");
 
     stop_test_entrypoint(shutdown_tx, handle).await;
 

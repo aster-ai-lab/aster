@@ -155,7 +155,7 @@ fn assemble_pinned_agent_loop(
     config.context_providers.extend(context_providers);
     config.tools = tool_executor.definitions();
 
-    // The Skill and search_skills built-ins capture a registry and executor.
+    // The Skill built-in captures a registry and executor.
     // Rebind them inside the Run snapshot so nested Skill execution cannot
     // resolve through the mutable Session-latest compatibility registries.
     crate::tools::register_skill(
@@ -494,7 +494,7 @@ async fn assemble_owned_admitted_agent_loop(
                 .into(),
                 guard,
             )
-            .await)
+            .await);
         }
     };
     // No Session reference or legacy lazy getter is captured by this supplier.

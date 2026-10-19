@@ -6,7 +6,7 @@ use base64::Engine as _;
 use super::part::{dialect, relationship_part, relative_target, worksheet_drawing, OfficeDialect};
 use super::{
     editor_error, escape_attribute, node_not_found, NativeCreatedImage, NativeOfficeImage,
-    NativeOfficeImageFormat,
+    NativeOfficeImageFormat, NativeOfficeImagePosition,
 };
 use crate::semantic::{NativeOfficeDocument, OfficeNodeType};
 use crate::spreadsheet_reference::CellReference;
@@ -29,6 +29,7 @@ struct PreparedImage {
     alt_text: String,
     width_px: u32,
     height_px: u32,
+    presentation_position: Option<NativeOfficeImagePosition>,
 }
 
 pub(super) fn add(
@@ -64,6 +65,11 @@ fn prepare_image(
     package: &NativeOfficePackage,
     image: &NativeOfficeImage,
 ) -> UseResult<PreparedImage> {
+    if image.presentation_position.is_some() && package.kind() != DocumentKind::Presentation {
+        return Err(image_invalid(
+            "Explicit Presentation image placement requires a Presentation document.",
+        ));
+    }
     let max_bytes = usize::try_from(package.limits().max_part_bytes)
         .unwrap_or(usize::MAX)
         .min(MAX_IMAGE_BYTES);
@@ -106,6 +112,7 @@ fn prepare_image(
         alt_text,
         width_px,
         height_px,
+        presentation_position: image.presentation_position,
     })
 }
 
@@ -305,6 +312,27 @@ fn add_presentation(
     parent: &str,
     image: PreparedImage,
 ) -> UseResult<NativeCreatedImage> {
+    if let Some(position) = image.presentation_position {
+        let presentation = package.xml_part("ppt/presentation.xml")?;
+        let index = index_xml(&presentation)?;
+        let size = index
+            .child("sldSz", 1)
+            .ok_or_else(|| image_invalid("Presentation slide size is missing."))?;
+        let dimension = |name: &str| -> UseResult<u64> {
+            size.attributes
+                .get(name)
+                .and_then(|value| value.parse().ok())
+                .filter(|&value| value > 0)
+                .ok_or_else(|| image_invalid("Presentation slide size is invalid."))
+        };
+        if u64::from(position.x_emu) + emu(image.width_px) > dimension("cx")?
+            || u64::from(position.y_emu) + emu(image.height_px) > dimension("cy")?
+        {
+            return Err(image_invalid(
+                "Explicit Presentation image placement exceeds the slide bounds.",
+            ));
+        }
+    }
     let snapshot = NativeOfficeDocument::from_package(package.clone())?;
     let slide = snapshot.get(parent, 0)?;
     if slide.node_type != OfficeNodeType::Slide {
@@ -348,6 +376,7 @@ fn add_presentation(
         &relationship_id,
         image.width_px,
         image.height_px,
+        image.presentation_position,
     );
     let edited = insert_child(&slide_part, shape_tree, fragment)?;
     package.set_part(&owner, edited)?;
@@ -654,11 +683,17 @@ fn presentation_picture_xml(
     relationship_id: &str,
     width_px: u32,
     height_px: u32,
+    position: Option<NativeOfficeImagePosition>,
 ) -> String {
     let width = emu(width_px);
     let height = emu(height_px);
+    let NativeOfficeImagePosition { x_emu: x, y_emu: y } =
+        position.unwrap_or(NativeOfficeImagePosition {
+            x_emu: 914_400,
+            y_emu: 914_400,
+        });
     format!(
-        "<p:pic xmlns:p=\"{}\" xmlns:a=\"{}\" xmlns:r=\"{}\"><p:nvPicPr><p:cNvPr id=\"{id}\" name=\"{}\" descr=\"{}\"/><p:cNvPicPr/><p:nvPr/></p:nvPicPr><p:blipFill><a:blip r:embed=\"{}\"/><a:stretch><a:fillRect/></a:stretch></p:blipFill><p:spPr><a:xfrm><a:off x=\"914400\" y=\"914400\"/><a:ext cx=\"{width}\" cy=\"{height}\"/></a:xfrm><a:prstGeom prst=\"rect\"><a:avLst/></a:prstGeom></p:spPr></p:pic>",
+        "<p:pic xmlns:p=\"{}\" xmlns:a=\"{}\" xmlns:r=\"{}\"><p:nvPicPr><p:cNvPr id=\"{id}\" name=\"{}\" descr=\"{}\"/><p:cNvPicPr/><p:nvPr/></p:nvPicPr><p:blipFill><a:blip r:embed=\"{}\"/><a:stretch><a:fillRect/></a:stretch></p:blipFill><p:spPr><a:xfrm><a:off x=\"{x}\" y=\"{y}\"/><a:ext cx=\"{width}\" cy=\"{height}\"/></a:xfrm><a:prstGeom prst=\"rect\"><a:avLst/></a:prstGeom></p:spPr></p:pic>",
         dialect.presentation_namespace(),
         dialect.drawing_namespace(),
         dialect.relationship_namespace(),

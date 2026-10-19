@@ -133,7 +133,7 @@ impl Tool for EditTool {
                 return Ok(ToolOutput::error(format!(
                     "Failed to read file {}: {}",
                     display_path, e
-                )))
+                )));
             }
         };
 
@@ -153,8 +153,7 @@ impl Tool for EditTool {
             Err(crate::text::LineEndingEditError::Ambiguous(count)) => {
                 return Ok(ToolOutput::error(format!(
                     "old_string found {} times in {}. Use replace_all=true to replace all occurrences, or provide a more specific string.",
-                    count,
-                    display_path
+                    count, display_path
                 )));
             }
             Err(crate::text::LineEndingEditError::Unsafe) => {

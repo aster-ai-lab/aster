@@ -188,12 +188,12 @@ impl Tool for GitTool {
                 return Ok(ToolOutput::error(format!(
                     "Not a git repository: {}",
                     ctx.workspace_services.workspace_ref().display_root
-                )))
+                )));
             }
             Err(e) => {
                 return Ok(ToolOutput::error(format!(
                     "Failed to inspect git repository: {e}"
-                )))
+                )));
             }
         }
 
@@ -214,7 +214,10 @@ impl Tool for GitTool {
             "checkout" => self.checkout(args, git.as_ref()).await,
             "diff" => self.diff(args, git.as_ref()).await,
             "stash" => {
-                let writes = args.get("message").and_then(|value| value.as_str()).is_some()
+                let writes = args
+                    .get("message")
+                    .and_then(|value| value.as_str())
+                    .is_some()
                     || args
                         .get("include_untracked")
                         .and_then(|value| value.as_bool())
@@ -697,7 +700,7 @@ impl GitTool {
             None => {
                 return Ok(ToolOutput::error(
                     "branch name is required for worktree create",
-                ))
+                ));
             }
         };
 
@@ -726,7 +729,7 @@ impl GitTool {
                 Err(error) => {
                     return Ok(ToolOutput::error(format!(
                         "worktree cleanup could not be registered to the Run: {error}"
-                    )))
+                    )));
                 }
             }
         }
@@ -762,7 +765,7 @@ impl GitTool {
             None => {
                 return Ok(ToolOutput::error(
                     "path parameter is required for worktree remove",
-                ))
+                ));
             }
         };
 
@@ -829,7 +832,7 @@ fn bounded_diff_output(args: &serde_json::Value, diff: String) -> Result<ToolOut
             None => {
                 return Ok(ToolOutput::error(
                     "byte_offset must be a non-negative integer",
-                ))
+                ));
             }
         },
         None => 0,
@@ -840,7 +843,7 @@ fn bounded_diff_output(args: &serde_json::Value, diff: String) -> Result<ToolOut
             _ => {
                 return Ok(ToolOutput::error(format!(
                     "max_bytes must be an integer of at least {MIN_DIFF_BYTES}"
-                )))
+                )));
             }
         },
         None => DEFAULT_DIFF_BYTES,

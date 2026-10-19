@@ -1,0 +1,20 @@
+{
+  "identifier": "applet-capability",
+  "description": "Office applet windows. Only minimize, zoom, close, and dragging. The shell token and child webviews stay on the main window.",
+  "local": true,
+  "remote": {
+    "urls": ["http://127.0.0.1:*"]
+  },
+  "windows": ["applet-*"],
+  "webviews": ["applet-*"],
+  "permissions": [
+    "allow-deliver-workbench-review",
+    "allow-office-tool",
+    "allow-take-pdf-tool-handoff",
+    "allow-request-document-result-save",
+    "core:window:allow-start-dragging",
+    "core:window:allow-minimize",
+    "core:window:allow-toggle-maximize",
+    "core:window:allow-close"
+  ]
+}

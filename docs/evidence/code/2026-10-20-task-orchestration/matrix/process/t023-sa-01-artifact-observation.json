@@ -1,0 +1,17 @@
+{
+  "observed_at_utc": "2026-10-19T17:59:24.641771+00:00",
+  "outer_elapsed_upper_bound_seconds": 394.551658,
+  "files": [
+    {
+      "relative_path": "pipeline.py",
+      "bytes": 25651,
+      "sha256": "5e639364c518e9b288fd9fcaf034066953a7d70b2d00a83bc2322e95f49cceca"
+    },
+    {
+      "relative_path": "output/results.json",
+      "bytes": 1439900,
+      "sha256": "dfcc0b13bea1b177aa5af6e9967f2bae42e8bfebdc6046f665fabf94db24ecf7"
+    }
+  ],
+  "scope": "First explicit monitor observation of artifact bytes; an upper bound on creation time, not exact tool completion, terminal success, certified availability or oracle correctness."
+}

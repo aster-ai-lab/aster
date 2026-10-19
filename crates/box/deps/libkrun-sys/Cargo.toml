@@ -1,4 +1,5 @@
 [package]
+publish = false
 name = "a3s-libkrun-sys"
 version = "3.2.7"
 edition = "2021"

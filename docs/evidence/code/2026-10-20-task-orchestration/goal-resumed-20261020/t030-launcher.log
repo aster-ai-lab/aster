@@ -1,0 +1,9 @@
+
+running 4 tests
+test agent_plane::launcher::execution_capabilities::tests::projection_does_not_repair_truncated_or_labeled_capability_declarations ... ok
+test agent_plane::launcher::execution_capabilities::tests::projection_keeps_only_exact_host_capability_blocks_and_original_fields ... ok
+test agent_plane::launcher::execution_capabilities::tests::trusted_config_projection_retains_the_acp_symlink_refusal ... ok
+test agent_plane::launcher::execution_capabilities::tests::trusted_config_read_is_bounded_and_rejects_non_utf8 ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 840 filtered out; finished in 0.01s
+

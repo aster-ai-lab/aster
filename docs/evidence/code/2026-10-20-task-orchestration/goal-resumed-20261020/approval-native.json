@@ -1,0 +1,16 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--offline",
+    "-p",
+    "aster-dream",
+    "--lib",
+    "approval_recovery_tests",
+    "--",
+    "--test-threads=1"
+  ],
+  "exit_code": 0,
+  "wall_seconds": 163.408541208,
+  "finished_utc": "2026-10-19T21:21:27.681439+00:00"
+}

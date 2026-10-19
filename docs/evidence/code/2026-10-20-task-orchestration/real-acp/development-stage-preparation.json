@@ -1,0 +1,29 @@
+{
+  "schema": "aster.task-orchestration-development-stage-preparation.v1",
+  "prepared_at_utc": "2026-10-19T18:54:44.912619+00:00",
+  "app": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/AsterDream-TaskOrchestration-Dev.app",
+  "state": "metadata_only_not_launchable",
+  "binaries_copied": false,
+  "signed": false,
+  "launched": false,
+  "host_capabilities": {
+    "path": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/host-capabilities.acl",
+    "sha256": "213428fb5061c855144ef5a551512eab0112ac6196ceef14abc5b35337161418",
+    "mode": "adaptive",
+    "retrieval": "disabled",
+    "contains_provider_credentials": false
+  },
+  "icon_sha256": "8bb605d6b8e785abf502ba42f7357246812404c2b50830f6dbfb760324a5902c",
+  "environment": {
+    "ASTER_SANDBOX_DIR": "/Users/roylin/code/aster/target/t013-assets-hardware",
+    "A3S_CONFIG": "/Users/roylin/code/aster/target/development-stage/task-orchestration-20261020/host-capabilities.acl",
+    "A3S_STUDIO_RENDERER_PORT": "4318"
+  },
+  "source_version": "0.1.1",
+  "renderer_observation": {
+    "port": 4318,
+    "pid": 83695,
+    "cwd": "/Users/roylin/code/aster/apps/work"
+  },
+  "selection_note": "Hardware assets and adaptive profile are provisional; re-evaluate after same-source screening. Final build/source/selected-asset identity and strict signatures must be verified before launch. Original canonical development app and installed release remain untouched."
+}

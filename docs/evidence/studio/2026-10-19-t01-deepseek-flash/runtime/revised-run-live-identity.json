@@ -1,0 +1,12 @@
+{
+  "observedAt": "2026-10-19T15:00:52.209524+00:00",
+  "sessions": [],
+  "processes": [
+    {
+      "pid": 71818,
+      "ppid": 1,
+      "path": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/AsterDream.app/Contents/MacOS/AsterDream",
+      "sha256": "c3e278a268048f5fecb5351ccaa9ee4811314c0b80e6c6ac07bcc0ef7544f668"
+    }
+  ]
+}

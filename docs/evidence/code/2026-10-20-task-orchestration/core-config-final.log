@@ -1,0 +1,136 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on build directory
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 41.90s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 113 tests
+test agent_api::session_config::tests::auto_compact_uses_the_model_window_or_the_unknown_fallback ... ok
+test agent_api::session_config::tests::host_supplied_llm_client_overrides_factory ... ok
+test agent_api::session_config::tests::without_llm_client_missing_default_model_errors ... ok
+test agent_api::session_config::tests::invalid_numeric_session_options_return_field_specific_errors ... ok
+test agent_api::session_config::tests::numeric_session_option_boundaries_are_valid ... ok
+test config::account_import::tests::the_closed_set_round_trips_and_names_itself_on_refusal ... ok
+test config::account_import::tests::an_acl_without_import_accounts_imports_nothing ... ok
+test agent_api::session_config::tests::durable_memory_binding_requires_exact_session_identity ... ok
+test config::editor::tests::scanner_keeps_comments_and_finds_labeled_blocks ... ok
+test config::account_import::tests::layers_append_import_accounts_without_duplicates ... ok
+test config::execution_capabilities::tests::later_trusted_capability_layer_overrides_without_duplicating_in_one_layer ... ok
+test config::execution_capabilities::tests::capability_declarations_refuse_ambiguous_or_incomplete_shapes ... ok
+test config::account_import::tests::import_accounts_parses_the_closed_set_and_refuses_unknown_sources ... ok
+test config::loader_tests::file_storage_backend_stays_in_the_closed_set ... ok
+test config::goal_control::tests::goal_control_is_optional_and_requires_all_fields_even_when_disabled ... ok
+test config::loader_tests::layered_documents_append_skill_and_agent_dirs ... ok
+test config::goal_control::tests::goal_control_layer_validation_preserves_file_boundaries ... ok
+test config::loader_tests::unknown_provider_attribute_names_the_closed_set ... ok
+test config::goal_control::tests::goal_control_rejects_duplicate_unknown_and_nonliteral_values ... ok
+test config::loader_tests::unknown_acl_block_names_the_closed_set ... ok
+test config::account_import::tests::an_untrusted_layer_cannot_opt_the_host_into_an_account_import ... ok
+test config::execution_capabilities::tests::workspace_cannot_select_profile_or_arm_local_retrieval ... ok
+test config::loader_tests::unknown_storage_backend_names_the_closed_set ... ok
+test config::tests::host_authoritative_block_detection_is_structural ... ok
+test config::loader_tests::unknown_queue_handler_mode_names_the_closed_set ... ok
+test config::goal_control::tests::goal_control_workspace_cannot_activate_enlarge_disable_or_erase_host_policy ... ok
+test config::tests::memory_prune_defaults_on_and_the_acl_off_hatch_is_a_closed_set ... ok
+test config::tests::notifications_block_parses_with_closed_sets_and_defaults ... ok
+test config::tests::test_code_config_default_provider_config ... ok
+test config::tests::test_code_config_default_model_config ... ok
+test config::loader_tests::declared_text_only_input_withholds_images_from_the_client ... ok
+test config::tests::test_acl_model_output_limit_flows_to_llm_config ... ok
+test config::tests::test_config_default ... ok
+test config::tests::test_code_config_default_llm_config ... ok
+test config::loader_tests::overlay_duplicate_providers_makes_layers_consistent ... ok
+test config::tests::test_config_has_directories ... ok
+test config::tests::sandbox_block_parses_the_closed_set_and_validates_origins_at_parse_time ... ok
+test agent_api::session_config::tests::configured_model_context_window_drives_compaction_accounting ... ok
+test config::tests::test_config_from_file_not_found ... ok
+test config::execution_capabilities::tests::capability_modes_and_disabled_retrieval_roundtrip_through_acl ... ok
+test config::tests::test_config_builder ... ok
+test agent_api::session_config::tests::invalid_structural_session_options_return_field_specific_errors ... ok
+test config::tests::test_config_has_providers ... ok
+test config::tests::test_config_memory_block_allows_explicit_llm_extraction_disable ... ok
+test config::tests::test_config_parses_optional_os_address ... ok
+test config::tests::test_config_parses_memory_block ... ok
+test config::tests::test_config_parses_acl_model_token_limit_edges ... ok
+test config::tests::test_config_parses_acl_model_token_limits ... ok
+test config::tests::test_config_rejects_unlabeled_provider_blocks ... ok
+test config::goal_control::tests::goal_control_decimal_strings_are_exact_and_canonical ... ok
+test config::tests::test_code_config_list_models ... ok
+test config::goal_control::tests::goal_control_section_roundtrip_preserves_u64_and_unrelated_acl ... ok
+test config::tests::test_config_supports_acl_style_provider_labels ... ok
+test config::tests::test_config_rejects_zero_task_scheduler_capacity_and_aging ... ok
+test config::tests::test_default_llm_config ... ok
+test config::tests::test_find_provider ... ok
+test config::tests::test_document_parser_config_normalizes_values ... ok
+test config::tests::test_list_models ... ok
+test config::tests::test_llm_config_missing_model ... ok
+test config::tests::test_llm_config_missing_provider ... ok
+test config::tests::test_llm_config_specific_provider_model ... ok
+test config::tests::test_llm_config_includes_headers_and_runtime_session_header ... ok
+test config::tests::test_model_api_key_override ... ok
+test config::tests::test_model_cost_default ... ok
+test config::tests::test_model_config_deserialization_with_defaults ... ok
+test config::tests::test_config_with_storage_backend ... ok
+test config::tests::test_model_config_all_optional_fields ... ok
+test config::tests::test_provider_config_get_api_key ... ok
+test config::tests::test_model_cost_deserialization_missing_fields ... ok
+test config::tests::test_model_limit_default ... ok
+test config::tests::test_model_modalities_default ... ok
+test config::tests::test_model_modalities_serialization ... ok
+test config::tests::test_model_cost_serialization ... ok
+test config::tests::test_model_limit_deserialization_missing_fields ... ok
+test config::tests::test_model_modalities_deserialization_missing_fields ... ok
+test config::tests::test_provider_config_deserialization_missing_optional ... ok
+test config::tests::test_provider_config_find_model ... ok
+test config::tests::test_provider_config_get_headers_and_session_id_header ... ok
+test config::tests::test_storage_backend_serde ... ok
+test config::loader_tests::acl_loader_covers_every_code_config_section ... ok
+test config::tests::test_storage_backend_default ... ok
+test config::tests::test_storage_backend_equality ... ok
+test config::tests::test_storage_backend_serde_custom ... ok
+test config::tests::unknown_block_error_names_the_real_dispatch_set ... ok
+test config::tests::workspace_retrieval_block_parses_and_refuses_malformed_shapes ... ok
+test config::tests::test_model_config_serialization ... ok
+test config::tests::test_model_limit_serialization ... ok
+test config::tests::test_provider_config_serialization ... ok
+test config::editor::tests::labeled_sections_remove_missing_entries_and_append_new_entries ... ok
+test config::workspace_trust::tests::trusted_only_layers_are_untouched ... ok
+test config::verification_contract::tests::malformed_host_contracts_refuse_instead_of_defaulting ... ok
+test config::verification_contract::tests::aliased_workspace_cannot_hide_duplicate_contract_ids ... ok
+test config::verification_contract::tests::workspace_layer_cannot_add_or_replace_host_verification_authority ... ok
+test config::workspace_trust::tests::untrusted_directories_must_stay_inside_the_repository ... ok
+test config::workspace_trust::tests::host_owned_paths_and_executables_are_withheld_from_the_repository ... ok
+test config::workspace_trust::tests::untrusted_mcp_declarations_are_pending_and_inert ... ok
+test config::editor::tests::every_config_section_round_trips_without_losing_unmanaged_content_or_env_calls ... ok
+test config::workspace_trust::tests::the_digest_binds_the_repository_root ... ok
+test config::workspace_trust::tests::a_malformed_or_symlinked_trust_store_is_an_error_not_an_empty_grant ... ok
+test config::workspace_trust::tests::the_digest_is_stable_across_hash_map_order ... ok
+test security::config::tests::test_default_config ... ok
+test security::config::tests::test_default_classification_rules ... ok
+test security::config::tests::test_config_serialization_roundtrip ... ok
+test config::verification_contract::tests::literal_host_contract_roundtrips_and_applies_only_to_its_workspace ... ok
+test security::config::tests::test_default_dangerous_commands ... ok
+test security::config::tests::test_redaction_strategy_serialization ... ok
+test security::config::tests::test_sensitivity_level_display ... ok
+test security::config::tests::test_sensitivity_level_ordering ... ok
+test config::verification_contract::tests::missing_or_nondirectory_declared_workspace_refuses_activation ... ok
+test config::workspace_trust::tests::an_untrusted_layer_cannot_shadow_a_trusted_server_name ... ok
+test config::workspace_trust::tests::trusting_the_exact_digest_admits_and_an_edit_does_not_inherit ... ok
+test agent_api::session_config::tests::session_memory_resolver_works_on_current_thread_runtime ... ok
+test agent_api::session_config::tests::session_memory_resolver_always_returns_memory ... ok
+
+test result: ok. 113 passed; 0 failed; 0 ignored; 0 measured; 5023 filtered out; finished in 0.04s
+

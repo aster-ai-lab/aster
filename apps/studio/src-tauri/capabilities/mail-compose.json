@@ -1,0 +1,18 @@
+{
+  "identifier": "mail-compose-capability",
+  "description": "Mail compose window. Minimize, zoom, close, dragging, host logs, and the result published back to the main window.",
+  "local": true,
+  "remote": {
+    "urls": ["http://127.0.0.1:*"]
+  },
+  "windows": ["mail-compose"],
+  "webviews": ["mail-compose"],
+  "permissions": [
+    "allow-log-to-host",
+    "allow-publish-mail-compose-result",
+    "core:window:allow-start-dragging",
+    "core:window:allow-minimize",
+    "core:window:allow-toggle-maximize",
+    "core:window:allow-close"
+  ]
+}

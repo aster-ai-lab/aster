@@ -24,9 +24,6 @@ const COMPACT_SUMMARY: &str = "COMPACT-SUMMARY-7f3a";
 const DURABLE_TOKEN: &str = "DURABLE-TOKEN-42";
 const GOAL_OBJECTIVE: &str = "pty-goal-7b2e";
 const WIRE_TEST: &str = "shipped_agent_session_wire";
-/// Repeating one read consumes the per-request churn cap (twice the
-/// twelve-distinct-evidence limit), bounded by the configured tool budget.
-const READ_ONLY_EVIDENCE_STOP: usize = 24;
 const PTY_TEST: &str = "shipped_tui_launch_resume_and_visible_commands";
 const NATIVE_FORM: &str = r#"root = Card("Aster form", [name, amount, ready, submit])
 name = Input("name", "Name", "", "text", null, null, null, true)
@@ -271,7 +268,7 @@ fn decide(raw: &str, state: &mut MockState) -> String {
         return reply_tool("write", &args, state, streaming);
     }
     if raw.contains("ASK-WRITE") && tools {
-        if raw.contains("wrote-marker") {
+        if raw.contains("wrote-marker") || raw.contains("rejected via ACP request_permission") {
             return reply_text("ok", streaming);
         }
         let args = serde_json::json!({
@@ -846,12 +843,35 @@ async fn shipped_agent_session_wire() {
                     .is_some_and(|parsed| has_tools(&parsed))
             });
             let tool_request_count = tool_requests.count();
-            // Repeated ls calls spend the current request's churn cap. The
-            // smaller none-effort budget below still binds first.
+            // A model that ignores the duplicate-call nudge still spends the
+            // advertised budget; reads have no separate hidden ceiling.
             assert_eq!(
                 tool_request_count,
-                READ_ONLY_EVIDENCE_STOP.min(low_rounds as usize),
-                "a repeated read loop must obey the churn cap and the advertised {low_rounds}"
+                low_rounds as usize,
+                "a repeated read loop must obey the advertised {low_rounds} tool rounds"
+            );
+            let duplicate = log_text(&workspace)
+                .lines()
+                .filter_map(|line| serde_json::from_str::<serde_json::Value>(line).ok())
+                .find(|fact| {
+                    fact["type"] == "tool.result"
+                        && fact["payload"]["output"]
+                            .as_str()
+                            .is_some_and(|output| output.contains("Change your approach"))
+                })
+                .expect("the repeated ls must produce a duplicate-call refusal");
+            assert_eq!(duplicate["payload"]["ok"], false);
+            assert_eq!(duplicate["payload"]["countRun"], true);
+            assert_eq!(duplicate["payload"]["receipt"]["outcome"], "denied");
+            assert_eq!(
+                duplicate["payload"]["receipt"]["effects"]["changes"],
+                serde_json::json!([]),
+                "duplicate calls must be refused without running another tool effect"
+            );
+            oracle(
+                WIRE_TEST,
+                "duplicate-tool-refused",
+                "denied with no effects, still consumes budget",
             );
             assert!(
                 low_bodies.iter().any(|body| {
@@ -909,12 +929,11 @@ async fn shipped_agent_session_wire() {
                         .is_some_and(|parsed| has_tools(&parsed))
                 })
                 .count();
-            // A new human request re-arms evidence gathering, while its
-            // larger budget still cannot exceed the repeated-read churn cap.
+            // A new human request receives its full advertised tool budget.
             assert_eq!(
                 high_tool_requests,
-                READ_ONLY_EVIDENCE_STOP.min(high_rounds as usize),
-                "a new request must re-arm evidence gathering within the churn cap"
+                high_rounds as usize,
+                "a new request must receive its advertised {high_rounds} tool rounds"
             );
             oracle(
                 WIRE_TEST,
@@ -922,9 +941,8 @@ async fn shipped_agent_session_wire() {
                 &format!("low={low_thinking}/{low_rounds} high={high_thinking}/{high_rounds}"),
             );
 
-            // A budget below the evidence limit binds first: effort none
-            // advertises four tool rounds, and the enforced stop lands exactly
-            // there — with the eight-stop above this rules out a hardcoded cap.
+            // Effort none advertises four tool rounds. Together with the
+            // larger budgets above, this rules out a hardcoded read ceiling.
             let none_session = acp::Agent::new_session(
                 agent.conn.as_ref(),
                 acp::NewSessionRequest::new(workspace.clone()),
@@ -1454,11 +1472,46 @@ fn shipped_native_form_submit_cancel_and_reject() {
     );
     let result: serde_json::Value = serde_json::from_slice(&output.stdout).expect("JSON result");
     assert_eq!(result["status"], "passed");
-    oracle(
-        "native-form",
-        "submit-cancel-reject",
-        &evidence.display().to_string(),
-    );
+    for (step_id, needle, label) in [
+        ("required", "required", "empty-field"),
+        ("range-error", "max 5", "range"),
+        ("typed-values-reached-agent", "FORM-SUBMITTED", "submitted"),
+        ("cancel-reached-agent", "FORM-CANCELLED", "cancelled"),
+        ("rejection-reached-agent", "FORM-REJECTED", "rejected"),
+    ] {
+        let text = passed_step_text(&result, step_id);
+        assert!(
+            text.contains(needle),
+            "{step_id} did not show {needle} on the real terminal:\n{text}"
+        );
+        oracle(
+            "shipped_native_form_submit_cancel_and_reject",
+            label,
+            needle,
+        );
+    }
+}
+
+fn passed_step_text(result: &serde_json::Value, step_id: &str) -> String {
+    let scenarios = result["scenarios"].as_array().expect("scenarios");
+    for scenario in scenarios {
+        let Some(steps) = scenario["steps"].as_array() else {
+            continue;
+        };
+        for step in steps {
+            if step["id"] != step_id {
+                continue;
+            }
+            assert_eq!(step["status"], "passed", "{step_id} did not pass");
+            let text = step["output"]["data"]["viewport"]["text"]
+                .as_str()
+                .unwrap_or("")
+                .to_string();
+            assert!(!text.is_empty(), "{step_id} captured no terminal text");
+            return text;
+        }
+    }
+    panic!("a3s-test result has no step {step_id}");
 }
 
 #[test]
@@ -1738,10 +1791,21 @@ impl PtySession {
         let deadline = Instant::now() + timeout;
         let mut last = String::new();
         let mut stable_since: Option<Instant> = None;
+        let mut welcome_since: Option<Instant> = None;
         while Instant::now() < deadline {
             self.drain();
             let screen = self.parser.screen().contents();
             let visible: String = screen.chars().filter(|ch| !ch.is_whitespace()).collect();
+            // The welcome star keeps moving, so a byte-identical frame never
+            // lasts 500ms. Aster plus the composer is a finished product frame.
+            if visible.len() > 12 && screen.contains("Aster") && screen.contains('❯') {
+                if welcome_since.is_some_and(|start| start.elapsed() > Duration::from_millis(200)) {
+                    return screen;
+                }
+                welcome_since.get_or_insert_with(Instant::now);
+            } else {
+                welcome_since = None;
+            }
             if visible.len() > 12 {
                 if screen == last {
                     if stable_since
@@ -2634,6 +2698,7 @@ fn shipped_tui_launch_resume_and_visible_commands() {
     pty.escape();
     pty.pump(Duration::from_millis(80));
     pty.write_bytes(b"\x15");
+    let bodies_before_doctor = state.lock().expect("mock").bodies.len();
     pty.type_text("/doctor");
     pty.enter();
     let doctor = pty.wait_for("terminal", Duration::from_secs(8));
@@ -2643,7 +2708,12 @@ fn shipped_tui_launch_resume_and_visible_commands() {
             || doctor.to_ascii_lowercase().contains("clipboard"),
         "doctor did not report\n{doctor}"
     );
-    oracle(PTY_TEST, "doctor", "terminal report");
+    assert_eq!(
+        state.lock().expect("mock").bodies.len(),
+        bodies_before_doctor,
+        "/doctor started a model turn"
+    );
+    oracle(PTY_TEST, "doctor", "terminal report, zero model requests");
 
     // Goal and compact before any user turn: status must not call the model,
     // and an empty session reports that there is nothing to compact.
@@ -2818,6 +2888,7 @@ fn shipped_tui_launch_resume_and_visible_commands() {
 
     pty.escape();
     pty.write_bytes(b"\x15");
+    let bodies_before_theme = state.lock().expect("mock").bodies.len();
     let before_theme = config_texts(&home);
     assert!(
         !before_theme.contains("grokday"),
@@ -2830,7 +2901,12 @@ fn shipped_tui_launch_resume_and_visible_commands() {
         "theme did not persist grokday\n{}",
         config_texts(&home)
     );
-    oracle(PTY_TEST, "theme", "grokday");
+    assert_eq!(
+        state.lock().expect("mock").bodies.len(),
+        bodies_before_theme,
+        "/theme started a model turn"
+    );
+    oracle(PTY_TEST, "theme", "grokday, zero model requests");
 
     pty.write_bytes(b"\x15");
     let before_vim = config_texts(&home);
@@ -2900,6 +2976,7 @@ fn shipped_tui_launch_resume_and_visible_commands() {
     oracle(PTY_TEST, "timeline", "show_timeline = true");
 
     pty.write_bytes(b"\x15");
+    let bodies_before_help = state.lock().expect("mock").bodies.len();
     pty.type_text("/help");
     pty.enter();
     let help = pty.wait_for("Commands", Duration::from_secs(5));
@@ -2907,7 +2984,12 @@ fn shipped_tui_launch_resume_and_visible_commands() {
         help.contains("Settings") && (help.contains("Quit") || help.contains("Keyboard Shortcuts")),
         "help did not open the command palette\n{help}"
     );
-    oracle(PTY_TEST, "help", "Commands palette");
+    assert_eq!(
+        state.lock().expect("mock").bodies.len(),
+        bodies_before_help,
+        "/help started a model turn"
+    );
+    oracle(PTY_TEST, "help", "Commands palette, zero model requests");
     pty.escape();
     pty.pump(Duration::from_millis(120));
     // One Escape can land while the palette is still opening. Close it
@@ -3175,18 +3257,44 @@ fn shipped_tui_launch_resume_and_visible_commands() {
         "info line still shows always-approve\n{yolo_frame}"
     );
     oracle(PTY_TEST, "yolo-flag", "yolo");
+    // Allow once already wrote this path and left the completion gate on
+    // screen. Remove the file so this turn has to create it again.
+    std::fs::remove_file(&write_path).expect("remove allow-once side effect");
+    assert!(
+        !write_path.exists(),
+        "side effect still present before yolo"
+    );
     pty.write_bytes(b"\x15");
     pty.type_text("WRITE-ORACLE please");
     pty.enter();
-    let yolo_gate = pty.wait_for("completion gate:", Duration::from_secs(20));
-    let wrote = std::fs::read_to_string(&write_path).unwrap_or_default();
-    assert_eq!(wrote, "wrote-marker", "yolo did not select AllowOnce");
+    let yolo_deadline = Instant::now() + Duration::from_secs(20);
+    let mut yolo_screen = String::new();
+    while Instant::now() < yolo_deadline {
+        yolo_screen = pty.pump(Duration::from_millis(80));
+        assert!(
+            !yolo_screen.contains("Yes, proceed"),
+            "yolo showed a permission prompt\n{yolo_screen}"
+        );
+        if write_path.is_file() {
+            break;
+        }
+    }
     assert!(
-        yolo_gate.contains("Assistant text does not count")
-            && yolo_gate.contains("side-effect.txt"),
-        "yolo turn hid the completion gate\n{yolo_gate}"
+        write_path.is_file(),
+        "yolo did not create side-effect.txt\n{yolo_screen}"
     );
-    oracle(PTY_TEST, "yolo", "wrote-marker completion-gate");
+    let wrote = std::fs::read_to_string(&write_path).unwrap_or_default();
+    assert_eq!(wrote, "wrote-marker", "yolo did not write the marker");
+    yolo_screen = pty.pump(Duration::from_millis(200));
+    assert!(
+        !yolo_screen.contains("Yes, proceed"),
+        "yolo showed a permission prompt after the write\n{yolo_screen}"
+    );
+    oracle(
+        PTY_TEST,
+        "yolo",
+        "new side-effect.txt, no permission prompt",
+    );
 
     pty.write_bytes(b"\x15");
     let copy_path = workspace.join("copied-reply.txt");
@@ -3361,6 +3469,110 @@ fn shipped_tui_launch_resume_and_visible_commands() {
     oracle(PTY_TEST, "quit", "exit 0");
     let _ = args;
     let _ = late_path;
+    let _ = std::fs::remove_dir_all(&workspace);
+    let _ = std::fs::remove_dir_all(&home);
+}
+
+/// Reject and cancel answer the permission card and leave the write unrun.
+#[test]
+fn shipped_tui_permission_reject_and_cancel_skip_the_side_effect() {
+    let binary = tui_binary();
+    assert!(
+        binary.is_file(),
+        "build aster before this test: {}",
+        binary.display()
+    );
+    let workspace = isolate_dir("pty-deny");
+    let home = isolate_dir("pty-deny-home");
+    let write_path = workspace.join("side-effect.txt");
+    let (addr, _state) = spawn_mock(&write_path, &workspace.join("late.txt"));
+    let config = write_acl(&home, &workspace, &format!("http://{addr}/v1"));
+    let owned = child_env(env!("CARGO_BIN_EXE_a3s-code-acp"), &config, &home);
+    let env: Vec<(&str, &str)> = owned
+        .iter()
+        .map(|(key, value)| (key.as_str(), value.as_str()))
+        .collect();
+    let cwd = workspace.to_str().expect("cwd");
+    let mut pty = open_pty(&binary, &["--cwd", cwd], &env, &workspace);
+    let ready = pty.wait_for("mock/gpt", Duration::from_secs(45));
+    assert!(
+        ready.contains("Aster"),
+        "welcome did not show Aster\n{ready}"
+    );
+
+    pty.type_text("ASK-WRITE reject this");
+    pty.enter();
+    let reject_prompt = pty.wait_for("Yes, proceed", Duration::from_secs(25));
+    assert!(
+        reject_prompt.contains("No"),
+        "reject option missing\n{reject_prompt}"
+    );
+    assert!(
+        !write_path.exists(),
+        "write ran before the permission was rejected"
+    );
+    pty.write_bytes(b"2");
+    let rejected = pty.wait_for("denied", Duration::from_secs(25));
+    assert!(
+        !write_path.exists(),
+        "reject wrote the side effect\n{rejected}"
+    );
+    oracle(
+        "shipped_tui_permission_reject_and_cancel_skip_the_side_effect",
+        "permission-reject",
+        "side-effect.txt absent",
+    );
+
+    pty.write_bytes(b"\x15");
+    pty.type_text("/quit");
+    pty.enter();
+    let rejected_status = pty.child.wait().expect("quit after reject");
+    assert!(
+        rejected_status.success(),
+        "/quit after reject exited {rejected_status:?}"
+    );
+
+    let mut pty = open_pty(&binary, &["--cwd", cwd], &env, &workspace);
+    let ready = pty.wait_for("mock/gpt", Duration::from_secs(45));
+    assert!(
+        ready.contains("Aster"),
+        "cancel launch did not show Aster\n{ready}"
+    );
+    pty.type_text("ASK-WRITE cancel this");
+    pty.enter();
+    let cancel_prompt = pty.wait_for("Yes, proceed", Duration::from_secs(25));
+    assert!(
+        !write_path.exists(),
+        "write ran before cancel\n{cancel_prompt}"
+    );
+    pty.write_bytes(b"\x03");
+    let cancel_deadline = Instant::now() + Duration::from_secs(20);
+    let mut cancel_screen = String::new();
+    while Instant::now() < cancel_deadline {
+        cancel_screen = pty.pump(Duration::from_millis(150));
+        if !cancel_screen.contains("Yes, proceed") {
+            break;
+        }
+    }
+    assert!(
+        !cancel_screen.contains("Yes, proceed"),
+        "cancel left the permission prompt\n{cancel_screen}"
+    );
+    assert!(
+        !write_path.exists(),
+        "cancel wrote the side effect\n{cancel_screen}"
+    );
+    oracle(
+        "shipped_tui_permission_reject_and_cancel_skip_the_side_effect",
+        "permission-cancel",
+        "side-effect.txt absent",
+    );
+
+    pty.write_bytes(b"\x15");
+    pty.type_text("/quit");
+    pty.enter();
+    let status = pty.child.wait().expect("quit");
+    assert!(status.success(), "/quit exited {status:?}");
     let _ = std::fs::remove_dir_all(&workspace);
     let _ = std::fs::remove_dir_all(&home);
 }

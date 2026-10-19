@@ -1,0 +1,381 @@
+import {
+  type KeyboardEvent,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import type { WorkDocumentSectionLayout } from '../work-types';
+import {
+  calculateDocumentNavigationWindowRange,
+  documentNavigationIndexAtOffset,
+  documentNavigationItemStarts,
+  documentNavigationWindowEntries,
+  documentNavigationWindowIndices,
+  type DocumentNavigationWindowRange,
+} from './document-navigation-window';
+import {
+  DocumentPageThumbnail,
+  type WorkDocumentPageThumbnailSource,
+} from './document-page-thumbnail';
+import { officeMessage } from '../../../i18n/office-locale';
+import { useOfficeMessages } from './office-messages-context';
+
+const DOCUMENT_PAGE_WINDOW_THRESHOLD = 48;
+const DOCUMENT_PAGE_WINDOW_OVERSCAN = 4;
+const DOCUMENT_PAGE_FALLBACK_VIEWPORT_HEIGHT = 720;
+const DOCUMENT_PAGE_LIST_PADDING_TOP = 12;
+const DOCUMENT_PAGE_ITEM_GAP = 12;
+const DOCUMENT_PAGE_PORTRAIT_WIDTH = 138;
+const DOCUMENT_PAGE_LANDSCAPE_WIDTH = 170;
+const DOCUMENT_PAGE_BUTTON_CHROME_HEIGHT = 36;
+export const DOCUMENT_PAGE_WINDOW_LIMIT = 24;
+
+export interface DocumentNavigationPage {
+  backgroundColor?: string;
+  physicalPage: number;
+  pageNumber: number;
+  orientation: WorkDocumentSectionLayout['orientation'];
+  previewText: string;
+  selectionPosition: number;
+}
+
+export function DocumentPageNavigation({
+  currentPage,
+  pages,
+  thumbnailSource,
+  onSelectPage,
+}: {
+  currentPage: number;
+  pages: readonly DocumentNavigationPage[];
+  thumbnailSource?: WorkDocumentPageThumbnailSource;
+  onSelectPage: (page: DocumentNavigationPage) => void | Promise<void>;
+}) {
+  const messages = useOfficeMessages();
+  const viewportRef = useRef<HTMLElement>(null);
+  const pageRefs = useRef(new Map<number, HTMLButtonElement>());
+  const pagesRef = useRef(pages);
+  const pendingFocusPageRef = useRef<number | null>(null);
+  const initialIndex = documentPageIndex(pages, currentPage);
+  const initialPhysicalPage = pages[initialIndex]?.physicalPage ?? currentPage;
+  const [selectedPage, setSelectedPage] = useState(initialPhysicalPage);
+  const [rovingPage, setRovingPage] = useState(initialPhysicalPage);
+  const [anchorIndex, setAnchorIndex] = useState(Math.max(0, initialIndex));
+  const [viewportHeight, setViewportHeight] = useState(
+    DOCUMENT_PAGE_FALLBACK_VIEWPORT_HEIGHT,
+  );
+  pagesRef.current = pages;
+
+  const currentPageIndex = documentPageIndex(pages, currentPage);
+  const resolvedCurrentPage = pages[currentPageIndex]?.physicalPage ?? null;
+  useEffect(() => {
+    if (resolvedCurrentPage === null) return;
+    setSelectedPage(resolvedCurrentPage);
+    setRovingPage(resolvedCurrentPage);
+    setAnchorIndex(currentPageIndex);
+  }, [currentPageIndex, resolvedCurrentPage]);
+
+  useEffect(() => {
+    if (!pages.length) return;
+    const fallback = pages[Math.max(0, currentPageIndex)] ?? pages[0];
+    if (!fallback) return;
+    if (!pages.some((page) => page.physicalPage === selectedPage)) {
+      setSelectedPage(fallback.physicalPage);
+    }
+    if (!pages.some((page) => page.physicalPage === rovingPage)) {
+      setRovingPage(fallback.physicalPage);
+    }
+  }, [currentPageIndex, pages, rovingPage, selectedPage]);
+
+  useLayoutEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    const update = () => {
+      const nextHeight =
+        viewport.clientHeight || DOCUMENT_PAGE_FALLBACK_VIEWPORT_HEIGHT;
+      setViewportHeight((current) =>
+        current === nextHeight ? current : nextHeight,
+      );
+    };
+    update();
+    if (typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(update);
+    observer.observe(viewport);
+    return () => observer.disconnect();
+  }, []);
+
+  const itemHeights = useMemo(
+    () =>
+      pages.map((page) =>
+        estimatedDocumentPageItemHeight(page, thumbnailSource),
+      ),
+    [
+      pages,
+      thumbnailSource?.pageHeight,
+      thumbnailSource?.pageWidth,
+      thumbnailSource?.pages,
+    ],
+  );
+  const pageStarts = useMemo(
+    () => documentNavigationItemStarts(itemHeights, DOCUMENT_PAGE_ITEM_GAP),
+    [itemHeights],
+  );
+  const averageItemHeight = itemHeights.length
+    ? (pageStarts[pageStarts.length - 1] ?? 1) / itemHeights.length
+    : 1;
+  const range = useMemo(
+    () =>
+      calculateDocumentPageRange({
+        anchorIndex,
+        averageItemHeight,
+        pageCount: pages.length,
+        viewportHeight,
+      }),
+    [anchorIndex, averageItemHeight, pages.length, viewportHeight],
+  );
+  const mountedIndices = useMemo(
+    () =>
+      documentNavigationWindowIndices({
+        itemCount: pages.length,
+        pinnedIndices: [
+          documentPageIndex(pages, selectedPage),
+          documentPageIndex(pages, rovingPage),
+        ],
+        range,
+      }),
+    [pages, range, rovingPage, selectedPage],
+  );
+  const listEntries = useMemo(
+    () =>
+      documentNavigationWindowEntries(
+        mountedIndices,
+        pageStarts,
+        pages.length,
+        DOCUMENT_PAGE_ITEM_GAP,
+      ),
+    [mountedIndices, pageStarts, pages.length],
+  );
+  const mountedPageKey = mountedIndices.join(',');
+
+  useLayoutEffect(() => {
+    pageRefs.current
+      .get(selectedPage)
+      ?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
+  }, [selectedPage]);
+
+  useLayoutEffect(() => {
+    const pendingPage = pendingFocusPageRef.current;
+    if (pendingPage === null) return;
+    const element = pageRefs.current.get(pendingPage);
+    if (!element) return;
+    pendingFocusPageRef.current = null;
+    focusDocumentPageButton(element);
+  }, [mountedPageKey, rovingPage]);
+
+  const focusPage = useCallback((pageNumber: number) => {
+    const pageIndex = documentPageIndex(pagesRef.current, pageNumber);
+    if (pageIndex < 0) return;
+    setRovingPage(pageNumber);
+    setAnchorIndex(pageIndex);
+    const mounted = pageRefs.current.get(pageNumber);
+    if (mounted) {
+      pendingFocusPageRef.current = null;
+      focusDocumentPageButton(mounted);
+      return;
+    }
+    pendingFocusPageRef.current = pageNumber;
+  }, []);
+
+  const handleKeyDown = (
+    event: KeyboardEvent<HTMLButtonElement>,
+    page: DocumentNavigationPage,
+  ) => {
+    const index = documentPageIndex(pages, page.physicalPage);
+    const focusAt = (requestedIndex: number) => {
+      const next = pages[requestedIndex];
+      if (next) focusPage(next.physicalPage);
+    };
+    if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
+      event.preventDefault();
+      focusAt(Math.min(pages.length - 1, index + 1));
+    } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
+      event.preventDefault();
+      focusAt(Math.max(0, index - 1));
+    } else if (event.key === 'Home') {
+      event.preventDefault();
+      focusAt(0);
+    } else if (event.key === 'End') {
+      event.preventDefault();
+      focusAt(pages.length - 1);
+    }
+  };
+
+  return (
+    <nav
+      ref={viewportRef}
+      className="work-document-task-pane-body work-document-page-navigation"
+      aria-label={officeMessage(messages, 'document.pageNav.aria')}
+      data-document-page-count={pages.length}
+      data-document-page-mounted-count={mountedIndices.length}
+      data-document-page-window-end={range.end}
+      data-document-page-window-limit={DOCUMENT_PAGE_WINDOW_LIMIT}
+      data-document-page-window-start={range.start}
+      data-document-page-windowed={range.windowed ? 'true' : 'false'}
+      onScroll={(event) => {
+        if (!range.windowed) return;
+        const nextAnchor = documentNavigationIndexAtOffset(
+          pageStarts,
+          Math.max(
+            0,
+            event.currentTarget.scrollTop - DOCUMENT_PAGE_LIST_PADDING_TOP,
+          ),
+          pages.length,
+        );
+        setAnchorIndex((current) =>
+          current === nextAnchor ? current : nextAnchor,
+        );
+      }}
+    >
+      {pages.length ? (
+        <ol>
+          {listEntries.map((entry) => {
+            if (entry.kind === 'spacer') {
+              return (
+                <li
+                  aria-hidden="true"
+                  className="work-document-page-navigation-spacer"
+                  data-document-page-spacer={entry.position}
+                  data-document-page-spacer-end={entry.end}
+                  data-document-page-spacer-start={entry.start + 1}
+                  key={`spacer-${entry.start}-${entry.end}`}
+                  role="presentation"
+                  style={{ height: `${entry.height}px` }}
+                />
+              );
+            }
+            const page = pages[entry.index];
+            if (!page) return null;
+            const current = page.physicalPage === selectedPage;
+            return (
+              <li
+                aria-posinset={entry.index + 1}
+                aria-setsize={pages.length}
+                data-document-page-item={page.physicalPage}
+                data-document-page-orientation={page.orientation}
+                key={page.physicalPage}
+              >
+                <button
+                  ref={(element) => {
+                    if (element) {
+                      pageRefs.current.set(page.physicalPage, element);
+                    } else {
+                      pageRefs.current.delete(page.physicalPage);
+                    }
+                  }}
+                  type="button"
+                  className={current ? 'active' : undefined}
+                  aria-current={current ? 'page' : undefined}
+                  aria-label={officeMessage(messages, 'document.pageNav.pageAria', {
+                    n: String(page.physicalPage),
+                  })}
+                  data-document-page-thumbnail={page.physicalPage}
+                  tabIndex={page.physicalPage === rovingPage ? 0 : -1}
+                  onFocus={() => setRovingPage(page.physicalPage)}
+                  onKeyDown={(event) => handleKeyDown(event, page)}
+                  onClick={() => {
+                    setSelectedPage(page.physicalPage);
+                    setAnchorIndex(entry.index);
+                    void onSelectPage(page);
+                  }}
+                >
+                  <DocumentPageThumbnail
+                    backgroundColor={page.backgroundColor}
+                    fallbackText={page.previewText}
+                    orientation={page.orientation}
+                    pageIndex={page.physicalPage - 1}
+                    priority={Math.abs(page.physicalPage - selectedPage) <= 1}
+                    source={thumbnailSource}
+                  />
+                  <span className="work-document-page-thumbnail-label">
+                    {officeMessage(messages, 'document.pageNav.pageLabel', {
+                      n: String(page.physicalPage),
+                    })}
+                    {page.pageNumber !== page.physicalPage && (
+                      <small>
+                        {officeMessage(messages, 'document.pageNav.pageNumber', {
+                          n: String(page.pageNumber),
+                        })}
+                      </small>
+                    )}
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ol>
+      ) : (
+        <div className="work-document-outline-empty">
+          {officeMessage(messages, 'document.pageNav.loading')}
+        </div>
+      )}
+    </nav>
+  );
+}
+
+export function calculateDocumentPageRange({
+  anchorIndex,
+  averageItemHeight,
+  pageCount,
+  viewportHeight,
+}: {
+  anchorIndex: number;
+  averageItemHeight: number;
+  pageCount: number;
+  viewportHeight: number;
+}): DocumentNavigationWindowRange {
+  return calculateDocumentNavigationWindowRange({
+    anchorIndex,
+    averageItemHeight,
+    itemCount: pageCount,
+    limit: DOCUMENT_PAGE_WINDOW_LIMIT,
+    overscan: DOCUMENT_PAGE_WINDOW_OVERSCAN,
+    threshold: DOCUMENT_PAGE_WINDOW_THRESHOLD,
+    viewportHeight,
+  });
+}
+
+function documentPageIndex(
+  pages: readonly DocumentNavigationPage[],
+  physicalPage: number,
+): number {
+  return pages.findIndex((page) => page.physicalPage === physicalPage);
+}
+
+function estimatedDocumentPageItemHeight(
+  page: DocumentNavigationPage,
+  source: WorkDocumentPageThumbnailSource | undefined,
+): number {
+  const width =
+    page.orientation === 'landscape'
+      ? DOCUMENT_PAGE_LANDSCAPE_WIDTH
+      : DOCUMENT_PAGE_PORTRAIT_WIDTH;
+  const sourcePage = source?.pages?.[page.physicalPage - 1];
+  const sourceRatio =
+    sourcePage && sourcePage.width > 0 && sourcePage.height > 0
+      ? sourcePage.height / sourcePage.width
+      : source && source.pageWidth > 0 && source.pageHeight > 0
+        ? source.pageHeight / source.pageWidth
+        : null;
+  const fallbackRatio =
+    page.orientation === 'landscape' ? 210 / 297 : 297 / 210;
+  return Math.ceil(
+    width * (sourceRatio ?? fallbackRatio) + DOCUMENT_PAGE_BUTTON_CHROME_HEIGHT,
+  );
+}
+
+function focusDocumentPageButton(element: HTMLButtonElement): void {
+  element.focus({ preventScroll: true });
+  element.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
+}

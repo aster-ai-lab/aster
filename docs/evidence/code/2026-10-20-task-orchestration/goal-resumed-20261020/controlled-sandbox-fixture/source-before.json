@@ -1,0 +1,22 @@
+[
+  {
+    "path": "apps/work/src-tauri/src/agent_plane/local_acp_delivery_tests.rs",
+    "sha256": "ba84be21210f2308a085a0e35470caddfe7fb8227eca3f126a9cf627e2792939",
+    "bytes": 25115
+  },
+  {
+    "path": "apps/work/src-tauri/src/agent_plane/local_acp_search_tests.rs",
+    "sha256": "2b3a5969d7e609340e71ec97060dd4ff26981f0c14880ff1f79aecdc858c2fbe",
+    "bytes": 9272
+  },
+  {
+    "path": "apps/work/src-tauri/src/agent_plane/local_acp_program_tests.rs",
+    "sha256": "fc8e4c629461f48547a59efc18e2f8c88903b0e61f1665701094a4292f0c6bc3",
+    "bytes": 31259
+  },
+  {
+    "path": "apps/work/src-tauri/src/agent_plane/local_acp_provider_tests.rs",
+    "sha256": "2225ae7ad0731e7ce946f36637460fe03506498cb0e12d4ceabee0aff79b1da3",
+    "bytes": 3713
+  }
+]

@@ -1,0 +1,93 @@
+{
+  "schema": "aster.t028.source-freeze.v1",
+  "captured_at_utc": "2026-10-19T21:27:55.731808+00:00",
+  "state": "production_and_tests_complete_pending_root_serial_cargo",
+  "cargo_run_by_worker": false,
+  "source_files": [
+    {
+      "path": "crates/code/core/src/sandbox.rs",
+      "bytes": 13904,
+      "sha256": "2fe21c7f1de11d5b6eacc238fc37be33cccfef9cf4231029de08c9272a2e1c6e"
+    },
+    {
+      "path": "crates/code/core/src/sandbox/native.rs",
+      "bytes": 14655,
+      "sha256": "9c51f09bdcfeb254823ec072805b87b6ffc12fd794742aeee562c04fbd6554d6"
+    },
+    {
+      "path": "crates/code/core/src/sandbox/process_host.rs",
+      "bytes": 24453,
+      "sha256": "3e140230961ec50b995de0745ca08cffab6c63e8c45eb972bb64841972fea3f3"
+    },
+    {
+      "path": "crates/code/core/src/sandbox/oci.rs",
+      "bytes": 17315,
+      "sha256": "33119139a3346a08210f31a83ec3ca479ae445dcec2aeb799312ef847bf4359e"
+    },
+    {
+      "path": "crates/code/core/src/sandbox/guest.rs",
+      "bytes": 23072,
+      "sha256": "a32f89b4c1921db85132a5246cf4440f538d1cd09ee2c03e99eb1538a653f70e"
+    },
+    {
+      "path": "crates/code/core/src/workspace/mod.rs",
+      "bytes": 21456,
+      "sha256": "afc062f3954e77ef614027232a18e7c3b77790d3a9603b05ef4c597d5f4ce1ed"
+    },
+    {
+      "path": "crates/code/core/src/workspace/local.rs",
+      "bytes": 54594,
+      "sha256": "5ff3788ba8656de6b9f09f2188b383aff134a73124ca65d1ce53b12300c452d7"
+    },
+    {
+      "path": "crates/code/core/src/workspace/manifest.rs",
+      "bytes": 52652,
+      "sha256": "825058fb2e2c610246b869b8f012af19854abf99febb5566ffed23e7b9947804"
+    },
+    {
+      "path": "crates/code/core/src/agent/turn_context.rs",
+      "bytes": 22116,
+      "sha256": "3f8cd7a29290ea1d45d2cb236c65852530e8a75f164fb9f3e430d0704e23f960"
+    },
+    {
+      "path": "crates/code/core/src/agent/turn_context/tests.rs",
+      "bytes": 10351,
+      "sha256": "4b7a16a8f636b6591860544b6aa33f2dd3c70a96bb52b1b864636c726c4d9e91"
+    },
+    {
+      "path": "crates/code/core/src/agent/turn_context/execution_target_tests.rs",
+      "bytes": 5157,
+      "sha256": "891549c975a19a39ead18d299bec1deb939d7d9eb645f885e0341bcdecdf8686"
+    },
+    {
+      "path": "crates/code/core/src/fact_control/model_call.rs",
+      "bytes": 24273,
+      "sha256": "2919ceb092d086304d036478582a22d715d2709cfb450428f714b30ff23d40a8"
+    },
+    {
+      "path": "crates/code/core/src/tools/builtin/bash.rs",
+      "bytes": 45334,
+      "sha256": "0febdf89de4dce6e5444342050897b78be7486a8a597d6281a06ed38471b3c2f"
+    },
+    {
+      "path": "crates/code/core/src/tools/builtin/bash/windows_shell.rs",
+      "bytes": 1977,
+      "sha256": "46c1fb33b197d47849e4964e1136801eaafabb94de087b8ee243497acbf52988"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log.rs",
+      "bytes": 60857,
+      "sha256": "67a8178c64118a84847046fa85bfdb561f6535656c45adea4bbdcf4f776fb350"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log/execution_target.rs",
+      "bytes": 10591,
+      "sha256": "0e6051590af7ecd3651f0ba90194c916a906a48ffd7ba97dd17300a474031f0d"
+    }
+  ],
+  "filters": [
+    "agent_api::tests::fact_log::execution_target::",
+    "agent::turn_context::tests::execution_target::",
+    "agent::turn_context::tests::env_block_"
+  ]
+}

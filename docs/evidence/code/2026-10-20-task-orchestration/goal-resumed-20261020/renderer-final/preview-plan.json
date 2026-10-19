@@ -1,0 +1,27 @@
+{
+  "started": false,
+  "cwd": "/Users/roylin/code/aster/apps/work",
+  "command": [
+    "node",
+    "./node_modules/@rsbuild/core/bin/rsbuild.js",
+    "preview",
+    "--no-env",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "4318",
+    "--strict-port"
+  ],
+  "environment_overrides": {
+    "removed": [
+      "RENDERER_VITE_PPIO_APP_SECRET",
+      "RENDERER_VITE_AIHUBMIX_SECRET"
+    ],
+    "STUDIO_RENDERER_DIST": "/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/renderer-final"
+  },
+  "served_root": "/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/renderer-final",
+  "entry_document": "/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/renderer-final/windows/main/index.html",
+  "entry_url": "http://127.0.0.1:4318/windows/main/index.html",
+  "browser_auto_open": false,
+  "source_basis": "Rsbuild 2.2.7 CLI server options and current rsbuild.config.ts server.open=false / strictPort=true; preview will refuse an occupied port"
+}

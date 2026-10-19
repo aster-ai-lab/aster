@@ -1,0 +1,22 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-code-core",
+    "--features",
+    "advanced-harness",
+    "--test",
+    "test_extensibility_real_llm",
+    "task_matrix::trimmed_event_windows_cannot_certify_otherwise_complete_metrics",
+    "--",
+    "--exact",
+    "--test-threads=1",
+    "--nocapture"
+  ],
+  "exit_code": 101,
+  "seconds": 4.691295167,
+  "scope": "new hermetic regression; no model/VM"
+}

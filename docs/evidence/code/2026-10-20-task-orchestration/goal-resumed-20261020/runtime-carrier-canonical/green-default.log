@@ -1,0 +1,46 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling a3s-oci-sdk v0.3.2 (/Users/roylin/code/aster/crates/oci-runtime/crates/sdk)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.74s
+     Running unittests src/lib.rs (target/debug/deps/a3s_oci_sdk-d648a1f77932b975)
+
+running 29 tests
+test attachment::tests::canonical_attachment_value_digest_matches_legacy_sorted_objects ... ok
+test attachment::tests::extension_names_follow_the_canonical_capability_order ... ok
+test attachment::tests::network_enforcement_wire_values_reject_tampering_and_policy_content ... ok
+test attachment::tests::capability_intersection_is_exact_and_wire_inventories_must_be_canonical ... ok
+test attachment::tests::canonical_attachment_wire_accepts_legacy_sorted_inventory_across_object_order ... ok
+test attachment::tests::canonical_attachment_inventory_rejects_value_array_order_and_raw_digest_drift ... ok
+test attachment::tests::derives_and_digest_binds_every_standard_attachment_category ... ok
+test attachment::tests::external_storage_handoff_requires_version_two_capability ... ok
+test attachment::tests::caller_owned_storage_cannot_be_transferred_with_a_runtime_owned_bundle ... ok
+test attachment::tests::rejects_drift_unknown_references_and_unversioned_extensions ... ok
+test attachment::tests::required_extensions_are_fail_closed_but_advisory_extensions_are_explicit ... ok
+test attachment::tests::reusable_guest_session_fails_closed_on_boundary_drift ... ok
+test attachment::tests::joined_network_namespace_requires_caller_preservation_cleanup ... ok
+test attachment::tests::network_attachments_are_v3_digest_bound_and_canonical ... ok
+test attachment::tests::network_enforcement_is_opaque_digest_bound_and_independently_negotiated ... ok
+test attachment::tests::external_storage_handoff_requires_storage_and_required_declaration ... ok
+test attachment::tests::serialized_manifest_contains_no_secret_value_or_runtime_identity ... ok
+test attachment::tests::handoff_extension_cannot_bypass_annotation_semantics_via_generic_builder ... ok
+test attachment::tests::terminal_attachment_binds_the_oci_console_size ... ok
+test attachment::tests::runtime_bundle_handoff_is_explicit_digest_bound_and_capability_checked ... ok
+test attachment::tests::network_and_storage_attachment_order_is_canonical_and_cumulative ... ok
+test attachment::tests::tee_launch_is_required_technology_specific_and_dedicated_vm_only ... ok
+test attachment::tests::storage_attachment_validation_rejects_identity_mount_and_access_drift ... ok
+test attachment::tests::reusable_guest_session_is_v4_digest_bound_and_cumulative ... ok
+test attachment::tests::storage_attachments_are_v2_digest_bound_and_explicitly_caller_owned ... ok
+test attachment::tests::tee_launch_rejects_mismatched_duplicate_and_misclassified_mechanisms ... ok
+test attachment::tests::network_attachment_validation_rejects_identity_cleanup_and_target_drift ... ok
+test attachment::tests::network_enforcement_rejects_unbound_or_mutable_namespace_mechanisms ... ok
+test attachment::tests::external_storage_handoff_rejects_relative_and_owned_bundle_sources ... ok
+
+test result: ok. 29 passed; 0 failed; 0 ignored; 0 measured; 177 filtered out; finished in 0.02s
+

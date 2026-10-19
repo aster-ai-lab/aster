@@ -1,0 +1,34 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling a3s-effect v0.2.1 (/Users/roylin/code/aster/crates/effect)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 11.71s
+     Running tests/tool_effects.rs (target/debug/deps/tool_effects-294028eec0bfa7a6)
+
+running 2 tests
+test revalidation::actual_byte_change_allows_identical_revalidation_after_the_repeat_limit ... FAILED
+test revalidation::unchanged_bytes_keep_the_identical_call_repeat_limit ... ok
+
+failures:
+
+---- revalidation::actual_byte_change_allows_identical_revalidation_after_the_repeat_limit stdout ----
+
+thread 'revalidation::actual_byte_change_allows_identical_revalidation_after_the_repeat_limit' (49771371) panicked at crates/effect/tests/tool_effects/revalidation.rs:155:9:
+assertion `left == right` failed: a new byte identity permits a fresh verification of identical arguments
+  left: 3
+ right: 4
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    revalidation::actual_byte_change_allows_identical_revalidation_after_the_repeat_limit
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.07s
+
+error: test failed, to rerun pass `-p a3s-effect --test tool_effects`

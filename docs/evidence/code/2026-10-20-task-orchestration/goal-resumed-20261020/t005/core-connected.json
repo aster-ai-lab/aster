@@ -1,0 +1,117 @@
+{
+  "binary": "target/qualification/t005-cua-20261020/core-tests",
+  "sha256": "92486c70ac258c5e1c43b889818e0b00b3438ba27b7ef0cbd42551284db0e3a3",
+  "source_artifact": "target/debug/deps/a3s_code_core-3b568ae695dcf868",
+  "results": [
+    {
+      "filter": "owned_fact_confirmation_uses_the_original_run_snapshot_after_session_mode_changes",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t005-cua-20261020/core-tests",
+        "owned_fact_confirmation_uses_the_original_run_snapshot_after_session_mode_changes",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 2.924898375,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/goal-resumed-20261020/t005/core-connected-01.log"
+    },
+    {
+      "filter": "fact_log::revalidation",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t005-cua-20261020/core-tests",
+        "fact_log::revalidation",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 1.2007711250000002,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/goal-resumed-20261020/t005/core-connected-02.log"
+    },
+    {
+      "filter": "porcelain::receipt_tests::",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t005-cua-20261020/core-tests",
+        "porcelain::receipt_tests::",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 3.490556542,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/goal-resumed-20261020/t005/core-connected-03.log"
+    },
+    {
+      "filter": "preparation_resolves_hooks_once_binds_effective_input_and_rechecks_approval",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t005-cua-20261020/core-tests",
+        "preparation_resolves_hooks_once_binds_effective_input_and_rechecks_approval",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.09289675000000042,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/goal-resumed-20261020/t005/core-connected-04.log"
+    },
+    {
+      "filter": "fact_control::receipts::tests::",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t005-cua-20261020/core-tests",
+        "fact_control::receipts::tests::",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 2.6494398750000006,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/goal-resumed-20261020/t005/core-connected-05.log"
+    },
+    {
+      "filter": "agent_api::tests::fact_log::nested_governance::",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t005-cua-20261020/core-tests",
+        "agent_api::tests::fact_log::nested_governance::",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 2.599189417,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/goal-resumed-20261020/t005/core-connected-06.log"
+    },
+    {
+      "filter": "agent_api::tests::fact_log::execution_target::",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t005-cua-20261020/core-tests",
+        "agent_api::tests::fact_log::execution_target::",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 1.6699317919999999,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/goal-resumed-20261020/t005/core-connected-07.log"
+    },
+    {
+      "filter": "tools::builtin::bash::tests::windows_shell_guidance_names_the_real_shell_and_its_chaining_rules",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t005-cua-20261020/core-tests",
+        "tools::builtin::bash::tests::windows_shell_guidance_names_the_real_shell_and_its_chaining_rules",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.012345124999999513,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/goal-resumed-20261020/t005/core-connected-08.log"
+    },
+    {
+      "filter": "tools::builtin::bash::tests::windows_host_shell_prefers_powershell_7_then_the_builtin_windows_powershell",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t005-cua-20261020/core-tests",
+        "tools::builtin::bash::tests::windows_host_shell_prefers_powershell_7_then_the_builtin_windows_powershell",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.010723207999999929,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/goal-resumed-20261020/t005/core-connected-09.log"
+    },
+    {
+      "filter": "agent_api::direct_tools::governed_tests::governed_search_grep_works_without_embeddings_and_obeys_denial",
+      "command": [
+        "/Users/roylin/code/aster/target/qualification/t005-cua-20261020/core-tests",
+        "agent_api::direct_tools::governed_tests::governed_search_grep_works_without_embeddings_and_obeys_denial",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.024903042000000042,
+      "log": "docs/evidence/code/2026-10-20-task-orchestration/goal-resumed-20261020/t005/core-connected-10.log"
+    }
+  ]
+}

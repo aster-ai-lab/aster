@@ -1,0 +1,1006 @@
+import { type CommandProps, Extension, type Editor } from '@tiptap/core';
+import {
+  documentParagraphBordersDomAttributes,
+  parseDocumentParagraphBorders,
+  parseDocumentParagraphBordersElement,
+} from './work-document-paragraph-borders';
+import {
+  documentParagraphShadingDomAttributes,
+  parseDocumentParagraphShading,
+  parseDocumentParagraphShadingElement,
+} from './work-document-paragraph-shading';
+import { DOCUMENT_WORD_DEFAULT_SINGLE_LINE_HEIGHT } from './work-document-word-line-metrics';
+import { DOCUMENT_CHARACTER_FORMAT_MARKS } from './work-document-format-changes';
+
+export const DOCUMENT_INDENT_STEP_PX = 24;
+export const MAX_DOCUMENT_INDENT_LEVEL = 8;
+export const DOCUMENT_RULER_INDENT_STEP_PX = 6;
+export const MAX_DOCUMENT_INDENT_PX =
+  DOCUMENT_INDENT_STEP_PX * MAX_DOCUMENT_INDENT_LEVEL;
+export const DOCUMENT_WORD_SINGLE_LINE_HEIGHT =
+  DOCUMENT_WORD_DEFAULT_SINGLE_LINE_HEIGHT;
+
+export interface DocumentParagraphIndent {
+  left: number;
+  right: number;
+  firstLine: number;
+}
+
+export interface DocumentParagraphPagination {
+  keepLines: boolean;
+  keepWithNext: boolean;
+  pageBreakBefore: boolean;
+  widowControl: boolean;
+}
+
+export type DocumentParagraphPaginationUpdate =
+  Partial<DocumentParagraphPagination>;
+
+export type DocumentParagraphDirection = 'ltr' | 'rtl';
+
+export type DocumentParagraphLineRule = 'auto' | 'exact' | 'atLeast';
+
+export interface DocumentParagraphSpacing {
+  before: number | null;
+  after: number | null;
+  lineHeight: string | null;
+  lineRule: DocumentParagraphLineRule | null;
+}
+
+export interface DocumentFormattingCommandOptions {
+  restoreFocus?: boolean;
+}
+
+declare module '@tiptap/core' {
+  interface Commands<ReturnType> {
+    documentParagraphFormatting: {
+      changeDocumentIndent: (direction: -1 | 1) => ReturnType;
+      clearDocumentParagraphPagination: (
+        options?: DocumentFormattingCommandOptions,
+      ) => ReturnType;
+      clearDocumentFormatting: () => ReturnType;
+      setDocumentIndentLevel: (
+        indentLevel: number,
+        options?: DocumentFormattingCommandOptions,
+      ) => ReturnType;
+      setDocumentLineHeight: (lineHeight: string | null) => ReturnType;
+      setDocumentParagraphDirection: (
+        direction: DocumentParagraphDirection,
+        options?: DocumentFormattingCommandOptions,
+      ) => ReturnType;
+      setDocumentParagraphIndent: (
+        indent: DocumentParagraphIndent,
+        options?: DocumentFormattingCommandOptions,
+      ) => ReturnType;
+      setDocumentParagraphPagination: (
+        pagination: DocumentParagraphPaginationUpdate,
+        options?: DocumentFormattingCommandOptions,
+      ) => ReturnType;
+      setDocumentParagraphSpacing: (
+        spacing: DocumentParagraphSpacing,
+        options?: DocumentFormattingCommandOptions,
+      ) => ReturnType;
+    };
+  }
+}
+
+export const DocumentParagraphFormatting = Extension.create({
+  name: 'documentParagraphFormatting',
+
+  addGlobalAttributes() {
+    return [
+      {
+        types: ['paragraph', 'heading'],
+        attributes: {
+          lineHeight: {
+            default: null,
+            parseHTML: (element: HTMLElement) =>
+              normalizedLineHeight(element.style.lineHeight),
+            renderHTML: (attributes: Record<string, unknown>) => {
+              const lineHeight = normalizedLineHeight(attributes.lineHeight);
+              return lineHeight ? { style: `line-height: ${lineHeight}` } : {};
+            },
+          },
+          lineRule: {
+            default: null,
+            parseHTML: (element: HTMLElement) =>
+              normalizedLineRule(element.dataset.officeLineRule),
+            renderHTML: (attributes: Record<string, unknown>) => {
+              const lineRule = normalizedLineRule(attributes.lineRule);
+              return lineRule ? { 'data-office-line-rule': lineRule } : {};
+            },
+          },
+          autoLineHeight: {
+            default: null,
+            parseHTML: (element: HTMLElement) =>
+              normalizedAutoLineHeight(element.dataset.officeAutoLineHeight),
+            renderHTML: (attributes: Record<string, unknown>) =>
+              normalizedLineRule(attributes.lineRule) === 'auto'
+                ? renderDocumentAutoLineHeight(
+                    attributes.lineHeight,
+                    attributes.autoLineHeight,
+                  )
+                : {},
+          },
+          spaceBefore: pointSpacingAttribute(
+            'spaceBefore',
+            'officeSpaceBefore',
+            'data-office-space-before',
+            'margin-top',
+          ),
+          spaceAfter: pointSpacingAttribute(
+            'spaceAfter',
+            'officeSpaceAfter',
+            'data-office-space-after',
+            'margin-bottom',
+          ),
+          indentLevel: {
+            default: 0,
+            parseHTML: (element: HTMLElement) =>
+              parsedIndentLevel(
+                element.dataset.officeIndentLevel,
+                element.style.marginLeft,
+              ),
+            renderHTML: (attributes: Record<string, unknown>) => {
+              const indentLevel = normalizedIndentLevel(attributes.indentLevel);
+              return indentLevel
+                ? {
+                    'data-office-indent-level': String(indentLevel),
+                    style: `margin-left: ${
+                      indentLevel * DOCUMENT_INDENT_STEP_PX
+                    }px`,
+                  }
+                : {};
+            },
+          },
+          rightIndent: {
+            default: 0,
+            parseHTML: (element: HTMLElement) =>
+              parsedIndentPixels(
+                element.dataset.officeIndentRight,
+                element.style.marginRight,
+              ),
+            renderHTML: (attributes: Record<string, unknown>) => {
+              const rightIndent = normalizedIndentPixels(
+                attributes.rightIndent,
+              );
+              return rightIndent
+                ? {
+                    'data-office-indent-right': formatPixelValue(rightIndent),
+                    style: `margin-right: ${rightIndent}px`,
+                  }
+                : {};
+            },
+          },
+          firstLineIndent: {
+            default: 0,
+            parseHTML: (element: HTMLElement) => {
+              const left = parsedIndentLevel(
+                element.dataset.officeIndentLevel,
+                element.style.marginLeft,
+              );
+              return normalizedFirstLineIndent(
+                parsedSignedIndentPixels(
+                  element.dataset.officeIndentFirstLine,
+                  element.style.textIndent,
+                ),
+                left * DOCUMENT_INDENT_STEP_PX,
+              );
+            },
+            renderHTML: (attributes: Record<string, unknown>) => {
+              const left =
+                normalizedIndentLevel(attributes.indentLevel) *
+                DOCUMENT_INDENT_STEP_PX;
+              const firstLineIndent = normalizedFirstLineIndent(
+                attributes.firstLineIndent,
+                left,
+              );
+              return firstLineIndent
+                ? {
+                    'data-office-indent-first-line':
+                      formatPixelValue(firstLineIndent),
+                    style: `text-indent: ${firstLineIndent}px`,
+                  }
+                : {};
+            },
+          },
+          keepLines: directBooleanAttribute(
+            'keepLines',
+            'officeKeepLines',
+            'data-office-keep-lines',
+          ),
+          keepWithNext: directBooleanAttribute(
+            'keepWithNext',
+            'officeKeepWithNext',
+            'data-office-keep-with-next',
+          ),
+          pageBreakBefore: directBooleanAttribute(
+            'pageBreakBefore',
+            'officePageBreakBefore',
+            'data-office-page-break-before',
+          ),
+          widowControl: directBooleanAttribute(
+            'widowControl',
+            'officeWidowControl',
+            'data-office-widow-control',
+          ),
+          contextualSpacing: directBooleanAttribute(
+            'contextualSpacing',
+            'officeContextualSpacing',
+            'data-office-contextual-spacing',
+          ),
+          defaultCollapsed: directBooleanAttribute(
+            'defaultCollapsed',
+            'officeDefaultCollapsed',
+            'data-office-default-collapsed',
+          ),
+          paragraphBorders: {
+            default: null,
+            parseHTML: (element: HTMLElement) =>
+              parseDocumentParagraphBordersElement(element),
+            renderHTML: (attributes: Record<string, unknown>) =>
+              documentParagraphBordersDomAttributes(
+                parseDocumentParagraphBorders(attributes.paragraphBorders),
+              ),
+          },
+          paragraphShading: {
+            default: null,
+            parseHTML: (element: HTMLElement) =>
+              parseDocumentParagraphShadingElement(element),
+            renderHTML: (attributes: Record<string, unknown>) =>
+              documentParagraphShadingDomAttributes(
+                parseDocumentParagraphShading(attributes.paragraphShading),
+              ),
+          },
+          outlineLevel: outlineLevelAttribute(),
+        },
+      },
+      {
+        types: ['paragraph', 'heading', 'listItem'],
+        attributes: {
+          paragraphDirection: paragraphDirectionAttribute(),
+        },
+      },
+    ];
+  },
+
+  addCommands() {
+    return {
+      changeDocumentIndent: (direction) => (props) =>
+        changeDocumentIndentCommand(props, direction),
+      clearDocumentParagraphPagination:
+        (options = {}) =>
+        (props) =>
+          clearDocumentParagraphPaginationCommand(props, options),
+      clearDocumentFormatting: () => (props) =>
+        clearDocumentFormattingCommand(props),
+      setDocumentIndentLevel:
+        (indentLevel, options = {}) =>
+        (props) =>
+          setDocumentIndentLevelCommand(props, indentLevel, options),
+      setDocumentLineHeight: (lineHeight) => (props) =>
+        setDocumentLineHeightCommand(props, lineHeight),
+      setDocumentParagraphDirection:
+        (direction, options = {}) =>
+        (props) =>
+          setDocumentParagraphDirectionCommand(props, direction, options),
+      setDocumentParagraphIndent:
+        (indent, options = {}) =>
+        (props) =>
+          setDocumentParagraphIndentCommand(props, indent, options),
+      setDocumentParagraphPagination:
+        (pagination, options = {}) =>
+        (props) =>
+          setDocumentParagraphPaginationCommand(props, pagination, options),
+      setDocumentParagraphSpacing:
+        (spacing, options = {}) =>
+        (props) =>
+          setDocumentParagraphSpacingCommand(props, spacing, options),
+    };
+  },
+});
+
+export function setDocumentLineHeight(
+  editor: Editor,
+  lineHeight: string | null,
+): boolean {
+  return editor.commands.setDocumentLineHeight(lineHeight);
+}
+
+export function changeDocumentIndent(
+  editor: Editor,
+  direction: -1 | 1,
+): boolean {
+  return editor.commands.changeDocumentIndent(direction);
+}
+
+export function canChangeDocumentIndent(
+  editor: Editor,
+  direction: -1 | 1,
+): boolean {
+  if (editor.isActive('listItem')) {
+    const canChangeListLevel =
+      direction > 0
+        ? editor.can().chain().focus().sinkListItem('listItem').run()
+        : editor.can().chain().focus().liftListItem('listItem').run();
+    if (canChangeListLevel) return true;
+  }
+  const current = documentIndentLevel(editor);
+  return direction > 0 ? current < MAX_DOCUMENT_INDENT_LEVEL : current > 0;
+}
+
+export function documentIndentLevel(editor: Editor): number {
+  return documentParagraphIndent(editor).left / DOCUMENT_INDENT_STEP_PX;
+}
+
+export function documentParagraphIndent(
+  editor: Editor,
+): DocumentParagraphIndent {
+  const attributes = editor.isActive('heading')
+    ? editor.getAttributes('heading')
+    : editor.getAttributes('paragraph');
+  return normalizeDocumentParagraphIndent({
+    left:
+      normalizedIndentLevel(attributes.indentLevel) * DOCUMENT_INDENT_STEP_PX,
+    right: normalizedIndentPixels(attributes.rightIndent),
+    firstLine: normalizedSignedIndentPixels(attributes.firstLineIndent),
+  });
+}
+
+export function setDocumentIndentLevel(
+  editor: Editor,
+  indentLevel: number,
+  options: DocumentFormattingCommandOptions = {},
+): boolean {
+  return editor.commands.setDocumentIndentLevel(indentLevel, options);
+}
+
+export function setDocumentParagraphIndent(
+  editor: Editor,
+  indent: DocumentParagraphIndent,
+  options: DocumentFormattingCommandOptions = {},
+): boolean {
+  return editor.commands.setDocumentParagraphIndent(indent, options);
+}
+
+export function documentParagraphPagination(
+  editor: Editor,
+): DocumentParagraphPagination {
+  const attributes = activeParagraphAttributes(editor);
+  return {
+    keepLines: directBoolean(attributes.keepLines) ?? false,
+    keepWithNext:
+      directBoolean(attributes.keepWithNext) ?? editor.isActive('heading'),
+    pageBreakBefore: directBoolean(attributes.pageBreakBefore) ?? false,
+    widowControl: directBoolean(attributes.widowControl) ?? true,
+  };
+}
+
+export function documentParagraphDirection(
+  editor: Editor,
+): DocumentParagraphDirection {
+  const attributes = editor.isActive('listItem')
+    ? editor.getAttributes('listItem')
+    : activeParagraphAttributes(editor);
+  return (
+    normalizeDocumentParagraphDirection(attributes.paragraphDirection) ?? 'ltr'
+  );
+}
+
+export function setDocumentParagraphDirection(
+  editor: Editor,
+  direction: DocumentParagraphDirection,
+  options: DocumentFormattingCommandOptions = {},
+): boolean {
+  return editor.commands.setDocumentParagraphDirection(direction, options);
+}
+
+export function setDocumentParagraphPagination(
+  editor: Editor,
+  pagination: DocumentParagraphPaginationUpdate,
+  options: DocumentFormattingCommandOptions = {},
+): boolean {
+  return editor.commands.setDocumentParagraphPagination(pagination, options);
+}
+
+export function clearDocumentParagraphPagination(
+  editor: Editor,
+  options: DocumentFormattingCommandOptions = {},
+): boolean {
+  return editor.commands.clearDocumentParagraphPagination(options);
+}
+
+export function documentParagraphSpacing(
+  editor: Editor,
+): DocumentParagraphSpacing {
+  const attributes = activeParagraphAttributes(editor);
+  return {
+    before: normalizedPointSpacing(attributes.spaceBefore),
+    after: normalizedPointSpacing(attributes.spaceAfter),
+    lineHeight: normalizedLineHeight(attributes.lineHeight),
+    lineRule: normalizedLineRule(attributes.lineRule),
+  };
+}
+
+export function setDocumentParagraphSpacing(
+  editor: Editor,
+  spacing: DocumentParagraphSpacing,
+  options: DocumentFormattingCommandOptions = {},
+): boolean {
+  return editor.commands.setDocumentParagraphSpacing(spacing, options);
+}
+
+export function normalizeDocumentParagraphIndent(
+  indent: DocumentParagraphIndent,
+): DocumentParagraphIndent {
+  const left =
+    normalizedIndentLevel(indent.left / DOCUMENT_INDENT_STEP_PX) *
+    DOCUMENT_INDENT_STEP_PX;
+  return {
+    left,
+    right: normalizedIndentPixels(indent.right),
+    firstLine: normalizedFirstLineIndent(indent.firstLine, left),
+  };
+}
+
+export function normalizeDocumentParagraphDirection(
+  value: unknown,
+): DocumentParagraphDirection | null {
+  if (typeof value !== 'string') return null;
+  const normalized = value.trim().toLowerCase();
+  return normalized === 'ltr' || normalized === 'rtl' ? normalized : null;
+}
+
+export function clearDocumentFormatting(editor: Editor): boolean {
+  return editor.commands.clearDocumentFormatting();
+}
+
+function setDocumentLineHeightCommand(
+  { chain }: CommandProps,
+  lineHeight: string | null,
+): boolean {
+  const value = normalizedLineHeight(lineHeight);
+  const lineRule = value ? lineRuleForLineHeight(value) : null;
+  const attributes = {
+    lineHeight: value,
+    lineRule,
+    autoLineHeight: lineRule === 'auto' ? documentAutoLineHeight(value) : null,
+  };
+  return chain()
+    .focus()
+    .updateAttributes('paragraph', attributes)
+    .updateAttributes('heading', attributes)
+    .run();
+}
+
+function changeDocumentIndentCommand(
+  props: CommandProps,
+  direction: -1 | 1,
+): boolean {
+  const { can, chain, editor } = props;
+  if (editor.isActive('listItem')) {
+    const canChangeListLevel =
+      direction > 0
+        ? can().chain().focus().sinkListItem('listItem').run()
+        : can().chain().focus().liftListItem('listItem').run();
+    if (canChangeListLevel) {
+      return direction > 0
+        ? chain().focus().sinkListItem('listItem').run()
+        : chain().focus().liftListItem('listItem').run();
+    }
+  }
+  const current = documentIndentLevel(editor);
+  const next = normalizedIndentLevel(current + direction);
+  if (next === current) return false;
+  return setDocumentIndentLevelCommand(props, next, {});
+}
+
+function setDocumentIndentLevelCommand(
+  props: CommandProps,
+  indentLevel: number,
+  options: DocumentFormattingCommandOptions,
+): boolean {
+  const current = documentParagraphIndent(props.editor);
+  return setDocumentParagraphIndentCommand(
+    props,
+    {
+      ...current,
+      left: normalizedIndentLevel(indentLevel) * DOCUMENT_INDENT_STEP_PX,
+    },
+    options,
+  );
+}
+
+function setDocumentParagraphIndentCommand(
+  { chain, editor }: CommandProps,
+  indent: DocumentParagraphIndent,
+  options: DocumentFormattingCommandOptions,
+): boolean {
+  const nodeTypes = activeParagraphNodeTypes(editor);
+  if (!nodeTypes.length) return false;
+  const normalized = normalizeDocumentParagraphIndent(indent);
+  const attributes = {
+    indentLevel: normalized.left / DOCUMENT_INDENT_STEP_PX,
+    rightIndent: normalized.right,
+    firstLineIndent: normalized.firstLine,
+  };
+  let commandChain = chain();
+  if (options.restoreFocus !== false) commandChain = commandChain.focus();
+  for (const nodeType of nodeTypes) {
+    commandChain = commandChain.updateAttributes(nodeType, attributes);
+  }
+  return commandChain.run();
+}
+
+function setDocumentParagraphDirectionCommand(
+  { chain, editor }: CommandProps,
+  direction: DocumentParagraphDirection,
+  options: DocumentFormattingCommandOptions,
+): boolean {
+  const nodeTypes = activeParagraphDirectionNodeTypes(editor);
+  const value = normalizeDocumentParagraphDirection(direction);
+  if (!nodeTypes.length || !value) return false;
+  let commandChain = chain();
+  if (options.restoreFocus !== false) commandChain = commandChain.focus();
+  for (const nodeType of nodeTypes) {
+    commandChain = commandChain.updateAttributes(nodeType, {
+      paragraphDirection: value,
+    });
+  }
+  return commandChain.run();
+}
+
+function setDocumentParagraphPaginationCommand(
+  { chain, editor }: CommandProps,
+  pagination: DocumentParagraphPaginationUpdate,
+  options: DocumentFormattingCommandOptions,
+): boolean {
+  const nodeTypes = activeParagraphNodeTypes(editor);
+  if (!nodeTypes.length) return false;
+  const attributes: DocumentParagraphPaginationUpdate = {};
+  for (const key of documentParagraphPaginationKeys) {
+    if (Object.hasOwn(pagination, key))
+      attributes[key] = Boolean(pagination[key]);
+  }
+  if (!Object.keys(attributes).length) return false;
+  let commandChain = chain();
+  if (options.restoreFocus !== false) commandChain = commandChain.focus();
+  for (const nodeType of nodeTypes) {
+    commandChain = commandChain.updateAttributes(nodeType, attributes);
+  }
+  return commandChain.run();
+}
+
+function clearDocumentParagraphPaginationCommand(
+  { chain, editor }: CommandProps,
+  options: DocumentFormattingCommandOptions,
+): boolean {
+  const nodeTypes = activeParagraphNodeTypes(editor);
+  if (!nodeTypes.length) return false;
+  const attributes = {
+    keepLines: null,
+    keepWithNext: null,
+    pageBreakBefore: null,
+    widowControl: null,
+  };
+  let commandChain = chain();
+  if (options.restoreFocus !== false) commandChain = commandChain.focus();
+  for (const nodeType of nodeTypes) {
+    commandChain = commandChain.updateAttributes(nodeType, attributes);
+  }
+  return commandChain.run();
+}
+
+function setDocumentParagraphSpacingCommand(
+  { chain, editor }: CommandProps,
+  spacing: DocumentParagraphSpacing,
+  options: DocumentFormattingCommandOptions,
+): boolean {
+  const nodeTypes = activeParagraphNodeTypes(editor);
+  if (!nodeTypes.length) return false;
+  const lineHeight = normalizedLineHeight(spacing.lineHeight);
+  const lineRule =
+    normalizedLineRule(spacing.lineRule) ??
+    (lineHeight ? lineRuleForLineHeight(lineHeight) : null);
+  const attributes = {
+    spaceBefore: normalizedPointSpacing(spacing.before),
+    spaceAfter: normalizedPointSpacing(spacing.after),
+    lineHeight,
+    lineRule,
+    autoLineHeight:
+      lineRule === 'auto' ? documentAutoLineHeight(lineHeight) : null,
+  };
+  let commandChain = chain();
+  if (options.restoreFocus !== false) commandChain = commandChain.focus();
+  for (const nodeType of nodeTypes) {
+    commandChain = commandChain.updateAttributes(nodeType, attributes);
+  }
+  return commandChain.run();
+}
+
+function clearDocumentFormattingCommand({
+  chain,
+  editor,
+}: CommandProps): boolean {
+  let commandChain = chain().focus();
+  for (const mark of DOCUMENT_CHARACTER_FORMAT_MARKS) {
+    if (editor.schema.marks[mark]) {
+      commandChain = commandChain.unsetMark(mark);
+    }
+  }
+  if (!editor.isActive('listItem')) commandChain = commandChain.setParagraph();
+  return commandChain
+    .unsetTextAlign()
+    .updateAttributes('paragraph', {
+      indentLevel: 0,
+      rightIndent: 0,
+      firstLineIndent: 0,
+      lineHeight: null,
+      lineRule: null,
+      autoLineHeight: null,
+      paragraphDirection: null,
+      spaceBefore: null,
+      spaceAfter: null,
+      keepLines: null,
+      keepWithNext: null,
+      pageBreakBefore: null,
+      widowControl: null,
+      contextualSpacing: null,
+      outlineLevel: null,
+      paragraphBorders: null,
+      paragraphShading: null,
+      tabStops: null,
+    })
+    .updateAttributes('listItem', {
+      paragraphDirection: null,
+    })
+    .run();
+}
+
+function parsedIndentLevel(
+  dataValue: string | undefined,
+  marginLeft: string,
+): number {
+  if (dataValue) return normalizedIndentLevel(dataValue);
+  const pixels = cssPixels(marginLeft);
+  return normalizedIndentLevel(
+    pixels ? Math.round(pixels / DOCUMENT_INDENT_STEP_PX) : 0,
+  );
+}
+
+function normalizedIndentLevel(value: unknown): number {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return 0;
+  return Math.min(
+    MAX_DOCUMENT_INDENT_LEVEL,
+    Math.max(0, Math.round(number * 4) / 4),
+  );
+}
+
+function normalizedLineHeight(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+  const normalized = value.trim();
+  if (!normalized || normalized === 'normal') return null;
+  return /^(?:\d+(?:\.\d+)?|\d+(?:\.\d+)?(?:px|pt|%))$/i.test(normalized)
+    ? normalized
+    : null;
+}
+
+export function documentAutoLineHeight(value: unknown): number | null {
+  const multiple = lineHeightMultiple(value);
+  if (multiple === null) return null;
+  return formatLineMetric(multiple * DOCUMENT_WORD_SINGLE_LINE_HEIGHT);
+}
+
+export function documentAutoLineLeadingShift(value: unknown): number | null {
+  const multiple = lineHeightMultiple(value);
+  if (multiple === null) return null;
+  return formatLineMetric(
+    ((1 - multiple) * DOCUMENT_WORD_SINGLE_LINE_HEIGHT) / 2,
+  );
+}
+
+export function renderDocumentAutoLineHeight(
+  lineHeight: unknown,
+  autoLineHeight: unknown = documentAutoLineHeight(lineHeight),
+): Record<string, string> {
+  const renderedLineHeight =
+    normalizedAutoLineHeight(autoLineHeight) ??
+    documentAutoLineHeight(lineHeight);
+  if (renderedLineHeight === null) return {};
+  const multiple = lineHeightMultiple(lineHeight);
+  const shift = documentAutoLineLeadingShift(lineHeight);
+  return {
+    'data-office-auto-line-height': String(
+      formatLineMetric(renderedLineHeight),
+    ),
+    style: [
+      `--work-document-office-auto-line-height: ${formatLineMetric(renderedLineHeight)}`,
+      ...(multiple === null
+        ? []
+        : [
+            `--work-document-office-auto-line-multiple: ${formatLineMetric(multiple)}`,
+          ]),
+      ...(shift === null
+        ? []
+        : [
+            `--work-document-office-auto-line-shift: ${formatLineMetric(shift)}em`,
+          ]),
+    ].join('; '),
+  };
+}
+
+function lineHeightMultiple(value: unknown): number | null {
+  const normalized = normalizedLineHeight(value);
+  if (!normalized) return null;
+  const percentage = /^(\d+(?:\.\d+)?)%$/.exec(normalized);
+  const multiple = percentage
+    ? Number(percentage[1]) / 100
+    : /^\d+(?:\.\d+)?$/.test(normalized)
+      ? Number(normalized)
+      : Number.NaN;
+  return Number.isFinite(multiple) && multiple > 0 ? multiple : null;
+}
+
+function normalizedAutoLineHeight(value: unknown): number | null {
+  if (value === null || value === undefined || value === '') return null;
+  const number = Number(value);
+  return Number.isFinite(number) && number > 0 && number <= 20
+    ? formatLineMetric(number)
+    : null;
+}
+
+function formatLineMetric(value: number): number {
+  return Number(value.toFixed(4));
+}
+
+function normalizedLineRule(value: unknown): DocumentParagraphLineRule | null {
+  if (value === 'auto' || value === 'exact' || value === 'atLeast')
+    return value;
+  if (value === 'exactly') return 'exact';
+  return null;
+}
+
+function lineRuleForLineHeight(value: string): DocumentParagraphLineRule {
+  return /(?:px|pt)$/i.test(value) ? 'exact' : 'auto';
+}
+
+function pointSpacingAttribute(
+  modelKey: 'spaceBefore' | 'spaceAfter',
+  datasetKey: 'officeSpaceBefore' | 'officeSpaceAfter',
+  htmlName: 'data-office-space-before' | 'data-office-space-after',
+  cssProperty: 'margin-top' | 'margin-bottom',
+) {
+  return {
+    default: null,
+    parseHTML: (element: HTMLElement) =>
+      parsedPointSpacing(
+        element.dataset[datasetKey],
+        cssProperty === 'margin-top'
+          ? element.style.marginTop
+          : element.style.marginBottom,
+      ),
+    renderHTML: (attributes: Record<string, unknown>) => {
+      const value = normalizedPointSpacing(attributes[modelKey]);
+      if (value === null) return {};
+      const formatted = formatPointValue(value);
+      return {
+        [htmlName]: formatted,
+        style: `${cssProperty}: ${formatted}pt`,
+      };
+    },
+  };
+}
+
+function parsedPointSpacing(
+  dataValue: string | undefined,
+  cssValue: string,
+): number | null {
+  if (dataValue !== undefined) return normalizedPointSpacing(dataValue);
+  const match = /^(-?\d+(?:\.\d+)?)(px|pt|mm|cm|in)?$/i.exec(cssValue.trim());
+  if (!match) return null;
+  const amount = Number(match[1]);
+  if (!Number.isFinite(amount)) return null;
+  const unit = match[2]?.toLowerCase() ?? 'px';
+  const points =
+    unit === 'pt'
+      ? amount
+      : unit === 'mm'
+        ? (amount * 72) / 25.4
+        : unit === 'cm'
+          ? (amount * 72) / 2.54
+          : unit === 'in'
+            ? amount * 72
+            : amount * 0.75;
+  return normalizedPointSpacing(points);
+}
+
+function normalizedPointSpacing(value: unknown): number | null {
+  if (value === null || value === undefined || value === '') return null;
+  const number = Number(value);
+  if (!Number.isFinite(number)) return null;
+  return Math.min(720, Math.max(0, Math.round(number * 4) / 4));
+}
+
+function formatPointValue(value: number): string {
+  return Number(value.toFixed(2)).toString();
+}
+
+function cssPixels(value: string): number {
+  const match = /^(-?\d+(?:\.\d+)?)(px|pt)?$/i.exec(value.trim());
+  if (!match) return 0;
+  const amount = Number(match[1]);
+  if (!Number.isFinite(amount)) return 0;
+  return match[2]?.toLowerCase() === 'pt' ? amount / 0.75 : amount;
+}
+
+function parsedIndentPixels(
+  dataValue: string | undefined,
+  cssValue: string,
+): number {
+  return normalizedIndentPixels(
+    dataValue === undefined ? cssPixels(cssValue) : dataValue,
+  );
+}
+
+function parsedSignedIndentPixels(
+  dataValue: string | undefined,
+  cssValue: string,
+): number {
+  return normalizedSignedIndentPixels(
+    dataValue === undefined ? cssPixels(cssValue) : dataValue,
+  );
+}
+
+function normalizedIndentPixels(value: unknown): number {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return 0;
+  return Math.min(MAX_DOCUMENT_INDENT_PX, Math.max(0, Math.round(number)));
+}
+
+function normalizedSignedIndentPixels(value: unknown): number {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return 0;
+  return Math.min(
+    MAX_DOCUMENT_INDENT_PX,
+    Math.max(-MAX_DOCUMENT_INDENT_PX, Math.round(number)),
+  );
+}
+
+function normalizedFirstLineIndent(value: unknown, leftIndent: number): number {
+  return Math.max(
+    -leftIndent,
+    Math.min(MAX_DOCUMENT_INDENT_PX, normalizedSignedIndentPixels(value)),
+  );
+}
+
+function formatPixelValue(value: number): string {
+  return Number(value.toFixed(2)).toString();
+}
+
+function activeParagraphAttributes(editor: Editor): Record<string, unknown> {
+  return editor.isActive('heading')
+    ? editor.getAttributes('heading')
+    : editor.getAttributes('paragraph');
+}
+
+function paragraphDirectionAttribute() {
+  return {
+    default: null,
+    parseHTML: (element: HTMLElement) =>
+      normalizeDocumentParagraphDirection(
+        element.getAttribute('dir') ?? element.style.direction,
+      ),
+    renderHTML: (attributes: Record<string, unknown>) => {
+      const direction = normalizeDocumentParagraphDirection(
+        attributes.paragraphDirection,
+      );
+      return direction ? { dir: direction } : {};
+    },
+  };
+}
+
+function directBooleanAttribute(
+  modelKey:
+    | 'keepLines'
+    | 'keepWithNext'
+    | 'pageBreakBefore'
+    | 'widowControl'
+    | 'contextualSpacing'
+    | 'defaultCollapsed',
+  datasetKey:
+    | 'officeKeepLines'
+    | 'officeKeepWithNext'
+    | 'officePageBreakBefore'
+    | 'officeWidowControl'
+    | 'officeContextualSpacing'
+    | 'officeDefaultCollapsed',
+  htmlName:
+    | 'data-office-keep-lines'
+    | 'data-office-keep-with-next'
+    | 'data-office-page-break-before'
+    | 'data-office-widow-control'
+    | 'data-office-contextual-spacing'
+    | 'data-office-default-collapsed',
+) {
+  return {
+    default: null,
+    parseHTML: (element: HTMLElement) =>
+      directBoolean(element.dataset[datasetKey]),
+    renderHTML: (attributes: Record<string, unknown>) => {
+      const value = directBoolean(attributes[modelKey]);
+      return value === null ? {} : { [htmlName]: String(value) };
+    },
+  };
+}
+
+function outlineLevelAttribute() {
+  return {
+    default: null,
+    parseHTML: (element: HTMLElement) =>
+      normalizedOutlineLevel(element.dataset.officeOutlineLevel),
+    renderHTML: (attributes: Record<string, unknown>) => {
+      const value = normalizedOutlineLevel(attributes.outlineLevel);
+      return value === null
+        ? {}
+        : { 'data-office-outline-level': String(value) };
+    },
+  };
+}
+
+function normalizedOutlineLevel(value: unknown): number | null {
+  if (value === null || value === undefined || value === '') return null;
+  const number = Number(value);
+  return Number.isSafeInteger(number) && number >= 0 && number <= 9
+    ? number
+    : null;
+}
+
+const documentParagraphPaginationKeys = [
+  'keepLines',
+  'keepWithNext',
+  'pageBreakBefore',
+  'widowControl',
+] as const satisfies readonly (keyof DocumentParagraphPagination)[];
+
+function directBoolean(value: unknown): boolean | null {
+  if (value === true || value === 'true' || value === '1') return true;
+  if (value === false || value === 'false' || value === '0') return false;
+  return null;
+}
+
+function activeParagraphNodeTypes(
+  editor: Editor,
+): Array<'paragraph' | 'heading'> {
+  const nodeTypes = new Set<'paragraph' | 'heading'>();
+  if (editor.isActive('paragraph')) nodeTypes.add('paragraph');
+  if (editor.isActive('heading')) nodeTypes.add('heading');
+  const { from, to } = editor.state.selection;
+  if (from !== to) {
+    editor.state.doc.nodesBetween(from, to, (node) => {
+      if (node.type.name === 'paragraph') nodeTypes.add('paragraph');
+      if (node.type.name === 'heading') nodeTypes.add('heading');
+    });
+  }
+  return [...nodeTypes];
+}
+
+function activeParagraphDirectionNodeTypes(
+  editor: Editor,
+): Array<'paragraph' | 'heading' | 'listItem'> {
+  const { from, to } = editor.state.selection;
+  if (from === to) {
+    return editor.isActive('listItem')
+      ? ['listItem']
+      : activeParagraphNodeTypes(editor);
+  }
+  const nodeTypes = new Set<'paragraph' | 'heading' | 'listItem'>();
+  editor.state.doc.nodesBetween(from, to, (node, _position, parent) => {
+    if (node.type.name === 'listItem') nodeTypes.add('listItem');
+    if (node.type.name === 'paragraph' && parent?.type.name !== 'listItem') {
+      nodeTypes.add('paragraph');
+    }
+    if (node.type.name === 'heading') nodeTypes.add('heading');
+  });
+  return [...nodeTypes];
+}

@@ -1,0 +1,26 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.35s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 5 tests
+test agent::tool_completion_runtime::native_artifact_verification_tests::native_artifacts_accumulate_only_complete_identity_bound_checks ... ok
+test agent::tool_completion_runtime::native_artifact_verification_tests::native_artifact_never_verifies_an_earlier_unverified_write_or_external_metadata ... ok
+test agent::tool_completion_runtime::native_artifact_verification_tests::another_writer_invalidates_native_proof_and_deserialization_does_not_recreate_it ... ok
+test agent::tool_completion_runtime::native_artifact_verification_tests::native_artifact_refuses_wrong_path_digest_bytes_and_incomplete_receipts ... ok
+test fact_control::receipts::tests::native_artifact_scope::parallel_prepared_invocations_never_inherit_or_share_native_evidence ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 5130 filtered out; finished in 0.01s
+

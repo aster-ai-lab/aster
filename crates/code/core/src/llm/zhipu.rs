@@ -80,10 +80,7 @@ impl ZhipuClient {
 #[async_trait]
 impl LlmClient for ZhipuClient {
     fn with_output_cap(&self, max_tokens: u32) -> Option<std::sync::Arc<dyn LlmClient>> {
-        // The generation-enforced cap for sampling bridges (SEC-SAMPLE1).
-        Some(std::sync::Arc::new(
-            self.clone().with_max_tokens(max_tokens as usize),
-        ))
+        self.0.with_output_cap(max_tokens)
     }
 
     fn gateway_decision_auth(&self) -> Option<crate::llm::GatewayDecisionAuth> {

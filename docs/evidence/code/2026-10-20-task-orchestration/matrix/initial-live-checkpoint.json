@@ -1,0 +1,49 @@
+{
+  "schema": "aster.t023.initial-live-checkpoint.v1",
+  "run_id": "t023-sa-01",
+  "model_attempt_count": 1,
+  "counts_against_maximum_t01_attempts": true,
+  "process_result": "process/t023-sa-01-result.json",
+  "run_report": "runs/t023-sa-01/run.json",
+  "observed_result": {
+    "task_ms": 408528,
+    "outer_process_seconds": 442.3253849169705,
+    "ordinary_completion": false,
+    "reported_tokens": 1004236,
+    "reported_token_soft_limit": 1000000,
+    "run_event_count": 45684,
+    "retained_events": 16384,
+    "event_window_complete": false,
+    "real_vm_count": 15,
+    "vm_observation_complete": true,
+    "immutable_inputs": true,
+    "frozen_identity": true,
+    "submissions": [
+      {
+        "bytes": 25651,
+        "path": "pipeline.py",
+        "present": true,
+        "sha256": "5e639364c518e9b288fd9fcaf034066953a7d70b2d00a83bc2322e95f49cceca"
+      },
+      {
+        "bytes": 1439900,
+        "path": "output/results.json",
+        "present": true,
+        "sha256": "dfcc0b13bea1b177aa5af6e9967f2bae42e8bfebdc6046f665fabf94db24ecf7"
+      }
+    ]
+  },
+  "qualification": "Not a qualified complete-metrics performance cell. Original report/executable/manifest/submission retained. Task outcome remains failed, independent correctness pending.",
+  "next": "Test-only bounded retention correction and explicit completeness regression; re-freeze changed test source/executable before any next model attempt. No production fix, model-answer repair, budget increase or silent restart.",
+  "independent_oracle": {
+    "report": "process/t023-sa-01-oracle.json",
+    "passed": false,
+    "passed_cases": 8,
+    "total_cases": 9,
+    "pipeline_sha256": "5e639364c518e9b288fd9fcaf034066953a7d70b2d00a83bc2322e95f49cceca",
+    "original_input_unchanged": true,
+    "failing_cases": [
+      "negative_zero"
+    ]
+  }
+}

@@ -1,0 +1,213 @@
+--- a/apps/work/src/renderer/pages/agents/AgentPage.tsx
++++ b/apps/work/src/renderer/pages/agents/AgentPage.tsx
+@@ -7,7 +7,6 @@
+ import { dataApiService } from '@data/DataApiService'
+ import { usePreference } from '@data/hooks/usePreference'
+ import { loggerService } from '@logger'
+-import { useMemberProfile } from '@renderer/components/account/memberProfile'
+ import { taskListBotActivity } from '@renderer/components/bot/botAvatarActivity'
+ import type { ResourcePaneConfig, ResourcePaneCountButtonProps } from '@renderer/components/chat/panes/Shell'
+ import { AgentResourceList } from '@renderer/components/chat/resourceList/AgentResourceList'
+@@ -114,7 +113,6 @@
+   type WorkbenchHomeTaskBridge
+ } from './workbenchComposerHost'
+ import { WORKBENCH_SIDEBAR_DEFAULT_WIDTH, WorkbenchHome, type WorkbenchCatalog } from './WorkbenchHome'
+-import { displayedTaskPermissionMode, readTaskPermission, writeTaskPermission } from './workbenchPermissionPostures'
+ import { readPendingProject, selectWorkbenchProject, writePendingProject } from './WorkbenchProjectTray'
+ import {
+   ensureCodeSessionDirectory,
+@@ -629,11 +627,6 @@
+   const workbenchDefaultModelRef = useRef(workbenchDefaultModel)
+   workbenchDefaultModelRef.current = workbenchDefaultModel
+   const freshHomeSessionRef = useRef<AgentSessionEntity | null>(null)
+-  const homeMemberId = useMemberProfile()?.id ?? null
+-  const homeMemberRef = useRef(homeMemberId)
+-  homeMemberRef.current = homeMemberId
+-  const freshHomeMemberRef = useRef<string | null>(null)
+-  const creatingHomeMemberRef = useRef<string | null>(null)
+   const homeSessionInFlightRef = useRef<Promise<{ id: string } | null> | null>(null)
+   const taskAgentId =
+     visibleSession?.agentId ?? (workbenchUsesSingleDefaultAgent() ? preferredWorkbenchAgentId(agents) : null)
+@@ -643,14 +636,7 @@
+   })
+   homeTaskRef.current = {
+     create: () => {
+-      if (homeSessionInFlightRef.current) {
+-        return creatingHomeMemberRef.current === homeMemberId ? homeSessionInFlightRef.current : Promise.resolve(null)
+-      }
+-      const permission = readTaskPermission('draft', undefined, homeMemberId) ?? {
+-        mode: displayedTaskPermissionMode('draft', homeMemberId),
+-        planFirst: false
+-      }
+-      creatingHomeMemberRef.current = homeMemberId
++      if (homeSessionInFlightRef.current) return homeSessionInFlightRef.current
+       const run = (async () => {
+         let agentId = taskAgentId
+         if (!agentId && workbenchUsesSingleDefaultAgent()) {
+@@ -659,12 +645,11 @@
+           agentId = await ensureWorkbenchDefaultAgent({
+             name: t('workbench.default_agent.name', { product: studioProductName() }),
+             modelId: model.id,
+-            memberId: homeMemberId,
+             refresh: () => invalidateCache('/agents'),
+             failureMessage: t('workbench.default_agent.create_failed')
+           })
+         }
+-        if (!agentId || isCreatingEmptySessionRef.current || homeMemberRef.current !== homeMemberId) return null
++        if (!agentId || isCreatingEmptySessionRef.current) return null
+         const resolvedAgentId = agentId
+         isCreatingEmptySessionRef.current = true
+         const open = async (defaults: CreateAgentSessionDefaults) => {
+@@ -673,10 +658,7 @@
+             excludeSessionId: visibleSession?.id,
+             ...defaults
+           })
+-          if (homeMemberRef.current !== homeMemberId) return null
+-          writeTaskPermission(session.id, permission, undefined, homeMemberId)
+           writePendingProject(null)
+-          freshHomeMemberRef.current = homeMemberId
+           freshHomeSessionRef.current = session
+           return { id: session.id }
+         }
+@@ -708,7 +690,7 @@
+     },
+     adopt: (id) => {
+       const session = freshHomeSessionRef.current
+-      if (!session || session.id !== id || freshHomeMemberRef.current !== homeMemberRef.current) return
++      if (!session || session.id !== id) return
+       setWorkbenchSidebarCollapsed(true)
+       writeWorkbenchSidebarCollapsed(true)
+       activateSession(session, session.agentId)
+diff --git a/apps/work/src/renderer/pages/agents/__tests__/AgentPage.test.tsx b/apps/work/src/renderer/pages/agents/__tests__/AgentPage.test.tsx
+index 6c13fece..7e4d6197 100644
+--- a/apps/work/src/renderer/pages/agents/__tests__/AgentPage.test.tsx
++++ b/apps/work/src/renderer/pages/agents/__tests__/AgentPage.test.tsx
+@@ -3,6 +3,7 @@ import { mockUseQuery } from '@test-mocks/renderer/useDataApi'
+ import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+ import userEvent from '@testing-library/user-event'
+ import type { ReactNode } from 'react'
++import { use } from 'react'
+ import { beforeEach, describe, expect, it, vi } from 'vitest'
+ 
+ import { cacheService } from '@data/CacheService'
+@@ -13,6 +14,9 @@ import { DataApiErrorFactory } from '@shared/data/api/errors'
+ import { AGENT_WORKSPACE_TYPE } from '@shared/data/api/schemas/agentWorkspaces'
+ import { DefaultPreferences } from '@shared/data/preference/preferenceSchemas'
+ 
++import { WorkbenchHomeTaskContext, type WorkbenchHomeTaskBridge } from '../workbenchComposerHost'
++import { readTaskPermission, writeTaskPermission } from '../workbenchPermissionPostures'
++
+ const agentPageMocks = vi.hoisted(() => ({
+   workspace: {
+     id: 'workspace-a',
+@@ -83,6 +87,8 @@ const agentPageMocks = vi.hoisted(() => ({
+   showSidebar: false,
+   routeSearch: { sessionId: 'session-initial' } as Record<string, unknown>,
+   navigate: vi.fn(),
++  homeTask: null as WorkbenchHomeTaskBridge | null,
++  memberId: null as string | null,
+   composerLaunchOptions: undefined as any,
+   dataApiGet: vi.fn(),
+   dataApiPost: vi.fn(),
+@@ -110,6 +116,15 @@ const agentPageMocks = vi.hoisted(() => ({
+   sessionsFullyLoaded: true
+ }))
+ 
++vi.mock('@renderer/components/account/memberProfile', () => ({
++  useMemberProfile: () => (agentPageMocks.memberId ? { id: agentPageMocks.memberId } : null)
++}))
++
++function CaptureHomeTask() {
++  agentPageMocks.homeTask = use(WorkbenchHomeTaskContext)
++  return null
++}
++
+ const activeSessionMocks = vi.hoisted(() => ({
+   session: null as any,
+   isLoading: false,
+@@ -428,6 +443,7 @@ vi.mock('../AgentChat', () => ({
+         agentPageMocks.composerLaunchOptions = composerLaunchOptions
+         onFileNavigationRequestChange?.(node ? agentPageMocks.fileNavigationRequest : null)
+       }}>
++      <CaptureHomeTask />
+       <output data-testid="active-session">{conversationBootstrap.session?.id ?? ''}</output>
+       <output data-testid="active-session-loading">{String(conversationBootstrap.sessionLoading)}</output>
+       <output data-testid="missing-agent-selection">{String(Boolean(missingAgentSelection))}</output>
+@@ -714,6 +730,8 @@ import { toast } from '@renderer/services/toast'
+ import AgentPage from '../AgentPage'
+ describe('AgentPage', () => {
+   beforeEach(() => {
++    agentPageMocks.homeTask = null
++    agentPageMocks.memberId = null
+     vi.clearAllMocks()
+     agentPageMocks.fileNavigationRequest.mockImplementation((transition) => transition())
+     agentPageMocks.routeSearch = { sessionId: 'session-initial' }
+@@ -2130,6 +2148,68 @@ describe('AgentPage', () => {
+     expect(agentPageMocks.activeSessionOptions?.activeSessionId).not.toBe('session-composer-empty')
+   })
+ 
++  it('hands the selected home permission to the created task before adoption', async () => {
++    agentPageMocks.memberId = 'permission-owner-a'
++    activeSessionMocks.session = { ...agentPageMocks.persistedSession, id: 'permission-old-task' }
++    writeTaskPermission('draft', { mode: 'bypassPermissions', planFirst: true }, undefined, agentPageMocks.memberId)
++    agentPageMocks.reuseOrCreateSession.mockResolvedValue({
++      session: { ...agentPageMocks.persistedSession, id: 'permission-created-task' },
++      created: true,
++      deletedDuplicateSessionIds: []
++    })
++    try {
++      render(<AgentPage />)
++      let created: { id: string } | null | undefined
++      await act(async () => {
++        created = await agentPageMocks.homeTask?.create()
++      })
++      expect(created).toEqual({ id: 'permission-created-task' })
++      expect(readTaskPermission('permission-created-task', undefined, 'permission-owner-a')).toEqual({
++        mode: 'bypassPermissions',
++        planFirst: true
++      })
++      expect(readTaskPermission('permission-created-task', undefined, 'permission-owner-b')).toBeNull()
++      expect(agentPageMocks.activeSessionOptions?.activeSessionId).not.toBe('permission-created-task')
++    } finally {
++      localStorage.removeItem('workbench.task.permission:v1')
++      localStorage.removeItem('workbench.task.permission:v1:permission-owner-a')
++    }
++  })
++
++  it('refuses an in-flight home creation and adoption after the member changes', async () => {
++    agentPageMocks.memberId = 'creation-owner-a'
++    activeSessionMocks.session = { ...agentPageMocks.persistedSession, id: 'permission-old-task' }
++    let release!: (value: unknown) => void
++    agentPageMocks.reuseOrCreateSession.mockReturnValue(
++      new Promise((resolve) => {
++        release = resolve
++      })
++    )
++    const view = render(<AgentPage />)
++    let pending!: ReturnType<WorkbenchHomeTaskBridge['create']>
++    act(() => {
++      pending = agentPageMocks.homeTask!.create()
++    })
++    await waitFor(() => expect(agentPageMocks.reuseOrCreateSession).toHaveBeenCalled())
++    agentPageMocks.memberId = 'creation-owner-b'
++    view.rerender(<AgentPage />)
++    await expect(agentPageMocks.homeTask!.create()).resolves.toBeNull()
++    await act(async () => {
++      release({
++        session: { ...agentPageMocks.persistedSession, id: 'foreign-created-task' },
++        created: true,
++        deletedDuplicateSessionIds: []
++      })
++      expect(await pending).toBeNull()
++    })
++    expect(readTaskPermission('foreign-created-task', undefined, 'creation-owner-a')).toBeNull()
++    expect(readTaskPermission('foreign-created-task', undefined, 'creation-owner-b')).toBeNull()
++    act(() => {
++      agentPageMocks.homeTask!.adopt('foreign-created-task')
++    })
++    expect(agentPageMocks.activeSessionOptions?.activeSessionId).not.toBe('foreign-created-task')
++  })
++
+   it('starts a review task in the system workspace when the pending project is gone', async () => {
+     activeSessionMocks.session = {
+       ...agentPageMocks.persistedSession,

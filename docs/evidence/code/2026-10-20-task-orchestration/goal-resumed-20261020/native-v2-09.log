@@ -1,0 +1,9 @@
+
+running 4 tests
+test agent_plane::turns::execution_status_tests::orphan_execution_write_failure_remains_unknown_and_can_retry ... ok
+test agent_plane::turns::execution_status_tests::orphan_recovery_fails_the_original_execution_after_restart ... ok
+test agent_plane::turns::execution_status_tests::orphan_recovery_preserves_live_and_terminal_execution_ownership ... ok
+test agent_plane::turns::execution_status_tests::status_publication_requires_the_current_live_owner_and_withdraws_at_settlement ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 839 filtered out; finished in 0.02s
+

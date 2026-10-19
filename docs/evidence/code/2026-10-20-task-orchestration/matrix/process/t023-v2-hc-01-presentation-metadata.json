@@ -1,0 +1,474 @@
+{
+  "schema": "aster.t023-code-presentation-metadata.v1",
+  "captured_at_utc": "2026-10-19T18:12:49.129731+00:00",
+  "run_report": "docs/evidence/code/2026-10-20-task-orchestration/matrix/runs/t023-v2-hc-01/run.json",
+  "run_report_sha256": "93f9a08452fe53f475bcc7fd4e261d095a1a0fd7f8ecd935f295f3c4f87da667",
+  "run_id": "t023-v2-hc-01",
+  "status": "failed",
+  "runner_gates_passed": false,
+  "frozen_identity_unchanged": true,
+  "immutable_inputs_unchanged": true,
+  "terminal_runtime": {
+    "task_ms": 276034,
+    "execution_completed": false,
+    "error_code": null,
+    "timed_out": false,
+    "event_count": 33334,
+    "retained_events": 33334,
+    "event_window_complete": true,
+    "metrics_complete": true,
+    "reported_token_ledger": 1028497,
+    "reported_token_limit": 1000000,
+    "session_closed": true,
+    "stream_settled": true,
+    "close_settled": true,
+    "agent_close_settled": true,
+    "terminal_end_event_present": false
+  },
+  "presentation": {
+    "snapshots": 28,
+    "model_input_snapshots": 28,
+    "all_profiled_code_one_definition": true,
+    "all_input_pairs_match": true,
+    "pairs": [
+      {
+        "call_sequence": 1,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 2,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 3,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 4,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 5,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 6,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 7,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 8,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 9,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 10,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 11,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 12,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 13,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 14,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 15,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 16,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 17,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 18,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 19,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 20,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 21,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 22,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 23,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 24,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 25,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 26,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 27,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      },
+      {
+        "call_sequence": 28,
+        "application": "profiled",
+        "profile_mode": "code",
+        "source_tool_count": 19,
+        "presented_tool_count": 1,
+        "presented_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "model_input_tool_count": 1,
+        "model_input_definitions_digest": "sha256:379fceada3f6e6c480d33fc4077b1ae30b2e0ed285d685b2ffc29740dfb58a9d",
+        "sequence_matches": true,
+        "definition_digest_matches": true
+      }
+    ],
+    "definition_names_directly_persisted": false,
+    "gateway_name_inference": "program: enforced code_projection returns only registered program; a nonempty count-one validated code presentation therefore identifies that gateway. Names are inferred from frozen implementation, not copied from a captured raw request."
+  },
+  "actual_execution": {
+    "fact_type_counts": {
+      "a3s.standing-context": 1,
+      "user.message": 1,
+      "context.sections": 1,
+      "model.turn": 28,
+      "tool.prepared": 29,
+      "tool.result": 29
+    },
+    "model_decision_call_names": {
+      "read": 8,
+      "ls": 2,
+      "bash": 18,
+      "write": 1
+    },
+    "prepared_tool_names": {
+      "read": 8,
+      "ls": 2,
+      "bash": 18,
+      "write": 1
+    },
+    "tool_effect_protocol_versions": {
+      "1": 28
+    },
+    "model_calls": 28,
+    "executed_parent_calls": 28,
+    "program_receipt_child_calls": 0,
+    "program_child_intervals_count": 0,
+    "vm_count": 17,
+    "conclusion": "Direct read/ls/bash/write names occur in final model.turn call/also; program has zero model decisions/preparations/receipts. This is not program lowering and cannot establish PTC execution or PTC speed gains."
+  },
+  "wire_input_boundary": {
+    "projected_definitions_passed_to_transport": true,
+    "source_chain": [
+      {
+        "path": "crates/code/core/src/fact_control/model_call.rs",
+        "line": 111,
+        "fact": "model_response projects tools then passes that vector into governed_model_response."
+      },
+      {
+        "path": "crates/code/core/src/agent/llm_invoker/fact_governance.rs",
+        "line": 394,
+        "fact": "Evidence captures the same self.tools passed to transport.complete_streaming at line501; nonstream fallback passes self.tools at line544."
+      },
+      {
+        "path": "crates/code/core/src/llm/openai.rs",
+        "line": 728,
+        "fact": "complete_streaming passes its tools argument to build_chat_request; line472 serializes convert_tools(tools), and convert_tools copies name/description/parameters at line349."
+      }
+    ],
+    "raw_http_request_or_provider_received_body_captured": false,
+    "limit": "Snapshots attest framework input definitions and frozen code serializes those definitions into the OpenAI-compatible request. No raw wire capture proves exact transmitted bytes or provider interpretation. Final facts omit structured-versus-recovered response origin, so this report cannot choose that response path.",
+    "profile_contract": "Definition-only presentation changes no executor authorization. decision_from_response accepts structured calls or recovered protocol calls; permissions remain the execution boundary. Manifest allowed_tools is wildcard."
+  },
+  "relevant_frozen_source_checks": [
+    {
+      "path": "crates/code/core/src/fact_control/model_call.rs",
+      "actual_sha256": "dc984e1b0c71fd16dc5fb8053fe59ecb40068cf174e82de7371a03c97f685c9e",
+      "manifest_sha256": "dc984e1b0c71fd16dc5fb8053fe59ecb40068cf174e82de7371a03c97f685c9e",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/fact_control/tool_results.rs",
+      "actual_sha256": "6f8282212c364a4d7baf0550de87040ffe68a157142847c2e8484b8cf58c6bb0",
+      "manifest_sha256": "6f8282212c364a4d7baf0550de87040ffe68a157142847c2e8484b8cf58c6bb0",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/agent/llm_invoker/fact_governance.rs",
+      "actual_sha256": "3a741a980a7cf87702f297ad2dcd3f1995adfca582747c7257fc7f9cf43821c6",
+      "manifest_sha256": "3a741a980a7cf87702f297ad2dcd3f1995adfca582747c7257fc7f9cf43821c6",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/tools/presentation.rs",
+      "actual_sha256": "44f7bba4eb0d3093aa4850b716a64335d235dd90ab7195de0f8af8d9d9677565",
+      "manifest_sha256": "44f7bba4eb0d3093aa4850b716a64335d235dd90ab7195de0f8af8d9d9677565",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/llm/openai.rs",
+      "actual_sha256": "4acec2e99f9ad765c904b831654cb2cad8afad0a861cc6635d80a28446deb720",
+      "manifest_sha256": "4acec2e99f9ad765c904b831654cb2cad8afad0a861cc6635d80a28446deb720",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/src/agent_api/session_builder.rs",
+      "actual_sha256": "beb5a35e661fac650c920bf428f4bb9675e9d03b8246c18d3d442ad9de5bbea7",
+      "manifest_sha256": "beb5a35e661fac650c920bf428f4bb9675e9d03b8246c18d3d442ad9de5bbea7",
+      "matched": true
+    },
+    {
+      "path": "crates/code/core/tests/extensibility/task_matrix.rs",
+      "actual_sha256": "996b60461d683374646d43a3765928576886b1578eb664cfa9f869284fa5c893",
+      "manifest_sha256": "996b60461d683374646d43a3765928576886b1578eb664cfa9f869284fa5c893",
+      "matched": true
+    }
+  ],
+  "independent_oracle_ref": "t023-v2-hc-01-oracle.json",
+  "privacy": "Only run/tool/presentation counts, digests, statuses, source identities and static call-site boundaries. No request bodies, commands, results, user input, credentials, headers or private model reasoning."
+}

@@ -112,7 +112,7 @@ impl Tool for WebFetchTool {
                 None => {
                     return Ok(invalid_fetch_argument(
                         "offset must be a non-negative integer",
-                    ))
+                    ));
                 }
             },
             None => 0,
@@ -123,7 +123,7 @@ impl Tool for WebFetchTool {
                 _ => {
                     return Ok(invalid_fetch_argument(
                         "max_chars must be a positive integer",
-                    ))
+                    ));
                 }
             },
             None => DEFAULT_MAX_CHARS,
@@ -162,7 +162,7 @@ impl Tool for WebFetchTool {
                 .with_error_kind(ToolErrorKind::Timeout {
                     op: "web_fetch".to_string(),
                     duration_ms: timeout_secs.saturating_mul(1_000),
-                }))
+                }));
             }
         };
 

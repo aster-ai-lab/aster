@@ -1,0 +1,34 @@
+{
+  "root": "/private/var/tmp/oh-7vehdiwn",
+  "source_revision": "2a1de03651aa71d31bfee92a314fa80eefeb6091",
+  "candidate": {
+    "root": "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-20261018/qualified-candidate-srvtus16",
+    "source_revision": "2a1de03651aa71d31bfee92a314fa80eefeb6091",
+    "sha256": {
+      "a3s-oci": "e612faddfea64c4200c1647e066d0d40b13adcc2eacb1ed1c1663e15dc94cd43",
+      "a3s-oci-krun-shim": "cbd22917202228f2be683ce3d0c192ce5d62a6d384e7147f291df3da3b277ccf"
+    }
+  },
+  "args": [
+    "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-20261018/qualified-candidate-srvtus16/a3s-oci",
+    "macos-hvf-host-service-smoke",
+    "--shim",
+    "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-20261018/qualified-candidate-srvtus16/a3s-oci-krun-shim",
+    "--system-image-manifest",
+    "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-20261018/system/system-image.json",
+    "--bundle",
+    "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/macos-vmm-confinement-20261018/fixture",
+    "--work-parent",
+    "/private/var/tmp/oh-7vehdiwn",
+    "--iterations",
+    "25",
+    "--source-revision",
+    "2a1de03651aa71d31bfee92a314fa80eefeb6091"
+  ],
+  "exit_code": 0,
+  "timed_out": false,
+  "environment_probe": {
+    "observed_worker_count": 28,
+    "ambient_sentinel_leaked": false
+  }
+}

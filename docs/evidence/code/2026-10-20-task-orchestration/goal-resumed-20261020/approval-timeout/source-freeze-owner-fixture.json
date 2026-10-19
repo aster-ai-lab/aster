@@ -1,0 +1,35 @@
+{
+  "frozen_at_utc": "2026-10-19T22:41:08.416867+00:00",
+  "source_count": 6,
+  "sources": [
+    {
+      "path": "crates/code/core/src/agent_api/governance_facade.rs",
+      "sha256": "9554a8ab5cdfe4a55ab77e12e66ea9e2c3327d9c14193d819f22e94f871e8119"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log/work_policy.rs",
+      "sha256": "464ad6099a6cb338178f8c2564c773961b456c992b8d6851cf0ddbf385239fd5"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log/work_policy/confirmation.rs",
+      "sha256": "b1a3eac7971b9b59c94653be011274aeda556906935f2f6423b9610697b0d30e"
+    },
+    {
+      "path": "crates/code/acp/src/agent.rs",
+      "sha256": "482d0b18add0f506feffdeea3a791d3d82ca4e32889636328f4a547db9e07b1c"
+    },
+    {
+      "path": "crates/code/acp/src/agent_tests.rs",
+      "sha256": "723cc414df2788637803b2054794f9b72194157605e12dc426e86bfa136697a2"
+    },
+    {
+      "path": "crates/code/acp/src/agent/approval_deadline_tests.rs",
+      "sha256": "fda409cea71fce412ac71e210bfd540af7cdd50690c5b8bdd5c24b96e41f748f"
+    }
+  ],
+  "change": "Owner exclusion regression fixture now holds the actual first provider call independent of its tool catalog, using a local controlled client for completion and streaming. Diagnostic races and unchanged 5s bound retained; no production changes after initial freeze. Initial and prior-binary failure plus actual early result retained in root logs.",
+  "root_test_filters": [
+    "two_actual_policy_sessions_share_original_owner_exclusion_and_legacy_refusal",
+    "agent_api::tests::fact_log::work_policy::confirmation"
+  ]
+}

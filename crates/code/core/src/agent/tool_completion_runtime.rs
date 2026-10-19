@@ -320,6 +320,7 @@ impl crate::agent::TurnEngine {
         metadata: &mut Option<serde_json::Value>,
         ledger: &mut crate::harness_loop::MutationLedger,
         reports: &mut Vec<crate::verification::VerificationReport>,
+        nested: Option<&crate::harness_loop::MutationLedger>,
     ) {
         if result.validate().is_err()
             || result.identity.tool_call_id != call.id
@@ -333,30 +334,31 @@ impl crate::agent::TurnEngine {
         {
             return;
         }
-        let Some(tool) = self.tool_executor.registry().get(&call.name) else {
-            return;
-        };
-        let mut tool_output = crate::tools::ToolOutput::success(output);
-        tool_output.metadata = metadata.clone();
-        let Some(proof) = tool.artifact_verification(&call.args, &tool_output) else {
-            return;
-        };
-        let Some(change) = result
-            .effects
-            .changes
-            .iter()
-            .find(|change| change.path == proof.file_path)
-        else {
-            return;
-        };
-        ledger.record_native_artifact_verification(
-            &call.name,
-            proof,
-            &change.after,
-            &self.tool_context.workspace,
-        );
-        if let Some(report) =
-            ledger.native_artifact_verification_report(&self.tool_context.workspace)
+        if let Some(tool) = self.tool_executor.registry().get(&call.name) {
+            let mut tool_output = crate::tools::ToolOutput::success(output);
+            tool_output.metadata = metadata.clone();
+            if let Some(proof) = tool.artifact_verification(&call.args, &tool_output) {
+                if let Some(change) = result
+                    .effects
+                    .changes
+                    .iter()
+                    .find(|change| change.path == proof.file_path)
+                {
+                    ledger.record_native_artifact_verification(
+                        &call.name,
+                        proof,
+                        &change.after,
+                        &self.tool_context.workspace,
+                    );
+                }
+            }
+        }
+        if let Some(nested) = nested {
+            ledger.absorb_nested_artifact_verifications(nested, &call.name, &result.effects, true);
+        }
+        if let Some(report) = ledger
+            .native_artifact_verification_report(&self.tool_context.workspace)
+            .or_else(|| ledger.nested_shell_verification_report(&self.tool_context.workspace))
         {
             metadata.get_or_insert_with(|| serde_json::json!({}))["verification_report"] =
                 report.to_value();

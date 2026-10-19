@@ -1,0 +1,734 @@
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  CopyPlus,
+  EyeOff,
+  Layers2,
+  Palette,
+  Pencil,
+  Plus,
+  Trash2,
+} from 'lucide-react';
+import {
+  type CSSProperties,
+  Fragment,
+  type KeyboardEvent,
+  type ReactNode,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from 'react';
+import { Popover } from '../../../design-system/primitives';
+import { officeMessage } from '../../../i18n/office-locale';
+import type { OfficeMessageCatalog } from '../../../i18n/office-messages';
+import type { WorkSpreadsheetSheet } from '../work-types';
+import { useOfficeDialog } from './office-dialog';
+import { OfficeMenuGroup } from './office-menu-group';
+import { moveOfficeMenuFocus } from './office-menu-keyboard';
+import { useOfficeMessages } from './office-messages-context';
+import {
+  isSpreadsheetSheetHidden,
+  type SpreadsheetSheetMoveDirection,
+  spreadsheetSheetNameValidationMessage,
+} from './spreadsheet-sheet-model';
+
+function spreadsheetSheetColors(messages: OfficeMessageCatalog) {
+  return [
+    {
+      color: '#4f7de8',
+      label: officeMessage(messages, 'spreadsheet.sheet.color.blue'),
+    },
+    {
+      color: '#35a37a',
+      label: officeMessage(messages, 'spreadsheet.sheet.color.green'),
+    },
+    {
+      color: '#d59a36',
+      label: officeMessage(messages, 'spreadsheet.sheet.color.orange'),
+    },
+    {
+      color: '#e06c53',
+      label: officeMessage(messages, 'spreadsheet.sheet.color.red'),
+    },
+    {
+      color: '#8b6ad8',
+      label: officeMessage(messages, 'spreadsheet.sheet.color.purple'),
+    },
+  ] as const;
+}
+
+export interface SpreadsheetSheetBarProps {
+  activeSheetId: string;
+  editable: boolean;
+  sheets: readonly WorkSpreadsheetSheet[];
+  onActivate(sheetId: string): void;
+  onCreate(): void;
+  onDelete(sheetId: string): void;
+  onDuplicate(sheetId: string): void;
+  onHide(sheetId: string): void;
+  onMove(sheetId: string, direction: SpreadsheetSheetMoveDirection): void;
+  onRename(sheetId: string, name: string): void;
+  onSetColor(sheetId: string, color: string | null): void;
+  onShow(sheetId: string): void;
+}
+
+export function SpreadsheetSheetBar({
+  activeSheetId,
+  editable,
+  sheets,
+  onActivate,
+  onCreate,
+  onDelete,
+  onDuplicate,
+  onHide,
+  onMove,
+  onRename,
+  onSetColor,
+  onShow,
+}: SpreadsheetSheetBarProps) {
+  const messages = useOfficeMessages();
+  const orderedSheets = [...sheets].sort(
+    (left, right) =>
+      (left.order ?? sheets.indexOf(left)) -
+      (right.order ?? sheets.indexOf(right)),
+  );
+  const visibleSheets = orderedSheets.filter(
+    (sheet) => !isSpreadsheetSheetHidden(sheet),
+  );
+  const listedSheets = editable ? orderedSheets : visibleSheets;
+  const [renamingSheetId, setRenamingSheetId] = useState<string | null>(null);
+  const [renameDraft, setRenameDraft] = useState('');
+  const [renameError, setRenameError] = useState<string | null>(null);
+  const renameErrorId = useId();
+  const renameInputRef = useRef<HTMLInputElement>(null);
+  const sheetTabsRef = useRef<HTMLDivElement>(null);
+  const sheetTabRefs = useRef(new Map<string, HTMLButtonElement>());
+  const officeDialog = useOfficeDialog();
+
+  useEffect(() => {
+    if (!renamingSheetId) return;
+    const frame = requestAnimationFrame(() => {
+      renameInputRef.current?.focus({ preventScroll: true });
+      renameInputRef.current?.select();
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [renamingSheetId]);
+
+  useEffect(() => {
+    if (!renameError) return;
+    const frame = requestAnimationFrame(() => {
+      renameInputRef.current?.parentElement?.scrollIntoView?.({
+        behavior: 'auto',
+        block: 'nearest',
+        inline: 'nearest',
+      });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [renameError]);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      scrollSpreadsheetSheetTabIntoView(
+        sheetTabRefs.current.get(activeSheetId),
+      );
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [activeSheetId]);
+
+  useEffect(() => {
+    const sheetTabs = sheetTabsRef.current;
+    if (!sheetTabs || typeof ResizeObserver === 'undefined') return;
+    let frame: number | null = null;
+    const observer = new ResizeObserver(() => {
+      if (frame !== null) cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        frame = null;
+        scrollSpreadsheetSheetTabIntoView(
+          sheetTabRefs.current.get(activeSheetId),
+        );
+      });
+    });
+    observer.observe(sheetTabs);
+    return () => {
+      observer.disconnect();
+      if (frame !== null) cancelAnimationFrame(frame);
+    };
+  }, [activeSheetId]);
+
+  const beginRename = (sheet: WorkSpreadsheetSheet) => {
+    setRenameDraft(sheet.name);
+    setRenameError(null);
+    setRenamingSheetId(sheet.id ?? null);
+  };
+  const finishRename = (
+    sheet: WorkSpreadsheetSheet,
+    commit: boolean,
+    restoreTabFocus = false,
+  ) => {
+    if (commit && sheet.id && renameDraft.trim() !== sheet.name) {
+      const validationMessage = spreadsheetSheetNameValidationMessage(
+        sheets,
+        sheet.id,
+        renameDraft,
+      );
+      if (validationMessage) {
+        setRenameError(validationMessage);
+        if (restoreTabFocus)
+          renameInputRef.current?.focus({ preventScroll: true });
+        return;
+      }
+      onRename(sheet.id, renameDraft);
+    }
+    setRenameError(null);
+    setRenamingSheetId(null);
+    if (restoreTabFocus && sheet.id) {
+      requestAnimationFrame(() => {
+        const tab = sheetTabRefs.current.get(sheet.id ?? '');
+        tab?.focus({ preventScroll: true });
+        scrollSpreadsheetSheetTabIntoView(tab);
+      });
+    }
+  };
+  const requestDelete = async (sheet: WorkSpreadsheetSheet) => {
+    const sheetId = sheet.id;
+    if (!sheetId) return;
+    const confirmed = await officeDialog.confirm({
+      title: officeMessage(messages, 'spreadsheet.sheet.deleteTitle', {
+        name: sheet.name,
+      }),
+      description: officeMessage(
+        messages,
+        'spreadsheet.sheet.deleteDescription',
+      ),
+      confirmLabel: officeMessage(messages, 'spreadsheet.sheet.deleteConfirm'),
+      confirmTone: 'danger',
+      restoreFocusTarget: () => sheetTabRefs.current.get(sheetId) ?? null,
+    });
+    if (confirmed) onDelete(sheetId);
+  };
+  const activateSheetFromTabKeyboard = (
+    sheetId: string,
+    key: string,
+  ): boolean => {
+    const currentIndex = visibleSheets.findIndex(
+      (candidate) => candidate.id === sheetId,
+    );
+    if (currentIndex < 0) return false;
+    const targetIndex =
+      key === 'Home'
+        ? 0
+        : key === 'End'
+          ? visibleSheets.length - 1
+          : key === 'ArrowRight'
+            ? (currentIndex + 1) % visibleSheets.length
+            : key === 'ArrowLeft'
+              ? (currentIndex - 1 + visibleSheets.length) % visibleSheets.length
+              : -1;
+    const targetId = visibleSheets[targetIndex]?.id;
+    if (!targetId || targetId === sheetId) return false;
+    onActivate(targetId);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const target = sheetTabRefs.current.get(targetId);
+        target?.focus({ preventScroll: true });
+        scrollSpreadsheetSheetTabIntoView(target);
+      });
+    });
+    return true;
+  };
+  const activateAdjacentSheet = (direction: -1 | 1) => {
+    if (visibleSheets.length < 2) return;
+    const activeIndex = visibleSheets.findIndex(
+      (sheet) => sheet.id === activeSheetId,
+    );
+    const nextIndex =
+      (Math.max(0, activeIndex) + direction + visibleSheets.length) %
+      visibleSheets.length;
+    const targetId = visibleSheets[nextIndex]?.id;
+    if (targetId) onActivate(targetId);
+  };
+
+  return [
+    <nav
+      key="sheet-bar"
+      className="work-spreadsheet-sheet-bar"
+      aria-label={officeMessage(messages, 'spreadsheet.sheet.barAria')}
+      data-editable={editable ? 'true' : 'false'}
+    >
+      <div className="work-spreadsheet-sheet-tools">
+        <button
+          type="button"
+          className="work-spreadsheet-sheet-navigation"
+          aria-label={officeMessage(messages, 'spreadsheet.sheet.prevAria')}
+          aria-keyshortcuts="Control+PageUp Meta+PageUp"
+          title={officeMessage(messages, 'spreadsheet.sheet.prevTitle')}
+          disabled={visibleSheets.length < 2}
+          onClick={() => activateAdjacentSheet(-1)}
+        >
+          <ChevronLeft size={14} />
+        </button>
+        <button
+          type="button"
+          className="work-spreadsheet-sheet-navigation"
+          aria-label={officeMessage(messages, 'spreadsheet.sheet.nextAria')}
+          aria-keyshortcuts="Control+PageDown Meta+PageDown"
+          title={officeMessage(messages, 'spreadsheet.sheet.nextTitle')}
+          disabled={visibleSheets.length < 2}
+          onClick={() => activateAdjacentSheet(1)}
+        >
+          <ChevronRight size={14} />
+        </button>
+        <Popover
+          label={officeMessage(messages, 'spreadsheet.sheet.listLabel')}
+          panelLabel={officeMessage(messages, 'spreadsheet.sheet.listLabel')}
+          panelRole="menu"
+          placement="top-start"
+          portal
+          panelClassName="work-office-context-menu work-spreadsheet-sheet-popover work-spreadsheet-sheet-list"
+          focusFirstOnOpen
+          onPanelKeyDown={moveOfficeMenuFocus}
+          trigger={(triggerProps) => (
+            <button
+              {...triggerProps}
+              title={officeMessage(messages, 'spreadsheet.sheet.listTitle')}
+            >
+              <Layers2 size={14} />
+            </button>
+          )}
+        >
+          {(close) =>
+            listedSheets.map((sheet) => (
+              <button
+                key={sheet.id ?? sheet.name}
+                type="button"
+                role="menuitemradio"
+                aria-checked={sheet.id === activeSheetId}
+                tabIndex={-1}
+                onClick={() => {
+                  close();
+                  if (!sheet.id) return;
+                  if (isSpreadsheetSheetHidden(sheet)) onShow(sheet.id);
+                  else onActivate(sheet.id);
+                }}
+              >
+                {sheet.id === activeSheetId ? (
+                  <Check size={14} />
+                ) : isSpreadsheetSheetHidden(sheet) ? (
+                  <EyeOff size={14} />
+                ) : (
+                  <span aria-hidden="true" />
+                )}
+                <span>{sheet.name}</span>
+              </button>
+            ))
+          }
+        </Popover>
+        {editable ? (
+          <button
+            type="button"
+            className="work-spreadsheet-sheet-add"
+            aria-label={officeMessage(messages, 'spreadsheet.sheet.addAria')}
+            aria-keyshortcuts="Shift+F11 Alt+Shift+F1"
+            title={officeMessage(messages, 'spreadsheet.sheet.addTitle')}
+            onClick={onCreate}
+          >
+            <Plus size={15} />
+          </button>
+        ) : null}
+      </div>
+
+      <div
+        ref={sheetTabsRef}
+        className="work-spreadsheet-sheet-tabs"
+        role="group"
+        aria-label={officeMessage(messages, 'spreadsheet.sheet.listLabel')}
+      >
+        {visibleSheets.map((sheet, index) => {
+          const sheetId = sheet.id ?? '';
+          const active = sheetId === activeSheetId;
+          const colorStyle = sheet.color
+            ? ({ '--work-sheet-color': sheet.color } as CSSProperties)
+            : undefined;
+          return (
+            <div
+              key={sheetId || sheet.name}
+              className={`work-spreadsheet-sheet-tab${active ? ' active' : ''}${renamingSheetId === sheetId ? ' renaming' : ''}${renamingSheetId === sheetId && renameError ? ' invalid' : ''}`}
+              style={colorStyle}
+            >
+              {renamingSheetId === sheetId ? (
+                <>
+                  <input
+                    ref={renameInputRef}
+                    aria-label={officeMessage(
+                      messages,
+                      'spreadsheet.sheet.renameAria',
+                      { name: sheet.name },
+                    )}
+                    aria-invalid={renameError ? 'true' : undefined}
+                    aria-describedby={renameError ? renameErrorId : undefined}
+                    aria-errormessage={renameError ? renameErrorId : undefined}
+                    data-office-shortcuts="ignore"
+                    data-office-escape-consumer="true"
+                    value={renameDraft}
+                    maxLength={31}
+                    onChange={(event) => {
+                      const nextValue = event.currentTarget.value;
+                      setRenameDraft(nextValue);
+                      if (renameError) {
+                        setRenameError(
+                          spreadsheetSheetNameValidationMessage(
+                            sheets,
+                            sheetId,
+                            nextValue,
+                          ),
+                        );
+                      }
+                    }}
+                    onBlur={() => finishRename(sheet, true)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter') {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        finishRename(sheet, true, true);
+                      } else if (event.key === 'Escape') {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        finishRename(sheet, false, true);
+                      }
+                    }}
+                  />
+                  {renameError ? (
+                    <span
+                      id={renameErrorId}
+                      className="work-spreadsheet-sheet-rename-error"
+                      role="alert"
+                      title={renameError}
+                    >
+                      {renameError}
+                    </span>
+                  ) : null}
+                </>
+              ) : (
+                <button
+                  ref={(node) => {
+                    if (node) sheetTabRefs.current.set(sheetId, node);
+                    else sheetTabRefs.current.delete(sheetId);
+                  }}
+                  type="button"
+                  aria-current={active ? 'true' : undefined}
+                  tabIndex={active ? 0 : -1}
+                  title={sheet.name}
+                  onClick={() => sheetId && onActivate(sheetId)}
+                  onDoubleClick={() => editable && beginRename(sheet)}
+                  onContextMenu={(event) => {
+                    if (!editable) return;
+                    event.preventDefault();
+                    openSpreadsheetSheetMenu(event.currentTarget);
+                  }}
+                  onKeyDown={(event) => {
+                    if (
+                      editable &&
+                      (event.key === 'ContextMenu' ||
+                        (event.key === 'F10' && event.shiftKey))
+                    ) {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      openSpreadsheetSheetMenu(event.currentTarget);
+                      return;
+                    }
+                    if (!activateSheetFromTabKeyboard(sheetId, event.key)) {
+                      return;
+                    }
+                    event.preventDefault();
+                    event.stopPropagation();
+                  }}
+                >
+                  <span>{sheet.name}</span>
+                </button>
+              )}
+              {editable && renamingSheetId !== sheetId ? (
+                <SpreadsheetSheetMenu
+                  sheet={sheet}
+                  canDelete={sheets.length > 1}
+                  canHide={visibleSheets.length > 1}
+                  canMoveLeft={index > 0}
+                  canMoveRight={index < visibleSheets.length - 1}
+                  onDelete={(target) => void requestDelete(target)}
+                  onDuplicate={onDuplicate}
+                  onHide={onHide}
+                  onMove={onMove}
+                  onRename={beginRename}
+                  onSetColor={onSetColor}
+                />
+              ) : null}
+            </div>
+          );
+        })}
+      </div>
+    </nav>,
+    <Fragment key="dialog">{officeDialog.dialog}</Fragment>,
+  ];
+}
+
+function scrollSpreadsheetSheetTabIntoView(
+  target: HTMLButtonElement | undefined,
+): void {
+  (target?.parentElement ?? target)?.scrollIntoView?.({
+    behavior: 'auto',
+    block: 'nearest',
+    inline: 'nearest',
+  });
+}
+
+function openSpreadsheetSheetMenu(sheetTab: HTMLButtonElement): void {
+  const trigger = sheetTab.parentElement?.querySelector<HTMLButtonElement>(
+    '.work-spreadsheet-sheet-options',
+  );
+  if (!trigger) return;
+  trigger.focus({ preventScroll: true });
+  trigger.click();
+}
+
+function SpreadsheetSheetMenu({
+  sheet,
+  canDelete,
+  canHide,
+  canMoveLeft,
+  canMoveRight,
+  onDelete,
+  onDuplicate,
+  onHide,
+  onMove,
+  onRename,
+  onSetColor,
+}: {
+  sheet: WorkSpreadsheetSheet;
+  canDelete: boolean;
+  canHide: boolean;
+  canMoveLeft: boolean;
+  canMoveRight: boolean;
+  onDelete(sheet: WorkSpreadsheetSheet): void;
+  onDuplicate(sheetId: string): void;
+  onHide(sheetId: string): void;
+  onMove(sheetId: string, direction: SpreadsheetSheetMoveDirection): void;
+  onRename(sheet: WorkSpreadsheetSheet): void;
+  onSetColor(sheetId: string, color: string | null): void;
+}) {
+  const messages = useOfficeMessages();
+  const sheetId = sheet.id ?? '';
+  const colors = spreadsheetSheetColors(messages);
+  return (
+    <Popover
+      label={officeMessage(messages, 'spreadsheet.sheet.optionsAria', {
+        name: sheet.name,
+      })}
+      panelLabel={officeMessage(messages, 'spreadsheet.sheet.optionsPanel', {
+        name: sheet.name,
+      })}
+      panelRole="menu"
+      placement="top-start"
+      portal
+      panelClassName="work-office-context-menu work-spreadsheet-sheet-popover"
+      focusFirstOnOpen
+      onPanelKeyDown={moveSpreadsheetSheetMenuFocus}
+      trigger={(triggerProps, { open }) => (
+        <button
+          {...triggerProps}
+          className="work-spreadsheet-sheet-options"
+          aria-keyshortcuts="Shift+F10"
+          title={officeMessage(messages, 'spreadsheet.sheet.optionsAria', {
+            name: sheet.name,
+          })}
+        >
+          <ChevronDown
+            size={12}
+            className={open ? 'open' : undefined}
+            aria-hidden="true"
+          />
+        </button>
+      )}
+    >
+      {(close) => (
+        <>
+          <SheetMenuButton
+            icon={<Pencil size={14} />}
+            label={officeMessage(messages, 'spreadsheet.sheet.rename')}
+            onClick={() => {
+              close();
+              onRename(sheet);
+            }}
+          />
+          <SheetMenuButton
+            icon={<CopyPlus size={14} />}
+            label={officeMessage(messages, 'spreadsheet.sheet.duplicate')}
+            onClick={() => {
+              close();
+              onDuplicate(sheetId);
+            }}
+          />
+          <SheetMenuButton
+            icon={<EyeOff size={14} />}
+            label={officeMessage(messages, 'spreadsheet.sheet.hide')}
+            disabled={!canHide}
+            onClick={() => {
+              close();
+              onHide(sheetId);
+            }}
+          />
+          <OfficeMenuGroup
+            className="work-spreadsheet-sheet-color-row"
+            ariaLabel={officeMessage(messages, 'spreadsheet.sheet.tabColor')}
+          >
+            <div className="work-spreadsheet-sheet-color-row-label">
+              <Palette size={14} aria-hidden="true" />
+              <span>
+                {officeMessage(messages, 'spreadsheet.sheet.tabColor')}
+              </span>
+            </div>
+            <div>
+              {colors.map(({ color, label }) => (
+                <button
+                  key={color}
+                  type="button"
+                  role="menuitemradio"
+                  aria-checked={sheet.color === color}
+                  tabIndex={-1}
+                  aria-label={officeMessage(
+                    messages,
+                    'spreadsheet.sheet.tabColorSwatch',
+                    { label },
+                  )}
+                  title={officeMessage(
+                    messages,
+                    'spreadsheet.sheet.tabColorSwatch',
+                    { label },
+                  )}
+                  className={sheet.color === color ? 'active' : undefined}
+                  style={{ backgroundColor: color }}
+                  onClick={() => {
+                    close();
+                    onSetColor(sheetId, color);
+                  }}
+                />
+              ))}
+              <button
+                type="button"
+                role="menuitemradio"
+                aria-checked={!sheet.color}
+                tabIndex={-1}
+                aria-label={officeMessage(
+                  messages,
+                  'spreadsheet.sheet.clearTabColor',
+                )}
+                title={officeMessage(
+                  messages,
+                  'spreadsheet.sheet.clearTabColor',
+                )}
+                className="clear"
+                onClick={() => {
+                  close();
+                  onSetColor(sheetId, null);
+                }}
+              />
+            </div>
+          </OfficeMenuGroup>
+          <hr />
+          <SheetMenuButton
+            icon={<ArrowLeft size={14} />}
+            label={officeMessage(messages, 'spreadsheet.sheet.moveLeft')}
+            disabled={!canMoveLeft}
+            onClick={() => {
+              close();
+              onMove(sheetId, -1);
+            }}
+          />
+          <SheetMenuButton
+            icon={<ArrowRight size={14} />}
+            label={officeMessage(messages, 'spreadsheet.sheet.moveRight')}
+            disabled={!canMoveRight}
+            onClick={() => {
+              close();
+              onMove(sheetId, 1);
+            }}
+          />
+          <hr />
+          <SheetMenuButton
+            icon={<Trash2 size={14} />}
+            label={officeMessage(messages, 'spreadsheet.sheet.delete')}
+            danger
+            disabled={!canDelete}
+            onClick={() => {
+              close();
+              onDelete(sheet);
+            }}
+          />
+        </>
+      )}
+    </Popover>
+  );
+}
+
+function moveSpreadsheetSheetMenuFocus(
+  event: KeyboardEvent<HTMLElement>,
+): boolean {
+  if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+    const colorRow = event.currentTarget.querySelector(
+      '.work-spreadsheet-sheet-color-row',
+    );
+    const active = document.activeElement;
+    if (
+      colorRow instanceof HTMLElement &&
+      active instanceof HTMLElement &&
+      colorRow.contains(active)
+    ) {
+      const swatches = [
+        ...colorRow.querySelectorAll<HTMLButtonElement>(
+          'button[role="menuitemradio"]:not(:disabled)',
+        ),
+      ];
+      const current = swatches.indexOf(active as HTMLButtonElement);
+      if (current >= 0 && swatches.length > 0) {
+        event.preventDefault();
+        const delta = event.key === 'ArrowRight' ? 1 : -1;
+        swatches[
+          (current + delta + swatches.length) % swatches.length
+        ]?.focus();
+        return true;
+      }
+    }
+  }
+  return moveOfficeMenuFocus(event);
+}
+
+function SheetMenuButton({
+  icon,
+  label,
+  danger = false,
+  disabled = false,
+  onClick,
+}: {
+  icon: ReactNode;
+  label: string;
+  danger?: boolean;
+  disabled?: boolean;
+  onClick(): void;
+}) {
+  return (
+    <button
+      type="button"
+      role="menuitem"
+      tabIndex={-1}
+      className={danger ? 'danger' : undefined}
+      disabled={disabled}
+      onClick={onClick}
+    >
+      {icon}
+      <span>{label}</span>
+    </button>
+  );
+}

@@ -1,0 +1,2468 @@
+import type { Editor, Extensions } from '@tiptap/core';
+import Placeholder from '@tiptap/extension-placeholder';
+import type { Node as ProseMirrorNode } from '@tiptap/pm/model';
+import type { Transaction } from '@tiptap/pm/state';
+import { EditorContent, useEditor } from '@tiptap/react';
+import {
+  type CSSProperties,
+  type FocusEvent,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import type { WorkOfficeCollaborationSession } from '../../../collaboration/office-collaboration';
+import { documentFrameCaretPosition } from '../../../collaboration/office-collaboration-frame-caret';
+import type { WorkOfficeCollaborationParticipant } from '../../../collaboration/office-collaboration-presence';
+import {
+  createWorkOfficeDocumentCollaborationBinding,
+  readWorkOfficeDocumentCollaboration,
+  type WorkOfficeDocumentCollaborationBinding,
+} from '../../../collaboration/office-document-collaboration';
+import { useDialogFocusScope } from '../../../design-system/primitives/overlay/dialog-focus-scope';
+import { officeMessage } from '../../../i18n/office-locale';
+import {
+  isWorkspaceContextMenuKeyboardEvent,
+  type WorkspaceContextMenuEvent,
+  workspaceContextMenuPosition,
+} from '../../workspace/components/workspace-context-menu';
+import { WorkEditorLoadingState } from '../components/work-editor-loading-state';
+import type { WorkEditorAgentRequest } from '../work-agent-request';
+import {
+  collectDocumentChanges,
+  type WorkDocumentChangeKind,
+} from '../work-document-changes';
+import { documentTransactionsOnlyHydrateChunks } from '../work-document-chunk-node';
+import { documentCitationCount } from '../work-document-citation-nodes';
+import {
+  collectDocumentCommentAnchors,
+  retainAnchoredDocumentComments,
+} from '../work-document-comments';
+import { createWorkDocumentExtensions } from '../work-document-extensions';
+import type { WorkDocumentLayoutFont } from '../work-document-fonts';
+import { millimetersToPixels } from '../work-document-layout';
+import {
+  documentLazyHtmlProjection,
+  materializeLazyDocumentEditorRoot,
+} from '../work-document-lazy-model';
+import {
+  materializeLazyDocumentUpdate,
+  transferLazyDocumentTextStatistics,
+} from '../work-document-lazy-update';
+import {
+  createMailMergeFieldContextResolver,
+  normalizeMailMergeSource,
+  type WorkDocumentMailMergeSource,
+} from '../work-document-mail-merge';
+import {
+  createSchemaDerivedWorkDocumentModel,
+  documentModelForContent,
+  documentModelHasTrustedInitialIntegrityFeatures,
+  resolveWorkDocumentEditorInput,
+} from '../work-document-model';
+import { serializeWorkDocumentNode } from '../work-document-model-codec';
+import { normalizeDocumentPageChrome } from '../work-document-page-chrome';
+import {
+  documentPageColor,
+  normalizeDocumentPageColor,
+} from '../work-document-page-color';
+import { documentPageSurfaceGeometry } from '../work-document-page-frames';
+import { resolveDocumentPageMargins } from '../work-document-page-margins';
+import { resolveDocumentPageSize } from '../work-document-page-size';
+import {
+  DocumentPagination,
+  documentPageMetrics,
+} from '../work-document-pagination';
+import { documentParagraphIndent } from '../work-document-paragraph-formatting';
+import type {
+  WorkDocumentReviewConflict,
+  WorkDocumentReviewConflictEvent,
+} from '../work-document-review-conflicts';
+import {
+  documentInitialSectionLayout,
+  normalizeDocumentHtml,
+  syncDocumentContentFromHtml,
+} from '../work-document-section';
+import { activeDocumentSection } from '../work-document-section-editor';
+import {
+  createWorkDocumentSelectionSnapshot,
+  documentPlainTextAsHtml,
+  type WorkGetDocumentSelectionMenuItems,
+} from '../work-document-selection-menu';
+import { documentParagraphTabStops } from '../work-document-tab-stops';
+import { documentModelUsesWindowing } from '../work-document-windowing';
+import { createWorkId } from '../work-templates';
+import type { WorkDocumentContent, WorkDocumentNode } from '../work-types';
+import {
+  type ControlledCompositionSnapshot,
+  ControlledEditorComposition,
+} from './controlled-editor-composition';
+import { DocumentChangesPanel } from './document-changes-panel';
+import { DocumentCitationsPanel } from './document-citations-panel';
+import { DocumentCommentsPanel } from './document-comments-panel';
+import { restoreDocumentEditorFocus } from './document-editor-focus';
+import { fallbackPaginationPageDescriptor } from './document-editor-pagination';
+import {
+  documentCurrentPage,
+  documentPageCount,
+  documentTextStatistics,
+} from './document-editor-support';
+import { shouldPublishDocumentUpdate } from './document-external-content';
+import {
+  selectedDocumentFieldIds,
+  syncDocumentFieldCodeClasses,
+  toggleDocumentFieldCodeOverrides,
+} from './document-field-code-overrides';
+import {
+  type DocumentFindReplaceMode,
+  DocumentFindReplacePanel,
+} from './document-find-replace-panel';
+import {
+  DocumentLayoutPanel,
+  type DocumentLayoutPanelTab,
+} from './document-layout-panel';
+import { DocumentMailMergeImportDialog } from './document-mail-merge-import-dialog';
+import { DocumentMailMergeRecipientFilterDialog } from './document-mail-merge-recipient-filter-dialog';
+import { DocumentNavigationPanel } from './document-navigation-panel';
+import { DocumentPageChromeRichTextEditor } from './document-page-chrome-editor';
+import { DocumentPageStack } from './document-page-stack';
+import { DocumentRuler } from './document-ruler';
+import {
+  DocumentSelectionContextMenu,
+  type DocumentSelectionMenuState,
+} from './document-selection-context-menu';
+import { DocumentSelectionToolbar } from './document-selection-toolbar';
+import { DocumentStatisticsDialog } from './document-statistics-dialog';
+import { DocumentStatusBar } from './document-status-bar';
+import { DocumentToolbar, type DocumentViewMode } from './document-toolbar';
+import { DocumentVerticalRuler } from './document-vertical-ruler';
+import {
+  clampDocumentZoom,
+  type DocumentZoomFit,
+  documentZoomForFit,
+} from './document-zoom';
+import { useOfficeCollaborationLocationNavigator } from './office-collaboration-presence-context';
+import {
+  OfficeTiptapPresenceLayer,
+  useOfficePublishPresenceLocation,
+} from './office-collaboration-presence-ui';
+import { OfficeFileInput, useOfficeDialog } from './office-controls';
+import { useOfficeEditorInitialFocus } from './office-editor-focus-handoff';
+import { useOfficeMessages } from './office-messages-context';
+import {
+  useOfficeTaskPaneEscape,
+  useOfficeTaskPaneModal,
+} from './office-task-pane';
+import { mergeOfficeTiptapExtensions } from './office-tiptap-extensions';
+import { useDocumentComments } from './use-document-comments';
+import { useDocumentComparison } from './use-document-comparison';
+import { useDocumentInsertCommands } from './use-document-insert-commands';
+import { useDocumentLayoutFonts } from './use-document-layout-fonts';
+import { useDocumentPageChrome } from './use-document-page-chrome';
+import { useDocumentPagination } from './use-document-pagination';
+import {
+  DocumentReviewConflictNotice,
+  useDocumentReviewConflicts,
+} from './use-document-review-conflicts';
+import { useOfficeEditorWheelZoom } from './use-office-editor-wheel-zoom';
+import {
+  type WorkOfficeFileAction,
+  WorkOfficePreviewBar,
+  WorkOfficeStatusBar,
+} from './work-office-chrome';
+
+export interface DocumentEditorProps {
+  artifactId?: string;
+  autoFocus?: boolean;
+  collaboration?: WorkOfficeCollaborationSession;
+  content: WorkDocumentContent;
+  extensions?: Extensions;
+  preview: boolean;
+  defaultRibbonCollapsed?: boolean;
+  saveStatus?: string;
+  kernelWasmUrl?: string;
+  layoutFonts?: readonly WorkDocumentLayoutFont[];
+  fileActions?: readonly WorkOfficeFileAction[];
+  getSelectionMenuItems?: WorkGetDocumentSelectionMenuItems;
+  /**
+   * Host-owned mail-merge data source for MERGEFIELD preview. Typed object
+   * (not a raw backend name) so hosts can swap CSV/DB providers without
+   * changing the editor contract. When omitted, the editor keeps a source
+   * created by Import recipients.
+   */
+  mailMergeSource?: WorkDocumentMailMergeSource | null;
+  /**
+   * Notifies the host when the editor updates mail-merge source state
+   * (imported recipients or the recipient filter).
+   */
+  onMailMergeSourceChange?: (source: WorkDocumentMailMergeSource) => void;
+  /** Opens the comment task pane on first mount. Hosts use this for review. */
+  defaultCommentsOpen?: boolean;
+  /**
+   * Keeps the right-hand comment pane closed. Comment marks can still sit on
+   * the text when a host anchors them from its own conversation.
+   */
+  hideCommentsPanel?: boolean;
+  onChange: (content: WorkDocumentContent) => void;
+  /** Hands the live TipTap editor to the host without binding Yjs Awareness. */
+  onEditorReady?: (editor: Editor) => void;
+  onAgentRequest?: (request: WorkEditorAgentRequest) => void | Promise<void>;
+  onReviewConflict?: (event: WorkDocumentReviewConflictEvent) => void;
+}
+
+const EMPTY_DOCUMENT_LAYOUT_FONTS: readonly WorkDocumentLayoutFont[] = [];
+const EMPTY_DOCUMENT_EXTENSIONS: Extensions = [];
+
+type DocumentTaskPane =
+  | DocumentFindReplaceMode
+  | 'citations'
+  | 'changes'
+  | 'layout'
+  | 'navigation';
+
+function createTrackedDocumentChange(
+  _kind: WorkDocumentChangeKind,
+  actor: WorkOfficeCollaborationSession['actor'] | undefined,
+  fallbackAuthor: string,
+) {
+  return {
+    id: createWorkId('change'),
+    ...(actor ? { actorId: actor.id } : {}),
+    author: actor?.name ?? fallbackAuthor,
+    date: new Date().toISOString(),
+  };
+}
+
+interface DocumentCollaborationBridge {
+  getContent(): WorkDocumentContent | null;
+  isTracking(): boolean;
+  onContentChange(content: WorkDocumentContent): void;
+  onTrackingChange(enabled: boolean): void;
+}
+
+interface DocumentEditorSurfaceProps extends DocumentEditorProps {
+  collaborationBinding?: WorkOfficeDocumentCollaborationBinding;
+  collaborationBridge?: { current: DocumentCollaborationBridge };
+  collaborationInitialContent?: WorkDocumentContent;
+}
+
+interface PendingLazyDocumentPublication {
+  before: ProseMirrorNode;
+  cancel: () => void;
+  editor: Editor;
+}
+
+export function DocumentEditor(props: DocumentEditorProps) {
+  if (!props.collaboration) return <DocumentEditorSurface {...props} />;
+  return (
+    <CollaborativeDocumentEditor
+      {...props}
+      collaboration={props.collaboration}
+    />
+  );
+}
+
+function CollaborativeDocumentEditor(
+  props: DocumentEditorProps & {
+    collaboration: WorkOfficeCollaborationSession;
+  },
+) {
+  const messages = useOfficeMessages();
+  const { collaboration, extensions = EMPTY_DOCUMENT_EXTENSIONS } = props;
+  const collaborationRef = useRef(collaboration);
+  const extensionsRef = useRef(extensions);
+  if (collaborationRef.current !== collaboration) {
+    throw new Error(
+      'DocumentEditor collaboration sessions cannot be replaced while mounted. Remount the editor for another shared document.',
+    );
+  }
+  if (extensionsRef.current !== extensions) {
+    throw new Error(
+      'DocumentEditor extensions cannot be replaced while a collaboration session is mounted. Remount the editor to change its schema.',
+    );
+  }
+  const initial = useRef<WorkDocumentContent | null>(null);
+  if (!initial.current) {
+    initial.current = readWorkOfficeDocumentCollaboration(collaboration);
+  }
+  const bridge = useRef<DocumentCollaborationBridge>({
+    getContent: () => initial.current,
+    isTracking: () =>
+      collaboration.mode === 'suggest' ||
+      Boolean(initial.current?.trackChanges),
+    onContentChange: () => undefined,
+    onTrackingChange: () => undefined,
+  });
+  const [binding, setBinding] =
+    useState<WorkOfficeDocumentCollaborationBinding>();
+  const bindingRef = useRef<WorkOfficeDocumentCollaborationBinding | undefined>(
+    undefined,
+  );
+  const disposeTokenRef = useRef<object | undefined>(undefined);
+
+  useEffect(() => {
+    disposeTokenRef.current = undefined;
+    const current =
+      bindingRef.current ??
+      createWorkOfficeDocumentCollaborationBinding(collaboration, {
+        additionalExtensions: extensionsRef.current,
+        workExtensions: {
+          getContent: () => bridge.current.getContent(),
+          isTracking: () => bridge.current.isTracking(),
+          createChange: (kind: WorkDocumentChangeKind) =>
+            createTrackedDocumentChange(
+              kind,
+              collaboration.actor,
+              officeMessage(messages, 'document.editor.collabAuthor'),
+            ),
+          onContentChange: (content: WorkDocumentContent) =>
+            bridge.current.onContentChange(content),
+          onTrackingChange: (enabled: boolean) =>
+            bridge.current.onTrackingChange(enabled),
+        },
+      });
+    bindingRef.current = current;
+    setBinding(current);
+    return () => {
+      const token = {};
+      disposeTokenRef.current = token;
+      queueMicrotask(() => {
+        if (disposeTokenRef.current !== token) return;
+        if (bindingRef.current === current) bindingRef.current = undefined;
+        current.destroy();
+      });
+    };
+  }, [collaboration, messages]);
+
+  if (!binding) {
+    return (
+      <WorkEditorLoadingState
+        title={officeMessage(messages, 'document.editor.loadingCollab')}
+      />
+    );
+  }
+  return (
+    <DocumentEditorSurface
+      {...props}
+      collaborationBinding={binding}
+      collaborationBridge={bridge}
+      collaborationInitialContent={initial.current}
+    />
+  );
+}
+
+function DocumentEditorSurface({
+  artifactId,
+  autoFocus = true,
+  collaboration,
+  collaborationBinding,
+  collaborationBridge,
+  collaborationInitialContent,
+  content,
+  extensions = EMPTY_DOCUMENT_EXTENSIONS,
+  preview: requestedPreview,
+  defaultRibbonCollapsed = false,
+  saveStatus: saveStatusProp,
+  kernelWasmUrl,
+  layoutFonts = EMPTY_DOCUMENT_LAYOUT_FONTS,
+  fileActions,
+  getSelectionMenuItems,
+  mailMergeSource = null,
+  onMailMergeSourceChange,
+  defaultCommentsOpen = false,
+  hideCommentsPanel = false,
+  onChange,
+  onEditorReady,
+  onAgentRequest,
+  onReviewConflict,
+}: DocumentEditorSurfaceProps) {
+  const messages = useOfficeMessages();
+  const saveStatus =
+    saveStatusProp ??
+    officeMessage(messages, 'document.editor.saveStatus.autoSaved');
+  const commentOnly = collaboration?.mode === 'comment' && !requestedPreview;
+  const suggestionOnly =
+    collaboration?.mode === 'suggest' &&
+    Boolean(collaboration.actor) &&
+    !requestedPreview;
+  const collaborationInteractive =
+    !collaboration ||
+    collaboration.mode === 'edit' ||
+    collaboration.mode === 'comment' ||
+    (collaboration.mode === 'suggest' && Boolean(collaboration.actor));
+  const preview = requestedPreview || !collaborationInteractive;
+  const canEditDocument =
+    !preview && (!collaboration || collaboration.mode === 'edit');
+  const canCommentDocument =
+    !preview &&
+    (!collaboration ||
+      collaboration.mode === 'edit' ||
+      (collaboration.mode === 'comment' && Boolean(collaboration.actor)));
+  const canReviewDocumentChanges = canEditDocument || suggestionOnly;
+  const readOnly = preview;
+  const initialContentRef = useRef(collaborationInitialContent ?? content);
+  const effectiveContent = collaboration ? initialContentRef.current : content;
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const pageHeaderRef = useRef<HTMLElement>(null);
+  const pageFooterRef = useRef<HTMLElement>(null);
+  const workspaceRef = useRef<HTMLDivElement>(null);
+  const reviewSurfaceRef = useRef<HTMLDivElement>(null);
+  const pageSurfaceRef = useRef<HTMLElement>(null);
+  const editableSurfaceRef = useRef<HTMLElement>(null);
+  const taskPaneInvokerRef = useRef<HTMLElement | null>(null);
+  const commentsDraftFocusRef = useRef<HTMLElement | null>(null);
+  const citationsDraftFocusRef = useRef<HTMLElement | null>(null);
+  const statisticsInvokerRef = useRef<HTMLElement | null>(null);
+  const mailMergeFilterInvokerRef = useRef<HTMLElement | null>(null);
+  const mailMergeImportInvokerRef = useRef<HTMLElement | null>(null);
+  const contentRef = useRef(effectiveContent);
+  const editorMountStartedAtRef = useRef(documentEditorNow());
+  const editorBeforeCreateAtRef = useRef<number | null>(null);
+  const editorDetachedMountAtRef = useRef<number | null>(null);
+  const onChangeRef = useRef(onChange);
+  const editorRef = useRef<Editor | null>(null);
+  const compositionRef = useRef<ControlledEditorComposition | null>(null);
+  compositionRef.current ??= new ControlledEditorComposition();
+  const composition = compositionRef.current;
+  const settleCompositionRef = useRef<
+    (editor: Editor, snapshot: ControlledCompositionSnapshot) => void
+  >(() => undefined);
+  const trackChangesRef = useRef(
+    suggestionOnly || Boolean(effectiveContent.trackChanges),
+  );
+  const collaborationBindingRef = useRef(collaborationBinding);
+  const validatedModel = useMemo(
+    () => documentModelForContent(effectiveContent),
+    [effectiveContent],
+  );
+  const normalizedContent = useMemo(
+    () =>
+      validatedModel
+        ? effectiveContent.html
+        : normalizeDocumentHtml(effectiveContent),
+    [effectiveContent, validatedModel],
+  );
+  const editorInput = useMemo(
+    () =>
+      resolveWorkDocumentEditorInput(
+        effectiveContent,
+        normalizedContent,
+        validatedModel,
+      ),
+    [effectiveContent, normalizedContent, validatedModel],
+  );
+  const initialEditorSourceRef = useRef(editorInput.source);
+  const appliedSourceKeyRef = useRef(editorInput.sourceKey);
+  const activeReviewConflictsRef = useRef<WorkDocumentReviewConflict[]>([]);
+  const publishedDocumentRef = useRef<ProseMirrorNode | null>(null);
+  const pendingLazyPublicationRef =
+    useRef<PendingLazyDocumentPublication | null>(null);
+  const [taskPane, setTaskPane] = useState<DocumentTaskPane | null>(null);
+  const [layoutPanelTab, setLayoutPanelTab] =
+    useState<DocumentLayoutPanelTab>('page');
+  const [findReplaceFocusRequest, setFindReplaceFocusRequest] = useState(0);
+  const [citationsDirty, setCitationsDirty] = useState(false);
+  const [commentsDirty, setCommentsDirty] = useState(false);
+  const taskPaneDialog = useOfficeDialog();
+  const taskPaneModal = useOfficeTaskPaneModal();
+  const layoutOpen = taskPane === 'layout';
+  const navigationOpen = taskPane === 'navigation';
+  const changesOpen = taskPane === 'changes';
+  const citationsOpen = taskPane === 'citations';
+  const findReplaceMode =
+    taskPane === 'find' || taskPane === 'replace' ? taskPane : null;
+  const [spellcheckEnabled, setSpellcheckEnabled] = useState(true);
+  const [viewMode, setViewMode] = useState<DocumentViewMode>('page');
+  const [showHiddenText, setShowHiddenText] = useState(false);
+  const [showFieldCodes, setShowFieldCodes] = useState(false);
+  const [fieldCodeOverrides, setFieldCodeOverrides] = useState(
+    () => new Set<string>(),
+  );
+  const [showRulers, setShowRulers] = useState(false);
+  const [zoom, setZoom] = useState(90);
+  const [selectionMenu, setSelectionMenu] =
+    useState<DocumentSelectionMenuState | null>(null);
+  const [selectionVersion, setSelectionVersion] = useState(0);
+  const [compositionRevision, setCompositionRevision] = useState(0);
+  const [statisticsOpen, setStatisticsOpen] = useState(false);
+  const [mailMergeFilterOpen, setMailMergeFilterOpen] = useState(false);
+  const [mailMergeFilterDraft, setMailMergeFilterDraft] =
+    useState<WorkDocumentMailMergeSource | null>(null);
+  const [localMailMergeSource, setLocalMailMergeSource] =
+    useState<WorkDocumentMailMergeSource | null>(null);
+  const [mailMergeImportOpen, setMailMergeImportOpen] = useState(false);
+  const effectiveMailMergeSource = mailMergeSource ?? localMailMergeSource;
+  const loadedLayoutFontIds = useDocumentLayoutFonts(layoutFonts);
+  if (!collaboration) contentRef.current = content;
+  onChangeRef.current = onChange;
+  trackChangesRef.current =
+    suggestionOnly || Boolean(contentRef.current.trackChanges);
+  const commitContentChange = useCallback((next: WorkDocumentContent) => {
+    const previous = contentRef.current;
+    const binding = collaborationBindingRef.current;
+    binding?.updateSidecars(previous, next);
+    contentRef.current = next;
+    if (!binding) onChangeRef.current(next);
+  }, []);
+  collaborationBindingRef.current = collaborationBinding;
+  if (collaborationBridge) {
+    collaborationBridge.current = {
+      getContent: () => contentRef.current,
+      isTracking: () => suggestionOnly || trackChangesRef.current,
+      onContentChange: (next) => commitContentChange(next),
+      onTrackingChange: (trackChanges) => {
+        if (suggestionOnly) return;
+        trackChangesRef.current = trackChanges;
+        commitContentChange({ ...contentRef.current, trackChanges });
+      },
+    };
+  }
+  const trustInitialIntegrityFeatures =
+    documentModelHasTrustedInitialIntegrityFeatures(editorInput.model);
+  const editorExtensions = useMemo(() => {
+    const startedAt = documentEditorNow();
+    const merged = mergeOfficeTiptapExtensions(
+      'DocumentEditor',
+      [
+        ...(collaborationBinding?.extensions ??
+          createWorkDocumentExtensions({
+            getContent: () => contentRef.current,
+            isTracking: () => trackChangesRef.current,
+            createChange: (kind) =>
+              createTrackedDocumentChange(
+                kind,
+                collaboration?.actor,
+                officeMessage(messages, 'document.editor.collabAuthor'),
+              ),
+            onContentChange: (next) => {
+              commitContentChange(next);
+            },
+            onTrackingChange: (trackChanges) => {
+              if (suggestionOnly) return;
+              trackChangesRef.current = trackChanges;
+              const next = { ...contentRef.current, trackChanges };
+              commitContentChange(next);
+            },
+            trustInitialIntegrityFeatures,
+          })),
+        Placeholder.configure({
+          placeholder: officeMessage(messages, 'document.editor.placeholder'),
+        }),
+        DocumentPagination,
+      ],
+      collaboration ? EMPTY_DOCUMENT_EXTENSIONS : extensions,
+    );
+    recordDocumentEditorMeasure(
+      'a3s-office.document.editor-extensions',
+      startedAt,
+      documentEditorNow(),
+    );
+    return merged;
+  }, [
+    collaboration,
+    collaborationBinding,
+    commitContentChange,
+    extensions,
+    messages,
+    suggestionOnly,
+    trustInitialIntegrityFeatures,
+  ]);
+  const editorProps = useMemo(
+    () => ({
+      attributes: {
+        'aria-label': officeMessage(messages, 'document.editor.bodyAria'),
+        'aria-multiline': 'true',
+        'aria-readonly': commentOnly ? 'true' : 'false',
+        role: 'textbox',
+        spellcheck: 'true',
+      },
+      handleDOMEvents: {
+        compositionstart: () => {
+          composition.start(editorRef.current);
+          return false;
+        },
+        compositionupdate: () => {
+          composition.start(editorRef.current);
+          return false;
+        },
+        beforeinput: (_view: unknown, event: Event) => {
+          composition.noteInput(event);
+          return false;
+        },
+        input: (_view: unknown, event: Event) => {
+          composition.noteInput(event);
+          return false;
+        },
+        compositionend: (_view: unknown, event: Event) => {
+          const current = editorRef.current;
+          if (current) {
+            composition.end(
+              current,
+              (event as CompositionEvent).data ?? null,
+              (settled, snapshot) =>
+                settleCompositionRef.current(settled, snapshot),
+            );
+          }
+          return false;
+        },
+      },
+    }),
+    [commentOnly, composition, messages],
+  );
+  const publishDocumentUpdate = useCallback(
+    (current: Editor, previousDocument: ProseMirrorNode) => {
+      if (current.isDestroyed || previousDocument.eq(current.state.doc)) return;
+      const publishStartedAt = documentEditorNow();
+      const previousContent = contentRef.current;
+      const previousModel = previousContent.model;
+      const compactRoot = current.getJSON() as unknown as WorkDocumentNode;
+      const materialized =
+        previousModel && documentLazyHtmlProjection(previousModel)
+          ? materializeLazyDocumentUpdate(
+              previousDocument,
+              current.state.doc,
+              compactRoot,
+              previousModel,
+            )
+          : {
+              html: null,
+              htmlFingerprint: null,
+              root: materializeLazyDocumentEditorRoot(
+                compactRoot,
+                previousModel,
+              ),
+            };
+      const anchors = collectDocumentCommentAnchors(current.state.doc);
+      const retainedCommentIds = new Set(
+        activeReviewConflictsRef.current
+          .filter((conflict) => conflict.kind === 'comment')
+          .map((conflict) => conflict.id),
+      );
+      const synchronized =
+        materialized.html === null
+          ? syncDocumentContentFromHtml(
+              previousContent,
+              documentModelUsesWindowing(materialized.root)
+                ? serializeWorkDocumentNode(materialized.root)
+                : current.getHTML(),
+            )
+          : { ...previousContent, html: materialized.html };
+      const model = createSchemaDerivedWorkDocumentModel(
+        synchronized.html,
+        materialized.root,
+        previousModel,
+        materialized.htmlFingerprint ?? undefined,
+      );
+      const next: WorkDocumentContent = {
+        ...synchronized,
+        model,
+        comments: retainAnchoredDocumentComments(
+          previousContent.comments ?? [],
+          anchors,
+          retainedCommentIds,
+        ),
+      };
+      if (!collaborationBindingRef.current) {
+        contentRef.current = next;
+        onChangeRef.current(next);
+      }
+      const publishEndedAt = documentEditorNow();
+      const publishCount =
+        Number(current.view.dom.dataset.documentControlledPublishCount) || 0;
+      current.view.dom.dataset.documentControlledPublishCount = String(
+        publishCount + 1,
+      );
+      current.view.dom.dataset.documentControlledPublishMode =
+        materialized.html === null ? 'full' : 'lazy-chunk';
+      current.view.dom.dataset.documentControlledPublishMs = String(
+        Math.round((publishEndedAt - publishStartedAt) * 10) / 10,
+      );
+      recordDocumentEditorMeasure(
+        'a3s-office.document.controlled-publish',
+        publishStartedAt,
+        publishEndedAt,
+        { mode: current.view.dom.dataset.documentControlledPublishMode },
+      );
+    },
+    [],
+  );
+  const queueLazyDocumentPublication = useCallback(
+    (current: Editor, previousDocument: ProseMirrorNode) => {
+      const pending = pendingLazyPublicationRef.current;
+      if (pending) {
+        pending.editor = current;
+        return;
+      }
+      const flush = () => {
+        const queued = pendingLazyPublicationRef.current;
+        if (!queued || composition.isBlocking(queued.editor)) return;
+        pendingLazyPublicationRef.current = null;
+        publishDocumentUpdate(queued.editor, queued.before);
+      };
+      pendingLazyPublicationRef.current = {
+        before: previousDocument,
+        cancel: scheduleDocumentEditorFrame(flush),
+        editor: current,
+      };
+    },
+    [composition, publishDocumentUpdate],
+  );
+  const publishDocumentSnapshot = useCallback(
+    (current: Editor, previousDocument: ProseMirrorNode, immediate = false) => {
+      if (previousDocument.eq(current.state.doc)) return;
+      const lazyProjection = documentLazyHtmlProjection(
+        contentRef.current.model,
+      );
+      if (lazyProjection) {
+        transferLazyDocumentTextStatistics(previousDocument, current.state.doc);
+      }
+      publishedDocumentRef.current = current.state.doc;
+      if (lazyProjection && !immediate) {
+        queueLazyDocumentPublication(current, previousDocument);
+      } else {
+        publishDocumentUpdate(current, previousDocument);
+      }
+    },
+    [publishDocumentUpdate, queueLazyDocumentPublication],
+  );
+  settleCompositionRef.current = (current, snapshot) => {
+    if (snapshot.text !== null && snapshot.range && !current.isDestroyed) {
+      const maximum = current.state.doc.content.size;
+      const from = Math.max(0, Math.min(maximum, snapshot.range.from));
+      const to = Math.max(0, Math.min(maximum, snapshot.range.to));
+      const start = Math.min(from, to);
+      const end = Math.max(from, to);
+      const currentText = current.state.doc.textBetween(start, end, '\n', '\n');
+      if (currentText !== snapshot.text) {
+        if (trackChangesRef.current) {
+          current.commands.replaceDocumentTextWithTrackedChange(
+            start,
+            end,
+            snapshot.text,
+          );
+        } else {
+          current.view.dispatch(
+            current.state.tr
+              .insertText(snapshot.text, start, end)
+              .setMeta('composition', snapshot.id)
+              .setMeta('uiEvent', 'input'),
+          );
+        }
+        current.view.dom.dataset.documentCompositionNormalized = 'true';
+      }
+    }
+    const pending = pendingLazyPublicationRef.current;
+    if (pending) {
+      pending.cancel();
+      pendingLazyPublicationRef.current = null;
+    }
+    const previousDocument = pending?.before ?? publishedDocumentRef.current;
+    if (previousDocument) {
+      publishDocumentSnapshot(current, previousDocument, true);
+    } else {
+      publishedDocumentRef.current = current.state.doc;
+    }
+    setCompositionRevision((value) => value + 1);
+  };
+  useEffect(
+    () => () => {
+      const pending = pendingLazyPublicationRef.current;
+      pendingLazyPublicationRef.current = null;
+      if (!pending) return;
+      pending.cancel();
+      if (!composition.isBlocking(pending.editor)) {
+        publishDocumentUpdate(pending.editor, pending.before);
+      }
+    },
+    [composition, publishDocumentUpdate],
+  );
+  const editor = useEditor({
+    // TipTap's immediate constructor runs inside a React state initializer,
+    // which StrictMode deliberately invokes more than once. Deferring creation
+    // to the committed effect avoids materializing editor instances repeatedly.
+    immediatelyRender: false,
+    extensions: editorExtensions,
+    content: collaboration ? undefined : initialEditorSourceRef.current,
+    editable: !readOnly,
+    editorProps,
+    onBeforeCreate: () => {
+      const beforeCreateAt = documentEditorNow();
+      editorBeforeCreateAtRef.current = beforeCreateAt;
+      recordDocumentEditorMeasure(
+        'a3s-office.document.editor-before-create',
+        editorMountStartedAtRef.current,
+        beforeCreateAt,
+      );
+    },
+    onMount: () => {
+      const mountedAt = documentEditorNow();
+      editorDetachedMountAtRef.current = mountedAt;
+      const beforeCreateAt = editorBeforeCreateAtRef.current;
+      if (beforeCreateAt !== null) {
+        recordDocumentEditorMeasure(
+          'a3s-office.document.editor-state-view',
+          beforeCreateAt,
+          mountedAt,
+        );
+      }
+    },
+    onCreate: ({ editor: current }) => {
+      editorRef.current = current;
+      onEditorReady?.(current);
+      publishedDocumentRef.current = current.state.doc;
+      const mountedAt = documentEditorNow();
+      const detachedMountAt = editorDetachedMountAtRef.current;
+      if (detachedMountAt !== null) {
+        recordDocumentEditorMeasure(
+          'a3s-office.document.editor-create-dispatch',
+          detachedMountAt,
+          mountedAt,
+        );
+      }
+      current.view.dom.dataset.documentEditorMountMs = String(
+        Math.round((mountedAt - editorMountStartedAtRef.current) * 10) / 10,
+      );
+      recordDocumentEditorMeasure(
+        'a3s-office.document.editor-mount',
+        editorMountStartedAtRef.current,
+        mountedAt,
+        {
+          source: editorInput.model ? 'model' : 'html',
+          windowed: Boolean(
+            editorInput.model &&
+              documentModelUsesWindowing(editorInput.model.root),
+          ),
+        },
+      );
+    },
+    onDestroy: () => {
+      editorRef.current = null;
+      composition.destroy();
+    },
+    onTransaction: ({ appendedTransactions, editor: current, transaction }) => {
+      composition.recordTransaction(transaction);
+      for (const appended of appendedTransactions ?? []) {
+        composition.recordTransaction(appended as Transaction);
+      }
+      if (
+        documentTransactionsOnlyHydrateChunks([
+          transaction,
+          ...appendedTransactions,
+        ])
+      ) {
+        publishedDocumentRef.current = current.state.doc;
+      }
+    },
+    onUpdate: ({ appendedTransactions, editor: current, transaction }) => {
+      if (composition.isBlocking(current)) return;
+      if (
+        !shouldPublishDocumentUpdate(transaction, appendedTransactions ?? [])
+      ) {
+        publishedDocumentRef.current = current.state.doc;
+        return;
+      }
+      if (!publishedDocumentRef.current) {
+        publishedDocumentRef.current = current.state.doc;
+        return;
+      }
+      const previousDocument = publishedDocumentRef.current;
+      if (previousDocument.eq(current.state.doc)) return;
+      publishDocumentSnapshot(current, previousDocument);
+    },
+    onSelectionUpdate: () => setSelectionVersion((value) => value + 1),
+  });
+  const documentPresenceLocation = useMemo(() => {
+    void selectionVersion;
+    if (!editor || editor.isDestroyed) return null;
+    const { anchor, head } = editor.state.selection;
+    return { kind: 'document' as const, anchor, head };
+  }, [editor, selectionVersion]);
+  useOfficePublishPresenceLocation(documentPresenceLocation);
+  const navigateToDocumentParticipant = useCallback(
+    (participant: WorkOfficeCollaborationParticipant): boolean => {
+      const location = participant.location;
+      if (!editor || editor.isDestroyed || location?.kind !== 'document') {
+        return false;
+      }
+      const maximum = editor.state.doc.content.size;
+      if (location.anchor > maximum || location.head > maximum) return false;
+      const from = Math.min(location.anchor, location.head);
+      const to = Math.max(location.anchor, location.head);
+      return editor
+        .chain()
+        .focus()
+        .setTextSelection({ from, to })
+        .scrollIntoView()
+        .run();
+    },
+    [editor],
+  );
+  useOfficeCollaborationLocationNavigator(navigateToDocumentParticipant);
+  const reviewConflicts = useDocumentReviewConflicts({
+    activeConflictsRef: activeReviewConflictsRef,
+    appliedSourceKeyRef,
+    artifactId,
+    content: collaboration ? contentRef.current : content,
+    controlledUpdateRevision: compositionRevision,
+    deferControlledUpdates: composition.isBlocking(editor),
+    editor,
+    editorInput,
+    normalizedContent,
+    onReviewConflict,
+    publishedDocumentRef,
+    reconcileControlledUpdates: !collaboration,
+  });
+  const [activeCommentId, setActiveCommentId] = useState<string | null>(null);
+  const documentComments = useDocumentComments({
+    actor: collaboration?.actor,
+    contentRef,
+    defaultOpen: hideCommentsPanel ? false : defaultCommentsOpen,
+    deleteOwnOnly: commentOnly,
+    editor,
+    enabled: canCommentDocument,
+    onBeforeDraft: () => setTaskPane(null),
+  });
+  const [collaborationVersion, setCollaborationVersion] = useState(0);
+  const [frameCaretHead, setFrameCaretHead] = useState<number | null>(null);
+  const [frameCaretRevision, setFrameCaretRevision] = useState(0);
+  const pendingFrameCaretRef = useRef<{
+    paragraphId: string;
+    textId: string;
+    indexUtf16: number;
+  } | null>(null);
+  const handledCollaborationVersionRef = useRef(0);
+  const pendingCollaborationContentRef = useRef<
+    WorkDocumentContent | undefined
+  >(undefined);
+  useEffect(() => {
+    if (!collaborationBinding) return;
+    const unsubscribeChange = collaborationBinding.subscribe((change) => {
+      if (change.caret?.kind === 'document') {
+        pendingFrameCaretRef.current = {
+          indexUtf16: change.caret.indexUtf16,
+          paragraphId: change.caret.paragraphId,
+          textId: change.caret.textId,
+        };
+        setFrameCaretRevision((value) => value + 1);
+      }
+      pendingCollaborationContentRef.current = change.content;
+      contentRef.current = change.content;
+      trackChangesRef.current =
+        suggestionOnly || Boolean(change.content.trackChanges);
+      setCollaborationVersion((value) => value + 1);
+    });
+    const unsubscribeError = collaborationBinding.subscribeError((error) => {
+      queueMicrotask(() => {
+        throw error;
+      });
+    });
+    const unsubscribeHistory = collaborationBinding.subscribeHistory(() => {
+      setCollaborationVersion((value) => value + 1);
+    });
+    return () => {
+      unsubscribeChange();
+      unsubscribeError();
+      unsubscribeHistory();
+    };
+  }, [collaborationBinding]);
+  useEffect(() => {
+    if (
+      collaborationVersion === handledCollaborationVersionRef.current ||
+      !pendingCollaborationContentRef.current
+    ) {
+      return;
+    }
+    handledCollaborationVersionRef.current = collaborationVersion;
+    const next = pendingCollaborationContentRef.current;
+    pendingCollaborationContentRef.current = undefined;
+    contentRef.current = next;
+    trackChangesRef.current = suggestionOnly || Boolean(next.trackChanges);
+    onChangeRef.current(next);
+  }, [collaborationVersion]);
+  const rememberTaskPaneInvoker = useCallback(() => {
+    const active = document.activeElement;
+    if (active instanceof HTMLElement && active.isConnected) {
+      taskPaneInvokerRef.current = active;
+    }
+  }, []);
+  const taskPaneRestoreTarget = useCallback(() => {
+    const invoker = taskPaneInvokerRef.current;
+    if (
+      invoker?.isConnected &&
+      !invoker.matches(':disabled') &&
+      !invoker.closest('[hidden], [aria-hidden="true"]')
+    ) {
+      return invoker;
+    }
+    return editor && !editor.isDestroyed ? editor.view.dom : null;
+  }, [editor]);
+  const rememberTaskPaneDraftFocus = useCallback(
+    (event: FocusEvent<HTMLDivElement>) => {
+      const target = event.target;
+      if (
+        !(target instanceof HTMLElement) ||
+        !target.matches(
+          'input:not([type="hidden"]), textarea, [contenteditable="true"], [role="combobox"]',
+        )
+      ) {
+        return;
+      }
+      if (target.closest('.work-document-comments-panel')) {
+        commentsDraftFocusRef.current = target;
+      } else if (target.closest('.work-document-citations-panel')) {
+        citationsDraftFocusRef.current = target;
+      }
+    },
+    [],
+  );
+  const restoreTaskPaneDraftFocus = useCallback(
+    (pane: 'comments' | 'citations') => {
+      requestAnimationFrame(() => {
+        const remembered =
+          pane === 'comments'
+            ? commentsDraftFocusRef.current
+            : citationsDraftFocusRef.current;
+        const fallbackSelector =
+          pane === 'comments'
+            ? '.work-document-comments-panel textarea[data-document-comment-body], .work-document-comments-panel textarea[data-document-comment-reply]'
+            : '.work-document-citations-panel input:not([type="hidden"]), .work-document-citations-panel textarea, .work-document-citations-panel [role="combobox"]';
+        const target =
+          (remembered?.isConnected ? remembered : null) ??
+          workspaceRef.current?.querySelector<HTMLElement>(fallbackSelector);
+        if (target) {
+          target.focus({ preventScroll: true });
+        } else if (editor && !editor.isDestroyed) {
+          editor.view.dom.focus({ preventScroll: true });
+        }
+      });
+    },
+    [editor],
+  );
+  const requestEditorViewChange = useCallback(
+    async (
+      nextPane: DocumentTaskPane | null,
+      closeComments: boolean,
+    ): Promise<boolean> => {
+      if (
+        taskPane === 'citations' &&
+        nextPane !== 'citations' &&
+        citationsDirty
+      ) {
+        const discard = await taskPaneDialog.confirm({
+          title: officeMessage(messages, 'document.citation.discardPane.title'),
+          description: officeMessage(
+            messages,
+            'document.citation.discardPane.description',
+          ),
+          confirmLabel: officeMessage(
+            messages,
+            'document.citation.discard.confirm',
+          ),
+          confirmTone: 'danger',
+        });
+        if (!discard) {
+          restoreTaskPaneDraftFocus('citations');
+          return false;
+        }
+      }
+      if (closeComments && commentsDirty) {
+        const discard = await taskPaneDialog.confirm({
+          title: officeMessage(messages, 'document.comment.discardDraft.title'),
+          description: officeMessage(
+            messages,
+            documentComments.draft
+              ? 'document.comment.discardDraft.descriptionComposer'
+              : 'document.comment.discardDraft.descriptionReply',
+          ),
+          confirmLabel: officeMessage(
+            messages,
+            'document.comment.discardDraft.confirm',
+          ),
+          confirmTone: 'danger',
+        });
+        if (!discard) {
+          restoreTaskPaneDraftFocus('comments');
+          return false;
+        }
+      }
+      if (taskPane === 'citations' && nextPane !== 'citations')
+        setCitationsDirty(false);
+      if (closeComments) {
+        setCommentsDirty(false);
+        documentComments.closeDraft(false);
+        documentComments.setOpen(false);
+      }
+      setTaskPane(nextPane);
+      return true;
+    },
+    [
+      citationsDirty,
+      commentsDirty,
+      documentComments.closeDraft,
+      documentComments.draft,
+      documentComments.setOpen,
+      messages,
+      restoreTaskPaneDraftFocus,
+      taskPane,
+      taskPaneDialog.confirm,
+    ],
+  );
+  const restoreClosedTaskPaneFocus = useCallback(() => {
+    requestAnimationFrame(() => {
+      const target = taskPaneModal
+        ? taskPaneRestoreTarget()
+        : editor && !editor.isDestroyed
+          ? editor.view.dom
+          : null;
+      target?.focus({ preventScroll: true });
+    });
+  }, [editor, taskPaneModal, taskPaneRestoreTarget]);
+  const closeTaskPane = useCallback(async () => {
+    if (!(await requestEditorViewChange(null, false))) return;
+    restoreClosedTaskPaneFocus();
+  }, [requestEditorViewChange, restoreClosedTaskPaneFocus]);
+  const closeCommentsPanel = useCallback(async () => {
+    if (!(await requestEditorViewChange(null, true))) return;
+    restoreClosedTaskPaneFocus();
+  }, [requestEditorViewChange, restoreClosedTaskPaneFocus]);
+  const toggleTaskPane = useCallback(
+    async (pane: Exclude<DocumentTaskPane, DocumentFindReplaceMode>) => {
+      if (taskPane !== pane) rememberTaskPaneInvoker();
+      return requestEditorViewChange(taskPane === pane ? null : pane, true);
+    },
+    [rememberTaskPaneInvoker, requestEditorViewChange, taskPane],
+  );
+  const openFindReplace = useCallback(
+    async (mode: DocumentFindReplaceMode) => {
+      if (taskPane !== mode) rememberTaskPaneInvoker();
+      const accepted = await requestEditorViewChange(mode, true);
+      if (accepted) setFindReplaceFocusRequest((current) => current + 1);
+      return accepted;
+    },
+    [rememberTaskPaneInvoker, requestEditorViewChange, taskPane],
+  );
+  const documentComparison = useDocumentComparison({
+    editor,
+    onApplied: () => {
+      if (editor && !editor.isDestroyed) {
+        taskPaneInvokerRef.current = editor.view.dom;
+      }
+      setTaskPane('changes');
+    },
+  });
+  const startCommentDraft = useCallback(async () => {
+    if (hideCommentsPanel) return;
+    rememberTaskPaneInvoker();
+    if (!(await requestEditorViewChange(null, false))) return;
+    documentComments.startDraft();
+  }, [
+    documentComments.startDraft,
+    hideCommentsPanel,
+    rememberTaskPaneInvoker,
+    requestEditorViewChange,
+  ]);
+  const toggleCommentsPanel = useCallback(async () => {
+    if (hideCommentsPanel) return;
+    if (documentComments.open) {
+      await closeCommentsPanel();
+      return;
+    }
+    rememberTaskPaneInvoker();
+    if (!(await requestEditorViewChange(null, false))) return;
+    documentComments.setOpen(true);
+  }, [
+    closeCommentsPanel,
+    documentComments.open,
+    documentComments.setOpen,
+    hideCommentsPanel,
+    rememberTaskPaneInvoker,
+    requestEditorViewChange,
+  ]);
+
+  const activeTaskPane = Boolean(taskPane || documentComments.open);
+  const activeTaskPaneElement = () =>
+    workspaceRef.current?.querySelector<HTMLElement>(
+      documentComments.open
+        ? '.work-document-comments-panel'
+        : '.work-document-task-pane',
+    ) ?? null;
+  useDialogFocusScope<HTMLElement>({
+    active: !preview && taskPaneModal && activeTaskPane,
+    onEscape: () => {
+      if (documentComments.open) void closeCommentsPanel();
+      else void closeTaskPane();
+    },
+    escapeDisabled: Boolean(documentComments.draft),
+    passThroughCommandKeys: ['enter', 'f', 'h'],
+    initialFocus: () => {
+      const pane = activeTaskPaneElement();
+      if (documentComments.draft) {
+        return (
+          pane?.querySelector<HTMLElement>('[data-document-comment-body]') ??
+          null
+        );
+      }
+      if (taskPane === 'find' || taskPane === 'replace') {
+        return (
+          pane?.querySelector<HTMLElement>('[data-document-find-query]') ?? null
+        );
+      }
+      if (taskPane === 'navigation') {
+        return (
+          pane?.querySelector<HTMLElement>('[data-document-nav-search]') ?? null
+        );
+      }
+      return pane?.querySelector<HTMLElement>('.ds-icon-button.close') ?? null;
+    },
+    getActiveScope: activeTaskPaneElement,
+    restoreFocusTarget: taskPaneRestoreTarget,
+  });
+
+  useOfficeTaskPaneEscape(Boolean(taskPane) && !taskPaneModal, closeTaskPane);
+  useOfficeTaskPaneEscape(
+    documentComments.open && !documentComments.draft && !taskPaneModal,
+    closeCommentsPanel,
+  );
+
+  const restoreDocumentBodyFocus = useCallback(() => {
+    restoreDocumentEditorFocus(() => {
+      if (!editor || editor.isDestroyed) return null;
+      return editor.view.dom;
+    });
+  }, [editor]);
+
+  useEffect(() => {
+    if (!editor || editor.isDestroyed || preview) return;
+    const sync = () => {
+      syncDocumentFieldCodeClasses(
+        editor.view.dom,
+        showFieldCodes,
+        fieldCodeOverrides,
+      );
+    };
+    sync();
+    editor.on('transaction', sync);
+    return () => {
+      editor.off('transaction', sync);
+    };
+  }, [editor, fieldCodeOverrides, preview, showFieldCodes]);
+
+  useOfficeEditorInitialFocus({
+    enabled: autoFocus && !readOnly && Boolean(editor && !editor.isDestroyed),
+    getTarget: () => (!editor || editor.isDestroyed ? null : editor.view.dom),
+    isTargetReady: (target) =>
+      target.getAttribute('contenteditable') === 'true',
+  });
+
+  const replaceDocumentText = useCallback(
+    (from: number, to: number, replacement: string) => {
+      if (!editor) return false;
+      if (trackChangesRef.current) {
+        return editor.commands.replaceDocumentTextWithTrackedChange(
+          from,
+          to,
+          replacement,
+        );
+      }
+      return editor
+        .chain()
+        .setTextSelection({ from, to })
+        .insertContent(documentPlainTextAsHtml(replacement))
+        .run();
+    },
+    [editor],
+  );
+
+  useEffect(() => {
+    if (!editor) return;
+    const applyEditableState = () => {
+      if (editor.isDestroyed) return;
+      editor.setEditable(!readOnly);
+      const editorDom = editor.view.dom;
+      editorDom.setAttribute('role', preview ? 'document' : 'textbox');
+      editorDom.setAttribute('aria-readonly', String(commentOnly || preview));
+      if (preview) {
+        editorDom.removeAttribute('aria-multiline');
+      } else {
+        editorDom.setAttribute('aria-multiline', 'true');
+      }
+    };
+    applyEditableState();
+    editor.on('mount', applyEditableState);
+    return () => {
+      editor.off('mount', applyEditableState);
+    };
+  }, [commentOnly, editor, preview, readOnly]);
+
+  useEffect(() => {
+    if (!editor) return;
+    const applySpellcheckState = () => {
+      if (!editor.isDestroyed) {
+        editor.view.dom.setAttribute('spellcheck', String(spellcheckEnabled));
+      }
+    };
+    applySpellcheckState();
+    editor.on('mount', applySpellcheckState);
+    return () => {
+      editor.off('mount', applySpellcheckState);
+    };
+  }, [editor, spellcheckEnabled]);
+
+  const section = editor ? activeDocumentSection(editor) : null;
+  const currentContent = contentRef.current;
+  const layout =
+    section?.layout ?? documentInitialSectionLayout(currentContent);
+  const resolvedPageSize = resolveDocumentPageSize(layout);
+  const resolvedMargins = resolveDocumentPageMargins(layout, 1);
+  const margins = resolvedMargins.body;
+  const marginPixels = {
+    top: millimetersToPixels(margins.top),
+    right: millimetersToPixels(margins.right),
+    bottom: millimetersToPixels(margins.bottom),
+    left: millimetersToPixels(margins.left),
+  };
+  const pageChrome = normalizeDocumentPageChrome(layout.pageChrome, layout);
+  const kernelPage = useMemo(
+    () => documentPageMetrics(layout),
+    [
+      layout.margins.bottom,
+      layout.margins.left,
+      layout.margins.right,
+      layout.margins.top,
+      layout.orientation,
+      JSON.stringify(layout.pageGeometry),
+      JSON.stringify(layout.pageMargins),
+      layout.pageSize,
+    ],
+  );
+  const documentCompositionIsActive = useCallback(
+    () => composition.isBlocking(editor),
+    [composition, editor],
+  );
+  const pagination = useDocumentPagination({
+    compositionRevision,
+    editor,
+    documentRevision: editorInput.revision,
+    enabled: Boolean(editor && viewMode === 'page'),
+    isComposing: documentCompositionIsActive,
+    layoutKey: [
+      layout.breakAfter,
+      layout.columns.count,
+      layout.columns.spacing,
+      layout.columns.separator,
+      layoutOpen,
+      JSON.stringify(pageChrome),
+      JSON.stringify(layout.pageBorders),
+      JSON.stringify(layout.pageMargins),
+    ].join(':'),
+    page: kernelPage,
+    selectionVersion,
+    wasmUrl: kernelWasmUrl,
+    layoutFonts,
+    loadedLayoutFontIds,
+  });
+  useLayoutEffect(() => {
+    const caret = pendingFrameCaretRef.current;
+    if (!caret || !editor || editor.isDestroyed) return;
+    if (viewMode === 'page' && !pagination.pageCount) return;
+    const head = documentFrameCaretPosition(editor.state.doc, caret);
+    pendingFrameCaretRef.current = null;
+    setFrameCaretHead(head);
+  }, [editor, frameCaretRevision, pagination.pageCount, viewMode]);
+  const resolveFieldContext = useMemo(
+    () =>
+      createMailMergeFieldContextResolver(
+        pagination.resolveFieldContext,
+        effectiveMailMergeSource,
+      ),
+    [pagination.resolveFieldContext, effectiveMailMergeSource],
+  );
+  const documentInsert = useDocumentInsertCommands({
+    contentRef,
+    editor,
+    resolveFieldContext,
+  });
+  useEffect(() => {
+    if (!editor || !resolveFieldContext) return;
+    editor.commands.refreshDocumentFields(contentRef.current, {
+      resolveContext: resolveFieldContext,
+      addToHistory: false,
+      updateClock: false,
+    });
+  }, [contentRef, editor, resolveFieldContext]);
+
+  const pageCount = editor
+    ? (pagination.pageCount ?? documentPageCount(editor))
+    : 1;
+  const paginationGeometry = pagination.pageCount
+    ? documentPageSurfaceGeometry(
+        pagination.pages.map((page) => page.page),
+        kernelPage,
+        pagination.pageCount,
+      )
+    : null;
+  const currentPage = editor
+    ? Math.min(pageCount, pagination.currentPage ?? documentCurrentPage(editor))
+    : 1;
+  const currentPageDescriptor =
+    pagination.currentPageDescriptor ??
+    fallbackPaginationPageDescriptor(
+      section?.id,
+      section?.index,
+      layout,
+      currentPage,
+    );
+  const firstPageDescriptor =
+    pagination.pages[0] ??
+    fallbackPaginationPageDescriptor(section?.id, section?.index, layout, 1);
+  const lastPageDescriptor = pagination.pages.at(-1) ?? currentPageDescriptor;
+  const firstPageFrame = paginationGeometry?.frames[0];
+  const lastPageFrame = paginationGeometry?.frames.at(-1);
+  const firstPageMargins = resolveDocumentPageMargins(
+    firstPageDescriptor.layout,
+    firstPageDescriptor.physicalPage,
+  );
+  const lastPageMargins = resolveDocumentPageMargins(
+    lastPageDescriptor.layout,
+    lastPageDescriptor.physicalPage,
+  );
+  const {
+    chromeEditor: pageChromeEditor,
+    close: closePageChrome,
+    edit: editPageChrome,
+    editing: pageChromeEditing,
+    footerChrome,
+    headerChrome,
+    reset: resetPageChrome,
+    setChromeEditor: setPageChromeEditor,
+    togglePageNumber: toggleVisiblePageNumber,
+    update: updateVisiblePageChrome,
+    visibleChrome,
+  } = useDocumentPageChrome({
+    editor,
+    enabled: canEditDocument && viewMode === 'page',
+    firstPage: firstPageDescriptor,
+    footerRef: pageFooterRef,
+    headerRef: pageHeaderRef,
+    lastPage: lastPageDescriptor,
+    layout,
+    onBeforeEdit: () => requestEditorViewChange(null, true),
+    visiblePage: currentPageDescriptor,
+  });
+  useOfficeEditorWheelZoom({
+    enabled: Boolean(editor),
+    scopeRef: workspaceRef,
+    onZoomIn: () => setZoom((current) => clampDocumentZoom(current + 10)),
+    onZoomOut: () => setZoom((current) => clampDocumentZoom(current - 10)),
+  });
+
+  if (!editor) {
+    return (
+      <WorkEditorLoadingState
+        title={officeMessage(messages, 'document.editor.loading')}
+      />
+    );
+  }
+
+  const finalPageNumber =
+    pagination.pages.at(-1)?.pageNumber ??
+    Math.max(1, layout.pageNumberStart ?? 1) + pageCount - 1;
+  const changes = collectDocumentChanges(editor.state.doc);
+  const decideDocumentChanges = (
+    selectedChanges: readonly (typeof changes)[number][],
+    decision: 'accept' | 'reject',
+  ): boolean => {
+    if (collaborationBinding) {
+      return collaborationBinding.decideChanges(
+        editor,
+        selectedChanges.map(({ id }) => id),
+        decision,
+      );
+    }
+    const ids = selectedChanges.map(({ id }) => id);
+    return decision === 'accept'
+      ? editor.commands.acceptDocumentChanges(ids)
+      : editor.commands.rejectDocumentChanges(ids);
+  };
+  const citationCount = documentCitationCount(editor);
+  const textStatistics = documentTextStatistics(editor);
+  const paragraphIndent = documentParagraphIndent(editor);
+  const paragraphTabStops = documentParagraphTabStops(editor);
+  const updateLayout = (next: typeof layout) => {
+    const {
+      propertyRevisionOmml: _cleared,
+      formattingChange: _fmt,
+      ...rest
+    } = next;
+    editor.commands.updateActiveDocumentSection(rest);
+  };
+  const openDocumentStatistics = () => {
+    const activeElement = document.activeElement;
+    statisticsInvokerRef.current =
+      activeElement instanceof HTMLElement && activeElement.isConnected
+        ? activeElement
+        : editor.view.dom;
+    setStatisticsOpen(true);
+  };
+  const commitMailMergeSource = (next: WorkDocumentMailMergeSource) => {
+    const normalized = normalizeMailMergeSource(next);
+    if (!mailMergeSource) setLocalMailMergeSource(normalized);
+    onMailMergeSourceChange?.(normalized);
+  };
+  const openMailMergeImport = () => {
+    const activeElement = document.activeElement;
+    mailMergeImportInvokerRef.current =
+      activeElement instanceof HTMLElement && activeElement.isConnected
+        ? activeElement
+        : editor.view.dom;
+    setMailMergeImportOpen(true);
+  };
+  const openMailMergeRecipientFilter = () => {
+    if (!effectiveMailMergeSource) return;
+    const activeElement = document.activeElement;
+    mailMergeFilterInvokerRef.current =
+      activeElement instanceof HTMLElement && activeElement.isConnected
+        ? activeElement
+        : editor.view.dom;
+    setMailMergeFilterDraft(effectiveMailMergeSource);
+    setMailMergeFilterOpen(true);
+  };
+  const closeMailMergeRecipientFilter = () => {
+    setMailMergeFilterOpen(false);
+    setMailMergeFilterDraft(null);
+  };
+  const submitMailMergeRecipientFilter = () => {
+    if (mailMergeFilterDraft) commitMailMergeSource(mailMergeFilterDraft);
+    closeMailMergeRecipientFilter();
+    restoreDocumentBodyFocus();
+  };
+  const updateToolbarLayout = (next: typeof layout) => {
+    updateLayout(next);
+    restoreDocumentBodyFocus();
+  };
+  const openLayoutPanel = (target: DocumentLayoutPanelTab) => {
+    setLayoutPanelTab(target);
+    if (layoutOpen) return;
+    void toggleTaskPane('layout').then((accepted) => {
+      if (accepted) resetPageChrome();
+    });
+  };
+  const toggleLayoutPanel = () => {
+    setLayoutPanelTab('page');
+    void toggleTaskPane('layout').then((accepted) => {
+      if (accepted) resetPageChrome();
+    });
+  };
+  const addSection = () => {
+    editor.commands.insertDocumentSection(layout.breakAfter);
+    restoreDocumentBodyFocus();
+  };
+  const updatePageColor = (value: string) => {
+    const pageColor = normalizeDocumentPageColor(value);
+    if (!pageColor) return;
+    if (pageColor !== contentRef.current.pageColor) {
+      const next = { ...contentRef.current, pageColor };
+      commitContentChange(next);
+    }
+    restoreDocumentBodyFocus();
+  };
+  const changeViewMode = (nextViewMode: DocumentViewMode) => {
+    setViewMode(nextViewMode);
+    restoreDocumentBodyFocus();
+  };
+  const changeToolbarZoom = (nextZoom: number) => {
+    setZoom(clampDocumentZoom(nextZoom));
+    restoreDocumentBodyFocus();
+  };
+  const fitToolbarZoom = (fit: DocumentZoomFit) => {
+    setViewMode('page');
+    requestAnimationFrame(() => {
+      const viewport = workspaceRef.current?.querySelector<HTMLElement>(
+        '.work-document-scroll',
+      );
+      if (!viewport) return;
+      const style = getComputedStyle(viewport);
+      setZoom(
+        documentZoomForFit(fit, {
+          pageHeight: currentPageDescriptor.page.height,
+          pageWidth: currentPageDescriptor.page.width,
+          viewportHeight: viewport.clientHeight,
+          viewportWidth: viewport.clientWidth,
+          viewportPadding: {
+            top: cssPixelValue(style.paddingTop),
+            right: cssPixelValue(style.paddingRight),
+            bottom: cssPixelValue(style.paddingBottom),
+            left: cssPixelValue(style.paddingLeft),
+          },
+        }),
+      );
+      restoreDocumentBodyFocus();
+    });
+  };
+  const changeSpellcheck = (enabled: boolean) => {
+    setSpellcheckEnabled(enabled);
+    restoreDocumentBodyFocus();
+  };
+  const toggleBodyPageNumbers = () => {
+    toggleVisiblePageNumber();
+    restoreDocumentBodyFocus();
+  };
+  const refreshDocumentFields = () => {
+    documentInsert.refreshFields();
+    restoreDocumentBodyFocus();
+  };
+  const refreshDocumentTableOfContents = () => {
+    documentInsert.refreshTableOfContents();
+    restoreDocumentBodyFocus();
+  };
+  const refreshDocumentIndex = () => {
+    documentInsert.refreshIndex();
+    restoreDocumentBodyFocus();
+  };
+  const openSelectionContextMenu = (
+    event: WorkspaceContextMenuEvent,
+  ): boolean => {
+    if (!canEditDocument || (!getSelectionMenuItems && !onAgentRequest))
+      return false;
+    const snapshot = createWorkDocumentSelectionSnapshot(
+      editor,
+      contentRef.current,
+    );
+    if (!snapshot) return false;
+    event.preventDefault();
+    event.stopPropagation();
+    const position = workspaceContextMenuPosition(event);
+    if (getSelectionMenuItems) {
+      const items = getSelectionMenuItems(snapshot);
+      setSelectionMenu(
+        items.length
+          ? {
+              kind: 'custom',
+              x: position.x,
+              y: position.y,
+              snapshot,
+              items,
+            }
+          : null,
+      );
+      return items.length > 0;
+    }
+    setSelectionMenu({
+      kind: 'agent',
+      x: position.x,
+      y: position.y,
+      snapshot,
+    });
+    return true;
+  };
+
+  return (
+    <section
+      className={`work-document-editor${preview ? ' preview' : ''}${!preview && showHiddenText ? ' show-hidden-text' : ''}${!preview && showFieldCodes ? ' show-field-codes' : ''}`}
+      data-collaboration-mode={collaboration?.mode}
+      data-work-pdf-artifact={artifactId}
+      data-work-pdf-surface={artifactId ? 'live' : undefined}
+    >
+      {canEditDocument && (
+        <OfficeFileInput
+          ref={imageInputRef}
+          accept="image/bmp,image/gif,image/jpeg,image/png,image/webp"
+          aria-label={officeMessage(
+            messages,
+            'document.editor.insertImageAria',
+          )}
+          onFileSelect={documentInsert.insertImage}
+        />
+      )}
+      {preview ? (
+        <WorkOfficePreviewBar
+          ariaLabel={officeMessage(
+            messages,
+            'document.editor.previewToolsAria',
+          )}
+          label={officeMessage(messages, 'document.editor.previewLabel')}
+          detail={officeMessage(messages, 'document.editor.previewDetail', {
+            count: String(pageCount),
+          })}
+          fileActions={
+            !hideCommentsPanel && documentComments.comments.length > 0
+              ? [
+                  ...(fileActions ?? []),
+                  {
+                    id: 'preview-comments',
+                    label: officeMessage(messages, 'document.group.comments'),
+                    onSelect: () => documentComments.setOpen(true),
+                  },
+                ]
+              : fileActions
+          }
+          className="work-document-ribbon"
+        />
+      ) : (
+        <DocumentToolbar
+          editor={editor}
+          defaultRibbonCollapsed={defaultRibbonCollapsed}
+          reviewOnly={commentOnly || suggestionOnly}
+          suggestionOnly={suggestionOnly}
+          history={
+            collaborationBinding && !commentOnly
+              ? {
+                  canRedo: collaborationBinding.canRedo(),
+                  canUndo: collaborationBinding.canUndo(),
+                  redo: () => collaborationBinding.redo(),
+                  undo: () => collaborationBinding.undo(),
+                }
+              : undefined
+          }
+          fileActions={fileActions}
+          layout={layout}
+          layoutFonts={layoutFonts}
+          layoutOpen={layoutOpen}
+          navigationOpen={navigationOpen}
+          pageColor={documentPageColor(currentContent.pageColor)}
+          showPageNumbers={visibleChrome.showPageNumber}
+          showFieldCodes={showFieldCodes}
+          showHiddenText={showHiddenText}
+          showRulers={showRulers}
+          spellcheckEnabled={spellcheckEnabled}
+          viewMode={viewMode}
+          zoom={zoom}
+          pageChromeEditor={pageChromeEditor}
+          pageChromeEditingPart={pageChromeEditing?.part ?? null}
+          pageChromeShowPageNumber={visibleChrome.showPageNumber}
+          onRequestImage={() => imageInputRef.current?.click()}
+          onInsertTextBox={documentInsert.insertTextBox}
+          onInsertConnector={documentInsert.insertConnector}
+          onInsertContentControl={documentInsert.openContentControl}
+          onImportMailMergeRecipients={openMailMergeImport}
+          onOpenMailMergeRecipientFilter={
+            effectiveMailMergeSource ? openMailMergeRecipientFilter : undefined
+          }
+          onPageChromeEditingPartChange={editPageChrome}
+          onClosePageChrome={closePageChrome}
+          onTogglePageChromePageNumber={toggleVisiblePageNumber}
+          onToggleLayout={toggleLayoutPanel}
+          onLayoutChange={updateToolbarLayout}
+          onOpenLayout={openLayoutPanel}
+          onToggleNavigation={() => void toggleTaskPane('navigation')}
+          onToggleFieldCodes={() => {
+            setFieldCodeOverrides(new Set());
+            setShowFieldCodes((value) => !value);
+            restoreDocumentBodyFocus();
+          }}
+          onToggleSelectedFieldCodes={() => {
+            if (!editor || editor.isDestroyed) return false;
+            const ids = selectedDocumentFieldIds(editor);
+            if (!ids.length) return false;
+            setFieldCodeOverrides((current) =>
+              toggleDocumentFieldCodeOverrides(current, ids),
+            );
+            restoreDocumentBodyFocus();
+            return true;
+          }}
+          onUnlinkFields={() => {
+            if (!editor || editor.isDestroyed) return false;
+            const ids = selectedDocumentFieldIds(editor);
+            if (!ids.length) return false;
+            if (!editor.commands.unlinkDocumentFields()) return false;
+            setFieldCodeOverrides((current) => {
+              const next = new Set(current);
+              for (const id of ids) next.delete(id);
+              return next;
+            });
+            restoreDocumentBodyFocus();
+            return true;
+          }}
+          onLockFields={() => {
+            if (!editor || editor.isDestroyed) return false;
+            if (!editor.commands.setDocumentFieldsLocked(true)) return false;
+            restoreDocumentBodyFocus();
+            return true;
+          }}
+          onUnlockFields={() => {
+            if (!editor || editor.isDestroyed) return false;
+            if (!editor.commands.setDocumentFieldsLocked(false)) return false;
+            restoreDocumentBodyFocus();
+            return true;
+          }}
+          onToggleHiddenText={() => {
+            setShowHiddenText((value) => !value);
+            restoreDocumentBodyFocus();
+          }}
+          onToggleRulers={() => {
+            setShowRulers((value) => !value);
+            restoreDocumentBodyFocus();
+          }}
+          onPageColorChange={updatePageColor}
+          onToggleSpellcheck={() => changeSpellcheck(!spellcheckEnabled)}
+          onViewModeChange={changeViewMode}
+          onZoomChange={changeToolbarZoom}
+          onZoomFit={fitToolbarZoom}
+          onTogglePageNumbers={toggleBodyPageNumbers}
+          onInsertSection={addSection}
+          onInsertNote={documentInsert.insertNote}
+          onInsertCaption={documentInsert.insertCaption}
+          onInsertCrossReference={documentInsert.insertCrossReference}
+          onOpenTableOfContents={documentInsert.openTableOfContents}
+          onOpenIndexEntry={documentInsert.openIndexEntry}
+          onOpenIndex={documentInsert.openIndex}
+          citationsOpen={citationsOpen}
+          citationSourceCount={currentContent.bibliography?.sources.length ?? 0}
+          onToggleCitations={() => void toggleTaskPane('citations')}
+          onInsertField={documentInsert.insertField}
+          onOpenField={documentInsert.openField}
+          onRefreshFields={refreshDocumentFields}
+          onRefreshIndex={refreshDocumentIndex}
+          onRefreshTableOfContents={refreshDocumentTableOfContents}
+          canInsertComment={
+            hideCommentsPanel ? false : documentComments.canInsert
+          }
+          onInsertComment={() => void startCommentDraft()}
+          commentsOpen={hideCommentsPanel ? false : documentComments.open}
+          hideCommentsPane={hideCommentsPanel}
+          commentCount={documentComments.comments.length}
+          canAcceptComment={documentComments.comments.some(
+            (comment) => !comment.resolved,
+          )}
+          canProcessComment={documentComments.comments.some(
+            (comment) => !comment.resolved,
+          )}
+          canWithdrawComment={documentComments.comments.some(
+            (comment) => comment.resolved,
+          )}
+          onAcceptComment={() => {
+            documentComments.acceptComment(activeCommentId);
+          }}
+          onProcessComment={() => {
+            documentComments.processComment(activeCommentId);
+          }}
+          onWithdrawComment={() => {
+            documentComments.withdrawComment(activeCommentId);
+          }}
+          onToggleComments={() => void toggleCommentsPanel()}
+          trackChanges={suggestionOnly || Boolean(currentContent.trackChanges)}
+          changesOpen={changesOpen}
+          changeCount={changes.length}
+          findReplaceMode={findReplaceMode}
+          onRibbonTabChange={(tab) => {
+            const keepCurrentPane =
+              taskPane === 'navigation' ||
+              (taskPane === 'layout' && tab === 'page') ||
+              (taskPane === 'citations' && tab === 'references') ||
+              (taskPane === 'changes' && tab === 'review') ||
+              ((taskPane === 'find' || taskPane === 'replace') &&
+                tab === 'home');
+            return requestEditorViewChange(
+              keepCurrentPane ? taskPane : null,
+              tab !== 'review',
+            );
+          }}
+          onToggleTrackChanges={() => {
+            if (suggestionOnly) return;
+            editor.commands.toggleDocumentTrackChanges();
+            restoreDocumentBodyFocus();
+          }}
+          onToggleChanges={() => void toggleTaskPane('changes')}
+          onOpenComparison={documentComparison.open}
+          onDecideChange={(change, decision) =>
+            decideDocumentChanges([change], decision)
+          }
+          onOpenWordCount={openDocumentStatistics}
+          onOpenFindReplace={openFindReplace}
+        />
+      )}
+      {!preview && (
+        <DocumentReviewConflictNotice
+          conflicts={reviewConflicts.visibleConflicts}
+          onDismiss={reviewConflicts.dismiss}
+        />
+      )}
+      <div
+        ref={workspaceRef}
+        className={`work-document-workspace${!preview && taskPane ? ' task-pane-open' : ''}`}
+        onFocusCapture={rememberTaskPaneDraftFocus}
+      >
+        {!preview && navigationOpen && (
+          <DocumentNavigationPanel
+            currentPage={currentPage}
+            editor={editor}
+            modal={taskPaneModal}
+            pageThumbnailSource={
+              pageSurfaceRef.current && pagination.pageCount
+                ? {
+                    element: pageSurfaceRef.current,
+                    pageCount: pagination.pageCount,
+                    pageGap: kernelPage.pageGap,
+                    pageHeight: kernelPage.height,
+                    pageWidth: kernelPage.width,
+                    pages: paginationGeometry?.frames,
+                    revision: editorInput.sourceKey,
+                  }
+                : undefined
+            }
+            pages={(pagination.pages.length
+              ? pagination.pages
+              : [firstPageDescriptor]
+            ).map((page) => ({
+              backgroundColor: documentPageColor(currentContent.pageColor),
+              orientation: page.layout.orientation,
+              pageNumber: page.pageNumber,
+              physicalPage: page.physicalPage,
+              previewText:
+                page.previewText ||
+                editor.getText().replaceAll(/\s+/g, ' ').trim().slice(0, 320),
+              selectionPosition: page.selectionPosition,
+            }))}
+            onClose={closeTaskPane}
+          />
+        )}
+        <div
+          className={`work-document-scroll ${viewMode}${
+            !preview && viewMode === 'page' && showRulers
+              ? ' rulers-visible'
+              : ''
+          }`}
+        >
+          <div
+            ref={reviewSurfaceRef}
+            className={`work-document-review-surface${!hideCommentsPanel && documentComments.open ? ' comments-open' : ''}`}
+          >
+            <div
+              className={`work-document-page-stage ${layout.pageSize} ${layout.orientation} ${viewMode}`}
+              data-testid="document-page-stage"
+              style={
+                { '--work-document-zoom': String(zoom / 100) } as CSSProperties
+              }
+            >
+              {!preview && viewMode === 'page' && showRulers && (
+                <DocumentRuler
+                  layout={layout}
+                  paragraphIndent={paragraphIndent}
+                  tabStops={paragraphTabStops}
+                  onParagraphIndentChange={(nextParagraphIndent) =>
+                    editor.commands.setDocumentParagraphIndent(
+                      nextParagraphIndent,
+                      {
+                        restoreFocus: false,
+                      },
+                    )
+                  }
+                  onTabStopsChange={(nextTabStops) =>
+                    editor.commands.setDocumentParagraphTabStops(nextTabStops, {
+                      restoreFocus: false,
+                    })
+                  }
+                  onLayoutChange={updateLayout}
+                />
+              )}
+              <div className="work-document-page-frame">
+                {!preview && viewMode === 'page' && showRulers && (
+                  <DocumentVerticalRuler
+                    layout={layout}
+                    onLayoutChange={updateLayout}
+                  />
+                )}
+                <article
+                  ref={pageSurfaceRef}
+                  className={`work-document-page${preview ? ' work-document-preview-page' : ''} ${layout.pageSize} ${layout.orientation}${pagination.pageCount ? ' paginated' : ''}${canEditDocument && pageChromeEditing ? ' page-chrome-editing' : ''}`}
+                  data-work-pdf-live-document={
+                    artifactId && pagination.pageCount ? '' : undefined
+                  }
+                  data-pdf-orientation={
+                    artifactId && pagination.pageCount
+                      ? layout.orientation
+                      : undefined
+                  }
+                  data-pdf-page-count={
+                    artifactId ? pagination.pageCount : undefined
+                  }
+                  data-pdf-page-gap={
+                    artifactId && pagination.pageCount
+                      ? kernelPage.pageGap
+                      : undefined
+                  }
+                  data-pdf-page-height={
+                    artifactId && pagination.pageCount
+                      ? kernelPage.height
+                      : undefined
+                  }
+                  data-pdf-page-size={
+                    artifactId && pagination.pageCount
+                      ? layout.pageSize
+                      : undefined
+                  }
+                  data-pdf-page-width-points={
+                    artifactId && pagination.pageCount
+                      ? resolvedPageSize.widthPoints
+                      : undefined
+                  }
+                  data-pdf-page-height-points={
+                    artifactId && pagination.pageCount
+                      ? resolvedPageSize.heightPoints
+                      : undefined
+                  }
+                  data-pdf-page-width={
+                    artifactId && pagination.pageCount
+                      ? kernelPage.width
+                      : undefined
+                  }
+                  data-document-page-gutter-position={
+                    resolvedMargins.gutterPosition
+                  }
+                  data-document-page-margins-bounded={String(
+                    resolvedMargins.bounded,
+                  )}
+                  data-document-page-mirror-margins={String(
+                    resolvedMargins.mirrorMargins,
+                  )}
+                  data-document-page-top-margin-mode={resolvedMargins.topMode}
+                  data-document-page-bottom-margin-mode={
+                    resolvedMargins.bottomMode
+                  }
+                  aria-label={
+                    preview
+                      ? officeMessage(messages, 'document.editor.previewAria')
+                      : officeMessage(messages, 'document.editor.pageAria')
+                  }
+                  style={
+                    {
+                      padding: paginationGeometry
+                        ? `${firstPageDescriptor.page.marginTop}px 0 ${lastPageDescriptor.page.marginBottom}px`
+                        : `${marginPixels.top}px ${marginPixels.right}px ${marginPixels.bottom}px ${marginPixels.left}px`,
+                      backgroundColor: documentPageColor(
+                        currentContent.pageColor,
+                      ),
+                      width:
+                        viewMode === 'page'
+                          ? (paginationGeometry?.width ?? kernelPage.width)
+                          : undefined,
+                      minHeight:
+                        viewMode === 'page'
+                          ? (paginationGeometry?.height ?? kernelPage.height)
+                          : undefined,
+                      '--work-document-page-color': documentPageColor(
+                        currentContent.pageColor,
+                      ),
+                      '--work-document-page-margin-left': `${marginPixels.left}px`,
+                      '--work-document-page-margin-right': `${marginPixels.right}px`,
+                      '--work-document-page-margin-top': `${marginPixels.top}px`,
+                      '--work-document-page-margin-bottom': `${marginPixels.bottom}px`,
+                      '--work-document-page-header-distance': `${millimetersToPixels(
+                        resolvedMargins.headerDistance,
+                      )}px`,
+                      '--work-document-page-footer-distance': `${millimetersToPixels(
+                        resolvedMargins.footerDistance,
+                      )}px`,
+                      '--work-document-page-header-height': `${Math.max(
+                        0,
+                        marginPixels.top -
+                          millimetersToPixels(resolvedMargins.headerDistance),
+                      )}px`,
+                      '--work-document-page-footer-height': `${Math.max(
+                        0,
+                        marginPixels.bottom -
+                          millimetersToPixels(resolvedMargins.footerDistance),
+                      )}px`,
+                    } as CSSProperties
+                  }
+                >
+                  {viewMode === 'page' && pagination.pageCount && (
+                    <DocumentPageStack
+                      pageColor={documentPageColor(currentContent.pageColor)}
+                      pageCount={pagination.pageCount}
+                      pageGap={kernelPage.pageGap}
+                      pageHeight={kernelPage.height}
+                      pageWidth={kernelPage.width}
+                      pages={pagination.pages}
+                    />
+                  )}
+                  {viewMode === 'page' &&
+                    (!preview || Boolean(headerChrome.headerHtml)) && (
+                      // biome-ignore lint/a11y/noStaticElementInteractions: Double-click mirrors desktop Office; keyboard users use the Insert-ribbon commands.
+                      <header
+                        ref={pageHeaderRef}
+                        className={`work-document-page-header${canEditDocument && pageChromeEditing?.part === 'header' ? ' editing' : ''}`}
+                        data-document-page-chrome={
+                          firstPageDescriptor.pageChrome.variant
+                        }
+                        style={
+                          firstPageFrame && paginationGeometry
+                            ? {
+                                height: firstPageDescriptor.page.headerHeight,
+                                left:
+                                  firstPageFrame.left +
+                                  firstPageDescriptor.page.marginLeft,
+                                right:
+                                  paginationGeometry.width -
+                                  firstPageFrame.left -
+                                  firstPageFrame.width +
+                                  firstPageDescriptor.page.marginRight,
+                                top: millimetersToPixels(
+                                  firstPageMargins.headerDistance,
+                                ),
+                              }
+                            : undefined
+                        }
+                        onDoubleClick={
+                          !canEditDocument
+                            ? undefined
+                            : (event) => {
+                                if (pageChromeEditing?.part === 'header')
+                                  return;
+                                event.preventDefault();
+                                void editPageChrome('header');
+                              }
+                        }
+                      >
+                        {canEditDocument &&
+                        pageChromeEditing?.part === 'header' ? (
+                          <DocumentPageChromeRichTextEditor
+                            key={`${pageChromeEditing.sectionId}-${pageChromeEditing.variant}-header`}
+                            autoFocus
+                            className="work-document-page-chrome-inline-editor"
+                            label={officeMessage(
+                              messages,
+                              'document.pageChrome.inline.header',
+                            )}
+                            value={headerChrome.headerHtml}
+                            showToolbar={false}
+                            onChange={(headerHtml) =>
+                              updateVisiblePageChrome({ headerHtml })
+                            }
+                            onEditorChange={setPageChromeEditor}
+                            onExit={closePageChrome}
+                          />
+                        ) : headerChrome.headerHtml ? (
+                          <div
+                            className="work-document-page-chrome-html"
+                            dangerouslySetInnerHTML={{
+                              __html: headerChrome.headerHtml,
+                            }}
+                          />
+                        ) : null}
+                      </header>
+                    )}
+                  <section
+                    ref={editableSurfaceRef}
+                    className={`work-document-editable ${viewMode}`}
+                    aria-label={officeMessage(
+                      messages,
+                      'document.editor.contentAria',
+                    )}
+                    onDoubleClick={() => {
+                      if (canEditDocument && pageChromeEditing)
+                        closePageChrome();
+                    }}
+                    onContextMenu={openSelectionContextMenu}
+                    onKeyDownCapture={(event) => {
+                      if (!isWorkspaceContextMenuKeyboardEvent(event)) return;
+                      openSelectionContextMenu(event);
+                    }}
+                  >
+                    <EditorContent editor={editor} />
+                    <OfficeTiptapPresenceLayer
+                      containerRef={editableSurfaceRef}
+                      editor={editor}
+                      frameCaretHead={frameCaretHead}
+                      kind="document"
+                      layoutSettled={
+                        viewMode !== 'page' || Boolean(pagination.pageCount)
+                      }
+                    />
+                    {!preview && (canEditDocument || canCommentDocument) && (
+                      <DocumentSelectionToolbar
+                        editor={editor}
+                        canInsertComment={
+                          hideCommentsPanel ? false : documentComments.canInsert
+                        }
+                        layoutFonts={layoutFonts}
+                        onInsertComment={() => void startCommentDraft()}
+                        reviewOnly={commentOnly}
+                      />
+                    )}
+                  </section>
+                  {viewMode === 'page' &&
+                    (!preview ||
+                      Boolean(footerChrome.footerHtml) ||
+                      footerChrome.showPageNumber) && (
+                      // biome-ignore lint/a11y/noStaticElementInteractions: Double-click mirrors desktop Office; keyboard users use the Insert-ribbon commands.
+                      <footer
+                        ref={pageFooterRef}
+                        className={`work-document-page-footer${canEditDocument && pageChromeEditing?.part === 'footer' ? ' editing' : ''}`}
+                        data-document-page-chrome={
+                          lastPageDescriptor.pageChrome.variant
+                        }
+                        style={
+                          lastPageFrame && paginationGeometry
+                            ? {
+                                bottom: millimetersToPixels(
+                                  lastPageMargins.footerDistance,
+                                ),
+                                height: lastPageDescriptor.page.footerHeight,
+                                left:
+                                  lastPageFrame.left +
+                                  lastPageDescriptor.page.marginLeft,
+                                right:
+                                  paginationGeometry.width -
+                                  lastPageFrame.left -
+                                  lastPageFrame.width +
+                                  lastPageDescriptor.page.marginRight,
+                              }
+                            : undefined
+                        }
+                        onDoubleClick={
+                          !canEditDocument
+                            ? undefined
+                            : (event) => {
+                                if (pageChromeEditing?.part === 'footer')
+                                  return;
+                                event.preventDefault();
+                                void editPageChrome('footer');
+                              }
+                        }
+                      >
+                        <div className="work-document-page-footer-content">
+                          {canEditDocument &&
+                          pageChromeEditing?.part === 'footer' ? (
+                            <DocumentPageChromeRichTextEditor
+                              key={`${pageChromeEditing.sectionId}-${pageChromeEditing.variant}-footer`}
+                              autoFocus
+                              className="work-document-page-chrome-inline-editor"
+                              label={officeMessage(
+                                messages,
+                                'document.pageChrome.inline.footer',
+                              )}
+                              value={footerChrome.footerHtml}
+                              showToolbar={false}
+                              onChange={(footerHtml) =>
+                                updateVisiblePageChrome({ footerHtml })
+                              }
+                              onEditorChange={setPageChromeEditor}
+                              onExit={closePageChrome}
+                            />
+                          ) : footerChrome.footerHtml ? (
+                            <div
+                              className="work-document-page-chrome-html"
+                              dangerouslySetInnerHTML={{
+                                __html: footerChrome.footerHtml,
+                              }}
+                            />
+                          ) : null}
+                        </div>
+                        {footerChrome.showPageNumber && (
+                          <span className="work-document-page-number">
+                            {lastPageDescriptor.pageNumber} / {finalPageNumber}
+                          </span>
+                        )}
+                      </footer>
+                    )}
+                </article>
+              </div>
+            </div>
+            {!hideCommentsPanel && documentComments.open && (
+              <DocumentCommentsPanel
+                readOnly={preview}
+                editor={editor}
+                comments={documentComments.comments}
+                canDelete={documentComments.canDeleteComment}
+                draft={documentComments.draft}
+                draftAuthor={collaboration?.actor?.name}
+                surfaceRef={reviewSurfaceRef}
+                onReply={documentComments.reply}
+                onToggleResolved={documentComments.toggleResolved}
+                onAcceptComment={(id) => {
+                  documentComments.acceptComment(id);
+                }}
+                onProcessComment={(id) => {
+                  documentComments.processComment(id);
+                }}
+                onWithdrawComment={(id) => {
+                  documentComments.withdrawComment(id);
+                }}
+                onActiveCommentChange={setActiveCommentId}
+                onDelete={documentComments.deleteComment}
+                onCancelDraft={documentComments.closeDraft}
+                onSubmitDraft={documentComments.submitDraft}
+                onClose={() => void closeCommentsPanel()}
+                onDirtyChange={setCommentsDirty}
+              />
+            )}
+          </div>
+        </div>
+        {canEditDocument && citationsOpen && (
+          <DocumentCitationsPanel
+            editor={editor}
+            content={currentContent}
+            onClose={closeTaskPane}
+            onDirtyChange={setCitationsDirty}
+          />
+        )}
+        {canReviewDocumentChanges && changesOpen && (
+          <DocumentChangesPanel
+            editor={editor}
+            changes={changes}
+            decisions={currentContent.changeDecisions}
+            trackChanges={
+              suggestionOnly || Boolean(currentContent.trackChanges)
+            }
+            suggestionOnly={suggestionOnly}
+            onDecideChanges={
+              canEditDocument ? decideDocumentChanges : undefined
+            }
+            onTrackChangesChange={(enabled) =>
+              suggestionOnly
+                ? false
+                : editor.commands.setDocumentTrackChanges(enabled)
+            }
+            onClose={closeTaskPane}
+          />
+        )}
+        {canEditDocument && layoutOpen && section && (
+          <DocumentLayoutPanel
+            layout={layout}
+            activeTab={layoutPanelTab}
+            sectionIndex={section.index}
+            sectionCount={section.count}
+            onActiveTabChange={setLayoutPanelTab}
+            onChange={updateLayout}
+            onInsertSection={addSection}
+            onMergeSection={() =>
+              editor.commands.mergeDocumentSectionWithPrevious()
+            }
+            onClose={closeTaskPane}
+          />
+        )}
+        {canEditDocument && findReplaceMode && (
+          <DocumentFindReplacePanel
+            editor={editor}
+            mode={findReplaceMode}
+            focusRequest={findReplaceFocusRequest}
+            onModeChange={(mode) => void openFindReplace(mode)}
+            onReplaceText={replaceDocumentText}
+            onClose={closeTaskPane}
+          />
+        )}
+      </div>
+      {preview ? (
+        <WorkOfficeStatusBar className="work-document-footer">
+          <output
+            aria-label={officeMessage(
+              messages,
+              'document.editor.pageCountAria',
+            )}
+          >
+            {officeMessage(messages, 'document.editor.pageCount', {
+              count: String(pageCount),
+            })}
+          </output>
+          <output
+            aria-label={officeMessage(
+              messages,
+              'document.editor.sectionCountAria',
+            )}
+          >
+            {officeMessage(messages, 'document.editor.sectionCount', {
+              count: String(section?.count ?? 1),
+            })}
+          </output>
+        </WorkOfficeStatusBar>
+      ) : (
+        <DocumentStatusBar
+          bibliographyCount={currentContent.bibliography?.sources.length ?? 0}
+          citationCount={citationCount}
+          currentPage={currentPage}
+          pageCount={pageCount}
+          saveStatus={saveStatus}
+          sectionCount={section?.count ?? 1}
+          sectionIndex={section?.index ?? 0}
+          spellcheckEnabled={spellcheckEnabled}
+          viewMode={viewMode}
+          wordCount={textStatistics.wordCount}
+          zoom={zoom}
+          onSpellcheckChange={changeSpellcheck}
+          onOpenWordCount={openDocumentStatistics}
+          onViewModeChange={changeViewMode}
+          onZoomChange={setZoom}
+        />
+      )}
+      {canEditDocument && selectionMenu && (
+        <DocumentSelectionContextMenu
+          editor={editor}
+          menu={selectionMenu}
+          getTrackChanges={() => trackChangesRef.current}
+          onAgentRequest={onAgentRequest}
+          onClose={() => setSelectionMenu(null)}
+        />
+      )}
+      {canEditDocument && documentInsert.dialog}
+      {canEditDocument && documentComparison.dialog}
+      {!preview && taskPaneDialog.dialog}
+      {!preview && statisticsOpen && (
+        <DocumentStatisticsDialog
+          pageCount={pageCount}
+          statistics={textStatistics}
+          restoreFocusTarget={() => statisticsInvokerRef.current}
+          onClose={() => setStatisticsOpen(false)}
+        />
+      )}
+      {!preview && mailMergeFilterOpen && mailMergeFilterDraft && (
+        <DocumentMailMergeRecipientFilterDialog
+          source={mailMergeFilterDraft}
+          restoreFocusTarget={() => mailMergeFilterInvokerRef.current}
+          onCancel={closeMailMergeRecipientFilter}
+          onChange={(next) =>
+            setMailMergeFilterDraft(normalizeMailMergeSource(next))
+          }
+          onSubmit={submitMailMergeRecipientFilter}
+        />
+      )}
+      {!preview && mailMergeImportOpen && (
+        <DocumentMailMergeImportDialog
+          restoreFocusTarget={() => mailMergeImportInvokerRef.current}
+          onCancel={() => {
+            setMailMergeImportOpen(false);
+            restoreDocumentBodyFocus();
+          }}
+          onImport={(source) => {
+            commitMailMergeSource(source);
+            setMailMergeImportOpen(false);
+            restoreDocumentBodyFocus();
+          }}
+        />
+      )}
+    </section>
+  );
+}
+
+function cssPixelValue(value: string): number {
+  const parsed = Number.parseFloat(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function scheduleDocumentEditorFrame(callback: () => void): () => void {
+  if (typeof requestAnimationFrame === 'function') {
+    const frame = requestAnimationFrame(callback);
+    return () => cancelAnimationFrame(frame);
+  }
+  const timeout = setTimeout(callback, 0);
+  return () => clearTimeout(timeout);
+}
+
+function documentEditorNow(): number {
+  return globalThis.performance?.now?.() ?? Date.now();
+}
+
+function recordDocumentEditorMeasure(
+  name: string,
+  start: number,
+  end: number,
+  detail?: Record<string, unknown>,
+): void {
+  try {
+    globalThis.performance?.measure(name, { detail, end, start });
+  } catch {
+    // User Timing diagnostics must never affect editor creation.
+  }
+}

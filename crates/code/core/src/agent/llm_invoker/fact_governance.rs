@@ -281,6 +281,34 @@ fn original_request(
 }
 
 impl crate::agent::TurnEngine {
+    pub(crate) fn present_fact_turn_tools(
+        &self,
+        tools: &[ToolDefinition],
+        messages: &[Message],
+    ) -> anyhow::Result<Vec<ToolDefinition>> {
+        let visible_source = self.permission_visible_tools(tools);
+        self.config
+            .tool_presentation_profile
+            .present_for_messages(&visible_source, messages)
+            .map_err(Into::into)
+    }
+
+    /// Only the coding actor's main turn applies the frozen profile. Auxiliary
+    /// clients keep their own governed definition surface and original binding.
+    pub(crate) fn prepare_profiled_fact_model_call(
+        &self,
+        expected_session_id: &str,
+        submitted: Arc<dyn LlmClient>,
+        messages: Vec<Message>,
+        system: Option<String>,
+        tools: Vec<ToolDefinition>,
+    ) -> anyhow::Result<PreparedFactModelCall> {
+        let mut prepared =
+            self.prepare_fact_model_call(expected_session_id, submitted, messages, system, tools)?;
+        prepared.application = ModelPresentationApplicationV1::Profiled;
+        Ok(prepared)
+    }
+
     pub(crate) fn prepare_fact_model_call(
         &self,
         expected_session_id: &str,

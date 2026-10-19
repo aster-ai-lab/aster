@@ -1,0 +1,92 @@
+[
+  {
+    "name": "harness",
+    "argv": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-code-core",
+      "--lib",
+      "harness_loop::",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.522,
+    "log": "docs/evidence/code/2026-10-20-task-orchestration/real-acp/nested-shell/harness-final.log"
+  },
+  {
+    "name": "native",
+    "argv": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-code-core",
+      "--lib",
+      "native_artifact",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.405,
+    "log": "docs/evidence/code/2026-10-20-task-orchestration/real-acp/nested-shell/native-final.log"
+  },
+  {
+    "name": "fact-control",
+    "argv": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-code-core",
+      "--lib",
+      "fact_control::",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "elapsed_seconds": 2.162,
+    "log": "docs/evidence/code/2026-10-20-task-orchestration/real-acp/nested-shell/fact-control-final.log"
+  },
+  {
+    "name": "nested-governance",
+    "argv": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-code-core",
+      "--lib",
+      "nested_governance",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.085,
+    "log": "docs/evidence/code/2026-10-20-task-orchestration/real-acp/nested-shell/nested-governance-final.log"
+  },
+  {
+    "name": "program",
+    "argv": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-code-core",
+      "--lib",
+      "tools::program_tool::",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.04,
+    "log": "docs/evidence/code/2026-10-20-task-orchestration/real-acp/nested-shell/program-final.log"
+  }
+]

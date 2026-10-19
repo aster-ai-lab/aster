@@ -1,0 +1,17 @@
+
+running 1 test
+test task_matrix::frozen_task_matrix_single_run ... 
+thread 'task_matrix::frozen_task_matrix_single_run' (49512205) panicked at crates/code/core/tests/extensibility/task_matrix.rs:1114:9:
+assertion `left == right` failed: qualification evidence incomplete: /runtime/metrics_complete
+  left: Some(Bool(false))
+ right: Some(Bool(true))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    task_matrix::frozen_task_matrix_single_run
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 23 filtered out; finished in 369.63s
+

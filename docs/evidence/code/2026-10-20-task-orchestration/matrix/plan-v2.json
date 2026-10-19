@@ -1,0 +1,90 @@
+{
+  "schema": "aster.t023.matrix-plan.v1",
+  "status": "frozen_before_v2_model_access",
+  "budget": {
+    "max_execution_ms": 900000,
+    "llm_api_timeout_ms": 180000,
+    "tool_timeout_ms": 120000,
+    "max_tool_rounds": 128,
+    "max_continuation_turns": 4,
+    "max_parallel_tasks": 4,
+    "thinking_budget": 8192,
+    "reasoning_effort": "medium",
+    "reported_token_limit": 1000000
+  },
+  "permissions": [
+    "*"
+  ],
+  "permission_scope": "Explicit allow over default Deny, with normal default security and workspace sandbox. Identical in all cells; delegation disabled.",
+  "fixed_retrieval": "disabled",
+  "prompt_sha256": "a55ceb23267a36b6aea90fa14c399621546a0223c551afa106ec5411b11cc6f5",
+  "correctness": "Independent nine-case T01 oracle; preserve signed-zero case and all failed runs. Runtime and profile promotion are separate.",
+  "concurrency": "No Cargo builds/tests, model tasks or config edits during any measured cell.",
+  "timing": "Outer process wall retained separately from backend preflight, Core task_ms and external oracle wall.",
+  "source_files": 2819,
+  "oracle": {
+    "path": "/Users/roylin/code/aster/docs/evidence/studio/2026-10-19-t01-deepseek-flash/oracle/evaluate.py",
+    "sha256": "36c4db2fb452ef738a228428598e38d567b4b77bf803b925b621078a416496ac",
+    "cases": 9
+  },
+  "version": "event-window-v2",
+  "frozen_at_utc": "2026-10-19T18:04:46.600511+00:00",
+  "order": [
+    {
+      "run_id": "t023-v2-hc-01",
+      "variant": "hardware",
+      "profile": "code",
+      "manifest": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-v2-hc-01.json",
+      "manifest_sha256": "f2a8bf1fb780ff591d16d9bd4de1fa93dc0bce2f422d04dfec52be2c78774ed4",
+      "workspace": "/Users/roylin/code/tasks/T01-t023-v2-hc-01"
+    },
+    {
+      "run_id": "t023-v2-sa-01",
+      "variant": "software",
+      "profile": "adaptive",
+      "manifest": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-v2-sa-01.json",
+      "manifest_sha256": "4e7890b47af4328527c25877bea4e820ef949fbf1e87f724bee10feedf76bf3a",
+      "workspace": "/Users/roylin/code/tasks/T01-t023-v2-sa-01"
+    },
+    {
+      "run_id": "t023-v2-ha-01",
+      "variant": "hardware",
+      "profile": "adaptive",
+      "manifest": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-v2-ha-01.json",
+      "manifest_sha256": "c74b01a6763e0a457af0558c329b430974cfe7133ef314eecc7ef12fbacd487e",
+      "workspace": "/Users/roylin/code/tasks/T01-t023-v2-ha-01"
+    },
+    {
+      "run_id": "t023-v2-sc-01",
+      "variant": "software",
+      "profile": "code",
+      "manifest": "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/manifests/t023-v2-sc-01.json",
+      "manifest_sha256": "6f1efbfdd98e8bd4ce7d2218d20aafecdd232fbf2a4a3776c9e42f094a2e6e5f",
+      "workspace": "/Users/roylin/code/tasks/T01-t023-v2-sc-01"
+    }
+  ],
+  "runner": "/Users/roylin/code/aster/target/t023-frozen-event-window-v2/t023-real-llm",
+  "runner_sha256": "33de605e83617a2e850778a2308832610697b1bcc95c0ffd227ec0ad1d9f130a",
+  "source_changes_since_v1": [
+    "crates/code/core/tests/extensibility/task_matrix.rs"
+  ],
+  "change_scope": "Only bounded test event retention and metrics-completeness gate changed; production source and model budgets unchanged. Do not pool v1 incomplete-window performance metrics.",
+  "sample_limit": {
+    "prior_attempts": 1,
+    "initial_v2_cells": 4,
+    "maximum_v2_attempts": 8,
+    "maximum_per_v2_cell": 2,
+    "absolute_all_version_t01_limit": 12,
+    "heldout_limit": 8
+  },
+  "second_wave_order_if_qualified": [
+    "sc",
+    "ha",
+    "sa",
+    "hc"
+  ],
+  "recording_limits": {
+    "events_per_run": 262144,
+    "event_bytes_per_run": 67108864
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "sdk_manifest": "/Users/roylin/code/aster/crates/oci-runtime/crates/sdk/Cargo.toml",
+  "core_manifest": "/Users/roylin/code/aster/crates/oci-runtime/crates/core/Cargo.toml",
+  "publish": [],
+  "test_count": 198,
+  "status": "passed"
+}

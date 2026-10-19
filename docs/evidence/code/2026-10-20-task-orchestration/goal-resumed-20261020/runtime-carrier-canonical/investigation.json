@@ -1,0 +1,124 @@
+{
+  "schema": "aster.runtime-carrier-canonical.investigation.v1",
+  "at_utc": "2026-10-19T22:09:03.532342+00:00",
+  "staged_unsigned_acp": {
+    "path": "target/debug/deps/a3s_code_acp-8d1de50a22ef8f81",
+    "bytes": 325456128,
+    "sha256": "073ad2aee0e0977ebea537dbfe689bf79a1e3387142ba846494ee0998f9c496c"
+  },
+  "qualified_unsigned_host": {
+    "path": "target/t013-sha-build/debug/a3s-oci",
+    "bytes": 66364280,
+    "sha256": "7dacc9fcd9d91b85f79de8b01c294215eeb7f60d5d41d122c096ddc54e9652fe"
+  },
+  "staged_acp_graph": [
+    {
+      "path": "target/debug/.fingerprint/a3s-code-acp-8d1de50a22ef8f81/bin-a3s-code-acp.json",
+      "sha256": "3de9ef4efa18f556eb93587e1681bdf512f51df54e2eb49bfef660fd68dde800",
+      "features": "[]",
+      "deps": [
+        [
+          8160210889872729633,
+          "serde_json",
+          false,
+          6069730952246001739
+        ],
+        [
+          16463797968214001849,
+          "a3s_code_core",
+          false,
+          15601326850580492753
+        ]
+      ]
+    },
+    {
+      "path": "target/debug/.fingerprint/a3s-code-core-a93cbf4342575925/lib-a3s_code_core.json",
+      "sha256": "34f89485088a982c00b8f892092e040d0e6a8a00fb929adb284a7e87a8b34c46",
+      "features": "[\"a3s-vec-fts\", \"default\", \"grep-trigram\", \"headless-search\", \"local-code\", \"web-fetch-pdf\"]",
+      "deps": [
+        [
+          6696153425172666934,
+          "a3s_oci_sdk",
+          false,
+          13429003967370353547
+        ],
+        [
+          8160210889872729633,
+          "serde_json",
+          false,
+          6069730952246001739
+        ]
+      ]
+    },
+    {
+      "path": "target/debug/.fingerprint/a3s-oci-sdk-ddcca1586ff72bf0/lib-a3s_oci_sdk.json",
+      "sha256": "3757c9e94f8e866d7b312674383e75caa7e05df79288d69891ad13130b51f0e0",
+      "features": "[]",
+      "deps": [
+        [
+          8160210889872729633,
+          "serde_json",
+          false,
+          6069730952246001739
+        ]
+      ]
+    },
+    {
+      "path": "target/debug/.fingerprint/serde_json-362a4202c7e383df/lib-serde_json.json",
+      "sha256": "a30b6e8c27c5d4ac6489dc5a4b16911be484c27c6ea142013ce9a59698ec37ca",
+      "features": "[\"alloc\", \"default\", \"float_roundtrip\", \"indexmap\", \"preserve_order\", \"raw_value\", \"std\"]",
+      "deps": []
+    }
+  ],
+  "qualified_host_graph": [
+    {
+      "path": "target/t013-sha-build/debug/.fingerprint/a3s-oci-cli-e6144fef55394103/bin-a3s-oci.json",
+      "sha256": "a55b9d3fdb6dad8d9a91b6c5174109785a67d355bd1861593e8c2ac24731ea6e",
+      "features": "[]",
+      "deps": [
+        [
+          6696153425172666934,
+          "a3s_oci_sdk",
+          false,
+          10648249177531434034
+        ],
+        [
+          8160210889872729633,
+          "serde_json",
+          false,
+          8754621024089430325
+        ]
+      ]
+    },
+    {
+      "path": "target/t013-sha-build/debug/.fingerprint/a3s-oci-sdk-71676190aa21972e/lib-a3s_oci_sdk.json",
+      "sha256": "41396426d0435f5f1897ccf3f15e12a26208fbffbf87973663f385422a8d5e5c",
+      "features": "[]",
+      "deps": [
+        [
+          8160210889872729633,
+          "serde_json",
+          false,
+          8754621024089430325
+        ]
+      ]
+    },
+    {
+      "path": "target/t013-sha-build/debug/.fingerprint/serde_json-e5d6220d48354f51/lib-serde_json.json",
+      "sha256": "2c25467d3a5d867f88424860624e12063399a043c1cbff0d32dd77a2f41358b3",
+      "features": "[\"default\", \"float_roundtrip\", \"std\"]",
+      "deps": []
+    }
+  ],
+  "representative_mount": {
+    "raw_json": "{\"source\":\"data\",\"destination\":\"/data\",\"type\":\"bind\",\"options\":[\"rbind\",\"rw\"]}",
+    "raw_digest": "sha256:21ca5da9fa681a0d65c2e9429bae9ba088aaa2566f6dfe24e14fa10c9c85c09b",
+    "sorted_json": "{\"destination\":\"/data\",\"options\":[\"rbind\",\"rw\"],\"source\":\"data\",\"type\":\"bind\"}",
+    "sorted_digest": "sha256:862e273bb512559f843584d35eee6dc7ed2028df88fb7f42cd7f84979cbe052e"
+  },
+  "scope": {
+    "no_model_vm_gui_or_cargo": true,
+    "running_task_assets_config_and_frozen_binaries_unchanged": true,
+    "fact_read_only_tool_result_error_and_receipt": true
+  }
+}

@@ -959,6 +959,10 @@ impl WorkspaceGitWorktreeProvider for LocalWorkspaceBackend {
 
 #[async_trait]
 impl WorkspaceCommandRunner for LocalWorkspaceBackend {
+    fn execution_target(&self) -> crate::sandbox::ShellExecutionTarget {
+        crate::sandbox::ShellExecutionTarget::local_host_shell()
+    }
+
     async fn exec(&self, request: CommandRequest) -> Result<CommandOutput> {
         #[cfg(windows)]
         if let Some(output) =

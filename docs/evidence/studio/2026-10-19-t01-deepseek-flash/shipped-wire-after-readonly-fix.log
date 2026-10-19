@@ -1,0 +1,82 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling a3s-effect v0.2.1 (/Users/roylin/code/aster/crates/effect)
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+warning: unused imports: `guest_agent_hello` and `host_runtime_version`
+  --> crates/code/core/src/sandbox/oci.rs:25:26
+   |
+25 | pub(crate) use version::{guest_agent_hello, host_runtime_version};
+   |                          ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `HOST_MISMATCH` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:10:7
+   |
+10 | const HOST_MISMATCH: &[u8] = b"guest agent version does not match the host runtime version";
+   |       ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `host_runtime_version` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:13:15
+   |
+13 | pub(crate) fn host_runtime_version(host: &[u8]) -> Option<&str> {
+   |               ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `guest_agent_hello` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:18:15
+   |
+18 | pub(crate) fn guest_agent_hello<'a>(agent: &'a [u8], architecture: &str) -> Option<&'a str> {
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: function `version_immediately_before` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:26:4
+   |
+26 | fn version_immediately_before<'a>(bytes: &'a [u8], marker: &[u8]) -> Option<&'a str> {
+   |    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `semver_ending_at` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:44:4
+   |
+44 | fn semver_ending_at(bytes: &[u8], end: usize) -> Option<&str> {
+   |    ^^^^^^^^^^^^^^^^
+
+   Compiling a3s-code-acp v9.1.4 (/Users/roylin/code/aster/crates/code/acp)
+warning: `a3s-code-core` (lib) generated 6 warnings (run `cargo fix --lib -p a3s-code-core` to apply 1 suggestion)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-acp` (bin "a3s-code-acp") generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 15.84s
+     Running tests/shipped_tui_e2e.rs (target/debug/deps/shipped_tui_e2e-db0c6533f5e5e47d)
+
+running 1 test
+ORACLE test=shipped_agent_session_wire name=initialize-acl-model result=pass detail=mock/gpt
+ORACLE test=shipped_agent_session_wire name=new-session-model result=pass detail=mock/gpt
+ORACLE test=shipped_agent_session_wire name=engineering-default result=pass detail=policy present once without selection metadata
+ORACLE test=shipped_agent_session_wire name=session-info-turn-usage result=pass detail=turn=1 used=2 prompts=1 rounds=16
+ORACLE test=shipped_agent_session_wire name=duplicate-tool-refused result=pass detail=denied with no effects, still consumes budget
+ORACLE test=shipped_agent_session_wire name=tool-call-name result=pass detail=low_thinking=2048 low_rounds=16
+ORACLE test=shipped_agent_session_wire name=effort-budget result=pass detail=low=2048/16 high=16384/128
+ORACLE test=shipped_agent_session_wire name=effort-budget-stop result=pass detail=advertised=4 enforced=4
+ORACLE test=shipped_agent_session_wire name=permission-blocks-until-allow-once result=pass detail=completion-gate file=wrote-marker
+ORACLE test=shipped_agent_session_wire name=question-answered result=pass detail=option=alpha
+ORACLE test=shipped_agent_session_wire name=cancel-no-late-file result=pass detail=stop=Cancelled
+ORACLE test=shipped_agent_session_wire name=compact-summary-kept result=pass detail=COMPACT-SUMMARY-7f3a
+ORACLE test=shipped_agent_session_wire name=goal-binding-and-quiet-verbs result=pass detail=status/pause/clear added 0 bodies; set bound the objective and policy in original facts
+ORACLE test=shipped_agent_session_wire name=prompt-id-per-session result=pass detail=left=stamp-left right=stamp-right
+test shipped_agent_session_wire has been running for over 60 seconds
+ORACLE test=shipped_agent_session_wire name=load-session-replay result=pass detail=DURABLE-TOKEN-42
+test shipped_agent_session_wire ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 80.10s
+

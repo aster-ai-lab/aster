@@ -1,0 +1,30 @@
+[
+  {
+    "variant": "sidebar-current",
+    "exit": 1,
+    "passed": 0,
+    "failed": 6,
+    "failedNames": [
+      "AgentPage shows both agent and session panes by default when sessions are on the right",
+      "AgentPage keeps a sidebar toggle beside agent resource search so a collapsed pane can be reopened",
+      "AgentPage collapses the agent sidebar when the shared shell requests it",
+      "AgentPage temporarily hides and restores the agent sidebar for responsive auto-collapse without changing the user preference",
+      "AgentPage keeps the agent sidebar open after selecting a session from the sidebar",
+      "AgentPage keeps detached session sidebar state local, default-closed, and fixed on the left"
+    ]
+  },
+  {
+    "variant": "sidebar-without-own-hunks",
+    "exit": 1,
+    "passed": 0,
+    "failed": 6,
+    "failedNames": [
+      "AgentPage shows both agent and session panes by default when sessions are on the right",
+      "AgentPage keeps a sidebar toggle beside agent resource search so a collapsed pane can be reopened",
+      "AgentPage collapses the agent sidebar when the shared shell requests it",
+      "AgentPage temporarily hides and restores the agent sidebar for responsive auto-collapse without changing the user preference",
+      "AgentPage keeps the agent sidebar open after selecting a session from the sidebar",
+      "AgentPage keeps detached session sidebar state local, default-closed, and fixed on the left"
+    ]
+  }
+]

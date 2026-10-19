@@ -1,0 +1,33 @@
+{
+  "name": "@a3s-lab/intelligent-ui",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "OpenUI Lang interactive UI for Studio messages and parked forms",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "acorn": "8.19.0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "4.1.18",
+    "@types/node": "24.13.3",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "esbuild": "0.25.12",
+    "jsdom": "26.1.0",
+    "tailwindcss": "4.1.18",
+    "typescript": "5.9.3",
+    "vitest": "3.2.4",
+    "@types/estree": "1.0.8"
+  },
+  "exports": {
+    ".": "./src/IntelligentUI.tsx",
+    "./openui": "./src/openui.ts"
+  }
+}

@@ -23,11 +23,9 @@ fn every_mutation_must_have_matching_content_evidence() {
         path: "two".into(),
         content_digest: String::new(),
     };
-    assert!(
-        attestor
-            .attest("effect", &[paths[0].clone(), missing])
-            .is_none()
-    );
+    assert!(attestor
+        .attest("effect", &[paths[0].clone(), missing])
+        .is_none());
     std::fs::write(root.path().join("two"), "tampered after verification").unwrap();
     assert!(attestor.attest("effect", &paths).is_none());
     assert!(attestor.attest("", &paths).is_none());
@@ -59,11 +57,9 @@ fn path_boundaries_reject_absolute_parent_symlink_and_special_files() {
             "accepted {path}"
         );
     }
-    assert!(
-        attestor
-            .attest("effect", &[record("./safe..name", "safe")])
-            .is_some()
-    );
+    assert!(attestor
+        .attest("effect", &[record("./safe..name", "safe")])
+        .is_some());
 }
 
 #[test]
@@ -82,9 +78,7 @@ fn large_file_is_hashed_with_the_shared_streaming_observer() {
         path: "large".into(),
         content_digest: format!("{:x}", hash.finalize()),
     }];
-    assert!(
-        DiskContentAttestor::new(root.path())
-            .attest("effect", &paths)
-            .is_some()
-    );
+    assert!(DiskContentAttestor::new(root.path())
+        .attest("effect", &paths)
+        .is_some());
 }

@@ -1,0 +1,8 @@
+{
+  "command": [
+    "just",
+    "build-work"
+  ],
+  "exit_code": 0,
+  "wall_seconds": 102.507050791
+}

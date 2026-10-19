@@ -1,0 +1,29 @@
+extension "proof/workbench" {
+  schema_version = 3
+  version = "1.0.0"
+  requires_use = ">=0.3.0, <0.4.0"
+  route = "proof-workbench"
+  actions = ["read"]
+  repository { url = "https://example.org/proof/workbench" }
+  skill "workbench" { path = "skills/workbench/SKILL.md" }
+  view_container "resources" { title = "AIX Resources" icon = "database" location = "activitybar" }
+  view_container "output" { title = "AIX Output" icon = "terminal" location = "panel" }
+  ui "tasks" {
+    title = "AIX Tasks"
+    entry = "ui/tasks/index.html"
+    root = "ui/tasks"
+    container = "resources"
+    presentation = "tree"
+  }
+  ui "overview" { title = "AIX Overview" entry = "ui/overview/index.html" root = "ui/overview" container = "resources" }
+  ui "output" { title = "AIX Output" entry = "ui/output/index.html" root = "ui/output" container = "output" }
+  ui "editor" { title = "AIX Editor" entry = "ui/editor/index.html" root = "ui/editor" point = "studio.editor" }
+  ui "app" {
+    title = "AIX Data Lens"
+    description = "Inspect data in an isolated mini app"
+    icon = "database"
+    entry = "ui/app/index.html"
+    root = "ui/app"
+    point = "studio.applets"
+  }
+}

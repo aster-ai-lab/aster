@@ -1,0 +1,16 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-code-acp",
+    "--lib",
+    "host_tool_confirmation_policy_uses_the_existing_human_ask_deadline",
+    "--",
+    "--test-threads=1"
+  ],
+  "exit_code": 101,
+  "wall_seconds": 65.82039091600001
+}

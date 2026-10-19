@@ -74,7 +74,7 @@ impl Tool for CodeNavigationTool {
             Some(_) => {
                 return Ok(invalid_argument(
                     "operation must be definition, declaration, references, or implementations",
-                ))
+                ));
             }
             None => return Ok(invalid_argument("operation parameter is required")),
         };
@@ -89,7 +89,7 @@ impl Tool for CodeNavigationTool {
             Err(error) => {
                 return Ok(invalid_argument(format!(
                     "failed to resolve workspace path: {error}"
-                )))
+                )));
             }
         };
         let line = match u32_argument(args, "line") {

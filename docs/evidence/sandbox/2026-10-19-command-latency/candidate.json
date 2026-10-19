@@ -1,0 +1,129 @@
+{
+  "schema": "aster.oci-command-latency.v1",
+  "stage": "candidate",
+  "assets": "/Users/roylin/code/aster/target/sandbox-latency-assets",
+  "asset_sha256": {
+    "a3s-oci": "4453349c5f73b4f3d95918cd04e57530f2ad40ad8a8499b245eb1208d86b43ba",
+    "a3s-oci-krun-shim": "3ed83beca4c1d1908f2490450fe770f2d7dbfbc196eb3f56e60de32ae0201ff8",
+    "system-image.json": "e1b6b5287caf144b7bfe083f996f90f26f80417a969ba9f96e137848586cab1b"
+  },
+  "sample_command": "printf phase-probe",
+  "samples": [
+    {
+      "sample": 0,
+      "total_ms": 4949.469,
+      "phases": [
+        {
+          "phase": "host_connect",
+          "milliseconds": 475.4095
+        },
+        {
+          "phase": "bundle_prepare",
+          "milliseconds": 580.4267090000001
+        },
+        {
+          "phase": "vm_create",
+          "milliseconds": 3574.783209
+        },
+        {
+          "phase": "process_start",
+          "milliseconds": 63.578084000000004
+        },
+        {
+          "phase": "collect_wait",
+          "milliseconds": 75.17504199999999
+        },
+        {
+          "phase": "vm_delete",
+          "milliseconds": 156.587625
+        },
+        {
+          "phase": "host_shutdown",
+          "milliseconds": 1.242375
+        },
+        {
+          "phase": "scratch_remove",
+          "milliseconds": 1.6657499999999998
+        }
+      ]
+    },
+    {
+      "sample": 1,
+      "total_ms": 3550.282,
+      "phases": [
+        {
+          "phase": "host_connect",
+          "milliseconds": 446.071083
+        },
+        {
+          "phase": "bundle_prepare",
+          "milliseconds": 380.115792
+        },
+        {
+          "phase": "vm_create",
+          "milliseconds": 2428.766916
+        },
+        {
+          "phase": "process_start",
+          "milliseconds": 61.85375
+        },
+        {
+          "phase": "collect_wait",
+          "milliseconds": 73.67637500000001
+        },
+        {
+          "phase": "vm_delete",
+          "milliseconds": 155.845083
+        },
+        {
+          "phase": "host_shutdown",
+          "milliseconds": 0.942791
+        },
+        {
+          "phase": "scratch_remove",
+          "milliseconds": 1.48475
+        }
+      ]
+    },
+    {
+      "sample": 2,
+      "total_ms": 3183.374,
+      "phases": [
+        {
+          "phase": "host_connect",
+          "milliseconds": 421.430209
+        },
+        {
+          "phase": "bundle_prepare",
+          "milliseconds": 307.566625
+        },
+        {
+          "phase": "vm_create",
+          "milliseconds": 2149.7484999999997
+        },
+        {
+          "phase": "process_start",
+          "milliseconds": 80.064208
+        },
+        {
+          "phase": "collect_wait",
+          "milliseconds": 70.694333
+        },
+        {
+          "phase": "vm_delete",
+          "milliseconds": 149.967125
+        },
+        {
+          "phase": "host_shutdown",
+          "milliseconds": 0.933
+        },
+        {
+          "phase": "scratch_remove",
+          "milliseconds": 1.529292
+        }
+      ]
+    }
+  ],
+  "mean_total_ms": 3894.375,
+  "limits": "Three synthetic isolated-workspace samples only; not a complete T01 model run or release qualification. Original cache unchanged. All pin/hash checks and fresh dedicated VM per command are preserved."
+}

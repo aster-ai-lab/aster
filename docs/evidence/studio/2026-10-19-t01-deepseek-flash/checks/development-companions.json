@@ -1,0 +1,16 @@
+{
+  "a3s-code-acp": {
+    "source": "/Users/roylin/code/aster/target/debug/a3s-code-acp",
+    "destination": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/AsterDream.app/Contents/MacOS/a3s-code-acp",
+    "sha256": "128588d3b0aee9e3700c497500a3bfb5b1ca75aee228c0f332184f8a04e49ad8"
+  },
+  "a3s-office": {
+    "source": "/Users/roylin/code/aster/target/debug/a3s-office",
+    "destination": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/AsterDream.app/Contents/MacOS/a3s-office",
+    "sha256": "35e9dbc647238444c51b42d3fb0ed544725ac25daf9cfe0d4465e7d93bf8db33"
+  },
+  "sandbox": {
+    "link": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/AsterDream.app/Contents/MacOS/sandbox",
+    "assets": "/Users/roylin/Library/Caches/aster/sandbox/dev-20261018-core-bash"
+  }
+}

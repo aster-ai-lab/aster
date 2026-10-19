@@ -1,0 +1,141 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on build directory
+warning: function `upsert_instance_map` is never used
+   --> crates/boot/src/service_discovery/mod.rs:203:15
+    |
+203 | pub(crate) fn upsert_instance_map(
+    |               ^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `remove_instance_map` is never used
+   --> crates/boot/src/service_discovery/mod.rs:215:15
+    |
+215 | pub(crate) fn remove_instance_map(
+    |               ^^^^^^^^^^^^^^^^^^^
+
+   Compiling aster-dream v0.1.1 (/Users/roylin/code/aster/apps/work/src-tauri)
+warning: `a3s-boot` (lib) generated 2 warnings
+warning: aster-dream@0.1.1: no DOUBAO_/DOCHUB_* in /Users/roylin/code/aster/apps/work/src-tauri/../.env; packaged host will not embed search/document-parse defaults
+warning: unused import: `Ordering`
+ --> apps/work/src-tauri/src/desktop_settings.rs:8:36
+  |
+8 | use std::sync::atomic::{AtomicU32, Ordering};
+  |                                    ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unnecessary `unsafe` block
+    --> apps/work/src-tauri/src/workspace_browser.rs:1080:32
+     |
+1080 |                 let absolute = unsafe { request.URL() }.and_then(|url| {
+     |                                ^^^^^^ unnecessary `unsafe` block
+     |
+     = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default
+
+warning: unnecessary `unsafe` block
+    --> apps/work/src-tauri/src/workspace_browser.rs:1114:32
+     |
+1114 |                 let absolute = unsafe { request.URL() }.and_then(|url| {
+     |                                ^^^^^^ unnecessary `unsafe` block
+
+warning: field `tool_call_id` is never read
+   --> apps/work/src-tauri/src/agent_plane/local_acp_tests.rs:858:5
+    |
+856 | struct Approval {
+    |        -------- field in this struct
+857 |     id: String,
+858 |     tool_call_id: String,
+    |     ^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `boot` is never used
+  --> apps/work/src-tauri/src/channel_gateway.rs:22:8
+   |
+22 | pub fn boot(token: &str, plane_url: &str) {
+   |        ^^^^
+
+warning: field `username` is never read
+  --> apps/work/src-tauri/src/crab_user.rs:66:9
+   |
+62 | pub struct IssuedSession {
+   |            ------------- field in this struct
+...
+66 |     pub username: String,
+   |         ^^^^^^^^
+   |
+   = note: `IssuedSession` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+
+warning: function `curl` is never used
+   --> apps/work/src-tauri/src/crab_user.rs:938:4
+    |
+938 | fn curl(
+    |    ^^^^
+
+warning: function `allow_test_upstream` is never used
+    --> apps/work/src-tauri/src/crab_user.rs:1088:15
+     |
+1088 | pub(crate) fn allow_test_upstream(origin: &str) {
+     |               ^^^^^^^^^^^^^^^^^^^
+
+warning: static `SLEEP_ASSERTION` is never used
+  --> apps/work/src-tauri/src/desktop_settings.rs:72:8
+   |
+72 | static SLEEP_ASSERTION: AtomicU32 = AtomicU32::new(0);
+   |        ^^^^^^^^^^^^^^^
+
+warning: function `boot` is never used
+   --> apps/work/src-tauri/src/desktop_settings.rs:411:8
+    |
+411 | pub fn boot(slug: &str, product: &str, logo: &Path) {
+    |        ^^^^
+
+warning: constant `CREATE_NO_WINDOW` is never used
+  --> apps/work/src-tauri/src/no_window.rs:29:7
+   |
+29 | const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+   |       ^^^^^^^^^^^^^^^^
+
+warning: function `verified_picker` is never used
+   --> apps/work/src-tauri/src/review_plugin.rs:462:8
+    |
+462 | pub fn verified_picker() -> Option<(PathBuf, String)> {
+    |        ^^^^^^^^^^^^^^^
+
+warning: `aster-dream` (lib test) generated 12 warnings (run `cargo fix --lib -p aster-dream --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 32s
+     Running unittests src/lib.rs (target/debug/deps/a3s_studio_lib-9c7d06d5a17857ce)
+
+running 1 test
+test agent_plane::turns::local_acp_tests::delivery::program::real_acp_program_cancel_after_nested_read_preserves_cancelled_terminal ... a3s-code-acp: 2026-10-19T17:23:29.831836Z  WARN a3s_code_core::skills::registry: Duplicate skill name encountered during directory load — overriding previous definition skill=a3s-test path=/Users/roylin/.claude/skills/a3s-test/SKILL.md
+a3s-code-acp: 2026-10-19T17:23:29.836536Z  WARN a3s_code_core::skills::registry: Duplicate skill name encountered during directory load — overriding previous definition skill=skill-creator path=/Users/roylin/.codex/skills/.system/skill-creator/SKILL.md
+a3s-code-acp: 2026-10-19T17:23:29.836846Z  WARN a3s_code_core::skills::registry: Duplicate skill name encountered during directory load — overriding previous definition skill=a3s-test path=/Users/roylin/.codex/skills/a3s-test/SKILL.md
+a3s-code-acp: 2026-10-19T17:23:29.837561Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /Users/roylin/.claude/agents
+a3s-code-acp: 2026-10-19T17:23:29.837593Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /Users/roylin/.a3s/agents
+a3s-code-acp: 2026-10-19T17:23:29.837621Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/a3s-studio-task-program-cancel-17149/state/workspace/01a15530-7932-7264-abc8-c47c5b15bd7b/.claude/agents
+a3s-code-acp: 2026-10-19T17:23:29.837655Z  WARN a3s_code_core::subagent::loader: Failed to resolve agent directory: /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/a3s-studio-task-program-cancel-17149/state/workspace/01a15530-7932-7264-abc8-c47c5b15bd7b/.a3s/agents
+WORK_REAL_ACP_PROGRAM_PHASE {"approval_cards_handled":2,"cancel_requested":true,"events":28,"provider_aux_requests":0,"provider_main_requests":1,"terminal_received":true,"tools":"program:output-error:allowed_tools,language,limits,source,type read:output-available:file_path,limit office_file:output-error:blocks,file_path,kind"}
+WORK_REAL_ACP_PROGRAM_IDENTITY {"binary":"/Users/roylin/code/aster/target/debug/a3s-code-acp","clock":"Work turn open through terminal; includes launch preparation, excludes identity lookup/cleanup/hash","host_turn_ms":339,"pid":17168,"sha256":"ceac064a510992a47d4bdb57d243ffeb7f82a4aaac4ae45d5871f35769ca4163"}
+
+thread 'agent_plane::turns::local_acp_tests::delivery::program::real_acp_program_cancel_after_nested_read_preserves_cancelled_terminal' (49308056) panicked at apps/work/src-tauri/src/agent_plane/local_acp_program_tests.rs:627:5:
+assertion failed: receipt["exit_code"].as_i64().is_some_and(|code| code != 0)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    agent_plane::turns::local_acp_tests::delivery::program::real_acp_program_cancel_after_nested_read_preserves_cancelled_terminal
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 834 filtered out; finished in 14.97s
+
+error: test failed, to rerun pass `-p aster-dream --lib`

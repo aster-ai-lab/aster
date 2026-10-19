@@ -3,6 +3,9 @@
 use super::*;
 use std::collections::HashMap;
 
+#[path = "agent/approval_deadline_tests.rs"]
+mod approval_deadline;
+
 #[test]
 fn cc_switch_picker_label_includes_other_profiles() {
     assert_eq!(

@@ -1,0 +1,13 @@
+{
+  "schema": "aster.t027.oracle-interpretation.v1",
+  "recorded_at_utc": "2026-10-19T20:44:54.202091+00:00",
+  "evaluator_exit_code_matches_quality_result": true,
+  "quality_pass": false,
+  "passed_cases": 8,
+  "total_cases": 9,
+  "failed_cases": [
+    "negative_zero"
+  ],
+  "supervisor_post_report_assertion": "The one-shot supervisor incorrectly asserted exit code 0 even for a valid quality failure. It failed after saving the complete report. Original exit=1 and all failure records are retained; this interpretation reads existing reports and does not rerun or rescore.",
+  "new_model_or_oracle_run": false
+}

@@ -1,0 +1,5 @@
+Sampling process 48334 for 1 second with 1 millisecond of run time between samples
+Couldn't find _sigtramp symbol in expected dylibs
+Found _sigtramp symbol after 6 tries
+Sampling completed, processing symbols...
+Sample analysis of process 48334 written to file /Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/program-failure-receipts/tightloop-red-stack.txt

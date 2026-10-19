@@ -1,0 +1,23 @@
+{
+  "schema": "aster.sandbox.t013.final-integrity.v1",
+  "harnessSha256": "16909621a2f34fc71378c0dc958cf3e5dcb681e37d8b960f52063e7c05c759ac",
+  "buildSourceManifestSha256": "421543348bca4fc6c2809db0b19b39fd4d1e1d2156a52a97bcbd5a2a00f625a7",
+  "currentSourceChangesAfterBuild": {
+    "Cargo.lock": {
+      "buildSha256": "10be1f74eb1ada3c525f6eb00caf8e3b985a0afac9d7d4a5514c7a81ff554e53",
+      "currentSha256": "66b5513f12803ea4e651fda88b47456f9bf8c07cd9db35f162fe6eacd45a80ef"
+    }
+  },
+  "originalCandidateFilesUnchanged": 950,
+  "softwareFilesUnchanged": 950,
+  "hardwareFilesUnchanged": 950,
+  "originalBaselineTrackedAssetsUnchanged": true,
+  "noBenchmarkProcessesRemaining": true,
+  "note": "Source equality was checked before both snapshots. Later working-tree changes do not alter the frozen harness or asset binaries used by all rounds.",
+  "newProbeRustfmtMatches": true,
+  "analysisReplayCommand": "/opt/homebrew/bin/python3.13 docs/evidence/sandbox/2026-10-19-command-latency/t013-analyze.py",
+  "analysisContractChecks": "All 76 receipts, 608 unique nonnegative finite phases, ordered sample indexes, exact stdout/stderr/exit/timeout and phase-sum bounds passed.",
+  "initialAndBothBuildsLockDigestMatches": true,
+  "buildTimeLockContentsArchived": false,
+  "ambientLoadObservation": "Only round-start/end aggregate load averages. No continuous per-process CPU record and no whole-machine-idle claim; later ambient-load observations cannot reconstruct the timing window."
+}

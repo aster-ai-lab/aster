@@ -433,6 +433,8 @@ pub struct KrunAgentVmSmokeReport {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub macos_boot_assets: Option<MacosBootAssetsEvidence>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub macos_host_sandbox_enforced: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub windows_boot_assets: Option<WindowsBootAssetsEvidence>,
     pub agent_binary_present: bool,
     pub agent_vsock_configured: bool,
@@ -476,6 +478,7 @@ impl KrunAgentVmSmokeReport {
             kvm_post_probe_failure_injected: false,
             linux_boot_assets: None,
             macos_boot_assets: None,
+            macos_host_sandbox_enforced: None,
             windows_boot_assets: None,
             agent_binary_present: false,
             agent_vsock_configured: false,
@@ -545,6 +548,7 @@ impl KrunAgentVmSmokeReport {
                 }
                 HostPlatform::Macos => {
                     self.runtime_share_configured
+                        && self.macos_host_sandbox_enforced == Some(true)
                         && self
                             .macos_boot_assets
                             .as_ref()
@@ -561,3 +565,7 @@ impl KrunAgentVmSmokeReport {
             && self.console_created
     }
 }
+
+#[cfg(test)]
+#[path = "report_tests.rs"]
+mod tests;

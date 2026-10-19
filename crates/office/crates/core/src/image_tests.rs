@@ -3,6 +3,59 @@ use crate::{
     NativeOfficeMutation, OfficeNodeType,
 };
 
+#[tokio::test]
+async fn explicit_presentation_image_positions_roundtrip_and_refuse_out_of_bounds() {
+    let temp = tempfile::tempdir().unwrap();
+    let path = temp.path().join("positioned.pptx");
+    let mut editor = NativeOfficeEditor::create(&path).await.unwrap();
+    let slide = editor.add_slide("/", "Chart").unwrap();
+    let image = || {
+        NativeOfficeImage::from_bytes(PNG_1X1)
+            .unwrap()
+            .with_width_px(96)
+            .with_height_px(48)
+    };
+    let default = editor.add_image(&slide, image()).unwrap();
+    let explicit = editor
+        .add_image(
+            &slide,
+            image().with_presentation_position_emu(914_400, 1_828_800),
+        )
+        .unwrap();
+    editor.save().await.unwrap();
+    let saved = crate::NativeOfficeDocument::open(&path).await.unwrap();
+    assert_eq!(saved.get(&default.path, 0).unwrap().format["y"], "2.5400cm");
+    assert_eq!(
+        saved.get(&explicit.path, 0).unwrap().format["y"],
+        "5.0800cm"
+    );
+    let before = editor.snapshot().unwrap().statistics().picture_count;
+    for (x, y) in [(u32::MAX, 0), (0, u32::MAX), (12_000_000, 6_000_000)] {
+        assert!(editor
+            .add_image(&slide, image().with_presentation_position_emu(x, y))
+            .is_err());
+    }
+    assert_eq!(
+        editor.snapshot().unwrap().statistics().picture_count,
+        before
+    );
+    for extension in ["docx", "xlsx"] {
+        let mut editor =
+            NativeOfficeEditor::create(temp.path().join(format!("unsupported.{extension}")))
+                .await
+                .unwrap();
+        let parent = if extension == "docx" {
+            "/body"
+        } else {
+            "/Sheet1/A1"
+        };
+        assert!(editor
+            .add_image(parent, image().with_presentation_position_emu(0, 0))
+            .is_err());
+        assert_eq!(editor.snapshot().unwrap().statistics().picture_count, 0);
+    }
+}
+
 pub(crate) const PNG_1X1: &[u8] = &[
     0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d, 0x49, 0x48, 0x44, 0x52,
     0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x08, 0x06, 0x00, 0x00, 0x00, 0x1f, 0x15, 0xc4,

@@ -1,0 +1,200 @@
+Diff in /Users/roylin/code/aster/apps/work/src-tauri/src/agent_plane/local_acp_delivery_tests.rs:2:
+ 
+ use super::*;
+ use std::io::{Cursor, Read, Write};
+[31m-use std::sync::Mutex;
+(B[m use std::sync::atomic::{AtomicBool, Ordering};
+[32m+use std::sync::Mutex;
+(B[m 
+ #[path = "local_acp_program_tests.rs"]
+ mod program;
+Diff in /Users/roylin/code/aster/apps/work/src-tauri/src/agent_plane/local_acp_delivery_tests.rs:323:
+     assert_ne!(requests[6]["stream"], true);
+     assert!(requests[6].get("tools").is_none());
+     assert_eq!(requests[6]["messages"][0]["role"], "system");
+[31m-    assert!(
+(B[m[31m-        requests[6]["messages"][0]["content"]
+(B[m[31m-            .as_str()
+(B[m[31m-            .unwrap()
+(B[m[31m-            .starts_with("You extract durable, reusable memory for a coding agent.\n")
+(B[m[31m-    );
+(B[m[32m+    assert!(requests[6]["messages"][0]["content"]
+(B[m[32m+        .as_str()
+(B[m[32m+        .unwrap()
+(B[m[32m+        .starts_with("You extract durable, reusable memory for a coding agent.\n"));
+(B[m     for name in ["office_file", "output_check"] {
+         assert!(
+             requests[0]["tools"]
+Diff in /Users/roylin/code/aster/apps/work/src-tauri/src/agent_plane/local_acp_delivery_tests.rs:476:
+     ));
+     let requests = provider.requests();
+     assert_eq!(requests.len(), 2);
+[31m-    assert!(
+(B[m[31m-        requests[1]["messages"]
+(B[m[31m-            .as_array()
+(B[m[31m-            .unwrap()
+(B[m[31m-            .iter()
+(B[m[31m-            .any(|message| message["role"] == "tool"
+(B[m[31m-                && message["tool_call_id"] == "invalid"
+(B[m[31m-                && message["content"]
+(B[m[31m-                    .as_str()
+(B[m[31m-                    .unwrap()
+(B[m[31m-                    .contains("extension must match kind"))
+(B[m[31m-    );
+(B[m[31m-    assert!(
+(B[m[31m-        events.last().unwrap()["payload"]["error"]["message"]
+(B[m[31m-            .as_str()
+(B[m[31m-            .unwrap()
+(B[m[31m-            .contains("fixture provider refused continuation")
+(B[m[31m-    );
+(B[m[32m+    assert!(requests[1]["messages"]
+(B[m[32m+        .as_array()
+(B[m[32m+        .unwrap()
+(B[m[32m+        .iter()
+(B[m[32m+        .any(|message| message["role"] == "tool"
+(B[m[32m+            && message["tool_call_id"] == "invalid"
+(B[m[32m+            && message["content"]
+(B[m[32m+                .as_str()
+(B[m[32m+                .unwrap()
+(B[m[32m+                .contains("extension must match kind")));
+(B[m[32m+    assert!(events.last().unwrap()["payload"]["error"]["message"]
+(B[m[32m+        .as_str()
+(B[m[32m+        .unwrap()
+(B[m[32m+        .contains("fixture provider refused continuation"));
+(B[m     let assistant = latest_assistant(&harness);
+     let row = harness
+         .store
+Diff in /Users/roylin/code/aster/apps/work/src-tauri/src/agent_plane/local_acp_delivery_tests.rs:505:
+     let tools = tool_parts(&assistant);
+     assert_eq!(tools.len(), 1, "{assistant}");
+     assert_eq!(tools[0]["state"], "output-error");
+[31m-    assert!(
+(B[m[31m-        tools[0]["errorText"]
+(B[m[31m-            .as_str()
+(B[m[31m-            .unwrap()
+(B[m[31m-            .contains("extension must match kind")
+(B[m[31m-    );
+(B[m[32m+    assert!(tools[0]["errorText"]
+(B[m[32m+        .as_str()
+(B[m[32m+        .unwrap()
+(B[m[32m+        .contains("extension must match kind"));
+(B[m     assert!(!Path::new(&workspace).join("report.csv").exists());
+     assert!(!Path::new(&workspace).join("report.xlsx").exists());
+     assert_eq!(
+Diff in /Users/roylin/code/aster/apps/work/src-tauri/src/agent_plane/local_acp_program_tests.rs:415:
+             .count(),
+         2
+     );
+[31m-    assert!(
+(B[m[31m-        calls
+(B[m[31m-            .iter()
+(B[m[31m-            .filter(|call| call["tool_name"] == "read")
+(B[m[31m-            .all(|call| call
+(B[m[31m-                .pointer("/metadata/source_anchors")
+(B[m[31m-                .and_then(Value::as_array)
+(B[m[31m-                .is_some_and(|anchors| !anchors.is_empty()))
+(B[m[31m-    );
+(B[m[32m+    assert!(calls
+(B[m[32m+        .iter()
+(B[m[32m+        .filter(|call| call["tool_name"] == "read")
+(B[m[32m+        .all(|call| call
+(B[m[32m+            .pointer("/metadata/source_anchors")
+(B[m[32m+            .and_then(Value::as_array)
+(B[m[32m+            .is_some_and(|anchors| !anchors.is_empty())));
+(B[m     let checks = envelope
+         .pointer("/metadata/verification_report/checks")
+         .unwrap()
+Diff in /Users/roylin/code/aster/apps/work/src-tauri/src/agent_plane/local_acp_program_tests.rs:516:
+     let receipt = original_receipt(&harness, &acp_session, "program-required-failure").await;
+     assert_eq!(receipt["outcome"], "failed");
+     let envelope: Value = serde_json::from_str(receipt["output"].as_str().unwrap()).unwrap();
+[31m-    assert!(
+(B[m[31m-        envelope["text"]
+(B[m[31m-            .as_str()
+(B[m[31m-            .unwrap()
+(B[m[31m-            .contains("required check failed")
+(B[m[31m-    );
+(B[m[32m+    assert!(envelope["text"]
+(B[m[32m+        .as_str()
+(B[m[32m+        .unwrap()
+(B[m[32m+        .contains("required check failed"));
+(B[m     assert!(envelope.pointer("/metadata/verification_report").is_none());
+     let proofs = harness.turns.workbench_proofs(&harness.session_id).unwrap();
+     assert_eq!(proofs[0]["producerStatus"], "failed");
+Diff in /Users/roylin/code/aster/apps/work/src-tauri/src/agent_plane/local_acp_program_tests.rs:528:
+[31m-    assert!(
+(B[m[31m-        proofs[0]["artifacts"]
+(B[m[31m-            .as_array()
+(B[m[31m-            .unwrap()
+(B[m[31m-            .iter()
+(B[m[31m-            .all(|artifact| artifact["status"] != "traced")
+(B[m[31m-    );
+(B[m[32m+    assert!(proofs[0]["artifacts"]
+(B[m[32m+        .as_array()
+(B[m[32m+        .unwrap()
+(B[m[32m+        .iter()
+(B[m[32m+        .all(|artifact| artifact["status"] != "traced"));
+(B[m     eprintln!(
+         "WORK_REAL_ACP_PROGRAM_REQUIRED_FAILURE_PASS {}",
+         json!({"receipt_outcome":receipt["outcome"],"producer_status":proofs[0]["producerStatus"],"artifacts":proofs[0]["artifacts"].as_array().unwrap().len()})
+Diff in /Users/roylin/code/aster/apps/work/src-tauri/src/agent_plane/local_acp_program_tests.rs:604:
+     assert_eq!(repaired["outcome"], "succeeded");
+     for receipt in [&failed, &repaired] {
+         assert_eq!(receipt["effects"]["completeness"], "complete");
+[31m-        assert!(
+(B[m[31m-            receipt["effects"]["changes"]
+(B[m[31m-                .as_array()
+(B[m[31m-                .unwrap()
+(B[m[31m-                .iter()
+(B[m[31m-                .any(|change| change["path"] == "recovered.txt")
+(B[m[31m-        );
+(B[m[32m+        assert!(receipt["effects"]["changes"]
+(B[m[32m+            .as_array()
+(B[m[32m+            .unwrap()
+(B[m[32m+            .iter()
+(B[m[32m+            .any(|change| change["path"] == "recovered.txt"));
+(B[m     }
+     let changed = |receipt: &Value| {
+         receipt["effects"]["changes"]
+Diff in /Users/roylin/code/aster/apps/work/src-tauri/src/agent_plane/local_acp_program_tests.rs:623:
+     };
+     assert_ne!(changed(&failed), changed(&repaired));
+     let assistant = latest_assistant(&harness);
+[31m-    assert!(
+(B[m[31m-        tool_parts(&assistant)
+(B[m[31m-            .iter()
+(B[m[31m-            .any(|tool| tool["toolName"] == "program" && tool["state"] == "output-error")
+(B[m[31m-    );
+(B[m[31m-    assert!(
+(B[m[31m-        tool_parts(&assistant)
+(B[m[31m-            .iter()
+(B[m[31m-            .any(|tool| tool["toolName"] == "program" && tool["state"] == "output-available")
+(B[m[31m-    );
+(B[m[32m+    assert!(tool_parts(&assistant)
+(B[m[32m+        .iter()
+(B[m[32m+        .any(|tool| tool["toolName"] == "program" && tool["state"] == "output-error"));
+(B[m[32m+    assert!(tool_parts(&assistant)
+(B[m[32m+        .iter()
+(B[m[32m+        .any(|tool| tool["toolName"] == "program" && tool["state"] == "output-available"));
+(B[m     let proofs = harness.turns.workbench_proofs(&harness.session_id).unwrap();
+     assert_eq!(proofs[0]["producerStatus"], "completed");
+     let artifacts = proofs[0]["artifacts"].as_array().unwrap();
+Diff in /Users/roylin/code/aster/apps/work/src-tauri/src/agent_plane/local_acp_program_tests.rs:698:
+     );
+     assert!(!workspace(&harness).join("refused.docx").exists());
+     assert_eq!(text_parts(&latest_assistant(&harness)), "denied");
+[31m-    assert!(
+(B[m[31m-        tool_parts(&latest_assistant(&harness))
+(B[m[31m-            .iter()
+(B[m[31m-            .any(|tool| tool["toolName"] == "program"
+(B[m[31m-                && tool["state"] == "approval-responded"
+(B[m[31m-                && tool["approval"]["approved"] == false)
+(B[m[31m-    );
+(B[m[32m+    assert!(tool_parts(&latest_assistant(&harness))
+(B[m[32m+        .iter()
+(B[m[32m+        .any(|tool| tool["toolName"] == "program"
+(B[m[32m+            && tool["state"] == "approval-responded"
+(B[m[32m+            && tool["approval"]["approved"] == false));
+(B[m     let facts = original_facts(&harness, &acp_session).await;
+     let refusals = facts
+         .iter()

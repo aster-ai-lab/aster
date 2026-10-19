@@ -1,0 +1,525 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/event/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on build directory
+   Compiling crypto-common v0.1.6
+   Compiling bytes v1.12.1
+   Compiling futures-util v0.3.34
+   Compiling rustix v1.1.5
+   Compiling tracing v0.1.44
+   Compiling icu_normalizer v2.0.0
+   Compiling sha2-asm v0.6.4
+   Compiling rustls v0.23.46
+   Compiling web_atoms v0.2.3
+   Compiling serde_yaml_ng v0.10.0
+   Compiling string_cache v0.9.0
+   Compiling digest v0.11.2
+   Compiling phf_macros v0.11.3
+   Compiling zip v2.4.2
+   Compiling derive_more v2.1.1
+   Compiling cpufeatures v0.3.0
+   Compiling darling_core v0.20.11
+   Compiling rayon v1.10.0
+   Compiling digest v0.10.7
+   Compiling cipher v0.4.4
+   Compiling hmac v0.13.0
+   Compiling phf v0.11.3
+   Compiling md-5 v0.11.0
+   Compiling sha2 v0.11.0
+   Compiling polling v3.11.0
+   Compiling sha1 v0.10.6
+   Compiling tempfile v3.27.0
+   Compiling xattr v1.6.1
+   Compiling aes v0.8.4
+   Compiling darling_macro v0.20.11
+   Compiling ahash v0.8.12
+   Compiling tokio v1.53.3
+   Compiling http v1.4.0
+   Compiling sha2 v0.10.9
+   Compiling postgres-protocol v0.6.12
+   Compiling syn v1.0.109
+   Compiling async-io v2.6.0
+   Compiling string_cache_codegen v0.5.4
+   Compiling fluent-uri v0.4.1
+   Compiling toml v0.9.12+spec-1.1.0
+   Compiling futures-executor v0.3.34
+   Compiling tar v0.4.46
+   Compiling fs-set-times v0.20.3
+   Compiling darling v0.20.11
+   Compiling cbc v0.1.2
+   Compiling http-body v1.0.1
+   Compiling postgres-types v0.2.14
+   Compiling markup5ever v0.14.1
+   Compiling futures v0.3.34
+   Compiling async-signal v0.2.13
+   Compiling async-global-executor v2.4.1
+   Compiling ecb v0.1.2
+   Compiling md-5 v0.10.6
+   Compiling serde_yaml v0.9.34+deprecated
+   Compiling safe_arch v0.7.4
+   Compiling http-body-util v0.1.3
+   Compiling plist v1.10.0
+   Compiling async-attributes v1.1.2
+   Compiling objc2-system-configuration v0.3.2
+   Compiling chromiumoxide_types v0.7.0
+   Compiling der_derive v0.7.3
+   Compiling async-process v2.5.0
+   Compiling cap-primitives v4.0.3
+   Compiling markup5ever v0.38.0
+   Compiling markup5ever v0.39.0
+   Compiling lopdf v0.42.0
+   Compiling wide v0.7.33
+   Compiling tungstenite v0.23.0
+   Compiling a3s-acl v0.3.0 (/Users/roylin/code/aster/crates/acl)
+   Compiling image v0.25.10
+   Compiling rustix v0.38.44
+   Compiling whoami v2.1.3
+   Compiling rustls-platform-verifier v0.6.2
+   Compiling chromiumoxide_pdl v0.7.0
+   Compiling tokio-util v0.7.19
+   Compiling tokio-rustls v0.26.6
+   Compiling tower v0.5.2
+   Compiling async-compression v0.4.19
+   Compiling der v0.7.10
+   Compiling idna_adapter v1.2.1
+   Compiling async-std v1.13.2
+   Compiling fraction v0.15.3
+   Compiling polycool v0.4.0
+   Compiling string_cache v0.8.9
+   Compiling cssparser v0.37.0
+   Compiling cssparser-macros v0.6.1
+   Compiling tower-http v0.6.8
+   Compiling which v6.0.3
+   Compiling h2 v0.4.19
+   Compiling idna v1.1.0
+   Compiling tokio-stream v0.1.17
+   Compiling tokio-postgres v0.7.18
+   Compiling rusqlite v0.37.0
+   Compiling derive_builder_core v0.20.2
+   Compiling kurbo v0.13.1
+   Compiling chromiumoxide_cdp v0.7.0
+   Compiling simba v0.8.1
+   Compiling cssparser v0.34.0
+   Compiling env_logger v0.11.8
+   Compiling html5ever v0.39.0
+   Compiling url v2.5.8
+   Compiling publicsuffix v2.3.0
+   Compiling html5ever v0.38.0
+   Compiling cap-std v4.0.2
+   Compiling derive_builder_macro v0.20.2
+   Compiling deadpool-runtime v0.1.4
+   Compiling tungstenite v0.28.0
+   Compiling universal-hash v0.5.1
+   Compiling selectors v0.38.0
+   Compiling owned_ttf_parser v0.25.1
+   Compiling cookie_store v0.21.1
+   Compiling a3s-use-core v0.2.4 (/Users/roylin/code/aster/crates/use/core)
+   Compiling hyper v1.8.1
+   Compiling urlpattern v0.6.0
+   Compiling wry v0.57.0
+   Compiling tao v0.37.1
+   Compiling roaring v0.11.1
+   Compiling const_format_proc_macros v0.2.34
+   Compiling email_address v0.2.9
+   Compiling match_token v0.1.0
+   Compiling derive_more v0.99.20
+   Compiling rustybuzz v0.20.1
+   Compiling dom_query v0.28.0
+   Compiling polyval v0.6.2
+   Compiling ab_glyph v0.2.32
+   Compiling tauri-utils v2.10.2
+   Compiling spki v0.7.3
+   Compiling html5ever v0.29.1
+   Compiling notify v8.2.0
+   Compiling const_format v0.2.36
+   Compiling hyper-util v0.1.20
+   Compiling a3s-vec v0.1.8 (/Users/roylin/code/aster/crates/vec)
+   Compiling tokio-tungstenite v0.28.0
+   Compiling nalgebra v0.32.6
+   Compiling deadpool v0.12.3
+   Compiling derive_builder v0.20.2
+   Compiling x509-cert v0.2.5
+   Compiling cap-fs-ext v4.0.2
+   Compiling pdf-inspector v1.17.0
+   Compiling svgtypes v0.16.1
+   Compiling jsonschema-value v0.48.5
+   Compiling opentelemetry v0.21.0
+   Compiling hyper-rustls v0.27.7
+   Compiling xml5ever v0.38.0
+   Compiling agent-client-protocol-schema v0.11.4
+   Compiling axum-core v0.5.5
+   Compiling referencing v0.48.5
+   Compiling which v7.0.3
+   Compiling reqwest v0.12.24
+   Compiling reqwest v0.13.5
+   Compiling rustls-platform-verifier v0.7.1
+   Compiling async-tungstenite v0.27.0
+   Compiling itertools v0.12.1
+   Compiling clap_derive v4.6.7
+   Compiling strum_macros v0.27.2
+   Compiling tracing-serde v0.2.0
+   Compiling quick-xml v0.38.4
+   Compiling serde_spanned v0.6.9
+   Compiling tauri-runtime v2.12.2
+   Compiling selectors v0.26.0
+   Compiling toml_datetime v0.6.11
+   Compiling getset v0.1.7
+   Compiling tracing-subscriber v0.3.23
+   Compiling tauri-runtime-wry v2.12.2
+   Compiling clap v4.6.7
+   Compiling dom_smoothie v0.18.2
+   Compiling usvg v0.47.0
+   Compiling tough v0.24.0
+   Compiling toml_edit v0.22.27
+   Compiling axum v0.8.6
+   Compiling jsonschema v0.48.5
+   Compiling imageproc v0.25.0
+   Compiling tauri v2.12.4
+   Compiling opentelemetry_sdk v0.21.2
+   Compiling markup5ever_rcdom v0.38.0+unofficial
+   Compiling tokio-postgres-rustls v0.14.0
+   Compiling a3s-use-reconcile v0.2.10 (/Users/roylin/code/aster/crates/use/reconcile)
+   Compiling nix v0.30.1
+   Compiling deadpool-postgres v0.14.1
+   Compiling ghash v0.5.1
+   Compiling agent-client-protocol v0.10.4
+   Compiling a3s-okf v0.1.0 (/Users/roylin/code/aster/crates/okf)
+   Compiling rust_decimal v1.43.0
+   Compiling tokio-rusqlite v0.7.0
+   Compiling tiny-skia v0.12.0
+   Compiling referencing v0.47.0
+   Compiling cron v0.17.0
+   Compiling ctr v0.9.2
+   Compiling aead v0.5.2
+   Compiling a3s-oci-core v0.3.2 (/Users/roylin/code/aster/crates/oci-runtime/crates/core)
+   Compiling async-stream-impl v0.3.6
+   Compiling vte_generate_state_changes v0.1.2
+   Compiling yrs v0.27.3
+   Compiling resvg v0.47.0
+   Compiling jsonschema v0.47.0
+   Compiling a3s-lane v0.5.1 (/Users/roylin/code/aster/crates/lane)
+   Compiling aes-gcm v0.10.3
+   Compiling a3s-boot v0.2.0 (/Users/roylin/code/aster/crates/boot)
+   Compiling a3s-orm v0.3.1 (/Users/roylin/code/aster/crates/orm)
+   Compiling lsp-types v0.97.0
+   Compiling vte v0.11.1
+   Compiling async-stream v0.3.6
+   Compiling a3s-tty-utils v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-tty-utils)
+   Compiling a3s-use-extension v0.3.3 (/Users/roylin/code/aster/crates/use/extension)
+   Compiling mermaid-to-svg v0.1.0 (/Users/roylin/code/aster/crates/terminal/third_party/mermaid-to-svg)
+   Compiling a3s-use-ocr v0.3.2 (/Users/roylin/code/aster/crates/ocr)
+   Compiling htmd v0.5.4
+   Compiling oci-spec v0.10.0 (/Users/roylin/code/aster/crates/oci-runtime/vendor/oci-spec-0.10.0)
+   Compiling toml v0.8.23
+   Compiling a3s-sandbox v0.2.3 (/Users/roylin/code/aster/crates/sandbox)
+   Compiling a3s-use-tool-acquire v0.2.4 (/Users/roylin/code/aster/crates/use/tool-acquire)
+   Compiling a3s-effect v0.2.1 (/Users/roylin/code/aster/crates/effect)
+   Compiling portable-pty v0.9.0
+warning: function `upsert_instance_map` is never used
+   --> crates/boot/src/service_discovery/mod.rs:203:15
+    |
+203 | pub(crate) fn upsert_instance_map(
+    |               ^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `remove_instance_map` is never used
+   --> crates/boot/src/service_discovery/mod.rs:215:15
+    |
+215 | pub(crate) fn remove_instance_map(
+    |               ^^^^^^^^^^^^^^^^^^^
+
+   Compiling html2text v0.16.7
+   Compiling scraper v0.22.0
+   Compiling sha256 v1.6.0
+   Compiling a3s-flow v2.0.0 (/Users/roylin/code/aster/crates/flow)
+   Compiling a3s-common v0.1.1 (/Users/roylin/code/aster/crates/common)
+   Compiling a3s-memory v0.1.5 (/Users/roylin/code/aster/crates/memory)
+   Compiling which v8.0.0
+   Compiling a3s-studio v2.1.3 (/Users/roylin/code/aster/apps/studio/src-tauri)
+   Compiling a3s-office-formula-parser v0.45.0 (/Users/roylin/code/aster/crates/office/crates/formula-parser)
+   Compiling tauri-plugin-updater v2.14.0
+   Compiling a3s-studio-data-sqlite v0.1.0 (/Users/roylin/code/aster/apps/studio/native/data-sqlite)
+   Compiling aster-work-pty v0.9.0 (/Users/roylin/code/aster/crates/terminal/third_party/portable-pty-work)
+   Compiling chromiumoxide v0.7.0
+   Compiling a3s-office v0.45.0 (/Users/roylin/code/aster/crates/office/crates/core)
+   Compiling a3s-code-mermaid v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-mermaid)
+   Compiling vt100 v0.15.2
+warning: `a3s-boot` (lib) generated 2 warnings
+   Compiling a3s-use-browser v0.3.2 (/Users/roylin/code/aster/crates/browser)
+   Compiling a3s-search v3.4.0 (/Users/roylin/code/aster/crates/search)
+   Compiling aster-dream v0.1.0 (/Users/roylin/code/aster/apps/work/src-tauri)
+   Compiling a3s-oci-sdk v0.3.2 (/Users/roylin/code/aster/crates/oci-runtime/crates/sdk)
+warning: unused import: `Ordering`
+ --> apps/work/src-tauri/src/desktop_settings.rs:8:36
+  |
+8 | use std::sync::atomic::{AtomicU32, Ordering};
+  |                                    ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `Ordering`
+ --> apps/studio/src-tauri/src/desktop_settings.rs:8:36
+  |
+8 | use std::sync::atomic::{AtomicU32, Ordering};
+  |                                    ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+warning: unused imports: `guest_agent_hello` and `host_runtime_version`
+  --> crates/code/core/src/sandbox/oci.rs:25:26
+   |
+25 | pub(crate) use version::{guest_agent_hello, host_runtime_version};
+   |                          ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unnecessary `unsafe` block
+    --> apps/work/src-tauri/src/workspace_browser.rs:1080:32
+     |
+1080 |                 let absolute = unsafe { request.URL() }.and_then(|url| {
+     |                                ^^^^^^ unnecessary `unsafe` block
+     |
+     = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default
+
+warning: unnecessary `unsafe` block
+    --> apps/work/src-tauri/src/workspace_browser.rs:1114:32
+     |
+1114 |                 let absolute = unsafe { request.URL() }.and_then(|url| {
+     |                                ^^^^^^ unnecessary `unsafe` block
+
+warning: field `tool_call_id` is never read
+   --> apps/work/src-tauri/src/agent_plane/local_acp_tests.rs:858:5
+    |
+856 | struct Approval {
+    |        -------- field in this struct
+857 |     id: String,
+858 |     tool_call_id: String,
+    |     ^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `boot` is never used
+  --> apps/work/src-tauri/src/channel_gateway.rs:22:8
+   |
+22 | pub fn boot(token: &str, plane_url: &str) {
+   |        ^^^^
+
+warning: field `username` is never read
+  --> apps/work/src-tauri/src/crab_user.rs:66:9
+   |
+62 | pub struct IssuedSession {
+   |            ------------- field in this struct
+...
+66 |     pub username: String,
+   |         ^^^^^^^^
+   |
+   = note: `IssuedSession` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+
+warning: function `curl` is never used
+   --> apps/work/src-tauri/src/crab_user.rs:938:4
+    |
+938 | fn curl(
+    |    ^^^^
+
+warning: function `allow_test_upstream` is never used
+    --> apps/work/src-tauri/src/crab_user.rs:1088:15
+     |
+1088 | pub(crate) fn allow_test_upstream(origin: &str) {
+     |               ^^^^^^^^^^^^^^^^^^^
+
+warning: static `SLEEP_ASSERTION` is never used
+  --> apps/work/src-tauri/src/desktop_settings.rs:72:8
+   |
+72 | static SLEEP_ASSERTION: AtomicU32 = AtomicU32::new(0);
+   |        ^^^^^^^^^^^^^^^
+
+warning: function `boot` is never used
+   --> apps/work/src-tauri/src/desktop_settings.rs:411:8
+    |
+411 | pub fn boot(slug: &str, product: &str, logo: &Path) {
+    |        ^^^^
+
+warning: constant `CREATE_NO_WINDOW` is never used
+  --> apps/work/src-tauri/src/no_window.rs:29:7
+   |
+29 | const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+   |       ^^^^^^^^^^^^^^^^
+
+warning: function `verified_picker` is never used
+   --> apps/work/src-tauri/src/review_plugin.rs:462:8
+    |
+462 | pub fn verified_picker() -> Option<(PathBuf, String)> {
+    |        ^^^^^^^^^^^^^^^
+
+warning: constant `POLL_LIMIT` is never used
+  --> apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:29:7
+   |
+29 | const POLL_LIMIT: usize = 100;
+   |       ^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: struct `SseEvent` is never constructed
+   --> apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:838:19
+    |
+838 | pub(super) struct SseEvent {
+    |                   ^^^^^^^^
+
+warning: function `stream_agent_events` is never used
+   --> apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:845:21
+    |
+845 | pub(super) async fn stream_agent_events(
+    |                     ^^^^^^^^^^^^^^^^^^^
+
+warning: function `recall_note` is never used
+  --> apps/studio/src-tauri/src/agent_plane/tobot_memory.rs:20:15
+   |
+20 | pub(crate) fn recall_note(origin: &str, slug: &str, query: &str) -> Option<String> {
+   |               ^^^^^^^^^^^
+
+warning: function `retain_exchange` is never used
+  --> apps/studio/src-tauri/src/agent_plane/tobot_memory.rs:39:15
+   |
+39 | pub(crate) fn retain_exchange(origin: &str, slug: &str, key: &str, user: &str, assistant: &str) {
+   |               ^^^^^^^^^^^^^^^
+
+warning: field `tool_call_id` is never read
+   --> apps/studio/src-tauri/src/agent_plane/local_acp_tests.rs:843:5
+    |
+841 | struct Approval {
+    |        -------- field in this struct
+842 |     id: String,
+843 |     tool_call_id: String,
+    |     ^^^^^^^^^^^^
+
+warning: function `boot` is never used
+  --> apps/studio/src-tauri/src/channel_gateway.rs:22:8
+   |
+22 | pub fn boot(token: &str, plane_url: &str) {
+   |        ^^^^
+
+warning: static `SLEEP_ASSERTION` is never used
+  --> apps/studio/src-tauri/src/desktop_settings.rs:58:8
+   |
+58 | static SLEEP_ASSERTION: AtomicU32 = AtomicU32::new(0);
+   |        ^^^^^^^^^^^^^^^
+
+warning: function `boot` is never used
+   --> apps/studio/src-tauri/src/desktop_settings.rs:167:8
+    |
+167 | pub fn boot(slug: &str, product: &str, logo: &Path) {
+    |        ^^^^
+
+warning: function `verified_picker` is never used
+   --> apps/studio/src-tauri/src/review_plugin.rs:462:8
+    |
+462 | pub fn verified_picker() -> Option<(PathBuf, String)> {
+    |        ^^^^^^^^^^^^^^^
+
+warning: `aster-dream` (lib test) generated 12 warnings (run `cargo fix --lib -p aster-dream --tests` to apply 1 suggestion)
+warning: `a3s-studio` (lib test) generated 11 warnings (run `cargo fix --lib -p a3s-studio --tests` to apply 1 suggestion)
+warning: constant `HOST_MISMATCH` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:10:7
+   |
+10 | const HOST_MISMATCH: &[u8] = b"guest agent version does not match the host runtime version";
+   |       ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `host_runtime_version` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:13:15
+   |
+13 | pub(crate) fn host_runtime_version(host: &[u8]) -> Option<&str> {
+   |               ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `guest_agent_hello` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:18:15
+   |
+18 | pub(crate) fn guest_agent_hello<'a>(agent: &'a [u8], architecture: &str) -> Option<&'a str> {
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: function `version_immediately_before` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:26:4
+   |
+26 | fn version_immediately_before<'a>(bytes: &'a [u8], marker: &[u8]) -> Option<&'a str> {
+   |    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `semver_ending_at` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:44:4
+   |
+44 | fn semver_ending_at(bytes: &[u8], end: usize) -> Option<&str> {
+   |    ^^^^^^^^^^^^^^^^
+
+warning: `a3s-code-core` (lib) generated 6 warnings (run `cargo fix --lib -p a3s-code-core` to apply 1 suggestion)
+   Compiling a3s-code-acp v9.1.4 (/Users/roylin/code/aster/crates/code/acp)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-acp` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4m 14s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_acp-90207d8b19fc7828)
+
+running 18 tests
+test agent::document_read_agent_tests::opted_in_agent_registers_reader_on_open_and_replacement_only ... ok
+test document_read::run_tests::a_native_release_that_never_acknowledges_refuses_success_at_the_run_deadline ... ok
+test document_read::run_tests::actual_harness_keeps_clean_native_model_across_turns_and_releases_it_before_success ... ignored, requires separately built Studio workspace_document_stdio probe
+test document_read::run_tests::cancellation_during_native_release_waits_for_cleanup_and_refuses_prior_success ... ok
+test document_read::run_tests::denied_read_and_forged_owner_input_cannot_pin_a_native_resource ... ok
+test document_read::run_tests::fresh_actual_runs_do_not_reuse_a_previous_pin_even_when_scope_addresses_repeat ... ok
+test document_read::run_tests::native_release_acknowledgement_gates_completion_and_keeps_one_actual_run_across_turns ... ok
+test document_read::run_tests::plain_context_cannot_promote_a_document_pin_to_a_fabricated_run ... ok
+test document_read::run_tests::refused_native_release_cannot_complete_a_pinned_document_run ... ok
+test document_read::tests::actual_harness_accepts_bound_advisory_diagnostics_and_refuses_forged_publications ... ok
+test document_read::tests::actual_harness_acp_reads_native_unsaved_document_across_process_boundary ... ignored, requires the separately built Studio native document probe
+test document_read::tests::actual_harness_reads_through_bidirectional_acp_and_refuses_invalid_observations ... ok
+test document_read::tests::actual_run_without_read_authority_never_calls_document_host ... ok
+test document_read::tests::cancelled_actual_turn_cannot_accept_late_document_reply ... ok
+test document_read::tests::document_read_contract_distinguishes_text_paths_from_binary_documents ... ok
+test document_read::tests::plain_tool_context_cannot_use_bridge ... ok
+test document_read::tests::stopping_transport_releases_waiting_tool_without_accepting_host_text ... ok
+test document_read::tests::workspace_replaced_during_read_cannot_accept_old_host_observation ... ok
+
+test result: ok. 16 passed; 0 failed; 2 ignored; 0 measured; 293 filtered out; finished in 9.58s
+
+     Running unittests src/lib.rs (target/debug/deps/a3s_studio_lib-eed446e20bd9a72c)
+
+running 12 tests
+test agent_plane::document_read::run_tests::malformed_or_injected_pin_and_release_requests_cannot_admit_resources ... ok
+test agent_plane::document_read::run_tests::owner_document_and_closed_nonce_limits_refuse_without_eviction_or_leaking ... ok
+test agent_plane::document_read::run_tests::pinned_clean_model_survives_view_and_temporary_reader_until_run_release ... ok
+test agent_plane::document_read::run_tests::reader_drop_releases_pins_and_oversize_refusal_does_not_leak ... ok
+test agent_plane::document_read::run_tests::release_still_acknowledges_when_bound_workspace_is_replaced ... ok
+test agent_plane::document_read::run_tests::run_release_does_not_revoke_an_independent_owner_or_allow_foreign_cleanup ... ok
+test agent_plane::document_read::tests::harness_reads_unsaved_model_after_view_closes_without_leaking_leases ... ok
+test agent_plane::document_read::tests::oversize_reads_release_before_refusing_observation ... ok
+test agent_plane::document_read::tests::requests_cannot_change_session_or_workspace_authority ... ok
+test agent_plane::turns::document_read_route_tests::cancelled_native_prompt_allows_run_release_and_refuses_new_document_reads ... ok
+test agent_plane::turns::document_read_route_tests::native_turn_pump_reads_the_shell_model_and_refuses_foreign_session ... ok
+test agent_plane::turns::document_read_route_tests::native_turn_without_document_host_refuses_read_request ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 783 filtered out; finished in 2.64s
+
+     Running unittests src/lib.rs (target/debug/deps/a3s_studio_lib-637d352638727666)
+
+running 12 tests
+test agent_plane::document_read::run_tests::malformed_or_injected_pin_and_release_requests_cannot_admit_resources ... ok
+test agent_plane::document_read::run_tests::owner_document_and_closed_nonce_limits_refuse_without_eviction_or_leaking ... ok
+test agent_plane::document_read::run_tests::pinned_clean_model_survives_view_and_temporary_reader_until_run_release ... ok
+test agent_plane::document_read::run_tests::reader_drop_releases_pins_and_oversize_refusal_does_not_leak ... ok
+test agent_plane::document_read::run_tests::release_still_acknowledges_when_bound_workspace_is_replaced ... ok
+test agent_plane::document_read::run_tests::run_release_does_not_revoke_an_independent_owner_or_allow_foreign_cleanup ... ok
+test agent_plane::document_read::tests::harness_reads_unsaved_model_after_view_closes_without_leaking_leases ... ok
+test agent_plane::document_read::tests::oversize_reads_release_before_refusing_observation ... ok
+test agent_plane::document_read::tests::requests_cannot_change_session_or_workspace_authority ... ok
+test agent_plane::turns::document_read_route_tests::cancelled_native_prompt_allows_run_release_and_refuses_new_document_reads ... ok
+test agent_plane::turns::document_read_route_tests::native_turn_pump_reads_the_shell_model_and_refuses_foreign_session ... ok
+test agent_plane::turns::document_read_route_tests::native_turn_without_document_host_refuses_read_request ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 753 filtered out; finished in 2.63s
+

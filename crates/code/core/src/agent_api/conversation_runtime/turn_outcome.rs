@@ -318,6 +318,7 @@ pub(super) async fn prepare_pinned(
     let streamed_text = std::sync::Arc::new(std::sync::atomic::AtomicBool::new(false));
     let forced_stop = std::sync::Arc::new(std::sync::Mutex::new(None));
     let _ = &forced_stop;
+    let confirmation = agent_loop.confirmation_provider();
     let parts = FactSession::from(session)
         .with_executor(agent_loop.tool_executor_handle())
         .with_surface(crate::fact_control::SessionSurface {
@@ -332,7 +333,7 @@ pub(super) async fn prepare_pinned(
             cancel: cancellation.clone(),
             transcript: Arc::new(std::sync::Mutex::new(Vec::new())),
             usage: Arc::new(std::sync::Mutex::new(crate::llm::TokenUsage::default())),
-            confirmation: session.config.confirmation_manager.clone(),
+            confirmation,
             run_store: active_run_id
                 .as_ref()
                 .map(|_| Arc::clone(&session.run_store)),

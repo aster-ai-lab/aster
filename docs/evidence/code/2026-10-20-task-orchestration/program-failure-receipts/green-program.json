@@ -1,0 +1,16 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-code-core",
+    "--lib",
+    "tools::program_tool::",
+    "--",
+    "--nocapture"
+  ],
+  "exit_code": 0,
+  "elapsed_ms": 32336.053
+}

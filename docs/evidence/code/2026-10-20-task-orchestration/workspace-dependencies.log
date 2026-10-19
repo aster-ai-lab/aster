@@ -1,0 +1,41 @@
+Fwarning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+F.warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+...
+======================================================================
+FAIL: test_desktop_sources_and_executable_fixtures_are_present (__main__.WorkspaceDependenciesTest.test_desktop_sources_and_executable_fixtures_are_present)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/workspace_dependencies.py", line 35, in test_desktop_sources_and_executable_fixtures_are_present
+    self.assertFalse((ROOT / "apps/work/.git").exists())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_internal_dependencies_are_local_and_unpublishable (__main__.WorkspaceDependenciesTest.test_internal_dependencies_are_local_and_unpublishable)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/workspace_dependencies.py", line 121, in test_internal_dependencies_are_local_and_unpublishable
+    self.assertEqual(package["publish"], [], package["name"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != [] : a3s-gateway
+
+----------------------------------------------------------------------
+Ran 6 tests in 3.584s
+
+FAILED (failures=2)

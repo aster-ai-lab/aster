@@ -10,6 +10,25 @@ use tokio::sync::Semaphore;
 use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
 use tokio_util::sync::CancellationToken;
 
+#[test]
+fn document_read_contract_distinguishes_text_paths_from_binary_documents() {
+    let root = tempfile::tempdir().unwrap();
+    let tool = DocumentBridge::new().tool(root.path(), "contract").unwrap();
+    let description = tool.description();
+    assert!(description.contains("UTF-8"));
+    assert!(description.contains("Office"));
+    assert!(description.contains("PDF"));
+    assert!(description.contains("parse_document"));
+    assert!(description.contains("absolute file path"));
+    let schema = tool.parameters();
+    let path = schema["properties"]["file_path"]["description"]
+        .as_str()
+        .unwrap();
+    assert!(path.contains("absolute"));
+    assert!(path.contains("relative to the current workspace"));
+    assert!(path.contains("not a document ID"));
+}
+
 struct Model {
     calls: AtomicUsize,
     result: Mutex<Option<String>>,

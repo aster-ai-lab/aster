@@ -1,0 +1,51 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 42.63s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 5 tests
+
+thread 'tools::program_tool::failure_receipt_tests::pre_worker_rejections_publish_native_empty_child_receipts' (49420252) panicked at crates/code/core/src/tools/program_tool/failure_receipt_tests.rs:45:31:
+program receipt metadata
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'tools::program_tool::failure_receipt_tests::child_panic_keeps_prior_receipts_without_claiming_an_exact_count' (49420250) panicked at crates/code/core/src/tools/program_tool/failure_receipt_tests.rs:18:9:
+assertion `left != right` failed: controlled child panic
+  left: Bool(true)
+ right: true
+
+thread 'tools::program_tool::failure_receipt_tests::write_then_failed_check_and_throw_preserves_both_child_receipts' (49420254) panicked at crates/code/core/src/tools/program_tool/failure_receipt_tests.rs:82:5:
+assertion `left == right` failed
+  left: Null
+ right: false
+
+thread 'tools::program_tool::failure_receipt_tests::read_then_js_throw_preserves_the_real_child_receipt_and_parent_failure' (49420253) panicked at crates/code/core/src/tools/program_tool/failure_receipt_tests.rs:66:5:
+assertion `left == right` failed
+  left: Null
+ right: false
+
+thread 'tools::program_tool::failure_receipt_tests::child_panic_keeps_prior_receipts_without_claiming_an_exact_count' (49420250) panicked at crates/code/core/src/tools/program_tool/failure_receipt_tests.rs:110:5:
+assertion `left == right` failed
+  left: Null
+ right: false
+test tools::program_tool::failure_receipt_tests::read_then_js_throw_preserves_the_real_child_receipt_and_parent_failure ... FAILED
+test tools::program_tool::failure_receipt_tests::write_then_failed_check_and_throw_preserves_both_child_receipts ... FAILED
+test tools::program_tool::failure_receipt_tests::child_panic_keeps_prior_receipts_without_claiming_an_exact_count ... FAILED
+test tools::program_tool::failure_receipt_tests::pre_worker_rejections_publish_native_empty_child_receipts ... FAILED
+error: test failed, to rerun pass `-p a3s-code-core --lib`
+
+Caused by:
+  process didn't exit successfully: `/Users/roylin/code/aster/target/debug/deps/a3s_code_core-3b568ae695dcf868 'tools::program_tool::failure_receipt_tests' --nocapture` (signal: 15, SIGTERM: termination signal)

@@ -1,0 +1,343 @@
+/* Same statement as index.css; repeated here for windows that only load this file. */
+@layer properties, theme, base, components, utilities, app;
+
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import '@a3s-lab/ui/styles/theme.css';
+@import '../../../../packages/ui/src/styles/dialog-motion.css';
+@import '../../../../packages/ui/src/styles/popup-motion.css';
+@import '../../../../packages/ui/src/styles/row-motion.css';
+@import './theme-surfaces.css';
+
+@source '../../../../packages/ui/src/**/*.{js,ts,jsx,tsx}';
+@source '../../../../../../packages/intelligent-ui/src/**/*.tsx';
+/* Tests quote citation markers such as [cite:[cite:1]]. Those are not classes. */
+@source not '../../**/__tests__/**';
+@source not '../../**/*.{test,spec}.{js,jsx,ts,tsx}';
+@source not '../../../../packages/**/__tests__/**';
+@source not '../../../../packages/**/*.{test,spec}.{js,jsx,ts,tsx}';
+@source not '../../../../../../packages/intelligent-ui/**/*.{test,spec}.{js,jsx,ts,tsx}';
+@source '../../../../node_modules/streamdown/dist/*.js';
+@source '../../../../node_modules/@streamdown/code/dist/*.js';
+@source '../../../../node_modules/@streamdown/cjk/dist/*.js';
+@source '../../../../node_modules/@streamdown/math/dist/*.js';
+@source '../../../../node_modules/@streamdown/mermaid/dist/*.js';
+@custom-variant dark (&:is(.dark *));
+@custom-variant no-hover (@media (hover: none));
+
+/*
+ * Application-side Tailwind bridge for @a3s-lab/ui.
+ *
+ * Organization guidelines:
+ * 1. Keep shared design-system tokens in `@a3s-lab/ui/styles/theme.css`.
+ * 2. Keep renderer-only shell tokens in this file.
+ * 3. Place global element resets in `@layer base`.
+ * 4. Add renderer-only reusable patterns in `@layer components` when needed.
+ * 5. Add custom utilities in `@layer utilities`.
+ *
+ * The shared generated theme is the only Tailwind variable adapter. Do not
+ * recreate renderer aliases or duplicate its `@theme` mappings here. Genuine
+ * renderer-only App Shell variables belong in a dedicated owning stylesheet,
+ * not in this generic theme entry.
+ */
+
+@layer base {
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+/* Let the Electron window surface control the document background. */
+@layer app {
+  :root {
+    background-color: unset;
+  }
+}
+
+/* PageLoading. The boot screen inlines the same wordmark. This is the in-app one.
+   Without it the ring stays in normal flow and the card clips it into an arc. */
+@layer components {
+  .page-loader {
+    --page-loader-mark: var(--color-ink, #171717);
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+    min-height: 0;
+    background-color: #ffffff;
+    color: var(--page-loader-mark);
+    pointer-events: auto;
+    isolation: isolate;
+  }
+
+  .dark .page-loader {
+    --page-loader-mark: #f2f2f3;
+    background-color: #111112;
+  }
+
+  .page-loader--contain {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    border-radius: inherit;
+    background-color: #ffffff;
+  }
+
+  .dark .page-loader--contain {
+    background-color: #171718;
+  }
+
+  .page-loader.is-leaving {
+    pointer-events: none;
+  }
+
+  .page-loader.is-leaving .page-loader-spinner-wrap {
+    opacity: 0;
+    transition: opacity 180ms ease;
+  }
+
+  .page-loader-spinner-wrap {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    margin: 0;
+    opacity: 1;
+    transition: opacity 180ms ease;
+  }
+
+  .page-loader-spinner {
+    display: block;
+    margin: 0;
+    overflow: visible;
+    transform-origin: center;
+    transform-box: fill-box;
+    animation: pageLoaderSpin 0.8s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .page-loader-spinner {
+      animation: pageLoaderPulse 1.2s ease-in-out infinite;
+    }
+  }
+
+  /* Mark and ring share one cell: the mark writes once, holds, then hands over to the ring. */
+  .page-loader-handoff > * {
+    grid-area: 1 / 1;
+  }
+
+  .page-loader-handoff > .towork-wordmark-draw {
+    animation: pageLoaderMarkOut 180ms ease 800ms both;
+  }
+
+  .page-loader-handoff > .page-loader-ring {
+    display: block;
+    animation: pageLoaderRingIn 180ms ease 800ms both;
+  }
+
+  /* Writes the wordmark once in 500ms and keeps it drawn. */
+  .towork-wordmark-draw {
+    color: #303030;
+  }
+
+  .dark .towork-wordmark-draw {
+    color: #f2f2f3;
+  }
+
+  .towork-wordmark-draw .towork-stroke {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: 1;
+    animation-fill-mode: both;
+  }
+
+  .towork-wordmark-draw .is-t {
+    animation-name: toworkDrawT;
+  }
+
+  .towork-wordmark-draw .is-o1 {
+    animation-name: toworkDrawO1;
+  }
+
+  .towork-wordmark-draw .is-w {
+    animation-name: toworkDrawW;
+  }
+
+  .towork-wordmark-draw .is-o2 {
+    animation-name: toworkDrawO2;
+  }
+
+  .towork-wordmark-draw .is-r {
+    animation-name: toworkDrawR;
+  }
+
+  .towork-wordmark-draw .is-k {
+    animation-name: toworkDrawK;
+  }
+
+  .page-loader.is-leaving .towork-wordmark-draw .towork-stroke {
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .towork-wordmark-draw .towork-stroke {
+      animation: none;
+      stroke-dashoffset: 0;
+      opacity: 1;
+    }
+  }
+}
+
+@keyframes pageLoaderSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pageLoaderMarkOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@keyframes pageLoaderRingIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pageLoaderPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes toworkDrawT {
+  0% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  2% {
+    stroke-dashoffset: 1;
+    opacity: 1;
+  }
+  13% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes toworkDrawO1 {
+  0%,
+  13% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  15% {
+    stroke-dashoffset: 1;
+    opacity: 1;
+  }
+  28% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes toworkDrawW {
+  0%,
+  28% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  30% {
+    stroke-dashoffset: 1;
+    opacity: 1;
+  }
+  57% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes toworkDrawO2 {
+  0%,
+  57% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  59% {
+    stroke-dashoffset: 1;
+    opacity: 1;
+  }
+  72% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes toworkDrawR {
+  0%,
+  72% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  74% {
+    stroke-dashoffset: 1;
+    opacity: 1;
+  }
+  83% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes toworkDrawK {
+  0%,
+  83% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  85% {
+    stroke-dashoffset: 1;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}

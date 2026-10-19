@@ -1,0 +1,47 @@
+{
+  "observedAtUtc": "2026-10-19T00:25:05.261466+00:00",
+  "explicitSessionWhitelist": [
+    "01a15187-2822-7567-a7b5-926622986293",
+    "01a15188-c26a-71e1-a441-b9f24dff66a8"
+  ],
+  "assistantModelMetadata": [
+    {
+      "sessionId": "01a15187-2822-7567-a7b5-926622986293",
+      "assistantId": "01a15187-28fc-7245-a227-28f357d89a9f",
+      "status": "success",
+      "modelId": "glm::glm-5.3",
+      "modelSnapshot": {
+        "id": "glm::glm-5.3",
+        "name": "glm-5.3",
+        "provider": "glm"
+      },
+      "createdAt": "2026-10-19T00:19:34.780Z",
+      "updatedAt": "2026-10-19T00:19:40.930Z"
+    },
+    {
+      "sessionId": "01a15188-c26a-71e1-a441-b9f24dff66a8",
+      "assistantId": "01a15188-c36f-76f5-8d0a-b5abda47ff10",
+      "status": "success",
+      "modelId": "glm::glm-5.3",
+      "modelSnapshot": {
+        "id": "glm::glm-5.3",
+        "name": "glm-5.3",
+        "provider": "glm"
+      },
+      "createdAt": "2026-10-19T00:21:19.855Z",
+      "updatedAt": "2026-10-19T00:21:29.340Z"
+    }
+  ],
+  "currentExactAgentModel": {
+    "id": "01a14deb-5f83-75b0-8d92-25be3c3589fb",
+    "model": "anthropic::qwen3.8-flash",
+    "configurationModel": null
+  },
+  "initialAuditObservation": {
+    "source": "First bounded whitelist projection in this audit, before this saved repeat",
+    "exactAgentId": "01a14deb-5f83-75b0-8d92-25be3c3589fb",
+    "model": "anthropic::qwen3.8-flash",
+    "configurationModel": null
+  },
+  "excluded": "No prompt, reply, attachment, credentials, ACL, provider config, runtime argv or environment values included"
+}

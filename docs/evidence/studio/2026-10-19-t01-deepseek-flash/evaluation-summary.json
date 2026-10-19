@@ -1,0 +1,29 @@
+{
+  "assessment_complete": true,
+  "model": "deepseek-flash",
+  "runtime_seconds": 482.856,
+  "model_calls": 26,
+  "tool_calls": 26,
+  "initial_scenarios": {
+    "passed": 8,
+    "total": 8
+  },
+  "additional_negative_zero": {
+    "passed": false,
+    "expected": "-0.00",
+    "actual": "0.00",
+    "field": "reconciliation Consumer Total_Profit actual/reference"
+  },
+  "overall_local_scenarios": {
+    "passed": 8,
+    "total": 9
+  },
+  "official_hidden_score": null,
+  "submission_modified_by_evaluator": false,
+  "pipeline": "/Users/roylin/code/tasks/T01-workspace/pipeline.py",
+  "results": "/Users/roylin/code/tasks/T01-workspace/output/results.json",
+  "report": "OUTCOME.md",
+  "original_inputs_preserved": true,
+  "active_application": "/Users/roylin/Library/Application Support/dev.a3s.studio/aster/AsterDream.app",
+  "installed_release_updated": false
+}

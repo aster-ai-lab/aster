@@ -961,6 +961,10 @@ impl WorkspaceTextReader for ManifestWorkspaceBackend {
 
 #[async_trait]
 impl WorkspaceCommandRunner for ManifestWorkspaceBackend {
+    fn execution_target(&self) -> crate::sandbox::ShellExecutionTarget {
+        self.local.execution_target()
+    }
+
     async fn exec(&self, request: CommandRequest) -> Result<CommandOutput> {
         self.local.exec(request).await
     }

@@ -1,0 +1,31 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling a3s-effect v0.2.1 (/Users/roylin/code/aster/crates/effect)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.31s
+     Running tests/tool_effects.rs (target/debug/deps/tool_effects-294028eec0bfa7a6)
+
+running 14 tests
+test append_faults_do_not_start_or_repeat_effects_on_both_logs ... ok
+test committed_terminal_prefix_does_not_hide_prepared_siblings_on_both_logs ... ok
+test effective_args_and_foreign_terminal_identity_are_checked_on_both_logs ... ok
+test identical_arguments_with_distinct_intents_execute_separately_on_both_logs ... ok
+test late_cancel_preserves_known_effect_and_skips_unstarted_sibling_on_both_logs ... ok
+test malformed_sibling_receipt_cannot_discard_a_known_result_on_both_logs ... ok
+test namespaced_composition_keeps_preparation_and_the_deferred_effect_on_both_logs ... ok
+test partial_sequential_and_parallel_results_survive_on_both_logs ... ok
+test prepared_only_is_unknown_without_execution_on_both_logs ... ok
+test revalidation::actual_byte_change_allows_identical_revalidation_after_the_repeat_limit ... ok
+test revalidation::same_byte_rewrites_and_incomplete_changes_do_not_reset_the_repeat_limit ... ok
+test revalidation::unchanged_bytes_keep_the_identical_call_repeat_limit ... ok
+test unknown_receipt_version_is_never_downgraded_to_legacy_on_both_logs ... ok
+test unsettled_legacy_call_is_never_replayed_or_promoted_on_both_logs ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.69s
+

@@ -297,6 +297,10 @@ impl AgentSession {
                 return Ok(true);
             }
         }
+        // A stale answer cannot reopen a policy-bound Run through the legacy owner.
+        if self.config.work_policy.is_some() {
+            return Ok(false);
+        }
         let run = super::conversation_runtime::FactSession::from(self).open()?;
         Ok(run.confirm_if_pending(tool_id, approved).await?)
     }

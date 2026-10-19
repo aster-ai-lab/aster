@@ -332,7 +332,6 @@ pub(crate) fn run_worker(
         Ok(console) => console,
         Err(reason) => return fail_worker(&mut evidence, reason),
     };
-    let console_path = prepared_console.pinned_path();
     if let Err(reason) = validate_marker_name(marker_name) {
         return fail_worker(&mut evidence, reason);
     }
@@ -411,10 +410,13 @@ pub(crate) fn run_worker(
         return fail_worker(&mut evidence, error.to_string());
     }
     evidence.workload_configured = true;
-    if let Err(error) = context.set_console_output(&console_path) {
+    if let Err(error) = context.set_console_output(prepared_console) {
         return fail_worker(&mut evidence, error.to_string());
     }
     evidence.console_configured = true;
+    if let Err(error) = context.confine() {
+        return fail_worker(&mut evidence, error.to_string());
+    }
     evidence.enter_attempted = true;
 
     if let Err(error) = emit_worker_evidence(&evidence) {

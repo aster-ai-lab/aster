@@ -1,0 +1,56 @@
+{
+  "schema": "aster.t023.cell-qualification.v1",
+  "run_id": "t023-v3-ha-01",
+  "run_report_sha256": "a2eda5f2bc9bb49fb3dd9a6e46036adb896475e2c258fc47ff2e2de04e5d65f9",
+  "execution_completed": true,
+  "run_status": "completed",
+  "run_error": null,
+  "task_seconds": 280.916,
+  "reported_tokens": 1426650,
+  "model_calls": 34,
+  "parent_tool_calls": 35,
+  "known_program_receipt_children": 0,
+  "programs_missing_child_receipts": 0,
+  "child_tool_calls": 0,
+  "observed_tool_interval_union_ms": 88325,
+  "tool_interval_union_ms": 88325,
+  "parent_output_bytes": 57650,
+  "vm_count": 25,
+  "metrics_complete": true,
+  "event_count": 21974,
+  "retained_events": 21974,
+  "event_window_complete": true,
+  "presentation_matches": true,
+  "immutable_inputs_unchanged": true,
+  "frozen_identity_unchanged": true,
+  "lifecycle": {
+    "agent_close_settled": true,
+    "close_settled": true,
+    "session_closed": true,
+    "stream_settled": true,
+    "timed_out": false
+  },
+  "submissions": [
+    {
+      "bytes": 24987,
+      "path": "pipeline.py",
+      "present": true,
+      "sha256": "55224a1b8cb737a49b8666bbb6ca537a10742d97b6af67ff21a3b8c9d473679a"
+    },
+    {
+      "bytes": 1439900,
+      "path": "output/results.json",
+      "present": true,
+      "sha256": "dfcc0b13bea1b177aa5af6e9967f2bae42e8bfebdc6046f665fabf94db24ecf7"
+    }
+  ],
+  "oracle_passed": false,
+  "oracle_passed_cases": 8,
+  "oracle_total_cases": 9,
+  "oracle_failed_cases": [
+    "negative_zero"
+  ],
+  "qualified": false,
+  "promotion": "No promotion or expansion: at least the first HC cell failed qualification. Do not repeat samples or change fixed conditions.",
+  "next_cell_admission": "Only the remaining frozen initial screen cells; identity/governance failure stops the wave."
+}

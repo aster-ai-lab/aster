@@ -35,7 +35,8 @@
 //! ## Providers
 //!
 //! - **memory** — In-memory provider for testing and single-process use
-//! - **nats** — NATS JetStream for distributed, persistent event streaming
+//! - **iggy** — Apache Iggy (DEFAULT) for persistent, distributed event streaming
+//! - **nats** — NATS JetStream, opt-in via the `nats` feature
 //!
 //! ## Architecture
 //!
@@ -52,6 +53,7 @@ pub mod cloudevents;
 pub mod crypto;
 pub mod dlq;
 pub mod error;
+pub mod messaging;
 pub mod metrics;
 pub mod provider;
 pub mod schema;
@@ -75,6 +77,7 @@ pub use crypto::{Aes256GcmEncryptor, EncryptedPayload, EventEncryptor};
 pub use dlq::SinkDlqHandler;
 pub use dlq::{DeadLetterEvent, DlqHandler, MemoryDlqHandler};
 pub use error::{EventError, Result};
+pub use messaging::{InMemoryMessaging, Message, MessageHandlerRef, MessageStream, MessagingPort};
 pub use metrics::{EventMetrics, MetricsSnapshot};
 pub use provider::{EventProvider, PendingEvent, ProviderInfo, Subscription};
 pub use schema::{Compatibility, EventSchema, MemorySchemaRegistry, SchemaRegistry};
@@ -90,6 +93,10 @@ pub use types::{
 };
 
 // Re-export providers for convenience
+#[cfg(feature = "iggy")]
+pub use provider::iggy::{
+    IggyClient, IggyConfig, IggyPartitioning, IggyProvider, IggySubscription,
+};
 pub use provider::memory::{MemoryConfig, MemoryProvider};
 #[cfg(feature = "nats")]
 pub use provider::nats::{NatsClient, NatsConfig, NatsProvider, NatsSubscription, StorageType};

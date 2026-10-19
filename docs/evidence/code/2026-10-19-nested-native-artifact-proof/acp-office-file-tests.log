@@ -1,0 +1,31 @@
+
+running 19 tests
+test office_file::tests::columns_and_explicit_tool_denies_keep_their_contract ... ok
+test office_file::tests::replaced_workspace_root_is_not_followed ... ok
+test office_file::tests::workspace_write_capability_and_missing_session_are_refused ... ok
+test office_file::tests::an_admitted_tool_refuses_a_recreated_workspace_directory ... ok
+test office_file::tests::symbolic_links_are_refused_for_both_parents_and_destinations ... ok
+test office_file::tests::native_png_is_a_real_image_file_and_invalid_svg_does_not_publish ... ok
+test office_file::tests::authority_revoked_at_publication_removes_staging_and_releases_the_write_claim ... ok
+test office_file::tests::native_document_preserves_ordered_paragraphs_and_table_cells ... ok
+test office_file::tests::native_workbook_saves_reopens_and_preserves_typed_cells_and_sheet_names ... ok
+test office_file::tests::artifact_verification_is_bound_to_the_created_path_and_saved_bytes ... ok
+test office_file::tests::workbook_explicit_formulas_recalculate_and_formats_survive_readback ... ok
+test office_file::tests::invalid_input_no_clobber_and_cancellation_never_publish ... ok
+test office_file::tests::native_presentation_contains_all_requested_slides_and_saved_text ... ok
+test office_file::tests::presentation_embeds_a_real_png_chart_below_the_title_inside_the_slide ... ok
+test office_file::tests::tool_entry_requires_a_live_turn_and_respects_real_write_and_permission_gates ... ok
+mutation=forged_metadata observed_model_calls=3 verified=false
+test office_file::tests::invalid_extended_inputs_and_formula_errors_never_publish ... ok
+mutation=none observed_model_calls=4 verified=true
+test office_file::tests::nested_verification::native_png_proofs_survive_program_batch_and_parallel_nested_calls ... ok
+mutation=none observed_model_calls=5 verified=true
+test office_file::tests::nested_verification::native_png_proofs_survive_program_boundaries_in_the_real_harness ... ok
+mutation=failed_write observed_model_calls=3 verified=false
+mutation=same_bytes observed_model_calls=3 verified=false
+mutation=tamper observed_model_calls=3 verified=false
+mutation=failed_wrapper observed_model_calls=3 verified=false
+test office_file::tests::nested_verification::nested_native_proofs_never_cover_unverified_failed_or_changed_writes ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 299 filtered out; finished in 2.49s
+

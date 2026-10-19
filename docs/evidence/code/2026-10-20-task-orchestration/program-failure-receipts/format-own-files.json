@@ -1,0 +1,18 @@
+{
+  "command": [
+    "rustfmt",
+    "--edition",
+    "2021",
+    "--check",
+    "--config",
+    "skip_children=true",
+    "crates/code/core/src/tools/program_tool.rs",
+    "crates/code/core/src/tools/program_tool/failure_receipt_tests.rs",
+    "crates/code/core/src/tools/program_tool/worker_deadline_tests.rs",
+    "crates/code/core/src/agent_api/tests/fact_log.rs",
+    "crates/code/core/src/agent_api/tests/fact_log/program_failure_receipts.rs",
+    "crates/code/core/tests/extensibility/metrics.rs"
+  ],
+  "exit_code": 0,
+  "elapsed_ms": 46.491
+}

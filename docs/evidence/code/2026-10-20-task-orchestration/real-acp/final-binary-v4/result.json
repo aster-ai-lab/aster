@@ -1,0 +1,60 @@
+{
+  "schema": "aster.final-acp-five-case.v4",
+  "state": "terminal",
+  "command": [
+    "/Users/roylin/code/aster/target/debug/deps/a3s_studio_lib-9c7d06d5a17857ce",
+    "agent_plane::turns::local_acp_tests::delivery::program::",
+    "--ignored",
+    "--test-threads=1",
+    "--nocapture"
+  ],
+  "started_at_utc": "2026-10-19T19:31:47.192923+00:00",
+  "harness": {
+    "path": "/Users/roylin/code/aster/target/debug/deps/a3s_studio_lib-9c7d06d5a17857ce",
+    "sha256": "be22e239bfb23b4269340492c84abdad4e22904e8ba38cd26ac9f6e9f8ad246e",
+    "compiler_artifact_observation": "cargo test --locked --offline -p aster-dream --lib provider_socket --no-run --message-format=json-render-diagnostics; terminal exit0, lib-test artifact fresh=false, features=[], test profile opt0/line-tables-only"
+  },
+  "binaries_before": {
+    "a3s-office": {
+      "path": "/Users/roylin/code/aster/target/debug/a3s-office",
+      "sha256": "652d0f04943e4c0c0c0c42dc8c3ffb855bb7fdc0e7740b492733a1a0157af1af"
+    },
+    "a3s-code-acp": {
+      "path": "/Users/roylin/code/aster/target/debug/a3s-code-acp",
+      "sha256": "b5a88347d4e6770d8ef2dc8f348ff6903674aeb30bc7726a38616d99670d72e0"
+    },
+    "aster": {
+      "path": "/Users/roylin/code/aster/target/debug/aster",
+      "sha256": "6456151a8330a651b305e007076c3025d3fb0c9846ae41b6c5d2c5d4ca9a469d"
+    },
+    "aster-dream": {
+      "path": "/Users/roylin/code/aster/target/debug/aster-dream",
+      "sha256": "70accee55841c85c309ff3564c4cdcd09402864973817c87c4205df391b27bdb"
+    },
+    "test_extensibility_real_llm": {
+      "path": "/Users/roylin/code/aster/target/debug/deps/test_extensibility_real_llm-d4219b08e7cc2f51",
+      "sha256": "dafcdb08898bbb196b05d4da739229abb81b16a2a9c60382a889e1291fa6b6dd"
+    }
+  },
+  "fixture_source": {
+    "apps/work/src-tauri/src/agent_plane/local_acp_delivery_tests.rs": "6810301c86e355676e5735739e759df0854e1b97b6f17090a8a3d85cd8a3d579",
+    "apps/work/src-tauri/src/agent_plane/local_acp_provider_tests.rs": "2225ae7ad0731e7ce946f36637460fe03506498cb0e12d4ceabee0aff79b1da3",
+    "apps/work/src-tauri/src/agent_plane/local_acp_program_tests.rs": "fc8e4c629461f48547a59efc18e2f8c88903b0e61f1665701094a4292f0c6bc3"
+  },
+  "previous_failed_record": "../final-binary-v3/result.json",
+  "test_fixture_repair": "../provider-socket/OUTCOME.md",
+  "scope": "Controlled provider and actual Work/ACP/Core/Office protocol; no live model or GUI qualification.",
+  "pid": 77427,
+  "exit_code": 0,
+  "supervisor_deadline_exceeded": false,
+  "wall_seconds": 76.620986292,
+  "ended_at_utc": "2026-10-19T19:33:03.872286+00:00",
+  "binaries_after": {
+    "a3s-office": "652d0f04943e4c0c0c0c42dc8c3ffb855bb7fdc0e7740b492733a1a0157af1af",
+    "a3s-code-acp": "b5a88347d4e6770d8ef2dc8f348ff6903674aeb30bc7726a38616d99670d72e0",
+    "aster": "6456151a8330a651b305e007076c3025d3fb0c9846ae41b6c5d2c5d4ca9a469d",
+    "aster-dream": "70accee55841c85c309ff3564c4cdcd09402864973817c87c4205df391b27bdb",
+    "test_extensibility_real_llm": "dafcdb08898bbb196b05d4da739229abb81b16a2a9c60382a889e1291fa6b6dd"
+  },
+  "log_sha256": "dc2210d1fe9b2431e71f3911a76c88abbe0179f1654336195be133e0171a83dd"
+}

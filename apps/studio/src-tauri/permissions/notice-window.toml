@@ -1,0 +1,4 @@
+[[permission]]
+identifier = "allow-open-notice-window"
+description = "Opens a system window for one published About notice."
+commands.allow = ["open_notice_window"]

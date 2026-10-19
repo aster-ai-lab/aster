@@ -1,6 +1,7 @@
 [package]
+publish = false
 name = "a3s-oci-runtime"
-version = "0.1.0"
+version = "0.3.6"
 edition = "2021"
 license = "MIT"
 description = "Cross-platform host runtime for A3S OCI workloads"
@@ -25,6 +26,9 @@ windows-sys.workspace = true
 
 [target.'cfg(any(target_os = "linux", target_os = "macos"))'.dependencies]
 libc = "0.2"
+
+[target.'cfg(all(target_os = "macos", target_arch = "aarch64"))'.dependencies]
+sha2 = { workspace = true, features = ["asm"] }
 
 [target.'cfg(target_os = "linux")'.dependencies]
 a3s-oci-agent = { path = "../agent" }

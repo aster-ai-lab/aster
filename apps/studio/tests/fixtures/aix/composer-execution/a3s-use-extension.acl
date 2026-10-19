@@ -1,0 +1,35 @@
+extension "proof/composer-execution" {
+  schema_version = 3
+  version = "1.0.0"
+  requires_use = ">=0.3.0, <0.4.0"
+  route = "proof-composer-execution"
+  actions = ["read"]
+  repository { url = "https://example.org/proof/composer-execution" }
+  ui "normalize" {
+    title = "Normalize"
+    entry = "index.html"
+    scripts = ["provider.js"]
+    point = "studio.composer.actions"
+  }
+  ui "session-normalize" {
+    title = "Session Normalize"
+    entry = "index.html"
+    scripts = ["provider.js"]
+    point = "studio.composer.actions"
+    scope = "session"
+  }
+  ui "run-normalize" {
+    title = "Run Normalize"
+    entry = "index.html"
+    scripts = ["provider.js"]
+    point = "studio.composer.actions"
+    scope = "run"
+  }
+  ui "turn-normalize" {
+    title = "Turn Normalize"
+    entry = "index.html"
+    scripts = ["provider.js"]
+    point = "studio.composer.actions"
+    scope = "turn"
+  }
+}
