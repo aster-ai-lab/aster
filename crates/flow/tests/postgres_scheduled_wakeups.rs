@@ -2,7 +2,7 @@
 
 use a3s_flow::{
     CancellationRequest, FlowEvent, FlowEventStore, PostgresEventStore, RetryPolicy,
-    RuntimeBuildId, ScheduledWakeupKind, WorkflowSpec,
+    RuntimeBuildId, ScheduledWakeupKind, SelectArm, SelectMode, WorkflowSpec,
 };
 use a3s_orm::{sql_query, Database, PostgresDialect, PostgresExecutor};
 use chrono::{DateTime, Utc};
@@ -25,7 +25,7 @@ ON flow_events (run_id, sequence);
 "#;
 
 fn postgres_url_from_env() -> Option<String> {
-    std::env::var("A3S_FLOW_POSTGRES_URL")
+    std::env::var("KENSE_FLOW_POSTGRES_URL")
         .ok()
         .filter(|url| !url.trim().is_empty())
 }
@@ -58,6 +58,277 @@ async fn create_run(store: &PostgresEventStore, run_id: &str) {
         .await
         .unwrap();
     store.append(run_id, FlowEvent::RunStarted).await.unwrap();
+}
+
+#[tokio::test]
+async fn postgres_scope_cancel_drops_indexed_waits() {
+    let Some(postgres_url) = postgres_url_from_env() else {
+        return;
+    };
+    let store = PostgresEventStore::connect(&postgres_url).await.unwrap();
+    let token = Uuid::new_v4();
+    let now = timestamp("2300-01-01T00:00:00Z");
+    let sibling = format!("postgres-scope-cancel-sibling-{token}");
+    create_run(&store, &sibling).await;
+    store
+        .append(
+            &sibling,
+            FlowEvent::WaitCreated {
+                wait_id: "outside".into(),
+                resume_at: timestamp("2200-08-07T00:00:01Z"),
+            },
+        )
+        .await
+        .unwrap();
+    store
+        .append(
+            &sibling,
+            FlowEvent::ScopeOpened {
+                scope_id: "outer".into(),
+                parent_scope_id: None,
+            },
+        )
+        .await
+        .unwrap();
+    store
+        .append(
+            &sibling,
+            FlowEvent::WaitCreated {
+                wait_id: "inside".into(),
+                resume_at: timestamp("2200-08-07T00:00:02Z"),
+            },
+        )
+        .await
+        .unwrap();
+    store
+        .append(
+            &sibling,
+            FlowEvent::ScopeCancelled {
+                scope_id: "outer".into(),
+                reason: None,
+            },
+        )
+        .await
+        .unwrap();
+    let subjects: Vec<_> = store
+        .list_due_wakeups(now)
+        .await
+        .unwrap()
+        .into_iter()
+        .filter(|wakeup| wakeup.run_id == sibling)
+        .map(|wakeup| wakeup.subject_id)
+        .collect();
+    assert_eq!(subjects, vec!["outside".to_string()]);
+
+    let nested = format!("postgres-scope-cancel-nested-{token}");
+    create_run(&store, &nested).await;
+    store
+        .append(
+            &nested,
+            FlowEvent::ScopeOpened {
+                scope_id: "parent".into(),
+                parent_scope_id: None,
+            },
+        )
+        .await
+        .unwrap();
+    store
+        .append(
+            &nested,
+            FlowEvent::ScopeOpened {
+                scope_id: "child".into(),
+                parent_scope_id: Some("parent".into()),
+            },
+        )
+        .await
+        .unwrap();
+    store
+        .append(
+            &nested,
+            FlowEvent::WaitCreated {
+                wait_id: "nested-wait".into(),
+                resume_at: timestamp("2200-08-07T00:00:03Z"),
+            },
+        )
+        .await
+        .unwrap();
+    store
+        .append(
+            &nested,
+            FlowEvent::SelectCreated {
+                select_id: "nested-race".into(),
+                arms: vec![
+                    SelectArm::timer("nested-timer", timestamp("2200-08-07T00:00:04Z")),
+                    SelectArm::timer("nested-later", timestamp("2200-08-07T00:00:05Z")),
+                ],
+                mode: SelectMode::Race,
+            },
+        )
+        .await
+        .unwrap();
+    store
+        .append(
+            &nested,
+            FlowEvent::ScopeCancelled {
+                scope_id: "parent".into(),
+                reason: None,
+            },
+        )
+        .await
+        .unwrap();
+    assert!(store
+        .list_due_wakeups(now)
+        .await
+        .unwrap()
+        .iter()
+        .all(|wakeup| wakeup.run_id != nested));
+}
+
+#[tokio::test]
+async fn postgres_scope_cancel_keeps_a_wait_owned_by_a_completed_child() {
+    let Some(postgres_url) = postgres_url_from_env() else {
+        return;
+    };
+    let store = PostgresEventStore::connect(&postgres_url).await.unwrap();
+    let scope = Uuid::new_v4();
+    let run_id = format!("postgres-scope-cancel-completed-child-{scope}");
+    create_run(&store, &run_id).await;
+    store
+        .append(
+            &run_id,
+            FlowEvent::ScopeOpened {
+                scope_id: "parent".into(),
+                parent_scope_id: None,
+            },
+        )
+        .await
+        .unwrap();
+    store
+        .append(
+            &run_id,
+            FlowEvent::ScopeOpened {
+                scope_id: "child".into(),
+                parent_scope_id: Some("parent".into()),
+            },
+        )
+        .await
+        .unwrap();
+    store
+        .append(
+            &run_id,
+            FlowEvent::WaitCreated {
+                wait_id: "survives".into(),
+                resume_at: timestamp("2200-08-07T00:00:01Z"),
+            },
+        )
+        .await
+        .unwrap();
+    store
+        .append(
+            &run_id,
+            FlowEvent::ScopeCompleted {
+                scope_id: "child".into(),
+            },
+        )
+        .await
+        .unwrap();
+    store
+        .append(
+            &run_id,
+            FlowEvent::WaitCreated {
+                wait_id: "parent-wait".into(),
+                resume_at: timestamp("2200-08-07T00:00:02Z"),
+            },
+        )
+        .await
+        .unwrap();
+    store
+        .append(
+            &run_id,
+            FlowEvent::ScopeCancelled {
+                scope_id: "parent".into(),
+                reason: None,
+            },
+        )
+        .await
+        .unwrap();
+
+    let subjects: Vec<_> = store
+        .list_due_wakeups(timestamp("2300-01-01T00:00:00Z"))
+        .await
+        .unwrap()
+        .into_iter()
+        .filter(|wakeup| wakeup.run_id == run_id)
+        .map(|wakeup| wakeup.subject_id)
+        .collect();
+    assert_eq!(subjects, vec!["survives".to_string()]);
+}
+
+#[tokio::test]
+async fn postgres_select_timer_arm_is_a_scheduled_wakeup() {
+    let Some(postgres_url) = postgres_url_from_env() else {
+        return;
+    };
+    let store = PostgresEventStore::connect(&postgres_url).await.unwrap();
+    let scope = Uuid::new_v4();
+    let run_id = format!("postgres-select-timer-{scope}");
+    create_run(&store, &run_id).await;
+    store
+        .append(
+            &run_id,
+            FlowEvent::SelectCreated {
+                select_id: "race".into(),
+                arms: vec![
+                    SelectArm::timer("soon", timestamp("2200-08-07T00:00:01Z")),
+                    SelectArm::timer("later", timestamp("2200-08-07T00:00:02Z")),
+                ],
+                mode: SelectMode::Race,
+            },
+        )
+        .await
+        .unwrap();
+
+    let due = store
+        .list_due_wakeups(timestamp("2300-01-01T00:00:00Z"))
+        .await
+        .unwrap();
+    let mut subjects: Vec<_> = due
+        .iter()
+        .filter(|wakeup| wakeup.run_id == run_id)
+        .map(|wakeup| wakeup.subject_id.as_str())
+        .collect();
+    subjects.sort();
+    assert_eq!(subjects, vec!["later", "soon"]);
+    assert!(due
+        .iter()
+        .filter(|wakeup| wakeup.run_id == run_id)
+        .all(|wakeup| wakeup.kind == ScheduledWakeupKind::Wait));
+
+    store
+        .append(
+            &run_id,
+            FlowEvent::WaitCompleted {
+                wait_id: "soon".into(),
+            },
+        )
+        .await
+        .unwrap();
+    store
+        .append(
+            &run_id,
+            FlowEvent::SelectCompleted {
+                select_id: "race".into(),
+                winning_arm_id: Some("soon".into()),
+            },
+        )
+        .await
+        .unwrap();
+    assert!(store
+        .list_due_wakeups(timestamp("2300-01-01T00:00:00Z"))
+        .await
+        .unwrap()
+        .iter()
+        .all(|wakeup| wakeup.run_id != run_id));
 }
 
 #[tokio::test]
@@ -527,6 +798,56 @@ async fn postgres_scheduled_wakeup_trigger_tracks_legacy_writers_and_nanoseconds
     )
     .await;
     assert!(scheduled_rows(&store, &run_id).await.is_empty());
+
+    let cancelled_run = format!("postgres-scheduled-cancelled-{}", Uuid::new_v4());
+    create_run(&store, &cancelled_run).await;
+    insert_raw_event(
+        store.executor(),
+        &cancelled_run,
+        3,
+        FlowEvent::StepCreated {
+            step_id: "cancelled-retry".into(),
+            step_name: "cancelledRetry".into(),
+            input: json!({}),
+            retry: RetryPolicy::fixed(3, Duration::from_secs(1)),
+        },
+    )
+    .await;
+    insert_raw_event(
+        store.executor(),
+        &cancelled_run,
+        4,
+        FlowEvent::StepStarted {
+            step_id: "cancelled-retry".into(),
+            attempt: 1,
+        },
+    )
+    .await;
+    insert_raw_event(
+        store.executor(),
+        &cancelled_run,
+        5,
+        FlowEvent::StepRetrying {
+            step_id: "cancelled-retry".into(),
+            attempt: 1,
+            error: "ambiguous sibling abort".into(),
+            retry_after: Some(timestamp("2200-08-07T00:00:04Z")),
+        },
+    )
+    .await;
+    assert_eq!(scheduled_rows(&store, &cancelled_run).await.len(), 1);
+    insert_raw_event(
+        store.executor(),
+        &cancelled_run,
+        6,
+        FlowEvent::StepCancelled {
+            step_id: "cancelled-retry".into(),
+            attempt: 1,
+            reason: "batch sibling outcome is unknown".into(),
+        },
+    )
+    .await;
+    assert!(scheduled_rows(&store, &cancelled_run).await.is_empty());
 
     insert_raw_event(
         store.executor(),

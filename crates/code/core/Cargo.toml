@@ -176,7 +176,7 @@ a3s-acl = {path = "../../acl"}
 a3s-vec = {optional = true, path = "../../vec"}
 a3s-apofasi = {default-features = false, features = ["router"], optional = true, path = "../../apofasi"}
 a3s-sandbox = {path = "../../sandbox"}
-a3s-flow = {default-features = false, optional = true, path = "../../flow-v2"}
+a3s-flow = {default-features = false, optional = true, path = "../../flow"}
 a3s-search = {default-features = false, path = "../../search"}
 a3s-lane = {path = "../../lane"}
 a3s-memory = {path = "../../memory"}

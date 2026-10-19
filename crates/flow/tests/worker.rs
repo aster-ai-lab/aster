@@ -2,8 +2,9 @@
 use a3s_flow::PostgresFlowTaskQueue;
 use a3s_flow::{
     FlowEngine, FlowError, FlowRuntime, FlowTask, FlowTaskLease, FlowTaskQueue, FlowWorker,
-    HookStatus, InMemoryFlowTaskQueue, LocalFileFlowTaskQueue, RetryPolicy, RuntimeCommand,
-    StepInvocation, WaitStatus, WorkflowInvocation, WorkflowRunStatus, WorkflowSpec,
+    FlowWorkerCapabilities, HookStatus, InMemoryFlowTaskQueue, LocalFileFlowTaskQueue, RetryPolicy,
+    RuntimeCommand, StepInvocation, WaitStatus, WorkflowInvocation, WorkflowRunStatus,
+    WorkflowSpec, FLOW_WORKER_PROTOCOL,
 };
 use async_trait::async_trait;
 use chrono::{DateTime, Duration as ChronoDuration, Utc};
@@ -21,7 +22,7 @@ fn spec() -> WorkflowSpec {
 
 #[cfg(feature = "postgres")]
 fn postgres_url_from_env() -> Option<String> {
-    std::env::var("A3S_FLOW_POSTGRES_URL")
+    std::env::var("KENSE_FLOW_POSTGRES_URL")
         .ok()
         .filter(|url| !url.trim().is_empty())
 }
@@ -149,7 +150,10 @@ impl FlowRuntime for BlockingAfterWaitRuntime {
             unreachable!("blocking runtime only completes when its future is dropped")
         }
 
-        Ok(ctx.wait_until("blocked", Utc::now() + ChronoDuration::hours(1)))
+        // Keep the fixture due so the worker reaches the intentionally
+        // blocking replay path. The production engine rejects a direct
+        // redelivery before its timer deadline.
+        Ok(ctx.wait_until("blocked", Utc::now() - ChronoDuration::seconds(1)))
     }
 
     async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {

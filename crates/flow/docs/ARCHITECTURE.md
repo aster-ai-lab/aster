@@ -34,7 +34,8 @@ Durable engine layer
           |
           v
 Event store layer
-  append-only FlowEventStore, projections, JSONL or A3S ORM SQL adapters
+  append-only FlowEventStore, validated projections, disposable checkpoints,
+  JSONL or A3S ORM SQL adapters
           |
           v
 Dispatch layer
@@ -63,7 +64,12 @@ The execution digest excludes canvas layout state such as positions,
 dimensions, selection, and viewport. It includes node configuration, edge
 handles, dependencies, features, and preserved semantic extensions. Hosts pin
 that digest to an immutable revision and must reject definition drift during
-replay.
+replay. Digest format `v2` is shared with the Flow UI: canonical JSON uses
+JavaScript number semantics, UTF-16 object-key ordering, a 256-level nesting
+limit, and rejects integers outside the JavaScript safe-integer range. Edge
+labels are presentation-only. A digest format change must use a new domain
+version and an explicit migration rather than silently reinterpreting an old
+identity.
 
 Flow does not interpret provider credentials, model catalogues, tools,
 datasets, tenant policy, or product authorization. Those remain host-owned node
@@ -71,6 +77,45 @@ capabilities. This prevents two graph parsers and two schedulers while keeping
 product semantics out of the durable engine. Hosts whose persisted source is a
 different authoritative format construct `WorkflowDag` nodes and edges
 programmatically, then reuse this exact structural compiler.
+
+### Streaming authoring updates
+
+Workflow authoring uses typed domain operations rather than arbitrary JSON
+pointer writes. `@a3s-lab/flow-ui` exposes a bounded NDJSON decoder and an async
+operation applier, while Rust exposes `WorkflowAuthoringSession` and an
+iterator-based batch helper. Both sides also expose canonical operation
+encoding (`canonicalizeFlowCliWorkflowUpdate` and
+`canonical_workflow_authoring_operation`) so equivalent JSON produces one
+idempotency byte stream before a host journals it. A CLI, Skill, or host adapter can therefore validate and apply one
+`add-node`, `move-node`, `remove-node`, `set-node`, `add-edge`, `set-edge`,
+`remove-edge`, or app-metadata operation as it arrives. `add-node` may set `parentId` to an
+existing iteration or loop container; the registry contract enforces the
+matching internal start type, while a container plus its incomplete children
+must be submitted as one batch/stream and published only after final
+validation. `set-edge` redirects an existing edge
+without changing its stable ID and preserves omitted handles plus unknown
+semantic/presentation fields; an explicit `null` handle removes that optional
+field. All JSON authoring entry points use a duplicate-key rejecting,
+256-level bounded decoder before the platform JSON value parser. This keeps
+Rust and TypeScript behavior aligned for documents, operation arrays, NDJSON
+records, and inline configuration rather than allowing a last-key-wins parser
+to alter the value that is reviewed or digested. CLI callers can provide NDJSON through stdin or a file-backed
+`--operations @<file>` stream; both transports share the same bounds and final
+atomic publication. `move-node` changes a node's `parentId` while retaining its stable ID,
+manifest configuration, presentation fields, and unknown extensions; moving
+an internal start requires its matching container, and a move to `null` or an
+omitted parent returns a public node to the top level. A base document digest can be supplied for optimistic concurrency;
+the publisher rechecks the exact source contents under a same-directory writer
+lock before replacing the snapshot. A failed operation, invalid final graph, or
+digest conflict therefore publishes nothing.
+
+The local portable JSON DSL remains a snapshot format. Its arrays and nested
+objects cannot be safely edited in place while preserving lossless extensions
+and atomic crash recovery, so the local CLI deliberately writes one validated
+snapshot at commit time even when the operation input is streamed. Hosted
+append-only operation journals, cursors, subscriptions, conflict resolution,
+and snapshot compaction belong to A3S Cloud; Cloud replays the same Flow
+operations and hands Flow only validated snapshots for compilation/execution.
 
 ## Durable Execution Model
 
@@ -82,6 +127,30 @@ retry first compares the persisted spec and input. Exact retries of fully
 terminal executions need no runtime code; pending root lifecycle writes and
 active-leaf replay still require the pinned build.
 
+Projection checkpoints are an optional acceleration path for inspection and
+host scheduling. A checkpoint stores a materialized snapshot together with the
+last sequence, event ID, and a SHA-256 snapshot digest. Flow accepts it only when the digest, projection revision, and anchor event
+match the current history (and replays a bounded indexed tail when the tip
+advanced); otherwise it discards the cache and replays the event log. A
+projection-rule change bumps the revision so a tip-matched checkpoint from
+the previous rules cannot keep a stale snapshot. SQLite and PostgreSQL append
+transactions validate the new event against the current checkpoint and advance
+that cache in the same transaction, avoiding a full-history read on the
+steady-state write path.
+Consequently checkpoint loss, corruption, or lag cannot change workflow
+semantics, and checkpoint storage never becomes a second authority.
+
+`FlowEngine::export_history_pages` is the bounded streaming boundary for
+archive workers. It pins the initial history tip and validates contiguous
+sequence pages before invoking a host-owned callback, allowing an archive
+destination to commit incrementally without materializing a complete run or
+chasing a continuously appended log. `export_history_archive` returns a
+tip-pinned ownership seal whose digest is hashed one page at a time and is
+independent of page size;
+`seal_history_partition` indexes immutable contiguous ranges over the same
+authoritative log. Flow keeps the event log authoritative; archive format,
+retention, and destination retry policy remain host-owned.
+
 The runtime returns exactly one command:
 
 - `schedule_step`: the engine persists `step_created`, runs the step runtime,
@@ -92,17 +161,35 @@ The runtime returns exactly one command:
   run by default. If a host stops between the durable final `step_failed` and
   `run_retry_exhausted` events, the next drive completes that terminal
   transition before invoking the workflow runtime. When the step retry policy
-  uses `continue_workflow_on_failure()`, the engine records
-  `step_failed` and replays so workflow code can observe `step_failed(...)`.
+  uses `continue_workflow_on_failure()`, the engine records the durable terminal
+  step event (`step_failed` or `step_non_retryable`) and replays so workflow
+  code can observe `step_failed(...)` (which covers both tips).
 - `schedule_steps`: the engine validates a stable batch of unique step IDs, then
-  applies the same durable step lifecycle to each step before replaying.
+  applies the same durable step lifecycle to each step before replaying. If a
+  sibling exhausts a fail-run policy, unsettled sibling futures are aborted and
+  each is marked with `step_cancelled` before the run-level terminal event is
+  committed. The cancellation reason is deliberately explicit when an
+  external side-effect outcome is unknown; hosts must reconcile that attempt
+  with its stable idempotency key before retrying it elsewhere.
+- `schedule_activity`: the engine persists an Activity ledger before invoking
+  host code. Each attempt has a stable `attempt_id`/idempotency key and a
+  fencing token; worker redelivery acquires a fresh fence, and stale results
+  are rejected by projection. A configured `timeout_ms` is persisted with the
+  Activity, derives a deadline from the durable `activity_started` timestamp,
+  and turns timeout into `activity_unknown` rather than an automatic duplicate
+  retry. Hosts can append fenced `activity_heartbeat` events carrying an
+  optional checkpoint through `heartbeat_activity()`, then reconcile unknown
+  outcomes with `resolve_unknown_activity()`.
 - `wait_until`: the engine persists `wait_created` and stops driving the run
   until `resume_wait()` records `wait_completed`. Redelivery for an existing
-  wait is idempotent after it completed or its run became terminal. Matching
-  redelivery repairs and drives a committed continuation leaf without appending
-  a second completion event; a fully terminal leaf does not require runtime-build
-  admission. Worker `run_ids` reports that leaf, while `resumed_waits` identifies
-  the segment-local completion only for the event-commit winner.
+  wait is idempotent after it completed or its run became terminal. Re-issuing
+  an open wait may recompute `resume_at` (`Utc::now() + delay`); the durable
+  deadline stays bound at creation and changing it requires a new wait id.
+  Matching redelivery repairs and drives a committed continuation leaf without
+  appending a second completion event; a fully terminal leaf does not require
+  runtime-build admission. Worker `run_ids` reports that leaf, while
+  `resumed_waits` identifies the segment-local completion only for the
+  event-commit winner.
 - `create_hook`: the engine persists `hook_created` and stops until
   `resume_hook()` records `hook_received` or `dispose_hook()` records
   `hook_disposed`. Replay then continues so workflow code can observe
@@ -239,6 +326,43 @@ ordering. New workflow code that emits the additive command must use a runtime
 build ID admitted only by workers that implement it, so older workers fail at
 build admission rather than interpreting an unsupported decision.
 
+## Dynamic Child-Workflow Maps
+
+`RuntimeCommand::MapChildWorkflows` is the dynamic fan-out form of first-class
+children. The parent declares one ordered plan (≤ `MAX_CHILD_WORKFLOW_MAP_SIZE`)
+and a concurrency window (1..=`MAX_CHILD_WORKFLOW_BATCH_SIZE`). Flow appends
+`child_workflow_map_opened` with the full plan, then requests at most
+`concurrency` missing children at a time. As open children resolve, the engine
+advances the window without requiring the workflow to restate a smaller batch.
+When every planned child has a terminal outcome, Flow appends
+`child_workflow_map_completed`. Redrive with the same plan is idempotent; plan
+or concurrency drift fails closed. Run cancellation marks an open map cancelled.
+Graceful `RunCompleted` and `RunContinuedAsNew` reject an still-open map
+(`projection_rejects_graceful_terminals_with_an_open_child_workflow_map`), so
+unspawned plan entries cannot be abandoned by a terminal append.
+
+## Durable Compensation Markers
+
+`RecordCompensationMarker` / `CompleteCompensationMarker` persist saga-style
+obligations without executing cleanup. Projection exposes open and completed
+markers so replay can schedule ordinary compensating steps, complete the marker
+idempotently, and reject payload drift. Markers are not patch markers, progress
+updates, or automatic undo.
+
+## External Dataset References
+
+`AttachExternalDataset` records an `ExternalDatasetRef` (`dataset_id`,
+`content_digest`, `item_count`) in history. Flow does not fetch or validate
+host storage; it only makes the reference durable, idempotent, and
+conflict-safe so large map/fan-out plans can stay outside the event log.
+
+## Per-Item Aggregates
+
+`RecordItemAggregate` persists one `(aggregate_id, item_id, value)` contribution
+in durable order. Replaying the same contribution is idempotent; changing the
+value fails closed. Workflows use aggregates to fold map/child outcomes without
+embedding a second product-specific reducer in the kernel.
+
 ## Named Workflow Signals
 
 Signals are durable asynchronous messages, not callback tokens. A
@@ -273,11 +397,64 @@ unless those persistence layers are approved for them.
 
 Cancellation deactivates signal waits that existed before the request; cleanup
 code may use a distinct stable wait if domain policy truly requires one. A run
-cannot continue as new while a signal wait is open or a received signal remains
-unconsumed, preventing history segmentation from silently dropping queued
-messages. Unlike hooks, signals require no pre-created bearer token and support
-repeated named deliveries. Hooks remain the right primitive for a one-shot
-externally routed callback whose public token and lifecycle must be inspected.
+cannot complete or continue as new while a signal wait is open. Continue-as-new
+also rejects an unconsumed received signal, preventing history segmentation from
+silently dropping queued messages. Unlike hooks, signals require no pre-created
+bearer token and support repeated named deliveries. Hooks remain the right
+primitive for a one-shot externally routed callback whose public token and
+lifecycle must be inspected.
+
+## Typed Workflow Queries And Updates
+
+Queries and updates are declared contracts on the immutable `WorkflowSpec`.
+`with_query` / `accepts_query` pin read-only names; `with_update` /
+`accepts_update` pin synchronous mutation names. Both paths fail closed before
+runtime dispatch when a name is undeclared, and both are fenced by the same
+runtime-build admission rules as workflow replay.
+
+`FlowEngine::query` builds a `QueryInvocation` over durable history and calls
+`FlowRuntime::run_query`. Queries never append events. The query input is
+separate from the workflow input so handlers can inspect both.
+
+`FlowEngine::apply_update` resolves the continue-as-new leaf, invokes
+`FlowRuntime::run_update` against history that does not yet include the new
+update, then appends `update_applied` with the handler output. Caller-owned
+`update_id` makes identical retries idempotent across the descendant chain;
+name or input drift returns `UpdateConflict`. After a new update commits, the
+engine forces one workflow replay even while timer, hook, or signal-wait
+suspensions remain open, so workflow code can observe `WorkflowContext::update`
+/ `updates` and choose a different next command. Authorization, schemas, and
+admission policy remain host-owned.
+
+## Cancellation Scopes
+
+Cancellation scopes are nested durable regions that localize cleanup without
+embedding product policy. Workflows emit `OpenScope` / `CompleteScope` /
+`CancelScope` commands. The engine persists `scope_opened`, `scope_completed`,
+and `scope_cancelled` events. Timer waits and structured selects inherit the innermost open scope at
+projection time. Cancelling a scope cancels descendant open scopes, waiting
+timers owned by that tree, and selects opened inside it, including signal arms
+that are still waiting. A timer created inside a descendant that has already
+completed is not owned by that tree and stays scheduled. The run remains
+non-terminal so cleanup code can observe `WorkflowContext::scope_cancelled`
+and continue.
+`FlowEngine::cancel_scope` is the host-facing idempotent API; reason drift
+returns `ScopeConflict`. Run-level `run_cancellation_requested` also marks every
+open scope cancelled during projection.
+
+## Structured Select, Race, And Join
+
+`RuntimeCommand::Select` records a durable wait over two or more timer or
+signal arms. Projection materializes each arm as a normal wait or signal wait
+tagged with the select identity. `SelectMode::Race` (default) completes when
+the first arm finishes, appends `select_completed` with the winning arm id, and
+cancels sibling waits. `SelectMode::JoinAll` via `WorkflowContext::join`
+completes only after every arm finishes, records `select_completed` without a
+winner, and does not cancel siblings early. Workflow code observes race winners
+through `select_winner` and join completion through `select_joined`. Redrive
+while the select is open is idempotent; changing arm identity, kind, signal
+name, or mode is rejected as non-deterministic replay. Timer `resume_at`
+recomputation is tolerated because durable waits already own the bound times.
 
 ## Continue-As-New History Segmentation
 
@@ -323,8 +500,9 @@ transactionally remove active-hook and scheduled-wakeup rows when a segment
 closes.
 
 The workflow function is deterministic because it derives its next decision from
-the input and event history. Side effects are isolated to steps and are only
-observed by the workflow after their outputs have been persisted.
+the input and event history. Side effects are isolated to Steps or first-class
+Activities and are only observed by the workflow after their outputs have been
+persisted.
 
 Replay also validates durable command definitions. If workflow code reuses an
 existing step, wait, hook, signal-wait, or child ID with a different step input,
@@ -358,8 +536,9 @@ to full replay rather than trusting derived state.
 ## Event Sourcing
 
 `FlowEventStore` is append-only. `WorkflowRunSnapshot` is a projection, not the
-source of truth. Engine writes use expected-sequence appends, and conflict-aware
-entrypoints re-read history before deciding what to do next. A stale writer gets
+source of truth. Engine writes use expected-sequence appends with projection
+validation, and conflict-aware entrypoints re-read history before deciding what
+to do next. A stale writer gets
 an explicit replay signal instead of silently extending a changed history. This
 gives A3S Flow:
 
@@ -383,8 +562,11 @@ lifecycle transitions, including duplicate step/wait/hook creation, exact step
 attempt progression, signal delivery/wait uniqueness and pairing, retry-budget
 and deadline consistency, terminal retry outcomes, and events appended after a
 terminal run state.
-The local JSONL store keeps file order intact and projects existing history
-before append, so a corrupt local log is rejected instead of extended.
+The local JSONL store keeps file order intact. A tip-matched checkpoint can
+validate the next append without replaying a corrupt prefix; without that
+checkpoint, and on `list`, a terminated corrupt log is still rejected instead
+of extended. Pruning a terminal history writes a tombstone first and then
+deletes the log, so the run id cannot be reused.
 `SqliteEventStore` stores the same envelopes as rows in one SQLite database and
 performs expected-sequence checks inside append transactions for single-node
 durable hosts.
@@ -410,7 +592,11 @@ Separate SQL migrations materialize open wait timers and delayed retries into
 `flow_scheduled_wakeups`. Fixed-width UTC nanosecond timestamp keys preserve
 lexicographic deadline ordering for indexed range and earliest-row queries.
 Lifecycle triggers insert, replace, or remove projection rows for waits,
-retries, cancellation, continuation, and terminal outcomes in the event append transaction.
+retries, step cancellation, run cancellation, continuation, and terminal
+outcomes in the event append transaction. The additive
+`step-cancellation-wakeup` migration reconciles retry rows created by an older
+writer before installing the cancellation trigger without changing a published
+migration checksum.
 Compatibility-wide due scans may race after reading the same projection rows.
 Expected-sequence appends select one completion winner; losing scans treat the
 resolved or terminal wait as a successful no-op and do not report it as their
@@ -434,6 +620,27 @@ terminal identity and a SHA-256 digest of the complete history; SQL append paths
 reject tombstoned run IDs. Partial prefix compaction is not supported because
 replay and audit both depend on the original contiguous sequence beginning with
 `run_created`.
+
+Physical run sharding is an optional storage layout for hosts that need to
+partition histories across files or databases. `FlowRunShardLayout` maps each
+`run_id` to a stable shard with FNV-1a and a power-of-two bucket count. The
+in-memory store keeps one map per shard under a shared lock; the local JSONL
+store writes `<root>/sNN/<run_id>.jsonl` when constructed with
+`with_shard_count`. Capability bit `physical_run_sharding` is set only for those
+layouts. Linked-run and hook-token uniqueness remain store-wide so
+cross-shard parent/child links stay valid. SQL and other hosts can place one
+unsharded backend per shard with `ShardedFlowEventStore`, which routes by
+`FlowRunShardLayout`, enforces store-wide link/hook checks, and appends through
+`FlowEventStore::append_shard_local_if_sequence`. `prune_terminal_runs_older_than`
+plans that same linked component across every backend before retiring a
+history, and `history_tombstone` reads the record back from the owning shard.
+A later scan treats that tombstone as a retired peer, so the rest of a
+finished component can still be deleted. A missing peer with no tombstone
+stays dangling. Pruning one member store directly still sees only that store.
+Composed multi-backend layouts
+do not claim cross-process locking for those store-wide invariants; hosts that
+need production-ready multi-worker admission should keep one database (or use
+the built-in single-process sharded memory/file stores).
 
 Both SQL stores are adapters over `a3s-orm`. ORM executors own connection and
 pool behavior, typed decoding, and transaction completion. Flow owns the event
@@ -600,6 +807,33 @@ outcomes report the active continuation leaf reached by handling in `run_ids`;
 the embedded task preserves the originally submitted root or predecessor ID for
 correlation, while event-specific fields remain commit-ownership reports.
 
+Dead-lettered tasks can be redriven through the queue administrative contract.
+Built-in local queues derive a stable pending identity so a crash between the
+copy and cleanup steps cannot duplicate a repeated redrive; PostgreSQL performs
+the copy and dead-letter deletion in one transaction. Custom queues fail closed
+until they implement the same durable identity and atomicity contract.
+
+Compatibility hosts can apply an explicit fairness budget with
+`FlowWorker::run_until_idle_bounded(limit)`: the worker leases and acknowledges
+no more than `limit` tasks before returning, so a host scheduler can yield even
+when the queue is continuously replenished. A zero limit is rejected before
+leasing. Queues may also configure a pending admission budget with
+`with_max_pending`; when pending depth reaches the budget, enqueue fails with
+`FlowError::QueueBackpressure`. Built-in in-memory and local-file queues can
+enable opaque processor-partition fairness with `with_partition_fairness` and
+`enqueue_for_partition`: leasing round-robins across host-supplied keys (or
+run-ID defaults) so one partition cannot monopolize FIFO dispatch. PostgreSQL
+queues persist the same opaque `partition_key` column and apply the same
+round-robin lease selection when fairness is enabled. Cloud still owns tenant
+identity and maps it onto those opaque keys; application processor lifecycle
+remains owned by A3S Boot and Cloud.
+
+Worker replacement uses the versioned `a3s.flow.worker.v1` capability contract.
+Hosts negotiate the required task kinds and kernel guarantees before leasing;
+protocol mismatches and missing capabilities are typed failures. The handshake
+does not negotiate Cloud-owned tenant policy, placement, queue admission, or
+processor lifecycle.
+
 Lease IDs are fencing tokens. Every successful `heartbeat()` atomically refreshes
 lease age and replaces the token; only the latest token can heartbeat or
 acknowledge the task. `FlowWorker` can heartbeat while handling long-running
@@ -607,7 +841,7 @@ tasks. A lost heartbeat drops the handling future, while a stale acknowledgement
 returns `FlowError::LeaseLost` instead of being mistaken for completion.
 Local-file queues accept only their canonical timestamp-and-UUID lease file
 names, so caller-provided tokens cannot escape the inflight queue directory.
-Workflow steps still have documented at-least-once side-effect semantics:
+Workflow Steps and Activities still have documented at-least-once side-effect semantics:
 fencing guards queue ownership, while committed event history and idempotency
 keys remain the authority for replay.
 
@@ -641,11 +875,21 @@ overflow. Heartbeat, reclaim, dead-letter, and acknowledgement statements
 contend on the same task row, so exactly one current lease transition wins.
 
 The PostgreSQL process-death gate leases a real task in a subprocess, commits an
-idempotent side effect, pauses before `step_completed`, and kills that process.
-A newly connected queue and event store then expire the old lease, reject its
-stale token, redeliver the same step attempt, persist one completion, and drain
-the task. This complements the competing-worker and heartbeat tests with
-process-level replay evidence.
+idempotent side effect, pauses before `step_completed` or `activity_completed`,
+and kills that process. A newly connected queue and event store then expire the
+old lease, reject its stale token, redeliver the same step or activity attempt
+(rotating the activity fencing token via `activity_lease_acquired`), persist one
+completion, and drain the task. Companion gates in
+`tests/postgres_activity_boundary_process_recovery.rs` apply the same real
+process-death pattern at `activity_started`, `activity_heartbeat`, and
+`activity_unknown` append boundaries: the interrupted event is never invented,
+lease expiry redelivers with fencing rules matching the in-memory crash suite,
+and exactly one durable completion remains. A completion-after-heartbeat variant
+proves a durable heartbeat checkpoint survives process death before
+`activity_completed`, lease rotation rejects the stale fence, and replacement
+completes once. This complements the competing-worker and
+heartbeat tests with process-level replay evidence across Step and Activity
+boundaries.
 
 ## Observability Boundary
 
@@ -654,8 +898,23 @@ Observers are for telemetry, audit, and host integration; they are not the
 source of truth for workflow state and cannot roll back a committed event.
 
 `A3sFlowEventBridge` converts committed envelopes into A3S-style records with
-workflow identity, event key, status, subject, audit identity, and
-low-cardinality metric labels. `InMemoryA3sFlowEventSink` keeps those records in
+workflow identity, event key, status, subject, audit identity, and optional
+step/activity attempt correlation (`attempt`, `attempt_id`, and
+`idempotency_key`). When a host binds ambient W3C Trace Context with
+`with_trace_context`, bridge records also carry `traceparent` / `tracestate`
+for correlation; that carrier is never written into the replay log. These
+high-cardinality fields are retained for logs, traces, and audit sinks but are
+excluded from low-cardinality metric labels.
+
+`FlowEngine::visibility_projection` publishes a tip-anchored
+`FlowVisibilityProjection` for host search and operations indexes. The record
+carries schema version, run/workflow identity, status, terminal outcome,
+bounded progress tip, open-work counters, and the same snapshot SHA-256 tip
+anchors used by checkpoints. It omits workflow input, output, and per-step
+payloads. Hosts rebuild from a tip-validated snapshot path or by paging
+authoritative history; the visibility record is never a second execution
+history.
+`InMemoryA3sFlowEventSink` keeps those records in
 process for tests and examples. `LocalFileA3sFlowEventSink` appends them to
 JSONL for local audit trails and records write failures in `last_error()`. On
 first append after startup or a write failure, it preserves a complete final

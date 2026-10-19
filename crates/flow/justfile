@@ -1,4 +1,4 @@
-# A3S Flow
+# Kense Flow
 
 default:
     @just --list
@@ -19,6 +19,31 @@ diff-check:
 test:
     cargo test --all-targets
 
+# Run FLOW-R6 certification harness and TypeScript protocol fixture parity
+certification:
+    cargo test --test certification
+    cargo test --test scale_slos
+    cargo test --test pre_v1_history
+    node packages/ui/node_modules/vitest/vitest.mjs run packages/ui/tests/protocol-fixtures.test.ts
+
+# Real-provider PostgreSQL chaos and release-scale SLO gates.
+# KENSE_FLOW_POSTGRES_URL must address a host-local endpoint in the same network
+# namespace as the test process (for example Postgres in WSL run from WSL).
+postgres-certification:
+    test -n "${KENSE_FLOW_POSTGRES_URL:-}" || (echo "KENSE_FLOW_POSTGRES_URL is required" >&2; exit 1)
+    cargo test --test postgres_chaos --features postgres -- --test-threads=1
+    KENSE_FLOW_POSTGRES_LOCAL=1 cargo test --release --test scale_slos --features postgres -- --exact postgres_scale_slos_meet_published_targets_when_url_is_configured --test-threads=1
+
+# Certification plus local package and advisory verification (no CI required)
+release-certification: certification package-dry-run advisory-check
+
+# Full offline + real-provider certification when Postgres is configured
+full-certification: release-certification postgres-certification
+
+# Verify the bounded advisory exception remains inactive
+advisory-check:
+    pwsh -NoProfile -File ./.github/scripts/check-advisory-reachability.ps1
+
 # Type-check the crate
 check:
     cargo check --all-targets
@@ -28,7 +53,7 @@ deep-test-non-pg: fmt-check diff-check clippy-non-pg test-non-pg doc-non-pg exam
 
 # Run the real Postgres store and worker integration suite
 postgres-test:
-    test -n "${A3S_FLOW_POSTGRES_URL:-}" || (echo "A3S_FLOW_POSTGRES_URL is required" >&2; exit 1)
+    test -n "${KENSE_FLOW_POSTGRES_URL:-}" || (echo "KENSE_FLOW_POSTGRES_URL is required" >&2; exit 1)
     cargo test --all-targets --features postgres -- --test-threads=1
 
 # Run the opt-in real Bun compiler and workflow smoke test

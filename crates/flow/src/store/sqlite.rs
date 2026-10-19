@@ -3,18 +3,25 @@ use std::path::{Path, PathBuf};
 
 use a3s_orm::{
     sql_query, Database, Executor, FromRow, Migrator, Query, SqlQuery, SqliteDialect, SqliteError,
-    SqliteExecutor, SqliteRow, SqliteTransaction, SqliteTransactionError,
+    SqliteExecutor, SqliteRow, SqliteTransaction, SqliteTransactionError, Value,
 };
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
+use std::collections::BTreeSet;
 use uuid::Uuid;
 
 use crate::error::{FlowError, Result};
 use crate::model::{
-    ActiveHookSnapshot, FlowEvent, FlowEventEnvelope, HookSnapshot, HookStatus, ScheduledWakeup,
+    project_run, project_run_from_snapshot, ActiveHookSnapshot, FlowEvent, FlowEventEnvelope,
+    HookSnapshot, HookStatus, ScheduledWakeup,
 };
 
-use super::{scheduled_wakeup_from_row, scheduled_wakeup_key, sqlite_migrations, FlowEventStore};
+use super::{
+    history_pages::fold_history_pages, next_event_sequence, scheduled_wakeup_from_row,
+    scheduled_wakeup_key, sqlite_migrations, validate_event_payload, FlowEventStore,
+    FlowHistoryPartition, FlowProjectionCheckpoint, FlowStoreCapabilities,
+    MAX_FLOW_HISTORY_PAGE_SIZE,
+};
 
 mod retention;
 
@@ -63,6 +70,7 @@ impl SqliteEventStore {
 
     /// Create a store from a configured executor and run Flow migrations.
     pub async fn from_executor(executor: SqliteExecutor) -> Result<Self> {
+        adopt_historical_sqlite_flow_migration_ids(&executor).await?;
         Migrator::new(executor.clone())
             .run(sqlite_migrations())
             .await
@@ -80,14 +88,18 @@ impl SqliteEventStore {
         run_id: &str,
         expected_sequence: Option<u64>,
         event: FlowEvent,
+        enforce_cross_run: bool,
     ) -> Result<FlowEventEnvelope> {
         let run_id = run_id.to_string();
         let result = self
             .executor
             .transaction(|transaction| {
                 Box::pin(async move {
-                    let linked_run_id =
-                        retention::required_linked_flow_run_id(&event).map(str::to_string);
+                    let linked_run_id = if enforce_cross_run {
+                        retention::required_linked_flow_run_id(&event).map(str::to_string)
+                    } else {
+                        None
+                    };
                     retention::ensure_sqlite_history_not_tombstoned(transaction, &run_id).await?;
                     if let Some(linked_run_id) = linked_run_id.as_deref() {
                         retention::ensure_sqlite_history_not_tombstoned(transaction, linked_run_id)
@@ -106,31 +118,77 @@ impl SqliteEventStore {
                             });
                         }
                     }
-                    if let FlowEvent::HookCreated { hook_id, token, .. } = &event {
-                        ensure_sqlite_active_hook_available(transaction, &run_id, hook_id, token)
+                    validate_event_payload(&event)?;
+                    if enforce_cross_run {
+                        if let FlowEvent::HookCreated { hook_id, token, .. } = &event {
+                            ensure_sqlite_active_hook_available(
+                                transaction,
+                                &run_id,
+                                hook_id,
+                                token,
+                            )
                             .await?;
+                        }
                     }
+                    let sequence = next_event_sequence(actual_sequence, &run_id)?;
 
-                    let envelope = FlowEventEnvelope {
-                        run_id,
-                        sequence: actual_sequence + 1,
-                        event_id: Uuid::new_v4(),
-                        timestamp: Utc::now(),
-                        event,
+                    let envelope =
+                        FlowEventEnvelope::new(run_id, sequence, Uuid::new_v4(), Utc::now(), event);
+                    let projected = match load_current_sqlite_checkpoint(
+                        transaction,
+                        &envelope.run_id,
+                        actual_sequence,
+                    )
+                    .await?
+                    {
+                        Some(checkpoint) => project_run_from_snapshot(
+                            &envelope.run_id,
+                            checkpoint.snapshot,
+                            std::slice::from_ref(&envelope),
+                        )?,
+                        None => match project_sqlite_history_pages(transaction, &envelope.run_id)
+                            .await?
+                        {
+                            Some(base) => project_run_from_snapshot(
+                                &envelope.run_id,
+                                base,
+                                std::slice::from_ref(&envelope),
+                            )?,
+                            None => project_run(&envelope.run_id, std::slice::from_ref(&envelope))?,
+                        },
                     };
                     insert_sqlite_envelope(transaction, &envelope).await?;
-                    Ok(envelope)
+                    let checkpoint = FlowProjectionCheckpoint::new(
+                        &envelope.run_id,
+                        envelope.sequence,
+                        envelope.event_id,
+                        projected,
+                    )
+                    .ok();
+                    Ok((envelope, checkpoint))
                 })
             })
             .await;
-        map_sqlite_transaction(result)
+        let (envelope, checkpoint) = map_sqlite_transaction(result)?;
+        if let Some(checkpoint) = checkpoint {
+            // Disposable acceleration stays off the history transaction, but the
+            // append caller must observe a tip-aligned cache attempt before
+            // return. Fire-and-forget races load_checkpoint and can lose to a
+            // later overwrite. Checkpoint failures must not fail the append.
+            let _ = self.save_checkpoint(&checkpoint).await;
+        }
+        Ok(envelope)
     }
 }
 
 #[async_trait]
 impl FlowEventStore for SqliteEventStore {
+    fn capabilities(&self) -> FlowStoreCapabilities {
+        FlowStoreCapabilities::new(true, true, true, true)
+    }
+
     async fn append(&self, run_id: &str, event: FlowEvent) -> Result<FlowEventEnvelope> {
-        self.append_with_expected_sequence(run_id, None, event)
+        self.append_with_expected_sequence(run_id, None, event, true)
             .await
     }
 
@@ -140,16 +198,101 @@ impl FlowEventStore for SqliteEventStore {
         expected_sequence: u64,
         event: FlowEvent,
     ) -> Result<FlowEventEnvelope> {
-        self.append_with_expected_sequence(run_id, Some(expected_sequence), event)
+        self.append_with_expected_sequence(run_id, Some(expected_sequence), event, true)
             .await
+    }
+
+    async fn append_shard_local_if_sequence(
+        &self,
+        run_id: &str,
+        expected_sequence: u64,
+        event: FlowEvent,
+    ) -> Result<FlowEventEnvelope> {
+        self.append_with_expected_sequence(run_id, Some(expected_sequence), event, false)
+            .await
+    }
+
+    async fn reject_retired_run_id(&self, run_id: &str) -> Result<()> {
+        let run_id = run_id.to_string();
+        let result = self
+            .executor
+            .transaction(|transaction| {
+                Box::pin(async move {
+                    retention::ensure_sqlite_history_not_tombstoned(transaction, &run_id).await
+                })
+            })
+            .await;
+        map_sqlite_transaction(result)
+    }
+
+    async fn held_run_ids(&self) -> Result<BTreeSet<String>> {
+        let result = self
+            .executor
+            .transaction(|transaction| {
+                Box::pin(async move { retention::sqlite_held_run_ids(transaction).await })
+            })
+            .await;
+        map_sqlite_transaction(result)
+    }
+
+    async fn retire_planned_terminal_history(&self, run_id: &str) -> Result<()> {
+        let run_id = run_id.to_string();
+        let result = self
+            .executor
+            .transaction(|transaction| {
+                Box::pin(async move {
+                    retention::retire_sqlite_planned_history(transaction, &run_id).await
+                })
+            })
+            .await;
+        map_sqlite_transaction(result)
+    }
+
+    async fn history_tombstone(&self, run_id: &str) -> Result<Option<super::FlowHistoryTombstone>> {
+        retention::load_sqlite_history_tombstone(&self.executor, run_id).await
+    }
+
+    async fn tombstoned_run_ids(&self) -> Result<BTreeSet<String>> {
+        retention::sqlite_tombstoned_run_ids(&self.executor).await
+    }
+
+    async fn append_validated_if_sequence(
+        &self,
+        run_id: &str,
+        expected_sequence: u64,
+        event: FlowEvent,
+    ) -> Result<FlowEventEnvelope> {
+        self.append_with_expected_sequence(run_id, Some(expected_sequence), event, true)
+            .await
+    }
+
+    async fn append_hook_if_token_available(
+        &self,
+        run_id: &str,
+        expected_sequence: u64,
+        hook_id: String,
+        token: String,
+        metadata: serde_json::Value,
+    ) -> Result<FlowEventEnvelope> {
+        self.append_with_expected_sequence(
+            run_id,
+            Some(expected_sequence),
+            FlowEvent::HookCreated {
+                hook_id,
+                token,
+                metadata,
+            },
+            true,
+        )
+        .await
     }
 
     async fn list(&self, run_id: &str) -> Result<Vec<FlowEventEnvelope>> {
         let database = Database::new(SqliteDialect, self.executor.clone());
         let rows = database
             .fetch_all_as(
-                sql_query::<(String, i64, String, String, String)>(
-                    "SELECT run_id, sequence, event_id, timestamp, event_json \
+                sql_query::<(String, i64, String, String, i64, String)>(
+                    "SELECT run_id, sequence, event_id, timestamp, schema_version, event_json \
                      FROM flow_events WHERE run_id = ",
                 )
                 .bind(run_id)
@@ -162,6 +305,295 @@ impl FlowEventStore for SqliteEventStore {
             return Err(FlowError::RunNotFound(run_id.to_string()));
         }
         rows.into_iter().map(row_to_envelope).collect()
+    }
+
+    async fn latest_event(&self, run_id: &str) -> Result<Option<(u64, Uuid)>> {
+        let database = Database::new(SqliteDialect, self.executor.clone());
+        let row = database
+            .fetch_all_as(
+                sql_query::<(i64, String)>(
+                    "SELECT sequence, event_id FROM flow_events WHERE run_id = ",
+                )
+                .bind(run_id)
+                .append(" ORDER BY sequence DESC LIMIT 1"),
+            )
+            .await
+            .map_err(sqlite_orm_error)?
+            .rows
+            .into_iter()
+            .next();
+        row.map(|(sequence, event_id)| {
+            let sequence = u64::try_from(sequence).map_err(|error| {
+                FlowError::Store(format!("invalid SQLite sequence {sequence}: {error}"))
+            })?;
+            let event_id = event_id.parse().map_err(|error| {
+                FlowError::Store(format!("invalid SQLite event id {event_id}: {error}"))
+            })?;
+            Ok((sequence, event_id))
+        })
+        .transpose()
+    }
+
+    async fn event_at(&self, run_id: &str, sequence: u64) -> Result<Option<FlowEventEnvelope>> {
+        let sequence = i64::try_from(sequence).map_err(|error| {
+            FlowError::Store(format!(
+                "event sequence {sequence} exceeds SQLite integer range: {error}"
+            ))
+        })?;
+        let database = Database::new(SqliteDialect, self.executor.clone());
+        let row = database
+            .fetch_all_as(
+                sql_query::<(String, i64, String, String, i64, String)>(
+                    "SELECT run_id, sequence, event_id, timestamp, schema_version, event_json \
+                 FROM flow_events WHERE run_id = ",
+                )
+                .bind(run_id)
+                .append(" AND sequence = ")
+                .bind(sequence),
+            )
+            .await
+            .map_err(sqlite_orm_error)?
+            .rows
+            .into_iter()
+            .next();
+        row.map(row_to_envelope).transpose()
+    }
+
+    async fn list_after(&self, run_id: &str, sequence: u64) -> Result<Vec<FlowEventEnvelope>> {
+        let sequence = i64::try_from(sequence).map_err(|error| {
+            FlowError::Store(format!(
+                "event sequence {sequence} exceeds SQLite integer range: {error}"
+            ))
+        })?;
+        let database = Database::new(SqliteDialect, self.executor.clone());
+        let rows = database
+            .fetch_all_as(
+                sql_query::<(String, i64, String, String, i64, String)>(
+                    "SELECT run_id, sequence, event_id, timestamp, schema_version, event_json \
+                 FROM flow_events WHERE run_id = ",
+                )
+                .bind(run_id)
+                .append(" AND sequence > ")
+                .bind(sequence)
+                .append(" ORDER BY sequence ASC"),
+            )
+            .await
+            .map_err(sqlite_orm_error)?
+            .rows;
+        if rows.is_empty() {
+            let exists = database
+                .fetch_all_as(
+                    sql_query::<i64>("SELECT 1 FROM flow_events WHERE run_id = ")
+                        .bind(run_id)
+                        .append(" LIMIT 1"),
+                )
+                .await
+                .map_err(sqlite_orm_error)?
+                .rows;
+            if exists.is_empty() {
+                return Err(FlowError::RunNotFound(run_id.to_string()));
+            }
+        }
+        rows.into_iter().map(row_to_envelope).collect()
+    }
+
+    async fn list_page(
+        &self,
+        run_id: &str,
+        after_sequence: u64,
+        limit: usize,
+    ) -> Result<Vec<FlowEventEnvelope>> {
+        if limit == 0 || limit > MAX_FLOW_HISTORY_PAGE_SIZE {
+            return Err(FlowError::Store(format!(
+                "history page size must be between 1 and {MAX_FLOW_HISTORY_PAGE_SIZE}, got {limit}"
+            )));
+        }
+        let sequence = i64::try_from(after_sequence).map_err(|error| {
+            FlowError::Store(format!(
+                "event sequence {after_sequence} exceeds SQLite integer range: {error}"
+            ))
+        })?;
+        let limit = i64::try_from(limit).map_err(|error| {
+            FlowError::Store(format!(
+                "history page size {limit} exceeds SQLite integer range: {error}"
+            ))
+        })?;
+        let database = Database::new(SqliteDialect, self.executor.clone());
+        let rows = database
+            .fetch_all_as(
+                sql_query::<(String, i64, String, String, i64, String)>(
+                    "SELECT run_id, sequence, event_id, timestamp, schema_version, event_json \
+                 FROM flow_events WHERE run_id = ",
+                )
+                .bind(run_id)
+                .append(" AND sequence > ")
+                .bind(sequence)
+                .append(" ORDER BY sequence ASC LIMIT ")
+                .bind(limit),
+            )
+            .await
+            .map_err(sqlite_orm_error)?
+            .rows;
+        if rows.is_empty() {
+            let exists = database
+                .fetch_all_as(
+                    sql_query::<i64>("SELECT 1 FROM flow_events WHERE run_id = ")
+                        .bind(run_id)
+                        .append(" LIMIT 1"),
+                )
+                .await
+                .map_err(sqlite_orm_error)?
+                .rows;
+            if exists.is_empty() {
+                return Err(FlowError::RunNotFound(run_id.to_string()));
+            }
+        }
+        rows.into_iter().map(row_to_envelope).collect()
+    }
+
+    async fn load_checkpoint(&self, run_id: &str) -> Result<Option<FlowProjectionCheckpoint>> {
+        let database = Database::new(SqliteDialect, self.executor.clone());
+        let row = database
+            .fetch_all_as(
+                sql_query::<(String, i64, String, String, String)>(
+                    "SELECT run_id, last_sequence, last_event_id, snapshot_sha256, snapshot_json \
+                 FROM flow_projection_checkpoints WHERE run_id = ",
+                )
+                .bind(run_id),
+            )
+            .await
+            .map_err(sqlite_orm_error)?
+            .rows
+            .into_iter()
+            .next();
+        Ok(row.and_then(|row| decode_sqlite_checkpoint(row).ok()))
+    }
+
+    async fn save_checkpoint(&self, checkpoint: &FlowProjectionCheckpoint) -> Result<()> {
+        let checkpoint = checkpoint.clone();
+        let result = self
+            .executor
+            .transaction(|transaction| {
+                Box::pin(async move { save_sqlite_checkpoint(transaction, &checkpoint).await })
+            })
+            .await;
+        map_sqlite_transaction(result)
+    }
+
+    async fn list_history_partitions(&self, run_id: &str) -> Result<Vec<FlowHistoryPartition>> {
+        let database = Database::new(SqliteDialect, self.executor.clone());
+        let exists = database
+            .fetch_all_as(
+                sql_query::<i64>("SELECT 1 FROM flow_events WHERE run_id = ")
+                    .bind(run_id)
+                    .append(" LIMIT 1"),
+            )
+            .await
+            .map_err(sqlite_orm_error)?
+            .rows;
+        if exists.is_empty() {
+            return Err(FlowError::RunNotFound(run_id.to_string()));
+        }
+        database
+            .fetch_all_as(
+                sql_query::<(String, i64, i64, i64, String, String, i64, String)>(
+                    "SELECT run_id, ordinal, first_sequence, last_sequence, first_event_id, \
+                     last_event_id, event_count, content_sha256 \
+                     FROM flow_history_partitions WHERE run_id = ",
+                )
+                .bind(run_id)
+                .append(" ORDER BY ordinal ASC"),
+            )
+            .await
+            .map_err(sqlite_orm_error)?
+            .rows
+            .into_iter()
+            .map(decode_sqlite_history_partition)
+            .collect()
+    }
+
+    async fn save_history_partition(&self, partition: &FlowHistoryPartition) -> Result<()> {
+        partition.validate()?;
+        let ordinal = i64::from(partition.ordinal);
+        let first_sequence = i64::try_from(partition.first_sequence).map_err(|error| {
+            FlowError::Store(format!(
+                "history partition first sequence {} exceeds SQLite integer range: {error}",
+                partition.first_sequence
+            ))
+        })?;
+        let last_sequence = i64::try_from(partition.last_sequence).map_err(|error| {
+            FlowError::Store(format!(
+                "history partition last sequence {} exceeds SQLite integer range: {error}",
+                partition.last_sequence
+            ))
+        })?;
+        let event_count = i64::try_from(partition.event_count).map_err(|error| {
+            FlowError::Store(format!(
+                "history partition event count {} exceeds SQLite integer range: {error}",
+                partition.event_count
+            ))
+        })?;
+        let database = Database::new(SqliteDialect, self.executor.clone());
+        let tip = database
+            .fetch_all_as(
+                sql_query::<i64>("SELECT sequence FROM flow_events WHERE run_id = ")
+                    .bind(partition.run_id.clone())
+                    .append(" ORDER BY sequence DESC LIMIT 1"),
+            )
+            .await
+            .map_err(sqlite_orm_error)?
+            .rows
+            .into_iter()
+            .next()
+            .ok_or_else(|| FlowError::RunNotFound(partition.run_id.clone()))?;
+        if last_sequence > tip {
+            return Err(FlowError::Store(format!(
+                "history partition for {} cannot seal beyond tip {tip}",
+                partition.run_id
+            )));
+        }
+        let existing = self.list_history_partitions(&partition.run_id).await?;
+        if let Some(last) = existing.last() {
+            if partition.ordinal != last.ordinal + 1
+                || partition.first_sequence != last.last_sequence + 1
+            {
+                return Err(FlowError::Store(format!(
+                    "history partition for {} must continue the sealed index",
+                    partition.run_id
+                )));
+            }
+        } else if partition.ordinal != 0 || partition.first_sequence != 1 {
+            return Err(FlowError::Store(format!(
+                "first history partition for {} must start at ordinal 0 sequence 1",
+                partition.run_id
+            )));
+        }
+        database
+            .execute(
+                sql_query::<()>(
+                    "INSERT INTO flow_history_partitions \
+                 (run_id, ordinal, first_sequence, last_sequence, first_event_id, last_event_id, event_count, content_sha256) VALUES (",
+                )
+                .bind(partition.run_id.clone())
+                .append(", ")
+                .bind(ordinal)
+                .append(", ")
+                .bind(first_sequence)
+                .append(", ")
+                .bind(last_sequence)
+                .append(", ")
+                .bind(partition.first_event_id.to_string())
+                .append(", ")
+                .bind(partition.last_event_id.to_string())
+                .append(", ")
+                .bind(event_count)
+                .append(", ")
+                .bind(partition.content_sha256.clone())
+                .append(")"),
+            )
+            .await
+            .map_err(sqlite_orm_error)?;
+        Ok(())
     }
 
     async fn list_run_ids(&self) -> Result<Vec<String>> {
@@ -321,6 +753,156 @@ pub(super) async fn latest_sqlite_sequence(
         .map_err(|error| FlowError::Store(format!("invalid SQLite sequence {sequence}: {error}")))
 }
 
+async fn load_sqlite_history_page(
+    transaction: &SqliteTransaction,
+    run_id: &str,
+    after_sequence: u64,
+    limit: usize,
+) -> Result<Vec<FlowEventEnvelope>> {
+    let sequence = i64::try_from(after_sequence).map_err(|error| {
+        FlowError::Store(format!(
+            "event sequence {after_sequence} exceeds SQLite integer range: {error}"
+        ))
+    })?;
+    let limit = i64::try_from(limit).map_err(|error| {
+        FlowError::Store(format!(
+            "history page size {limit} exceeds SQLite integer range: {error}"
+        ))
+    })?;
+    fetch_all_sqlite::<(String, i64, String, String, i64, String), _>(
+        transaction,
+        sql_query::<(String, i64, String, String, i64, String)>(
+            "SELECT run_id, sequence, event_id, timestamp, schema_version, event_json \
+             FROM flow_events WHERE run_id = ",
+        )
+        .bind(run_id)
+        .append(" AND sequence > ")
+        .bind(sequence)
+        .append(" ORDER BY sequence ASC LIMIT ")
+        .bind(limit),
+    )
+    .await?
+    .into_iter()
+    .map(row_to_envelope)
+    .collect()
+}
+
+async fn project_sqlite_history_pages(
+    transaction: &SqliteTransaction,
+    run_id: &str,
+) -> Result<Option<crate::model::WorkflowRunSnapshot>> {
+    fold_history_pages(run_id, |after_sequence, limit| {
+        load_sqlite_history_page(transaction, run_id, after_sequence, limit)
+    })
+    .await
+}
+
+/// Load a checkpoint only when it is anchored to the transaction's current
+/// history tip. A stale or corrupt checkpoint is disposable metadata and
+/// therefore causes the caller to rebuild from the authoritative event log.
+async fn load_current_sqlite_checkpoint(
+    transaction: &SqliteTransaction,
+    run_id: &str,
+    actual_sequence: u64,
+) -> Result<Option<FlowProjectionCheckpoint>> {
+    if actual_sequence == 0 {
+        return Ok(None);
+    }
+    let row = fetch_optional_sqlite(
+        transaction,
+        sql_query::<(String, i64, String, String, String)>(
+            "SELECT run_id, last_sequence, last_event_id, snapshot_sha256, snapshot_json \
+             FROM flow_projection_checkpoints WHERE run_id = ",
+        )
+        .bind(run_id),
+    )
+    .await?;
+    let Some((checkpoint_run_id, last_sequence, last_event_id, snapshot_sha256, snapshot_json)) =
+        row
+    else {
+        return Ok(None);
+    };
+    let checkpoint = match decode_sqlite_checkpoint((
+        checkpoint_run_id,
+        last_sequence,
+        last_event_id,
+        snapshot_sha256,
+        snapshot_json,
+    )) {
+        Ok(checkpoint) if checkpoint.last_sequence == actual_sequence => checkpoint,
+        _ => return Ok(None),
+    };
+    let sequence = i64::try_from(checkpoint.last_sequence).map_err(|error| {
+        FlowError::Store(format!(
+            "projection checkpoint sequence {} exceeds SQLite integer range: {error}",
+            checkpoint.last_sequence
+        ))
+    })?;
+    let event_id = fetch_optional_sqlite(
+        transaction,
+        sql_query::<String>("SELECT event_id FROM flow_events WHERE run_id = ")
+            .bind(run_id)
+            .append(" AND sequence = ")
+            .bind(sequence),
+    )
+    .await?;
+    let Some(event_id) = event_id else {
+        return Ok(None);
+    };
+    let event_id: Uuid = event_id.parse().map_err(|error| {
+        FlowError::Store(format!("invalid SQLite event id {event_id}: {error}"))
+    })?;
+    if event_id != checkpoint.last_event_id {
+        return Ok(None);
+    }
+    Ok(Some(checkpoint))
+}
+
+async fn save_sqlite_checkpoint(
+    transaction: &SqliteTransaction,
+    checkpoint: &FlowProjectionCheckpoint,
+) -> Result<()> {
+    checkpoint.validate()?;
+    let sequence = i64::try_from(checkpoint.last_sequence).map_err(|error| {
+        FlowError::Store(format!(
+            "projection checkpoint sequence {} exceeds SQLite integer range: {error}",
+            checkpoint.last_sequence
+        ))
+    })?;
+    let snapshot_json = serde_json::to_string(&checkpoint.snapshot)?;
+    let query = sql_query::<()>(
+        "INSERT INTO flow_projection_checkpoints \
+         (run_id, last_sequence, last_event_id, snapshot_sha256, snapshot_json, updated_at) VALUES (",
+    )
+    .bind(checkpoint.run_id.clone())
+    .append(", ")
+    .bind(sequence)
+    .append(", ")
+    .bind(checkpoint.last_event_id.to_string())
+    .append(", ")
+    .bind(checkpoint.snapshot_sha256.clone())
+    .append(", ")
+    .bind(snapshot_json)
+    .append(", ")
+    .bind(Utc::now().to_rfc3339())
+    .append(
+        ") ON CONFLICT(run_id) DO UPDATE SET \
+         last_sequence = excluded.last_sequence, \
+         last_event_id = excluded.last_event_id, \
+         snapshot_sha256 = excluded.snapshot_sha256, \
+         snapshot_json = excluded.snapshot_json, \
+         updated_at = excluded.updated_at \
+         WHERE excluded.last_sequence >= flow_projection_checkpoints.last_sequence",
+    )
+    .compile(&SqliteDialect)
+    .map_err(sqlite_query_error)?;
+    transaction
+        .execute(&query)
+        .await
+        .map_err(sqlite_driver_error)?;
+    Ok(())
+}
+
 async fn ensure_sqlite_active_hook_available(
     transaction: &SqliteTransaction,
     run_id: &str,
@@ -376,7 +958,7 @@ async fn insert_sqlite_envelope(
         ))
     })?;
     let query = sql_query::<()>(
-        "INSERT INTO flow_events (run_id, sequence, event_id, timestamp, event_json) VALUES (",
+        "INSERT INTO flow_events (run_id, sequence, event_id, timestamp, schema_version, event_json) VALUES (",
     )
     .bind(envelope.run_id.clone())
     .append(", ")
@@ -385,6 +967,8 @@ async fn insert_sqlite_envelope(
     .bind(envelope.event_id.to_string())
     .append(", ")
     .bind(envelope.timestamp.to_rfc3339())
+    .append(", ")
+    .bind(i64::from(envelope.schema_version))
     .append(", ")
     .bind(serde_json::to_string(&envelope.event)?)
     .append(")")
@@ -398,9 +982,21 @@ async fn insert_sqlite_envelope(
 }
 
 pub(super) fn row_to_envelope(
-    (run_id, sequence, event_id, timestamp, event_json): (String, i64, String, String, String),
+    (run_id, sequence, event_id, timestamp, schema_version, event_json): (
+        String,
+        i64,
+        String,
+        String,
+        i64,
+        String,
+    ),
 ) -> Result<FlowEventEnvelope> {
-    Ok(FlowEventEnvelope {
+    let envelope = FlowEventEnvelope {
+        schema_version: u16::try_from(schema_version).map_err(|error| {
+            FlowError::Store(format!(
+                "invalid SQLite event envelope schema version {schema_version}: {error}"
+            ))
+        })?,
         run_id,
         sequence: u64::try_from(sequence).map_err(|error| {
             FlowError::Store(format!("invalid SQLite sequence {sequence}: {error}"))
@@ -414,7 +1010,10 @@ pub(super) fn row_to_envelope(
             ))
         })?,
         event: serde_json::from_str(&event_json)?,
-    })
+        schema_version_explicit: true,
+    };
+    envelope.validate_schema_version()?;
+    Ok(envelope)
 }
 
 fn active_hook_from_row(
@@ -430,6 +1029,91 @@ fn active_hook_from_row(
             payload: None,
         },
     })
+}
+
+fn decode_sqlite_history_partition(
+    (
+        run_id,
+        ordinal,
+        first_sequence,
+        last_sequence,
+        first_event_id,
+        last_event_id,
+        event_count,
+        content_sha256,
+    ): (String, i64, i64, i64, String, String, i64, String),
+) -> Result<FlowHistoryPartition> {
+    let ordinal = u32::try_from(ordinal).map_err(|error| {
+        FlowError::Store(format!(
+            "invalid SQLite history partition ordinal {ordinal}: {error}"
+        ))
+    })?;
+    let first_sequence = u64::try_from(first_sequence).map_err(|error| {
+        FlowError::Store(format!(
+            "invalid SQLite history partition first sequence {first_sequence}: {error}"
+        ))
+    })?;
+    let last_sequence = u64::try_from(last_sequence).map_err(|error| {
+        FlowError::Store(format!(
+            "invalid SQLite history partition last sequence {last_sequence}: {error}"
+        ))
+    })?;
+    let event_count = u64::try_from(event_count).map_err(|error| {
+        FlowError::Store(format!(
+            "invalid SQLite history partition event count {event_count}: {error}"
+        ))
+    })?;
+    let first_event_id = first_event_id.parse().map_err(|error| {
+        FlowError::Store(format!(
+            "invalid SQLite history partition first event id {first_event_id}: {error}"
+        ))
+    })?;
+    let last_event_id = last_event_id.parse().map_err(|error| {
+        FlowError::Store(format!(
+            "invalid SQLite history partition last event id {last_event_id}: {error}"
+        ))
+    })?;
+    let partition = FlowHistoryPartition {
+        run_id,
+        ordinal,
+        first_sequence,
+        last_sequence,
+        first_event_id,
+        last_event_id,
+        event_count,
+        content_sha256,
+    };
+    partition.validate()?;
+    Ok(partition)
+}
+
+fn decode_sqlite_checkpoint(
+    (run_id, last_sequence, last_event_id, snapshot_sha256, snapshot_json): (
+        String,
+        i64,
+        String,
+        String,
+        String,
+    ),
+) -> Result<FlowProjectionCheckpoint> {
+    let last_sequence = u64::try_from(last_sequence).map_err(|error| {
+        FlowError::Store(format!(
+            "invalid SQLite checkpoint sequence {last_sequence}: {error}"
+        ))
+    })?;
+    let last_event_id = last_event_id.parse().map_err(|error| {
+        FlowError::Store(format!(
+            "invalid SQLite checkpoint event id {last_event_id}: {error}"
+        ))
+    })?;
+    let snapshot = serde_json::from_str(&snapshot_json)?;
+    FlowProjectionCheckpoint::from_stored(
+        run_id,
+        last_sequence,
+        last_event_id,
+        snapshot_sha256,
+        snapshot,
+    )
 }
 
 fn sqlite_path(database_url: &str) -> Result<PathBuf> {
@@ -483,4 +1167,66 @@ fn sqlite_decode_error(error: a3s_orm::DecodeError) -> FlowError {
 
 fn sqlite_orm_error(error: a3s_orm::DatabaseError<a3s_orm::SqliteError>) -> FlowError {
     FlowError::Store(format!("SQLite Flow storage failed: {error}"))
+}
+
+async fn adopt_historical_sqlite_flow_migration_ids(executor: &SqliteExecutor) -> Result<()> {
+    use sha2::{Digest, Sha256};
+
+    use super::migrations::{canonical_flow_migration_version, sqlite_migrations};
+
+    let database = Database::new(SqliteDialect, executor.clone());
+    let tables = database
+        .fetch_all(sql_query::<()>(
+            "select name from sqlite_master where type = 'table' and name = 'a3s_orm_migrations'",
+        ))
+        .await
+        .map_err(sqlite_orm_error)?;
+    if tables.rows.is_empty() {
+        return Ok(());
+    }
+    let applied = database
+        .fetch_all(sql_query::<()>(
+            "select version, checksum from a3s_orm_migrations where version like 'kense-flow-%' order by version",
+        ))
+        .await
+        .map_err(sqlite_orm_error)?;
+    let source = sqlite_migrations();
+    for row in applied.rows {
+        let version = sqlite_ledger_text(&row, 0)?;
+        let checksum = sqlite_ledger_text(&row, 1)?;
+        let Some(renamed) = canonical_flow_migration_version(&version) else {
+            continue;
+        };
+        let Some(migration) = source
+            .iter()
+            .find(|migration| migration.version() == renamed)
+        else {
+            continue;
+        };
+        let source_checksum = format!("{:x}", Sha256::digest(migration.up_sql().as_bytes()));
+        if source_checksum != checksum {
+            return Err(FlowError::Store(format!(
+                "historical Flow migration {version} checksum {checksum} does not match {renamed} ({source_checksum})"
+            )));
+        }
+        database
+            .execute(
+                sql_query::<()>("update a3s_orm_migrations set version = ")
+                    .bind(renamed)
+                    .append(" where version = ")
+                    .bind(version),
+            )
+            .await
+            .map_err(sqlite_orm_error)?;
+    }
+    Ok(())
+}
+
+fn sqlite_ledger_text(row: &SqliteRow, index: usize) -> Result<String> {
+    match row.get(index) {
+        Some(Value::String(value)) => Ok(value.clone()),
+        _ => Err(FlowError::Store(
+            "SQLite Flow migration ledger returned a non-text column".to_string(),
+        )),
+    }
 }

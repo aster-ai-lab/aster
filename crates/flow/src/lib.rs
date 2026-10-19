@@ -1,6 +1,6 @@
 //! Durable workflow engine core for A3S.
 //!
-//! `a3s-flow` models the Workflow SDK style of durable execution as a Rust
+//! `kense-flow` models the Workflow SDK style of durable execution as a Rust
 //! core: workflow runs are event-sourced, step results are persisted, waits and
 //! hooks suspend without burning compute, named signals queue in history,
 //! first-class child runs have durable lifecycle policy, and the actual
@@ -22,6 +22,7 @@ mod runtime;
 mod runtime_build;
 mod scheduler;
 mod store;
+mod trace;
 mod worker;
 mod workflow_dsl;
 
@@ -29,15 +30,24 @@ pub use context::WorkflowContext;
 pub use engine::{FlowEngine, FlowEngineBuilder};
 pub use error::{FlowError, Result};
 pub use model::{
-    ActiveHookSnapshot, CancellationRequest, CancellationRequestSnapshot, ChildOperationReference,
-    ChildWorkflowCancellationPolicy, ChildWorkflowCommand, ChildWorkflowSnapshot, FlowEvent,
-    FlowEventEnvelope, HookCallbackRoute, HookMetadata, HookSnapshot, HookStatus, JsonValue,
-    RetryBackoff, RetryPolicy, RuntimeCommand, RuntimeKind, RuntimeSpec, ScheduledWakeup,
-    ScheduledWakeupKind, SignalWaitSnapshot, SignalWaitStatus, StepCommand, StepFailureAction,
-    StepSnapshot, StepStatus, WaitSnapshot, WaitStatus, WorkflowContinuation, WorkflowPatchId,
-    WorkflowProgress, WorkflowRunSnapshot, WorkflowRunStatus, WorkflowRunSummary,
-    WorkflowRunSuspension, WorkflowSignal, WorkflowSignalSnapshot, WorkflowSpec,
-    WorkflowTerminalOutcome, MAX_CHILD_WORKFLOW_BATCH_SIZE, MAX_WORKFLOW_PATCH_MARKERS,
+    ActiveHookSnapshot, ActivityCommand, ActivityResolution, ActivitySnapshot, ActivityStatus,
+    CancellationRequest, CancellationRequestSnapshot, CancellationScopeSnapshot,
+    CancellationScopeStatus, ChildOperationReference, ChildWorkflowCancellationPolicy,
+    ChildWorkflowCommand, ChildWorkflowMapSnapshot, ChildWorkflowMapStatus, ChildWorkflowSnapshot,
+    CompensationMarker, CompensationMarkerSnapshot, CompensationMarkerStatus, ExternalDatasetRef,
+    FlowBlobEncryption, FlowBlobRef, FlowEvent, FlowEventEnvelope, FlowVisibilityProgress,
+    FlowVisibilityProjection, FlowVisibilitySuspensionCounts, HookCallbackRoute, HookMetadata,
+    HookSnapshot, HookStatus, ItemAggregateContribution, ItemAggregateEntry, ItemAggregateSnapshot,
+    JsonValue, RetryBackoff, RetryPolicy, RuntimeCommand, RuntimeKind, RuntimeSpec,
+    ScheduledWakeup, ScheduledWakeupKind, SelectArm, SelectMode, SelectSnapshot, SelectStatus,
+    SignalWaitSnapshot, SignalWaitStatus, StepCommand, StepFailureAction, StepSnapshot, StepStatus,
+    WaitSnapshot, WaitStatus, WorkflowContinuation, WorkflowPatchId, WorkflowProgress,
+    WorkflowRunSnapshot, WorkflowRunStatus, WorkflowRunSummary, WorkflowRunSuspension,
+    WorkflowSignal, WorkflowSignalSnapshot, WorkflowSpec, WorkflowTerminalOutcome, WorkflowUpdate,
+    WorkflowUpdateOutcome, WorkflowUpdateSnapshot, FLOW_BLOB_REF_OUTPUT_KEY,
+    FLOW_EVENT_ENVELOPE_SCHEMA_VERSION, FLOW_PROJECTION_REVISION,
+    FLOW_VISIBILITY_PROJECTION_SCHEMA_VERSION, MAX_CHILD_WORKFLOW_BATCH_SIZE,
+    MAX_CHILD_WORKFLOW_MAP_SIZE, MAX_FLOW_EVENT_BYTES, MAX_WORKFLOW_PATCH_MARKERS,
 };
 #[cfg(feature = "a3s-event")]
 pub use observe::A3sEventBusFlowEventSink;
@@ -52,8 +62,9 @@ pub use protocol::{
     NATIVE_RUNTIME_PROTOCOL,
 };
 pub use runtime::{
-    FlowRuntime, NativeTsDependencyMode, NativeTsRuntime, NativeTsRuntimeConfig,
-    NativeTsRuntimePreflight, StepInvocation, WorkflowInvocation,
+    read_native_ts_entrypoint, ActivityInvocation, FlowRuntime, NativeTsDependencyMode,
+    NativeTsEntrypointRead, NativeTsRuntime, NativeTsRuntimeConfig, NativeTsRuntimePreflight,
+    QueryInvocation, StepInvocation, UpdateInvocation, WorkflowInvocation,
 };
 pub use runtime_build::{RuntimeBuildCompatibility, RuntimeBuildId};
 pub use scheduler::{FlowScheduler, FlowSchedulerTick};
@@ -61,22 +72,36 @@ pub use scheduler::{FlowScheduler, FlowSchedulerTick};
 pub use store::SqliteEventStore;
 #[cfg(feature = "postgres")]
 pub use store::{migrate_postgres_flow, PostgresEventStore};
-pub use store::{FlowEventStore, InMemoryEventStore, LocalFileEventStore};
-#[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub use store::{
-    FlowHistoryHold, FlowHistoryRetentionPolicy, FlowHistoryRetentionReport, FlowHistoryTombstone,
+    FlowEventStore, FlowHistoryArchiveSeal, FlowHistoryPartition, FlowHistoryTombstone,
+    FlowProjectionCheckpoint, FlowRunShardLayout, FlowStoreCapabilities, InMemoryEventStore,
+    LocalFileEventStore, ShardedFlowEventStore, MAX_FLOW_HISTORY_PAGE_SIZE,
+    MAX_FLOW_RUN_SHARD_COUNT, MIN_FLOW_RUN_SHARD_COUNT,
+};
+#[cfg(any(feature = "postgres", feature = "sqlite"))]
+pub use store::{FlowHistoryHold, FlowHistoryRetentionPolicy, FlowHistoryRetentionReport};
+pub use trace::{
+    current_trace_context, with_trace_context, without_trace_context, FlowTraceContext,
+};
+pub use worker::{
+    ensure_queue_admission, resolve_flow_task_partition, select_fair_pending_index,
+    validate_flow_task_partition_key, validate_queue_capacity, FlowTask, FlowTaskDispatcher,
+    FlowTaskLease, FlowTaskOutcome, FlowTaskQueue, FlowWorker, FlowWorkerCapabilities,
+    InMemoryFlowTaskQueue, LocalFileDeadLetteredTask, LocalFileFlowTaskQueue,
+    RuntimeBuildTaskRouter, FLOW_WORKER_PROTOCOL, MAX_FLOW_TASK_PARTITION_KEY_BYTES,
+    UNSCOPED_FLOW_TASK_PARTITION,
 };
 #[cfg(feature = "boot")]
 pub use worker::{BootFlowTaskDeduplication, BootFlowTaskManager, BootFlowTaskPolicy};
-pub use worker::{
-    FlowTask, FlowTaskDispatcher, FlowTaskLease, FlowTaskOutcome, FlowTaskQueue, FlowWorker,
-    InMemoryFlowTaskQueue, LocalFileDeadLetteredTask, LocalFileFlowTaskQueue,
-    RuntimeBuildTaskRouter,
-};
 #[cfg(feature = "postgres")]
 pub use worker::{PostgresDeadLetteredTask, PostgresFlowTaskQueue};
 pub use workflow_dsl::{
-    WorkflowDag, WorkflowDagEdge, WorkflowDagNode, WorkflowDagPlan, WorkflowDsl, WorkflowDslApp,
+    apply_workflow_authoring_operation, apply_workflow_authoring_operations,
+    canonical_workflow_authoring_operation, canonical_workflow_authoring_snapshot,
+    validate_executable_workflow_authoring_snapshot, WorkflowAuthoringSession, WorkflowDag,
+    WorkflowDagEdge, WorkflowDagNode, WorkflowDagPlan, WorkflowDsl, WorkflowDslApp,
     WorkflowDslBody, WorkflowDslCompatibility, WorkflowDslError, TESTED_WORKFLOW_DSL_VERSION,
+    WORKFLOW_AUTHORING_ID_MAX_BYTES, WORKFLOW_AUTHORING_MAX_OPERATIONS,
+    WORKFLOW_AUTHORING_OPERATION_MAX_BYTES, WORKFLOW_DSL_EXECUTION_DIGEST_VERSION,
     WORKFLOW_DSL_MAX_BYTES,
 };

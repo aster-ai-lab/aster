@@ -128,7 +128,7 @@ impl WorkflowProgress {
 
 /// Durable reference from a parent workflow to a child operation.
 ///
-/// `flow_run_id` is set only when the child is another A3S Flow run. The
+/// `flow_run_id` is set only when the child is another Kense Flow run. The
 /// reference itself does not imply automatic cancellation; the parent
 /// workflow owns propagation through durable, idempotent cleanup steps.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -140,7 +140,7 @@ pub struct ChildOperationReference {
     pub kind: String,
     /// Identifier assigned by the child operation's owner.
     pub operation_id: String,
-    /// Linked A3S Flow run identifier, when the child is a workflow run.
+    /// Linked Kense Flow run identifier, when the child is a workflow run.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flow_run_id: Option<String>,
     /// Application-defined structured metadata.
@@ -164,7 +164,7 @@ impl ChildOperationReference {
         }
     }
 
-    /// Associates the operation with an A3S Flow run.
+    /// Associates the operation with an Kense Flow run.
     pub fn with_flow_run_id(mut self, flow_run_id: impl Into<String>) -> Self {
         self.flow_run_id = Some(flow_run_id.into());
         self

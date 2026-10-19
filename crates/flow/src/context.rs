@@ -1,12 +1,13 @@
 use chrono::{DateTime, Utc};
 use serde::de::DeserializeOwned;
+use uuid::Uuid;
 
 use crate::error::{FlowError, Result};
 use crate::model::{
-    CancellationRequest, ChildOperationReference, ChildWorkflowCancellationPolicy,
+    ActivityCommand, CancellationRequest, ChildOperationReference, ChildWorkflowCancellationPolicy,
     ChildWorkflowCommand, FlowEvent, FlowEventEnvelope, HookMetadata, JsonValue, RetryPolicy,
     RuntimeCommand, StepCommand, WorkflowProgress, WorkflowSignal, WorkflowSpec,
-    WorkflowTerminalOutcome,
+    WorkflowTerminalOutcome, WorkflowUpdate,
 };
 use crate::runtime::WorkflowInvocation;
 
@@ -60,6 +61,32 @@ impl<'a> WorkflowContext<'a> {
     /// Returns committed history in ascending event-sequence order.
     pub fn history(&self) -> &[FlowEventEnvelope] {
         &self.invocation.history
+    }
+
+    /// Return the latest committed event time as the workflow's logical clock.
+    ///
+    /// This value is replay-stable: it comes from durable history rather than
+    /// the host wall clock. Workflow code that needs the current time should
+    /// use this helper and persist a wait or event before observing a later
+    /// logical time. `None` is returned only for an invalid empty invocation.
+    pub fn logical_time(&self) -> Option<DateTime<Utc>> {
+        self.history().last().map(|envelope| envelope.timestamp)
+    }
+
+    /// Derive a replay-stable UUID for a workflow-local identity.
+    ///
+    /// The caller-owned `name` is length-delimited with the run ID so values
+    /// containing separators cannot collide. The same run and name always
+    /// produce the same UUID across hosts and language runtimes that implement
+    /// UUID version five.
+    pub fn deterministic_id(&self, name: &str) -> Uuid {
+        let value = format!(
+            "a3s.flow.workflow.v1/{}/{}{}",
+            self.run_id().len(),
+            self.run_id(),
+            name.len(),
+        );
+        Uuid::new_v5(&Uuid::NAMESPACE_OID, format!("{value}{name}").as_bytes())
     }
 
     /// Return the durable cleanup-aware cancellation request, when present.
@@ -138,6 +165,24 @@ impl<'a> WorkflowContext<'a> {
             })
     }
 
+    /// Return every applied update in durable history order.
+    pub fn updates(&self) -> Vec<&WorkflowUpdate> {
+        self.history()
+            .iter()
+            .filter_map(|envelope| match &envelope.event {
+                FlowEvent::UpdateApplied { update, .. } => Some(update),
+                _ => None,
+            })
+            .collect()
+    }
+
+    /// Return the first applied update that matches `name`.
+    pub fn update(&self, name: &str) -> Option<&WorkflowUpdate> {
+        self.updates()
+            .into_iter()
+            .find(|update| update.name == name)
+    }
+
     /// Return the payload paired with a completed deterministic signal wait.
     pub fn signal_payload(&self, wait_id: &str) -> Option<&JsonValue> {
         let signal_id = self
@@ -195,7 +240,39 @@ impl<'a> WorkflowContext<'a> {
         self.step_output(step_id).is_some()
     }
 
-    /// Returns the terminal error of a step that exhausted its retries.
+    /// Returns the durable JSON output of a completed activity.
+    pub fn activity_output(&self, activity_id: &str) -> Option<&JsonValue> {
+        self.history()
+            .iter()
+            .find_map(|envelope| match &envelope.event {
+                FlowEvent::ActivityCompleted {
+                    activity_id: id,
+                    output,
+                    ..
+                } if id == activity_id => Some(output),
+                _ => None,
+            })
+    }
+
+    /// Decodes a completed activity output into a host-defined serde type.
+    pub fn activity_output_as<T>(&self, activity_id: &str) -> Result<Option<T>>
+    where
+        T: DeserializeOwned,
+    {
+        self.activity_output(activity_id)
+            .cloned()
+            .map(serde_json::from_value)
+            .transpose()
+            .map_err(FlowError::from)
+    }
+
+    /// Returns whether the activity has a durable successful output.
+    pub fn activity_completed(&self, activity_id: &str) -> bool {
+        self.activity_output(activity_id).is_some()
+    }
+
+    /// Returns the terminal error of a step that failed permanently
+    /// (`StepFailed` after retry exhaustion, or `StepNonRetryable`).
     pub fn step_failed(&self, step_id: &str) -> Option<&str> {
         self.history()
             .iter()
@@ -203,9 +280,69 @@ impl<'a> WorkflowContext<'a> {
             .find_map(|envelope| match &envelope.event {
                 FlowEvent::StepFailed {
                     step_id: id, error, ..
+                }
+                | FlowEvent::StepNonRetryable {
+                    step_id: id, error, ..
                 } if id == step_id => Some(error.as_str()),
                 _ => None,
             })
+    }
+
+    /// Returns the terminal error of an activity that failed permanently.
+    pub fn activity_failed(&self, activity_id: &str) -> Option<&str> {
+        self.history()
+            .iter()
+            .rev()
+            .find_map(|envelope| match &envelope.event {
+                FlowEvent::ActivityFailed {
+                    activity_id: id,
+                    error,
+                    ..
+                }
+                | FlowEvent::ActivityNonRetryable {
+                    activity_id: id,
+                    error,
+                    ..
+                } if id == activity_id => Some(error.as_str()),
+                _ => None,
+            })
+    }
+
+    /// Returns the reconciliation reason of an activity with an unknown
+    /// external outcome.
+    pub fn activity_unknown(&self, activity_id: &str) -> Option<&str> {
+        self.history()
+            .iter()
+            .rev()
+            .find_map(|envelope| match &envelope.event {
+                FlowEvent::ActivityUnknown {
+                    activity_id: id,
+                    reason,
+                    ..
+                } if id == activity_id => Some(Some(reason.as_str())),
+                FlowEvent::ActivityCompleted {
+                    activity_id: id, ..
+                }
+                | FlowEvent::ActivityRetrying {
+                    activity_id: id, ..
+                }
+                | FlowEvent::ActivityFailed {
+                    activity_id: id, ..
+                }
+                | FlowEvent::ActivityNonRetryable {
+                    activity_id: id, ..
+                }
+                | FlowEvent::ActivityCancelled {
+                    activity_id: id, ..
+                } if id == activity_id => Some(None),
+                _ => None,
+            })
+            .flatten()
+    }
+
+    /// Returns whether an activity is waiting for host reconciliation.
+    pub fn activity_outcome_unknown(&self, activity_id: &str) -> bool {
+        self.activity_unknown(activity_id).is_some()
     }
 
     /// Returns whether a durable timer wait has completed.
@@ -286,6 +423,156 @@ impl<'a> WorkflowContext<'a> {
     /// Persist an idempotently identified progress update and replay.
     pub fn record_progress(&self, progress: WorkflowProgress) -> RuntimeCommand {
         RuntimeCommand::RecordProgress { progress }
+    }
+
+    /// Record a durable compensation obligation and replay.
+    pub fn record_compensation_marker(
+        &self,
+        marker: crate::model::CompensationMarker,
+    ) -> RuntimeCommand {
+        RuntimeCommand::RecordCompensationMarker { marker }
+    }
+
+    /// Mark a compensation obligation finished and replay.
+    pub fn complete_compensation_marker(
+        &self,
+        marker_id: impl Into<String>,
+        outcome: JsonValue,
+    ) -> RuntimeCommand {
+        RuntimeCommand::CompleteCompensationMarker {
+            marker_id: marker_id.into(),
+            outcome,
+        }
+    }
+
+    /// Return a durable compensation marker recorded in history, when present.
+    pub fn compensation_marker(
+        &self,
+        marker_id: &str,
+    ) -> Option<crate::model::CompensationMarkerSnapshot> {
+        let mut recorded = None;
+        for envelope in self.history() {
+            match &envelope.event {
+                FlowEvent::CompensationMarkerRecorded { marker }
+                    if marker.marker_id == marker_id =>
+                {
+                    recorded = Some(crate::model::CompensationMarkerSnapshot {
+                        marker_id: marker.marker_id.clone(),
+                        compensates: marker.compensates.clone(),
+                        details: marker.details.clone(),
+                        status: crate::model::CompensationMarkerStatus::Open,
+                        outcome: None,
+                    });
+                }
+                FlowEvent::CompensationMarkerCompleted {
+                    marker_id: id,
+                    outcome,
+                } if id == marker_id => {
+                    if let Some(marker) = recorded.as_mut() {
+                        marker.status = crate::model::CompensationMarkerStatus::Completed;
+                        marker.outcome = if outcome.is_null() {
+                            None
+                        } else {
+                            Some(outcome.clone())
+                        };
+                    }
+                }
+                _ => {}
+            }
+        }
+        recorded
+    }
+
+    /// Return open compensation marker ids in history order.
+    pub fn open_compensation_marker_ids(&self) -> Vec<&str> {
+        let mut open = Vec::new();
+        let mut completed = std::collections::BTreeSet::new();
+        for envelope in self.history() {
+            match &envelope.event {
+                FlowEvent::CompensationMarkerRecorded { marker } => {
+                    open.push(marker.marker_id.as_str());
+                }
+                FlowEvent::CompensationMarkerCompleted { marker_id, .. } => {
+                    completed.insert(marker_id.as_str());
+                }
+                _ => {}
+            }
+        }
+        open.into_iter()
+            .filter(|marker_id| !completed.contains(marker_id))
+            .collect()
+    }
+
+    /// Attach a host-owned external dataset reference and replay.
+    pub fn attach_external_dataset(
+        &self,
+        dataset: crate::model::ExternalDatasetRef,
+    ) -> RuntimeCommand {
+        RuntimeCommand::AttachExternalDataset { dataset }
+    }
+
+    /// Return an attached external dataset reference from history, when present.
+    pub fn external_dataset(&self, dataset_id: &str) -> Option<&crate::model::ExternalDatasetRef> {
+        self.history()
+            .iter()
+            .find_map(|envelope| match &envelope.event {
+                FlowEvent::ExternalDatasetAttached { dataset }
+                    if dataset.dataset_id == dataset_id =>
+                {
+                    Some(dataset)
+                }
+                _ => None,
+            })
+    }
+
+    /// Attach a host-owned content-addressed blob reference and replay.
+    pub fn attach_blob_ref(&self, blob: crate::model::FlowBlobRef) -> RuntimeCommand {
+        RuntimeCommand::AttachBlobRef { blob }
+    }
+
+    /// Return an attached blob reference from history, when present.
+    pub fn blob_ref(&self, blob_id: &str) -> Option<&crate::model::FlowBlobRef> {
+        self.history()
+            .iter()
+            .find_map(|envelope| match &envelope.event {
+                FlowEvent::BlobRefAttached { blob } if blob.blob_id == blob_id => Some(blob),
+                _ => None,
+            })
+    }
+
+    /// Record one durable contribution into a named per-item aggregate.
+    pub fn record_item_aggregate(
+        &self,
+        contribution: crate::model::ItemAggregateContribution,
+    ) -> RuntimeCommand {
+        RuntimeCommand::RecordItemAggregate { contribution }
+    }
+
+    /// Return whether an aggregate item has a durable recorded contribution.
+    pub fn item_aggregate_has(&self, aggregate_id: &str, item_id: &str) -> bool {
+        self.history().iter().any(|envelope| {
+            matches!(
+                &envelope.event,
+                FlowEvent::ItemAggregateRecorded { contribution }
+                    if contribution.aggregate_id == aggregate_id
+                        && contribution.item_id == item_id
+            )
+        })
+    }
+
+    /// Return recorded aggregate item values in durable order.
+    pub fn item_aggregate_values(&self, aggregate_id: &str) -> Vec<JsonValue> {
+        self.history()
+            .iter()
+            .filter_map(|envelope| match &envelope.event {
+                FlowEvent::ItemAggregateRecorded { contribution }
+                    if contribution.aggregate_id == aggregate_id =>
+                {
+                    Some(contribution.value.clone())
+                }
+                _ => None,
+            })
+            .collect()
     }
 
     /// Persist a child-operation reference and replay.
@@ -407,6 +694,82 @@ impl<'a> WorkflowContext<'a> {
         RuntimeCommand::schedule_steps(steps)
     }
 
+    /// Schedules one first-class activity with the default retry policy.
+    pub fn schedule_activity(
+        &self,
+        activity_id: impl Into<String>,
+        activity_name: impl Into<String>,
+        input: JsonValue,
+    ) -> RuntimeCommand {
+        RuntimeCommand::schedule_activity(activity_id, activity_name, input)
+    }
+
+    /// Schedules one first-class activity with an explicit retry policy.
+    pub fn schedule_activity_with_retry(
+        &self,
+        activity_id: impl Into<String>,
+        activity_name: impl Into<String>,
+        input: JsonValue,
+        retry: RetryPolicy,
+    ) -> RuntimeCommand {
+        RuntimeCommand::ScheduleActivity {
+            activity_id: activity_id.into(),
+            activity_name: activity_name.into(),
+            input,
+            retry,
+            timeout_ms: None,
+        }
+    }
+
+    /// Schedules one first-class activity with a per-attempt timeout.
+    pub fn schedule_activity_with_timeout(
+        &self,
+        activity_id: impl Into<String>,
+        activity_name: impl Into<String>,
+        input: JsonValue,
+        timeout: std::time::Duration,
+    ) -> RuntimeCommand {
+        ActivityCommand::new(activity_id, activity_name, input)
+            .with_timeout(timeout)
+            .into()
+    }
+
+    /// Schedules one first-class activity with retry and per-attempt timeout.
+    pub fn schedule_activity_with_retry_and_timeout(
+        &self,
+        activity_id: impl Into<String>,
+        activity_name: impl Into<String>,
+        input: JsonValue,
+        retry: RetryPolicy,
+        timeout: std::time::Duration,
+    ) -> RuntimeCommand {
+        ActivityCommand::new(activity_id, activity_name, input)
+            .with_retry(retry)
+            .with_timeout(timeout)
+            .into()
+    }
+
+    /// Creates an activity definition with the default retry policy.
+    pub fn activity(
+        &self,
+        activity_id: impl Into<String>,
+        activity_name: impl Into<String>,
+        input: JsonValue,
+    ) -> ActivityCommand {
+        ActivityCommand::new(activity_id, activity_name, input)
+    }
+
+    /// Creates an activity definition with an explicit retry policy.
+    pub fn activity_with_retry(
+        &self,
+        activity_id: impl Into<String>,
+        activity_name: impl Into<String>,
+        input: JsonValue,
+        retry: RetryPolicy,
+    ) -> ActivityCommand {
+        ActivityCommand::new(activity_id, activity_name, input).with_retry(retry)
+    }
+
     /// Suspends replay until the given UTC deadline becomes ready.
     pub fn wait_until(
         &self,
@@ -417,6 +780,175 @@ impl<'a> WorkflowContext<'a> {
             wait_id: wait_id.into(),
             resume_at,
         }
+    }
+
+    /// Open a nested cancellation scope with a stable identity.
+    pub fn open_scope(&self, scope_id: impl Into<String>) -> RuntimeCommand {
+        RuntimeCommand::OpenScope {
+            scope_id: scope_id.into(),
+        }
+    }
+
+    /// Complete the innermost open cancellation scope cleanly.
+    pub fn complete_scope(&self, scope_id: impl Into<String>) -> RuntimeCommand {
+        RuntimeCommand::CompleteScope {
+            scope_id: scope_id.into(),
+        }
+    }
+
+    /// Cancel a cancellation scope and its owned suspensions.
+    pub fn cancel_scope(
+        &self,
+        scope_id: impl Into<String>,
+        reason: Option<String>,
+    ) -> RuntimeCommand {
+        RuntimeCommand::CancelScope {
+            scope_id: scope_id.into(),
+            reason,
+        }
+    }
+
+    /// Race multiple durable arms; the first completion wins.
+    pub fn select(
+        &self,
+        select_id: impl Into<String>,
+        arms: Vec<crate::model::SelectArm>,
+    ) -> RuntimeCommand {
+        RuntimeCommand::Select {
+            select_id: select_id.into(),
+            arms,
+            mode: crate::model::SelectMode::Race,
+        }
+    }
+
+    /// Wait until every durable arm completes without cancelling siblings early.
+    pub fn join(
+        &self,
+        select_id: impl Into<String>,
+        arms: Vec<crate::model::SelectArm>,
+    ) -> RuntimeCommand {
+        RuntimeCommand::Select {
+            select_id: select_id.into(),
+            arms,
+            mode: crate::model::SelectMode::JoinAll,
+        }
+    }
+
+    /// Return the winning arm id of a completed race select, when present.
+    pub fn select_winner(&self, select_id: &str) -> Option<&str> {
+        self.history()
+            .iter()
+            .find_map(|envelope| match &envelope.event {
+                FlowEvent::SelectCompleted {
+                    select_id: id,
+                    winning_arm_id,
+                } if id == select_id => winning_arm_id.as_deref(),
+                _ => None,
+            })
+    }
+
+    /// Return whether a join-all select has completed.
+    pub fn select_joined(&self, select_id: &str) -> bool {
+        let is_join = self.history().iter().any(|envelope| {
+            matches!(
+                &envelope.event,
+                FlowEvent::SelectCreated {
+                    select_id: id,
+                    mode: crate::model::SelectMode::JoinAll,
+                    ..
+                } if id == select_id
+            )
+        });
+        if !is_join {
+            return false;
+        }
+        self.history().iter().any(|envelope| {
+            matches!(
+                &envelope.event,
+                FlowEvent::SelectCompleted {
+                    select_id: id,
+                    ..
+                } if id == select_id
+            )
+        })
+    }
+
+    /// Open a dynamic bounded child-workflow map with engine-managed windows.
+    pub fn map_child_workflows(
+        &self,
+        map_id: impl Into<String>,
+        children: Vec<crate::model::ChildWorkflowCommand>,
+        concurrency: usize,
+    ) -> RuntimeCommand {
+        RuntimeCommand::map_child_workflows(map_id, children, concurrency)
+    }
+
+    /// Return whether a child-workflow map has a durable completed event.
+    pub fn child_workflow_map_completed(&self, map_id: &str) -> bool {
+        self.history().iter().any(|envelope| {
+            matches!(
+                &envelope.event,
+                FlowEvent::ChildWorkflowMapCompleted { map_id: id } if id == map_id
+            )
+        })
+    }
+
+    /// Return whether a timer wait has a durable created event.
+    pub fn wait_status(&self, wait_id: &str) -> Option<()> {
+        self.history()
+            .iter()
+            .find_map(|envelope| match &envelope.event {
+                FlowEvent::WaitCreated { wait_id: id, .. } if id == wait_id => Some(()),
+                _ => None,
+            })
+    }
+
+    /// Return whether a cancellation scope has been opened in history.
+    pub fn has_scope(&self, scope_id: &str) -> bool {
+        self.history().iter().any(|envelope| {
+            matches!(
+                &envelope.event,
+                FlowEvent::ScopeOpened { scope_id: id, .. } if id == scope_id
+            )
+        })
+    }
+
+    /// Return whether a cancellation scope was cancelled in durable history.
+    ///
+    /// Run-level cancellation also counts once the scope had been opened and
+    /// had not completed before the request.
+    pub fn scope_cancelled(&self, scope_id: &str) -> bool {
+        if self.history().iter().any(|envelope| {
+            matches!(
+                &envelope.event,
+                FlowEvent::ScopeCancelled { scope_id: id, .. } if id == scope_id
+            )
+        }) {
+            return true;
+        }
+        let opened = self.history().iter().position(|envelope| {
+            matches!(
+                &envelope.event,
+                FlowEvent::ScopeOpened { scope_id: id, .. } if id == scope_id
+            )
+        });
+        let Some(opened_at) = opened else {
+            return false;
+        };
+        let completed = self.history().iter().enumerate().any(|(index, envelope)| {
+            index > opened_at
+                && matches!(
+                    &envelope.event,
+                    FlowEvent::ScopeCompleted { scope_id: id } if id == scope_id
+                )
+        });
+        if completed {
+            return false;
+        }
+        self.history().iter().enumerate().any(|(index, envelope)| {
+            index > opened_at
+                && matches!(envelope.event, FlowEvent::RunCancellationRequested { .. })
+        })
     }
 
     /// Creates an externally completable hook with JSON metadata.

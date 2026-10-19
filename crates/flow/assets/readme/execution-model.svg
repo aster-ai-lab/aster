@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="430" viewBox="0 0 1200 430" role="img" aria-labelledby="title desc">
-  <title id="title">A3S Flow replay and durability model</title>
+  <title id="title">Kense Flow replay and durability model</title>
   <desc id="desc">Workflow code reads projected history and returns one command. Flow appends events before replay observes results. Steps perform host-owned side effects, while waits, signals, and hooks suspend without holding compute.</desc>
 
   <defs>

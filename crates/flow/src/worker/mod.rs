@@ -1,9 +1,11 @@
 #[cfg(feature = "boot")]
 mod boot;
+mod fairness;
 mod local_file;
 mod memory;
 #[cfg(feature = "postgres")]
 mod postgres;
+mod protocol;
 mod queue;
 mod routing;
 mod runner;
@@ -11,11 +13,18 @@ mod task;
 
 #[cfg(feature = "boot")]
 pub use boot::{BootFlowTaskDeduplication, BootFlowTaskManager, BootFlowTaskPolicy};
+pub use fairness::{
+    resolve_flow_task_partition, select_fair_pending_index, validate_flow_task_partition_key,
+    MAX_FLOW_TASK_PARTITION_KEY_BYTES, UNSCOPED_FLOW_TASK_PARTITION,
+};
 pub use local_file::{LocalFileDeadLetteredTask, LocalFileFlowTaskQueue};
 pub use memory::InMemoryFlowTaskQueue;
 #[cfg(feature = "postgres")]
 pub use postgres::{PostgresDeadLetteredTask, PostgresFlowTaskQueue};
-pub use queue::{FlowTaskDispatcher, FlowTaskQueue};
+pub use protocol::{FlowWorkerCapabilities, FLOW_WORKER_PROTOCOL};
+pub use queue::{
+    ensure_queue_admission, validate_queue_capacity, FlowTaskDispatcher, FlowTaskQueue,
+};
 pub use routing::RuntimeBuildTaskRouter;
 pub use runner::FlowWorker;
 pub use task::{FlowTask, FlowTaskLease, FlowTaskOutcome};

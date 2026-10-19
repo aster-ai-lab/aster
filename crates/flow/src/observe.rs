@@ -1,8 +1,13 @@
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
+use futures_util::{
+    future::FutureExt,
+    stream::{FuturesUnordered, StreamExt},
+};
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap};
 use std::fmt;
+use std::panic::AssertUnwindSafe;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 use uuid::Uuid;
@@ -87,8 +92,36 @@ impl fmt::Debug for FanoutFlowEventObserver {
 #[async_trait]
 impl FlowEventObserver for FanoutFlowEventObserver {
     async fn observe(&self, envelope: FlowEventEnvelope) {
-        for observer in &self.observers {
-            observer.observe(envelope.clone()).await;
+        let mut deliveries = self
+            .observers
+            .iter()
+            .enumerate()
+            .map(|(observer_index, observer)| {
+                let observer = Arc::clone(observer);
+                let envelope = envelope.clone();
+                Box::pin(async move {
+                    // A broken telemetry sink must not prevent healthy sinks
+                    // from seeing the same committed event. `FlowEventObserver`
+                    // deliberately has no error return, so convert a panic
+                    // into a warning at this isolation boundary and continue
+                    // polling the other deliveries.
+                    if AssertUnwindSafe(observer.observe(envelope))
+                        .catch_unwind()
+                        .await
+                        .is_err()
+                    {
+                        tracing::warn!(
+                            observer_index,
+                            "flow event observer panicked; other observers remain active"
+                        );
+                    }
+                })
+            })
+            .collect::<FuturesUnordered<_>>();
+        while deliveries.next().await.is_some() {
+            // Poll every downstream observer concurrently. Dropping the
+            // collection on cancellation also drops still-pending futures,
+            // allowing the engine's observer deadline to stop a stalled sink.
         }
     }
 }
@@ -188,6 +221,21 @@ pub struct A3sFlowEvent {
     pub status: Option<String>,
     /// Step, wait, hook, signal, progress, or child touched by the event.
     pub subject: Option<A3sFlowEventSubject>,
+    /// One-based attempt number when the event belongs to a step or activity attempt.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub attempt: Option<u32>,
+    /// Stable activity attempt identity, when the event carries one.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub attempt_id: Option<String>,
+    /// Stable external side-effect idempotency key, when the event carries one.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub idempotency_key: Option<String>,
+    /// Ambient W3C `traceparent`, when the host bound a trace context.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub traceparent: Option<String>,
+    /// Ambient W3C `tracestate`, when the host bound one.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tracestate: Option<String>,
 }
 
 impl A3sFlowEvent {
@@ -196,6 +244,8 @@ impl A3sFlowEvent {
         envelope: &FlowEventEnvelope,
         workflow: Option<FlowWorkflowIdentity>,
     ) -> Self {
+        let (attempt, attempt_id, idempotency_key) = event_attempt_identity(&envelope.event);
+        let trace = crate::trace::current_trace_context();
         Self {
             key: envelope.event.event_key().to_string(),
             run_id: envelope.run_id.clone(),
@@ -205,6 +255,11 @@ impl A3sFlowEvent {
             workflow,
             status: event_status(&envelope.event).map(str::to_string),
             subject: event_subject(&envelope.event),
+            attempt,
+            attempt_id,
+            idempotency_key,
+            traceparent: trace.as_ref().map(|value| value.traceparent.clone()),
+            tracestate: trace.and_then(|value| value.tracestate),
         }
     }
 
@@ -239,12 +294,12 @@ pub struct A3sEventBusFlowEventSink {
 
 #[cfg(feature = "a3s-event")]
 impl A3sEventBusFlowEventSink {
-    /// Creates a sink using the default `flow` category and `a3s-flow` source.
+    /// Creates a sink using the default `flow` category and `kense-flow` source.
     pub fn new(bus: Arc<a3s_event::EventBus>) -> Self {
         Self {
             bus,
             category: "flow".to_string(),
-            source: "a3s-flow".to_string(),
+            source: "kense-flow".to_string(),
             last_error: Mutex::new(None),
         }
     }
@@ -307,6 +362,21 @@ impl A3sEventBusFlowEventSink {
         if let Some(subject) = &event.subject {
             metadata.insert("flow.subject_kind".to_string(), subject.kind.clone());
             metadata.insert("flow.subject_id".to_string(), subject.id.clone());
+        }
+        if let Some(attempt) = event.attempt {
+            metadata.insert("flow.attempt".to_string(), attempt.to_string());
+        }
+        if let Some(attempt_id) = &event.attempt_id {
+            metadata.insert("flow.attempt_id".to_string(), attempt_id.clone());
+        }
+        if let Some(idempotency_key) = &event.idempotency_key {
+            metadata.insert("flow.idempotency_key".to_string(), idempotency_key.clone());
+        }
+        if let Some(traceparent) = &event.traceparent {
+            metadata.insert("traceparent".to_string(), traceparent.clone());
+        }
+        if let Some(tracestate) = &event.tracestate {
+            metadata.insert("tracestate".to_string(), tracestate.clone());
         }
 
         Ok(a3s_event::Event {
@@ -402,6 +472,15 @@ where
     pub fn sink(&self) -> Arc<S> {
         Arc::clone(&self.sink)
     }
+
+    /// Return the number of workflow identities retained for non-terminal
+    /// event streams.
+    ///
+    /// Terminal events remove their identity before delivery, so this value is
+    /// bounded by the number of runs that are currently being observed.
+    pub async fn cached_workflow_count(&self) -> usize {
+        self.workflows.lock().await.len()
+    }
 }
 
 #[async_trait]
@@ -410,12 +489,17 @@ where
     S: A3sFlowEventSink,
 {
     async fn observe(&self, envelope: FlowEventEnvelope) {
+        let terminal = is_terminal_run_event(&envelope.event);
         let workflow = {
             let mut workflows = self.workflows.lock().await;
             if let FlowEvent::RunCreated { spec, .. } = &envelope.event {
                 workflows.insert(envelope.run_id.clone(), FlowWorkflowIdentity::from(spec));
             }
-            workflows.get(&envelope.run_id).cloned()
+            let workflow = workflows.get(&envelope.run_id).cloned();
+            if terminal {
+                workflows.remove(&envelope.run_id);
+            }
+            workflow
         };
         self.sink
             .emit(A3sFlowEvent::from_envelope(&envelope, workflow))
@@ -453,6 +537,55 @@ fn flow_event_topic(key: &str) -> &str {
     key.strip_prefix("flow.").unwrap_or(key)
 }
 
+fn event_attempt_identity(event: &FlowEvent) -> (Option<u32>, Option<String>, Option<String>) {
+    match event {
+        FlowEvent::StepStarted { attempt, .. }
+        | FlowEvent::StepRetrying { attempt, .. }
+        | FlowEvent::StepFailed { attempt, .. }
+        | FlowEvent::StepNonRetryable { attempt, .. }
+        | FlowEvent::StepCancelled { attempt, .. }
+        | FlowEvent::ActivityCancelled { attempt, .. } => (Some(*attempt), None, None),
+        FlowEvent::ActivityStarted {
+            attempt,
+            attempt_id,
+            idempotency_key,
+            ..
+        } => (
+            Some(*attempt),
+            Some(attempt_id.clone()),
+            Some(idempotency_key.clone()),
+        ),
+        FlowEvent::ActivityLeaseAcquired {
+            attempt,
+            attempt_id,
+            ..
+        }
+        | FlowEvent::ActivityHeartbeat {
+            attempt,
+            attempt_id,
+            ..
+        } => (Some(*attempt), Some(attempt_id.clone()), None),
+        FlowEvent::ActivityCompleted { attempt_id, .. }
+        | FlowEvent::ActivityUnknown { attempt_id, .. } => (None, Some(attempt_id.clone()), None),
+        FlowEvent::ActivityRetrying {
+            attempt,
+            attempt_id,
+            ..
+        }
+        | FlowEvent::ActivityFailed {
+            attempt,
+            attempt_id,
+            ..
+        }
+        | FlowEvent::ActivityNonRetryable {
+            attempt,
+            attempt_id,
+            ..
+        } => (Some(*attempt), Some(attempt_id.clone()), None),
+        _ => (None, None, None),
+    }
+}
+
 fn event_status(event: &FlowEvent) -> Option<&'static str> {
     match event {
         FlowEvent::RunCreated { .. } => Some("pending"),
@@ -469,20 +602,58 @@ fn event_status(event: &FlowEvent) -> Option<&'static str> {
         FlowEvent::ChildOperationLinked { .. } => Some("linked"),
         FlowEvent::ChildWorkflowRequested { .. } => Some("requested"),
         FlowEvent::ChildWorkflowResolved { .. } => Some("resolved"),
+        FlowEvent::ChildWorkflowMapOpened { .. } => Some("open"),
+        FlowEvent::ChildWorkflowMapCompleted { .. } => Some("completed"),
         FlowEvent::SignalReceived { .. } => Some("received"),
         FlowEvent::SignalWaitCreated { .. } => Some("waiting"),
         FlowEvent::SignalWaitCompleted { .. } => Some("completed"),
+        FlowEvent::UpdateApplied { .. } => Some("applied"),
+        FlowEvent::CompensationMarkerRecorded { .. } => Some("recorded"),
+        FlowEvent::CompensationMarkerCompleted { .. } => Some("completed"),
+        FlowEvent::ExternalDatasetAttached { .. } => Some("attached"),
+        FlowEvent::BlobRefAttached { .. } => Some("attached"),
+        FlowEvent::ItemAggregateRecorded { .. } => Some("recorded"),
         FlowEvent::StepCreated { .. } => Some("pending"),
         FlowEvent::StepStarted { .. } => Some("running"),
         FlowEvent::StepCompleted { .. } => Some("completed"),
         FlowEvent::StepRetrying { .. } => Some("retrying"),
         FlowEvent::StepFailed { .. } => Some("failed"),
+        FlowEvent::StepNonRetryable { .. } => Some("non_retryable"),
+        FlowEvent::StepCancelled { .. } => Some("cancelled"),
+        FlowEvent::ActivityCreated { .. } => Some("pending"),
+        FlowEvent::ActivityStarted { .. } => Some("running"),
+        FlowEvent::ActivityLeaseAcquired { .. } => Some("lease_acquired"),
+        FlowEvent::ActivityCompleted { .. } => Some("completed"),
+        FlowEvent::ActivityRetrying { .. } => Some("retrying"),
+        FlowEvent::ActivityFailed { .. } => Some("failed"),
+        FlowEvent::ActivityNonRetryable { .. } => Some("non_retryable"),
+        FlowEvent::ActivityUnknown { .. } => Some("unknown"),
+        FlowEvent::ActivityHeartbeat { .. } => Some("heartbeat"),
+        FlowEvent::ActivityCancelled { .. } => Some("cancelled"),
         FlowEvent::WaitCreated { .. } => Some("waiting"),
         FlowEvent::WaitCompleted { .. } => Some("completed"),
+        FlowEvent::ScopeOpened { .. } => Some("open"),
+        FlowEvent::ScopeCompleted { .. } => Some("completed"),
+        FlowEvent::ScopeCancelled { .. } => Some("cancelled"),
+        FlowEvent::SelectCreated { .. } => Some("open"),
+        FlowEvent::SelectCompleted { .. } => Some("completed"),
         FlowEvent::HookCreated { .. } => Some("active"),
         FlowEvent::HookReceived { .. } => Some("received"),
         FlowEvent::HookDisposed { .. } => Some("disposed"),
     }
+}
+
+fn is_terminal_run_event(event: &FlowEvent) -> bool {
+    matches!(
+        event,
+        FlowEvent::RunCompleted { .. }
+            | FlowEvent::RunFailed { .. }
+            | FlowEvent::RunCancelled { .. }
+            | FlowEvent::RunTimedOut { .. }
+            | FlowEvent::RunRetryExhausted { .. }
+            | FlowEvent::RunHostShutdown { .. }
+            | FlowEvent::RunContinuedAsNew { .. }
+    )
 }
 
 fn event_subject(event: &FlowEvent) -> Option<A3sFlowEventSubject> {
@@ -492,9 +663,24 @@ fn event_subject(event: &FlowEvent) -> Option<A3sFlowEventSubject> {
         | FlowEvent::StepCompleted { step_id, .. }
         | FlowEvent::StepRetrying { step_id, .. }
         | FlowEvent::StepFailed { step_id, .. }
+        | FlowEvent::StepNonRetryable { step_id, .. }
+        | FlowEvent::StepCancelled { step_id, .. }
         | FlowEvent::RunRetryExhausted { step_id, .. } => Some(A3sFlowEventSubject {
             kind: "step".to_string(),
             id: step_id.clone(),
+        }),
+        FlowEvent::ActivityCreated { activity_id, .. }
+        | FlowEvent::ActivityStarted { activity_id, .. }
+        | FlowEvent::ActivityLeaseAcquired { activity_id, .. }
+        | FlowEvent::ActivityCompleted { activity_id, .. }
+        | FlowEvent::ActivityRetrying { activity_id, .. }
+        | FlowEvent::ActivityFailed { activity_id, .. }
+        | FlowEvent::ActivityNonRetryable { activity_id, .. }
+        | FlowEvent::ActivityUnknown { activity_id, .. }
+        | FlowEvent::ActivityHeartbeat { activity_id, .. }
+        | FlowEvent::ActivityCancelled { activity_id, .. } => Some(A3sFlowEventSubject {
+            kind: "activity".to_string(),
+            id: activity_id.clone(),
         }),
         FlowEvent::RunProgressRecorded { progress } => Some(A3sFlowEventSubject {
             kind: "progress".to_string(),
@@ -509,6 +695,11 @@ fn event_subject(event: &FlowEvent) -> Option<A3sFlowEventSubject> {
             kind: "child_workflow".to_string(),
             id: child_id.clone(),
         }),
+        FlowEvent::ChildWorkflowMapOpened { map_id, .. }
+        | FlowEvent::ChildWorkflowMapCompleted { map_id } => Some(A3sFlowEventSubject {
+            kind: "child_workflow_map".to_string(),
+            id: map_id.clone(),
+        }),
         FlowEvent::SignalReceived { signal } => Some(A3sFlowEventSubject {
             kind: "signal".to_string(),
             id: signal.signal_id.clone(),
@@ -518,12 +709,47 @@ fn event_subject(event: &FlowEvent) -> Option<A3sFlowEventSubject> {
             kind: "signal_wait".to_string(),
             id: wait_id.clone(),
         }),
+        FlowEvent::UpdateApplied { update, .. } => Some(A3sFlowEventSubject {
+            kind: "update".to_string(),
+            id: update.update_id.clone(),
+        }),
+        FlowEvent::CompensationMarkerRecorded { marker } => Some(A3sFlowEventSubject {
+            kind: "compensation_marker".to_string(),
+            id: marker.marker_id.clone(),
+        }),
+        FlowEvent::CompensationMarkerCompleted { marker_id, .. } => Some(A3sFlowEventSubject {
+            kind: "compensation_marker".to_string(),
+            id: marker_id.clone(),
+        }),
+        FlowEvent::ExternalDatasetAttached { dataset } => Some(A3sFlowEventSubject {
+            kind: "external_dataset".to_string(),
+            id: dataset.dataset_id.clone(),
+        }),
+        FlowEvent::BlobRefAttached { blob } => Some(A3sFlowEventSubject {
+            kind: "blob_ref".to_string(),
+            id: blob.blob_id.clone(),
+        }),
+        FlowEvent::ItemAggregateRecorded { contribution } => Some(A3sFlowEventSubject {
+            kind: "item_aggregate".to_string(),
+            id: format!("{}:{}", contribution.aggregate_id, contribution.item_id),
+        }),
         FlowEvent::WaitCreated { wait_id, .. } | FlowEvent::WaitCompleted { wait_id } => {
             Some(A3sFlowEventSubject {
                 kind: "wait".to_string(),
                 id: wait_id.clone(),
             })
         }
+        FlowEvent::ScopeOpened { scope_id, .. }
+        | FlowEvent::ScopeCompleted { scope_id }
+        | FlowEvent::ScopeCancelled { scope_id, .. } => Some(A3sFlowEventSubject {
+            kind: "scope".to_string(),
+            id: scope_id.clone(),
+        }),
+        FlowEvent::SelectCreated { select_id, .. }
+        | FlowEvent::SelectCompleted { select_id, .. } => Some(A3sFlowEventSubject {
+            kind: "select".to_string(),
+            id: select_id.clone(),
+        }),
         FlowEvent::HookCreated { hook_id, .. }
         | FlowEvent::HookReceived { hook_id, .. }
         | FlowEvent::HookDisposed { hook_id } => Some(A3sFlowEventSubject {

@@ -2,7 +2,7 @@ use a3s_flow::{
     ActiveHookSnapshot, FlowEngine, FlowError, FlowEvent, FlowEventEnvelope, FlowEventStore,
     FlowRuntime, FlowTask, FlowWorker, HookStatus, InMemoryEventStore, RuntimeBuildCompatibility,
     RuntimeBuildId, RuntimeCommand, StepInvocation, WorkflowInvocation, WorkflowRunStatus,
-    WorkflowSpec,
+    WorkflowSpec, WorkflowUpdate,
 };
 use async_trait::async_trait;
 use serde_json::{json, Value};
@@ -459,6 +459,349 @@ async fn opposite_terminal_hook_resolutions_are_rejected() {
         .await
         .unwrap_err();
     assert_hook_conflict(dispose_error, "was already resumed");
+}
+
+struct HookBesideOpenWaitRuntime;
+
+#[async_trait]
+impl FlowRuntime for HookBesideOpenWaitRuntime {
+    async fn run_workflow(
+        &self,
+        invocation: WorkflowInvocation,
+    ) -> a3s_flow::Result<RuntimeCommand> {
+        let context = invocation.context();
+        if context.hook_payload(HOOK_ID).is_some() {
+            return Ok(context.complete(json!("received")));
+        }
+        if context.hook_disposed(HOOK_ID) {
+            return Ok(context.complete(json!("disposed")));
+        }
+        let hook_open = invocation
+            .history
+            .iter()
+            .any(|envelope| matches!(envelope.event, FlowEvent::HookCreated { .. }));
+        if context.update("open-hook").is_some() && !hook_open {
+            return Ok(context.create_hook(HOOK_ID, "approval-token", json!({})));
+        }
+        Ok(context.wait_until("pause", "2030-01-01T00:00:00Z".parse().unwrap()))
+    }
+
+    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+        unreachable!("hook-beside-wait runtime does not schedule steps")
+    }
+
+    async fn run_update(&self, _invocation: a3s_flow::UpdateInvocation) -> a3s_flow::Result<Value> {
+        Ok(json!({ "opened": true }))
+    }
+}
+
+fn hook_beside_wait_spec() -> WorkflowSpec {
+    spec().with_update("open-hook")
+}
+
+#[tokio::test]
+async fn hook_receipt_wakes_workflow_while_timer_wait_is_open() {
+    let engine = FlowEngine::in_memory(Arc::new(HookBesideOpenWaitRuntime));
+    engine
+        .start_with_id("hook-beside-wait", hook_beside_wait_spec(), json!({}))
+        .await
+        .unwrap();
+
+    let opened = engine
+        .apply_update(
+            "hook-beside-wait",
+            WorkflowUpdate::new("open-1", "open-hook", json!({})),
+        )
+        .await
+        .unwrap();
+    assert_eq!(opened.snapshot.status, WorkflowRunStatus::Suspended);
+    assert_eq!(opened.snapshot.hooks[HOOK_ID].status, HookStatus::Active);
+
+    engine
+        .resume_hook("hook-beside-wait", HOOK_ID, approved_payload())
+        .await
+        .unwrap();
+
+    let snapshot = engine.snapshot("hook-beside-wait").await.unwrap();
+    assert_eq!(snapshot.status, WorkflowRunStatus::Completed);
+    assert_eq!(snapshot.output, Some(json!("received")));
+    assert_eq!(snapshot.hooks[HOOK_ID].status, HookStatus::Received);
+}
+
+#[tokio::test]
+async fn hook_disposal_wakes_workflow_while_timer_wait_is_open() {
+    let engine = FlowEngine::in_memory(Arc::new(HookBesideOpenWaitRuntime));
+    engine
+        .start_with_id(
+            "hook-beside-wait-dispose",
+            hook_beside_wait_spec(),
+            json!({}),
+        )
+        .await
+        .unwrap();
+    engine
+        .apply_update(
+            "hook-beside-wait-dispose",
+            WorkflowUpdate::new("open-1", "open-hook", json!({})),
+        )
+        .await
+        .unwrap();
+
+    engine
+        .dispose_hook("hook-beside-wait-dispose", HOOK_ID)
+        .await
+        .unwrap();
+
+    let snapshot = engine.snapshot("hook-beside-wait-dispose").await.unwrap();
+    assert_eq!(snapshot.status, WorkflowRunStatus::Completed);
+    assert_eq!(snapshot.output, Some(json!("disposed")));
+    assert_eq!(snapshot.hooks[HOOK_ID].status, HookStatus::Disposed);
+}
+
+struct CrashAfterHookReceivedStore {
+    inner: InMemoryEventStore,
+    armed: AtomicBool,
+}
+
+impl CrashAfterHookReceivedStore {
+    fn new() -> Self {
+        Self {
+            inner: InMemoryEventStore::new(),
+            armed: AtomicBool::new(false),
+        }
+    }
+}
+
+#[async_trait]
+impl FlowEventStore for CrashAfterHookReceivedStore {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+        self.inner.append(run_id, event).await
+    }
+
+    async fn append_if_sequence(
+        &self,
+        run_id: &str,
+        expected_sequence: u64,
+        event: FlowEvent,
+    ) -> a3s_flow::Result<FlowEventEnvelope> {
+        let envelope = self
+            .inner
+            .append_if_sequence(run_id, expected_sequence, event.clone())
+            .await?;
+        if matches!(
+            event,
+            FlowEvent::HookReceived { ref hook_id, .. } if hook_id == HOOK_ID
+        ) && self.armed.swap(false, Ordering::SeqCst)
+        {
+            return Err(FlowError::Store(
+                "injected crash after HookReceived before observation drive".into(),
+            ));
+        }
+        Ok(envelope)
+    }
+
+    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+        self.inner.list(run_id).await
+    }
+
+    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+        self.inner.list_run_ids().await
+    }
+}
+
+struct CrashAfterHookDisposedStore {
+    inner: InMemoryEventStore,
+    armed: AtomicBool,
+}
+
+impl CrashAfterHookDisposedStore {
+    fn new() -> Self {
+        Self {
+            inner: InMemoryEventStore::new(),
+            armed: AtomicBool::new(false),
+        }
+    }
+}
+
+#[async_trait]
+impl FlowEventStore for CrashAfterHookDisposedStore {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+        self.inner.append(run_id, event).await
+    }
+
+    async fn append_if_sequence(
+        &self,
+        run_id: &str,
+        expected_sequence: u64,
+        event: FlowEvent,
+    ) -> a3s_flow::Result<FlowEventEnvelope> {
+        let envelope = self
+            .inner
+            .append_if_sequence(run_id, expected_sequence, event.clone())
+            .await?;
+        if matches!(
+            event,
+            FlowEvent::HookDisposed { ref hook_id, .. } if hook_id == HOOK_ID
+        ) && self.armed.swap(false, Ordering::SeqCst)
+        {
+            return Err(FlowError::Store(
+                "injected crash after HookDisposed before observation drive".into(),
+            ));
+        }
+        Ok(envelope)
+    }
+
+    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+        self.inner.list(run_id).await
+    }
+
+    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+        self.inner.list_run_ids().await
+    }
+}
+
+#[tokio::test]
+async fn hook_received_recovery_wakes_via_drive_while_unscoped_timer_is_open() {
+    let store = Arc::new(CrashAfterHookReceivedStore::new());
+    let engine = FlowEngine::new(store.clone(), Arc::new(HookBesideOpenWaitRuntime));
+    engine
+        .start_with_id("hook-received-drive", hook_beside_wait_spec(), json!({}))
+        .await
+        .unwrap();
+    engine
+        .apply_update(
+            "hook-received-drive",
+            WorkflowUpdate::new("open-1", "open-hook", json!({})),
+        )
+        .await
+        .unwrap();
+
+    store.armed.store(true, Ordering::SeqCst);
+    let interrupted = engine
+        .resume_hook("hook-received-drive", HOOK_ID, approved_payload())
+        .await
+        .expect_err("crash after durable HookReceived must interrupt");
+    assert!(matches!(interrupted, FlowError::Store(_)));
+
+    let mid = engine.snapshot("hook-received-drive").await.unwrap();
+    assert!(!mid.status.is_terminal());
+    assert_eq!(mid.hooks[HOOK_ID].status, HookStatus::Received);
+    assert_eq!(mid.waits["pause"].status, a3s_flow::WaitStatus::Waiting);
+
+    let recovered = engine.drive("hook-received-drive").await.unwrap();
+    assert_eq!(
+        recovered.output,
+        Some(json!("received")),
+        "drive must observe tip HookReceived beside an open unscoped timer"
+    );
+    assert_eq!(recovered.status, WorkflowRunStatus::Completed);
+}
+
+#[tokio::test]
+async fn hook_disposed_recovery_wakes_via_drive_while_unscoped_timer_is_open() {
+    let store = Arc::new(CrashAfterHookDisposedStore::new());
+    let engine = FlowEngine::new(store.clone(), Arc::new(HookBesideOpenWaitRuntime));
+    engine
+        .start_with_id("hook-disposed-drive", hook_beside_wait_spec(), json!({}))
+        .await
+        .unwrap();
+    engine
+        .apply_update(
+            "hook-disposed-drive",
+            WorkflowUpdate::new("open-1", "open-hook", json!({})),
+        )
+        .await
+        .unwrap();
+
+    store.armed.store(true, Ordering::SeqCst);
+    let interrupted = engine
+        .dispose_hook("hook-disposed-drive", HOOK_ID)
+        .await
+        .expect_err("crash after durable HookDisposed must interrupt");
+    assert!(matches!(interrupted, FlowError::Store(_)));
+
+    let mid = engine.snapshot("hook-disposed-drive").await.unwrap();
+    assert!(!mid.status.is_terminal());
+    assert_eq!(mid.hooks[HOOK_ID].status, HookStatus::Disposed);
+    assert_eq!(mid.waits["pause"].status, a3s_flow::WaitStatus::Waiting);
+
+    let recovered = engine.drive("hook-disposed-drive").await.unwrap();
+    assert_eq!(
+        recovered.output,
+        Some(json!("disposed")),
+        "drive must observe tip HookDisposed beside an open unscoped timer"
+    );
+    assert_eq!(recovered.status, WorkflowRunStatus::Completed);
+}
+
+struct ParallelSiblingHookRuntime;
+
+#[async_trait]
+impl FlowRuntime for ParallelSiblingHookRuntime {
+    async fn run_workflow(
+        &self,
+        invocation: WorkflowInvocation,
+    ) -> a3s_flow::Result<RuntimeCommand> {
+        let context = invocation.context();
+        let left_done = context.hook_payload("left").is_some();
+        let right_done = context.hook_payload("right").is_some();
+        if left_done && right_done {
+            return Ok(context.complete(json!({ "joined": true })));
+        }
+        let left_open = context.history().iter().any(|envelope| {
+            matches!(
+                &envelope.event,
+                FlowEvent::HookCreated { hook_id, .. } if hook_id == "left"
+            )
+        });
+        let right_open = context.history().iter().any(|envelope| {
+            matches!(
+                &envelope.event,
+                FlowEvent::HookCreated { hook_id, .. } if hook_id == "right"
+            )
+        });
+        if !left_open {
+            return Ok(context.create_hook("left", "left-token", json!({ "arm": "left" })));
+        }
+        if !right_open {
+            return Ok(context.create_hook("right", "right-token", json!({ "arm": "right" })));
+        }
+        Ok(context.create_hook("left", "left-token", json!({ "arm": "left" })))
+    }
+
+    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+        unreachable!("parallel sibling hook runtime does not schedule steps")
+    }
+}
+
+#[tokio::test]
+async fn start_opens_sibling_hooks_in_one_wave_while_peers_stay_active() {
+    let engine = FlowEngine::in_memory(Arc::new(ParallelSiblingHookRuntime));
+    let run_id = engine
+        .start_with_id(
+            "parallel-sibling-hooks",
+            WorkflowSpec::rust_embedded(
+                "test.parallel-sibling-hooks",
+                "1",
+                "tests::hook_idempotency",
+                "main",
+            ),
+            json!({}),
+        )
+        .await
+        .expect("start parallel sibling hooks");
+    let snapshot = engine
+        .snapshot(&run_id)
+        .await
+        .expect("parallel sibling snapshot");
+    assert_eq!(
+        snapshot.hooks.get("left").map(|hook| hook.status),
+        Some(HookStatus::Active)
+    );
+    assert_eq!(
+        snapshot.hooks.get("right").map(|hook| hook.status),
+        Some(HookStatus::Active)
+    );
 }
 
 #[path = "hook_idempotency/worker_outcomes.rs"]

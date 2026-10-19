@@ -33,6 +33,35 @@ const SQLITE_SCHEDULED_WAKEUPS_CHECKSUM: &str =
 #[cfg(feature = "sqlite")]
 const SQLITE_CONTINUE_AS_NEW_CHECKSUM: &str =
     "abd8e02b3da89fa50630ae951aa0e44e136b3c3f058eeb0c857dff78b84f4c57";
+#[cfg(feature = "sqlite")]
+const SQLITE_SCHEDULED_WAKEUPS_CANCELLATION_CHECKSUM: &str =
+    "8d09073d28b842385d22b12720bb3fbfc728935daefd37e6ccf198f34705af5c";
+#[cfg(feature = "sqlite")]
+const SQLITE_SCHEDULED_WAKEUPS_ACTIVITY_RETRY_CHECKSUM: &str =
+    "4ecd837a531d45c129721229a5bb3aadbffe4166291ceb9f02e3f84710b313b8";
+#[cfg(feature = "sqlite")]
+const SQLITE_SCHEDULED_WAKEUPS_ACTIVITY_KIND_CHECKSUM: &str =
+    "93d6b1ae76001b20a3e7992886bfb025a2c27d3393a27b6395412b7d14859c0a";
+#[cfg(feature = "sqlite")]
+const SQLITE_SCHEDULED_WAKEUPS_SELECT_TIMER_CHECKSUM: &str =
+    "23ee8b599bed019d5edf70e2f453d12ff5a28afa40e467c5ccf5f072af63d59e";
+#[cfg(feature = "sqlite")]
+const SQLITE_SCHEDULED_WAKEUPS_SCOPE_CANCEL_CHECKSUM: &str =
+    "11798dc89694aef7c5623de4be07ed7b1e437d1be1c485889a16e7b8aa119940";
+#[cfg(feature = "sqlite")]
+const SQLITE_SCHEDULED_WAKEUPS_SCOPE_CANCEL_OPEN_CHECKSUM: &str =
+    "2f485748f37d40a84452805761b000bb17679f3b8b32e077a3d92654ee53f939";
+const EVENT_ENVELOPE_SCHEMA_CHECKSUM: &str =
+    "66b66243437158aaed793e75423b8ce8141c09bb5cc8f983bc4bce1a5b70bd09";
+const PROJECTION_CHECKPOINTS_CHECKSUM: &str =
+    "b69612dd86dcc58c2ecae0424d9d19ba36cdd04e80c4727c2b07fac1786c3861";
+const PROJECTION_CHECKPOINT_DIGEST_CHECKSUM: &str =
+    "988c3793d7c15867b66c12e6e176f4812eff9d35542906d3c78f95ccd10b0ade";
+const HISTORY_PARTITIONS_CHECKSUM: &str =
+    "613e69a8190c542ec41c2121e25ff50ff7e867470473c6629fa4e1ad79c5a702";
+#[cfg(feature = "postgres")]
+const POSTGRES_TASK_PARTITION_KEY_CHECKSUM: &str =
+    "7e778edf8b101f8ef3b6f2ef73a86ead0e3821211adc9aeef1e71ad044cc2d9d";
 #[cfg(feature = "postgres")]
 const POSTGRES_TASKS_CHECKSUM: &str =
     "6e73f57af6f836508a12b66eb8a00130ca0fbc62c99ca1a0bfa8c36f0b9d5b93";
@@ -45,6 +74,27 @@ const POSTGRES_SCHEDULED_WAKEUPS_CHECKSUM: &str =
 #[cfg(feature = "postgres")]
 const POSTGRES_CONTINUE_AS_NEW_CHECKSUM: &str =
     "e22ca39f110328b4b83023f306b426e15d55c5b1ff378cce3e30b4d9e8726dc0";
+#[cfg(feature = "postgres")]
+const POSTGRES_SCHEDULED_WAKEUPS_CANCELLATION_CHECKSUM: &str =
+    "23d0a21b972d67f6edb4fe27607847bb2e743055ede9e6dbd80deb8224203cba";
+#[cfg(feature = "postgres")]
+const POSTGRES_SCHEDULED_WAKEUPS_ACTIVITY_RETRY_CHECKSUM: &str =
+    "88e78cefdb7cedc0ba855c6afd0aba9a5e12488df8e4f9667d8817bcfd284390";
+#[cfg(feature = "postgres")]
+const POSTGRES_SCHEDULED_WAKEUPS_ACTIVITY_KIND_CHECKSUM: &str =
+    "7f22e03e7d505502aca197979c88e58ee17fe11966c24f1b706ca8b60a24edb6";
+#[cfg(feature = "postgres")]
+const POSTGRES_SCHEDULED_WAKEUPS_SELECT_TIMER_CHECKSUM: &str =
+    "37da59e13966bd8702ba1d545edd57414bd35a1cf8cf4ce2b2b65b5ea81044c6";
+#[cfg(feature = "postgres")]
+const POSTGRES_SCHEDULED_WAKEUPS_SCOPE_CANCEL_CHECKSUM: &str =
+    "c8973a031c4283bec79ce6e0c5ba83c707086567c5b50fc4b162b44c73fe6ca9";
+#[cfg(feature = "postgres")]
+const POSTGRES_SCHEDULED_WAKEUPS_SCOPE_CANCEL_OPEN_CHECKSUM: &str =
+    "32648dd1b9b94f7d5d2d37990f052a780153b24f988a5597b1413c0442560f28";
+#[cfg(feature = "postgres")]
+const POSTGRES_FUNCTION_NAMES_CHECKSUM: &str =
+    "1c58c4f80ff24c6c677094bf85aa82eb7ec961552e836328bc8578a63c1f2bdd";
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 const LEGACY_EVENT_JSON: [&str; 4] = [
@@ -109,6 +159,46 @@ fn sqlite_migrations_keep_every_published_checksum() {
                 "a3s-flow-0005-continue-as-new".into(),
                 SQLITE_CONTINUE_AS_NEW_CHECKSUM.into(),
             ),
+            (
+                "a3s-flow-0006-step-cancellation-wakeup".into(),
+                SQLITE_SCHEDULED_WAKEUPS_CANCELLATION_CHECKSUM.into(),
+            ),
+            (
+                "a3s-flow-0007-event-envelope-schema".into(),
+                EVENT_ENVELOPE_SCHEMA_CHECKSUM.into(),
+            ),
+            (
+                "a3s-flow-0008-projection-checkpoints".into(),
+                PROJECTION_CHECKPOINTS_CHECKSUM.into(),
+            ),
+            (
+                "a3s-flow-0009-projection-checkpoint-digest".into(),
+                PROJECTION_CHECKPOINT_DIGEST_CHECKSUM.into(),
+            ),
+            (
+                "a3s-flow-0010-history-partitions".into(),
+                HISTORY_PARTITIONS_CHECKSUM.into(),
+            ),
+            (
+                "a3s-flow-0011-activity-retry-wakeup".into(),
+                SQLITE_SCHEDULED_WAKEUPS_ACTIVITY_RETRY_CHECKSUM.into(),
+            ),
+            (
+                "a3s-flow-0012-activity-retry-wakeup-kind".into(),
+                SQLITE_SCHEDULED_WAKEUPS_ACTIVITY_KIND_CHECKSUM.into(),
+            ),
+            (
+                "a3s-flow-0013-select-timer-wakeup".into(),
+                SQLITE_SCHEDULED_WAKEUPS_SELECT_TIMER_CHECKSUM.into(),
+            ),
+            (
+                "a3s-flow-0014-scope-cancel-wakeup".into(),
+                SQLITE_SCHEDULED_WAKEUPS_SCOPE_CANCEL_CHECKSUM.into(),
+            ),
+            (
+                "a3s-flow-0015-scope-cancel-open-descendant".into(),
+                SQLITE_SCHEDULED_WAKEUPS_SCOPE_CANCEL_OPEN_CHECKSUM.into(),
+            ),
         ]
     );
 }
@@ -134,6 +224,54 @@ fn postgres_migrations_keep_every_published_checksum() {
             (
                 "a3s-flow-0006-continue-as-new".into(),
                 POSTGRES_CONTINUE_AS_NEW_CHECKSUM.into(),
+            ),
+            (
+                "a3s-flow-0007-step-cancellation-wakeup".into(),
+                POSTGRES_SCHEDULED_WAKEUPS_CANCELLATION_CHECKSUM.into(),
+            ),
+            (
+                "a3s-flow-0008-event-envelope-schema".into(),
+                EVENT_ENVELOPE_SCHEMA_CHECKSUM.into(),
+            ),
+            (
+                "a3s-flow-0009-projection-checkpoints".into(),
+                PROJECTION_CHECKPOINTS_CHECKSUM.into(),
+            ),
+            (
+                "a3s-flow-0010-projection-checkpoint-digest".into(),
+                PROJECTION_CHECKPOINT_DIGEST_CHECKSUM.into(),
+            ),
+            (
+                "a3s-flow-0011-history-partitions".into(),
+                HISTORY_PARTITIONS_CHECKSUM.into(),
+            ),
+            (
+                "a3s-flow-0012-task-partition-key".into(),
+                POSTGRES_TASK_PARTITION_KEY_CHECKSUM.into(),
+            ),
+            (
+                "a3s-flow-0013-activity-retry-wakeup".into(),
+                POSTGRES_SCHEDULED_WAKEUPS_ACTIVITY_RETRY_CHECKSUM.into(),
+            ),
+            (
+                "a3s-flow-0014-activity-retry-wakeup-kind".into(),
+                POSTGRES_SCHEDULED_WAKEUPS_ACTIVITY_KIND_CHECKSUM.into(),
+            ),
+            (
+                "a3s-flow-0015-select-timer-wakeup".into(),
+                POSTGRES_SCHEDULED_WAKEUPS_SELECT_TIMER_CHECKSUM.into(),
+            ),
+            (
+                "a3s-flow-0016-scope-cancel-wakeup".into(),
+                POSTGRES_SCHEDULED_WAKEUPS_SCOPE_CANCEL_CHECKSUM.into(),
+            ),
+            (
+                "a3s-flow-0017-scope-cancel-open-descendant".into(),
+                POSTGRES_SCHEDULED_WAKEUPS_SCOPE_CANCEL_OPEN_CHECKSUM.into(),
+            ),
+            (
+                "a3s-flow-0018-function-names".into(),
+                POSTGRES_FUNCTION_NAMES_CHECKSUM.into(),
             ),
         ]
     );
@@ -215,11 +353,12 @@ async fn sqlite_upgrades_every_supported_pre_v1_schema_baseline() {
             .iter()
             .any(|wakeup| wakeup.run_id == run_id && wakeup.subject_id == "release-timer"));
 
+        let successor_run_id = format!("{run_id}-successor").replace('.', "-");
         store
             .append(
                 &run_id,
                 FlowEvent::RunContinuedAsNew {
-                    successor_run_id: format!("{run_id}-successor"),
+                    successor_run_id,
                     input: json!({ "generation": 1 }),
                 },
             )
@@ -252,7 +391,7 @@ async fn sqlite_failed_migration_rolls_back_schema_and_preserves_history() {
     insert_sqlite_legacy_history(&executor, "sqlite-failed-upgrade").await;
     let mut invalid = migrations[..1].to_vec();
     invalid.push(Migration::new(
-        "a3s-flow-9999-invalid",
+        "kense-flow-9999-invalid",
         "exercise migration transaction rollback",
         "CREATE TABLE flow_migration_rollback_probe (id INTEGER); invalid SQL;",
     ));
@@ -274,7 +413,7 @@ async fn sqlite_failed_migration_rolls_back_schema_and_preserves_history() {
 
 #[cfg(feature = "postgres")]
 fn postgres_url_from_env() -> Option<String> {
-    std::env::var("A3S_FLOW_POSTGRES_URL")
+    std::env::var("KENSE_FLOW_POSTGRES_URL")
         .ok()
         .filter(|url| !url.trim().is_empty())
 }
@@ -381,7 +520,7 @@ async fn postgres_upgrades_every_supported_pre_v1_schema_baseline() {
             .append(
                 &run_id,
                 FlowEvent::RunContinuedAsNew {
-                    successor_run_id: format!("{run_id}-successor"),
+                    successor_run_id: format!("{run_id}-successor").replace('.', "-"),
                     input: json!({ "generation": 1 }),
                 },
             )
@@ -437,7 +576,7 @@ async fn postgres_failed_migration_rolls_back_schema_and_preserves_history() {
     insert_postgres_legacy_history(&scoped_executor, "postgres-failed-upgrade").await;
     let mut invalid = migrations[..3].to_vec();
     invalid.push(Migration::new(
-        "a3s-flow-9999-invalid",
+        "kense-flow-9999-invalid",
         "exercise migration transaction rollback",
         "CREATE TABLE flow_migration_rollback_probe (id BIGINT); invalid SQL;",
     ));

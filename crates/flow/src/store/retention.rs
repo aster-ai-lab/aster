@@ -1,9 +1,7 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-#[cfg(any(feature = "postgres", feature = "sqlite"))]
 use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
-#[cfg(any(feature = "postgres", feature = "sqlite"))]
 use uuid::Uuid;
 
 use crate::error::{FlowError, Result};
@@ -77,7 +75,6 @@ pub struct FlowHistoryHold {
 }
 
 /// Minimal audit record retained after a complete event history is deleted.
-#[cfg(any(feature = "postgres", feature = "sqlite"))]
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[non_exhaustive]
 pub struct FlowHistoryTombstone {
@@ -120,10 +117,14 @@ pub(crate) struct FlowHistoryRetentionPlan {
 ///
 /// Storage adapters own locking, transaction, and deletion details, while this
 /// function is the single source of truth for terminal eligibility and
-/// linked-component protection.
+/// linked-component protection. `tombstoned_run_ids` are peers whose histories
+/// are already gone; a link to one of them does not pin the rest of a finished
+/// component. A link to a run that is neither present nor tombstoned stays
+/// dangling.
 pub(crate) fn plan_history_retention(
     histories: &BTreeMap<String, Vec<FlowEventEnvelope>>,
     hold_run_ids: &BTreeSet<String>,
+    tombstoned_run_ids: &BTreeSet<String>,
     policy: &FlowHistoryRetentionPolicy,
     storage_name: &str,
 ) -> Result<FlowHistoryRetentionPlan> {
@@ -196,7 +197,9 @@ pub(crate) fn plan_history_retention(
                     });
             }
             if !histories.contains_key(child_run_id) {
-                dangling_reference_runs.insert(parent_run_id.clone());
+                if !tombstoned_run_ids.contains(child_run_id) {
+                    dangling_reference_runs.insert(parent_run_id.clone());
+                }
                 continue;
             }
             adjacency
@@ -442,7 +445,6 @@ pub(crate) fn required_linked_flow_run_id(event: &FlowEvent) -> Option<&str> {
     }
 }
 
-#[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub(crate) fn history_checksum(history: &[FlowEventEnvelope]) -> Result<String> {
     let digest = Sha256::digest(serde_json::to_vec(history)?);
     Ok(format!("{digest:x}"))

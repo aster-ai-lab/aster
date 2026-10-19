@@ -4,6 +4,13 @@
   <img src="assets/readme/hero.svg" width="100%" alt="A3S Flow commits workflow decisions to append-only history and resumes safely after worker replacement" />
 </p>
 
+
+<p align="center">
+  <strong>Language / 语言:</strong>
+  <a href="README.md">English</a> ·
+  <a href="README.zh-CN.md">中文</a>
+</p>
+
 <p align="center">
   <strong>AI Native Workflow Engine for Agents, tools, approvals, and child workflows.</strong><br />
   Author with React or Vue, automate with the CLI and Skill, and recover every run from append-only history.
@@ -45,6 +52,7 @@ that operate on Flow's versioned workflow document contract.
 | A parent starts one or many child workflows      | Child identities, policies, and terminal outcomes survive either cross-stream crash window |
 | New workflow code rolls out                      | Runtime build IDs and immutable patch markers keep histories on compatible replay paths    |
 | Multiple workers append concurrently             | Expected-sequence writes select one durable winner and reject stale decisions              |
+| A batch sibling fails while peers are running    | Unsettled peers are durably marked cancelled before the run terminal outcome                |
 
 > [!IMPORTANT]
 > Flow owns workflow graph validation, append-only history, durable replay, and
@@ -59,15 +67,15 @@ that operate on Flow's versioned workflow document contract.
 keeps the node catalog, editor components, framework hooks, command-line tools,
 and agent instructions on the same manifest and graph contracts.
 
-| Surface      | Current contract                                                                                                                                                                                                             |
-| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Playground   | Integrated visual authoring route with a 35-node cross-border order fulfillment sample covering all 20 registry manifests, drag and drop, typed connections, A3S UI configuration forms, DAG compilation, and DSL inspection |
-| Node catalog | 18 public manifests in six authoring groups, with fields, defaults, ports, runtime bindings, and durable node identity                                                                                                       |
-| React        | Node preview and configuration components plus `useA3SFlowNode` for controlled-ready node state                                                                                                                              |
-| Vue          | A `useA3SFlowNode` composable over the same node object, defaults, and manifest registry                                                                                                                                     |
-| Custom nodes | Immutable host catalogs with A3S UI form rendering, exact executor capabilities, and a publication gate                                                                                                                      |
-| CLI          | `a3s-flow nodes`, `node`, `new`, `sample`, `validate`, `compile`, and `digest`, all with JSON output                                                                                                                         |
-| Skill        | An installable `a3s-flow` Skill that queries the CLI before creating, connecting, validating, or reviewing a workflow                                                                                                        |
+| Surface      | Current contract                                                                                                                                                                                                                                                                                                                                                   |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Playground   | Integrated visual authoring route with a 35-node cross-border order fulfillment sample covering all 20 registry manifests, complete manifest-contract inspection, drag and drop, typed connections, editable presentation-only edge labels, A3S UI configuration forms, Worker and WebAssembly layout, visible-node rendering, DAG compilation, DSL inspection, and a host-injectable CLI / Skill / Copilot extension drawer |
+| Node catalog | 18 public manifests in six authoring groups, with fields, defaults, ports, runtime bindings, and durable node identity                                                                                                                                                                                                                                             |
+| React        | Node preview and configuration components plus `useKenseFlowNode` for controlled-ready node state; `createKenseFlowDesignerContext` and `KenseFlowDesignerExtensionArea` expose immutable full-DSL and selection context to host extensions                                                                                                                                 |
+| Vue          | A `useKenseFlowNode` composable over the same node object, defaults, and manifest registry                                                                                                                                                                                                                                                                           |
+| Custom nodes | Immutable host catalogs with A3S UI form rendering, exact executor capabilities, and a publication gate                                                                                                                                                                                                                                                            |
+| CLI          | JSON-first `a3s-flow` commands for node discovery plus file CRUD: `create`, `read`, `update`, `delete`, `validate`, `compile`, and `digest`; updates include stable-ID-preserving node moves and edge redirects, scoped container-child placement, batch or NDJSON-streamed patches from stdin or files, optimistic digest checks, dry-run, atomic writes, and final candidate revalidation                                                                                         |
+| Skill        | An installable `a3s-flow` Skill that queries the CLI before creating, connecting, validating, reviewing, or safely editing a workflow file                                                                                                                                                                                                                         |
 
 The [Workflow Playground](https://a3s-lab.github.io/Flow/playground/),
 [React guide](https://a3s-lab.github.io/Flow/reference/react),
@@ -84,7 +92,7 @@ Add Flow and an async runtime:
 
 ```toml
 [dependencies]
-a3s-flow = "=1.1.0"
+a3s-flow = "=2.0.0"
 async-trait = "0.1"
 serde_json = "1"
 tokio = { version = "1", features = ["macros", "rt"] }
@@ -176,10 +184,22 @@ That boundary produces concrete guarantees:
 
 - A successful step becomes visible to workflow code only after
   `StepCompleted` is durable.
+- First-class activities persist a created/started/result ledger before and
+  after host side effects. Every attempt carries an idempotency key and
+  fencing token; hosts can append fenced heartbeats with checkpoints through
+  `heartbeat_activity`. If the provider response is lost, return
+  `FlowError::UnknownOutcome` and reconcile the suspended attempt with
+  `resolve_unknown_activity` before allowing a retry or completion. A
+  per-attempt `timeout_ms` deadline follows the same rule: timeout becomes
+  unknown rather than an automatic duplicate retry.
 - Reusing an ID with different input, retry policy, deadline, signal name,
   callback token, or metadata fails as non-deterministic replay.
 - Timers, delayed retries, signals, and hooks release compute while the run is
   suspended.
+- A terminal failure in `schedule_steps` aborts unsettled sibling futures and
+  persists `step_cancelled` markers first. The marker records when an external
+  side-effect outcome is unknown, so hosts can reconcile the stable attempt
+  idempotency key before any compensating retry.
 - Crash recovery reconstructs state from typed events rather than an in-memory
   stack.
 
@@ -196,7 +216,8 @@ by runnable examples or integration tests.
 | Area              | Current contract                                                                                                                                               | Evidence                                                                                                                                                                     |
 | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Durable steps     | Sequential steps, concurrent step batches, typed input/output helpers, stable IDs, progress, and child-operation references                                    | [`sequential_steps`](examples/sequential_steps.rs), [`batch_steps`](examples/batch_steps.rs)                                                                                 |
-| Retry policy      | Immediate retry, fixed delay, and capped exponential backoff with deterministic full jitter; exhaustion can fail or return to workflow fallback logic          | [`retry_backoff`](examples/retry_backoff.rs), [`recoverable_step_failure`](examples/recoverable_step_failure.rs)                                                             |
+| Durable activities | First-class activity ledger with attempt IDs, idempotency keys, fencing tokens, per-attempt deadlines, retries, non-retryable failures, heartbeat checkpoints, and explicit unknown-outcome reconciliation; existing step runtimes remain compatible | `first_class_activity_persists_identity_and_output`, `activity_heartbeat_persists_checkpoint_and_rejects_stale_fence`, `activity_timeout_persists_deadline_and_enters_unknown_state`, `unknown_activity_outcome_waits_for_fenced_reconciliation` |
+| Retry policy      | Immediate retry, fixed delay, and capped exponential backoff with deterministic full jitter; deadlines anchor at failure time and exhaustion can fail or return to workflow fallback logic | [`retry_backoff`](examples/retry_backoff.rs), [`recoverable_step_failure`](examples/recoverable_step_failure.rs)                                                             |
 | Suspension        | Durable timers, declared named signals, and token-routed hooks/callbacks resume without holding a worker                                                       | [`scheduler_worker`](examples/scheduler_worker.rs), [`workflow_signals`](examples/workflow_signals.rs), [`hook_approval`](examples/hook_approval.rs)                         |
 | Cancellation      | Cleanup-aware cancellation enters `Cancelling`, replays stable cleanup steps, and records one typed terminal outcome; force cancellation remains explicit      | [`cancellation`](examples/cancellation.rs)                                                                                                                                   |
 | Child workflows   | First-class single children and bounded concurrent batches persist every child identity before execution and recover partial cross-stream progress             | [`child_workflow`](examples/child_workflow.rs), [`child_workflow_batch`](examples/child_workflow_batch.rs)                                                                   |
@@ -204,7 +225,7 @@ by runnable examples or integration tests.
 | Safe rollout      | Exact runtime-build routing rejects incompatible workers before mutation; immutable patch markers preserve old and new replay branches                         | [`replay_safe_patch`](examples/replay_safe_patch.rs), [rollout recipe](docs/COOKBOOK.md#replay-safe-workflow-patches)                                                        |
 | Persistence       | In-memory and JSONL stores are built in; SQLite and PostgreSQL share the `FlowEventStore` contract and canonical A3S ORM migrations                            | [`local_file_durability`](examples/local_file_durability.rs), [`sqlite_durability`](examples/sqlite_durability.rs), [`postgres_durability`](examples/postgres_durability.rs) |
 | Dispatch          | A3S Boot task management is recommended; embedded compatibility queues and `FlowWorker` remain available                                                       | [`boot_task_policy`](examples/boot_task_policy.rs), [`task_queue_durability`](examples/task_queue_durability.rs)                                                             |
-| Observability     | Post-commit observers, fan-out, an A3S Event bridge, and a repair-aware local JSONL audit sink mirror committed events without becoming state authority        | [`observer_fanout`](examples/observer_fanout.rs), [`local_audit_log`](examples/local_audit_log.rs)                                                                           |
+| Observability     | Post-commit observers with bounded panic/timeout isolation, concurrent fan-out, an A3S Event bridge, and a repair-aware local JSONL audit sink mirror committed events without becoming state authority | [`observer_fanout`](examples/observer_fanout.rs), [`local_audit_log`](examples/local_audit_log.rs)                                                                           |
 | Native TypeScript | Optional source compilation, artifact identity, dependency-manifest verification, and a versioned JSON invocation protocol; Rust remains the durable authority | [`native_ts_preflight`](examples/native_ts_preflight.rs), [protocol guide](docs/NATIVE_TYPESCRIPT.md)                                                                        |
 
 ### Bounded retries
@@ -288,8 +309,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 The compiler rejects duplicate IDs, missing endpoints, self-edges, cycles,
 invalid cross-scope edges, and malformed iteration or loop containers. Unknown
 fields round-trip, while layout, selection, and viewport do not affect the
-execution digest. An empty canvas remains importable as a draft but cannot
-produce an execution plan. See the runnable
+execution digest. Digest format `v2` is shared with the UI and follows
+JavaScript number formatting and UTF-16 key ordering, rejects unsafe integers,
+and bounds nesting to 256 levels. Edge labels remain presentation-only. An
+empty canvas remains importable as a draft but cannot produce an execution
+plan. See the runnable
 [`workflow_dsl_import`](examples/workflow_dsl_import.rs) example.
 
 ## Production operations
@@ -306,10 +330,42 @@ All stores preserve the same event envelope and replay contract.
 | `PostgresEventStore`  | Multi-process workers sharing authoritative history | `postgres` |
 
 SQLite and PostgreSQL use `a3s-orm` for typed access, checksummed migrations,
-transactional appends, active-hook routing, scheduled-wakeup indexes, and
-whole-history retention. Production PostgreSQL deployments run migration
-authority separately, then admit serving workers only after verifying the
+projection-validated transactional appends, active-hook routing, scheduled-wakeup indexes,
+durable projection checkpoints, and whole-history retention. `FlowEngine::checkpoint`
+persists only disposable materialized state; SQL append transactions advance that
+cache from the validated event tail, while reads verify the latest sequence and
+event ID and fall back to authoritative history replay when metadata is stale or
+corrupt. `FlowEngine::history_page` exposes an exclusive sequence cursor with a bounded
+page size for archive/export and visibility rebuilds without loading an entire
+history into memory. `FlowEngine::history` still returns the complete log, assembled
+from those pages instead of one unbounded read. Production PostgreSQL deployments run migration authority
+separately, then admit serving workers only after verifying the
 canonical migration ledger. See [Upgrading to Flow 1.0](docs/UPGRADING_TO_V1.md).
+
+For archive workers, `FlowEngine::export_history_pages` pins the initial history
+tip, validates contiguous sequence pages, and invokes a host-owned sink one
+page at a time. Flow keeps the event log authoritative; Cloud or another host
+chooses the archive format, retention policy, and destination.
+
+Flow task queues expose lease fencing, stale-task requeue, dead-letter
+inspection, and an administrative `redrive_dead_lettered` operation. Built-in
+local and PostgreSQL queues make repeated redrive safe; custom queue adapters
+must explicitly implement the redrive contract.
+
+Hosts that own a compatibility `FlowWorker` loop can call
+`run_until_idle_bounded(limit)` to drain at most a fairness/backpressure budget
+before yielding to other work. A zero limit is rejected before any lease is
+acquired; `run_until_idle()` remains available when an unbounded drain is
+intentional.
+
+Workers advertise the versioned `FlowWorkerCapabilities` contract. Hosts should
+call `worker.ensure_compatible(&required)` before leasing work; protocol or
+task-capability mismatches fail closed. Cloud remains responsible for queue
+admission, tenant fairness, placement, and processor lifecycle.
+
+The event bridge retains stable Step/Activity attempt correlation for logs,
+traces, and audit sinks while keeping attempt IDs and idempotency keys out of
+`safe_metric_labels()`.
 
 Retention removes only complete eligible continuation/child components and
 leaves checksum tombstones. Flow never compacts part of an event stream;
@@ -342,7 +398,7 @@ dependency graph before and after atomic publication.
 Install the compiler and provide Bun on `PATH` (or set `A3S_FLOW_BUN`):
 
 ```sh
-cargo install a3s-flow --version 1.1.0 --locked \
+cargo install a3s-flow --version 2.0.0 --locked \
   --bin a3s-flow-native-compiler
 
 a3s-flow-native-compiler capabilities
@@ -355,7 +411,7 @@ lifecycle. Read the [compiler and protocol contract](docs/NATIVE_TYPESCRIPT.md).
 
 | Flow owns                                                                                                              | The host owns                                                                                        |
 | ---------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| Workflow document/graph parsing, structural invariants, deterministic plans, and semantic digests                      | Node semantics, capability bindings, credentials, and authoring policy                               |
+| Workflow document/graph parsing, structural invariants, deterministic plans, semantic digests, bounded authoring byte APIs/sessions, and canonical operation encoding | Node semantics, capability bindings, credentials, and authoring policy                               |
 | Reusable node manifests, configuration components, React and Vue hooks, CLI commands, and the workflow-authoring Skill | Product-specific node availability, identity, authorization, publication, and hosted editor behavior |
 | Append-only run history and expected-sequence writes                                                                   | Product authorization, tenancy, and publication lifecycle                                            |
 | Replay validation and terminal state                                                                                   | Logical idempotency for physical side effects                                                        |
@@ -388,6 +444,7 @@ Start with one executable path, then move to the concern you need.
 | [Documentation website](https://a3s-lab.github.io/Flow/) | Guided setup, execution concepts, production operations, runtimes, examples, and API map |
 | [Architecture](docs/ARCHITECTURE.md)                     | Event sourcing, replay, store, scheduler, and native-runtime boundaries                  |
 | [Cookbook](docs/COOKBOOK.md)                             | Stable IDs, retries, batches, timers, hooks, signals, cancellation, and compensation     |
+| [Execution-kernel roadmap](docs/ROADMAP.md)              | Ordered kernel work, Flow/Cloud ownership, compatibility, scale, and release gates       |
 | [Functional plan](docs/FUNCTIONAL_PLAN.md)               | Capability-level evidence, completion gates, maintenance work, and non-goals             |
 | [API stability](docs/API_STABILITY.md)                   | SemVer, durable compatibility, MSRV, and the `1.0.0` release contract                    |
 | [Upgrading to Flow 1.0](docs/UPGRADING_TO_V1.md)         | Supported pre-v1 histories/schemas, rollout, verification, and rollback                  |
@@ -411,7 +468,7 @@ deeper matrices:
 
 ```sh
 just deep-test-non-pg
-A3S_FLOW_POSTGRES_URL=postgres://user:pass@localhost:5432/a3s_flow \
+KENSE_FLOW_POSTGRES_URL=postgres://user:pass@localhost:5432/a3s_flow \
   just postgres-test
 A3S_FLOW_NATIVE_TS_COMPILER=/path/to/a3s-flow-native-compiler \
   just native-ts-bun-test
@@ -422,10 +479,10 @@ gate, package contents, and an end-to-end Bun workflow on Linux and Windows.
 
 ## Release status
 
-The crate currently declares version `1.1.0`. This compatible minor release
-adds bounded concurrent child-workflow batches, bounded exponential retries,
-and hardened custom workflow-node authoring while preserving the Flow 1.x
-runtime, replay, and persistence contracts.
+The crate currently declares version `2.0.0`. This major release documents the
+closed native TypeScript `NativeRuntimeKind::Activity` protocol extension and
+related public enum discriminant shifts while preserving Flow's durable replay
+and persistence contracts for compatible 2.x hosts.
 
 Reusable workflow-authoring components, React and Vue hooks, the CLI, and the
 Skill are maintained in this repository. Hosted tenancy, authorization,

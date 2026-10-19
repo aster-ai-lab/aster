@@ -43,6 +43,12 @@ pub(in crate::runtime) struct SourceSnapshot {
 }
 
 impl SourceSnapshot {
+    /// The entrypoint this snapshot opened, and the logical path stored on the spec.
+    pub(in crate::runtime) fn primary(&self) -> Option<(&Path, &str)> {
+        let source = self.sources.first()?;
+        Some((source.path.as_path(), source.logical_path.as_str()))
+    }
+
     pub(in crate::runtime) async fn read(
         path: &Path,
         spec: &WorkflowSpec,
@@ -297,6 +303,34 @@ mod tests {
             source_hash,
             "1f0e35a1cadd3012364a35a196c3e8ee9823191faa6254ac004a62963f32c814"
         );
+    }
+
+    #[tokio::test]
+    async fn source_snapshot_reads_the_absolute_workflow_entrypoint() {
+        let directory = tempfile::tempdir().unwrap();
+        let entrypoint = directory.path().join("reason.ts");
+        tokio::fs::write(
+            &entrypoint,
+            b"export async function run() {\n  return { type: \"complete\", output: null };\n}\n",
+        )
+        .await
+        .unwrap();
+        let entrypoint = tokio::fs::canonicalize(&entrypoint).await.unwrap();
+        let spec: WorkflowSpec = serde_json::from_value(serde_json::json!({
+            "name": "reason",
+            "version": "1",
+            "runtime": {
+                "kind": "native_ts",
+                "entrypoint": entrypoint.to_string_lossy(),
+                "export_name": "run"
+            }
+        }))
+        .unwrap();
+        let (_hash, snapshot) = SourceSnapshot::read(&entrypoint, &spec).await.unwrap();
+        let source = snapshot.sources.first().expect("entrypoint snapshot");
+        assert_eq!(source.path, entrypoint);
+        assert_eq!(source.logical_path, spec.runtime.entrypoint);
+        assert_eq!(spec.runtime.entrypoint, entrypoint.to_string_lossy());
     }
 
     #[tokio::test]

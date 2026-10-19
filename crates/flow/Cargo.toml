@@ -1,6 +1,6 @@
 [package]
-name = "aster-flow-legacy"
-version = "1.1.0"
+name = "a3s-flow"
+version = "2.0.0"
 edition = "2021"
 rust-version = "1.88"
 authors = ["A3S Lab"]
@@ -29,21 +29,24 @@ sqlite = ["dep:a3s-orm", "a3s-orm/sqlite"]
 postgres = ["dep:a3s-orm", "a3s-orm/postgres"]
 
 [dependencies]
-async-trait = {workspace = true}
+async-trait = "0.1"
 chrono = {version = "0.4", features = ["serde"]}
-serde = {workspace = true}
-serde_json = {workspace = true}
+futures-util = "0.3"
+serde = {version = "1", features = ["derive"]}
+serde_json = "1"
 serde_yaml_ng = "0.10"
-semver = {workspace = true}
-sha2 = {workspace = true}
+semver = "1"
+sha2 = "0.10"
+ryu-js = "1"
 thiserror = "1"
-tracing = {workspace = true}
-uuid = {version = "1", features = ["serde", "v4"]}
+tracing = "0.1"
+uuid = {version = "1", features = ["serde", "v4", "v5"]}
 tokio = {version = "1", features = ["fs", "io-util", "macros", "process", "rt", "sync", "time"]}
 a3s-orm = {optional = true, default-features = false, path = "../orm"}
 a3s-event = {optional = true, default-features = false, path = "../event"}
 a3s-boot = {optional = true, default-features = false, features = ["queue"], path = "../boot"}
 
 [dev-dependencies]
+sha2 = "0.10"
 tokio = {version = "1", features = ["macros", "rt", "sync", "time"]}
-tempfile = {workspace = true}
+tempfile = "3"

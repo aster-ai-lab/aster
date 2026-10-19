@@ -18,7 +18,7 @@
       "revision": "4c0cd9eb1ed586e27a5fd0446a92824717eb095e"
     },
     {
-      "path": "crates/flow-v2",
+      "path": "crates/flow",
       "source": "apps/work/vendor/crates/flow",
       "revision": null
     },

@@ -700,3 +700,228 @@ async fn persisted_child_cycle_fails_closed_before_runtime_replay() {
         Err(FlowError::ChildWorkflowCycle(run_id)) if run_id == "cycle-parent"
     ));
 }
+
+struct ChildResolvedBesideOpenTimerRuntime;
+
+#[async_trait]
+impl FlowRuntime for ChildResolvedBesideOpenTimerRuntime {
+    async fn run_workflow(
+        &self,
+        invocation: WorkflowInvocation,
+    ) -> a3s_flow::Result<RuntimeCommand> {
+        let context = invocation.context();
+        match invocation.spec.name.as_str() {
+            "child-workflow.parent" => {
+                if let Some(WorkflowTerminalOutcome::Completed { output }) =
+                    context.child_workflow_outcome("worker")
+                {
+                    return Ok(context.complete(output.clone()));
+                }
+                if context.child_workflow_outcome("worker").is_none()
+                    && !invocation.history.iter().any(|envelope| {
+                        matches!(
+                            &envelope.event,
+                            FlowEvent::ChildWorkflowRequested { child_id, .. }
+                                if child_id == "worker"
+                        )
+                    })
+                {
+                    return Ok(context.start_child_workflow(
+                        "worker",
+                        child_spec(),
+                        json!({ "batch": 3 }),
+                    ));
+                }
+                // Arm a parent-side poll while the child stays open. Forced update
+                // replay must be able to create this wait beside the open child.
+                Ok(context.wait_until("poll", "2030-01-01T00:00:00Z".parse().unwrap()))
+            }
+            "child-workflow.child" => {
+                if invocation.history.iter().any(|envelope| {
+                    matches!(
+                        &envelope.event,
+                        FlowEvent::WaitCompleted { wait_id, .. } if wait_id == "child-hold"
+                    )
+                }) {
+                    return Ok(context.complete(json!({ "batch": context.input()["batch"] })));
+                }
+                Ok(context.wait_until("child-hold", Utc::now() - Duration::seconds(1)))
+            }
+            name => unreachable!("unexpected workflow {name}"),
+        }
+    }
+
+    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+        unreachable!("child workflow tests do not execute steps")
+    }
+
+    async fn run_update(&self, _invocation: a3s_flow::UpdateInvocation) -> a3s_flow::Result<Value> {
+        Ok(json!({ "armed": true }))
+    }
+}
+
+#[tokio::test]
+async fn child_resolution_wakes_parent_while_another_timer_is_open() {
+    let engine = FlowEngine::in_memory(Arc::new(ChildResolvedBesideOpenTimerRuntime));
+    engine
+        .start_with_id(PARENT_RUN_ID, parent_spec().with_update("arm"), json!({}))
+        .await
+        .unwrap();
+    let open = engine.snapshot(PARENT_RUN_ID).await.unwrap();
+    assert_eq!(open.status, WorkflowRunStatus::Suspended);
+    let child_run_id = open.child_workflow("worker").unwrap().run_id.clone();
+    assert_eq!(
+        engine.snapshot(&child_run_id).await.unwrap().status,
+        WorkflowRunStatus::Suspended
+    );
+
+    engine
+        .apply_update(
+            PARENT_RUN_ID,
+            a3s_flow::WorkflowUpdate::new("arm-1", "arm", json!({})),
+        )
+        .await
+        .unwrap();
+    let armed = engine.snapshot(PARENT_RUN_ID).await.unwrap();
+    assert_eq!(armed.status, WorkflowRunStatus::Suspended);
+    assert_eq!(
+        armed.waits["poll"].status,
+        a3s_flow::WaitStatus::Waiting,
+        "parent poll wait must stay open beside the child"
+    );
+
+    engine
+        .resume_wait(&child_run_id, "child-hold")
+        .await
+        .unwrap();
+    assert_eq!(
+        engine.snapshot(&child_run_id).await.unwrap().status,
+        WorkflowRunStatus::Completed
+    );
+
+    let parent = engine.drive(PARENT_RUN_ID).await.unwrap();
+    assert_eq!(
+        parent.status,
+        WorkflowRunStatus::Completed,
+        "appending ChildWorkflowResolved must not be hidden by an open parent timer"
+    );
+    assert_eq!(parent.output, Some(json!({ "batch": 3 })));
+    assert!(matches!(
+        parent.child_workflow("worker").unwrap().outcome,
+        Some(WorkflowTerminalOutcome::Completed { .. })
+    ));
+}
+
+struct CrashAfterChildWorkflowResolvedStore {
+    inner: InMemoryEventStore,
+    armed: AtomicBool,
+}
+
+impl CrashAfterChildWorkflowResolvedStore {
+    fn new() -> Self {
+        Self {
+            inner: InMemoryEventStore::new(),
+            armed: AtomicBool::new(false),
+        }
+    }
+}
+
+#[async_trait]
+impl FlowEventStore for CrashAfterChildWorkflowResolvedStore {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+        self.inner.append(run_id, event).await
+    }
+
+    async fn append_if_sequence(
+        &self,
+        run_id: &str,
+        expected_sequence: u64,
+        event: FlowEvent,
+    ) -> a3s_flow::Result<FlowEventEnvelope> {
+        let envelope = self
+            .inner
+            .append_if_sequence(run_id, expected_sequence, event.clone())
+            .await?;
+        if matches!(
+            event,
+            FlowEvent::ChildWorkflowResolved {
+                ref child_id,
+                ..
+            } if child_id == "worker"
+        ) && self.armed.swap(false, Ordering::SeqCst)
+        {
+            return Err(FlowError::Store(
+                "injected crash after ChildWorkflowResolved before observation drive".into(),
+            ));
+        }
+        Ok(envelope)
+    }
+
+    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+        self.inner.list(run_id).await
+    }
+
+    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+        self.inner.list_run_ids().await
+    }
+}
+
+#[tokio::test]
+async fn child_resolved_recovery_wakes_via_drive_while_unscoped_timer_is_open() {
+    let store = Arc::new(CrashAfterChildWorkflowResolvedStore::new());
+    let engine = FlowEngine::new(store.clone(), Arc::new(ChildResolvedBesideOpenTimerRuntime));
+    engine
+        .start_with_id(
+            "child-resolved-drive",
+            parent_spec().with_update("arm"),
+            json!({}),
+        )
+        .await
+        .unwrap();
+    let child_run_id = engine
+        .snapshot("child-resolved-drive")
+        .await
+        .unwrap()
+        .child_workflow("worker")
+        .unwrap()
+        .run_id
+        .clone();
+    engine
+        .apply_update(
+            "child-resolved-drive",
+            a3s_flow::WorkflowUpdate::new("arm-1", "arm", json!({})),
+        )
+        .await
+        .unwrap();
+    engine
+        .resume_wait(&child_run_id, "child-hold")
+        .await
+        .unwrap();
+    assert_eq!(
+        engine.snapshot(&child_run_id).await.unwrap().status,
+        WorkflowRunStatus::Completed
+    );
+
+    store.armed.store(true, Ordering::SeqCst);
+    let interrupted = engine
+        .drive("child-resolved-drive")
+        .await
+        .expect_err("crash after durable ChildWorkflowResolved must interrupt");
+    assert!(matches!(interrupted, FlowError::Store(_)));
+
+    let mid = engine.snapshot("child-resolved-drive").await.unwrap();
+    assert!(!mid.status.is_terminal());
+    assert!(matches!(
+        mid.child_workflow("worker").unwrap().outcome,
+        Some(WorkflowTerminalOutcome::Completed { .. })
+    ));
+    assert_eq!(mid.waits["poll"].status, a3s_flow::WaitStatus::Waiting);
+
+    let recovered = engine.drive("child-resolved-drive").await.unwrap();
+    assert_eq!(
+        recovered.output,
+        Some(json!({ "batch": 3 })),
+        "drive must observe tip ChildWorkflowResolved beside an open unscoped timer"
+    );
+    assert_eq!(recovered.status, WorkflowRunStatus::Completed);
+}

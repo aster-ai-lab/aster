@@ -2,7 +2,7 @@
 
 ## Supported Releases
 
-A3S Flow accepts security reports for the latest published stable release and
+Kense Flow accepts security reports for the latest published stable release and
 for the current `main` branch while it is being prepared for release. Older
 release lines and prereleases are not supported by default unless a GitHub
 security advisory explicitly says otherwise.
@@ -19,7 +19,7 @@ Do not open a public issue for an undisclosed vulnerability.
 
 Include the following information when it is safe to do so:
 
-- the affected A3S Flow version, Cargo features, target, and Rust version;
+- the affected Kense Flow version, Cargo features, target, and Rust version;
 - the event store, task manager or queue, and workflow runtime in use;
 - a minimal reproduction or the smallest failing history;
 - the expected impact and the trust boundary that is crossed; and

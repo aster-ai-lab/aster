@@ -46,11 +46,11 @@ impl FlowRuntime for SleepRuntime {
 #[cfg(feature = "postgres")]
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> a3s_flow::Result<()> {
-    let Some(url) = std::env::var("A3S_FLOW_POSTGRES_URL")
+    let Some(url) = std::env::var("KENSE_FLOW_POSTGRES_URL")
         .ok()
         .filter(|url| !url.trim().is_empty())
     else {
-        println!("set A3S_FLOW_POSTGRES_URL=postgres://user:pass@host:5432/db to run it");
+        println!("set KENSE_FLOW_POSTGRES_URL=postgres://user:pass@host:5432/db to run it");
         return Ok(());
     };
 

@@ -4,7 +4,7 @@ use super::*;
 #[tokio::test]
 async fn postgres_task_queue_leases_requeues_and_dead_letters_when_url_is_configured() {
     let Some(url) = postgres_url_from_env() else {
-        eprintln!("skipping postgres queue integration test; set A3S_FLOW_POSTGRES_URL");
+        eprintln!("skipping postgres queue integration test; set KENSE_FLOW_POSTGRES_URL");
         return;
     };
     let queue_name = format!("test-queue-{}", Uuid::new_v4());
@@ -78,9 +78,40 @@ async fn postgres_task_queue_leases_requeues_and_dead_letters_when_url_is_config
 
 #[cfg(feature = "postgres")]
 #[tokio::test]
+async fn postgres_task_queue_redrives_a_dead_letter_atomically_when_url_is_configured() {
+    let Some(url) = postgres_url_from_env() else {
+        eprintln!("skipping postgres redrive test; set KENSE_FLOW_POSTGRES_URL");
+        return;
+    };
+    let queue_name = format!("test-redrive-{}", Uuid::new_v4());
+    let queue = PostgresFlowTaskQueue::connect_with_queue(&url, &queue_name)
+        .await
+        .unwrap();
+    let task = FlowTask::DriveRun {
+        run_id: "postgres-redrive-run".to_string(),
+    };
+    queue.enqueue(task.clone()).await.unwrap();
+    let lease = queue.lease().await.unwrap().unwrap();
+    queue
+        .dead_letter_inflight_older_than(
+            Utc::now() + ChronoDuration::seconds(1),
+            "operator redrive test",
+        )
+        .await
+        .unwrap();
+
+    assert!(queue.redrive_dead_lettered(&lease.lease_id).await.unwrap());
+    assert!(!queue.redrive_dead_lettered(&lease.lease_id).await.unwrap());
+    assert_eq!(queue.dead_letter_len().await.unwrap(), 0);
+    assert_eq!(queue.len().await.unwrap(), 1);
+    assert_eq!(queue.dequeue().await.unwrap(), Some(task));
+}
+
+#[cfg(feature = "postgres")]
+#[tokio::test]
 async fn postgres_task_queue_competing_workers_lease_distinct_tasks_when_url_is_configured() {
     let Some(url) = postgres_url_from_env() else {
-        eprintln!("skipping postgres competing-worker test; set A3S_FLOW_POSTGRES_URL");
+        eprintln!("skipping postgres competing-worker test; set KENSE_FLOW_POSTGRES_URL");
         return;
     };
     let queue_name = format!("test-competing-workers-{}", Uuid::new_v4());
@@ -119,7 +150,7 @@ async fn postgres_task_queue_competing_workers_lease_distinct_tasks_when_url_is_
 #[tokio::test]
 async fn postgres_task_queue_drives_worker_when_url_is_configured() {
     let Some(url) = postgres_url_from_env() else {
-        eprintln!("skipping postgres queue worker integration test; set A3S_FLOW_POSTGRES_URL");
+        eprintln!("skipping postgres queue worker integration test; set KENSE_FLOW_POSTGRES_URL");
         return;
     };
     let now = Utc::now();
@@ -155,4 +186,58 @@ async fn postgres_task_queue_drives_worker_when_url_is_configured() {
 
     let snapshot = engine.snapshot(&run_id).await.unwrap();
     assert_eq!(snapshot.status, WorkflowRunStatus::Completed);
+}
+
+#[cfg(feature = "postgres")]
+#[tokio::test]
+async fn postgres_partition_fairness_rotates_across_opaque_keys_when_url_is_configured() {
+    let Some(url) = postgres_url_from_env() else {
+        eprintln!("skipping postgres partition fairness test; set KENSE_FLOW_POSTGRES_URL");
+        return;
+    };
+    let queue_name = format!("fair-queue-{}", Uuid::new_v4());
+    let queue = PostgresFlowTaskQueue::connect_with_queue(&url, &queue_name)
+        .await
+        .unwrap()
+        .with_partition_fairness();
+    assert!(queue.partition_fairness());
+
+    for run_id in ["a-1", "a-2", "a-3"] {
+        queue
+            .enqueue_for_partition(
+                "tenant-a",
+                FlowTask::DriveRun {
+                    run_id: run_id.to_string(),
+                },
+            )
+            .await
+            .unwrap();
+    }
+    queue
+        .enqueue_for_partition(
+            "tenant-b",
+            FlowTask::DriveRun {
+                run_id: "b-1".to_string(),
+            },
+        )
+        .await
+        .unwrap();
+
+    let first = queue.lease().await.unwrap().unwrap();
+    queue.ack(&first.lease_id).await.unwrap();
+    let second = queue.lease().await.unwrap().unwrap();
+    queue.ack(&second.lease_id).await.unwrap();
+
+    assert_eq!(
+        first.task,
+        FlowTask::DriveRun {
+            run_id: "a-1".to_string()
+        }
+    );
+    assert_eq!(
+        second.task,
+        FlowTask::DriveRun {
+            run_id: "b-1".to_string()
+        }
+    );
 }

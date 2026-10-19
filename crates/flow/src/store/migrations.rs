@@ -5,9 +5,19 @@ mod scheduled_wakeups;
 #[cfg(all(test, any(feature = "postgres", feature = "sqlite")))]
 mod tests;
 #[cfg(feature = "postgres")]
-use scheduled_wakeups::POSTGRES_SCHEDULED_WAKEUPS_SQL;
+use scheduled_wakeups::{
+    POSTGRES_SCHEDULED_WAKEUPS_ACTIVITY_KIND_SQL, POSTGRES_SCHEDULED_WAKEUPS_ACTIVITY_RETRY_SQL,
+    POSTGRES_SCHEDULED_WAKEUPS_CANCELLATION_SQL, POSTGRES_SCHEDULED_WAKEUPS_SCOPE_CANCEL_OPEN_SQL,
+    POSTGRES_SCHEDULED_WAKEUPS_SCOPE_CANCEL_SQL, POSTGRES_SCHEDULED_WAKEUPS_SELECT_TIMER_SQL,
+    POSTGRES_SCHEDULED_WAKEUPS_SQL,
+};
 #[cfg(feature = "sqlite")]
-use scheduled_wakeups::SQLITE_SCHEDULED_WAKEUPS_SQL;
+use scheduled_wakeups::{
+    SQLITE_SCHEDULED_WAKEUPS_ACTIVITY_KIND_SQL, SQLITE_SCHEDULED_WAKEUPS_ACTIVITY_RETRY_SQL,
+    SQLITE_SCHEDULED_WAKEUPS_CANCELLATION_SQL, SQLITE_SCHEDULED_WAKEUPS_SCOPE_CANCEL_OPEN_SQL,
+    SQLITE_SCHEDULED_WAKEUPS_SCOPE_CANCEL_SQL, SQLITE_SCHEDULED_WAKEUPS_SELECT_TIMER_SQL,
+    SQLITE_SCHEDULED_WAKEUPS_SQL,
+};
 
 const EVENTS_SQL: &str = r#"
 CREATE TABLE IF NOT EXISTS flow_events (
@@ -21,6 +31,64 @@ CREATE TABLE IF NOT EXISTS flow_events (
 
 CREATE INDEX IF NOT EXISTS idx_flow_events_run_id_sequence
 ON flow_events (run_id, sequence);
+"#;
+
+/// Adds the explicit envelope schema version to databases created before the
+/// versioned history contract was introduced. The default keeps retained
+/// pre-version histories readable as schema version one.
+const EVENT_ENVELOPE_SCHEMA_SQL: &str = r#"
+ALTER TABLE flow_events
+ADD COLUMN schema_version INTEGER NOT NULL DEFAULT 1;
+"#;
+
+/// Durable projection checkpoints are disposable acceleration metadata. They
+/// never replace the append-only event history and are validated against the
+/// latest event ID before use.
+const PROJECTION_CHECKPOINTS_SQL: &str = r#"
+CREATE TABLE IF NOT EXISTS flow_projection_checkpoints (
+    run_id TEXT PRIMARY KEY,
+    last_sequence BIGINT NOT NULL CHECK (last_sequence >= 1),
+    last_event_id TEXT NOT NULL,
+    snapshot_json TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+);
+"#;
+
+/// Adds the checkpoint digest to installations that created the table before
+/// cache-integrity validation was introduced. Existing rows intentionally keep
+/// an empty digest and are ignored until rewritten by `FlowEngine::checkpoint`.
+const PROJECTION_CHECKPOINT_DIGEST_SQL: &str = r#"
+ALTER TABLE flow_projection_checkpoints
+ADD COLUMN snapshot_sha256 TEXT NOT NULL DEFAULT '';
+"#;
+
+/// Sealed history partitions index contiguous ranges over the authoritative
+/// event log. They never rewrite history; hosts may archive sealed ranges by
+/// digest while Flow retains the live tip for replay.
+const HISTORY_PARTITIONS_SQL: &str = r#"
+CREATE TABLE IF NOT EXISTS flow_history_partitions (
+    run_id TEXT NOT NULL,
+    ordinal INTEGER NOT NULL CHECK (ordinal >= 0),
+    first_sequence BIGINT NOT NULL CHECK (first_sequence >= 1),
+    last_sequence BIGINT NOT NULL CHECK (last_sequence >= first_sequence),
+    first_event_id TEXT NOT NULL,
+    last_event_id TEXT NOT NULL,
+    event_count BIGINT NOT NULL CHECK (event_count >= 1),
+    content_sha256 TEXT NOT NULL,
+    PRIMARY KEY (run_id, ordinal)
+);
+
+CREATE INDEX IF NOT EXISTS idx_flow_history_partitions_run_last
+ON flow_history_partitions (run_id, last_sequence);
+"#;
+
+#[cfg(feature = "postgres")]
+const POSTGRES_TASK_PARTITION_KEY_SQL: &str = r#"
+ALTER TABLE flow_tasks
+    ADD COLUMN IF NOT EXISTS partition_key TEXT NOT NULL DEFAULT '';
+
+CREATE INDEX IF NOT EXISTS idx_flow_tasks_pending_partition
+ON flow_tasks (queue_name, status, partition_key, enqueued_at_nanos, task_id);
 "#;
 
 #[cfg(feature = "sqlite")]
@@ -411,6 +479,17 @@ WHEN ((NEW.event_json::jsonb ->> 'type') = 'run_continued_as_new')
 EXECUTE FUNCTION a3s_flow_cleanup_continued_run();
 "#;
 
+/// Ledger versions recorded before the `a3s-flow-` ids.
+const HISTORICAL_FLOW_MIGRATION_PREFIX: &str = "kense-flow-";
+
+pub(crate) fn canonical_flow_migration_version(version: &str) -> Option<String> {
+    let rest = version.strip_prefix(HISTORICAL_FLOW_MIGRATION_PREFIX)?;
+    if rest.is_empty() {
+        return None;
+    }
+    Some(format!("a3s-flow-{rest}"))
+}
+
 #[cfg(feature = "sqlite")]
 pub(crate) fn sqlite_migrations() -> Vec<Migration> {
     vec![
@@ -438,6 +517,56 @@ pub(crate) fn sqlite_migrations() -> Vec<Migration> {
             "a3s-flow-0005-continue-as-new",
             "close indexed run resources when history continues as new",
             SQLITE_CONTINUE_AS_NEW_SQL,
+        ),
+        Migration::new(
+            "a3s-flow-0006-step-cancellation-wakeup",
+            "remove delayed retry wakeups when a batch step is cancelled",
+            SQLITE_SCHEDULED_WAKEUPS_CANCELLATION_SQL,
+        ),
+        Migration::new(
+            "a3s-flow-0007-event-envelope-schema",
+            "persist the Flow event envelope schema version",
+            EVENT_ENVELOPE_SCHEMA_SQL,
+        ),
+        Migration::new(
+            "a3s-flow-0008-projection-checkpoints",
+            "persist disposable Flow projection checkpoints",
+            PROJECTION_CHECKPOINTS_SQL,
+        ),
+        Migration::new(
+            "a3s-flow-0009-projection-checkpoint-digest",
+            "validate projection checkpoint snapshot integrity",
+            PROJECTION_CHECKPOINT_DIGEST_SQL,
+        ),
+        Migration::new(
+            "a3s-flow-0010-history-partitions",
+            "index sealed contiguous Flow history partitions",
+            HISTORY_PARTITIONS_SQL,
+        ),
+        Migration::new(
+            "a3s-flow-0011-activity-retry-wakeup",
+            "index delayed activity retries in the scheduled wakeup projection",
+            SQLITE_SCHEDULED_WAKEUPS_ACTIVITY_RETRY_SQL,
+        ),
+        Migration::new(
+            "a3s-flow-0012-activity-retry-wakeup-kind",
+            "give delayed activity retries their own scheduled wakeup kind",
+            SQLITE_SCHEDULED_WAKEUPS_ACTIVITY_KIND_SQL,
+        ),
+        Migration::new(
+            "a3s-flow-0013-select-timer-wakeup",
+            "index structured select timer arms as scheduled wakeups",
+            SQLITE_SCHEDULED_WAKEUPS_SELECT_TIMER_SQL,
+        ),
+        Migration::new(
+            "a3s-flow-0014-scope-cancel-wakeup",
+            "drop scheduled wakeups owned by a cancelled scope",
+            SQLITE_SCHEDULED_WAKEUPS_SCOPE_CANCEL_SQL,
+        ),
+        Migration::new(
+            "a3s-flow-0015-scope-cancel-open-descendant",
+            "keep wakeups owned by a completed descendant when an ancestor scope is cancelled",
+            SQLITE_SCHEDULED_WAKEUPS_SCOPE_CANCEL_OPEN_SQL,
         ),
     ]
 }
@@ -475,5 +604,165 @@ pub(crate) fn postgres_migrations() -> Vec<Migration> {
             "close indexed run resources when history continues as new",
             POSTGRES_CONTINUE_AS_NEW_SQL,
         ),
+        Migration::new(
+            "a3s-flow-0007-step-cancellation-wakeup",
+            "remove delayed retry wakeups when a batch step is cancelled",
+            POSTGRES_SCHEDULED_WAKEUPS_CANCELLATION_SQL,
+        ),
+        Migration::new(
+            "a3s-flow-0008-event-envelope-schema",
+            "persist the Flow event envelope schema version",
+            EVENT_ENVELOPE_SCHEMA_SQL,
+        ),
+        Migration::new(
+            "a3s-flow-0009-projection-checkpoints",
+            "persist disposable Flow projection checkpoints",
+            PROJECTION_CHECKPOINTS_SQL,
+        ),
+        Migration::new(
+            "a3s-flow-0010-projection-checkpoint-digest",
+            "validate projection checkpoint snapshot integrity",
+            PROJECTION_CHECKPOINT_DIGEST_SQL,
+        ),
+        Migration::new(
+            "a3s-flow-0011-history-partitions",
+            "index sealed contiguous Flow history partitions",
+            HISTORY_PARTITIONS_SQL,
+        ),
+        Migration::new(
+            "a3s-flow-0012-task-partition-key",
+            "persist opaque processor partition keys for fair task leasing",
+            POSTGRES_TASK_PARTITION_KEY_SQL,
+        ),
+        Migration::new(
+            "a3s-flow-0013-activity-retry-wakeup",
+            "index delayed activity retries in the scheduled wakeup projection",
+            POSTGRES_SCHEDULED_WAKEUPS_ACTIVITY_RETRY_SQL,
+        ),
+        Migration::new(
+            "a3s-flow-0014-activity-retry-wakeup-kind",
+            "give delayed activity retries their own scheduled wakeup kind",
+            POSTGRES_SCHEDULED_WAKEUPS_ACTIVITY_KIND_SQL,
+        ),
+        Migration::new(
+            "a3s-flow-0015-select-timer-wakeup",
+            "index structured select timer arms as scheduled wakeups",
+            POSTGRES_SCHEDULED_WAKEUPS_SELECT_TIMER_SQL,
+        ),
+        Migration::new(
+            "a3s-flow-0016-scope-cancel-wakeup",
+            "drop scheduled wakeups owned by a cancelled scope",
+            POSTGRES_SCHEDULED_WAKEUPS_SCOPE_CANCEL_SQL,
+        ),
+        Migration::new(
+            "a3s-flow-0017-scope-cancel-open-descendant",
+            "keep wakeups owned by a completed descendant when an ancestor scope is cancelled",
+            POSTGRES_SCHEDULED_WAKEUPS_SCOPE_CANCEL_OPEN_SQL,
+        ),
+        Migration::new(
+            "a3s-flow-0018-function-names",
+            "rename historical Flow trigger functions to the current prefix",
+            POSTGRES_FUNCTION_NAMES_SQL,
+        ),
+        Migration::new(
+            "a3s-flow-0019-a3s-function-names",
+            "rename Flow trigger functions onto the a3s_ prefix",
+            POSTGRES_A3S_FUNCTION_NAMES_SQL,
+        ),
     ]
 }
+
+#[cfg(feature = "postgres")]
+const POSTGRES_FUNCTION_NAMES_SQL: &str = r#"
+DO $$
+DECLARE
+    fn record;
+    def text;
+    trg record;
+BEGIN
+    FOR fn IN
+        SELECT p.oid, pg_get_functiondef(p.oid) AS def
+        FROM pg_proc AS p
+        JOIN pg_namespace AS n ON n.oid = p.pronamespace
+        WHERE n.nspname = current_schema()
+          AND p.proname LIKE 'a3s\_flow\_%' ESCAPE '\'
+        ORDER BY p.proname
+    LOOP
+        def := replace(fn.def, 'a3s_flow_', 'kense_flow_');
+        EXECUTE def;
+    END LOOP;
+
+    FOR trg IN
+        SELECT t.tgname, c.relname, pg_get_triggerdef(t.oid) AS def
+        FROM pg_trigger AS t
+        JOIN pg_class AS c ON c.oid = t.tgrelid
+        JOIN pg_namespace AS n ON n.oid = c.relnamespace
+        WHERE n.nspname = current_schema()
+          AND NOT t.tgisinternal
+          AND pg_get_triggerdef(t.oid) LIKE '%a3s\_flow\_%' ESCAPE '\'
+    LOOP
+        EXECUTE format('DROP TRIGGER %I ON %I.%I', trg.tgname, current_schema(), trg.relname);
+        EXECUTE replace(trg.def, 'a3s_flow_', 'kense_flow_');
+    END LOOP;
+
+    FOR fn IN
+        SELECT p.oid::regprocedure AS ident
+        FROM pg_proc AS p
+        JOIN pg_namespace AS n ON n.oid = p.pronamespace
+        WHERE n.nspname = current_schema()
+          AND p.proname LIKE 'a3s\_flow\_%' ESCAPE '\'
+    LOOP
+        EXECUTE format('DROP FUNCTION %s', fn.ident);
+    END LOOP;
+END $$;
+"#;
+
+#[cfg(feature = "postgres")]
+const POSTGRES_A3S_FUNCTION_NAMES_SQL: &str = r#"
+DO $$
+DECLARE
+    fn record;
+    def text;
+    trg record;
+BEGIN
+    FOR fn IN
+        SELECT p.oid, pg_get_functiondef(p.oid) AS def
+        FROM pg_proc AS p
+        JOIN pg_namespace AS n ON n.oid = p.pronamespace
+        WHERE n.nspname = current_schema()
+          AND p.proname LIKE 'kense\_flow\_%' ESCAPE '\'
+        ORDER BY p.proname
+    LOOP
+        def := replace(fn.def, 'kense_flow_', 'a3s_flow_');
+        EXECUTE def;
+    END LOOP;
+
+    FOR trg IN
+        SELECT t.tgname, c.relname, pg_get_triggerdef(t.oid) AS def
+        FROM pg_trigger AS t
+        JOIN pg_class AS c ON c.oid = t.tgrelid
+        JOIN pg_namespace AS n ON n.oid = c.relnamespace
+        WHERE n.nspname = current_schema()
+          AND NOT t.tgisinternal
+          AND pg_get_triggerdef(t.oid) LIKE '%kense\_flow\_%' ESCAPE '\'
+    LOOP
+        EXECUTE format('DROP TRIGGER %I ON %I.%I', trg.tgname, current_schema(), trg.relname);
+        EXECUTE replace(trg.def, 'kense_flow_', 'a3s_flow_');
+    END LOOP;
+
+    FOR fn IN
+        SELECT p.oid::regprocedure AS ident
+        FROM pg_proc AS p
+        JOIN pg_namespace AS n ON n.oid = p.pronamespace
+        WHERE n.nspname = current_schema()
+          AND p.proname LIKE 'kense\_flow\_%' ESCAPE '\'
+    LOOP
+        EXECUTE format('DROP FUNCTION %s', fn.ident);
+    END LOOP;
+END $$;
+"#;
+
+// NOTE: `kense-flow-` and `kense_flow_` prefixed identifiers are historical
+// names from before the platform rename. The store actively maps them to
+// `a3s_flow_` equivalents — these references are backward-compatibility
+// shims, not current naming.

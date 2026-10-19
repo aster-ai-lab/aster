@@ -10,7 +10,7 @@ use sha2::{Digest, Sha256};
 use uuid::Uuid;
 
 fn postgres_url_from_env() -> Option<String> {
-    std::env::var("A3S_FLOW_POSTGRES_URL")
+    std::env::var("KENSE_FLOW_POSTGRES_URL")
         .ok()
         .filter(|url| !url.trim().is_empty())
 }

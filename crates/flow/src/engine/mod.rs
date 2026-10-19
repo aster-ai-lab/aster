@@ -1,39 +1,51 @@
 use chrono::{DateTime, Utc};
 use std::collections::BTreeSet;
 use std::sync::Arc;
+use std::time::Duration;
 use uuid::Uuid;
 
 use crate::error::{FlowError, Result};
 use crate::model::{
     project_run, validate_child_workflow_command, ChildWorkflowCommand, FlowEvent,
-    FlowEventEnvelope, HookStatus, RuntimeCommand, ScheduledWakeup, StepStatus, WaitStatus,
-    WorkflowRunSnapshot, WorkflowRunStatus, WorkflowSpec,
+    FlowEventEnvelope, HookStatus, JsonValue, RuntimeCommand, ScheduledWakeup, StepStatus,
+    WaitStatus, WorkflowRunSnapshot, WorkflowRunStatus, WorkflowSpec,
 };
 use crate::observe::{FlowEventObserver, NoopFlowEventObserver};
 use crate::runtime::{FlowRuntime, WorkflowInvocation};
 use crate::runtime_build::{RuntimeBuildCompatibility, RuntimeBuildId};
-use crate::store::{FlowEventStore, InMemoryEventStore};
+use crate::store::{FlowEventStore, FlowStoreCapabilities, InMemoryEventStore};
 
+mod activities;
+mod child_maps;
 mod child_workflows;
 mod continuation;
 mod hooks;
 mod inspection;
 mod operations;
+mod queries;
 mod runs;
 mod scheduling;
+mod scopes;
+mod selects;
 mod signals;
 mod steps;
+mod updates;
 mod validation;
+use activities::ActivityExecutionContext;
+use child_maps::{ChildMapCommandOutcome, ChildMapReconcile};
+use selects::SelectCommandOutcome;
 use signals::SignalWaitCommandOutcome;
-use steps::{interrupted_retry_exhaustion_event, StepExecutionContext};
+use steps::{interrupted_terminal_event, StepExecutionContext};
 use validation::{
-    ensure_child_operation_matches, ensure_child_workflow_batch_valid, ensure_hook_command_matches,
-    ensure_progress_matches, ensure_retry_policy_valid, ensure_step_batch_valid,
-    ensure_step_command_matches, ensure_wait_command_matches, is_event_conflict,
+    ensure_activity_command_matches, ensure_activity_command_valid, ensure_child_operation_matches,
+    ensure_child_workflow_batch_valid, ensure_hook_command_matches, ensure_progress_matches,
+    ensure_retry_policy_valid, ensure_step_batch_valid, ensure_step_command_matches,
+    ensure_wait_command_matches, is_event_conflict,
 };
 
 const DEFAULT_MAX_CONTINUE_AS_NEW_HOPS: usize = 64;
 const DEFAULT_MAX_CHILD_WORKFLOW_DEPTH: usize = 32;
+const DEFAULT_OBSERVER_TIMEOUT: Duration = Duration::from_secs(5);
 
 pub(crate) struct HookResolutionOutcome {
     pub(crate) hook_run_id: String,
@@ -64,6 +76,7 @@ pub struct FlowEngineBuilder {
     max_replay_iterations: usize,
     max_continue_as_new_hops: usize,
     max_child_workflow_depth: usize,
+    observer_timeout: Duration,
 }
 
 impl FlowEngineBuilder {
@@ -77,6 +90,7 @@ impl FlowEngineBuilder {
             max_replay_iterations: 1024,
             max_continue_as_new_hops: DEFAULT_MAX_CONTINUE_AS_NEW_HOPS,
             max_child_workflow_depth: DEFAULT_MAX_CHILD_WORKFLOW_DEPTH,
+            observer_timeout: DEFAULT_OBSERVER_TIMEOUT,
         }
     }
 
@@ -89,6 +103,17 @@ impl FlowEngineBuilder {
     /// Observe each event after it has been durably appended.
     pub fn with_observer(mut self, observer: Arc<dyn FlowEventObserver>) -> Self {
         self.observer = observer;
+        self
+    }
+
+    /// Bound how long a committed-event observer may delay an engine call.
+    ///
+    /// The default is five seconds. A zero duration preserves the legacy
+    /// unbounded wait while still isolating observer panics from durable state.
+    /// When a non-zero deadline expires, the event remains committed and the
+    /// observer task is cancelled after a warning is emitted.
+    pub fn with_observer_timeout(mut self, timeout: Duration) -> Self {
+        self.observer_timeout = timeout;
         self
     }
 
@@ -137,6 +162,7 @@ impl FlowEngineBuilder {
             max_replay_iterations: self.max_replay_iterations,
             max_continue_as_new_hops: self.max_continue_as_new_hops,
             max_child_workflow_depth: self.max_child_workflow_depth,
+            observer_timeout: self.observer_timeout,
         }
     }
 }
@@ -151,6 +177,7 @@ pub struct FlowEngine {
     max_replay_iterations: usize,
     max_continue_as_new_hops: usize,
     max_child_workflow_depth: usize,
+    observer_timeout: Duration,
 }
 
 impl FlowEngine {
@@ -169,6 +196,7 @@ impl FlowEngine {
             max_replay_iterations: 1024,
             max_continue_as_new_hops: DEFAULT_MAX_CONTINUE_AS_NEW_HOPS,
             max_child_workflow_depth: DEFAULT_MAX_CHILD_WORKFLOW_DEPTH,
+            observer_timeout: DEFAULT_OBSERVER_TIMEOUT,
         }
     }
 
@@ -182,9 +210,19 @@ impl FlowEngine {
         Arc::clone(&self.store)
     }
 
+    /// Return the declared execution guarantees of this engine's event store.
+    pub fn store_capabilities(&self) -> FlowStoreCapabilities {
+        self.store.capabilities()
+    }
+
     /// Clone the engine's event-observer handle.
     pub fn observer(&self) -> Arc<dyn FlowEventObserver> {
         Arc::clone(&self.observer)
+    }
+
+    /// Return the configured committed-event observer deadline.
+    pub fn observer_timeout(&self) -> Duration {
+        self.observer_timeout
     }
 
     /// Return this engine's explicit runtime-build admission policy.
@@ -212,10 +250,15 @@ impl FlowEngine {
         allow_continue_as_new: bool,
         child_depth: usize,
         ancestry: &BTreeSet<String>,
+        force_workflow_replay: bool,
     ) -> Result<WorkflowRunSnapshot> {
+        let mut force_replay = force_workflow_replay;
+        let mut observed_tip_workflow_emission = force_workflow_replay;
+        let mut sequence_before_workflow = None;
+        let mut yielded_due_retry_at = None;
         let mut replay_iterations = 0;
         'replay: while replay_iterations < self.max_replay_iterations {
-            let history = self.store.list(run_id).await?;
+            let history = self.read_history_pages(run_id).await?;
             let snapshot = project_run(run_id, &history)?;
             if snapshot.status.is_terminal() {
                 return Ok(snapshot);
@@ -226,9 +269,24 @@ impl FlowEngine {
                     .await?;
                 continue;
             }
+            // DriveRun recovery after durable progress that appends then continues:
+            // the tip needs one observation even while an unscoped timer stays open.
+            // Host force APIs (update/hook/signal/cancel_scope/resume_wait) already
+            // force replay; this mirrors that for ordinary drive() without
+            // re-forcing later iterations.
+            // Suspension tips (wait/hook/select create) are intentionally excluded.
+            if !observed_tip_workflow_emission {
+                observed_tip_workflow_emission = true;
+                if history
+                    .last()
+                    .is_some_and(|envelope| tip_requires_workflow_observation(&envelope.event))
+                {
+                    force_replay = true;
+                }
+            }
             replay_iterations += 1;
             self.ensure_runtime_build_available(run_id, &snapshot.spec)?;
-            if let Some(event) = interrupted_retry_exhaustion_event(&snapshot, &history) {
+            if let Some(event) = interrupted_terminal_event(&snapshot, &history) {
                 match self
                     .record_event_at(run_id, snapshot.last_sequence, event)
                     .await
@@ -242,34 +300,109 @@ impl FlowEngine {
                 .reconcile_child_workflows(&snapshot, now, child_depth, ancestry)
                 .await?
             {
-                child_workflows::ChildReconciliation::Ready => {}
-                child_workflows::ChildReconciliation::Replay => continue,
+                child_workflows::ChildReconciliation::Ready => {
+                    match self
+                        .reconcile_open_child_workflow_maps(&snapshot, child_depth)
+                        .await
+                    {
+                        // Window advancement only requests children; do not force
+                        // parent workflow replay (open-map redrive would see plan drift).
+                        Ok(ChildMapReconcile::Advanced) => continue,
+                        Ok(ChildMapReconcile::Completed) => {
+                            // Map completion must be visible beside an open timer.
+                            force_replay = true;
+                            continue;
+                        }
+                        Ok(ChildMapReconcile::Idle) => {}
+                        Err(err) if is_event_conflict(&err) => continue,
+                        Err(err) => return Err(err),
+                    }
+                }
+                child_workflows::ChildReconciliation::Replay => {
+                    // ChildWorkflowResolved (or a conflict retry) mutated the tip;
+                    // an open parent timer must not hide that durable progress.
+                    force_replay = true;
+                    continue;
+                }
                 child_workflows::ChildReconciliation::Waiting => {
-                    return self.snapshot(run_id).await;
+                    match self
+                        .reconcile_open_child_workflow_maps(&snapshot, child_depth)
+                        .await
+                    {
+                        Ok(ChildMapReconcile::Advanced) => continue,
+                        Ok(ChildMapReconcile::Completed) => {
+                            force_replay = true;
+                            continue;
+                        }
+                        Ok(ChildMapReconcile::Idle) => {
+                            let progressed = sequence_before_workflow
+                                .is_some_and(|sequence| snapshot.last_sequence > sequence);
+                            let due_retry = !snapshot.due_retries(now).is_empty();
+                            let retry_appended = yielded_due_retry_at
+                                .is_some_and(|sequence| snapshot.last_sequence > sequence);
+                            if force_replay {
+                                // One caller-forced replay, consumed below.
+                            } else if due_retry
+                                && yielded_due_retry_at != Some(snapshot.last_sequence)
+                            {
+                                yielded_due_retry_at = Some(snapshot.last_sequence);
+                            } else if retry_appended && progressed {
+                                // Let the workflow observe the retry it just committed,
+                                // then stop. Unrelated progress must not re-enter a
+                                // waiting parent (map redrive would see plan drift).
+                                yielded_due_retry_at = Some(snapshot.last_sequence);
+                            } else {
+                                return self.snapshot(run_id).await;
+                            }
+                        }
+                        Err(err) if is_event_conflict(&err) => continue,
+                        Err(err) => return Err(err),
+                    }
                 }
             }
             match self.reconcile_signal_waits(&snapshot).await {
-                Ok(true) => continue,
+                Ok(true) => {
+                    force_replay = true;
+                    continue;
+                }
                 Ok(false) => {}
                 Err(err) if is_event_conflict(&err) => continue,
                 Err(err) => return Err(err),
             }
-            if snapshot
-                .waits
-                .values()
-                .any(|wait| wait.status == WaitStatus::Waiting)
-                || snapshot
-                    .hooks
+            match self.reconcile_open_selects(&snapshot).await {
+                Ok(true) => {
+                    force_replay = true;
+                    continue;
+                }
+                Ok(false) => {}
+                Err(err) if is_event_conflict(&err) => continue,
+                Err(err) => return Err(err),
+            }
+            // A caller that just mutated history can force one workflow replay.
+            // Later iterations replay when child/signal/select reconciliation
+            // appended durable progress, that pass appended history, or a retry
+            // is already due, so an open timer cannot hide those cases and a
+            // not-yet-due step cannot spin the replay budget.
+            let progressed =
+                sequence_before_workflow.is_some_and(|sequence| snapshot.last_sequence > sequence);
+            let due_retry = !snapshot.due_retries(now).is_empty();
+            if !force_replay
+                && !progressed
+                && !due_retry
+                && (snapshot
+                    .waits
                     .values()
-                    .any(|hook| hook.status == HookStatus::Active)
-                || snapshot
-                    .signal_waits
-                    .values()
-                    .any(|wait| wait.status == crate::model::SignalWaitStatus::Waiting)
-                || (snapshot.has_future_retry(now) && snapshot.due_retries(now).is_empty())
+                    .any(|wait| wait.status == WaitStatus::Waiting)
+                    || snapshot
+                        .signal_waits
+                        .values()
+                        .any(|wait| wait.status == crate::model::SignalWaitStatus::Waiting)
+                    || (snapshot.has_future_retry(now) && snapshot.due_retries(now).is_empty()))
             {
                 return Ok(snapshot);
             }
+            force_replay = false;
+            sequence_before_workflow = Some(snapshot.last_sequence);
 
             let command = self
                 .runtime
@@ -278,6 +411,7 @@ impl FlowEngine {
                     spec: snapshot.spec.clone(),
                     input: snapshot.input.clone(),
                     history,
+                    trace_context: crate::trace::current_trace_context(),
                 })
                 .await?;
 
@@ -415,6 +549,155 @@ impl FlowEngine {
                         Err(err) => return Err(err),
                     }
                 }
+                RuntimeCommand::RecordCompensationMarker { marker } => {
+                    marker.validate()?;
+                    if let Some(existing) = snapshot.compensation_marker(&marker.marker_id) {
+                        if !existing.matches_record(&marker) {
+                            return Err(FlowError::NonDeterministic {
+                                run_id: run_id.to_string(),
+                                reason: format!(
+                                    "compensation marker {} differs from the durable marker",
+                                    marker.marker_id
+                                ),
+                            });
+                        }
+                        continue;
+                    }
+                    match self
+                        .record_event_at(
+                            run_id,
+                            snapshot.last_sequence,
+                            FlowEvent::CompensationMarkerRecorded { marker },
+                        )
+                        .await
+                    {
+                        Ok(_) => continue,
+                        Err(err) if is_event_conflict(&err) => continue,
+                        Err(err) => return Err(err),
+                    }
+                }
+                RuntimeCommand::CompleteCompensationMarker { marker_id, outcome } => {
+                    match snapshot.compensation_marker(&marker_id) {
+                        None => {
+                            return Err(FlowError::InvalidTransition(format!(
+                                "cannot complete unknown compensation marker {marker_id}"
+                            )));
+                        }
+                        Some(existing)
+                            if existing.status
+                                == crate::model::CompensationMarkerStatus::Completed =>
+                        {
+                            let existing_outcome =
+                                existing.outcome.clone().unwrap_or(JsonValue::Null);
+                            if existing_outcome != outcome {
+                                return Err(FlowError::NonDeterministic {
+                                    run_id: run_id.to_string(),
+                                    reason: format!(
+                                        "compensation marker {marker_id} completion outcome differs"
+                                    ),
+                                });
+                            }
+                            continue;
+                        }
+                        Some(_) => {}
+                    }
+                    match self
+                        .record_event_at(
+                            run_id,
+                            snapshot.last_sequence,
+                            FlowEvent::CompensationMarkerCompleted { marker_id, outcome },
+                        )
+                        .await
+                    {
+                        Ok(_) => continue,
+                        Err(err) if is_event_conflict(&err) => continue,
+                        Err(err) => return Err(err),
+                    }
+                }
+                RuntimeCommand::AttachExternalDataset { dataset } => {
+                    dataset.validate()?;
+                    if let Some(existing) = snapshot.external_dataset(&dataset.dataset_id) {
+                        if existing != &dataset {
+                            return Err(FlowError::NonDeterministic {
+                                run_id: run_id.to_string(),
+                                reason: format!(
+                                    "external dataset {} differs from the durable reference",
+                                    dataset.dataset_id
+                                ),
+                            });
+                        }
+                        continue;
+                    }
+                    match self
+                        .record_event_at(
+                            run_id,
+                            snapshot.last_sequence,
+                            FlowEvent::ExternalDatasetAttached { dataset },
+                        )
+                        .await
+                    {
+                        Ok(_) => continue,
+                        Err(err) if is_event_conflict(&err) => continue,
+                        Err(err) => return Err(err),
+                    }
+                }
+                RuntimeCommand::AttachBlobRef { blob } => {
+                    blob.validate()?;
+                    if let Some(existing) = snapshot.blob_ref(&blob.blob_id) {
+                        if existing != &blob {
+                            return Err(FlowError::NonDeterministic {
+                                run_id: run_id.to_string(),
+                                reason: format!(
+                                    "blob {} differs from the durable reference",
+                                    blob.blob_id
+                                ),
+                            });
+                        }
+                        continue;
+                    }
+                    match self
+                        .record_event_at(
+                            run_id,
+                            snapshot.last_sequence,
+                            FlowEvent::BlobRefAttached { blob },
+                        )
+                        .await
+                    {
+                        Ok(_) => continue,
+                        Err(err) if is_event_conflict(&err) => continue,
+                        Err(err) => return Err(err),
+                    }
+                }
+                RuntimeCommand::RecordItemAggregate { contribution } => {
+                    contribution.validate()?;
+                    if let Some(existing) = snapshot
+                        .item_aggregate(&contribution.aggregate_id)
+                        .and_then(|aggregate| aggregate.get(&contribution.item_id))
+                    {
+                        if existing != &contribution.value {
+                            return Err(FlowError::NonDeterministic {
+                                run_id: run_id.to_string(),
+                                reason: format!(
+                                    "item aggregate {} item {} differs from the durable contribution",
+                                    contribution.aggregate_id, contribution.item_id
+                                ),
+                            });
+                        }
+                        continue;
+                    }
+                    match self
+                        .record_event_at(
+                            run_id,
+                            snapshot.last_sequence,
+                            FlowEvent::ItemAggregateRecorded { contribution },
+                        )
+                        .await
+                    {
+                        Ok(_) => continue,
+                        Err(err) if is_event_conflict(&err) => continue,
+                        Err(err) => return Err(err),
+                    }
+                }
                 RuntimeCommand::LinkChildOperation { child } => {
                     child.validate()?;
                     if let Some(existing) = snapshot.child_operation(&child.reference_id) {
@@ -500,6 +783,29 @@ impl FlowEngine {
                         Err(err) => return Err(err),
                     }
                 }
+                RuntimeCommand::MapChildWorkflows {
+                    map_id,
+                    children,
+                    concurrency,
+                } => {
+                    match self
+                        .schedule_child_workflow_map(
+                            &snapshot,
+                            map_id,
+                            children,
+                            concurrency,
+                            child_depth,
+                        )
+                        .await
+                    {
+                        Ok(ChildMapCommandOutcome::Replay) => continue,
+                        Ok(ChildMapCommandOutcome::Waiting) => {
+                            return self.snapshot(run_id).await;
+                        }
+                        Err(err) if is_event_conflict(&err) => continue,
+                        Err(err) => return Err(err),
+                    }
+                }
                 RuntimeCommand::ScheduleStep {
                     step_id,
                     step_name,
@@ -576,6 +882,64 @@ impl FlowEngine {
                         Err(err) => return Err(err),
                     }
                 }
+                RuntimeCommand::ScheduleActivity {
+                    activity_id,
+                    activity_name,
+                    input,
+                    retry,
+                    timeout_ms,
+                } => {
+                    ensure_activity_command_valid(&crate::model::ActivityCommand {
+                        activity_id: activity_id.clone(),
+                        activity_name: activity_name.clone(),
+                        input: input.clone(),
+                        retry,
+                        timeout_ms,
+                    })?;
+                    if let Some(activity) = snapshot.activities.get(&activity_id) {
+                        ensure_activity_command_matches(
+                            run_id,
+                            activity,
+                            &activity_name,
+                            &input,
+                            retry,
+                            timeout_ms,
+                        )?;
+                        if activity.status == crate::model::ActivityStatus::Unknown {
+                            return self.snapshot(run_id).await;
+                        }
+                        if matches!(
+                            activity.status,
+                            crate::model::ActivityStatus::Completed
+                                | crate::model::ActivityStatus::Failed
+                                | crate::model::ActivityStatus::Cancelled
+                        ) {
+                            return Err(FlowError::InvalidTransition(format!(
+                                "workflow rescheduled terminal activity {activity_id} without progress"
+                            )));
+                        }
+                    }
+                    ensure_retry_policy_valid(retry)?;
+                    match self
+                        .execute_activity(
+                            run_id,
+                            &snapshot,
+                            ActivityExecutionContext {
+                                activity_id,
+                                activity_name,
+                                input,
+                                retry,
+                                timeout_ms,
+                                now,
+                            },
+                        )
+                        .await
+                    {
+                        Ok(()) => {}
+                        Err(err) if is_event_conflict(&err) => continue,
+                        Err(err) => return Err(err),
+                    }
+                }
                 RuntimeCommand::WaitUntil { wait_id, resume_at } => {
                     match snapshot.waits.get(&wait_id) {
                         Some(wait) => {
@@ -625,17 +989,13 @@ impl FlowEngine {
                         }
                     }
                     None => {
-                        self.ensure_hook_token_available(run_id, &hook_id, &token)
-                            .await?;
                         match self
-                            .record_event_at(
+                            .record_hook_created_at(
                                 run_id,
                                 snapshot.last_sequence,
-                                FlowEvent::HookCreated {
-                                    hook_id,
-                                    token,
-                                    metadata,
-                                },
+                                hook_id,
+                                token,
+                                metadata,
                             )
                             .await
                         {
@@ -643,7 +1003,9 @@ impl FlowEngine {
                             Err(err) if is_event_conflict(&err) => continue,
                             Err(err) => return Err(err),
                         }
-                        return self.snapshot(run_id).await;
+                        // Continue driving so sibling hooks/steps can open in the
+                        // same wave while peers remain Active.
+                        continue;
                     }
                 },
                 RuntimeCommand::WaitForSignal {
@@ -655,6 +1017,40 @@ impl FlowEngine {
                 {
                     Ok(SignalWaitCommandOutcome::Replay) => continue,
                     Ok(SignalWaitCommandOutcome::Waiting) => return self.snapshot(run_id).await,
+                    Err(err) if is_event_conflict(&err) => continue,
+                    Err(err) => return Err(err),
+                },
+                RuntimeCommand::OpenScope { scope_id } => {
+                    match self.schedule_open_scope(&snapshot, scope_id).await {
+                        Ok(_) => continue,
+                        Err(err) if is_event_conflict(&err) => continue,
+                        Err(err) => return Err(err),
+                    }
+                }
+                RuntimeCommand::CompleteScope { scope_id } => {
+                    match self.schedule_complete_scope(&snapshot, scope_id).await {
+                        Ok(_) => continue,
+                        Err(err) if is_event_conflict(&err) => continue,
+                        Err(err) => return Err(err),
+                    }
+                }
+                RuntimeCommand::CancelScope { scope_id, reason } => {
+                    match self
+                        .schedule_cancel_scope(&snapshot, scope_id, reason)
+                        .await
+                    {
+                        Ok(_) => continue,
+                        Err(err) if is_event_conflict(&err) => continue,
+                        Err(err) => return Err(err),
+                    }
+                }
+                RuntimeCommand::Select {
+                    select_id,
+                    arms,
+                    mode,
+                } => match self.schedule_select(&snapshot, select_id, arms, mode).await {
+                    Ok(SelectCommandOutcome::Replay) => continue,
+                    Ok(SelectCommandOutcome::Waiting) => return self.snapshot(run_id).await,
                     Err(err) if is_event_conflict(&err) => continue,
                     Err(err) => return Err(err),
                 },
@@ -691,28 +1087,116 @@ impl FlowEngine {
     ) -> Result<FlowEventEnvelope> {
         let envelope = self
             .store
-            .append_if_sequence(run_id, expected_sequence, event)
+            .append_validated_if_sequence(run_id, expected_sequence, event)
             .await?;
-        self.observer.observe(envelope.clone()).await;
+        self.observe_committed(envelope.clone()).await;
         Ok(envelope)
     }
 
-    async fn ensure_hook_token_available(
+    async fn record_hook_created_at(
         &self,
         run_id: &str,
-        hook_id: &str,
-        token: &str,
-    ) -> Result<()> {
-        for active in self.store.find_active_hooks_by_token(token).await? {
-            if active.run_id == run_id && active.hook.hook_id == hook_id {
-                continue;
-            }
-            return Err(FlowError::HookTokenConflict {
-                token: token.to_string(),
-                existing_run_id: active.run_id,
-                existing_hook_id: active.hook.hook_id,
-            });
-        }
-        Ok(())
+        expected_sequence: u64,
+        hook_id: String,
+        token: String,
+        metadata: serde_json::Value,
+    ) -> Result<FlowEventEnvelope> {
+        let envelope = self
+            .store
+            .append_hook_if_token_available(run_id, expected_sequence, hook_id, token, metadata)
+            .await?;
+        self.observe_committed(envelope.clone()).await;
+        Ok(envelope)
     }
+
+    async fn observe_committed(&self, envelope: FlowEventEnvelope) {
+        let event_key = envelope.event.event_key().to_string();
+        let run_id = envelope.run_id.clone();
+        let sequence = envelope.sequence;
+        let observer = Arc::clone(&self.observer);
+        let mut task = tokio::spawn(async move {
+            observer.observe(envelope).await;
+        });
+
+        let result = if self.observer_timeout().is_zero() {
+            task.await.map_err(|error| (false, error.to_string()))
+        } else {
+            match tokio::time::timeout(self.observer_timeout(), &mut task).await {
+                Ok(result) => result.map_err(|error| (false, error.to_string())),
+                Err(_) => {
+                    task.abort();
+                    // Do not await the aborted handle here: a misbehaving
+                    // observer may be executing a non-cooperative future, and
+                    // waiting for its destructor would defeat the deadline.
+                    // Tokio will drop a cooperative task at its next
+                    // cancellation point; the durable transition is already
+                    // independent of it.
+                    Err((true, String::new()))
+                }
+            }
+        };
+
+        if let Err((timed_out, error)) = result {
+            if timed_out {
+                tracing::warn!(
+                    run_id = %run_id,
+                    sequence,
+                    event_key = %event_key,
+                    timeout_ms = self.observer_timeout().as_millis() as u64,
+                    "flow event observer timed out; durable event remains committed"
+                );
+            } else {
+                tracing::warn!(
+                    run_id = %run_id,
+                    sequence,
+                    event_key = %event_key,
+                    error = %error,
+                    "flow event observer failed; durable event remains committed"
+                );
+            }
+        }
+    }
+}
+
+/// Tip events that append durable progress then continue (not suspend). Ordinary
+/// DriveRun recovery must observe them once beside open waits. Includes workflow
+/// emissions (scopes, select completion, compensation, attachments) and host
+/// resolution tips (`WaitCompleted`, `SignalWaitCompleted`, `SignalReceived`,
+/// `HookReceived`, `HookDisposed`, `UpdateApplied`, `ActivityCompleted`,
+/// `StepCompleted`, `ChildWorkflowResolved`, `ChildWorkflowMapCompleted`, and
+/// terminal activity / step resolution tips (`ActivityNonRetryable`,
+/// `ActivityFailed`, `ActivityCancelled`, `StepNonRetryable`, `StepFailed`) that
+/// host delivery/resume APIs, in-drive settlement, or child/map reconciliation
+/// already force.
+/// Intentional suspension tips (wait/hook/select create) remain excluded.
+fn tip_requires_workflow_observation(event: &FlowEvent) -> bool {
+    matches!(
+        event,
+        FlowEvent::ScopeOpened { .. }
+            | FlowEvent::ScopeCancelled { .. }
+            | FlowEvent::ScopeCompleted { .. }
+            | FlowEvent::SelectCompleted { .. }
+            | FlowEvent::WaitCompleted { .. }
+            | FlowEvent::SignalWaitCompleted { .. }
+            | FlowEvent::SignalReceived { .. }
+            | FlowEvent::HookReceived { .. }
+            | FlowEvent::HookDisposed { .. }
+            | FlowEvent::UpdateApplied { .. }
+            | FlowEvent::ActivityCompleted { .. }
+            | FlowEvent::ActivityNonRetryable { .. }
+            | FlowEvent::ActivityFailed { .. }
+            | FlowEvent::ActivityCancelled { .. }
+            | FlowEvent::StepCompleted { .. }
+            | FlowEvent::StepNonRetryable { .. }
+            | FlowEvent::StepFailed { .. }
+            | FlowEvent::ChildWorkflowResolved { .. }
+            | FlowEvent::ChildWorkflowMapCompleted { .. }
+            | FlowEvent::CompensationMarkerRecorded { .. }
+            | FlowEvent::CompensationMarkerCompleted { .. }
+            | FlowEvent::ChildOperationLinked { .. }
+            | FlowEvent::RunProgressRecorded { .. }
+            | FlowEvent::BlobRefAttached { .. }
+            | FlowEvent::ExternalDatasetAttached { .. }
+            | FlowEvent::ItemAggregateRecorded { .. }
+    )
 }

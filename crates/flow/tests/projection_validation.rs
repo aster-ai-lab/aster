@@ -163,6 +163,64 @@ async fn assert_invalid(events: Vec<FlowEventEnvelope>, expected_message: &str) 
 }
 
 #[tokio::test]
+async fn rejects_activity_completion_with_a_stale_fencing_token() {
+    let events = vec![
+        envelope(
+            1,
+            FlowEvent::RunCreated {
+                spec: WorkflowSpec::rust_embedded(
+                    "projection.activity",
+                    "0.1.0",
+                    "tests::projection_validation",
+                    "main",
+                ),
+                input: json!({}),
+            },
+        ),
+        envelope(2, FlowEvent::RunStarted),
+        envelope(
+            3,
+            FlowEvent::ActivityCreated {
+                activity_id: "activity".to_string(),
+                activity_name: "activity".to_string(),
+                input: json!({}),
+                retry: RetryPolicy::default(),
+                timeout_ms: None,
+            },
+        ),
+        envelope(
+            4,
+            FlowEvent::ActivityStarted {
+                activity_id: "activity".to_string(),
+                attempt: 1,
+                attempt_id: "attempt-1".to_string(),
+                idempotency_key: "key-1".to_string(),
+                fencing_token: "fence-1".to_string(),
+            },
+        ),
+        envelope(
+            5,
+            FlowEvent::ActivityLeaseAcquired {
+                activity_id: "activity".to_string(),
+                attempt: 1,
+                attempt_id: "attempt-1".to_string(),
+                fencing_token: "fence-2".to_string(),
+            },
+        ),
+        envelope(
+            6,
+            FlowEvent::ActivityCompleted {
+                activity_id: "activity".to_string(),
+                attempt_id: "attempt-1".to_string(),
+                fencing_token: "fence-1".to_string(),
+                output: json!(true),
+            },
+        ),
+    ];
+    assert_invalid(events, "fencing identity does not match").await;
+}
+
+#[tokio::test]
 async fn accepts_a_consistent_exhausted_retry_history() {
     let engine = FlowEngine::new(
         Arc::new(StaticHistoryStore {
@@ -309,4 +367,97 @@ async fn rejects_retry_exhaustion_with_a_different_error() {
         "run_retry_exhausted error does not match failed step guarded-step",
     )
     .await;
+}
+
+#[tokio::test]
+async fn projection_rejects_run_completed_with_running_step() {
+    use a3s_flow::InMemoryEventStore;
+
+    let store = InMemoryEventStore::new();
+    let run_id = "complete-with-running";
+    let spec = WorkflowSpec::rust_embedded("projection.complete", "1", "tests", "main");
+    for event in [
+        FlowEvent::RunCreated {
+            spec: spec.clone(),
+            input: json!({}),
+        },
+        FlowEvent::RunStarted,
+        FlowEvent::StepCreated {
+            step_id: "open-step".into(),
+            step_name: "openStep".into(),
+            input: json!({}),
+            retry: RetryPolicy::none(),
+        },
+        FlowEvent::StepStarted {
+            step_id: "open-step".into(),
+            attempt: 1,
+        },
+    ] {
+        store.append(run_id, event).await.unwrap();
+    }
+
+    let err = store
+        .append(run_id, FlowEvent::RunCompleted { output: json!({}) })
+        .await
+        .expect_err("RunCompleted must fail closed while a step is still Running");
+    assert!(
+        matches!(err, FlowError::InvalidTransition(_)),
+        "unexpected error: {err}"
+    );
+    assert!(
+        err.to_string().contains("open-step"),
+        "error should name the open step: {err}"
+    );
+}
+
+#[tokio::test]
+async fn projection_rejects_run_completed_with_unknown_activity() {
+    use a3s_flow::InMemoryEventStore;
+
+    let store = InMemoryEventStore::new();
+    let run_id = "complete-with-unknown-activity";
+    let spec = WorkflowSpec::rust_embedded("projection.complete", "1", "tests", "main");
+    for event in [
+        FlowEvent::RunCreated {
+            spec: spec.clone(),
+            input: json!({}),
+        },
+        FlowEvent::RunStarted,
+        FlowEvent::ActivityCreated {
+            activity_id: "charge".into(),
+            activity_name: "chargeCard".into(),
+            input: json!({}),
+            retry: RetryPolicy::none(),
+            timeout_ms: None,
+        },
+        FlowEvent::ActivityStarted {
+            activity_id: "charge".into(),
+            attempt: 1,
+            attempt_id: "attempt-1".into(),
+            idempotency_key: "idem-1".into(),
+            fencing_token: "fence-1".into(),
+        },
+        FlowEvent::ActivityUnknown {
+            activity_id: "charge".into(),
+            attempt: 1,
+            attempt_id: "attempt-1".into(),
+            fencing_token: "fence-1".into(),
+            reason: "provider timeout".into(),
+        },
+    ] {
+        store.append(run_id, event).await.unwrap();
+    }
+
+    let err = store
+        .append(run_id, FlowEvent::RunCompleted { output: json!({}) })
+        .await
+        .expect_err("RunCompleted must fail closed while an activity is Unknown");
+    assert!(
+        matches!(err, FlowError::InvalidTransition(_)),
+        "unexpected error: {err}"
+    );
+    assert!(
+        err.to_string().contains("charge"),
+        "error should name the open activity: {err}"
+    );
 }

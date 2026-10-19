@@ -1,9 +1,33 @@
 use async_trait::async_trait;
 
-use crate::error::Result;
+use crate::error::{FlowError, Result};
 use crate::runtime_build::RuntimeBuildId;
 
 use super::{FlowTask, FlowTaskLease};
+
+/// Refuse enqueue when `pending` already meets or exceeds `capacity`.
+///
+/// A missing capacity means unlimited admission. Capacity must be positive when
+/// configured by a concrete queue builder.
+pub fn ensure_queue_admission(pending: usize, capacity: Option<usize>) -> Result<()> {
+    let Some(capacity) = capacity else {
+        return Ok(());
+    };
+    if pending >= capacity {
+        return Err(FlowError::QueueBackpressure { pending, capacity });
+    }
+    Ok(())
+}
+
+/// Validate a host-configured pending admission budget.
+pub fn validate_queue_capacity(capacity: usize) -> Result<usize> {
+    if capacity == 0 {
+        return Err(FlowError::InvalidTransition(
+            "workflow task queue capacity must be greater than zero".to_string(),
+        ));
+    }
+    Ok(capacity)
+}
 
 /// Enqueue-only dispatch boundary used by schedulers and callback routers.
 #[async_trait]
@@ -48,6 +72,31 @@ pub trait FlowTaskQueue: Send + Sync {
     /// Appends one task to pending dispatch.
     async fn enqueue(&self, task: FlowTask) -> Result<()>;
 
+    /// Append one task under an opaque processor partition key.
+    ///
+    /// Hosts map tenant or namespace identities onto the key. Built-in queues
+    /// that enable partition fairness lease round-robin across keys so one
+    /// partition cannot monopolize FIFO dispatch. The default ignores the key
+    /// and enqueues normally so custom queues remain compatible.
+    async fn enqueue_for_partition(&self, _partition_key: &str, task: FlowTask) -> Result<()> {
+        self.enqueue(task).await
+    }
+
+    /// Optional pending-task admission budget for host backpressure.
+    ///
+    /// When set, [`Self::enqueue`] must refuse work with
+    /// [`FlowError::QueueBackpressure`] once pending depth reaches the budget.
+    /// Tenant fairness and fleet placement remain host-owned; this hook only
+    /// protects a single queue's pending depth.
+    fn max_pending_tasks(&self) -> Option<usize> {
+        None
+    }
+
+    /// Return whether this queue leases round-robin across opaque partitions.
+    fn partition_fairness(&self) -> bool {
+        false
+    }
+
     /// Leases the next pending task without acknowledging it.
     async fn lease(&self) -> Result<Option<FlowTaskLease>>;
 
@@ -67,6 +116,17 @@ pub trait FlowTaskQueue: Send + Sync {
     /// Returns inflight tasks to pending dispatch and reports the count.
     async fn requeue_inflight(&self) -> Result<usize> {
         Ok(0)
+    }
+
+    /// Redrive one dead-lettered task into pending dispatch.
+    ///
+    /// The default fails closed because a custom queue must define its own
+    /// durable dead-letter identity and redrive transaction before exposing
+    /// this administrative operation.
+    async fn redrive_dead_lettered(&self, _lease_id: &str) -> Result<bool> {
+        Err(crate::FlowError::Store(
+            "dead-letter redrive is unsupported by this task queue".to_string(),
+        ))
     }
 
     /// Leases and immediately acknowledges the next pending task.

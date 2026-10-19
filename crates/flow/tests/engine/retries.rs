@@ -96,6 +96,56 @@ async fn exhausted_step_failure_fails_run_by_default() {
         .any(|envelope| matches!(envelope.event, FlowEvent::RunRetryExhausted { .. })));
 }
 
+#[derive(Default)]
+struct NonRetryableFailureRuntime {
+    attempts: AtomicUsize,
+}
+
+#[async_trait]
+impl FlowRuntime for NonRetryableFailureRuntime {
+    async fn run_workflow(
+        &self,
+        invocation: WorkflowInvocation,
+    ) -> a3s_flow::Result<RuntimeCommand> {
+        Ok(invocation.context().schedule_step_with_retry(
+            "permanent",
+            "permanentStep",
+            json!({}),
+            RetryPolicy::fixed(4, Duration::from_millis(0)),
+        ))
+    }
+
+    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+        self.attempts.fetch_add(1, Ordering::SeqCst);
+        Err(FlowError::NonRetryable("permission denied".to_string()))
+    }
+}
+
+#[tokio::test]
+async fn non_retryable_step_failure_skips_retry_budget() {
+    let runtime = Arc::new(NonRetryableFailureRuntime::default());
+    let engine = FlowEngine::in_memory(runtime.clone());
+    let run_id = engine.start(spec(), json!({})).await.unwrap();
+    let snapshot = engine.snapshot(&run_id).await.unwrap();
+    let history = engine.history(&run_id).await.unwrap();
+
+    assert_eq!(runtime.attempts.load(Ordering::SeqCst), 1);
+    assert_eq!(snapshot.status, WorkflowRunStatus::Failed);
+    assert_eq!(
+        snapshot.terminal_outcome,
+        Some(WorkflowTerminalOutcome::Failed {
+            error: "non-retryable step error: permission denied".to_string(),
+        })
+    );
+    assert!(history.iter().any(|envelope| matches!(
+        envelope.event,
+        FlowEvent::StepNonRetryable { attempt: 1, .. }
+    )));
+    assert!(!history
+        .iter()
+        .any(|envelope| matches!(envelope.event, FlowEvent::StepRetrying { .. })));
+}
+
 #[async_trait]
 impl FlowRuntime for RecoverableStepFailureRuntime {
     async fn run_workflow(
@@ -267,6 +317,51 @@ async fn delayed_step_retry_suspends_until_due() {
     );
     assert_eq!(completed.steps["delayed-flaky"].retry_after, None);
     assert_eq!(completed.output.unwrap()["attempt"], 2);
+}
+
+struct SlowFailureRuntime {
+    attempts: AtomicUsize,
+}
+
+#[async_trait]
+impl FlowRuntime for SlowFailureRuntime {
+    async fn run_workflow(
+        &self,
+        invocation: WorkflowInvocation,
+    ) -> a3s_flow::Result<RuntimeCommand> {
+        Ok(invocation.context().schedule_step_with_retry(
+            "slow-failure",
+            "slowFailureStep",
+            json!({}),
+            RetryPolicy::fixed(2, Duration::from_millis(100)),
+        ))
+    }
+
+    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+        self.attempts.fetch_add(1, Ordering::SeqCst);
+        tokio::time::sleep(Duration::from_millis(25)).await;
+        Err(FlowError::Runtime("slow failure".to_string()))
+    }
+}
+
+#[tokio::test]
+async fn retry_deadline_is_anchored_after_a_long_step_failure() {
+    let runtime = Arc::new(SlowFailureRuntime {
+        attempts: AtomicUsize::new(0),
+    });
+    let engine = FlowEngine::in_memory(runtime.clone());
+    let run_id = engine.start(spec(), json!({})).await.unwrap();
+    let history = engine.history(&run_id).await.unwrap();
+    let retry = history
+        .iter()
+        .find(|envelope| matches!(envelope.event, FlowEvent::StepRetrying { .. }))
+        .expect("slow failure must schedule a retry");
+    let retry_after = engine.snapshot(&run_id).await.unwrap().steps["slow-failure"]
+        .retry_after
+        .expect("retry deadline");
+
+    assert!(retry_after > retry.timestamp);
+    assert_eq!(runtime.attempts.load(Ordering::SeqCst), 1);
 }
 
 #[derive(Default)]
@@ -506,4 +601,140 @@ async fn stores_spec_with_run_for_runtime_replay() {
         vec![2],
         "workflow replay receives run_created and run_started"
     );
+}
+
+struct StepNonRetryableBesideOpenTimerRuntime;
+
+#[async_trait]
+impl FlowRuntime for StepNonRetryableBesideOpenTimerRuntime {
+    async fn run_workflow(
+        &self,
+        invocation: WorkflowInvocation,
+    ) -> a3s_flow::Result<RuntimeCommand> {
+        let context = invocation.context();
+        if let Some(error) = context.step_failed("primary") {
+            return Ok(context.complete(json!({ "failed": error })));
+        }
+        let stepped = invocation.history.iter().any(|envelope| {
+            matches!(
+                &envelope.event,
+                FlowEvent::StepCreated { step_id, .. } if step_id == "primary"
+            )
+        });
+        if context.update("arm").is_some() && !stepped {
+            return Ok(context.schedule_step_with_retry(
+                "primary",
+                "primaryStep",
+                json!({}),
+                RetryPolicy::none().continue_workflow_on_failure(),
+            ));
+        }
+        Ok(context.wait_until("hold", "2030-01-01T00:00:00Z".parse().unwrap()))
+    }
+
+    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+        Err(FlowError::NonRetryable("permission denied".to_string()))
+    }
+
+    async fn run_update(
+        &self,
+        _invocation: a3s_flow::UpdateInvocation,
+    ) -> a3s_flow::Result<serde_json::Value> {
+        Ok(json!({ "armed": true }))
+    }
+}
+
+struct CrashAfterStepNonRetryableStore {
+    inner: InMemoryEventStore,
+    armed: AtomicBool,
+}
+
+impl CrashAfterStepNonRetryableStore {
+    fn new() -> Self {
+        Self {
+            inner: InMemoryEventStore::new(),
+            armed: AtomicBool::new(false),
+        }
+    }
+}
+
+#[async_trait]
+impl FlowEventStore for CrashAfterStepNonRetryableStore {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+        self.inner.append(run_id, event).await
+    }
+
+    async fn append_if_sequence(
+        &self,
+        run_id: &str,
+        expected_sequence: u64,
+        event: FlowEvent,
+    ) -> a3s_flow::Result<FlowEventEnvelope> {
+        let envelope = self
+            .inner
+            .append_if_sequence(run_id, expected_sequence, event.clone())
+            .await?;
+        if matches!(
+            event,
+            FlowEvent::StepNonRetryable { ref step_id, .. } if step_id == "primary"
+        ) && self.armed.swap(false, Ordering::SeqCst)
+        {
+            return Err(FlowError::Store(
+                "injected crash after StepNonRetryable before observation drive".into(),
+            ));
+        }
+        Ok(envelope)
+    }
+
+    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+        self.inner.list(run_id).await
+    }
+
+    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+        self.inner.list_run_ids().await
+    }
+}
+
+#[tokio::test]
+async fn step_non_retryable_recovery_wakes_via_drive_while_unscoped_timer_is_open() {
+    let store = Arc::new(CrashAfterStepNonRetryableStore::new());
+    let engine = FlowEngine::new(
+        store.clone(),
+        Arc::new(StepNonRetryableBesideOpenTimerRuntime),
+    );
+    engine
+        .start_with_id(
+            "step-non-retryable-drive",
+            spec().with_update("arm"),
+            json!({}),
+        )
+        .await
+        .unwrap();
+    engine.drive("step-non-retryable-drive").await.unwrap();
+
+    store.armed.store(true, Ordering::SeqCst);
+    let interrupted = engine
+        .apply_update(
+            "step-non-retryable-drive",
+            a3s_flow::WorkflowUpdate::new("arm-1", "arm", json!({})),
+        )
+        .await
+        .expect_err("crash after durable StepNonRetryable must interrupt");
+    assert!(
+        matches!(interrupted, FlowError::Store(_)),
+        "expected store crash, got {interrupted:?}"
+    );
+
+    let mid = engine.snapshot("step-non-retryable-drive").await.unwrap();
+    assert!(!mid.status.is_terminal());
+    assert_eq!(mid.steps["primary"].status, StepStatus::Failed);
+    assert_eq!(mid.waits["hold"].status, WaitStatus::Waiting);
+
+    let recovered = engine.drive("step-non-retryable-drive").await.unwrap();
+    assert_eq!(
+        recovered.output,
+        Some(json!({ "failed": "non-retryable step error: permission denied" })),
+        "drive must observe tip StepNonRetryable beside an open unscoped timer"
+    );
+    assert_eq!(recovered.status, WorkflowRunStatus::Completed);
 }

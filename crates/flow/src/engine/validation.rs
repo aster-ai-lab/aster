@@ -4,10 +4,10 @@ use std::collections::BTreeSet;
 
 use crate::error::{FlowError, Result};
 use crate::model::{
-    validate_child_workflow_command, ChildOperationReference, ChildWorkflowCancellationPolicy,
-    ChildWorkflowCommand, ChildWorkflowSnapshot, HookSnapshot, RetryPolicy, SignalWaitSnapshot,
-    StepCommand, StepSnapshot, WaitSnapshot, WorkflowProgress, WorkflowRunSnapshot, WorkflowSpec,
-    MAX_CHILD_WORKFLOW_BATCH_SIZE,
+    validate_child_workflow_command, ActivityCommand, ActivitySnapshot, ChildOperationReference,
+    ChildWorkflowCancellationPolicy, ChildWorkflowCommand, ChildWorkflowSnapshot, HookSnapshot,
+    RetryPolicy, SignalWaitSnapshot, StepCommand, StepSnapshot, WaitSnapshot, WorkflowProgress,
+    WorkflowRunSnapshot, WorkflowSpec, MAX_CHILD_WORKFLOW_BATCH_SIZE,
 };
 
 pub(super) fn ensure_same_start(
@@ -126,21 +126,78 @@ pub(super) fn ensure_step_command_matches(
     Ok(())
 }
 
+pub(super) fn ensure_activity_command_matches(
+    run_id: &str,
+    activity: &ActivitySnapshot,
+    activity_name: &str,
+    input: &serde_json::Value,
+    retry: RetryPolicy,
+    timeout_ms: Option<u64>,
+) -> Result<()> {
+    if activity.activity_name != activity_name {
+        return Err(FlowError::NonDeterministic {
+            run_id: run_id.to_string(),
+            reason: format!(
+                "activity {} name differs: {}",
+                activity.activity_id,
+                replay_diff(&activity.activity_name, &activity_name.to_string())
+            ),
+        });
+    }
+    if activity.input != *input {
+        return Err(FlowError::NonDeterministic {
+            run_id: run_id.to_string(),
+            reason: format!(
+                "activity {} input differs: {}",
+                activity.activity_id,
+                replay_diff(&activity.input, input)
+            ),
+        });
+    }
+    if activity.retry != retry {
+        return Err(FlowError::NonDeterministic {
+            run_id: run_id.to_string(),
+            reason: format!(
+                "activity {} retry policy differs: {}",
+                activity.activity_id,
+                replay_diff(&activity.retry, &retry)
+            ),
+        });
+    }
+    if activity.timeout_ms != timeout_ms {
+        return Err(FlowError::NonDeterministic {
+            run_id: run_id.to_string(),
+            reason: format!("activity {} timeout differs", activity.activity_id),
+        });
+    }
+    Ok(())
+}
+
+pub(super) fn ensure_activity_command_valid(command: &ActivityCommand) -> Result<()> {
+    crate::model::activity_deadline(Utc::now(), command.timeout_ms)?;
+    if command.activity_id.trim().is_empty() {
+        return Err(FlowError::InvalidTransition(
+            "scheduled activity id must not be empty".to_string(),
+        ));
+    }
+    if command.activity_name.trim().is_empty() {
+        return Err(FlowError::InvalidTransition(
+            "scheduled activity name must not be empty".to_string(),
+        ));
+    }
+    Ok(())
+}
+
 pub(super) fn ensure_wait_command_matches(
     run_id: &str,
     wait: &WaitSnapshot,
     resume_at: DateTime<Utc>,
 ) -> Result<()> {
-    if wait.resume_at != resume_at {
-        return Err(FlowError::NonDeterministic {
-            run_id: run_id.to_string(),
-            reason: format!(
-                "wait {} resume_at differs: {}",
-                wait.wait_id,
-                replay_diff(&wait.resume_at, &resume_at)
-            ),
-        });
-    }
+    // Durable waits already own `resume_at` at WaitCreated. Forced replay after
+    // updates/hooks/signals commonly re-issues `wait_until` with a recomputed
+    // `Utc::now() + delay`; comparing wall-clock times would fail closed for
+    // deterministic wait identities. Changing a deadline requires a new wait id.
+    let _ = (run_id, wait, resume_at);
     Ok(())
 }
 

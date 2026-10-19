@@ -1,10 +1,10 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use a3s_orm::{sql_query, PostgresTransaction};
+use a3s_orm::{sql_query, PostgresExecutor, PostgresTransaction};
 use chrono::Utc;
 
 use crate::error::{FlowError, Result};
-use crate::model::FlowEventEnvelope;
+use crate::model::{project_run, FlowEventEnvelope};
 
 use super::{
     execute_postgres, fetch_all_postgres, fetch_optional_postgres, latest_postgres_sequence,
@@ -18,7 +18,7 @@ use crate::store::{
 
 pub(super) use crate::store::retention::required_linked_flow_run_id;
 
-const RETENTION_GUARD_LOCK_ID: &str = "a3s-flow-history-retention-guard";
+const RETENTION_GUARD_LOCK_ID: &str = "kense-flow-history-retention-guard";
 
 impl PostgresEventStore {
     /// Persist an audit hold that prevents a run history from being pruned.
@@ -127,18 +127,9 @@ impl PostgresEventStore {
         rows.into_iter().map(history_hold_row).collect()
     }
 
-    /// Read the minimal audit tombstone retained after history deletion.
+    /// Read the audit tombstone left after `run_id` was pruned, if any.
     pub async fn history_tombstone(&self, run_id: &str) -> Result<Option<FlowHistoryTombstone>> {
-        fetch_optional_postgres(
-            &self.executor,
-            sql_query::<(String, String, i64, String, String, String)>(
-                "SELECT run_id, deleted_at, terminal_sequence, terminal_event_id, terminal_event_key, history_sha256 FROM flow_history_tombstones WHERE run_id = ",
-            )
-            .bind(run_id),
-        )
-        .await?
-        .map(history_tombstone_row)
-        .transpose()
+        load_postgres_history_tombstone(&self.executor, run_id).await
     }
 
     /// Delete complete eligible terminal histories in one consistent scan.
@@ -161,6 +152,34 @@ impl PostgresEventStore {
     }
 }
 
+pub(super) async fn postgres_tombstoned_run_ids(
+    executor: &PostgresExecutor,
+) -> Result<BTreeSet<String>> {
+    Ok(fetch_all_postgres(
+        executor,
+        sql_query::<String>("SELECT run_id FROM flow_history_tombstones"),
+    )
+    .await?
+    .into_iter()
+    .collect())
+}
+
+pub(super) async fn load_postgres_history_tombstone(
+    executor: &PostgresExecutor,
+    run_id: &str,
+) -> Result<Option<FlowHistoryTombstone>> {
+    fetch_optional_postgres(
+        executor,
+        sql_query::<(String, String, i64, String, String, String)>(
+            "SELECT run_id, deleted_at, terminal_sequence, terminal_event_id, terminal_event_key, history_sha256 FROM flow_history_tombstones WHERE run_id = ",
+        )
+        .bind(run_id),
+    )
+    .await?
+    .map(history_tombstone_row)
+    .transpose()
+}
+
 async fn prune_postgres_history(
     transaction: &PostgresTransaction,
     policy: &FlowHistoryRetentionPolicy,
@@ -179,8 +198,8 @@ async fn prune_postgres_history(
 
     let rows = fetch_all_postgres(
         transaction,
-        sql_query::<(String, i64, String, String, String)>(
-            "SELECT run_id, sequence, event_id, timestamp, event_json FROM flow_events ORDER BY run_id ASC, sequence ASC",
+        sql_query::<(String, i64, String, String, i64, String)>(
+            "SELECT run_id, sequence, event_id, timestamp, schema_version, event_json FROM flow_events ORDER BY run_id ASC, sequence ASC",
         ),
     )
     .await?;
@@ -200,53 +219,137 @@ async fn prune_postgres_history(
     .await?
     .into_iter()
     .collect::<BTreeSet<_>>();
-
-    let mut plan = plan_history_retention(&histories, &hold_run_ids, policy, "PostgreSQL")?;
+    let tombstoned_run_ids = fetch_all_postgres(
+        transaction,
+        sql_query::<String>("SELECT run_id FROM flow_history_tombstones"),
+    )
+    .await?
+    .into_iter()
+    .collect::<BTreeSet<_>>();
+    let mut plan = plan_history_retention(
+        &histories,
+        &hold_run_ids,
+        &tombstoned_run_ids,
+        policy,
+        "PostgreSQL",
+    )?;
 
     for run_id in &plan.deletable_run_ids {
         let history = histories.get(run_id).ok_or_else(|| {
             FlowError::Store(format!("retention lost PostgreSQL history for {run_id}"))
         })?;
-        let terminal = history.last().ok_or_else(|| {
-            FlowError::Store(format!(
-                "retention found empty PostgreSQL history for {run_id}"
-            ))
-        })?;
-        let terminal_sequence = i64::try_from(terminal.sequence).map_err(|error| {
-            FlowError::Store(format!(
-                "terminal sequence {} for {run_id} exceeds PostgreSQL bigint: {error}",
-                terminal.sequence
-            ))
-        })?;
-        let history_sha256 = history_checksum(history)?;
-        execute_postgres(
-            transaction,
-            sql_query::<()>(
-                "INSERT INTO flow_history_tombstones (run_id, deleted_at, terminal_sequence, terminal_event_id, terminal_event_key, history_sha256) VALUES (",
-            )
-            .bind(run_id.clone())
-            .append(", ")
-            .bind(Utc::now().to_rfc3339())
-            .append(", ")
-            .bind(terminal_sequence)
-            .append(", ")
-            .bind(terminal.event_id.to_string())
-            .append(", ")
-            .bind(terminal.event.event_key())
-            .append(", ")
-            .bind(history_sha256)
-            .append(")"),
-        )
-        .await?;
-        execute_postgres(
-            transaction,
-            sql_query::<()>("DELETE FROM flow_events WHERE run_id = ").bind(run_id.clone()),
-        )
-        .await?;
+        delete_postgres_terminal_history(transaction, run_id, history).await?;
     }
 
     plan.report.deleted_run_ids = plan.deletable_run_ids.into_iter().collect();
     Ok(plan.report)
+}
+
+async fn delete_postgres_terminal_history(
+    transaction: &PostgresTransaction,
+    run_id: &str,
+    history: &[FlowEventEnvelope],
+) -> Result<()> {
+    let terminal = history.last().ok_or_else(|| {
+        FlowError::Store(format!(
+            "retention found empty PostgreSQL history for {run_id}"
+        ))
+    })?;
+    let terminal_sequence = i64::try_from(terminal.sequence).map_err(|error| {
+        FlowError::Store(format!(
+            "terminal sequence {} for {run_id} exceeds PostgreSQL bigint: {error}",
+            terminal.sequence
+        ))
+    })?;
+    execute_postgres(
+        transaction,
+        sql_query::<()>(
+            "INSERT INTO flow_history_tombstones (run_id, deleted_at, terminal_sequence, terminal_event_id, terminal_event_key, history_sha256) VALUES (",
+        )
+        .bind(run_id.to_string())
+        .append(", ")
+        .bind(Utc::now().to_rfc3339())
+        .append(", ")
+        .bind(terminal_sequence)
+        .append(", ")
+        .bind(terminal.event_id.to_string())
+        .append(", ")
+        .bind(terminal.event.event_key())
+        .append(", ")
+        .bind(history_checksum(history)?)
+        .append(")"),
+    )
+    .await?;
+    execute_postgres(
+        transaction,
+        sql_query::<()>("DELETE FROM flow_projection_checkpoints WHERE run_id = ")
+            .bind(run_id.to_string()),
+    )
+    .await?;
+    execute_postgres(
+        transaction,
+        sql_query::<()>("DELETE FROM flow_history_partitions WHERE run_id = ")
+            .bind(run_id.to_string()),
+    )
+    .await?;
+    execute_postgres(
+        transaction,
+        sql_query::<()>("DELETE FROM flow_events WHERE run_id = ").bind(run_id.to_string()),
+    )
+    .await?;
+    Ok(())
+}
+
+pub(super) async fn retire_postgres_planned_history(
+    transaction: &PostgresTransaction,
+    run_id: &str,
+) -> Result<()> {
+    lock_postgres_run(transaction, run_id).await?;
+    let held = fetch_optional_postgres(
+        transaction,
+        sql_query::<String>("SELECT run_id FROM flow_history_holds WHERE run_id = ").bind(run_id),
+    )
+    .await?
+    .is_some();
+    if held {
+        return Err(FlowError::Store(format!(
+            "refusing to retire held PostgreSQL history for {run_id}"
+        )));
+    }
+    let rows = fetch_all_postgres(
+        transaction,
+        sql_query::<(String, i64, String, String, i64, String)>(
+            "SELECT run_id, sequence, event_id, timestamp, schema_version, event_json FROM flow_events WHERE run_id = ",
+        )
+        .bind(run_id)
+        .append(" ORDER BY sequence ASC"),
+    )
+    .await?;
+    if rows.is_empty() {
+        return Err(FlowError::RunNotFound(run_id.to_string()));
+    }
+    let history = rows
+        .into_iter()
+        .map(row_to_envelope)
+        .collect::<Result<Vec<_>>>()?;
+    if !project_run(run_id, &history)?.status.is_terminal() {
+        return Err(FlowError::Store(format!(
+            "refusing to retire non-terminal PostgreSQL history for {run_id}"
+        )));
+    }
+    delete_postgres_terminal_history(transaction, run_id, &history).await
+}
+
+pub(super) async fn postgres_held_run_ids(
+    transaction: &PostgresTransaction,
+) -> Result<BTreeSet<String>> {
+    Ok(fetch_all_postgres(
+        transaction,
+        sql_query::<String>("SELECT DISTINCT run_id FROM flow_history_holds"),
+    )
+    .await?
+    .into_iter()
+    .collect())
 }
 
 fn history_hold_row(

@@ -1,12 +1,13 @@
 use a3s_flow::{
-    FlowEngine, FlowError, FlowRuntime, FlowScheduler, FlowTask, FlowTaskQueue, FlowWorker,
-    InMemoryFlowTaskQueue, RetryPolicy, RuntimeCommand, StepInvocation, WorkflowInvocation,
-    WorkflowRunStatus, WorkflowSpec,
+    FlowEngine, FlowError, FlowEvent, FlowEventEnvelope, FlowEventStore, FlowRuntime,
+    FlowScheduler, FlowTask, FlowTaskQueue, FlowWorker, InMemoryEventStore, InMemoryFlowTaskQueue,
+    RetryPolicy, RuntimeCommand, StepInvocation, WaitStatus, WorkflowInvocation, WorkflowRunStatus,
+    WorkflowSpec, WorkflowUpdate,
 };
 use async_trait::async_trait;
 use chrono::{DateTime, Duration as ChronoDuration, Utc};
 use serde_json::json;
-use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
 
@@ -334,4 +335,456 @@ async fn scheduler_groups_due_retry_siblings_into_one_run_task() {
         engine.snapshot(&run_id).await.unwrap().status,
         WorkflowRunStatus::Completed
     );
+}
+
+struct WaitBesideOpenTimerRuntime;
+
+#[async_trait]
+impl FlowRuntime for WaitBesideOpenTimerRuntime {
+    async fn run_workflow(
+        &self,
+        invocation: WorkflowInvocation,
+    ) -> a3s_flow::Result<RuntimeCommand> {
+        let context = invocation.context();
+        if context.wait_completed("due") {
+            return Ok(context.complete(json!("due")));
+        }
+        let armed = invocation
+            .history
+            .iter()
+            .any(|envelope| matches!(&envelope.event, FlowEvent::WaitCreated { wait_id, .. } if wait_id == "due"));
+        if context.update("arm").is_some() && !armed {
+            return Ok(context.wait_until("due", Utc::now() - ChronoDuration::seconds(5)));
+        }
+        Ok(context.wait_until("hold", "2030-01-01T00:00:00Z".parse().unwrap()))
+    }
+
+    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+        unreachable!("wait-beside-timer runtime does not schedule steps")
+    }
+
+    async fn run_update(
+        &self,
+        _invocation: a3s_flow::UpdateInvocation,
+    ) -> a3s_flow::Result<serde_json::Value> {
+        Ok(json!({ "armed": true }))
+    }
+}
+
+#[tokio::test]
+async fn due_wait_wakes_workflow_while_another_timer_is_open() {
+    let engine = FlowEngine::in_memory(Arc::new(WaitBesideOpenTimerRuntime));
+    engine
+        .start_with_id("wait-beside-timer", spec().with_update("arm"), json!({}))
+        .await
+        .unwrap();
+    let armed = engine
+        .apply_update(
+            "wait-beside-timer",
+            WorkflowUpdate::new("arm-1", "arm", json!({})),
+        )
+        .await
+        .unwrap();
+    assert_eq!(armed.snapshot.status, WorkflowRunStatus::Suspended);
+    assert!(armed.snapshot.waits["hold"].status == a3s_flow::WaitStatus::Waiting);
+    assert!(armed.snapshot.waits["due"].status == a3s_flow::WaitStatus::Waiting);
+
+    engine
+        .resume_wait("wait-beside-timer", "due")
+        .await
+        .unwrap();
+
+    let snapshot = engine.snapshot("wait-beside-timer").await.unwrap();
+    assert_eq!(snapshot.status, WorkflowRunStatus::Completed);
+    assert_eq!(snapshot.output, Some(json!("due")));
+}
+
+struct CrashAfterWaitCompletedStore {
+    inner: InMemoryEventStore,
+    armed: AtomicBool,
+}
+
+impl CrashAfterWaitCompletedStore {
+    fn new() -> Self {
+        Self {
+            inner: InMemoryEventStore::new(),
+            armed: AtomicBool::new(false),
+        }
+    }
+}
+
+#[async_trait]
+impl FlowEventStore for CrashAfterWaitCompletedStore {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+        self.inner.append(run_id, event).await
+    }
+
+    async fn append_if_sequence(
+        &self,
+        run_id: &str,
+        expected_sequence: u64,
+        event: FlowEvent,
+    ) -> a3s_flow::Result<FlowEventEnvelope> {
+        let envelope = self
+            .inner
+            .append_if_sequence(run_id, expected_sequence, event.clone())
+            .await?;
+        if matches!(
+            event,
+            FlowEvent::WaitCompleted { ref wait_id } if wait_id == "due"
+        ) && self.armed.swap(false, Ordering::SeqCst)
+        {
+            return Err(FlowError::Store(
+                "injected crash after WaitCompleted before observation drive".into(),
+            ));
+        }
+        Ok(envelope)
+    }
+
+    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+        self.inner.list(run_id).await
+    }
+
+    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+        self.inner.list_run_ids().await
+    }
+}
+
+#[tokio::test]
+async fn wait_completed_recovery_wakes_via_drive_while_unscoped_timer_is_open() {
+    let store = Arc::new(CrashAfterWaitCompletedStore::new());
+    let engine = FlowEngine::new(store.clone(), Arc::new(WaitBesideOpenTimerRuntime));
+    engine
+        .start_with_id("wait-completed-drive", spec().with_update("arm"), json!({}))
+        .await
+        .unwrap();
+    engine
+        .apply_update(
+            "wait-completed-drive",
+            WorkflowUpdate::new("arm-1", "arm", json!({})),
+        )
+        .await
+        .unwrap();
+
+    store.armed.store(true, Ordering::SeqCst);
+    let interrupted = engine
+        .resume_wait("wait-completed-drive", "due")
+        .await
+        .expect_err("crash after durable WaitCompleted must interrupt");
+    assert!(matches!(interrupted, FlowError::Store(_)));
+
+    let mid = engine.snapshot("wait-completed-drive").await.unwrap();
+    assert!(!mid.status.is_terminal());
+    assert_eq!(mid.waits["due"].status, WaitStatus::Completed);
+    assert_eq!(mid.waits["hold"].status, WaitStatus::Waiting);
+
+    // Ordinary DriveRun recovery — not resume_wait retry.
+    let recovered = engine.drive("wait-completed-drive").await.unwrap();
+    assert_eq!(
+        recovered.output,
+        Some(json!("due")),
+        "drive must observe tip WaitCompleted beside an open unscoped timer"
+    );
+    assert_eq!(recovered.status, WorkflowRunStatus::Completed);
+}
+
+struct RetryBesideOpenTimerRuntime {
+    attempts: AtomicUsize,
+}
+
+#[async_trait]
+impl FlowRuntime for RetryBesideOpenTimerRuntime {
+    async fn run_workflow(
+        &self,
+        invocation: WorkflowInvocation,
+    ) -> a3s_flow::Result<RuntimeCommand> {
+        let context = invocation.context();
+        if let Some(output) = context.step_output("flaky") {
+            return Ok(context.complete(output.clone()));
+        }
+        if context.update("arm").is_some() {
+            return Ok(context.schedule_step_with_retry(
+                "flaky",
+                "flakyStep",
+                json!({}),
+                RetryPolicy::fixed(2, Duration::from_secs(60)),
+            ));
+        }
+        Ok(context.wait_until("hold", "2030-01-01T00:00:00Z".parse().unwrap()))
+    }
+
+    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+        let attempt = self.attempts.fetch_add(1, Ordering::SeqCst);
+        if attempt == 0 {
+            Err(FlowError::Runtime("first attempt failed".to_string()))
+        } else {
+            Ok(json!({ "attempt": attempt + 1 }))
+        }
+    }
+
+    async fn run_update(
+        &self,
+        _invocation: a3s_flow::UpdateInvocation,
+    ) -> a3s_flow::Result<serde_json::Value> {
+        Ok(json!({ "armed": true }))
+    }
+}
+
+#[tokio::test]
+async fn due_retry_runs_while_another_timer_is_open() {
+    let runtime = Arc::new(RetryBesideOpenTimerRuntime {
+        attempts: AtomicUsize::new(0),
+    });
+    let engine = FlowEngine::in_memory(runtime.clone());
+    engine
+        .start_with_id("retry-beside-timer", spec().with_update("arm"), json!({}))
+        .await
+        .unwrap();
+    engine
+        .apply_update(
+            "retry-beside-timer",
+            WorkflowUpdate::new("arm-1", "arm", json!({})),
+        )
+        .await
+        .unwrap();
+    assert_eq!(runtime.attempts.load(Ordering::SeqCst), 1);
+    assert_eq!(
+        engine.snapshot("retry-beside-timer").await.unwrap().status,
+        WorkflowRunStatus::Suspended
+    );
+
+    let resumed = engine
+        .resume_scheduled_run(
+            "retry-beside-timer",
+            Utc::now() + ChronoDuration::seconds(120),
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(runtime.attempts.load(Ordering::SeqCst), 2);
+    assert!(resumed.iter().any(|wakeup| {
+        wakeup.kind == a3s_flow::ScheduledWakeupKind::Retry && wakeup.subject_id == "flaky"
+    }));
+    let snapshot = engine.snapshot("retry-beside-timer").await.unwrap();
+    assert_eq!(snapshot.status, WorkflowRunStatus::Completed);
+    assert_eq!(snapshot.output, Some(json!({ "attempt": 2 })));
+}
+
+struct StepBesideOpenTimerRuntime;
+
+#[async_trait]
+impl FlowRuntime for StepBesideOpenTimerRuntime {
+    async fn run_workflow(
+        &self,
+        invocation: WorkflowInvocation,
+    ) -> a3s_flow::Result<RuntimeCommand> {
+        let context = invocation.context();
+        if let Some(output) = context.step_output("work") {
+            return Ok(context.complete(output.clone()));
+        }
+        let stepped = invocation.history.iter().any(|envelope| {
+            matches!(
+                &envelope.event,
+                FlowEvent::StepCreated { step_id, .. } if step_id == "work"
+            )
+        });
+        if context.update("arm").is_some() && !stepped {
+            return Ok(context.schedule_step("work", "workStep", json!({})));
+        }
+        Ok(context.wait_until("hold", "2030-01-01T00:00:00Z".parse().unwrap()))
+    }
+
+    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+        Ok(json!({ "done": true }))
+    }
+
+    async fn run_update(
+        &self,
+        _invocation: a3s_flow::UpdateInvocation,
+    ) -> a3s_flow::Result<serde_json::Value> {
+        Ok(json!({ "armed": true }))
+    }
+}
+
+struct CrashAfterStepCompletedStore {
+    inner: InMemoryEventStore,
+    armed: AtomicBool,
+}
+
+impl CrashAfterStepCompletedStore {
+    fn new() -> Self {
+        Self {
+            inner: InMemoryEventStore::new(),
+            armed: AtomicBool::new(false),
+        }
+    }
+}
+
+#[async_trait]
+impl FlowEventStore for CrashAfterStepCompletedStore {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+        self.inner.append(run_id, event).await
+    }
+
+    async fn append_if_sequence(
+        &self,
+        run_id: &str,
+        expected_sequence: u64,
+        event: FlowEvent,
+    ) -> a3s_flow::Result<FlowEventEnvelope> {
+        let envelope = self
+            .inner
+            .append_if_sequence(run_id, expected_sequence, event.clone())
+            .await?;
+        if matches!(
+            event,
+            FlowEvent::StepCompleted { ref step_id, .. } if step_id == "work"
+        ) && self.armed.swap(false, Ordering::SeqCst)
+        {
+            return Err(FlowError::Store(
+                "injected crash after StepCompleted before observation drive".into(),
+            ));
+        }
+        Ok(envelope)
+    }
+
+    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+        self.inner.list(run_id).await
+    }
+
+    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+        self.inner.list_run_ids().await
+    }
+}
+
+#[tokio::test]
+async fn step_completed_recovery_wakes_via_drive_while_unscoped_timer_is_open() {
+    let store = Arc::new(CrashAfterStepCompletedStore::new());
+    let engine = FlowEngine::new(store.clone(), Arc::new(StepBesideOpenTimerRuntime));
+    engine
+        .start_with_id("step-completed-drive", spec().with_update("arm"), json!({}))
+        .await
+        .unwrap();
+    engine.drive("step-completed-drive").await.unwrap();
+
+    store.armed.store(true, Ordering::SeqCst);
+    let interrupted = engine
+        .apply_update(
+            "step-completed-drive",
+            WorkflowUpdate::new("arm-1", "arm", json!({})),
+        )
+        .await
+        .expect_err("crash after durable StepCompleted must interrupt");
+    assert!(matches!(interrupted, FlowError::Store(_)));
+
+    let mid = engine.snapshot("step-completed-drive").await.unwrap();
+    assert!(!mid.status.is_terminal());
+    assert_eq!(mid.steps["work"].status, a3s_flow::StepStatus::Completed);
+    assert_eq!(mid.waits["hold"].status, WaitStatus::Waiting);
+
+    let recovered = engine.drive("step-completed-drive").await.unwrap();
+    assert_eq!(
+        recovered.output,
+        Some(json!({ "done": true })),
+        "drive must observe tip StepCompleted beside an open unscoped timer"
+    );
+    assert_eq!(recovered.status, WorkflowRunStatus::Completed);
+}
+
+fn sleeping_child_spec() -> WorkflowSpec {
+    WorkflowSpec::rust_embedded(
+        "scheduler.sleeping-child",
+        "0.1.0",
+        "tests::scheduler",
+        "child",
+    )
+}
+
+struct RetryBesideOpenChildRuntime {
+    attempts: AtomicUsize,
+}
+
+#[async_trait]
+impl FlowRuntime for RetryBesideOpenChildRuntime {
+    async fn run_workflow(
+        &self,
+        invocation: WorkflowInvocation,
+    ) -> a3s_flow::Result<RuntimeCommand> {
+        let context = invocation.context();
+        if invocation.spec.name == "scheduler.sleeping-child" {
+            return Ok(context.wait_until("child-hold", "2030-01-01T00:00:00Z".parse().unwrap()));
+        }
+        if context.step_output("flaky").is_some() {
+            return Ok(context.start_child_workflow("sleeper", sleeping_child_spec(), json!({})));
+        }
+        if context.update("arm").is_some() {
+            return Ok(context.schedule_step_with_retry(
+                "flaky",
+                "flakyStep",
+                json!({}),
+                RetryPolicy::fixed(2, Duration::from_secs(60)),
+            ));
+        }
+        Ok(context.start_child_workflow("sleeper", sleeping_child_spec(), json!({})))
+    }
+
+    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+        let attempt = self.attempts.fetch_add(1, Ordering::SeqCst);
+        if attempt == 0 {
+            Err(FlowError::Runtime("first attempt failed".to_string()))
+        } else {
+            Ok(json!({ "attempt": attempt + 1 }))
+        }
+    }
+
+    async fn run_update(
+        &self,
+        _invocation: a3s_flow::UpdateInvocation,
+    ) -> a3s_flow::Result<serde_json::Value> {
+        Ok(json!({ "armed": true }))
+    }
+}
+
+#[tokio::test]
+async fn due_retry_runs_while_a_child_workflow_is_open() {
+    let runtime = Arc::new(RetryBesideOpenChildRuntime {
+        attempts: AtomicUsize::new(0),
+    });
+    let engine = FlowEngine::in_memory(runtime.clone());
+    engine
+        .start_with_id("retry-beside-child", spec().with_update("arm"), json!({}))
+        .await
+        .unwrap();
+    assert!(engine
+        .snapshot("retry-beside-child")
+        .await
+        .unwrap()
+        .child_workflow("sleeper")
+        .unwrap()
+        .is_open());
+
+    engine
+        .apply_update(
+            "retry-beside-child",
+            WorkflowUpdate::new("arm-1", "arm", json!({})),
+        )
+        .await
+        .unwrap();
+    assert_eq!(runtime.attempts.load(Ordering::SeqCst), 1);
+
+    engine
+        .resume_scheduled_run(
+            "retry-beside-child",
+            Utc::now() + ChronoDuration::seconds(120),
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(runtime.attempts.load(Ordering::SeqCst), 2);
+    let snapshot = engine.snapshot("retry-beside-child").await.unwrap();
+    assert_eq!(
+        snapshot.step_output("flaky"),
+        Some(&json!({ "attempt": 2 }))
+    );
+    assert!(snapshot.child_workflow("sleeper").unwrap().is_open());
 }

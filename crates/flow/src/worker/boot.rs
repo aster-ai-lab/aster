@@ -264,7 +264,7 @@ impl BootFlowTaskManager {
                 async move {
                     let task = job.data_as::<FlowTask>()?;
                     handle_flow_task(&engine, task).await.map_err(|error| {
-                        BootError::Internal(format!("A3S Flow task handling failed: {error}"))
+                        BootError::Internal(format!("Kense Flow task handling failed: {error}"))
                     })?;
                     Ok(())
                 }
@@ -356,7 +356,7 @@ fn flow_task_deduplication_id(job_name: &str, task: &FlowTask) -> String {
         FlowTask::ResumeDueRetries { .. } => "resume_due_retries",
     };
     hash_deduplication_field(&mut hasher, kind);
-    format!("a3s-flow:{kind}:{:x}", hasher.finalize())
+    format!("kense-flow:{kind}:{:x}", hasher.finalize())
 }
 
 fn hash_deduplication_field(hasher: &mut Sha256, value: &str) {

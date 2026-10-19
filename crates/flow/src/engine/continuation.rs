@@ -69,7 +69,27 @@ impl FlowEngine {
         run_id: &str,
         now: DateTime<Utc>,
     ) -> Result<WorkflowRunSnapshot> {
-        self.drive_at_with_child_context(run_id, now, 0, &BTreeSet::new())
+        self.drive_at_with_child_context(run_id, now, 0, &BTreeSet::new(), false)
+            .await
+    }
+
+    /// Replay after a durable history mutation that may change the next command
+    /// even while suspensions remain open (for example an applied update).
+    pub(super) async fn drive_forcing_workflow_replay(
+        &self,
+        run_id: &str,
+    ) -> Result<WorkflowRunSnapshot> {
+        self.drive_forcing_workflow_replay_at(run_id, Utc::now())
+            .await
+    }
+
+    /// Same as [`Self::drive_forcing_workflow_replay`] at a caller-supplied clock.
+    pub(super) async fn drive_forcing_workflow_replay_at(
+        &self,
+        run_id: &str,
+        now: DateTime<Utc>,
+    ) -> Result<WorkflowRunSnapshot> {
+        self.drive_at_with_child_context(run_id, now, 0, &BTreeSet::new(), true)
             .await
     }
 
@@ -102,6 +122,7 @@ impl FlowEngine {
         now: DateTime<Utc>,
         child_depth: usize,
         ancestors: &BTreeSet<String>,
+        force_workflow_replay: bool,
     ) -> Result<WorkflowRunSnapshot> {
         let mut current_run_id = run_id.to_string();
         let mut visited = BTreeSet::new();
@@ -124,6 +145,7 @@ impl FlowEngine {
                     allow_continue_as_new,
                     child_depth,
                     &active_ancestry,
+                    force_workflow_replay && hop == 0,
                 )
                 .await?;
             let Some(successor_run_id) = self

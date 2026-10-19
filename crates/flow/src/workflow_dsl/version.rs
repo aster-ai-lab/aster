@@ -3,7 +3,7 @@ use semver::Version;
 use super::{WorkflowDslError, TESTED_WORKFLOW_DSL_VERSION};
 
 /// Compatibility of an imported workflow DSL with the version exercised by
-/// this release of A3S Flow.
+/// this release of Kense Flow.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[non_exhaustive]
 pub enum WorkflowDslCompatibility {
@@ -21,7 +21,7 @@ pub(super) fn classify_dsl_version(
     let current = Version::parse(TESTED_WORKFLOW_DSL_VERSION).map_err(|error| {
         WorkflowDslError::InvalidDocument {
             message: format!(
-                "A3S Flow tested workflow DSL version {TESTED_WORKFLOW_DSL_VERSION:?} is invalid: {error}"
+                "Kense Flow tested workflow DSL version {TESTED_WORKFLOW_DSL_VERSION:?} is invalid: {error}"
             ),
         }
     })?;

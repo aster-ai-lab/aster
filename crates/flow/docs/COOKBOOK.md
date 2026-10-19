@@ -359,6 +359,11 @@ queue
 let engine = FlowEngine::new(store, runtime);
 let worker = FlowWorker::new(engine.clone(), queue.clone())
     .with_heartbeat_interval(std::time::Duration::from_secs(30))?;
+
+// Embedded hosts can yield after a bounded fairness budget when the queue is
+// continuously replenished. Use run_until_idle() when an unbounded drain is
+// intentional.
+let _outcomes = worker.run_until_idle_bounded(100).await?;
 # Ok(())
 # }
 ```
@@ -387,7 +392,17 @@ let moved = queue
     )
     .await?;
 let dead = queue.dead_lettered_tasks().await?;
+if let Some(record) = dead.first() {
+    let redriven = queue.redrive_dead_lettered(&record.lease_id).await?;
+    assert!(redriven);
+}
 ```
+
+Redrive is an administrative action: local queues use a crash-safe stable
+pending identity, while PostgreSQL copies and removes the dead-letter row in
+one transaction. Repeating the same lease ID is idempotent; a custom queue
+must explicitly implement `FlowTaskQueue::redrive_dead_lettered` before a host
+can rely on it.
 
 The local backends serialize access inside one process. They are useful for
 developer tools, desktop apps, existing FlowWorker integrations, and embedded
@@ -531,10 +546,10 @@ active worker on that queue.
 Run the companion examples with:
 
 ```sh
-A3S_FLOW_POSTGRES_URL=postgres://user:pass@localhost:5432/a3s_flow \
+KENSE_FLOW_POSTGRES_URL=postgres://user:pass@localhost:5432/a3s_flow \
   cargo run --example postgres_durability --features postgres
 
-A3S_FLOW_POSTGRES_URL=postgres://user:pass@localhost:5432/a3s_flow \
+KENSE_FLOW_POSTGRES_URL=postgres://user:pass@localhost:5432/a3s_flow \
   cargo run --example postgres_task_queue_durability --features postgres
 ```
 
@@ -591,6 +606,11 @@ Step IDs are durable. Once a step is created, replay must return the same step
 name, input, and retry policy for that ID. If workflow code changes the
 definition, A3S Flow reports non-deterministic replay instead of silently doing
 new work under an old ID.
+
+Every step invocation also carries a one-based `attempt` and an opaque
+`idempotency_key` derived from the run, step, and attempt IDs. Use that key for
+an external write so a crash between the side effect and `step_completed` can
+be reconciled without creating a duplicate business result.
 
 Replay mismatch errors include compact `history=...; replay=...` command diffs
 for step definitions, wait deadlines, and hook metadata. Hook token mismatches
@@ -707,7 +727,14 @@ the configured maximum, then selects deterministic full jitter from the run,
 step, and failed-attempt identities. The persisted `retry_after` deadline is
 therefore bounded, spread across workers, and stable across restart. Use
 `RetryPolicy::fixed` when a constant delay is part of an existing replay
-contract.
+contract. Flow anchors a newly computed retry deadline at the actual failure
+clock (while retaining a scheduler-provided future cutoff), so a long-running
+step cannot make its next retry immediately overdue.
+
+For permanent application failures, return `FlowError::NonRetryable` from the
+step. Flow records a `step_non_retryable` marker and bypasses the retry budget;
+the configured `continue_workflow_on_failure()` policy still lets replay choose
+a fallback, while the default policy emits a typed run failure.
 
 Host loop:
 
@@ -788,7 +815,9 @@ commits `wait_completed` receives that wait in its returned list. A compatibilit
 `ResumeWait` task left behind by cancellation is acknowledged without being
 reported as resumed. The targeted scheduler path follows the same commit-report
 rule when duplicate tasks race, while `FlowEngine::resume_scheduled_run()` itself
-still returns the wakeups that were due when the call began.
+still returns the wakeups that were due when the call began. A direct
+`resume_wait()` call for an open future timer is rejected until its persisted
+deadline; terminal redelivery remains an idempotent no-op.
 
 For polling, give each wait a deterministic ID derived from the poll attempt,
 for example `poll-1`, `poll-2`, and so on. Reusing a completed wait ID for a new
@@ -871,6 +900,56 @@ history and possibly a task queue, so do not place secrets there unless those
 stores are approved for them. See `examples/workflow_signals.rs` and use hooks
 instead when a pre-created one-shot callback with a routable bearer token is
 the actual domain primitive.
+
+## Typed Workflow Updates
+
+Use updates when a host needs a synchronous, idempotent RPC that both returns a
+handler result and can change the next workflow decision. Declare every accepted
+name on the immutable run spec:
+
+```rust
+let spec = WorkflowSpec::rust_embedded("counter", "1", "counter", "main")
+    .with_update("bump");
+```
+
+Implement `FlowRuntime::run_update` to answer from durable history, then let
+workflow replay observe applied updates through `WorkflowContext`:
+
+```rust
+async fn run_update(&self, invocation: UpdateInvocation) -> a3s_flow::Result<JsonValue> {
+    Ok(json!({ "name": invocation.update.name, "input": invocation.update.input }))
+}
+
+async fn run_workflow(&self, invocation: WorkflowInvocation) -> a3s_flow::Result<RuntimeCommand> {
+    let ctx = invocation.context();
+    if ctx.update("bump").is_some() {
+        return Ok(RuntimeCommand::Complete {
+            output: json!({ "bumps": ctx.updates().len() }),
+        });
+    }
+    Ok(ctx.wait_until("pause", "2030-01-01T00:00:00Z".parse().unwrap()))
+}
+```
+
+Hosts supply a caller-owned `update_id` and retry the exact triple:
+
+```rust
+use a3s_flow::WorkflowUpdate;
+
+let outcome = engine
+    .apply_update(
+        "run-1",
+        WorkflowUpdate::new("upd-1", "bump", json!({ "by": 1 })),
+    )
+    .await?;
+assert_eq!(outcome.output["name"], "bump");
+```
+
+Identical retries return the stored output without another `run_update` call.
+Changing the name or input for the same `update_id` returns `UpdateConflict`.
+Unlike queries, updates append `update_applied` and force one workflow replay so
+open waits or hooks can observe the new history. Authorization and input schemas
+remain host-owned.
 
 ## Human Approval Or Webhook Callback
 
@@ -992,27 +1071,29 @@ its callback even though Flow redacts it from error diagnostics.
 
 ## Compensation
 
-A3S Flow does not have a special compensation command. Model compensation as
-ordinary durable steps that the workflow schedules after it observes a domain
-failure output.
+A3S Flow records compensation as durable markers plus ordinary steps. Markers
+do not execute undo logic; they make saga-style obligations visible to replay.
 
 Recommended shape:
 
-1. Side-effecting steps return domain results for recoverable business outcomes,
+1. After a forward side effect succeeds, record a compensation marker with a
+   stable `marker_id`, the forward-work identity in `compensates`, and any
+   details needed later (for example a reservation id).
+2. Side-effecting steps return domain results for recoverable business outcomes,
    such as `{ "ok": false, "reason": "card_declined" }`.
-2. Reserve `Err(...)` from `run_step` for infrastructure or programmer errors
+3. Reserve `Err(...)` from `run_step` for infrastructure or programmer errors
    that should retry or fail the run.
-3. When replay observes a recoverable failure output, schedule a compensating
-   step such as `void_authorization` or `release_inventory`.
-4. Complete with a final output that includes the original failure and the
+4. When replay observes a recoverable failure, read open markers, schedule
+   compensating steps such as `void_authorization` or `release_inventory`, then
+   `complete_compensation_marker` with the cleanup outcome.
+5. Complete with a final output that includes the original failure and the
    compensation result.
 
-This keeps every side effect in the event history and avoids trying to run new
-workflow decisions after the run has already reached a terminal failure state.
+Marker record/complete commands are idempotent for identical payloads and reject
+drift. This keeps every side effect and obligation in the event history without
+trying to run new workflow decisions after a terminal failure.
 
-See `examples/compensation.rs` for a checkout workflow that reserves inventory,
-observes a declined payment as a domain result, releases the reservation, and
-then completes with a compensated outcome.
+See `examples/compensation.rs` and `tests/compensation_markers.rs`.
 
 ## Run Inspection
 
@@ -1028,6 +1109,14 @@ let suspensions = engine.list_open_suspensions(now).await?;
 let next_wakeup = engine.next_wakeup(now).await?;
 let active_hooks = engine.list_active_hooks().await?;
 let history = engine.history(&run_ids[0]).await?;
+let mut page_sizes = Vec::new();
+let exported_events = engine
+    .export_history_pages(&run_ids[0], 500, |page| {
+        page_sizes.push(page.len());
+        // A production callback writes this page to the host archive.
+        async { Ok(()) }
+    })
+    .await?;
 ```
 
 `list_run_ids()` returns sorted run IDs from the active store.
@@ -1043,8 +1132,14 @@ open wait or delayed retry by scheduled time, which lets scheduler hosts sleep
 until the next useful tick instead of polling at a fixed interval.
 `list_active_hooks()` returns stable `ActiveHookSnapshot` records for callback
 routers and dashboards. `history()` returns the raw committed
-`FlowEventEnvelope` sequence for audit exports and replay debugging. See
-`examples/run_inspection.rs` for a runnable mixed-status inspection flow.
+`FlowEventEnvelope` sequence for small audit/debug reads. Use
+`export_history_pages()` for bounded archive/export work: it pins the current
+tip and each callback receives one contiguous page, so the host can commit pages
+without loading the complete run or racing a continuously appended tail. Prefer
+`export_history_archive()` when the host needs a tip-pinned ownership seal whose
+digest is independent of page size, and `seal_history_partition()` when sealing
+immutable contiguous ranges for later cold storage while Flow retains the live
+tip. See `examples/run_inspection.rs` for a runnable mixed-status inspection flow.
 
 ## Observability
 
@@ -1063,9 +1158,11 @@ let observer = Arc::new(A3sFlowEventBridge::new(sink.clone()));
 ```
 
 `A3sFlowEvent` carries audit identity (`run_id`, `event_id`, sequence) plus
-workflow identity, status, and step/wait/signal/hook subject when one exists. Use
-`safe_metric_labels()` for metrics and keep high-cardinality identity in logs or
-traces.
+workflow identity, status, and step/wait/signal/hook subject when one exists.
+Step/activity events also retain attempt correlation when available:
+`attempt`, `attempt_id`, and `idempotency_key`. Use `safe_metric_labels()` for
+metrics and keep these high-cardinality identities in logs, traces, or audit
+sinks.
 
 When one host needs several observability outputs, compose observers with
 `FanoutFlowEventObserver`:
@@ -1329,9 +1426,38 @@ Use [`NATIVE_TYPESCRIPT.md`](NATIVE_TYPESCRIPT.md) for the native compiler
 contract, protocol envelope, and TypeScript authoring types. The
 `native_ts_greeting` example shows a Rust host wiring `NativeTsRuntime` to
 `examples/native-ts/greeting.ts`; it exits successfully with a prerequisite
-message unless `A3S_FLOW_NATIVE_TS_COMPILER` points at a compiler. The
+message unless `KENSE_FLOW_NATIVE_TS_COMPILER` points at a compiler. The
 `native_ts_preflight` example exercises the validation and artifact-cache path
 without starting a workflow run.
+
+## Certification Gates
+
+Before cutting a Flow release that Cloud or another host will pin, run the
+kernel certification harness and keep the frozen protocol fixtures in sync.
+
+```bash
+just certification
+# or include local package verification:
+just release-certification
+```
+
+`tests/certification.rs` locks worker capability, task, and event-envelope wire
+shapes under `tests/fixtures/protocol/`, fails closed on stale or forged lease
+acknowledgements and mixed worker protocols, and verifies tip-pinned archive
+export for a 10_000-event history. `tests/scale_slos.rs` records append, history
+page, and tip-validated checkpointed snapshot percentiles; when
+`KENSE_FLOW_POSTGRES_URL` is set, `just postgres-certification` asserts the
+published SQL scale SLO targets from a `--release` build with
+`KENSE_FLOW_POSTGRES_LOCAL=1` (URL must be host-local to the test process) and runs
+`tests/postgres_chaos.rs` for real-provider concurrent-writer, hook-claim,
+lease-fencing, competing-worker, dead-letter redrive, and backend-disconnect
+reconnect gates. The UI package
+reads the same JSON fixtures so TypeScript and Rust share one wire authority.
+Retained pre-v1 histories under `tests/fixtures/pre_v1/` must continue to
+deserialize and resume on the current kernel. `just release-certification` also
+runs the local `cargo package --locked` verification script and the bounded
+advisory reachability check. Use `just full-certification` when Postgres is
+available.
 
 ## Operational Checklist
 
@@ -1342,6 +1468,8 @@ Before shipping a host integration:
   in workflow decisions.
 - Put side effects in steps and persist their outputs before fan-in.
 - Run a scheduler loop for due waits and delayed retries.
+- Run `cargo test --test certification` and the UI protocol-fixture Vitest file
+  before pinning a host to a new Flow revision.
 - Use `FlowScheduler::next_wakeup_delay()` to choose the next scheduler sleep
   deadline when the host is not already using an external clock or queue
   trigger.

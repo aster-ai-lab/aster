@@ -1,23 +1,586 @@
 use chrono::{DateTime, Utc};
+use std::future::Future;
 
 use crate::error::{FlowError, Result};
 use crate::model::{
-    project_run, ActiveHookSnapshot, HookStatus, ScheduledWakeup, ScheduledWakeupKind, StepStatus,
+    project_run, project_run_from_snapshot, ActiveHookSnapshot, ActivityStatus,
+    FlowVisibilityProjection, HookStatus, ScheduledWakeup, ScheduledWakeupKind, StepStatus,
     WaitStatus, WorkflowRunSnapshot, WorkflowRunSummary, WorkflowRunSuspension,
+};
+use crate::store::{
+    FlowHistoryArchiveSeal, FlowHistoryPartition, FlowProjectionCheckpoint, HistoryContentHasher,
+    MAX_FLOW_HISTORY_PAGE_SIZE,
 };
 
 use super::FlowEngine;
 
 impl FlowEngine {
     /// Project the current snapshot for `run_id` from its durable history.
+    ///
+    /// A valid checkpoint that matches the history tip is returned as-is. A
+    /// checkpoint behind the tip is caught up by paging the contiguous tail.
+    /// Missing or unusable checkpoints are rebuilt the same way, from sequence
+    /// zero, instead of loading the log with unbounded `list`.
     pub async fn snapshot(&self, run_id: &str) -> Result<WorkflowRunSnapshot> {
-        let history = self.store.list(run_id).await?;
-        project_run(run_id, &history)
+        if let Some(checkpoint) = self.store.load_checkpoint(run_id).await? {
+            if checkpoint.validate().is_ok() {
+                if let Some((sequence, event_id)) = self.store.latest_event(run_id).await? {
+                    if event_id == checkpoint.last_event_id && sequence == checkpoint.last_sequence
+                    {
+                        return Ok(checkpoint.snapshot);
+                    }
+                    if sequence > checkpoint.last_sequence {
+                        if let Ok(Some(anchor)) =
+                            self.store.event_at(run_id, checkpoint.last_sequence).await
+                        {
+                            if anchor.event_id == checkpoint.last_event_id {
+                                if let Ok(snapshot) = self
+                                    .project_pages_until(
+                                        run_id,
+                                        Some(checkpoint.snapshot),
+                                        Some(sequence),
+                                    )
+                                    .await
+                                {
+                                    return Ok(snapshot);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        self.project_pages_until(run_id, None, None).await
+    }
+
+    /// Fold history one bounded page at a time.
+    ///
+    /// `snapshot` is the checkpoint to continue from. `None` starts at sequence
+    /// zero and treats the first page as a full projection. `tip_sequence` pins
+    /// the end when the caller already loaded it; `None` stops at the first
+    /// short page so a store whose `latest_event` scans the log is not read twice.
+    async fn project_pages_until(
+        &self,
+        run_id: &str,
+        mut snapshot: Option<WorkflowRunSnapshot>,
+        tip_sequence: Option<u64>,
+    ) -> Result<WorkflowRunSnapshot> {
+        let mut after_sequence = snapshot
+            .as_ref()
+            .map(|state| state.last_sequence)
+            .unwrap_or(0);
+        loop {
+            if tip_sequence.is_some_and(|tip| after_sequence >= tip) {
+                break;
+            }
+            let limit = match tip_sequence {
+                Some(tip) => {
+                    let remaining = usize::try_from(tip - after_sequence).map_err(|_| {
+                        FlowError::Store(format!(
+                            "history page sequence overflow for workflow run {run_id}"
+                        ))
+                    })?;
+                    remaining.min(MAX_FLOW_HISTORY_PAGE_SIZE)
+                }
+                None => MAX_FLOW_HISTORY_PAGE_SIZE,
+            };
+            let page = self.store.list_page(run_id, after_sequence, limit).await?;
+            if page.is_empty() {
+                if snapshot.is_none() {
+                    return Err(FlowError::RunNotFound(run_id.to_string()));
+                }
+                let Some(tip) = tip_sequence else {
+                    break;
+                };
+                return Err(FlowError::Store(format!(
+                    "history page for {run_id} ended before sequence {tip}"
+                )));
+            }
+            let page_last = page.last().expect("non-empty page").sequence;
+            snapshot = Some(match snapshot {
+                None => project_run(run_id, &page)?,
+                Some(current) => project_run_from_snapshot(run_id, current, &page)?,
+            });
+            if page_last <= after_sequence {
+                return Err(FlowError::Store(format!(
+                    "history page for {run_id} did not advance past sequence {after_sequence}"
+                )));
+            }
+            after_sequence = page_last;
+            if page.len() < limit {
+                if let Some(tip) = tip_sequence {
+                    if after_sequence < tip {
+                        return Err(FlowError::Store(format!(
+                            "history page for {run_id} returned a short page before sequence {tip}"
+                        )));
+                    }
+                }
+                break;
+            }
+        }
+        let snapshot = snapshot.ok_or_else(|| FlowError::RunNotFound(run_id.to_string()))?;
+        if let Some(tip_sequence) = tip_sequence {
+            if snapshot.last_sequence != tip_sequence {
+                return Err(FlowError::InvalidTransition(format!(
+                    "paged history for {run_id} stopped at sequence {} before tip {tip_sequence}",
+                    snapshot.last_sequence
+                )));
+            }
+        }
+        Ok(snapshot)
+    }
+
+    /// Build a tip-anchored visibility projection for host search/ops indexes.
+    ///
+    /// Uses the same tip-validated snapshot path as [`Self::snapshot`], so a
+    /// valid checkpoint accelerates rebuild without treating the visibility
+    /// record as a second execution history. Hosts that lost their index can
+    /// also call [`FlowVisibilityProjection::from_history`] after paging
+    /// authoritative events with [`Self::history_page`].
+    pub async fn visibility_projection(&self, run_id: &str) -> Result<FlowVisibilityProjection> {
+        let snapshot = self.snapshot(run_id).await?;
+        let (sequence, event_id) = self
+            .store
+            .latest_event(run_id)
+            .await?
+            .ok_or_else(|| FlowError::RunNotFound(run_id.to_string()))?;
+        if snapshot.last_sequence != sequence {
+            return Err(FlowError::InvalidTransition(format!(
+                "visibility projection tip mismatch for {run_id}: snapshot sequence {} != history tip {sequence}",
+                snapshot.last_sequence
+            )));
+        }
+        let projection = FlowVisibilityProjection::from_snapshot(snapshot, event_id)?;
+        projection.validate()?;
+        Ok(projection)
+    }
+
+    /// Replay and persist a projection checkpoint for `run_id`.
+    ///
+    /// Uses the same tip-validated snapshot path as [`Self::snapshot`]. A
+    /// checkpoint that already matches the history tip is refreshed without
+    /// replaying the full log. Checkpoints are acceleration metadata only. If a
+    /// checkpoint write fails, the append-only history remains fully usable and
+    /// `snapshot` falls back to replay.
+    pub async fn checkpoint(&self, run_id: &str) -> Result<FlowProjectionCheckpoint> {
+        let snapshot = self.snapshot(run_id).await?;
+        let (sequence, event_id) = self
+            .store
+            .latest_event(run_id)
+            .await?
+            .ok_or_else(|| FlowError::RunNotFound(run_id.to_string()))?;
+        if snapshot.last_sequence != sequence {
+            return Err(FlowError::InvalidTransition(format!(
+                "checkpoint tip mismatch for {run_id}: snapshot sequence {} != history tip {sequence}",
+                snapshot.last_sequence
+            )));
+        }
+        let checkpoint = FlowProjectionCheckpoint::new(run_id, sequence, event_id, snapshot)?;
+        self.store.save_checkpoint(&checkpoint).await?;
+        Ok(checkpoint)
+    }
+
+    /// Load durable history for `run_id` one bounded page at a time.
+    ///
+    /// Callers that must hand the log to a runtime still receive the complete
+    /// sequence. The store read itself does not use unbounded `list`.
+    pub(super) async fn read_history_pages(
+        &self,
+        run_id: &str,
+    ) -> Result<Vec<crate::model::FlowEventEnvelope>> {
+        let mut after_sequence = 0u64;
+        let mut history = Vec::new();
+        loop {
+            let page = self
+                .store
+                .list_page(run_id, after_sequence, MAX_FLOW_HISTORY_PAGE_SIZE)
+                .await?;
+            if page.is_empty() {
+                if history.is_empty() {
+                    return Err(FlowError::RunNotFound(run_id.to_string()));
+                }
+                break;
+            }
+            let page_last = page.last().expect("non-empty page").sequence;
+            let expected = after_sequence.checked_add(1).ok_or_else(|| {
+                FlowError::Store(format!(
+                    "history page sequence overflow for workflow run {run_id}"
+                ))
+            })?;
+            if page.first().expect("non-empty page").sequence != expected {
+                return Err(FlowError::Store(format!(
+                    "history page for {run_id} is not contiguous at sequence {}; expected {expected}",
+                    page.first().expect("non-empty page").sequence
+                )));
+            }
+            let short = page.len() < MAX_FLOW_HISTORY_PAGE_SIZE;
+            if page_last <= after_sequence {
+                return Err(FlowError::Store(format!(
+                    "history page for {run_id} did not advance past sequence {after_sequence}"
+                )));
+            }
+            history.extend(page);
+            after_sequence = page_last;
+            if short {
+                break;
+            }
+        }
+        Ok(history)
     }
 
     /// Load the complete durable event history for `run_id`.
+    ///
+    /// The returned log is still the full sequence. The store read is assembled
+    /// from bounded `list_page` windows, the same path query and cold snapshot
+    /// already use, so a SQL host does not issue one unbounded `list`.
     pub async fn history(&self, run_id: &str) -> Result<Vec<crate::model::FlowEventEnvelope>> {
-        self.store.list(run_id).await
+        self.read_history_pages(run_id).await
+    }
+
+    /// Read one bounded page of durable history after an exclusive sequence.
+    ///
+    /// The returned page is ordered by sequence. Use its last sequence as the
+    /// cursor for the next page; the append-only history remains authoritative.
+    pub async fn history_page(
+        &self,
+        run_id: &str,
+        after_sequence: u64,
+        limit: usize,
+    ) -> Result<Vec<crate::model::FlowEventEnvelope>> {
+        validate_history_page_size(limit)?;
+        self.store.list_page(run_id, after_sequence, limit).await
+    }
+
+    /// Export a run history page by page without materializing the full log.
+    ///
+    /// The callback runs once for each validated, sequence-ordered page. Flow
+    /// owns cursor and history integrity; the callback owns the archive or
+    /// transport destination. A callback failure stops the export and leaves
+    /// already-delivered pages for the host to resume from their last cursor.
+    pub async fn export_history_pages<F, Fut>(
+        &self,
+        run_id: &str,
+        page_size: usize,
+        consume_page: F,
+    ) -> Result<usize>
+    where
+        F: FnMut(Vec<crate::model::FlowEventEnvelope>) -> Fut,
+        Fut: Future<Output = Result<()>>,
+    {
+        Ok(self
+            .export_history_archive(run_id, page_size, consume_page)
+            .await?
+            .event_count as usize)
+    }
+
+    /// Export a tip-pinned history archive and return an ownership seal.
+    ///
+    /// The seal digests ordered event IDs independently of page size so hosts
+    /// can verify archive completeness without Flow owning destination storage.
+    /// Concurrent appends after the tip is pinned are excluded from the seal.
+    pub async fn export_history_archive<F, Fut>(
+        &self,
+        run_id: &str,
+        page_size: usize,
+        mut consume_page: F,
+    ) -> Result<FlowHistoryArchiveSeal>
+    where
+        F: FnMut(Vec<crate::model::FlowEventEnvelope>) -> Fut,
+        Fut: Future<Output = Result<()>>,
+    {
+        validate_history_page_size(page_size)?;
+        let (target_sequence, target_event_id) = self
+            .store
+            .latest_event(run_id)
+            .await?
+            .ok_or_else(|| FlowError::RunNotFound(run_id.to_string()))?;
+        let mut after_sequence = 0;
+        let mut exported = 0u64;
+        let mut page_count = 0u64;
+        let mut digest = HistoryContentHasher::new();
+
+        loop {
+            if after_sequence == target_sequence {
+                break;
+            }
+            let mut page = self.history_page(run_id, after_sequence, page_size).await?;
+            page.retain(|envelope| envelope.sequence <= target_sequence);
+            if page.is_empty() {
+                return Err(FlowError::Store(format!(
+                    "history export for workflow run {run_id} ended before sequence {target_sequence}"
+                )));
+            }
+
+            let mut expected_sequence = after_sequence.checked_add(1).ok_or_else(|| {
+                FlowError::Store(format!(
+                    "history export cursor overflow for workflow run {run_id}"
+                ))
+            })?;
+            for envelope in &page {
+                if envelope.sequence != expected_sequence {
+                    return Err(FlowError::Store(format!(
+                        "history export for workflow run {run_id} is not contiguous at sequence {}; expected {expected_sequence}",
+                        envelope.sequence
+                    )));
+                }
+                expected_sequence = expected_sequence.checked_add(1).ok_or_else(|| {
+                    FlowError::Store(format!(
+                        "history export sequence overflow for workflow run {run_id}"
+                    ))
+                })?;
+            }
+
+            let page_len = page.len();
+            digest.update(&page);
+            consume_page(page).await?;
+            exported = exported.checked_add(page_len as u64).ok_or_else(|| {
+                FlowError::Store(format!(
+                    "history export count overflow for workflow run {run_id}"
+                ))
+            })?;
+            page_count = page_count.checked_add(1).ok_or_else(|| {
+                FlowError::Store(format!(
+                    "history export page count overflow for workflow run {run_id}"
+                ))
+            })?;
+            after_sequence = expected_sequence - 1;
+            if after_sequence == target_sequence {
+                break;
+            }
+            if page_len < page_size {
+                return Err(FlowError::Store(format!(
+                    "history export for workflow run {run_id} returned a short page before sequence {target_sequence}"
+                )));
+            }
+        }
+
+        let exported_tip = self
+            .store
+            .event_at(run_id, target_sequence)
+            .await?
+            .ok_or_else(|| {
+                FlowError::Store(format!(
+                    "history export for workflow run {run_id} lost its initial tip"
+                ))
+            })?;
+        if exported_tip.event_id != target_event_id {
+            return Err(FlowError::Store(format!(
+                "history export tip changed for workflow run {run_id}"
+            )));
+        }
+
+        let seal = FlowHistoryArchiveSeal {
+            run_id: run_id.to_string(),
+            tip_sequence: target_sequence,
+            tip_event_id: target_event_id,
+            event_count: exported,
+            page_count,
+            content_sha256: digest.finalize(),
+        };
+        seal.validate()?;
+        Ok(seal)
+    }
+
+    /// Verify that a tip-pinned archive seal still matches durable history.
+    pub async fn verify_history_archive_seal(&self, seal: &FlowHistoryArchiveSeal) -> Result<()> {
+        seal.validate()?;
+        let tip = self
+            .store
+            .event_at(&seal.run_id, seal.tip_sequence)
+            .await?
+            .ok_or_else(|| {
+                FlowError::Store(format!(
+                    "archive seal tip for {} is missing from durable history",
+                    seal.run_id
+                ))
+            })?;
+        if tip.event_id != seal.tip_event_id {
+            return Err(FlowError::Store(format!(
+                "archive seal tip for {} does not match durable history",
+                seal.run_id
+            )));
+        }
+
+        let mut after_sequence = 0;
+        let mut remaining = seal.event_count;
+        let mut digest = HistoryContentHasher::new();
+        while remaining > 0 {
+            let limit = usize::try_from(remaining.min(MAX_FLOW_HISTORY_PAGE_SIZE as u64))
+                .unwrap_or(MAX_FLOW_HISTORY_PAGE_SIZE);
+            let page = self
+                .history_page(&seal.run_id, after_sequence, limit)
+                .await?;
+            if page.is_empty() {
+                return Err(FlowError::Store(format!(
+                    "archive seal for {} ended before sequence {}",
+                    seal.run_id, seal.tip_sequence
+                )));
+            }
+            for envelope in &page {
+                if envelope.sequence > seal.tip_sequence {
+                    return Err(FlowError::Store(format!(
+                        "archive seal tip for {} was exceeded during verification",
+                        seal.run_id
+                    )));
+                }
+            }
+            let page_len = u64::try_from(page.len()).map_err(|_| {
+                FlowError::Store(format!(
+                    "archive seal verification overflow for {}",
+                    seal.run_id
+                ))
+            })?;
+            after_sequence = page.last().expect("non-empty page").sequence;
+            digest.update(&page);
+            remaining = remaining.saturating_sub(page_len);
+        }
+        if after_sequence != seal.tip_sequence {
+            return Err(FlowError::Store(format!(
+                "archive seal tip for {} does not match verified history",
+                seal.run_id
+            )));
+        }
+        let actual = digest.finalize();
+        if actual != seal.content_sha256 {
+            return Err(FlowError::Store(format!(
+                "archive seal digest for {} does not match durable history",
+                seal.run_id
+            )));
+        }
+        Ok(())
+    }
+
+    /// List sealed history partitions for `run_id` in ordinal order.
+    pub async fn list_history_partitions(&self, run_id: &str) -> Result<Vec<FlowHistoryPartition>> {
+        self.store.list_history_partitions(run_id).await
+    }
+
+    /// Seal the next contiguous history partition through `through_sequence`.
+    ///
+    /// Partitions are immutable indexes over the authoritative event log. The
+    /// next seal must continue immediately after the previous partition without
+    /// gaps or overlap, and may not extend past the durable tip. The sealed
+    /// range is read in bounded pages so a long tail after `through_sequence`
+    /// is not loaded.
+    pub async fn seal_history_partition(
+        &self,
+        run_id: &str,
+        through_sequence: u64,
+    ) -> Result<FlowHistoryPartition> {
+        let (tip_sequence, _) = self
+            .store
+            .latest_event(run_id)
+            .await?
+            .ok_or_else(|| FlowError::RunNotFound(run_id.to_string()))?;
+        if through_sequence == 0 || through_sequence > tip_sequence {
+            return Err(FlowError::Store(format!(
+                "history partition for {run_id} cannot seal sequence {through_sequence} beyond history tip {tip_sequence}"
+            )));
+        }
+
+        let existing = self.store.list_history_partitions(run_id).await?;
+        let (ordinal, first_sequence) = match existing.last() {
+            Some(last) => {
+                if through_sequence <= last.last_sequence {
+                    return Err(FlowError::Store(format!(
+                        "history partition for {run_id} sequence {through_sequence} is already sealed through {}",
+                        last.last_sequence
+                    )));
+                }
+                let next_ordinal = last.ordinal.checked_add(1).ok_or_else(|| {
+                    FlowError::Store(format!(
+                        "history partition ordinal overflow for workflow run {run_id}"
+                    ))
+                })?;
+                let next_first = last.last_sequence.checked_add(1).ok_or_else(|| {
+                    FlowError::Store(format!(
+                        "history partition sequence overflow for workflow run {run_id}"
+                    ))
+                })?;
+                (next_ordinal, next_first)
+            }
+            None => (0, 1),
+        };
+
+        let mut after_sequence = first_sequence.saturating_sub(1);
+        let mut digest = HistoryContentHasher::new();
+        let mut first_event_id = None;
+        let mut last_event_id = None;
+        let mut event_count = 0u64;
+        while after_sequence < through_sequence {
+            let remaining = usize::try_from(through_sequence - after_sequence).map_err(|_| {
+                FlowError::Store(format!(
+                    "history partition sequence overflow for workflow run {run_id}"
+                ))
+            })?;
+            let limit = remaining.min(MAX_FLOW_HISTORY_PAGE_SIZE);
+            let page = self.history_page(run_id, after_sequence, limit).await?;
+            if page.is_empty() {
+                return Err(FlowError::Store(format!(
+                    "history partition for {run_id} ended before sequence {through_sequence}"
+                )));
+            }
+            let mut expected = after_sequence.checked_add(1).ok_or_else(|| {
+                FlowError::Store(format!(
+                    "history partition sequence overflow for workflow run {run_id}"
+                ))
+            })?;
+            for envelope in &page {
+                if envelope.sequence != expected {
+                    return Err(FlowError::Store(format!(
+                        "history partition for {run_id} is not contiguous at sequence {}; expected {expected}",
+                        envelope.sequence
+                    )));
+                }
+                if first_event_id.is_none() {
+                    first_event_id = Some(envelope.event_id);
+                }
+                last_event_id = Some(envelope.event_id);
+                expected = expected.checked_add(1).ok_or_else(|| {
+                    FlowError::Store(format!(
+                        "history partition sequence overflow for workflow run {run_id}"
+                    ))
+                })?;
+                event_count = event_count.checked_add(1).ok_or_else(|| {
+                    FlowError::Store(format!(
+                        "history partition event count overflow for workflow run {run_id}"
+                    ))
+                })?;
+            }
+            let page_last = page.last().expect("non-empty page").sequence;
+            digest.update(&page);
+            after_sequence = page_last;
+            if page.len() < limit && after_sequence < through_sequence {
+                return Err(FlowError::Store(format!(
+                    "history partition for {run_id} returned a short page before sequence {through_sequence}"
+                )));
+            }
+        }
+        let first_event_id = first_event_id.ok_or_else(|| {
+            FlowError::Store(format!("history partition for {run_id} cannot be empty"))
+        })?;
+        let last_event_id = last_event_id.ok_or_else(|| {
+            FlowError::Store(format!("history partition for {run_id} cannot be empty"))
+        })?;
+        let partition = FlowHistoryPartition {
+            run_id: run_id.to_string(),
+            ordinal,
+            first_sequence,
+            last_sequence: through_sequence,
+            first_event_id,
+            last_event_id,
+            event_count,
+            content_sha256: digest.finalize(),
+        };
+        partition.validate()?;
+        if partition.first_sequence != first_sequence || partition.last_sequence != through_sequence
+        {
+            return Err(FlowError::Store(format!(
+                "history partition for {run_id} did not seal the requested range {first_sequence}-{through_sequence}"
+            )));
+        }
+        self.store.save_history_partition(&partition).await?;
+        Ok(partition)
     }
 
     /// List all workflow run IDs known to the engine's store.
@@ -84,6 +647,22 @@ impl FlowEngine {
                             due: retry_after <= now,
                         });
                     }
+                }
+            }
+            for activity in snapshot.activities.values() {
+                if activity.status == ActivityStatus::Pending {
+                    if let Some(retry_after) = activity.retry_after {
+                        suspensions.push(WorkflowRunSuspension::ActivityRetry {
+                            run_id: run_id.clone(),
+                            activity: activity.clone(),
+                            due: retry_after <= now,
+                        });
+                    }
+                } else if activity.status == ActivityStatus::Unknown {
+                    suspensions.push(WorkflowRunSuspension::ActivityUnknown {
+                        run_id: run_id.clone(),
+                        activity: activity.clone(),
+                    });
                 }
             }
             for child in snapshot.child_workflows.values() {
@@ -165,6 +744,15 @@ impl FlowEngine {
     }
 }
 
+fn validate_history_page_size(limit: usize) -> Result<()> {
+    if limit == 0 || limit > MAX_FLOW_HISTORY_PAGE_SIZE {
+        return Err(FlowError::Store(format!(
+            "history page size must be between 1 and {MAX_FLOW_HISTORY_PAGE_SIZE}, got {limit}"
+        )));
+    }
+    Ok(())
+}
+
 fn resolve_scheduled_wakeup(
     snapshot: &WorkflowRunSnapshot,
     wakeup: &ScheduledWakeup,
@@ -193,6 +781,19 @@ fn resolve_scheduled_wakeup(
             Some(WorkflowRunSuspension::Retry {
                 run_id: wakeup.run_id.clone(),
                 step: step.clone(),
+                due: wakeup.scheduled_at <= now,
+            })
+        }
+        ScheduledWakeupKind::ActivityRetry => {
+            let activity = snapshot.activities.get(&wakeup.subject_id)?;
+            if activity.status != ActivityStatus::Pending
+                || activity.retry_after != Some(wakeup.scheduled_at)
+            {
+                return None;
+            }
+            Some(WorkflowRunSuspension::ActivityRetry {
+                run_id: wakeup.run_id.clone(),
+                activity: activity.clone(),
                 due: wakeup.scheduled_at <= now,
             })
         }

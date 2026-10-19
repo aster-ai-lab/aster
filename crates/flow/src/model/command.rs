@@ -83,6 +83,12 @@ pub struct WorkflowSpec {
     /// Named asynchronous message contracts accepted by this workflow.
     #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
     pub signal_names: BTreeSet<String>,
+    /// Named read-only query contracts accepted by this workflow.
+    #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
+    pub query_names: BTreeSet<String>,
+    /// Named synchronous update contracts accepted by this workflow.
+    #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
+    pub update_names: BTreeSet<String>,
 }
 
 impl WorkflowSpec {
@@ -100,6 +106,8 @@ impl WorkflowSpec {
             runtime_build_id: None,
             patch_markers: BTreeSet::new(),
             signal_names: BTreeSet::new(),
+            query_names: BTreeSet::new(),
+            update_names: BTreeSet::new(),
         }
     }
 
@@ -117,6 +125,8 @@ impl WorkflowSpec {
             runtime_build_id: None,
             patch_markers: BTreeSet::new(),
             signal_names: BTreeSet::new(),
+            query_names: BTreeSet::new(),
+            update_names: BTreeSet::new(),
         }
     }
 
@@ -152,7 +162,29 @@ impl WorkflowSpec {
         self.signal_names.contains(signal_name)
     }
 
-    /// Validates identifiers, runtime metadata, patch limits, and signal names.
+    /// Declare one named read-only query contract for this workflow.
+    pub fn with_query(mut self, query_name: impl Into<String>) -> Self {
+        self.query_names.insert(query_name.into());
+        self
+    }
+
+    /// Return whether this immutable workflow definition accepts `query_name`.
+    pub fn accepts_query(&self, query_name: &str) -> bool {
+        self.query_names.contains(query_name)
+    }
+
+    /// Declare one named synchronous update contract for this workflow.
+    pub fn with_update(mut self, update_name: impl Into<String>) -> Self {
+        self.update_names.insert(update_name.into());
+        self
+    }
+
+    /// Return whether this immutable workflow definition accepts `update_name`.
+    pub fn accepts_update(&self, update_name: &str) -> bool {
+        self.update_names.contains(update_name)
+    }
+
+    /// Validates identifiers, runtime metadata, patch limits, and named contracts.
     pub fn validate(&self) -> Result<()> {
         if self.name.trim().is_empty() {
             return Err(FlowError::InvalidWorkflow(
@@ -184,6 +216,20 @@ impl WorkflowSpec {
             if signal_name.trim().is_empty() {
                 return Err(FlowError::InvalidWorkflow(
                     "workflow signal name must not be empty".to_string(),
+                ));
+            }
+        }
+        for query_name in &self.query_names {
+            if query_name.trim().is_empty() {
+                return Err(FlowError::InvalidWorkflow(
+                    "workflow query name must not be empty".to_string(),
+                ));
+            }
+        }
+        for update_name in &self.update_names {
+            if update_name.trim().is_empty() {
+                return Err(FlowError::InvalidWorkflow(
+                    "workflow update name must not be empty".to_string(),
                 ));
             }
         }
@@ -392,7 +438,7 @@ impl RetryPolicy {
 fn deterministic_full_jitter(cap: u64, run_id: &str, step_id: &str, failed_attempt: u32) -> u64 {
     debug_assert!(cap > 0);
     let mut hasher = Sha256::new();
-    hasher.update(b"a3s-flow.retry-jitter.v1");
+    hasher.update(b"kense-flow.retry-jitter.v1");
     hash_retry_part(&mut hasher, run_id.as_bytes());
     hash_retry_part(&mut hasher, step_id.as_bytes());
     hasher.update(failed_attempt.to_be_bytes());
@@ -539,6 +585,34 @@ pub enum RuntimeCommand {
         /// Progress value exposed through inspection and observation APIs.
         progress: WorkflowProgress,
     },
+    /// Record a durable saga-style compensation obligation.
+    RecordCompensationMarker {
+        /// Obligation identity, forward-work identity, and details.
+        marker: crate::model::CompensationMarker,
+    },
+    /// Mark a previously recorded compensation obligation as finished.
+    CompleteCompensationMarker {
+        /// Stable identity of the completed marker.
+        marker_id: String,
+        /// Optional structured compensation outcome.
+        #[serde(default, skip_serializing_if = "JsonValue::is_null")]
+        outcome: JsonValue,
+    },
+    /// Attach a host-owned external dataset reference to the run.
+    AttachExternalDataset {
+        /// Content-addressed dataset reference.
+        dataset: crate::model::ExternalDatasetRef,
+    },
+    /// Attach a host-owned content-addressed blob reference to the run.
+    AttachBlobRef {
+        /// Content-addressed blob reference.
+        blob: crate::model::FlowBlobRef,
+    },
+    /// Record one durable contribution into a named per-item aggregate.
+    RecordItemAggregate {
+        /// Aggregate identity, item identity, and value.
+        contribution: crate::model::ItemAggregateContribution,
+    },
     /// Persist a parent-to-child operation reference before replaying.
     LinkChildOperation {
         /// Stable reference to the externally managed child operation.
@@ -573,6 +647,21 @@ pub enum RuntimeCommand {
         /// Step definitions in deterministic scheduling order.
         steps: Vec<StepCommand>,
     },
+    /// Schedules one first-class activity or awaits its recorded outcome.
+    ScheduleActivity {
+        /// Replay-stable identity of the activity.
+        activity_id: String,
+        /// Registered activity implementation name.
+        activity_name: String,
+        /// JSON input supplied to the activity.
+        input: JsonValue,
+        /// Retry behavior pinned when the activity is created.
+        #[serde(default)]
+        retry: RetryPolicy,
+        /// Optional wall-clock budget for each activity attempt.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        timeout_ms: Option<u64>,
+    },
     /// Suspends replay until a UTC deadline becomes ready.
     WaitUntil {
         /// Replay-stable identity of the timer wait.
@@ -603,6 +692,43 @@ pub enum RuntimeCommand {
         /// Child definitions in deterministic request order.
         children: Vec<ChildWorkflowCommand>,
     },
+    /// Open a nested cancellation scope.
+    OpenScope {
+        /// Replay-stable identity of the scope.
+        scope_id: String,
+    },
+    /// Complete a cancellation scope cleanly.
+    CompleteScope {
+        /// Stable identity of the completed scope.
+        scope_id: String,
+    },
+    /// Cancel a cancellation scope and its owned suspensions.
+    CancelScope {
+        /// Stable identity of the cancelled scope.
+        scope_id: String,
+        /// Optional cancellation reason.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        reason: Option<String>,
+    },
+    /// Wait for durable arms under a completion policy.
+    Select {
+        /// Replay-stable identity of the select.
+        select_id: String,
+        /// Arms participating in the select.
+        arms: Vec<crate::model::SelectArm>,
+        /// Completion policy; defaults to race for compatibility.
+        #[serde(default)]
+        mode: crate::model::SelectMode,
+    },
+    /// Open a dynamic bounded child-workflow map with engine-managed windows.
+    MapChildWorkflows {
+        /// Replay-stable identity of the map.
+        map_id: String,
+        /// Ordered child definitions that form the complete plan.
+        children: Vec<ChildWorkflowCommand>,
+        /// Maximum number of open children activated at once.
+        concurrency: usize,
+    },
 }
 
 /// Step definition returned by workflow replay.
@@ -618,6 +744,68 @@ pub struct StepCommand {
     /// Retry behavior pinned when the step is created.
     #[serde(default)]
     pub retry: RetryPolicy,
+}
+
+/// Activity definition returned by workflow replay.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[non_exhaustive]
+pub struct ActivityCommand {
+    /// Replay-stable identity of the activity.
+    pub activity_id: String,
+    /// Registered activity implementation name.
+    pub activity_name: String,
+    /// JSON input supplied to the activity.
+    pub input: JsonValue,
+    /// Retry behavior pinned when the activity is created.
+    #[serde(default)]
+    pub retry: RetryPolicy,
+    /// Optional wall-clock budget applied independently to each attempt.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timeout_ms: Option<u64>,
+}
+
+impl ActivityCommand {
+    /// Creates an activity definition with the default retry policy.
+    pub fn new(
+        activity_id: impl Into<String>,
+        activity_name: impl Into<String>,
+        input: JsonValue,
+    ) -> Self {
+        Self {
+            activity_id: activity_id.into(),
+            activity_name: activity_name.into(),
+            input,
+            retry: RetryPolicy::default(),
+            timeout_ms: None,
+        }
+    }
+
+    /// Replaces the activity's retry policy.
+    pub fn with_retry(mut self, retry: RetryPolicy) -> Self {
+        self.retry = retry;
+        self
+    }
+
+    /// Sets a wall-clock budget for each activity attempt, rounding up to
+    /// milliseconds. A zero or unrepresentable timeout fails validation.
+    pub fn with_timeout(mut self, timeout: std::time::Duration) -> Self {
+        let milliseconds =
+            timeout.as_millis() + u128::from(!timeout.subsec_nanos().is_multiple_of(1_000_000));
+        self.timeout_ms = Some(milliseconds.min(u64::MAX as u128) as u64);
+        self
+    }
+}
+
+impl From<ActivityCommand> for RuntimeCommand {
+    fn from(activity: ActivityCommand) -> Self {
+        Self::ScheduleActivity {
+            activity_id: activity.activity_id,
+            activity_name: activity.activity_name,
+            input: activity.input,
+            retry: activity.retry,
+            timeout_ms: activity.timeout_ms,
+        }
+    }
 }
 
 impl StepCommand {
@@ -658,8 +846,36 @@ impl RuntimeCommand {
         Self::ScheduleSteps { steps }
     }
 
+    /// Creates a single-activity schedule command with the default retry policy.
+    pub fn schedule_activity(
+        activity_id: impl Into<String>,
+        activity_name: impl Into<String>,
+        input: JsonValue,
+    ) -> Self {
+        Self::ScheduleActivity {
+            activity_id: activity_id.into(),
+            activity_name: activity_name.into(),
+            input,
+            retry: RetryPolicy::default(),
+            timeout_ms: None,
+        }
+    }
+
     /// Create a bounded batch child-workflow command.
     pub fn start_child_workflows(children: Vec<ChildWorkflowCommand>) -> Self {
         Self::StartChildWorkflows { children }
+    }
+
+    /// Create a dynamic bounded child-workflow map command.
+    pub fn map_child_workflows(
+        map_id: impl Into<String>,
+        children: Vec<ChildWorkflowCommand>,
+        concurrency: usize,
+    ) -> Self {
+        Self::MapChildWorkflows {
+            map_id: map_id.into(),
+            children,
+            concurrency,
+        }
     }
 }

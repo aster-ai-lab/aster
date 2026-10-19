@@ -1,5 +1,9 @@
 # A3S Flow Roadmap
 
+Aster's consumers share this one engine under `crates/flow`. Local migration
+checks and the remaining baseline failure are recorded in the
+[single-engine outcome](../../docs/evidence/flow/2026-10-18-single-engine/OUTCOME.md).
+
 **Status as of 2026-09-10.** Updated **2026-09-23** for OS Wave H (AX-inspired
 Agent platform) non-goals only — no change to Flow's authority.
 

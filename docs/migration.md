@@ -126,8 +126,10 @@ uses the workspace-compatible 0.25.10 release.
 
 Code, Work, and Studio share the Flow 2 engine at `crates/flow`, with
 package name `a3s-flow` and library identity `a3s_flow`. The initial import
-retained Flow 1 separately for Code; that duplicate engine is removed as
-Code migrates to the shared API. The workflow authoring package stays under
+retained Flow 1 separately for Code at commit
+`2948ad51a1395177764766c3ddf7e44338f9e374`. The root workspace now resolves
+one engine, `a3s-flow` 2.0.0, from `crates/flow`. `crates/flow-v2` is not a
+workspace member. The workflow authoring package stays under
 `crates/flow/packages/ui`.
 
 Work's desktop copies of the shared Rust libraries and its separate lockfile

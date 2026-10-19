@@ -4,7 +4,10 @@ use std::time::Duration;
 use crate::engine::FlowEngine;
 use crate::error::Result;
 
-use super::{FlowTask, FlowTaskLease, FlowTaskOutcome, FlowTaskQueue, InMemoryFlowTaskQueue};
+use super::{
+    FlowTask, FlowTaskLease, FlowTaskOutcome, FlowTaskQueue, FlowWorkerCapabilities,
+    InMemoryFlowTaskQueue,
+};
 
 /// Worker that handles queued workflow tasks against a [`FlowEngine`].
 #[derive(Clone)]
@@ -59,6 +62,16 @@ impl FlowWorker {
         self.heartbeat_interval
     }
 
+    /// Advertise the worker's versioned kernel execution capabilities.
+    pub fn capabilities(&self) -> FlowWorkerCapabilities {
+        FlowWorkerCapabilities::current()
+    }
+
+    /// Fail before leasing work when a host requires unsupported capabilities.
+    pub fn ensure_compatible(&self, required: &FlowWorkerCapabilities) -> Result<()> {
+        FlowWorkerCapabilities::negotiate(required, &self.capabilities())
+    }
+
     /// Enqueues one task on the worker's queue.
     pub async fn enqueue(&self, task: FlowTask) -> Result<()> {
         self.queue.enqueue(task).await
@@ -108,6 +121,27 @@ impl FlowWorker {
     pub async fn run_until_idle(&self) -> Result<Vec<FlowTaskOutcome>> {
         let mut outcomes = Vec::new();
         while let Some(outcome) = self.run_once().await? {
+            outcomes.push(outcome);
+        }
+        Ok(outcomes)
+    }
+
+    /// Handles at most `max_tasks` queued tasks and returns their outcomes.
+    ///
+    /// This bounded drain is a host backpressure hook: callers can yield to a
+    /// scheduler or enforce a fairness budget even while more work remains in
+    /// the queue. A zero limit is rejected before leasing any task.
+    pub async fn run_until_idle_bounded(&self, max_tasks: usize) -> Result<Vec<FlowTaskOutcome>> {
+        if max_tasks == 0 {
+            return Err(crate::FlowError::InvalidWorkerConfiguration(
+                "worker batch size must be greater than zero".to_string(),
+            ));
+        }
+        let mut outcomes = Vec::with_capacity(max_tasks.min(16));
+        while outcomes.len() < max_tasks {
+            let Some(outcome) = self.run_once().await? else {
+                break;
+            };
             outcomes.push(outcome);
         }
         Ok(outcomes)
@@ -185,7 +219,7 @@ pub(super) async fn handle_flow_task(
             outcome.run_ids.push(scheduled.snapshot.run_id);
             outcome.resumed_waits = scheduled.resumed_waits;
             for wakeup in scheduled.due {
-                if wakeup.kind == crate::ScheduledWakeupKind::Retry {
+                if wakeup.kind.is_retry() {
                     outcome
                         .resumed_retries
                         .push((wakeup.run_id, wakeup.subject_id));

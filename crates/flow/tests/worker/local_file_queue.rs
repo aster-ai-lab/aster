@@ -344,6 +344,33 @@ async fn local_file_task_queue_dead_letters_expired_inflight_tasks() {
 }
 
 #[tokio::test]
+async fn local_file_task_queue_redrives_a_dead_letter_without_duplication() {
+    let dir = tempfile::tempdir().unwrap();
+    let queue = LocalFileFlowTaskQueue::new(dir.path());
+    let task = FlowTask::DriveRun {
+        run_id: "redrive-run".to_string(),
+    };
+    queue.enqueue(task.clone()).await.unwrap();
+    let lease = queue.lease().await.unwrap().unwrap();
+    assert_eq!(
+        queue
+            .dead_letter_inflight_older_than(
+                Utc::now() + ChronoDuration::seconds(1),
+                "operator redrive test",
+            )
+            .await
+            .unwrap(),
+        1
+    );
+
+    assert!(queue.redrive_dead_lettered(&lease.lease_id).await.unwrap());
+    assert!(!queue.redrive_dead_lettered(&lease.lease_id).await.unwrap());
+    assert_eq!(queue.dead_letter_len().await.unwrap(), 0);
+    assert_eq!(queue.len().await.unwrap(), 1);
+    assert_eq!(queue.dequeue().await.unwrap(), Some(task));
+}
+
+#[tokio::test]
 async fn local_file_task_queue_drives_worker_after_restart() {
     let now = Utc::now();
     let engine = FlowEngine::in_memory(Arc::new(SleepRuntime));
@@ -378,4 +405,80 @@ async fn local_file_task_queue_drives_worker_after_restart() {
 
     let snapshot = engine.snapshot(&run_id).await.unwrap();
     assert_eq!(snapshot.status, WorkflowRunStatus::Completed);
+}
+
+#[tokio::test]
+async fn local_file_task_queue_refuses_enqueue_at_pending_capacity() {
+    let dir = tempfile::tempdir().unwrap();
+    let queue = LocalFileFlowTaskQueue::new(dir.path())
+        .with_max_pending(1)
+        .unwrap();
+    queue
+        .enqueue(FlowTask::DriveRun {
+            run_id: "kept".to_string(),
+        })
+        .await
+        .unwrap();
+    let error = queue
+        .enqueue(FlowTask::DriveRun {
+            run_id: "rejected".to_string(),
+        })
+        .await
+        .unwrap_err();
+    assert!(matches!(
+        error,
+        FlowError::QueueBackpressure {
+            pending: 1,
+            capacity: 1
+        }
+    ));
+    assert_eq!(queue.len().await.unwrap(), 1);
+}
+
+#[tokio::test]
+async fn local_file_partition_fairness_rotates_across_opaque_keys() {
+    let dir = tempfile::tempdir().unwrap();
+    let queue = LocalFileFlowTaskQueue::new(dir.path()).with_partition_fairness();
+    assert!(queue.partition_fairness());
+
+    for run_id in ["a-1", "a-2"] {
+        queue
+            .enqueue_for_partition(
+                "tenant-a",
+                FlowTask::DriveRun {
+                    run_id: run_id.to_string(),
+                },
+            )
+            .await
+            .unwrap();
+        // Ensure stable lexicographic file order within a partition.
+        tokio::time::sleep(Duration::from_millis(2)).await;
+    }
+    queue
+        .enqueue_for_partition(
+            "tenant-b",
+            FlowTask::DriveRun {
+                run_id: "b-1".to_string(),
+            },
+        )
+        .await
+        .unwrap();
+
+    let first = queue.lease().await.unwrap().unwrap();
+    queue.ack(&first.lease_id).await.unwrap();
+    let second = queue.lease().await.unwrap().unwrap();
+    queue.ack(&second.lease_id).await.unwrap();
+
+    assert_eq!(
+        first.task,
+        FlowTask::DriveRun {
+            run_id: "a-1".to_string()
+        }
+    );
+    assert_eq!(
+        second.task,
+        FlowTask::DriveRun {
+            run_id: "b-1".to_string()
+        }
+    );
 }

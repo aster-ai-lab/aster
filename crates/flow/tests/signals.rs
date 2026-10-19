@@ -1,9 +1,9 @@
 use std::sync::Arc;
 
 use a3s_flow::{
-    FlowEngine, FlowError, FlowEvent, FlowEventStore, FlowRuntime, FlowTask, FlowWorker,
-    RuntimeCommand, SignalWaitStatus, StepInvocation, WorkflowInvocation, WorkflowRunStatus,
-    WorkflowSignal, WorkflowSpec,
+    FlowEngine, FlowError, FlowEvent, FlowEventEnvelope, FlowEventStore, FlowRuntime, FlowTask,
+    FlowWorker, InMemoryEventStore, RuntimeCommand, SignalWaitStatus, StepInvocation,
+    WorkflowInvocation, WorkflowRunStatus, WorkflowSignal, WorkflowSpec, WorkflowUpdate,
 };
 use async_trait::async_trait;
 use serde::Deserialize;
@@ -723,6 +723,310 @@ async fn engine_rejects_continue_as_new_with_an_unconsumed_signal() {
         .unwrap()
         .iter()
         .any(|envelope| matches!(envelope.event, FlowEvent::RunContinuedAsNew { .. })));
+}
+
+struct SignalBesideOpenWaitRuntime;
+
+#[async_trait]
+impl FlowRuntime for SignalBesideOpenWaitRuntime {
+    async fn run_workflow(
+        &self,
+        invocation: WorkflowInvocation,
+    ) -> a3s_flow::Result<RuntimeCommand> {
+        let context = invocation.context();
+        if context.signal_payload("approval").is_some() {
+            return Ok(context.complete(json!("approved")));
+        }
+        let armed = invocation
+            .history
+            .iter()
+            .any(|envelope| matches!(envelope.event, FlowEvent::SignalWaitCreated { .. }));
+        if context.update("arm").is_some() && !armed {
+            return Ok(context.wait_for_signal("approval", APPROVAL_SIGNAL));
+        }
+        Ok(context.wait_until("pause", "2030-01-01T00:00:00Z".parse().unwrap()))
+    }
+
+    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+        unreachable!("signal-beside-wait runtime does not schedule steps")
+    }
+
+    async fn run_update(
+        &self,
+        _invocation: a3s_flow::UpdateInvocation,
+    ) -> a3s_flow::Result<serde_json::Value> {
+        Ok(json!({ "armed": true }))
+    }
+}
+
+fn signal_beside_wait_spec() -> WorkflowSpec {
+    spec().with_update("arm")
+}
+
+#[tokio::test]
+async fn signal_delivery_wakes_workflow_while_timer_wait_is_open() {
+    let engine = FlowEngine::in_memory(Arc::new(SignalBesideOpenWaitRuntime));
+    engine
+        .start_with_id("signal-beside-wait", signal_beside_wait_spec(), json!({}))
+        .await
+        .unwrap();
+    let armed = engine
+        .apply_update(
+            "signal-beside-wait",
+            WorkflowUpdate::new("arm-1", "arm", json!({})),
+        )
+        .await
+        .unwrap();
+    assert_eq!(armed.snapshot.status, WorkflowRunStatus::Suspended);
+    assert_eq!(
+        armed.snapshot.signal_waits["approval"].status,
+        SignalWaitStatus::Waiting
+    );
+
+    let snapshot = engine
+        .send_signal(
+            "signal-beside-wait",
+            WorkflowSignal::new("delivery-1", APPROVAL_SIGNAL, json!({ "approved": true })),
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(snapshot.status, WorkflowRunStatus::Completed);
+    assert_eq!(snapshot.output, Some(json!("approved")));
+    assert_eq!(
+        snapshot.signal_waits["approval"].status,
+        SignalWaitStatus::Completed
+    );
+}
+
+struct CrashAfterSignalWaitCompletedStore {
+    inner: InMemoryEventStore,
+    armed: AtomicBool,
+}
+
+impl CrashAfterSignalWaitCompletedStore {
+    fn new() -> Self {
+        Self {
+            inner: InMemoryEventStore::new(),
+            armed: AtomicBool::new(false),
+        }
+    }
+}
+
+#[async_trait]
+impl FlowEventStore for CrashAfterSignalWaitCompletedStore {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+        self.inner.append(run_id, event).await
+    }
+
+    async fn append_if_sequence(
+        &self,
+        run_id: &str,
+        expected_sequence: u64,
+        event: FlowEvent,
+    ) -> a3s_flow::Result<FlowEventEnvelope> {
+        let envelope = self
+            .inner
+            .append_if_sequence(run_id, expected_sequence, event.clone())
+            .await?;
+        if matches!(
+            event,
+            FlowEvent::SignalWaitCompleted {
+                ref wait_id,
+                ..
+            } if wait_id == "approval"
+        ) && self.armed.swap(false, Ordering::SeqCst)
+        {
+            return Err(FlowError::Store(
+                "injected crash after SignalWaitCompleted before observation drive".into(),
+            ));
+        }
+        Ok(envelope)
+    }
+
+    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+        self.inner.list(run_id).await
+    }
+
+    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+        self.inner.list_run_ids().await
+    }
+}
+
+#[tokio::test]
+async fn signal_wait_completed_recovery_wakes_via_drive_while_unscoped_timer_is_open() {
+    let store = Arc::new(CrashAfterSignalWaitCompletedStore::new());
+    let engine = FlowEngine::new(store.clone(), Arc::new(SignalBesideOpenWaitRuntime));
+    engine
+        .start_with_id(
+            "signal-wait-completed-drive",
+            signal_beside_wait_spec(),
+            json!({}),
+        )
+        .await
+        .unwrap();
+    engine
+        .apply_update(
+            "signal-wait-completed-drive",
+            WorkflowUpdate::new("arm-1", "arm", json!({})),
+        )
+        .await
+        .unwrap();
+
+    store.armed.store(true, Ordering::SeqCst);
+    let interrupted = engine
+        .send_signal(
+            "signal-wait-completed-drive",
+            WorkflowSignal::new("delivery-1", APPROVAL_SIGNAL, json!({ "approved": true })),
+        )
+        .await
+        .expect_err("crash after durable SignalWaitCompleted must interrupt");
+    assert!(matches!(interrupted, FlowError::Store(_)));
+
+    let mid = engine
+        .snapshot("signal-wait-completed-drive")
+        .await
+        .unwrap();
+    assert!(!mid.status.is_terminal());
+    assert_eq!(
+        mid.signal_waits["approval"].status,
+        SignalWaitStatus::Completed
+    );
+    assert_eq!(mid.waits["pause"].status, a3s_flow::WaitStatus::Waiting);
+
+    let recovered = engine.drive("signal-wait-completed-drive").await.unwrap();
+    assert_eq!(
+        recovered.output,
+        Some(json!("approved")),
+        "drive must observe tip SignalWaitCompleted beside an open unscoped timer"
+    );
+    assert_eq!(recovered.status, WorkflowRunStatus::Completed);
+}
+
+struct BufferedSignalBesideOpenWaitRuntime;
+
+#[async_trait]
+impl FlowRuntime for BufferedSignalBesideOpenWaitRuntime {
+    async fn run_workflow(
+        &self,
+        invocation: WorkflowInvocation,
+    ) -> a3s_flow::Result<RuntimeCommand> {
+        let context = invocation.context();
+        if context.signal_payload("approval").is_some() {
+            return Ok(context.complete(json!("approved")));
+        }
+        let approval_buffered = invocation.history.iter().any(|envelope| {
+            matches!(
+                &envelope.event,
+                FlowEvent::SignalReceived { signal }
+                    if signal.name == APPROVAL_SIGNAL
+            )
+        });
+        let wait_opened = invocation.history.iter().any(|envelope| {
+            matches!(
+                &envelope.event,
+                FlowEvent::SignalWaitCreated { wait_id, .. } if wait_id == "approval"
+            )
+        });
+        if approval_buffered && !wait_opened {
+            return Ok(context.wait_for_signal("approval", APPROVAL_SIGNAL));
+        }
+        Ok(context.wait_until("pause", "2030-01-01T00:00:00Z".parse().unwrap()))
+    }
+
+    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+        unreachable!("buffered-signal runtime does not schedule steps")
+    }
+}
+
+struct CrashAfterSignalReceivedStore {
+    inner: InMemoryEventStore,
+    armed: AtomicBool,
+}
+
+impl CrashAfterSignalReceivedStore {
+    fn new() -> Self {
+        Self {
+            inner: InMemoryEventStore::new(),
+            armed: AtomicBool::new(false),
+        }
+    }
+}
+
+#[async_trait]
+impl FlowEventStore for CrashAfterSignalReceivedStore {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+        self.inner.append(run_id, event).await
+    }
+
+    async fn append_if_sequence(
+        &self,
+        run_id: &str,
+        expected_sequence: u64,
+        event: FlowEvent,
+    ) -> a3s_flow::Result<FlowEventEnvelope> {
+        let envelope = self
+            .inner
+            .append_if_sequence(run_id, expected_sequence, event.clone())
+            .await?;
+        if matches!(event, FlowEvent::SignalReceived { .. })
+            && self.armed.swap(false, Ordering::SeqCst)
+        {
+            return Err(FlowError::Store(
+                "injected crash after SignalReceived before observation drive".into(),
+            ));
+        }
+        Ok(envelope)
+    }
+
+    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+        self.inner.list(run_id).await
+    }
+
+    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+        self.inner.list_run_ids().await
+    }
+}
+
+#[tokio::test]
+async fn signal_received_recovery_wakes_via_drive_while_unscoped_timer_is_open() {
+    let store = Arc::new(CrashAfterSignalReceivedStore::new());
+    let engine = FlowEngine::new(store.clone(), Arc::new(BufferedSignalBesideOpenWaitRuntime));
+    engine
+        .start_with_id("signal-received-drive", spec(), json!({}))
+        .await
+        .unwrap();
+    engine.drive("signal-received-drive").await.unwrap();
+
+    store.armed.store(true, Ordering::SeqCst);
+    let interrupted = engine
+        .send_signal(
+            "signal-received-drive",
+            WorkflowSignal::new("delivery-1", APPROVAL_SIGNAL, json!({ "approved": true })),
+        )
+        .await
+        .expect_err("crash after durable SignalReceived must interrupt");
+    assert!(
+        matches!(interrupted, FlowError::Store(_)),
+        "expected store crash, got {interrupted:?}"
+    );
+
+    let mid = engine.snapshot("signal-received-drive").await.unwrap();
+    assert!(!mid.status.is_terminal());
+    assert!(mid
+        .signals
+        .iter()
+        .any(|signal| signal.signal_id == "delivery-1"));
+    assert!(mid.signal_waits.is_empty());
+    assert_eq!(mid.waits["pause"].status, a3s_flow::WaitStatus::Waiting);
+
+    let recovered = engine.drive("signal-received-drive").await.unwrap();
+    assert_eq!(
+        recovered.output,
+        Some(json!("approved")),
+        "drive must observe tip SignalReceived beside an open unscoped timer"
+    );
+    assert_eq!(recovered.status, WorkflowRunStatus::Completed);
 }
 
 #[path = "signals/worker_outcomes.rs"]

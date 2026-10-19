@@ -1,4 +1,5 @@
 use async_trait::async_trait;
+#[cfg(feature = "native-ts")]
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 #[cfg(feature = "native-ts")]
@@ -8,11 +9,12 @@ use std::path::Path;
 use std::path::PathBuf;
 use std::time::Duration;
 
-use crate::context::WorkflowContext;
 use crate::error::{FlowError, Result};
 #[cfg(feature = "native-ts")]
+use crate::model::FlowEventEnvelope;
+#[cfg(feature = "native-ts")]
 use crate::model::RuntimeKind;
-use crate::model::{FlowEventEnvelope, JsonValue, RuntimeCommand, WorkflowSpec};
+use crate::model::{JsonValue, RuntimeCommand, WorkflowSpec};
 #[cfg(feature = "native-ts")]
 use crate::protocol::{
     NativeRuntimeKind, NativeRuntimeRequest, NativeRuntimeResponse, NATIVE_RUNTIME_PROTOCOL,
@@ -32,91 +34,39 @@ use native_ts::{
     MAX_DEPENDENCY_MANIFEST_BYTES,
 };
 
-/// Workflow replay request passed to a runtime implementation.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[non_exhaustive]
-pub struct WorkflowInvocation {
-    /// Durable identifier of the workflow run being replayed.
-    pub run_id: String,
-    /// Workflow definition recorded when the run was created.
-    pub spec: WorkflowSpec,
-    /// Original workflow input.
-    pub input: JsonValue,
-    /// Complete persisted event history in sequence order.
-    pub history: Vec<FlowEventEnvelope>,
-}
+mod invocation;
+pub(crate) use invocation::{
+    activity_attempt_id, activity_attempt_idempotency_key, step_attempt_idempotency_key,
+};
 
-impl WorkflowInvocation {
-    /// Create a workflow invocation from its complete durable replay input.
-    pub fn new(
-        run_id: impl Into<String>,
-        spec: WorkflowSpec,
-        input: JsonValue,
-        history: Vec<FlowEventEnvelope>,
-    ) -> Self {
-        Self {
-            run_id: run_id.into(),
-            spec,
-            input,
-            history,
-        }
-    }
-
-    /// Build a deterministic helper view over this workflow invocation.
-    pub fn context(&self) -> WorkflowContext<'_> {
-        WorkflowContext::new(self)
-    }
-
-    /// Decode the workflow input into a host-defined serde type.
-    pub fn input_as<T>(&self) -> Result<T>
-    where
-        T: DeserializeOwned,
+#[cfg(feature = "native-ts")]
+fn hide_console(command: &mut Command) {
+    #[cfg(windows)]
     {
-        serde_json::from_value(self.input.clone()).map_err(FlowError::from)
+        const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+        command.creation_flags(CREATE_NO_WINDOW);
     }
-}
-
-/// Step execution request passed to a runtime implementation.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[non_exhaustive]
-pub struct StepInvocation {
-    /// Durable identifier of the workflow run that scheduled the step.
-    pub run_id: String,
-    /// Replay-stable identifier of this step invocation.
-    pub step_id: String,
-    /// Host-defined step handler name.
-    pub step_name: String,
-    /// Input supplied by the workflow command.
-    pub input: JsonValue,
-    /// Complete persisted workflow history in sequence order.
-    pub history: Vec<FlowEventEnvelope>,
-}
-
-impl StepInvocation {
-    /// Create a step invocation from its complete durable execution input.
-    pub fn new(
-        run_id: impl Into<String>,
-        step_id: impl Into<String>,
-        step_name: impl Into<String>,
-        input: JsonValue,
-        history: Vec<FlowEventEnvelope>,
-    ) -> Self {
-        Self {
-            run_id: run_id.into(),
-            step_id: step_id.into(),
-            step_name: step_name.into(),
-            input,
-            history,
-        }
-    }
-
-    /// Decode the step input into a host-defined serde type.
-    pub fn input_as<T>(&self) -> Result<T>
-    where
-        T: DeserializeOwned,
+    #[cfg(not(windows))]
     {
-        serde_json::from_value(self.input.clone()).map_err(FlowError::from)
+        let _ = command;
     }
+}
+pub use invocation::{
+    ActivityInvocation, QueryInvocation, StepInvocation, UpdateInvocation, WorkflowInvocation,
+};
+
+/// Identity recorded when the native TypeScript entrypoint is read.
+///
+/// This is the source snapshot [`NativeTsRuntime::artifact_for`] takes before
+/// it asks the compiler for an artifact. The compiler is not started.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct NativeTsEntrypointRead {
+    /// Filesystem path opened for the snapshot.
+    pub path: PathBuf,
+    /// `runtime.entrypoint` stored on the workflow spec.
+    pub logical_path: String,
+    /// Portable content hash of that entrypoint.
+    pub source_hash: String,
 }
 
 /// Runtime boundary for workflow code and side-effecting steps.
@@ -127,6 +77,45 @@ pub trait FlowRuntime: Send + Sync {
 
     /// Execute one side-effecting step. The engine persists success/failure.
     async fn run_step(&self, invocation: StepInvocation) -> Result<JsonValue>;
+
+    /// Execute one first-class activity. The default adapter preserves
+    /// compatibility with existing runtimes by delegating to `run_step`.
+    async fn run_activity(&self, invocation: ActivityInvocation) -> Result<JsonValue> {
+        self.run_step(StepInvocation {
+            run_id: invocation.run_id,
+            step_id: invocation.activity_id,
+            attempt: invocation.attempt,
+            step_name: invocation.activity_name,
+            input: invocation.input,
+            history: invocation.history,
+            idempotency_key: invocation.idempotency_key,
+            trace_context: invocation.trace_context,
+        })
+        .await
+    }
+
+    /// Answer one declared read-only query without mutating history.
+    ///
+    /// The default fails closed so existing runtimes do not silently accept
+    /// query contracts they do not implement.
+    async fn run_query(&self, invocation: QueryInvocation) -> Result<JsonValue> {
+        Err(FlowError::Runtime(format!(
+            "workflow query {} is unsupported by this runtime",
+            invocation.query_name
+        )))
+    }
+
+    /// Apply one declared synchronous update and return its handler output.
+    ///
+    /// The default fails closed so existing runtimes do not silently accept
+    /// update contracts they do not implement. The engine persists the returned
+    /// output with the update before driving workflow replay.
+    async fn run_update(&self, invocation: UpdateInvocation) -> Result<JsonValue> {
+        Err(FlowError::Runtime(format!(
+            "workflow update {} is unsupported by this runtime",
+            invocation.update.name
+        )))
+    }
 }
 
 /// Source-identity policy for native TypeScript artifacts.
@@ -173,7 +162,7 @@ impl NativeTsRuntimeConfig {
 impl Default for NativeTsRuntimeConfig {
     fn default() -> Self {
         Self {
-            compiler_binary: PathBuf::from("a3s-flow-native-compiler"),
+            compiler_binary: PathBuf::from("kense-flow-native-compiler"),
             cache_dir: PathBuf::from(".a3s/flow/native-ts"),
             working_dir: PathBuf::from("."),
         }
@@ -418,15 +407,17 @@ impl NativeTsRuntime {
         working_dir: &Path,
         entrypoint: &Path,
     ) -> Result<VerifiedDependencyGraph> {
-        let child = Command::new(compiler_binary)
+        let mut command = Command::new(compiler_binary);
+        command
             .arg("dependencies")
             .arg(entrypoint)
             .current_dir(working_dir)
             .stdin(std::process::Stdio::null())
             .stdout(std::process::Stdio::piped())
             .stderr(std::process::Stdio::piped())
-            .kill_on_drop(true)
-            .spawn()?;
+            .kill_on_drop(true);
+        hide_console(&mut command);
+        let child = command.spawn()?;
         let output = communicate_with_bounded_output(
             child,
             "compiler dependency scan",
@@ -476,7 +467,8 @@ impl NativeTsRuntime {
         // entry. Renaming the directory is the atomic publish boundary, so a
         // reader can observe either the complete entry or no entry at all.
         let mut temporary_entry = TemporaryCacheEntryGuard::create(&artifact.cache_entry).await?;
-        let child = match Command::new(&artifact.compiler_binary)
+        let mut command = Command::new(&artifact.compiler_binary);
+        command
             .arg("compile")
             .arg(&artifact.entrypoint)
             .arg("-o")
@@ -487,9 +479,9 @@ impl NativeTsRuntime {
             .stderr(std::process::Stdio::piped())
             // A cancelled preflight must not leave the compiler running after
             // its Rust future and temporary-artifact cleanup have disappeared.
-            .kill_on_drop(true)
-            .spawn()
-        {
+            .kill_on_drop(true);
+        hide_console(&mut command);
+        let child = match command.spawn() {
             Ok(child) => child,
             Err(error) => {
                 temporary_entry.remove().await;
@@ -627,7 +619,8 @@ impl NativeTsRuntime {
             payload,
         ))?;
 
-        let child = Command::new(&artifact.binary)
+        let mut command = Command::new(&artifact.binary);
+        command
             .arg("--a3s-flow-runtime")
             .stdin(std::process::Stdio::piped())
             .stdout(std::process::Stdio::piped())
@@ -635,8 +628,9 @@ impl NativeTsRuntime {
             .current_dir(&artifact.working_dir)
             // Boot timeouts, lease loss, shutdown, and caller cancellation all
             // drop this future. Tie the direct artifact process to that owner.
-            .kill_on_drop(true)
-            .spawn()?;
+            .kill_on_drop(true);
+        hide_console(&mut command);
+        let child = command.spawn()?;
 
         let output = communicate_with_bounded_output(
             child,
@@ -824,6 +818,33 @@ fn native_artifact_cache_key(
     }
 }
 
+/// Read the workflow entrypoint the same way [`NativeTsRuntime::artifact_for`]
+/// does after resolving it. An absolute entrypoint is opened as itself.
+///
+/// This does not start the native TypeScript compiler.
+#[cfg(feature = "native-ts")]
+pub async fn read_native_ts_entrypoint(spec: &WorkflowSpec) -> Result<NativeTsEntrypointRead> {
+    validate_native_ts_spec(spec)?;
+    let entrypoint = resolve_against(Path::new("."), &spec.runtime.entrypoint);
+    let (source_hash, snapshot) = SourceSnapshot::read(&entrypoint, spec).await?;
+    let (path, logical_path) = snapshot.primary().ok_or_else(|| {
+        FlowError::Runtime("native TypeScript entrypoint snapshot has no source".to_string())
+    })?;
+    Ok(NativeTsEntrypointRead {
+        path: path.to_path_buf(),
+        logical_path: logical_path.to_owned(),
+        source_hash,
+    })
+}
+
+/// Native TypeScript support is not compiled in.
+#[cfg(not(feature = "native-ts"))]
+pub async fn read_native_ts_entrypoint(_spec: &WorkflowSpec) -> Result<NativeTsEntrypointRead> {
+    Err(FlowError::Runtime(
+        "native-ts feature is disabled for NativeTsRuntime".to_string(),
+    ))
+}
+
 #[cfg(feature = "native-ts")]
 fn validate_native_ts_spec(spec: &WorkflowSpec) -> Result<()> {
     spec.validate()?;
@@ -861,6 +882,20 @@ impl FlowRuntime for NativeTsRuntime {
 
     #[cfg(not(feature = "native-ts"))]
     async fn run_step(&self, _invocation: StepInvocation) -> Result<JsonValue> {
+        Err(FlowError::Runtime(
+            "native-ts feature is disabled for NativeTsRuntime".to_string(),
+        ))
+    }
+
+    #[cfg(feature = "native-ts")]
+    async fn run_activity(&self, invocation: ActivityInvocation) -> Result<JsonValue> {
+        let spec = workflow_spec_from_history(&invocation.history)?;
+        self.invoke(&spec, NativeRuntimeKind::Activity, invocation)
+            .await
+    }
+
+    #[cfg(not(feature = "native-ts"))]
+    async fn run_activity(&self, _invocation: ActivityInvocation) -> Result<JsonValue> {
         Err(FlowError::Runtime(
             "native-ts feature is disabled for NativeTsRuntime".to_string(),
         ))

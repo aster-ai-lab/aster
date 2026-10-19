@@ -76,6 +76,19 @@ pub enum FlowError {
         required_build_id: Option<RuntimeBuildId>,
     },
 
+    /// A worker and host do not speak the same versioned worker protocol.
+    #[error("unsupported Flow worker protocol: required {required}, offered {offered}")]
+    UnsupportedWorkerProtocol {
+        /// Protocol required by the host.
+        required: String,
+        /// Protocol offered by the worker.
+        offered: String,
+    },
+
+    /// A worker is missing a capability required by the host.
+    #[error("Flow worker is missing required capabilities: {0}")]
+    WorkerCapabilityUnavailable(String),
+
     /// Runtime replay emitted a command that conflicts with durable history.
     #[error("non-deterministic workflow replay for run {run_id}: {reason}")]
     NonDeterministic {
@@ -98,6 +111,18 @@ pub enum FlowError {
         actual_sequence: u64,
     },
 
+    /// A persisted event envelope uses a schema version this crate cannot
+    /// safely replay. Hosts should migrate or upcast the history first.
+    #[error(
+        "unsupported flow event envelope schema version {version}; supported version is {supported}"
+    )]
+    UnsupportedEventSchemaVersion {
+        /// Version encoded by the persisted envelope.
+        version: u16,
+        /// Highest version understood by this crate.
+        supported: u16,
+    },
+
     /// The original token remains available for programmatic routing, while
     /// `Display` and `Debug` deliberately redact it.
     #[error("active hook token not found (value redacted)")]
@@ -106,6 +131,15 @@ pub enum FlowError {
     /// A queue lease was lost before its task could be acknowledged.
     #[error("workflow task lease is no longer active: {0}")]
     LeaseLost(String),
+
+    /// A queue refused a new task because its pending admission budget is full.
+    #[error("workflow task queue is at capacity: pending {pending} tasks, capacity {capacity}")]
+    QueueBackpressure {
+        /// Observed pending task count when admission was refused.
+        pending: usize,
+        /// Configured maximum pending tasks for this queue.
+        capacity: usize,
+    },
 
     /// The conflicting token remains available for programmatic handling,
     /// while `Display` and `Debug` deliberately redact it.
@@ -143,6 +177,28 @@ pub enum FlowError {
         reason: String,
     },
 
+    /// An update retry conflicts with its durable identity or payload.
+    #[error("update {update_id} for workflow run {run_id} conflicts with request: {reason}")]
+    UpdateConflict {
+        /// Run targeted by the update.
+        run_id: String,
+        /// Caller-owned update identity.
+        update_id: String,
+        /// Description of the conflicting delivery.
+        reason: String,
+    },
+
+    /// A scope cancellation conflicts with its durable identity or reason.
+    #[error("scope {scope_id} for workflow run {run_id} conflicts with request: {reason}")]
+    ScopeConflict {
+        /// Run that owns the scope.
+        run_id: String,
+        /// Replay-stable scope identity.
+        scope_id: String,
+        /// Description of the conflicting request.
+        reason: String,
+    },
+
     /// A workflow definition violates a static invariant.
     #[error("invalid workflow definition: {0}")]
     InvalidWorkflow(String),
@@ -150,6 +206,17 @@ pub enum FlowError {
     /// An event or command violates the current durable state.
     #[error("invalid state transition: {0}")]
     InvalidTransition(String),
+
+    /// A serialized event payload exceeds the durable history budget.
+    #[error("flow event {event_key} payload is {bytes} bytes; maximum is {max_bytes}")]
+    PayloadTooLarge {
+        /// Dot-separated event key.
+        event_key: String,
+        /// Encoded JSON payload size.
+        bytes: usize,
+        /// Configured maximum payload size.
+        max_bytes: usize,
+    },
 
     /// Worker settings cannot provide the requested execution guarantees.
     #[error("invalid worker configuration: {0}")]
@@ -167,6 +234,18 @@ pub enum FlowError {
     #[error("runtime error: {0}")]
     Runtime(String),
 
+    /// A step returned an application error that must not be retried.
+    #[error("non-retryable step error: {0}")]
+    NonRetryable(String),
+
+    /// The host cannot determine whether an activity side effect committed.
+    ///
+    /// This error is intentionally not retryable: the engine records an
+    /// explicit unknown activity outcome and waits for host reconciliation
+    /// rather than risking a duplicate external side effect.
+    #[error("activity outcome is unknown: {0}")]
+    UnknownOutcome(String),
+
     /// JSON serialization or deserialization failed.
     #[error("serialization error: {0}")]
     Serialization(#[from] serde_json::Error),
@@ -178,6 +257,17 @@ pub enum FlowError {
     /// Replay emitted more commands than the configured safety bound.
     #[error("workflow replay exceeded {0} iterations")]
     ReplayLimitExceeded(usize),
+}
+
+impl FlowError {
+    /// Return whether an execution error may be retried by its configured
+    /// policy.
+    ///
+    /// Runtime failures remain retryable for backwards compatibility; step
+    /// handlers opt out explicitly with [`FlowError::NonRetryable`].
+    pub fn is_retryable(&self) -> bool {
+        !matches!(self, Self::NonRetryable(_) | Self::UnknownOutcome(_))
+    }
 }
 
 // Error values can retain callback tokens for programmatic recovery, but
@@ -238,6 +328,15 @@ impl fmt::Debug for FlowError {
                 .debug_struct("RuntimeBuildRouteNotFound")
                 .field("required_build_id", required_build_id)
                 .finish(),
+            Self::UnsupportedWorkerProtocol { required, offered } => formatter
+                .debug_struct("UnsupportedWorkerProtocol")
+                .field("required", required)
+                .field("offered", offered)
+                .finish(),
+            Self::WorkerCapabilityUnavailable(capabilities) => formatter
+                .debug_tuple("WorkerCapabilityUnavailable")
+                .field(capabilities)
+                .finish(),
             Self::NonDeterministic { run_id, reason } => formatter
                 .debug_struct("NonDeterministic")
                 .field("run_id", run_id)
@@ -253,6 +352,11 @@ impl fmt::Debug for FlowError {
                 .field("expected_sequence", expected_sequence)
                 .field("actual_sequence", actual_sequence)
                 .finish(),
+            Self::UnsupportedEventSchemaVersion { version, supported } => formatter
+                .debug_struct("UnsupportedEventSchemaVersion")
+                .field("version", version)
+                .field("supported", supported)
+                .finish(),
             Self::HookTokenNotFound(_) => formatter
                 .debug_tuple("HookTokenNotFound")
                 .field(&"<redacted>")
@@ -260,6 +364,11 @@ impl fmt::Debug for FlowError {
             Self::LeaseLost(lease_id) => {
                 formatter.debug_tuple("LeaseLost").field(lease_id).finish()
             }
+            Self::QueueBackpressure { pending, capacity } => formatter
+                .debug_struct("QueueBackpressure")
+                .field("pending", pending)
+                .field("capacity", capacity)
+                .finish(),
             Self::HookTokenConflict {
                 existing_run_id,
                 existing_hook_id,
@@ -290,6 +399,26 @@ impl fmt::Debug for FlowError {
                 .field("signal_id", signal_id)
                 .field("reason", reason)
                 .finish(),
+            Self::UpdateConflict {
+                run_id,
+                update_id,
+                reason,
+            } => formatter
+                .debug_struct("UpdateConflict")
+                .field("run_id", run_id)
+                .field("update_id", update_id)
+                .field("reason", reason)
+                .finish(),
+            Self::ScopeConflict {
+                run_id,
+                scope_id,
+                reason,
+            } => formatter
+                .debug_struct("ScopeConflict")
+                .field("run_id", run_id)
+                .field("scope_id", scope_id)
+                .field("reason", reason)
+                .finish(),
             Self::InvalidWorkflow(message) => formatter
                 .debug_tuple("InvalidWorkflow")
                 .field(message)
@@ -297,6 +426,16 @@ impl fmt::Debug for FlowError {
             Self::InvalidTransition(message) => formatter
                 .debug_tuple("InvalidTransition")
                 .field(message)
+                .finish(),
+            Self::PayloadTooLarge {
+                event_key,
+                bytes,
+                max_bytes,
+            } => formatter
+                .debug_struct("PayloadTooLarge")
+                .field("event_key", event_key)
+                .field("bytes", bytes)
+                .field("max_bytes", max_bytes)
                 .finish(),
             Self::InvalidWorkerConfiguration(message) => formatter
                 .debug_tuple("InvalidWorkerConfiguration")
@@ -308,6 +447,14 @@ impl fmt::Debug for FlowError {
                 .finish(),
             Self::Store(message) => formatter.debug_tuple("Store").field(message).finish(),
             Self::Runtime(message) => formatter.debug_tuple("Runtime").field(message).finish(),
+            Self::NonRetryable(message) => formatter
+                .debug_tuple("NonRetryable")
+                .field(message)
+                .finish(),
+            Self::UnknownOutcome(message) => formatter
+                .debug_tuple("UnknownOutcome")
+                .field(message)
+                .finish(),
             Self::Serialization(error) => {
                 formatter.debug_tuple("Serialization").field(error).finish()
             }

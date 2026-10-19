@@ -1,13 +1,16 @@
-use std::collections::BTreeMap;
-
 use crate::error::{FlowError, Result};
 
 use super::{
-    validate_run_id, CancellationRequestSnapshot, ChildWorkflowSnapshot, FlowEvent,
-    FlowEventEnvelope, HookSnapshot, HookStatus, SignalWaitSnapshot, SignalWaitStatus,
-    StepFailureAction, StepSnapshot, StepStatus, WaitSnapshot, WaitStatus, WorkflowContinuation,
-    WorkflowRunSnapshot, WorkflowRunStatus, WorkflowSignalSnapshot, WorkflowTerminalOutcome,
+    validate_run_id, ActivityStatus, CancellationRequestSnapshot, CancellationScopeSnapshot,
+    CancellationScopeStatus, ChildWorkflowMapSnapshot, ChildWorkflowMapStatus,
+    ChildWorkflowSnapshot, CompensationMarkerSnapshot, CompensationMarkerStatus, FlowEvent,
+    FlowEventEnvelope, HookSnapshot, HookStatus, ItemAggregateSnapshot, SelectArm, SelectMode,
+    SelectSnapshot, SelectStatus, SignalWaitSnapshot, SignalWaitStatus, StepFailureAction,
+    StepSnapshot, StepStatus, WaitSnapshot, WaitStatus, WorkflowContinuation, WorkflowRunSnapshot,
+    WorkflowRunStatus, WorkflowSignalSnapshot, WorkflowTerminalOutcome, WorkflowUpdateSnapshot,
 };
+
+mod activity;
 
 pub(crate) fn project_run(
     run_id: &str,
@@ -27,29 +30,38 @@ pub(crate) fn project_run(
     };
     spec.validate()?;
 
-    let mut snapshot = WorkflowRunSnapshot {
-        run_id: run_id.to_string(),
-        spec,
-        input,
-        status: WorkflowRunStatus::Pending,
-        steps: BTreeMap::new(),
-        waits: BTreeMap::new(),
-        hooks: BTreeMap::new(),
-        cancellation: None,
-        progress: Vec::new(),
-        child_operations: BTreeMap::new(),
-        child_workflows: BTreeMap::new(),
-        signals: Vec::new(),
-        signal_waits: BTreeMap::new(),
-        output: None,
-        error: None,
-        terminal_outcome: None,
-        continuation: None,
-        last_sequence: first.sequence,
-    };
+    project_run_from_snapshot(
+        run_id,
+        WorkflowRunSnapshot::new(run_id, spec, input),
+        events,
+    )
+}
 
-    for (index, envelope) in events.iter().enumerate() {
-        let expected_sequence = index as u64 + 1;
+/// Continue projecting a run from a previously validated materialized state.
+///
+/// The caller must provide only the contiguous tail immediately after
+/// `snapshot.last_sequence`. The same reducer and transition checks used for a
+/// complete replay are applied, so an incremental projection cannot weaken
+/// history validation.
+pub(crate) fn project_run_from_snapshot(
+    run_id: &str,
+    mut snapshot: WorkflowRunSnapshot,
+    events: &[FlowEventEnvelope],
+) -> Result<WorkflowRunSnapshot> {
+    // Suspended is a derived state: it is recomputed after reducing the tail.
+    // Treat a checkpoint in that state as running while applying new events so
+    // the incremental path has the same transition semantics as a full replay.
+    if !events.is_empty() && snapshot.status == WorkflowRunStatus::Suspended {
+        snapshot.status = WorkflowRunStatus::Running;
+    }
+
+    for envelope in events {
+        envelope.validate_schema_version()?;
+        let expected_sequence = snapshot.last_sequence.checked_add(1).ok_or_else(|| {
+            FlowError::InvalidTransition(format!(
+                "event sequence overflowed while projecting run {run_id}"
+            ))
+        })?;
         if envelope.sequence != expected_sequence {
             return Err(FlowError::InvalidTransition(format!(
                 "event sequence must be contiguous for run {run_id}: expected {expected_sequence}, got {}",
@@ -62,16 +74,22 @@ pub(crate) fn project_run(
                 envelope.event_id, envelope.run_id, run_id
             )));
         }
-        if index > 0 && snapshot.status.is_terminal() {
+        if snapshot.status.is_terminal() {
             return Err(FlowError::InvalidTransition(format!(
                 "event {} appears after terminal run state",
                 envelope.event.event_key()
             )));
         }
+        let is_first_event = snapshot.last_sequence == 0;
+        if is_first_event && !matches!(&envelope.event, FlowEvent::RunCreated { .. }) {
+            return Err(FlowError::InvalidTransition(
+                "first run event must be run_created".to_string(),
+            ));
+        }
         snapshot.last_sequence = envelope.sequence;
         match &envelope.event {
             FlowEvent::RunCreated { .. } => {
-                if index > 0 {
+                if !is_first_event {
                     return Err(FlowError::InvalidTransition(
                         "run_created must only appear as the first event".to_string(),
                     ));
@@ -91,7 +109,12 @@ pub(crate) fn project_run(
                         "a cancelling run must finish as cancelled or failed".to_string(),
                     ));
                 }
+                crate::model::validate_json_blob_ref_marker(output)?;
                 ensure_no_blocking_child_workflows(&snapshot)?;
+                ensure_no_open_signal_waits(&snapshot)?;
+                ensure_no_open_child_workflow_maps(&snapshot)?;
+                ensure_no_open_selects(&snapshot)?;
+                ensure_no_open_in_flight_work(&snapshot)?;
                 snapshot.status = WorkflowRunStatus::Completed;
                 snapshot.output = Some(output.clone());
                 snapshot.error = None;
@@ -128,6 +151,15 @@ pub(crate) fn project_run(
                         step.retry_after = None;
                     }
                 }
+                for activity in snapshot.activities.values_mut() {
+                    if matches!(
+                        activity.status,
+                        ActivityStatus::Pending | ActivityStatus::Running | ActivityStatus::Unknown
+                    ) {
+                        activity.status = ActivityStatus::Cancelled;
+                        activity.retry_after = None;
+                    }
+                }
                 for wait in snapshot.waits.values_mut() {
                     if wait.status == WaitStatus::Waiting {
                         wait.status = WaitStatus::Cancelled;
@@ -141,6 +173,26 @@ pub(crate) fn project_run(
                 for wait in snapshot.signal_waits.values_mut() {
                     if wait.status == SignalWaitStatus::Waiting {
                         wait.status = SignalWaitStatus::Cancelled;
+                    }
+                }
+                for scope_id in snapshot.open_scope_stack.drain(..).rev() {
+                    if let Some(scope) = snapshot.scopes.get_mut(&scope_id) {
+                        if scope.status == CancellationScopeStatus::Open {
+                            scope.status = CancellationScopeStatus::Cancelled;
+                            if scope.reason.is_none() {
+                                scope.reason = request.reason.clone();
+                            }
+                        }
+                    }
+                }
+                for select in snapshot.selects.values_mut() {
+                    if select.status == SelectStatus::Open {
+                        select.status = SelectStatus::Cancelled;
+                    }
+                }
+                for map in snapshot.child_workflow_maps.values_mut() {
+                    if map.status == ChildWorkflowMapStatus::Open {
+                        map.status = ChildWorkflowMapStatus::Cancelled;
                     }
                 }
             }
@@ -229,15 +281,9 @@ pub(crate) fn project_run(
                         "run_continued_as_new cannot abandon an open child workflow".to_string(),
                     ));
                 }
-                if snapshot
-                    .signal_waits
-                    .values()
-                    .any(|wait| wait.status == SignalWaitStatus::Waiting)
-                {
-                    return Err(FlowError::InvalidTransition(
-                        "run_continued_as_new cannot abandon an open signal wait".to_string(),
-                    ));
-                }
+                ensure_no_open_signal_waits(&snapshot)?;
+                ensure_no_open_child_workflow_maps(&snapshot)?;
+                ensure_no_open_selects(&snapshot)?;
                 if let Some(signal) = snapshot
                     .signals
                     .iter()
@@ -248,6 +294,7 @@ pub(crate) fn project_run(
                         signal.signal_id
                     )));
                 }
+                ensure_no_open_in_flight_work(&snapshot)?;
                 validate_run_id(successor_run_id)?;
                 snapshot.status = WorkflowRunStatus::ContinuedAsNew;
                 snapshot.output = None;
@@ -333,6 +380,68 @@ pub(crate) fn project_run(
                 child.resolved_at = Some(envelope.timestamp);
                 child.resolved_sequence = Some(envelope.sequence);
             }
+            FlowEvent::ChildWorkflowMapOpened {
+                map_id,
+                children,
+                concurrency,
+            } => {
+                if snapshot.status == WorkflowRunStatus::Pending {
+                    return Err(FlowError::InvalidTransition(
+                        "child_workflow_map_opened cannot precede run_started".to_string(),
+                    ));
+                }
+                super::validate_child_workflow_map(map_id, children, *concurrency)?;
+                if snapshot.child_workflow_maps.contains_key(map_id) {
+                    return Err(FlowError::InvalidTransition(format!(
+                        "child_workflow_map_opened duplicates map {map_id}"
+                    )));
+                }
+                for child in children {
+                    if snapshot.child_workflows.contains_key(&child.child_id) {
+                        return Err(FlowError::InvalidTransition(format!(
+                            "child workflow map {map_id} child {} already exists outside the map",
+                            child.child_id
+                        )));
+                    }
+                }
+                snapshot.child_workflow_maps.insert(
+                    map_id.clone(),
+                    ChildWorkflowMapSnapshot {
+                        map_id: map_id.clone(),
+                        children: children.clone(),
+                        concurrency: *concurrency,
+                        status: ChildWorkflowMapStatus::Open,
+                    },
+                );
+            }
+            FlowEvent::ChildWorkflowMapCompleted { map_id } => {
+                let map = snapshot.child_workflow_maps.get(map_id).ok_or_else(|| {
+                    FlowError::InvalidTransition(format!(
+                        "child_workflow_map_completed references unknown map {map_id}"
+                    ))
+                })?;
+                if map.status != ChildWorkflowMapStatus::Open {
+                    return Err(FlowError::InvalidTransition(format!(
+                        "child_workflow_map_completed cannot follow {:?} for map {map_id}",
+                        map.status
+                    )));
+                }
+                if !map.children.iter().all(|child| {
+                    snapshot
+                        .child_workflows
+                        .get(&child.child_id)
+                        .is_some_and(|existing| existing.outcome.is_some())
+                }) {
+                    return Err(FlowError::InvalidTransition(format!(
+                        "child_workflow_map_completed before all children resolved for map {map_id}"
+                    )));
+                }
+                snapshot
+                    .child_workflow_maps
+                    .get_mut(map_id)
+                    .expect("map validated above")
+                    .status = ChildWorkflowMapStatus::Completed;
+            }
             FlowEvent::SignalReceived { signal } => {
                 if snapshot.status == WorkflowRunStatus::Pending {
                     return Err(FlowError::InvalidTransition(
@@ -363,6 +472,146 @@ pub(crate) fn project_run(
                     received_at: envelope.timestamp,
                     received_sequence: envelope.sequence,
                     consumed_by: None,
+                });
+            }
+            FlowEvent::UpdateApplied { update, output } => {
+                if snapshot.status == WorkflowRunStatus::Pending {
+                    return Err(FlowError::InvalidTransition(
+                        "update_applied cannot precede run_started".to_string(),
+                    ));
+                }
+                update.validate()?;
+                if !snapshot.spec.accepts_update(&update.name) {
+                    return Err(FlowError::InvalidTransition(format!(
+                        "update {} uses undeclared workflow update name {}",
+                        update.update_id, update.name
+                    )));
+                }
+                if snapshot
+                    .updates
+                    .iter()
+                    .any(|existing| existing.update_id == update.update_id)
+                {
+                    return Err(FlowError::InvalidTransition(format!(
+                        "update_applied duplicates update {}",
+                        update.update_id
+                    )));
+                }
+                snapshot.updates.push(WorkflowUpdateSnapshot {
+                    update_id: update.update_id.clone(),
+                    name: update.name.clone(),
+                    input: update.input.clone(),
+                    output: output.clone(),
+                    applied_at: envelope.timestamp,
+                    applied_sequence: envelope.sequence,
+                });
+            }
+            FlowEvent::CompensationMarkerRecorded { marker } => {
+                if snapshot.status == WorkflowRunStatus::Pending {
+                    return Err(FlowError::InvalidTransition(
+                        "compensation_marker_recorded cannot precede run_started".to_string(),
+                    ));
+                }
+                marker.validate()?;
+                if snapshot
+                    .compensation_markers
+                    .contains_key(&marker.marker_id)
+                {
+                    return Err(FlowError::InvalidTransition(format!(
+                        "compensation_marker_recorded duplicates marker {}",
+                        marker.marker_id
+                    )));
+                }
+                snapshot.compensation_markers.insert(
+                    marker.marker_id.clone(),
+                    CompensationMarkerSnapshot {
+                        marker_id: marker.marker_id.clone(),
+                        compensates: marker.compensates.clone(),
+                        details: marker.details.clone(),
+                        status: CompensationMarkerStatus::Open,
+                        outcome: None,
+                    },
+                );
+            }
+            FlowEvent::CompensationMarkerCompleted { marker_id, outcome } => {
+                let marker = snapshot
+                    .compensation_markers
+                    .get_mut(marker_id)
+                    .ok_or_else(|| {
+                        FlowError::InvalidTransition(format!(
+                            "compensation_marker_completed references unknown marker {marker_id}"
+                        ))
+                    })?;
+                if marker.status != CompensationMarkerStatus::Open {
+                    return Err(FlowError::InvalidTransition(format!(
+                        "compensation_marker_completed cannot follow {:?} for marker {marker_id}",
+                        marker.status
+                    )));
+                }
+                marker.status = CompensationMarkerStatus::Completed;
+                marker.outcome = if outcome.is_null() {
+                    None
+                } else {
+                    Some(outcome.clone())
+                };
+            }
+            FlowEvent::ExternalDatasetAttached { dataset } => {
+                if snapshot.status == WorkflowRunStatus::Pending {
+                    return Err(FlowError::InvalidTransition(
+                        "external_dataset_attached cannot precede run_started".to_string(),
+                    ));
+                }
+                dataset.validate()?;
+                if let Some(existing) = snapshot.external_datasets.get(&dataset.dataset_id) {
+                    return Err(FlowError::InvalidTransition(format!(
+                        "external_dataset_attached duplicates dataset {}",
+                        existing.dataset_id
+                    )));
+                }
+                snapshot
+                    .external_datasets
+                    .insert(dataset.dataset_id.clone(), dataset.clone());
+            }
+            FlowEvent::BlobRefAttached { blob } => {
+                if snapshot.status == WorkflowRunStatus::Pending {
+                    return Err(FlowError::InvalidTransition(
+                        "blob_ref_attached cannot precede run_started".to_string(),
+                    ));
+                }
+                blob.validate()?;
+                if let Some(existing) = snapshot.blob_refs.get(&blob.blob_id) {
+                    return Err(FlowError::InvalidTransition(format!(
+                        "blob_ref_attached duplicates blob {}",
+                        existing.blob_id
+                    )));
+                }
+                snapshot
+                    .blob_refs
+                    .insert(blob.blob_id.clone(), blob.clone());
+            }
+            FlowEvent::ItemAggregateRecorded { contribution } => {
+                if snapshot.status == WorkflowRunStatus::Pending {
+                    return Err(FlowError::InvalidTransition(
+                        "item_aggregate_recorded cannot precede run_started".to_string(),
+                    ));
+                }
+                contribution.validate()?;
+                let aggregate = snapshot
+                    .item_aggregates
+                    .entry(contribution.aggregate_id.clone())
+                    .or_insert_with(|| ItemAggregateSnapshot {
+                        aggregate_id: contribution.aggregate_id.clone(),
+                        entries: Vec::new(),
+                    });
+                if aggregate.get(&contribution.item_id).is_some() {
+                    return Err(FlowError::InvalidTransition(format!(
+                        "item_aggregate_recorded duplicates aggregate {} item {}",
+                        contribution.aggregate_id, contribution.item_id
+                    )));
+                }
+                aggregate.entries.push(super::ItemAggregateEntry {
+                    item_id: contribution.item_id.clone(),
+                    value: contribution.value.clone(),
                 });
             }
             FlowEvent::SignalWaitCreated {
@@ -396,6 +645,7 @@ pub(crate) fn project_run(
                         signal_id: None,
                         completed_at: None,
                         completed_sequence: None,
+                        select_id: None,
                     },
                 );
             }
@@ -516,6 +766,7 @@ pub(crate) fn project_run(
                         step.status
                     )));
                 }
+                crate::model::validate_json_blob_ref_marker(output)?;
                 step.status = StepStatus::Completed;
                 step.output = Some(output.clone());
                 step.error = None;
@@ -598,6 +849,71 @@ pub(crate) fn project_run(
                 step.error = Some(error.clone());
                 step.retry_after = None;
             }
+            FlowEvent::StepNonRetryable {
+                step_id,
+                attempt,
+                error,
+            } => {
+                let step = snapshot.steps.get_mut(step_id).ok_or_else(|| {
+                    FlowError::InvalidTransition(format!(
+                        "step_non_retryable references unknown step {step_id}"
+                    ))
+                })?;
+                if step.status != StepStatus::Running {
+                    return Err(FlowError::InvalidTransition(format!(
+                        "step_non_retryable cannot follow {:?} for step {step_id}",
+                        step.status
+                    )));
+                }
+                if *attempt != step.attempt {
+                    return Err(FlowError::InvalidTransition(format!(
+                        "step_non_retryable attempt {attempt} does not match running attempt {} for step {step_id}",
+                        step.attempt
+                    )));
+                }
+                step.status = StepStatus::Failed;
+                step.attempt = *attempt;
+                step.error = Some(error.clone());
+                step.retry_after = None;
+            }
+            FlowEvent::StepCancelled {
+                step_id,
+                attempt,
+                reason,
+            } => {
+                let step = snapshot.steps.get_mut(step_id).ok_or_else(|| {
+                    FlowError::InvalidTransition(format!(
+                        "step_cancelled references unknown step {step_id}"
+                    ))
+                })?;
+                if !matches!(step.status, StepStatus::Pending | StepStatus::Running) {
+                    return Err(FlowError::InvalidTransition(format!(
+                        "step_cancelled cannot follow {:?} for step {step_id}",
+                        step.status
+                    )));
+                }
+                if *attempt != step.attempt {
+                    return Err(FlowError::InvalidTransition(format!(
+                        "step_cancelled attempt {attempt} does not match current attempt {} for step {step_id}",
+                        step.attempt
+                    )));
+                }
+                step.status = StepStatus::Cancelled;
+                step.error = Some(reason.clone());
+                step.retry_after = None;
+            }
+            FlowEvent::ActivityCreated { .. }
+            | FlowEvent::ActivityStarted { .. }
+            | FlowEvent::ActivityLeaseAcquired { .. }
+            | FlowEvent::ActivityCompleted { .. }
+            | FlowEvent::ActivityRetrying { .. }
+            | FlowEvent::ActivityFailed { .. }
+            | FlowEvent::ActivityNonRetryable { .. }
+            | FlowEvent::ActivityUnknown { .. }
+            | FlowEvent::ActivityHeartbeat { .. }
+            | FlowEvent::ActivityCancelled { .. } => {
+                activity::project_activity(&mut snapshot, envelope)?;
+            }
             FlowEvent::WaitCreated { wait_id, resume_at } => {
                 if snapshot.waits.contains_key(wait_id) {
                     return Err(FlowError::InvalidTransition(format!(
@@ -610,6 +926,8 @@ pub(crate) fn project_run(
                         wait_id: wait_id.clone(),
                         status: WaitStatus::Waiting,
                         resume_at: *resume_at,
+                        scope_id: snapshot.innermost_open_scope().map(str::to_string),
+                        select_id: None,
                     },
                 );
             }
@@ -677,14 +995,318 @@ pub(crate) fn project_run(
                 }
                 hook.status = HookStatus::Disposed;
             }
+            FlowEvent::ScopeOpened {
+                scope_id,
+                parent_scope_id,
+            } => {
+                if snapshot.status == WorkflowRunStatus::Pending {
+                    return Err(FlowError::InvalidTransition(
+                        "scope_opened cannot precede run_started".to_string(),
+                    ));
+                }
+                if scope_id.trim().is_empty() {
+                    return Err(FlowError::InvalidTransition(
+                        "workflow scope id must not be empty".to_string(),
+                    ));
+                }
+                if snapshot.scopes.contains_key(scope_id) {
+                    return Err(FlowError::InvalidTransition(format!(
+                        "scope_opened duplicates scope {scope_id}"
+                    )));
+                }
+                let expected_parent = snapshot.innermost_open_scope().map(str::to_string);
+                if parent_scope_id.as_deref() != expected_parent.as_deref() {
+                    return Err(FlowError::InvalidTransition(format!(
+                        "scope_opened parent for {scope_id} does not match the open scope stack"
+                    )));
+                }
+                snapshot.scopes.insert(
+                    scope_id.clone(),
+                    CancellationScopeSnapshot {
+                        scope_id: scope_id.clone(),
+                        status: CancellationScopeStatus::Open,
+                        parent_scope_id: parent_scope_id.clone(),
+                        opened_at: envelope.timestamp,
+                        opened_sequence: envelope.sequence,
+                        reason: None,
+                    },
+                );
+                snapshot.open_scope_stack.push(scope_id.clone());
+            }
+            FlowEvent::ScopeCompleted { scope_id } => {
+                let scope = snapshot.scopes.get_mut(scope_id).ok_or_else(|| {
+                    FlowError::InvalidTransition(format!(
+                        "scope_completed references unknown scope {scope_id}"
+                    ))
+                })?;
+                if scope.status != CancellationScopeStatus::Open {
+                    return Err(FlowError::InvalidTransition(format!(
+                        "scope_completed cannot follow {:?} for scope {scope_id}",
+                        scope.status
+                    )));
+                }
+                if snapshot.open_scope_stack.last().map(String::as_str) != Some(scope_id.as_str()) {
+                    return Err(FlowError::InvalidTransition(format!(
+                        "scope_completed requires {scope_id} to be the innermost open scope"
+                    )));
+                }
+                scope.status = CancellationScopeStatus::Completed;
+                snapshot.open_scope_stack.pop();
+            }
+            FlowEvent::ScopeCancelled { scope_id, reason } => {
+                {
+                    let scope = snapshot.scopes.get_mut(scope_id).ok_or_else(|| {
+                        FlowError::InvalidTransition(format!(
+                            "scope_cancelled references unknown scope {scope_id}"
+                        ))
+                    })?;
+                    if scope.status != CancellationScopeStatus::Open {
+                        return Err(FlowError::InvalidTransition(format!(
+                            "scope_cancelled cannot follow {:?} for scope {scope_id}",
+                            scope.status
+                        )));
+                    }
+                    scope.status = CancellationScopeStatus::Cancelled;
+                    scope.reason = reason.clone();
+                }
+                cancel_scope_tree(&mut snapshot, scope_id);
+            }
+            FlowEvent::SelectCreated {
+                select_id,
+                arms,
+                mode,
+            } => {
+                if snapshot.status == WorkflowRunStatus::Pending {
+                    return Err(FlowError::InvalidTransition(
+                        "select_created cannot precede run_started".to_string(),
+                    ));
+                }
+                super::validate_select(select_id, arms)?;
+                if snapshot.selects.contains_key(select_id) {
+                    return Err(FlowError::InvalidTransition(format!(
+                        "select_created duplicates select {select_id}"
+                    )));
+                }
+                let scope_id = snapshot.innermost_open_scope().map(str::to_string);
+                for arm in arms {
+                    match arm {
+                        SelectArm::Timer { arm_id, resume_at } => {
+                            if snapshot.waits.contains_key(arm_id) {
+                                return Err(FlowError::InvalidTransition(format!(
+                                    "select {select_id} timer arm {arm_id} duplicates an existing wait"
+                                )));
+                            }
+                            snapshot.waits.insert(
+                                arm_id.clone(),
+                                WaitSnapshot {
+                                    wait_id: arm_id.clone(),
+                                    status: WaitStatus::Waiting,
+                                    resume_at: *resume_at,
+                                    scope_id: scope_id.clone(),
+                                    select_id: Some(select_id.clone()),
+                                },
+                            );
+                        }
+                        SelectArm::Signal {
+                            arm_id,
+                            signal_name,
+                        } => {
+                            super::validate_signal_wait(arm_id, signal_name)?;
+                            if !snapshot.spec.accepts_signal(signal_name) {
+                                return Err(FlowError::InvalidTransition(format!(
+                                    "select {select_id} signal arm {arm_id} uses undeclared signal {signal_name}"
+                                )));
+                            }
+                            if snapshot.signal_waits.contains_key(arm_id) {
+                                return Err(FlowError::InvalidTransition(format!(
+                                    "select {select_id} signal arm {arm_id} duplicates an existing signal wait"
+                                )));
+                            }
+                            snapshot.signal_waits.insert(
+                                arm_id.clone(),
+                                SignalWaitSnapshot {
+                                    wait_id: arm_id.clone(),
+                                    signal_name: signal_name.clone(),
+                                    status: SignalWaitStatus::Waiting,
+                                    created_at: envelope.timestamp,
+                                    created_sequence: envelope.sequence,
+                                    signal_id: None,
+                                    completed_at: None,
+                                    completed_sequence: None,
+                                    select_id: Some(select_id.clone()),
+                                },
+                            );
+                        }
+                    }
+                }
+                snapshot.selects.insert(
+                    select_id.clone(),
+                    SelectSnapshot {
+                        select_id: select_id.clone(),
+                        arms: arms.clone(),
+                        mode: *mode,
+                        status: SelectStatus::Open,
+                        winning_arm_id: None,
+                        scope_id: scope_id.clone(),
+                    },
+                );
+            }
+            FlowEvent::SelectCompleted {
+                select_id,
+                winning_arm_id,
+            } => {
+                let select = snapshot.selects.get_mut(select_id).ok_or_else(|| {
+                    FlowError::InvalidTransition(format!(
+                        "select_completed references unknown select {select_id}"
+                    ))
+                })?;
+                if select.status != SelectStatus::Open {
+                    return Err(FlowError::InvalidTransition(format!(
+                        "select_completed cannot follow {:?} for select {select_id}",
+                        select.status
+                    )));
+                }
+                let mode = select.mode;
+                let arms = select.arms.clone();
+                match mode {
+                    SelectMode::Race => {
+                        let Some(winning_arm_id) = winning_arm_id.as_ref() else {
+                            return Err(FlowError::InvalidTransition(format!(
+                                "select_completed for race select {select_id} requires a winning arm"
+                            )));
+                        };
+                        if !arms.iter().any(|arm| arm.arm_id() == winning_arm_id) {
+                            return Err(FlowError::InvalidTransition(format!(
+                                "select_completed winning arm {winning_arm_id} is not part of select {select_id}"
+                            )));
+                        }
+                        let select = snapshot.selects.get_mut(select_id).unwrap();
+                        select.status = SelectStatus::Completed;
+                        select.winning_arm_id = Some(winning_arm_id.clone());
+                        for wait in snapshot.waits.values_mut() {
+                            if wait.select_id.as_deref() == Some(select_id.as_str())
+                                && wait.wait_id != *winning_arm_id
+                                && wait.status == WaitStatus::Waiting
+                            {
+                                wait.status = WaitStatus::Cancelled;
+                            }
+                        }
+                        for wait in snapshot.signal_waits.values_mut() {
+                            if wait.select_id.as_deref() == Some(select_id.as_str())
+                                && wait.wait_id != *winning_arm_id
+                                && wait.status == SignalWaitStatus::Waiting
+                            {
+                                wait.status = SignalWaitStatus::Cancelled;
+                            }
+                        }
+                    }
+                    SelectMode::JoinAll => {
+                        if winning_arm_id.is_some() {
+                            return Err(FlowError::InvalidTransition(format!(
+                                "select_completed for join-all select {select_id} must not set a winner"
+                            )));
+                        }
+                        for arm in &arms {
+                            let arm_id = arm.arm_id();
+                            let timer_done = snapshot
+                                .waits
+                                .get(arm_id)
+                                .is_some_and(|wait| wait.status == WaitStatus::Completed);
+                            let signal_done = snapshot
+                                .signal_waits
+                                .get(arm_id)
+                                .is_some_and(|wait| wait.status == SignalWaitStatus::Completed);
+                            if !timer_done && !signal_done {
+                                return Err(FlowError::InvalidTransition(format!(
+                                    "select_completed for join-all select {select_id} before arm {arm_id} completed"
+                                )));
+                            }
+                        }
+                        let select = snapshot.selects.get_mut(select_id).unwrap();
+                        select.status = SelectStatus::Completed;
+                        select.winning_arm_id = None;
+                    }
+                }
+            }
         }
     }
 
     if snapshot.status == WorkflowRunStatus::Running && snapshot.has_open_suspension() {
         snapshot.status = WorkflowRunStatus::Suspended;
     }
+    snapshot.projection_revision = super::FLOW_PROJECTION_REVISION;
 
     Ok(snapshot)
+}
+
+fn cancel_scope_tree(snapshot: &mut WorkflowRunSnapshot, root_scope_id: &str) {
+    use std::collections::BTreeSet;
+
+    let mut cancelled = BTreeSet::new();
+    cancelled.insert(root_scope_id.to_string());
+    loop {
+        let mut grew = false;
+        for (scope_id, scope) in &snapshot.scopes {
+            if scope.status != CancellationScopeStatus::Open {
+                continue;
+            }
+            let Some(parent) = scope.parent_scope_id.as_deref() else {
+                continue;
+            };
+            if cancelled.contains(parent) && cancelled.insert(scope_id.clone()) {
+                grew = true;
+            }
+        }
+        if !grew {
+            break;
+        }
+    }
+
+    for scope_id in &cancelled {
+        if let Some(scope) = snapshot.scopes.get_mut(scope_id) {
+            if scope.status == CancellationScopeStatus::Open {
+                scope.status = CancellationScopeStatus::Cancelled;
+            }
+        }
+    }
+    snapshot
+        .open_scope_stack
+        .retain(|scope_id| !cancelled.contains(scope_id));
+    for wait in snapshot.waits.values_mut() {
+        if wait.status == WaitStatus::Waiting {
+            if let Some(scope_id) = wait.scope_id.as_deref() {
+                if cancelled.contains(scope_id) {
+                    wait.status = WaitStatus::Cancelled;
+                }
+            }
+        }
+    }
+    let cancelled_selects: Vec<String> = snapshot
+        .selects
+        .values()
+        .filter(|select| {
+            select.status == SelectStatus::Open
+                && select
+                    .scope_id
+                    .as_deref()
+                    .is_some_and(|scope_id| cancelled.contains(scope_id))
+        })
+        .map(|select| select.select_id.clone())
+        .collect();
+    for select_id in &cancelled_selects {
+        if let Some(select) = snapshot.selects.get_mut(select_id) {
+            select.status = SelectStatus::Cancelled;
+        }
+    }
+    for wait in snapshot.signal_waits.values_mut() {
+        if wait.status == SignalWaitStatus::Waiting {
+            if let Some(select_id) = wait.select_id.as_deref() {
+                if cancelled_selects.iter().any(|id| id == select_id) {
+                    wait.status = SignalWaitStatus::Cancelled;
+                }
+            }
+        }
+    }
 }
 
 fn ensure_signal_pair_is_fifo(
@@ -734,4 +1356,157 @@ fn ensure_no_blocking_child_workflows(snapshot: &WorkflowRunSnapshot) -> Result<
         )));
     }
     Ok(())
+}
+
+/// Fail closed when graceful completion or continue-as-new would abandon an
+/// open signal wait (including select signal arms projected into
+/// `signal_waits`). Unconsumed deliveries remain a continue-as-new-only rule
+/// because only segmentation must not drop a queued message for a successor.
+fn ensure_no_open_signal_waits(snapshot: &WorkflowRunSnapshot) -> Result<()> {
+    if snapshot
+        .signal_waits
+        .values()
+        .any(|wait| wait.status == SignalWaitStatus::Waiting)
+    {
+        return Err(FlowError::InvalidTransition(
+            "cannot abandon an open signal wait".to_string(),
+        ));
+    }
+    Ok(())
+}
+
+/// Fail closed when graceful completion or continue-as-new would abandon an
+/// open structured select/race (including timer-only arms that would otherwise
+/// look abandonable as ordinary waits).
+fn ensure_no_open_selects(snapshot: &WorkflowRunSnapshot) -> Result<()> {
+    if let Some(select) = snapshot
+        .selects
+        .values()
+        .find(|select| select.status == SelectStatus::Open)
+    {
+        return Err(FlowError::InvalidTransition(format!(
+            "workflow run {} cannot complete while select {} is still open",
+            snapshot.run_id, select.select_id
+        )));
+    }
+    Ok(())
+}
+
+/// Fail closed when graceful completion or continue-as-new would abandon an
+/// open child-workflow map (including plans that never activated a child).
+fn ensure_no_open_child_workflow_maps(snapshot: &WorkflowRunSnapshot) -> Result<()> {
+    if let Some(map) = snapshot
+        .child_workflow_maps
+        .values()
+        .find(|map| map.status == ChildWorkflowMapStatus::Open)
+    {
+        return Err(FlowError::InvalidTransition(format!(
+            "workflow run {} cannot complete while child workflow map {} is still open",
+            snapshot.run_id, map.map_id
+        )));
+    }
+    Ok(())
+}
+
+/// Fail closed when a graceful completion or continue-as-new would strand
+/// in-flight step/activity work that can no longer settle on a terminal run.
+///
+/// Immediate host termination (`run_cancelled`, timeout, host shutdown) and
+/// failure terminals intentionally omit this check.
+fn ensure_no_open_in_flight_work(snapshot: &WorkflowRunSnapshot) -> Result<()> {
+    if let Some(step) = snapshot
+        .steps
+        .values()
+        .find(|step| matches!(step.status, StepStatus::Pending | StepStatus::Running))
+    {
+        return Err(FlowError::InvalidTransition(format!(
+            "workflow run {} cannot complete while step {} is still {:?}",
+            snapshot.run_id, step.step_id, step.status
+        )));
+    }
+    if let Some(activity) = snapshot.activities.values().find(|activity| {
+        matches!(
+            activity.status,
+            ActivityStatus::Pending | ActivityStatus::Running | ActivityStatus::Unknown
+        )
+    }) {
+        return Err(FlowError::InvalidTransition(format!(
+            "workflow run {} cannot complete while activity {} is still {:?}",
+            snapshot.run_id, activity.activity_id, activity.status
+        )));
+    }
+    Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use chrono::Utc;
+    use serde_json::json;
+    use uuid::Uuid;
+
+    fn envelope(run_id: &str, sequence: u64, event: FlowEvent) -> FlowEventEnvelope {
+        FlowEventEnvelope::new(
+            run_id,
+            sequence,
+            Uuid::from_u128(u128::from(sequence)),
+            Utc::now(),
+            event,
+        )
+    }
+
+    fn history(run_id: &str) -> Vec<FlowEventEnvelope> {
+        vec![
+            envelope(
+                run_id,
+                1,
+                FlowEvent::RunCreated {
+                    spec: super::super::WorkflowSpec::rust_embedded(
+                        "projection.test",
+                        "1",
+                        "tests::projection",
+                        "main",
+                    ),
+                    input: json!({"source": "projection-test"}),
+                },
+            ),
+            envelope(run_id, 2, FlowEvent::RunStarted),
+            envelope(
+                run_id,
+                3,
+                FlowEvent::WaitCreated {
+                    wait_id: "pause".to_string(),
+                    resume_at: "2030-01-01T00:00:00Z".parse().unwrap(),
+                },
+            ),
+            envelope(
+                run_id,
+                4,
+                FlowEvent::WaitCompleted {
+                    wait_id: "pause".to_string(),
+                },
+            ),
+        ]
+    }
+
+    #[test]
+    fn incremental_projection_matches_full_replay_for_multiple_events() {
+        let run_id = "projection-tail";
+        let events = history(run_id);
+        let full = project_run(run_id, &events).unwrap();
+        let checkpoint = project_run(run_id, &events[..2]).unwrap();
+        let incremental = project_run_from_snapshot(run_id, checkpoint, &events[2..]).unwrap();
+        assert_eq!(incremental, full);
+    }
+
+    #[test]
+    fn incremental_projection_recomputes_derived_suspension_state() {
+        let run_id = "projection-suspension";
+        let events = history(run_id);
+        let full = project_run(run_id, &events).unwrap();
+        let checkpoint = project_run(run_id, &events[..3]).unwrap();
+        assert_eq!(checkpoint.status, WorkflowRunStatus::Suspended);
+        let incremental = project_run_from_snapshot(run_id, checkpoint, &events[3..]).unwrap();
+        assert_eq!(incremental, full);
+    }
 }

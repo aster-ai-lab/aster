@@ -58,7 +58,7 @@ async fn local_queue_maximum_cutoff_does_not_panic_and_requeues_every_lease() {
 
 #[cfg(feature = "postgres")]
 fn postgres_url_from_env() -> Option<String> {
-    std::env::var("A3S_FLOW_POSTGRES_URL")
+    std::env::var("KENSE_FLOW_POSTGRES_URL")
         .ok()
         .filter(|url| !url.trim().is_empty())
 }

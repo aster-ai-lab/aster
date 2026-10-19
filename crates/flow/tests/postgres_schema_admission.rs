@@ -7,7 +7,7 @@ use a3s_orm::PostgresExecutor;
 use uuid::Uuid;
 
 fn postgres_url_from_env() -> Option<String> {
-    std::env::var("A3S_FLOW_POSTGRES_URL")
+    std::env::var("KENSE_FLOW_POSTGRES_URL")
         .ok()
         .filter(|url| !url.trim().is_empty())
 }
@@ -20,7 +20,7 @@ fn schema_scoped_url(postgres_url: &str, schema: &str) -> String {
 #[tokio::test]
 async fn dedicated_migrator_admits_store_and_queue_without_serving_ddl() {
     let Some(postgres_url) = postgres_url_from_env() else {
-        eprintln!("skipping PostgreSQL schema admission test; set A3S_FLOW_POSTGRES_URL");
+        eprintln!("skipping PostgreSQL schema admission test; set KENSE_FLOW_POSTGRES_URL");
         return;
     };
     let schema = format!("flow_schema_admission_{}", Uuid::new_v4().simple());

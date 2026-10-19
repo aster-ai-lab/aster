@@ -57,6 +57,9 @@ The produced artifact must:
 - write one `NativeRuntimeResponse` JSON object to stdout,
 - dispatch workflow requests to the `exportName` function from the request,
 - dispatch step requests by `payload.step_name`.
+- dispatch activity requests by `payload.activity_name`; activity payloads also
+  include `attempt_id`, `idempotency_key`, and `fencing_token` for safe
+  redelivery and stale-worker rejection.
 
 Set a custom compiler path in Rust:
 
@@ -197,13 +200,13 @@ cancellation can still end the same operation sooner.
 The runnable example also accepts:
 
 ```sh
-A3S_FLOW_NATIVE_TS_COMPILER=/path/to/a3s-flow-native-compiler \
+KENSE_FLOW_NATIVE_TS_COMPILER=/path/to/a3s-flow-native-compiler \
   cargo run --example native_ts_greeting
 
-A3S_FLOW_NATIVE_TS_COMPILER=/path/to/a3s-flow-native-compiler \
+KENSE_FLOW_NATIVE_TS_COMPILER=/path/to/a3s-flow-native-compiler \
   cargo run --example native_ts_preflight
 
-A3S_FLOW_NATIVE_TS_COMPILER=/path/to/a3s-flow-native-compiler \
+KENSE_FLOW_NATIVE_TS_COMPILER=/path/to/a3s-flow-native-compiler \
   just native-ts-bun-test
 ```
 
@@ -306,13 +309,31 @@ The contract defines:
 - `FlowEvent`
 - `FlowEventEnvelope`
 - `StepDefinition<Input, Output>`
+- `ActivityInvocation<Input>` and `ActivityDefinition<Input, Output>`
 - `NativeRuntimeRequest<Payload>`
 - `NativeRuntimeResponse<Output>`
 
 Important protocol details:
 
-- `FlowEventEnvelope` includes `event_id`, `run_id`, `sequence`, `timestamp`,
-  and `event`. It does not include a derived event key.
+- `FlowEventEnvelope` includes `schema_version`, `event_id`, `run_id`,
+  `sequence`, `timestamp`, and `event`. Older histories may omit
+  `schema_version` and are interpreted as version `1`; a newer version must be
+  migrated or upcast before replay. It does not include a derived event key.
+- Durable event payloads are capped at `MAX_FLOW_EVENT_BYTES` (one MiB). Put
+  larger values in a host-owned content-addressed blob and persist only its
+  reference in Flow history.
+- `StepInvocation` includes the one-based `attempt` and an opaque
+  `idempotency_key` derived from the run, step, and attempt identities. Hosts
+  should use this key when making an external side effect retry-safe.
+- `ActivityInvocation` is the first-class side-effect contract. It includes
+  `attempt_id`, `idempotency_key`, and a per-attempt `fencing_token`; hosts must
+  carry these identities through Outbox/Inbox or connector receipts and reject
+  stale completions. Redelivery retains the attempt/idempotency identity but
+  emits `activity_lease_acquired` with a fresh fence. `ActivityHeartbeat`
+  events carry the same fence and an optional checkpoint. A scheduled
+  `timeout_ms` is persisted and exposed as `ActivityInvocation.deadline`; Flow
+  converts an elapsed deadline into `activity_unknown`, which the host must
+  reconcile before retrying or completing the side effect.
 - `WorkflowSpec.runtime_build_id`, `WorkflowSpec.patch_markers`, and
   `WorkflowSpec.signal_names` are optional for legacy histories. Marker and
   signal-name sets use sorted string arrays. Workflow code may use
@@ -322,6 +343,10 @@ Important protocol details:
   `token` because callback routing must be stable across replay.
 - `step_retrying.retry_after` is `string | null`, matching Rust's serialized
   `Option<DateTime<Utc>>`.
+- `step_cancelled` is emitted when a terminal batch abort makes a step
+  non-actionable. Its `reason` can indicate that an external side effect has an
+  unknown outcome; reconcile that attempt with the stable step identity before
+  retrying it.
 - `schedule_step.retry` and batched `StepCommand.retry` may be omitted; Rust
   applies the default retry policy.
 - `record_progress` and `link_child_operation` use stable IDs. Replay should

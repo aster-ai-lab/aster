@@ -7,9 +7,11 @@ use crate::error::{FlowError, Result};
 use crate::runtime_build::RuntimeBuildId;
 
 use super::{
-    CancellationRequestSnapshot, ChildOperationReference, ChildWorkflowSnapshot, JsonValue,
-    RetryPolicy, SignalWaitSnapshot, SignalWaitStatus, WorkflowContinuation, WorkflowProgress,
-    WorkflowSignalSnapshot, WorkflowSpec, WorkflowTerminalOutcome,
+    CancellationRequestSnapshot, CancellationScopeSnapshot, ChildOperationReference,
+    ChildWorkflowMapSnapshot, ChildWorkflowSnapshot, CompensationMarkerSnapshot,
+    ExternalDatasetRef, FlowBlobRef, ItemAggregateSnapshot, JsonValue, RetryPolicy, SelectSnapshot,
+    SignalWaitSnapshot, SignalWaitStatus, WorkflowContinuation, WorkflowProgress,
+    WorkflowSignalSnapshot, WorkflowSpec, WorkflowTerminalOutcome, WorkflowUpdateSnapshot,
 };
 
 /// Materialized lifecycle state of a workflow run.
@@ -58,7 +60,7 @@ pub enum StepStatus {
     Completed,
     /// The step exhausted its retry policy.
     Failed,
-    /// The owning run cancelled the step before completion.
+    /// The owning run or a failed batch cancelled the step before completion.
     Cancelled,
 }
 
@@ -84,6 +86,123 @@ pub struct StepSnapshot {
     pub attempt: u32,
     /// Earliest UTC time for a delayed retry.
     pub retry_after: Option<DateTime<Utc>>,
+}
+
+/// Materialized lifecycle state of a durable activity.
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[non_exhaustive]
+#[serde(rename_all = "snake_case")]
+pub enum ActivityStatus {
+    /// The activity is ready now or after a retry deadline.
+    Pending,
+    /// A worker has started the current attempt.
+    Running,
+    /// The activity produced a durable output.
+    Completed,
+    /// The activity exhausted its retry policy or failed permanently.
+    Failed,
+    /// The host cannot determine whether the external side effect committed.
+    ///
+    /// An unknown activity is intentionally non-actionable until its owner
+    /// reconciles the stable attempt and idempotency identities.
+    Unknown,
+    /// The owning run cancelled the activity before completion.
+    Cancelled,
+}
+
+/// Host decision that reconciles an activity with an unknown external outcome.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[non_exhaustive]
+#[serde(tag = "type", rename_all = "snake_case")]
+pub enum ActivityResolution {
+    /// The external side effect is confirmed and returned this output.
+    Completed {
+        /// Durable JSON output to commit.
+        output: JsonValue,
+    },
+    /// The external side effect is confirmed absent and the attempt may retry.
+    Retry {
+        /// Reconciliation or provider error recorded for the attempt.
+        error: String,
+        /// Earliest UTC time at which a replacement attempt may run.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        retry_after: Option<DateTime<Utc>>,
+    },
+    /// The external side effect is confirmed failed permanently.
+    Failed {
+        /// Final failure description.
+        error: String,
+    },
+    /// The external side effect failed with an application error that must not
+    /// be retried.
+    NonRetryable {
+        /// Failure description.
+        error: String,
+    },
+    /// The host explicitly abandons the ambiguous attempt.
+    Cancelled {
+        /// Cancellation or reconciliation reason.
+        reason: String,
+    },
+}
+
+/// Materialized state of one durable activity invocation.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[non_exhaustive]
+pub struct ActivitySnapshot {
+    /// Replay-stable identity of the activity.
+    pub activity_id: String,
+    /// Registered activity implementation name.
+    pub activity_name: String,
+    /// Current lifecycle state.
+    pub status: ActivityStatus,
+    /// JSON input pinned when the activity was created.
+    pub input: JsonValue,
+    /// Retry behavior pinned when the activity was created.
+    pub retry: RetryPolicy,
+    /// Optional wall-clock budget applied independently to each attempt.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timeout_ms: Option<u64>,
+    /// Durable JSON output, when completed successfully.
+    pub output: Option<JsonValue>,
+    /// Final or most recent attempt error.
+    pub error: Option<String>,
+    /// Latest one-based attempt number observed in history.
+    pub attempt: u32,
+    /// Stable identity for the current attempt.
+    #[serde(default)]
+    pub attempt_id: String,
+    /// Stable idempotency key for the current attempt.
+    #[serde(default)]
+    pub idempotency_key: String,
+    /// Fencing token assigned to the current attempt.
+    #[serde(default)]
+    pub fencing_token: String,
+    /// Latest checkpoint supplied by the activity host.
+    #[serde(default)]
+    pub checkpoint: Option<JsonValue>,
+    /// Earliest UTC time for a delayed retry.
+    pub retry_after: Option<DateTime<Utc>>,
+    /// Last durable heartbeat timestamp, when one has been recorded.
+    #[serde(default)]
+    pub last_heartbeat_at: Option<DateTime<Utc>>,
+    /// Deadline of the current or most recent attempt.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deadline: Option<DateTime<Utc>>,
+}
+
+impl ActivitySnapshot {
+    /// Decode the persisted activity output into a host-defined serde type.
+    pub fn output_as<T>(&self) -> Result<Option<T>>
+    where
+        T: DeserializeOwned,
+    {
+        self.output
+            .clone()
+            .map(serde_json::from_value)
+            .transpose()
+            .map_err(FlowError::from)
+    }
 }
 
 impl StepSnapshot {
@@ -123,6 +242,12 @@ pub struct WaitSnapshot {
     pub status: WaitStatus,
     /// UTC time at which the wait becomes ready.
     pub resume_at: DateTime<Utc>,
+    /// Cancellation scope that owned the wait when it was created.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scope_id: Option<String>,
+    /// Structured select that owns this wait, when created by a select arm.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub select_id: Option<String>,
 }
 
 /// Materialized lifecycle state of an external callback hook.
@@ -230,6 +355,8 @@ impl ActiveHookSnapshot {
 pub enum ScheduledWakeupKind {
     /// A durable timer wait.
     Wait,
+    /// A delayed first-class activity retry.
+    ActivityRetry,
     /// A delayed step retry.
     Retry,
 }
@@ -239,15 +366,21 @@ impl ScheduledWakeupKind {
     pub(crate) fn from_database_code(code: i64) -> Result<Self> {
         match code {
             0 => Ok(Self::Wait),
+            1 => Ok(Self::ActivityRetry),
             2 => Ok(Self::Retry),
             _ => Err(FlowError::Store(format!(
                 "invalid scheduled wakeup kind code {code}"
             ))),
         }
     }
+
+    /// Whether this wakeup is a delayed step or activity retry.
+    pub const fn is_retry(self) -> bool {
+        matches!(self, Self::Retry | Self::ActivityRetry)
+    }
 }
 
-/// Minimal indexed record for a wait timer or delayed step retry.
+/// Minimal indexed record for a wait timer or delayed activity/step retry.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[non_exhaustive]
 pub struct ScheduledWakeup {
@@ -283,7 +416,18 @@ impl ScheduledWakeup {
     }
 }
 
+/// Current projection-rule revision stamped into every rebuilt snapshot.
+///
+/// Bump this when a projection rule changes the meaning of an existing history
+/// without a new event. Disposable checkpoints from an older revision are
+/// discarded and rebuilt from the event log.
+pub const FLOW_PROJECTION_REVISION: u32 = 1;
+
 /// Materialized state of a workflow run.
+///
+/// `projection_revision` is part of the disposable checkpoint contract. History
+/// remains authoritative. A checkpoint whose snapshot was produced by an older
+/// revision is rejected and rebuilt.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[non_exhaustive]
 pub struct WorkflowRunSnapshot {
@@ -297,6 +441,9 @@ pub struct WorkflowRunSnapshot {
     pub status: WorkflowRunStatus,
     /// Durable steps indexed by their stable identifiers.
     pub steps: BTreeMap<String, StepSnapshot>,
+    /// First-class durable activities indexed by their stable identifiers.
+    #[serde(default)]
+    pub activities: BTreeMap<String, ActivitySnapshot>,
     /// Durable timer waits indexed by their stable identifiers.
     pub waits: BTreeMap<String, WaitSnapshot>,
     /// External callback hooks indexed by their stable identifiers.
@@ -319,6 +466,39 @@ pub struct WorkflowRunSnapshot {
     /// Deterministic signal waits indexed by stable wait identifiers.
     #[serde(default)]
     pub signal_waits: BTreeMap<String, SignalWaitSnapshot>,
+    /// Applied updates in durable application order.
+    #[serde(default)]
+    pub updates: Vec<WorkflowUpdateSnapshot>,
+    /// Cancellation scopes indexed by stable scope identifiers.
+    #[serde(default)]
+    pub scopes: BTreeMap<String, CancellationScopeSnapshot>,
+    /// Open scope stack from outermost to innermost.
+    #[serde(default)]
+    pub open_scope_stack: Vec<String>,
+    /// Structured selects indexed by stable select identifiers.
+    #[serde(default)]
+    pub selects: BTreeMap<String, SelectSnapshot>,
+    /// Dynamic child-workflow maps indexed by stable map identifiers.
+    #[serde(default)]
+    pub child_workflow_maps: BTreeMap<String, ChildWorkflowMapSnapshot>,
+    /// Durable compensation markers indexed by stable marker identifiers.
+    #[serde(default)]
+    pub compensation_markers: BTreeMap<String, CompensationMarkerSnapshot>,
+    /// Host-owned external dataset references indexed by dataset identity.
+    #[serde(default)]
+    pub external_datasets: BTreeMap<String, ExternalDatasetRef>,
+    /// Host-owned content-addressed blob references indexed by blob identity.
+    #[serde(default)]
+    pub blob_refs: BTreeMap<String, FlowBlobRef>,
+    /// Named per-item aggregates indexed by aggregate identity.
+    #[serde(default)]
+    pub item_aggregates: BTreeMap<String, ItemAggregateSnapshot>,
+    /// Projection-rule revision used to invalidate disposable checkpoints.
+    ///
+    /// Missing or older values deserialize as `0`. Checkpoint validation
+    /// accepts only [`FLOW_PROJECTION_REVISION`].
+    #[serde(default)]
+    pub projection_revision: u32,
     /// Final JSON output for a successfully completed run.
     pub output: Option<JsonValue>,
     /// Terminal error for a failed run.
@@ -346,6 +526,7 @@ impl WorkflowRunSnapshot {
             input,
             status: WorkflowRunStatus::Pending,
             steps: BTreeMap::new(),
+            activities: BTreeMap::new(),
             waits: BTreeMap::new(),
             hooks: BTreeMap::new(),
             cancellation: None,
@@ -354,6 +535,16 @@ impl WorkflowRunSnapshot {
             child_workflows: BTreeMap::new(),
             signals: Vec::new(),
             signal_waits: BTreeMap::new(),
+            updates: Vec::new(),
+            scopes: BTreeMap::new(),
+            open_scope_stack: Vec::new(),
+            selects: BTreeMap::new(),
+            child_workflow_maps: BTreeMap::new(),
+            compensation_markers: BTreeMap::new(),
+            external_datasets: BTreeMap::new(),
+            blob_refs: BTreeMap::new(),
+            item_aggregates: BTreeMap::new(),
+            projection_revision: FLOW_PROJECTION_REVISION,
             output: None,
             error: None,
             terminal_outcome: None,
@@ -387,6 +578,25 @@ impl WorkflowRunSnapshot {
         self.steps
             .get(step_id)
             .and_then(|step| step.output.as_ref())
+    }
+
+    /// Returns the durable JSON output of a completed activity.
+    pub fn activity_output(&self, activity_id: &str) -> Option<&JsonValue> {
+        self.activities
+            .get(activity_id)
+            .and_then(|activity| activity.output.as_ref())
+    }
+
+    /// Decode a completed activity output into a host-defined serde type.
+    pub fn activity_output_as<T>(&self, activity_id: &str) -> Result<Option<T>>
+    where
+        T: DeserializeOwned,
+    {
+        self.activity_output(activity_id)
+            .cloned()
+            .map(serde_json::from_value)
+            .transpose()
+            .map_err(FlowError::from)
     }
 
     /// Decode a persisted step output into a host-defined serde type.
@@ -434,6 +644,61 @@ impl WorkflowRunSnapshot {
         self.signals
             .iter()
             .find(|signal| signal.signal_id == signal_id)
+    }
+
+    /// Return an applied update by its caller-owned idempotency identity.
+    pub fn update(&self, update_id: &str) -> Option<&WorkflowUpdateSnapshot> {
+        self.updates
+            .iter()
+            .find(|update| update.update_id == update_id)
+    }
+
+    /// Return a cancellation scope by its stable identity.
+    pub fn scope(&self, scope_id: &str) -> Option<&CancellationScopeSnapshot> {
+        self.scopes.get(scope_id)
+    }
+
+    /// Return the innermost currently open cancellation scope, if any.
+    pub fn innermost_open_scope(&self) -> Option<&str> {
+        self.open_scope_stack.last().map(String::as_str)
+    }
+
+    /// Return a structured select by its stable identity.
+    pub fn select(&self, select_id: &str) -> Option<&SelectSnapshot> {
+        self.selects.get(select_id)
+    }
+
+    /// Return a dynamic child-workflow map by its stable identity.
+    pub fn child_workflow_map(&self, map_id: &str) -> Option<&ChildWorkflowMapSnapshot> {
+        self.child_workflow_maps.get(map_id)
+    }
+
+    /// Return a durable compensation marker by its stable identity.
+    pub fn compensation_marker(&self, marker_id: &str) -> Option<&CompensationMarkerSnapshot> {
+        self.compensation_markers.get(marker_id)
+    }
+
+    /// Return a host-owned external dataset reference by dataset identity.
+    pub fn external_dataset(&self, dataset_id: &str) -> Option<&ExternalDatasetRef> {
+        self.external_datasets.get(dataset_id)
+    }
+
+    /// Return a host-owned content-addressed blob reference by blob identity.
+    pub fn blob_ref(&self, blob_id: &str) -> Option<&FlowBlobRef> {
+        self.blob_refs.get(blob_id)
+    }
+
+    /// Return a named per-item aggregate by identity.
+    pub fn item_aggregate(&self, aggregate_id: &str) -> Option<&ItemAggregateSnapshot> {
+        self.item_aggregates.get(aggregate_id)
+    }
+
+    /// Return open compensation markers in durable insertion order.
+    pub fn open_compensation_markers(&self) -> Vec<&CompensationMarkerSnapshot> {
+        self.compensation_markers
+            .values()
+            .filter(|marker| marker.is_open())
+            .collect()
     }
 
     /// Return the signal payload paired with a deterministic signal wait.
@@ -486,6 +751,9 @@ impl WorkflowRunSnapshot {
                 .values()
                 .any(|hook| hook.status == HookStatus::Active)
             || self.steps.values().any(|step| step.retry_after.is_some())
+            || self.activities.values().any(|activity| {
+                activity.retry_after.is_some() || activity.status == ActivityStatus::Unknown
+            })
             || self
                 .child_workflows
                 .values()
@@ -498,7 +766,8 @@ impl WorkflowRunSnapshot {
 
     /// Returns delayed step retries ready at or before `now`.
     pub fn due_retries(&self, now: DateTime<Utc>) -> Vec<(String, DateTime<Utc>)> {
-        self.steps
+        let mut retries = self
+            .steps
             .values()
             .filter_map(|step| match step.retry_after {
                 Some(retry_after) if step.status == StepStatus::Pending && retry_after <= now => {
@@ -506,7 +775,18 @@ impl WorkflowRunSnapshot {
                 }
                 _ => None,
             })
-            .collect()
+            .collect::<Vec<_>>();
+        retries.extend(self.activities.values().filter_map(
+            |activity| match activity.retry_after {
+                Some(retry_after)
+                    if activity.status == ActivityStatus::Pending && retry_after <= now =>
+                {
+                    Some((activity.activity_id.clone(), retry_after))
+                }
+                _ => None,
+            },
+        ));
+        retries
     }
 
     /// Returns whether any pending step has a retry deadline after `now`.
@@ -514,6 +794,12 @@ impl WorkflowRunSnapshot {
         self.steps.values().any(|step| {
             step.status == StepStatus::Pending
                 && step
+                    .retry_after
+                    .map(|retry_after| retry_after > now)
+                    .unwrap_or(false)
+        }) || self.activities.values().any(|activity| {
+            activity.status == ActivityStatus::Pending
+                && activity
                     .retry_after
                     .map(|retry_after| retry_after > now)
                     .unwrap_or(false)

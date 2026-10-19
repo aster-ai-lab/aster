@@ -10,7 +10,7 @@ use crate::jsonl::{
 
 use super::{A3sFlowEvent, A3sFlowEventSink};
 
-/// JSONL-backed A3S Flow event sink for local audit logs.
+/// JSONL-backed Kense Flow event sink for local audit logs.
 ///
 /// `A3sFlowEventSink::emit` is intentionally best-effort because observers run
 /// after the event store commit. Write failures are recorded in `last_error()`

@@ -1,11 +1,27 @@
 use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
+use serde::ser::SerializeStruct;
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use uuid::Uuid;
 
 use super::{
     CancellationRequest, ChildOperationReference, ChildWorkflowCancellationPolicy, JsonValue,
     RetryPolicy, WorkflowProgress, WorkflowSignal, WorkflowSpec, WorkflowTerminalOutcome,
+    WorkflowUpdate,
 };
+
+/// Schema version of the durable [`FlowEventEnvelope`] wire representation.
+///
+/// The version is intentionally attached to the envelope rather than to each
+/// event variant so stores and runtimes can reject or upcast a history before
+/// projecting it. Older histories omitted this field and are interpreted as
+/// version one through the backwards-compatible decoder below.
+pub const FLOW_EVENT_ENVELOPE_SCHEMA_VERSION: u16 = 1;
+
+/// Maximum UTF-8 JSON payload size accepted for one durable event.
+///
+/// Large inputs, outputs, logs, and checkpoints should be stored by a host in
+/// a content-addressed blob store and referenced from the event payload.
+pub const MAX_FLOW_EVENT_BYTES: usize = 1024 * 1024;
 
 /// Event persisted as the single source of truth for a workflow run.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -100,6 +116,20 @@ pub enum FlowEvent {
         /// Terminal outcome returned by the child.
         outcome: WorkflowTerminalOutcome,
     },
+    /// Opens a dynamic bounded child-workflow map with an ordered plan.
+    ChildWorkflowMapOpened {
+        /// Replay-stable identity of the map.
+        map_id: String,
+        /// Ordered child definitions that form the complete plan.
+        children: Vec<super::ChildWorkflowCommand>,
+        /// Maximum number of open children activated at once.
+        concurrency: usize,
+    },
+    /// Records that every planned child in a map reached a terminal outcome.
+    ChildWorkflowMapCompleted {
+        /// Stable identity of the completed map.
+        map_id: String,
+    },
     /// Persists one named asynchronous signal.
     SignalReceived {
         /// Signal identity, name, payload, and receipt metadata.
@@ -118,6 +148,41 @@ pub enum FlowEvent {
         wait_id: String,
         /// Identifier of the signal consumed by the wait.
         signal_id: String,
+    },
+    /// Persists one named synchronous update and its handler output.
+    UpdateApplied {
+        /// Update identity, name, and input.
+        update: WorkflowUpdate,
+        /// JSON output returned by the update handler.
+        output: JsonValue,
+    },
+    /// Records a durable compensation obligation for later cleanup.
+    CompensationMarkerRecorded {
+        /// Obligation identity, forward-work identity, and details.
+        marker: super::CompensationMarker,
+    },
+    /// Records that a compensation obligation finished.
+    CompensationMarkerCompleted {
+        /// Stable identity of the completed marker.
+        marker_id: String,
+        /// Optional structured compensation outcome.
+        #[serde(default, skip_serializing_if = "JsonValue::is_null")]
+        outcome: JsonValue,
+    },
+    /// Attaches a host-owned external dataset reference to the run.
+    ExternalDatasetAttached {
+        /// Content-addressed dataset reference.
+        dataset: super::ExternalDatasetRef,
+    },
+    /// Attaches a host-owned content-addressed blob reference to the run.
+    BlobRefAttached {
+        /// Content-addressed blob reference.
+        blob: super::FlowBlobRef,
+    },
+    /// Records one durable contribution into a named per-item aggregate.
+    ItemAggregateRecorded {
+        /// Aggregate identity, item identity, and value.
+        contribution: super::ItemAggregateContribution,
     },
     /// Creates a durable step invocation.
     StepCreated {
@@ -165,6 +230,159 @@ pub enum FlowEvent {
         /// Error returned by the final attempt.
         error: String,
     },
+    /// Records an application failure that must not be retried.
+    StepNonRetryable {
+        /// Stable identity of the step.
+        step_id: String,
+        /// Attempt number that failed.
+        attempt: u32,
+        /// Error returned by the attempt.
+        error: String,
+    },
+    /// Marks a step as no longer actionable after a terminal batch or explicit
+    /// host abort.
+    ///
+    /// The reason should explain whether the external side-effect outcome is
+    /// unknown so a host can reconcile it with the step's stable idempotency
+    /// key before deciding whether to retry elsewhere.
+    StepCancelled {
+        /// Stable identity of the cancelled step.
+        step_id: String,
+        /// Attempt that was active when the step was cancelled.
+        attempt: u32,
+        /// Human-readable cancellation or reconciliation reason.
+        reason: String,
+    },
+    /// Creates a first-class durable activity invocation.
+    ActivityCreated {
+        /// Replay-stable identity of the activity.
+        activity_id: String,
+        /// Registered activity implementation name.
+        activity_name: String,
+        /// JSON input supplied to the activity.
+        input: JsonValue,
+        /// Retry behavior pinned when the activity is created.
+        #[serde(default)]
+        retry: RetryPolicy,
+        /// Optional wall-clock budget applied independently to each attempt.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        timeout_ms: Option<u64>,
+    },
+    /// Marks one activity attempt as started and assigns its fencing token.
+    ActivityStarted {
+        /// Stable identity of the activity.
+        activity_id: String,
+        /// One-based attempt number.
+        attempt: u32,
+        /// Stable identity for this attempt.
+        attempt_id: String,
+        /// Idempotency key for external side effects.
+        idempotency_key: String,
+        /// Fencing token used to reject stale completions.
+        fencing_token: String,
+    },
+    /// Reassigns a running attempt after worker redelivery with a new fence.
+    ActivityLeaseAcquired {
+        /// Stable identity of the activity.
+        activity_id: String,
+        /// Current attempt number.
+        attempt: u32,
+        /// Attempt identity retained across redelivery.
+        attempt_id: String,
+        /// New fencing token for the replacement worker.
+        fencing_token: String,
+    },
+    /// Records the successful output of an activity.
+    ActivityCompleted {
+        /// Stable identity of the activity.
+        activity_id: String,
+        /// Attempt identity that produced the output.
+        attempt_id: String,
+        /// Fencing token of the completing attempt.
+        fencing_token: String,
+        /// JSON output returned by the activity.
+        output: JsonValue,
+    },
+    /// Records a failed activity attempt that will be retried.
+    ActivityRetrying {
+        /// Stable identity of the activity.
+        activity_id: String,
+        /// Attempt number that failed.
+        attempt: u32,
+        /// Attempt identity that failed.
+        attempt_id: String,
+        /// Fencing token of the failed attempt.
+        fencing_token: String,
+        /// Error returned by the attempt.
+        error: String,
+        /// Earliest UTC time for the next attempt, if delayed.
+        retry_after: Option<DateTime<Utc>>,
+    },
+    /// Records an activity that exhausted its retry policy.
+    ActivityFailed {
+        /// Stable identity of the activity.
+        activity_id: String,
+        /// Final attempt number that failed.
+        attempt: u32,
+        /// Attempt identity that failed.
+        attempt_id: String,
+        /// Fencing token of the failed attempt.
+        fencing_token: String,
+        /// Error returned by the final attempt.
+        error: String,
+    },
+    /// Records an application failure that must not be retried.
+    ActivityNonRetryable {
+        /// Stable identity of the activity.
+        activity_id: String,
+        /// Attempt number that failed.
+        attempt: u32,
+        /// Attempt identity that failed.
+        attempt_id: String,
+        /// Fencing token of the failed attempt.
+        fencing_token: String,
+        /// Error returned by the attempt.
+        error: String,
+    },
+    /// Records that an activity's external side effect has an unknown outcome.
+    ///
+    /// Hosts must reconcile this attempt using its stable idempotency key
+    /// before appending a completion, retry, or terminal failure event.
+    ActivityUnknown {
+        /// Stable identity of the activity.
+        activity_id: String,
+        /// Attempt number whose result is ambiguous.
+        attempt: u32,
+        /// Attempt identity that may have committed externally.
+        attempt_id: String,
+        /// Fencing token of the ambiguous attempt.
+        fencing_token: String,
+        /// Human-readable reason for the unknown outcome.
+        reason: String,
+    },
+    /// Records a durable heartbeat and optional activity checkpoint.
+    ActivityHeartbeat {
+        /// Stable identity of the activity.
+        activity_id: String,
+        /// Current attempt number.
+        attempt: u32,
+        /// Attempt identity submitting the heartbeat.
+        attempt_id: String,
+        /// Fencing token submitting the heartbeat.
+        fencing_token: String,
+        /// Optional checkpoint for recovery or operator inspection.
+        #[serde(default)]
+        checkpoint: Option<JsonValue>,
+    },
+    /// Marks an activity as no longer actionable after cancellation.
+    ActivityCancelled {
+        /// Stable identity of the activity.
+        activity_id: String,
+        /// Attempt that was active when the activity was cancelled.
+        attempt: u32,
+        /// Human-readable cancellation or reconciliation reason.
+        reason: String,
+    },
     /// Creates a durable timer wait.
     WaitCreated {
         /// Replay-stable identity of the wait.
@@ -176,6 +394,48 @@ pub enum FlowEvent {
     WaitCompleted {
         /// Stable identity of the completed wait.
         wait_id: String,
+    },
+    /// Opens a nested cancellation scope.
+    ScopeOpened {
+        /// Replay-stable identity of the scope.
+        scope_id: String,
+        /// Parent scope that was open when this scope opened.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        parent_scope_id: Option<String>,
+    },
+    /// Completes a cancellation scope cleanly.
+    ScopeCompleted {
+        /// Stable identity of the completed scope.
+        scope_id: String,
+    },
+    /// Cancels a cancellation scope and its owned suspensions.
+    ScopeCancelled {
+        /// Stable identity of the cancelled scope.
+        scope_id: String,
+        /// Optional cancellation reason.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        reason: Option<String>,
+    },
+    /// Creates a structured select over durable arms.
+    SelectCreated {
+        /// Replay-stable identity of the select.
+        select_id: String,
+        /// Arms competing for completion.
+        arms: Vec<super::SelectArm>,
+        /// Completion policy; omitted histories default to race.
+        #[serde(default)]
+        mode: super::SelectMode,
+    },
+    /// Records completion of a structured select.
+    ///
+    /// Race mode sets `winning_arm_id` to the first completed arm. Join-all mode
+    /// omits a winner after every arm has completed.
+    SelectCompleted {
+        /// Stable identity of the completed select.
+        select_id: String,
+        /// Winning arm for race mode, when present.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        winning_arm_id: Option<String>,
     },
     /// Creates an externally completable hook.
     HookCreated {
@@ -218,16 +478,41 @@ impl FlowEvent {
             Self::ChildOperationLinked { .. } => "flow.child.operation.linked",
             Self::ChildWorkflowRequested { .. } => "flow.child.workflow.requested",
             Self::ChildWorkflowResolved { .. } => "flow.child.workflow.resolved",
+            Self::ChildWorkflowMapOpened { .. } => "flow.child.workflow.map.opened",
+            Self::ChildWorkflowMapCompleted { .. } => "flow.child.workflow.map.completed",
             Self::SignalReceived { .. } => "flow.signal.received",
             Self::SignalWaitCreated { .. } => "flow.signal.wait.created",
             Self::SignalWaitCompleted { .. } => "flow.signal.wait.completed",
+            Self::UpdateApplied { .. } => "flow.update.applied",
+            Self::CompensationMarkerRecorded { .. } => "flow.compensation.marker.recorded",
+            Self::CompensationMarkerCompleted { .. } => "flow.compensation.marker.completed",
+            Self::ExternalDatasetAttached { .. } => "flow.dataset.attached",
+            Self::BlobRefAttached { .. } => "flow.blob.attached",
+            Self::ItemAggregateRecorded { .. } => "flow.aggregate.item.recorded",
             Self::StepCreated { .. } => "flow.step.created",
             Self::StepStarted { .. } => "flow.step.started",
             Self::StepCompleted { .. } => "flow.step.completed",
             Self::StepRetrying { .. } => "flow.step.retrying",
             Self::StepFailed { .. } => "flow.step.failed",
+            Self::StepNonRetryable { .. } => "flow.step.non_retryable",
+            Self::StepCancelled { .. } => "flow.step.cancelled",
+            Self::ActivityCreated { .. } => "flow.activity.created",
+            Self::ActivityStarted { .. } => "flow.activity.started",
+            Self::ActivityLeaseAcquired { .. } => "flow.activity.lease_acquired",
+            Self::ActivityCompleted { .. } => "flow.activity.completed",
+            Self::ActivityRetrying { .. } => "flow.activity.retrying",
+            Self::ActivityFailed { .. } => "flow.activity.failed",
+            Self::ActivityNonRetryable { .. } => "flow.activity.non_retryable",
+            Self::ActivityUnknown { .. } => "flow.activity.unknown",
+            Self::ActivityHeartbeat { .. } => "flow.activity.heartbeat",
+            Self::ActivityCancelled { .. } => "flow.activity.cancelled",
             Self::WaitCreated { .. } => "flow.wait.created",
             Self::WaitCompleted { .. } => "flow.wait.completed",
+            Self::ScopeOpened { .. } => "flow.scope.opened",
+            Self::ScopeCompleted { .. } => "flow.scope.completed",
+            Self::ScopeCancelled { .. } => "flow.scope.cancelled",
+            Self::SelectCreated { .. } => "flow.select.created",
+            Self::SelectCompleted { .. } => "flow.select.completed",
             Self::HookCreated { .. } => "flow.hook.created",
             Self::HookReceived { .. } => "flow.hook.received",
             Self::HookDisposed { .. } => "flow.hook.disposed",
@@ -236,9 +521,11 @@ impl FlowEvent {
 }
 
 /// Stored event with per-run sequence and timestamp.
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone)]
 #[non_exhaustive]
 pub struct FlowEventEnvelope {
+    /// Version of the durable envelope schema used to encode this event.
+    pub schema_version: u16,
     /// Run whose history owns this event.
     pub run_id: String,
     /// Monotonically increasing per-run sequence number.
@@ -249,6 +536,73 @@ pub struct FlowEventEnvelope {
     pub timestamp: DateTime<Utc>,
     /// Durable event payload.
     pub event: FlowEvent,
+    /// Whether the schema version was explicitly present on the wire.
+    ///
+    /// This lets legacy histories round-trip byte-for-byte without synthesizing
+    /// a field they never contained, while all newly created envelopes emit
+    /// the version explicitly.
+    pub(crate) schema_version_explicit: bool,
+}
+
+impl PartialEq for FlowEventEnvelope {
+    fn eq(&self, other: &Self) -> bool {
+        self.schema_version == other.schema_version
+            && self.run_id == other.run_id
+            && self.sequence == other.sequence
+            && self.event_id == other.event_id
+            && self.timestamp == other.timestamp
+            && self.event == other.event
+    }
+}
+
+impl Serialize for FlowEventEnvelope {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let field_count = if self.schema_version_explicit { 6 } else { 5 };
+        let mut state = serializer.serialize_struct("FlowEventEnvelope", field_count)?;
+        if self.schema_version_explicit {
+            state.serialize_field("schema_version", &self.schema_version)?;
+        }
+        state.serialize_field("run_id", &self.run_id)?;
+        state.serialize_field("sequence", &self.sequence)?;
+        state.serialize_field("event_id", &self.event_id)?;
+        state.serialize_field("timestamp", &self.timestamp)?;
+        state.serialize_field("event", &self.event)?;
+        state.end()
+    }
+}
+
+impl<'de> Deserialize<'de> for FlowEventEnvelope {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        #[derive(Deserialize)]
+        struct Wire {
+            #[serde(default)]
+            schema_version: Option<u16>,
+            run_id: String,
+            sequence: u64,
+            event_id: Uuid,
+            timestamp: DateTime<Utc>,
+            event: FlowEvent,
+        }
+
+        let wire = Wire::deserialize(deserializer)?;
+        Ok(Self {
+            schema_version: wire
+                .schema_version
+                .unwrap_or(FLOW_EVENT_ENVELOPE_SCHEMA_VERSION),
+            schema_version_explicit: wire.schema_version.is_some(),
+            run_id: wire.run_id,
+            sequence: wire.sequence,
+            event_id: wire.event_id,
+            timestamp: wire.timestamp,
+            event: wire.event,
+        })
+    }
 }
 
 impl FlowEventEnvelope {
@@ -261,11 +615,28 @@ impl FlowEventEnvelope {
         event: FlowEvent,
     ) -> Self {
         Self {
+            schema_version: FLOW_EVENT_ENVELOPE_SCHEMA_VERSION,
             run_id: run_id.into(),
             sequence,
             event_id,
             timestamp,
             event,
+            schema_version_explicit: true,
         }
+    }
+
+    /// Validate that this envelope can be interpreted by the current crate.
+    ///
+    /// A future version must not be silently replayed as if it were version
+    /// one. A host can inspect [`Self::schema_version`] and perform an
+    /// explicit migration/upcast before handing the history to the engine.
+    pub fn validate_schema_version(&self) -> crate::Result<()> {
+        if self.schema_version > FLOW_EVENT_ENVELOPE_SCHEMA_VERSION || self.schema_version == 0 {
+            return Err(crate::FlowError::UnsupportedEventSchemaVersion {
+                version: self.schema_version,
+                supported: FLOW_EVENT_ENVELOPE_SCHEMA_VERSION,
+            });
+        }
+        Ok(())
     }
 }

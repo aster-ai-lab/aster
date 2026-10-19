@@ -2,6 +2,722 @@
 
 ## Unreleased
 
+- Fixed FLOW-R3 SQL scheduled wakeups so cancelling a scope does not drop a
+  timer owned by a descendant that has already completed. Only open
+  descendants belong to the cancellation tree
+  (`sqlite_scope_cancel_keeps_a_wait_owned_by_a_completed_child`).
+
+- Fixed FLOW-R3 projection checkpoints so a tip-matched cache from an older
+  projection revision is rebuilt from history. A checkpoint saved before
+  select scope ownership could otherwise keep that select `Open`
+  (`stale_projection_checkpoint_is_rebuilt_from_history`).
+
+- Fixed FLOW-R3 scope cancellation so a structured select opened inside the
+  cancelled tree is cancelled with its still-waiting signal arms. Graceful
+  completion is no longer blocked by that select
+  (`cancelling_a_scope_cancels_a_select_opened_inside_it`).
+
+- Fixed FLOW-R3 SQL scheduled wakeups so cancelling a scope drops the waits
+  and select timers that scope owns, including waits in descendant scopes.
+  A wait created outside the cancelled tree stays indexed
+  (`sqlite_scope_cancel_drops_indexed_waits`).
+
+- Fixed FLOW-R3 SQL scheduled wakeups so a structured select timer arm is
+  indexed on `select_created`, not only on `wait_created`. A race completion
+  drops every losing timer arm, including when a signal arm wins
+  (`sqlite_select_timer_arm_is_a_scheduled_wakeup`).
+
+- Fixed FLOW-R3 LocalFile retention so the history tombstone is synced before
+  the JSONL log is unlinked. A crash after the tombstone is published still
+  finishes the delete and keeps the run id fenced
+  (`sharded_prune_finishes_when_the_tombstone_precedes_log_delete`).
+
+- Fixed FLOW-R3 retention so a tombstoned linked peer does not pin the rest
+  of a finished component forever
+  (`composed_prune_finishes_after_a_linked_peer_was_already_retired`).
+
+- Fixed FLOW-R3 composed retention so the facade can read the tombstone it
+  just wrote (`composed_local_file_prune_keeps_child_linked_from_another_shard`).
+
+- Fixed FLOW-R3 composed retention so a terminal child stays while a
+  non-terminal parent on another shard still links to it
+  (`composed_local_file_prune_keeps_child_linked_from_another_shard`).
+
+- Fixed FLOW-R3 composed shards so a link to a pruned run id returns
+  `RunConflict` from that shard's tombstone instead of `RunNotFound`
+  (`composed_local_file_link_to_pruned_run_is_tombstone_conflict`).
+
+- Fixed FLOW-R3 LocalFile retention so pruning a terminal history writes an
+  audit tombstone before deleting the log. A later append of that run id, or a
+  link to it, returns `RunConflict` instead of starting a new history
+  (`local_file_prune_tombstones_the_run_id`).
+
+- Fixed FLOW-R3 LocalFile history partitions so listing and sealing bound
+  against the committed JSONL tip, matching SQL `LIMIT 1` / latest sequence,
+  instead of replaying the full log. A missing run is still `RunNotFound`, and
+  `list` still rejects a corrupt prefix
+  (`local_file_history_partition_uses_tip_not_full_history`).
+
+- Fixed FLOW-R3 LocalFile linked-run and hook-token checks so they use the
+  committed JSONL tip (and a tip-matched checkpoint for hook tokens) instead
+  of replaying every history. A missing run is still `RunNotFound`, and a
+  missing checkpoint still decodes the full log
+  (`local_file_linked_run_check_uses_tip_not_full_history`,
+  `local_file_hook_token_check_uses_tip_checkpoint`,
+  `local_file_hook_token_check_without_checkpoint_rejects_corrupt_prefix`).
+
+- Fixed FLOW-R3 LocalFile append so a tip-matched checkpoint validates the
+  candidate from that snapshot. The JSONL tip is read from the tail, so a
+  corrupt prefix is not replayed; without a matching checkpoint the full log
+  is still validated
+  (`local_file_tip_checkpoint_append_does_not_rescan_corrupt_prefix`,
+  `local_file_append_without_checkpoint_rejects_corrupt_prefix`,
+  `read_jsonl_tip_ignores_a_corrupt_prefix`).
+
+- Fixed FLOW-R3 tip identity so default `latest_event` and `event_at` read
+  bounded `list_page` windows instead of unbounded `list` / `list_after`, and
+  LocalFile `latest_event` keeps only the last JSONL record
+  (`default_latest_event_and_event_at_page_instead_of_unbounded_list`,
+  `load_jsonl_last_keeps_only_the_tip`,
+  `local_file_latest_event_returns_the_tip`).
+
+- Fixed FLOW-R3 InMemory and LocalFile `list_page` so bounded history windows
+  no longer route through a full-history load; LocalFile streams JSONL and
+  stops once the page is filled (`load_jsonl_page_stops_decoding_after_limit_is_filled`,
+  `in_memory_list_page_returns_exclusive_cursor_window`,
+  `local_file_list_page_returns_exclusive_cursor_window`).
+
+- Fixed FLOW-R3 default `list_active_hooks` and scheduled-wakeup replay so
+  custom stores that only override `list_page` project each run from bounded
+  pages instead of unbounded `list`
+  (`default_list_active_hooks_pages_history_instead_of_unbounded_list`,
+  `default_list_due_wakeups_pages_history_instead_of_unbounded_list`).
+
+- Fixed FLOW-R3 default `append_validated_if_sequence` so custom stores that
+  only override `list_page` validate against history folded from bounded pages
+  instead of unbounded `list`
+  (`default_append_validated_pages_history_instead_of_unbounded_list`).
+
+- Fixed FLOW-R3 composed sharded stores so linked-run existence checks use
+  `latest_event` instead of unbounded `list`
+  (`composed_sharded_linked_run_check_does_not_require_unbounded_list`).
+
+- Fixed FLOW-R3 SQL cold append so a missing tip checkpoint rebuilds the
+  projection from bounded history pages instead of one unbounded history load
+  (`fold_history_pages_loads_each_window_instead_of_one_shot`,
+  `sqlite_cold_append_after_checkpoint_loss_rebuilds_from_pages`).
+
+- Fixed FLOW-R3/R4 drive and related execution paths so the history handed to
+  the runtime is assembled from bounded `list_page` windows instead of
+  unbounded `list`. Projection-only reloads (`ensure_run_started`, batch
+  sibling cancel) use `snapshot` (`drive_reads_history_in_pages_instead_of_unbounded_list`).
+
+- Fixed FLOW-R3 `FlowEngine::history` so the complete durable log is assembled
+  from bounded `list_page` windows instead of unbounded `list`
+  (`history_reads_complete_log_in_pages_instead_of_unbounded_list`).
+
+- Fixed FLOW-R4 queries so the durable history handed to the runtime is read
+  in bounded `list_page` windows instead of unbounded `list`
+  (`query_reads_history_in_pages_instead_of_unbounded_list`).
+
+- Fixed FLOW-R3 scheduled resume so a not-yet-due run is projected with
+  `snapshot` instead of unbounded `list`
+  (`resume_not_yet_due_run_uses_snapshot_instead_of_full_history`).
+
+- Fixed FLOW-R3 cold `snapshot` so a run with no usable checkpoint is rebuilt
+  from bounded `list_page` windows instead of unbounded `list`
+  (`snapshot_without_a_checkpoint_pages_history_instead_of_list`).
+
+- Fixed FLOW-R3 behind-tip snapshot catch-up so the delta after a validated
+  checkpoint is read in bounded `list_page` windows instead of one unbounded
+  `list_after`
+  (`behind_tip_snapshot_pages_a_tail_larger_than_one_history_page`).
+
+- Fixed FLOW-R3 explicit `checkpoint` refresh so a tip-matched cache is reused
+  instead of replaying the full event log
+  (`repeat_checkpoint_uses_the_tip_cache_instead_of_full_history`).
+
+- Fixed FLOW-R3 history partition sealing so the requested range is read in
+  bounded pages. Sealing a prefix no longer loads the unbounded tail via
+  `list_after` (`history_partition_seal_reads_only_the_requested_prefix`).
+
+- Fixed FLOW-R3 tip-pinned archive export and seal verification so the
+  content digest is hashed one history page at a time instead of cloning the
+  full log into one allocation (`load_tip_pinned_archive_export_stays_correct_for_ten_thousand_events`).
+
+- Enforced published FLOW-R3 Postgres scale SLO budgets on host-local CI /
+  release runners (`KENSE_FLOW_POSTGRES_LOCAL=1` plus a release-profile
+  `scale_slos` gate) so tip cannot stay green while append/page/checkpoint
+  percentiles miss the ROADMAP table (#172).
+
+- Fixed FLOW-R4 tip `SignalReceived` DriveRun recovery beside an open timer:
+  a buffered signal delivery that crashes after the durable receipt (before the
+  forced observation drive) is no longer hidden by an open unscoped timer
+  (`signal_received_recovery_wakes_via_drive_while_unscoped_timer_is_open`).
+
+- Fixed FLOW-R4 tip `StepNonRetryable` / `StepFailed` DriveRun recovery beside an
+  open timer, and made `WorkflowContext::step_failed` observe `StepNonRetryable`
+  (symmetric with `activity_failed`) so `continue_workflow_on_failure` workflows
+  can recover after a crash between the durable tip and observation
+  (`step_non_retryable_recovery_wakes_via_drive_while_unscoped_timer_is_open`).
+
+- Updated the frozen public-API baseline SHA after `FlowEvent::BlobRefAttached`
+  so CI `release-type: minor` checks against the current 2.x contract instead of
+  a stale pre-blob-ref revision that false-failed every tip PR on enum
+  discriminant drift.
+
+- Fixed PostgreSQL scheduled-wakeup migration `kense-flow-0013` /
+  `kense-flow-0014` trigger `WHEN` clauses: the membership test must be fully
+  inside `WHEN (...)`, otherwise Postgres rejects the migration with a syntax
+  error at `IN` (`postgres_upgrades_every_supported_pre_v1_schema_baseline`).
+
+- Fixed FLOW-R4 graceful completion fail-closed for in-flight work (#123):
+  `run_completed` and `run_continued_as_new` reject histories that still have a
+  Pending/Running step or Pending/Running/Unknown activity so terminal runs
+  cannot strand side effects (`projection_rejects_run_completed_with_running_step`,
+  `projection_rejects_run_completed_with_unknown_activity`). Immediate host
+  termination paths remain unconstrained.
+
+- Fixed FLOW-R4 child-map completion while another parent suspension stays open
+  (#121): appending `ChildWorkflowMapCompleted` forces one workflow replay so
+  an open timer cannot hide durable map completion
+  (`map_completion_wakes_parent_while_another_timer_is_open`). Map window
+  advancement still does not force parent replay (avoids open-map plan drift).
+
+- Fixed FLOW-R4 child resolution while another parent suspension stays open
+  (#119): appending `ChildWorkflowResolved` forces one workflow replay so an
+  open timer, hook, or signal wait cannot hide durable child progress
+  (`child_resolution_wakes_parent_while_another_timer_is_open`). Map window
+  advancement still does not force parent replay (avoids open-map plan drift).
+
+- Fixed FLOW-R4 open `wait_until` redrive after forced replay (#117):
+  existing waits no longer compare recomputed `resume_at` on re-issue so updates,
+  hooks, signals, and other force-replay hosts can wake workflows that use
+  `Utc::now() + delay`; durable deadlines stay bound at `WaitCreated`
+  (`update_force_replay_tolerates_open_wait_resume_at_recomputation`,
+  `open_wait_redrive_tolerates_resume_at_recomputation`).
+
+- Fixed FLOW-R4 open JoinAll / select redrive after a forced timer resume (#115):
+  open select plan matching ignores timer `resume_at` so workflows that recompute
+  `Utc::now() + delay` while arms remain open no longer fail closed; arm identity,
+  kind, signal name, and mode drift stay rejected
+  (`join_all_completes_only_after_every_arm_finishes`,
+  `open_select_rejects_arm_identity_drift`).
+
+- Fixed FLOW-R4 unknown-activity reconciliation while another suspension stays
+  open (#113): `resolve_unknown_activity` forces workflow replay so a durable
+  completion, failure, or retry cannot be hidden by an open timer, hook, or
+  signal wait
+  (`unknown_activity_resolution_wakes_workflow_while_timer_wait_is_open`).
+
+- Fixed FLOW-R4 scheduled wakeup identity collision for step and activity
+  retries (#111): activity retries use reserved wakeup kind `1` so a shared
+  subject id cannot overwrite a step retry
+  (`sqlite_step_and_activity_retries_with_same_id_both_remain_indexed`).
+
+- Fixed FLOW-R4 SQL scheduled wakeups for delayed activity retries (#109): the
+  indexed wakeup projection now records `activity_retrying` the same way it
+  records `step_retrying`, including histories written before the migration
+  (`sqlite_delayed_activity_retry_is_a_scheduled_wakeup`).
+
+- Fixed FLOW-R4 delayed retries while a child workflow stays open (#107): drive no
+  longer returns before a due step or activity retry just because a child is
+  still open, and yielding for that retry cannot spin the replay budget
+  (`due_retry_runs_while_a_child_workflow_is_open`).
+
+- Fixed FLOW-R4 delayed retries while another suspension stays open (#105): a due
+  step retry still runs when a timer, hook, or signal wait is open, and a
+  forced replay cannot spin on a not-yet-due step
+  (`due_retry_runs_while_another_timer_is_open`).
+
+- Fixed FLOW-R4 timer resume while another suspension stays open (#103): `resume_wait`
+  forces workflow replay so a fired timer cannot be hidden by another open
+  timer, hook, or signal wait
+  (`due_wait_wakes_workflow_while_another_timer_is_open`).
+
+- Fixed FLOW-R4 signal delivery while another suspension stays open (#101): `send_signal`
+  forces workflow replay so a paired signal cannot be hidden by an open timer
+  or hook (`signal_delivery_wakes_workflow_while_timer_wait_is_open`).
+
+- Fixed FLOW-R4 hook resolution while another suspension stays open (#99): `resume_hook`
+  and `dispose_hook` force workflow replay so a durable receipt cannot be hidden
+  by an open timer or signal wait
+  (`hook_receipt_wakes_workflow_while_timer_wait_is_open`,
+  `hook_disposal_wakes_workflow_while_timer_wait_is_open`).
+
+- Fixed FLOW-R4 scope-cancel redelivery after receipt-before-drive crashes (#97):
+  an identical `cancel_scope` retry forces workflow replay when
+  `ScopeCancelled` is durable but the run is still non-terminal
+  (`scope_cancel_redelivery_recovers_after_scope_cancelled_before_drive_completes`).
+
+- Fixed FLOW-R4 update redelivery after receipt-before-drive crashes (#95):
+  identical `update_id` retries force workflow replay so a durable
+  `UpdateApplied` can still complete the run when an open wait would otherwise
+  short-circuit ordinary drive
+  (`update_redelivery_recovers_after_update_applied_before_drive_completes`).
+
+- Added FLOW-R4 select completion interruption evidence (#92): losing
+  `SelectCompleted` after a durable winning `WaitCompleted` recovers with
+  exactly one select completion, cancelled losing arms, and no duplicate
+  winners (`select_recovers_after_select_completed_persistence_is_lost`).
+
+- Added FLOW-R4 typed content-addressed blob references (#88): `FlowBlobRef` /
+  `FlowBlobEncryption`, `RuntimeCommand::AttachBlobRef`,
+  `FlowEvent::BlobRefAttached`, and `$flow_blob_ref` step/activity/run output
+  markers so large payloads can stay under `MAX_FLOW_EVENT_BYTES` without Flow
+  fetching host CAS bytes
+  (`tests/blob_refs.rs`, including step and activity `$flow_blob_ref` markers).
+  Frozen R6 protocol fixture
+  `event_envelope.blob_ref_attached.v1.json` locks the wire shape.
+
+- Added FLOW-R4 PostgreSQL durable-interruption evidence for concurrent
+  `ScheduleSteps` terminal settlement (#86): losing the peer `StepCancelled`
+  append mid-settlement recovers without a stuck Running sibling or duplicate
+  side effects
+  (`postgres_batch_terminal_settlement_recovers_after_sibling_cleanup_persistence_is_lost`).
+
+- Added FLOW-R4 PostgreSQL durable-interruption evidence (#82): partial
+  `ChildWorkflowRequested` / `ChildWorkflowResolved` append failures on a real
+  Postgres store recover without duplicate or lost children for map windows,
+  batches, and parent resolution
+  (`tests/postgres_child_workflow_interruption.rs`).
+
+- Extended FLOW-R2 PostgreSQL Activity process-death evidence (#83): after a
+  durable heartbeat, worker death before `ActivityCompleted` keeps the
+  checkpoint, rotates the lease fence on replacement, rejects the stale fence,
+  and completes once
+  (`postgres_worker_recovers_after_activity_heartbeat_then_completion_process_death`).
+
+- Added FLOW-R3 PostgreSQL tip-monotonic checkpoint evidence (#80): a stale
+  lower-sequence `save_checkpoint` cannot replace a newer tip
+  (`postgres_checkpoint_save_ignores_stale_sequence`), matching the existing
+  InMemory and SQLite gates.
+
+- Extended FLOW-R2 PostgreSQL Activity process-death evidence (#78): real worker
+  death at `ActivityStarted`, `ActivityHeartbeat`, and `ActivityUnknown` append
+  boundaries invents no interrupted event; lease expiry + replacement recovers
+  with the same fencing/idempotency rules as the in-memory crash suite
+  (`tests/postgres_activity_boundary_process_recovery.rs`). Completion-boundary
+  coverage remains in `tests/postgres_process_recovery.rs`.
+
+- Fixed native TypeScript concurrent cache publication (#74): serialize
+  `ArtifactCache::publish` so a concurrent repair cannot discard another
+  publisher's just-written Valid entry after a stale Invalid inspect
+  (`concurrent_repair_converges_on_one_valid_cache_entry`).
+
+- Added FLOW-R3 InMemory concurrent-writer evidence (#76): in-process InMemory
+  races two `append_if_sequence` writers at the same tip and proves exactly one
+  winner plus one `EventConflict`
+  (`in_memory_chaos_concurrent_writers_have_one_winner`).
+
+- Added FLOW-R3 LocalFile concurrent-writer evidence (#72): tempfile LocalFile
+  races two `append_if_sequence` writers at the same tip and proves exactly one
+  winner plus one `EventConflict`
+  (`local_file_chaos_concurrent_writers_have_one_winner`).
+
+- Added FLOW-R3 SQLite concurrent-writer evidence (#70): tempfile SQLite races
+  two `append_if_sequence` writers at the same tip and proves exactly one
+  winner plus one `EventConflict`
+  (`sqlite_chaos_concurrent_writers_have_one_winner`).
+
+- Fixed SQL projection-cache races after append (#64): SQLite and PostgreSQL
+  still refresh disposable checkpoints off the history transaction, but now
+  await the tip-aligned `save_checkpoint` before append returns so
+  `load_checkpoint` cannot miss the cache solely due to scheduling. Checkpoint
+  persistence failures still do not fail the durable append
+  (`sqlite_append_advances_projection_cache_atomically`,
+  `postgres_append_advances_projection_cache_atomically`). Built-in stores also
+  keep checkpoint saves tip-monotonic so a concurrent stale save cannot replace
+  a newer tip (`checkpoint_save_ignores_stale_sequence`,
+  `sqlite_checkpoint_save_ignores_stale_sequence`,
+  `postgres_checkpoint_save_ignores_stale_sequence`).
+
+- Closed the FLOW-R2 ActivityHeartbeat append crash window (#66): an injected
+  loss of the first `ActivityHeartbeat` append invents no checkpoint; an
+  identical same-fence retry becomes durable and the attempt completes without
+  lease rotation
+  (`lost_activity_heartbeat_append_does_not_invent_checkpoint_and_retry_succeeds`).
+
+- Clarified FLOW-R2 heartbeat/completion crash recovery: durable activity
+  checkpoints survive `activity_completed` persistence loss, redelivery rotates
+  the lease fence while rejecting the pre-crash token, and the same attempt
+  completes
+  (`heartbeat_checkpoint_survives_completion_persistence_loss_and_redelivery`).
+  That gate covers the completion boundary after a successful heartbeat, not
+  the heartbeat append itself.
+
+- Added FLOW-R4 map partial-window crash recovery and FLOW-R2 unknown-outcome
+  persistence-loss evidence: map concurrency windows recover without duplicate
+  or lost children (`tests/child_workflow_maps.rs`), and undurable
+  `ActivityUnknown` appends redeliver the same running attempt
+  (`tests/crash_recovery.rs`).
+
+- Added FLOW-R3 backend-disconnect recovery evidence:
+  `postgres_chaos_store_recovers_after_backend_disconnect_when_url_is_configured`
+  terminates pooled PostgreSQL backends and proves the next validated append
+  reconnects without rewriting history. Extended FLOW-R2 Activity crash
+  coverage to the create→start boundary
+  (`pending_activity_starts_after_start_persistence_is_lost`).
+
+- Closed the FLOW-R2 Activity kill/disconnect evidence gap: crash recovery now
+  redelivers a running activity after `activity_completed` persistence loss
+  (`tests/crash_recovery.rs`), and the PostgreSQL process-death gate covers
+  both Step and Activity completion boundaries with lease fencing and
+  same-attempt replay (`tests/postgres_process_recovery.rs`).
+
+- Require `KENSE_FLOW_POSTGRES_LOCAL=1` (or `KENSE_FLOW_POSTGRES_SLO_STRICT=1`) before
+  enforcing published SQL scale SLO budgets in `--release`, so bridged remotes
+  such as Windows host → WSL2 Docker still record samples without false
+  failures. `just postgres-certification` sets the host-local flag.
+
+- Added real-provider PostgreSQL chaos certification through
+  `tests/postgres_chaos.rs` and `just postgres-certification`: concurrent
+  expected-sequence writers have one winner, hook-token claims are exclusive,
+  stale leases cannot ack after heartbeat rotation, competing workers lease
+  distinct tasks, and dead-letter redrive is idempotent. Release-scale SLO
+  enforcement uses `--release` against a host-local SQL endpoint; append p50
+  is published at ≤ 10 ms after measured certification on PostgreSQL 16.
+
+- Moved disposable PostgreSQL/SQLite projection checkpoint cache writes off the
+  history transaction so durability latency no longer waits on acceleration
+  metadata inside the append commit. Later refined by #64 to await the
+  tip-aligned cache write after commit (still outside the history transaction)
+  and to keep checkpoint upserts tip-monotonic.
+
+- Added `ShardedFlowEventStore` for host-composed physical run sharding: one
+  unsharded backend per `FlowRunShardLayout` shard, store-wide linked-run and
+  hook-token checks on the facade, and
+  `FlowEventStore::append_shard_local_if_sequence` on built-in memory, local
+  file, SQLite, and PostgreSQL stores. Composed multi-backend layouts advertise
+  `physical_run_sharding` but do not claim production-ready cross-process
+  locking for cross-database invariants.
+
+- Added `tests/scale_slos.rs` to the FLOW-R6 certification recipe. The harness
+  always records in-memory append/page/checkpoint percentiles and asserts the
+  published SQL scale SLO targets when `KENSE_FLOW_POSTGRES_URL` is set.
+
+- Extended opaque processor-partition fairness to `PostgresFlowTaskQueue` with
+  migration `kense-flow-0012-task-partition-key`, `with_partition_fairness`, and
+  the same `enqueue_for_partition` contract used by in-memory and local-file
+  queues.
+
+- Extended the FLOW-R6 certification recipe to include retained pre-v1 history
+  upgrade tests (`cargo test --test pre_v1_history`) alongside protocol
+  fixtures and TypeScript parity checks. Added `just release-certification` to
+  fold in local package verification and the bounded advisory reachability
+  check without requiring CI.
+
+- Added the first FLOW-R6 certification harness through `tests/certification.rs`
+  and frozen protocol fixtures under `tests/fixtures/protocol/`. The suite
+  locks worker capability, task, and event-envelope wire shapes, fails closed
+  on mixed-version negotiation and stale/forged lease acknowledgements, and
+  verifies tip-pinned archive export for a 10_000-event history. TypeScript
+  consumes the same fixtures via `packages/ui/tests/protocol-fixtures.test.ts`.
+  Operators can run `just certification` and follow the cookbook certification
+  gates section.
+
+- Added opaque processor-partition fairness through
+  `FlowTaskQueue::enqueue_for_partition`, `FlowTaskQueue::partition_fairness`,
+  `InMemoryFlowTaskQueue::with_partition_fairness`, and
+  `LocalFileFlowTaskQueue::with_partition_fairness`. Fair queues lease
+  round-robin across host-supplied partition keys (or targeted run IDs) so one
+  partition cannot monopolize FIFO dispatch; Cloud still owns tenant identity.
+
+- Added physical run sharding through `FlowRunShardLayout`,
+  `InMemoryEventStore::with_shard_count`, `LocalFileEventStore::with_shard_count`,
+  and `FlowStoreCapabilities::physical_run_sharding`. Runs hash stably onto
+  independent shard maps or `sNN/` directories while cross-shard linked-run and
+  hook-token checks remain store-wide.
+
+- Added structured join-all through `SelectMode::JoinAll`, `WorkflowContext::join`,
+  and `WorkflowContext::select_joined`. A join waits until every timer/signal arm
+  completes without cancelling siblings early; race mode remains the default for
+  existing select histories.
+
+- Added queue-admission backpressure through `FlowError::QueueBackpressure`,
+  `FlowTaskQueue::max_pending_tasks`, `ensure_queue_admission`, and
+  `with_max_pending` on in-memory, local-file, and PostgreSQL task queues.
+  Pending depth budgets refuse enqueue without inventing tenant fairness or
+  fleet placement policy.
+
+- Added the tip-anchored visibility projection contract through
+  `FlowVisibilityProjection`, `FlowVisibilityProgress`,
+  `FlowVisibilitySuspensionCounts`, `FLOW_VISIBILITY_PROJECTION_SCHEMA_VERSION`,
+  and `FlowEngine::visibility_projection`. Hosts rebuild search/ops indexes from
+  tip-validated snapshots or paged history without indexing workflow
+  input/output/step payloads or treating the index as a second execution history.
+
+- Added ambient W3C Trace Context propagation through `FlowTraceContext`,
+  `with_trace_context` / `without_trace_context` / `current_trace_context`, and
+  optional `trace_context` on workflow/step/activity/query/update invocations.
+  Hosts bind context for a drive without writing it into replay history;
+  `A3sFlowEvent` and the a3s-event sink mirror `traceparent` / `tracestate` when
+  ambient context is present.
+
+- Added durable per-item aggregates through `ItemAggregateContribution`,
+  `RuntimeCommand::RecordItemAggregate`, `FlowEvent::ItemAggregateRecorded`, and
+  `WorkflowContext::{record_item_aggregate,item_aggregate_has,item_aggregate_values}`.
+  Contributions are idempotent on `(aggregate_id, item_id)` and reject value
+  drift, so map/fan-out results can be folded without silently dropping items.
+
+- Added host-owned external dataset references through
+  `ExternalDatasetRef`, `RuntimeCommand::AttachExternalDataset`,
+  `FlowEvent::ExternalDatasetAttached`, and
+  `WorkflowContext::{attach_external_dataset,external_dataset}`. Attachments are
+  idempotent for identical digests and reject digest/count drift so large
+  fan-out plans can stay out of the event log.
+
+- Added durable compensation markers through
+  `RuntimeCommand::{RecordCompensationMarker,CompleteCompensationMarker}`,
+  `FlowEvent::{CompensationMarkerRecorded,CompensationMarkerCompleted}`, and
+  `WorkflowContext::{record_compensation_marker,complete_compensation_marker,
+  compensation_marker,open_compensation_marker_ids}`. Markers record saga-style
+  obligations without executing cleanup; replay remains idempotent and rejects
+  payload drift.
+
+- Added dynamic bounded child-workflow maps through
+  `RuntimeCommand::MapChildWorkflows`, `FlowEvent::{ChildWorkflowMapOpened,
+  ChildWorkflowMapCompleted}`, and
+  `WorkflowContext::{map_child_workflows,child_workflow_map_completed}`. A map
+  declares an ordered plan up to `MAX_CHILD_WORKFLOW_MAP_SIZE` and activates at
+  most `concurrency` open children at a time, so partial fan-out recovery stays
+  deterministic and no planned child is silently dropped. Update-forced replay
+  may observe an open map while children are suspended, so plan drift fails
+  closed instead of being ignored.
+
+- Added structured select/race through `RuntimeCommand::Select`,
+  `SelectArm::{timer,signal}`, `FlowEvent::{SelectCreated,SelectCompleted}`, and
+  `WorkflowContext::{select,select_winner}`. The first completed timer or signal
+  arm wins; sibling waits are cancelled durably without silently dropping work.
+
+- Added durable cancellation scopes through `RuntimeCommand::{OpenScope,
+  CompleteScope, CancelScope}`, `FlowEvent::{ScopeOpened, ScopeCompleted,
+  ScopeCancelled}`, `FlowEngine::cancel_scope`, and
+  `WorkflowContext::{open_scope,scope_cancelled,...}`. Timer waits inherit the
+  innermost open scope; cancelling a scope (or requesting run cancellation)
+  cancels owned waits without requiring a distinct wait identity for cleanup.
+
+- Added typed synchronous workflow updates through `WorkflowSpec::with_update`,
+  `WorkflowUpdate`, `UpdateInvocation`, `FlowRuntime::run_update`, and
+  `FlowEngine::apply_update`. Updates are declared on the immutable run spec,
+  fenced by runtime-build admission, idempotent on `(update_id, name, input)`,
+  conflict-safe on payload drift, and force one workflow replay after the
+  durable `update_applied` event so suspended runs can observe the new history.
+
+- Added typed read-only workflow queries through `WorkflowSpec::with_query`,
+  `QueryInvocation`, `FlowRuntime::run_query`, and `FlowEngine::query`. Queries
+  are declared on the immutable run spec, fenced by runtime-build admission,
+  fail closed for undeclared names, and never append history.
+
+- Added tip-pinned history archive ownership seals through
+  `FlowEngine::export_history_archive` and
+  `FlowEngine::verify_history_archive_seal`. Seals digest ordered event IDs
+  independently of page size so hosts can verify contiguous exports without
+  Flow owning archive storage or retention policy.
+
+- Added sealed `FlowHistoryPartition` indexes for contiguous history ranges,
+  with `FlowEngine::seal_history_partition` / `list_history_partitions` and
+  durable persistence in memory, local-file, SQLite, and PostgreSQL stores.
+  Partitions never rewrite the append-only event log; retention deletes their
+  index rows with the owning run.
+
+- Published initial Flow kernel scale SLO targets for append, tip-validated
+  checkpoint reads, bounded history pages, and tip-pinned archive export.
+
+- Added cross-language canonical operation encoding through
+  `canonical_workflow_authoring_operation` and
+  `canonicalizeFlowCliWorkflowUpdate(s)`. Equivalent operation JSON now has
+  one stable byte form (including omitted add-node configuration and omitted
+  top-level move parents), so hosts can derive idempotency keys before
+  appending a streamed patch.
+
+- Added a bounded, stateless Rust workflow-authoring API for Cloud and other
+  hosts: canonical snapshot validation, strict JSON operation parsing, immutable
+  single-operation application, explicit draft versus executable admission, and
+  preservation of unknown DSL extensions. Hosts retain authorization, product
+  node catalogs, persistence, and publication policy.
+
+- Added `WorkflowAuthoringSession` and the iterator-based batch helper so Rust
+  hosts can consume bounded operation streams incrementally, preserve the last
+  successful candidate after a rejected operation, and canonicalize only once
+  at the publication boundary.
+
+- Aligned the TypeScript and Rust authoring contracts on the 255-byte UTF-8
+  identity/endpoint limit across JSON arrays, direct calls, and NDJSON streams.
+
+- Made JSON DSL and authoring decoding reject duplicate object keys at every
+  nesting level, removing ambiguous last-key-wins input before canonicalization
+  and digesting. The TypeScript document/CLI decoder now enforces the same
+  duplicate-key and 256-level nesting boundary, and direct/JSON-array update
+  APIs enforce the one-megabyte per-operation budget at runtime.
+
+- Added file-backed NDJSON operation streams with `--operations @<file>`, so
+  generated patches can be streamed without shell argument-size limits.
+
+- Added stable-ID-preserving `move-node` workflow authoring operations for
+  moving public nodes between the top-level graph and iteration/loop scopes;
+  internal start placement and parent-cycle checks remain enforced.
+
+- Added registry-driven scoped workflow node creation to the CLI and typed
+  JSON/NDJSON update operations. `--parent`/`parentId` now place public nodes
+  and matching container-start nodes safely, while incomplete container edits
+  remain candidate-only until final validation and atomic publication.
+
+- Unified the 10,000-operation authoring bound across JSON-array parsing,
+  direct typed update calls, and NDJSON streams, with the limits exported for
+  host adapters that need to preflight a request.
+
+- Made NDJSON framing account for UTF-8 bytes incrementally, avoiding repeated
+  re-encoding of a growing unterminated line while retaining the same strict
+  size and malformed-input checks.
+
+- Applied the NDJSON byte budget to ignored whitespace records as well as JSON
+  operations, with consistent limit diagnostics for complete and unterminated
+  lines.
+
+- Made workflow sources and mixed text/byte authoring streams decode as strict
+  UTF-8, preventing replacement characters or stranded decoder state from
+  being published silently.
+
+- Corrected incremental UTF-8 byte accounting across split multibyte chunks at
+  the exact NDJSON record limit, without double-counting decoder-held tails.
+
+- Extended the packaged CLI smoke path to create, compile, and clean up a
+  container-scoped workflow, covering the same parent placement contract used
+  by the Codex Skill.
+
+- Made inline update flags fail closed when they do not belong to the selected
+  operation, so automation cannot silently lose an edge, node, or scope option.
+
+- Added command-level option allowlists to the framework-backed CLI, rejecting
+  flags that belong to another command before any workflow file is read.
+
+- Preserved stable Step/Activity attempt, attempt ID, and idempotency-key
+  correlation in `A3sFlowEvent` and A3S Event metadata without increasing metric
+  label cardinality.
+
+- Added `FlowEngine::export_history_pages` for bounded, tip-pinned, contiguous
+  history export through a host-owned callback without materializing a full run
+  log.
+
+- Added the versioned `FlowWorkerCapabilities` handshake and stable task-kind
+  identifiers. Hosts can reject protocol or capability mismatches before a
+  worker leases work; Cloud-owned admission and fleet policy remain outside
+  Flow.
+
+- Added `FlowWorker::run_until_idle_bounded` so compatibility hosts can impose
+  an explicit fairness/backpressure budget; zero limits fail before leasing.
+
+- Added `FlowTaskQueue::redrive_dead_lettered` for administrative recovery of
+  poison tasks. Local queues use a stable crash-safe pending identity, while
+  PostgreSQL performs the pending copy and dead-letter removal atomically;
+  custom queues fail closed until they implement the contract.
+
+- Fixed incremental projection to match full replay for multi-event tails and
+  derived suspended states. SQLite and PostgreSQL append transactions now
+  advance an integrity-checked projection checkpoint from the validated event
+  tail, rebuilding once from authoritative history when the cache is stale or
+  missing; checkpoint writes remain best-effort acceleration metadata.
+
+- Added durable `FlowProjectionCheckpoint` support to the memory, local-file,
+  SQLite, and PostgreSQL stores plus `FlowEngine::checkpoint`. Checkpoints are
+  validated by run identity, sequence, and tip event ID; stale or corrupt
+  metadata is ignored and authoritative history replay is used instead;
+  checkpoint snapshots carry a SHA-256 integrity digest, and custom stores
+  must explicitly implement checkpoint persistence.
+
+- Added explicit Activity unknown-outcome events and fenced host
+  reconciliation through `FlowError::UnknownOutcome`, `ActivityResolution`,
+  and `FlowEngine::resolve_unknown_activity`; ambiguous provider responses now
+  suspend without an automatic duplicate retry.
+- Added per-attempt Activity `timeout_ms` deadlines. Deadlines are derived from
+  the durable attempt-start timestamp, reused on redelivery, and convert an
+  elapsed attempt into the same explicit unknown state for host reconciliation.
+
+- Added an explicit, persisted event-envelope schema version with a
+  backwards-compatible decoder for retained pre-version histories and fail-closed
+  rejection of unsupported future versions across projection and SQL stores.
+- Added replay-stable workflow logical time and UUIDv5 deterministic identity
+  helpers, plus an attempt-scoped step idempotency key in Rust and native
+  TypeScript invocation contracts.
+- Added an explicit `FlowStoreCapabilities` contract so Cloud admission can
+  distinguish compatibility stores from stores with atomic append, indexed
+  wakeups, and cross-process coordination guarantees.
+- Added a one-megabyte encoded event payload budget with a typed
+  `PayloadTooLarge` rejection; hosts should use content-addressed blob
+  references for larger inputs, outputs, and checkpoints.
+- Added explicit non-retryable step failures and durable `step_non_retryable`
+  markers so permanent application errors bypass retry budgets while retaining
+  replay and recovery semantics.
+- Added a first-class Activity ledger with durable attempt, idempotency, and
+  fencing identities, retry/non-retryable lifecycle events, cancellation
+  projection, lease reacquisition, and an engine heartbeat/checkpoint API.
+  Existing Step runtimes remain source-compatible through the default
+  `run_activity` adapter.
+- Unified Rust and TypeScript workflow execution digests under format `v2`,
+  including JavaScript number rendering, UTF-16 key ordering, safe-integer and
+  nesting guards, and cross-language golden vectors.
+- Made engine transitions projection-validated and expected-sequence based for
+  built-in stores, and made hook-token creation an atomic claim in the memory,
+  local-file, SQLite, and PostgreSQL adapters.
+- Durably settle every open sibling before a terminal concurrent-batch outcome,
+  emit an explicit `step_cancelled` marker for unknown external effects, and
+  recover interrupted settlement after a host crash; indexed stores include an
+  additive wakeup-cleanup migration.
+- Isolated post-commit observer panics and bounded observer delays, delivered
+  fan-out sinks concurrently, and released terminal workflow identities from
+  the A3S event bridge cache.
+- Anchored retry deadlines at the effective failure clock and rejected direct
+  resumption of open timer waits before their persisted deadline.
+- Added a complete manifest-contract inspector for the React authoring panel,
+  including node metadata, typed ports, output definitions, field visibility,
+  value state, and the original manifest properties with secret redaction.
+- Unified conditional field visibility and partial build-config overrides across
+  form generation, validation, previews, and serialized workflow documents.
+- Improved large Playground graphs with visible-element rendering,
+  `content-visibility` containment for long panels, adaptive minimap pausing,
+  and a reproducible 100/500/1,000-node p50/p95/p99 benchmark harness for the
+  Worker and WebAssembly layout path.
+- Added deterministic A3S Test coverage for the complete designer and custom
+  node catalog, including localized A3S UI controls and browser error checks.
+- Made the A3S UI select adapter progressively usable while its browser runtime
+  loads, preserving first-click, pointer, keyboard, focus, and disabled states
+  in embedded workflow configuration panels.
+- Prevented runtime option-selection re-targeting without swallowing an
+  immediate intentional trigger click.
+- Restored closed disclosure panels to the native hidden layout contract so
+  deeply nested value-source controls remain reachable in short settings
+  panes.
+- Kept select and variable suggestion overlays above the node-panel scroll
+  boundary, with viewport-aware flipping, clamping, and scroll repositioning.
+- Fixed workflow code-editor viewports so long JSON and expression values keep
+  their text aligned with line numbers while scrolling inside a bounded editor.
+- Fixed indexed batch and child-workflow editors so text, expression, JSON, and
+  policy changes update the selected member instead of being silently ignored.
+- Hardened narrow Flow inspectors so editable descriptions, composite fields,
+  contract metadata, code-editor chrome, and mobile playground actions remain
+  readable and inside the viewport.
+## 2.0.0 - 2026-09-17
+
+### Breaking
+
+- Extended the closed native TypeScript protocol discriminator with
+  `NativeRuntimeKind::Activity`. Per `docs/API_STABILITY.md`, that enum is not
+  `#[non_exhaustive]`; hosts and adapters that match on it must take a major
+  bump and handle the new activity invocation kind. Related public command,
+  event, suspension, and DSL error enums gained variants and therefore shifted
+  discriminants for numeric casts.
+
+### Fixed
+
+- Sanitized PostgreSQL pre-v1 upgrade fixture successor run IDs so release tags
+  with `.` cannot produce `InvalidRunId` during schema upgrade gates.
+- Bumped rustls to `0.23.45` and chacha20 to `0.10.2` for `RUSTSEC-2026-0285`
+  and the yanked chacha20 advisory path.
+- Removed a forbidden colon from ZH CLI reference prose so website content lint
+  passes.
+
+
 ## 1.1.0 - 2026-08-25
 
 - Hardened custom workflow-node authoring with deeply immutable manifests,
@@ -183,7 +899,7 @@
 - Isolated package verification in a dedicated clean release job so it cannot
   inherit workspace state or resource pressure from the full release test
   matrix.
-- Added the installable `a3s-flow-native-compiler` with closed capabilities,
+- Added the installable `kense-flow-native-compiler` with closed capabilities,
   dependency-manifest, and compile commands backed by Bun. The compiler builds
   standalone workflow/step artifacts, reports its exact Bun content identity,
   derives dependencies from Bun's metafile, includes applicable package, lock,
@@ -210,8 +926,8 @@
 
 ## 0.12.0 - 2026-08-10
 
-- Aligned optional task management with `a3s-boot` 0.2.0 and SQLite/PostgreSQL
-  persistence with `a3s-orm` 0.3.0.
+- Aligned optional task management with `kense-boot` 0.2.0 and SQLite/PostgreSQL
+  persistence with `kense-orm` 0.3.0.
 - Raised the crate version to 0.12.0 for the dependency compatibility boundary.
 
 ## 0.11.0 - 2026-08-09
@@ -539,7 +1255,7 @@
 - Added the optional `boot` integration and `BootFlowTaskManager`. Flow
   schedulers now target an enqueue-only dispatcher, while A3S Boot can own
   processor registration, queue job state, worker lifecycle, and shutdown.
-- Replaced the SQLx storage path with `a3s-orm` executors, transactions, typed
+- Replaced the SQLx storage path with `kense-orm` executors, transactions, typed
   row decoding, and checksummed migrations for SQLite and PostgreSQL event
   stores and the PostgreSQL compatibility task queue. Custom PostgreSQL hosts
   now inject `PostgresExecutor` through `from_executor(...)` instead of an SQLx
@@ -592,7 +1308,7 @@
 
 ## 0.4.0 - 2026-07-06
 
-This release promotes A3S Flow into the durable Rust workflow SDK for A3S.
+This release promotes Kense Flow into the durable Rust workflow SDK for A3S.
 
 Highlights:
 
