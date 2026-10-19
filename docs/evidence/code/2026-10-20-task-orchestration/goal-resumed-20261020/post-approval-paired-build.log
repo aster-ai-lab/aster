@@ -417,3 +417,18 @@ warning: method `as_str` is never used
 
 warning: `a3s-code-acp` (lib) generated 1 warning
 warning: `a3s-code-core` (lib) generated 6 warnings (run `cargo fix --lib -p a3s-code-core` to apply 1 suggestion)
+   Compiling a3s-code-http v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-http)
+   Compiling a3s-code-shell-terminal v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-shell-terminal)
+   Compiling a3s-code-pager-render v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-pager-render)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-acp` (bin "a3s-code-acp") generated 1 warning
+   Compiling a3s-code-memory v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-memory)
+   Compiling a3s-code-shell-session-support v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-shell-session-support)
+   Compiling a3s-code-login v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-login)
+   Compiling a3s-code-shell v1.0.41 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-shell)
+   Compiling a3s-code-update v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-update)
+   Compiling a3s-code-pager v9.1.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-pager)
+   Compiling a3s-code-pager-minimal v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-pager-minimal)
