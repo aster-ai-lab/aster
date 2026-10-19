@@ -333,4 +333,55 @@ mod tests {
             violations.join("\n")
         );
     }
+
+    #[test]
+    fn billing_stays_off_cloud_stores() {
+        // Convergence DP-1 boundary
+        // (apps/cloud/docs/convergence/dp1-billing-boundary.md): billing
+        // is the member-plane commercial ledger and holds no Cloud
+        // control-plane storage client under either DP-1 outcome —
+        // product usage, if ever consumed, arrives through the sanctioned
+        // member-plane projection surface, never a Cloud namespace
+        // dependency. The token set is the Cloud product's own closed
+        // namespace (crate prefix, crate path separator, env prefix).
+        let tokens = [
+            concat!("a3s", "-cloud"),
+            concat!("a3s", "_cloud::"),
+            concat!("A3S", "_CLOUD_"),
+        ];
+        let mut hits = Vec::new();
+        for (_, root) in roots() {
+            let mut pending = vec![root.clone()];
+            while let Some(path) = pending.pop() {
+                if path.is_dir() {
+                    let entries = std::fs::read_dir(&path).expect("read source directory");
+                    pending.extend(entries.map(|entry| entry.expect("source entry").path()));
+                    continue;
+                }
+                if path.extension().and_then(|value| value.to_str()) != Some("rs") {
+                    continue;
+                }
+                let relative = path.strip_prefix(&root).expect("relative source path");
+                if relative.ends_with("architecture.rs") {
+                    continue;
+                }
+                let source = std::fs::read_to_string(&path).expect("read source");
+                let source = production_source(&source);
+                for token in tokens {
+                    if source.contains(token) {
+                        hits.push(format!(
+                            "{} references {}",
+                            relative.display(),
+                            token
+                        ));
+                    }
+                }
+            }
+        }
+        assert!(
+            hits.is_empty(),
+            "billing must not reference the Cloud control-plane namespace:\n{}",
+            hits.join("\n")
+        );
+    }
 }
