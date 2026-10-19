@@ -13,7 +13,7 @@ name: a3s
 services:
   a3s-postgres:
     build:
-      context: ../api/postgres
+      context: ./apps/api/postgres
     image: a3s-postgres:16-alpine-pgvector
     container_name: a3s-postgres
     restart: unless-stopped
@@ -25,7 +25,7 @@ services:
       - "5432:5432"
     volumes:
       - a3s_api_pg:/var/lib/postgresql/data
-      - ../api/migrations/001_init.sql:/docker-entrypoint-initdb.d/001_init.sql:ro
+      - ./apps/api/migrations/001_init.sql:/docker-entrypoint-initdb.d/001_init.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U a3s_api -d a3s_api"]
       interval: 5s
@@ -212,7 +212,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ../api/gateway/gateway.acl:/etc/gateway/gateway.acl:ro
+      - ./apps/api/gateway/gateway.acl:/etc/gateway/gateway.acl:ro
       - ./local-state/a3s-use-models:/var/lib/a3s-use-models
     command: ["--config", "/etc/gateway/gateway.acl"]
     extra_hosts:

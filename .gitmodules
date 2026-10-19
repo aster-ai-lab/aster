@@ -1,0 +1,9 @@
+[submodule "work"]
+	path = apps/work
+	url = git@github.com:aster-ai-lab/work.git
+[submodule "cloud"]
+	path = apps/cloud
+	url = git@github.com:kense-labs/cloud.git
+[submodule "api"]
+	path = apps/api
+	url = git@github.com:kense-labs/api.git
