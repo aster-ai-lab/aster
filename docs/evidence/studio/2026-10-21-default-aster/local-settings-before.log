@@ -1,0 +1,208 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:9021) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/studio
+
+ ❯ |renderer| src/renderer/pages/settings/ProviderSettings/__tests__/ProviderSettingsPage.test.tsx (15 tests | 1 failed | 14 skipped) 1137ms
+   ❯ ProviderSettingsPage (15)
+     × keeps the ToYou build managed even when runtime branding has no service label 1017ms
+ ❯ |renderer| src/renderer/pages/settings/ProviderSettings/__tests__/ProviderList.test.tsx (17 tests | 1 failed | 16 skipped) 93ms
+   ❯ ProviderList (17)
+     × does not expose local provider creation in the ToYou build 45ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/pages/settings/ProviderSettings/__tests__/ProviderList.test.tsx > ProviderList > does not expose local provider creation in the ToYou build
+Error: expect(element).not.toBeInTheDocument()
+
+expected document not to contain element, found <button
+  aria-label="添加服务商"
+  class="flex h-[30px] w-full items-center justify-center gap-1.5 rounded-[8px] border border-[#e5e5e5] bg-white px-2.5 py-0 text-[13px] text-[#171717] shadow-none transition-colors hover:bg-[#fafafa] disabled:pointer-events-none disabled:opacity-40"
+  data-ui="settings.provider-list"
+  type="button"
+>
+  <svg
+    aria-hidden="true"
+    class="lucide lucide-plus"
+    fill="none"
+    height="14"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="2.5"
+    viewBox="0 0 24 24"
+    width="14"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M5 12h14"
+    />
+    <path
+      d="M12 5v14"
+    />
+  </svg>
+  <span>
+    添加服务商
+  </span>
+</button> instead
+ ❯ src/renderer/pages/settings/ProviderSettings/__tests__/ProviderList.test.tsx:218:104
+    216|     try {
+    217|       render(<ProviderList onSelectProvider={vi.fn()} />)
+    218|       expect(screen.queryByRole('button', { name: i18n.t('settings.pro…
+       |                                                                                                        ^
+    219|       expect(document.querySelector('[data-ui="provider.settings.list.…
+    220|     } finally { vi.unstubAllEnvs() }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |renderer| src/renderer/pages/settings/ProviderSettings/__tests__/ProviderSettingsPage.test.tsx > ProviderSettingsPage > keeps the ToYou build managed even when runtime branding has no service label
+TestingLibraryElementError: Unable to find role="heading" and name "模型市场"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"relative flex h-full min-h-0 w-full min-w-0 overflow-hidden"[39m
+      [33mdata-ui[39m=[32m"settings.provider-settings-content"[39m
+    [36m>[39m
+      [36m<div>[39m
+        [36m<div[39m
+          [33mdata-testid[39m=[32m"selected-provider-id"[39m
+        [36m>[39m
+          [0mopenai[0m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0mselect-openai[0m
+        [36m</button>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0mselect-anthropic[0m
+        [36m</button>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0mselect-custom-with-key[0m
+        [36m</button>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0mcreate-custom-with-key[0m
+        [36m</button>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0mcreate-custom-without-key[0m
+        [36m</button>[39m
+      [36m</div>[39m
+      [36m<div>[39m
+        [36m<span>[39m
+          [0mprovider-setting-openai[0m
+        [36m</span>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"relative flex h-full min-h-0 w-full min-w-0 overflow-hidden"[39m
+      [33mdata-ui[39m=[32m"settings.provider-settings-content"[39m
+    [36m>[39m
+      [36m<div>[39m
+        [36m<div[39m
+          [33mdata-testid[39m=[32m"selected-provider-id"[39m
+        [36m>[39m
+          [0mopenai[0m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0mselect-openai[0m
+        [36m</button>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0mselect-anthropic[0m
+        [36m</button>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0mselect-custom-with-key[0m
+        [36m</button>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0mcreate-custom-with-key[0m
+        [36m</button>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0mcreate-custom-without-key[0m
+        [36m</button>[39m
+      [36m</div>[39m
+      [36m<div>[39m
+        [36m<span>[39m
+          [0mprovider-setting-openai[0m
+        [36m</span>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ waitForWrapper node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/renderer/pages/settings/ProviderSettings/__tests__/ProviderSettingsPage.test.tsx:318:27
+    316|     try {
+    317|       render(<ProviderSettingsPage />)
+    318|       expect(await screen.findByRole('heading', { name: i18n.t('settin…
+       |                           ^
+    319|       expect(screen.queryByRole('button', { name: 'select-openai' })).…
+    320|     } finally { vi.unstubAllEnvs() }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 30 skipped (32)
+   Start at  23:32:34
+   Duration  4.26s (import 44%, transform 25%, tests 20%, environment 8%, setup 2%)
+

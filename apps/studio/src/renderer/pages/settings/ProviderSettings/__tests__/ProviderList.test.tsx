@@ -3,6 +3,7 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import i18n from '@renderer/i18n/resolver'
 import { toast } from '@renderer/services/toast'
 import { ENDPOINT_TYPE } from '@shared/data/types/model'
 
@@ -208,6 +209,15 @@ describe('ProviderList', () => {
     ipcRequest.mockImplementation((route: string) =>
       route === 'app.get_info' ? Promise.resolve({ appDataPath: '' }) : Promise.resolve(undefined)
     )
+  })
+
+  it('does not expose local provider creation in the ToYou build', () => {
+    vi.stubEnv('PUBLIC_STUDIO_TENANT', 'toyou')
+    try {
+      render(<ProviderList onSelectProvider={vi.fn()} />)
+      expect(screen.queryByRole('button', { name: i18n.t('settings.provider.add.button_title') })).not.toBeInTheDocument()
+      expect(document.querySelector('[data-ui="provider.settings.list.add"]')).not.toBeInTheDocument()
+    } finally { vi.unstubAllEnvs() }
   })
 
   it('loads the provider editor only when the user opens it', async () => {

@@ -311,6 +311,15 @@ describe('ProviderSettingsPage', () => {
     expect(screen.queryByText('api-setup-models')).not.toBeInTheDocument()
   })
 
+  it('keeps the ToYou build managed even when runtime branding has no service label', async () => {
+    vi.stubEnv('PUBLIC_STUDIO_TENANT', 'toyou')
+    try {
+      render(<ProviderSettingsPage />)
+      expect(await screen.findByRole('heading', { name: i18n.t('settings.models.market_title') })).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: 'select-openai' })).not.toBeInTheDocument()
+    } finally { vi.unstubAllEnvs() }
+  })
+
   it('replaces provider setup with the tenant model market', async () => {
     const user = userEvent.setup()
     document.documentElement.dataset.a3sModelService = 'ToGateway'
