@@ -221,6 +221,11 @@ fn run_workspace_mcp_command(args: &Args, command: &WorkspaceMcpCommand) -> Resu
     Ok(())
 }
 
+/// Windows gives the process entry thread 1 MB, and Tokio workers default to
+/// 2 MB. `LocalSet::block_on` inlines the session and prompt state machines on
+/// the calling stack; a debug build overflows that stack on the first prompt.
+const RUNTIME_STACK_BYTES: usize = 8 * 1024 * 1024;
+
 fn main() -> Result<()> {
     if let Some(arg) = std::env::args().nth(1) {
         if arg == "--version" || arg == "-V" {
@@ -228,12 +233,26 @@ fn main() -> Result<()> {
             return Ok(());
         }
     }
+    match std::thread::Builder::new()
+        .name("a3s-code".into())
+        .stack_size(RUNTIME_STACK_BYTES)
+        .spawn(run_runtime)
+        .context("start a3s-code runtime thread")?
+        .join()
+    {
+        Ok(result) => result,
+        Err(_) => Err(anyhow::anyhow!("a3s-code runtime thread panicked")),
+    }
+}
+
+fn run_runtime() -> Result<()> {
     // ACP requests stay on this LocalSet via spawn_local. The fact worker is
     // tokio::spawn on the pool. A tool poll that does not yield must not
     // freeze the task that reads session/cancel. Do not spawn_local from a
     // pool thread.
     let rt = tokio::runtime::Builder::new_multi_thread()
         .enable_all()
+        .thread_stack_size(RUNTIME_STACK_BYTES)
         .build()
         .context("tokio runtime")?;
     let local = tokio::task::LocalSet::new();

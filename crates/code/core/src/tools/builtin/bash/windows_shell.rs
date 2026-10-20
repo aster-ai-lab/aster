@@ -22,8 +22,17 @@ pub(crate) fn host_powershell_candidates(
     candidates
 }
 
+/// The first candidate the caller reports as a usable regular file.
+pub(crate) fn first_usable_host_powershell<'a>(
+    candidates: &'a [std::path::PathBuf],
+    usable: impl Fn(&std::path::Path) -> bool,
+) -> Option<&'a std::path::PathBuf> {
+    candidates
+        .iter()
+        .find(|candidate| usable(candidate.as_path()))
+}
+
 /// Model-facing note on the host shell. `None` means no PowerShell was found.
-#[cfg(test)]
 pub(crate) fn windows_shell_guidance(shell: Option<&std::path::Path>) -> String {
     let Some(shell) = shell else {
         return "Shell: no PowerShell was found, so the `bash` tool cannot run commands on this machine.".to_string();

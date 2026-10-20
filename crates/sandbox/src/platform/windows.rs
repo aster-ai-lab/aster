@@ -14,6 +14,7 @@ use std::ffi::{c_void, OsStr, OsString};
 use std::fs::{File, OpenOptions};
 use std::mem::{size_of, size_of_val, zeroed};
 use std::os::windows::ffi::OsStrExt;
+use std::os::windows::fs::MetadataExt;
 use std::os::windows::io::{AsRawHandle, FromRawHandle, OwnedHandle};
 use std::path::{Component, Path, PathBuf, Prefix};
 use std::ptr::{null, null_mut};
@@ -64,6 +65,10 @@ impl PlatformSandbox {
             powershell,
             profile,
         })
+    }
+
+    pub(crate) fn shell_launcher(&self) -> &Path {
+        &self.powershell
     }
 
     /// Factory that recreates the same pipe name with the session AppContainer SID.
@@ -200,14 +205,128 @@ fn finish_execution(
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum LauncherKind {
+    Missing,
+    Directory,
+    Reparse,
+    RegularFile,
+}
+
+const FILE_ATTRIBUTE_REPARSE_POINT: u32 = 0x400;
+
 pub(crate) fn resolve_powershell(workspace: &Path) -> Result<PathBuf> {
+    resolve_powershell_with(workspace, std::env::var_os("A3S_SANDBOX_PWSH"))
+}
+
+/// `override_pwsh` is the raw `A3S_SANDBOX_PWSH` value. `Some` is authoritative:
+/// an empty, relative, missing, or reparse override fails without consulting
+/// the system Program Files copy.
+pub(crate) fn resolve_powershell_with(
+    workspace: &Path,
+    override_pwsh: Option<OsString>,
+) -> Result<PathBuf> {
+    if let Some(raw) = override_pwsh {
+        return resolve_pwsh_override(workspace, PathBuf::from(raw));
+    }
+    resolve_program_files_pwsh(workspace)
+}
+
+fn resolve_pwsh_override(workspace: &Path, path: PathBuf) -> Result<PathBuf> {
+    if path.as_os_str().is_empty() {
+        bail!("A3S_SANDBOX_PWSH is set but empty");
+    }
+    if !path.is_absolute() {
+        bail!(
+            "A3S_SANDBOX_PWSH must be an absolute path outside the workspace, got {}",
+            path.display()
+        );
+    }
+    accept_sandbox_pwsh(workspace, &path, "A3S_SANDBOX_PWSH")
+}
+
+fn resolve_program_files_pwsh(workspace: &Path) -> Result<PathBuf> {
+    let candidate = program_files_pwsh()?;
+    match launcher_kind(&candidate) {
+        LauncherKind::RegularFile => accept_sandbox_pwsh(workspace, &candidate, "Program Files"),
+        _ => bail!("{}", missing_sandbox_pwsh_message(&candidate)),
+    }
+}
+
+fn program_files_pwsh() -> Result<PathBuf> {
     let program_files = std::env::var_os("ProgramFiles")
         .filter(|path| !path.is_empty())
         .map(PathBuf::from)
         .context("Windows Program Files directory is unavailable")?;
-    let candidate = program_files.join("PowerShell").join("7").join("pwsh.exe");
-    resolve_executable(candidate, workspace)
-        .context("PowerShell 7 is required for the Windows native sandbox")
+    Ok(program_files.join("PowerShell").join("7").join("pwsh.exe"))
+}
+
+fn missing_sandbox_pwsh_message(candidate: &Path) -> String {
+    format!(
+        "PowerShell 7 is required for the Windows native sandbox. Expected a regular file at {}. \
+         Windows PowerShell 5.1 cannot run inside this AppContainer. \
+         Install PowerShell 7 with: winget install Microsoft.PowerShell",
+        candidate.display()
+    )
+}
+
+fn accept_sandbox_pwsh(workspace: &Path, path: &Path, source: &str) -> Result<PathBuf> {
+    match launcher_kind(path) {
+        LauncherKind::Reparse => bail!(
+            "{source} PowerShell launcher is a reparse point and cannot be used: {}",
+            path.display()
+        ),
+        LauncherKind::Directory => bail!(
+            "{source} PowerShell launcher is a directory, not pwsh.exe: {}",
+            path.display()
+        ),
+        LauncherKind::Missing => bail!(
+            "{source} PowerShell launcher was not found: {}",
+            path.display()
+        ),
+        LauncherKind::RegularFile => {}
+    }
+    if path_contains_windows_apps(path) {
+        bail!(
+            "{source} PowerShell launcher is under WindowsApps and cannot be used: {}",
+            path.display()
+        );
+    }
+    let resolved = resolve_executable(path, workspace).with_context(|| {
+        format!(
+            "{source} PowerShell launcher was rejected: {}",
+            path.display()
+        )
+    })?;
+    if path_contains_windows_apps(&resolved) {
+        bail!(
+            "{source} PowerShell launcher resolved under WindowsApps: {}",
+            resolved.display()
+        );
+    }
+    Ok(resolved)
+}
+
+fn launcher_kind(path: &Path) -> LauncherKind {
+    let meta = match std::fs::symlink_metadata(path) {
+        Ok(meta) => meta,
+        Err(_) => return LauncherKind::Missing,
+    };
+    if meta.file_attributes() & FILE_ATTRIBUTE_REPARSE_POINT != 0 {
+        return LauncherKind::Reparse;
+    }
+    if meta.is_dir() {
+        return LauncherKind::Directory;
+    }
+    if meta.is_file() {
+        return LauncherKind::RegularFile;
+    }
+    LauncherKind::Missing
+}
+
+fn path_contains_windows_apps(path: &Path) -> bool {
+    path.components()
+        .any(|component| component.as_os_str().eq_ignore_ascii_case("WindowsApps"))
 }
 
 struct AttributeList {
@@ -1104,6 +1223,114 @@ fn file_identity(file: &File) -> Result<(u32, u64)> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn missing_program_files_pwsh_names_winget_and_refuses_windows_powershell_51() {
+        let message =
+            missing_sandbox_pwsh_message(Path::new(r"C:\Program Files\PowerShell\7\pwsh.exe"));
+        assert!(
+            message.contains("winget install Microsoft.PowerShell"),
+            "{message}"
+        );
+        assert!(
+            message.contains("Windows PowerShell 5.1 cannot run"),
+            "{message}"
+        );
+        assert!(
+            !message.to_ascii_lowercase().contains("falling back"),
+            "{message}"
+        );
+        assert!(!message.contains("powershell.exe"), "{message}");
+    }
+
+    #[test]
+    fn override_must_be_absolute_and_does_not_fall_through() {
+        let workspace = tempfile::tempdir().unwrap();
+        let error = resolve_powershell_with(workspace.path(), Some(OsString::from("pwsh.exe")))
+            .expect_err("relative override");
+        let text = format!("{error:#}");
+        assert!(text.contains("A3S_SANDBOX_PWSH"), "{text}");
+        assert!(text.contains("absolute"), "{text}");
+        assert!(!text.contains("winget"), "{text}");
+    }
+
+    #[test]
+    fn empty_override_does_not_fall_through() {
+        let workspace = tempfile::tempdir().unwrap();
+        let error = resolve_powershell_with(workspace.path(), Some(OsString::from("")))
+            .expect_err("empty override");
+        let text = format!("{error:#}");
+        assert!(text.contains("A3S_SANDBOX_PWSH is set but empty"), "{text}");
+        assert!(!text.contains("winget"), "{text}");
+    }
+
+    #[test]
+    fn absolute_override_outside_the_workspace_is_accepted() {
+        let workspace = tempfile::tempdir().unwrap();
+        let launcher_dir = tempfile::tempdir().unwrap();
+        let launcher = launcher_dir.path().join("pwsh.exe");
+        std::fs::write(&launcher, b"not a real powershell").unwrap();
+        let resolved =
+            resolve_powershell_with(workspace.path(), Some(launcher.as_os_str().to_os_string()))
+                .expect("regular file outside the workspace");
+        assert_eq!(resolved, launcher.canonicalize().unwrap());
+    }
+
+    #[test]
+    fn override_inside_the_workspace_is_rejected() {
+        let workspace = tempfile::tempdir().unwrap();
+        let launcher = workspace.path().join("pwsh.exe");
+        std::fs::write(&launcher, b"inside").unwrap();
+        let error =
+            resolve_powershell_with(workspace.path(), Some(launcher.as_os_str().to_os_string()))
+                .expect_err("workspace launcher");
+        let text = format!("{error:#}");
+        assert!(text.contains("inside the active workspace"), "{text}");
+        assert!(!text.contains("winget"), "{text}");
+    }
+
+    #[test]
+    fn override_directory_is_rejected() {
+        let workspace = tempfile::tempdir().unwrap();
+        let launcher_dir = tempfile::tempdir().unwrap();
+        let error = resolve_powershell_with(
+            workspace.path(),
+            Some(launcher_dir.path().as_os_str().to_os_string()),
+        )
+        .expect_err("directory override");
+        let text = format!("{error:#}");
+        assert!(text.contains("directory"), "{text}");
+        assert!(!text.contains("winget"), "{text}");
+    }
+
+    #[test]
+    fn windows_apps_component_is_rejected_before_launch() {
+        let workspace = tempfile::tempdir().unwrap();
+        let apps = tempfile::tempdir().unwrap();
+        let launcher_dir = apps.path().join("WindowsApps");
+        std::fs::create_dir(&launcher_dir).unwrap();
+        let launcher = launcher_dir.join("pwsh.exe");
+        std::fs::write(&launcher, b"alias").unwrap();
+        let error = accept_sandbox_pwsh(workspace.path(), &launcher, "A3S_SANDBOX_PWSH")
+            .expect_err("WindowsApps component");
+        let text = format!("{error:#}");
+        assert!(text.contains("WindowsApps"), "{text}");
+    }
+
+    #[test]
+    fn reparse_point_launcher_is_rejected() {
+        let workspace = tempfile::tempdir().unwrap();
+        let dir = tempfile::tempdir().unwrap();
+        let target = dir.path().join("real.exe");
+        std::fs::write(&target, b"target").unwrap();
+        let link = dir.path().join("pwsh.exe");
+        std::os::windows::fs::symlink_file(&target, &link).expect("create a file symlink");
+        let error = accept_sandbox_pwsh(workspace.path(), &link, "A3S_SANDBOX_PWSH")
+            .expect_err("reparse launcher");
+        let text = format!("{error:#}");
+        assert!(text.contains("reparse point"), "{text}");
+        assert!(!text.contains("winget"), "{text}");
+    }
 
     #[test]
     fn windows_argument_quoting_preserves_spaces_quotes_and_trailing_slashes() {

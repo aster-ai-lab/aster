@@ -545,6 +545,12 @@ pub trait WorkspaceCommandRunner: Send + Sync {
         crate::sandbox::ShellExecutionTarget::Unknown
     }
 
+    /// Edition note for the runner's already selected shell. Empty by default.
+    /// Callers must not start a process to produce it.
+    fn shell_note(&self) -> Option<String> {
+        None
+    }
+
     async fn exec(&self, request: CommandRequest) -> Result<CommandOutput>;
 }
 

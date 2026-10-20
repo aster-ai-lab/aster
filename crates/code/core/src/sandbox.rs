@@ -190,6 +190,12 @@ pub trait BashSandbox: Send + Sync {
         ShellExecutionTarget::Unknown
     }
 
+    /// Edition note for the already resolved launcher. The default is empty.
+    /// Rendering this note must not start a process.
+    fn shell_note(&self) -> Option<String> {
+        None
+    }
+
     /// Check whether this backend can admit command execution without starting
     /// a process or producing effects. A refusal is a known unexecuted call,
     /// rather than an execution whose terminal state is unknown. Implementations
