@@ -1,10 +1,12 @@
 # Issue resolution delivery review
 
-Status: the seven reported bugs have a reviewed, isolated candidate patch.
-All seven issues now carry the existing bug label. Isolated library regressions
-pass (Core 205, ACP 50, TUI 36); workspace gate regressions remain queued.
-This pre-landing record is captured before the first commit and PR publication.
-This is not a claim that the issues are already resolved on GitHub.
+Status: the reviewed seven-issue candidate is published in
+[PR #8](https://github.com/aster-ai-lab/aster/pull/8), code commit
+`834bcd3e90c1b1ba6a23e7018f4fd0c83b3b674f`.
+Fresh isolated library regressions pass (Core 205, ACP 50, TUI 36).
+The prior four passing workspace-gate regressions are reused with exact
+source equivalence; this is not a claim of a fresh isolated binary test.
+This record is captured before merge and issue closure.
 
 ## Scope and source identity
 
@@ -43,7 +45,10 @@ excluded. The original working-tree repair files remain untouched.
   reproduces alone and the path is absent in the base commit.
 - Final isolated Core / ACP / TUI regressions: 205 / 50 / 36 passed, zero failed.
   Counts are package summaries, excluding nested worker subprocess summaries.
-- Isolated workspace-command gate regressions: queued behind the shared build lock.
+- Workspace-command gate regressions: prior 4/4 reused, with matching tested
+  main source, byte-identical isolated gate block and matching sibling tests.
+  [Source equivalence and the original command](logs/gate-source-equivalence.json)
+  preserve this boundary. The isolated retry did not complete and is not counted.
 
 ## GitHub handling
 
@@ -52,16 +57,21 @@ bug-label updates. The seven reports concern distinct confirmed bugs.
 Issue #1 contains one explanation already fixed before this candidate; its
 remaining default-stall bug still requires the current fix.
 
-The [draft PR description](PR_BODY.md) closes issues only when its fix lands.
+The [PR description](PR_BODY.md) closes issues only when its fix lands.
 The request to handle all repository issues covers the necessary issue-fix
 commits and PR workflow. Only the reviewed isolated candidate will be staged.
-The current main CI baseline already fails at
-format, Work launcher and frontend dependency installation; no CI guard or
-protection is bypassed.
+The [CI comparison](logs/ci-comparison.json) confirms six observed failures
+match the base diagnostics: absent Work sources affect manifest loading,
+launcher and frontend installation, and the backend lacks cargo-fmt.
+Both workflows are byte-identical to the base. Follow-up: make CI materialize
+the pinned Work sources, install rustfmt for the backend toolchain, then
+rerun all stages and address remaining frontend installation failures.
+No CI setting, check or protection is bypassed; later stages remain untested.
 
 ## Explicitly not claimed
 
-- No commit, push, merge, PR, public comment, issue closure or release occurred.
+- Commit, push and draft PR publication occurred. Merge, resolution comments,
+  issue closure and release had not occurred at this capture.
 - A local repair or bug label is not an available fix on the default branch.
 - The complete workspace Python suite and the existing main CI are not green.
 - No production model/account, user memory or existing fact log is a fixture.

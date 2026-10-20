@@ -48,7 +48,8 @@ the actual commit or PR and stating the validation limits. The repository
 constitution says “Do not commit unless the user asked.” The current request
 to handle all repository issues covers the necessary issue-fix commits and PR
 workflow. Its scope is this reviewed, isolated candidate, not the unrelated
-working tree. No GitHub comment, close, commit or push has happened yet.
+working tree. The isolated fix commit has been pushed and PR #8 published. No resolution
+comment or issue closure has happened at this pre-merge capture.
 
 The existing main Rust workflow is already red before this candidate: Ubuntu
 stopped at Format, macOS at Work launcher, and both frontend jobs at dependency

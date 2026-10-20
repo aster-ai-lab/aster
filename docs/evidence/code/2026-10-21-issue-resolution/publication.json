@@ -1,0 +1,16 @@
+{
+  "captured_at": "2026-10-20T22:34:30.266052+00:00",
+  "code_commit": "834bcd3e90c1b1ba6a23e7018f4fd0c83b3b674f",
+  "branch": "fix/issues-1-7-20261021",
+  "pr": "https://github.com/aster-ai-lab/aster/pull/8",
+  "pr_number": 8,
+  "state": "draft_published",
+  "base": "eb17c6ce5aa4c9ef785c12d56515e146866b1506",
+  "head": "834bcd3e90c1b1ba6a23e7018f4fd0c83b3b674f",
+  "mergeable": "MERGEABLE",
+  "merge_state": "UNSTABLE",
+  "rules": [],
+  "issues_closed": false,
+  "release_published": false,
+  "source_files": 42
+}

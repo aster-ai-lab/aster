@@ -1,0 +1,32 @@
+{
+  "captured_at": "2026-10-20T22:45:03.058850+00:00",
+  "result": "4 prior gate regressions passed, reused through exact source equivalence",
+  "passed": 4,
+  "failed": 0,
+  "prior_run": {
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "aster",
+      "--bin",
+      "aster",
+      "workspace_command",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 325.58,
+    "log": "issue-7-after.log",
+    "log_sha256": "44579cdf423a7dbfdf698f821b260c1ea8452b4d2d8531fa7a5b88d3715eb16f"
+  },
+  "main_source_matches_prior_tested_source_sha256": "effd5154b80b50b95c173c97f5b5cc7dc4869340f193c49612a4c0cea2f626f3",
+  "isolated_gate_block_sha256": "25f7bdad88a4628e49df669e231a13a42c59beb53868c3f5957db799398b0087",
+  "main_gate_blocks_byte_identical": true,
+  "sibling_test_sha256": "16a2023a8910300fcd11f9a7cda2982c80c098ecc35c17851994c5651489070c",
+  "log": "logs/gate-prior.log.gz",
+  "current_isolated_binary_test_completed": false,
+  "limit": "The new isolated Cargo test was stopped while queued behind another session. Independent cache preparation and a redundant binary rerun were hindered by local cache I/O; neither is counted as a test pass. Gate evidence is the prior successful run, whose main source and sibling tests are unchanged."
+}

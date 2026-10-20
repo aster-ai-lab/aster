@@ -1,0 +1,12 @@
+{
+  "captured_at": "2026-10-20T22:34:01.382486+00:00",
+  "own_process": 10422,
+  "verified_command": "/Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/bin/cargo test --locked --offline --manifest-path /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml -p aster --bin aster -- workspace_command_gate_tests --test-threads=1",
+  "action": "SIGINT only this queued task",
+  "reason": "Shared build directory held by another session for over 50 minutes; use an independent APFS-cloned cache for gate tests",
+  "not_a_test_failure": true,
+  "other_sessions_untouched": true,
+  "replacement_filter": "workspace_command (both new gate cases and both existing priority/env cases)",
+  "cache_copy": "APFS clone of dependencies, fingerprints and build outputs only; unrelated incremental tree omitted after stopping own full-cache copy",
+  "copy_pid_stopped": 40278
+}
