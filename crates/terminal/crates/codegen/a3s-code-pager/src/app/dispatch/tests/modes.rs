@@ -251,6 +251,43 @@ fn slash_plan_with_args_not_in_plan_enters_and_sends_prompt() {
     assert_eq!(test_agent(&app, id).plan_mode_pending, Some(true));
 }
 
+#[test]
+fn a_refused_plan_switch_restores_the_command_and_draft_without_sending() {
+    let mut app = test_app_with_agent();
+    let effects = dispatch(Action::SendPrompt("/plan add auth".into()), &mut app);
+    let Effect::SetModeThenPrompt {
+        session_id,
+        agent_id,
+        prompt_id,
+        text,
+        ..
+    } = effects.into_iter().next().unwrap()
+    else {
+        panic!("mode precondition effect required");
+    };
+    app.agents
+        .get_mut(&agent_id)
+        .unwrap()
+        .prompt
+        .set_text("later draft");
+    let effects = dispatch(
+        Action::TaskComplete(TaskResult::ModeSwitchPromptFailed {
+            agent_id,
+            session_id,
+            prompt_id,
+            text,
+            error: "mode refused".into(),
+        }),
+        &mut app,
+    );
+    assert!(effects.is_empty());
+    let agent = test_agent(&app, agent_id);
+    assert_eq!(agent.prompt.text(), "/plan add auth\n\nlater draft");
+    assert!(agent.session.state.is_idle());
+    assert!(agent.plan_mode_pending.is_none());
+    assert!(agent.session.current_prompt_id.is_none());
+}
+
 /// The `SendPrompt → SetModeThenPrompt` rewrap must forward the skill token ranges (offsets into the stripped desc).
 /// The drained echo must style them.
 /// A silent `Vec::new()` regression in the rewrap (or its handler) would compile clean and only show up as plain styling on the `/plan <desc>` path.
@@ -2679,4 +2716,78 @@ fn create_session_with_published_modes(app: &mut AppView) -> Vec<Effect> {
         }),
         app,
     )
+}
+
+#[test]
+fn permission_snapshot_uses_the_prompt_targets_session() {
+    let mut app = three_agent_app();
+    let target = app.agents.get_mut(&AgentId(1)).unwrap();
+    target.plan_mode_pending = Some(true);
+    target.session.yolo_mode = true;
+    let base = crate::app::effects::SessionFlags::default();
+    let effect = Effect::SendPrompt {
+        agent_id: AgentId(1),
+        session_id: acp::SessionId::new("background"),
+        text: "task".into(),
+        prompt_id: "p1".into(),
+        skill_token_ranges: Vec::new(),
+    };
+    let flags = crate::app::event_loop::session_flags_for_effect(&base, &app, &effect);
+    assert_eq!(flags.effective_permission_posture(), "plan");
+    assert!(!base.plan_mode);
+}
+
+#[test]
+fn advertised_permission_modes_have_one_complete_cycle() {
+    let mut app = test_app_with_agent();
+    app.auto_mode_gate = true;
+    app.agents.get_mut(&AgentId(0)).unwrap().available_modes = ["default", "plan", "auto", "yolo"]
+        .into_iter()
+        .map(|id| acp::SessionMode::new(id, id))
+        .collect();
+    let labels: Vec<_> = (0..4).map(|_| press_shift_tab(&mut app).0).collect();
+    assert_eq!(
+        labels,
+        [
+            "Switched to mode: plan",
+            "Switched to mode: auto",
+            "Switched to mode: yolo",
+            "Switched to mode: default"
+        ]
+    );
+}
+
+#[test]
+fn confirmed_code_modes_apply_auto_yolo_and_refuse_unknown_values() {
+    let mut app = test_app_with_agent();
+    let agent = app.agents.get_mut(&AgentId(0)).unwrap();
+    assert!(agent.code_session_mode("auto").is_some());
+    assert!(agent.session.is_auto());
+    assert!(!agent.session.is_yolo());
+    assert!(agent.code_session_mode("yolo").is_some());
+    assert!(agent.session.is_yolo());
+    assert!(!agent.session.is_auto());
+    assert!(agent.code_session_mode("unknown").is_none());
+    assert!(agent.session.is_yolo());
+    assert!(agent.code_session_mode("default").is_some());
+    assert!(!agent.session.is_yolo());
+}
+
+#[test]
+fn refused_background_permission_change_does_not_change_the_active_tabs_mode() {
+    let mut app = three_agent_app();
+    for id in [AgentId(0), AgentId(1)] {
+        app.agents.get_mut(&id).unwrap().session.yolo_mode = true;
+    }
+    app.agents.get_mut(&AgentId(1)).unwrap().session.session_id =
+        Some(acp::SessionId::new("background-mode"));
+    dispatch(
+        Action::TaskComplete(TaskResult::PermissionModeFailed {
+            session_id: acp::SessionId::new("background-mode"),
+            error: "refused".into(),
+        }),
+        &mut app,
+    );
+    assert!(app.agents.get(&AgentId(0)).unwrap().session.is_yolo());
+    assert!(!app.agents.get(&AgentId(1)).unwrap().session.is_yolo());
 }

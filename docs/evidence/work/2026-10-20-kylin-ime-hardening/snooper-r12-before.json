@@ -1,0 +1,29 @@
+{
+  "kind": "R12-real-module-negative-before",
+  "command": [
+    "docker",
+    "exec",
+    "-w",
+    "/aster/target/worktrees/kylin-ime-hardening-20261020/apps/work",
+    "aster-kylin-ime-hardening",
+    "timeout",
+    "60",
+    "bash",
+    "scripts/kylin-flatpak/test-input-method.sh",
+    "/root/.local/share/flatpak/app/dev.a3s.AsterDream/x86_64/50/d588d6d5e186e0b960198af3dd75956ea4cd890367e47d4dcccf519b5a369bc8/files",
+    "/root/.local/share/flatpak/runtime/org.gnome.Platform/x86_64/50/7e410fa0d429fcc34f2ddd0d9b6224f1435d8640fb9759801db4f02700542353/files"
+  ],
+  "installed_app_commit": "d588d6d5e186e0b960198af3dd75956ea4cd890367e47d4dcccf519b5a369bc8",
+  "exit_code": 1,
+  "elapsed_seconds": 3.89,
+  "checks": {
+    "exit_code_1": true,
+    "protocol_8_pass": true,
+    "observed_each_key_twice": true,
+    "fails_on_key_delivery_assertion": true,
+    "not_timeout": true,
+    "no_GTK_pass": true,
+    "no_control_failure": true
+  },
+  "log_sha256": "a7338dc0e185f6bfa92eaa506254048df4bcd3d37dcd81229b31e0358c416365"
+}

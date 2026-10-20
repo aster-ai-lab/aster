@@ -1,0 +1,8 @@
+{
+  "status": "passed",
+  "path": "apps/work/src/renderer/components/composer/__tests__/ComposerSurface.lifecycle.test.tsx",
+  "original_sha256": "dd61c6818eef31eb4de885c6c217581e2294bab472b3fc3925db8375f9ac8672",
+  "isolated_sha256": "dd61c6818eef31eb4de885c6c217581e2294bab472b3fc3925db8375f9ac8672",
+  "scope": "test-only actual prop callback type and narrowed ready editor; production unchanged",
+  "build_performed": false
+}

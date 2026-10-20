@@ -1,0 +1,8 @@
+new-success: PASS new=1 old=0 connected=1 focus=1 commit=1
+unknown-object: PASS new=1 old=1 connected=1 focus=1 commit=1
+unknown-method: PASS new=1 old=1 connected=1 focus=1 commit=1
+access-denied: PASS new=1 old=0 connected=0 focus=0 commit=0
+failed: PASS new=1 old=0 connected=0 focus=0 commit=0
+both-unknown-method: PASS new=1 old=1 connected=0 focus=0 commit=0
+cancelled: PASS new=1 old=0 connected=0 focus=0 commit=0
+no-reply: PASS new=1 old=0 connected=0 focus=0 commit=0

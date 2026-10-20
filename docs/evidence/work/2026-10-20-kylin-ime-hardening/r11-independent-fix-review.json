@@ -1,0 +1,47 @@
+{
+  "kind": "read-only-R11-minimal-fix-independent-review",
+  "source_sha256": {
+    "apps/work/src/renderer/components/composer/variants/shared/useComposerFileCapabilities.ts": "5aab1708c81fb46f7a49cf2d828cc9dbac225fcc24b7336d7166f460b6656446",
+    "apps/work/src/renderer/components/composer/__tests__/ComposerSurface.lifecycle.test.tsx": "b142b76dd6318adf595e59797f4be55e0cdc139cecb51f0234f9ce3e9ab0b5ee",
+    "apps/work/src/renderer/components/composer/tools/components/AttachmentButton.tsx": "beb9d5b1d1119509129d451498b7c7d3d3d012f27c7e561145f0328a1a96bc81",
+    "apps/work/src/renderer/components/composer/tools/ComposerToolProvider.tsx": "592bf623a7cef27671463cc8349c134ff358b1f78fbde45a810ba6b6395559b7",
+    "apps/work/src/renderer/components/composer/ComposerToolRuntime.tsx": "58a66ae0ebadf7fd3d8ba308dd34aeedd5aeb73e617fd72f4eded08db7e73f69",
+    "apps/work/src/renderer/components/QuickPanel/QuickPanelProvider.tsx": "7c42e081c25af0343a8a4a304d787a972c45173a9f01d729b91b786c0fd6f68c",
+    "apps/work/tests/renderer.setup.ts": "da241337ab63292618c8dd6ad3a14a903080511f1ff5b9af7d0be4ce9bef2ae0",
+    "apps/work/vitest.config.ts": "431fcc67587910ae96de9c7ba50dd69ba16724c56f6b30e1a2a743663d9cf5c7",
+    "docs/evidence/work/2026-10-20-kylin-ime-hardening/composer-lifecycle-before.log": "aac597ea23578f9054f14fe4b807f541f30fb325ed26df5e650584a0b99dc474",
+    "docs/evidence/work/2026-10-20-kylin-ime-hardening/composer-lifecycle-after.log": "a6f7f80a14e2983280d436f332c68069af6c04907c161d8c2dd96b9baeee0dfa",
+    "docs/evidence/work/2026-10-20-kylin-ime-hardening/composer-lifecycle-regression.log": "648a58bb494b9d0a809af5f013b808faef8aa6113b7e4c4e7e16161267f8e813"
+  },
+  "production_agentFileExtensions_callers": [
+    "apps/work/src/renderer/pages/agents/AgentComposer.tsx:1087",
+    "apps/work/src/renderer/pages/agents/AgentComposer.tsx:2723"
+  ],
+  "mutating_array_consumers_found": false,
+  "consumer_operations": [
+    "length",
+    "includes",
+    "map to new dialog-filter array",
+    "new Set",
+    "pass-through provider/props/ref storage"
+  ],
+  "regression_real_components": [
+    "QuickPanelProvider",
+    "ComposerToolRuntimeProvider",
+    "AttachmentToolRuntime",
+    "ComposerSurfaceRuntime",
+    "useComposerToolLauncherVersion"
+  ],
+  "reviewed_receipts": {
+    "before": "same Maximum update depth stack at QuickPanelProvider:107 / ComposerToolRuntime:218",
+    "after": "1 lifecycle case passes",
+    "related_regressions": "5 files / 33 cases pass"
+  },
+  "model_transition_assessment": "No-model closed loop covered. Stable-model changes remain useMemo bounded recomputation; no production mutation found. undefined -> model -> undefined test would be additional boundary coverage, not a confirmed missing fix.",
+  "limitations": [
+    "Did not run container or GUI",
+    "Did not re-run existing tests during independent review",
+    "Did not modify product source",
+    "Shared mutable string[] signature relies on reviewed internal consumers remaining non-mutating"
+  ]
+}

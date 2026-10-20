@@ -1,0 +1,159 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on build directory
+   Compiling a3s-code-tools-api v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-tools-api)
+   Compiling a3s-tool-runtime v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/a3s-tool-runtime)
+   Compiling a3s-computer-hub-core v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/a3s-computer-hub-core)
+   Compiling a3s-computer-hub-sdk v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/a3s-computer-hub-sdk)
+   Compiling a3s-code-tools v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-tools)
+   Compiling a3s-code-workspace-client v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-workspace-client)
+   Compiling a3s-code-workspace-daemon v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-workspace-daemon)
+   Compiling a3s-computer-hub-mcp-adapter v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/a3s-computer-hub-mcp-adapter)
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:145:26
+    |
+145 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:146:20
+    |
+146 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+   Compiling a3s-code-hooks v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-hooks)
+   Compiling a3s-code-mcp v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-mcp)
+   Compiling a3s-code-announcements v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-announcements)
+   Compiling a3s-code-pager-diff v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-pager-diff)
+warning: `a3s-code-tools` (lib) generated 2 warnings (run `cargo fix --lib -p a3s-code-tools` to apply 2 suggestions)
+   Compiling a3s-code-agent v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-agent)
+   Compiling a3s-code-config-types v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-config-types)
+   Compiling a3s-code-workspace v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-workspace)
+   Compiling a3s-code-plugin-marketplace v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-plugin-marketplace)
+   Compiling a3s-code-subagent-resolution v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-subagent-resolution)
+   Compiling a3s-code-http v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-http)
+   Compiling a3s-code-shell-terminal v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-shell-terminal)
+   Compiling a3s-code-pager-render v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-pager-render)
+   Compiling a3s-code-memory v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-memory)
+   Compiling a3s-code-shell-session-support v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-shell-session-support)
+   Compiling a3s-code-login v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-login)
+   Compiling a3s-code-shell v1.0.41 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-shell)
+   Compiling a3s-code-update v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-update)
+   Compiling a3s-code-pager v9.1.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-pager)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-pager` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4m 00s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_pager-8d0ac8819a5048b8)
+
+running 91 tests
+test acp::a3s_spawn::tests::both_stdio_entry_points_forward_the_same_model_effort_workspace_and_acl ... ok
+test app::dispatch::tests::modes::active_agent_plan_nudge_state_tracks_nudge_and_plan ... ok
+test app::dispatch::tests::modes::cycle_mode_plan_to_auto_includes_persist_auto ... ok
+test app::dispatch::tests::modes::cycle_mode_plan_plus_always_approve_exits_plan_keeps_yolo ... ok
+test app::dispatch::tests::modes::cycle_mode_plan_to_always_approve_blocked_by_policy_pin ... ok
+test app::dispatch::tests::modes::cycle_mode_plan_plus_auto_keeps_auto_not_reset ... ok
+test app::dispatch::tests::modes::accept_word_select_tip_flips_setting_and_retires_tip ... ok
+test app::dispatch::tests::modes::cycle_always_approve_with_nudge_jumps_to_plan ... ok
+test app::dispatch::tests::modes::cycle_mode_plan_plus_always_approve_under_pin_still_resets ... ok
+test app::dispatch::tests::modes::cycle_into_plan_without_nudge_leaves_other_tip_intact ... ok
+test app::dispatch::tests::modes::cycle_mode_plan_to_always_approve_when_auto_gated_off ... ok
+test app::dispatch::tests::modes::cycle_into_plan_with_nudge_showing_accepts_and_retires_nudge ... ok
+test app::dispatch::tests::modes::confirmed_code_modes_apply_auto_yolo_and_refuse_unknown_values ... ok
+test app::dispatch::tests::modes::cycle_mode_auto_to_always_approve_blocked_by_policy_pin ... ok
+test app::dispatch::tests::modes::accept_word_select_tip_no_op_when_tip_not_showing ... ok
+test app::dispatch::tests::modes::cycle_auto_with_nudge_jumps_to_plan ... ok
+test app::dispatch::tests::modes::an_agent_that_publishes_modes_drops_auto ... ok
+test app::dispatch::tests::modes::cycle_mode_pre_session_always_approve_to_normal_persists_ask ... ok
+test app::dispatch::tests::modes::cycle_mode_pre_session_plan_plus_yolo_unstages_plan_keeps_yolo ... ok
+test app::dispatch::tests::modes::cycle_with_nudge_jumps_to_plan_from_a_published_ask ... ok
+test app::dispatch::tests::modes::cycle_mode_pre_session_normal_to_plan_does_not_persist_permission_mode ... ok
+test app::dispatch::tests::modes::cycle_with_nudge_does_nothing_while_reconnecting ... ok
+test app::dispatch::tests::modes::dispatch_cycle_mode_plan_to_always_approve_delegates_through_inner ... ok
+test app::dispatch::tests::modes::advertised_permission_modes_have_one_complete_cycle ... ok
+test app::dispatch::tests::modes::enable_always_approve_is_idempotent_when_yolo_already_on ... ok
+test app::dispatch::tests::modes::dispatch_cycle_mode_always_approve_to_normal_delegates_off ... ok
+test app::dispatch::tests::modes::permission_mode_toast_returns_brand_consistent_strings ... ok
+test app::dispatch::tests::modes::cycle_mode_under_the_policy_pin_returns_to_the_first_published_mode ... ok
+test app::dispatch::tests::modes::enable_always_approve_sends_response_and_flips_yolo_and_persists ... ok
+test app::dispatch::tests::modes::dispatch_cycle_mode_and_sync_always_approve_with_nudge_takes_ring_to_normal ... ok
+test app::dispatch::tests::modes::dispatch_cycle_mode_plan_to_always_approve_drains_queue_via_inner ... ok
+test app::dispatch::tests::modes::dispatch_cycle_mode_normal_to_plan_does_not_touch_yolo ... ok
+test app::dispatch::tests::modes::cycle_with_nudge_clears_the_soft_default_flag ... ok
+test app::dispatch::tests::modes::picking_ask_restages_ask_over_a_staged_auto ... ok
+test app::dispatch::tests::modes::permission_mode_slash_gate_offers_toggles_subject_to_auto_feature ... ok
+test app::dispatch::tests::modes::plan_mode_toast_format ... ok
+test app::dispatch::tests::modes::set_plan_mode_idempotency_uses_pending_over_active ... ok
+test app::dispatch::tests::modes::published_mode_confirmation_clears_the_pick_and_labels_the_row ... ok
+test app::dispatch::tests::modes::set_permission_mode_always_approve_under_plan_uses_plan_aware_toast ... ok
+test app::dispatch::tests::modes::permission_snapshot_uses_the_prompt_targets_session ... ok
+test app::dispatch::tests::modes::cycle_mode_walks_the_published_modes_then_always_approve ... ok
+test app::dispatch::tests::modes::published_modes_keep_the_always_approve_staged_before_the_session ... ok
+test app::dispatch::tests::modes::set_permission_mode_default_overrides_canonical_to_default ... ok
+test app::dispatch::tests::modes::set_plan_mode_idempotent_off ... ok
+test app::dispatch::tests::modes::set_permission_mode_always_approve_from_default_captures_prev_canonical ... ok
+test app::dispatch::tests::modes::set_yolo_mode_no_op_when_no_active_agent ... ok
+test app::dispatch::tests::modes::set_plan_mode_idempotent_on ... ok
+test app::dispatch::tests::modes::refused_background_permission_change_does_not_change_the_active_tabs_mode ... ok
+test app::dispatch::tests::modes::set_theme_auto_enables_auto_mode_and_persists_auto ... ok
+test app::dispatch::tests::modes::set_plan_mode_mutates_only_active_agent_not_others ... ok
+test app::dispatch::tests::modes::set_yolo_mode_off_allowed_under_policy_pin ... ok
+test app::dispatch::tests::modes::set_yolo_mode_on_blocked_by_policy_pin ... ok
+test app::dispatch::tests::modes::set_yolo_mode_on_drains_multi_item_queue ... ok
+test app::dispatch::tests::modes::set_yolo_mode_on_duplicate_dispatch_still_drains_queue ... ok
+test app::dispatch::tests::modes::set_yolo_mode_off_to_on_emits_persist_with_rollback ... ok
+test app::dispatch::tests::modes::set_yolo_mode_redispatch_same_value_still_emits_effect_and_toast ... ok
+test app::dispatch::tests::modes::set_yolo_mode_on_with_no_allow_once_option_sends_cancelled ... ok
+test app::dispatch::tests::modes::set_yolo_mode_on_to_off_emits_persist_with_rollback ... ok
+test app::dispatch::tests::modes::show_plan_nudge_no_op_when_flag_off ... ok
+test app::dispatch::tests::modes::set_yolo_mode_toast_format ... ok
+test app::dispatch::tests::modes::a_refused_plan_switch_restores_the_command_and_draft_without_sending ... ok
+test app::dispatch::tests::modes::show_export_copy_tip_no_op_when_flag_off ... ok
+test app::dispatch::tests::modes::set_yolo_mode_refreshes_open_modal_snapshots ... ok
+test app::dispatch::tests::modes::show_plan_nudge_shows_and_counts_when_flag_on ... ok
+test app::dispatch::tests::modes::show_export_copy_tip_shows_and_counts_when_flag_on ... ok
+test app::dispatch::tests::modes::show_word_select_tip_no_op_when_already_word_select ... ok
+test app::dispatch::tests::modes::permission_setters_never_touch_plan_state ... ok
+test app::dispatch::tests::modes::show_word_select_tip_targets_the_takeover_child ... ok
+test app::dispatch::tests::modes::set_yolo_mode_with_live_yolo_and_default_ui_mirror_rolls_back_to_default ... ok
+test app::dispatch::tests::modes::show_word_select_tip_no_op_when_flag_off ... ok
+test app::dispatch::tests::modes::show_word_select_tip_shows_and_counts_when_flag_on ... ok
+test app::effects::tests::permission_posture_and_prompt_metadata_keep_plan_binding ... ok
+test app::dispatch::tests::modes::set_yolo_mode_on_under_plan_uses_plan_aware_toast ... ok
+test app::dispatch::tests::modes::slash_plan_no_args_already_in_plan_shows_plan ... ok
+test app::dispatch::tests::modes::slash_plan_no_args_not_in_plan_enters_plan_mode ... ok
+test app::dispatch::tests::modes::turning_always_approve_off_keeps_a_staged_auto ... ok
+test app::effects::tests::reconciliation_wire_kind_keeps_the_kernel_sentence ... ok
+test app::dispatch::tests::modes::turning_always_approve_on_before_a_session_stages_it ... ok
+test app::dispatch::tests::modes::slash_plan_with_args_already_in_plan_is_noop ... ok
+test app::effects::tests::reconciliation_wire_kind_never_recommends_resend_even_with_unrecognized_text ... ok
+test app::dispatch::tests::modes::yolo_on_drain_clears_double_click_tracker ... ok
+test app::dispatch::tests::modes::turning_always_approve_off_restages_ask ... ok
+test app::dispatch::tests::modes::slash_always_approve_and_auto_toggle_and_cross_switch ... ok
+test app::dispatch::tests::modes::slash_plan_with_args_not_in_plan_enters_and_sends_prompt ... ok
+test app::dispatch::tests::modes::slash_plan_desc_forwards_skill_token_ranges ... ok
+test app::effects::tests::permission_ack_failure_narrows_ui_without_writing_preference ... ok
+test app::effects::tests::persist_permission_mode_best_effort_failure_returns_dedicated_variant ... ok
+test app::effects::tests::refused_mode_precondition_never_sends_the_prompt ... ok
+test app::effects::tests::persist_permission_mode_no_session_id_suppresses_acp ... ok
+test app::effects::tests::persist_permission_mode_acp_notification_gated_on_disk_for_with_rollback ... ok
+test app::effects::tests::persist_permission_mode_acp_notification_fires_once_on_best_effort ... ok
+
+test result: ok. 91 passed; 0 failed; 0 ignored; 0 measured; 10107 filtered out; finished in 4.97s
+

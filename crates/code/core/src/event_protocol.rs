@@ -62,6 +62,7 @@ define_agent_event_types_v1! {
     TurnEnd => TURN_END = "turn_end",
     End => AGENT_END = "agent_end",
     Error => ERROR = "error",
+    ToolEffectUnresolved => TOOL_EFFECT_UNRESOLVED = "tool_effect_unresolved",
     ConfirmationRequired => CONFIRMATION_REQUIRED = "confirmation_required",
     ConfirmationReceived => CONFIRMATION_RECEIVED = "confirmation_received",
     ConfirmationTimeout => CONFIRMATION_TIMEOUT = "confirmation_timeout",

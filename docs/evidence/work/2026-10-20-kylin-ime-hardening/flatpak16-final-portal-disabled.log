@@ -1,0 +1,40 @@
+Host DISPLAY=:120
+org.fcitx.Fcitx-120:    boolean true
+org.fcitx.Fcitx-99:    boolean false
+org.fcitx.Fcitx:    boolean true
+org.freedesktop.portal.Fcitx:    boolean false
+dbus-daemon[21434]: [session uid=0 pid=21434] Connection :1.7 (uid=0 pid=21466 comm="dbus-monitor --session type='method_call',destinat") became a monitor.
+Flatpak 1.6.5
+xdg-dbus-proxy 0.1.2
+bubblewrap 0.4.0
+dbus-daemon[21434]: [session uid=0 pid=21434] Activating service name='org.freedesktop.Flatpak' requested by ':1.8' (uid=0 pid=21473 comm="/aster/target/evaluations/kylin-ime-hardening/flat")
+dbus-daemon[21434]: [session uid=0 pid=21434] Successfully activated service 'org.freedesktop.Flatpak'
+dbus-daemon[21434]: [session uid=0 pid=21434] Activating service name='org.a11y.Bus' requested by ':1.8' (uid=0 pid=21473 comm="/aster/target/evaluations/kylin-ime-hardening/flat")
+dbus-daemon[21434]: [session uid=0 pid=21434] Successfully activated service 'org.a11y.Bus'
+GTK_IM_MODULE=fcitx
+GTK_IM_MODULE_FILE=/app/lib/im/fcitx4/immodules.cache
+XMODIFIERS=
+DBUS=org.fcitx.Fcitx
+NOTE=
+GTK client DISPLAY=:99.0
+
+** (process:21518): WARNING **: 09:12:42.332: Error writing credentials to socket: Error sending message: Broken pipe
+
+** (process:21518): WARNING **: 09:12:42.844: Error writing credentials to socket: Error sending message: Broken pipe
+
+** (process:21518): WARNING **: 09:12:43.534: Error writing credentials to socket: Error sending message: Broken pipe
+
+** (process:21518): WARNING **: 09:12:46.137: Error writing credentials to socket: Error sending message: Broken pipe
+
+** (process:21518): WARNING **: 09:12:47.978: Error writing credentials to socket: Error sending message: Broken pipe
+
+** (process:21518): WARNING **: 09:12:50.032: Error writing credentials to socket: Error sending message: Broken pipe
+
+** (process:21518): WARNING **: 09:12:51.202: Error writing credentials to socket: Error sending message: Broken pipe
+
+** (process:21518): WARNING **: 09:12:52.903: Error writing credentials to socket: Error sending message: Broken pipe
+
+** (process:21518): WARNING **: 09:12:54.955: Error writing credentials to socket: Error sending message: Broken pipe
+Observed Fcitx state: 0
+IME test timed out at phase 0; committed text: 
+dbus-daemon[21434]: [session uid=0 pid=21434] Monitoring connection :1.7 closed.

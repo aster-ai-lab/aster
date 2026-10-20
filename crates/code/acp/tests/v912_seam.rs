@@ -515,8 +515,15 @@ async fn v912_session_posture_and_deny() {
                 Some("default"),
                 "fresh session did not start on default: {fresh}"
             );
-            set_mode(&agent, &session, "always-approve").await;
-            set_mode(&agent, &session, "force").await;
+            for retired in ["always-approve", "force"] {
+                let error = acp::Agent::set_session_mode(
+                    agent.conn.as_ref(),
+                    acp::SetSessionModeRequest::new(session.clone(), retired),
+                )
+                .await
+                .unwrap_err();
+                assert_eq!(error.code, acp::ErrorCode::InvalidParams);
+            }
             let still_default = ext(
                 &agent,
                 "x.ai/session/info",
@@ -539,7 +546,7 @@ async fn v912_session_posture_and_deny() {
                 )
                 .await;
                 assert!(
-                    detail.contains("unknown posture"),
+                    detail.contains("default, plan, auto, yolo"),
                     "{retired} was accepted: {detail}"
                 );
                 assert!(

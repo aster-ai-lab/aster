@@ -1,0 +1,23 @@
+
+======================================================================
+FAIL: test_explicit_gdk_backend_takes_precedence_over_session_variables (__main__.KylinInputMethodTest) (version='fcitx4')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/kylin_input_method.py", line 258, in test_explicit_gdk_backend_takes_precedence_over_session_variables
+    self.assertEqual(x11["GTK_IM_MODULE"], "fcitx")
+AssertionError: '' != 'fcitx'
++ fcitx
+
+======================================================================
+FAIL: test_explicit_gdk_backend_takes_precedence_over_session_variables (__main__.KylinInputMethodTest) (version='fcitx5')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/kylin_input_method.py", line 258, in test_explicit_gdk_backend_takes_precedence_over_session_variables
+    self.assertEqual(x11["GTK_IM_MODULE"], "fcitx")
+AssertionError: '' != 'fcitx'
++ fcitx
+
+----------------------------------------------------------------------
+Ran 1 test in 0.010s
+
+FAILED (failures=2)

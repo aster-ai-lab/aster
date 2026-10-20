@@ -253,7 +253,7 @@ pub fn admit_tool_call<T>(
 /// tool. When the policy asks, the checker may still deny (a plan-mode
 /// guardrail over a default policy) or quiet a read. It must not quiet a
 /// command or file change: 逐次确认 and 智能授权 stay on Ask for those.
-pub(super) fn execution_permission(
+pub(crate) fn execution_permission(
     policy: &PermissionPolicy,
     checker: Option<&dyn crate::permissions::PermissionChecker>,
     name: &str,
@@ -266,12 +266,16 @@ pub(super) fn execution_permission(
     let Some(checker) = checker else {
         return policy_decision;
     };
+    let ceiling = checker.check(name, args);
+    if ceiling == PermissionDecision::Deny {
+        return PermissionDecision::Deny;
+    }
     if policy_decision == PermissionDecision::Allow {
         return PermissionDecision::Allow;
     }
-    match checker.check(name, args) {
-        PermissionDecision::Deny => PermissionDecision::Deny,
+    match ceiling {
         PermissionDecision::Allow if !side_effect_tool(name) => PermissionDecision::Allow,
+        PermissionDecision::Deny => PermissionDecision::Deny,
         PermissionDecision::Allow | PermissionDecision::Ask => PermissionDecision::Ask,
     }
 }

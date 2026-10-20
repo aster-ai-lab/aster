@@ -154,12 +154,13 @@ impl ClusterClient {
             ) else {
                 continue;
             };
+            let effect_flags = super::event_loop::session_flags_for_effect(&flags, &self.app, &eff);
             let (_quit, _meta) = effects::execute(
                 eff,
                 &mut self.tasks,
                 &self.app.acp_tx,
                 &self.app.cwd,
-                &flags,
+                &effect_flags,
                 &self.progress_tx,
             );
         }

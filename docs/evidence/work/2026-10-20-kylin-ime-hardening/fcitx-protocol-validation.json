@@ -1,0 +1,72 @@
+{
+  "kind": "real-client-protocol-regression-not-full-desktop-acceptance",
+  "source": "apps/work/scripts/kylin-flatpak/fcitx_client_protocol_test.c",
+  "source_sha256": "ced6920541e3e14b90431a9fe1042e71ea6b5a7dfedc84401e4d4e19ca69e69a",
+  "cases": 8,
+  "original_passed": 5,
+  "original_failed": 3,
+  "patched_passed": 8,
+  "compile": "cc -O2 -Wall -Wextra -Werror SOURCE -o TEST $(pkg-config --cflags --libs gio-2.0 gmodule-2.0)",
+  "run": "timeout 30 TEST LIBFCITX_GCLIENT",
+  "original_client_sha256": "986d45a8579bad6337c2528aa02a62154b0c1eaf7c11942683ffe839112dd1c6",
+  "patched_client_sha256": "35c3cd304cbf72db8d263a4a73c9a81649f81a65e72370f4f7545370f4a6e110",
+  "coverage": [
+    "new path success without fallback",
+    "UnknownObject fallback once",
+    "UnknownMethod fallback once",
+    "AccessDenied no fallback",
+    "Failed no fallback",
+    "new and old UnknownMethod at most one fallback",
+    "typed G_IO_ERROR_CANCELLED no fallback",
+    "NoReply no fallback"
+  ],
+  "success_assertions": [
+    "exact factory request counts",
+    "real client connected",
+    "FocusIn uses returned IC path",
+    "real client receives Chinese CommitString"
+  ],
+  "failure_completion": "External client reference is released while the request is pending; finalization proves the async error callback completed.",
+  "logs": [
+    "fcitx-protocol-before.log",
+    "fcitx-protocol-after.log"
+  ],
+  "isolated_original_failure_rechecks": [
+    {
+      "case": "unknown-object",
+      "log": "fcitx-protocol-before-unknown-object-isolated.log",
+      "exit_status": 1,
+      "observed": {
+        "new_calls": 1,
+        "old_calls": 0,
+        "connected": 0,
+        "focused": 0,
+        "committed": 0
+      }
+    },
+    {
+      "case": "unknown-method",
+      "log": "fcitx-protocol-before-unknown-method-isolated.log",
+      "exit_status": 1,
+      "observed": {
+        "new_calls": 1,
+        "old_calls": 0,
+        "connected": 0,
+        "focused": 0,
+        "committed": 0
+      }
+    },
+    {
+      "case": "both-unknown-method",
+      "log": "fcitx-protocol-before-both-unknown-method-isolated.log",
+      "exit_status": 1,
+      "observed": {
+        "new_calls": 1,
+        "old_calls": 0,
+        "connected": 0,
+        "focused": 0,
+        "committed": 0
+      }
+    }
+  ]
+}

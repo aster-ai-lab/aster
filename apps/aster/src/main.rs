@@ -2028,6 +2028,11 @@ fn dispatch_doctor_if_requested(args: &PagerArgs) -> bool {
     true
 }
 fn main() {
+    if std::env::args_os().nth(1).as_deref() == Some(std::ffi::OsStr::new("--build-id")) {
+        println!("{}", env!("ASTER_PAIR_BUILD_ID"));
+        return;
+    }
+    a3s_code_pager::acp::a3s_spawn::set_expected_pair_build_id(env!("ASTER_PAIR_BUILD_ID"));
     a3s_code_version::set_full_version(env!("VERSION_WITH_COMMIT"));
     a3s_code_telemetry::startup::mark_process_start();
     if let Some(code) = a3s_code_pager::app::mermaid_worker::maybe_run_render_subprocess() {

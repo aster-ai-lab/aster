@@ -123,6 +123,12 @@ impl Tool for BatchTool {
         })
     }
 
+    fn capabilities(&self, args: &serde_json::Value) -> crate::tools::ToolCapabilities {
+        let mut capabilities = crate::tools::ToolCapabilities::conservative();
+        capabilities.read_only = batch_members_are_read_only(self.fallback_invoker.as_ref(), args);
+        capabilities
+    }
+
     fn validate_execution_available(
         &self,
         args: &serde_json::Value,
@@ -287,6 +293,7 @@ impl Tool for BatchTool {
         let mut success_count = 0usize;
         let mut result_metadata = Vec::with_capacity(results.len());
         let mut failed_indices = Vec::new();
+        let mut evidence_incomplete = false;
 
         for (invocation, result) in results {
             let label = invocation
@@ -308,6 +315,12 @@ impl Tool for BatchTool {
                 output.push_str(&result.output);
             }
             output.push('\n');
+            let child_metadata = compact_child_metadata(result.metadata);
+            evidence_incomplete |= child_metadata
+                .as_ref()
+                .and_then(|value| value.get("evidence_incomplete"))
+                .and_then(Value::as_bool)
+                == Some(true);
             result_metadata.push(serde_json::json!({
                 "index": invocation.index,
                 "step": invocation.step,
@@ -317,7 +330,7 @@ impl Tool for BatchTool {
                 "exit_code": result.exit_code,
                 "output_bytes": result.output.len(),
                 "error_kind": result.error_kind,
-                "metadata": compact_child_metadata(result.metadata),
+                "metadata": child_metadata,
             }));
         }
 
@@ -331,6 +344,7 @@ impl Tool for BatchTool {
             ));
         }
         let metadata = serde_json::json!({
+            "evidence_incomplete": evidence_incomplete,
             "status": if failure_count == 0 {
                 "complete"
             } else if partial_failure {
@@ -372,6 +386,30 @@ impl Tool for BatchTool {
                 .with_metadata(metadata))
         }
     }
+}
+
+/// A batch is read-only only when every member that will run is read-only.
+/// An unknown tool, a nested batch, or a member whose arguments are not an
+/// object stays mutating: this call must not skip the workspace watch.
+fn batch_members_are_read_only(invoker: &dyn ToolInvoker, args: &Value) -> bool {
+    let Some(invocations) = args.get("invocations").and_then(Value::as_array) else {
+        return false;
+    };
+    if invocations.is_empty() {
+        return false;
+    }
+    invocations.iter().all(|invocation| {
+        let name = invocation.get("tool").and_then(Value::as_str).unwrap_or("");
+        if name.is_empty() || name.eq_ignore_ascii_case("batch") {
+            return false;
+        }
+        let Some(member_args) = invocation.get("args").filter(|value| value.is_object()) else {
+            return false;
+        };
+        invoker
+            .capabilities(name, member_args)
+            .is_some_and(|capabilities| capabilities.read_only)
+    })
 }
 
 /// Refuse a batch before any member runs.
@@ -628,6 +666,33 @@ fn compact_child_metadata(metadata: Option<serde_json::Value>) -> Option<serde_j
             serde_json::Value::from(encoded.len()),
         ),
     ]);
+    // Lifecycle evidence is never shortened to make room for display fields.
+    for key in [
+        "workspace_child",
+        "source_run",
+        "run",
+        "command_started",
+        "observation_incomplete",
+        "process_settled",
+        "execution_future_released",
+        "output_facts_retained",
+        "disposition",
+        "process_settlement_basis",
+        "exit_code",
+        "unresolved_external_operations",
+        "evidence_incomplete",
+    ] {
+        if let Some(value) = metadata.get(key) {
+            compacted.insert(key.into(), value.clone());
+        }
+    }
+    if !serde_json::to_vec(&compacted).is_ok_and(|value| value.len() <= MAX_CHILD_METADATA_BYTES) {
+        return Some(serde_json::json!({
+            "truncated": true, "original_bytes": encoded.len(),
+            "evidence_incomplete": true, "observation_incomplete": true,
+            "evidence_error": { "kind": "batch_lifecycle_metadata_budget", "limit": MAX_CHILD_METADATA_BYTES }
+        }));
+    }
     for key in [
         "file_path",
         "changed_paths",
@@ -1512,3 +1577,6 @@ mod tests {
         assert!(result.content.contains("at most 32"));
     }
 }
+
+#[cfg(test)]
+mod lifecycle_metadata_tests;

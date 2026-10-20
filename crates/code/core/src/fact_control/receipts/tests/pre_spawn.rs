@@ -155,8 +155,9 @@ async fn a_write_past_the_stamp_cap_does_not_freeze_the_ledger() {
     assert_eq!(result.outcome, ToolExecutionOutcome::Succeeded);
     assert_eq!(
         result.effects.completeness,
-        a3s_effect::ToolObservationCompleteness::Complete
+        a3s_effect::ToolObservationCompleteness::Incomplete
     );
+    assert!(result.effects.budget_exceeded);
     assert!(result
         .effects
         .changes

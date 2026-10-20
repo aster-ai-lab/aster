@@ -1,0 +1,33 @@
+{
+  "kind": "final-stage-isolated-negative-control",
+  "results": [
+    {
+      "name": "missing-module",
+      "log": "native-final-missing-module.log",
+      "exit_status": 1,
+      "elapsed_seconds": 18.05,
+      "checks": {
+        "exit_status_1": true,
+        "protocol_pass_count_8": true,
+        "no_protocol_failures": true,
+        "gtk_phase0_timeout": true,
+        "no_gtk_pass": true
+      },
+      "log_sha256": "be90e8b946e5f436658d9cd7116ec281e143d78339f16cc298a603df2aa8715d"
+    },
+    {
+      "name": "unpinned-bus",
+      "log": "native-final-unpinned-bus.log",
+      "exit_status": 1,
+      "elapsed_seconds": 17.85,
+      "checks": {
+        "exit_status_1": true,
+        "protocol_pass_count_8": true,
+        "no_protocol_failures": true,
+        "gtk_phase0_timeout": true,
+        "no_gtk_pass": true
+      },
+      "log_sha256": "4a7cdd676ed06a5b5d0bcbe93baa6c2acc7823f48375fb9302275fe8fa435de9"
+    }
+  ]
+}

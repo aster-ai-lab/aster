@@ -1,0 +1,3 @@
+F: Warning: Treating remote fetch error as non-fatal since runtime/org.gnome.Platform/x86_64/50 is already installed: No such ref 'runtime/org.gnome.Platform/x86_64/50' in remote platform-origin
+Installing app/dev.a3s.AsterDream/x86_64/50
+Error: Failed to install bundle dev.a3s.AsterDream: dev.a3s.AsterDream already installed

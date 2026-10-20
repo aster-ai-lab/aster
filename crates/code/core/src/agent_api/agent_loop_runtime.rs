@@ -55,6 +55,40 @@ impl PinnedRuntimeProjection {
     }
 }
 
+pub(super) struct RuntimePermissionChecker {
+    pub(super) policy: crate::permissions::PermissionPolicy,
+    pub(super) ceiling: Option<Arc<dyn crate::permissions::PermissionChecker>>,
+}
+
+impl crate::permissions::PermissionChecker for RuntimePermissionChecker {
+    fn snapshot_for_run(&self) -> Option<Arc<dyn crate::permissions::PermissionChecker>> {
+        Some(Arc::new(Self {
+            policy: self.policy.clone(),
+            ceiling: self.ceiling.as_ref().map(|checker| {
+                checker
+                    .snapshot_for_run()
+                    .unwrap_or_else(|| Arc::clone(checker))
+            }),
+        }))
+    }
+
+    fn expose_to_model(&self, name: &str) -> bool {
+        crate::permissions::PermissionChecker::expose_to_model(&self.policy, name)
+            && self
+                .ceiling
+                .as_ref()
+                .is_none_or(|checker| checker.expose_to_model(name))
+    }
+
+    fn check(
+        &self,
+        name: &str,
+        args: &serde_json::Value,
+    ) -> crate::permissions::PermissionDecision {
+        crate::fact_control::execution_permission(&self.policy, self.ceiling.as_deref(), name, args)
+    }
+}
+
 pub(super) fn build_agent_loop(session: &AgentSession) -> AgentLoop {
     let tool_executor = Arc::clone(&session.tool_executor);
     let mut config = live_config(session);
@@ -62,6 +96,12 @@ pub(super) fn build_agent_loop(session: &AgentSession) -> AgentLoop {
     // Compatibility APIs remain mutable until CAP-GA1. A host-direct runtime
     // observes their latest definitions when it is constructed.
     config.tools = tool_executor.definitions();
+    if let Some(policy) = session.runtime_permission_policy() {
+        config.permission_checker = Some(Arc::new(RuntimePermissionChecker {
+            policy,
+            ceiling: config.permission_checker.clone(),
+        }));
+    }
     finish_agent_loop(session, tool_executor, config)
 }
 

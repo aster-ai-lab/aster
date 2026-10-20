@@ -19,6 +19,35 @@ use super::spawn::{SpawnedAgent, boot_auth_manager};
 use a3s_code_shell::agent::config::Config as AgentConfig;
 
 const MAX_BUF: usize = 8 * 1024 * 1024;
+static EXPECTED_PAIR_BUILD_ID: std::sync::OnceLock<&'static str> = std::sync::OnceLock::new();
+
+pub fn set_expected_pair_build_id(id: &'static str) {
+    let _ = EXPECTED_PAIR_BUILD_ID.set(id);
+}
+
+async fn validate_pair(bin: &Path) -> Result<()> {
+    // Explicit external agents have their own lifecycle and are not the shipped pair.
+    if std::env::var_os("A3S_ACP_AGENT_BIN").is_some() {
+        return Ok(());
+    }
+    let Some(expected) = EXPECTED_PAIR_BUILD_ID.get() else {
+        return Ok(());
+    };
+    let mut command = Command::new(bin);
+    command.arg("--build-id").kill_on_drop(true);
+    let output = tokio::time::timeout(std::time::Duration::from_secs(2), command.output())
+        .await
+        .context("ACP pair identity check timed out")??;
+    let actual = std::str::from_utf8(&output.stdout)
+        .context("invalid ACP build identity")?
+        .trim();
+    if !output.status.success() || actual != *expected {
+        anyhow::bail!(
+            "Aster and its ACP companion have different build identities; rebuild or reinstall both together"
+        );
+    }
+    Ok(())
+}
 
 /// Spawn the shipped ACP agent and bridge its stdio into an [`SpawnedAgent`].
 pub async fn spawn_a3s_acp(
@@ -32,20 +61,22 @@ pub async fn spawn_a3s_acp(
             "no a3s-code-acp beside the pager and A3S_ACP_AGENT_BIN is not set; cannot spawn the agent"
         )
     })?;
+    validate_pair(&bin).await?;
     let auth_manager = boot_auth_manager(&grok_home(), agent_config);
 
     let agent_cancel = cancel.child_token();
     let (client_channel, agent_channel) = acp_channels();
 
-    let cwd = cwd
-        .map(std::path::PathBuf::from)
-        .or_else(|| std::env::current_dir().ok())
-        .unwrap_or_default();
-    let model = model.map(str::to_owned);
-    let effort = agent_config
-        .reasoning_effort_override
-        .or(agent_config.models.default_reasoning_effort)
-        .unwrap_or(a3s_code_shell::sampling::types::ReasoningEffort::Medium);
+    let cwd = match cwd {
+        Some(cwd) => cwd.to_owned(),
+        None => std::env::current_dir().context("resolve ACP workspace")?,
+    };
+    let arguments = sidecar_arguments(
+        agent_config,
+        &cwd,
+        model,
+        std::env::var_os("A3S_CONFIG").as_deref(),
+    );
     let bridge_cancel = agent_cancel.clone();
 
     let thread_handle = thread::Builder::new()
@@ -57,22 +88,11 @@ pub async fn spawn_a3s_acp(
             let local = tokio::task::LocalSet::new();
             local.block_on(&rt, async move {
                 let mut command = Command::new(&bin);
-                command
-                    .arg("--reasoning-effort")
-                    .arg(effort.to_string())
-                    .arg("--cwd")
-                    .arg(&cwd)
+                command.args(arguments)
                     .stdin(Stdio::piped())
                     .stdout(Stdio::piped())
                     .stderr(Stdio::inherit())
                     .kill_on_drop(true);
-                if let Some(model) = model.as_deref() {
-                    command.arg("--model").arg(model);
-                }
-                if let Some(config) = std::env::var_os("A3S_CONFIG").filter(|value| !value.is_empty())
-                {
-                    command.arg("--config").arg(config);
-                }
                 let mut child = command
                     .spawn()
                     .with_context(|| format!("failed to spawn a3s ACP agent at {}", bin.display()))?;
@@ -203,13 +223,51 @@ pub async fn spawn_required_sidecar(
     spawn_a3s_acp(agent_config, cancel, cwd, model).await
 }
 
+fn sidecar_arguments(
+    config: &AgentConfig,
+    cwd: &Path,
+    model: Option<&str>,
+    acl: Option<&std::ffi::OsStr>,
+) -> Vec<std::ffi::OsString> {
+    let effort = config
+        .reasoning_effort_override
+        .or(config.models.default_reasoning_effort)
+        .unwrap_or(a3s_code_shell::sampling::types::ReasoningEffort::Medium);
+    let mut args = vec![
+        "--reasoning-effort".into(),
+        effort.to_string().into(),
+        "--cwd".into(),
+        cwd.as_os_str().to_owned(),
+    ];
+    if let Some(model) = model {
+        args.extend(["--model".into(), model.into()]);
+    }
+    if let Some(acl) = acl.filter(|value| !value.is_empty()) {
+        args.extend(["--config".into(), acl.to_owned()]);
+    }
+    args
+}
+
 /// Run the shipped ACP agent on this process's stdin and stdout.
 pub async fn run_sidecar_on_stdio() -> Result<()> {
+    run_sidecar_on_stdio_with_config(&AgentConfig::default()).await
+}
+
+pub async fn run_sidecar_on_stdio_with_config(config: &AgentConfig) -> Result<()> {
     if !a3s_acp_enabled() {
         return Err(missing_agent_backend());
     }
     let bin = a3s_acp_executable().ok_or_else(missing_agent_backend)?;
+    validate_pair(&bin).await?;
+    let cwd = std::env::current_dir().context("resolve ACP workspace")?;
+    let arguments = sidecar_arguments(
+        config,
+        &cwd,
+        config.default_model_override.as_deref(),
+        std::env::var_os("A3S_CONFIG").as_deref(),
+    );
     let mut child = tokio::process::Command::new(&bin)
+        .args(arguments)
         .stdin(std::process::Stdio::inherit())
         .stdout(std::process::Stdio::inherit())
         .stderr(std::process::Stdio::inherit())
@@ -291,6 +349,43 @@ mod tests {
     use std::ffi::OsString;
 
     use super::{ACP_AGENT_BIN_TEST_LOCK, a3s_acp_executable, resolve_sidecar_executable};
+
+    #[test]
+    fn both_stdio_entry_points_forward_the_same_model_effort_workspace_and_acl() {
+        let mut config = super::AgentConfig::default();
+        config.default_model_override = Some("mock/exact-model".into());
+        config.reasoning_effort_override =
+            Some(a3s_code_shell::sampling::types::ReasoningEffort::High);
+        let cwd = std::path::Path::new("workspace with spaces");
+        let acl = std::ffi::OsStr::new("config with spaces.acl");
+        let interactive =
+            super::sidecar_arguments(&config, cwd, Some("mock/exact-model"), Some(acl));
+        let stdio = super::sidecar_arguments(
+            &config,
+            cwd,
+            config.default_model_override.as_deref(),
+            Some(acl),
+        );
+        assert_eq!(interactive, stdio);
+        assert_eq!(
+            stdio,
+            [
+                "--reasoning-effort",
+                "high",
+                "--cwd",
+                "workspace with spaces",
+                "--model",
+                "mock/exact-model",
+                "--config",
+                "config with spaces.acl"
+            ]
+            .map(OsString::from)
+        );
+        config.reasoning_effort_override = None;
+        config.models.default_reasoning_effort =
+            Some(a3s_code_shell::sampling::types::ReasoningEffort::Low);
+        assert_eq!(super::sidecar_arguments(&config, cwd, None, None)[1], "low");
+    }
 
     fn executable_file(path: &std::path::Path) {
         std::fs::write(path, b"").unwrap();

@@ -329,9 +329,7 @@ impl TurnFinish {
                     forced_stop: result.forced_stop,
                     meta: None,
                 }),
-                Err(error) => Some(AgentEvent::Error {
-                    message: error.to_string(),
-                }),
+                Err(error) => Some(AgentEvent::execution_error(error)),
             };
             if let Some(event) = event {
                 if target.cancelled {

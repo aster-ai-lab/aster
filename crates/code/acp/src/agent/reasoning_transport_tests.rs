@@ -237,7 +237,7 @@ async fn effort_switch_preserves_history_and_exposes_existing_anthropic_none_sem
         let session = {
             let sessions = host.sessions.lock().await;
             let live = sessions.get(id.0.as_ref()).unwrap();
-            assert_eq!(live.posture, "auto");
+            assert_eq!(live.permissions.lock().unwrap().posture.as_str(), "auto");
             assert_eq!(live.session.session_id(), id.0.as_ref());
             live.session.clone()
         };

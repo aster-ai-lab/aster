@@ -6,22 +6,43 @@ use agent_client_protocol as acp;
 use crate::app::agent_view::AgentView;
 
 impl AgentView {
-    /// Stores the modes the agent published and turns Auto off. Ask replaces Auto for these agents.
+    /// Stores the published modes and their confirmed permission state.
     pub(crate) fn apply_session_modes(&mut self, modes: Option<acp::SessionModeState>) -> bool {
         let Some(modes) = modes else {
             return false;
         };
-        self.session_mode = SessionMode::from_id(&modes.current_mode_id.0);
+        self.session_mode = if crate::app::a3s_code_active() {
+            let Some(mode) = self.code_session_mode(&modes.current_mode_id.0) else {
+                return false;
+            };
+            mode
+        } else {
+            self.session.auto_mode = false;
+            if self.deferred_permission_mode == Some("auto") {
+                self.deferred_permission_mode = None;
+            }
+            SessionMode::from_id(&modes.current_mode_id.0)
+        };
         self.session_mode_pending = None;
         self.plan_mode_active = self.session_mode.is_plan();
         self.available_modes = modes.available_modes;
 
-        self.session.auto_mode = false;
-        if self.deferred_permission_mode == Some("auto") {
-            self.deferred_permission_mode = None;
-        }
-
         true
+    }
+
+    pub(crate) fn code_session_mode(&mut self, id: &str) -> Option<SessionMode> {
+        match id {
+            "plan" => Some(SessionMode::Plan),
+            "default" | "auto" | "yolo" => {
+                self.session.yolo_mode = id == "yolo";
+                self.session.auto_mode = id == "auto";
+                Some(SessionMode::Default)
+            }
+            _ => {
+                tracing::error!(mode = id, "refused unknown ACP permission mode");
+                None
+            }
+        }
     }
 
     /// Optimistic pick, else the confirmed mode. Plan exits through the plan flags must not

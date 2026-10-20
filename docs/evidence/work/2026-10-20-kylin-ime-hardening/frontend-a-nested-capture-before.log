@@ -1,0 +1,80 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:65409) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/local-product-scope.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-local-product-scope.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/work
+
+ ❯ |renderer| src/renderer/components/QuickPanel/__tests__/view.test.tsx (56 tests | 1 failed | 54 skipped) 79ms
+   ❯ QuickPanelView (56)
+     × leaves IME Escape untouched in the global capture handler for a nested input 12ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/components/QuickPanel/__tests__/view.test.tsx > QuickPanelView > leaves IME Escape untouched in the global capture handler for a nested input
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/renderer/components/QuickPanel/__tests__/view.test.tsx:630:91
+    628|     const target = screen.getByRole('textbox', { name: 'Composer targe…
+    629|     if (origin === 'nested input') fireEvent.compositionStart(target)
+    630|     expect(fireEvent.keyDown(target, { key: 'Escape', keyCode: 27, isC…
+       |                                                                                           ^
+    631|     expect(onClose).not.toHaveBeenCalled()
+    632|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed | 54 skipped (56)
+   Start at  08:27:34
+   Duration  626ms (transform 28%, environment 27%, import 25%, tests 14%, setup 6%, worker 1%)
+

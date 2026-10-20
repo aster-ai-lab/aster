@@ -1,0 +1,15 @@
+{
+  "app_commit": "d588d6d5e186e0b960198af3dd75956ea4cd890367e47d4dcccf519b5a369bc8",
+  "artifacts": [
+    {
+      "name": "aster_0.1.2_kylin-v10_x86_64.tar.gz",
+      "bytes": 571991063,
+      "sha256": "93b3ffa8a5936ec4bc5bd4fc636c660a0c3e79a1b57d5dddcd6014155f1b6f7f"
+    },
+    {
+      "name": "aster_0.1.2_kylin-v10_x86_64.run",
+      "bytes": 571991949,
+      "sha256": "d375b5ad38d265bf48be4486095d4ce46dcead37a68410d31b354c32623ef8a6"
+    }
+  ]
+}

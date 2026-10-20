@@ -1,0 +1,593 @@
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent/extensions.rs:229:
+             }
+             None => {}
+         }
+[31m-        self.sessions.lock().await.get_mut(session_id)
+(B[m[32m+        self.sessions
+(B[m[32m+            .lock()
+(B[m[32m+            .await
+(B[m[32m+            .get_mut(session_id)
+(B[m             .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?
+             .set_posture(posture, extra)?;
+         let posture_name = posture.as_str();
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent/permission_state.rs:68:
+         self.session
+             .set_permission_policy(next.policy())
+             .and_then(|()| {
+[31m-                self.session.set_planning_mode(if posture == PermissionPosture::Plan {
+(B[m[31m-                    a3s_code_core::PlanningMode::Enabled
+(B[m[31m-                } else {
+(B[m[31m-                    a3s_code_core::PlanningMode::Disabled
+(B[m[31m-                })
+(B[m[32m+                self.session
+(B[m[32m+                    .set_planning_mode(if posture == PermissionPosture::Plan {
+(B[m[32m+                        a3s_code_core::PlanningMode::Enabled
+(B[m[32m+                    } else {
+(B[m[32m+                        a3s_code_core::PlanningMode::Disabled
+(B[m[32m+                    })
+(B[m             })
+             .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
+         *self
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent/permission_state_tests.rs:5:
+ use serde_json::json;
+ 
+ async fn write(session: &AgentSession, args: serde_json::Value) -> a3s_code_core::ToolCallResult {
+[31m-    tokio::time::timeout(std::time::Duration::from_secs(5), session.governed_tool("write", args))
+(B[m[31m-        .await.expect("a denied tool must not park for confirmation").unwrap()
+(B[m[32m+    tokio::time::timeout(
+(B[m[32m+        std::time::Duration::from_secs(5),
+(B[m[32m+        session.governed_tool("write", args),
+(B[m[32m+    )
+(B[m[32m+    .await
+(B[m[32m+    .expect("a denied tool must not park for confirmation")
+(B[m[32m+    .unwrap()
+(B[m }
+ 
+ async fn setup(root: &std::path::Path) -> (A3sCodeAgent, acp::SessionId) {
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent/permission_state_tests.rs:13:
+     let mut launch = tests::test_launch(Some(root.join("store")));
+     launch.workspace = root.to_owned();
+     let agent = A3sCodeAgent::new(launch);
+[31m-    let id = agent.new_session(acp::NewSessionRequest::new(root)).await.unwrap().session_id;
+(B[m[32m+    let id = agent
+(B[m[32m+        .new_session(acp::NewSessionRequest::new(root))
+(B[m[32m+        .await
+(B[m[32m+        .unwrap()
+(B[m[32m+        .session_id;
+(B[m     (agent, id)
+ }
+ 
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent/permission_state_tests.rs:20:
+ async fn deny_write(agent: &A3sCodeAgent, id: &acp::SessionId) {
+[31m-    let request = acp::ExtRequest::new("x.ai/permission_posture",
+(B[m[32m+    let request = acp::ExtRequest::new(
+(B[m[32m+        "x.ai/permission_posture",
+(B[m         serde_json::value::to_raw_value(&json!({
+             "sessionId":id, "posture":"yolo", "deny":["write"]
+[31m-        })).unwrap().into());
+(B[m[32m+        }))
+(B[m[32m+        .unwrap()
+(B[m[32m+        .into(),
+(B[m[32m+    );
+(B[m     agent.handle_permission_posture(&request).await.unwrap();
+ }
+ 
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent/permission_state_tests.rs:30:
+     let root = tempfile::tempdir().unwrap();
+     let (agent, id) = setup(root.path()).await;
+     for explicit_restore in [false, true] {
+[31m-        agent.set_session_mode(acp::SetSessionModeRequest::new(id.clone(), "yolo")).await.unwrap();
+(B[m[31m-        let mut gate = ResearchGate::enter(agent.sessions.lock().await.get(id.0.as_ref()).unwrap()).unwrap();
+(B[m[31m-        agent.set_session_mode(acp::SetSessionModeRequest::new(id.clone(), "plan")).await.unwrap();
+(B[m[31m-        if explicit_restore { gate.restore().unwrap(); }
+(B[m[32m+        agent
+(B[m[32m+            .set_session_mode(acp::SetSessionModeRequest::new(id.clone(), "yolo"))
+(B[m[32m+            .await
+(B[m[32m+            .unwrap();
+(B[m[32m+        let mut gate =
+(B[m[32m+            ResearchGate::enter(agent.sessions.lock().await.get(id.0.as_ref()).unwrap()).unwrap();
+(B[m[32m+        agent
+(B[m[32m+            .set_session_mode(acp::SetSessionModeRequest::new(id.clone(), "plan"))
+(B[m[32m+            .await
+(B[m[32m+            .unwrap();
+(B[m[32m+        if explicit_restore {
+(B[m[32m+            gate.restore().unwrap();
+(B[m[32m+        }
+(B[m         drop(gate);
+[31m-        let session = agent.sessions.lock().await.get(id.0.as_ref()).unwrap().session.clone();
+(B[m[31m-        let output = write(&session, json!({
+(B[m[31m-            "file_path":"must-stay-read-only.txt", "content":"forbidden"
+(B[m[31m-        })).await;
+(B[m[32m+        let session = agent
+(B[m[32m+            .sessions
+(B[m[32m+            .lock()
+(B[m[32m+            .await
+(B[m[32m+            .get(id.0.as_ref())
+(B[m[32m+            .unwrap()
+(B[m[32m+            .session
+(B[m[32m+            .clone();
+(B[m[32m+        let output = write(
+(B[m[32m+            &session,
+(B[m[32m+            json!({
+(B[m[32m+                "file_path":"must-stay-read-only.txt", "content":"forbidden"
+(B[m[32m+            }),
+(B[m[32m+        )
+(B[m[32m+        .await;
+(B[m         assert_ne!(output.exit_code, 0);
+         assert!(!root.path().join("must-stay-read-only.txt").exists());
+     }
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent/permission_state_tests.rs:48:
+ async fn mode_changes_cannot_relax_research_admission_and_new_denies_survive_cleanup() {
+     let root = tempfile::tempdir().unwrap();
+     let (agent, id) = setup(root.path()).await;
+[31m-    let gate = ResearchGate::enter(agent.sessions.lock().await.get(id.0.as_ref()).unwrap()).unwrap();
+(B[m[31m-    agent.set_session_mode(acp::SetSessionModeRequest::new(id.clone(), "yolo")).await.unwrap();
+(B[m[31m-    let session = agent.sessions.lock().await.get(id.0.as_ref()).unwrap().session.clone();
+(B[m[32m+    let gate =
+(B[m[32m+        ResearchGate::enter(agent.sessions.lock().await.get(id.0.as_ref()).unwrap()).unwrap();
+(B[m[32m+    agent
+(B[m[32m+        .set_session_mode(acp::SetSessionModeRequest::new(id.clone(), "yolo"))
+(B[m[32m+        .await
+(B[m[32m+        .unwrap();
+(B[m[32m+    let session = agent
+(B[m[32m+        .sessions
+(B[m[32m+        .lock()
+(B[m[32m+        .await
+(B[m[32m+        .get(id.0.as_ref())
+(B[m[32m+        .unwrap()
+(B[m[32m+        .session
+(B[m[32m+        .clone();
+(B[m     let args = json!({"file_path":"denied.txt", "content":"forbidden"});
+     assert_ne!(write(&session, args.clone()).await.exit_code, 0);
+     deny_write(&agent, &id).await;
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent/permission_state_tests.rs:67:
+     let (permissions, queue, assets) = {
+         let sessions = agent.sessions.lock().await;
+         let live = sessions.get(id.0.as_ref()).unwrap();
+[31m-        (live.permissions.clone(), live.turn_queue.clone(), live.asset_denies.clone())
+(B[m[32m+        (
+(B[m[32m+            live.permissions.clone(),
+(B[m[32m+            live.turn_queue.clone(),
+(B[m[32m+            live.asset_denies.clone(),
+(B[m[32m+        )
+(B[m     };
+     for effort in [None, Some("high")] {
+         let mut request = acp::SetSessionModelRequest::new(id.clone(), "openai/gpt-4o");
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent/permission_state_tests.rs:75:
+             request = request.meta(json!({"reasoningEffort":effort}).as_object().cloned());
+         }
+         agent.set_session_model(request).await.unwrap();
+[31m-        agent.set_session_mode(acp::SetSessionModeRequest::new(id.clone(), "yolo")).await.unwrap();
+(B[m[32m+        agent
+(B[m[32m+            .set_session_mode(acp::SetSessionModeRequest::new(id.clone(), "yolo"))
+(B[m[32m+            .await
+(B[m[32m+            .unwrap();
+(B[m         let session = {
+             let sessions = agent.sessions.lock().await;
+             let live = sessions.get(id.0.as_ref()).unwrap();
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent/permission_state_tests.rs:86:
+             assert_eq!(*assets.lock().unwrap(), ["write"]);
+             live.session.clone()
+         };
+[31m-        let result = write(&session, json!({
+(B[m[31m-            "file_path":"model-must-deny.txt", "content":"forbidden"
+(B[m[31m-        })).await;
+(B[m[32m+        let result = write(
+(B[m[32m+            &session,
+(B[m[32m+            json!({
+(B[m[32m+                "file_path":"model-must-deny.txt", "content":"forbidden"
+(B[m[32m+            }),
+(B[m[32m+        )
+(B[m[32m+        .await;
+(B[m         assert_ne!(result.exit_code, 0);
+         assert!(!root.path().join("model-must-deny.txt").exists());
+     }
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent/permission_state_tests.rs:101:
+     launch.workspace = root.path().into();
+     let agent = A3sCodeAgent::new(launch);
+     let model = agent.model_id.lock().await.clone();
+[31m-    let error = agent.set_session_model(acp::SetSessionModelRequest::new("missing", "openai/gpt-4o")).await.unwrap_err();
+(B[m[32m+    let error = agent
+(B[m[32m+        .set_session_model(acp::SetSessionModelRequest::new("missing", "openai/gpt-4o"))
+(B[m[32m+        .await
+(B[m[32m+        .unwrap_err();
+(B[m     assert!(format!("{error:?}").contains("unknown session id"));
+     assert!(agent.sessions.lock().await.is_empty());
+     assert!(agent.core_agent.lock().await.is_none());
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent/permission_state_tests.rs:113:
+ async fn mode_parsing_is_closed_and_canonical_before_mutation() {
+     let root = tempfile::tempdir().unwrap();
+     let (agent, id) = setup(root.path()).await;
+[31m-    agent.set_session_mode(acp::SetSessionModeRequest::new(id.clone(), " plan ")).await.unwrap();
+(B[m[31m-    let error = agent.set_session_mode(acp::SetSessionModeRequest::new(id.clone(), "misspelled-mode")).await.unwrap_err();
+(B[m[32m+    agent
+(B[m[32m+        .set_session_mode(acp::SetSessionModeRequest::new(id.clone(), " plan "))
+(B[m[32m+        .await
+(B[m[32m+        .unwrap();
+(B[m[32m+    let error = agent
+(B[m[32m+        .set_session_mode(acp::SetSessionModeRequest::new(
+(B[m[32m+            id.clone(),
+(B[m[32m+            "misspelled-mode",
+(B[m[32m+        ))
+(B[m[32m+        .await
+(B[m[32m+        .unwrap_err();
+(B[m     assert!(format!("{error:?}").contains("default, plan, auto, yolo"));
+     let sessions = agent.sessions.lock().await;
+[31m-    let state = sessions.get(id.0.as_ref()).unwrap().permissions.lock().unwrap();
+(B[m[32m+    let state = sessions
+(B[m[32m+        .get(id.0.as_ref())
+(B[m[32m+        .unwrap()
+(B[m[32m+        .permissions
+(B[m[32m+        .lock()
+(B[m[32m+        .unwrap();
+(B[m     assert_eq!(state.posture.as_str(), "plan");
+ }
+ 
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent/session_open.rs:410:
+             mcp_servers: setup.mcp_servers,
+             active_prompt_id: std::sync::Mutex::new(None),
+         };
+[31m-        let posture = live.permissions.lock()
+(B[m[31m-            .unwrap_or_else(std::sync::PoisonError::into_inner).posture;
+(B[m[32m+        let posture = live
+(B[m[32m+            .permissions
+(B[m[32m+            .lock()
+(B[m[32m+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+(B[m[32m+            .posture;
+(B[m         live.set_posture(posture, Vec::new())?;
+         Ok(live)
+     }
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent.rs:49:
+     answer_from_permission_outcome, claim_question_prompt, followup_message, question_has_choices,
+     question_permission_request,
+ };
+[31m-use permission_state::{PermissionPosture, ResearchGate, SessionPermissions};
+(B[m #[cfg(test)]
+ use permission_ask::{
+     permission_response_always, permission_response_approved, question_permission_options,
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent.rs:56:
+ };
+[32m+use permission_state::{PermissionPosture, ResearchGate, SessionPermissions};
+(B[m #[cfg(test)]
+ use sampling::resolve_consent_session;
+ use sampling::serve_sampling_consent;
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent.rs:455:
+ 
+ #[cfg(test)]
+ fn remember_denies(live: &mut LiveSession) {
+[31m-    let denies = live.permissions.lock()
+(B[m[31m-        .unwrap_or_else(std::sync::PoisonError::into_inner).denies.clone();
+(B[m[31m-    *live.asset_denies.lock().unwrap_or_else(std::sync::PoisonError::into_inner) = denies;
+(B[m[32m+    let denies = live
+(B[m[32m+        .permissions
+(B[m[32m+        .lock()
+(B[m[32m+        .unwrap_or_else(std::sync::PoisonError::into_inner)
+(B[m[32m+        .denies
+(B[m[32m+        .clone();
+(B[m[32m+    *live
+(B[m[32m+        .asset_denies
+(B[m[32m+        .lock()
+(B[m[32m+        .unwrap_or_else(std::sync::PoisonError::into_inner) = denies;
+(B[m }
+ 
+ /// ACP agent that owns live [`AgentSession`] values keyed by ACP session id.
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent.rs:820:
+             prompt_tokens.saturating_add(completion_tokens)
+         };
+         let total = live.session.context_window_tokens() as u64;
+[31m-        let posture = live.permissions.lock()
+(B[m[31m-            .unwrap_or_else(std::sync::PoisonError::into_inner).posture.as_str().to_string();
+(B[m[32m+        let posture = live
+(B[m[32m+            .permissions
+(B[m[32m+            .lock()
+(B[m[32m+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+(B[m[32m+            .posture
+(B[m[32m+            .as_str()
+(B[m[32m+            .to_string();
+(B[m         Some((
+             live.workspace.display().to_string(),
+             live.model_id.clone(),
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent.rs:1107:
+     ) -> acp::Result<acp::SetSessionModeResponse> {
+         let session_key = args.session_id.0.to_string();
+         let posture = PermissionPosture::parse(args.mode_id.0.as_ref())?;
+[31m-        self.sessions.lock().await.get_mut(&session_key)
+(B[m[32m+        self.sessions
+(B[m[32m+            .lock()
+(B[m[32m+            .await
+(B[m[32m+            .get_mut(&session_key)
+(B[m             .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?
+             .set_posture(posture, Vec::new())?;
+         Ok(acp::SetSessionModeResponse::new())
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent.rs:1125:
+         let effort = models::selected_effort(args.meta.as_ref(), *self.effort.lock().await)?;
+ 
+         let session_key = args.session_id.0.to_string();
+[31m-        let turn_queue = self.sessions.lock().await.get(&session_key)
+(B[m[32m+        let turn_queue = self
+(B[m[32m+            .sessions
+(B[m[32m+            .lock()
+(B[m[32m+            .await
+(B[m[32m+            .get(&session_key)
+(B[m             .map(|live| Arc::clone(&live.turn_queue))
+             .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?;
+[31m-        let _turn_permit = turn_queue.acquire_owned().await.ok_or_else(|| {
+(B[m[31m-            acp::Error::invalid_params().data("session operation queue is full")
+(B[m[31m-        })?;
+(B[m[32m+        let _turn_permit = turn_queue
+(B[m[32m+            .acquire_owned()
+(B[m[32m+            .await
+(B[m[32m+            .ok_or_else(|| acp::Error::invalid_params().data("session operation queue is full"))?;
+(B[m         // Keep permission updates and replacement in one commit. Queued turns
+         // look the session up again after acquiring this same queue.
+         {
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent.rs:1137:
+             let mut sessions = self.sessions.lock().await;
+[31m-            let current = sessions.get(&session_key)
+(B[m[32m+            let current = sessions
+(B[m[32m+                .get(&session_key)
+(B[m                 .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?;
+[31m-            let live = self.replace_core_session(current, SessionSetup {
+(B[m[31m-                workspace: current.workspace.clone(),
+(B[m[31m-                model_id: &model_id,
+(B[m[31m-                effort,
+(B[m[31m-                host: current.host.clone(),
+(B[m[31m-                components: &current.components,
+(B[m[31m-                mcp_servers: current.mcp_servers.clone(),
+(B[m[31m-            }).await?;
+(B[m[31m-            let live = self.finish_plugin_tools(live, current.plugin_tools.clone()).await?;
+(B[m[32m+            let live = self
+(B[m[32m+                .replace_core_session(
+(B[m[32m+                    current,
+(B[m[32m+                    SessionSetup {
+(B[m[32m+                        workspace: current.workspace.clone(),
+(B[m[32m+                        model_id: &model_id,
+(B[m[32m+                        effort,
+(B[m[32m+                        host: current.host.clone(),
+(B[m[32m+                        components: &current.components,
+(B[m[32m+                        mcp_servers: current.mcp_servers.clone(),
+(B[m[32m+                    },
+(B[m[32m+                )
+(B[m[32m+                .await?;
+(B[m[32m+            let live = self
+(B[m[32m+                .finish_plugin_tools(live, current.plugin_tools.clone())
+(B[m[32m+                .await?;
+(B[m             sessions.insert(session_key.clone(), live);
+         }
+         self.reapply_active_goal(&session_key).await;
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent.rs:1185:
+         tracing::info!(target: "perf_probe", "prompt_enter");
+         let session_key = args.session_id.0.to_string();
+         let turn_started = std::time::Instant::now();
+[31m-        let turn_queue = self.sessions.lock().await.get(&session_key)
+(B[m[32m+        let turn_queue = self
+(B[m[32m+            .sessions
+(B[m[32m+            .lock()
+(B[m[32m+            .await
+(B[m[32m+            .get(&session_key)
+(B[m             .map(|live| Arc::clone(&live.turn_queue))
+             .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?;
+ 
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent.rs:1212:
+         };
+         let session = {
+             let sessions = self.sessions.lock().await;
+[31m-            let live = sessions.get(&session_key)
+(B[m[32m+            let live = sessions
+(B[m[32m+                .get(&session_key)
+(B[m                 .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?;
+[31m-            *live.turn_started.lock().unwrap_or_else(std::sync::PoisonError::into_inner) = Some(turn_started);
+(B[m[32m+            *live
+(B[m[32m+                .turn_started
+(B[m[32m+                .lock()
+(B[m[32m+                .unwrap_or_else(std::sync::PoisonError::into_inner) = Some(turn_started);
+(B[m             Arc::clone(&live.session)
+         };
+         let generation = {
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent.rs:1290:
+             let prompt = crate::host_context::apply_turn_directives(&prompt, &turn);
+             let gate = if turn.research || turn.plan_first {
+                 let sessions = self.sessions.lock().await;
+[31m-                let live = sessions.get(&session_key)
+(B[m[32m+                let live = sessions
+(B[m[32m+                    .get(&session_key)
+(B[m                     .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?;
+                 Some(ResearchGate::enter(live)?)
+             } else {
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent.rs:1304:
+                 turn_permit,
+                 observation.as_ref(),
+                 gate,
+[31m-            ).await
+(B[m[31m-
+(B[m[32m+            )
+(B[m[32m+            .await
+(B[m         };
+         tracing::info!(target: "perf_probe", "prompt_return");
+         self.finish_prompt(&session_key, generation, response).await
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent_tests.rs:426:
+     {
+         let mut sessions = agent.sessions.lock().await;
+         let live = sessions.get_mut(&session_id).expect("live session");
+[31m-        live.permissions.lock().unwrap().denies.push("Skill".to_string());
+(B[m[31m-        live.permissions.lock().unwrap().denies.push("mcp__session-notes".to_string());
+(B[m[32m+        live.permissions
+(B[m[32m+            .lock()
+(B[m[32m+            .unwrap()
+(B[m[32m+            .denies
+(B[m[32m+            .push("Skill".to_string());
+(B[m[32m+        live.permissions
+(B[m[32m+            .lock()
+(B[m[32m+            .unwrap()
+(B[m[32m+            .denies
+(B[m[32m+            .push("mcp__session-notes".to_string());
+(B[m         remember_denies(live);
+     }
+     let denied_skill = session
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent_tests.rs:459:
+     {
+         let mut sessions = agent.sessions.lock().await;
+         let live = sessions.get_mut(&session_id).expect("live session");
+[31m-        live.permissions.lock().unwrap().denies.push("open_local_asset".to_string());
+(B[m[32m+        live.permissions
+(B[m[32m+            .lock()
+(B[m[32m+            .unwrap()
+(B[m[32m+            .denies
+(B[m[32m+            .push("open_local_asset".to_string());
+(B[m         remember_denies(live);
+     }
+     let denied_wiki = session
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/agent_loop_runtime.rs:55:
+     }
+ }
+ 
+[31m-
+(B[m pub(super) struct RuntimePermissionChecker {
+     pub(super) policy: crate::permissions::PermissionPolicy,
+     pub(super) ceiling: Option<Arc<dyn crate::permissions::PermissionChecker>>,
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/agent_loop_runtime.rs:62:
+ }
+ 
+ impl crate::permissions::PermissionChecker for RuntimePermissionChecker {
+[31m-    fn check(&self, name: &str, args: &serde_json::Value) -> crate::permissions::PermissionDecision {
+(B[m[32m+    fn check(
+(B[m[32m+        &self,
+(B[m[32m+        name: &str,
+(B[m[32m+        args: &serde_json::Value,
+(B[m[32m+    ) -> crate::permissions::PermissionDecision {
+(B[m         use crate::permissions::PermissionDecision;
+[31m-        if self.ceiling.as_ref().is_some_and(|checker| checker.check(name, args) == PermissionDecision::Deny) {
+(B[m[32m+        if self
+(B[m[32m+            .ceiling
+(B[m[32m+            .as_ref()
+(B[m[32m+            .is_some_and(|checker| checker.check(name, args) == PermissionDecision::Deny)
+(B[m[32m+        {
+(B[m             return PermissionDecision::Deny;
+         }
+         crate::fact_control::execution_permission(&self.policy, self.ceiling.as_deref(), name, args)
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/direct_tools/governed_tests.rs:39:
+ 
+ #[test]
+ fn runtime_posture_and_host_deny_both_govern_direct_calls() {
+[31m-    use crate::permissions::{policy_for_posture, PermissionPolicy};
+(B[m     use crate::agent_api::agent_loop_runtime::RuntimePermissionChecker;
+[32m+    use crate::permissions::{policy_for_posture, PermissionPolicy};
+(B[m     let args = serde_json::json!({"file_path":"fixture.txt", "content":"fixture"});
+     for (policy, ceiling, expected) in [
+[31m-        (policy_for_posture("plan"), PermissionDecision::Allow, PermissionDecision::Deny),
+(B[m[31m-        (policy_for_posture("yolo"), PermissionDecision::Deny, PermissionDecision::Deny),
+(B[m[31m-        (policy_for_posture("yolo").deny("write"), PermissionDecision::Ask, PermissionDecision::Deny),
+(B[m[31m-        (PermissionPolicy::new().allow("write"), PermissionDecision::Ask, PermissionDecision::Allow),
+(B[m[31m-        (PermissionPolicy::new(), PermissionDecision::Allow, PermissionDecision::Ask),
+(B[m[32m+        (
+(B[m[32m+            policy_for_posture("plan"),
+(B[m[32m+            PermissionDecision::Allow,
+(B[m[32m+            PermissionDecision::Deny,
+(B[m[32m+        ),
+(B[m[32m+        (
+(B[m[32m+            policy_for_posture("yolo"),
+(B[m[32m+            PermissionDecision::Deny,
+(B[m[32m+            PermissionDecision::Deny,
+(B[m[32m+        ),
+(B[m[32m+        (
+(B[m[32m+            policy_for_posture("yolo").deny("write"),
+(B[m[32m+            PermissionDecision::Ask,
+(B[m[32m+            PermissionDecision::Deny,
+(B[m[32m+        ),
+(B[m[32m+        (
+(B[m[32m+            PermissionPolicy::new().allow("write"),
+(B[m[32m+            PermissionDecision::Ask,
+(B[m[32m+            PermissionDecision::Allow,
+(B[m[32m+        ),
+(B[m[32m+        (
+(B[m[32m+            PermissionPolicy::new(),
+(B[m[32m+            PermissionDecision::Allow,
+(B[m[32m+            PermissionDecision::Ask,
+(B[m[32m+        ),
+(B[m     ] {
+[31m-        let checker = RuntimePermissionChecker { policy, ceiling: Some(Arc::new(StaticPermission(ceiling))) };
+(B[m[32m+        let checker = RuntimePermissionChecker {
+(B[m[32m+            policy,
+(B[m[32m+            ceiling: Some(Arc::new(StaticPermission(ceiling))),
+(B[m[32m+        };
+(B[m         assert_eq!(checker.check("write", &args), expected);
+     }
+ }
+Diff in /Users/roylin/code/aster/crates/code/core/src/fact_control.rs:19:
+ use crate::ask_user::{self, AskUserError};
+ use crate::llm::{Attachment, LlmClient, LlmResponse, Message, ToolDefinition};
+ use crate::permissions::{PermissionChecker, PermissionDecision, PermissionPolicy};
+[31m-pub(crate) use tool_results::execution_permission;
+(B[m use crate::queue::SessionLane;
+ use crate::tools::ToolExecutor;
+[32m+pub(crate) use tool_results::execution_permission;
+(B[m 
+ const THREAD: &str = "thread-1";
+ 
+Diff in /Users/roylin/code/aster/crates/code/core/src/porcelain.rs:554:
+     // A stable status line needs both metadata stamps. New status paths are
+     // already candidates; an unstamped existing dirty path is a real gap.
+     if before.stamps_incomplete || after.stamps_incomplete {
+[31m-        let before_stamps: HashSet<_> = before.stamps.iter().map(|stamp| stamp.path.as_str()).collect();
+(B[m[31m-        let after_stamps: HashSet<_> = after.stamps.iter().map(|stamp| stamp.path.as_str()).collect();
+(B[m[32m+        let before_stamps: HashSet<_> = before
+(B[m[32m+            .stamps
+(B[m[32m+            .iter()
+(B[m[32m+            .map(|stamp| stamp.path.as_str())
+(B[m[32m+            .collect();
+(B[m[32m+        let after_stamps: HashSet<_> = after
+(B[m[32m+            .stamps
+(B[m[32m+            .iter()
+(B[m[32m+            .map(|stamp| stamp.path.as_str())
+(B[m[32m+            .collect();
+(B[m         if let (Some(old), Some(new)) = (
+             before.porcelain.as_deref().and_then(porcelain_paths),
+             after.porcelain.as_deref().and_then(porcelain_paths),
+Diff in /Users/roylin/code/aster/crates/code/core/src/porcelain.rs:562:
+         ) {
+             let old: HashSet<_> = old.into_iter().collect();
+             observed.incomplete |= new.iter().any(|path| {
+[31m-                !is_harness_path(path) && old.contains(path)
+(B[m[31m-                    && (!before_stamps.contains(path.as_str()) || !after_stamps.contains(path.as_str()))
+(B[m[32m+                !is_harness_path(path)
+(B[m[32m+                    && old.contains(path)
+(B[m[32m+                    && (!before_stamps.contains(path.as_str())
+(B[m[32m+                        || !after_stamps.contains(path.as_str()))
+(B[m             });
+         }
+     }
+Diff in /Users/roylin/code/aster/crates/code/core/src/porcelain.rs:1349:
+         .ok()?
+         .checked_mul(1_000_000_000)?
+         .checked_add(u128::try_from(stat_subseconds(stat).0).ok()?)?;
+[31m-    let changed = u128::try_from(stat.st_ctime).ok()?
+(B[m[32m+    let changed = u128::try_from(stat.st_ctime)
+(B[m[32m+        .ok()?
+(B[m         .checked_mul(1_000_000_000)?
+         .checked_add(u128::try_from(stat_subseconds(stat).1).ok()?)?;
+     Some(ContentStamp {
+Diff in /Users/roylin/code/aster/crates/code/core/src/porcelain.rs:1366:
+ }
+ 
+ #[cfg(unix)]
+[31m-fn observe_identity_unix(root: &Path, relative: &str, budget: &mut u64, metadata_fallback: bool) -> Option<ContentStamp> {
+(B[m[32m+fn observe_identity_unix(
+(B[m[32m+    root: &Path,
+(B[m[32m+    relative: &str,
+(B[m[32m+    budget: &mut u64,
+(B[m[32m+    metadata_fallback: bool,
+(B[m[32m+) -> Option<ContentStamp> {
+(B[m     use std::os::fd::AsRawFd;
+     use std::os::unix::ffi::OsStrExt;
+     let parts = relative_components(Path::new(relative))?;
+Diff in /Users/roylin/code/aster/crates/code/core/src/porcelain.rs:1395:
+             if len > *budget {
+                 // Keep no-follow metadata for candidate detection without
+                 // inventing a content hash or spending the baseline budget.
+[31m-                return metadata_fallback.then(|| identity_from_stat(relative, &before, 0, None)).flatten();
+(B[m[32m+                return metadata_fallback
+(B[m[32m+                    .then(|| identity_from_stat(relative, &before, 0, None))
+(B[m[32m+                    .flatten();
+(B[m             }
+             let mut file = open_at(
+                 &parent,

@@ -1959,7 +1959,12 @@ pub(crate) fn detect_plan_mode_change_replayed(
     let acp::SessionUpdate::CurrentModeUpdate(cmu) = update else {
         return None;
     };
-    let mode = SessionMode::from_id(cmu.current_mode_id.0.as_ref());
+    let id = cmu.current_mode_id.0.as_ref();
+    let mode = if crate::app::a3s_code_active() {
+        agent.code_session_mode(id)?
+    } else {
+        SessionMode::from_id(id)
+    };
     let was_active = agent.plan_mode_active;
     let now_active = mode.is_plan();
     let staged = agent.plan_mode_pending;

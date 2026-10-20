@@ -1,0 +1,174 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:63241) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/local-product-scope.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-local-product-scope.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/work
+
+stdout | src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx > real composer prompt-variable composition > commits the final value, ends composition, and lets the next Enter send
+Global paste handler initialized
+
+stderr | src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx > real composer prompt-variable composition > commits the final value, ends composition, and lets the next Enter send
+An update to Portals inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+stderr | src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx > real composer prompt-variable composition > preserves the old value when composition is canceled (empty update: false)
+An update to Portals inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+stderr | src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx > real composer prompt-variable composition > preserves the old value when composition is canceled (empty update: true)
+An update to Portals inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+stderr | src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx > real composer prompt-variable composition > uses the last composition update only when the end event has no data
+An update to Portals inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+ ❯ |renderer| src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx (4 tests | 4 failed) 103ms
+   ❯ real composer prompt-variable composition (4)
+     × commits the final value, ends composition, and lets the next Enter send 63ms
+     × preserves the old value when composition is canceled (empty update: false) 13ms
+     × preserves the old value when composition is canceled (empty update: true) 14ms
+     × uses the last composition update only when the end event has no data 12ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx > real composer prompt-variable composition > commits the final value, ends composition, and lets the next Enter send
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx:78:35
+     76|     fireEvent.compositionEnd(input, { data: '上海' })
+     77|
+     78|     expect(editor.view.composing).toBe(false)
+       |                                   ^
+     79|     send(input)
+     80|     expect(onSendDraft).toHaveBeenCalledExactlyOnceWith(expect.objectC…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx > real composer prompt-variable composition > preserves the old value when composition is canceled (empty update: false)
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx > real composer prompt-variable composition > preserves the old value when composition is canceled (empty update: true)
+AssertionError: expected 'shanghai' to be '${city}' // Object.is equality
+
+Expected: "${city}"
+Received: "shanghai"
+
+ ❯ src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx:89:71
+     87|     fireEvent.compositionEnd(input, { data: '' })
+     88|
+     89|     expect(editor.state.doc.firstChild?.firstChild?.attrs.promptText).…
+       |                                                                       ^
+     90|     expect(editor.view.composing).toBe(false)
+     91|     send(input)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx > real composer prompt-variable composition > uses the last composition update only when the end event has no data
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx:100:35
+     98|     fireEvent(input, new Event('compositionend', { bubbles: true }))
+     99|
+    100|     expect(editor.view.composing).toBe(false)
+       |                                   ^
+    101|     send(input)
+    102|     expect(onSendDraft).toHaveBeenCalledExactlyOnceWith(expect.objectC…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed (4)
+   Start at  08:19:28
+   Duration  4.33s (transform 55%, import 39%, environment 3%, tests 2%, setup 1%)
+
+  Transform  |renderer| transforming modules took 2.34s · 55% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+

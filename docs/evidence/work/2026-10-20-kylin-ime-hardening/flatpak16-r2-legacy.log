@@ -1,0 +1,25 @@
+Host DISPLAY=:120
+org.fcitx.Fcitx-120:    boolean true
+org.fcitx.Fcitx-99:    boolean false
+org.fcitx.Fcitx:    boolean true
+org.freedesktop.portal.Fcitx:    boolean true
+dbus-daemon[37009]: [session uid=0 pid=37009] Connection :1.10 (uid=0 pid=37046 comm="dbus-monitor --session type='method_call',destinat") became a monitor.
+Flatpak 1.6.5
+xdg-dbus-proxy 0.1.2
+bubblewrap 0.4.0
+dbus-daemon[37009]: [session uid=0 pid=37009] Activating service name='org.freedesktop.Flatpak' requested by ':1.11' (uid=0 pid=37051 comm="/aster/target/evaluations/kylin-ime-hardening/flat")
+dbus-daemon[37009]: [session uid=0 pid=37009] Successfully activated service 'org.freedesktop.Flatpak'
+dbus-daemon[37009]: [session uid=0 pid=37009] Activating service name='org.a11y.Bus' requested by ':1.11' (uid=0 pid=37051 comm="/aster/target/evaluations/kylin-ime-hardening/flat")
+dbus-daemon[37009]: [session uid=0 pid=37009] Successfully activated service 'org.a11y.Bus'
+GTK_IM_MODULE=fcitx
+GTK_IM_MODULE_FILE=/app/lib/im/fcitx4/immodules.cache
+XMODIFIERS=
+DBUS=org.fcitx.Fcitx
+NOTE=
+GTK client DISPLAY=:99.0
+Fcitx state ready for phase 0
+Chinese text committed through GTK: 你好
+Fcitx state ready for phase 2
+Fcitx state ready for phase 3
+PASS: Chinese commit, mixed English, Escape cancellation
+dbus-daemon[37009]: [session uid=0 pid=37009] Monitoring connection :1.10 closed.

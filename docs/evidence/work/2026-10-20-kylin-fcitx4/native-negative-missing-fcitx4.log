@@ -1,2 +1,69 @@
 Fixture case: missing-fcitx4; repetition: 7
 kylin-im: missing-fcitx4-module
+Observed Fcitx state: 0
+IME test timed out at phase 0; committed text:
+==> /tmp/tmp.HlZmnO0GSA/fcitx.log <==
+(INFO-7292 addon.c:151) Load Addon Config File:fcitx-remote-module.conf
+(INFO-7292 addon.c:151) Load Addon Config File:fcitx-spell.conf
+(INFO-7292 addon.c:151) Load Addon Config File:fcitx-unicode.conf
+(INFO-7292 addon.c:151) Load Addon Config File:fcitx-vk.conf
+(INFO-7292 addon.c:151) Load Addon Config File:fcitx-x11.conf
+(INFO-7292 addon.c:151) Load Addon Config File:fcitx-xim.conf
+(INFO-7292 addon.c:151) Load Addon Config File:fcitx-xkb.conf
+(INFO-7292 addon.c:151) Load Addon Config File:fcitx-xkbdbus.conf
+(INFO-7292 addon.c:151) Load Addon Config File:fcitx-pinyin-enhance.conf
+(INFO-7292 addon.c:151) Load Addon Config File:fcitx-pinyin.conf
+(INFO-7292 addon.c:151) Load Addon Config File:fcitx-classic-ui.conf
+(INFO-7292 addon.c:151) Load Addon Config File:fcitx-notificationitem.conf
+(INFO-7292 addon.c:151) Load Addon Config File:fcitx-dbus.conf
+(INFO-7292 addon.c:151) Load Addon Config File:fcitx-freedesktop-notify.conf
+(INFO-7292 addon.c:151) Load Addon Config File:fcitx-ipc.conf
+(ERROR-7292 ime.c:432) fcitx-keyboard-us already exists
+(WARN-7292 xim.c:161) Please set XMODIFIERS.
+=========================
+FCITX 4.2.9.9 -- Get Signal No.: 15
+Date: try "date -d @1792482956" if you are using GNU date ***
+ProcessID: 7292
+fcitx(+0x19ba)[0x5555555559ba]
+/lib/x86_64-linux-gnu/libc.so.6(+0x45330)[0x7fffff59d330]
+/lib/x86_64-linux-gnu/libc.so.6(__select+0x147)[0x7fffff67efa7]
+/lib/x86_64-linux-gnu/libfcitx-core.so.0(+0x1411c)[0x7fffff7af11c]
+/lib/x86_64-linux-gnu/libfcitx-core.so.0(FcitxInstanceRun+0x5f)[0x7fffff7af81f]
+fcitx(+0x14c7)[0x5555555554c7]
+/lib/x86_64-linux-gnu/libc.so.6(+0x2a1ca)[0x7fffff5821ca]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x8b)[0x7fffff58228b]
+fcitx(+0x1585)[0x555555555585]
+
+==> /tmp/tmp.HlZmnO0GSA/proxy.log <==
+
+** (process:7293): WARNING **: 07:55:51.635: Error writing credentials to socket: Error sending message: Broken pipe
+
+** (process:7293): WARNING **: 07:55:51.746: Error writing credentials to socket: Error sending message: Broken pipe
+
+** (process:7293): WARNING **: 07:55:52.405: Error writing credentials to socket: Error sending message: Broken pipe
+
+** (process:7293): WARNING **: 07:55:52.606: Error writing credentials to socket: Error sending message: Broken pipe
+
+** (process:7293): WARNING **: 07:55:52.910: Error writing credentials to socket: Error sending message: Broken pipe
+
+** (process:7293): WARNING **: 07:55:52.985: Error writing credentials to socket: Error sending message: Broken pipe
+
+** (process:7293): WARNING **: 07:55:53.617: Error writing credentials to socket: Error sending message: Broken pipe
+
+** (process:7293): WARNING **: 07:55:53.654: Error writing credentials to socket: Error sending message: Broken pipe
+
+** (process:7293): WARNING **: 07:55:53.944: Error writing credentials to socket: Error sending message: Broken pipe
+
+** (process:7293): WARNING **: 07:55:54.749: Error writing credentials to socket: Error sending message: Broken pipe
+
+** (process:7293): WARNING **: 07:55:55.156: Error writing credentials to socket: Error sending message: Broken pipe
+
+** (process:7293): WARNING **: 07:55:55.229: Error writing credentials to socket: Error sending message: Broken pipe
+
+** (process:7293): WARNING **: 07:55:55.557: Error writing credentials to socket: Error sending message: Broken pipe
+
+** (process:7293): WARNING **: 07:55:56.179: Error writing credentials to socket: Error sending message: Broken pipe
+
+** (process:7293): WARNING **: 07:55:56.613: Error writing credentials to socket: Error sending message: Broken pipe
+
+Exit status: 1

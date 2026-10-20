@@ -560,7 +560,7 @@ async fn real_git_nul_names_are_exact_before_hashing_even_with_quotes_spaces_and
     }
     let mut byte_budget = OBSERVATION_BYTE_CAP;
     let mut path_budget = FILE_WALK_CAP;
-    let (stamps, incomplete) =
+    let (stamps, incomplete, _) =
         stamp_lines(root.path(), &records, &mut byte_budget, &mut path_budget);
     assert!(!incomplete);
     assert!(stamps
@@ -620,10 +620,12 @@ fn stable_porcelain_lines_do_not_hide_preserved_metadata_writes() {
     let lines = vec![" M dirty.txt".to_string()];
     let mut byte_budget = OBSERVATION_BYTE_CAP;
     let mut path_budget = FILE_WALK_CAP;
-    let (before, incomplete) = stamp_lines(root.path(), &lines, &mut byte_budget, &mut path_budget);
+    let (before, incomplete, _) =
+        stamp_lines(root.path(), &lines, &mut byte_budget, &mut path_budget);
     assert!(!incomplete);
     overwrite_preserving_mtime(&path, b"other\n");
-    let (after, incomplete) = stamp_lines(root.path(), &lines, &mut byte_budget, &mut path_budget);
+    let (after, incomplete, _) =
+        stamp_lines(root.path(), &lines, &mut byte_budget, &mut path_budget);
     assert!(!incomplete);
     assert_eq!(before[0].modified, after[0].modified);
     assert_eq!(content_changes(&before, &after), vec!["dirty.txt"]);
@@ -883,7 +885,7 @@ fn failed_directory_and_stat_reads_are_explicitly_incomplete() {
     let mut budget = OBSERVATION_BYTE_CAP;
     assert!(observe_file_identity(root.path(), "not-a-directory/child", &mut budget).is_none());
     let mut path_budget = FILE_WALK_CAP;
-    let (stamps, incomplete) = stamp_paths(
+    let (stamps, incomplete, _) = stamp_paths(
         root.path(),
         &["not-a-directory/child".to_string()],
         &mut budget,
@@ -1034,7 +1036,7 @@ fn oversized_relative_paths_are_refused_before_component_allocation_or_io() {
     assert!(observe_file_identity(root.path(), &path, &mut budget).is_none());
     assert_eq!(budget, OBSERVATION_BYTE_CAP);
     let mut path_budget = FILE_WALK_CAP;
-    let (stamps, incomplete) = stamp_paths(root.path(), &[path], &mut budget, &mut path_budget);
+    let (stamps, incomplete, _) = stamp_paths(root.path(), &[path], &mut budget, &mut path_budget);
     assert!(incomplete);
     assert!(stamps.is_empty());
 }
@@ -1078,6 +1080,8 @@ fn a_large_status_list_is_a_digest_in_the_prepared_baseline() {
             present: true,
             len: 1,
             modified: 1,
+            changed: 1,
+            node: (1, 1),
             mode: 0o100644,
             kind: 0,
             content_digest: Some("ab".repeat(32)),
@@ -1090,6 +1094,7 @@ fn a_large_status_list_is_a_digest_in_the_prepared_baseline() {
             stamps,
             stamps_incomplete: true,
             stamp_read_failed: false,
+            hidden_index_budget: false,
             status_budget: false,
             git_worktree: true,
         },
@@ -1120,6 +1125,7 @@ fn a_large_status_list_is_a_digest_in_the_prepared_baseline() {
             stamps: Vec::new(),
             stamps_incomplete: true,
             stamp_read_failed: true,
+            hidden_index_budget: false,
             status_budget: false,
             git_worktree: true,
         },

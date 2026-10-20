@@ -155,7 +155,7 @@ async fn an_unchanged_git_worktree_is_a_complete_empty_delta() {
 }
 
 #[tokio::test]
-async fn a_status_list_past_the_stamp_cap_is_a_complete_empty_delta() {
+async fn an_unstamped_existing_dirty_path_is_an_observation_gap() {
     let root = tempfile::tempdir().unwrap();
     git_repo(root.path());
     for index in 0..=FILE_WALK_CAP {
@@ -189,7 +189,7 @@ async fn a_status_list_past_the_stamp_cap_is_a_complete_empty_delta() {
         .finish_observed_with_revision(root.path(), false)
         .await;
     assert!(!unchanged.incomplete, "{unchanged:?}");
-    assert!(!unchanged.budget_exceeded, "{unchanged:?}");
+    assert!(unchanged.budget_exceeded, "{unchanged:?}");
     assert!(
         unchanged.paths.is_empty(),
         "an unchanged overflow was a mutation: {:?}",
@@ -202,7 +202,7 @@ async fn a_status_list_past_the_stamp_cap_is_a_complete_empty_delta() {
         .finish_observed_with_revision(root.path(), false)
         .await;
     assert!(!owned.incomplete, "{owned:?}");
-    assert!(!owned.budget_exceeded, "{owned:?}");
+    assert!(owned.budget_exceeded, "{owned:?}");
     assert_eq!(owned.paths, vec!["owned.txt".to_string()]);
 }
 
@@ -429,7 +429,7 @@ async fn a_status_byte_cap_is_a_budget_and_a_hidden_index_byte_cap_keeps_the_sta
         .finish_observed_with_revision(root.path(), false)
         .await;
     assert!(!observed.incomplete, "{observed:?}");
-    assert!(!observed.budget_exceeded, "{observed:?}");
+    assert!(observed.budget_exceeded, "{observed:?}");
     assert!(
         observed.paths.iter().any(|path| path == "added-after.txt"),
         "{:?}",

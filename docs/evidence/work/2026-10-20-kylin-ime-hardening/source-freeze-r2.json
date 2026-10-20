@@ -1,0 +1,144 @@
+{
+  "root_base": "d4a8393f12a6d526a4d08693ac76e73e87414b14",
+  "work_base": "9aad91f1e934c731e540cf99be25733e25c3a411",
+  "tracked_work_patch_sha256": "e27b98d8b8bc05f2e65b65a421cfa04dc846ede06a14b128567bbb6c96c09f7c",
+  "tracked_work_files": 24,
+  "untracked_work_files": [
+    "scripts/kylin-flatpak/fcitx4_legacy_portal.patch",
+    "scripts/kylin-flatpak/fcitx_client_protocol_test.c",
+    "scripts/kylin-flatpak/kylin_im_backend.c",
+    "src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx",
+    "src/renderer/components/composer/__tests__/ComposerSurface.lifecycle.test.tsx"
+  ],
+  "source_identity_checks": [
+    {
+      "path": "apps/work/scripts/kylin-flatpak/README.md",
+      "sha256": "ffa595978ac9cf919c7b8e40e9f5d167176e7fb11cb632e19a59c9eec0c4a9a3"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/build-fcitx4-immodule.sh",
+      "sha256": "58075d1eae8e7204328bf56cb5ec7edab03c1deee8eae5366fff097284078eff"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/build-immodule.sh",
+      "sha256": "5cef530f90644c3d599677732fb83f3f51f3a542cc16a92fa944b34c0d2614b9"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/gtk_input_probe.c",
+      "sha256": "1d20306dfe10f1de9d41a8fc2af41b1125f8005ad7d1ff93b72ea623c2769eeb"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/install-on-kylin.sh",
+      "sha256": "bfe7837e6d93eb3a30dc5d642f5893a688beea24f347fe6251d22139cfbe4f4d"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/kylin-launch.sh",
+      "sha256": "6a6f459d0b7561faf7de2b400012e10f5e4d34342861f25ac896f052f37a9f84"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/pack-onefile.sh",
+      "sha256": "70da5c0f24b743a0430d4d2efdd1140f9f118ea8f5c869265380d5d4336cd58b"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/package-bundle.sh",
+      "sha256": "5932277350efd5a2558da42f23e4e9b4d0e4d221a52daab13b701d13600022e4"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/test-input-method.sh",
+      "sha256": "0eeedbc8210418988cb0717e35a1d8972cfb1466aec96f08124118b641b54766"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/安装说明.txt",
+      "sha256": "b028b8081d6b08f9f6e06462986f65d3d18f3c6f389c969f80f49138969dc82d"
+    },
+    {
+      "path": "apps/work/src/renderer/components/QuickPanel/QuickPanelView.tsx",
+      "sha256": "5e104acc78c5188dc2269e44fe33815e025ef091b7fc55889d5e85f34c1bb82f"
+    },
+    {
+      "path": "apps/work/src/renderer/components/QuickPanel/__tests__/view.test.tsx",
+      "sha256": "ac147439e19935208f8e1b573feacd7487bab305058821b7873095f743f2c3be"
+    },
+    {
+      "path": "apps/work/src/renderer/components/QuickPanel/types.ts",
+      "sha256": "01b1b7897ad8d887f4b9fbdd62884c5ecb797dd453a966ba69464fe11a65e5ec"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/ComposerSurfaceRuntime.tsx",
+      "sha256": "e5d2644e12df78102d115f63ca245837c9f6c86cb8772b429aa5ec9207d3d997"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/PromptVariableToken.tsx",
+      "sha256": "2fd285a7fe327b25a8fda0fe8d925afd4565b6090246b0cf99a08044725ea3a9"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/__tests__/ComposerSurface.test.tsx",
+      "sha256": "7d282ae0611be2e73d189a622a2f61b539fc3e7fc4aee552dea38f6aea716838"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/__tests__/ComposerToken.test.tsx",
+      "sha256": "a0eea3d5209b1204534d5520bdc46a63f35102766a1cf9fdd584d8d014a22584"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/__tests__/composerInputAdapter.test.ts",
+      "sha256": "58c35c0543e70cae0c04ef5d3c26bb885324782a3aff240642a1a0d105cf93cf"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/composerInputAdapter.ts",
+      "sha256": "c66ff7fb7e38c5e90e55fbded2662500a5b8e4b5d5302c9dfc46b3ef0c0dfa17"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/variants/AskUserQuestionComposer.tsx",
+      "sha256": "ff2e6e02b7132586eb50f91e150fa531574118775a5be04eb97e87edb1c8d6b4"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/variants/PermissionRequestComposer.tsx",
+      "sha256": "249d8508e7aabc0cee93582d7f3af0ae79084d7c9e0cd010a684be5d5cde05a6"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/variants/__tests__/AskUserQuestionComposer.test.tsx",
+      "sha256": "83ea66c86694b7c7f4a1a6cfec2205868edc0ff6f60b6ce5ce7de4f82ec74423"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx",
+      "sha256": "6dcb24c135049288471942053c748ab01c9e44f5233f6cb133393f3bf5eca022"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/fcitx4_legacy_portal.patch",
+      "sha256": "a5330e62b2fa668920261857593b6efc38016cbcb72b4535e96091ac9e7d9755"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/fcitx_client_protocol_test.c",
+      "sha256": "ced6920541e3e14b90431a9fe1042e71ea6b5a7dfedc84401e4d4e19ca69e69a"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/kylin_im_backend.c",
+      "sha256": "637ed80e13c8f16028d761a87e46dca670f323ba04e93eb0284eb94cee4b6d77"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx",
+      "sha256": "e5c61b28be360c2cc6e1d638cfcf9928df4a0a4d2c7e155a604e73672a08d163"
+    },
+    {
+      "path": "tests/kylin_input_method.py",
+      "sha256": "4e9707bf2c8fdf2260ecdfa01e0ef7999e30a9c329c1b47ba5d069de1dfe2240"
+    },
+    {
+      "path": "tests/kylin_onefile.py",
+      "sha256": "cdba33614ec619646c0237e499fcf17231403d2e2c446fd6d31a83a7124285d4"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/variants/shared/useComposerFileCapabilities.ts",
+      "sha256": "5aab1708c81fb46f7a49cf2d828cc9dbac225fcc24b7336d7166f460b6656446"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/__tests__/ComposerSurface.lifecycle.test.tsx",
+      "sha256": "b142b76dd6318adf595e59797f4be55e0cdc139cecb51f0234f9ce3e9ab0b5ee"
+    }
+  ],
+  "original_isolated_work_patch_identical": true,
+  "env_copied": false,
+  "docker_env_mount_placeholder_bytes": 0,
+  "unrelated_root_rust_changes_copied": false,
+  "purpose": "R11 candidate source freeze; acceptance requires rebuilt rich GUI test"
+}

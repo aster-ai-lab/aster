@@ -36,6 +36,10 @@ pub(crate) struct ContentStamp {
     pub len: u64,
     pub modified: u128,
     #[serde(default)]
+    pub changed: u128,
+    #[serde(default)]
+    pub node: (u64, u64),
+    #[serde(default)]
     pub mode: u32,
     #[serde(default)]
     pub kind: u8,
@@ -55,6 +59,8 @@ pub(crate) struct Snapshot {
     /// the stamp budget stays false: the status diff is still the command delta.
     #[serde(default)]
     stamp_read_failed: bool,
+    /// The hidden-index list exceeded its bound, so unnamed writes are possible.
+    hidden_index_budget: bool,
     /// Status hit its record or byte cap. The prefix is not a diff input.
     #[serde(default)]
     status_budget: bool,
@@ -79,9 +85,11 @@ impl Snapshot {
             "status_complete": self.porcelain.is_some(),
             "status_budget": self.status_budget,
             "stamp_count": self.stamps.len(),
+            "unhashed_stamp_count": self.stamps.iter().filter(|stamp| stamp.present && stamp.kind == 0 && stamp.content_digest.is_none()).count(),
             "stamp_digest": digest_stamps(&self.stamps),
             "stamps_incomplete": self.stamps_incomplete,
             "stamp_read_failed": self.stamp_read_failed,
+            "hidden_index_budget": self.hidden_index_budget,
         })
     }
 }
@@ -248,8 +256,8 @@ pub(crate) struct PathDelta {
     /// A known cap was hit. Distinct from [`Self::incomplete`], which is a
     /// failed read. The run scan owns that gap. It is not an invocation debt.
     pub budget_exceeded: bool,
-    /// The fresh or baseline git status hit its record or byte cap.
-    /// A revision-name list does not set this, and must not close the run.
+    /// Whole-workspace coverage hit a status, stamp, or hidden-index cap.
+    /// A revision-name list alone does not set this coverage gap.
     pub status_budget: bool,
 }
 
@@ -293,9 +301,7 @@ fn observe_path_effects_within(
     delta.incomplete |= invalid_scope;
     delta.paths.sort();
     delta.paths.dedup();
-    if !delta.incomplete
-        && (delta.budget_exceeded || delta.paths.len() > a3s_effect::MAX_TOOL_EFFECT_PATHS)
-    {
+    if !delta.incomplete && delta.paths.len() > a3s_effect::MAX_TOOL_EFFECT_PATHS {
         return ToolEffectObservationV1::budget_exceeded();
     }
     let mut effects = ToolEffectObservationV1::complete(Vec::new());
@@ -335,6 +341,11 @@ fn observe_path_effects_within(
         );
         effects.budget_exceeded = false;
     }
+    if delta.budget_exceeded && !delta.incomplete {
+        effects.completeness = ToolObservationCompleteness::Incomplete;
+        effects.budget_exceeded = true;
+        effects.reason = Some("tool_effect_observation_incomplete: workspace metadata coverage exceeded its path budget".into());
+    }
     if effects.exceeds_canonical_bound() {
         return if delta.incomplete {
             ToolEffectObservationV1::incomplete(
@@ -359,31 +370,35 @@ pub(crate) async fn snapshot(root: &Path) -> Snapshot {
     let git_worktree = porcelain.is_some() || status_budget || inside_work_tree(root).await;
     let mut byte_budget = OBSERVATION_BYTE_CAP;
     let mut path_budget = FILE_WALK_CAP;
-    let (mut stamps, mut stamps_incomplete) = match &porcelain {
+    let (mut stamps, mut stamps_incomplete, stamp_failed) = match &porcelain {
         Some(lines) => stamp_lines(root, lines, &mut byte_budget, &mut path_budget),
         // Status missed inside a worktree. That is not an empty non-git tree.
-        None => (Vec::new(), false),
+        None => (Vec::new(), false, false),
     };
     // A missed status or a broken hidden-index query cannot prove an empty
     // delta. Hitting the stamp budget on a fully read status list cannot
     // either be treated as a missed read: that froze every later mutating
     // call on a worktree that was already dirtier than FILE_WALK_CAP.
-    let mut stamp_read_failed = porcelain.is_none() && !status_budget && git_worktree;
+    let mut stamp_read_failed =
+        stamp_failed || (porcelain.is_none() && !status_budget && git_worktree);
+    let mut hidden_index_budget = false;
     if porcelain.is_some() {
         match hidden_index_paths(root).await {
             HiddenIndex::Listed(paths, parse_incomplete) => {
-                let hidden_budget = parse_incomplete && paths.len() == FILE_WALK_CAP;
-                stamp_read_failed |= parse_incomplete && !hidden_budget;
+                hidden_index_budget |= parse_incomplete && paths.len() == FILE_WALK_CAP;
+                stamp_read_failed |= parse_incomplete && !hidden_index_budget;
                 stamps_incomplete |= parse_incomplete;
-                let (extra, extra_incomplete) =
+                let (extra, extra_incomplete, extra_failed) =
                     stamp_paths(root, &paths, &mut byte_budget, &mut path_budget);
                 stamps_incomplete |= extra_incomplete;
+                stamp_read_failed |= extra_failed;
                 stamps.extend(extra);
                 stamps.sort_by(|left, right| left.path.cmp(&right.path));
                 stamps.dedup_by(|left, right| left.path == right.path);
             }
             HiddenIndex::OverCap => {
                 stamps_incomplete = true;
+                hidden_index_budget = true;
             }
             HiddenIndex::Failed => {
                 stamp_read_failed = true;
@@ -398,6 +413,7 @@ pub(crate) async fn snapshot(root: &Path) -> Snapshot {
         stamps,
         stamps_incomplete,
         stamp_read_failed,
+        hidden_index_budget,
         status_budget,
         git_worktree,
     }
@@ -545,11 +561,39 @@ async fn command_delta(root: &Path, before: &Snapshot, attribute_revision: bool)
     if matches!(names, RevisionNames::Budget) {
         observed.budget_exceeded = true;
     }
-    // Stamp-budget overflow still leaves stamps_incomplete on the snapshot.
-    // It must not turn a fully read status diff into an unresolved command.
     observed.incomplete |= before.stamp_read_failed || after.stamp_read_failed;
+    // A stable status line needs both metadata stamps. New status paths are
+    // already candidates; an unstamped existing dirty path is a real gap.
+    let mut coverage_budget = before.hidden_index_budget || after.hidden_index_budget;
+    if before.stamps_incomplete || after.stamps_incomplete {
+        let before_stamps: HashSet<_> = before
+            .stamps
+            .iter()
+            .map(|stamp| stamp.path.as_str())
+            .collect();
+        let after_stamps: HashSet<_> = after
+            .stamps
+            .iter()
+            .map(|stamp| stamp.path.as_str())
+            .collect();
+        if let (Some(old), Some(new)) = (
+            before.porcelain.as_deref().and_then(porcelain_paths),
+            after.porcelain.as_deref().and_then(porcelain_paths),
+        ) {
+            let old: HashSet<_> = old.into_iter().collect();
+            coverage_budget |= new.iter().any(|path| {
+                !is_harness_path(path)
+                    && old.contains(path)
+                    && (!before_stamps.contains(path.as_str())
+                        || !after_stamps.contains(path.as_str()))
+            });
+        }
+    }
     if observed.incomplete {
         observed.budget_exceeded = false;
+    } else if coverage_budget {
+        observed.budget_exceeded = true;
+        observed.status_budget = true;
     }
     observed
         .paths
@@ -996,9 +1040,10 @@ fn stamp_lines(
     lines: &[String],
     byte_budget: &mut u64,
     path_budget: &mut usize,
-) -> (Vec<ContentStamp>, bool) {
+) -> (Vec<ContentStamp>, bool, bool) {
     let mut paths = Vec::new();
     let mut incomplete = false;
+    let mut read_failed = false;
     for line in lines {
         match paths_of(line) {
             Some(found) if paths.len() + found.len() <= FILE_WALK_CAP => paths.extend(found),
@@ -1006,11 +1051,19 @@ fn stamp_lines(
                 incomplete = true;
                 break;
             }
-            None => incomplete = true,
+            None => {
+                incomplete = true;
+                read_failed = true;
+            }
         }
     }
-    let (stamps, stamp_incomplete) = stamp_paths(root, &paths, byte_budget, path_budget);
-    (stamps, incomplete || stamp_incomplete)
+    let (stamps, stamp_incomplete, stamp_failed) =
+        stamp_paths(root, &paths, byte_budget, path_budget);
+    (
+        stamps,
+        incomplete || stamp_incomplete,
+        read_failed || stamp_failed,
+    )
 }
 
 fn stamp_paths(
@@ -1018,13 +1071,15 @@ fn stamp_paths(
     paths: &[String],
     byte_budget: &mut u64,
     path_budget: &mut usize,
-) -> (Vec<ContentStamp>, bool) {
+) -> (Vec<ContentStamp>, bool, bool) {
     let mut stamps = Vec::new();
     let mut incomplete = false;
+    let mut read_failed = false;
     let mut seen = HashSet::new();
     for path in paths {
         if path.len() > OBSERVATION_PATH_BYTE_CAP {
             incomplete = true;
+            read_failed = true;
             continue;
         }
         if !seen.insert(path.clone()) || is_harness_path(path) {
@@ -1035,13 +1090,20 @@ fn stamp_paths(
             break;
         }
         *path_budget -= 1;
-        match observe_file_identity(root, path, byte_budget) {
+        #[cfg(unix)]
+        let stamp = observe_identity_unix(root, path, byte_budget, true);
+        #[cfg(not(unix))]
+        let stamp = observe_file_identity(root, path, byte_budget);
+        match stamp {
             Some(stamp) => stamps.push(stamp),
-            None => incomplete = true,
+            None => {
+                incomplete = true;
+                read_failed = true;
+            }
         }
     }
     stamps.sort_by(|left, right| left.path.cmp(&right.path));
-    (stamps, incomplete)
+    (stamps, incomplete, read_failed)
 }
 
 /// Paths `git status` hides. `S` is skip-worktree, `h`/`s` is assume-unchanged.
@@ -1117,7 +1179,7 @@ pub(crate) fn observe_file_identity(
     }
     #[cfg(unix)]
     {
-        observe_identity_unix(root, relative, budget)
+        observe_identity_unix(root, relative, budget, false)
     }
     #[cfg(not(unix))]
     {
@@ -1161,6 +1223,8 @@ fn missing_identity(relative: &str) -> ContentStamp {
         present: false,
         len: 0,
         modified: 0,
+        changed: 0,
+        node: (0, 0),
         mode: 0,
         kind: 0,
         content_digest: None,
@@ -1324,11 +1388,17 @@ fn identity_from_stat(
         .ok()?
         .checked_mul(1_000_000_000)?
         .checked_add(u128::try_from(stat_subseconds(stat).0).ok()?)?;
+    let changed = u128::try_from(stat.st_ctime)
+        .ok()?
+        .checked_mul(1_000_000_000)?
+        .checked_add(u128::try_from(stat_subseconds(stat).1).ok()?)?;
     Some(ContentStamp {
         path: relative.to_string(),
         present: true,
         len: u64::try_from(stat.st_size).ok()?,
         modified,
+        changed,
+        node: (stat.st_dev as u64, stat.st_ino as u64),
         mode: stat.st_mode as u32,
         kind,
         content_digest: digest,
@@ -1336,7 +1406,12 @@ fn identity_from_stat(
 }
 
 #[cfg(unix)]
-fn observe_identity_unix(root: &Path, relative: &str, budget: &mut u64) -> Option<ContentStamp> {
+fn observe_identity_unix(
+    root: &Path,
+    relative: &str,
+    budget: &mut u64,
+    metadata_fallback: bool,
+) -> Option<ContentStamp> {
     use std::os::fd::AsRawFd;
     use std::os::unix::ffi::OsStrExt;
     let parts = relative_components(Path::new(relative))?;
@@ -1363,7 +1438,11 @@ fn observe_identity_unix(root: &Path, relative: &str, budget: &mut u64) -> Optio
             // Gate kind and declared size BEFORE open: a FIFO may block open
             // itself. O_NONBLOCK also closes a regular-file-to-FIFO race.
             if len > *budget {
-                return None;
+                // Keep no-follow metadata for candidate detection without
+                // inventing a content hash or spending the baseline budget.
+                return metadata_fallback
+                    .then(|| identity_from_stat(relative, &before, 0, None))
+                    .flatten();
             }
             let mut file = open_at(
                 &parent,
@@ -1587,9 +1666,8 @@ fn directory_entries(
 
 /// Paths present on both sides whose stat changed. A stable status line is
 /// not proof the file is unchanged.
-/// shortcut: a dirty path past FILE_WALK_CAP is not stamped, so a content-only
-/// edit there is absent from the delta; raise the stamp cap when that edit
-/// must be attributed.
+/// Metadata-only stamps include ctime and node identity. Missing stamps remain
+/// an explicit coverage gap in command_delta, never a complete empty delta.
 fn content_changes(before: &[ContentStamp], after: &[ContentStamp]) -> Vec<String> {
     let before_map: HashMap<&str, &ContentStamp> = before
         .iter()
@@ -1727,6 +1805,7 @@ async fn git_capture(root: &Path, args: &[&str]) -> GitCapture {
     let captured = tokio::time::timeout(GIT_QUERY_TIMEOUT, async {
         let mut child = match tokio::process::Command::new("git")
             .args(args)
+            .env("GIT_OPTIONAL_LOCKS", "0")
             .current_dir(root)
             .stdin(std::process::Stdio::null())
             .stdout(std::process::Stdio::piped())
@@ -2311,6 +2390,7 @@ pub(crate) fn snapshot_from_parts(
         stamps,
         stamps_incomplete,
         stamp_read_failed: stamps_incomplete,
+        hidden_index_budget: false,
         status_budget: false,
         git_worktree,
     }
@@ -2318,6 +2398,9 @@ pub(crate) fn snapshot_from_parts(
 
 #[cfg(test)]
 mod receipt_tests;
+
+#[cfg(all(test, unix))]
+mod bounded_stamp_tests;
 
 #[cfg(test)]
 mod tests;

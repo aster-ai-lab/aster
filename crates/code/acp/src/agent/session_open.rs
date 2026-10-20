@@ -281,8 +281,7 @@ impl A3sCodeAgent {
             session: Arc::new(session),
             workspace: setup.workspace,
             model_id: setup.model_id.to_string(),
-            posture: "default".to_string(),
-            denies: Vec::new(),
+            permissions: Arc::new(std::sync::Mutex::new(SessionPermissions::default())),
             asset_denies,
             host: setup.host,
             plugin_tools: Vec::new(),
@@ -355,14 +354,14 @@ impl A3sCodeAgent {
     /// changes have to replace that session in place.
     pub(super) async fn replace_core_session(
         &self,
-        current: &AgentSession,
+        current: &LiveSession,
         setup: SessionSetup<'_>,
     ) -> acp::Result<LiveSession> {
         self.ensure_core_agent().await?;
         let store_dir =
             Self::interactive_session_store_dir(self.launch.config.sessions_dir.as_deref());
         let mut options = self
-            .session_options_for(current.session_id(), &setup, &store_dir)
+            .session_options_for(current.session.session_id(), &setup, &store_dir)
             .await?;
         let agent_guard = self.core_agent.lock().await;
         let agent = agent_guard
@@ -373,15 +372,15 @@ impl A3sCodeAgent {
         }
         options = crate::harness_assemble::apply(options, setup.components)
             .map_err(|error| acp::Error::invalid_params().data(error))?;
-        let session = if let Some(store) = current.session_store() {
+        let session = if let Some(store) = current.session.session_store() {
             options = options.with_session_store(store);
             agent
-                .replace_session_async(current, options)
+                .replace_session_async(&current.session, options)
                 .await
                 .map_err(|error| acp::Error::internal_error().data(error.to_string()))?
         } else {
             // Nothing was persisted, so closing frees the id for a fresh session.
-            current.close().await;
+            current.session.close().await;
             agent
                 .session_async(setup.workspace.to_string_lossy().to_string(), Some(options))
                 .await
@@ -395,28 +394,29 @@ impl A3sCodeAgent {
             crate::engineering::register_scenarios(&session)
                 .map_err(|error| acp::Error::internal_error().data(error))?;
         }
-        let asset_denies = std::sync::Arc::new(std::sync::Mutex::new(Vec::new()));
-        if Self::attach_local_assets(&session, &setup.host, &asset_denies, self.document_bridge())?
-        {
-            session
-                .set_permission_policy(posture_policy("default", &[]))
-                .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
-        }
-        Ok(LiveSession {
+        let asset_denies = Arc::clone(&current.asset_denies);
+        Self::attach_local_assets(&session, &setup.host, &asset_denies, self.document_bridge())?;
+        let mut live = LiveSession {
             turn_started: std::sync::Mutex::new(None),
             session: Arc::new(session),
             workspace: setup.workspace,
             model_id: setup.model_id.to_string(),
-            posture: "default".to_string(),
-            denies: Vec::new(),
+            permissions: Arc::clone(&current.permissions),
             asset_denies,
             host: setup.host,
             plugin_tools: Vec::new(),
             components: setup.components.to_vec(),
-            turn_queue: Arc::new(TurnQueue::new()),
+            turn_queue: Arc::clone(&current.turn_queue),
             mcp_servers: setup.mcp_servers,
             active_prompt_id: std::sync::Mutex::new(None),
-        })
+        };
+        let posture = live
+            .permissions
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .posture;
+        live.set_posture(posture, Vec::new())?;
+        Ok(live)
     }
 
     /// Register `open_local_asset` when the tenant catalog is non-empty.

@@ -1,0 +1,69 @@
+
+Isolated old launcher case: test_actual_backend_result_takes_precedence_over_session_variables
+test_actual_backend_result_takes_precedence_over_session_variables (kylin_backend_before.KylinInputMethodTest) ... 
+======================================================================
+FAIL: test_actual_backend_result_takes_precedence_over_session_variables (kylin_backend_before.KylinInputMethodTest) (version='fcitx4')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/kylin_input_method.py", line 274, in test_actual_backend_result_takes_precedence_over_session_variables
+    self.assertEqual(x11["GTK_IM_MODULE"], "fcitx")
+AssertionError: '' != 'fcitx'
++ fcitx
+
+======================================================================
+FAIL: test_actual_backend_result_takes_precedence_over_session_variables (kylin_backend_before.KylinInputMethodTest) (version='fcitx5')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/kylin_input_method.py", line 274, in test_actual_backend_result_takes_precedence_over_session_variables
+    self.assertEqual(x11["GTK_IM_MODULE"], "fcitx")
+AssertionError: '' != 'fcitx'
++ fcitx
+
+----------------------------------------------------------------------
+Ran 1 test in 0.049s
+
+FAILED (failures=2)
+
+Isolated old launcher case: test_backend_probe_failure_and_unknown_output_do_not_guess_or_block_app
+test_backend_probe_failure_and_unknown_output_do_not_guess_or_block_app (kylin_backend_before.KylinInputMethodTest) ... 
+======================================================================
+FAIL: test_backend_probe_failure_and_unknown_output_do_not_guess_or_block_app (kylin_backend_before.KylinInputMethodTest) (note='backend-probe-failed')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/kylin_input_method.py", line 298, in test_backend_probe_failure_and_unknown_output_do_not_guess_or_block_app
+    self.assertIn(note, stderr)
+AssertionError: 'backend-probe-failed' not found in ''
+
+======================================================================
+FAIL: test_backend_probe_failure_and_unknown_output_do_not_guess_or_block_app (kylin_backend_before.KylinInputMethodTest) (note='invalid-backend-probe-output')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/kylin_input_method.py", line 298, in test_backend_probe_failure_and_unknown_output_do_not_guess_or_block_app
+    self.assertIn(note, stderr)
+AssertionError: 'invalid-backend-probe-output' not found in ''
+
+----------------------------------------------------------------------
+Ran 1 test in 0.016s
+
+FAILED (failures=2)
+
+Isolated old launcher case: test_child_fcitx_address_uses_only_the_filtered_session_bus
+test_child_fcitx_address_uses_only_the_filtered_session_bus (kylin_backend_before.KylinInputMethodTest) ... FAIL
+
+======================================================================
+FAIL: test_child_fcitx_address_uses_only_the_filtered_session_bus (kylin_backend_before.KylinInputMethodTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/kylin_input_method.py", line 304, in test_child_fcitx_address_uses_only_the_filtered_session_bus
+    self.assertEqual(child["FCITX_DBUS_ADDRESS"], session)
+AssertionError: 'unix:path=/fixture/unrelated-bus' != 'unix:path=/fixture/private-session-bus'
+- unix:path=/fixture/unrelated-bus
+?                    ^^ ^^   ^
++ unix:path=/fixture/private-session-bus
+?                    ^ ^^   ^^^^^^^^
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.008s
+
+FAILED (failures=1)

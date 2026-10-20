@@ -1,0 +1,53 @@
+kind: final-stage isolated negative control
+fixture: /aster/target/evaluations/kylin-ime-hardening/final-negatives/fixture/unpinned-bus/files
+harness: /aster/apps/work/scripts/kylin-flatpak/test-input-method.sh
+expected: protocol 8 pass; GTK phase 0 failure; exit 1
+
+new-success: PASS new=1 old=0 connected=1 focus=1 commit=1
+unknown-object: PASS new=1 old=1 connected=1 focus=1 commit=1
+unknown-method: PASS new=1 old=1 connected=1 focus=1 commit=1
+access-denied: PASS new=1 old=0 connected=0 focus=0 commit=0
+failed: PASS new=1 old=0 connected=0 focus=0 commit=0
+both-unknown-method: PASS new=1 old=1 connected=0 focus=0 commit=0
+cancelled: PASS new=1 old=0 connected=0 focus=0 commit=0
+no-reply: PASS new=1 old=0 connected=0 focus=0 commit=0
+kylin-ime: host-display (host DISPLAY=:100)
+GTK client DISPLAY=:100
+Observed Fcitx state: 0
+IME test timed out at phase 0; committed text: 
+==> /tmp/tmp.nISrZXwfcB/fcitx.log <==
+(INFO-19942 addon.c:151) Load Addon Config File:fcitx-remote-module.conf
+(INFO-19942 addon.c:151) Load Addon Config File:fcitx-spell.conf
+(INFO-19942 addon.c:151) Load Addon Config File:fcitx-unicode.conf
+(INFO-19942 addon.c:151) Load Addon Config File:fcitx-dbus.conf
+(INFO-19942 addon.c:151) Load Addon Config File:fcitx-freedesktop-notify.conf
+(INFO-19942 addon.c:151) Load Addon Config File:fcitx-ipc.conf
+(INFO-19942 addon.c:151) Load Addon Config File:fcitx-vk.conf
+(INFO-19942 addon.c:151) Load Addon Config File:fcitx-x11.conf
+(INFO-19942 addon.c:151) Load Addon Config File:fcitx-xim.conf
+(INFO-19942 addon.c:151) Load Addon Config File:fcitx-xkb.conf
+(INFO-19942 addon.c:151) Load Addon Config File:fcitx-xkbdbus.conf
+(INFO-19942 addon.c:151) Load Addon Config File:fcitx-pinyin-enhance.conf
+(INFO-19942 addon.c:151) Load Addon Config File:fcitx-pinyin.conf
+(INFO-19942 addon.c:151) Load Addon Config File:fcitx-classic-ui.conf
+(INFO-19942 addon.c:151) Load Addon Config File:fcitx-notificationitem.conf
+(ERROR-19942 ime.c:432) fcitx-keyboard-us already exists
+(WARN-19942 xim.c:161) Please set XMODIFIERS.
+=========================
+FCITX 4.2.9.9 -- Get Signal No.: 15
+Date: try "date -d @1792487403" if you are using GNU date ***
+ProcessID: 19942
+fcitx(+0x19ba)[0x5555555559ba]
+/lib/x86_64-linux-gnu/libc.so.6(+0x45330)[0x7fffff59d330]
+/lib/x86_64-linux-gnu/libc.so.6(__select+0x147)[0x7fffff67efa7]
+/lib/x86_64-linux-gnu/libfcitx-core.so.0(+0x1411c)[0x7fffff7af11c]
+/lib/x86_64-linux-gnu/libfcitx-core.so.0(FcitxInstanceRun+0x5f)[0x7fffff7af81f]
+fcitx(+0x14c7)[0x5555555554c7]
+/lib/x86_64-linux-gnu/libc.so.6(+0x2a1ca)[0x7fffff5821ca]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x8b)[0x7fffff58228b]
+fcitx(+0x1585)[0x555555555585]
+
+==> /tmp/tmp.nISrZXwfcB/proxy.log <==
+
+exit_status: 1
+checks: {"exit_status_1": true, "gtk_phase0_timeout": true, "no_gtk_pass": true, "no_protocol_failures": true, "protocol_pass_count_8": true}

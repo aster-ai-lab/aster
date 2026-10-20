@@ -1,0 +1,3 @@
+i18n 检查已通过（已校验 19468 条翻译）
+(node:81873) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)

@@ -1,0 +1,15 @@
+
+running 1 test
+test plugin_mcp::tests::failed_later_mcp_preparation_keeps_earlier_process_bytes_until_observed_rollback ... FAILED
+
+failures:
+
+failures:
+    plugin_mcp::tests::failed_later_mcp_preparation_keeps_earlier_process_bytes_until_observed_rollback
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 351 filtered out; finished in 3.43s
+
+
+thread 'plugin_mcp::tests::failed_later_mcp_preparation_keeps_earlier_process_bytes_until_observed_rollback' (51750585) panicked at crates/code/acp/src/plugin_mcp_tests.rs:607:10:
+called `Result::unwrap()` on an `Err` value: Os { code: 2, kind: NotFound, message: "No such file or directory" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

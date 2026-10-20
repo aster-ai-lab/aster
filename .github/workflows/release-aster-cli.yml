@@ -72,6 +72,10 @@ jobs:
             bin_dir="target/release"
           fi
           bash scripts/package-aster-cli.sh "${{ matrix.platform }}" "$bin_dir" "${{ matrix.asset }}"
+      - name: Verify Windows pair installation and rollback
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./tests/cli_pair_delivery.ps1 -Archive "${{ matrix.asset }}"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: aster-cli-${{ matrix.platform }}

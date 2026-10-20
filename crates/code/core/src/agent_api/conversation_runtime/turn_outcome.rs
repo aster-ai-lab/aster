@@ -214,7 +214,10 @@ pub(crate) fn gate_surface_result(
         }
         crate::harness_loop::CompletionGate::Incomplete { message }
         | crate::harness_loop::CompletionGate::Continue { message } => {
-            Err(anyhow::anyhow!(message))
+            match crate::harness_loop::ToolEffectUnresolved::from_ledger(&ledger) {
+                Some(error) => Err(error.into()),
+                None => Err(anyhow::anyhow!(message)),
+            }
         }
     }
 }

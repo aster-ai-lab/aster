@@ -33,6 +33,8 @@ jobs:
         run: cargo fmt --all -- --check
       - name: Internal dependency boundary
         run: python3 tests/workspace_dependencies.py
+      - name: CLI pair delivery
+        run: python3 tests/cli_pair_delivery.py
       - name: Desktop updater release boundary
         run: python3 tests/desktop_update.py
       - name: Kylin input method launcher

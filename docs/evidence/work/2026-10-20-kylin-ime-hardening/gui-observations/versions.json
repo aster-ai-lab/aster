@@ -1,0 +1,11 @@
+{
+  "application_commit": "d8477930b0cc4c2453e61425916fef9d13acadc26ed2e0f5ac9bde3f9757eb3c",
+  "app_binary_sha256": "f5f5d9326d253d114549d33e9dd3e62d92ae6c252133273c8418ee386dae075f",
+  "fcitx_client_sha256": "35c3cd304cbf72db8d263a4a73c9a81649f81a65e72370f4f7545370f4a6e110",
+  "flatpak_version": "Flatpak 1.6.5",
+  "modern_daemon": "fcitx version: 4.2.9.9",
+  "old_daemon_source_url": "https://download.fcitx-im.org/fcitx/fcitx-4.2.9.6.tar.xz",
+  "old_daemon_source_sha256": "d55eee3f094037b5c32f0c5397d585fdf932cbc7d2091ed6f78fd7a9ae512c47",
+  "old_daemon_binary_sha256": "14cfe3b3d4560f66c970ddbfa474b149292481a0554548ad597e1067a78e401a",
+  "old_daemon_version_caveat": "Official 4.2.9.6 archive keeps CMake project version 4.2.9.5; built executable reports 4.2.9.5. This is not a Kylin distribution binary."
+}

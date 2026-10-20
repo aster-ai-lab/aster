@@ -202,6 +202,8 @@ impl A3sCodeAgent {
                     generation,
                     turn_permit,
                     observation,
+                    None,
+                    None,
                 )
                 .await;
         }

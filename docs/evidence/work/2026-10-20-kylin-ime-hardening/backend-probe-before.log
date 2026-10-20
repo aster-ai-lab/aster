@@ -1,0 +1,39 @@
+s.......
+======================================================================
+FAIL: test_actual_backend_result_takes_precedence_over_session_variables (__main__.KylinInputMethodTest) (version='fcitx4')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/kylin_input_method.py", line 271, in test_actual_backend_result_takes_precedence_over_session_variables
+    self.assertEqual(x11["GTK_IM_MODULE"], "fcitx")
+AssertionError: '' != 'fcitx'
++ fcitx
+
+======================================================================
+FAIL: test_actual_backend_result_takes_precedence_over_session_variables (__main__.KylinInputMethodTest) (version='fcitx5')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/kylin_input_method.py", line 271, in test_actual_backend_result_takes_precedence_over_session_variables
+    self.assertEqual(x11["GTK_IM_MODULE"], "fcitx")
+AssertionError: '' != 'fcitx'
++ fcitx
+
+======================================================================
+FAIL: test_backend_probe_failure_and_unknown_output_do_not_guess_or_block_app (__main__.KylinInputMethodTest) (note='backend-probe-failed')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/kylin_input_method.py", line 295, in test_backend_probe_failure_and_unknown_output_do_not_guess_or_block_app
+    self.assertIn(note, stderr)
+AssertionError: 'backend-probe-failed' not found in ''
+
+======================================================================
+FAIL: test_backend_probe_failure_and_unknown_output_do_not_guess_or_block_app (__main__.KylinInputMethodTest) (note='invalid-backend-probe-output')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/kylin_input_method.py", line 295, in test_backend_probe_failure_and_unknown_output_do_not_guess_or_block_app
+    self.assertIn(note, stderr)
+AssertionError: 'invalid-backend-probe-output' not found in ''
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.251s
+
+FAILED (failures=4, skipped=1)

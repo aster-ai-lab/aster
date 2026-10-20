@@ -1,0 +1,12 @@
+$ ./node_modules/.bin/oxfmt --check src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx
+Checking formatting...
+
+All matched files use the correct format.
+Finished in 29ms on 1 files using 18 threads.
+exit: 0
+$ ./node_modules/.bin/oxlint --deny-warnings src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx
+exit: 0
+$ ./node_modules/.bin/eslint src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx
+exit: 0
+$ git diff --check -- src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx
+exit: 0

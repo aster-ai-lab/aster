@@ -420,9 +420,8 @@ impl MutationLedger {
         self.open_children.retain(|child| {
             !settled_workspace_children.contains(&format!("workspace-child:{}", child.task_id))
         });
-        self.unresolved_tool_effects.retain(|key| {
-            !key.starts_with("workspace-child:") || !settled_workspace_children.contains(key)
-        });
+        self.unresolved_tool_effects
+            .retain(|key| !settled_workspace_children.contains(key));
     }
 
     /// Compare cached claims, including uncertainty, with a projection made
@@ -682,12 +681,8 @@ impl MutationLedger {
         for change in &effects.changes {
             self.observe_receipt_path("background", &change.path, &change.after);
         }
-        if effects.completeness == a3s_effect::ToolObservationCompleteness::Incomplete
-            && !effects.budget_exceeded
-        {
-            self.unresolved_tool_effects
-                .insert(format!("background-receipt-incomplete:{fact_key}"));
-        }
+        // The caller validates the process terminal. File coverage belongs
+        // to the run scan, just as it does for a captured foreground exit.
         self.unresolved_tool_effects
             .extend(effects.unresolved_external_operations.iter().cloned());
     }
@@ -1370,6 +1365,21 @@ pub enum CompletionGate {
     },
 }
 
+/// Recovery requires evidence for these exact invocations in the same session.
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize, thiserror::Error)]
+#[error("tool_effect_unresolved: {count} invocation obligation(s) require identity-bound reconciliation; local scans, final text, and ordinary waivers cannot discharge them.", count = .obligation_ids.len())]
+pub struct ToolEffectUnresolved {
+    pub obligation_ids: Vec<String>,
+}
+
+impl ToolEffectUnresolved {
+    pub fn from_ledger(ledger: &MutationLedger) -> Option<Self> {
+        (!ledger.unresolved_tool_effects.is_empty()).then(|| Self {
+            obligation_ids: ledger.unresolved_tool_effects.iter().cloned().collect(),
+        })
+    }
+}
+
 pub fn decide_completion(
     ledger: &MutationLedger,
     reports: &[VerificationReport],
@@ -1386,12 +1396,9 @@ pub fn decide_with_observations(
     allow_continuation: bool,
     observations: &[crate::external_observation::ExternalObservationV1],
 ) -> CompletionGate {
-    if !ledger.unresolved_tool_effects.is_empty() {
+    if let Some(error) = ToolEffectUnresolved::from_ledger(ledger) {
         return CompletionGate::Incomplete {
-            message: format!(
-                "tool_effect_unresolved: {} invocation obligation(s) require identity-bound reconciliation; local scans, final text, and ordinary waivers cannot discharge them.",
-                ledger.unresolved_tool_effects.len()
-            ),
+            message: error.to_string(),
         };
     }
     let open = crate::external_observation::still_open(observations, waivers, ledger.digest());

@@ -155,14 +155,7 @@ pub(super) async fn emit_gated(
     cancellation: Option<&tokio_util::sync::CancellationToken>,
 ) {
     if let Err(error) = mapped {
-        send_host_event(
-            tx,
-            AgentEvent::Error {
-                message: error.to_string(),
-            },
-            cancellation,
-        )
-        .await;
+        send_host_event(tx, AgentEvent::execution_error(error), cancellation).await;
         return;
     }
     // Only the original sealed publication can authorize a successful End.

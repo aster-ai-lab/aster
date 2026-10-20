@@ -1,0 +1,27 @@
+[
+  {
+    "test": "document_read::run_tests::fresh_actual_runs_do_not_reuse_a_previous_pin_even_when_scope_addresses_repeat",
+    "exit_code": 101,
+    "log": "historical-acp-alone-0.log"
+  },
+  {
+    "test": "plugin_mcp::tests::timed_out_native_mcp_call_revokes_readiness_and_reaps_before_retirement",
+    "exit_code": 101,
+    "log": "historical-acp-alone-1.log"
+  },
+  {
+    "test": "plugin_mcp::tests::native_skill_and_real_stdio_mcp_stay_frozen_and_ready_processes_retain_their_package",
+    "exit_code": 0,
+    "log": "historical-acp-alone-2.log"
+  },
+  {
+    "test": "plugin_mcp::tests::failed_later_mcp_preparation_keeps_earlier_process_bytes_until_observed_rollback",
+    "exit_code": 0,
+    "log": "historical-acp-alone-3.log"
+  },
+  {
+    "test": "plugin_selection::tests::cancelled_actual_task_native_tool_settles_descendants_before_package_retirement",
+    "exit_code": 0,
+    "log": "historical-acp-alone-4.log"
+  }
+]

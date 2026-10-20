@@ -1,0 +1,52 @@
+FFFF.
+======================================================================
+FAIL: test_full_destination_refuses_despite_ample_temporary_volume (__main__.KylinInstallerSpaceTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/kylin_onefile.py", line 143, in test_full_destination_refuses_despite_ample_temporary_volume
+    self.assertNotEqual(result.returncode, 0)
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_small_temporary_volume_does_not_block_ample_destination (__main__.KylinInstallerSpaceTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/kylin_onefile.py", line 137, in test_small_temporary_volume_does_not_block_ample_destination
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 1 != 0 : 安装目录: /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-kylin-install-space-n9576_c0/extracted-payload
+gnome-platform-50.flatpak: OK
+gl-default-25.08.flatpak: OK
+dev.a3s.AsterDream.flatpak: OK
+flatpak: Flatpak 1.6.5
+错误: 磁盘剩余不足 3GB（当前约 1464MB），请清理后再装。
+
+
+======================================================================
+FAIL: test_uncreated_data_directory_checks_its_existing_parent (__main__.KylinInstallerSpaceTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/kylin_onefile.py", line 150, in test_uncreated_data_directory_checks_its_existing_parent
+    self.assertEqual(probes, [destination])
+AssertionError: Lists differ: ['.'] != ['/var/folders/3d/0pn3wn612t7cs79b5ml89x440[52 chars]ata']
+
+First differing element 0:
+'.'
+'/var/folders/3d/0pn3wn612t7cs79b5ml89x440[51 chars]data'
+
+- ['.']
++ ['/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-kylin-install-space-nkk7c8g3/desktop-data']
+
+======================================================================
+FAIL: test_insufficient_extraction_space_refuses_before_running_installer (__main__.KylinOnefileTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/kylin_onefile.py", line 84, in test_insufficient_extraction_space_refuses_before_running_installer
+    self.assertNotEqual(refused.returncode, 0, refused.stdout + refused.stderr)
+AssertionError: 0 == 0 : 正在准备安装文件，请稍候...
+开始安装...
+
+
+----------------------------------------------------------------------
+Ran 5 tests in 9.832s
+
+FAILED (failures=4)

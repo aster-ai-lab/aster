@@ -12,6 +12,7 @@ mod cache_provenance;
 mod execution_availability;
 mod native_artifact_scope;
 mod pre_spawn;
+mod readonly_effect;
 mod tool_budget;
 mod tool_budget_cancel;
 mod workspace_boundary;
@@ -225,6 +226,34 @@ fn durable_background_terminal_settles_only_its_exact_child() {
     assert_eq!(debt.background_results.len(), 1);
 }
 
+#[test]
+fn a_settled_background_observation_gap_is_not_an_unresolved_execution() {
+    for budget in [false, true] {
+        let mut facts = background_debt_fixture(false);
+        facts[2].payload["effects"]["completeness"] = json!("incomplete");
+        facts[2].payload["effects"]["reason"] = json!("fixture observation gap");
+        facts[2].payload["effects"]["budget_exceeded"] = json!(budget);
+        facts[2].payload["observation_incomplete"] = json!(!budget);
+        let debt = fold_debt(&facts);
+        assert!(!debt.integrity_invalid);
+        assert!(!debt.unresolved.contains("workspace-child:one"));
+        assert!(!debt
+            .unresolved
+            .contains("background-receipt-incomplete:bg:one:2"));
+        assert!(!debt.unresolved.contains("background-evidence:one"));
+        assert!(debt.unresolved.contains("workspace-child:two"));
+        let mut live = crate::harness_loop::MutationLedger::default();
+        live.observe_background_receipt(
+            "bg:one:2",
+            &serde_json::from_value(facts[2].payload["effects"].clone()).unwrap(),
+        );
+        assert!(!live.has_uncertain_tool_invocations());
+        facts[2].payload["disposition"] = json!("unknown");
+        let unknown = fold_debt(&facts);
+        assert!(unknown.unresolved.contains("workspace-child:one"));
+    }
+}
+
 fn background_debt_fixture(cancelled: bool) -> Vec<Fact> {
     let mut prepared = preparation("background");
     prepared.identity.admission = Some(ToolAdmissionIdentityV1 {
@@ -320,7 +349,6 @@ fn background_evidence_does_not_clear_wrong_run_or_incomplete_terminals() {
         ("source_run", json!("other-source")),
         ("run", json!("other-effect")),
         ("task_id", json!("other-task")),
-        ("observation_incomplete", json!(true)),
         ("output_facts_retained", json!(false)),
         ("process_settled", json!(false)),
         ("execution_future_released", json!(false)),
@@ -550,6 +578,9 @@ impl crate::tools::Tool for ReceiptProbe {
         }
         if args["write"] == true {
             std::fs::write(ctx.workspace.join("changed.txt"), "exact bytes")?;
+        }
+        if args["execution_error"] == true {
+            anyhow::bail!("execution error before a process started");
         }
         if args["cancel_context"] == true {
             ctx.cancellation_token().cancel();
@@ -1083,3 +1114,5 @@ fn recovery_seed_and_legacy_reset_preserve_the_authoritative_prefix() {
         .unresolved
         .contains(&prepared.identity.key().unwrap()));
 }
+
+mod batch_evidence;

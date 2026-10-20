@@ -1,0 +1,45 @@
+fcitx version: 4.2.9.5
+kylin-ime: host-display (host DISPLAY=:100)
+GTK client DISPLAY=:100
+Fcitx state ready for phase 0
+Chinese text committed through GTK: 你好
+Fcitx state ready for phase 2
+Fcitx state ready for phase 3
+PASS: Chinese commit, mixed English, Escape cancellation
+kylin-ime: flatpak-display (host DISPLAY=:100)
+GTK client DISPLAY=:99.0
+Observed Fcitx state: 0
+IME test timed out at phase 0; committed text: 
+==> /tmp/tmp.sB9CSHrkqF/fcitx.log <==
+(INFO-13519 addon.c:151) Load Addon Config File:fcitx-quickphrase.conf
+(INFO-13519 addon.c:151) Load Addon Config File:fcitx-chttrans.conf
+(INFO-13519 addon.c:151) Load Addon Config File:fcitx-punc.conf
+(INFO-13519 addon.c:151) Load Addon Config File:fcitx-ipcportal.conf
+(INFO-13519 addon.c:151) Load Addon Config File:fcitx-autoeng.conf
+(INFO-13519 addon.c:151) Load Addon Config File:fcitx-kimpanel-ui.conf
+(INFO-13519 addon.c:151) Load Addon Config File:fcitx-imselector.conf
+(INFO-13519 addon.c:151) Load Addon Config File:fcitx-keyboard.conf
+(INFO-13519 addon.c:151) Load Addon Config File:fcitx-ipc.conf
+(INFO-13519 addon.c:151) Load Addon Config File:fcitx-fullwidth-char.conf
+(INFO-13519 addon.c:151) Load Addon Config File:fcitx-clipboard.conf
+(INFO-13519 addon.c:151) Load Addon Config File:fcitx-pinyin.conf
+(INFO-13519 addon.c:151) Load Addon Config File:fcitx-notificationitem.conf
+(INFO-13519 addon.c:151) Load Addon Config File:fcitx-pinyin-enhance.conf
+(INFO-13519 addon.c:151) Load Addon Config File:fcitx-unicode.conf
+(INFO-13519 addon.c:151) Load Addon Config File:fcitx-remote-module.conf
+(INFO-13519 addon.c:151) Load Addon Config File:fcitx-freedesktop-notify.conf
+=========================
+FCITX 4.2.9.5 -- Get Signal No.: 15
+Date: try "date -d @1792486259" if you are using GNU date ***
+ProcessID: 13519
+/aster/target/evaluations/kylin-ime-native-review/install-4296/bin/fcitx(+0x191a)[0x55555555591a]
+/lib/x86_64-linux-gnu/libc.so.6(+0x45330)[0x7fffff598330]
+/lib/x86_64-linux-gnu/libc.so.6(__select+0xae)[0x7fffff679f0e]
+/aster/target/evaluations/kylin-ime-native-review/install-4296/lib/libfcitx-core.so.0(+0xb56a)[0x7fffff7a956a]
+/aster/target/evaluations/kylin-ime-native-review/install-4296/lib/libfcitx-core.so.0(FcitxInstanceRun+0x57)[0x7fffff7a9937]
+/aster/target/evaluations/kylin-ime-native-review/install-4296/bin/fcitx(+0x1432)[0x555555555432]
+/lib/x86_64-linux-gnu/libc.so.6(+0x2a1ca)[0x7fffff57d1ca]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x8b)[0x7fffff57d28b]
+/aster/target/evaluations/kylin-ime-native-review/install-4296/bin/fcitx(+0x14b5)[0x5555555554b5]
+
+==> /tmp/tmp.sB9CSHrkqF/proxy.log <==

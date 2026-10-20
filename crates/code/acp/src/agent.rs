@@ -23,6 +23,7 @@ mod host_methods;
 mod local_embedding;
 mod models;
 mod permission_ask;
+mod permission_state;
 mod resume;
 mod sampling;
 mod session_catalog;
@@ -52,6 +53,7 @@ use permission_ask::{
 use permission_ask::{
     permission_response_always, permission_response_approved, question_permission_options,
 };
+use permission_state::{PermissionPosture, ResearchGate, SessionPermissions};
 #[cfg(test)]
 use sampling::resolve_consent_session;
 use sampling::serve_sampling_consent;
@@ -225,9 +227,8 @@ struct LiveSession {
     session: Arc<AgentSession>,
     workspace: PathBuf,
     model_id: String,
-    /// Named next-run posture. Deny rules on this session still win.
-    posture: String,
-    denies: Vec<String>,
+    /// Desired next-run permission state, shared with temporary admission guards.
+    permissions: Arc<std::sync::Mutex<SessionPermissions>>,
     /// Same deny list `open_local_asset` reads while a turn is in flight.
     asset_denies: std::sync::Arc<std::sync::Mutex<Vec<String>>>,
     /// Standing Studio instructions admitted into the system prompt at build.
@@ -426,16 +427,6 @@ fn interactive_session_store_dir_from(
     PathBuf::from(".a3s").join("session-store")
 }
 
-fn canonical_posture(mode: &str) -> Option<&'static str> {
-    match mode.trim().to_ascii_lowercase().as_str() {
-        "default" => Some("default"),
-        "plan" => Some("plan"),
-        "auto" => Some("auto"),
-        "yolo" => Some("yolo"),
-        _ => None,
-    }
-}
-
 /// WC-NOTIFY1: whether a completed run owes the configured completion
 /// signal. Pure so the floor and the closed set stay pinnable without
 /// a terminal.
@@ -462,31 +453,18 @@ fn posture_policy(
     policy.allow("open_local_asset").allow("search_wiki")
 }
 
+#[cfg(test)]
 fn remember_denies(live: &mut LiveSession) {
-    let mut gate = live
+    let denies = live
+        .permissions
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner)
+        .denies
+        .clone();
+    *live
         .asset_denies
         .lock()
-        .unwrap_or_else(|poison| poison.into_inner());
-    *gate = live.denies.clone();
-}
-
-/// Restores the session posture if a read-only turn returns early.
-struct ResearchGate<'a> {
-    session: &'a AgentSession,
-    posture: &'a str,
-    denies: &'a [String],
-    armed: bool,
-}
-
-impl Drop for ResearchGate<'_> {
-    fn drop(&mut self) {
-        if !self.armed {
-            return;
-        }
-        let _ = self
-            .session
-            .set_permission_policy(posture_policy(self.posture, self.denies));
-    }
+        .unwrap_or_else(std::sync::PoisonError::into_inner) = denies;
 }
 
 /// ACP agent that owns live [`AgentSession`] values keyed by ACP session id.
@@ -849,10 +827,17 @@ impl A3sCodeAgent {
             prompt_tokens.saturating_add(completion_tokens)
         };
         let total = live.session.context_window_tokens() as u64;
+        let posture = live
+            .permissions
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .posture
+            .as_str()
+            .to_string();
         Some((
             live.workspace.display().to_string(),
             live.model_id.clone(),
-            live.posture.clone(),
+            posture,
             turns,
             used,
             total,
@@ -888,6 +873,7 @@ fn note_tool_row(painted: &mut HashSet<String>, id: &str) -> ToolRowPaint {
 struct TurnState {
     observer: Option<crate::run_observation::Observer>,
     turn_failure: Option<String>,
+    reconciliation: Option<a3s_code_core::harness_loop::ToolEffectUnresolved>,
     saw_text: bool,
     delta_text: String,
     end_text: Option<String>,
@@ -963,6 +949,7 @@ impl acp::Agent for A3sCodeAgent {
         &self,
         args: acp::NewSessionRequest,
     ) -> acp::Result<acp::NewSessionResponse> {
+        let posture = PermissionPosture::from_meta(args.meta.as_ref())?;
         let mut host = crate::host_context::studio_host_from_meta(args.meta.as_ref())
             .map_err(|error| acp::Error::invalid_params().data(error))?;
         if !args
@@ -1014,7 +1001,16 @@ impl acp::Agent for A3sCodeAgent {
                 false,
             )
             .await?;
-        let live = self.finish_plugin_tools(live, plugin_tools).await?;
+        let mut live = self.finish_plugin_tools(live, plugin_tools).await?;
+        if let Some(posture) = posture {
+            live.set_posture(posture, Vec::new())?;
+        }
+        let modes = live
+            .permissions
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .posture
+            .modes();
         let effort_token = self.effort.lock().await.map(|limits| limits.token);
         let models = self.model_state_with(&live.model_id, effort_token);
         let goal = match live.session.goal_definition() {
@@ -1043,6 +1039,7 @@ impl acp::Agent for A3sCodeAgent {
         self.announce_commands(&session_id);
         Ok(
             acp::NewSessionResponse::new(acp::SessionId::new(session_id))
+                .modes(modes)
                 .models(models)
                 .config_options(config_options),
         )
@@ -1052,6 +1049,7 @@ impl acp::Agent for A3sCodeAgent {
         &self,
         args: acp::LoadSessionRequest,
     ) -> acp::Result<acp::LoadSessionResponse> {
+        let posture = PermissionPosture::from_meta(args.meta.as_ref())?;
         let host = crate::host_context::studio_host_from_meta(args.meta.as_ref())
             .map_err(|error| acp::Error::invalid_params().data(error))?;
         self.validate_plugin_selection(args.meta.as_ref(), &args.mcp_servers)?;
@@ -1088,7 +1086,16 @@ impl acp::Agent for A3sCodeAgent {
                 true,
             )
             .await?;
-        let live = self.finish_plugin_tools(live, plugin_tools).await?;
+        let mut live = self.finish_plugin_tools(live, plugin_tools).await?;
+        if let Some(posture) = posture {
+            live.set_posture(posture, Vec::new())?;
+        }
+        let modes = live
+            .permissions
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .posture
+            .modes();
         let effort_token = self.effort.lock().await.map(|limits| limits.token);
         let models = self.model_state_with(&live.model_id, effort_token);
         let transcript = Arc::clone(&live.session);
@@ -1121,6 +1128,7 @@ impl acp::Agent for A3sCodeAgent {
         let config_options = Self::model_config_options(&models);
         self.announce_commands(&session_id);
         Ok(acp::LoadSessionResponse::new()
+            .modes(modes)
             .models(models)
             .config_options(config_options))
     }
@@ -1133,35 +1141,14 @@ impl acp::Agent for A3sCodeAgent {
         args: acp::SetSessionModeRequest,
     ) -> acp::Result<acp::SetSessionModeResponse> {
         let session_key = args.session_id.0.to_string();
-        let mode_id = args.mode_id.0.to_string();
-        let named = canonical_posture(&mode_id);
-        let (session, posture, denies) = {
-            let mut sessions = self.sessions.lock().await;
-            let live = sessions
-                .get_mut(&session_key)
-                .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?;
-            if let Some(name) = named {
-                live.posture = name.to_string();
-            }
-            (
-                Arc::clone(&live.session),
-                live.posture.clone(),
-                live.denies.clone(),
-            )
-        };
-        if named.is_some() {
-            session
-                .set_permission_policy(posture_policy(&posture, &denies))
-                .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
-        }
-        let planning = if mode_id.eq_ignore_ascii_case("plan") {
-            a3s_code_core::PlanningMode::Enabled
-        } else {
-            a3s_code_core::PlanningMode::Disabled
-        };
-        session
-            .set_planning_mode(planning)
-            .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
+        let posture = PermissionPosture::parse(args.mode_id.0.as_ref())?;
+        self.sessions
+            .lock()
+            .await
+            .get_mut(&session_key)
+            .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?
+            .set_posture(posture, Vec::new())?;
+        self.emit_permission_mode(args.session_id, posture).await;
         Ok(acp::SetSessionModeResponse::new())
     }
 
@@ -1177,59 +1164,42 @@ impl acp::Agent for A3sCodeAgent {
         let effort = models::selected_effort(args.meta.as_ref(), *self.effort.lock().await)?;
 
         let session_key = args.session_id.0.to_string();
-        let existing = {
-            let sessions = self.sessions.lock().await;
-            sessions.get(&session_key).map(|live| {
-                (
-                    Arc::clone(&live.session),
-                    live.workspace.clone(),
-                    live.host.clone(),
-                    live.plugin_tools.clone(),
-                    live.components.clone(),
-                    // Carried into the rebuilt session: the recorded set is
-                    // this session's contribution to the global union, and
-                    // dropping it here would let the next sync evict this
-                    // session's servers while it stays live.
-                    live.mcp_servers.clone(),
-                )
-            })
-        };
-
-        let live = if let Some((current, workspace, host, plugin_tools, components, mcp_servers)) =
-            existing
+        let turn_queue = self
+            .sessions
+            .lock()
+            .await
+            .get(&session_key)
+            .map(|live| Arc::clone(&live.turn_queue))
+            .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?;
+        let _turn_permit = turn_queue
+            .acquire_owned()
+            .await
+            .ok_or_else(|| acp::Error::invalid_params().data("session operation queue is full"))?;
+        // Keep permission updates and replacement in one commit. Queued turns
+        // look the session up again after acquiring this same queue.
         {
+            let mut sessions = self.sessions.lock().await;
+            let current = sessions
+                .get(&session_key)
+                .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?;
             let live = self
                 .replace_core_session(
-                    &current,
+                    current,
                     SessionSetup {
-                        workspace,
+                        workspace: current.workspace.clone(),
                         model_id: &model_id,
                         effort,
-                        host,
-                        components: &components,
-                        mcp_servers,
+                        host: current.host.clone(),
+                        components: &current.components,
+                        mcp_servers: current.mcp_servers.clone(),
                     },
                 )
                 .await?;
-            self.finish_plugin_tools(live, plugin_tools).await?
-        } else {
-            let components = crate::harness_assemble::components_from_meta(None)
-                .map_err(|error| acp::Error::invalid_params().data(error))?;
-            self.open_core_session(
-                &session_key,
-                SessionSetup {
-                    workspace: self.launch.workspace.clone(),
-                    model_id: &model_id,
-                    effort,
-                    host: crate::host_context::StudioHost::default(),
-                    components: &components,
-                    mcp_servers: Vec::new(),
-                },
-                false,
-            )
-            .await?
-        };
-        self.sessions.lock().await.insert(session_key.clone(), live);
+            let live = self
+                .finish_plugin_tools(live, current.plugin_tools.clone())
+                .await?;
+            sessions.insert(session_key.clone(), live);
+        }
         self.reapply_active_goal(&session_key).await;
         *self.model_id.lock().await = model_id;
         *self.effort.lock().await = effort;
@@ -1265,24 +1235,16 @@ impl acp::Agent for A3sCodeAgent {
 
     async fn prompt(&self, args: acp::PromptRequest) -> acp::Result<acp::PromptResponse> {
         tracing::info!(target: "perf_probe", "prompt_enter");
+        let requested_posture = PermissionPosture::from_meta(args.meta.as_ref())?;
         let session_key = args.session_id.0.to_string();
         let turn_started = std::time::Instant::now();
-        let (session, turn_queue, posture, denies) = {
-            let sessions = self.sessions.lock().await;
-            let live = sessions
-                .get(&session_key)
-                .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?;
-            *live
-                .turn_started
-                .lock()
-                .unwrap_or_else(std::sync::PoisonError::into_inner) = Some(turn_started);
-            (
-                Arc::clone(&live.session),
-                Arc::clone(&live.turn_queue),
-                live.posture.clone(),
-                live.denies.clone(),
-            )
-        };
+        let turn_queue = self
+            .sessions
+            .lock()
+            .await
+            .get(&session_key)
+            .map(|live| Arc::clone(&live.turn_queue))
+            .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?;
 
         let prompt = Self::prompt_text(&args.prompt);
         if prompt.trim().is_empty() {
@@ -1305,6 +1267,16 @@ impl acp::Agent for A3sCodeAgent {
                 )));
             }
         };
+        let session = {
+            let mut sessions = self.sessions.lock().await;
+            let live = sessions
+                .get_mut(&session_key)
+                .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?;
+            if let Some(posture) = requested_posture {
+                live.set_posture(posture, Vec::new())?;
+            }
+            Arc::clone(&live.session)
+        };
         let generation = {
             let mut generations = self.turn_generation.lock().await;
             let slot = generations.entry(session_key.clone()).or_insert(0);
@@ -1322,9 +1294,17 @@ impl acp::Agent for A3sCodeAgent {
             .map(str::to_string);
         if let Some(live) = self.sessions.lock().await.get(&session_key) {
             *live
+                .turn_started
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner) = Some(turn_started);
+            *live
                 .active_prompt_id
                 .lock()
                 .unwrap_or_else(|p| p.into_inner()) = client_prompt_id.clone();
+        }
+        if let Some(posture) = requested_posture {
+            self.emit_permission_mode(args.session_id.clone(), posture)
+                .await;
         }
         if let Some(unattended) = &self.unattended {
             // A task that starts with `/goal` is task text, not a goal command.
@@ -1376,53 +1356,26 @@ impl acp::Agent for A3sCodeAgent {
             }
             let prompt = crate::goal::standing_goal_prompt(goal.as_ref(), &prompt);
             let prompt = crate::host_context::apply_turn_directives(&prompt, &turn);
-            let mut gate = ResearchGate {
-                session: &session,
-                posture: &posture,
-                denies: &denies,
-                armed: false,
-            };
-            // Steps-first uses the same one-turn read-only policy. The stored mode stays.
-            let mut response = if turn.research || turn.plan_first {
-                match session.set_permission_policy(crate::host_context::research_policy(&denies)) {
-                    Ok(()) => {
-                        gate.armed = true;
-                        self.stream_turn(
-                            &args.session_id,
-                            &session,
-                            &prompt,
-                            generation,
-                            turn_permit,
-                            observation.as_ref(),
-                        )
-                        .await
-                    }
-                    Err(error) => {
-                        drop(turn_permit);
-                        Err(acp::Error::internal_error().data(error.to_string()))
-                    }
-                }
+            let gate = if turn.research || turn.plan_first {
+                let sessions = self.sessions.lock().await;
+                let live = sessions
+                    .get(&session_key)
+                    .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?;
+                Some(ResearchGate::enter(live)?)
             } else {
-                self.stream_turn(
-                    &args.session_id,
-                    &session,
-                    &prompt,
-                    generation,
-                    turn_permit,
-                    observation.as_ref(),
-                )
-                .await
+                None
             };
-            if gate.armed {
-                match session.set_permission_policy(posture_policy(&posture, &denies)) {
-                    Ok(()) => gate.armed = false,
-                    Err(error) if response.is_ok() => {
-                        response = Err(acp::Error::internal_error().data(error.to_string()));
-                    }
-                    Err(_) => {}
-                }
-            }
-            response
+            self.stream_turn(
+                &args.session_id,
+                &session,
+                &prompt,
+                generation,
+                turn_permit,
+                observation.as_ref(),
+                gate,
+                requested_posture,
+            )
+            .await
         };
         tracing::info!(target: "perf_probe", "prompt_return");
         self.finish_prompt(&session_key, generation, response).await
@@ -1530,3 +1483,7 @@ mod document_read_agent_tests;
 #[cfg(test)]
 #[path = "run_observation_agent_tests.rs"]
 mod run_observation_agent_tests;
+
+#[cfg(test)]
+#[path = "agent/permission_state_tests.rs"]
+mod permission_state_tests;

@@ -19,3 +19,35 @@ Metadata Written: 4
 Content Total: 2968
 Content Written: 1
 Content Bytes Written: 79672672 (79.7?MB)
+kylin-bundle dist/kylin/v012-ime/dev.a3s.AsterDream.flatpak
+-rw-r--r-- 1 root root 135M Oct 20 07:57 dist/kylin/v012-ime/dev.a3s.AsterDream.flatpak
+
+(flatpak build-import-bundle:8378): GLib-CRITICAL **: 07:57:30.221: g_str_has_prefix: assertion 'str != NULL' failed
+
+(flatpak build-import-bundle:8378): OSTree-CRITICAL **: 07:57:30.222: _ostree_repo_get_remote: assertion 'name != NULL' failed
+
+(flatpak build-import-bundle:8378): GLib-CRITICAL **: 07:57:30.222: g_propagate_error: assertion 'src != NULL' failed
+
+(flatpak build-import-bundle:8416): GLib-CRITICAL **: 07:58:10.448: g_str_has_prefix: assertion 'str != NULL' failed
+
+(flatpak build-import-bundle:8416): OSTree-CRITICAL **: 07:58:10.449: _ostree_repo_get_remote: assertion 'name != NULL' failed
+
+(flatpak build-import-bundle:8416): GLib-CRITICAL **: 07:58:10.449: g_propagate_error: assertion 'src != NULL' failed
+
+(flatpak build-import-bundle:8438): GLib-CRITICAL **: 07:58:25.546: g_str_has_prefix: assertion 'str != NULL' failed
+
+(flatpak build-import-bundle:8438): OSTree-CRITICAL **: 07:58:25.548: _ostree_repo_get_remote: assertion 'name != NULL' failed
+
+(flatpak build-import-bundle:8438): GLib-CRITICAL **: 07:58:25.548: g_propagate_error: assertion 'src != NULL' failed
+kylin-ship dist/kylin/v012-ime/ship
+total 506M
+-rw-rw-rw- 1 root root  21K Oct 20 07:58 SHA256SUMS
+-rw-r--r-- 1 root root 135M Oct 20 07:57 dev.a3s.AsterDream.flatpak
+-rw-rw-rw- 1 root root   65 Oct 20 07:58 dev.a3s.AsterDream.flatpak.commit
+-rw-r--r-- 1 root root  93M Oct 20 07:57 gl-default-25.08.flatpak
+-rw-rw-rw- 1 root root   65 Oct 20 07:58 gl-default-25.08.flatpak.commit
+-rw-r--r-- 1 root root 279M Oct 20 07:57 gnome-platform-50.flatpak
+-rw-rw-rw- 1 root root   65 Oct 20 07:58 gnome-platform-50.flatpak.commit
+-rwxr-xr-x 1 root root 9.7K Oct 20 07:57 install-on-kylin.sh
+drwxr-xr-x 1 root root 5.1K Oct 19 21:56 offline-flatpak
+-rw-r--r-- 1 root root 2.8K Oct 20 07:57 安装说明.txt

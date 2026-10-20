@@ -153,10 +153,70 @@ if [[ ! -f "$src_aster" || ! -f "$src_acp" ]]; then
   exit 1
 fi
 
+# The archive contains a closed two-file checksum set and one source identity.
+[[ -f "$unpack/BUILD_ID" && -f "$unpack/SHA256SUMS" ]] || {
+  echo "error: release is missing paired build identity or checksums" >&2; exit 1;
+}
+sha256_file() {
+  if command -v sha256sum >/dev/null 2>&1; then sha256sum "$1";
+  else shasum -a 256 "$1"; fi
+}
+name_aster="${src_aster##*/}"
+name_acp="${src_acp##*/}"
+expected_sums="$(cd "$unpack" && sha256_file "$name_aster" && sha256_file "$name_acp")"
+[[ "$(cat "$unpack/SHA256SUMS")" == "$expected_sums" ]] || {
+  echo "error: paired binary checksum mismatch" >&2; exit 1;
+}
+chmod 755 "$src_aster" "$src_acp"
+identity="$(cat "$unpack/BUILD_ID")"
+[[ "$identity" == aster-cli-pair-v1:* && "$identity" == "$("$src_aster" --build-id)" && "$identity" == "$("$src_acp" --build-id)" ]] || {
+  echo "error: paired binary source identity mismatch" >&2; exit 1;
+}
+
 mkdir -p "$prefix"
-cp -f "$src_aster" "$dest_aster"
-cp -f "$src_acp" "$dest_acp"
-chmod 755 "$dest_aster" "$dest_acp"
+if [[ -d "$dest_aster" || -d "$dest_acp" ]]; then
+  echo "error: binary destination is a directory" >&2; exit 1;
+fi
+lock="${prefix}/.aster-install.lock"
+mkdir "$lock" || { echo "error: another pair installation needs to finish" >&2; exit 1; }
+stage="$(mktemp -d "${prefix}/.aster-install.XXXXXX")" || { rmdir "$lock"; exit 1; }
+promoted_aster=0
+promoted_acp=0
+installed=0
+cleanup_pair() {
+  local status=$?
+  local recovered=1
+  if [[ "$installed" == 0 ]]; then
+    if [[ "$promoted_aster" == 1 ]]; then
+      if [[ -e "$stage/old-aster" || -L "$stage/old-aster" ]]; then mv -f "$stage/old-aster" "$dest_aster" || recovered=0; else rm -f "$dest_aster" || recovered=0; fi
+    fi
+    if [[ "$promoted_acp" == 1 ]]; then
+      if [[ -e "$stage/old-acp" || -L "$stage/old-acp" ]]; then mv -f "$stage/old-acp" "$dest_acp" || recovered=0; else rm -f "$dest_acp" || recovered=0; fi
+    fi
+  fi
+  if [[ "$recovered" == 0 ]]; then
+    echo "error: pair recovery needs attention; backup retained at $stage" >&2
+    rm -rf "$work"
+    return 1
+  fi
+  rm -rf "$stage" "$work"
+  rmdir "$lock"
+  return "$status"
+}
+trap cleanup_pair EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+cp -f "$src_aster" "$stage/new-aster"
+cp -f "$src_acp" "$stage/new-acp"
+chmod 755 "$stage/new-aster" "$stage/new-acp"
+[[ ! -e "$dest_aster" && ! -L "$dest_aster" ]] || cp -Pp "$dest_aster" "$stage/old-aster"
+[[ ! -e "$dest_acp" && ! -L "$dest_acp" ]] || cp -Pp "$dest_acp" "$stage/old-acp"
+mv -f "$stage/new-aster" "$dest_aster"
+promoted_aster=1
+# shortcut: two renames cannot survive every power loss; use one version-directory pointer when crash-atomic upgrades are required.
+mv -f "$stage/new-acp" "$dest_acp"
+promoted_acp=1
+installed=1
 if [[ "$platform" == "macos" ]] && command -v xattr >/dev/null 2>&1; then
   xattr -d com.apple.quarantine "$dest_aster" 2>/dev/null || true
   xattr -d com.apple.quarantine "$dest_acp" 2>/dev/null || true

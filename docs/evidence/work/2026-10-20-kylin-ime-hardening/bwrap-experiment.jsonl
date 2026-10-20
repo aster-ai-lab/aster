@@ -1,0 +1,20 @@
+{"removed_only_seccomp_fds": [], "retained_argument_count": 4}
+{"removed_only_seccomp_fds": ["17"], "retained_argument_count": 4}
+{"removed_only_seccomp_fds": [], "retained_argument_count": 4}
+{"removed_only_seccomp_fds": ["17"], "retained_argument_count": 3}
+{"removed_only_seccomp_fds": [], "retained_argument_count": 4}
+{"removed_only_seccomp_fds": ["17"], "retained_argument_count": 4}
+{"removed_only_seccomp_fds": [], "retained_argument_count": 4}
+{"removed_only_seccomp_fds": ["17"], "retained_argument_count": 3}
+{"removed_only_seccomp_fds": [], "retained_argument_count": 4}
+{"removed_only_seccomp_fds": ["17"], "retained_argument_count": 4}
+{"removed_only_seccomp_fds": [], "retained_argument_count": 4}
+{"removed_only_seccomp_fds": ["17"], "retained_argument_count": 3}
+{"removed_only_seccomp_fds": [], "all_other_semantic_arguments_identical": true, "original_argument_count": 83, "forwarded_argument_count": 83, "x11_socket_binds": [], "wrapper_environment_DISPLAY": ":120"}
+{"removed_only_seccomp_fds": ["17"], "all_other_semantic_arguments_identical": true, "original_argument_count": 403, "forwarded_argument_count": 401, "x11_socket_binds": [["--ro-bind", "/tmp/.X11-unix/X120", "/tmp/.X11-unix/X99"]], "wrapper_environment_DISPLAY": null}
+{"removed_only_seccomp_fds": [], "all_other_semantic_arguments_identical": true, "original_argument_count": 83, "forwarded_argument_count": 83, "x11_socket_binds": [], "wrapper_environment_DISPLAY": ":120"}
+{"removed_only_seccomp_fds": ["17"], "all_other_semantic_arguments_identical": true, "original_argument_count": 405, "forwarded_argument_count": 403, "x11_socket_binds": [["--ro-bind", "/tmp/.X11-unix/X120", "/tmp/.X11-unix/X99"]], "wrapper_environment_DISPLAY": null}
+{"removed_only_seccomp_fds": [], "all_other_semantic_arguments_identical": true, "original_argument_count": 83, "forwarded_argument_count": 83, "x11_socket_binds": [], "wrapper_environment_DISPLAY": ":120"}
+{"removed_only_seccomp_fds": ["17"], "all_other_semantic_arguments_identical": true, "original_argument_count": 403, "forwarded_argument_count": 401, "x11_socket_binds": [["--ro-bind", "/tmp/.X11-unix/X120", "/tmp/.X11-unix/X99"]], "wrapper_environment_DISPLAY": null}
+{"removed_only_seccomp_fds": [], "all_other_semantic_arguments_identical": true, "original_argument_count": 83, "forwarded_argument_count": 83, "x11_socket_binds": [], "wrapper_environment_DISPLAY": ":120"}
+{"removed_only_seccomp_fds": ["17"], "all_other_semantic_arguments_identical": true, "original_argument_count": 405, "forwarded_argument_count": 403, "x11_socket_binds": [["--ro-bind", "/tmp/.X11-unix/X120", "/tmp/.X11-unix/X99"]], "wrapper_environment_DISPLAY": null}

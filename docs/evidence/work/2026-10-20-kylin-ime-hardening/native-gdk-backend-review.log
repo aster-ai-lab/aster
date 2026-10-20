@@ -1,0 +1,12 @@
+Case: GDK_BACKEND=x11; WAYLAND_DISPLAY=absent-review-socket
+
+(gdk-backend-probe:4319): dbind-WARNING **: 08:47:32.033: AT-SPI: Error retrieving accessibility bus address: org.freedesktop.DBus.Error.ServiceUnknown: The name org.a11y.Bus was not provided by any .service files
+GTK=3.24.41 backend=GdkX11Display GTK_IM_MODULE=fcitx
+Case: GDK_BACKEND=x11,wayland; WAYLAND_DISPLAY=absent-review-socket
+
+(gdk-backend-probe:4342): dbind-WARNING **: 08:47:32.553: AT-SPI: Error retrieving accessibility bus address: org.freedesktop.DBus.Error.ServiceUnknown: The name org.a11y.Bus was not provided by any .service files
+GTK=3.24.41 backend=GdkX11Display GTK_IM_MODULE=<unset>
+Case: GDK_BACKEND=wayland,x11; WAYLAND_DISPLAY=absent-review-socket
+
+(gdk-backend-probe:4363): dbind-WARNING **: 08:47:33.075: AT-SPI: Error retrieving accessibility bus address: org.freedesktop.DBus.Error.ServiceUnknown: The name org.a11y.Bus was not provided by any .service files
+GTK=3.24.41 backend=GdkX11Display GTK_IM_MODULE=<unset>

@@ -41,9 +41,11 @@ async fn opted_in_agent_registers_reader_on_open_and_replacement_only() {
                 .any(|name| name == "studio_document_read"),
             enabled
         );
+        let sessions = agent.sessions.lock().await;
+        let current = sessions.get(opened.session_id.0.as_ref()).unwrap();
         let replaced = agent
             .replace_core_session(
-                &session,
+                current,
                 SessionSetup {
                     workspace: workspace.clone(),
                     model_id: &model,
@@ -55,6 +57,7 @@ async fn opted_in_agent_registers_reader_on_open_and_replacement_only() {
             )
             .await
             .unwrap();
+        drop(sessions);
         let replaced = agent.finish_plugin_tools(replaced, vec![]).await.unwrap();
         assert_eq!(
             replaced

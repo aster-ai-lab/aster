@@ -1294,6 +1294,7 @@ pub(crate) fn execute(
         } => {
             let tx = acp_tx.clone();
             let screen_mode = session_flags.screen_mode_label;
+            let permission_posture = session_flags.permission_posture();
             let is_api_key_auth = session_flags.is_api_key_auth;
             tasks
                 .spawn(async move {
@@ -1312,7 +1313,7 @@ pub(crate) fn execute(
                     let prompt = vec![plain_prompt_content_block(text, &skill_token_ranges)];
                     let req = acp::PromptRequest::new(session_id.clone(), prompt)
                         .meta(
-                            prompt_request_meta(&prompt_id, screen_mode)
+                            prompt_request_meta(&prompt_id, screen_mode, permission_posture)
                                 .as_object()
                                 .cloned(),
                         );
@@ -1353,11 +1354,12 @@ pub(crate) fn execute(
         } => {
             let tx = acp_tx.clone();
             let screen_mode = session_flags.screen_mode_label;
+            let permission_posture = session_flags.permission_posture();
             let is_api_key_auth = session_flags.is_api_key_auth;
             tasks
                 .spawn(async move {
                     let prompt = vec![acp::ContentBlock::Text(acp::TextContent::new(String::new()))];
-                    let mut meta = prompt_request_meta(&prompt_id, screen_mode);
+                    let mut meta = prompt_request_meta(&prompt_id, screen_mode, permission_posture);
                     if let Some(map) = meta.as_object_mut() {
                         let mut execute_plan = serde_json::Map::new();
                         execute_plan
@@ -1401,6 +1403,7 @@ pub(crate) fn execute(
             let send_now = effect_is_send_now;
             let tx = acp_tx.clone();
             let screen_mode = session_flags.screen_mode_label;
+            let permission_posture = session_flags.permission_posture();
             let is_api_key_auth = session_flags.is_api_key_auth;
             tasks
                 .spawn(async move {
@@ -1416,7 +1419,7 @@ pub(crate) fn execute(
                         ),
                     );
                     let send_start = std::time::Instant::now();
-                    let mut meta = prompt_request_meta(&prompt_id, screen_mode);
+                    let mut meta = prompt_request_meta(&prompt_id, screen_mode, permission_posture);
                     if send_now && let Some(map) = meta.as_object_mut() {
                         map.insert("sendNow".into(), serde_json::Value::Bool(true));
                     }
@@ -1463,6 +1466,7 @@ pub(crate) fn execute(
         Effect::SendBashCommand { agent_id, session_id, command, prompt_id } => {
             let tx = acp_tx.clone();
             let screen_mode = session_flags.screen_mode_label;
+            let permission_posture = session_flags.permission_posture();
             let is_api_key_auth = session_flags.is_api_key_auth;
             tasks
                 .spawn(async move {
@@ -1490,7 +1494,7 @@ pub(crate) fn execute(
                 )];
                     let req = acp::PromptRequest::new(session_id.clone(), prompt)
                         .meta(
-                            prompt_request_meta(&prompt_id, screen_mode)
+                            prompt_request_meta(&prompt_id, screen_mode, permission_posture)
                                 .as_object()
                                 .cloned(),
                         );
@@ -1768,6 +1772,7 @@ pub(crate) fn execute(
         } => {
             let tx = acp_tx.clone();
             let screen_mode = session_flags.screen_mode_label;
+            let permission_posture = session_flags.permission_posture();
             let is_api_key_auth = session_flags.is_api_key_auth;
             tasks
                 .spawn(async move {
@@ -1777,6 +1782,10 @@ pub(crate) fn execute(
                     );
                     if let Err(e) = acp_send(mode_req, &tx).await {
                         tracing::warn!("Failed to set session mode: {e}");
+                        return TaskResult::ModeSwitchPromptFailed {
+                            agent_id, session_id, prompt_id, text,
+                            error: format_acp_error(&e, is_api_key_auth),
+                        };
                     }
                     ulog::info(
                         "prompt submitted",
@@ -1786,7 +1795,7 @@ pub(crate) fn execute(
                     let prompt = vec![plain_prompt_content_block(text, &skill_token_ranges)];
                     let req = acp::PromptRequest::new(session_id.clone(), prompt)
                         .meta(
-                            prompt_request_meta(&prompt_id, screen_mode)
+                            prompt_request_meta(&prompt_id, screen_mode, permission_posture)
                                 .as_object()
                                 .cloned(),
                         );
@@ -2333,6 +2342,7 @@ pub(crate) fn execute(
                         canonical,
                         session_id,
                         persist,
+                        session_flags.permission_posture(),
                         tx,
                     ),
                 );
@@ -5517,11 +5527,15 @@ fn plain_prompt_content_block(
 fn prompt_request_meta(
     prompt_id: &str,
     screen_mode: Option<&'static str>,
+    permission_posture: Option<&'static str>,
 ) -> serde_json::Value {
     let mut map = serde_json::Map::new();
     map.insert("promptId".into(), serde_json::Value::String(prompt_id.into()));
     if let Some(mode) = screen_mode {
         map.insert("screenMode".into(), serde_json::Value::String(mode.into()));
+    }
+    if let Some(posture) = permission_posture {
+        map.insert("permissionPosture".into(), posture.into());
     }
     serde_json::Value::Object(map)
 }

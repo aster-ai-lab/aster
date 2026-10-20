@@ -1,0 +1,655 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:63924) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/local-product-scope.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-local-product-scope.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/work
+
+ ❯ |renderer| src/renderer/components/QuickPanel/__tests__/view.test.tsx (55 tests | 4 failed) 484ms
+   ❯ QuickPanelView (55)
+     × leaves IME Escape untouched in the global capture handler 28ms
+     × does not select or navigate the panel on IME Enter 7ms
+     × does not select or navigate the panel on IME Tab 6ms
+     × does not select or navigate the panel on IME ArrowDown 6ms
+ ❯ |renderer| src/renderer/components/composer/__tests__/ComposerToken.test.tsx (59 tests | 2 failed) 690ms
+   ❯ ComposerToken (58)
+     × keeps IME Enter from finishing prompt-variable editing 5ms
+     × keeps IME Tab from finishing prompt-variable editing 2ms
+ ❯ |renderer| src/renderer/components/composer/variants/__tests__/AskUserQuestionComposer.test.tsx (17 tests | 1 failed) 463ms
+   ❯ AskUserQuestionComposer (17)
+     × keeps IME confirmation separate from submitting a custom answer 50ms
+ ❯ |renderer| src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx (28 tests | 4 failed) 616ms
+   ❯ PermissionRequestComposer (28)
+     × leaves IME Enter in the note to the input method 15ms
+     × leaves IME Escape in the note to the input method 13ms
+     × ignores a legacy IME Enter in the global permission hotkey 2ms
+     × ignores a legacy IME Escape in the global permission hotkey 2ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 11 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/components/QuickPanel/__tests__/view.test.tsx > QuickPanelView > leaves IME Escape untouched in the global capture handler
+AssertionError: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array [
+      Object {
+        "action": "esc",
+        "context": Object {
+          "afterAction": undefined,
+          "beforeAction": undefined,
+          "close": [Function anonymous],
+          "consumeQueryOnDismiss": false,
+          "defaultIndex": -1,
+          "dispatchKeyDown": [Function anonymous],
+          "fillToAvailableHeight": false,
+          "filterFn": undefined,
+          "footerActions": Array [],
+          "getPanelGeneration": [Function anonymous],
+          "initialSearchText": undefined,
+          "isVisible": true,
+          "lastCloseAction": undefined,
+          "list": Array [
+            Object {
+              "icon": null,
+              "id": "action",
+              "label": "Action",
+            },
+          ],
+          "manageListExternally": false,
+          "multiple": false,
+          "onClose": [Function Mock],
+          "open": [Function anonymous],
+          "pageSize": 7,
+          "parentPanel": undefined,
+          "placementAnchor": undefined,
+          "placementWidth": undefined,
+          "queryAnchor": undefined,
+          "readOnly": false,
+          "registerKeyDownHandler": [Function anonymous],
+          "setFillToAvailableHeight": [Function bound dispatchSetState],
+          "sortFn": undefined,
+          "symbol": "/",
+          "title": "Actions",
+          "trackInputQuery": false,
+          "triggerInfo": Object {
+            "type": "button",
+          },
+          "updateFooterActions": [Function anonymous],
+          "updateItemSelection": [Function anonymous],
+          "updateList": [Function anonymous],
+        },
+        "item": Object {},
+        "searchText": "",
+      },
+    ]
+
+
+Number of calls: 1
+
+ ❯ src/renderer/components/QuickPanel/__tests__/view.test.tsx:631:25
+    629|     })
+    630|     fireEvent(target, active)
+    631|     expect(onClose).not.toHaveBeenCalled()
+       |                         ^
+    632|     expect(active.defaultPrevented).toBe(false)
+    633|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/11]⎯
+
+ FAIL  |renderer| src/renderer/components/QuickPanel/__tests__/view.test.tsx > QuickPanelView > does not select or navigate the panel on IME Enter
+ FAIL  |renderer| src/renderer/components/QuickPanel/__tests__/view.test.tsx > QuickPanelView > does not select or navigate the panel on IME Tab
+AssertionError: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array [
+      Object {
+        "action": "enter",
+        "context": Object {
+          "afterAction": undefined,
+          "beforeAction": undefined,
+          "close": [Function anonymous],
+          "consumeQueryOnDismiss": false,
+          "defaultIndex": -1,
+          "dispatchKeyDown": [Function anonymous],
+          "fillToAvailableHeight": false,
+          "filterFn": undefined,
+          "footerActions": Array [],
+          "getPanelGeneration": [Function anonymous],
+          "initialSearchText": undefined,
+          "isVisible": true,
+          "lastCloseAction": undefined,
+          "list": Array [
+            Object {
+              "action": [Function Mock],
+              "icon": null,
+              "id": "first",
+              "label": "First action",
+            },
+            Object {
+              "action": [Function Mock],
+              "icon": null,
+              "id": "second",
+              "label": "Second action",
+            },
+          ],
+          "manageListExternally": false,
+          "multiple": false,
+          "onClose": undefined,
+          "open": [Function anonymous],
+          "pageSize": 7,
+          "parentPanel": undefined,
+          "placementAnchor": undefined,
+          "placementWidth": undefined,
+          "queryAnchor": undefined,
+          "readOnly": false,
+          "registerKeyDownHandler": [Function anonymous],
+          "setFillToAvailableHeight": [Function bound dispatchSetState],
+          "sortFn": undefined,
+          "symbol": "/",
+          "title": "Actions",
+          "trackInputQuery": false,
+          "triggerInfo": Object {
+            "type": "button",
+          },
+          "updateFooterActions": [Function anonymous],
+          "updateItemSelection": [Function anonymous],
+          "updateList": [Function anonymous],
+        },
+        "inputAdapter": Object {
+          "deleteTriggerRange": [Function Mock],
+          "focus": [Function Mock],
+          "getText": [Function getText],
+          "insertText": [Function Mock],
+          "isComposing": [Function isComposing],
+        },
+        "item": Object {
+          "action": [Function Mock],
+          "icon": null,
+          "id": "first",
+          "label": "First action",
+        },
+        "parentPanel": Object {
+          "afterAction": undefined,
+          "beforeAction": undefined,
+          "consumeQueryOnDismiss": false,
+          "defaultIndex": 0,
+          "filterFn": undefined,
+          "footerActions": Array [],
+          "initialSearchText": "",
+          "list": Array [
+            Object {
+              "action": [Function Mock],
+              "icon": null,
+              "id": "first",
+              "label": "First action",
+            },
+            Object {
+              "action": [Function Mock],
+              "icon": null,
+              "id": "second",
+              "label": "Second action",
+            },
+          ],
+          "manageListExternally": false,
+          "multiple": false,
+          "onClose": undefined,
+          "pageSize": 7,
+          "parentPanel": undefined,
+          "queryAnchor": 0,
+          "readOnly": false,
+          "sortFn": undefined,
+          "symbol": "/",
+          "title": "Actions",
+          "trackInputQuery": false,
+          "triggerInfo": Object {
+            "type": "button",
+          },
+        },
+        "queryAnchor": 0,
+        "searchText": "",
+      },
+    ]
+
+
+Number of calls: 1
+
+ ❯ src/renderer/components/QuickPanel/__tests__/view.test.tsx:685:29
+    683|     })
+    684|     fireEvent(target, active)
+    685|     expect(firstAction).not.toHaveBeenCalled()
+       |                             ^
+    686|     expect(secondAction).not.toHaveBeenCalled()
+    687|     expect(active.defaultPrevented).toBe(false)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/11]⎯
+
+ FAIL  |renderer| src/renderer/components/QuickPanel/__tests__/view.test.tsx > QuickPanelView > does not select or navigate the panel on IME ArrowDown
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/renderer/components/QuickPanel/__tests__/view.test.tsx:687:37
+    685|     expect(firstAction).not.toHaveBeenCalled()
+    686|     expect(secondAction).not.toHaveBeenCalled()
+    687|     expect(active.defaultPrevented).toBe(false)
+       |                                     ^
+    688|
+    689|     composing = false
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/11]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerToken.test.tsx > ComposerToken > keeps IME Enter from finishing prompt-variable editing
+AssertionError: expected "vi.fn()" to not be called at all, but actually been called 2 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array [
+      "上海",
+      "enter",
+      Object {
+        "dirty": true,
+      },
+    ]
+
+  2nd vi.fn() call:
+
+    Array [
+      "上海",
+      "blur",
+      Object {
+        "dirty": true,
+      },
+    ]
+
+
+Number of calls: 2
+
+ ❯ src/renderer/components/composer/__tests__/ComposerToken.test.tsx:1411:26
+    1409|     })
+    1410|     fireEvent(input, confirmation)
+    1411|     expect(onCommit).not.toHaveBeenCalled()
+       |                          ^
+    1412|     expect(confirmation.defaultPrevented).toBe(false)
+    1413|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/11]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerToken.test.tsx > ComposerToken > keeps IME Tab from finishing prompt-variable editing
+AssertionError: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array [
+      "上海",
+      "tab",
+      Object {
+        "direction": 1,
+        "dirty": true,
+      },
+    ]
+
+
+Number of calls: 1
+
+ ❯ src/renderer/components/composer/__tests__/ComposerToken.test.tsx:1411:26
+    1409|     })
+    1410|     fireEvent(input, confirmation)
+    1411|     expect(onCommit).not.toHaveBeenCalled()
+       |                          ^
+    1412|     expect(confirmation.defaultPrevented).toBe(false)
+    1413|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/11]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/variants/__tests__/AskUserQuestionComposer.test.tsx > AskUserQuestionComposer > keeps IME confirmation separate from submitting a custom answer
+AssertionError: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array [
+      Object {
+        "approved": true,
+        "match": Object {
+          "approvalId": "approval-1",
+          "input": Object {
+            "questions": Array [
+              Object {
+                "header": "Logger",
+                "multiSelect": false,
+                "options": Array [
+                  Object {
+                    "description": "Mature ecosystem",
+                    "label": "Winston",
+                  },
+                  Object {
+                    "description": "JSON native",
+                    "label": "Pino",
+                  },
+                ],
+                "question": "Choose logger",
+              },
+            ],
+          },
+          "messageId": "message-1",
+          "part": Object {
+            "approval": Object {
+              "id": "approval-1",
+            },
+            "input": Object {
+              "questions": Array [
+                Object {
+                  "header": "Logger",
+                  "multiSelect": false,
+                  "options": Array [
+                    Object {
+                      "description": "Mature ecosystem",
+                      "label": "Winston",
+                    },
+                    Object {
+                      "description": "JSON native",
+                      "label": "Pino",
+                    },
+                  ],
+                  "question": "Choose logger",
+                },
+              ],
+            },
+            "state": "approval-requested",
+            "toolCallId": "call-1",
+            "type": "tool-AskUserQuestion",
+          },
+          "state": "approval-requested",
+          "toolCallId": "call-1",
+        },
+        "updatedInput": Object {
+          "answers": Object {
+            "Choose logger": "使用中文日志",
+          },
+          "questions": Array [
+            Object {
+              "header": "Logger",
+              "multiSelect": false,
+              "options": Array [
+                Object {
+                  "description": "Mature ecosystem",
+                  "label": "Winston",
+                },
+                Object {
+                  "description": "JSON native",
+                  "label": "Pino",
+                },
+              ],
+              "question": "Choose logger",
+            },
+          ],
+        },
+      },
+    ]
+
+
+Number of calls: 1
+
+ ❯ src/renderer/components/composer/variants/__tests__/AskUserQuestionComposer.test.tsx:96:27
+     94|     })
+     95|     fireEvent(answer, active)
+     96|     expect(onRespond).not.toHaveBeenCalled()
+       |                           ^
+     97|     expect(active.defaultPrevented).toBe(false)
+     98|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/11]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx > PermissionRequestComposer > leaves IME Enter in the note to the input method
+AssertionError: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array [
+      Object {
+        "approved": true,
+        "match": Object {
+          "approvalId": "approval-1",
+          "input": Object {
+            "command": "pnpm test",
+          },
+          "messageId": "message-1",
+          "part": Object {
+            "approval": Object {
+              "id": "approval-1",
+            },
+            "input": Object {
+              "command": "pnpm test",
+            },
+            "state": "approval-requested",
+            "toolCallId": "call-1",
+            "toolName": "CustomTool",
+            "type": "tool-CustomTool",
+          },
+          "state": "approval-requested",
+          "toolCallId": "call-1",
+        },
+      },
+    ]
+
+
+Number of calls: 1
+
+ ❯ src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx:405:27
+    403|     })
+    404|     fireEvent(note, active)
+    405|     expect(onRespond).not.toHaveBeenCalled()
+       |                           ^
+    406|     expect(active.defaultPrevented).toBe(false)
+    407|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/11]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx > PermissionRequestComposer > leaves IME Escape in the note to the input method
+AssertionError: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array [
+      Object {
+        "approved": false,
+        "match": Object {
+          "approvalId": "approval-1",
+          "input": Object {
+            "command": "pnpm test",
+          },
+          "messageId": "message-1",
+          "part": Object {
+            "approval": Object {
+              "id": "approval-1",
+            },
+            "input": Object {
+              "command": "pnpm test",
+            },
+            "state": "approval-requested",
+            "toolCallId": "call-1",
+            "toolName": "CustomTool",
+            "type": "tool-CustomTool",
+          },
+          "state": "approval-requested",
+          "toolCallId": "call-1",
+        },
+        "reason": "User denied permission for this tool.",
+      },
+    ]
+
+
+Number of calls: 1
+
+ ❯ src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx:405:27
+    403|     })
+    404|     fireEvent(note, active)
+    405|     expect(onRespond).not.toHaveBeenCalled()
+       |                           ^
+    406|     expect(active.defaultPrevented).toBe(false)
+    407|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/11]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx > PermissionRequestComposer > ignores a legacy IME Enter in the global permission hotkey
+AssertionError: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array [
+      Object {
+        "approved": true,
+        "match": Object {
+          "approvalId": "approval-1",
+          "input": Object {
+            "command": "pnpm test",
+          },
+          "messageId": "message-1",
+          "part": Object {
+            "approval": Object {
+              "id": "approval-1",
+            },
+            "input": Object {
+              "command": "pnpm test",
+            },
+            "state": "approval-requested",
+            "toolCallId": "call-1",
+            "toolName": "CustomTool",
+            "type": "tool-CustomTool",
+          },
+          "state": "approval-requested",
+          "toolCallId": "call-1",
+        },
+      },
+    ]
+
+
+Number of calls: 1
+
+ ❯ src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx:437:27
+    435|     })
+    436|     fireEvent(document, confirmation)
+    437|     expect(onRespond).not.toHaveBeenCalled()
+       |                           ^
+    438|     expect(confirmation.defaultPrevented).toBe(false)
+    439|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/11]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx > PermissionRequestComposer > ignores a legacy IME Escape in the global permission hotkey
+AssertionError: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array [
+      Object {
+        "approved": false,
+        "match": Object {
+          "approvalId": "approval-1",
+          "input": Object {
+            "command": "pnpm test",
+          },
+          "messageId": "message-1",
+          "part": Object {
+            "approval": Object {
+              "id": "approval-1",
+            },
+            "input": Object {
+              "command": "pnpm test",
+            },
+            "state": "approval-requested",
+            "toolCallId": "call-1",
+            "toolName": "CustomTool",
+            "type": "tool-CustomTool",
+          },
+          "state": "approval-requested",
+          "toolCallId": "call-1",
+        },
+        "reason": "User denied permission for this tool.",
+      },
+    ]
+
+
+Number of calls: 1
+
+ ❯ src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx:437:27
+    435|     })
+    436|     fireEvent(document, confirmation)
+    437|     expect(onRespond).not.toHaveBeenCalled()
+       |                           ^
+    438|     expect(confirmation.defaultPrevented).toBe(false)
+    439|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/11]⎯
+
+
+ Test Files  4 failed (4)
+      Tests  11 failed | 148 passed (159)
+   Start at  08:21:43
+   Duration  3.37s (import 39%, tests 28%, transform 23%, environment 8%, setup 2%)
+

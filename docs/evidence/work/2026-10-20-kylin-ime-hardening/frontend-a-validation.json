@@ -1,0 +1,81 @@
+{
+  "kind": "focused-frontend-ime-hardening-not-a-native-webkit-acceptance",
+  "baseline_work_revision": "9aad91f1e934c731e540cf99be25733e25c3a411",
+  "before": {
+    "log": "frontend-a-real-primitives-before.log",
+    "failed_regression_cases": 15,
+    "passed_existing_cases": 153,
+    "production_override": "Read HEAD versions of the five runtime source modules via a Vite load plugin; no working source mutation",
+    "config": "target/evaluations/kylin-ime-review/frontend-a-before.config.ts"
+  },
+  "after": {
+    "log": "frontend-a-final.log",
+    "passed": 168,
+    "test_files": 5
+  },
+  "checks": {
+    "oxlint_deny_warnings": true,
+    "eslint_no_fix": true,
+    "oxfmt_check": true,
+    "scoped_git_diff_check": true
+  },
+  "new_cases": {
+    "permission_note_and_global_hotkeys": 4,
+    "custom_answer": 1,
+    "prompt_variable_enter_tab": 2,
+    "quick_panel_capture_selection_and_navigation": 7,
+    "real_editor_adapter_composition": 1
+  },
+  "ui_primitive": "Permission and AskUserQuestion retain the existing fixture boundaries but use the real Textarea.Input implementation",
+  "files": [
+    {
+      "path": "apps/work/src/renderer/components/composer/variants/PermissionRequestComposer.tsx",
+      "sha256": "249d8508e7aabc0cee93582d7f3af0ae79084d7c9e0cd010a684be5d5cde05a6"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/variants/AskUserQuestionComposer.tsx",
+      "sha256": "ff2e6e02b7132586eb50f91e150fa531574118775a5be04eb97e87edb1c8d6b4"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/PromptVariableToken.tsx",
+      "sha256": "2fd285a7fe327b25a8fda0fe8d925afd4565b6090246b0cf99a08044725ea3a9"
+    },
+    {
+      "path": "apps/work/src/renderer/components/QuickPanel/QuickPanelView.tsx",
+      "sha256": "5e104acc78c5188dc2269e44fe33815e025ef091b7fc55889d5e85f34c1bb82f"
+    },
+    {
+      "path": "apps/work/src/renderer/components/QuickPanel/types.ts",
+      "sha256": "01b1b7897ad8d887f4b9fbdd62884c5ecb797dd453a966ba69464fe11a65e5ec"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/composerInputAdapter.ts",
+      "sha256": "c66ff7fb7e38c5e90e55fbded2662500a5b8e4b5d5302c9dfc46b3ef0c0dfa17"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx",
+      "sha256": "6dcb24c135049288471942053c748ab01c9e44f5233f6cb133393f3bf5eca022"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/variants/__tests__/AskUserQuestionComposer.test.tsx",
+      "sha256": "83ea66c86694b7c7f4a1a6cfec2205868edc0ff6f60b6ce5ce7de4f82ec74423"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/__tests__/ComposerToken.test.tsx",
+      "sha256": "a0eea3d5209b1204534d5520bdc46a63f35102766a1cf9fdd584d8d014a22584"
+    },
+    {
+      "path": "apps/work/src/renderer/components/QuickPanel/__tests__/view.test.tsx",
+      "sha256": "ac147439e19935208f8e1b573feacd7487bab305058821b7873095f743f2c3be"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/__tests__/composerInputAdapter.test.ts",
+      "sha256": "58c35c0543e70cae0c04ef5d3c26bb885324782a3aff240642a1a0d105cf93cf"
+    }
+  ],
+  "not_checked": [
+    "Full WebKit/Kylin GUI and candidate window placement",
+    "Full repository CI or application build; delegated to the parent task"
+  ],
+  "artifact_build_done_by_this_agent": false
+}

@@ -26,15 +26,30 @@ copy_file() {
 }
 
 case "$platform" in
+  macos|linux) suffix="" ;;
+  windows) suffix=".exe" ;;
+  *) echo "error: unsupported platform: $platform" >&2; exit 1 ;;
+esac
+copy_file "${bin_dir}/aster${suffix}" "${stage}/aster${suffix}"
+copy_file "${bin_dir}/a3s-code-acp${suffix}" "${stage}/a3s-code-acp${suffix}"
+chmod 755 "${stage}/aster${suffix}" "${stage}/a3s-code-acp${suffix}"
+aster_identity="$("${stage}/aster${suffix}" --build-id)"
+acp_identity="$("${stage}/a3s-code-acp${suffix}" --build-id)"
+if [[ "$aster_identity" != aster-cli-pair-v1:* || "$aster_identity" != "$acp_identity" ]]; then
+  echo "error: aster and a3s-code-acp must have the same source build identity" >&2
+  exit 1
+fi
+printf '%s\n' "$aster_identity" > "${stage}/BUILD_ID"
+if command -v sha256sum >/dev/null 2>&1; then
+  (cd "$stage" && sha256sum "aster${suffix}" "a3s-code-acp${suffix}") > "${stage}/SHA256SUMS"
+else
+  (cd "$stage" && shasum -a 256 "aster${suffix}" "a3s-code-acp${suffix}") > "${stage}/SHA256SUMS"
+fi
+case "$platform" in
   macos|linux)
-    copy_file "${bin_dir}/aster" "${stage}/aster"
-    copy_file "${bin_dir}/a3s-code-acp" "${stage}/a3s-code-acp"
-    chmod 755 "${stage}/aster" "${stage}/a3s-code-acp"
-    COPYFILE_DISABLE=1 tar -C "$stage" -czf "$out" aster a3s-code-acp
+    COPYFILE_DISABLE=1 tar -C "$stage" -czf "$out" aster a3s-code-acp BUILD_ID SHA256SUMS
     ;;
   windows)
-    copy_file "${bin_dir}/aster.exe" "${stage}/aster.exe"
-    copy_file "${bin_dir}/a3s-code-acp.exe" "${stage}/a3s-code-acp.exe"
     if command -v python3 >/dev/null 2>&1; then
       py=(python3)
     elif command -v python >/dev/null 2>&1; then
@@ -48,7 +63,7 @@ import sys, zipfile
 from pathlib import Path
 stage, out = Path(sys.argv[1]), Path(sys.argv[2])
 with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
-    for name in ("aster.exe", "a3s-code-acp.exe"):
+    for name in ("aster.exe", "a3s-code-acp.exe", "BUILD_ID", "SHA256SUMS"):
         archive.write(stage / name, name)
 PY
     ;;

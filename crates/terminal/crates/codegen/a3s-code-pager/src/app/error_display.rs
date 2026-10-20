@@ -20,6 +20,7 @@ pub(crate) enum WireErrorType {
     Serialization,
     RateLimited,
     MaxTokensTruncation,
+    ToolEffectUnresolved,
     Other,
 }
 
@@ -31,6 +32,7 @@ impl WireErrorType {
             return Self::Other;
         };
         match s {
+            "tool_effect_unresolved" => Self::ToolEffectUnresolved,
             "auth_transient" => Self::AuthTransient,
             "legacy_auth" => Self::LegacyAuth,
             s if s == a3s_code_shell::extensions::notification::CONTEXT_LENGTH_ERROR_TYPE => {
@@ -160,14 +162,28 @@ pub(crate) fn format_request_failure(
     raw: &str,
 ) -> FormattedRequestFailure {
     // The kernel sentence already says what happened and what would close it.
-    // Truncating it and appending a retry hides the cause: sending again does
-    // not bind a Passed verification.
+    // Truncating it, replacing it, or appending a retry hides the cause:
+    // sending again does not bind a Passed verification, and it does not
+    // reconcile an unresolved tool effect in this session. A typed kind must
+    // not replace that sentence.
     if let Some(gate) = completion_gate_text(raw) {
         return FormattedRequestFailure {
             status: None,
             headline: gate,
             detail: String::new(),
-            wire: WireErrorType::Other,
+            wire: if raw.contains("tool_effect_unresolved:") {
+                WireErrorType::ToolEffectUnresolved
+            } else {
+                error_type.unwrap_or(WireErrorType::Other)
+            },
+        };
+    }
+    if error_type == Some(WireErrorType::ToolEffectUnresolved) {
+        return FormattedRequestFailure {
+            status: None,
+            headline: "Tool execution needs reconciliation".into(),
+            detail: "Reconcile the original operations in this session before sending another task. Do not repeat them.".into(),
+            wire: WireErrorType::ToolEffectUnresolved,
         };
     }
     let untyped = error_type.is_none();
@@ -386,8 +402,23 @@ fn join_sentence(why: &str) -> String {
 }
 
 fn completion_gate_text(raw: &str) -> Option<String> {
-    let start = raw.find("completion gate:")?;
+    let start = raw
+        .find("completion gate:")
+        .or_else(|| raw.find("tool_effect_unresolved:"))?;
     let text = raw.get(start..)?.trim();
+    if text.is_empty() {
+        return None;
+    }
+    // This refusal used to be wrapped as "Request failed: … Try sending again."
+    // Sending again in the same session does not reconcile the invocation.
+    let text = if text.starts_with("tool_effect_unresolved:") {
+        text.strip_suffix(" Try sending again.")
+            .or_else(|| text.strip_suffix(" Try sending again"))
+            .unwrap_or(text)
+            .trim()
+    } else {
+        text
+    };
     if text.is_empty() {
         None
     } else {
@@ -755,6 +786,30 @@ mod tests {
         );
         assert!(!formatted.message().contains("Try sending again"));
         assert!(!formatted.message().contains("does not co."));
+    }
+
+    #[test]
+    fn unresolved_tool_effect_keeps_the_kernel_sentence() {
+        let raw = "tool_effect_unresolved: 1 invocation obligation(s) require identity-bound reconciliation; local scans, final text, and ordinary waivers cannot discharge them.";
+        for formatted in [
+            format_request_failure(None, None, raw),
+            format_request_failure(None, Some(WireErrorType::ToolEffectUnresolved), raw),
+        ] {
+            assert_eq!(formatted.message(), raw);
+            assert!(formatted.message().contains("tool_effect_unresolved"));
+            assert!(
+                formatted
+                    .message()
+                    .contains("identity-bound reconciliation")
+            );
+            assert!(formatted.message().contains("local scans"));
+            assert!(!formatted.message().contains("Try sending again"));
+        }
+        let wrapped = format!("Request failed: {raw} Try sending again.");
+        let unwrapped =
+            format_request_failure(None, Some(WireErrorType::ToolEffectUnresolved), &wrapped);
+        assert_eq!(unwrapped.message(), raw);
+        assert!(!unwrapped.message().contains("Try sending again"));
     }
 
     #[test]

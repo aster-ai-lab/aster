@@ -782,9 +782,7 @@ impl TurnFinish {
                     self.note(run_id, &end).await;
                 }
                 Err(error) => {
-                    let event = AgentEvent::Error {
-                        message: error.to_string(),
-                    };
+                    let event = AgentEvent::execution_error(error);
                     self.run_store.record_event(run_id, event.clone()).await;
                     self.note(run_id, &event).await;
                 }

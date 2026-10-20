@@ -1,0 +1,89 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:16419) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/local-product-scope.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-local-product-scope.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/work
+
+stdout | src/renderer/components/composer/__tests__/ComposerSurface.lifecycle.test.tsx > home composer attachment lifecycle > keeps the rich editor usable while registering attachments before a model is selected
+Global paste handler initialized
+
+ ❯ |renderer| src/renderer/components/composer/__tests__/ComposerSurface.lifecycle.test.tsx (1 test | 1 failed) 89ms
+   ❯ home composer attachment lifecycle (1)
+     × keeps the rich editor usable while registering attachments before a model is selected 87ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.lifecycle.test.tsx > home composer attachment lifecycle > keeps the rich editor usable while registering attachments before a model is selected
+Error: Maximum update depth exceeded. This can happen when a component repeatedly calls setState inside componentWillUpdate or componentDidUpdate. React limits the number of nested updates to prevent infinite loops.
+ ❯ getRootForUpdatedFiber node_modules/.pnpm/react-dom@19.2.3_react@19.2.3/node_modules/react-dom/cjs/react-dom-client.development.js:4624:11
+ ❯ enqueueConcurrentHookUpdate node_modules/.pnpm/react-dom@19.2.3_react@19.2.3/node_modules/react-dom/cjs/react-dom-client.development.js:4584:14
+ ❯ dispatchSetStateInternal node_modules/.pnpm/react-dom@19.2.3_react@19.2.3/node_modules/react-dom/cjs/react-dom-client.development.js:9167:18
+ ❯ dispatchSetState node_modules/.pnpm/react-dom@19.2.3_react@19.2.3/node_modules/react-dom/cjs/react-dom-client.development.js:9127:7
+ ❯ src/renderer/components/QuickPanel/QuickPanelProvider.tsx:107:5
+    105|
+    106|   const updateFooterActions = useCallback((actions: QuickPanelFooterAc…
+    107|     setFooterActions(actions)
+       |     ^
+    108|   }, [])
+    109|
+ ❯ src/renderer/components/composer/ComposerToolRuntime.tsx:218:7
+ ❯ Object.react_stack_bottom_frame node_modules/.pnpm/react-dom@19.2.3_react@19.2.3/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20
+ ❯ runWithFiberInDEV node_modules/.pnpm/react-dom@19.2.3_react@19.2.3/node_modules/react-dom/cjs/react-dom-client.development.js:874:13
+ ❯ commitHookEffectListMount node_modules/.pnpm/react-dom@19.2.3_react@19.2.3/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29
+ ❯ commitHookLayoutEffects node_modules/.pnpm/react-dom@19.2.3_react@19.2.3/node_modules/react-dom/cjs/react-dom-client.development.js:13213:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  09:44:17
+   Duration  4.77s (transform 53%, import 41%, environment 4%, tests 2%, setup 1%)
+
+  Transform  |renderer| transforming modules took 2.48s · 53% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+

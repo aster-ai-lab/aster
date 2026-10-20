@@ -1,0 +1,17 @@
+ℹ tsdown v0.22.14 powered by rolldown v1.2.6
+ℹ config file: /Users/roylin/code/aster/target/worktrees/kylin-ime-hardening-20261020/apps/work/packages/remote-protocol/tsdown.config.ts 
+ℹ entry: src/index.ts, src/agent.ts, src/configuration.ts, src/failure.ts
+ℹ tsconfig: tsconfig.json
+ℹ Build start
+ℹ dist/agent.js               29.35 kB │ gzip:  6.46 kB
+ℹ dist/index.js                7.12 kB │ gzip:  2.41 kB
+ℹ dist/failure.js              1.35 kB │ gzip:  0.61 kB
+ℹ dist/configuration.js        0.94 kB │ gzip:  0.43 kB
+ℹ dist/errors-DraEu1WZ.js      1.31 kB │ gzip:  0.70 kB
+ℹ dist/agent.d.ts            177.93 kB │ gzip: 10.91 kB
+ℹ dist/index.d.ts             17.06 kB │ gzip:  2.43 kB
+ℹ dist/failure.d.ts            3.82 kB │ gzip:  0.83 kB
+ℹ dist/configuration.d.ts      2.86 kB │ gzip:  0.70 kB
+ℹ dist/values-PwquYDbQ.d.ts    0.16 kB │ gzip:  0.14 kB
+ℹ 10 files, total: 241.89 kB
+✔ Build complete in 789ms

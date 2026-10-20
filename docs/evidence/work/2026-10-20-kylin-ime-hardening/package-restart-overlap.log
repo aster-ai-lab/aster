@@ -1,0 +1,40 @@
+bundled agent=dist/kylin/a3s-code-acp office=dist/kylin/a3s-office
+kylin-package: this kernel rejects PR_SET_SECCOMP; checking org.gnome.Platform//50 through bwrap
+kylin-package: this kernel rejects PR_SET_SECCOMP; checking org.gnome.Platform//50 through bwrap
+kylin-package: this kernel rejects PR_SET_SECCOMP; checking org.gnome.Platform//50 through bwrap
+kylin-package: this kernel rejects PR_SET_SECCOMP; checking org.gnome.Platform//50 through bwrap
+kylin-package: this kernel rejects PR_SET_SECCOMP; checking org.gnome.Platform//50 through bwrap
+kylin-package: this kernel rejects PR_SET_SECCOMP; checking org.gnome.Platform//50 through bwrap
+kylin-package: fcitx4 and fcitx5 modules link libgtk-3.so.0 and the runtime cache has ibus
+Exporting share/applications/dev.a3s.AsterDream.desktop
+Exporting share/icons/hicolor/128x128/apps/dev.a3s.AsterDream.png
+Please review the exported files and the metadata
+new-success: PASS new=1 old=0 connected=1 focus=1 commit=1
+unknown-object: PASS new=1 old=1 connected=1 focus=1 commit=1
+unknown-method: PASS new=1 old=1 connected=1 focus=1 commit=1
+access-denied: PASS new=1 old=0 connected=0 focus=0 commit=0
+failed: PASS new=1 old=0 connected=0 focus=0 commit=0
+both-unknown-method: PASS new=1 old=1 connected=0 focus=0 commit=0
+cancelled: PASS new=1 old=0 connected=0 focus=0 commit=0
+no-reply: PASS new=1 old=0 connected=0 focus=0 commit=0
+kylin-ime: host-display (host DISPLAY=:100)
+GTK client DISPLAY=:100
+Fcitx state ready for phase 0
+Chinese text committed through GTK: 你好
+Fcitx state ready for phase 2
+Fcitx state ready for phase 3
+PASS: Chinese commit, mixed English, Escape cancellation
+kylin-ime: flatpak-display (host DISPLAY=:100)
+GTK client DISPLAY=:99.0
+Fcitx state ready for phase 0
+Chinese text committed through GTK: 你好
+Fcitx state ready for phase 2
+Fcitx state ready for phase 3
+PASS: Chinese commit, mixed English, Escape cancellation
+Commit: 5b25522f34b3dab203243afe03d6035154ae34dc5064da15f29c9c30ce14b749
+Metadata Total: 1241
+Metadata Written: 10
+Content Total: 2973
+Content Written: 1
+Content Bytes Written: 11281 (11.3?kB)
+[?25h

@@ -1,0 +1,161 @@
+{
+  "packages": {
+    "flatpak": {
+      "deb": "flatpak_1.6.5-0ubuntu0.5_amd64.deb",
+      "sha256": "3266add1d53ce37691d787ceca9929d9a423f2f2c3f71bcf8d6e1be2095a41bc",
+      "version": "1.6.5-0ubuntu0.5"
+    },
+    "bubblewrap": {
+      "deb": "bubblewrap_0.4.0-1ubuntu4.1_amd64.deb",
+      "sha256": "c8393a164df5850e65eae06c8c0e837c6752911e3720623dfe59d04024f38a17",
+      "version": "0.4.0-1ubuntu4.1"
+    },
+    "xdg-dbus-proxy": {
+      "deb": "xdg-dbus-proxy_0.1.2-1_amd64.deb",
+      "sha256": "416614cce46fa4c59bbd1032d9f508f86ebd062065b514b9e09b2a7ff7d89277",
+      "version": "0.1.2-1"
+    }
+  },
+  "binaries": {
+    "flatpak": {
+      "version": "Flatpak 1.6.5",
+      "sha256": "ae80fb645248e4d181c075e5d56f3987da9f3ad40b1b223eb8377cf1b596c16f"
+    },
+    "bwrap": {
+      "version": "bubblewrap 0.4.0",
+      "sha256": "af662c55cd85178a58da083220a9348c4a7d3c24333fd0bc7badb18c93392987"
+    },
+    "xdg-dbus-proxy": {
+      "version": "xdg-dbus-proxy 0.1.2",
+      "sha256": "0594c24b92f62fd1316188c5a6edfb532dc9abf21ca3c5d787d008be5894ef70"
+    }
+  },
+  "app_commit": "13573ab54e364f3935a8f9686e8a0b53052c78af227104b6b58f638614c639f0",
+  "runtime_commit": "7e410fa0d429fcc34f2ddd0d9b6224f1435d8640fb9759801db4f02700542353",
+  "tested_app_bundle_sha256": "af37c321dfa5983954785fb0d5de9a837fa4feda57e0a6935dac4621cabef436",
+  "launcher_sha256": "45930f4ea9b756d89bba05a62ab9b72f8896033d28aa6a3cbec3f1fa5a7127d1",
+  "fcitx4_module_sha256": "5fe65fde7ccb324d6d9885e89b46bc71d1ed79439892d6760a41494bfe03877b",
+  "probe_sha256": "afddbac6c57049d6604750c255db4bb6dbd370eef89e46398acc98e2ce7890ff",
+  "session_bus_policy": {
+    "org.freedesktop.portal.FileChooser": "talk",
+    "org.freedesktop.Notifications": "talk",
+    "org.fcitx.*": "talk",
+    "org.freedesktop.portal.Desktop": "talk",
+    "org.freedesktop.IBus": "talk",
+    "org.freedesktop.portal.Documents": "talk"
+  },
+  "portal_create_count": 1,
+  "portal_key_event_count": 38,
+  "verified_bwrap_argument_records": [
+    {
+      "removed_only_seccomp_fds": [],
+      "all_other_semantic_arguments_identical": true,
+      "original_argument_count": 83,
+      "forwarded_argument_count": 83,
+      "x11_socket_binds": [],
+      "wrapper_environment_DISPLAY": ":120"
+    },
+    {
+      "removed_only_seccomp_fds": [
+        "17"
+      ],
+      "all_other_semantic_arguments_identical": true,
+      "original_argument_count": 403,
+      "forwarded_argument_count": 401,
+      "x11_socket_binds": [
+        [
+          "--ro-bind",
+          "/tmp/.X11-unix/X120",
+          "/tmp/.X11-unix/X99"
+        ]
+      ],
+      "wrapper_environment_DISPLAY": null
+    },
+    {
+      "removed_only_seccomp_fds": [],
+      "all_other_semantic_arguments_identical": true,
+      "original_argument_count": 83,
+      "forwarded_argument_count": 83,
+      "x11_socket_binds": [],
+      "wrapper_environment_DISPLAY": ":120"
+    },
+    {
+      "removed_only_seccomp_fds": [
+        "17"
+      ],
+      "all_other_semantic_arguments_identical": true,
+      "original_argument_count": 405,
+      "forwarded_argument_count": 403,
+      "x11_socket_binds": [
+        [
+          "--ro-bind",
+          "/tmp/.X11-unix/X120",
+          "/tmp/.X11-unix/X99"
+        ]
+      ],
+      "wrapper_environment_DISPLAY": null
+    },
+    {
+      "removed_only_seccomp_fds": [],
+      "all_other_semantic_arguments_identical": true,
+      "original_argument_count": 83,
+      "forwarded_argument_count": 83,
+      "x11_socket_binds": [],
+      "wrapper_environment_DISPLAY": ":120"
+    },
+    {
+      "removed_only_seccomp_fds": [
+        "17"
+      ],
+      "all_other_semantic_arguments_identical": true,
+      "original_argument_count": 403,
+      "forwarded_argument_count": 401,
+      "x11_socket_binds": [
+        [
+          "--ro-bind",
+          "/tmp/.X11-unix/X120",
+          "/tmp/.X11-unix/X99"
+        ]
+      ],
+      "wrapper_environment_DISPLAY": null
+    },
+    {
+      "removed_only_seccomp_fds": [],
+      "all_other_semantic_arguments_identical": true,
+      "original_argument_count": 83,
+      "forwarded_argument_count": 83,
+      "x11_socket_binds": [],
+      "wrapper_environment_DISPLAY": ":120"
+    },
+    {
+      "removed_only_seccomp_fds": [
+        "17"
+      ],
+      "all_other_semantic_arguments_identical": true,
+      "original_argument_count": 405,
+      "forwarded_argument_count": 403,
+      "x11_socket_binds": [
+        [
+          "--ro-bind",
+          "/tmp/.X11-unix/X120",
+          "/tmp/.X11-unix/X99"
+        ]
+      ],
+      "wrapper_environment_DISPLAY": null
+    }
+  ],
+  "positive": {
+    "host_display": ":120",
+    "client_display": ":99.0",
+    "client_display_bus_owned": false,
+    "chinese_mixed_cancel": "pass"
+  },
+  "negative_portal_disabled": "expected phase-0 timeout",
+  "limits": [
+    "Ubuntu 24.04 container and modern dependency libraries; shipped Flatpak/bwrap/proxy executables are exact offline binaries",
+    "PR_SET_SECCOMP is rejected by Rosetta; test wrapper removes only --seccomp FD pairs and validates all other semantic arguments are identical",
+    "GTK probe through product launcher/module, not full WebKit UI or Kylin physical desktop",
+    "Daemon tested: fcitx4.2.9.9; older daemon binary versions are not executed",
+    "No source, stage/dist or product metadata modifications in this experiment"
+  ]
+}

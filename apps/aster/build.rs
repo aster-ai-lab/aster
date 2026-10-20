@@ -1,3 +1,5 @@
+#[path = "../../scripts/cli_pair_build.rs"]
+mod cli_pair_build;
 use std::path::Path;
 use std::process::Command;
 
@@ -31,6 +33,8 @@ fn pinned_code_commit(manifest_dir: &Path) -> Option<String> {
 }
 
 fn main() {
+    cli_pair_build::stamp(&std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."))
+        .unwrap_or_else(|error| panic!("CLI pair identity: {error}"));
     println!("cargo:rerun-if-env-changed=GROK_VERSION");
     println!("cargo:rerun-if-env-changed=GROK_COMMIT");
 

@@ -578,7 +578,10 @@ fn should_bridge_agent_event(event: &AgentEvent) -> bool {
 }
 
 fn is_terminal_runtime_event(event: &AgentEvent) -> bool {
-    matches!(event, AgentEvent::End { .. } | AgentEvent::Error { .. })
+    matches!(
+        event,
+        AgentEvent::End { .. } | AgentEvent::Error { .. } | AgentEvent::ToolEffectUnresolved { .. }
+    )
 }
 
 async fn receive_checkpoint(

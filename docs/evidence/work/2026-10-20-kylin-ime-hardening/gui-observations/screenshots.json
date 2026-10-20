@@ -1,0 +1,98 @@
+[
+  {
+    "file": "modern-chinese.png",
+    "source": "target/evaluations/kylin-ime-gui/run-cl8OUJ/observe-10.png",
+    "sha256": "affbf2f701a99dacb6c6b816c2413a6fb901261683e63308180e3571c3f73156",
+    "interpretation": "human visual review; not an automated DOM text assertion"
+  },
+  {
+    "file": "modern-mixed.png",
+    "source": "target/evaluations/kylin-ime-gui/run-cl8OUJ/observe-11.png",
+    "sha256": "ade16b45c487429e2590b9ee6a91cad609d1a1db8526e9b379d55593786fe7fd",
+    "interpretation": "human visual review; not an automated DOM text assertion"
+  },
+  {
+    "file": "modern-cancel-resume.png",
+    "source": "target/evaluations/kylin-ime-gui/run-cl8OUJ/observe-14.png",
+    "sha256": "751059ad6bedaba6a1eb426c674fc4331fb2681a23c0d7808b82f5b5b1d07200",
+    "interpretation": "human visual review; not an automated DOM text assertion"
+  },
+  {
+    "file": "modern-candidate.png",
+    "source": "target/evaluations/kylin-ime-gui/run-cl8OUJ/observe-16.png",
+    "sha256": "39404b46f22df975e359adb41e352793cc4ddd265aeb9945d0523c2b71989ed4",
+    "interpretation": "human visual review; not an automated DOM text assertion"
+  },
+  {
+    "file": "modern-candidate-return.png",
+    "source": "target/evaluations/kylin-ime-gui/run-cl8OUJ/observe-17.png",
+    "sha256": "6ac561dec30a6aa5021ce4bff05cb8b1a753c2f7b7c54a25a9b3ed5e6eb2679e",
+    "interpretation": "human visual review; not an automated DOM text assertion"
+  },
+  {
+    "file": "fresh-ascii-before.png",
+    "source": "target/evaluations/kylin-ime-gui/run-s0m5xz/fresh-05.png",
+    "sha256": "551c9b4ebc0b0e7b4329282d1a92caf60c2905eed5f1471f151eb205e05606e6",
+    "interpretation": "human visual review; not an automated DOM text assertion"
+  },
+  {
+    "file": "fresh-ascii-return.png",
+    "source": "target/evaluations/kylin-ime-gui/run-s0m5xz/fresh-06.png",
+    "sha256": "4e11b005caf54d950687485b17ce17ba6876a1959e7d277a4e0bcf707d76ab2b",
+    "interpretation": "human visual review; not an automated DOM text assertion"
+  },
+  {
+    "file": "sync-ascii-before.png",
+    "source": "target/evaluations/kylin-ime-gui/run-mBG2P8/sync-05.png",
+    "sha256": "551c9b4ebc0b0e7b4329282d1a92caf60c2905eed5f1471f151eb205e05606e6",
+    "interpretation": "human visual review; not an automated DOM text assertion"
+  },
+  {
+    "file": "sync-ascii-return.png",
+    "source": "target/evaluations/kylin-ime-gui/run-mBG2P8/sync-06.png",
+    "sha256": "4e11b005caf54d950687485b17ce17ba6876a1959e7d277a4e0bcf707d76ab2b",
+    "interpretation": "human visual review; not an automated DOM text assertion"
+  },
+  {
+    "file": "no-daemon-ascii-before.png",
+    "source": "target/evaluations/kylin-ime-gui/run-4C42Rl/noim-05.png",
+    "sha256": "551c9b4ebc0b0e7b4329282d1a92caf60c2905eed5f1471f151eb205e05606e6",
+    "interpretation": "human visual review; not an automated DOM text assertion"
+  },
+  {
+    "file": "no-daemon-ascii-return.png",
+    "source": "target/evaluations/kylin-ime-gui/run-4C42Rl/noim-06.png",
+    "sha256": "4e11b005caf54d950687485b17ce17ba6876a1959e7d277a4e0bcf707d76ab2b",
+    "interpretation": "human visual review; not an automated DOM text assertion"
+  },
+  {
+    "file": "old-chinese.png",
+    "source": "target/evaluations/kylin-ime-gui/run-cCJUxh/old-06.png",
+    "sha256": "affbf2f701a99dacb6c6b816c2413a6fb901261683e63308180e3571c3f73156",
+    "interpretation": "human visual review; not an automated DOM text assertion"
+  },
+  {
+    "file": "old-cancel-resume.png",
+    "source": "target/evaluations/kylin-ime-gui/run-cCJUxh/old-10.png",
+    "sha256": "34f8fb9dee35973c2ffcee0eec131e35c3f279787b864b2b65fc015c9071ee67",
+    "interpretation": "human visual review; not an automated DOM text assertion"
+  },
+  {
+    "file": "old-candidate-return.png",
+    "source": "target/evaluations/kylin-ime-gui/run-cCJUxh/old-12.png",
+    "sha256": "6ac561dec30a6aa5021ce4bff05cb8b1a753c2f7b7c54a25a9b3ed5e6eb2679e",
+    "interpretation": "human visual review; not an automated DOM text assertion"
+  },
+  {
+    "file": "observer-ascii-before.png",
+    "source": "target/evaluations/kylin-ime-gui/run-6dvnUC/trace-06.png",
+    "sha256": "551c9b4ebc0b0e7b4329282d1a92caf60c2905eed5f1471f151eb205e05606e6",
+    "interpretation": "human visual review; not an automated DOM text assertion"
+  },
+  {
+    "file": "observer-ascii-return.png",
+    "source": "target/evaluations/kylin-ime-gui/run-6dvnUC/trace-07.png",
+    "sha256": "4e11b005caf54d950687485b17ce17ba6876a1959e7d277a4e0bcf707d76ab2b",
+    "interpretation": "human visual review; not an automated DOM text assertion"
+  }
+]

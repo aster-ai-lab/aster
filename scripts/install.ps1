@@ -77,11 +77,72 @@ try {
         Write-Error "archive $AssetName did not contain both aster-cli binaries"
         exit 1
     }
+    $identityPath = Join-Path $unpack "BUILD_ID"
+    $checksumPath = Join-Path $unpack "SHA256SUMS"
+    if (-not (Test-Path -LiteralPath $identityPath) -or -not (Test-Path -LiteralPath $checksumPath)) {
+        throw "release is missing paired build identity or checksums"
+    }
+    $expectedSums = @("$((Get-FileHash -LiteralPath $srcAster -Algorithm SHA256).Hash.ToLowerInvariant())  aster.exe",
+        "$((Get-FileHash -LiteralPath $srcAcp -Algorithm SHA256).Hash.ToLowerInvariant())  a3s-code-acp.exe") -join "`n"
+    if ((Get-Content -LiteralPath $checksumPath -Raw).Trim() -cne $expectedSums) {
+        throw "paired binary checksum mismatch"
+    }
+    $identity = (Get-Content -LiteralPath $identityPath -Raw).Trim()
+    $asterIdentity = & $srcAster --build-id
+    if ($LASTEXITCODE -ne 0) { throw "cannot read Aster source identity" }
+    $acpIdentity = & $srcAcp --build-id
+    if ($LASTEXITCODE -ne 0 -or -not $identity.StartsWith("aster-cli-pair-v1:") -or
+        $identity -cne $asterIdentity -or $identity -cne $acpIdentity) {
+        throw "paired binary source identity mismatch"
+    }
     New-Item -ItemType Directory -Force -Path $Prefix | Out-Null
+    $lock = Join-Path $Prefix ".aster-install.lock"
+    New-Item -ItemType Directory -Path $lock -ErrorAction Stop | Out-Null
+    $stage = Join-Path $Prefix (".aster-install." + [guid]::NewGuid().ToString("n"))
+    $promoted = @()
+    $installed = $false
+    try {
+        New-Item -ItemType Directory -Path $stage | Out-Null
+        # shortcut: two renames cannot survive every power loss; use one version-directory pointer when crash-atomic upgrades are required.
+        foreach ($name in @("aster.exe", "a3s-code-acp.exe")) {
+            if (Test-Path -LiteralPath (Join-Path $Prefix $name) -PathType Container) {
+                throw "binary destination is a directory"
+            }
+            Copy-Item -LiteralPath (Join-Path $unpack $name) -Destination (Join-Path $stage "new-$name")
+            $destination = Join-Path $Prefix $name
+            if (Test-Path -LiteralPath $destination) {
+                Copy-Item -LiteralPath $destination -Destination (Join-Path $stage "old-$name")
+            }
+        }
+        foreach ($name in @("aster.exe", "a3s-code-acp.exe")) {
+            Move-Item -LiteralPath (Join-Path $stage "new-$name") -Destination (Join-Path $Prefix $name) -Force
+            $promoted += $name
+        }
+        $installed = $true
+    } finally {
+        $recovered = $true
+        if (-not $installed) {
+            foreach ($name in $promoted) {
+                try {
+                    $backup = Join-Path $stage "old-$name"
+                    if (Test-Path -LiteralPath $backup) {
+                        Move-Item -LiteralPath $backup -Destination (Join-Path $Prefix $name) -Force
+                    } else {
+                        Remove-Item -LiteralPath (Join-Path $Prefix $name) -Force
+                    }
+                } catch {
+                    $recovered = $false
+                    Write-Warning "Pair recovery needs attention; backup retained at $stage : $_"
+                }
+            }
+        }
+        if ($recovered) {
+            Remove-Item -LiteralPath $stage -Recurse -Force -ErrorAction SilentlyContinue
+            Remove-Item -LiteralPath $lock -Force
+        }
+    }
     $destAster = Join-Path $Prefix "aster.exe"
     $destAcp = Join-Path $Prefix "a3s-code-acp.exe"
-    Copy-Item -LiteralPath $srcAster -Destination $destAster -Force
-    Copy-Item -LiteralPath $srcAcp -Destination $destAcp -Force
     Write-Output "installed Aster v0.1.1 into $Prefix"
     Write-Output "aster=$destAster"
     Write-Output "a3s-code-acp=$destAcp"

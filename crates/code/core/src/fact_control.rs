@@ -21,6 +21,7 @@ use crate::llm::{Attachment, LlmClient, LlmResponse, Message, ToolDefinition};
 use crate::permissions::{PermissionChecker, PermissionDecision, PermissionPolicy};
 use crate::queue::SessionLane;
 use crate::tools::ToolExecutor;
+pub(crate) use tool_results::execution_permission;
 
 const THREAD: &str = "thread-1";
 
@@ -72,8 +73,6 @@ use model_wait::{
     model_idle_sleep, AbortOnDrop,
 };
 pub use tool_results::admit_tool_call;
-#[cfg(test)]
-use tool_results::execution_permission;
 pub(crate) use tool_results::exposed_tool_specs;
 use tool_results::{
     confirmation_parked, decision_from_response, decode_fact_tool_result, definitions_for,

@@ -2,6 +2,103 @@
 
 use super::*;
 
+#[tokio::test]
+async fn exact_background_terminals_reconcile_legacy_observation_only_cache_keys() {
+    for scenario in [
+        "settled",
+        "external",
+        "unknown",
+        "wrong-run",
+        "missing-terminal",
+    ] {
+        let external_unknown = scenario == "external";
+        let mut fixture = CacheCoverageFixture::new().await;
+        let mut prepared = fixture.write.clone();
+        prepared.identity.tool_call_id = "background-cache".into();
+        prepared.tool_name = "background".into();
+        let child = "cache-child";
+        let terminal_key = "cache-child:exited";
+        let legacy_gap = format!("background-receipt-incomplete:{terminal_key}");
+        let mut spawned = ToolExecutionResultV1 {
+            schema: TOOL_RESULT_SCHEMA.into(),
+            identity: prepared.identity.clone(),
+            prepared_digest: prepared.digest().unwrap(),
+            outcome: ToolExecutionOutcome::Succeeded,
+            exit_code: Some(0),
+            output: json!(json!({
+                "kind":"a3s.fact_tool_result", "text":"accepted", "is_error":false,
+                "exit_code":0, "outcome":"succeeded", "workspace_child":child,
+                "metadata":{"workspace_child":child,"source_run":"cached-run","run":"cache-effect"}
+            })
+            .to_string()),
+            effects: ToolEffectObservationV1::complete(Vec::new()),
+        };
+        spawned
+            .effects
+            .unresolved_external_operations
+            .push(format!("workspace-child:{child}"));
+        let mut effects = ToolEffectObservationV1::budget_exceeded();
+        if external_unknown {
+            effects
+                .unresolved_external_operations
+                .push(legacy_gap.clone());
+        }
+        let cache = &mut fixture.checkpoint.convergence.mutations;
+        cache.observe_tool_receipt("background", &spawned);
+        cache.observe_background_receipt(terminal_key, &effects);
+        cache.restore_unresolved_tool_effects(
+            std::collections::BTreeSet::from([
+                legacy_gap.clone(),
+                format!("background-evidence:{child}"),
+            ]),
+            &Default::default(),
+        );
+        let mut facts = fixture.original();
+        facts.extend(CacheCoverageFixture::pair(&prepared, &spawned));
+        let mut terminal = json!({
+            "event":"exited", "task_id":child, "workspace_child":child, "changed_paths":[],
+            "observation_incomplete":false, "output_complete":true, "exit_code":0,
+            "cancelled":false, "timed_out":false, "disposition":"completed",
+            "process_settled":true, "execution_future_released":true, "output_facts_retained":true,
+            "process_settlement_basis":"execution_returned", "source_run":"cached-run",
+            "run":"cache-effect", "effects":effects
+        });
+        if scenario == "unknown" {
+            terminal["disposition"] = json!("unknown");
+        }
+        if scenario == "wrong-run" {
+            terminal["source_run"] = json!("another-run");
+        }
+        if scenario != "missing-terminal" {
+            facts.push(fact("background.output", terminal_key, terminal));
+        }
+        fixture.append(&facts);
+        fixture.seed();
+        let unresolved = unresolved(&fixture.pinned);
+        if matches!(scenario, "unknown" | "wrong-run" | "missing-terminal") {
+            assert!(
+                unresolved.contains(&legacy_gap),
+                "{scenario}: {unresolved:?}"
+            );
+            assert!(!unresolved.is_empty());
+            fixture.pinned.close().await;
+            continue;
+        }
+        assert!(
+            !unresolved.contains(&"tool_effect_cache_evidence_missing".into()),
+            "{unresolved:?}"
+        );
+        assert!(!unresolved.contains(&format!("workspace-child:{child}")));
+        assert!(!unresolved.contains(&format!("background-evidence:{child}")));
+        assert_eq!(
+            unresolved.contains(&legacy_gap),
+            external_unknown,
+            "an explicit original operation stays debt"
+        );
+        fixture.pinned.close().await;
+    }
+}
+
 struct CacheCoverageFixture {
     workspace: tempfile::TempDir,
     session: AgentSession,
@@ -771,5 +868,55 @@ async fn originally_settled_legacy_history_stays_readable_without_positive_cache
             crate::harness_loop::CompletionTerminal::Narrative
         )
     ));
+    fixture.pinned.close().await;
+}
+
+#[tokio::test]
+async fn completion_gate_to_host_retains_typed_reconciliation() {
+    let fixture = CacheCoverageFixture::new().await;
+    fixture
+        .pinned
+        .parts
+        .surface
+        .as_ref()
+        .unwrap()
+        .ledger
+        .lock()
+        .unwrap()
+        .restore_unresolved_tool_effects(
+            std::collections::BTreeSet::from(["exact-unresolved".into()]),
+            &Default::default(),
+        );
+    let result = AgentResult {
+        text: "done".into(),
+        messages: vec![],
+        usage: Default::default(),
+        tool_calls_count: 0,
+        verification_reports: vec![],
+        completion: crate::harness_loop::CompletionTerminal::Narrative,
+        forced_stop: None,
+        run_admission: "ordinary".into(),
+    };
+    let mapped = gate_result(&fixture.pinned.parts, result, None);
+    assert!(mapped
+        .as_ref()
+        .unwrap_err()
+        .downcast_ref::<crate::harness_loop::ToolEffectUnresolved>()
+        .is_some());
+    let (tx, mut rx) = tokio::sync::mpsc::channel(2);
+    host_events::emit_gated(
+        &tx,
+        &Err(anyhow::anyhow!("unused")),
+        &mapped,
+        false,
+        run_admission::OriginalPublicationKind::End,
+        "fixture-run",
+        None,
+    )
+    .await;
+    assert!(
+        matches!(rx.recv().await, Some(AgentEvent::ToolEffectUnresolved { error })
+        if error.obligation_ids.contains(&"exact-unresolved".into()))
+    );
     fixture.pinned.close().await;
 }

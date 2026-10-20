@@ -1,0 +1,211 @@
+{
+  "status": "passed",
+  "file_count": 29,
+  "original_root": "/Users/roylin/code/aster",
+  "isolated_root": "/Users/roylin/code/aster/target/worktrees/kylin-ime-hardening-20261020",
+  "checks": [
+    {
+      "path": "apps/work/scripts/kylin-flatpak/README.md",
+      "expected_sha256": "ffa595978ac9cf919c7b8e40e9f5d167176e7fb11cb632e19a59c9eec0c4a9a3",
+      "original_sha256": "ffa595978ac9cf919c7b8e40e9f5d167176e7fb11cb632e19a59c9eec0c4a9a3",
+      "isolated_sha256": "ffa595978ac9cf919c7b8e40e9f5d167176e7fb11cb632e19a59c9eec0c4a9a3",
+      "matches": true
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/build-fcitx4-immodule.sh",
+      "expected_sha256": "58075d1eae8e7204328bf56cb5ec7edab03c1deee8eae5366fff097284078eff",
+      "original_sha256": "58075d1eae8e7204328bf56cb5ec7edab03c1deee8eae5366fff097284078eff",
+      "isolated_sha256": "58075d1eae8e7204328bf56cb5ec7edab03c1deee8eae5366fff097284078eff",
+      "matches": true
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/build-immodule.sh",
+      "expected_sha256": "5cef530f90644c3d599677732fb83f3f51f3a542cc16a92fa944b34c0d2614b9",
+      "original_sha256": "5cef530f90644c3d599677732fb83f3f51f3a542cc16a92fa944b34c0d2614b9",
+      "isolated_sha256": "5cef530f90644c3d599677732fb83f3f51f3a542cc16a92fa944b34c0d2614b9",
+      "matches": true
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/gtk_input_probe.c",
+      "expected_sha256": "1d20306dfe10f1de9d41a8fc2af41b1125f8005ad7d1ff93b72ea623c2769eeb",
+      "original_sha256": "1d20306dfe10f1de9d41a8fc2af41b1125f8005ad7d1ff93b72ea623c2769eeb",
+      "isolated_sha256": "1d20306dfe10f1de9d41a8fc2af41b1125f8005ad7d1ff93b72ea623c2769eeb",
+      "matches": true
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/install-on-kylin.sh",
+      "expected_sha256": "bfe7837e6d93eb3a30dc5d642f5893a688beea24f347fe6251d22139cfbe4f4d",
+      "original_sha256": "bfe7837e6d93eb3a30dc5d642f5893a688beea24f347fe6251d22139cfbe4f4d",
+      "isolated_sha256": "bfe7837e6d93eb3a30dc5d642f5893a688beea24f347fe6251d22139cfbe4f4d",
+      "matches": true
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/kylin-launch.sh",
+      "expected_sha256": "6a6f459d0b7561faf7de2b400012e10f5e4d34342861f25ac896f052f37a9f84",
+      "original_sha256": "6a6f459d0b7561faf7de2b400012e10f5e4d34342861f25ac896f052f37a9f84",
+      "isolated_sha256": "6a6f459d0b7561faf7de2b400012e10f5e4d34342861f25ac896f052f37a9f84",
+      "matches": true
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/pack-onefile.sh",
+      "expected_sha256": "70da5c0f24b743a0430d4d2efdd1140f9f118ea8f5c869265380d5d4336cd58b",
+      "original_sha256": "70da5c0f24b743a0430d4d2efdd1140f9f118ea8f5c869265380d5d4336cd58b",
+      "isolated_sha256": "70da5c0f24b743a0430d4d2efdd1140f9f118ea8f5c869265380d5d4336cd58b",
+      "matches": true
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/package-bundle.sh",
+      "expected_sha256": "5932277350efd5a2558da42f23e4e9b4d0e4d221a52daab13b701d13600022e4",
+      "original_sha256": "5932277350efd5a2558da42f23e4e9b4d0e4d221a52daab13b701d13600022e4",
+      "isolated_sha256": "5932277350efd5a2558da42f23e4e9b4d0e4d221a52daab13b701d13600022e4",
+      "matches": true
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/test-input-method.sh",
+      "expected_sha256": "0eeedbc8210418988cb0717e35a1d8972cfb1466aec96f08124118b641b54766",
+      "original_sha256": "0eeedbc8210418988cb0717e35a1d8972cfb1466aec96f08124118b641b54766",
+      "isolated_sha256": "0eeedbc8210418988cb0717e35a1d8972cfb1466aec96f08124118b641b54766",
+      "matches": true
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/安装说明.txt",
+      "expected_sha256": "b028b8081d6b08f9f6e06462986f65d3d18f3c6f389c969f80f49138969dc82d",
+      "original_sha256": "b028b8081d6b08f9f6e06462986f65d3d18f3c6f389c969f80f49138969dc82d",
+      "isolated_sha256": "b028b8081d6b08f9f6e06462986f65d3d18f3c6f389c969f80f49138969dc82d",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/QuickPanel/QuickPanelView.tsx",
+      "expected_sha256": "5e104acc78c5188dc2269e44fe33815e025ef091b7fc55889d5e85f34c1bb82f",
+      "original_sha256": "5e104acc78c5188dc2269e44fe33815e025ef091b7fc55889d5e85f34c1bb82f",
+      "isolated_sha256": "5e104acc78c5188dc2269e44fe33815e025ef091b7fc55889d5e85f34c1bb82f",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/QuickPanel/__tests__/view.test.tsx",
+      "expected_sha256": "ac147439e19935208f8e1b573feacd7487bab305058821b7873095f743f2c3be",
+      "original_sha256": "ac147439e19935208f8e1b573feacd7487bab305058821b7873095f743f2c3be",
+      "isolated_sha256": "ac147439e19935208f8e1b573feacd7487bab305058821b7873095f743f2c3be",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/QuickPanel/types.ts",
+      "expected_sha256": "01b1b7897ad8d887f4b9fbdd62884c5ecb797dd453a966ba69464fe11a65e5ec",
+      "original_sha256": "01b1b7897ad8d887f4b9fbdd62884c5ecb797dd453a966ba69464fe11a65e5ec",
+      "isolated_sha256": "01b1b7897ad8d887f4b9fbdd62884c5ecb797dd453a966ba69464fe11a65e5ec",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/ComposerSurfaceRuntime.tsx",
+      "expected_sha256": "e5d2644e12df78102d115f63ca245837c9f6c86cb8772b429aa5ec9207d3d997",
+      "original_sha256": "e5d2644e12df78102d115f63ca245837c9f6c86cb8772b429aa5ec9207d3d997",
+      "isolated_sha256": "e5d2644e12df78102d115f63ca245837c9f6c86cb8772b429aa5ec9207d3d997",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/PromptVariableToken.tsx",
+      "expected_sha256": "2fd285a7fe327b25a8fda0fe8d925afd4565b6090246b0cf99a08044725ea3a9",
+      "original_sha256": "2fd285a7fe327b25a8fda0fe8d925afd4565b6090246b0cf99a08044725ea3a9",
+      "isolated_sha256": "2fd285a7fe327b25a8fda0fe8d925afd4565b6090246b0cf99a08044725ea3a9",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/__tests__/ComposerSurface.test.tsx",
+      "expected_sha256": "7d282ae0611be2e73d189a622a2f61b539fc3e7fc4aee552dea38f6aea716838",
+      "original_sha256": "7d282ae0611be2e73d189a622a2f61b539fc3e7fc4aee552dea38f6aea716838",
+      "isolated_sha256": "7d282ae0611be2e73d189a622a2f61b539fc3e7fc4aee552dea38f6aea716838",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/__tests__/ComposerToken.test.tsx",
+      "expected_sha256": "a0eea3d5209b1204534d5520bdc46a63f35102766a1cf9fdd584d8d014a22584",
+      "original_sha256": "a0eea3d5209b1204534d5520bdc46a63f35102766a1cf9fdd584d8d014a22584",
+      "isolated_sha256": "a0eea3d5209b1204534d5520bdc46a63f35102766a1cf9fdd584d8d014a22584",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/__tests__/composerInputAdapter.test.ts",
+      "expected_sha256": "58c35c0543e70cae0c04ef5d3c26bb885324782a3aff240642a1a0d105cf93cf",
+      "original_sha256": "58c35c0543e70cae0c04ef5d3c26bb885324782a3aff240642a1a0d105cf93cf",
+      "isolated_sha256": "58c35c0543e70cae0c04ef5d3c26bb885324782a3aff240642a1a0d105cf93cf",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/composerInputAdapter.ts",
+      "expected_sha256": "c66ff7fb7e38c5e90e55fbded2662500a5b8e4b5d5302c9dfc46b3ef0c0dfa17",
+      "original_sha256": "c66ff7fb7e38c5e90e55fbded2662500a5b8e4b5d5302c9dfc46b3ef0c0dfa17",
+      "isolated_sha256": "c66ff7fb7e38c5e90e55fbded2662500a5b8e4b5d5302c9dfc46b3ef0c0dfa17",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/variants/AskUserQuestionComposer.tsx",
+      "expected_sha256": "ff2e6e02b7132586eb50f91e150fa531574118775a5be04eb97e87edb1c8d6b4",
+      "original_sha256": "ff2e6e02b7132586eb50f91e150fa531574118775a5be04eb97e87edb1c8d6b4",
+      "isolated_sha256": "ff2e6e02b7132586eb50f91e150fa531574118775a5be04eb97e87edb1c8d6b4",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/variants/PermissionRequestComposer.tsx",
+      "expected_sha256": "249d8508e7aabc0cee93582d7f3af0ae79084d7c9e0cd010a684be5d5cde05a6",
+      "original_sha256": "249d8508e7aabc0cee93582d7f3af0ae79084d7c9e0cd010a684be5d5cde05a6",
+      "isolated_sha256": "249d8508e7aabc0cee93582d7f3af0ae79084d7c9e0cd010a684be5d5cde05a6",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/variants/__tests__/AskUserQuestionComposer.test.tsx",
+      "expected_sha256": "83ea66c86694b7c7f4a1a6cfec2205868edc0ff6f60b6ce5ce7de4f82ec74423",
+      "original_sha256": "83ea66c86694b7c7f4a1a6cfec2205868edc0ff6f60b6ce5ce7de4f82ec74423",
+      "isolated_sha256": "83ea66c86694b7c7f4a1a6cfec2205868edc0ff6f60b6ce5ce7de4f82ec74423",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx",
+      "expected_sha256": "6dcb24c135049288471942053c748ab01c9e44f5233f6cb133393f3bf5eca022",
+      "original_sha256": "6dcb24c135049288471942053c748ab01c9e44f5233f6cb133393f3bf5eca022",
+      "isolated_sha256": "6dcb24c135049288471942053c748ab01c9e44f5233f6cb133393f3bf5eca022",
+      "matches": true
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/fcitx4_legacy_portal.patch",
+      "expected_sha256": "a5330e62b2fa668920261857593b6efc38016cbcb72b4535e96091ac9e7d9755",
+      "original_sha256": "a5330e62b2fa668920261857593b6efc38016cbcb72b4535e96091ac9e7d9755",
+      "isolated_sha256": "a5330e62b2fa668920261857593b6efc38016cbcb72b4535e96091ac9e7d9755",
+      "matches": true
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/fcitx_client_protocol_test.c",
+      "expected_sha256": "ced6920541e3e14b90431a9fe1042e71ea6b5a7dfedc84401e4d4e19ca69e69a",
+      "original_sha256": "ced6920541e3e14b90431a9fe1042e71ea6b5a7dfedc84401e4d4e19ca69e69a",
+      "isolated_sha256": "ced6920541e3e14b90431a9fe1042e71ea6b5a7dfedc84401e4d4e19ca69e69a",
+      "matches": true
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/kylin_im_backend.c",
+      "expected_sha256": "637ed80e13c8f16028d761a87e46dca670f323ba04e93eb0284eb94cee4b6d77",
+      "original_sha256": "637ed80e13c8f16028d761a87e46dca670f323ba04e93eb0284eb94cee4b6d77",
+      "isolated_sha256": "637ed80e13c8f16028d761a87e46dca670f323ba04e93eb0284eb94cee4b6d77",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx",
+      "expected_sha256": "e5c61b28be360c2cc6e1d638cfcf9928df4a0a4d2c7e155a604e73672a08d163",
+      "original_sha256": "e5c61b28be360c2cc6e1d638cfcf9928df4a0a4d2c7e155a604e73672a08d163",
+      "isolated_sha256": "e5c61b28be360c2cc6e1d638cfcf9928df4a0a4d2c7e155a604e73672a08d163",
+      "matches": true
+    },
+    {
+      "path": "tests/kylin_input_method.py",
+      "expected_sha256": "4e9707bf2c8fdf2260ecdfa01e0ef7999e30a9c329c1b47ba5d069de1dfe2240",
+      "original_sha256": "4e9707bf2c8fdf2260ecdfa01e0ef7999e30a9c329c1b47ba5d069de1dfe2240",
+      "isolated_sha256": "4e9707bf2c8fdf2260ecdfa01e0ef7999e30a9c329c1b47ba5d069de1dfe2240",
+      "matches": true
+    },
+    {
+      "path": "tests/kylin_onefile.py",
+      "expected_sha256": "cdba33614ec619646c0237e499fcf17231403d2e2c446fd6d31a83a7124285d4",
+      "original_sha256": "cdba33614ec619646c0237e499fcf17231403d2e2c446fd6d31a83a7124285d4",
+      "isolated_sha256": "cdba33614ec619646c0237e499fcf17231403d2e2c446fd6d31a83a7124285d4",
+      "matches": true
+    }
+  ]
+}

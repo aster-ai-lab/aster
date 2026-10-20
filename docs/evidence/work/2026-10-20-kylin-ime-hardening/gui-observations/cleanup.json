@@ -1,0 +1,37 @@
+[
+  {
+    "scope": "run-cCJUxh",
+    "app_pid": 31547,
+    "app_process_exists_after_cleanup": false
+  },
+  {
+    "scope": "run-481rS5",
+    "app_pid": 33434,
+    "app_process_exists_after_cleanup": false
+  },
+  {
+    "scope": "run-mBG2P8",
+    "app_pid": 28741,
+    "app_process_exists_after_cleanup": false
+  },
+  {
+    "scope": "run-6dvnUC",
+    "app_pid": 34146,
+    "app_process_exists_after_cleanup": false
+  },
+  {
+    "scope": "run-cl8OUJ",
+    "app_pid": 23092,
+    "app_process_exists_after_cleanup": false
+  },
+  {
+    "scope": "run-4C42Rl",
+    "app_pid": 30420,
+    "app_process_exists_after_cleanup": false
+  },
+  {
+    "scope": "run-s0m5xz",
+    "app_pid": 26455,
+    "app_process_exists_after_cleanup": false
+  }
+]

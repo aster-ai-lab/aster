@@ -1,0 +1,57 @@
+kind: final-stage isolated negative control
+fixture: /aster/target/evaluations/kylin-ime-hardening/final-negatives/fixture/missing-module/files
+harness: /aster/apps/work/scripts/kylin-flatpak/test-input-method.sh
+expected: protocol 8 pass; GTK phase 0 failure; exit 1
+
+new-success: PASS new=1 old=0 connected=1 focus=1 commit=1
+unknown-object: PASS new=1 old=1 connected=1 focus=1 commit=1
+unknown-method: PASS new=1 old=1 connected=1 focus=1 commit=1
+access-denied: PASS new=1 old=0 connected=0 focus=0 commit=0
+failed: PASS new=1 old=0 connected=0 focus=0 commit=0
+both-unknown-method: PASS new=1 old=1 connected=0 focus=0 commit=0
+cancelled: PASS new=1 old=0 connected=0 focus=0 commit=0
+no-reply: PASS new=1 old=0 connected=0 focus=0 commit=0
+kylin-ime: host-display (host DISPLAY=:101)
+GTK client DISPLAY=:101
+
+(gtk-ime-probe:18877): Gtk-WARNING **: 09:09:30.581: /app/lib/im/fcitx4/im-fcitx.so: cannot open shared object file: No such file or directory
+
+(gtk-ime-probe:18877): Gtk-WARNING **: 09:09:30.583: Loading IM context type 'fcitx' failed
+Observed Fcitx state: 0
+IME test timed out at phase 0; committed text: 
+==> /tmp/tmp.0kteWa1c7J/fcitx.log <==
+(INFO-18851 addon.c:151) Load Addon Config File:fcitx-remote-module.conf
+(INFO-18851 addon.c:151) Load Addon Config File:fcitx-spell.conf
+(INFO-18851 addon.c:151) Load Addon Config File:fcitx-unicode.conf
+(INFO-18851 addon.c:151) Load Addon Config File:fcitx-dbus.conf
+(INFO-18851 addon.c:151) Load Addon Config File:fcitx-freedesktop-notify.conf
+(INFO-18851 addon.c:151) Load Addon Config File:fcitx-ipc.conf
+(INFO-18851 addon.c:151) Load Addon Config File:fcitx-vk.conf
+(INFO-18851 addon.c:151) Load Addon Config File:fcitx-x11.conf
+(INFO-18851 addon.c:151) Load Addon Config File:fcitx-xim.conf
+(INFO-18851 addon.c:151) Load Addon Config File:fcitx-xkb.conf
+(INFO-18851 addon.c:151) Load Addon Config File:fcitx-xkbdbus.conf
+(INFO-18851 addon.c:151) Load Addon Config File:fcitx-pinyin-enhance.conf
+(INFO-18851 addon.c:151) Load Addon Config File:fcitx-pinyin.conf
+(INFO-18851 addon.c:151) Load Addon Config File:fcitx-classic-ui.conf
+(INFO-18851 addon.c:151) Load Addon Config File:fcitx-notificationitem.conf
+(ERROR-18851 ime.c:432) fcitx-keyboard-us already exists
+(WARN-18851 xim.c:161) Please set XMODIFIERS.
+=========================
+FCITX 4.2.9.9 -- Get Signal No.: 15
+Date: try "date -d @1792487385" if you are using GNU date ***
+ProcessID: 18851
+fcitx(+0x19ba)[0x5555555559ba]
+/lib/x86_64-linux-gnu/libc.so.6(+0x45330)[0x7fffff59d330]
+/lib/x86_64-linux-gnu/libc.so.6(__select+0x147)[0x7fffff67efa7]
+/lib/x86_64-linux-gnu/libfcitx-core.so.0(+0x1411c)[0x7fffff7af11c]
+/lib/x86_64-linux-gnu/libfcitx-core.so.0(FcitxInstanceRun+0x5f)[0x7fffff7af81f]
+fcitx(+0x14c7)[0x5555555554c7]
+/lib/x86_64-linux-gnu/libc.so.6(+0x2a1ca)[0x7fffff5821ca]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x8b)[0x7fffff58228b]
+fcitx(+0x1585)[0x555555555585]
+
+==> /tmp/tmp.0kteWa1c7J/proxy.log <==
+
+exit_status: 1
+checks: {"exit_status_1": true, "gtk_phase0_timeout": true, "no_gtk_pass": true, "no_protocol_failures": true, "protocol_pass_count_8": true}

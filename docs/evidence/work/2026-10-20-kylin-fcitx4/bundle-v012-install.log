@@ -1,0 +1,18 @@
+F: Warning: Treating remote fetch error as non-fatal since runtime/org.gnome.Platform/x86_64/50 is already installed: No such ref 'runtime/org.gnome.Platform/x86_64/50' in remote platform-origin
+
+dev.a3s.AsterDream permissions:
+    ipc	network	fallback-x11	pulseaudio
+    wayland	x11	dri	file access [1]
+    dbus access [2]
+
+    [1] home, xdg-config/fontconfig:ro, xdg-data/fonts:ro, xdg-download
+    [2] org.fcitx.*, org.freedesktop.IBus, org.freedesktop.Notifications,
+        org.freedesktop.portal.Desktop, org.freedesktop.portal.Documents,
+        org.freedesktop.portal.FileChooser
+
+
+ 1.	   	dev.a3s.AsterDream	50	i	asterdream-origin	0 bytes
+
+
+Installing?
+Installation complete.

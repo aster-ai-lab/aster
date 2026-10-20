@@ -565,6 +565,12 @@ pub enum AgentEvent {
     #[serde(rename = "error")]
     Error { message: String },
 
+    /// Execution identity is unresolved; blind retries may duplicate effects.
+    #[serde(rename = "tool_effect_unresolved")]
+    ToolEffectUnresolved {
+        error: crate::harness_loop::ToolEffectUnresolved,
+    },
+
     /// Tool execution requires confirmation (HITL)
     #[serde(rename = "confirmation_required")]
     ConfirmationRequired {
@@ -977,6 +983,22 @@ pub enum AgentEvent {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         correlation_id: Option<String>,
     },
+}
+
+impl AgentEvent {
+    pub(crate) fn execution_error(error: &anyhow::Error) -> Self {
+        match error
+            .chain()
+            .find_map(|cause| cause.downcast_ref::<crate::harness_loop::ToolEffectUnresolved>())
+        {
+            Some(error) => Self::ToolEffectUnresolved {
+                error: error.clone(),
+            },
+            None => Self::Error {
+                message: error.to_string(),
+            },
+        }
+    }
 }
 
 /// Result of agent execution

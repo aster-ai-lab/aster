@@ -19,6 +19,10 @@ pub(super) fn runner_result_value(
     exit_code: i32,
     metadata: Option<&serde_json::Value>,
 ) -> serde_json::Value {
+    let evidence_incomplete = metadata
+        .and_then(|value| value.get("evidence_incomplete"))
+        .and_then(serde_json::Value::as_bool)
+        == Some(true);
     let images: Vec<_> = images.iter().map(|image| serde_json::json!({
         "media_type": image.media_type,
         "data": base64::Engine::encode(&base64::engine::general_purpose::STANDARD, &image.data),
@@ -29,7 +33,8 @@ pub(super) fn runner_result_value(
         "is_error": is_error,
         "images": images,
         "exit_code": exit_code,
-        "outcome": if is_error { ToolExecutionOutcome::Failed } else { ToolExecutionOutcome::Succeeded },
+        "outcome": if evidence_incomplete { ToolExecutionOutcome::Unknown }
+            else if is_error { ToolExecutionOutcome::Failed } else { ToolExecutionOutcome::Succeeded },
         "workspace_child": metadata.and_then(|value| value.get("workspace_child")).and_then(|value| value.as_str()),
         "observation_incomplete": metadata.and_then(|value| value.get("observation_incomplete")).and_then(|value| value.as_bool()).unwrap_or(false),
         "metadata": metadata,
@@ -481,14 +486,31 @@ pub(super) async fn prepare_tools(
                         ),
                     }
                 }
-                Err(error) => (
-                    serde_json::Value::String(error.to_string()),
-                    ToolExecutionOutcome::Unknown,
-                    None,
-                    None,
-                    true,
-                    false,
-                ),
+                Err(error) => {
+                    let message = serde_json::Value::String(error.to_string());
+                    // No envelope and no child: a read-only body did not start
+                    // a process, so it owns no workspace delta. Unknown would
+                    // freeze the turn. A mutating call stays Unknown.
+                    if read_only {
+                        (
+                            message,
+                            ToolExecutionOutcome::Failed,
+                            Some(1),
+                            None,
+                            false,
+                            true,
+                        )
+                    } else {
+                        (
+                            message,
+                            ToolExecutionOutcome::Unknown,
+                            None,
+                            None,
+                            true,
+                            false,
+                        )
+                    }
+                }
             };
             if source_incomplete {
                 effects.completeness = ToolObservationCompleteness::Incomplete;
@@ -523,6 +545,20 @@ pub(super) async fn prepare_tools(
                 effects
                     .unresolved_external_operations
                     .push(format!("workspace-child:{child}"));
+            }
+            if prepared.tool_name == "batch" {
+                let envelope = output.as_str().and_then(decode_fact_tool_result);
+                for id in workspace_child_bindings(
+                    "batch",
+                    envelope.as_ref().and_then(|value| value.metadata.as_ref()),
+                )
+                .into_keys()
+                {
+                    let key = format!("workspace-child:{id}");
+                    if !effects.unresolved_external_operations.contains(&key) {
+                        effects.unresolved_external_operations.push(key);
+                    }
+                }
             }
             let mut result = ToolExecutionResultV1 {
                 schema: TOOL_RESULT_SCHEMA.into(),
@@ -667,6 +703,9 @@ pub(super) struct ReceiptDebt {
     tool_fact_indices: Vec<usize>,
     background_fact_indices: Vec<usize>,
     pub settled_workspace_children: std::collections::BTreeSet<String>,
+    /// Legacy observation-only cache keys settled by an exact terminal and
+    /// its original spawn binding. The value is the required terminal fact.
+    pub settled_observation_gaps: std::collections::BTreeMap<String, (String, String)>,
 }
 
 struct CacheProofEvent {
@@ -972,37 +1011,29 @@ fn fold_receipts(facts: &[a3s_effect::Fact], include_covered: bool) -> ReceiptDe
                                 debt.add_validated_uncertainty(index, operation.clone());
                             }
                             let envelope = result.output.as_str().and_then(decode_fact_tool_result);
-                            let source_run = envelope
-                                .as_ref()
-                                .and_then(|envelope| envelope.metadata.as_ref())
-                                .and_then(|metadata| metadata.get("source_run"))
-                                .and_then(|value| value.as_str());
-                            let effect_run = envelope
-                                .as_ref()
-                                .and_then(|envelope| envelope.metadata.as_ref())
-                                .and_then(|metadata| metadata.get("run"))
-                                .and_then(|value| value.as_str());
+                            let bindings = workspace_child_bindings(
+                                &value.tool_name,
+                                envelope
+                                    .as_ref()
+                                    .and_then(|envelope| envelope.metadata.as_ref()),
+                            );
                             for child in result
                                 .effects
                                 .unresolved_external_operations
                                 .iter()
                                 .filter(|key| key.starts_with("workspace-child:"))
                             {
-                                let binding = result
-                                    .identity
-                                    .admission
-                                    .as_ref()
-                                    .filter(|admission| {
-                                        Some(admission.run_id.as_str()) == source_run
-                                    })
-                                    .filter(|_| {
-                                        envelope.as_ref().and_then(|envelope| {
-                                            envelope.workspace_child.as_deref()
-                                        }) == child.strip_prefix("workspace-child:")
-                                    })
-                                    .and_then(|_| {
-                                        Some((source_run?.to_string(), effect_run?.to_string()))
-                                    });
+                                let binding =
+                                    child
+                                        .strip_prefix("workspace-child:")
+                                        .and_then(|id| bindings.get(id))
+                                        .cloned()
+                                        .flatten()
+                                        .filter(|(source, _)| {
+                                            result.identity.admission.as_ref().is_some_and(
+                                                |admission| admission.run_id == *source,
+                                            )
+                                        });
                                 if child_bindings
                                     .get(child)
                                     .is_some_and(|previous| previous != &binding)
@@ -1189,11 +1220,9 @@ fn fold_receipts(facts: &[a3s_effect::Fact], include_covered: bool) -> ReceiptDe
                     if !evidence_valid {
                         debt.invalidate_evidence(format!("background-evidence:{id}"));
                     }
-                    let complete = background_terminal_settled(&fact.payload)
-                        && observation.as_ref().is_some_and(|effects| {
-                            effects.completeness == ToolObservationCompleteness::Complete
-                                && effects.unresolved_external_operations.is_empty()
-                        })
+                    let complete = evidence_valid
+                        && background_terminal_settled(&fact.payload)
+                        && observation.is_some()
                         && paths_match
                         && fact.payload.get("task_id").and_then(|value| value.as_str()) == Some(id);
                     if evidence_valid {
@@ -1227,13 +1256,6 @@ fn fold_receipts(facts: &[a3s_effect::Fact], include_covered: bool) -> ReceiptDe
                         ));
                         background_bindings.insert(child, binding);
                         if let Some(effects) = observation.as_ref() {
-                            if effects.completeness == ToolObservationCompleteness::Incomplete {
-                                debt.add_validated_background_uncertainty(
-                                    index,
-                                    &fact.key,
-                                    format!("background-receipt-incomplete:{}", fact.key),
-                                );
-                            }
                             for operation in &effects.unresolved_external_operations {
                                 debt.add_validated_background_uncertainty(
                                     index,
@@ -1285,8 +1307,18 @@ fn fold_receipts(facts: &[a3s_effect::Fact], include_covered: bool) -> ReceiptDe
         {
             let required = terminal_at.max(*spawn_at);
             debt.background_required_proof_indices
-                .insert(fact_key, required);
+                .insert(fact_key.clone(), required);
             if complete {
+                debt.settled_observation_gaps.insert(
+                    format!("background-receipt-incomplete:{fact_key}"),
+                    (fact_key.clone(), child.clone()),
+                );
+                if let Some(id) = child.strip_prefix("workspace-child:") {
+                    debt.settled_observation_gaps.insert(
+                        format!("background-evidence:{id}"),
+                        (fact_key, child.clone()),
+                    );
+                }
                 debt.settled_child_proof_indices
                     .entry(child)
                     .and_modify(|earlier| *earlier = (*earlier).min(required))
@@ -1329,6 +1361,9 @@ fn fold_receipts(facts: &[a3s_effect::Fact], include_covered: bool) -> ReceiptDe
         debt.validated_uncertainty.remove(key);
     }
     debt.settled_workspace_children = settled_children;
+    // An original explicit external operation with the same opaque key wins.
+    debt.settled_observation_gaps
+        .retain(|key, _| !debt.unresolved.contains(key));
     debt.paths
         .retain(|path| !crate::porcelain::is_harness_path(path));
     debt.paths.sort();
@@ -1398,7 +1433,6 @@ fn background_terminal_settled(payload: &serde_json::Value) -> bool {
     if flag("process_settled") != Some(true)
         || flag("execution_future_released") != Some(true)
         || flag("output_facts_retained") != Some(true)
-        || flag("observation_incomplete") != Some(false)
         || flag("timed_out") != Some(false)
     {
         return false;
@@ -1450,14 +1484,57 @@ fn model_position(key: &str) -> Option<(u64, u64)> {
 #[cfg(test)]
 mod tests;
 
+// Batch nesting is refused at admission; only its bounded direct results are evidence.
+fn workspace_child_bindings(
+    tool: &str,
+    metadata: Option<&serde_json::Value>,
+) -> std::collections::BTreeMap<String, Option<(String, String)>> {
+    let mut bindings = std::collections::BTreeMap::new();
+    let nested = metadata
+        .filter(|_| tool == "batch")
+        .and_then(|value| value.get("results"))
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+        .take(crate::tools::builtin::MAX_BATCH_INVOCATIONS)
+        .filter_map(|value| value.get("metadata"));
+    for value in metadata.into_iter().chain(nested) {
+        let Some(id) = value
+            .get("workspace_child")
+            .and_then(serde_json::Value::as_str)
+            .filter(|id| !id.is_empty())
+        else {
+            continue;
+        };
+        let binding = value
+            .get("source_run")
+            .and_then(serde_json::Value::as_str)
+            .filter(|source| !source.is_empty())
+            .zip(
+                value
+                    .get("run")
+                    .and_then(serde_json::Value::as_str)
+                    .filter(|run| !run.is_empty()),
+            )
+            .map(|(source, run)| (source.to_owned(), run.to_owned()));
+        bindings
+            .entry(id.to_owned())
+            .and_modify(|prior| {
+                if *prior != binding {
+                    *prior = None;
+                }
+            })
+            .or_insert(binding);
+    }
+    bindings
+}
+
 pub(super) fn observe_live_child(
     ledger: &Arc<Mutex<crate::harness_loop::MutationLedger>>,
     metadata: Option<&serde_json::Value>,
+    tool: &str,
 ) {
-    if let Some(child) = metadata
-        .and_then(|value| value.get("workspace_child"))
-        .and_then(|value| value.as_str())
-    {
+    for child in workspace_child_bindings(tool, metadata).into_keys() {
         ledger
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner)

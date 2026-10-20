@@ -177,11 +177,15 @@ impl crate::agent::TurnEngine {
             }
             crate::harness_loop::CompletionGate::Incomplete { message } => {
                 if let Some(tx) = event_tx {
-                    tx.send(AgentEvent::Error {
-                        message: message.clone(),
-                    })
-                    .await
-                    .ok();
+                    let event = match crate::harness_loop::ToolEffectUnresolved::from_ledger(
+                        &state.mutations,
+                    ) {
+                        Some(error) => AgentEvent::ToolEffectUnresolved { error },
+                        None => AgentEvent::Error {
+                            message: message.clone(),
+                        },
+                    };
+                    tx.send(event).await.ok();
                 }
                 return CompletionFlow::Blocked(message);
             }

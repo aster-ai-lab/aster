@@ -925,6 +925,52 @@ pub(super) fn dispatch_task_result(result: TaskResult, app: &mut AppView) -> Vec
             }
             vec![]
         }
+        TaskResult::ModeSwitchPromptFailed {
+            agent_id,
+            session_id,
+            prompt_id,
+            text,
+            error,
+        } => {
+            if let Some(agent) = app.agents.get_mut(&agent_id)
+                && agent.session.session_id.as_ref() == Some(&session_id)
+                && agent.session.current_prompt_id.as_deref() == Some(prompt_id.as_str())
+            {
+                agent.plan_mode_pending = None;
+                agent.session_mode_pending = None;
+                agent.pending_post_turn_commit = None;
+                let restored = format!("/plan {text}");
+                if let Some(mut stashed) = agent.session.in_flight_prompt.take() {
+                    stashed.text = restored;
+                    for chip in &mut stashed.chip_elements {
+                        chip.range.start += "/plan ".len();
+                        chip.range.end += "/plan ".len();
+                    }
+                    stashed
+                        .images
+                        .extend(std::mem::take(&mut agent.prompt.images));
+                    let target = if agent.prompt.text().is_empty() {
+                        super::turn::RewindTarget::ReplaceComposer
+                    } else {
+                        super::turn::RewindTarget::MergeIntoDraft
+                    };
+                    super::turn::rewind_in_flight_prompt(agent, stashed, &prompt_id, target);
+                } else {
+                    let draft = agent.prompt.text().to_string();
+                    agent.prompt.set_text(&if draft.is_empty() {
+                        restored
+                    } else {
+                        format!("{restored}\n\n{draft}")
+                    });
+                    agent.session.finish_turn(&mut agent.scrollback);
+                    agent.prompt_ack = None;
+                    agent.note_rewound_prompt(&prompt_id);
+                }
+                super::turn::finish_turn_view(agent, crate::app::cancel_latency::TurnEnd::Aborted);
+                agent.show_toast(&format!("Mode change failed. Message restored: {error}"));
+            }
+            vec![]
+        }
         TaskResult::ConsentPersistFailed { error } => {
             tracing::warn!(%error, "consent answer not persisted; the notice re-arms next launch");
             app.show_toast(
@@ -2250,6 +2296,27 @@ pub(super) fn dispatch_task_result(result: TaskResult, app: &mut AppView) -> Vec
         TaskResult::SettingPersisted { key, value } => {
             tracing::trace!(target: "settings", ?key, ?value, "setting persisted");
             settings::handle_setting_persisted(app, key, value);
+            vec![]
+        }
+        TaskResult::PermissionModeFailed { session_id, error } => {
+            let active = if let ActiveView::Agent(id) = app.active_view {
+                app.agents
+                    .get(&id)
+                    .is_some_and(|agent| agent.session.session_id.as_ref() == Some(&session_id))
+            } else {
+                false
+            };
+            if let Some(agent) = find_agent_by_session_id(&mut app.agents, &session_id.0) {
+                agent.session.yolo_mode = false;
+                agent.session.auto_mode = false;
+                agent.deferred_permission_mode = None;
+                agent.show_toast(&error);
+            }
+            if active {
+                app.default_yolo = false;
+                app.current_ui.permission_mode = Some("default".into());
+            }
+            super::settings::ui::refresh_open_settings_modals(app);
             vec![]
         }
         TaskResult::SettingPersistFailed {

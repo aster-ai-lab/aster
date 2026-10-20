@@ -1,0 +1,16 @@
+{"action": ["click", "1250", "46"], "command": ["xdotool", "mousemove", "1250", "46", "click", "1"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["focus"], "command": ["xdotool", "windowfocus", "--sync", "2097154"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["click", "720", "510"], "command": ["xdotool", "mousemove", "720", "510", "click", "1"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["focus"], "command": ["xdotool", "windowfocus", "--sync", "2097154"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["click", "710", "530"], "command": ["xdotool", "mousemove", "710", "530", "click", "1"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["im-open"], "command": ["fcitx-remote", "-o"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["keys", "n", "i", "h", "a", "o"], "command": ["xdotool", "key", "--clearmodifiers", "--delay", "120", "n", "i", "h", "a", "o"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["keys", "space"], "command": ["xdotool", "key", "--clearmodifiers", "--delay", "120", "space"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["focus"], "command": ["xdotool", "windowfocus", "--sync", "2097154"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["click", "710", "530"], "command": ["xdotool", "mousemove", "710", "530", "click", "1"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["keys", "n", "i", "h", "a", "o", "space"], "command": ["xdotool", "key", "--clearmodifiers", "--delay", "120", "n", "i", "h", "a", "o", "space"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["keys", "n", "i"], "command": ["xdotool", "key", "--clearmodifiers", "--delay", "120", "n", "i"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["keys", "Escape"], "command": ["xdotool", "key", "--clearmodifiers", "--delay", "120", "Escape"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["keys", "h", "a", "o", "space"], "command": ["xdotool", "key", "--clearmodifiers", "--delay", "120", "h", "a", "o", "space"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["keys", "ctrl+a", "BackSpace", "n", "i", "h", "a", "o"], "command": ["xdotool", "key", "--clearmodifiers", "--delay", "120", "ctrl+a", "BackSpace", "n", "i", "h", "a", "o"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["keys", "Return"], "command": ["xdotool", "key", "--clearmodifiers", "--delay", "120", "Return"], "returncode": 0, "stdout": "", "stderr": ""}

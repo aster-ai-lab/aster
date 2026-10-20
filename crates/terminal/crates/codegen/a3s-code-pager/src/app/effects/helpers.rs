@@ -286,7 +286,8 @@ pub(super) fn format_acp_error(err: &acp::Error, is_api_key_auth: bool) -> Strin
         .unwrap_or_else(|| err.to_string());
     crate::app::error_display::format_request_failure(
             http_status_from_error(err),
-            crate::app::error_display::wire_error_kind(error_kind_str_from_error(err)),
+            crate::app::error_display::wire_error_kind(error_kind_str_from_error(err)
+                .or_else(|| err.data.as_ref()?.get("kind")?.as_str())),
             &raw,
         )
         .message()
@@ -501,6 +502,14 @@ pub(crate) struct SessionFlags {
     pub resume_local_miss: Option<String>,
 }
 impl SessionFlags {
+    pub(crate) fn permission_posture(&self) -> Option<&'static str> {
+        crate::app::a3s_code_active().then_some(self.effective_permission_posture())
+    }
+
+    pub(crate) fn effective_permission_posture(&self) -> &'static str {
+        if self.plan_mode { "plan" } else if self.yolo_mode { "yolo" }
+        else if self.auto_mode { "auto" } else { "default" }
+    }
     /// Resolve the agent profile name from the flags.
     /// Returns `None` for the default `a3s-build` profile (no `_meta` needed; it already includes TaskTool).
     /// Chat mode never injects a Build profile (remote owns agent behavior).
@@ -520,6 +529,9 @@ impl SessionFlags {
     /// `--no-ask-user` always forces `askUserQuestion: false` into the meta, even when paired with `GROK_AGENT`.
     pub(crate) fn to_meta(&self) -> Option<acp::Meta> {
         let mut meta = serde_json::Map::new();
+        if let Some(posture) = self.permission_posture() {
+            meta.insert("permissionPosture".into(), posture.into());
+        }
         if self.chat_mode {
             if self.plan_mode || self.agent_override.is_some()
                 || std::env::var("GROK_AGENT").ok().is_some_and(|s| !s.trim().is_empty())
@@ -1417,8 +1429,23 @@ pub(crate) async fn persist_permission_mode_and_notify(
     canonical: &'static str,
     session_id: Option<acp::SessionId>,
     persist: PermissionModePersist,
+    effective_posture: Option<&'static str>,
     tx: AcpAgentTx,
 ) -> TaskResult {
+    if let Some(posture) = effective_posture {
+        if let Some(id) = session_id {
+            if let Err(error) = acp_send(acp::SetSessionModeRequest::new(id.clone(), posture), &tx).await {
+                return TaskResult::PermissionModeFailed {
+                    session_id: id,
+                    error: format!("Permission mode was not confirmed: {error}. Next task will request a restrictive mode."),
+                };
+            }
+        }
+        let outcome = a3s_code_shell::util::config::update_config(|cfg| {
+            cfg.ui.permission_mode = Some(canonical.to_string());
+        }).await.map_err(|error| format!("Session mode applied; preference was not saved: {error}"));
+        return route_permission_mode_result(outcome, PermissionModePersist::BestEffort, canonical);
+    }
     let config_str: &'static str = canonical;
     let notify_first = session_id.is_some()
         && matches!(persist, PermissionModePersist::BestEffort);

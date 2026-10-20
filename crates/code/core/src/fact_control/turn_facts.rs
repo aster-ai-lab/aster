@@ -214,7 +214,20 @@ pub(super) fn checkpoint_mutation_cache_covered(
             return false;
         }
     }
-    let (tool_keys, background_keys) = checkpoint.convergence.mutations.checkpoint_receipt_keys();
+    let mut mutations = checkpoint.convergence.mutations.clone();
+    let (tool_keys, background_keys) = mutations.checkpoint_receipt_keys();
+    let tool_keys = tool_keys.clone();
+    let mut background_keys = background_keys.clone();
+    let mut settled = std::collections::BTreeSet::new();
+    for (key, (fact, child)) in &debt.settled_observation_gaps {
+        if mutations.checkpoint_uncertainty_keys().contains(key) {
+            background_keys.insert(fact.clone());
+            settled.extend([key.clone(), child.clone()]);
+        }
+    }
+    // Schema, session and admission bindings were validated above. Legacy
+    // gaps still require their exact terminal at the chosen cache boundary.
+    mutations.restore_unresolved_tool_effects(Default::default(), &settled);
     let mut missing_tools = tool_keys.clone();
     let mut missing_background = background_keys.clone();
     let mut missing_reports = checkpoint
@@ -231,13 +244,8 @@ pub(super) fn checkpoint_mutation_cache_covered(
     // compare its indexed states once, rather than folding every prefix or
     // repeatedly scanning a growing ledger.
     let mut original = crate::harness_loop::MutationLedger::default();
-    let mut proof = debt.cache_proof_cursor(
-        checkpoint
-            .convergence
-            .mutations
-            .checkpoint_uncertainty_keys(),
-        background_keys,
-    );
+    let mut proof =
+        debt.cache_proof_cursor(mutations.checkpoint_uncertainty_keys(), &background_keys);
     for projection in &debt.projection_order {
         let proof_ready = proof.advance_to(projection);
         match projection {
@@ -255,8 +263,7 @@ pub(super) fn checkpoint_mutation_cache_covered(
                             &envelope.metadata,
                         );
                         recorded.retain(|report| {
-                            report.effect_digest.as_deref()
-                                == Some(checkpoint.convergence.mutations.digest())
+                            report.effect_digest.as_deref() == Some(mutations.digest())
                         });
                         missing_reports.retain(|cached| !recorded.contains(cached));
                     }
@@ -275,17 +282,11 @@ pub(super) fn checkpoint_mutation_cache_covered(
             && proof_ready
         {
             let uncertainty = proof.into_proven_uncertainty();
-            let negative_cache_covered = checkpoint
-                .convergence
-                .mutations
-                .checkpoint_negative_cache_covered_by(&uncertainty);
+            let negative_cache_covered =
+                mutations.checkpoint_negative_cache_covered_by(&uncertainty);
             original
                 .restore_unresolved_tool_effects(uncertainty, &std::collections::BTreeSet::new());
-            return negative_cache_covered
-                || checkpoint
-                    .convergence
-                    .mutations
-                    .checkpoint_cache_covered_by(&original);
+            return negative_cache_covered || mutations.checkpoint_cache_covered_by(&original);
         }
     }
     // A final preparation or negative input may follow the last receipt.
@@ -296,16 +297,9 @@ pub(super) fn checkpoint_mutation_cache_covered(
         && proof.finish()
     {
         let uncertainty = proof.into_proven_uncertainty();
-        let negative_cache_covered = checkpoint
-            .convergence
-            .mutations
-            .checkpoint_negative_cache_covered_by(&uncertainty);
+        let negative_cache_covered = mutations.checkpoint_negative_cache_covered_by(&uncertainty);
         original.restore_unresolved_tool_effects(uncertainty, &std::collections::BTreeSet::new());
-        negative_cache_covered
-            || checkpoint
-                .convergence
-                .mutations
-                .checkpoint_cache_covered_by(&original)
+        negative_cache_covered || mutations.checkpoint_cache_covered_by(&original)
     } else {
         false
     }
@@ -373,7 +367,9 @@ pub(super) fn replay_unsettled_mutations_from_facts(
             }
         }
     }
-    ledger.restore_unresolved_tool_effects(debt.unresolved, &debt.settled_workspace_children);
+    let mut settled = debt.settled_workspace_children;
+    settled.extend(debt.settled_observation_gaps.into_keys());
+    ledger.restore_unresolved_tool_effects(debt.unresolved, &settled);
 }
 
 /// Record the `(provider, digest)` identity of every context section this

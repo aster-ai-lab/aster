@@ -1,0 +1,193 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on build directory
+   Compiling a3s-oci-sdk v0.3.2 (/Users/roylin/code/aster/crates/oci-runtime/crates/sdk)
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 30s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 169 tests
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::completion_gate_to_host_retains_typed_reconciliation ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::originally_settled_legacy_history_stays_readable_without_positive_cache_claims ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::exact_original_unknown_receipt_covers_its_cache_without_forgiving_debt ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::cached_prepared_debt_waits_for_its_actual_later_original_boundary ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::a_future_terminal_does_not_erase_prepared_debt_at_the_exact_cached_prefix ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::exact_prepared_only_debt_proves_its_negative_cache_without_a_terminal_receipt ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::exact_original_write_and_verifier_receipts_cover_a_passed_cache ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::prior_settled_path_does_not_rebind_a_new_runs_distinct_effect_report ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::an_original_write_without_its_verifier_cannot_authorize_cached_passed_reports ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_lifecycle::actual_original_log_io_fault_refuses_resume_before_provider_and_retains_source_cache ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::prior_run_settled_receipts_keep_their_own_frozen_binding_in_cache_coverage ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::conflicting_detached_binding_fails_before_execution_and_retains_close_failure ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::detached_binding_uses_the_pinned_capability_cognitive_and_control_identity ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_identity::reopened_memory_session_refuses_exact_recovery_target_equal_to_source ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_lifecycle::distinct_target_runs_reuse_one_negative_identity_but_changed_source_content_does_not ... ok
+test agent_api::direct_tools::governed_tests::runtime_policy_retains_visibility_and_the_hosts_snapshot_boundary ... ok
+test agent_api::direct_tools::governed_tests::runtime_posture_and_host_deny_both_govern_direct_calls ... ok
+test event_protocol::tests::envelope_rejects_unsupported_version_and_projects_confirmation_arms ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::unrelated_prepared_debt_does_not_invalidate_exact_cache_provenance ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::valid_older_cache_is_covered_before_a_later_known_write ... ok
+test event_protocol::tests::envelope_round_trips_and_projects_streaming_tool_and_turn_events ... ok
+test event_protocol::tests::event_type_catalog_is_non_empty_and_stable ... ok
+test event_protocol::tests::run_event_envelope_attaches_replay_metadata ... ok
+test event_protocol::tests::projection_covers_subagent_and_agent_end_verification_summary ... ok
+test event_protocol::tests::tool_request_bound_projection_keeps_ids ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::missing_log_and_compacted_checkpoint_preserve_unknown_after_history_import ... ok
+test fact_control::receipts::tests::a_captured_incomplete_receipt_is_not_replayed_as_an_invocation_obligation ... ok
+test fact_control::receipts::tests::a_marker_only_covers_the_receipts_it_explicitly_names ... ok
+test fact_control::receipts::tests::admission_refused_background_settles_without_an_exit_code ... ok
+test fact_control::receipts::tests::a_settled_background_observation_gap_is_not_an_unresolved_execution ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::retained_end_and_external_end_share_the_actual_byte_check_summary ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::original_log_wins_for_later_known_bytes_and_preserves_all_unknowns_past_marker ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::failed_recovery_seed_closes_bound_run_before_releasing_session_slots ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_lifecycle::full_log_negative_survives_compaction_settlement_later_original_proof_and_current_passed ... ok
+test fact_control::receipts::tests::batch_evidence::lost_batch_lifecycle_evidence_cannot_be_successful_execution ... ok
+test fact_control::receipts::tests::batch_evidence::batched_background_identity_settles_only_with_its_matching_terminal ... ok
+test fact_control::receipts::tests::background_evidence_does_not_clear_wrong_run_or_incomplete_terminals ... ok
+test fact_control::receipts::tests::batch_evidence::wrapped_reconciliation_failure_keeps_its_typed_event_and_identity ... ok
+test fact_control::receipts::tests::argument_validation::permission_denial_with_invalid_arguments_remains_denied_without_execution ... ok
+test fact_control::receipts::tests::argument_validation::invalid_original_arguments_fail_before_hook_or_tool_execution ... ok
+test fact_control::receipts::tests::argument_validation::invalid_rewritten_arguments_preserve_both_inputs_and_hook_uncertainty ... ok
+test fact_control::receipts::tests::cache_proof::proof_cursor_refuses_invalid_originals_and_regressing_projection_boundaries ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_identity::reopened_file_session_refuses_exact_recovery_target_equal_to_source ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::reports_only_and_unreadable_original_logs_remain_unproved ... ok
+test fact_control::receipts::tests::cache_provenance::exact_original_unknown_and_incomplete_receipts_prove_cached_uncertainty ... ok
+test fact_control::receipts::tests::cache_provenance::cached_preparation_after_last_receipt_requires_the_actual_final_log_boundary ... ok
+test fact_control::receipts::tests::cache_provenance::background_terminal_cannot_borrow_a_later_exact_spawn_binding_at_its_earlier_boundary ... ok
+test fact_control::receipts::tests::cache_provenance::later_terminal_cannot_erase_the_original_pending_interval_at_a_verified_byte_prefix ... ok
+test fact_control::receipts::tests::cache_provenance::malformed_and_conflicting_originals_are_integrity_errors_not_honest_unknown ... ok
+test fact_control::receipts::tests::cache_provenance::purely_negative_cache_uses_original_typed_preparation_without_inventing_receipts ... ok
+test fact_control::receipts::tests::a_call_prepared_before_another_unknown_cannot_mutate_or_run_twice ... ok
+test fact_control::receipts::tests::cache_provenance::selected_prefix_never_imports_future_or_untyped_uncertainty ... ok
+test fact_control::receipts::tests::cancelled_background_can_settle_without_inventing_complete_output ... ok
+test fact_control::receipts::tests::durable_background_terminal_settles_only_its_exact_child ... ok
+test fact_control::receipts::tests::cache_provenance::typed_background_uncertainty_is_distinct_from_malformed_fields_and_bindings ... ok
+test fact_control::receipts::tests::cache_provenance::actual_write_and_host_verifier_provenance_survive_unrelated_prepared_uncertainty ... ok
+test fact_control::receipts::tests::exact_confirmation_and_budget_refusals_prove_zero_execution ... ok
+test fact_control::receipts::tests::execution_availability::hook_without_argument_rewrite_still_rechecks_backend_availability ... ok
+test fact_control::receipts::tests::execution_availability::initialization_refusal_in_an_unobservable_workspace_does_not_poison_later_turns ... ok
+test fact_control::receipts::tests::execution_availability::native_refusal_in_an_unobservable_workspace_does_not_poison_later_turns ... ok
+test fact_control::receipts::tests::execution_availability::rewritten_unavailable_invocation_retains_the_input_hooks_uncertainty ... ok
+test fact_control::receipts::tests::execution_availability::unconfirmed_ask_keeps_a_pre_spawn_refusal ... ok
+test fact_control::receipts::tests::incomplete_paths_and_external_unknown_are_distinct_from_a_local_scan ... ok
+test fact_control::receipts::tests::failed_and_cancelled_writes_restore_actual_byte_identity_once ... ok
+test fact_control::receipts::tests::execution_availability::unavailable_backend_refuses_before_input_hooks_without_creating_debt ... ok
+test fact_control::receipts::tests::legacy_unsettled_is_unknown_but_settled_legacy_history_stays_readable ... ok
+test fact_control::receipts::tests::malformed_cross_call_and_missing_preparation_results_fail_closed ... ok
+test fact_control::receipts::tests::mixed_background_and_foreground_receipts_project_in_fact_order ... ok
+test fact_control::receipts::tests::missing_admission_and_permission_refusal_execute_nothing ... ok
+test fact_control::receipts::tests::native_artifact_scope::parallel_prepared_invocations_never_inherit_or_share_native_evidence ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_lifecycle::exact_target_publisher_cleanup_never_deletes_source_or_discharges_original_negative ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::exact_background_terminals_reconcile_legacy_observation_only_cache_keys ... ok
+test fact_control::receipts::tests::preparation_and_unknown_cannot_be_forgiven_by_a_turn_marker_or_scan ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::detached_live_controls_apply_exact_steer_and_settle_parked_interrupt ... ok
+test fact_control::receipts::tests::byte_receipts_keep_all_paths_and_explicit_deletion ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::cached_passed_report_requires_the_original_accepted_bound_report ... ok
+test fact_control::receipts::tests::protocol_one_unprepared_call_is_proven_unexecuted_but_preparation_opens_debt ... ok
+test fact_control::receipts::tests::readonly_effect::all_read_batch_and_program_do_not_watch_or_freeze_a_later_read ... ok
+test fact_control::receipts::tests::readonly_effect::read_only_execution_error_settles_failed_and_the_turn_can_close ... ok
+test fact_control::receipts::tests::argument_validation::valid_unchanged_arguments_still_execute_once ... ok
+test fact_control::receipts::tests::recovery_seed_and_legacy_reset_preserve_the_authoritative_prefix ... ok
+test fact_control::receipts::tests::preparation_binds_the_actual_run_and_refuses_frozen_generation_drift ... ok
+test fact_control::receipts::tests::tool_budget::denied_tool_budget_prevents_execution_and_keeps_original_typed_receipt ... ok
+test fact_control::receipts::tests::tool_budget::permission_refusal_and_precancel_do_not_enter_the_tool_budget ... ok
+test fact_control::receipts::tests::execution_availability::identical_error_after_dispatch_remains_unknown ... ok
+test fact_control::receipts::tests::executed_error_text_cannot_prove_zero_execution_or_discharge_external_debt ... ok
+test fact_control::receipts::tests::cache_proof::large_late_pure_negative_proof_visits_original_events_once_and_waits_for_actual_tail ... ok
+test fact_control::receipts::tests::tool_budget_cancel::cancellation_drops_the_original_pending_budget_future_before_tool_effects ... ok
+test fact_control::receipts::tests::tool_budget_cancel::cancellation_wins_over_a_ready_original_budget_decision ... ok
+test harness_loop::background_receipt_tests::a_background_path_budget_does_not_become_unresolved_debt ... ok
+test harness_loop::background_receipt_tests::background_fact_projection_binds_real_bytes_mode_and_exact_fact_key_once ... ok
+test harness_loop::background_receipt_tests::background_log_can_reproject_after_conservative_checkpoint_restore ... ok
+test harness_loop::background_receipt_tests::full_log_replay_preserves_later_foreground_after_an_unprojected_background ... ok
+test harness_loop::background_receipt_tests::incomplete_invalid_and_external_background_observations_remain_debt ... ok
+test fact_control::receipts::tests::preparation_resolves_hooks_once_binds_effective_input_and_rechecks_approval ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::incomplete_or_mismatched_original_evidence_cannot_promote_a_passed_cache ... ok
+test porcelain::receipt_tests::a_caller_budget_is_remaining_bytes_not_a_fresh_per_file_allowance ... ok
+test fact_control::receipts::tests::readonly_effect::unknown_mutating_call_keeps_one_identity_and_blocks_later_writes ... ok
+test fact_control::receipts::tests::pre_spawn::a_capture_failure_after_the_child_starts_stays_unknown ... ok
+test fact_control::receipts::tests::tool_budget::allowed_tool_budget_is_checked_once_before_the_original_effect ... ok
+test fact_control::receipts::tests::tool_budget::soft_tool_budget_preserves_execution_and_reports_the_original_limit ... ok
+test porcelain::receipt_tests::a_large_status_list_is_a_digest_in_the_prepared_baseline ... ok
+test porcelain::receipt_tests::a_non_git_read_failure_stays_incomplete ... ok
+test porcelain::receipt_tests::a_rename_cannot_cross_the_path_bound_and_malformed_status_cannot_panic ... ok
+test porcelain::receipt_tests::absolute_parent_and_empty_paths_are_refused_while_absence_is_a_typed_identity ... ok
+test porcelain::receipt_tests::an_oversized_sparse_file_is_refused_before_reading_any_bytes ... ok
+test porcelain::receipt_tests::directory_eof_resets_stale_errno_and_keeps_the_maximum_legal_name ... ok
+test porcelain::receipt_tests::failed_directory_and_stat_reads_are_explicitly_incomplete ... ok
+test porcelain::receipt_tests::failed_reads_keep_spent_bytes_and_never_produce_a_digest ... ok
+test porcelain::receipt_tests::git_output_read_failure_cannot_become_an_empty_success ... ok
+test porcelain::receipt_tests::git_output_stops_at_its_byte_bound_and_never_returns_a_prefix_as_success ... ok
+test porcelain::receipt_tests::git_parsers_bound_paths_and_do_not_accept_overflow_as_complete ... ok
+test fact_control::receipts::tests::prepared_batch_observes_each_actual_execution_boundary_and_failed_bytes ... ok
+test porcelain::bounded_stamp_tests::an_unchanged_large_file_does_not_poison_the_next_observation ... ok
+test fact_control::receipts::tests::pre_spawn::a_shell_that_never_starts_does_not_block_a_later_tool ... ok
+test fact_control::receipts::tests::workspace_boundary::known_workspace_boundary_refusal_does_not_block_a_later_tool_or_completion ... ok
+test porcelain::receipt_tests::nul_rename_fields_and_legacy_unicode_renames_keep_exact_paths_without_panicking ... ok
+test porcelain::receipt_tests::old_stat_only_baselines_remain_readable_without_fabricating_a_hash ... ok
+test porcelain::receipt_tests::oversized_relative_paths_are_refused_before_component_allocation_or_io ... ok
+test fact_control::receipts::tests::unchanged_ask_obeys_the_frozen_host_confirmation_authority ... ok
+test porcelain::receipt_tests::path_budget_exhaustion_is_explicit_and_cannot_become_an_empty_success ... ok
+test porcelain::receipt_tests::non_git_delta_sees_preserved_mtime_writes_and_keeps_all_forty_paths ... ok
+test fact_control::receipts::tests::context_cancellation_after_a_write_is_not_a_pre_execution_denial ... ok
+test porcelain::receipt_tests::real_git_nul_names_are_exact_before_hashing_even_with_quotes_spaces_and_arrows ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_lifecycle::committed_negative_input_survives_surface_destruction_and_actual_send ... ok
+test porcelain::receipt_tests::same_length_and_preserved_mtime_still_change_the_content_identity ... ok
+test porcelain::receipt_tests::stable_porcelain_lines_do_not_hide_preserved_metadata_writes ... ok
+test porcelain::receipt_tests::symlink_identity_hashes_only_its_target_spelling_and_never_external_contents ... ok
+test porcelain::receipt_tests::total_byte_budget_is_shared_and_overflow_marks_the_changed_paths_incomplete ... ok
+test porcelain::receipt_tests::typed_path_observation_keeps_missing_unknown_and_contract_bounds_distinct ... ok
+test porcelain::receipt_tests::unreadable_subdirectories_are_not_silently_dropped ... ok
+test porcelain::receipt_tests::unsupported_nodes_are_refused_before_a_fifo_open_can_block ... ok
+test porcelain::tests::a_clean_revision_path_is_not_kept_when_git_was_not_invoked ... ok
+test porcelain::tests::a_failed_reread_is_not_an_empty_mutation ... ok
+test porcelain::receipt_tests::receipt_preimages_keep_uncaptured_existing_bytes_unknown_after_baseline_budget_failure ... ok
+test porcelain::tests::a_missed_status_outside_git_is_not_a_git_observation ... ok
+test porcelain::tests::a_missed_status_with_a_known_head_is_not_an_empty_tree ... ok
+test porcelain::tests::a_quoted_porcelain_path_is_a_mutation ... ok
+test porcelain::tests::a_renamed_quoted_pair_records_both_paths ... ok
+test porcelain::tests::a_revision_path_left_dirty_stays_on_the_command ... ok
+test porcelain::tests::a_run_level_budget_closes_the_gate_and_a_command_path_list_does_not ... ok
+test fact_control::receipts::tests::pre_spawn::a_shell_that_never_starts_on_a_missed_status_does_not_block_a_later_tool ... ok
+test porcelain::receipt_tests::a_nested_git_workspace_observes_only_its_exact_relative_bytes ... ok
+test porcelain::receipt_tests::receipt_preimages_use_complete_nongit_absence_for_creation_and_known_bytes_for_deletion ... ok
+test porcelain::tests::a_status_budget_does_not_diff_a_prefix_or_fail_the_read ... ok
+test porcelain::tests::an_undecodable_quoted_path_is_not_an_empty_mutation ... ok
+test porcelain::receipt_tests::receipt_preimages_do_not_invent_the_first_clean_git_file_baseline ... ok
+test porcelain::tests::hidden_index_tags_are_paths_and_ordinary_tags_are_not ... ok
+test porcelain::tests::nul_status_keeps_a_path_with_a_space ... ok
+test porcelain::tests::porcelain_keeps_the_suffix_past_thirty_two_paths ... ok
+test tools::builtin::batch::lifecycle_metadata_tests::body_compaction_preserves_lifecycle_identity_and_uncertainty ... ok
+test tools::builtin::batch::lifecycle_metadata_tests::oversized_identity_is_an_explicit_bounded_evidence_gap ... ok
+test porcelain::receipt_tests::nested_hidden_index_identity_stays_in_workspace_and_detects_preserved_mtime ... ok
+test porcelain::receipt_tests::harness_directory_components_do_not_hide_literal_unix_backslash_files ... ok
+test porcelain::tests::an_unchanged_git_worktree_is_a_complete_empty_delta ... ok
+test porcelain::receipt_tests::receipt_preimages_bind_known_nongit_and_dirty_git_bytes_without_rewrite_progress ... ok
+test porcelain::receipt_tests::a_changed_data_file_larger_than_a_baseline_budget_has_byte_identity ... ok
+test porcelain::receipt_tests::nested_revision_deltas_exclude_outside_commits_and_keep_inside_relative_paths ... ok
+test porcelain::tests::a_foreign_commit_is_not_a_command_mutation_unless_this_command_invoked_git ... ok
+test porcelain::receipt_tests::a_large_non_git_tree_is_a_complete_index_and_a_bounded_receipt ... ok
+test fact_control::receipts::tests::pre_spawn::a_write_past_the_stamp_cap_does_not_freeze_the_ledger ... ok
+test porcelain::bounded_stamp_tests::a_large_dirty_file_edit_has_a_receipt_even_with_restored_mtime ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_lifecycle::malformed_and_unknown_negative_inputs_remain_unproved_on_fresh_surface_and_actual_send ... ok
+test porcelain::tests::an_unstamped_existing_dirty_path_is_an_observation_gap ... ok
+test fact_control::receipts::tests::pre_spawn::missing_execution_evidence_overrides_a_path_budget ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::recovery_lifecycle::original_negative_debt_survives_memory_and_reopened_file_session_stores_without_caches ... ok
+test porcelain::tests::a_status_byte_cap_is_a_budget_and_a_hidden_index_byte_cap_keeps_the_status ... ok
+test porcelain::tests::a_status_record_cap_is_a_budget_and_drops_the_prefix ... ok
+test porcelain::receipt_tests::a_non_git_walk_past_the_node_cap_is_a_budget_with_no_prefix ... ok
+
+test result: ok. 169 passed; 0 failed; 0 ignored; 0 measured; 5086 filtered out; finished in 57.16s
+

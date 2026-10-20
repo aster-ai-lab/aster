@@ -449,7 +449,6 @@ fn malformed_and_conflicting_originals_are_integrity_errors_not_honest_unknown()
 fn typed_background_uncertainty_is_distinct_from_malformed_fields_and_bindings() {
     for (field, value) in [
         ("process_settled", json!(false)),
-        ("observation_incomplete", json!(true)),
         ("disposition", json!("unknown")),
         ("process_settlement_basis", json!("unproven")),
     ] {

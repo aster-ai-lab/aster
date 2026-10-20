@@ -1,0 +1,189 @@
+{
+  "root_worktree": "/Users/roylin/code/aster/target/worktrees/kylin-ime-hardening-20261020",
+  "work_worktree": "/Users/roylin/code/aster/target/worktrees/kylin-ime-hardening-20261020/apps/work",
+  "root_base": "d4a8393f12a6d526a4d08693ac76e73e87414b14",
+  "work_base": "9aad91f1e934c731e540cf99be25733e25c3a411",
+  "work_patch_sha256": "d7c31f63840170728f9ef6a88046df31f06bf7f18ded71d9dd15769f59c6d99b",
+  "work_tracked_file_count": 21,
+  "source_identity_checks": [
+    {
+      "path": "apps/work/scripts/kylin-flatpak/README.md",
+      "sha256": "915f504e9757c6d3f9bd20e12cfbe1bd4ff5ae1ac8c19dca3b68dcd56f2c67b4"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/gtk_input_probe.c",
+      "sha256": "6eaa42f6ad54eb048f41eb6df63bc23cbbdda87783cfa94ec1202672b1a76322"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/install-on-kylin.sh",
+      "sha256": "bfe7837e6d93eb3a30dc5d642f5893a688beea24f347fe6251d22139cfbe4f4d"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/kylin-launch.sh",
+      "sha256": "973422121c736208b2524f00cbca953f2fd5b04c09ddc73a1fb04ecf603eafed"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/pack-onefile.sh",
+      "sha256": "70da5c0f24b743a0430d4d2efdd1140f9f118ea8f5c869265380d5d4336cd58b"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/package-bundle.sh",
+      "sha256": "71169d5ed53c91884e2ca00b4bb41bc8c7307d4ba4676b9c259f19f5b2704936"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/test-input-method.sh",
+      "sha256": "56cb1607fdbf2b2acb194065cc74b8703c420c72c1f2f7b9e960bdf50b5829e3"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/\u5b89\u88c5\u8bf4\u660e.txt",
+      "sha256": "b028b8081d6b08f9f6e06462986f65d3d18f3c6f389c969f80f49138969dc82d"
+    },
+    {
+      "path": "apps/work/src/renderer/components/QuickPanel/QuickPanelView.tsx",
+      "sha256": "5e104acc78c5188dc2269e44fe33815e025ef091b7fc55889d5e85f34c1bb82f"
+    },
+    {
+      "path": "apps/work/src/renderer/components/QuickPanel/__tests__/view.test.tsx",
+      "sha256": "ac147439e19935208f8e1b573feacd7487bab305058821b7873095f743f2c3be"
+    },
+    {
+      "path": "apps/work/src/renderer/components/QuickPanel/types.ts",
+      "sha256": "01b1b7897ad8d887f4b9fbdd62884c5ecb797dd453a966ba69464fe11a65e5ec"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/ComposerSurfaceRuntime.tsx",
+      "sha256": "e5d2644e12df78102d115f63ca245837c9f6c86cb8772b429aa5ec9207d3d997"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/PromptVariableToken.tsx",
+      "sha256": "2fd285a7fe327b25a8fda0fe8d925afd4565b6090246b0cf99a08044725ea3a9"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/__tests__/ComposerSurface.test.tsx",
+      "sha256": "7d282ae0611be2e73d189a622a2f61b539fc3e7fc4aee552dea38f6aea716838"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/__tests__/ComposerToken.test.tsx",
+      "sha256": "a0eea3d5209b1204534d5520bdc46a63f35102766a1cf9fdd584d8d014a22584"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/__tests__/composerInputAdapter.test.ts",
+      "sha256": "58c35c0543e70cae0c04ef5d3c26bb885324782a3aff240642a1a0d105cf93cf"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/composerInputAdapter.ts",
+      "sha256": "c66ff7fb7e38c5e90e55fbded2662500a5b8e4b5d5302c9dfc46b3ef0c0dfa17"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/variants/AskUserQuestionComposer.tsx",
+      "sha256": "ff2e6e02b7132586eb50f91e150fa531574118775a5be04eb97e87edb1c8d6b4"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/variants/PermissionRequestComposer.tsx",
+      "sha256": "249d8508e7aabc0cee93582d7f3af0ae79084d7c9e0cd010a684be5d5cde05a6"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/variants/__tests__/AskUserQuestionComposer.test.tsx",
+      "sha256": "83ea66c86694b7c7f4a1a6cfec2205868edc0ff6f60b6ce5ce7de4f82ec74423"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx",
+      "sha256": "6dcb24c135049288471942053c748ab01c9e44f5233f6cb133393f3bf5eca022"
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx",
+      "sha256": "e5c61b28be360c2cc6e1d638cfcf9928df4a0a4d2c7e155a604e73672a08d163"
+    },
+    {
+      "path": "tests/kylin_input_method.py",
+      "sha256": "7d83e24a7cbe748d58d8e65397cfb438edbc8c391fa2a4090c17431bdcb29572"
+    },
+    {
+      "path": "tests/kylin_onefile.py",
+      "sha256": "cdba33614ec619646c0237e499fcf17231403d2e2c446fd6d31a83a7124285d4"
+    }
+  ],
+  "root_modified_paths": [
+    "tests/kylin_input_method.py",
+    "tests/kylin_onefile.py"
+  ],
+  "root_unrelated_rust_changes_copied": false,
+  "cache_clone": {
+    "source": "/Users/roylin/code/aster/target/kylin-x86_64",
+    "destination": "/Users/roylin/code/aster/target/worktrees/kylin-ime-hardening-20261020/target/kylin-x86_64",
+    "command": "cp -cR target/kylin-x86_64 target/worktrees/kylin-ime-hardening-20261020/target/",
+    "separate_inode_checks": [
+      {
+        "path": "release/aster-dream",
+        "size": 94671472,
+        "sha256": "b9ce1e2b3c12f61d38132c0e0a0c6617418b3f94d48e14b7316dfa93563bf7d8",
+        "source_inode": 134564260,
+        "isolated_inode": 135079606
+      },
+      {
+        "path": "release/a3s-code-acp",
+        "size": 73697960,
+        "sha256": "cdf05432493a0492c78013d0e1e2ec23af6d7a5bcacdcfd47146ceb6def0b163",
+        "source_inode": 134512719,
+        "isolated_inode": 135065164
+      },
+      {
+        "path": "release/a3s-office",
+        "size": 23240056,
+        "sha256": "2d00939c284a3108c195ab70643357444c0335eac9dfc4b3c139c0e7db92f96f",
+        "source_inode": 131518696,
+        "isolated_inode": 135079605
+      },
+      {
+        "path": ".rustc_info.json",
+        "size": 1227,
+        "sha256": "3184ab99c6e0c060c75654917920ef5bb20c3539bdda79cdd94a528c0d54002c",
+        "source_inode": 128181665,
+        "isolated_inode": 135057892
+      }
+    ]
+  },
+  "node_modules": {
+    "wrapper_directories": [
+      "node_modules",
+      "packages/extension-table-plus/node_modules",
+      "packages/ui/node_modules",
+      "packages/provider-registry/node_modules",
+      "packages/remote-protocol/node_modules",
+      "packages/ai-sdk-provider/node_modules",
+      "packages/aiCore/node_modules",
+      "packages/intelligent-ui/node_modules",
+      "packages/remote-transport/node_modules",
+      "vendor/packages/office/node_modules"
+    ],
+    "shared_pnpm_stores": [
+      "apps/work/node_modules/.pnpm"
+    ],
+    "excluded": "tool caches and package manager state; no .env or user session state copied",
+    "workspace_resolutions": {
+      "@a3s-lab/office": "/Users/roylin/code/aster/target/worktrees/kylin-ime-hardening-20261020/apps/work/vendor/packages/office",
+      "@a3s-lab/ui": "/Users/roylin/code/aster/target/worktrees/kylin-ime-hardening-20261020/apps/work/packages/ui",
+      "@a3s-lab/intelligent-ui": "/Users/roylin/code/aster/target/worktrees/kylin-ime-hardening-20261020/apps/work/packages/intelligent-ui"
+    }
+  },
+  "ignored_dependency_directories": [
+    "dependencies/offline-flatpak",
+    "python",
+    "python-wheels",
+    "node",
+    "immodules",
+    "native-libs",
+    "native-licenses"
+  ],
+  "ignored_dependency_archives": [
+    "fcitx-4.2.9.9.tar.xz"
+  ],
+  "not_copied": [
+    ".env",
+    "user session state",
+    "old flatpak build/repo",
+    "frozen artifacts"
+  ],
+  "build_started": false,
+  "setup_failures": []
+}

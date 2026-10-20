@@ -208,55 +208,53 @@ impl A3sCodeAgent {
             })?;
         let requested = request
             .get("posture")
-            .and_then(|value| value.as_str())
+            .map(|value| {
+                value
+                    .as_str()
+                    .ok_or_else(|| acp::Error::invalid_params().data("posture must be a string"))
+            })
+            .transpose()?
             .unwrap_or("default");
-        let posture = canonical_posture(requested).ok_or_else(|| {
-            acp::Error::invalid_params().data(format!("unknown posture: {requested}"))
-        })?;
+        let posture = PermissionPosture::parse(requested)?;
         let mut extra = Vec::new();
         match request.get("deny") {
             Some(value) if value.is_string() => {
-                if let Some(rule) = value.as_str().filter(|rule| !rule.is_empty()) {
-                    extra.push(rule.to_string());
-                }
+                let rule = value
+                    .as_str()
+                    .filter(|rule| !rule.trim().is_empty())
+                    .ok_or_else(|| {
+                        acp::Error::invalid_params().data("deny must contain nonempty strings")
+                    })?;
+                extra.push(rule.to_string());
             }
             Some(value) => {
-                if let Some(rules) = value.as_array() {
-                    for rule in rules {
-                        if let Some(rule) = rule.as_str().filter(|rule| !rule.is_empty()) {
-                            extra.push(rule.to_string());
-                        }
-                    }
+                let rules = value.as_array().ok_or_else(|| {
+                    acp::Error::invalid_params()
+                        .data("deny must be a string or an array of nonempty strings")
+                })?;
+                for rule in rules {
+                    extra.push(
+                        rule.as_str()
+                            .filter(|rule| !rule.trim().is_empty())
+                            .ok_or_else(|| {
+                                acp::Error::invalid_params()
+                                    .data("deny must contain nonempty strings")
+                            })?
+                            .to_string(),
+                    );
                 }
             }
             None => {}
         }
-        let (session, posture_name, denies) = {
-            let mut sessions = self.sessions.lock().await;
-            let live = sessions
-                .get_mut(session_id)
-                .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?;
-            live.posture = posture.to_string();
-            live.denies.extend(extra);
-            remember_denies(live);
-            (
-                Arc::clone(&live.session),
-                live.posture.clone(),
-                live.denies.clone(),
-            )
-        };
-        let policy = posture_policy(&posture_name, &denies);
-        session
-            .set_permission_policy(policy)
-            .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
-        let planning = if posture_name == "plan" {
-            a3s_code_core::PlanningMode::Enabled
-        } else {
-            a3s_code_core::PlanningMode::Disabled
-        };
-        session
-            .set_planning_mode(planning)
-            .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
+        self.sessions
+            .lock()
+            .await
+            .get_mut(session_id)
+            .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?
+            .set_posture(posture, extra)?;
+        let posture_name = posture.as_str();
+        self.emit_permission_mode(acp::SessionId::new(session_id), posture)
+            .await;
 
         let body = serde_json::json!({
             "result": {

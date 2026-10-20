@@ -380,6 +380,12 @@ pub(crate) fn note_event(progress: &mut RunProgress, facts: &mut AttemptFacts, e
                 facts.last_error = Some(output.clone());
             }
         }
+        AgentEvent::ToolEffectUnresolved { error } => {
+            progress.error_count += 1;
+            progress.remember_error(&error.to_string());
+            facts.failed = true;
+            facts.last_error = Some(error.to_string());
+        }
         AgentEvent::Error { message } => {
             progress.error_count += 1;
             progress.remember_error(message);

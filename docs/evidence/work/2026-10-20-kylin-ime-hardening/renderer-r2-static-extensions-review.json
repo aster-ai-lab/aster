@@ -1,0 +1,19 @@
+{
+  "kind": "r2-renderer-output-direct-inspection",
+  "scope": "Inspect emitted renderer code only; not reverse source recovery or GUI/binary execution",
+  "bundle": "target/worktrees/kylin-ime-hardening-20261020/apps/work/.studio-package/static/js/async/hqz.3b738f730e.js",
+  "bundle_sha256": "86a904e2fe53be9a52c5c98b4ced2ebbcf98105a83ad96896e71d313ae964dad",
+  "bundle_size": 80940,
+  "module_id": "SnK",
+  "module_offset_zero_based": 64441,
+  "module_line": 6,
+  "module_sha256": "d8a3ca91b153df96ad23bd419ed54c4e58079fef07619dc2f2dcec4662948d14",
+  "observed_emitted_code": "SnK(e,t,n){var r=n(\"b\"),a=n(\"Fq\"),i=n(\"vf\");let l=[],o=[...i.WJ,...i.Vk,...i.aM,...i.Ip,...i.mt,...i.ZQ];function s(){return o}let u={audio:[a.qx,a.LG],video:[a.DD,a.Gh]};function d(e){let t=!!e&&Array.isArray(e.models),{models:n,fallbackModel:a}=t?e:{models:l,fallbackModel:e};return(0,r.useMemo)(()=>{if(!t){let e=null!=a;return{canAddImageFile:e,canAddTextFile:e,supportedExts:e?[...o]:[]}}let e=e=>{let[t,r]=e;return n.length>0?r(n):!!a&&t(a)},r=e(u.audio),l=e(u.video);return{canAddImageFile:!0,canAddTextFile:!0,supportedExts:[...i.WJ,...r?i.Vk:[],...l?i.aM:[],...i.Ip,...i.mt]}},[t,n,a])}n.d(t,{E:()=>s,m:()=>d})}",
+  "checks": {
+    "all_extensions_assembled_at_module_scope_once": true,
+    "agentFileExtensions_returns_existing_array": true,
+    "enabled_agent_hook_still_returns_copy": true,
+    "exports_identify_helper_and_hook": true
+  },
+  "source_sha256": "5aab1708c81fb46f7a49cf2d828cc9dbac225fcc24b7336d7166f460b6656446"
+}

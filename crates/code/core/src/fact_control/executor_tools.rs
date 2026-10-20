@@ -571,7 +571,7 @@ impl ToolRunner for ExecutorTools {
             let mut metadata = result.metadata;
             if tools.pre_tool_hook_resolved {
                 if let Some(ledger) = &tools.ledger {
-                    receipts::observe_live_child(ledger, metadata.as_ref());
+                    receipts::observe_live_child(ledger, metadata.as_ref(), &call.name);
                 }
             } else if let Some(agent) = &tools.agent {
                 let mut bound = tools

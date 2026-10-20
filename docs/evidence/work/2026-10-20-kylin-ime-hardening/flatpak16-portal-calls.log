@@ -1,0 +1,306 @@
+signal time=1792485265.436932 sender=org.freedesktop.DBus -> destination=:1.13 serial=2 path=/org/freedesktop/DBus; interface=org.freedesktop.DBus; member=NameAcquired
+   string ":1.13"
+signal time=1792485265.437875 sender=org.freedesktop.DBus -> destination=:1.13 serial=4 path=/org/freedesktop/DBus; interface=org.freedesktop.DBus; member=NameLost
+   string ":1.13"
+method call time=1792485266.734545 sender=:1.27 -> destination=:1.7 serial=34 path=/org/freedesktop/portal/inputmethod; interface=org.fcitx.Fcitx.InputMethod1; member=CreateInputContext
+   array [
+      struct {
+         string "display,"
+         string "x11:"
+      }
+   ]
+method call time=1792485266.736241 sender=:1.27 -> destination=:1.7 serial=39 path=/org/freedesktop/portal/inputcontext/0; interface=org.freedesktop.DBus.Properties; member=GetAll
+   string "org.fcitx.Fcitx.InputContext1"
+method call time=1792485266.737769 sender=:1.27 -> destination=:1.7 serial=40 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=SetCapability
+   uint64 18
+method call time=1792485266.737821 sender=:1.27 -> destination=:1.7 serial=41 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=FocusIn
+method call time=1792485266.738527 sender=:1.27 -> destination=:1.7 serial=42 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=SetCursorRect
+   int32 9
+   int32 1
+   int32 0
+   int32 32
+method call time=1792485267.285571 sender=:1.27 -> destination=:1.7 serial=43 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=SetSurroundingText
+   string ""
+   uint32 0
+   uint32 0
+method call time=1792485267.285885 sender=:1.27 -> destination=:1.7 serial=44 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=SetCapability
+   uint64 82
+method call time=1792485267.285912 sender=:1.27 -> destination=:1.7 serial=45 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 110
+   uint32 57
+   uint32 0
+   boolean false
+   uint32 0
+method call time=1792485267.288821 sender=:1.27 -> destination=:1.7 serial=46 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 110
+   uint32 57
+   uint32 0
+   boolean true
+   uint32 0
+method call time=1792485267.288858 sender=:1.27 -> destination=:1.7 serial=47 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 105
+   uint32 31
+   uint32 0
+   boolean false
+   uint32 0
+method call time=1792485267.288881 sender=:1.27 -> destination=:1.7 serial=48 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 105
+   uint32 31
+   uint32 0
+   boolean true
+   uint32 0
+method call time=1792485267.288903 sender=:1.27 -> destination=:1.7 serial=49 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 32
+   uint32 65
+   uint32 0
+   boolean false
+   uint32 0
+method call time=1792485267.288925 sender=:1.27 -> destination=:1.7 serial=50 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 32
+   uint32 65
+   uint32 0
+   boolean true
+   uint32 0
+method call time=1792485267.317363 sender=:1.27 -> destination=:1.7 serial=51 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=SetCursorRect
+   int32 22
+   int32 1
+   int32 0
+   int32 32
+method call time=1792485267.324376 sender=:1.27 -> destination=:1.7 serial=52 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=SetCursorRect
+   int32 9
+   int32 1
+   int32 0
+   int32 32
+method call time=1792485267.324494 sender=:1.27 -> destination=:1.7 serial=53 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 110
+   uint32 57
+   uint32 0
+   boolean false
+   uint32 0
+method call time=1792485267.324558 sender=:1.27 -> destination=:1.7 serial=54 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 110
+   uint32 57
+   uint32 0
+   boolean true
+   uint32 0
+method call time=1792485267.324581 sender=:1.27 -> destination=:1.7 serial=55 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 105
+   uint32 31
+   uint32 0
+   boolean false
+   uint32 0
+method call time=1792485267.324640 sender=:1.27 -> destination=:1.7 serial=56 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 105
+   uint32 31
+   uint32 0
+   boolean true
+   uint32 0
+method call time=1792485267.324725 sender=:1.27 -> destination=:1.7 serial=57 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 104
+   uint32 43
+   uint32 0
+   boolean false
+   uint32 0
+method call time=1792485267.324753 sender=:1.27 -> destination=:1.7 serial=58 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 104
+   uint32 43
+   uint32 0
+   boolean true
+   uint32 0
+method call time=1792485267.324771 sender=:1.27 -> destination=:1.7 serial=59 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 97
+   uint32 38
+   uint32 0
+   boolean false
+   uint32 0
+method call time=1792485267.324789 sender=:1.27 -> destination=:1.7 serial=60 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 97
+   uint32 38
+   uint32 0
+   boolean true
+   uint32 0
+method call time=1792485267.324807 sender=:1.27 -> destination=:1.7 serial=61 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 111
+   uint32 32
+   uint32 0
+   boolean false
+   uint32 0
+method call time=1792485267.324895 sender=:1.27 -> destination=:1.7 serial=62 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 111
+   uint32 32
+   uint32 0
+   boolean true
+   uint32 0
+method call time=1792485267.324922 sender=:1.27 -> destination=:1.7 serial=63 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 32
+   uint32 65
+   uint32 0
+   boolean false
+   uint32 0
+method call time=1792485267.324958 sender=:1.27 -> destination=:1.7 serial=64 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 32
+   uint32 65
+   uint32 0
+   boolean true
+   uint32 0
+method call time=1792485267.327386 sender=:1.27 -> destination=:1.7 serial=65 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=SetCursorRect
+   int32 35
+   int32 1
+   int32 0
+   int32 32
+method call time=1792485267.377940 sender=:1.27 -> destination=:1.7 serial=66 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=SetSurroundingText
+   string "你好"
+   uint32 2
+   uint32 2
+method call time=1792485267.377986 sender=:1.27 -> destination=:1.7 serial=67 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 97
+   uint32 38
+   uint32 0
+   boolean false
+   uint32 0
+method call time=1792485267.378012 sender=:1.27 -> destination=:1.7 serial=68 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 97
+   uint32 38
+   uint32 0
+   boolean true
+   uint32 0
+method call time=1792485267.378039 sender=:1.27 -> destination=:1.7 serial=69 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 98
+   uint32 56
+   uint32 0
+   boolean false
+   uint32 0
+method call time=1792485267.378061 sender=:1.27 -> destination=:1.7 serial=70 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 98
+   uint32 56
+   uint32 0
+   boolean true
+   uint32 0
+method call time=1792485267.378105 sender=:1.27 -> destination=:1.7 serial=71 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 99
+   uint32 54
+   uint32 0
+   boolean false
+   uint32 0
+method call time=1792485267.378425 sender=:1.27 -> destination=:1.7 serial=72 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 99
+   uint32 54
+   uint32 0
+   boolean true
+   uint32 0
+method call time=1792485267.381067 sender=:1.27 -> destination=:1.7 serial=73 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=SetCursorRect
+   int32 43
+   int32 1
+   int32 0
+   int32 32
+method call time=1792485267.381279 sender=:1.27 -> destination=:1.7 serial=74 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=SetCursorRect
+   int32 51
+   int32 1
+   int32 0
+   int32 32
+method call time=1792485267.381368 sender=:1.27 -> destination=:1.7 serial=75 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=SetCursorRect
+   int32 58
+   int32 1
+   int32 0
+   int32 32
+method call time=1792485267.530882 sender=:1.27 -> destination=:1.7 serial=76 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=SetSurroundingText
+   string "你好abc"
+   uint32 5
+   uint32 5
+method call time=1792485267.530936 sender=:1.27 -> destination=:1.7 serial=77 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 110
+   uint32 57
+   uint32 0
+   boolean false
+   uint32 0
+method call time=1792485267.530964 sender=:1.27 -> destination=:1.7 serial=78 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 110
+   uint32 57
+   uint32 0
+   boolean true
+   uint32 0
+method call time=1792485267.530988 sender=:1.27 -> destination=:1.7 serial=79 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 105
+   uint32 31
+   uint32 0
+   boolean false
+   uint32 0
+method call time=1792485267.531010 sender=:1.27 -> destination=:1.7 serial=80 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 105
+   uint32 31
+   uint32 0
+   boolean true
+   uint32 0
+method call time=1792485267.531036 sender=:1.27 -> destination=:1.7 serial=81 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 65307
+   uint32 9
+   uint32 0
+   boolean false
+   uint32 0
+method call time=1792485267.531060 sender=:1.27 -> destination=:1.7 serial=82 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 65307
+   uint32 9
+   uint32 0
+   boolean true
+   uint32 0
+method call time=1792485267.531084 sender=:1.27 -> destination=:1.7 serial=83 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 104
+   uint32 43
+   uint32 0
+   boolean false
+   uint32 0
+method call time=1792485267.531107 sender=:1.27 -> destination=:1.7 serial=84 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 104
+   uint32 43
+   uint32 0
+   boolean true
+   uint32 0
+method call time=1792485267.531130 sender=:1.27 -> destination=:1.7 serial=85 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 97
+   uint32 38
+   uint32 0
+   boolean false
+   uint32 0
+method call time=1792485267.531152 sender=:1.27 -> destination=:1.7 serial=86 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 97
+   uint32 38
+   uint32 0
+   boolean true
+   uint32 0
+method call time=1792485267.531205 sender=:1.27 -> destination=:1.7 serial=87 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 111
+   uint32 32
+   uint32 0
+   boolean false
+   uint32 0
+method call time=1792485267.531227 sender=:1.27 -> destination=:1.7 serial=88 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 111
+   uint32 32
+   uint32 0
+   boolean true
+   uint32 0
+method call time=1792485267.531251 sender=:1.27 -> destination=:1.7 serial=89 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 32
+   uint32 65
+   uint32 0
+   boolean false
+   uint32 0
+method call time=1792485267.531274 sender=:1.27 -> destination=:1.7 serial=90 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=ProcessKeyEvent
+   uint32 32
+   uint32 65
+   uint32 0
+   boolean true
+   uint32 0
+method call time=1792485267.532231 sender=:1.27 -> destination=:1.7 serial=91 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=SetCursorRect
+   int32 71
+   int32 1
+   int32 0
+   int32 32
+method call time=1792485267.535917 sender=:1.27 -> destination=:1.7 serial=92 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=FocusOut
+method call time=1792485267.535952 sender=:1.27 -> destination=:1.7 serial=93 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=SetCursorRect
+   int32 0
+   int32 0
+   int32 0
+   int32 32
+method call time=1792485267.536288 sender=:1.27 -> destination=:1.7 serial=94 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=Reset
+method call time=1792485267.536337 sender=:1.27 -> destination=:1.7 serial=95 path=/org/freedesktop/portal/inputcontext/0; interface=org.fcitx.Fcitx.InputContext1; member=DestroyIC

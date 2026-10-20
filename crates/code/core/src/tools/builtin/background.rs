@@ -921,7 +921,7 @@ async fn execute_background(
                 output.timed_out,
                 if output.timed_out {
                     BackgroundDisposition::TimedOut
-                } else if exit_code.is_none() || summary.is_none() || observation_incomplete {
+                } else if exit_code.is_none() || summary.is_none() {
                     BackgroundDisposition::Unknown
                 } else {
                     BackgroundDisposition::Completed

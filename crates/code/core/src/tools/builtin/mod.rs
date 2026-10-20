@@ -32,7 +32,8 @@ mod write;
 pub(crate) use read::{MAX_BATCH_READ_FILES, MAX_BATCH_READ_PATH_BYTES};
 
 #[cfg(test)]
-pub(crate) use batch::{BatchTool, MAX_BATCH_INVOCATIONS};
+pub(crate) use batch::BatchTool;
+pub(crate) use batch::MAX_BATCH_INVOCATIONS;
 #[cfg(test)]
 pub(crate) use read::read_image_file;
 #[cfg(test)]

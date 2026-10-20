@@ -18,8 +18,14 @@ impl AgentRuntime {
         self.leader_mode
     }
     pub async fn run_stdio(&self, config: &Config) -> Result<()> {
-        let _ = (self, config);
-        crate::acp::a3s_spawn::run_sidecar_on_stdio().await
+        if config.default_model_override.is_none()
+            && config.reasoning_effort_override.is_none()
+            && config.models.default_reasoning_effort.is_none()
+        {
+            crate::acp::a3s_spawn::run_sidecar_on_stdio().await
+        } else {
+            crate::acp::a3s_spawn::run_sidecar_on_stdio_with_config(config).await
+        }
     }
 }
 impl Backend {

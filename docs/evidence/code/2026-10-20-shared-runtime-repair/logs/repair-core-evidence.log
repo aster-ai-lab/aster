@@ -1,0 +1,28 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on build directory
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3m 52s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 6 tests
+test agent_api::direct_tools::governed_tests::runtime_posture_and_host_deny_both_govern_direct_calls ... ok
+test fact_control::receipts::tests::batch_evidence::wrapped_reconciliation_failure_keeps_its_typed_event_and_identity ... ok
+test fact_control::receipts::tests::batch_evidence::lost_batch_lifecycle_evidence_cannot_be_successful_execution ... ok
+test fact_control::receipts::tests::batch_evidence::batched_background_identity_settles_only_with_its_matching_terminal ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::completion_gate_to_host_retains_typed_reconciliation ... ok
+test agent_api::conversation_runtime::receipt_restore_tests::cache_coverage::exact_background_terminals_reconcile_legacy_observation_only_cache_keys ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 5248 filtered out; finished in 0.09s
+

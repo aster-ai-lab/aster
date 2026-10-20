@@ -26,6 +26,16 @@ if ! docker compose ps --status running a3s-postgres 2>/dev/null | grep -q a3s-p
 fi
 pg_host="$(bash scripts/compose-postgres-host.sh)"
 
+# Run against this checkout's OWN database. The shared a3s_cloud database may
+# be owned by another running control plane (another checkout); sharing it
+# corrupts reconciler state across schemas. create-if-missing is idempotent.
+cloud_database="${A3S_CLOUD_DATABASE:-a3s_cloud_aster}"
+container="${A3S_PG_CONTAINER:-$(bash scripts/resolve-container.sh a3s-postgres a3s-postgres)}"
+docker exec "$container" psql -U a3s_api -d postgres -tAc \
+  "select 1 from pg_database where datname = '$cloud_database'" | grep -q 1 \
+  || docker exec "$container" psql -U a3s_api -d postgres -c \
+    "create database $cloud_database owner a3s_cloud" >/dev/null
+
 # The dev ACL's object storage credentials read from these environment
 # names; default them to the compose RustFS values.
 export A3S_CLOUD_S3_ACCESS_KEY_ID="${A3S_CLOUD_S3_ACCESS_KEY_ID:-kense}"
@@ -55,7 +65,12 @@ else
 fi
 
 mkdir -p "$state_dir"
-sed "s#^  endpoint = \"http://host.orb.internal:9000\"#  endpoint = \"$object_endpoint\"#" \
+api_port="${A3S_CLOUD_API_PORT:-8080}"
+node_control_port="${A3S_CLOUD_NODE_CONTROL_PORT:-8443}"
+sed \
+  -e "s#^  endpoint = \"http://host.orb.internal:9000\"#  endpoint = \"$object_endpoint\"#" \
+  -e "s#^  port = 8080#  port = $api_port#" \
+  -e "s#^  port = 8443#  port = $node_control_port#" \
   "$cloud_root/config/cloud.acl" > "$local_acl"
 
 generated_bootstrap_token=false
@@ -75,15 +90,14 @@ fi
 api_bin="$target_directory/debug/a3s-cloud-control-plane"
 migration_bin="$target_directory/debug/a3s-cloud-migrate"
 
-A3S_CLOUD_POSTGRES_URL="${A3S_CLOUD_POSTGRES_URL:-postgres://a3s_cloud:a3s_cloud@${pg_host}:5432/a3s_cloud}" \
-  A3S_CLOUD_POSTGRES_MIGRATION_URL="${A3S_CLOUD_POSTGRES_MIGRATION_URL:-$A3S_CLOUD_POSTGRES_URL}" \
+export A3S_CLOUD_POSTGRES_URL="${A3S_CLOUD_POSTGRES_URL:-postgres://a3s_cloud:a3s_cloud@${pg_host}:5432/${cloud_database}}"
+A3S_CLOUD_POSTGRES_MIGRATION_URL="${A3S_CLOUD_POSTGRES_MIGRATION_URL:-$A3S_CLOUD_POSTGRES_URL}" \
   "$migration_bin" "$local_acl"
-unset A3S_CLOUD_POSTGRES_MIGRATION_URL
 
 printf '%s\n' \
   'A3S Cloud control-plane API is starting:' \
-  '  API: http://127.0.0.1:8080/api/v1' \
-  "  config: $local_acl (derived from config/cloud.acl; object endpoint $object_endpoint)"
+  "  API: http://127.0.0.1:${api_port}/api/v1" \
+  "  config: $local_acl (derived from config/cloud.acl; object endpoint $object_endpoint, api :${api_port}, node-control :${node_control_port})"
 if [[ $generated_bootstrap_token == true ]]; then
   printf '  Bootstrap token for this run: %s\n' "$A3S_CLOUD_BOOTSTRAP_TOKEN"
 fi

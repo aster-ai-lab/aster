@@ -63,6 +63,13 @@ impl Tool for ProgramTool {
         "Run a sandboxed JavaScript PTC script. The script defines async function run(ctx, inputs) and may call only allowed ctx tools."
     }
 
+    fn capabilities(&self, args: &serde_json::Value) -> crate::tools::ToolCapabilities {
+        let mut capabilities = crate::tools::ToolCapabilities::conservative();
+        capabilities.read_only =
+            program_allowed_tools_are_read_only(self.fallback_invoker.as_ref(), args);
+        capabilities
+    }
+
     fn parameters(&self) -> serde_json::Value {
         serde_json::json!({
             "type": "object",
@@ -215,6 +222,25 @@ async fn load_script_source(
         .read_text(&workspace_path)
         .await
         .map_err(|err| format!("failed to read script path '{}': {err}", path))
+}
+
+/// Read-only when every tool the script may call is read-only for unknown
+/// arguments. Empty args are the mutating default for git, edit, and write.
+/// A missing tool is not read-only.
+fn program_allowed_tools_are_read_only(
+    invoker: &dyn ToolInvoker,
+    args: &serde_json::Value,
+) -> bool {
+    let allowed = script_allowed_tools(args, invoker.available_tools());
+    if allowed.is_empty() {
+        return false;
+    }
+    let empty = serde_json::json!({});
+    allowed.iter().all(|name| {
+        invoker
+            .capabilities(name, &empty)
+            .is_some_and(|capabilities| capabilities.read_only)
+    })
 }
 
 fn script_allowed_tools(args: &serde_json::Value, available_tools: Vec<String>) -> HashSet<String> {

@@ -1,0 +1,21 @@
+CASE: xdotool key --clearmodifiers --delay 120 Return
+CASE: xdotool key --clearmodifiers --delay 120 Shift+Return
+CASE: xdotool key --clearmodifiers --delay 120 ctrl+Return
+CASE: xdotool key --clearmodifiers --delay 120 alt+Return
+CASE: xdotool key --clearmodifiers --delay 120 super+Return
+CASE: all four modifiers held, then exact Return command
+READY DISPLAY=:180
+{"event":"press","keysym":"Return","keyval":65293,"keycode":36,"state":0,"shift":false,"control":false,"alt_mod1":false,"meta":false,"super":false,"mod4":false}
+{"event":"release","keysym":"Return","keyval":65293,"keycode":36,"state":0,"shift":false,"control":false,"alt_mod1":false,"meta":false,"super":false,"mod4":false}
+{"event":"press","keysym":"Return","keyval":65293,"keycode":36,"state":1,"shift":true,"control":false,"alt_mod1":false,"meta":false,"super":false,"mod4":false}
+{"event":"release","keysym":"Return","keyval":65293,"keycode":36,"state":0,"shift":false,"control":false,"alt_mod1":false,"meta":false,"super":false,"mod4":false}
+{"event":"press","keysym":"Return","keyval":65293,"keycode":36,"state":4,"shift":false,"control":true,"alt_mod1":false,"meta":false,"super":false,"mod4":false}
+{"event":"release","keysym":"Return","keyval":65293,"keycode":36,"state":0,"shift":false,"control":false,"alt_mod1":false,"meta":false,"super":false,"mod4":false}
+{"event":"press","keysym":"Return","keyval":65293,"keycode":36,"state":8,"shift":false,"control":false,"alt_mod1":true,"meta":false,"super":false,"mod4":false}
+{"event":"release","keysym":"Return","keyval":65293,"keycode":36,"state":0,"shift":false,"control":false,"alt_mod1":false,"meta":false,"super":false,"mod4":false}
+{"event":"press","keysym":"Return","keyval":65293,"keycode":36,"state":67108928,"shift":false,"control":false,"alt_mod1":false,"meta":false,"super":true,"mod4":true}
+{"event":"release","keysym":"Return","keyval":65293,"keycode":36,"state":0,"shift":false,"control":false,"alt_mod1":false,"meta":false,"super":false,"mod4":false}
+{"event":"press","keysym":"Return","keyval":65293,"keycode":36,"state":0,"shift":false,"control":false,"alt_mod1":false,"meta":false,"super":false,"mod4":false}
+{"event":"release","keysym":"Return","keyval":65293,"keycode":36,"state":0,"shift":false,"control":false,"alt_mod1":false,"meta":false,"super":false,"mod4":false}
+
+exit_status: 0

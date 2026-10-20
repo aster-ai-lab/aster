@@ -1,0 +1,17 @@
+
+running 1 test
+test document_read::run_tests::fresh_actual_runs_do_not_reuse_a_previous_pin_even_when_scope_addresses_repeat ... FAILED
+
+failures:
+
+failures:
+    document_read::run_tests::fresh_actual_runs_do_not_reuse_a_previous_pin_even_when_scope_addresses_repeat
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 351 filtered out; finished in 0.25s
+
+
+thread 'document_read::run_tests::fresh_actual_runs_do_not_reuse_a_previous_pin_even_when_scope_addresses_repeat' (51750269) panicked at crates/code/acp/src/document_run_tests.rs:567:17:
+assertion `left == right` failed
+  left: 3
+ right: 4
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

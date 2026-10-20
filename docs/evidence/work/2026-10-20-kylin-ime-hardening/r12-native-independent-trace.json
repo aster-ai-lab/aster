@@ -1,0 +1,83 @@
+{
+  "kind": "read-only-R12-rich-repeat-native-causal-trace-not-fix-acceptance",
+  "scope": "target/evaluations/kylin-ime-gui/run-wCZiI4",
+  "input_sha256": {
+    "target/evaluations/kylin-ime-gui/run-wCZiI4/app-state/AsterDream/logs/aster-dream-20261020-100141-2.log": "e81c8050cf39caa425dccbb1fb8de886be7d3c2cf6664789d0b1541dd5564f39",
+    "target/evaluations/kylin-ime-gui/run-wCZiI4/actions.jsonl": "6de53bc938babb5ba84029eb477164ed8db5225091bf0dfe95a798d26db57a61",
+    "target/evaluations/kylin-ime-gui/driver.py": "f8733ac0943b0d7ea51515d0a2aa4b1be8bc4e49d8edbf57cceab2c5a0223853",
+    "target/evaluations/kylin-ime-gui/readonly-observer/ime-dom-observer.js": "6dd92acf2420749469d62412d43d58df13fd8f75cd7ac553103e88b6d898caac",
+    "apps/work/scripts/kylin-flatpak/build-fcitx4-immodule.sh": "58075d1eae8e7204328bf56cb5ec7edab03c1deee8eae5366fff097284078eff"
+  },
+  "fcitx_archive_sha256": "307bddeabbec383eb27c4ea222d9f71d8d9011d7942f4010368e5bc3ca7440a1",
+  "fcitx_source_members_sha256": {
+    "fcitx-4.2.9.9/src/frontend/gtk3/fcitximcontext.c": "06835f62f6c58df5f4f31a60f46b500f7f5a6dc7f9511ee74ca20549bbb55b4b",
+    "fcitx-4.2.9.9/src/lib/fcitx-gclient/fcitxclient.c": "c6feb8ee33be0a28a4a8f62d7c12a6eefdc7cf4a9847b94c54efcacff5ea7a60",
+    "fcitx-4.2.9.9/CMakeLists.txt": "d607e4f173fccb2a85acd126eb79939ec60bebf75eaba963a5b571890ce46456"
+  },
+  "captured_event_counts": {
+    "keydown": 18,
+    "keydown_repeat_true": 18,
+    "keypress": 17,
+    "keyup": 36,
+    "unique_release_key_and_timestamp_groups": 18,
+    "releases_per_group": [
+      2
+    ]
+  },
+  "enter_events": [
+    {
+      "sequence": 214,
+      "type": "keydown",
+      "timeStamp": 72003,
+      "key": "Enter",
+      "code": "Enter",
+      "keyCode": 13,
+      "repeat": true,
+      "isComposing": false,
+      "viewComposing": false,
+      "shiftKey": false,
+      "ctrlKey": false,
+      "altKey": false,
+      "metaKey": false
+    },
+    {
+      "sequence": 216,
+      "type": "keyup",
+      "timeStamp": 72068,
+      "key": "Enter",
+      "code": "Enter",
+      "keyCode": 13,
+      "repeat": false,
+      "isComposing": false,
+      "viewComposing": false,
+      "shiftKey": false,
+      "ctrlKey": false,
+      "altKey": false,
+      "metaKey": false
+    },
+    {
+      "sequence": 218,
+      "type": "keyup",
+      "timeStamp": 72068,
+      "key": "Enter",
+      "code": "Enter",
+      "keyCode": 13,
+      "repeat": false,
+      "isComposing": false,
+      "viewComposing": false,
+      "shiftKey": false,
+      "ctrlKey": false,
+      "altKey": false,
+      "metaKey": false
+    }
+  ],
+  "recorded_Return_command_count": 1,
+  "source_proxy_timeout_setters_found": [],
+  "sync_timeout_assessment": "The bundled gclient uses -1 proxy default with NULL cancellable; no timeout setter found. Official GIO default is typically 25 seconds, not infinite, but exact runtime latency/stall/daemon-loss behavior is unmeasured here.",
+  "snooper_assessment": "Official 4.2.9.9 CMake defaults ON; shipped recipe forces OFF. Both DISABLE_SNOOPER variables set to 0 enable the installed pre-widget hook when no NO_SNOOPER_APPS exclusion matches. Its async path swallows original press/release before WebKit and passes ignored replay through. Mechanism needs new rich A/B acceptance.",
+  "limitations": [
+    "Existing Return GDK logger confirms normal isolated Xvfb command gives one press/release and no modifiers; current proof Xvfb raw event stream was not newly observed",
+    "Main/tag WebKit source illustrates the causal mechanism; neither tag is claimed as identified installed runtime source",
+    "No product edits, container execution or GUI action during this review"
+  ]
+}

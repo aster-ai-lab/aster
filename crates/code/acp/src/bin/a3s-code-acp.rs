@@ -223,6 +223,10 @@ fn run_workspace_mcp_command(args: &Args, command: &WorkspaceMcpCommand) -> Resu
 
 fn main() -> Result<()> {
     if let Some(arg) = std::env::args().nth(1) {
+        if arg == "--build-id" {
+            println!("{}", env!("ASTER_PAIR_BUILD_ID"));
+            return Ok(());
+        }
         if arg == "--version" || arg == "-V" {
             println!("{}", env!("CARGO_PKG_VERSION"));
             return Ok(());

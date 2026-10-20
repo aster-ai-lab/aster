@@ -37,6 +37,86 @@ impl LlmClient for UnusedLlm {
 
 struct StaticPermission(PermissionDecision);
 
+#[test]
+fn runtime_posture_and_host_deny_both_govern_direct_calls() {
+    use crate::agent_api::agent_loop_runtime::RuntimePermissionChecker;
+    use crate::permissions::{policy_for_posture, PermissionPolicy};
+    let args = serde_json::json!({"file_path":"fixture.txt", "content":"fixture"});
+    for (policy, ceiling, expected) in [
+        (
+            policy_for_posture("plan"),
+            PermissionDecision::Allow,
+            PermissionDecision::Deny,
+        ),
+        (
+            policy_for_posture("yolo"),
+            PermissionDecision::Deny,
+            PermissionDecision::Deny,
+        ),
+        (
+            policy_for_posture("yolo").deny("write"),
+            PermissionDecision::Ask,
+            PermissionDecision::Deny,
+        ),
+        (
+            PermissionPolicy::new().allow("write"),
+            PermissionDecision::Ask,
+            PermissionDecision::Allow,
+        ),
+        (
+            PermissionPolicy::new(),
+            PermissionDecision::Allow,
+            PermissionDecision::Ask,
+        ),
+    ] {
+        let checker = RuntimePermissionChecker {
+            policy,
+            ceiling: Some(Arc::new(StaticPermission(ceiling))),
+        };
+        assert_eq!(checker.check("write", &args), expected);
+    }
+}
+
+#[test]
+fn runtime_policy_retains_visibility_and_the_hosts_snapshot_boundary() {
+    use crate::agent_api::agent_loop_runtime::RuntimePermissionChecker;
+    struct Mutable(std::sync::atomic::AtomicBool);
+    impl PermissionChecker for Mutable {
+        fn check(&self, _: &str, _: &serde_json::Value) -> PermissionDecision {
+            if self.0.load(Ordering::SeqCst) {
+                PermissionDecision::Deny
+            } else {
+                PermissionDecision::Allow
+            }
+        }
+        fn snapshot_for_run(&self) -> Option<Arc<dyn PermissionChecker>> {
+            Some(Arc::new(StaticPermission(
+                self.check("write", &serde_json::json!({})),
+            )))
+        }
+    }
+    let ceiling = Arc::new(Mutable(std::sync::atomic::AtomicBool::new(true)));
+    let checker = RuntimePermissionChecker {
+        policy: crate::permissions::policy_for_posture("yolo").deny("write"),
+        ceiling: Some(ceiling.clone()),
+    };
+    assert!(!checker.expose_to_model("write"));
+    let checker = RuntimePermissionChecker {
+        policy: crate::permissions::policy_for_posture("yolo"),
+        ceiling: Some(ceiling.clone()),
+    };
+    let frozen = checker.snapshot_for_run().unwrap();
+    ceiling.0.store(false, Ordering::SeqCst);
+    assert_eq!(
+        checker.check("write", &serde_json::json!({})),
+        PermissionDecision::Allow
+    );
+    assert_eq!(
+        frozen.check("write", &serde_json::json!({})),
+        PermissionDecision::Deny
+    );
+}
+
 impl PermissionChecker for StaticPermission {
     fn check(&self, _tool_name: &str, _args: &serde_json::Value) -> PermissionDecision {
         self.0

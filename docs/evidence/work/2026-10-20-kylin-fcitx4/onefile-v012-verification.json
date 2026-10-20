@@ -1,0 +1,10 @@
+{
+  "installer": "target/packages/asterdream-0.1.2-kylin-x86_64-20261020/aster_0.1.2_kylin-v10_x86_64.run",
+  "size": 572041057,
+  "sha256": "761cc24f6cc305ab2cfbb39ba389113f10548bc2f0fb6d36c36d7e9f5a6b361c",
+  "payload_offset": 492,
+  "verified_payload_files": 168,
+  "all_ship_checksums_match": true,
+  "flatpak_matches_installed_artifact": true,
+  "full_install_executed_on_kylin": false
+}

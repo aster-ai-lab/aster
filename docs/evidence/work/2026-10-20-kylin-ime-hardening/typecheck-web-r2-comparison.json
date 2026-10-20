@@ -1,0 +1,51 @@
+{
+  "previous_errors": 278,
+  "initial_r2_errors": 285,
+  "final_r2_errors": 278,
+  "same_file_error_code_counts": true,
+  "initial_added": [
+    {
+      "file": "src/renderer/components/composer/__tests__/ComposerSurface.lifecycle.test.tsx",
+      "code": "TS2322",
+      "count": 1
+    },
+    {
+      "file": "src/renderer/components/composer/__tests__/ComposerSurface.lifecycle.test.tsx",
+      "code": "TS18048",
+      "count": 1
+    },
+    {
+      "file": "src/renderer/pages/settings/DeviceConnectionsSettings/DeviceConnectionsSettings.tsx",
+      "code": "TS2307",
+      "count": 1
+    },
+    {
+      "file": "src/shared/ai/__tests__/executionFailure.test.ts",
+      "code": "TS2307",
+      "count": 1
+    },
+    {
+      "file": "src/shared/ai/executionFailure.ts",
+      "code": "TS2307",
+      "count": 1
+    },
+    {
+      "file": "src/shared/data/types/apiGatewayPairedDevice.ts",
+      "code": "TS2307",
+      "count": 1
+    },
+    {
+      "file": "src/shared/ipc/schemas/apiGateway.ts",
+      "code": "TS2307",
+      "count": 1
+    }
+  ],
+  "final_added": [],
+  "final_removed": [],
+  "corrections": [
+    "Default Node heap exhausted, exit134; validation rerun with explicit8192MiB heap",
+    "Two new lifecycle-test typing diagnostics fixed without changing behavior; focused regression/scoped checks rerun",
+    "Built missing isolated remote-protocol declarations from same local baseline package; five dependency-resolution diagnostics gone"
+  ],
+  "scope": "Full web check remains failing existing 278 baseline diagnostics; final r2 adds no file/error-code diagnostics"
+}

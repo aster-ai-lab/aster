@@ -1,0 +1,53 @@
+{
+  "kind": "final-staged-files-negative-fixtures",
+  "source_stage": "target/worktrees/kylin-ime-hardening-20261020/apps/work/dist/kylin/flatpak-build",
+  "source_manifest_sha256": "a0c61d35be53b7ea168528d082eecb39cf0d77e9c7e71683e73c40a64b737c5d",
+  "source_entries": 3582,
+  "source_unchanged_during_preparation": true,
+  "harness": "apps/work/scripts/kylin-flatpak/test-input-method.sh",
+  "harness_sha256": "0eeedbc8210418988cb0717e35a1d8972cfb1466aec96f08124118b641b54766",
+  "fixtures": [
+    {
+      "name": "missing-module",
+      "fixture": "target/evaluations/kylin-ime-hardening/final-negatives/fixture/missing-module",
+      "unique_difference": "files/lib/im/fcitx4/im-fcitx.so",
+      "before": {
+        "kind": "file",
+        "mode": 493,
+        "size": 40168,
+        "sha256": "0a9356681e4a42b611f5a3027451b4ae8e95d5c36fe5a7906e23db60b83d7c10"
+      },
+      "after": null,
+      "manifest_sha256": "63e9899819b203e50075ea4ab5d7fb3f69d68b8eef561aff2f907b29190bec6a"
+    },
+    {
+      "name": "unpinned-bus",
+      "fixture": "target/evaluations/kylin-ime-hardening/final-negatives/fixture/unpinned-bus",
+      "unique_difference": "files/bin/kylin-launch",
+      "before": {
+        "kind": "file",
+        "mode": 493,
+        "size": 4980,
+        "sha256": "6a6f459d0b7561faf7de2b400012e10f5e4d34342861f25ac896f052f37a9f84"
+      },
+      "after": {
+        "kind": "file",
+        "mode": 493,
+        "size": 4746,
+        "sha256": "8c923b352d7c20d02d49b0836ab9dafbfe705f00819bb2015ede4d66742adcf5"
+      },
+      "manifest_sha256": "eed57ad5080daa967fe858105040543358294836f2896bef9a08e261aadf194f"
+    }
+  ],
+  "source_unchanged_after_tests": true,
+  "fixtures_unchanged_during_tests": true,
+  "unchanged_input_sha256": {
+    "apps/work/scripts/kylin-flatpak/fcitx_client_protocol_test.c": "ced6920541e3e14b90431a9fe1042e71ea6b5a7dfedc84401e4d4e19ca69e69a",
+    "apps/work/scripts/kylin-flatpak/gtk_input_probe.c": "1d20306dfe10f1de9d41a8fc2af41b1125f8005ad7d1ff93b72ea623c2769eeb",
+    "target/worktrees/kylin-ime-hardening-20261020/apps/work/dist/kylin/flatpak-build/metadata": "fa8ffa59ec1534a75616b62dc440e6942f40c21de5cc3995fb693c79a7bfb957",
+    "target/worktrees/kylin-ime-hardening-20261020/apps/work/dist/kylin/flatpak-build/files/lib/im/fcitx4/libfcitx-gclient.so.1": "35c3cd304cbf72db8d263a4a73c9a81649f81a65e72370f4f7545370f4a6e110",
+    "target/worktrees/kylin-ime-hardening-20261020/apps/work/dist/kylin/flatpak-build/files/bin/kylin-im-backend": "34371bbf987e4620871845371734e8cdc11154bba4048b5688cd3acf4ad7f230"
+  },
+  "per_fixture_timeout_seconds": 60,
+  "runtime_files": "/root/.local/share/flatpak/runtime/org.gnome.Platform/x86_64/50/7e410fa0d429fcc34f2ddd0d9b6224f1435d8640fb9759801db4f02700542353/files"
+}

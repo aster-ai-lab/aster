@@ -1,0 +1,25 @@
+{"action": ["accessibility"], "command": ["gdbus", "call", "--session", "--dest", "org.a11y.Bus", "--object-path", "/org/a11y/bus", "--method", "org.freedesktop.DBus.Properties.Set", "org.a11y.Status", "IsEnabled", "<true>"], "returncode": 0, "stdout": "()\n", "stderr": ""}
+{"action": ["click", "1250", "46"], "command": ["xdotool", "mousemove", "1250", "46", "click", "1"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["click", "750", "510"], "command": ["xdotool", "mousemove", "750", "510", "click", "1"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["im-open"], "command": ["fcitx-remote", "-o"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["keys", "n", "i", "h", "a", "o"], "command": ["xdotool", "key", "--clearmodifiers", "--delay", "120", "n", "i", "h", "a", "o"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["keys", "space"], "command": ["xdotool", "key", "--clearmodifiers", "--delay", "120", "space"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["focus"], "command": ["xdotool", "windowfocus", "--sync", "4194306"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["click", "720", "530"], "command": ["xdotool", "mousemove", "720", "530", "click", "1"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["keys", "n", "i", "h", "a", "o"], "command": ["xdotool", "key", "--clearmodifiers", "--delay", "120", "n", "i", "h", "a", "o"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["keys", "space"], "command": ["xdotool", "key", "--clearmodifiers", "--delay", "120", "space"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["im-close"], "command": ["fcitx-remote", "-c"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["keys", "a", "b", "c"], "command": ["xdotool", "key", "--clearmodifiers", "--delay", "120", "a", "b", "c"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["im-open"], "command": ["fcitx-remote", "-o"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["keys", "n", "i"], "command": ["xdotool", "key", "--clearmodifiers", "--delay", "120", "n", "i"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["keys", "Escape"], "command": ["xdotool", "key", "--clearmodifiers", "--delay", "120", "Escape"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["keys", "h", "a", "o", "space"], "command": ["xdotool", "key", "--clearmodifiers", "--delay", "120", "h", "a", "o", "space"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["keys", "ctrl+a", "BackSpace"], "command": ["xdotool", "key", "--clearmodifiers", "--delay", "120", "ctrl+a", "BackSpace"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["keys", "n", "i", "h", "a", "o"], "command": ["xdotool", "key", "--clearmodifiers", "--delay", "120", "n", "i", "h", "a", "o"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["keys", "Return"], "command": ["xdotool", "key", "--clearmodifiers", "--delay", "120", "Return"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["im-close"], "command": ["fcitx-remote", "-c"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["keys", "Return"], "command": ["xdotool", "key", "--clearmodifiers", "--delay", "120", "Return"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["click", "173", "55"], "command": ["xdotool", "mousemove", "173", "55", "click", "1"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["click", "700", "530"], "command": ["xdotool", "mousemove", "700", "530", "click", "1"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["keys", "ctrl+a", "BackSpace", "a", "b", "c"], "command": ["xdotool", "key", "--clearmodifiers", "--delay", "120", "ctrl+a", "BackSpace", "a", "b", "c"], "returncode": 0, "stdout": "", "stderr": ""}
+{"action": ["keys", "Return"], "command": ["xdotool", "key", "--clearmodifiers", "--delay", "120", "Return"], "returncode": 0, "stdout": "", "stderr": ""}

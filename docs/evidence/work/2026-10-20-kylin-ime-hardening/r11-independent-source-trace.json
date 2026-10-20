@@ -1,0 +1,30 @@
+{
+  "kind": "read-only-R11-bundle-stack-and-source-trace",
+  "base": "target/worktrees/kylin-ime-hardening-20261020/apps/work",
+  "sha256": {
+    ".studio-package/static/js/async/do.b300b640a9.js": "e8c565c82e0778bff5aa42f85fba7f0eba0e8788886c47fbd23844f7a1853938",
+    ".studio-package/static/js/async/s9z.955f177b8a.js": "a7b5b6fd135648875872999dad638b0e8955f96626b22190a153340820556a50",
+    "src/renderer/pages/agents/AgentComposer.tsx": "09e027c08d1b6b072bd2b816b7e1bcfb3584b76c51c5193fdeb8789c401817dc",
+    "src/renderer/pages/agents/WorkbenchHomeComposerExtras.tsx": "635b5e32a174ec64b116adaadf3096c890ab210572465555301af56312ccc935",
+    "src/renderer/components/composer/variants/shared/useComposerFileCapabilities.ts": "b7a5ed2153d87de440582c586390d0619c6136eb67c95a390cf38dbd62f80179",
+    "src/renderer/components/composer/tools/components/AttachmentButton.tsx": "beb9d5b1d1119509129d451498b7c7d3d3d012f27c7e561145f0328a1a96bc81",
+    "src/renderer/components/composer/tools/ComposerToolProvider.tsx": "592bf623a7cef27671463cc8349c134ff358b1f78fbde45a810ba6b6395559b7",
+    "src/renderer/components/composer/ComposerToolRuntime.tsx": "58a66ae0ebadf7fd3d8ba308dd34aeedd5aeb73e617fd72f4eded08db7e73f69",
+    "src/renderer/components/QuickPanel/QuickPanelProvider.tsx": "7c42e081c25af0343a8a4a304d787a972c45173a9f01d729b91b786c0fd6f68c"
+  },
+  "bundle_frames": {
+    "do.b300b640a9.js:1:64124": "ComposerToolFooterActionsSync layout effect updateFooterActions",
+    "do.b300b640a9.js:1:82355": "QuickPanelProvider updateFooterActions -> setFooterActions",
+    "s9z.955f177b8a.js:3:23626": "MissingAgentHomeComposerInner (minified s_)",
+    "s9z.955f177b8a.js:3:31275": "MissingAgentHomeComposer (minified sN)"
+  },
+  "candidate_trigger": "Workbench host exists; modelSupportedExts is empty (including absent default model).",
+  "minimal_cycle": [
+    "MissingAgentHomeComposerInner subscribes useComposerToolLauncherVersion",
+    "fallback calls agentFileExtensions for a fresh extensions array each render",
+    "mounted AttachmentToolRuntime callback depends on extensions; registration effect depends on callback",
+    "old launcher cleanup and new launcher registration both increment launcherVersion",
+    "launcher context update renders MissingAgentHomeComposerInner again"
+  ],
+  "scope": "Static source and actual bundled stack mapping only; no container/GUI/test run and no source edit."
+}

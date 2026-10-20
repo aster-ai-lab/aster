@@ -1,0 +1,29 @@
+{
+  "application_commit": "d8477930b0cc4c2453e61425916fef9d13acadc26ed2e0f5ac9bde3f9757eb3c",
+  "overall_gui_acceptance": "not_passed",
+  "observation_method": "physical ASCII XTEST input through fcitx and manual screenshot review; optional passive metadata observer only for the separate no-daemon diagnostic",
+  "ime_native_path_observed_in_final_webkit_fallback": true,
+  "rich_composer_ime_guard": "not_verified; rich composer fails with React185 and WorkbenchHome fallback takes over before tested keypresses",
+  "react185_observed_without_instrumentation": [
+    "run-cl8OUJ",
+    "run-s0m5xz",
+    "run-mBG2P8",
+    "run-4C42Rl",
+    "run-cCJUxh"
+  ],
+  "ordinary_return_causal_diagnostic": {
+    "target": "WorkbenchHome fallback textarea",
+    "key": "Enter",
+    "code": "Enter",
+    "keyCode": 13,
+    "isComposing": false,
+    "viewComposing": null,
+    "all_modifiers": false,
+    "defaultPrevented_capture_and_bubble": false,
+    "source": "dom-events.jsonl sequences42-51"
+  },
+  "physical_kylin_acceptance": false,
+  "authentication_acceptance": false,
+  "cua_certification": false,
+  "snapshot_text_automatically_asserted": false
+}

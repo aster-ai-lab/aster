@@ -1,0 +1,34 @@
+{
+  "source_identity_checks": [
+    {
+      "path": "apps/work/scripts/kylin-flatpak/kylin-launch.sh",
+      "sha256": "6a6f459d0b7561faf7de2b400012e10f5e4d34342861f25ac896f052f37a9f84"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/build-immodule.sh",
+      "sha256": "5cef530f90644c3d599677732fb83f3f51f3a542cc16a92fa944b34c0d2614b9"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/package-bundle.sh",
+      "sha256": "75f01dd3e4e6ecbc28a9091e0f5983953bcd3575b86d0d5dfbd9ffc5a5fee3bb"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/kylin_im_backend.c",
+      "sha256": "637ed80e13c8f16028d761a87e46dca670f323ba04e93eb0284eb94cee4b6d77"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/README.md",
+      "sha256": "938830e9070b1fa582ba55e1d6b8fbb2728e92bedabcb9fc2102e40e71445dcc"
+    },
+    {
+      "path": "tests/kylin_input_method.py",
+      "sha256": "4e9707bf2c8fdf2260ecdfa01e0ef7999e30a9c329c1b47ba5d069de1dfe2240"
+    },
+    {
+      "path": "apps/work/dist/kylin/kylin-im-backend",
+      "sha256": "34371bbf987e4620871845371734e8cdc11154bba4048b5688cd3acf4ad7f230"
+    }
+  ],
+  "original_source_modified_only_in_owned_paths": true,
+  "isolated_root": "/Users/roylin/code/aster/target/worktrees/kylin-ime-hardening-20261020"
+}

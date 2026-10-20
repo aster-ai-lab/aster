@@ -1,0 +1,67 @@
+{
+  "lock_schema": 2,
+  "cua_repository": "https://github.com/trycua/cua",
+  "cua_revision": "e88e9d899ac5effaeae38619527ebaa46b26ce72",
+  "cua_driver_version": "0.23.2",
+  "mcp_protocol": "2025-06-18",
+  "profiles": [
+    {
+      "id": "linux-embedded",
+      "platform": "linux",
+      "endpoint": "embedded_socket",
+      "semantic": false,
+      "window_vision": false,
+      "lifecycle": false,
+      "status": "unsupported",
+      "reason": "The locked CUA 0.23.2 revision has no reviewed Linux application backend."
+    },
+    {
+      "id": "linux-installed",
+      "platform": "linux",
+      "endpoint": "installed_daemon",
+      "semantic": false,
+      "window_vision": false,
+      "lifecycle": false,
+      "status": "unsupported",
+      "reason": "The locked CUA 0.23.2 revision has no reviewed Linux application backend."
+    },
+    {
+      "id": "macos-embedded",
+      "platform": "macos",
+      "endpoint": "embedded_socket",
+      "semantic": true,
+      "window_vision": true,
+      "lifecycle": true,
+      "status": "contract_tested"
+    },
+    {
+      "id": "macos-installed",
+      "platform": "macos",
+      "endpoint": "installed_daemon",
+      "semantic": true,
+      "window_vision": true,
+      "lifecycle": true,
+      "status": "contract_tested"
+    },
+    {
+      "id": "windows-embedded",
+      "platform": "windows",
+      "endpoint": "embedded_socket",
+      "semantic": false,
+      "window_vision": false,
+      "lifecycle": false,
+      "status": "unsupported",
+      "reason": "The locked CUA 0.23.2 revision has no reviewed Windows application backend."
+    },
+    {
+      "id": "windows-installed",
+      "platform": "windows",
+      "endpoint": "installed_daemon",
+      "semantic": false,
+      "window_vision": false,
+      "lifecycle": false,
+      "status": "unsupported",
+      "reason": "The locked CUA 0.23.2 revision has no reviewed Windows application backend."
+    }
+  ]
+}

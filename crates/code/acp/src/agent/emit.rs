@@ -3,6 +3,18 @@
 use super::*;
 
 impl A3sCodeAgent {
+    pub(super) async fn emit_permission_mode(
+        &self,
+        id: acp::SessionId,
+        posture: PermissionPosture,
+    ) {
+        self.emit(acp::SessionNotification::new(
+            id,
+            acp::SessionUpdate::CurrentModeUpdate(acp::CurrentModeUpdate::new(posture.as_str())),
+        ))
+        .await;
+    }
+
     pub(super) async fn emit(&self, notification: acp::SessionNotification) {
         let client = self.client.borrow().clone();
         if let Some(client) = client {

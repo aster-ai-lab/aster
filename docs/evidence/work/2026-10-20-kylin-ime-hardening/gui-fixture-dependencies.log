@@ -1,0 +1,13 @@
+debconf: delaying package configuration, since apt-utils is not installed
+  --log-a11y-bus                          Log accessibility bus calls
+  --no-a11y-bus                           Don't proxy accessibility bus calls
+  --a11y-bus                              Proxy accessibility bus calls (default except when sandboxed)
+  --session-bus                           Proxy session bus calls (default except when sandboxed)
+  --sandbox                               Run completely sandboxed
+  --instance-id-fd                        Write the instance ID to the given file descriptor
+  --log-a11y-bus                          Log accessibility bus calls
+  --no-a11y-bus                           Don't proxy accessibility bus calls
+  --a11y-bus                              Proxy accessibility bus calls (default except when sandboxed)
+  --session-bus                           Proxy session bus calls (default except when sandboxed)
+  --sandbox                               Run completely sandboxed
+AT-SPI and Gdk screenshot APIs available

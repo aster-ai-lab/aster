@@ -51,9 +51,7 @@ fn a_background_path_budget_does_not_become_unresolved_debt() {
     );
     same_words.budget_exceeded = false;
     ledger.observe_background_receipt("background:words:exited", &same_words);
-    assert!(ledger
-        .unresolved_tool_effects
-        .contains("background-receipt-incomplete:background:words:exited"));
+    assert!(!ledger.has_uncertain_tool_invocations());
 }
 
 #[test]
@@ -71,7 +69,7 @@ fn incomplete_invalid_and_external_background_observations_remain_debt() {
     ledger.observe_background_receipt("background:invalid", &invalid);
     ledger.observe_background_receipt("", &observed(b"bytes", 0o644));
     ledger.restore_unresolved_tool_effects(Default::default(), &Default::default());
-    assert!(ledger
+    assert!(!ledger
         .unresolved_tool_effects
         .contains("background-receipt-incomplete:background:partial"));
     assert!(ledger

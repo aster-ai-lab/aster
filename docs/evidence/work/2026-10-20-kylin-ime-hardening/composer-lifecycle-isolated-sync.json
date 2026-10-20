@@ -1,0 +1,19 @@
+{
+  "status": "passed",
+  "file_count": 2,
+  "checks": [
+    {
+      "path": "apps/work/src/renderer/components/composer/variants/shared/useComposerFileCapabilities.ts",
+      "original_sha256": "5aab1708c81fb46f7a49cf2d828cc9dbac225fcc24b7336d7166f460b6656446",
+      "isolated_sha256": "5aab1708c81fb46f7a49cf2d828cc9dbac225fcc24b7336d7166f460b6656446",
+      "matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/__tests__/ComposerSurface.lifecycle.test.tsx",
+      "original_sha256": "b142b76dd6318adf595e59797f4be55e0cdc139cecb51f0234f9ce3e9ab0b5ee",
+      "isolated_sha256": "b142b76dd6318adf595e59797f4be55e0cdc139cecb51f0234f9ce3e9ab0b5ee",
+      "matches": true
+    }
+  ],
+  "build_performed": false
+}

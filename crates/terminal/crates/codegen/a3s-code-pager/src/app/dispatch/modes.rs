@@ -599,9 +599,6 @@ fn cycle_refuses(app: &AppView) -> bool {
 /// publishes its own modes. Returns `None` when the ordinary cycle should run instead.
 /// Agent-view only, so a peeked agent's unseen nudge never changes its cycle.
 fn jump_to_published_plan_for_nudge(app: &mut AppView) -> Option<Vec<Effect>> {
-    if crate::app::a3s_code_active() {
-        return None;
-    }
     let ActiveView::Agent(id) = app.active_view else {
         return None;
     };
@@ -889,6 +886,10 @@ fn dispatch_cycle_mode_inner(app: &mut AppView) -> Vec<Effect> {
     tracing::info!(next = %name, "Mode cycle");
 
     let canonical = apply_choice_permission(app, next, in_yolo, in_auto, blocked.is_some());
+    sync_active_auto_flag(app);
+    if crate::app::a3s_code_active() && canonical.is_some() {
+        effects.retain(|effect| !matches!(effect, Effect::SetSessionMode { .. }));
+    }
     refresh_open_settings_modals(app);
     if let Some(canonical) = canonical {
         effects.push(Effect::PersistPermissionMode {
@@ -914,26 +915,31 @@ fn mode_choices(
     auto_gate: bool,
 ) -> Vec<(ModeChoice, String)> {
     let mut choices = published_mode_choices(agent);
+    choices.retain(|(choice, _)| auto_gate || *choice != ModeChoice::Auto);
     if choices.is_empty() {
         choices = builtin_mode_choices(auto_gate);
     }
-    choices.push((ModeChoice::AlwaysApprove, yolo_mode_label().into()));
+    if !choices
+        .iter()
+        .any(|(choice, _)| *choice == ModeChoice::AlwaysApprove)
+    {
+        choices.push((ModeChoice::AlwaysApprove, yolo_mode_label().into()));
+    }
     choices
 }
 
 /// The modes the agent publishes, in place of the built-in Normal and Plan.
 fn published_mode_choices(agent: &crate::app::agent_view::AgentView) -> Vec<(ModeChoice, String)> {
-    let a3s = crate::app::a3s_code_active();
     agent
         .available_modes
         .iter()
         .filter_map(|mode| {
-            let id: SessionMode = mode.id.0.parse().ok()?;
-            // Plan is unsupported under a3s-code-acp even if a catalog wrongly lists it.
-            if a3s && id.is_plan() {
-                return None;
-            }
-            Some((ModeChoice::Session(id), mode.name.clone()))
+            let choice = match mode.id.0.as_ref() {
+                "auto" => ModeChoice::Auto,
+                "yolo" => ModeChoice::AlwaysApprove,
+                id => ModeChoice::Session(id.parse().ok()?),
+            };
+            Some((choice, mode.name.clone()))
         })
         .collect()
 }
@@ -941,7 +947,7 @@ fn published_mode_choices(agent: &crate::app::agent_view::AgentView) -> Vec<(Mod
 /// The cycle for an agent that publishes no modes of its own.
 fn builtin_mode_choices(auto_gate: bool) -> Vec<(ModeChoice, String)> {
     let mut choices = vec![(ModeChoice::Session(SessionMode::Default), "Normal".into())];
-    // Plan mode needs shell SetSessionMode + plan tooling; a3s-code-acp does not advertise it.
+    // Without a published catalog, do not assume the sidecar supports Plan.
     if !crate::app::a3s_code_active() {
         choices.push((ModeChoice::Session(SessionMode::Plan), "Plan".into()));
     }

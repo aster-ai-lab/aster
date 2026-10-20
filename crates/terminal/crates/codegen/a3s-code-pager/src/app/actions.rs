@@ -2628,6 +2628,14 @@ pub enum TaskResult {
     SetSessionModeFailed {
         session_id: acp::SessionId,
     },
+    /// The mode precondition failed before this prompt was sent.
+    ModeSwitchPromptFailed {
+        agent_id: AgentId,
+        session_id: acp::SessionId,
+        prompt_id: String,
+        text: String,
+        error: String,
+    },
     /// The marker can stop advertising itself as unsent.
     ConsentRecorded {
         notice_id: String,
@@ -3205,6 +3213,10 @@ pub enum TaskResult {
     },
     /// Setting persist failed.
     /// Rolls back in-memory cache to `rollback_value` and shows a failure toast.
+    PermissionModeFailed {
+        session_id: acp::SessionId,
+        error: String,
+    },
     SettingPersistFailed {
         key: crate::settings::SettingKey,
         rollback_value: crate::settings::SettingValue,

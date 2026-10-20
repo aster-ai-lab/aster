@@ -1,0 +1,7 @@
+PASS: requested=x11 actual=x11 module=fcitx
+PASS: requested=x11,wayland actual=x11 module=fcitx
+PASS: requested=wayland,x11 actual=x11 module=fcitx
+PASS: requested=* actual=x11 module=fcitx
+PASS: failed probe diagnosed; main target still executed
+34371bbf987e4620871845371734e8cdc11154bba4048b5688cd3acf4ad7f230  /src/dist/kylin/kylin-im-backend
+637ed80e13c8f16028d761a87e46dca670f323ba04e93eb0284eb94cee4b6d77  /src/scripts/kylin-flatpak/kylin_im_backend.c

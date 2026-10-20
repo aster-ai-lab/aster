@@ -1,0 +1,48 @@
+{
+  "app_pid": 31547,
+  "synthetic_session_fixture": true,
+  "expected_commit": "d8477930b0cc4c2453e61425916fef9d13acadc26ed2e0f5ac9bde3f9757eb3c",
+  "app_selected_environment": {
+    "A3S_STUDIO_INSTANCE": "gui-ime-31477",
+    "GTK_IM_MODULE": "fcitx",
+    "XDG_DATA_HOME": "/root/.var/app/dev.a3s.AsterDream/data",
+    "XDG_CONFIG_HOME": "/root/.var/app/dev.a3s.AsterDream/config",
+    "WEBKIT_DISABLE_SANDBOX_THIS_IS_DANGEROUS": "1",
+    "XDG_CACHE_HOME": "/root/.var/app/dev.a3s.AsterDream/cache",
+    "DISPLAY": ":99.0",
+    "XDG_STATE_HOME": "/aster/target/evaluations/kylin-ime-gui/run-cCJUxh/app-state",
+    "XDG_RUNTIME_DIR": "/aster/target/evaluations/kylin-ime-gui/run-cCJUxh/runtime",
+    "GTK_IM_MODULE_FILE": "/app/lib/im/fcitx4/immodules.cache",
+    "FCITX_DBUS_ADDRESS": "unix:path=/run/user/0/bus"
+  },
+  "namespaces": {
+    "net": "net:[4026532509]",
+    "mnt": "mnt:[4026532617]"
+  },
+  "routes": [],
+  "interfaces": [
+    {
+      "ifindex": 1,
+      "ifname": "lo",
+      "flags": [
+        "LOOPBACK",
+        "UP",
+        "LOWER_UP"
+      ],
+      "mtu": 65536,
+      "qdisc": "noqueue",
+      "operstate": "UNKNOWN",
+      "linkmode": "DEFAULT",
+      "group": "default",
+      "txqlen": 1000,
+      "link_type": "loopback",
+      "address": "00:00:00:00:00:00",
+      "broadcast": "00:00:00:00:00:00"
+    }
+  ],
+  "profile_mounts": [
+    "241 167 0:36 /Users/roylin/code/aster/target/evaluations/kylin-ime-gui/run-cCJUxh/flatpak-profile /root/.var/app/dev.a3s.AsterDream rw,nosuid,nodev,relatime - virtiofs mac rw"
+  ],
+  "display_mapping": ":150 host Xvfb → :99.0 Flatpak",
+  "observation_method": "X11 screenshots; AT-SPI exposes only GTK frame/menu, not WebKit DOM"
+}

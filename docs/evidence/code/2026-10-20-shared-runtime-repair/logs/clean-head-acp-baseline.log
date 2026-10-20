@@ -1,0 +1,133 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/shared-runtime-pre-repair/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/shared-runtime-pre-repair/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/shared-runtime-pre-repair/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/shared-runtime-pre-repair/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/shared-runtime-pre-repair/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/shared-runtime-pre-repair/Cargo.toml
+warning: function `sigmoid` is never used
+  --> crates/bge/src/math.rs:18:15
+   |
+18 | pub(crate) fn sigmoid(logit: f32) -> f32 {
+   |               ^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `encode_pairs` is never used
+  --> crates/bge/src/tokenizer.rs:91:19
+   |
+28 | impl PairTokenizer {
+   | ------------------ method in this implementation
+...
+91 |     pub(crate) fn encode_pairs(
+   |                   ^^^^^^^^^^^^
+
+warning: `a3s-use-bge` (lib) generated 2 warnings
+warning: unused imports: `guest_agent_hello` and `host_runtime_version`
+  --> crates/code/core/src/sandbox/oci.rs:25:26
+   |
+25 | pub(crate) use version::{guest_agent_hello, host_runtime_version};
+   |                          ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:413:21
+    |
+413 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `HOST_MISMATCH` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:10:7
+   |
+10 | const HOST_MISMATCH: &[u8] = b"guest agent version does not match the host runtime version";
+   |       ^^^^^^^^^^^^^
+
+warning: function `host_runtime_version` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:13:15
+   |
+13 | pub(crate) fn host_runtime_version(host: &[u8]) -> Option<&str> {
+   |               ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `guest_agent_hello` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:18:15
+   |
+18 | pub(crate) fn guest_agent_hello<'a>(agent: &'a [u8], architecture: &str) -> Option<&'a str> {
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: function `version_immediately_before` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:26:4
+   |
+26 | fn version_immediately_before<'a>(bytes: &'a [u8], marker: &[u8]) -> Option<&'a str> {
+   |    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `semver_ending_at` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:44:4
+   |
+44 | fn semver_ending_at(bytes: &[u8], end: usize) -> Option<&str> {
+   |    ^^^^^^^^^^^^^^^^
+
+warning: `a3s-code-core` (lib) generated 7 warnings (run `cargo fix --lib -p a3s-code-core` to apply 1 suggestion)
+   Compiling a3s-code-acp v9.1.4 (/Users/roylin/code/aster/.tmp/shared-runtime-pre-repair/crates/code/acp)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-acp` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 15.55s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_acp-76d742eaffc8545d)
+
+running 5 tests
+test document_read::run_tests::fresh_actual_runs_do_not_reuse_a_previous_pin_even_when_scope_addresses_repeat ... FAILED
+test plugin_mcp::tests::failed_later_mcp_preparation_keeps_earlier_process_bytes_until_observed_rollback ... FAILED
+test plugin_mcp::tests::native_skill_and_real_stdio_mcp_stay_frozen_and_ready_processes_retain_their_package ... FAILED
+test plugin_mcp::tests::timed_out_native_mcp_call_revokes_readiness_and_reaps_before_retirement ... FAILED
+test plugin_selection::tests::cancelled_actual_task_native_tool_settles_descendants_before_package_retirement ... FAILED
+
+failures:
+
+---- document_read::run_tests::fresh_actual_runs_do_not_reuse_a_previous_pin_even_when_scope_addresses_repeat stdout ----
+
+thread 'document_read::run_tests::fresh_actual_runs_do_not_reuse_a_previous_pin_even_when_scope_addresses_repeat' (51782179) panicked at crates/code/acp/src/document_run_tests.rs:567:17:
+assertion `left == right` failed
+  left: 3
+ right: 4
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- plugin_mcp::tests::failed_later_mcp_preparation_keeps_earlier_process_bytes_until_observed_rollback stdout ----
+
+thread 'plugin_mcp::tests::failed_later_mcp_preparation_keeps_earlier_process_bytes_until_observed_rollback' (51782187) panicked at crates/code/acp/src/plugin_mcp_tests.rs:607:10:
+called `Result::unwrap()` on an `Err` value: Os { code: 2, kind: NotFound, message: "No such file or directory" }
+
+---- plugin_mcp::tests::native_skill_and_real_stdio_mcp_stay_frozen_and_ready_processes_retain_their_package stdout ----
+
+thread 'plugin_mcp::tests::native_skill_and_real_stdio_mcp_stay_frozen_and_ready_processes_retain_their_package' (51782554) panicked at crates/code/acp/src/plugin_mcp_tests.rs:607:10:
+called `Result::unwrap()` on an `Err` value: Os { code: 2, kind: NotFound, message: "No such file or directory" }
+
+---- plugin_mcp::tests::timed_out_native_mcp_call_revokes_readiness_and_reaps_before_retirement stdout ----
+
+thread 'plugin_mcp::tests::timed_out_native_mcp_call_revokes_readiness_and_reaps_before_retirement' (51782855) panicked at crates/code/acp/src/plugin_mcp_tests.rs:758:5:
+assertion `left == right` failed
+  left: 0
+ right: 2
+
+---- plugin_selection::tests::cancelled_actual_task_native_tool_settles_descendants_before_package_retirement stdout ----
+
+thread 'plugin_selection::tests::cancelled_actual_task_native_tool_settles_descendants_before_package_retirement' (51782975) panicked at crates/code/acp/src/plugin_selection_tests.rs:370:23:
+called `Result::unwrap()` on an `Err` value: Elapsed(())
+
+
+failures:
+    document_read::run_tests::fresh_actual_runs_do_not_reuse_a_previous_pin_even_when_scope_addresses_repeat
+    plugin_mcp::tests::failed_later_mcp_preparation_keeps_earlier_process_bytes_until_observed_rollback
+    plugin_mcp::tests::native_skill_and_real_stdio_mcp_stay_frozen_and_ready_processes_retain_their_package
+    plugin_mcp::tests::timed_out_native_mcp_call_revokes_readiness_and_reaps_before_retirement
+    plugin_selection::tests::cancelled_actual_task_native_tool_settles_descendants_before_package_retirement
+
+test result: FAILED. 0 passed; 5 failed; 0 ignored; 0 measured; 338 filtered out; finished in 13.35s
+
+error: test failed, to rerun pass `-p a3s-code-acp --lib`

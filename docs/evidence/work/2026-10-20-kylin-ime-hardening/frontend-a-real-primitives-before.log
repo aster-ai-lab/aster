@@ -1,0 +1,223 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - import "/Users/roylin/code/aster/apps/work/vitest.config" without a file extension (../../target/evaluations/kylin-ime-review/frontend-a-before.config.ts:2:20). Add the file extension
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/local-product-scope.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-local-product-scope.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/work
+
+ ❯ |renderer| src/renderer/components/QuickPanel/__tests__/view.test.tsx (58 tests | 7 failed) 513ms
+   ❯ QuickPanelView (58)
+     × leaves IME Escape untouched in the global capture handler for a editor session 30ms
+     × leaves IME Escape untouched in the global capture handler for a nested input 9ms
+     × leaves IME Escape untouched in the global capture handler for a nested input blur 7ms
+     × leaves IME Escape untouched in the global capture handler for a window blur 7ms
+     × does not select or navigate the panel on IME Enter 5ms
+     × does not select or navigate the panel on IME Tab 5ms
+     × does not select or navigate the panel on IME ArrowDown 6ms
+ ❯ |renderer| src/renderer/components/composer/__tests__/ComposerToken.test.tsx (59 tests | 2 failed) 696ms
+   ❯ ComposerToken (58)
+     × keeps IME Enter from finishing prompt-variable editing 5ms
+     × keeps IME Tab from finishing prompt-variable editing 3ms
+ ❯ |renderer| src/renderer/components/composer/__tests__/composerInputAdapter.test.ts (6 tests | 1 failed) 78ms
+   ❯ createComposerInputAdapter (6)
+     × reports the live composition session to panels outside the editor event path 5ms
+ ❯ |renderer| src/renderer/components/composer/variants/__tests__/AskUserQuestionComposer.test.tsx (17 tests | 1 failed) 434ms
+   ❯ AskUserQuestionComposer (17)
+     × keeps IME confirmation separate from submitting a custom answer 49ms
+ ❯ |renderer| src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx (28 tests | 4 failed) 573ms
+   ❯ PermissionRequestComposer (28)
+     × leaves IME Enter in the note to the input method 15ms
+     × leaves IME Escape in the note to the input method 13ms
+     × ignores a legacy IME Enter in the global permission hotkey 2ms
+     × ignores a legacy IME Escape in the global permission hotkey 2ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 15 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/components/QuickPanel/__tests__/view.test.tsx > QuickPanelView > leaves IME Escape untouched in the global capture handler for a editor session
+ FAIL  |renderer| src/renderer/components/QuickPanel/__tests__/view.test.tsx > QuickPanelView > leaves IME Escape untouched in the global capture handler for a nested input
+ FAIL  |renderer| src/renderer/components/QuickPanel/__tests__/view.test.tsx > QuickPanelView > leaves IME Escape untouched in the global capture handler for a nested input blur
+ FAIL  |renderer| src/renderer/components/QuickPanel/__tests__/view.test.tsx > QuickPanelView > leaves IME Escape untouched in the global capture handler for a window blur
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/renderer/components/QuickPanel/__tests__/view.test.tsx:630:93
+    628|       const target = screen.getByRole('textbox', { name: 'Composer tar…
+    629|       if (origin !== 'editor session') fireEvent.compositionStart(targ…
+    630|       expect(fireEvent.keyDown(target, { key: 'Escape', keyCode: 27, i…
+       |                                                                                             ^
+    631|       expect(onClose).not.toHaveBeenCalled()
+    632|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/15]⎯
+
+ FAIL  |renderer| src/renderer/components/QuickPanel/__tests__/view.test.tsx > QuickPanelView > does not select or navigate the panel on IME Enter
+ FAIL  |renderer| src/renderer/components/QuickPanel/__tests__/view.test.tsx > QuickPanelView > does not select or navigate the panel on IME Tab
+ FAIL  |renderer| src/renderer/components/QuickPanel/__tests__/view.test.tsx > QuickPanelView > does not select or navigate the panel on IME ArrowDown
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/renderer/components/QuickPanel/__tests__/view.test.tsx:674:7
+    672|     expect(
+    673|       fireEvent.keyDown(target, { key, keyCode: key === 'Enter' ? 13 :…
+    674|     ).toBe(true)
+       |       ^
+    675|     expect(firstAction).not.toHaveBeenCalled()
+    676|     expect(secondAction).not.toHaveBeenCalled()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/15]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerToken.test.tsx > ComposerToken > keeps IME Enter from finishing prompt-variable editing
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerToken.test.tsx > ComposerToken > keeps IME Tab from finishing prompt-variable editing
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/renderer/components/composer/__tests__/ComposerToken.test.tsx:1395:81
+    1393|
+    1394|     fireEvent.compositionEnd(input, { data: '上海' })
+    1395|     expect(fireEvent.keyDown(input, { key, keyCode: 229, isComposing: …
+       |                                                                                 ^
+    1396|     expect(onCommit).not.toHaveBeenCalled()
+    1397|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/15]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/composerInputAdapter.test.ts > createComposerInputAdapter > reports the live composition session to panels outside the editor event path
+AssertionError: expected undefined to be true // Object.is equality
+
+- Expected:
+true
+
++ Received:
+undefined
+
+ ❯ src/renderer/components/composer/__tests__/composerInputAdapter.test.ts:96:37
+     94|
+     95|     fireEvent.compositionStart(currentEditor.view.dom)
+     96|     expect(adapter.isComposing?.()).toBe(true)
+       |                                     ^
+     97|
+     98|     fireEvent.compositionEnd(currentEditor.view.dom)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/15]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/variants/__tests__/AskUserQuestionComposer.test.tsx > AskUserQuestionComposer > keeps IME confirmation separate from submitting a custom answer
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/renderer/components/composer/variants/__tests__/AskUserQuestionComposer.test.tsx:94:90
+     92|     fireEvent.compositionStart(answer)
+     93|     fireEvent.change(answer, { target: { value: '使用中文日志' } })
+     94|     expect(fireEvent.keyDown(answer, { key: 'Enter', keyCode: 13, isCo…
+       |                                                                                          ^
+     95|     expect(onRespond).not.toHaveBeenCalled()
+     96|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/15]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx > PermissionRequestComposer > leaves IME Enter in the note to the input method
+ FAIL  |renderer| src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx > PermissionRequestComposer > leaves IME Escape in the note to the input method
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx:403:102
+    401|
+    402|     fireEvent.compositionStart(note)
+    403|     expect(fireEvent.keyDown(note, { key, keyCode: key === 'Enter' ? 1…
+       |                                                                                                      ^
+    404|     expect(onRespond).not.toHaveBeenCalled()
+    405|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/15]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx > PermissionRequestComposer > ignores a legacy IME Enter in the global permission hotkey
+ FAIL  |renderer| src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx > PermissionRequestComposer > ignores a legacy IME Escape in the global permission hotkey
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx:419:84
+    417|     render(<PermissionRequestComposer request={makeRequest()} onRespon…
+    418|
+    419|     expect(fireEvent.keyDown(document, { key, keyCode: 229, isComposin…
+       |                                                                                    ^
+    420|     expect(onRespond).not.toHaveBeenCalled()
+    421|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/15]⎯
+
+
+ Test Files  5 failed (5)
+      Tests  15 failed | 153 passed (168)
+   Start at  08:31:30
+   Duration  3.46s (import 45%, tests 22%, transform 22%, environment 9%, setup 3%)
+

@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "changed_critical_files_from_prior": [
+    "bin/aster-dream"
+  ],
+  "unchanged_critical_files": 22,
+  "session_bus_policy_unchanged": true,
+  "meaning": "R11 changes renderer embedded in host. Prior native negative fixtures used same launcher,module,probe identities; new installed positives rerun."
+}

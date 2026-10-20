@@ -1,0 +1,17 @@
+
+running 1 test
+test plugin_mcp::tests::timed_out_native_mcp_call_revokes_readiness_and_reaps_before_retirement ... FAILED
+
+failures:
+
+failures:
+    plugin_mcp::tests::timed_out_native_mcp_call_revokes_readiness_and_reaps_before_retirement
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 351 filtered out; finished in 1.29s
+
+
+thread 'plugin_mcp::tests::timed_out_native_mcp_call_revokes_readiness_and_reaps_before_retirement' (51750274) panicked at crates/code/acp/src/plugin_mcp_tests.rs:758:5:
+assertion `left == right` failed
+  left: 0
+ right: 2
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

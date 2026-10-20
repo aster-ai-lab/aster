@@ -238,6 +238,10 @@ impl A3sCodeAgent {
             AgentEvent::Error { message } => {
                 state.turn_failure = Some(message);
             }
+            AgentEvent::ToolEffectUnresolved { error } => {
+                state.turn_failure = Some(error.to_string());
+                state.reconciliation = Some(error);
+            }
             AgentEvent::ModelUsageBound { snapshot } => {
                 let used = snapshot.reported_prompt_tokens as u64;
                 let size = session.context_window_tokens() as u64;
@@ -374,9 +378,29 @@ impl A3sCodeAgent {
         generation: u64,
         turn_permit: OwnedMutexGuard<()>,
         observation: Option<&crate::run_observation::Binding>,
+        mut research_gate: Option<ResearchGate>,
+        requested_posture: Option<PermissionPosture>,
     ) -> acp::Result<acp::PromptResponse> {
         let governing_goal = self.goals.lock().await.get(session_id.0.as_ref()).cloned();
-        let stream = match session.stream_with_run(prompt, None).await {
+        // Keep a mode update from overtaking the policy captured for this prompt.
+        let mut sessions = self.sessions.lock().await;
+        if let Some(posture) = requested_posture {
+            sessions
+                .get_mut(session_id.0.as_ref())
+                .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?
+                .set_posture(posture, Vec::new())?;
+        }
+        let admitted = session.stream_with_run(prompt, None).await;
+        drop(sessions);
+        // The run owns its frozen policy now. Restore before draining events
+        // or releasing the turn permit so the next queued turn sees its mode.
+        if let Some(gate) = research_gate.as_mut() {
+            gate.restore()?;
+        }
+        if let Some(posture) = requested_posture {
+            self.emit_permission_mode(session_id.clone(), posture).await;
+        }
+        let stream = match admitted {
             Ok(parts) => parts,
             Err(error) => {
                 drop(turn_permit);
@@ -421,6 +445,7 @@ impl A3sCodeAgent {
         let mut state = TurnState {
             observer,
             turn_failure: None,
+            reconciliation: None,
             saw_text: false,
             delta_text: String::new(),
             end_text: None,
@@ -550,6 +575,9 @@ impl A3sCodeAgent {
             "stream_turn_tail"
         );
         if let Some(message) = state.turn_failure {
+            if let Some(error) = state.reconciliation {
+                return Err(reconciliation_error(&error));
+            }
             return Err(agent_failure_error(&message));
         }
         Ok(acp::PromptResponse::new(
@@ -663,15 +691,24 @@ impl A3sCodeAgent {
         generation: u64,
         response: acp::Result<acp::PromptResponse>,
     ) -> acp::Result<acp::PromptResponse> {
-        {
+        let elapsed = {
             let sessions = self.sessions.lock().await;
-            if let Some(live) = sessions.get(session_key) {
+            let current =
+                self.turn_generation.lock().await.get(session_key).copied() == Some(generation);
+            if let Some(live) = sessions.get(session_key).filter(|_| current) {
                 *live
                     .active_prompt_id
                     .lock()
                     .unwrap_or_else(std::sync::PoisonError::into_inner) = None;
+                live.turn_started
+                    .lock()
+                    .unwrap_or_else(std::sync::PoisonError::into_inner)
+                    .take()
+                    .map(|started| started.elapsed())
+            } else {
+                None
             }
-        }
+        };
         let cancelled = self
             .cancelled_generation
             .lock()
@@ -686,16 +723,6 @@ impl A3sCodeAgent {
         // a terminal bell on stderr when the configured floor elapsed.
         // Focus detection and OS-level notifications stay with the
         // terminal host; the payload never carries content.
-        let elapsed = {
-            let sessions = self.sessions.lock().await;
-            sessions.get(session_key).and_then(|live| {
-                live.turn_started
-                    .lock()
-                    .unwrap_or_else(std::sync::PoisonError::into_inner)
-                    .take()
-                    .map(|started| started.elapsed())
-            })
-        };
         if let Some(elapsed) = elapsed {
             if let Some(notifications) = &self.launch.config.notifications {
                 if completion_bell_due(notifications, elapsed) {
@@ -750,6 +777,19 @@ pub(super) fn terminal_kind(
 /// `Err` as TurnFailed; `Ok(EndTurn)` would say the turn completed.
 pub(super) fn agent_failure_error(message: &str) -> acp::Error {
     acp::Error::internal_error().data(message.to_string())
+}
+
+pub(super) fn reconciliation_error(
+    error: &a3s_code_core::harness_loop::ToolEffectUnresolved,
+) -> acp::Error {
+    acp::Error::internal_error().data(serde_json::json!({
+        "kind": "tool_effect_unresolved",
+        "code": "tool_effect_unresolved",
+        "message": error.to_string(),
+        "retryable": false,
+        "recovery": { "action": "reconcile_tool_effects", "sameSession": true,
+            "obligationIds": error.obligation_ids },
+    }))
 }
 
 /// The failure text for a turn worker that died without a terminal event:

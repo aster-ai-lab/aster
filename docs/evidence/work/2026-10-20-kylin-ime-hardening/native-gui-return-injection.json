@@ -1,0 +1,90 @@
+{
+  "kind": "isolated-GDK-key-state-not-DOM-acceptance",
+  "driver": "target/evaluations/kylin-ime-gui/driver.py",
+  "driver_sha256": "f8733ac0943b0d7ea51515d0a2aa4b1be8bc4e49d8edbf57cceab2c5a0223853",
+  "logger_sha256": "e60a88235510e430652613b573e80cb89dabd0e58eebcd377d1308fccec41549",
+  "runner_sha256": "2515012a69eb4380c80e12fd3c7799069f4cd24d96efa6e1157c01ba2a38cc02",
+  "elapsed_seconds": 3.4,
+  "exit_status": 0,
+  "presses": [
+    {
+      "event": "press",
+      "keysym": "Return",
+      "keyval": 65293,
+      "keycode": 36,
+      "state": 0,
+      "shift": false,
+      "control": false,
+      "alt_mod1": false,
+      "meta": false,
+      "super": false,
+      "mod4": false
+    },
+    {
+      "event": "press",
+      "keysym": "Return",
+      "keyval": 65293,
+      "keycode": 36,
+      "state": 1,
+      "shift": true,
+      "control": false,
+      "alt_mod1": false,
+      "meta": false,
+      "super": false,
+      "mod4": false
+    },
+    {
+      "event": "press",
+      "keysym": "Return",
+      "keyval": 65293,
+      "keycode": 36,
+      "state": 4,
+      "shift": false,
+      "control": true,
+      "alt_mod1": false,
+      "meta": false,
+      "super": false,
+      "mod4": false
+    },
+    {
+      "event": "press",
+      "keysym": "Return",
+      "keyval": 65293,
+      "keycode": 36,
+      "state": 8,
+      "shift": false,
+      "control": false,
+      "alt_mod1": true,
+      "meta": false,
+      "super": false,
+      "mod4": false
+    },
+    {
+      "event": "press",
+      "keysym": "Return",
+      "keyval": 65293,
+      "keycode": 36,
+      "state": 67108928,
+      "shift": false,
+      "control": false,
+      "alt_mod1": false,
+      "meta": false,
+      "super": true,
+      "mod4": true
+    },
+    {
+      "event": "press",
+      "keysym": "Return",
+      "keyval": 65293,
+      "keycode": 36,
+      "state": 0,
+      "shift": false,
+      "control": false,
+      "alt_mod1": false,
+      "meta": false,
+      "super": false,
+      "mod4": false
+    }
+  ],
+  "exact_Return_plain_and_held_modifiers_state_zero": true
+}

@@ -3949,6 +3949,41 @@ pub(crate) fn session_flags_for_effects(
         resume_local_miss: app.resume_local_miss.clone(),
     }
 }
+/// Permission state belongs to the effect's target, including a background tab.
+pub(crate) fn session_flags_for_effect(
+    base: &effects::SessionFlags,
+    app: &AppView,
+    effect: &Effect,
+) -> effects::SessionFlags {
+    let mut flags = base.clone();
+    let agent = match effect {
+        Effect::SendPrompt { agent_id, .. }
+        | Effect::SendPromptBlocks { agent_id, .. }
+        | Effect::SendPromptNow { agent_id, .. }
+        | Effect::SendBashCommand { agent_id, .. }
+        | Effect::ExecutePlan { agent_id, .. }
+        | Effect::SetModeThenPrompt { agent_id, .. } => app.agents.get(agent_id),
+        Effect::PersistPermissionMode {
+            session_id: Some(id),
+            ..
+        } => app
+            .agents
+            .values()
+            .find(|agent| agent.session.session_id.as_ref() == Some(id)),
+        _ => None,
+    };
+    if let Some(agent) = agent {
+        flags.plan_mode = agent.plan_mode_pending.unwrap_or(agent.plan_mode_active);
+        flags.yolo_mode = agent.session.is_yolo();
+        flags.auto_mode = agent.session.is_auto();
+    }
+    if let Effect::PersistPermissionMode { canonical, .. } = effect {
+        flags.yolo_mode = *canonical == "yolo";
+        flags.auto_mode = *canonical == "auto";
+    }
+    flags
+}
+
 /// Dispatch `action`, re-process `event` through the updated view, return one combined effect list.
 /// Shared by the event-loop `ActionThenForward` arm and tests (batches; no effect barrier between).
 /// The forward is meant for an agent composer. If the action left Welcome up (it opened the local-workspace ACK prompt instead of a session), the event lands in the welcome composer as a draft, which the eventual leave-home carries across, instead of answering that prompt.
@@ -4002,7 +4037,15 @@ fn process_effects(
         else {
             continue;
         };
-        let (quit, meta) = effects::execute(eff, tasks, &app.acp_tx, &app.cwd, &flags, progress_tx);
+        let effect_flags = session_flags_for_effect(&flags, app, &eff);
+        let (quit, meta) = effects::execute(
+            eff,
+            tasks,
+            &app.acp_tx,
+            &app.cwd,
+            &effect_flags,
+            progress_tx,
+        );
         if let Some((seq, abort_handle)) = meta.auth_abort_handle
             && let super::app_view::AuthState::Authenticating {
                 request_seq,

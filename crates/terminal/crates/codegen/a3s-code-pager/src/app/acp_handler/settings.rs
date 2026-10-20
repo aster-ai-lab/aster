@@ -395,6 +395,32 @@ pub(super) fn apply_soft_default_permission_mode(
 /// A sibling tab's yolo is thus preserved; only auto is cleared.
 pub(super) fn notify_sessions_leave_auto(app: &AppView, session_ids: &[acp::SessionId]) {
     for session_id in session_ids {
+        if crate::app::a3s_code_active() {
+            let posture = app
+                .agents
+                .values()
+                .find(|agent| agent.session.session_id.as_ref() == Some(session_id))
+                .map(|agent| {
+                    if agent.plan_mode_pending.unwrap_or(agent.plan_mode_active) {
+                        "plan"
+                    } else if agent.session.is_yolo() {
+                        "yolo"
+                    } else {
+                        "default"
+                    }
+                })
+                .unwrap_or("default");
+            let tx = app.acp_tx.clone();
+            let id = session_id.clone();
+            tokio::spawn(async move {
+                if let Err(error) =
+                    a3s_acp_lib::acp_send(acp::SetSessionModeRequest::new(id, posture), &tx).await
+                {
+                    tracing::error!(%error, "failed to leave Auto permission mode");
+                }
+            });
+            continue;
+        }
         let params = serde_json::json!({
             "sessionId": session_id,
             "auto_mode": false,

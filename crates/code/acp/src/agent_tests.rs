@@ -426,8 +426,16 @@ async fn studio_local_assets_session_opens_only_the_selected_item() {
     {
         let mut sessions = agent.sessions.lock().await;
         let live = sessions.get_mut(&session_id).expect("live session");
-        live.denies.push("Skill".to_string());
-        live.denies.push("mcp__session-notes".to_string());
+        live.permissions
+            .lock()
+            .unwrap()
+            .denies
+            .push("Skill".to_string());
+        live.permissions
+            .lock()
+            .unwrap()
+            .denies
+            .push("mcp__session-notes".to_string());
         remember_denies(live);
     }
     let denied_skill = session
@@ -459,7 +467,11 @@ async fn studio_local_assets_session_opens_only_the_selected_item() {
     {
         let mut sessions = agent.sessions.lock().await;
         let live = sessions.get_mut(&session_id).expect("live session");
-        live.denies.push("open_local_asset".to_string());
+        live.permissions
+            .lock()
+            .unwrap()
+            .denies
+            .push("open_local_asset".to_string());
         remember_denies(live);
     }
     let denied_wiki = session
@@ -1820,6 +1832,7 @@ async fn tui_turn_renders_every_pager_event() {
     let mut state = TurnState {
         observer: None,
         turn_failure: None,
+        reconciliation: None,
         saw_text: false,
         delta_text: String::new(),
         end_text: None,
@@ -2325,6 +2338,7 @@ async fn user_question_with_form_round_trips_the_submitted_values() {
             let mut state = TurnState {
                 observer: None,
                 turn_failure: None,
+        reconciliation: None,
                 saw_text: false,
                 delta_text: String::new(),
                 end_text: None,
@@ -2444,6 +2458,7 @@ async fn user_question_choices_round_trip_typed_and_selected_answers() {
             let mut state = TurnState {
                 observer: None,
                 turn_failure: None,
+                reconciliation: None,
                 saw_text: false,
                 delta_text: String::new(),
                 end_text: None,

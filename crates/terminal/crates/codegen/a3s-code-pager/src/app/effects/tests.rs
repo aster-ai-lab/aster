@@ -42,6 +42,31 @@ fn j<'a, V: JsonKeyed + ?Sized>(v: &'a V, key: &str) -> &'a serde_json::Value {
     got
 }
 use std::path::PathBuf;
+
+#[tokio::test]
+async fn refused_mode_precondition_never_sends_the_prompt() {
+    let (tx, mut rx) = tokio::sync::mpsc::unbounded_channel();
+    let broker = tokio::spawn(async move {
+        let Some(a3s_acp_lib::AcpAgentMessage::SetSessionMode(args)) = rx.recv().await else {
+            panic!("the mode request must be first");
+        };
+        args.response_tx.send(Err(acp::Error::invalid_params().data("fixture mode refusal"))).unwrap();
+        assert!(tokio::time::timeout(std::time::Duration::from_millis(30), rx.recv()).await.is_err(),
+            "a failed mode request must not be followed by session/prompt");
+    });
+    let mut tasks = JoinSet::new();
+    let (progress, _) = tokio::sync::mpsc::unbounded_channel();
+    execute(Effect::SetModeThenPrompt {
+        session_id: acp::SessionId::new("fixture"), mode_id: acp::SessionModeId::new("plan"),
+        agent_id: AgentId(0), text:"keep this message".into(), prompt_id:"p1".into(), skill_token_ranges:Vec::new()
+    }, &mut tasks, &tx, Path::new("."), &SessionFlags::default(), &progress);
+    let result = tokio::time::timeout(std::time::Duration::from_secs(2), tasks.join_next())
+        .await.unwrap().unwrap().unwrap();
+    assert!(matches!(result, TaskResult::ModeSwitchPromptFailed { text, prompt_id, .. }
+        if text == "keep this message" && prompt_id == "p1"));
+    broker.await.unwrap();
+}
+
 use actions::ProbedAttachment;
 use a3s_code_shell::extensions::billing::{BillingConfig, Cent, UsagePeriod};
 /// The invalid-params server detail survives `attach_prompt_usage` wrapping `error.data` as `{message, promptUsage}`.
@@ -164,7 +189,7 @@ fn plain_prompt_block_no_meta_when_ranges_empty() {
 /// With a screen mode, `_meta` carries both `promptId` and `screenMode` (the shell threads the latter into `prompt_submitted.screen_mode`).
 #[test]
 fn prompt_request_meta_stamps_screen_mode() {
-    let meta = prompt_request_meta("p-1", Some("minimal"));
+    let meta = prompt_request_meta("p-1", Some("minimal"), None);
     assert_eq!(
             meta,
             serde_json::json!({ "promptId": "p-1", "screenMode": "minimal" })
@@ -173,14 +198,14 @@ fn prompt_request_meta_stamps_screen_mode() {
 /// Without a screen mode (`SessionFlags::default()` in tests), the key is omitted; the legacy `{"promptId": …}` wire shape stays byte-identical.
 #[test]
 fn prompt_request_meta_omits_screen_mode_when_unset() {
-    let meta = prompt_request_meta("p-2", None);
+    let meta = prompt_request_meta("p-2", None, None);
     assert_eq!(meta, serde_json::json!({ "promptId": "p-2" }));
 }
 /// An ordinary prompt advertises no `x.ai/` method. Session create uses a different meta builder.
 #[test]
 fn ordinary_prompt_meta_sends_no_xai_extension() {
     for mode in [None, Some("minimal")] {
-        let meta = prompt_request_meta("p-ordinary", mode);
+        let meta = prompt_request_meta("p-ordinary", mode, None);
         let xai: Vec<&String> = meta
             .as_object()
             .expect("prompt meta is an object")
@@ -1194,6 +1219,7 @@ async fn persist_permission_mode_acp_notification_fires_once_on_best_effort() {
             "yolo",
             session_id,
             PermissionModePersist::BestEffort,
+            None,
             tx,
         )
         .await;
@@ -1227,6 +1253,7 @@ async fn persist_permission_mode_acp_notification_gated_on_disk_for_with_rollbac
             "yolo",
             session_id,
             PermissionModePersist::WithRollback("ask"),
+            None,
             tx,
         )
         .await;
@@ -1262,6 +1289,7 @@ async fn persist_permission_mode_no_session_id_suppresses_acp() {
             "yolo",
             None,
             PermissionModePersist::BestEffort,
+            None,
             tx,
         )
         .await;
@@ -1284,6 +1312,7 @@ async fn persist_permission_mode_best_effort_failure_returns_dedicated_variant()
             "yolo",
             None,
             PermissionModePersist::BestEffort,
+            None,
             tx,
         )
         .await;
@@ -3102,4 +3131,57 @@ async fn hydrate_team_capability_adapter_maps_every_reply_to_the_asking_identity
             serde_json::from_str::<HydrateTeamCapabilityResponse>(r#"{"canadministerteam":true}"#)
                 .is_err()
         );
+}
+
+#[test]
+fn permission_posture_and_prompt_metadata_keep_plan_binding() {
+    let mut flags = SessionFlags { yolo_mode: true, auto_mode: true, ..Default::default() };
+    assert_eq!(flags.effective_permission_posture(), "yolo");
+    flags.plan_mode = true;
+    assert_eq!(flags.effective_permission_posture(), "plan");
+    let meta = prompt_request_meta("p-contract", None, Some(flags.effective_permission_posture()));
+    assert_eq!(meta["permissionPosture"], "plan");
+}
+
+#[tokio::test]
+async fn permission_ack_failure_narrows_ui_without_writing_preference() {
+    let _guard = setup_grok_home_in_tempdir();
+    let (tx, mut rx) = tokio::sync::mpsc::unbounded_channel();
+    let broker = tokio::spawn(async move {
+        let Some(a3s_acp_lib::AcpAgentMessage::SetSessionMode(args)) = rx.recv().await else {
+            panic!("must use acknowledged session/set_mode");
+        };
+        assert_eq!(args.request.mode_id.0.as_ref(), "plan");
+        args.response_tx.send(Err(acp::Error::invalid_params().data("refused"))).unwrap();
+    });
+    let result = persist_permission_mode_and_notify("yolo", Some(acp::SessionId::new("s")),
+        PermissionModePersist::WithRollback("yolo"), Some("plan"), tx).await;
+    assert!(matches!(result, TaskResult::PermissionModeFailed { session_id, .. } if session_id.0.as_ref() == "s"));
+    broker.await.unwrap();
+}
+
+#[test]
+fn reconciliation_wire_kind_never_recommends_resend_even_with_unrecognized_text() {
+    let error = acp::Error::internal_error().data(serde_json::json!({
+        "kind":"tool_effect_unresolved", "message":"unrecognized localized text", "retryable":false,
+        "recovery":{"action":"reconcile_tool_effects"}
+    }));
+    let message = format_acp_error(&error, false);
+    assert!(message.contains("Reconcile the original operations in this session"));
+    assert!(!message.contains("Try sending again"));
+}
+
+#[test]
+fn reconciliation_wire_kind_keeps_the_kernel_sentence() {
+    let raw = "tool_effect_unresolved: 1 invocation obligation(s) require identity-bound reconciliation; local scans, final text, and ordinary waivers cannot discharge them.";
+    let error = acp::Error::internal_error().data(serde_json::json!({
+        "kind": "tool_effect_unresolved",
+        "code": "tool_effect_unresolved",
+        "message": raw,
+        "retryable": false,
+        "recovery": { "action": "reconcile_tool_effects", "sameSession": true }
+    }));
+    let message = format_acp_error(&error, false);
+    assert_eq!(message, raw);
+    assert!(!message.contains("Try sending again"));
 }

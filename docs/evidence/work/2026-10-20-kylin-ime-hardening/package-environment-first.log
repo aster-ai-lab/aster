@@ -1,0 +1,1 @@
+install: cannot stat 'node_modules/@embedpdf/fonts-sc/fonts/NotoSansHans-Regular.otf': No such file or directory
