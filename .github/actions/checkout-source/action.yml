@@ -1,0 +1,50 @@
+name: Checkout pinned private source
+description: Read a private source repository at the commit recorded by its root gitlink.
+inputs:
+  path:
+    description: Root gitlink path
+    required: true
+  repository:
+    description: GitHub repository name
+    required: true
+  owner:
+    description: GitHub repository owner
+    required: true
+  app-id:
+    description: CI source GitHub App ID
+    required: true
+  private-key:
+    description: CI source GitHub App private key
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Resolve recorded source commit
+      id: source
+      shell: bash
+      working-directory: ${{ github.workspace }}
+      env:
+        SOURCE_PATH: ${{ inputs.path }}
+        SOURCE_KEY_SET: ${{ inputs.app-id != '' && inputs.private-key != '' }}
+      run: |
+        set -euo pipefail
+        if [[ "$SOURCE_KEY_SET" != true ]]; then
+          echo "::error::CI source GitHub App credentials are missing for $SOURCE_PATH"
+          exit 1
+        fi
+        python3 .github/scripts/gitlink-ref.py "$SOURCE_PATH" >> "$GITHUB_OUTPUT"
+    - uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510
+      id: access
+      with:
+        app-id: ${{ inputs.app-id }}
+        private-key: ${{ inputs.private-key }}
+        owner: ${{ inputs.owner }}
+        repositories: ${{ inputs.repository }}
+        permission-contents: read
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      with:
+        repository: ${{ inputs.owner }}/${{ inputs.repository }}
+        path: ${{ inputs.path }}
+        ref: ${{ steps.source.outputs.ref }}
+        token: ${{ steps.access.outputs.token }}
+        persist-credentials: false

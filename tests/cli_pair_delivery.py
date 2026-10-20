@@ -27,7 +27,7 @@ class PairDelivery(unittest.TestCase):
         self.commands = self.root / "commands"
         for path in (self.bins, self.assets, self.prefix, self.commands):
             path.mkdir()
-        self.archive = self.assets / f"aster-cli-v0.1.1-{PLATFORM}.tar.gz"
+        self.archive = self.assets / f"aster-cli-v0.1.2-{PLATFORM}.tar.gz"
         for name in NAMES:
             self.binary(name, IDENTITY)
             (self.prefix / name).write_text("old-" + name)
