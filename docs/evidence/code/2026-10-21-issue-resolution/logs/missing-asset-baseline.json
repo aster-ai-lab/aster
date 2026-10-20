@@ -1,0 +1,8 @@
+{
+  "base": "eb17c6ce5aa4c9ef785c12d56515e146866b1506",
+  "path": "apps/web/public/tenant/toyou/INFO.md",
+  "exists_in_base": false,
+  "exists_in_candidate": false,
+  "git_exit_code": 128,
+  "git_stderr": "fatal: path 'apps/web/public/tenant/toyou/INFO.md' exists on disk, but not in 'eb17c6ce5aa4c9ef785c12d56515e146866b1506'\n"
+}

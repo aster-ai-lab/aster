@@ -9,10 +9,19 @@ for ACP and the local TUI scaffold.
 
 The declaration is optional. Core and SDK hosts disable automatic continuation
 when absent. ACP/Code TUI instead supply product-host bounds: 8 slices, 2
-successive slices without accepted progress, and a 24-hour deadline from host
+successive slices without observed workspace mutation, and a 24-hour deadline from host
 initialization. They still require an explicit goal/wake and retain original
 historical counts. A trusted declaration overrides these defaults, including
 an explicit disabled policy. Workspace declarations remain withheld.
+For `a3s-code-acp --unattended`, the absent-policy defaults instead allow up to
+1000 slices within the run deadline, with a limit of 3 successive settled slices
+without observed workspace mutation. The trusted ACL declaration still wins.
+Progress comes from complete, identity-bound receipts for actual workspace
+changes in that slice. A successful tool, read-only accepted step, or identical
+rewrite does not refresh this limit. Mutation can refresh progress even when
+the goal judgment is not achieved; a verified turn alone cannot complete the
+goal. Historical admissions retain their recorded progress semantics, while
+new admissions use the actual-mutation basis.
 When present, all four fields are required, including when disabled:
 
 ```acl

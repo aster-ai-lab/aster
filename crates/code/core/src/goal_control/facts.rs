@@ -335,7 +335,13 @@ fn fold_definitions(
                 session_id,
                 workspace,
                 policy_digest,
-            )?,
+            )
+            .map(|(operation, digest, view, mutated)| {
+                if mutated {
+                    folded.continuation.slices_since_progress = 0;
+                }
+                (operation, digest, view)
+            })?,
             GoalFactKindV1::Completed => complete::fold_complete(
                 fact,
                 folded.current.as_ref(),
@@ -353,9 +359,7 @@ fn fold_definitions(
                 policy_digest,
             )
             .map(|(operation, digest, view, _, mutated)| {
-                if mutated {
-                    folded.continuation.slices_since_progress = 0;
-                }
+                folded.continuation.accepted_legacy_receipt(mutated);
                 (operation, digest, view)
             })?,
             GoalFactKindV1::Paused | GoalFactKindV1::Resumed | GoalFactKindV1::Cancelled => {

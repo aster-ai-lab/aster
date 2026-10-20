@@ -13,16 +13,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "a3s-acl"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "add06e627b80ea0d3f6de5ecfb2708cfcf4c6d022806ae33aec0905aeffde3ce"
-dependencies = [
- "ryu-js",
- "sha2 0.10.9",
-]
-
-[[package]]
 name = "a3s-acp-lib"
 version = "0.1.0"
 dependencies = [
@@ -119,7 +109,7 @@ dependencies = [
 name = "a3s-boot"
 version = "0.2.0"
 dependencies = [
- "a3s-acl 0.3.0",
+ "a3s-acl",
  "a3s-boot-macros",
  "a3s-event",
  "a3s-lane",
@@ -174,7 +164,7 @@ dependencies = [
 name = "a3s-box-core"
 version = "3.2.7"
 dependencies = [
- "a3s-acl 0.3.0",
+ "a3s-acl",
  "a3s-common",
  "async-trait",
  "base64 0.22.1",
@@ -215,7 +205,7 @@ dependencies = [
 name = "a3s-box-runtime"
 version = "3.2.7"
 dependencies = [
- "a3s-acl 0.3.0",
+ "a3s-acl",
  "a3s-box-core",
  "a3s-box-mkext4",
  "a3s-box-netproxy",
@@ -303,7 +293,7 @@ dependencies = [
 name = "a3s-code-acp"
 version = "9.1.4"
 dependencies = [
- "a3s-acl 0.3.0",
+ "a3s-acl",
  "a3s-code-core",
  "a3s-code-mermaid",
  "a3s-office",
@@ -480,7 +470,7 @@ dependencies = [
 name = "a3s-code-core"
 version = "9.1.4"
 dependencies = [
- "a3s-acl 0.3.0",
+ "a3s-acl",
  "a3s-apofasi",
  "a3s-common",
  "a3s-effect",
@@ -945,7 +935,7 @@ dependencies = [
 name = "a3s-code-pager"
 version = "9.1.4"
 dependencies = [
- "a3s-acl 0.3.0",
+ "a3s-acl",
  "a3s-acp-lib",
  "a3s-chat-state",
  "a3s-code-active-sessions",
@@ -2328,7 +2318,7 @@ dependencies = [
 name = "a3s-form-core"
 version = "0.1.0"
 dependencies = [
- "a3s-acl 0.3.0",
+ "a3s-acl",
  "regress 0.10.5",
  "ryu-js",
  "serde",
@@ -2376,10 +2366,10 @@ dependencies = [
 name = "a3s-gateway"
 version = "1.1.1"
 dependencies = [
- "a3s-acl 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "a3s-acl",
  "a3s-apofasi",
- "a3s-sentry 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "a3s-updater 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "a3s-sentry",
+ "a3s-updater",
  "a3s-use-bge",
  "a3s-use-ocr",
  "ab_glyph",
@@ -2857,7 +2847,7 @@ dependencies = [
 name = "a3s-runner"
 version = "0.1.0"
 dependencies = [
- "a3s-acl 0.3.0",
+ "a3s-acl",
  "async-trait",
  "chrono",
  "reqwest 0.12.24",
@@ -2904,7 +2894,7 @@ dependencies = [
 name = "a3s-search"
 version = "3.4.0"
 dependencies = [
- "a3s-acl 0.3.0",
+ "a3s-acl",
  "a3s-use-browser",
  "anyhow",
  "async-trait",
@@ -2946,25 +2936,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "a3s-sentry"
-version = "0.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6726c7fb4b635dc39ffb3c8bd518f337c5e35376b560fc1154d925a968dc4c12"
-dependencies = [
- "anyhow",
- "hcl-rs",
- "libc",
- "regex",
- "serde",
- "serde_json",
- "ureq 2.12.1",
-]
-
-[[package]]
 name = "a3s-sms"
 version = "0.1.0"
 dependencies = [
- "a3s-acl 0.3.0",
+ "a3s-acl",
  "async-trait",
  "md-5 0.10.6",
  "reqwest 0.12.24",
@@ -2991,7 +2966,7 @@ dependencies = [
 name = "a3s-studio"
 version = "2.1.3"
 dependencies = [
- "a3s-acl 0.3.0",
+ "a3s-acl",
  "a3s-boot",
  "a3s-flow",
  "a3s-okf",
@@ -3175,25 +3150,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "a3s-updater"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2ec6f6a3004ac108482a751309e2c3f68edf6a68630131c56626d1341902dabe"
-dependencies = [
- "anyhow",
- "flate2",
- "reqwest 0.12.24",
- "semver",
- "serde",
- "serde_json",
- "sha2 0.10.9",
- "tar",
- "tempfile",
- "tokio",
- "zip 2.4.2",
-]
-
-[[package]]
 name = "a3s-use"
 version = "0.3.3"
 dependencies = [
@@ -3288,7 +3244,7 @@ dependencies = [
 name = "a3s-use-extension"
 version = "0.3.3"
 dependencies = [
- "a3s-acl 0.3.0",
+ "a3s-acl",
  "a3s-use-core",
  "async-trait",
  "flate2",
@@ -4089,7 +4045,7 @@ dependencies = [
 name = "aster-dream"
 version = "0.1.2"
 dependencies = [
- "a3s-acl 0.3.0",
+ "a3s-acl",
  "a3s-boot",
  "a3s-flow",
  "a3s-form-core",

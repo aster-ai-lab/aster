@@ -13,6 +13,7 @@
 edition = "2021"
 name = "a3s-sentry"
 version = "0.7.0"
+publish = false
 build = false
 autolib = false
 autobins = false

@@ -260,5 +260,81 @@ pub(crate) fn evidence_for_goal_step(
     if evidence.len() > 32 * 1024 {
         return None;
     }
+    // The legacy admission projection retains this original receipt meaning;
+    // current progress is separately derived from settled identity changes.
     Some((reports, evidence, !ledger.is_empty()))
 }
+
+/// Progress is an actual identity change in this slice's original receipts,
+/// independent of a goal judgment. A successful tool or an accepted read-only
+/// step cannot refresh the stall budget, nor can an earlier/foreign Run.
+pub(crate) fn goal_slice_made_progress(
+    facts: &[a3s_effect::Fact],
+    run_sequence: u64,
+    session_id: &str,
+    run_id: &str,
+) -> bool {
+    let Some(start) = facts.iter().position(|fact| fact.seq == run_sequence) else {
+        return false;
+    };
+    let end = facts[start + 1..]
+        .iter()
+        .position(|fact| fact.kind == crate::goal_control::GoalFactKindV1::SliceAdmitted.as_str())
+        .map_or(facts.len(), |offset| start + 1 + offset);
+    let window = &facts[start..end];
+    let debt = receipts::fold_cache_evidence(window);
+    if debt.integrity_invalid || !debt.unresolved.is_empty() || debt.results.is_empty() {
+        return false;
+    }
+    let mut capability = None;
+    let mut mutated = false;
+    for (_, result) in &debt.results {
+        let Some(admission) = result.identity.admission.as_ref() else {
+            return false;
+        };
+        if admission.run_id != run_id
+            || admission.thread_id != session_id
+            || capability.is_some_and(|digest| digest != admission.capability_binding_digest)
+        {
+            return false;
+        }
+        capability = Some(admission.capability_binding_digest.as_str());
+        mutated |= observed_workspace_mutation(&result.effects);
+    }
+    for (key, effects) in &debt.background_results {
+        // The receipt fold validates the exact child/terminal binding. The
+        // owner must also be this slice, rather than another session Run.
+        if !window
+            .iter()
+            .any(|fact| &fact.key == key && fact.payload["source_run"].as_str() == Some(run_id))
+        {
+            return false;
+        }
+        mutated |= observed_workspace_mutation(effects);
+    }
+    mutated
+}
+
+fn observed_workspace_mutation(effects: &a3s_effect::ToolEffectObservationV1) -> bool {
+    use a3s_effect::{ToolFileKind, ToolObservationCompleteness};
+    effects.completeness == ToolObservationCompleteness::Complete
+        && effects.changes.iter().any(|change| {
+            if crate::porcelain::is_harness_path(&change.path) {
+                return false;
+            }
+            let Some(before) = &change.before else {
+                return false;
+            };
+            before.kind != change.after.kind
+                || (matches!(before.kind, ToolFileKind::File | ToolFileKind::Symlink)
+                    && before.content_digest != change.after.content_digest)
+                || (before.kind != ToolFileKind::Missing
+                    && before
+                        .mode
+                        .zip(change.after.mode)
+                        .is_some_and(|(before, after)| before != after))
+        })
+}
+
+#[cfg(test)]
+mod tests;

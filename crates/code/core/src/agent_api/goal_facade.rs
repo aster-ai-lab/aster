@@ -532,10 +532,12 @@ impl AgentSession {
         let Some(policy) = self.config.goal_control.clone() else {
             return Ok(None);
         };
-        Ok(Some(crate::goal_control::ContinuationSource {
-            policy,
-            observed_unix_ms: host_clock_unix_ms()?,
-        }))
+        Ok(Some(
+            crate::goal_control::ContinuationSource::observed_mutations(
+                policy,
+                host_clock_unix_ms()?,
+            ),
+        ))
     }
 
     async fn preview_goal_tick_with(

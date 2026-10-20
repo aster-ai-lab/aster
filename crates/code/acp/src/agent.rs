@@ -333,6 +333,24 @@ fn append_slot_extra(slots: &mut a3s_code_core::SystemPromptSlots, body: &str) {
     });
 }
 
+fn initialize_rules_from_meta(meta: Option<&acp::Meta>) -> acp::Result<Option<String>> {
+    let read = |key: &str| -> acp::Result<Option<String>> {
+        match meta.and_then(|meta| meta.get(key)) {
+            None => Ok(None),
+            Some(serde_json::Value::String(value)) => Ok(Some(value.clone())),
+            Some(_) => Err(acp::Error::invalid_params().data(format!("{key} must be a string"))),
+        }
+    };
+    let rules = read("rules")?;
+    let replacement = read("systemPromptOverride")?;
+    if replacement.is_some_and(|value| !value.trim().is_empty()) {
+        return Err(acp::Error::invalid_params().data(
+            "systemPromptOverride is not supported: Aster preserves its core runtime and safety contracts. Use --rules / --append-system-prompt to append instructions.",
+        ));
+    }
+    Ok(rules.filter(|value| !value.trim().is_empty()))
+}
+
 fn interactive_skill_dirs(workspace: &std::path::Path, configured: &[PathBuf]) -> Vec<PathBuf> {
     let (dirs, missing) = interactive_skill_dirs_from(workspace, configured);
     for path in missing {
@@ -518,6 +536,9 @@ pub struct A3sCodeAgent {
     /// What the untrusted workspace layer was refused or left pending.
     workspace_admission: a3s_code_core::config::WorkspaceLayerAdmission,
     client_reads_files: std::cell::Cell<bool>,
+    /// Trusted launcher instructions from initialize, kept separate from the
+    /// workspace configuration and applied whenever a session is opened.
+    client_rules: RefCell<Option<String>>,
     /// This process created `~/.a3s/config.acl`. The pager opens `/config`.
     first_run_config: bool,
 }
@@ -572,6 +593,7 @@ impl A3sCodeAgent {
             unattended: None,
             workspace_admission: Default::default(),
             client_reads_files: std::cell::Cell::new(false),
+            client_rules: RefCell::new(None),
             first_run_config: false,
         }
     }
@@ -906,6 +928,8 @@ impl acp::Agent for A3sCodeAgent {
         &self,
         args: acp::InitializeRequest,
     ) -> acp::Result<acp::InitializeResponse> {
+        let rules = initialize_rules_from_meta(args.meta.as_ref())?;
+        *self.client_rules.borrow_mut() = rules;
         self.client_reads_files
             .set(args.client_capabilities.fs.read_text_file);
         let cwd = self.launch.workspace.to_string_lossy().to_string();
@@ -1459,6 +1483,9 @@ mod resume_tests;
 
 #[cfg(test)]
 mod session_setup_tests;
+
+#[cfg(test)]
+mod memory_sessions_tests;
 
 #[cfg(test)]
 mod retrieval_seam_tests;

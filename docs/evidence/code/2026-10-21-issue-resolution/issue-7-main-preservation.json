@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "head_unchanged": "eb17c6ce5aa4c9ef785c12d56515e146866b1506",
+  "original_main_sha256": "c96972d90e4a23b5deb40e9e02a7edbb62a4d9a3e75d7b71a8381d0b0631c92e",
+  "current_main_sha256": "effd5154b80b50b95c173c97f5b5cc7dc4869340f193c49612a4c0cea2f626f3",
+  "normalized_outside_owned_workspace_gate_regions_sha256": "9b055e162436aa7775890846a0136243132b2ed001f370556b8041c7dbda5095",
+  "all_existing_updater_and_other_main_bytes_preserved": true,
+  "new_test_file": "apps/aster/src/workspace_command_gate_tests.rs",
+  "new_test_file_sha256": "16a2023a8910300fcd11f9a7cda2982c80c098ecc35c17851994c5651489070c",
+  "compiled_test_depfile": "target/debug/deps/aster-8ed270e1c7c09693.d",
+  "sibling_test_file_present_in_compiled_depfile": true
+}
