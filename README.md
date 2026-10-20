@@ -109,15 +109,15 @@ aster
 安装要解决的是：在本机得到同一目录里的 `aster` 和 `a3s-code-acp`，并且之后能从终端启动。
 `aster` 默认启动旁边的 `a3s-code-acp`。需要别的路径时，设置 `A3S_ACP_AGENT_BIN`。
 
-安装命令下载 [aster-cli v0.1.1](https://github.com/aster-ai-lab/aster/releases/tag/aster-cli-v0.1.1) 的发布包，并把包里的两个程序放到同一目录。
+安装命令下载 [aster-cli v0.1.2](https://github.com/aster-ai-lab/aster/releases/tag/aster-cli-v0.1.2) 的发布包，并把包里的两个程序放到同一目录。
 它不克隆仓库，也不在本机编译。
 它不下载上游 CLI，也不打开自动更新。
 macOS 和 Linux 需要 `curl`。Windows 使用 PowerShell。安装程序不修改 shell 配置，因此还要把目标目录放进 `PATH`。
 
 `just code` 只在仓库里启动调试构建，不把程序复制到系统目录。
 
-`aster update` 下载本仓库的 [aster-cli v0.1.1](https://github.com/aster-ai-lab/aster/releases/tag/aster-cli-v0.1.1) 归档，并替换所调用 `aster` 所在目录里的 `aster` 和 `a3s-code-acp`。
-这个发布包里是这两个程序。它们不提供 `--build-id`。归档另外同时带有 `BUILD_ID` 和 `SHA256SUMS` 时，两个程序必须带有同一个 `aster-cli-pair-v1` 构建身份。
+`aster update` 下载本仓库的 [aster-cli v0.1.2](https://github.com/aster-ai-lab/aster/releases/tag/aster-cli-v0.1.2) 归档，并替换所调用 `aster` 所在目录里的 `aster` 和 `a3s-code-acp`。
+发布包同时包含两个程序、`BUILD_ID` 和 `SHA256SUMS`。更新前会校验两个程序的校验和，以及相同的 `aster-cli-pair-v1` 构建身份。
 下载失败，或带身份文件时两个程序的身份不一致，原来的两个程序保持原字节并且仍可运行。
 下载在终端中进行，且输出不是 JSON 时，画面是 ascii.rest 的 [`progress-bar`](https://ascii.rest/progress-bar/)。填充随收到的字节增加，更新结束时动画停止。
 `aster update --check` 和任何带 `--json` 的状态只打印结果，不替换文件，输出里也没有这段动画。
@@ -125,23 +125,23 @@ macOS 和 Linux 需要 `curl`。Windows 使用 PowerShell。安装程序不修�
 `~/.a3s` 和 `~/.grok` 保持不变。普通启动、leader 和 stdio 不会在后台自动更新。
 
 也可以再执行一次下面该系统的安装命令。
-安装命令下载同一个 v0.1.1 发布包，只覆盖安装目录里的这两个程序。
-然后执行 `aster version --json`，确认 `currentVersion` 以 `0.1.1` 开头。
+安装命令下载同一个 v0.1.2 发布包，只覆盖安装目录里的这两个程序。
+然后执行 `aster version --json`，确认 `currentVersion` 以 `0.1.2` 开头。
 
 卸载只删除这两个程序。`~/.a3s` 和 `~/.grok` 都保留。
 装到其他目录时，更新和卸载都针对那个目录里的同名文件。
 
 | 系统 | 发布包 | 默认目录 | 程序名 |
 | --- | --- | --- | --- |
-| macOS | https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.1/aster-cli-v0.1.1-macos.tar.gz | `$HOME/.local/bin` | `aster`、`a3s-code-acp` |
-| Linux | https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.1/aster-cli-v0.1.1-linux.tar.gz | `$HOME/.local/bin` | `aster`、`a3s-code-acp` |
-| Windows | https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.1/aster-cli-v0.1.1-windows.zip | `%LOCALAPPDATA%\Aster\bin` | `aster.exe`、`a3s-code-acp.exe` |
+| macOS ARM64 | https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.2/aster-cli-v0.1.2-macos.tar.gz | `$HOME/.local/bin` | `aster`、`a3s-code-acp` |
+| Linux x86-64 | https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.2/aster-cli-v0.1.2-linux.tar.gz | `$HOME/.local/bin` | `aster`、`a3s-code-acp` |
+| Windows x86-64 | https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.2/aster-cli-v0.1.2-windows.zip | `%LOCALAPPDATA%\Aster\bin` | `aster.exe`、`a3s-code-acp.exe` |
 
 安装后的程序就是该发布包里的程序。macOS 上原生 Shell 工具仍会被拒绝，见[快速开始](#快速开始)中的限制。
 
 ### macOS
 
-安装命令下载上表中的 macOS 发布包 `aster-cli-v0.1.1-macos.tar.gz`。
+安装命令下载上表中的 macOS 发布包 `aster-cli-v0.1.2-macos.tar.gz`。
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.sh | bash -s -- --prefix "$HOME/.local/bin"
@@ -151,7 +151,7 @@ a3s-code-acp --version
 ```
 
 `export` 只作用于当前终端。要长期生效，把同一行写入 shell 的启动文件。
-`product` 是 `Aster`。`aster version --json` 确认 `currentVersion` 以 `0.1.1` 开头。`a3s-code-acp --version` 打印 ACP 的包版本。
+`product` 是 `Aster`。`aster version --json` 确认 `currentVersion` 以 `0.1.2` 开头。`a3s-code-acp --version` 打印 ACP 的包版本。
 
 更新再执行一次 macOS 安装命令。它下载 v0.1.1 的 macOS 发布包，只覆盖 `$HOME/.local/bin` 里的 `aster` 和 `a3s-code-acp`。`~/.a3s` 保持不变。
 
@@ -161,7 +161,7 @@ export PATH="$HOME/.local/bin:$PATH"
 aster version --json
 ```
 
-`aster version --json` 确认 `currentVersion` 以 `0.1.1` 开头。
+`aster version --json` 确认 `currentVersion` 以 `0.1.2` 开头。
 
 卸载：
 
@@ -171,7 +171,7 @@ rm -f "$HOME/.local/bin/aster" "$HOME/.local/bin/a3s-code-acp"
 
 ### Linux
 
-安装命令下载上表中的 Linux 发布包 `aster-cli-v0.1.1-linux.tar.gz`。脚本按本机系统选择发布包。
+安装命令下载上表中的 Linux 发布包 `aster-cli-v0.1.2-linux.tar.gz`。脚本按本机系统选择发布包。
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.sh | bash -s -- --prefix "$HOME/.local/bin"
@@ -181,7 +181,7 @@ a3s-code-acp --version
 ```
 
 `export` 只作用于当前终端。要长期生效，把同一行写入 shell 的启动文件。
-`aster version --json` 确认 `currentVersion` 以 `0.1.1` 开头。
+`aster version --json` 确认 `currentVersion` 以 `0.1.2` 开头。
 
 更新再执行一次 Linux 安装命令。它下载 v0.1.1 的 Linux 发布包，只覆盖 `$HOME/.local/bin` 里的 `aster` 和 `a3s-code-acp`。`~/.a3s` 保持不变。
 
@@ -191,7 +191,7 @@ export PATH="$HOME/.local/bin:$PATH"
 aster version --json
 ```
 
-`aster version --json` 确认 `currentVersion` 以 `0.1.1` 开头。
+`aster version --json` 确认 `currentVersion` 以 `0.1.2` 开头。
 
 卸载：
 
@@ -201,7 +201,7 @@ rm -f "$HOME/.local/bin/aster" "$HOME/.local/bin/a3s-code-acp"
 
 ### Windows
 
-在 PowerShell 中，第一条命令保存安装脚本，第二条下载上表中的 Windows 发布包 `aster-cli-v0.1.1-windows.zip` 并复制两个程序。
+在 PowerShell 中，第一条命令保存安装脚本，第二条下载上表中的 Windows 发布包 `aster-cli-v0.1.2-windows.zip` 并复制两个程序。
 
 ```powershell
 irm "https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.ps1" -OutFile "$env:TEMP\install.ps1"
@@ -212,7 +212,7 @@ a3s-code-acp --version
 ```
 
 `Path` 赋值只作用于当前窗口。Git Bash 使用 macOS 的同一条命令；脚本在 Windows 上下载 Windows 发布包。
-`aster version --json` 确认 `currentVersion` 以 `0.1.1` 开头。
+`aster version --json` 确认 `currentVersion` 以 `0.1.2` 开头。
 
 更新再执行一次 Windows 安装命令。它下载 v0.1.1 的 Windows 发布包，只覆盖 `%LOCALAPPDATA%\Aster\bin` 里的 `aster.exe` 和 `a3s-code-acp.exe`。`~/.a3s` 保持不变。
 
@@ -223,7 +223,7 @@ $env:Path = "$env:LOCALAPPDATA\Aster\bin;" + $env:Path
 aster version --json
 ```
 
-`aster version --json` 确认 `currentVersion` 以 `0.1.1` 开头。
+`aster version --json` 确认 `currentVersion` 以 `0.1.2` 开头。
 
 卸载：
 

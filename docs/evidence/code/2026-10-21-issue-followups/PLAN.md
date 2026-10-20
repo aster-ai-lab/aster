@@ -1,14 +1,11 @@
-# Remaining issue delivery
+# Issue follow-up scope
 
-Continue after PR #8: fix the failing CI checkout/toolchain/install paths and the missing tenant source; reproduce the headless API-key hang using bounded local fixtures; wire full prompt replacement without removing host permission contracts; deliver a validated CLI/ACP pair.
+Continue PR #8 with pinned private-source CI checkout, toolchain/front-end/service fixture repairs, restoration of the complete historical tenant data directory, bounded ACP startup, HTTP response-body cancellation, truthful prompt-override help and a source-matched CLI/ACP v0.1.2 release path.
 
-Work stays private and pinned by the root gitlink. CI access uses a dedicated read-only deployment key if needed, never an existing user credential. Preserve the original dirty main, use the existing isolated checkout at the merged base, and stage only reviewed own changes. No guard is removed to make checks pass.
+Changes use the isolated worktree at 0fd4689df8f586f2092e5fb6e674957e2caf35c5. The original dirty working tree is not staged, reset or committed. No guard is removed. Product configuration stays ACL and public Rust signatures stay intact.
 
-Retain commands, package identities and before/after evidence. Source fixes, CI completion and published installers are distinct claims; finish and verify each before claiming completion.
+Reuse the existing session RPC timeout helper for TUI/headless startup. Preserve productive streaming lifetimes and the existing non-streaming generation/retry policy. Full prompt replacement stays explicitly unsupported: issue #3 accepted that contract, and removing harness/permission prompts would violate the host boundary. Append instructions through --rules.
 
-The initial repository-scoped read-only deploy-key option was refused by
-GitHub policy (Work HTTP 422); organization secret inventory is also denied
-(HTTP 403). No deploy key or secret was created. The concrete CI action now
-uses `CI_SOURCE_APP_ID` / `CI_SOURCE_APP_PRIVATE_KEY`, with a separate
-contents:read token scoped to each pinned private source checkout. This
-requires the owner to configure a dedicated App for work/api/cloud.
+GitHub refused a new Work deploy key (HTTP 422, deploy keys disabled), and organization-secret inventory is unavailable to the current connection (HTTP 403). No deploy key or secret was created. CI instead has a concrete pinned GitHub App action, using CI_SOURCE_APP_ID and CI_SOURCE_APP_PRIVATE_KEY with per-repository Contents:read tokens and no persisted checkout credentials. Configuration and remote success remain unclaimed until owner setup and an actual run.
+
+Published releases are immutable: build all three archives in the same run at its source SHA, create a new aster-cli-v0.1.2 tag/release, and never clobber v0.1.1. Installer links are held in the follow-up branch until delivery is validated.

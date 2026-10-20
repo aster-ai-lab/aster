@@ -1,24 +1,24 @@
 #!/usr/bin/env bash
-# Install aster-cli v0.1.1 from this repository's GitHub Release.
+# Install aster-cli v0.1.2 from this repository's GitHub Release.
 #
 # One command:
 #   curl -fsSL https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.sh | bash -s -- --prefix "$HOME/.local/bin"
 #
 # The release page is:
-#   https://github.com/aster-ai-lab/aster/releases/tag/aster-cli-v0.1.1
-# macOS downloads aster-cli-v0.1.1-macos.tar.gz.
-# Linux downloads aster-cli-v0.1.1-linux.tar.gz.
-# Windows downloads aster-cli-v0.1.1-windows.zip.
+#   https://github.com/aster-ai-lab/aster/releases/tag/aster-cli-v0.1.2
+# macOS downloads aster-cli-v0.1.2-macos.tar.gz.
+# Linux downloads aster-cli-v0.1.2-linux.tar.gz.
+# Windows downloads aster-cli-v0.1.2-windows.zip.
 # Each archive contains aster and a3s-code-acp.
 # The command does not clone this repository and does not compile.
 set -euo pipefail
 
-official_base="https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.1"
+official_base="https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.2"
 
 usage() {
   echo "Usage: install.sh [--prefix DIR]" >&2
   echo "https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.sh" >&2
-  echo "${official_base}/aster-cli-v0.1.1-macos.tar.gz" >&2
+  echo "${official_base}/aster-cli-v0.1.2-macos.tar.gz" >&2
   exit 2
 }
 
@@ -47,7 +47,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     *://*)
       case "$1" in
-        "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.1/aster-cli-v0.1.1-macos.tar.gz"|"https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.1/aster-cli-v0.1.1-linux.tar.gz"|"https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.1/aster-cli-v0.1.1-windows.zip")
+        "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.2/aster-cli-v0.1.2-macos.tar.gz"|"https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.2/aster-cli-v0.1.2-linux.tar.gz"|"https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.2/aster-cli-v0.1.2-windows.zip")
           ;;
         *)
           refuse
@@ -82,8 +82,8 @@ case "$uname_s" in
 esac
 
 case "$platform" in
-  windows) asset_name="aster-cli-v0.1.1-windows.zip" ;;
-  *) asset_name="aster-cli-v0.1.1-${platform}.tar.gz" ;;
+  windows) asset_name="aster-cli-v0.1.2-windows.zip" ;;
+  *) asset_name="aster-cli-v0.1.2-${platform}.tar.gz" ;;
 esac
 
 base="${ASTER_RELEASE_BASE:-$official_base}"
@@ -109,7 +109,7 @@ cleanup() { rm -rf "$work"; }
 trap cleanup EXIT
 archive="${work}/${asset_name}"
 echo "platform=${platform}"
-echo "release=aster-cli-v0.1.1"
+echo "release=aster-cli-v0.1.2"
 echo "asset=${asset_url}"
 
 if [[ -n "$local_asset" ]]; then

@@ -528,7 +528,7 @@ pub struct PagerArgs {
     /// Only affects `--compaction-mode segments`. Sets `GROK_COMPACTION_DETAIL`.
     #[clap(long = "compaction-detail", value_name = "DETAIL", hide = true)]
     pub compaction_detail: Option<String>,
-    /// Override the agent's system prompt (compat alias: --system-prompt).
+    /// Request full prompt replacement; local Aster ACP refuses it. Use --rules for additional instructions.
     #[clap(
         long = "system-prompt-override",
         alias = "system-prompt",
