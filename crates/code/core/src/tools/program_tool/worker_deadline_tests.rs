@@ -56,9 +56,7 @@ async fn worker(mode: &str) {
         wait_for_read: !queued_only,
     });
     let released = Arc::downgrade(&invoker);
-    let tool = ProgramTool {
-        fallback_invoker: invoker,
-    };
+    let tool = ProgramTool::from_catalog(invoker, ProgramCatalog::new());
     drop(executor);
     let ctx = ToolContext::new(workspace.path().to_owned()).with_session_id("owned-program-worker");
     let cancel = ctx.cancellation_token();

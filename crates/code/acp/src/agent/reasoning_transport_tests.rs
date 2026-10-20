@@ -187,11 +187,11 @@ async fn effort_switch_preserves_history_and_exposes_existing_anthropic_none_sem
                 .await
                 .unwrap();
             socket.get_mut().shutdown().await.unwrap();
-            if requests.len() == 4 {
+            if requests.len() == 5 {
                 break;
             }
         }
-        assert_eq!(requests.len(), 4);
+        assert_eq!(requests.len(), 5);
         requests
     });
     let root = tempfile::tempdir().unwrap();
@@ -204,7 +204,18 @@ async fn effort_switch_preserves_history_and_exposes_existing_anthropic_none_sem
         ..Default::default()
     });
     let model = launch.model_id.clone();
-    let host = A3sCodeAgent::new(launch);
+    let host = A3sCodeAgent::new(launch.clone());
+    let initialize = || {
+        acp::InitializeRequest::new(acp::ProtocolVersion::V1).meta(Some(
+            [(
+                "rules".into(),
+                serde_json::json!("Initialize rules marker: BLUE_WHALE_9090"),
+            )]
+            .into_iter()
+            .collect(),
+        ))
+    };
+    host.initialize(initialize()).await.unwrap();
     let id = host
         .new_session(acp::NewSessionRequest::new(root.path()))
         .await
@@ -255,8 +266,51 @@ async fn effort_switch_preserves_history_and_exposes_existing_anthropic_none_sem
         .unwrap();
         assert!(!session.is_closed());
     }
+    let session = host
+        .sessions
+        .lock()
+        .await
+        .get(id.0.as_ref())
+        .unwrap()
+        .session
+        .clone();
+    session.close().await;
+    drop(session);
+    drop(host);
+    let reopened = A3sCodeAgent::new(launch);
+    reopened.initialize(initialize()).await.unwrap();
+    reopened
+        .load_session(acp::LoadSessionRequest::new(id.clone(), root.path()))
+        .await
+        .unwrap();
+    let session = reopened
+        .sessions
+        .lock()
+        .await
+        .get(id.0.as_ref())
+        .unwrap()
+        .session
+        .clone();
+    tokio::time::timeout(
+        std::time::Duration::from_secs(5),
+        session.send("marker-4", None),
+    )
+    .await
+    .unwrap()
+    .unwrap();
+    session.close().await;
     let requests = provider.await.unwrap();
     for (index, request) in requests.iter().enumerate() {
+        let system = request["system"].to_string();
+        assert_eq!(
+            system.matches("BLUE_WHALE_9090").count(),
+            1,
+            "initialize rules must reach request {index} exactly once"
+        );
+        assert!(
+            system.contains(SESSION_OUTCOME_BOUNDARY),
+            "core boundary must remain in request {index}"
+        );
         let messages = request["messages"].to_string();
         for earlier in 0..index {
             assert!(

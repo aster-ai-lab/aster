@@ -126,6 +126,15 @@ impl RunProgress {
     }
 
     pub(crate) fn remember_failure(&mut self, error: &anyhow::Error) {
+        if error
+            .downcast_ref::<crate::goal::GoalContinuationStopped>()
+            .is_some()
+        {
+            // A recoverable tool error from an earlier slice must not hide
+            // the host's terminal refusal to continue this unfinished goal.
+            self.last_error = Some(bound_error(error.to_string()));
+            return;
+        }
         self.remember_error(error);
         if let Some(provider_error) =
             error.downcast_ref::<a3s_code_core::llm::NonRetryableLlmError>()
@@ -275,6 +284,15 @@ pub(crate) fn classify_failure(
         return (
             ExecutionResultOutcomeV1::Failed,
             TerminalReason::EvidenceMissing,
+        );
+    }
+    if error
+        .downcast_ref::<crate::goal::GoalContinuationStopped>()
+        .is_some()
+    {
+        return (
+            ExecutionResultOutcomeV1::Failed,
+            TerminalReason::ExecutionFailed,
         );
     }
     // Provider clients preserve terminal HTTP responses as a typed error. Do

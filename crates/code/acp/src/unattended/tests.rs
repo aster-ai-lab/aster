@@ -210,12 +210,12 @@ fn an_engineering_launch_puts_the_named_policy_on_every_session() {
 }
 
 #[test]
-fn a_goal_launch_continues_until_the_run_deadline() {
+fn a_goal_launch_has_a_small_stall_bound_within_the_run_deadline() {
     let goal = Unattended::new(1_000, None).expect("profile");
     let policy = goal.goal_control(5_000).expect("policy").expect("goal");
     assert!(policy.automatic_enabled);
     assert_eq!(policy.max_slices.get(), 1_000);
-    assert_eq!(policy.max_no_progress_slices.get(), 1_000);
+    assert_eq!(policy.max_no_progress_slices.get(), 3);
     assert_eq!(policy.deadline_unix_ms.get(), 6_000);
     policy.check_admission(5_000).expect("admissible");
     let options = goal

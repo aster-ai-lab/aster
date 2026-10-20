@@ -511,6 +511,24 @@ enum WorkspaceGate {
     Disabled,
     Unknown,
 }
+impl WorkspaceGate {
+    fn require_enabled(self) -> Result<()> {
+        match self {
+            Self::Enabled => Ok(()),
+            Self::Disabled => anyhow::bail!(
+                "`aster workspace` is not enabled for this account \
+                 (gated by a server-side feature flag that is currently off)."
+            ),
+            Self::Unknown => anyhow::bail!(
+                "The feature gate for `aster workspace` could not be confirmed. \
+                 Set GROK_WORKSPACE_COMMAND=1 to enable it locally."
+            ),
+        }
+    }
+}
+
+#[cfg(test)]
+mod workspace_command_gate_tests;
 /// The `GROK_WORKSPACE_COMMAND` override, if set (`Some(true)`/`Some(false)`); `None` defers to the remote settings flag.
 fn workspace_command_env_override() -> Option<bool> {
     std::env::var(WORKSPACE_COMMAND_ENV)
@@ -593,22 +611,7 @@ async fn run_workspace_mgmt(args: WorkspaceMgmtArgs) -> Result<()> {
     } else {
         None
     };
-    match workspace_command_gate(env_override, remote_settings.as_ref()) {
-        WorkspaceGate::Enabled => {}
-        WorkspaceGate::Disabled => {
-            anyhow::bail!(
-                "`aster workspace` is not enabled for this account \
-             (gated by a server-side feature flag that is currently off)."
-            )
-        }
-        WorkspaceGate::Unknown => {
-            anyhow::bail!(
-                "Could not load your settings for `aster workspace`. Check your \
-             network connection (run `aster login` if you are signed out), then \
-             try again."
-            )
-        }
-    }
+    workspace_command_gate(env_override, remote_settings.as_ref()).require_enabled()?;
     match args.command {
         WorkspaceMgmtCommand::Start(a) => {
             let settings = match remote_settings {

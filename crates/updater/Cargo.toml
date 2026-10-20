@@ -13,6 +13,7 @@
 edition = "2021"
 name = "a3s-updater"
 version = "0.3.0"
+publish = false
 authors = ["A3S Lab"]
 build = false
 autolib = false

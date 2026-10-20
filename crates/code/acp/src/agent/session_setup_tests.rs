@@ -2,6 +2,86 @@
 
 use super::{A3sCodeAgent, SessionSetup};
 use a3s_code_core::{sandbox::SandboxNetworkMode, CodeConfig};
+use agent_client_protocol::{self as acp, Agent as _};
+
+#[tokio::test]
+async fn initialize_refuses_invalid_prompt_metadata_instead_of_silently_ignoring_it() {
+    for (key, value) in [
+        ("rules", serde_json::json!(42)),
+        ("rules", serde_json::Value::Null),
+        ("systemPromptOverride", serde_json::json!(["not a string"])),
+        (
+            "systemPromptOverride",
+            serde_json::json!("Replace the whole system prompt"),
+        ),
+    ] {
+        let agent = A3sCodeAgent::new(super::tests::test_launch(None));
+        let error = agent
+            .initialize(
+                acp::InitializeRequest::new(acp::ProtocolVersion::V1)
+                    .meta(Some([(key.into(), value)].into_iter().collect())),
+            )
+            .await
+            .expect_err("unsupported prompt metadata must be explicit");
+        assert!(format!("{error:?}").contains(key));
+    }
+}
+
+#[tokio::test]
+async fn initialize_rules_append_without_replacing_host_or_unattended_contracts() {
+    for unattended in [false, true] {
+        let root = tempfile::tempdir().unwrap();
+        let mut launch = super::tests::test_launch(None);
+        launch.workspace = root.path().into();
+        let mut agent = A3sCodeAgent::new(launch);
+        if unattended {
+            agent =
+                agent.with_unattended(crate::unattended::Unattended::new(10_000, None).unwrap());
+        }
+        agent
+            .initialize(
+                acp::InitializeRequest::new(acp::ProtocolVersion::V1).meta(Some(
+                    [
+                        ("rules".into(), serde_json::json!("保留原文 APPEND_RULE_42")),
+                        ("systemPromptOverride".into(), serde_json::json!(" \n")),
+                    ]
+                    .into_iter()
+                    .collect(),
+                )),
+            )
+            .await
+            .unwrap();
+        let setup = SessionSetup {
+            workspace: root.path().into(),
+            model_id: "fixture/model",
+            effort: None,
+            host: crate::host_context::StudioHost {
+                guidelines: "Standing host instruction".into(),
+                source_review: true,
+                ..Default::default()
+            },
+            components: &[],
+            mcp_servers: Vec::new(),
+        };
+        let options = agent
+            .session_options_for("rules", &setup, &root.path().join("store"))
+            .await
+            .unwrap();
+        assert!(
+            options.permission_policy.is_some(),
+            "review restrictions stay installed"
+        );
+        let prompt = options.prompt_slots.unwrap().build();
+        assert_eq!(prompt.matches("APPEND_RULE_42").count(), 1);
+        assert!(prompt.contains("保留原文"));
+        if unattended {
+            assert!(prompt.contains("Host note: A host admission bind"));
+        } else {
+            assert!(prompt.contains("Standing host instruction"));
+            assert!(prompt.contains(super::SESSION_OUTCOME_BOUNDARY));
+        }
+    }
+}
 
 #[test]
 fn trusted_acl_presentation_reaches_the_host_session_without_changing_default() {

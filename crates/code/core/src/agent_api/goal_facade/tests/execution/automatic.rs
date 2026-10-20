@@ -359,10 +359,7 @@ async fn goal_tick_writer_revalidation_refuses_stale_or_invalid_origins() {
         let (agent, session, client) =
             fixture_with(root.path(), true, options("goal-run"), Some(limits.clone())).await;
         let mut tick = request(&session, "wake-1");
-        let mut source = ContinuationSource {
-            policy: limits,
-            observed_unix_ms: now_ms(),
-        };
+        let mut source = ContinuationSource::observed_mutations(limits, now_ms());
         match case {
             0 => tick.expected_goal_sequence += 1,
             1 => source.policy = policy(false, 8, 8, now_ms() + 600_000),

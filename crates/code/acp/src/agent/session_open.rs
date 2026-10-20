@@ -204,6 +204,14 @@ impl A3sCodeAgent {
             Some(profile) => options.with_tool_presentation_profile(profile.clone()),
             None => options,
         };
+        if let Some(rules) = self.client_rules.borrow().as_ref() {
+            let mut slots = options.prompt_slots.clone().unwrap_or_default();
+            append_slot_extra(
+                &mut slots,
+                &format!("<human_rules>\n{rules}\n</human_rules>"),
+            );
+            options = options.with_prompt_slots(slots);
+        }
         if let Some(reason) = unavailable {
             tracing::error!(%reason, "configured local workspace retrieval is unavailable");
             let mut slots = options.prompt_slots.clone().unwrap_or_default();

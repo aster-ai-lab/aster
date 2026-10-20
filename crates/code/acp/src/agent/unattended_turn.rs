@@ -139,7 +139,7 @@ impl A3sCodeAgent {
                 {
                     a3s_code_core::GoalTickStream::Started(stream) => stream,
                     a3s_code_core::GoalTickStream::Decided(decision) => {
-                        bail!("the bound task goal did not advance: {}", decision.as_str())
+                        return Err(crate::goal::GoalContinuationStopped(decision).into());
                     }
                     a3s_code_core::GoalTickStream::Replayed(snapshot) => {
                         bail!("the goal slice replayed Run {}", snapshot.id)
@@ -202,10 +202,7 @@ impl A3sCodeAgent {
                     }
                     crate::goal::BoundGoalStep::Finished => return Ok(None),
                     crate::goal::BoundGoalStep::Stopped(reason) => {
-                        bail!(
-                            "the bound task goal stopped before it was finished: {}",
-                            reason.as_str()
-                        )
+                        return Err(crate::goal::GoalContinuationStopped(reason).into());
                     }
                 }
             }

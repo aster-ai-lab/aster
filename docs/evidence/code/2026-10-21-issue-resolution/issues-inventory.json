@@ -1,0 +1,51 @@
+[
+  {
+    "number": 7,
+    "title": "`aster workspace` 在 GROK_WORKSPACE_COMMAND 未设置时的错误信息误导(提示检查网络/登录)",
+    "url": "https://github.com/aster-ai-lab/aster/issues/7",
+    "state": "open",
+    "updated_at": "2026-10-20T11:04:24Z"
+  },
+  {
+    "number": 6,
+    "title": "a3s-gateway 的内部 A3S 依赖指向 crates.io 而非本地路径,违反仓库自身守卫,检出即 workspace 测试红",
+    "url": "https://github.com/aster-ai-lab/aster/issues/6",
+    "state": "open",
+    "updated_at": "2026-10-20T11:04:22Z"
+  },
+  {
+    "number": 5,
+    "title": "同进程多会话并发时 durable memory 集合锁互斥,后续会话记忆召回与提炼失效",
+    "url": "https://github.com/aster-ai-lab/aster/issues/5",
+    "state": "open",
+    "updated_at": "2026-10-20T11:03:51Z"
+  },
+  {
+    "number": 4,
+    "title": "program 工具的内置模板目录(program_code_search / program_repo_map)未接线,模型不可见",
+    "url": "https://github.com/aster-ai-lab/aster/issues/4",
+    "state": "open",
+    "updated_at": "2026-10-20T11:03:49Z"
+  },
+  {
+    "number": 3,
+    "title": "--rules / --system-prompt-override 被 a3s-code-acp 静默丢弃(pager 发送、acp 不消费)",
+    "url": "https://github.com/aster-ai-lab/aster/issues/3",
+    "state": "open",
+    "updated_at": "2026-10-20T11:03:12Z"
+  },
+  {
+    "number": 2,
+    "title": "headless 模式(-p/--print)永远报 \"Not signed in\",与 TUI 的空 auth_methods 策略不一致",
+    "url": "https://github.com/aster-ai-lab/aster/issues/2",
+    "state": "open",
+    "updated_at": "2026-10-20T11:02:48Z"
+  },
+  {
+    "number": 1,
+    "title": "goal continuation 在 gate verified 后仍不终止：unattended 策略把停滞上限设为 1000，goal 无法完成时只能空转到墙钟 deadline",
+    "url": "https://github.com/aster-ai-lab/aster/issues/1",
+    "state": "open",
+    "updated_at": "2026-10-20T04:18:49Z"
+  }
+]

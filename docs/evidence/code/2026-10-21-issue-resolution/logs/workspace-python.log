@@ -1,0 +1,47 @@
+test_desktop_sources_and_executable_fixtures_are_present (__main__.WorkspaceDependenciesTest.test_desktop_sources_and_executable_fixtures_are_present) ... warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml
+FAIL
+test_internal_dependencies_are_local_and_unpublishable (__main__.WorkspaceDependenciesTest.test_internal_dependencies_are_local_and_unpublishable) ... warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml
+ok
+test_office_kernel_rebuilds_from_the_workspace (__main__.WorkspaceDependenciesTest.test_office_kernel_rebuilds_from_the_workspace) ... ok
+test_products_share_one_flow_engine (__main__.WorkspaceDependenciesTest.test_products_share_one_flow_engine) ... warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml
+ok
+test_studio_stages_companions_from_the_active_cargo_profile (__main__.WorkspaceDependenciesTest.test_studio_stages_companions_from_the_active_cargo_profile) ... ok
+test_studio_uses_one_workspace_without_external_sources (__main__.WorkspaceDependenciesTest.test_studio_uses_one_workspace_without_external_sources) ... ok
+
+======================================================================
+FAIL: test_desktop_sources_and_executable_fixtures_are_present (__main__.WorkspaceDependenciesTest.test_desktop_sources_and_executable_fixtures_are_present)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/tests/workspace_dependencies.py", line 60, in test_desktop_sources_and_executable_fixtures_are_present
+    self.assertTrue((ROOT / path).is_file(), path)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : apps/web/public/tenant/toyou/INFO.md
+
+----------------------------------------------------------------------
+Ran 6 tests in 1.573s
+
+FAILED (failures=1)
