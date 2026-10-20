@@ -44,6 +44,33 @@ async function run(ctx, program) {
 // firm bound while leaving enough room for explicit contracts and diagnostics.
 pub const MAX_PROGRAM_SCRIPT_SOURCE_BYTES: usize = 192 * 1024;
 
+#[derive(Clone, Copy)]
+enum ProgramKind {
+    Script,
+    Template,
+}
+
+impl ProgramKind {
+    fn parse(value: &str) -> std::result::Result<Self, String> {
+        match value {
+            "script" => Ok(Self::Script),
+            "template" => Ok(Self::Template),
+            _ => Err(format!(
+                "Unsupported program type: {value}. Supported types are {:?} and {:?}.",
+                Self::Script.as_str(),
+                Self::Template.as_str(),
+            )),
+        }
+    }
+
+    fn as_str(self) -> &'static str {
+        match self {
+            Self::Script => "script",
+            Self::Template => "template",
+        }
+    }
+}
+
 pub struct ProgramTool {
     fallback_invoker: Arc<dyn ToolInvoker>,
     catalog: ProgramCatalog,
@@ -150,11 +177,15 @@ impl Tool for ProgramTool {
 
     fn capabilities(&self, args: &serde_json::Value) -> crate::tools::ToolCapabilities {
         let mut capabilities = crate::tools::ToolCapabilities::conservative();
-        capabilities.read_only = match args.get("type").and_then(serde_json::Value::as_str) {
-            Some("script") => {
+        capabilities.read_only = match args
+            .get("type")
+            .and_then(serde_json::Value::as_str)
+            .and_then(|kind| ProgramKind::parse(kind).ok())
+        {
+            Some(ProgramKind::Script) => {
                 program_allowed_tools_are_read_only(self.fallback_invoker.as_ref(), args)
             }
-            Some("template") => self
+            Some(ProgramKind::Template) => self
                 .instantiate_template(args, self.fallback_invoker.as_ref())
                 .is_ok_and(|program| {
                     !program.steps.is_empty()
@@ -177,7 +208,7 @@ impl Tool for ProgramTool {
                 "type": {
                     "type": "string",
                     "description": "Required. Program kind. Only \"script\" is supported.",
-                    "enum": ["script"]
+                    "enum": [ProgramKind::Script.as_str()]
                 },
                 "inputs": {
                     "type": "object",
@@ -215,13 +246,13 @@ impl Tool for ProgramTool {
             "required": ["type"]
         });
         if !self.catalog.list().is_empty() {
-            schema["properties"]["type"] = serde_json::json!({"type":"string","description":"Required. Choose script for JavaScript source/path, or template for a registered name.","enum":["script","template"]});
+            schema["properties"]["type"] = serde_json::json!({"type":"string","description":"Required. Choose script for JavaScript source/path, or template for a registered name.","enum":[ProgramKind::Script.as_str(),ProgramKind::Template.as_str()]});
             schema["properties"]["name"] = serde_json::json!({
                 "type":"string", "description":"Exact registered template name. Required for type=template.",
                 "enum":self.catalog.list().iter().map(|template| &template.name).collect::<Vec<_>>()
             });
             let mut variants = vec![
-                serde_json::json!({"properties":{"type":{"const":"script"}},"required":["type"]}),
+                serde_json::json!({"properties":{"type":{"const":ProgramKind::Script.as_str()}},"required":["type"]}),
             ];
             for template in self.catalog.list() {
                 let mut properties = serde_json::Map::new();
@@ -238,7 +269,7 @@ impl Tool for ProgramTool {
                 }
                 let mut variant = serde_json::json!({
                     "properties":{
-                        "type":{"const":"template"}, "name":{"const":template.name},
+                        "type":{"const":ProgramKind::Template.as_str()}, "name":{"const":template.name},
                         "inputs":{"type":"object","additionalProperties":false,"properties":properties,"required":required}
                     },
                     "required":["type","name"]
@@ -254,18 +285,17 @@ impl Tool for ProgramTool {
     }
 
     async fn execute(&self, args: &serde_json::Value, ctx: &ToolContext) -> Result<ToolOutput> {
-        let Some(kind) = args.get("type").and_then(|value| value.as_str()) else {
+        let Some(value) = args.get("type").and_then(|value| value.as_str()) else {
             return Ok(script_preflight_error("type parameter is required"));
         };
-        if kind != "script" && kind != "template" {
-            return Ok(script_preflight_error(format!(
-                "Unsupported program type: {kind}. Supported types are \"script\" and \"template\"."
-            )));
-        }
+        let kind = match ProgramKind::parse(value) {
+            Ok(kind) => kind,
+            Err(error) => return Ok(script_preflight_error(error)),
+        };
         let invoker = ctx
             .tool_invoker()
             .unwrap_or_else(|| Arc::clone(&self.fallback_invoker));
-        if kind == "template" {
+        if matches!(kind, ProgramKind::Template) {
             let program = match self.instantiate_template(args, invoker.as_ref()) {
                 Ok(program) => program,
                 Err(error) => return Ok(script_preflight_error(error)),
@@ -280,7 +310,7 @@ impl Tool for ProgramTool {
                     .await?;
             if let Some(metadata) = output.metadata.as_mut() {
                 metadata["program"]["name"] = serde_json::json!(program.name);
-                metadata["program"]["type"] = serde_json::json!("template");
+                metadata["program"]["type"] = serde_json::json!(kind.as_str());
             }
             return Ok(output);
         }
