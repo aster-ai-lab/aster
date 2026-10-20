@@ -188,6 +188,12 @@ impl NativeSandbox {
         &self.workspace
     }
 
+    /// PowerShell 7 executable selected for the AppContainer guest.
+    #[cfg(windows)]
+    pub fn shell_launcher(&self) -> &Path {
+        self.platform.shell_launcher()
+    }
+
     /// A snapshot of the active policy document.
     pub fn policy(&self) -> SandboxPolicy {
         read_policy(&self.policy)

@@ -470,12 +470,14 @@ fn bind_host_shell_job(child: &tokio::process::Child) -> std::io::Result<()> {
 /// Spawn a shell command cross-platform.
 ///
 /// - Unix: `bash -c <command>`
-/// - Windows: PowerShell 7 with a hidden console window. The process is
-///   placed in a Job Object that kills descendants when the shell exits, so
-///   dropping the child cannot leave a later side effect. Short commands use
-///   `-EncodedCommand`. Commands that would exceed the 32767-character
-///   `CreateProcess` limit use `-File`. Startup failures are returned without
-///   reinterpreting the command as `cmd` or Windows PowerShell 5.
+/// - Windows: PowerShell 7 when `pwsh.exe` is a regular file, otherwise the
+///   built-in Windows PowerShell 5.1. The process is placed in a Job Object
+///   that kills descendants when the shell exits, so dropping the child cannot
+///   leave a later side effect. Short commands use `-EncodedCommand`. Commands
+///   that would exceed the 32767-character `CreateProcess` limit use `-File`.
+///   Reparse points, including WindowsApps aliases, are skipped. If the chosen
+///   executable fails to start, the command is not reinterpreted with `cmd`
+///   or the other PowerShell.
 pub(crate) fn spawn_shell(
     command: &str,
     workspace: &std::path::Path,
@@ -487,7 +489,7 @@ pub(crate) fn spawn_shell(
             std::io::Error::new(
                 std::io::ErrorKind::NotFound,
                 format!(
-                    "failed to resolve PowerShell 7 for workspace {}: {error}",
+                    "failed to resolve host PowerShell for workspace {}: {error}",
                     workspace.display()
                 ),
             )

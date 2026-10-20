@@ -963,6 +963,12 @@ impl WorkspaceCommandRunner for LocalWorkspaceBackend {
         crate::sandbox::ShellExecutionTarget::local_host_shell()
     }
 
+    #[cfg(windows)]
+    fn shell_note(&self) -> Option<String> {
+        let powershell = crate::tools::builtin::bash::windows_host_powershell(&self.root).ok()?;
+        Some(crate::tools::builtin::bash::windows_shell::windows_shell_guidance(Some(&powershell)))
+    }
+
     async fn exec(&self, request: CommandRequest) -> Result<CommandOutput> {
         #[cfg(windows)]
         if let Some(output) =

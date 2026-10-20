@@ -535,12 +535,18 @@ fn render_env_block_for_host(
     host_arch: &str,
 ) -> String {
     let runner = ctx.workspace_services.command_runner();
-    let runner_target = runner.as_ref().map(|runner| runner.execution_target());
-    let runner_description = runner_target
-        .map(|target| describe_execution_target(target, host_os, host_arch))
-        .unwrap_or_else(|| "unavailable (workspace has no command runner)".to_string());
+    let runner_description = match runner {
+        Some(runner) => append_shell_note(
+            describe_execution_target(runner.execution_target(), host_os, host_arch),
+            runner.shell_note(),
+        ),
+        None => "unavailable (workspace has no command runner)".to_string(),
+    };
     let default_target = match &ctx.sandbox {
-        Some(sandbox) => describe_execution_target(sandbox.execution_target(), host_os, host_arch),
+        Some(sandbox) => append_shell_note(
+            describe_execution_target(sandbox.execution_target(), host_os, host_arch),
+            sandbox.shell_note(),
+        ),
         None if ctx.workspace_services.local_root().is_some() && ctx.has_run_governance() => {
             "unavailable (configured sandbox is missing)".to_string()
         }
@@ -551,6 +557,13 @@ fn render_env_block_for_host(
         ctx.workspace.display(),
         chrono::Local::now().format("%Y-%m-%d"),
     )
+}
+
+fn append_shell_note(description: String, note: Option<String>) -> String {
+    match note {
+        Some(note) if !note.is_empty() => format!("{description}\n{note}"),
+        _ => description,
+    }
 }
 
 fn describe_execution_target(

@@ -163,6 +163,15 @@ impl BashSandbox for NativeBashSandbox {
         super::ShellExecutionTarget::local_host_shell()
     }
 
+    #[cfg(windows)]
+    fn shell_note(&self) -> Option<String> {
+        Some(
+            crate::tools::builtin::bash::windows_shell::windows_shell_guidance(Some(
+                self.inner.shell_launcher(),
+            )),
+        )
+    }
+
     fn validate_execution_available(&self) -> Result<()> {
         self.ensure_process_lifetime_qualified()
     }

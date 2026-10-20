@@ -1,6 +1,7 @@
 //! Windows-specific shell compatibility support.
 use crate::tools::types::ToolOutput;
 use base64::{engine::general_purpose::STANDARD as BASE64_STANDARD, Engine as _};
+use std::os::windows::fs::MetadataExt;
 
 #[cfg(windows)]
 pub(crate) const CREATE_NO_WINDOW: u32 = 0x0800_0000;
@@ -1071,13 +1072,11 @@ pub(crate) fn windows_host_powershell(
         env_dir("ProgramFiles").as_deref(),
         env_dir("SystemRoot").as_deref(),
     );
-    candidates
-        .iter()
-        .find(|candidate| candidate.is_file())
+    super::windows_shell::first_usable_host_powershell(&candidates, is_regular_powershell)
         .cloned()
         .ok_or_else(|| {
             anyhow::anyhow!(
-                "no PowerShell found at {}; install PowerShell 7 before running host shell commands",
+                "no PowerShell found at {}",
                 candidates
                     .iter()
                     .map(|path| path.display().to_string())
@@ -1085,4 +1084,15 @@ pub(crate) fn windows_host_powershell(
                     .join(" or ")
             )
         })
+}
+
+fn is_regular_powershell(path: &std::path::Path) -> bool {
+    let Ok(metadata) = std::fs::symlink_metadata(path) else {
+        return false;
+    };
+    const FILE_ATTRIBUTE_REPARSE_POINT: u32 = 0x400;
+    if metadata.file_attributes() & FILE_ATTRIBUTE_REPARSE_POINT != 0 {
+        return false;
+    }
+    metadata.is_file()
 }

@@ -2744,6 +2744,23 @@ async fn unrelated_failure_and_success_never_propose_escalation() {
 }
 
 #[test]
+fn first_usable_host_powershell_skips_an_unusable_pwsh() {
+    let candidates = windows_shell::host_powershell_candidates(
+        Some(std::path::Path::new(r"C:\Program Files")),
+        Some(std::path::Path::new(r"C:\Windows")),
+    );
+    let selected = windows_shell::first_usable_host_powershell(&candidates, |path| {
+        path.file_name()
+            .is_some_and(|name| name.eq_ignore_ascii_case("powershell.exe"))
+    })
+    .expect("5.1 remains usable when pwsh is not");
+    assert!(selected
+        .file_name()
+        .is_some_and(|name| name.eq_ignore_ascii_case("powershell.exe")));
+    assert!(windows_shell::first_usable_host_powershell(&candidates, |_| false).is_none());
+}
+
+#[test]
 fn windows_host_shell_prefers_powershell_7_then_the_builtin_windows_powershell() {
     let candidates = windows_shell::host_powershell_candidates(
         Some(std::path::Path::new(r"C:\Program Files")),

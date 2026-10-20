@@ -72,8 +72,12 @@ fn bound_linux_target_is_independent_of_macos_or_windows_host() {
         assert!(block.contains(&format!("Host platform: {os} ({arch})")));
         assert!(block.contains("Default Bash execution target: linux guest; shell: /bin/bash"));
         assert!(!block.contains("Default Bash execution target: host"));
-        assert!(!block.contains("GNU"));
-        assert!(!block.contains("BSD"));
+        let default_line = block
+            .lines()
+            .find(|line| line.starts_with("Default Bash execution target:"))
+            .expect("default target line");
+        assert!(!default_line.contains("GNU"), "{default_line}");
+        assert!(!default_line.contains("BSD"), "{default_line}");
     }
 }
 
@@ -133,6 +137,75 @@ fn custom_runner_without_metadata_remains_unknown() {
     );
     assert!(block
         .contains("Escalated Bash execution target: unknown (backend did not report OS/shell)"));
+}
+
+struct NotedSandbox;
+
+#[async_trait::async_trait]
+impl BashSandbox for NotedSandbox {
+    fn execution_target(&self) -> ShellExecutionTarget {
+        ShellExecutionTarget::HostPowerShell
+    }
+
+    fn shell_note(&self) -> Option<String> {
+        Some(
+            crate::tools::builtin::bash::windows_shell::windows_shell_guidance(Some(
+                std::path::Path::new(r"C:\Program Files\PowerShell\7\pwsh.exe"),
+            )),
+        )
+    }
+
+    async fn exec_command(&self, _: &str, _: &str) -> anyhow::Result<SandboxOutput> {
+        anyhow::bail!("context metadata must not execute commands")
+    }
+
+    async fn shutdown(&self) {}
+}
+
+struct NotedRunner;
+
+#[async_trait::async_trait]
+impl WorkspaceCommandRunner for NotedRunner {
+    fn execution_target(&self) -> ShellExecutionTarget {
+        ShellExecutionTarget::HostPowerShell
+    }
+
+    fn shell_note(&self) -> Option<String> {
+        Some(
+            crate::tools::builtin::bash::windows_shell::windows_shell_guidance(Some(
+                std::path::Path::new(r"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"),
+            )),
+        )
+    }
+
+    async fn exec(&self, _: CommandRequest) -> anyhow::Result<CommandOutput> {
+        anyhow::bail!("context metadata must not execute commands")
+    }
+}
+
+#[test]
+fn powershell_7_sandbox_note_reaches_the_env_block_without_spawning() {
+    let ctx = ToolContext::new(std::env::temp_dir()).with_sandbox(Arc::new(NotedSandbox));
+    let block = render_env_block_for_host(&ctx, "windows", "x86_64");
+    assert!(block.contains("Shell: the `bash` tool runs PowerShell 7"));
+    assert!(block.contains("not GNU bash"));
+    assert!(!block.contains("`&&` and `||` do not work in this version"));
+}
+
+#[test]
+fn windows_powershell_51_runner_note_names_the_chaining_limit() {
+    let root = std::env::temp_dir();
+    let fs = Arc::new(crate::workspace::LocalWorkspaceBackend::new(root.clone()));
+    let services = WorkspaceServices::builder(
+        crate::workspace::WorkspaceRef::new("custom", "custom://workspace"),
+        fs,
+    )
+    .command_runner(Arc::new(NotedRunner))
+    .build();
+    let ctx = ToolContext::new(root).with_workspace_services(services);
+    let block = render_env_block_for_host(&ctx, "windows", "x86_64");
+    assert!(block.contains("Windows PowerShell 5.1"));
+    assert!(block.contains("`&&` and `||` do not work"));
 }
 
 #[test]
