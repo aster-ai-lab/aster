@@ -497,26 +497,22 @@ fn support_dir(slug: &str) -> Option<PathBuf> {
     if !slug_ok(slug) {
         return None;
     }
-    let instance = crate::tenant::instance_name().ok().flatten();
-    Some(crate::tenant::profile_dir_under(
-        &support_root(),
-        slug,
-        instance.as_deref(),
-    ))
-}
-
-fn support_root() -> PathBuf {
     #[cfg(test)]
     {
-        std::env::temp_dir().join("a3s-studio-desktop-settings-test")
+        let instance = crate::tenant::instance_name().ok().flatten();
+        Some(crate::tenant::profile_dir_under(
+            &support_root(),
+            slug,
+            instance.as_deref(),
+        ))
     }
     #[cfg(not(test))]
-    {
-        std::env::var_os("HOME")
-            .map(PathBuf::from)
-            .unwrap_or_default()
-            .join("Library/Application Support/dev.a3s.studio")
-    }
+    crate::tenant::profile_dir(slug)
+}
+
+#[cfg(test)]
+fn support_root() -> PathBuf {
+    std::env::temp_dir().join("a3s-studio-desktop-settings-test")
 }
 
 fn launch_agents_dir() -> Option<PathBuf> {

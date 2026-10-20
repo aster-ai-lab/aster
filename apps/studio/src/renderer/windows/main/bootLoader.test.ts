@@ -1,9 +1,21 @@
 import { describe, expect, it } from 'vitest'
 
+import { stampTenantHtml } from '../../../../scripts/studioTenantBrand'
 import html from './index.html?raw'
 
 describe('main window boot loader', () => {
-  it('writes the ToWork wordmark once, hands over to the ring, and ignores the launch tenant', () => {
+  it('keeps the aster star available before the application mounts', () => {
+    const branded = stampTenantHtml(html, { slug: 'aster', product: 'AsterDream', brand: '#005ABB' })
+    const parsed = new DOMParser().parseFromString(branded, 'text/html')
+    const mark = parsed.querySelector('#spinner img[data-ui="page.loader.wordmark"]')
+    expect(mark?.getAttribute('src')).toBe('/tenant-mark.png')
+    expect(mark?.classList.contains('aster-dream-mark')).toBe(true)
+    expect(branded).toContain("html[data-tenant='aster'] .boot-loader .towork-wordmark-draw")
+    expect(parsed.documentElement.getAttribute('data-tenant')).toBe('aster')
+    expect(parsed.title).toBe('AsterDream')
+  })
+
+  it('retains the ToWork wordmark animation and ring beside the tenant-specific mark', () => {
     const parsed = new DOMParser().parseFromString(html, 'text/html')
     const mark = parsed.querySelector('#spinner [data-ui="page.loader.wordmark"]')
     expect(parsed.getElementById('spinner')?.getAttribute('role')).toBe('status')
@@ -29,7 +41,7 @@ describe('main window boot loader', () => {
     expect(parsed.querySelector('.mark-a3s')).toBeNull()
     expect(parsed.querySelector('.mark-toyou')).toBeNull()
     expect(parsed.querySelector('[data-draw]')).toBeNull()
-    expect(html).not.toContain('data-tenant')
+    expect(parsed.documentElement.hasAttribute('data-tenant')).toBe(false)
     expect(html).toContain('document.documentElement.dataset.a3sProduct')
     const bootBar = parsed.getElementById('applet-boot-bar')
     expect(bootBar?.hasAttribute('hidden')).toBe(true)

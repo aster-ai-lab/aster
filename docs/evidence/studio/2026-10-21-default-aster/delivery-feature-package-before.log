@@ -1,0 +1,41 @@
+F
+======================================================================
+FAIL: test_package_entry_seals_the_selected_product_and_never_the_other_tenant (__main__.ProductIdentityTests) (tenant='aster')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/apps/studio/scripts/tests/studio_product_test.py", line 119, in test_package_entry_seals_the_selected_product_and_never_the_other_tenant
+    self.assertEqual(run.returncode, 0, run.stderr)
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/tmp98do3ver/apps/studio/./node_modules/.bin/tauri", line 4, in <module>
+    assert '--no-default-features' in sys.argv, 'default product feature must be disabled'
+AssertionError: default product feature must be disabled
+
+
+======================================================================
+FAIL: test_package_entry_seals_the_selected_product_and_never_the_other_tenant (__main__.ProductIdentityTests) (tenant='toyou')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/apps/studio/scripts/tests/studio_product_test.py", line 119, in test_package_entry_seals_the_selected_product_and_never_the_other_tenant
+    self.assertEqual(run.returncode, 0, run.stderr)
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/tmp3o1rjux3/apps/studio/./node_modules/.bin/tauri", line 4, in <module>
+    assert '--no-default-features' in sys.argv, 'default product feature must be disabled'
+AssertionError: default product feature must be disabled
+
+
+======================================================================
+FAIL: test_only_declared_products_have_release_identities (__main__.ProductIdentityTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/apps/studio/scripts/tests/studio_product_test.py", line 21, in test_only_declared_products_have_release_identities
+    self.assertEqual(PRODUCT.identity("aster"), {"product": "AsterDream", "identifier": "dev.a3s.studio.aster", "feature": "tenant-aster"})
+AssertionError: {'pro[22 chars]identifier': 'dev.a3s.studio.aster'} != {'pro[22 chars]identifier': 'dev.a3s.studio.aster', 'feature': 'tenant-aster'}
+- {'identifier': 'dev.a3s.studio.aster', 'product': 'AsterDream'}
++ {'feature': 'tenant-aster',
++  'identifier': 'dev.a3s.studio.aster',
++  'product': 'AsterDream'}
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.268s
+
+FAILED (failures=3)

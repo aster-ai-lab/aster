@@ -1,3 +1,4 @@
+import { peekMemberProfile } from '@renderer/components/account/memberProfile'
 import { studioModelServiceName } from '@renderer/tenantBrand'
 import type { DataRequest, DataResponse } from '@shared/data/api/types'
 import {
@@ -217,7 +218,12 @@ export function installStudioProviderIpc() {
   const original = bridge.request.bind(bridge)
   bridge.request = (route: string, input?: unknown) => {
     if (route === 'ovms.is_supported') return Promise.resolve({ ok: true, data: false })
-    if (route === 'ai.provider.model.list') return listModelsIpc(input)
+    if (route === 'ai.provider.model.list') {
+      if (import.meta.env.PUBLIC_STUDIO_TENANT === 'aster' && record(input).providerId !== OS_GATEWAY_PROVIDER_ID) {
+        return import('./studioLocalProviderPlane').then(({ listStudioLocalModelsIpc }) => listStudioLocalModelsIpc(input))
+      }
+      return listModelsIpc(input)
+    }
     if (route === 'ai.provider.model.check') {
       return Promise.resolve({
         ok: false,
@@ -431,11 +437,61 @@ function patchModel(uniqueModelId: string, patch: Record<string, unknown>): Mode
   return next
 }
 
+/** Address ownership is explicit in the existing DTO; mixed writes fail before any side effect. */
+function providerRequestOwner(request: DataRequest): 'local' | 'managed' | 'mixed' | 'collection' {
+  const parts = segments(request.path)
+  const query = request.params ?? {}
+  const body = record(request.body)
+  const ids: string[] = []
+  if (parts[0] === 'providers') {
+    if (parts.length > 1 && parts[1] !== 'order:batch') ids.push(parts[1])
+    else if (request.method === 'GET') return 'collection'
+    else if (typeof body.providerId === 'string') ids.push(body.providerId)
+    else if (typeof body.presetProviderId === 'string') ids.push(body.presetProviderId)
+  } else if (parts[0] === 'models') {
+    const modelProvider = (id: unknown) => {
+      if (typeof id !== 'string') throw new Error('model id is required')
+      ids.push(parseUniqueModelId(id as UniqueModelId).providerId)
+    }
+    if (parts.length > 1) modelProvider(parts.slice(1).join('/'))
+    else if (request.method === 'GET') {
+      if (typeof query.providerId === 'string' && query.providerId) ids.push(query.providerId)
+      else return 'collection'
+    } else if (request.method === 'POST') {
+      for (const item of Array.isArray(request.body) ? request.body : []) {
+        const providerId = record(item).providerId
+        if (typeof providerId !== 'string' || !providerId) throw new Error('provider id is required')
+        ids.push(providerId)
+      }
+    } else if (request.method === 'PATCH') {
+      for (const item of Array.isArray(request.body) ? request.body : []) modelProvider(record(item).uniqueModelId)
+    } else if (request.method === 'DELETE') {
+      for (const id of asStringList(query.ids)) modelProvider(id)
+    }
+  }
+  const managed = ids.some((id) => id === OS_GATEWAY_PROVIDER_ID)
+  const local = ids.some((id) => id !== OS_GATEWAY_PROVIDER_ID)
+  return managed && local ? 'mixed' : managed ? 'managed' : 'local'
+}
+
 export async function answerStudioProviderRequest(request: DataRequest): Promise<DataResponse | null> {
   const runtime = runtimeOrNull()
   if (!runtime || !planePath(String(request?.path || ''))) return null
   installStudioProviderIpc()
   try {
+    if (import.meta.env.PUBLIC_STUDIO_TENANT === 'aster') {
+      const owner = providerRequestOwner(request)
+      if (owner === 'mixed') throw new Error('local and managed model writes must be separate')
+      if (owner !== 'managed') {
+        const { answerStudioLocalProviderRequest } = await import('./studioLocalProviderPlane')
+        const local = await answerStudioLocalProviderRequest(request)
+        if (owner !== 'collection' || !peekMemberProfile() || local?.status !== 200) return local
+        // Optional organization data is additive. An unavailable org cannot block local BYOK.
+        let managed: unknown = []
+        try { managed = await dispatch(runtime, request) } catch { /* Local catalog remains usable. */ }
+        return ok(request, [...(Array.isArray(local.data) ? local.data : []), ...(Array.isArray(managed) ? managed : [])])
+      }
+    }
     return ok(request, await dispatch(runtime, request))
   } catch (error) {
     const message = error instanceof Error ? error.message : 'provider request failed'

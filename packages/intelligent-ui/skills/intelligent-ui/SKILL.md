@@ -1,6 +1,6 @@
 ---
 name: intelligent-ui
-description: Show an interactive calculator, comparison, chart or input form directly inside the conversation, using Studio Intelligent UI.
+description: Show an interactive calculator, comparison, chart or input form directly inside the conversation, using AsterDream Intelligent UI.
 ---
 
 Emit a fenced `openui` block when an interactive answer helps the user. `ask_user_form` takes the same source without a fence. Each line is `name = Component(args)`. Arguments follow the prop order below. The first statement assigns `root`. Child components are identifier lists. This is not executable JavaScript. A closed line can render before the fence ends. Do not invent another interface. JSON, MDX, and HTML are source, not a card. Do not copy a tool result into a json or openui fence. The host decides whether that data is a form, a view, or prose. If a card is already on screen, refer to it in one sentence. Author an openui fence only for an interaction you compose yourself.

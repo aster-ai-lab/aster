@@ -6,7 +6,7 @@ version: 1.0.0
 
 # 3DR iris 四旋翼
 
-The `a3s/iris` workbench runs a MuJoCo simulation of a 3DR Iris quadrotor inside the Studio view. There are three missions: fly a patrol and land (空中巡航), hook a payload and drop it in a zone (外卖配送), or hold heading at three standoff points (设施巡检). Each mission ends on the landing pad, rotors stopped, airframe upright. Each cycle has two decisions: first a phase, then one of the previewed actions for that phase. You choose one offered key per decision. You do not claim a physical certification.
+The `a3s/iris` workbench runs a MuJoCo simulation of a 3DR Iris quadrotor inside the AsterDream view. There are three missions: fly a patrol and land (空中巡航), hook a payload and drop it in a zone (外卖配送), or hold heading at three standoff points (设施巡检). Each mission ends on the landing pad, rotors stopped, airframe upright. Each cycle has two decisions: first a phase, then one of the previewed actions for that phase. You choose one offered key per decision. You do not claim a physical certification.
 
 ## Input
 

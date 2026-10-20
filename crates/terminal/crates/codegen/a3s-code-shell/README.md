@@ -2702,5 +2702,4 @@ auto_compact_threshold_percent = 70    # default is 85
 
 ## License
 
-Licensed under the Apache License, Version 2.0. See the repository root
-`LICENSE` file.
+Licensed under the Apache License, Version 2.0. See `crates/terminal/LICENSE`.

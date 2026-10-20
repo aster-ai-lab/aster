@@ -1,8 +1,10 @@
-# Studio Kylin / Linux package
+# AsterDream and 通友租户 Kylin / Linux package
 
-This is Studio's separate `dev.a3s.studio` Flatpak, targeting x86-64 Kylin V10 with
-`org.gnome.Platform//50` (GTK3/WebKitGTK 4.1). It does not install or replace Work,
-change Studio's server update feed, copy user state, or run a user installer.
+The shared `Studio` host targets x86-64 Kylin V10 with `org.gnome.Platform//50`
+(GTK3/WebKitGTK 4.1). The default `aster` tenant is **AsterDream**, app ID
+`dev.a3s.studio.aster`. Explicit `toyou` retains **ToWork**, app ID `dev.a3s.studio`.
+These are separate Flatpak installations. No legacy AsterDream data is imported,
+no server update feed is changed, and no user installer runs during packaging.
 
 ## Build one generation
 
@@ -10,15 +12,20 @@ From `apps/studio`, with the root pinned Rust toolchain, installed frontend depe
 Docker and the prepared `aster-kylin-build:24.04` image:
 
 ```sh
-A3S_TENANT_SLUG=toyou bash scripts/kylin-flatpak/build-host.sh
+bash scripts/kylin-flatpak/build-host.sh # default: aster / AsterDream
+# Explicit alternative:
+# A3S_TENANT_SLUG=toyou bash scripts/kylin-flatpak/build-host.sh
 bash scripts/kylin-flatpak/build-immodule.sh
 ```
 
-The first script builds the renderer and Office kernel, then builds Studio, workspace ACP
-and Office together under `target/studio-kylin-x86_64`. Linux outputs go to
+The first script builds the selected renderer and Office kernel, then builds `Studio`, workspace ACP
+and Office together under `target/studio-kylin-x86_64`. Each host build disables Cargo's default
+features and selects exactly `tenant-aster` or `tenant-toyou`, together with `custom-protocol`.
+The native product identity must match the selected package; it cannot switch products at runtime. Linux outputs go to
 `apps/studio/dist/kylin`; the checkout `.env` is replaced by an empty read-only file in
 the build container. No credentials are copied. `studio-build.json` seals the three binary
-hashes and exact renderer generation. Failed builds cannot create a new receipt.
+hashes, exact renderer generation, selected brand files and desktop icon. Changed brand,
+renderer or binary inputs refuse staging. Failed builds cannot create a new receipt.
 
 The second script builds the independent fcitx4 and fcitx5 GTK3 clients and GDK backend
 helper. The fcitx4 recipe keeps `ENABLE_SNOOPER=ON`: disabling it caused duplicate native
@@ -38,7 +45,7 @@ python3 scripts/kylin-flatpak/delivery.py import-r4 \
 `import-r4` refuses any changed module/helper hash, including the old snooper-disabled
 fcitx4 module. It verifies both exact upstream archives and preserves the source patch.
 Copy the verified `immodules`, `kylin-im-backend` and `ime-assets.json` from that directory
-into `dist/kylin` before packaging. Do not copy Work's host, ACP, Office, feed or installer.
+into `dist/kylin` before packaging. Do not copy the legacy Work host, ACP, Office, feed or installer.
 The mechanism provenance and original file hashes are in `work-provenance.json`.
 
 ## Package without installing
@@ -47,6 +54,8 @@ Run in an x86-64 Linux container with GNOME Platform 50 installed for its isolat
 
 ```sh
 bash scripts/kylin-flatpak/package-bundle.sh
+# Output: dist/kylin/dev.a3s.studio.aster.flatpak
+# A toyou build instead produces dist/kylin/dev.a3s.studio.flatpak.
 ```
 
 The packaging environment needs `flatpak`, `python3`, `binutils`, `bubblewrap`,
@@ -59,17 +68,20 @@ The package uses this exact layout:
 
 | Resource | Path inside Flatpak |
 | --- | --- |
-| Studio | `/app/bin/Studio` |
+| Shared host | `/app/bin/Studio` |
 | ACP | `/app/bin/agent/a3s-code-acp` |
 | Office | `/app/bin/a3s-office` |
 | Renderer | `/app/Resources/studio-frontend` |
 | Brand data / default tenant | `/app/Resources/tenant/<slug>` / `/app/Resources/studio-tenant` |
 | Independent fcitx caches | `/app/lib/im/fcitx4`, `/app/lib/im/fcitx5` |
 
-Those companion paths already match Studio's Linux lookup; no fallback to another product
+Those companion paths already match the shared host's Linux lookup; no fallback to another product
 is added. Every launch verifies all listed files against `studio-generation.json` and the
-complete `SHA256SUMS` before executing Studio. Missing, modified, mixed-generation,
-unexpected or symlinked files refuse startup. `--print` reports the input-method decision
+complete `SHA256SUMS` before executing `Studio`. Missing, modified, mixed-generation,
+unexpected or symlinked files refuse startup. The built receipt chooses the exact app ID, desktop name and icon; a conflicting explicit
+`A3S_TENANT_SLUG` refuses packaging. Other development tenants have no release identity.
+
+`--print` reports the input-method decision
 without starting the app. It does not certify a generation.
 
 Packaging requires all host/companion/module links to resolve in the actual GNOME runtime,

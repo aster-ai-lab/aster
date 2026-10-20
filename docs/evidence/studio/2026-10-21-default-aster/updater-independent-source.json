@@ -1,0 +1,46 @@
+{
+  "status": "read-only review; native source is still receiving the authorized build-feature increment",
+  "files": [
+    {
+      "path": "apps/studio/src-tauri/src/app_updater.rs",
+      "sha256": "00a2795f502f53926e2606c0d82d657570ae4db34b8c78e49e460908ac6933d9",
+      "bytes": 44466
+    },
+    {
+      "path": "apps/studio/src-tauri/src/app_updater/delivery_manifest.rs",
+      "sha256": "1431b559ee208e8fe94c5a4f402069112ca347f1cd5b14a96aae6d27b5ac01f6",
+      "bytes": 5096
+    },
+    {
+      "path": "apps/studio/src-tauri/src/app_updater/delivery_tests.rs",
+      "sha256": "767dd82e95820f17394999b8dcff2f90d79ffbdc04f8991255c702fe63c0f03f",
+      "bytes": 10801
+    },
+    {
+      "path": "apps/studio/src-tauri/src/app_updater/delivery_manifest_tests.rs",
+      "sha256": "3ab1ec0ffe7251eea6cd5a88c04a2a78c42730e4271501c0e911c7150ab6fca4",
+      "bytes": 3465
+    },
+    {
+      "path": "apps/studio/src-tauri/src/tenant.rs",
+      "sha256": "a09b2ac253831e4ee604a2a81a58699be46bb00529a0c8c4e3bc71255a560221",
+      "bytes": 21563
+    },
+    {
+      "path": "apps/studio/scripts/studio_delivery.py",
+      "sha256": "fcbfd7b7ec90edc27df6a22b733577c1ba0b3d863ba1a96a68bb16f11b0e74ef",
+      "bytes": 3280
+    },
+    {
+      "path": "apps/studio/scripts/studio_product.py",
+      "sha256": "7760687675de4d5895d547928452c80cb5b514038fa04f078486ab78152562e4",
+      "bytes": 3442
+    },
+    {
+      "path": "apps/studio/scripts/package-host.sh",
+      "sha256": "cb2a4c03f367d31540bad77562dd3793cf40144451bedd54d2e27945d3c139de",
+      "bytes": 1764
+    }
+  ],
+  "review": "UPDATER-INDEPENDENT-REVIEW.md"
+}

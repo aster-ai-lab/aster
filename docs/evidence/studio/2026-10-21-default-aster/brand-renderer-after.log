@@ -1,0 +1,630 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:99624) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/studio
+
+ ❯ |renderer| src/renderer/windows/main/bootLoader.test.ts (2 tests | 2 failed) 92ms
+   ❯ main window boot loader (2)
+     × keeps the aster star available before the application mounts 21ms
+     × writes the ToWork wordmark once, hands over to the ring, and ignores the launch tenant 13ms
+ ❯ |renderer| src/renderer/pages/agents/__tests__/WorkbenchHome.test.tsx (96 tests | 1 failed) 9930ms
+   ❯ WorkbenchHome (96)
+     × shows the aster star on the existing workbench landing 43ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/windows/main/bootLoader.test.ts > main window boot loader > keeps the aster star available before the application mounts
+Error: expect(received).toHaveAttribute()
+
+received value must be an HTMLElement or an SVGElement.
+Received has type:  HTMLImageElement
+Received has value: <img
+  alt=""
+  class="aster-dream-mark"
+  data-ui="page.loader.wordmark"
+  src="/tenant-mark.png"
+/>
+ ❯ src/renderer/windows/main/bootLoader.test.ts:12:18
+     10|     const parsed = new DOMParser().parseFromString(branded, 'text/html…
+     11|     const mark = parsed.querySelector('#spinner img[data-ui="page.load…
+     12|     expect(mark).toHaveAttribute('src', '/tenant-mark.png')
+       |                  ^
+     13|     expect(mark).toHaveClass('aster-dream-mark')
+     14|     expect(branded).toContain("html[data-tenant='aster'] .boot-loader …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |renderer| src/renderer/windows/main/bootLoader.test.ts > main window boot loader > writes the ToWork wordmark once, hands over to the ring, and ignores the launch tenant
+AssertionError: expected '<!doctype html>\n<html lang="zh-CN">\…' not to contain 'data-tenant'
+
+- Expected
++ Received
+
+- data-tenant
++ <!doctype html>
++ <html lang="zh-CN">
++   <head>
++     <meta charset="UTF-8" />
++     <meta name="viewport" content="initial-scale=1, width=device-width" />
++     <meta name="logger-window-source" content="mainWindow" />
++     <meta
++       http-equiv="Content-Security-Policy"
++       content="default-src 'self'; connect-src blob: *; script-src 'self' 'unsafe-eval' 'unsafe-inline' *; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' *; font-src 'self' data: *; img-src 'self' data: file: * blob:; media-src 'self' file: http: https:; frame-src * file:" />
++     <title>Cherry Studio</title>
++     <script>
++       // A rebuilt preview swaps chunk hashes. A cached document then 404s its
++       // scripts and the white boot layer never unmounts. Reload once against
++       // a fresh URL; a second miss leaves the loader in place.
++       ;(function () {
++         var key = 'a3s-boot-reload'
++         window.addEventListener(
++           'error',
++           function (event) {
++             var target = event.target
++             if (!target || target === window || !target.src) return
++             if (String(target.src).indexOf('/static/js/') === -1) return
++             try {
++               if (sessionStorage.getItem(key)) return
++               sessionStorage.setItem(key, '1')
++             } catch (error) {
++               return
++             }
++             var next = location.pathname + location.search
++             var join = next.indexOf('?') === -1 ? '?' : '&'
++             location.replace(next + join + 'boot=' + Date.now())
++           },
++           true
++         )
++       })()
++     </script>
++
++     <style>
++       html,
++       body {
++         margin: 0;
++       }
++
++       .boot-loader {
++         --page-loader-mark: #171717;
++         position: fixed;
++         inset: 0;
++         z-index: 9999;
++         display: flex;
++         align-items: center;
++         justify-content: center;
++         background: #ffffff;
++         color: var(--page-loader-mark);
++       }
++
++       html[data-theme='dark'] .boot-loader {
++         --page-loader-mark: #f2f2f3;
++         background: #111112;
++       }
++
++       /* Same handoff as the in-app loader: the 500ms wordmark writes once, holds, then the ring takes over.
++          This document has no stylesheet yet. */
++       .boot-loader .boot-handoff {
++         display: grid;
++         place-items: center;
++       }
++
++       .boot-loader .boot-handoff > * {
++         grid-area: 1 / 1;
++       }
++
++       .boot-loader .boot-handoff > .towork-wordmark-draw {
++         animation: pageLoaderMarkOut 180ms ease 800ms both;
++       }
++
++       .boot-loader .boot-handoff > .page-loader-ring {
++         display: block;
++         animation: pageLoaderRingIn 180ms ease 800ms both;
++       }
++
++       .boot-loader .page-loader-spinner {
++         display: block;
++         overflow: visible;
++         transform-origin: center;
++         transform-box: fill-box;
++         animation: pageLoaderSpin 0.8s linear infinite;
++       }
++
++       @media (prefers-reduced-motion: reduce) {
++         .boot-loader .page-loader-spinner {
++           animation: pageLoaderPulse 1.2s ease-in-out infinite;
++         }
++       }
++
++       @keyframes pageLoaderMarkOut {
++         to {
++           opacity: 0;
++           visibility: hidden;
++         }
++       }
++
++       @keyframes pageLoaderRingIn {
++         from {
++           opacity: 0;
++         }
++
++         to {
++           opacity: 1;
++         }
++       }
++
++       @keyframes pageLoaderSpin {
++         to {
++           transform: rotate(360deg);
++         }
++       }
++
++       @keyframes pageLoaderPulse {
++         0%,
++         100% {
++           opacity: 1;
++         }
++
++         50% {
++           opacity: 0.4;
++         }
++       }
++
++       .boot-loader .towork-wordmark-draw {
++         display: block;
++         width: auto;
++         height: 48px;
++         overflow: visible;
++         color: #303030;
++       }
++
++       .boot-loader .aster-dream-mark {
++         display: none;
++         height: 48px;
++         width: 48px;
++         grid-area: 1 / 1;
++         object-fit: contain;
++       }
++
++       html[data-tenant='aster'] .boot-loader .aster-dream-mark {
++         display: block;
++         animation: pageLoaderMarkOut 180ms ease 800ms both;
++       }
++
++       html[data-tenant='aster'] .boot-loader .towork-wordmark-draw {
++         display: none;
++       }
++
++       html[data-theme='dark'] .boot-loader .towork-wordmark-draw {
++         color: #f2f2f3;
++       }
++
++       .boot-loader .towork-wordmark-draw .towork-stroke {
++         stroke-dasharray: 1;
++         stroke-dashoffset: 1;
++         animation-duration: 0.5s;
++         animation-timing-function: linear;
++         animation-iteration-count: 1;
++         animation-fill-mode: both;
++       }
++
++       .boot-loader .towork-wordmark-draw .is-t {
++         animation-name: toworkDrawT;
++       }
++
++       .boot-loader .towork-wordmark-draw .is-o1 {
++         animation-name: toworkDrawO1;
++       }
++
++       .boot-loader .towork-wordmark-draw .is-w {
++         animation-name: toworkDrawW;
++       }
++
++       .boot-loader .towork-wordmark-draw .is-o2 {
++         animation-name: toworkDrawO2;
++       }
++
++       .boot-loader .towork-wordmark-draw .is-r {
++         animation-name: toworkDrawR;
++       }
++
++       .boot-loader .towork-wordmark-draw .is-k {
++         animation-name: toworkDrawK;
++       }
++
++       @media (prefers-reduced-motion: reduce) {
++         .boot-loader .towork-wordmark-draw .towork-stroke {
++           animation: none;
++           stroke-dashoffset: 0;
++           opacity: 1;
++         }
++       }
++
++       @keyframes toworkDrawT {
++         0% {
++           stroke-dashoffset: 1;
++           opacity: 0;
++         }
++         2% {
++           stroke-dashoffset: 1;
++           opacity: 1;
++         }
++         13% {
++           stroke-dashoffset: 0;
++           opacity: 1;
++         }
++         100% {
++           stroke-dashoffset: 0;
++           opacity: 1;
++         }
++       }
++
++       @keyframes toworkDrawO1 {
++         0%,
++         13% {
++           stroke-dashoffset: 1;
++           opacity: 0;
++         }
++         15% {
++           stroke-dashoffset: 1;
++           opacity: 1;
++         }
++         28% {
++           stroke-dashoffset: 0;
++           opacity: 1;
++         }
++         100% {
++           stroke-dashoffset: 0;
++           opacity: 1;
++         }
++       }
++
++       @keyframes toworkDrawW {
++         0%,
++         28% {
++           stroke-dashoffset: 1;
++           opacity: 0;
++         }
++         30% {
++           stroke-dashoffset: 1;
++           opacity: 1;
++         }
++         57% {
++           stroke-dashoffset: 0;
++           opacity: 1;
++         }
++         100% {
++           stroke-dashoffset: 0;
++           opacity: 1;
++         }
++       }
++
++       @keyframes toworkDrawO2 {
++         0%,
++         57% {
++           stroke-dashoffset: 1;
++           opacity: 0;
++         }
++         59% {
++           stroke-dashoffset: 1;
++           opacity: 1;
++         }
++         72% {
++           stroke-dashoffset: 0;
++           opacity: 1;
++         }
++         100% {
++           stroke-dashoffset: 0;
++           opacity: 1;
++         }
++       }
++
++       @keyframes toworkDrawR {
++         0%,
++         72% {
++           stroke-dashoffset: 1;
++           opacity: 0;
++         }
++         74% {
++           stroke-dashoffset: 1;
++           opacity: 1;
++         }
++         83% {
++           stroke-dashoffset: 0;
++           opacity: 1;
++         }
++         100% {
++           stroke-dashoffset: 0;
++           opacity: 1;
++         }
++       }
++
++       @keyframes toworkDrawK {
++         0%,
++         83% {
++           stroke-dashoffset: 1;
++           opacity: 0;
++         }
++         85% {
++           stroke-dashoffset: 1;
++           opacity: 1;
++         }
++         100% {
++           stroke-dashoffset: 0;
++           opacity: 1;
++         }
++       }
++
++       /* Above the boot loader. Native traffic lights are hidden on applet windows. */
++       #applet-boot-bar {
++         position: fixed;
++         z-index: 10001;
++         top: 0;
++         right: 0;
++         left: 0;
++         display: none;
++         height: 32px;
++         align-items: center;
++         border-bottom: 1px solid #efefef;
++         background: #fff;
++         color: #171717;
++       }
++
++       #applet-boot-bar:not([hidden]) {
++         display: flex;
++       }
++
++       #applet-boot-title {
++         min-width: 0;
++         max-width: 12rem;
++         margin-right: auto;
++         overflow: hidden;
++         padding-left: 8px;
++         font-size: 14px;
++         font-weight: 500;
++         line-height: 32px;
++         text-overflow: ellipsis;
++         white-space: nowrap;
++       }
++
++       #applet-boot-bar [role='group'] {
++         display: flex;
++         align-items: center;
++         gap: 2px;
++         padding-right: 6px;
++       }
++
++       #applet-boot-bar button {
++         display: grid;
++         width: 24px;
++         height: 24px;
++         place-items: center;
++         padding: 0;
++         border: 0;
++         border-radius: 6px;
++         background: transparent;
++         color: #3f3f3f;
++       }
++
++       #applet-boot-bar button:hover {
++         background: #f2f3f5;
++         color: #171717;
++       }
++
++       #applet-boot-bar svg {
++         width: 14px;
++         height: 14px;
++       }
++     </style>
++   </head>
++
++   <body>
++     <div id="root"></div>
++     <header id="applet-boot-bar" hidden>
++       <strong id="applet-boot-title"></strong>
++       <div role="group" aria-label="窗口">
++         <button type="button" data-applet-boot="minimize" aria-label="最小化">
++           <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
++             <path d="M2.5 7h9" />
++           </svg>
++         </button>
++         <button type="button" data-applet-boot="toggle_maximize" aria-label="缩放">
++           <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
++             <rect x="3" y="3" width="8" height="8" rx="1" />
++           </svg>
++         </button>
++         <button type="button" data-applet-boot="close" aria-label="关闭">
++           <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
++             <path d="M3.5 3.5l7 7M10.5 3.5l-7 7" />
++           </svg>
++         </button>
++       </div>
++     </header>
++     <script>
++       ;(function () {
++         var params = new URLSearchParams(location.search)
++         var id = params.get('workbench-applet')
++         if (!id) return
++         var bar = document.getElementById('applet-boot-bar')
++         if (!bar) return
++         var names = {
++           approval: '审批',
++           leave: '请假',
++           travel: '出差',
++           expense: '报销',
++           meeting: '会议',
++           seal: '用印',
++           notice: '公告',
++           pdf: '格式转换',
++           review: '审查',
++           inbox: '任务'
++         }
++         var title = document.getElementById('applet-boot-title')
++         if (title) title.textContent = names[id] || id
++         bar.hidden = false
++         document.documentElement.dataset.appletBootBar = 'shown'
++         function command(name) {
++           var internals = globalThis.__TAURI_INTERNALS__
++           var invoke = internals && internals.invoke
++           var label =
++             internals &&
++             internals.metadata &&
++             internals.metadata.currentWindow &&
++             internals.metadata.currentWindow.label
++           if (typeof invoke !== 'function' || typeof label !== 'string' || label.indexOf('applet-') !== 0) return
++           invoke('plugin:window|' + name, { label: label })
++         }
++         bar.addEventListener('mousedown', function (event) {
++           if (event.button !== 0 || event.target.closest('button')) return
++           command('start_dragging')
++         })
++         bar.addEventListener('click', function (event) {
++           var button = event.target.closest('button')
++           var name = button && button.getAttribute('data-applet-boot')
++           if (name) command(name)
++         })
++       })()
++     </script>
++     <div id="spinner" class="boot-loader" role="status" aria-label="Loading" aria-busy="true">
++       <div class="boot-handoff">
++         <svg
++           class="towork-wordmark-draw"
++           data-ui="page.loader.wordmark"
++           viewBox="140 116 2164 512"
++           height="48"
++           aria-hidden="true"
++           fill="none"
++           stroke="currentColor"
++           stroke-width="76"
++           stroke-linecap="butt"
++           stroke-linejoin="miter"
++           stroke-miterlimit="16">
++           <path class="towork-stroke is-t" pathLength="1" d="M156 170H532M344 170V612" />
++           <circle
++             class="towork-stroke is-o1"
++             pathLength="1"
++             cx="606"
++             cy="432"
++             r="142"
++             transform="rotate(-90 606 432)" />
++           <path
++             class="towork-stroke is-w"
++             pathLength="1"
++             d="M868 233.4L980 510.6L1091.9 233.4L1203.9 510.6L1315.9 233.4" />
++           <circle
++             class="towork-stroke is-o2"
++             pathLength="1"
++             cx="1577.9"
++             cy="432"
++             r="142"
++             transform="rotate(-90 1577.9 432)" />
++           <path class="towork-stroke is-r" pathLength="1" d="M1839.9 612V290H1957.7" />
++           <path
++             class="towork-stroke is-k"
++             pathLength="1"
++             d="M2053.7 132V612M2053.7 396L2249.7 288M2053.7 396L2249.7 582" />
++         </svg>
++         <img data-ui="page.loader.wordmark" class="aster-dream-mark" src="/tenant-mark.png" alt="" />
++         <span class="page-loader-ring">
++           <svg
++             class="page-loader-spinner"
++             data-ui="page.loader.ring"
++             viewBox="0 0 48 48"
++             width="56"
++             height="56"
++             aria-hidden="true">
++             <circle
++               cx="24"
++               cy="24"
++               r="18"
++               fill="none"
++               stroke="currentColor"
++               stroke-width="3"
++               stroke-linecap="round"
++               stroke-dasharray="28 85" />
++           </svg>
++         </span>
++       </div>
++     </div>
++     <script>
++       var bootProduct = document.documentElement.dataset.a3sProduct
++       if (bootProduct) document.title = bootProduct
++     </script>
++     <script>
++       console.time('init')
++     </script>
++     <script type="module" src="/windows/main/entryPoint.tsx"></script>
++   </body>
++ </html>
++
+
+ ❯ src/renderer/windows/main/bootLoader.test.ts:45:22
+     43|     expect(parsed.querySelector('.mark-toyou')).toBeNull()
+     44|     expect(parsed.querySelector('[data-draw]')).toBeNull()
+     45|     expect(html).not.toContain('data-tenant')
+       |                      ^
+     46|     expect(html).toContain('document.documentElement.dataset.a3sProduc…
+     47|     const bootBar = parsed.getElementById('applet-boot-bar')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/WorkbenchHome.test.tsx > WorkbenchHome > shows the aster star on the existing workbench landing
+Error: expect(received).toBeInTheDocument()
+
+received value must be an HTMLElement or an SVGElement.
+Received has type:  Null
+Received has value: null
+ ❯ src/renderer/pages/agents/__tests__/WorkbenchHome.test.tsx:582:72
+    580|       renderHome()
+    581|       expect(screen.getByRole('heading', { name: 'AsterDream' }).query…
+    582|       expect(document.querySelector('[data-ui="workbench.composer"]'))…
+       |                                                                        ^
+    583|       expect(document.querySelector('[data-ui="workbench.tasks"]')).to…
+    584|     } finally {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed | 7 passed (9)
+      Tests  3 failed | 184 passed (187)
+   Start at  23:14:09
+   Duration  20.46s (tests 48%, transform 26%, import 18%, environment 6%, setup 2%)
+
+  Transform  |renderer| transforming modules took 6.31s · 26% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+

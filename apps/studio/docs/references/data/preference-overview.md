@@ -102,7 +102,7 @@ Preference key.
 ## Debugging
 
 Run `bash scripts/test-native-preferences.sh <new evidence directory>` after
-installing the pinned Studio dependencies. It verifies real native storage and
+installing the pinned AsterDream dependencies. It verifies real native storage and
 the production bridge over test stdio, including the real renderer cache and
 Harness capture. Its controlled event transport does not certify Tauri event
 delivery or native WebView isolation.
@@ -113,7 +113,7 @@ profile: old values remain, and Harness capture refuses an unresolved legacy
 choice until an explicit new choice commits. Corrupt ACL is preserved for
 diagnosis and refuses both reads and writes. Real WebView multi-window/restart,
 session-transition delivery, and BootConfig write routing remain acceptance
-work under T005; the full Meta Studio gate is still open.
+work under T005; the full Meta AsterDream gate is still open.
 
 ## Related Documentation
 

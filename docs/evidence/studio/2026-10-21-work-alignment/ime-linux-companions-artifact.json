@@ -1,0 +1,79 @@
+{
+  "status": "passed companion artifact checks; host and full generation pending",
+  "paired_source_digest": "9d19105abe11072a6eb48e8fedc1bc5765099fd1",
+  "artifacts": {
+    "a3s-code-acp": {
+      "path": "target/evaluations/studio-work-alignment/ime-native/linux-cargo-target/release/a3s-code-acp",
+      "bytes": 73912872,
+      "sha256": "d43c4bcd1f00d1b1c56d91493edfb01b9dc9c097fe732fab5e2d8fe2f1fd987a",
+      "checks": [
+        {
+          "args": [
+            "file",
+            "/aster/target/evaluations/studio-work-alignment/ime-native/linux-cargo-target/release/a3s-code-acp"
+          ],
+          "exit_code": 0,
+          "stdout": "/aster/target/evaluations/studio-work-alignment/ime-native/linux-cargo-target/release/a3s-code-acp: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 3.2.0, BuildID[sha1]=d8c80655aaf0505f851b1bd983426828214b1e46, stripped\n",
+          "stderr": ""
+        },
+        {
+          "args": [
+            "ldd",
+            "/aster/target/evaluations/studio-work-alignment/ime-native/linux-cargo-target/release/a3s-code-acp"
+          ],
+          "exit_code": 0,
+          "stdout": "\tlibstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007ffffaeb2000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007ffffae84000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007ffffad9b000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007ffffab88000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007ffffffc6000)\n",
+          "stderr": ""
+        },
+        {
+          "args": [
+            "timeout",
+            "10",
+            "/aster/target/evaluations/studio-work-alignment/ime-native/linux-cargo-target/release/a3s-code-acp",
+            "--build-id"
+          ],
+          "exit_code": 0,
+          "stdout": "aster-cli-pair-v1:9d19105abe11072a6eb48e8fedc1bc5765099fd1:x86_64-unknown-linux-gnu\n",
+          "stderr": ""
+        }
+      ]
+    },
+    "a3s-office": {
+      "path": "target/evaluations/studio-work-alignment/ime-native/linux-cargo-target/release/a3s-office",
+      "bytes": 23293432,
+      "sha256": "7e79945d036645427f360d93ef0e529e5eb8aec14ac8de7ca2483ef2d8c74cb6",
+      "checks": [
+        {
+          "args": [
+            "file",
+            "/aster/target/evaluations/studio-work-alignment/ime-native/linux-cargo-target/release/a3s-office"
+          ],
+          "exit_code": 0,
+          "stdout": "/aster/target/evaluations/studio-work-alignment/ime-native/linux-cargo-target/release/a3s-office: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 3.2.0, BuildID[sha1]=36a9a95f75c4fc99ee92b0c0bb56a35a9aae1522, stripped\n",
+          "stderr": ""
+        },
+        {
+          "args": [
+            "ldd",
+            "/aster/target/evaluations/studio-work-alignment/ime-native/linux-cargo-target/release/a3s-office"
+          ],
+          "exit_code": 0,
+          "stdout": "\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007ffffe153000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007ffffe06a000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007ffffde57000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007ffffffc6000)\n",
+          "stderr": ""
+        },
+        {
+          "args": [
+            "timeout",
+            "10",
+            "/aster/target/evaluations/studio-work-alignment/ime-native/linux-cargo-target/release/a3s-office",
+            "--version"
+          ],
+          "exit_code": 0,
+          "stdout": "0.45.0\n",
+          "stderr": ""
+        }
+      ]
+    }
+  },
+  "boundary": "Only ACP/Office built; no Studio host, final tenant renderer, full package or physical Kylin GUI acceptance."
+}

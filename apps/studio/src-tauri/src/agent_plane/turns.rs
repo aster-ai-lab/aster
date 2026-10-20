@@ -3345,8 +3345,14 @@ impl TurnService {
             })?;
         let (provider, model_id) = split_model_id(model)
             .ok_or_else(|| format!("Model {model} is not providerId::modelId."))?;
-        let credentials = (self.config.credentials)(provider)
-            .ok_or_else(|| "登录后通过统一网关使用模型。".to_owned())?;
+        let credentials = (self.config.credentials)(provider).ok_or_else(|| {
+            if cfg!(feature = "tenant-aster") && provider != "a3s" {
+                "请配置并启用当前模型的服务商。"
+            } else {
+                "登录后通过统一网关使用模型。"
+            }
+            .to_owned()
+        })?;
         let cwd = PathBuf::from(&session.workspace.path);
         if !cwd.is_dir() {
             return Err(format!(

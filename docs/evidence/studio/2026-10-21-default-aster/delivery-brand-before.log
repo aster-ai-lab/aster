@@ -1,0 +1,116 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:78031) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/studio
+
+ ❯ |scripts| scripts/studioTenantBrand.test.ts (12 tests | 7 failed) 14ms
+   ❯ studio tenant brand (12)
+     × defaults to AsterDream and its existing blue brand 6ms
+     × refuses explicit invalid or missing tenant "" 2ms
+     × refuses explicit invalid or missing tenant " " 0ms
+     × refuses explicit invalid or missing tenant "Bad" 0ms
+     × refuses explicit invalid or missing tenant "../aster" 0ms
+     × refuses explicit invalid or missing tenant "missing-tenant" 0ms
+     × refuses missing brand assets instead of producing a Cherry build 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |scripts| scripts/studioTenantBrand.test.ts > studio tenant brand > defaults to AsterDream and its existing blue brand
+AssertionError: expected 'toyou' to be 'aster' // Object.is equality
+
+Expected: "aster"
+Received: "toyou"
+
+ ❯ scripts/studioTenantBrand.test.ts:15:25
+     13|   it('defaults to AsterDream and its existing blue brand', () => {
+     14|     const brand = loadStudioTenantBrand(projectRoot, undefined)
+     15|     expect(brand?.slug).toBe('aster')
+       |                         ^
+     16|     expect(brand?.product).toBe('AsterDream')
+     17|     expect(brand?.brand?.toLowerCase()).toBe('#005abb')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  |scripts| scripts/studioTenantBrand.test.ts > studio tenant brand > refuses explicit invalid or missing tenant ""
+ FAIL  |scripts| scripts/studioTenantBrand.test.ts > studio tenant brand > refuses explicit invalid or missing tenant " "
+ FAIL  |scripts| scripts/studioTenantBrand.test.ts > studio tenant brand > refuses explicit invalid or missing tenant "Bad"
+ FAIL  |scripts| scripts/studioTenantBrand.test.ts > studio tenant brand > refuses explicit invalid or missing tenant "../aster"
+ FAIL  |scripts| scripts/studioTenantBrand.test.ts > studio tenant brand > refuses explicit invalid or missing tenant "missing-tenant"
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ scripts/studioTenantBrand.test.ts:22:60
+     20|
+     21|   it.each(['', ' ', 'Bad', '../aster', 'missing-tenant'])('refuses exp…
+     22|     expect(() => loadStudioTenantBrand(projectRoot, slug)).toThrow(/te…
+       |                                                            ^
+     23|   })
+     24|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  |scripts| scripts/studioTenantBrand.test.ts > studio tenant brand > refuses missing brand assets instead of producing a Cherry build
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ scripts/studioTenantBrand.test.ts:33:61
+     31|       mkdirSync(tenant, { recursive: true })
+     32|       writeFileSync(join(tenant, 'INFO.md'), '---\nproduct: "ToWork"\n…
+     33|       expect(() => loadStudioTenantBrand(project, 'toyou')).toThrow(/t…
+       |                                                             ^
+     34|     } finally {
+     35|       rmSync(root, { recursive: true, force: true })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed | 5 passed (12)
+   Start at  23:06:13
+   Duration  157ms (transform 46%, tests 27%, import 17%, worker 10%)
+

@@ -76,10 +76,12 @@ Retained package names and Rust module paths keep the embeddable SDK stable.
 
 ## Licensing
 
-The terminal and Aster entry point retain Apache-2.0 licensing. Code Core,
-ACP, and the supporting A3S libraries retain their original MIT licenses.
-Third-party notices remain under `crates/terminal`. The root Apache license
-covers the product entry point and does not relicense imported MIT code.
+The Aster entry point and the repository root license are MIT. The terminal
+tree retains Apache-2.0 in `crates/terminal/LICENSE`. Code Core, ACP, and the
+supporting A3S libraries retain their original MIT licenses. Third-party
+notices remain under `crates/terminal`. The root MIT license does not
+relicense the terminal tree, vendored Apache text, or the AGPL desktop
+components.
 
 ## Validation
 

@@ -440,12 +440,16 @@ pub fn open_workbench_applet_window(
         return Ok(());
     }
 
-    let mut builder = WebviewWindowBuilder::new(&app, &label, WebviewUrl::External(url))
-        .initialization_script(script)
-        .data_store_identifier(store_id)
-        .title(title)
-        .inner_size(bounds.width, bounds.height)
-        .min_inner_size(bounds.min_width, bounds.min_height);
+    let mut builder = crate::tenant::isolate_webview(
+        WebviewWindowBuilder::new(&app, &label, WebviewUrl::External(url))
+            .initialization_script(script)
+            .data_store_identifier(store_id),
+        store_id,
+    )
+    .map_err(|error| error.to_string())?
+    .title(title)
+    .inner_size(bounds.width, bounds.height)
+    .min_inner_size(bounds.min_width, bounds.min_height);
     if let (Some(max_width), Some(max_height)) = (bounds.max_width, bounds.max_height) {
         builder = builder.max_inner_size(max_width, max_height);
     }

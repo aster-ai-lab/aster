@@ -22,8 +22,8 @@ import type { AixWorkbenchCatalogue } from '@shared/types/aixWorkbench'
 
 import { resetPluginInstallOverlayForTests } from '../../capabilities/pluginInstallSync'
 import { APPLET_PERMISSION_GRANT_KEY } from '../appletPermissionGrant'
-import { HOME_APPLET_PINS_KEY } from '../homeApplets'
 import { readCodeSession } from '../codeMode'
+import { HOME_APPLET_PINS_KEY } from '../homeApplets'
 import { resetHomeComposerModeForTests } from '../homeComposerMode'
 import { writeHomePluginPins } from '../homePins'
 import { appletPackageCacheKey, sha256Hex } from '../loadAppletPackage'
@@ -571,6 +571,23 @@ describe('WorkbenchHome', () => {
     expect(document.querySelector('[data-ui="workbench.features"]')).toBeNull()
     expect(document.querySelector('[data-ui="workbench.applets"]')).toBeNull()
     expect(document.querySelectorAll('[data-ui="workbench.feature"]')).toHaveLength(0)
+  })
+
+  it('shows the aster star on the existing workbench landing', () => {
+    document.documentElement.dataset.tenant = 'aster'
+    document.documentElement.dataset.a3sProduct = 'AsterDream'
+    try {
+      renderHome()
+      expect(screen.getByRole('heading', { name: 'AsterDream' }).querySelector('img')).toHaveAttribute(
+        'src',
+        '/tenant-mark.png'
+      )
+      expect(screen.getByRole('textbox')).toBeInTheDocument()
+      expect(document.querySelector('[data-ui="workbench.tasks"]')).toBeInTheDocument()
+    } finally {
+      delete document.documentElement.dataset.tenant
+      delete document.documentElement.dataset.a3sProduct
+    }
   })
 
   it('matches the workbench landing without a mascot', () => {

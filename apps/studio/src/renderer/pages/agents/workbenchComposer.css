@@ -95,12 +95,12 @@
 }
 
 :is(html.dark, body.dark) [data-ui~='workbench.composer'] button[data-workbench-chip],
-:is(html.dark, body.dark) [data-ui~='workbench.composer'] [data-composer-toolbar] > div:first-child button {
+:is(html.dark, body.dark) [data-ui~='workbench.composer'] [data-composer-toolbar] > div:first-child button:not([role='switch']) {
   color: #b0b4ba;
 }
 
 :is(html.dark, body.dark) [data-ui~='workbench.composer'] button[data-workbench-chip]:hover,
-:is(html.dark, body.dark) [data-ui~='workbench.composer'] [data-composer-toolbar] > div:first-child button:hover {
+:is(html.dark, body.dark) [data-ui~='workbench.composer'] [data-composer-toolbar] > div:first-child button:not([role='switch']):hover {
   background: #2c2c2c;
   color: #f5f5f5;
 }
@@ -116,14 +116,14 @@
   color: #171717;
 }
 
-[data-ui~='workbench.composer'] [data-composer-toolbar] > div:first-child button {
+[data-ui~='workbench.composer'] [data-composer-toolbar] > div:first-child button:not([role='switch']) {
   height: 30px;
   min-width: 30px;
   border-radius: 8px;
   color: #3f3f3f;
 }
 
-[data-ui~='workbench.composer'] [data-composer-toolbar] > div:first-child button:hover {
+[data-ui~='workbench.composer'] [data-composer-toolbar] > div:first-child button:not([role='switch']):hover {
   background: #f7f7f7;
   color: #171717;
 }

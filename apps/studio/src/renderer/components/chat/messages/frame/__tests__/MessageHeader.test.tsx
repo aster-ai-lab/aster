@@ -164,6 +164,24 @@ describe('MessageHeader', () => {
     expect(container.querySelector('.message-body-content')?.textContent).toBe('stream')
   })
 
+  it('uses the aster star for the workbench assistant while preserving its name', () => {
+    document.documentElement.dataset.tenant = 'aster'
+    document.documentElement.dataset.a3sProduct = 'AsterDream'
+    try {
+      const { container, getByText } = render(
+        <WorkbenchProjectLockedContext value={true}>
+          <MessageHeader message={createMessage('assistant')} />
+        </WorkbenchProjectLockedContext>
+      )
+      expect(container.querySelector('[data-ui="workbench.assistant.mark"]')).toHaveAttribute('src', '/tenant-mark.png')
+      expect(container.querySelector('[data-a3s-bot-avatar="true"]')).toBeNull()
+      expect(getByText('AsterDream')).toBeInTheDocument()
+    } finally {
+      delete document.documentElement.dataset.tenant
+      delete document.documentElement.dataset.a3sProduct
+    }
+  })
+
   it('uses the document expert face on a workbench assistant turn', () => {
     const { container, getByText } = render(
       <WorkbenchProjectLockedContext value={true}>

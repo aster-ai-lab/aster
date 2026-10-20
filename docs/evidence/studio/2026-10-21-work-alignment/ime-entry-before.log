@@ -1,0 +1,37 @@
+...
+======================================================================
+FAIL: test_default_entrypoints_open_aster_studio_without_legacy_work_process_control (__main__.StudioLauncherTest) (recipe='studio')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/just_work.py", line 52, in test_default_entrypoints_open_aster_studio_without_legacy_work_process_control
+    self.assertEqual(opened.read_text().strip(), "aster 1")
+AssertionError: 'toyou 1' != 'aster 1'
+- toyou 1
++ aster 1
+
+
+======================================================================
+FAIL: test_default_entrypoints_open_aster_studio_without_legacy_work_process_control (__main__.StudioLauncherTest) (recipe='dev')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/just_work.py", line 51, in test_default_entrypoints_open_aster_studio_without_legacy_work_process_control
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : cd apps/work && just dev
+sh: line 0: cd: apps/work: No such file or directory
+error: recipe `dev` failed on line 60 with exit code 1
+
+
+======================================================================
+FAIL: test_default_entrypoints_open_aster_studio_without_legacy_work_process_control (__main__.StudioLauncherTest) (recipe='work')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/just_work.py", line 51, in test_default_entrypoints_open_aster_studio_without_legacy_work_process_control
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 37 != 0 : cargo build --locked -p a3s-code-acp -p a3s-office-cli
+error: recipe `build-work` failed on line 24 with exit code 37
+
+
+----------------------------------------------------------------------
+Ran 4 tests in 4.137s
+
+FAILED (failures=3)

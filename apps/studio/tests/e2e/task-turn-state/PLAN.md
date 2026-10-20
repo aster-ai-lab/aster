@@ -1,4 +1,6 @@
-# 任务对话进行中状态（Studio）
+<a id="任务对话进行中状态studio"></a>
+
+# 任务对话进行中状态（AsterDream）
 
 确定性 Playwright 泳道。不接真实模型，不做桌面 CUA。
 Vitest 已覆盖 `taskTurnPresentation` / `turnShowsWorkingStatus`；本泳道只锁壳层集成。

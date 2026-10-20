@@ -113,7 +113,9 @@ fn claim_next_fork(brand_slug: &str) -> (String, single_instance::InstanceLock) 
             std::env::set_var("A3S_STUDIO_FORK_ALLOC", "1");
             std::env::set_var(
                 "STUDIO_RUNTIME_FILE",
-                std::env::temp_dir().join(format!("a3s-studio-runtime-{brand_slug}-{id}.json")),
+                // Both values were validated before this single-threaded startup branch.
+                tenant::runtime_path_under(&std::env::temp_dir(), brand_slug, Some(&id))
+                    .expect("validated fork identity"),
             );
         }
         match single_instance::claim_quiet(&storage) {
@@ -380,14 +382,14 @@ pub fn run() {
         .setup(move |app| {
             #[cfg(target_os = "macos")]
             macos_app::register_bundle_with_window_server();
-            let preference_root = match crate::tenant::profile_dir(&session_slug) {
-                Some(dir) => dir,
-                None => app.path().app_data_dir()?.join(&session_slug),
-            };
-            app.manage(preferences::PreferenceHost::new(
+            let preference_root = crate::tenant::profile_dir(&session_slug).ok_or_else(|| {
+                io::Error::new(io::ErrorKind::NotFound, "studio profile unavailable")
+            })?;
+            app.manage(preferences::PreferenceHost::for_tenant(
                 preference_root.join("preferences"),
                 preference_member,
                 token.clone(),
+                &slug,
             ));
             // Knowledge and the task form ship with the app. Link each when that name is still free.
             let _ = crate::capabilities::prepare_builtin_skill_at_home("stc-answer");
@@ -662,7 +664,8 @@ fn create_main_window(
         &runtime,
         cfg!(target_os = "macos"),
     );
-    let signed_in = member_session::MemberSessionStore::open(session_slug).has_session();
+    let signed_in = member_session::MemberSessionStore::open(session_slug).has_session()
+        || tenant::RuntimePolicy::for_storage(slug, None).allows_local();
     let resume_script = main_renderer_resume_script(&runtime, slug, app_name);
     let packaged = packaged_shell();
     let slides = !signed_in
@@ -685,18 +688,19 @@ fn create_main_window(
     // A saved session must not paint the shell. The window stays hidden until
     // the committed page is the main renderer.
     let shell_origin = api_base_url.trim_end_matches('/').to_owned();
-    let builder = WebviewWindowBuilder::new(app, "main", webview_url)
-        .initialization_script(initialization_script)
-        .title(app_name)
-        .theme(Some(Theme::Light))
-        .inner_size(1440.0, 920.0)
-        .min_inner_size(960.0, 640.0)
-        .resizable(true)
-        .visible(!signed_in)
-        .background_color(tauri::webview::Color(red, green, blue, 255))
-        // The default handler accepts the drop and does not call through to the
-        // web view, so the homepage and message composers never receive the file.
-        .disable_drag_drop_handler();
+    let builder =
+        tenant::isolate_webview(WebviewWindowBuilder::new(app, "main", webview_url), [0; 16])?
+            .initialization_script(initialization_script)
+            .title(app_name)
+            .theme(Some(Theme::Light))
+            .inner_size(1440.0, 920.0)
+            .min_inner_size(960.0, 640.0)
+            .resizable(true)
+            .visible(!signed_in)
+            .background_color(tauri::webview::Color(red, green, blue, 255))
+            // The default handler accepts the drop and does not call through to the
+            // web view, so the homepage and message composers never receive the file.
+            .disable_drag_drop_handler();
     #[cfg(target_os = "macos")]
     let builder = builder
         .hidden_title(true)
@@ -993,7 +997,7 @@ struct RuntimeFile {
 
 impl RuntimeFile {
     fn create(authority: &StudioAuthority) -> io::Result<Self> {
-        let path = runtime_path();
+        let path = runtime_path()?;
         if let Some(parent) = path.parent() {
             if !parent.as_os_str().is_empty() {
                 fs::create_dir_all(parent)?;
@@ -1079,10 +1083,15 @@ fn studio_context<R: tauri::Runtime>() -> tauri::Context<R> {
     tauri::generate_context!()
 }
 
-fn runtime_path() -> PathBuf {
-    std::env::var("STUDIO_RUNTIME_FILE")
-        .map(PathBuf::from)
-        .unwrap_or_else(|_| std::env::temp_dir().join("a3s-studio-runtime.json"))
+fn runtime_path() -> io::Result<PathBuf> {
+    if let Some(path) = std::env::var_os("STUDIO_RUNTIME_FILE") {
+        return Ok(PathBuf::from(path));
+    }
+    tenant::runtime_path_under(
+        &std::env::temp_dir(),
+        &tenant::selected_slug()?,
+        tenant::instance_name()?.as_deref(),
+    )
 }
 
 #[cfg(test)]
@@ -2024,3 +2033,7 @@ mod traffic_lights {
         assert!((60.0 - cluster_end) - origins[0].0 < 0.01);
     }
 }
+#[cfg(all(feature = "tenant-aster", feature = "tenant-toyou"))]
+compile_error!("Studio requires exactly one tenant feature");
+#[cfg(not(any(feature = "tenant-aster", feature = "tenant-toyou")))]
+compile_error!("Studio requires one of tenant-aster or tenant-toyou");

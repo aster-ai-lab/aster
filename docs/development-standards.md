@@ -30,7 +30,7 @@ The spec-kit phase mapping lives in
 Paths: `apps/aster`, `apps/work`, `apps/studio`, `crates/code`,
 `crates/terminal`.
 
-New behavior has a small hermetic test. AsterDream and Studio use
+New behavior has a small hermetic test. AsterDream desktop tenants use
 Tauri commands and stay in the root Cargo workspace. Members keep
 `publish = false`.
 
@@ -55,12 +55,13 @@ their own workspaces and lockfiles, and they are not root members.
   its `a3s-code-acp` companion. Build and distribute both together.
 - `crates/code/core` is the embeddable Rust SDK and harness. Do not
   add Node, Python, or Go bindings, SDKs, or package publishing jobs.
-- `apps/work` is AsterDream. Build ACP and Office first with
-  `just build-work`. Keep its frontend under `apps/work`. Do not add
-  a Cargo workspace or lockfile for Work.
-- `apps/studio` is Studio. Build it with `just build-studio`. Keep
-  Studio and Work as separate applications that share the root
-  workspace.
+- `apps/studio` is the shared desktop host. Build it with
+  `just build-studio`. Its default `aster` tenant is AsterDream;
+  explicit `toyou` retains the original toyou product. Keep their
+  product identities and data isolated. See `specs/004-studio-default-aster`.
+- `apps/work` retains legacy AsterDream source and the Office vendor
+  dependency. `just build-work` remains a legacy build. Do not copy
+  old user state or add another Cargo workspace or lockfile.
 - `crates/` holds Rust libraries, including internalized upstream
   trees. `packages/` holds TypeScript and React libraries (`ui`,
   `office`, and the other workspace packages).
@@ -109,7 +110,7 @@ data crosses the public Rust API of the owning crate. Preserve those
 public APIs and the upstream package names unless a task explicitly
 requires a rename.
 
-On a product path, AsterDream and Studio stay in the root workspace.
+On a product path, AsterDream desktop tenants stay in the root workspace.
 On a control-plane path, each module is a bounded context with
 `domain/`, `application/`, `infrastructure/`, `presentation/`, and
 `published/`. Domain code does not import presentation or
@@ -153,7 +154,7 @@ repository-wide unwrap census in this tree. A new production
 - Crate and package identifiers that already start with `a3s-` stay,
   including `a3s-acl` and `a3s-code-acp`. Do not rename them in
   passing.
-- User-visible product names are Aster, AsterDream, and Studio. Do
+- User-visible product names are Aster and AsterDream (desktop tenant branding remains explicit). Do
   not describe this product as A3S OS or as a Grok release.
 - Files are snake_case. Rust modules are snake_case. Types are
   CamelCase. ACL attributes are snake_case.
@@ -178,7 +179,7 @@ repository-wide unwrap census in this tree. A new production
 
 ## 7. Commands and controllers
 
-On a product path, AsterDream and Studio expose behavior through
+On a product path, AsterDream desktop tenants expose behavior through
 Tauri commands.
 
 - A new command is registered on the host and allowed by a
@@ -308,7 +309,7 @@ React is not available. The contract is `DESIGN.md` §6 "Picker
 
 **Enforcement.** Constitution principle XVI.
 `apps/studio/src/renderer/__tests__/noNativeSelect.test.ts` fails on
-a native dropdown in Studio's renderer and holds the Radix `Select`
+a native dropdown in AsterDream's renderer and holds the Radix `Select`
 list shrink-only. Component tests open the trigger and choose a
 `role="option"` row.
 

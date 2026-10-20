@@ -1,12 +1,12 @@
 # 论文精读
 
-The `a3s/paperloom` AIX package extends Studio's installed `@` agents. Select
+The `a3s/paperloom` AIX package extends AsterDream's installed `@` agents. Select
 one PDF from the current workspace, then invoke `@论文精读` to read or ask
-about that source. With no selection, reuse Studio's workspace file picker or
+about that source. With no selection, reuse AsterDream's workspace file picker or
 provide the exact workspace path. No separate library, collection manager,
 upload workflow or applet window is declared.
 
-The workspace follows `DESIGN.md` and uses Studio's existing file and save
+The workspace follows `DESIGN.md` and uses AsterDream's existing file and save
 controls. Original PDF bytes come from the workspace snapshot. Derived output
 is saved back to the same workspace without overwriting its source.
 

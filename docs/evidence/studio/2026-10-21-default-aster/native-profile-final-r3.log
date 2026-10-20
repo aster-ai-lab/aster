@@ -1,0 +1,95 @@
+warning: unused import: `Ordering`
+ --> /Users/roylin/code/aster/apps/studio/src-tauri/src/desktop_settings.rs:8:36
+  |
+8 | use std::sync::atomic::{AtomicU32, Ordering};
+  |                                    ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `POLL_LIMIT` is never used
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:29:7
+   |
+29 | const POLL_LIMIT: usize = 100;
+   |       ^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: struct `SseEvent` is never constructed
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:838:19
+    |
+838 | pub(super) struct SseEvent {
+    |                   ^^^^^^^^
+
+warning: function `stream_agent_events` is never used
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:845:21
+    |
+845 | pub(super) async fn stream_agent_events(
+    |                     ^^^^^^^^^^^^^^^^^^^
+
+warning: function `recall_note` is never used
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/tobot_memory.rs:20:15
+   |
+20 | pub(crate) fn recall_note(origin: &str, slug: &str, query: &str) -> Option<String> {
+   |               ^^^^^^^^^^^
+
+warning: function `retain_exchange` is never used
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/tobot_memory.rs:39:15
+   |
+39 | pub(crate) fn retain_exchange(origin: &str, slug: &str, key: &str, user: &str, assistant: &str) {
+   |               ^^^^^^^^^^^^^^^
+
+warning: field `tool_call_id` is never read
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/local_acp_tests.rs:843:5
+    |
+841 | struct Approval {
+    |        -------- field in this struct
+842 |     id: String,
+843 |     tool_call_id: String,
+    |     ^^^^^^^^^^^^
+
+warning: function `boot` is never used
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/channel_gateway.rs:22:8
+   |
+22 | pub fn boot(token: &str, plane_url: &str) {
+   |        ^^^^
+
+warning: static `SLEEP_ASSERTION` is never used
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/desktop_settings.rs:72:8
+   |
+72 | static SLEEP_ASSERTION: AtomicU32 = AtomicU32::new(0);
+   |        ^^^^^^^^^^^^^^^
+
+warning: function `boot` is never used
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/desktop_settings.rs:181:8
+    |
+181 | pub fn boot(slug: &str, product: &str, logo: &Path) {
+    |        ^^^^
+
+warning: function `verified_picker` is never used
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/review_plugin.rs:462:8
+    |
+462 | pub fn verified_picker() -> Option<(PathBuf, String)> {
+    |        ^^^^^^^^^^^^^^^
+
+warning: 11 warnings emitted
+
+
+running 15 tests
+test tenant::identity_tests::default_aster_preserves_the_published_toyou_bundle_id ... ok
+test tenant::identity_tests::default_aster_identity_is_closed_but_declared_development_brands_remain_selectable ... ok
+test tenant::tests::a_side_instance_keeps_the_brand_and_uses_its_own_storage_id ... ok
+test tenant::identity_tests::default_aster_instance_ignores_old_work_flat_profiles ... ok
+test tenant::tests::parses_a_tenant_name_and_light_logo ... ok
+test tenant::identity_tests::default_aster_platform_fallbacks_and_long_instance_ids_stay_isolated ... ok
+test tenant::identity_tests::default_aster_runtime_and_browser_scopes_cannot_overlap ... ok
+test tenant::tests::a_new_side_profile_nests_and_an_existing_flat_directory_stays ... ok
+test tenant::tests::loads_the_selected_tenant_files ... ok
+test tenant::tests::towork_cua_is_an_isolated_towork_brand ... ok
+test tenant::identity_tests::default_aster_installed_identity_cannot_be_changed_by_launch_environment ... ok
+test tenant::delivery_tests::linux_bundle_reads_its_explicit_tenant_without_checkout_or_process_environment ... ok
+test tenant::identity_tests::default_aster_profile_never_opens_the_legacy_work_directory ... ok
+test tenant::identity_tests::default_aster_toyou_keeps_flat_and_nested_instance_compatibility ... ok
+test tenant::identity_tests::default_aster_platform_roots_skip_all_synthetic_legacy_work_state ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 867 filtered out; finished in 0.01s
+

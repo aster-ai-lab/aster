@@ -8,7 +8,7 @@ sources:
 
 # Fuzzy Search for Directory Listings
 
-Cherry Studio exposes directory listing and fuzzy search through
+AsterDream exposes directory listing and fuzzy search through
 `listDirectory` and `listDirectoryEntries` in. Both functions run in the main process;
 renderers receive flat paths or classified entries without building a filesystem index.
 

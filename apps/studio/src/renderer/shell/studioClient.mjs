@@ -66,10 +66,18 @@ function toWorkWordmark(document) {
 }
 
 export function paintStudioWelcome(document, bootstrap) {
+  if (typeof bootstrap.tenant === 'string') document.documentElement.dataset.tenant = bootstrap.tenant
   const product = document.getElementById('product')
   if (product) {
     product.replaceChildren()
-    if (bootstrap.product === 'ToWork') {
+    if (bootstrap.tenant === 'aster') {
+      const mark = document.createElement('img')
+      mark.src = '/mark.png'
+      mark.alt = ''
+      mark.className = 'aster-dream-mark'
+      product.append(mark)
+      product.setAttribute('aria-label', bootstrap.product)
+    } else if (bootstrap.product === 'ToWork') {
       product.append(toWorkWordmark(document))
       product.setAttribute('aria-label', 'ToWork')
     } else {

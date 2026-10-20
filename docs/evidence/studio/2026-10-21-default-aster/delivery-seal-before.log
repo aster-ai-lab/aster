@@ -1,0 +1,35 @@
+E..F..F
+======================================================================
+ERROR: test_aster_package_uses_its_own_identity_and_brand (__main__.StudioDeliveryTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/apps/studio/scripts/tests/studio_delivery_test.py", line 57, in test_aster_package_uses_its_own_identity_and_brand
+    marker = DELIVERY.seal(self.app, self.renderer, "aster", self.root / "tenant")
+  File "/Users/roylin/code/aster/apps/studio/scripts/studio_delivery.py", line 20, in seal
+    raise ValueError("not a Studio application")
+ValueError: not a Studio application
+
+======================================================================
+FAIL: test_known_bundle_cannot_be_sealed_under_unknown_product (__main__.StudioDeliveryTest)
+----------------------------------------------------------------------
+ValueError: invalid Studio resource input: /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/tmp1iyoisok/tenant/a3s
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/apps/studio/scripts/tests/studio_delivery_test.py", line 69, in test_known_bundle_cannot_be_sealed_under_unknown_product
+    DELIVERY.seal(self.app, self.renderer, "a3s", self.root / "tenant")
+AssertionError: "product tenant" does not match "invalid Studio resource input: /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/tmp1iyoisok/tenant/a3s"
+
+======================================================================
+FAIL: test_toyou_bundle_cannot_be_sealed_as_aster (__main__.StudioDeliveryTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/apps/studio/scripts/tests/studio_delivery_test.py", line 65, in test_toyou_bundle_cannot_be_sealed_as_aster
+    DELIVERY.seal(self.app, self.renderer, "aster", self.root / "tenant")
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.038s
+
+FAILED (failures=2, errors=1)

@@ -1,6 +1,6 @@
 # Reference material live evaluation
 
-This lane uses the real Studio `TurnService`, a real ACP process in an owned
+This lane uses the real AsterDream `TurnService`, a real ACP process in an owned
 Ubuntu MicroVM, and exactly `boyue/deepseek-v4-flash`. It never feeds task
 solutions or graders to the model. It does not qualify the signed-in product
 gateway or the Tauri GUI. External integrations, ToBox and ToBot product behavior are
@@ -50,7 +50,7 @@ visible until the acceptance environment supplies that quota. Preserve failed jo
 and rerun only after fixing the recorded execution/harness defect.
 
 Synthetic feature fixtures use `--source tests/e2e/reference-alignment/cases`
-(from Studio) or the corresponding repository-root path. Tables, content and
+(from AsterDream) or the corresponding repository-root path. Tables, content and
 web artifacts have separate structural/data checks; real UI journeys remain
 separate acceptance work in the alignment plan.
 
@@ -88,8 +88,8 @@ binding to answer a real ACP `ask_user` call. The choice case explicitly selects
 the second option, and the text case has no synthetic choice. Their private reply
 fixtures never enter the model workspace. They prove answer transport and a final
 Boyue echo; they do not prove reading or reviewing the selected document.
-Studio's question bridge requires both `allowFreeText` and `hasChoices` in the ACP
-question metadata, so deploy the paired Studio/ACP changes together.
+AsterDream's question bridge requires both `allowFreeText` and `hasChoices` in the ACP
+question metadata, so deploy the paired AsterDream/ACP changes together.
 
 `review-text-basic` and `review-text-clean` submit `inputs/source.txt` as explicit
 pasted text through `turnContext.reviewSource`, with the task kept separate.

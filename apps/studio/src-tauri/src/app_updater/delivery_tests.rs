@@ -55,6 +55,7 @@ fn absent_or_failed_installed_identity_is_retried() {
 
 fn ready() -> ReadyUpdate {
     ReadyUpdate {
+        identity: HostIdentity::ToYou,
         version: "2.1.4".into(),
         notes: String::new(),
         sha256: "ab".repeat(32),
@@ -62,6 +63,58 @@ fn ready() -> ReadyUpdate {
         size: 4,
         published_at: String::new(),
     }
+}
+
+#[cfg(target_os = "macos")]
+#[test]
+fn aster_signature_accepts_its_distinct_product_identity() {
+    let temp = tempfile::tempdir().unwrap();
+    let app = temp.path().join("AsterDream.app");
+    fs::create_dir_all(app.join("Contents/MacOS")).unwrap();
+    fs::copy("/usr/bin/true", app.join("Contents/MacOS/Studio")).unwrap();
+    fs::write(
+        app.join("Contents/Info.plist"),
+        r#"<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>CFBundleExecutable</key><string>Studio</string>
+<key>CFBundleIdentifier</key><string>dev.a3s.studio.aster</string>
+<key>CFBundleName</key><string>AsterDream</string>
+<key>CFBundleDisplayName</key><string>AsterDream</string>
+<key>CFBundleShortVersionString</key><string>2.1.4</string>
+<key>CFBundlePackageType</key><string>APPL</string>
+</dict></plist>"#,
+    )
+    .unwrap();
+    let result = Command::new("/usr/bin/codesign")
+        .args(["--force", "--deep", "--sign", "-"])
+        .arg(&app)
+        .output()
+        .unwrap();
+    assert!(result.status.success(), "{:?}", result.stderr);
+    assert!(verify_signature(&app, "2.1.4", HostIdentity::Aster).is_ok());
+    assert!(matches!(
+        verify_signature(&app, "2.1.4", HostIdentity::ToYou),
+        Err(UpdateFail::ProductMismatch)
+    ));
+}
+
+#[test]
+fn distinct_product_bundles_never_share_their_update_staging_directory() {
+    let root = Path::new("/fixture/Applications");
+    assert_ne!(
+        stage_dir(&root.join("AsterDream.app")).unwrap(),
+        stage_dir(&root.join("ToWork.app")).unwrap()
+    );
+}
+
+#[test]
+fn an_unpublished_product_never_queries_the_other_tenants_feed() {
+    assert_eq!(update_channel(HostIdentity::ToYou), Ok("desktop"));
+    assert!(matches!(
+        fetch_current("not a network address", "mac", HostIdentity::Aster),
+        Err(UpdateFail::NotPublished)
+    ));
 }
 
 #[test]

@@ -51,6 +51,21 @@ describe('useUserTheme', () => {
     expect(result.current.userTheme.colorPrimary).toBe('#D80C18')
   })
 
+  it('leaves the aster default primary to its light and dark tenant stylesheet', () => {
+    document.documentElement.dataset.tenant = 'aster'
+    document.documentElement.style.setProperty('--a3s-tenant-brand', '#005ABB')
+    try {
+      const { result } = renderHook(() => useUserTheme())
+      act(() => result.current.initUserTheme({ colorPrimary: '#00b96b' }))
+      expect(document.documentElement.style.getPropertyValue('--cs-theme-primary')).toBe('')
+      expect(document.documentElement.style.getPropertyValue('--cs-theme-primary-foreground')).toBe('')
+      act(() => result.current.initUserTheme({ colorPrimary: '#AB2244' }))
+      expect(document.documentElement.style.getPropertyValue('--cs-theme-primary')).toBe(Color('#AB2244').toString())
+    } finally {
+      delete document.documentElement.dataset.tenant
+    }
+  })
+
   it('keeps a saved primary that is not the stock green', () => {
     document.documentElement.style.setProperty('--a3s-tenant-brand', '#D80C18')
     MockUsePreferenceUtils.setPreferenceValue('ui.theme_user.color_primary', '#3B82F6')

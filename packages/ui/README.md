@@ -1,10 +1,10 @@
 # @a3s/ui
 
-Cherry Studio UI component library for React applications.
+AsterDream UI component library for React applications.
 
 ## ✨ Features
 
-- 🎨 **Design System**: Cherry Studio primitive palettes, product semantics, and Shadcn-compatible theme mappings
+- 🎨 **Design System**: AsterDream primitive palettes, product semantics, and Shadcn-compatible theme mappings
 - 🌓 **Dark Mode**: Built-in light and dark theme support
 - 🚀 **Tailwind v4**: Built on top of the latest Tailwind CSS v4
 - 📦 **Flexible Imports**: Two style integration modes for different adoption paths
@@ -35,7 +35,7 @@ npm install motion react react-dom tailwindcss
 
 #### Mode 1: Full Theme Contract ✨
 
-Use the full Cherry Studio design system so Tailwind theme tokens resolve to Cherry Studio values.
+Use the full AsterDream design system so Tailwind theme tokens resolve to AsterDream values.
 
 ```css
 /* app.css */
@@ -45,7 +45,7 @@ Use the full Cherry Studio design system so Tailwind theme tokens resolve to Che
 **Characteristics:**
 
 - ✅ Use standard Tailwind utility names directly (`bg-primary`, `bg-red-500`, `p-4`, `rounded-lg`)
-- ✅ Colors resolve to Cherry Studio design values
+- ✅ Colors resolve to AsterDream design values
 - ✅ Uses Tailwind's standard numeric spacing scale
 - ✅ Includes Shadcn-derived radii through `rounded-4xl` plus `rounded-full`; smaller Cherry aliases remain available for compatibility
 - ⚠️ Overrides the default Tailwind theme contract for the imported app bundle
@@ -87,10 +87,10 @@ Import only primitives and existing foundation providers, then decide which valu
 **Characteristics:**
 
 - ✅ Does not override the full Tailwind theme
-- ✅ Gives access to Cherry Studio foundation values (`var(--cs-brand-500)`, `var(--cs-red-500)`)
+- ✅ Gives access to AsterDream foundation values (`var(--cs-brand-500)`, `var(--cs-red-500)`)
 - ✅ Lets you choose what to adopt and what to keep
-- ✅ Works when you already own the semantic contract and only need selected Cherry Studio foundations
-- ⚠️ Does not expose the complete Shadcn or Cherry Studio product contract
+- ✅ Works when you already own the semantic contract and only need selected AsterDream foundations
+- ⚠️ Does not expose the complete Shadcn or AsterDream product contract
 
 **Component consumption after defining the adapter:**
 
@@ -115,14 +115,14 @@ consumer entry point.
 
 The normative v2 architecture, Shadcn contract, and migration boundary are defined in
 [Design Token System](./docs/design-token-system.md). Official Shadcn variables remain unprefixed; approved
-Cherry Studio product variables extend the same unprefixed public namespace. Use the
+AsterDream product variables extend the same unprefixed public namespace. Use the
 [Variable Catalog](./docs/variable-catalog.md) to select a stable role and distinguish runtime API from internal
 providers and tooling-only historical names.
 
 To avoid mixing value sources, semantic variables, theme mappings, and runtime overrides, use these rules:
 
 1. `--background`, `--primary`, `--muted-foreground`, and the other variables in `shadcn.css` are the official Shadcn contract
-2. Approved Cherry Studio product semantics are also unprefixed, such as `--success` and `--background-subtle`
+2. Approved AsterDream product semantics are also unprefixed, such as `--success` and `--background-subtle`
 3. Historical migration names are tooling-only and must not be recreated as runtime product variables
 4. Shared `--cs-*` variables are internal value providers; a selective-foundation consumer may reference primitive
    providers only while defining its own adapter, not from ordinary component styles. `--cs-theme-*` is the reserved
@@ -143,13 +143,13 @@ Default consumption rules:
 
 ### Shadcn CLI Ownership
 
-Use the Shadcn CLI to scaffold or update component source and dependency metadata only. Cherry Studio's authored
+Use the Shadcn CLI to scaffold or update component source and dependency metadata only. AsterDream's authored
 theme layers and generator own the shared CSS contract, even though `components.json` points the CLI at the generated
 `src/styles/theme.css` entry.
 
 - Do not retain direct CLI edits to `src/styles/theme.css`; `pnpm theme:build` is its only writer.
 - Review any CSS proposed by `shadcn add` and place it according to ownership: official semantics in `shadcn.css`,
-  Cherry Studio product semantics in `product.css` and `theme-contract.ts`, and component-local styles with the
+  AsterDream product semantics in `product.css` and `theme-contract.ts`, and component-local styles with the
   component.
 - Add Tailwind mappings through the theme generator rather than by hand-editing its output.
 - Run `pnpm theme:build` followed by `pnpm theme:check` after accepting a component that changes theme requirements.
@@ -277,7 +277,7 @@ Only the runtime surface should be treated as consumable package API.
 ### Structural Markers
 
 `packages/ui` keeps Shadcn-compatible `data-slot` attributes for component-internal styling and its standalone build.
-When Cherry Studio consumes the package source, the app's UI-contract generator treats those markers as structural
+When AsterDream consumes the package source, the app's UI-contract generator treats those markers as structural
 semantics and emits the corresponding public `data-ui` `part:*` tokens without removing the original attributes.
 Existing renderer code, application tests, and custom themes that use `data-slot` continue to work; new selectors can
 use the generated semantic layer. The application-level token grammar, stability tiers, maintained anchors, and

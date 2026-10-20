@@ -1,0 +1,407 @@
+warning: unexpected `cfg` condition value: `tenant-aster`
+    --> /Users/roylin/code/aster/apps/studio/src-tauri/src/lib.rs:2036:11
+     |
+2036 | #[cfg(all(feature = "tenant-aster", feature = "tenant-toyou"))]
+     |           ^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = note: expected values for `feature` are: `custom-protocol`
+     = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-aster"))`
+     = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+     = note: `#[warn(unexpected_cfgs)]` on by default
+
+warning: unexpected `cfg` condition value: `tenant-toyou`
+    --> /Users/roylin/code/aster/apps/studio/src-tauri/src/lib.rs:2036:37
+     |
+2036 | #[cfg(all(feature = "tenant-aster", feature = "tenant-toyou"))]
+     |                                     ^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = note: expected values for `feature` are: `custom-protocol`
+     = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-toyou"))`
+     = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-aster`
+    --> /Users/roylin/code/aster/apps/studio/src-tauri/src/lib.rs:2038:15
+     |
+2038 | #[cfg(not(any(feature = "tenant-aster", feature = "tenant-toyou")))]
+     |               ^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = note: expected values for `feature` are: `custom-protocol`
+     = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-aster"))`
+     = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-toyou`
+    --> /Users/roylin/code/aster/apps/studio/src-tauri/src/lib.rs:2038:41
+     |
+2038 | #[cfg(not(any(feature = "tenant-aster", feature = "tenant-toyou")))]
+     |                                         ^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = note: expected values for `feature` are: `custom-protocol`
+     = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-toyou"))`
+     = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-aster`
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/native_local_acp_alignment_tests.rs:172:7
+    |
+172 | #[cfg(feature = "tenant-aster")]
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-aster"))`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-aster`
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/native_local_acp_alignment_tests.rs:250:15
+    |
+250 |         #[cfg(feature = "tenant-aster")]
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-aster"))`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-aster`
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/native_local_acp_alignment_tests.rs:256:19
+    |
+256 |         #[cfg(not(feature = "tenant-aster"))]
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-aster"))`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-aster`
+    --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/turns.rs:3349:21
+     |
+3349 |             if cfg!(feature = "tenant-aster") && provider != "a3s" {
+     |                     ^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = note: expected values for `feature` are: `custom-protocol`
+     = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-aster"))`
+     = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unused import: `Ordering`
+ --> /Users/roylin/code/aster/apps/studio/src-tauri/src/desktop_settings.rs:8:36
+  |
+8 | use std::sync::atomic::{AtomicU32, Ordering};
+  |                                    ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unexpected `cfg` condition value: `tenant-aster`
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/preferences.rs:455:11
+    |
+455 |     #[cfg(feature = "tenant-aster")]
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-aster"))`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-aster`
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/preferences.rs:116:11
+    |
+116 |     #[cfg(feature = "tenant-aster")]
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-aster"))`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-aster`
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/preferences.rs:469:19
+    |
+469 |             #[cfg(feature = "tenant-aster")]
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-aster"))`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-aster`
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/preferences.rs:480:15
+    |
+480 |         #[cfg(feature = "tenant-aster")]
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-aster"))`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-aster`
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/preferences.rs:485:15
+    |
+485 |         #[cfg(feature = "tenant-aster")]
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-aster"))`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-aster`
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/preferences.rs:501:19
+    |
+501 |             #[cfg(feature = "tenant-aster")]
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-aster"))`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-toyou`
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/preferences_local_tenant_tests.rs:18:13
+   |
+18 |     if cfg!(feature = "tenant-toyou") {
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: expected values for `feature` are: `custom-protocol`
+   = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-toyou"))`
+   = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-aster`
+ --> /Users/roylin/code/aster/apps/studio/src-tauri/src/providers_local_tenant_tests.rs:6:7
+  |
+6 | #[cfg(feature = "tenant-aster")]
+  |       ^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: expected values for `feature` are: `custom-protocol`
+  = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-aster"))`
+  = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-aster`
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/providers_local_tenant_tests.rs:24:7
+   |
+24 | #[cfg(feature = "tenant-aster")]
+   |       ^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: expected values for `feature` are: `custom-protocol`
+   = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-aster"))`
+   = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-aster`
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/providers.rs:400:11
+    |
+400 |     #[cfg(feature = "tenant-aster")]
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-aster"))`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-aster`
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/providers.rs:227:15
+    |
+227 |         #[cfg(feature = "tenant-aster")]
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-aster"))`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-aster`
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/providers.rs:203:23
+    |
+203 |             #[cfg(not(feature = "tenant-aster"))]
+    |                       ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-aster"))`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-aster`
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/providers.rs:205:19
+    |
+205 |             #[cfg(feature = "tenant-aster")]
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-aster"))`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-aster`
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/providers.rs:393:15
+    |
+393 |         #[cfg(feature = "tenant-aster")]
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-aster"))`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-aster`
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/tenant.rs:243:11
+    |
+243 |     #[cfg(feature = "tenant-aster")]
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-aster"))`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-aster`
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/tenant.rs:19:15
+   |
+19 |         #[cfg(feature = "tenant-aster")]
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: expected values for `feature` are: `custom-protocol`
+   = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-aster"))`
+   = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-aster`
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/tenant.rs:23:23
+   |
+23 |         #[cfg(all(not(feature = "tenant-aster"), feature = "tenant-toyou"))]
+   |                       ^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: expected values for `feature` are: `custom-protocol`
+   = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-aster"))`
+   = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-toyou`
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/tenant.rs:23:50
+   |
+23 |         #[cfg(all(not(feature = "tenant-aster"), feature = "tenant-toyou"))]
+   |                                                  ^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: expected values for `feature` are: `custom-protocol`
+   = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-toyou"))`
+   = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-aster`
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/tenant.rs:27:23
+   |
+27 |         #[cfg(not(any(feature = "tenant-aster", feature = "tenant-toyou")))]
+   |                       ^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: expected values for `feature` are: `custom-protocol`
+   = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-aster"))`
+   = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-toyou`
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/tenant.rs:27:49
+   |
+27 |         #[cfg(not(any(feature = "tenant-aster", feature = "tenant-toyou")))]
+   |                                                 ^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: expected values for `feature` are: `custom-protocol`
+   = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-toyou"))`
+   = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-aster`
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/tenant.rs:250:15
+    |
+250 |         #[cfg(feature = "tenant-aster")]
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-aster"))`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-aster`
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/tenant.rs:262:15
+    |
+262 |         #[cfg(feature = "tenant-aster")]
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-aster"))`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `tenant-aster`
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/tenant.rs:266:19
+    |
+266 |         #[cfg(not(feature = "tenant-aster"))]
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = help: to expect this configuration use `--check-cfg=cfg(feature, values("tenant-aster"))`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+
+warning: constant `POLL_LIMIT` is never used
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:29:7
+   |
+29 | const POLL_LIMIT: usize = 100;
+   |       ^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: struct `SseEvent` is never constructed
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:838:19
+    |
+838 | pub(super) struct SseEvent {
+    |                   ^^^^^^^^
+
+warning: function `stream_agent_events` is never used
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:845:21
+    |
+845 | pub(super) async fn stream_agent_events(
+    |                     ^^^^^^^^^^^^^^^^^^^
+
+warning: function `recall_note` is never used
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/tobot_memory.rs:20:15
+   |
+20 | pub(crate) fn recall_note(origin: &str, slug: &str, query: &str) -> Option<String> {
+   |               ^^^^^^^^^^^
+
+warning: function `retain_exchange` is never used
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/tobot_memory.rs:39:15
+   |
+39 | pub(crate) fn retain_exchange(origin: &str, slug: &str, key: &str, user: &str, assistant: &str) {
+   |               ^^^^^^^^^^^^^^^
+
+warning: field `tool_call_id` is never read
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/local_acp_tests.rs:843:5
+    |
+841 | struct Approval {
+    |        -------- field in this struct
+842 |     id: String,
+843 |     tool_call_id: String,
+    |     ^^^^^^^^^^^^
+
+warning: function `boot` is never used
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/channel_gateway.rs:22:8
+   |
+22 | pub fn boot(token: &str, plane_url: &str) {
+   |        ^^^^
+
+warning: static `SLEEP_ASSERTION` is never used
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/desktop_settings.rs:72:8
+   |
+72 | static SLEEP_ASSERTION: AtomicU32 = AtomicU32::new(0);
+   |        ^^^^^^^^^^^^^^^
+
+warning: function `boot` is never used
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/desktop_settings.rs:181:8
+    |
+181 | pub fn boot(slug: &str, product: &str, logo: &Path) {
+    |        ^^^^
+
+warning: function `verified_picker` is never used
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/review_plugin.rs:462:8
+    |
+462 | pub fn verified_picker() -> Option<(PathBuf, String)> {
+    |        ^^^^^^^^^^^^^^^
+
+warning: function `delivery_logo_name` is never used
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/tenant.rs:381:15
+    |
+381 | pub(crate) fn delivery_logo_name(text: &str, identity: HostIdentity) -> io::Result<String> {
+    |               ^^^^^^^^^^^^^^^^^^
+
+warning: 43 warnings emitted
+
+
+running 1 test
+
+thread 'app_updater::delivery_manifest::tests::missing_native_brand_images_refuse_even_when_the_remaining_files_are_sealed' (53030692) panicked at /Users/roylin/code/aster/apps/studio/src-tauri/src/app_updater/delivery_manifest_tests.rs:47:9:
+logo-light.png
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app_updater::delivery_manifest::tests::missing_native_brand_images_refuse_even_when_the_remaining_files_are_sealed ... FAILED
+
+failures:
+
+failures:
+    app_updater::delivery_manifest::tests::missing_native_brand_images_refuse_even_when_the_remaining_files_are_sealed
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 888 filtered out; finished in 0.00s
+

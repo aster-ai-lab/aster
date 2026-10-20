@@ -1,0 +1,216 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:4432) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/studio
+
+ ❯ |renderer| src/renderer/pages/agents/taskConversation/__tests__/TaskPlanSnapshot.test.tsx (2 tests | 1 failed) 237ms
+   ❯ TaskPlanSnapshot status semantics (2)
+     × collapses a completed plan to its count while keeping details available 53ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/taskConversation/__tests__/TaskPlanSnapshot.test.tsx > TaskPlanSnapshot status semantics > collapses a completed plan to its count while keeping details available
+TestingLibraryElementError: Unable to find an accessible element with the role "button" and name "Show plan steps"
+
+Here are the accessible roles:
+
+  region:
+
+  Name "任务计划":
+  [36m<section[39m
+    [33maria-label[39m=[32m"任务计划"[39m
+    [33mclass[39m=[32m"my-2 rounded-lg border border-border px-3 py-1"[39m
+    [33mdata-task-plan-snapshot[39m=[32m""[39m
+    [33mdata-ui[39m=[32m"agents.task-plan-snapshot"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  button:
+
+  Name "显示计划步骤":
+  [36m<button[39m
+    [33maria-controls[39m=[32m"_r_0_"[39m
+    [33maria-expanded[39m=[32m"false"[39m
+    [33maria-label[39m=[32m"显示计划步骤"[39m
+    [33mclass[39m=[32m"inline-flex rounded-md h-7 w-full justify-start gap-2 px-0 text-start hover:bg-transparent"[39m
+    [33mdata-slot[39m=[32m"button"[39m
+    [33mdata-variant[39m=[32m"ghost"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<section[39m
+      [33maria-label[39m=[32m"任务计划"[39m
+      [33mclass[39m=[32m"my-2 rounded-lg border border-border px-3 py-1"[39m
+      [33mdata-task-plan-snapshot[39m=[32m""[39m
+      [33mdata-ui[39m=[32m"agents.task-plan-snapshot"[39m
+    [36m>[39m
+      [36m<button[39m
+        [33maria-controls[39m=[32m"_r_0_"[39m
+        [33maria-expanded[39m=[32m"false"[39m
+        [33maria-label[39m=[32m"显示计划步骤"[39m
+        [33mclass[39m=[32m"inline-flex rounded-md h-7 w-full justify-start gap-2 px-0 text-start hover:bg-transparent"[39m
+        [33mdata-slot[39m=[32m"button"[39m
+        [33mdata-variant[39m=[32m"ghost"[39m
+      [36m>[39m
+        [36m<svg[39m
+          [33maria-hidden[39m=[32m"true"[39m
+          [33mclass[39m=[32m"lucide lucide-list-checks"[39m
+          [33mfill[39m=[32m"none"[39m
+          [33mheight[39m=[32m"14"[39m
+          [33mstroke[39m=[32m"currentColor"[39m
+          [33mstroke-linecap[39m=[32m"round"[39m
+          [33mstroke-linejoin[39m=[32m"round"[39m
+          [33mstroke-width[39m=[32m"2"[39m
+          [33mviewBox[39m=[32m"0 0 24 24"[39m
+          [33mwidth[39m=[32m"14"[39m
+          [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+        [36m>[39m
+          [36m<path[39m
+            [33md[39m=[32m"m3 17 2 2 4-4"[39m
+          [36m/>[39m
+          [36m<path[39m
+            [33md[39m=[32m"m3 7 2 2 4-4"[39m
+          [36m/>[39m
+          [36m<path[39m
+            [33md[39m=[32m"M13 6h8"[39m
+          [36m/>[39m
+          [36m<path[39m
+            [33md[39m=[32m"M13 12h8"[39m
+          [36m/>[39m
+          [36m<path[39m
+            [33md[39m=[32m"M13 18h8"[39m
+          [36m/>[39m
+        [36m</svg>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"min-w-0 flex-1 text-[13px] font-medium"[39m
+        [36m>[39m
+          [0m任务计划[0m
+        [36m</span>[39m
+        [36m<span[39m
+          [33maria-live[39m=[32m"polite"[39m
+          [33mclass[39m=[32m"shrink-0 text-xs font-normal text-muted-foreground tabular-nums"[39m
+        [36m>[39m
+          [0m1 / 1 已完成[0m
+        [36m</span>[39m
+        [36m<svg[39m
+          [33maria-hidden[39m=[32m"true"[39m
+          [33mclass[39m=[32m"lucide lucide-chevron-down shrink-0"[39m
+          [33mfill[39m=[32m"none"[39m
+          [33mheight[39m=[32m"14"[39m
+          [33mstroke[39m=[32m"currentColor"[39m
+          [33mstroke-linecap[39m=[32m"round"[39m
+          [33mstroke-linejoin[39m=[32m"round"[39m
+          [33mstroke-width[39m=[32m"2"[39m
+          [33mviewBox[39m=[32m"0 0 24 24"[39m
+          [33mwidth[39m=[32m"14"[39m
+          [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+        [36m>[39m
+          [36m<path[39m
+            [33md[39m=[32m"m6 9 6 6 6-6"[39m
+          [36m/>[39m
+        [36m</svg>[39m
+      [36m</button>[39m
+      [36m<ol[39m
+        [33mclass[39m=[32m"space-y-1 pb-1"[39m
+        [33mhidden[39m=[32m""[39m
+        [33mid[39m=[32m"_r_0_"[39m
+      [36m>[39m
+        [36m<li[39m
+          [33mclass[39m=[32m"flex items-start gap-2 text-[13px]"[39m
+          [33mdata-task-plan-status[39m=[32m"completed"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"lucide lucide-check mt-0.5 shrink-0 text-success-subtle-foreground"[39m
+            [33mfill[39m=[32m"none"[39m
+            [33mheight[39m=[32m"14"[39m
+            [33mstroke[39m=[32m"currentColor"[39m
+            [33mstroke-linecap[39m=[32m"round"[39m
+            [33mstroke-linejoin[39m=[32m"round"[39m
+            [33mstroke-width[39m=[32m"2"[39m
+            [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [33mwidth[39m=[32m"14"[39m
+            [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+          [36m>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M20 6 9 17l-5-5"[39m
+            [36m/>[39m
+          [36m</svg>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"min-w-0 flex-1 break-words"[39m
+          [36m>[39m
+            [0mVerified result[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"shrink-0 text-xs text-success-subtle-foreground"[39m
+          [36m>[39m
+            [0m已完成[0m
+          [36m</span>[39m
+        [36m</li>[39m
+      [36m</ol>[39m
+    [36m</section>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/renderer/pages/agents/taskConversation/__tests__/TaskPlanSnapshot.test.tsx:12:27
+     10|       <TaskPlanSnapshot steps={[{ id: 'verify', title: 'Verified resul…
+     11|     )
+     12|     const button = screen.getByRole('button', { name: 'Show plan steps…
+       |                           ^
+     13|     expect(button).toHaveAttribute('aria-expanded', 'false')
+     14|     expect(container.querySelector('ol')).not.toBeVisible()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 3 passed | 1 skipped (5)
+      Tests  1 failed | 111 passed | 1 skipped (113)
+   Start at  23:25:16
+   Duration  8.32s (import 41%, transform 40%, tests 8%, environment 8%, setup 2%)
+
+  Transform  |renderer| transforming modules took 8.09s · 40% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+

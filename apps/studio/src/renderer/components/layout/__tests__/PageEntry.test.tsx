@@ -3,7 +3,7 @@ import { resolve } from 'node:path'
 
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { useState } from 'react'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { appShellPaintsEntry, clearPageEntrySession, PageEntry, workbenchEntryReady } from '../PageEntry'
 
@@ -25,10 +25,17 @@ function Probe({ initial }: { initial: boolean }) {
 }
 
 describe('PageEntry', () => {
+  beforeEach(() => {
+    document.documentElement.dataset.tenant = 'toyou'
+    document.documentElement.dataset.a3sProduct = 'ToWork'
+  })
+
   afterEach(() => {
     vi.useRealTimers()
     vi.restoreAllMocks()
     clearPageEntrySession()
+    delete document.documentElement.dataset.tenant
+    delete document.documentElement.dataset.a3sProduct
   })
 
   it('stays on screen while the view is not ready, then fades without replaying', () => {
@@ -66,6 +73,22 @@ describe('PageEntry', () => {
   })
 
   // Catch a wordmark that replays for the whole wait instead of handing over to the ring.
+  it('uses the aster tenant star for a live page entry', () => {
+    document.documentElement.dataset.tenant = 'aster'
+    document.documentElement.dataset.a3sProduct = 'AsterDream'
+    try {
+      render(<PageEntry id="aster-brand" ready={false} />)
+      const mark = document.querySelector('[data-ui="page.loader.wordmark"]')
+      expect(mark?.tagName).toBe('IMG')
+      expect(mark).toHaveAttribute('src', '/tenant-mark.png')
+      expect(document.querySelectorAll('.towork-stroke')).toHaveLength(0)
+      expect(document.querySelector('[data-ui="page.loader.ring"]')).toBeInTheDocument()
+    } finally {
+      delete document.documentElement.dataset.tenant
+      delete document.documentElement.dataset.a3sProduct
+    }
+  })
+
   it('writes the wordmark once, then hands the wait to the ring', () => {
     const block = (selector: string) => {
       const start = styles.indexOf(`${selector} {`)

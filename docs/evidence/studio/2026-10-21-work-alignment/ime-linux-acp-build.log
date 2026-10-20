@@ -131,3 +131,4 @@ warning: method `as_str` is never used
 warning: `a3s-code-acp` (lib) generated 1 warning
    Compiling a3s-office-cli v0.45.0 (/aster/target/worktrees/studio-linux-alignment-20261021/crates/office/crates/cli)
 warning: `a3s-code-core` (lib) generated 1 warning
+    Finished `release` profile [optimized] target(s) in 15m 12s

@@ -1,0 +1,145 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:3546) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/studio
+
+ ❯ |renderer| src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx (71 tests | 2 failed | 69 skipped) 71ms
+   ❯ task conversation turn (71)
+     × updates one stable plan card through a turn without repeating intermediate snapshots 43ms
+     × clears the projected plan when a later accepted update explicitly empties it 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx > task conversation turn > updates one stable plan card through a turn without repeating intermediate snapshots
+AssertionError: expected <section …(4)>…(2)</section>
+…(1) to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx:158:74
+    156|
+    157|     view.rerender(<TaskConversationTurn parts={parts} streaming={false…
+    158|     expect(view.container.querySelectorAll('[data-task-plan-snapshot]'…
+       |                                                                          ^
+    159|     expect(view.container.querySelector('[data-task-plan-snapshot]')).…
+    160|     expect(card).toHaveTextContent('Verify the fixture')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx > task conversation turn > clears the projected plan when a later accepted update explicitly empties it
+AssertionError: expected <section …(4)>…(2)</section> to be null
+
+- Expected:
+null
+
++ Received:
+<section
+  aria-label="任务计划"
+  class="my-2 rounded-lg border border-border px-3 py-2"
+  data-task-plan-snapshot=""
+  data-ui="agents.task-plan-snapshot"
+>
+  <p
+    class="mb-1 text-[13px] font-medium"
+  >
+    任务计划
+  </p>
+  <ol
+    class="space-y-1"
+  >
+    <li
+      class="flex items-start gap-2 text-[13px]"
+      data-task-plan-status="pending"
+    >
+      <svg
+        aria-hidden="true"
+        class="lucide lucide-circle mt-0.5 shrink-0 text-muted-foreground"
+        fill="none"
+        height="14"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        width="14"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle
+          cx="12"
+          cy="12"
+          r="10"
+        />
+      </svg>
+      <span
+        class="min-w-0 flex-1 break-words"
+      >
+        Old plan
+      </span>
+      <span
+        class="shrink-0 text-xs text-muted-foreground"
+      >
+        待处理
+      </span>
+    </li>
+  </ol>
+</section>
+
+ ❯ src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx:172:66
+    170|     } as CherryMessagePart
+    171|     const { container } = renderTurn([plan('p1', 'Old plan'), empty])
+    172|     expect(container.querySelector('[data-task-plan-snapshot]')).toBeN…
+       |                                                                  ^
+    173|   })
+    174|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 69 skipped (71)
+   Start at  23:23:52
+   Duration  6.89s (transform 47%, import 47%, environment 4%, tests 1%, setup 1%)
+
+  Transform  |renderer| transforming modules took 3.22s · 47% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+

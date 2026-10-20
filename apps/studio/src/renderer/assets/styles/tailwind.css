@@ -8,6 +8,7 @@
 @import '../../../../packages/ui/src/styles/popup-motion.css';
 @import '../../../../packages/ui/src/styles/row-motion.css';
 @import './theme-surfaces.css';
+@import './aster-dream-theme.css';
 
 @source '../../../../packages/ui/src/**/*.{js,ts,jsx,tsx}';
 @source '../../../../../../packages/intelligent-ui/src/**/*.tsx';

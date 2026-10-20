@@ -1,0 +1,16 @@
+
+/Users/roylin/code/aster/apps/studio/src/renderer/pages/agents/WorkbenchHome.tsx
+   56:37  warning  Unexpected path "@renderer/pages/capabilities/capabilitiesData" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7  import-x/no-restricted-paths
+   57:30  warning  Unexpected path "@renderer/pages/capabilities/CapabilitiesPage" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7  import-x/no-restricted-paths
+   58:27  warning  Unexpected path "@renderer/pages/settings/TasksSettings" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7         import-x/no-restricted-paths
+  619:5   warning  React Hook useMemo has an unnecessary dependency: 'permissionRevision'. Either exclude it or remove the dependency array                                                             react-hooks/exhaustive-deps
+
+/Users/roylin/code/aster/apps/studio/src/renderer/pages/agents/WorkbenchHomeComposerExtras.tsx
+  33:33  warning  Unexpected path "@renderer/pages/settings/GeneralSettings" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7   import-x/no-restricted-paths
+  34:32  warning  Unexpected path "@renderer/pages/settings/ProviderSettings" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7  import-x/no-restricted-paths
+
+/Users/roylin/code/aster/apps/studio/src/renderer/pages/settings/AboutSettings/AboutSettings.tsx
+  16:69  warning  Unexpected path "@renderer/windows/main/hooks/useAppUpdateHandler" imported in restricted zone. A page must not import a window (reverse edge). architecture/renderer.md §2/§7  import-x/no-restricted-paths
+
+✖ 7 problems (0 errors, 7 warnings)
+

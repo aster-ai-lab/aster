@@ -1,10 +1,12 @@
-# Feature Specification: Studio / Work behavior alignment
+<a id="feature-specification-studio--work-behavior-alignment"></a>
+
+# Feature Specification: AsterDream / Work behavior alignment
 
 **Feature Branch**: `003-studio-work-alignment` (no branch requested or created)
 **Created**: 2026-10-21
 **Status**: Specified
-**Input**: 完成 Studio 侧上述规划的对齐优化。
-**Gate context**: Product regime, `apps/studio`. Implements the approved six-area synchronization plan: shared ACP, input/terminal reliability, planning/goals, approvals, model preferences, and independent packaging/updating. Work is prior art; Studio remains a separate application.
+**Input**: 完成 AsterDream 侧上述规划的对齐优化。
+**Gate context**: Product regime, `apps/studio`. Implements the approved six-area synchronization plan: shared ACP, input/terminal reliability, planning/goals, approvals, model preferences, and packaging/updating. Work is prior art. The later explicit user request in [spec 004](../004-studio-default-aster/spec.md) replaces the separate-application assumption with a shared AsterDream host and isolated `aster`/`toyou` products; these behavior obligations remain active.
 
 ## User Scenarios & Testing
 
@@ -12,7 +14,7 @@
 
 A person composes Chinese text, selects candidates, cancels composition, and sends a request whose reply finishes immediately. The result appears in the correct session without duplicate sends, lost cancellation semantics, or rich-editor render loops.
 
-**Independent test**: Studio renderer IME, actual Tiptap lifecycle and SWR handoff cases reject the old behavior and pass after the repair.
+**Independent test**: AsterDream renderer IME, actual Tiptap lifecycle and SWR handoff cases reject the old behavior and pass after the repair.
 
 **Acceptance**: Candidate Enter/Escape cannot submit/approve/close; a later deliberate Enter sends once; empty composition cancellation is retained; old committed callbacks cannot populate another session; accepted sends remain accepted when a background refresh fails.
 
@@ -20,7 +22,7 @@ A person composes Chinese text, selects candidates, cancels composition, and sen
 
 A person enables planning, reviews and revises a structured plan, then starts execution under the existing authorization policy. Progress updates live and completed controls leave the composer while history remains accessible.
 
-**Independent test**: Studio plan-mode submission, review, task projection, task progress, composer and goal cases. Native interactive fixture proves plan → review → approval → execution → completed cleanup.
+**Independent test**: AsterDream plan-mode submission, review, task projection, task progress, composer and goal cases. Native interactive fixture proves plan → review → approval → execution → completed cleanup.
 
 **Acceptance**: Planning is independent of permission mode; running/queued turns retain their submitted choice; a nonempty draft prevents accidental execution; unknown or failed task states never become completed; a new home task cannot inherit an old plan/goal. User-facing system states use concise localized text and expandable details.
 
@@ -32,39 +34,41 @@ A person reconnects during approval or stops a task, then changes model defaults
 
 **Acceptance**: Wrong member/session/execution approval replies refuse without delivering a decision; cancellation withdraws pending approvals; local runtime reconciliation never blindly resends a tool. Default/quick/translation choices update the native preference owner, preserve unrelated settings, and report write failure with rollback rather than success.
 
-### US4 — Coherent Studio build and upgrade (P1)
+<a id="us4--coherent-studio-build-and-upgrade-p1"></a>
 
-A person installs or upgrades Studio with its corresponding frontend, ACP and Office. An incomplete or foreign update is refused while a recoverable failure permits retry.
+### US4 — Coherent AsterDream build and upgrade (P1)
 
-**Independent test**: Root workspace build, companion-resource identity, isolated Studio old-app upgrade, malformed/foreign/incomplete archive and failure/retry cases; Studio Linux/IME package tests and bounded native GUI evidence.
+A person installs or upgrades AsterDream with its corresponding frontend, ACP and Office. An incomplete or foreign update is refused while a recoverable failure permits retry.
 
-**Acceptance**: Studio's server update protocol, product/tenant identity and data paths remain authoritative. Installation cannot leave a host/ACP/Office mixed generation. The Linux launcher uses the tested display/input-method chain with the Studio resource layout. Missing required assets refuse packaging.
+**Independent test**: Root workspace build, companion-resource identity, isolated AsterDream old-app upgrade, malformed/foreign/incomplete archive and failure/retry cases; AsterDream Linux/IME package tests and bounded native GUI evidence.
+
+**Acceptance**: AsterDream's server update protocol, product/tenant identity and data paths remain authoritative. Installation cannot leave a host/ACP/Office mixed generation. The Linux launcher uses the tested display/input-method chain with the AsterDream resource layout. Missing required assets refuse packaging.
 
 ## Edge Cases
 
 - Stale callbacks, queued turns, rapid completion, reselecting the same session, background WebView focus and concurrent sessions preserve exact ownership.
 - IME keyCode 229/native flags/ProseMirror composing, empty composition data, repeat keys and attachment registration must be tested through actual existing entry points.
 - Unknown plan status, invalid approval binding, missing update size/digest/identity or unavailable preference storage refuse with precise existing or typed reasons.
-- Local ACP, cloud and other declared runtimes remain separate lanes. Shared Core improvements alone do not prove cloud behavior or a new Studio rules input.
+- Local ACP, cloud and other declared runtimes remain separate lanes. Shared Core improvements alone do not prove cloud behavior or a new AsterDream rules input.
 
 ## Requirements
 
-- **FR-001**: Studio MUST build/load the workspace ACP and Office from the same delivery; missing, stale or mismatched required companions MUST refuse activation or packaging.
+- **FR-001**: AsterDream MUST build/load the workspace ACP and Office from the same delivery; missing, stale or mismatched required companions MUST refuse activation or packaging.
 - **FR-002**: Every affected input entry MUST honor composition ownership and cancellation; candidate selection MUST NOT invoke send/approve/close.
 - **FR-003**: Rich input and accepted-send handoff MUST converge to the correct durable reply; cross-session callbacks MUST be refused.
 - **FR-004**: Plan-first submission, review/edit/execute and structured progress MUST be wired end to end; unknown states and stale reviews MUST refuse execution/completion projection.
 - **FR-005**: Goal details MUST be compact/localized and bound to the current task; terminal controls MUST clear from the composer without deleting history or guessing success from text.
 - **FR-006**: Approval attach/reconnect/response/stop MUST use exact execution identity; foreign/stale replies MUST not reach another execution.
-- **FR-007**: Model default persistence MUST synchronize the three native device preferences, retain Studio organization eligibility, and refuse partial-write success with rollback.
-- **FR-008**: Studio updates MUST retain its own server channel, verify the complete product/binary generation, serialize install state, preserve retry on recoverable failure and refuse foreign/incomplete payloads.
-- **FR-009**: Studio Linux/IME packaging MUST reuse qualified module/protocol mechanisms with the Studio product layout and fail on missing required resources.
-- **FR-010**: Studio MUST preserve dockContent, background timer/focus, Paperloom/ComposerMode, tenant and data ownership. Synchronization MUST NOT replace these with Work's differing application behavior.
+- **FR-007**: Model default persistence MUST synchronize the three native device preferences, retain AsterDream organization eligibility, and refuse partial-write success with rollback.
+- **FR-008**: AsterDream updates MUST retain its own server channel, verify the complete product/binary generation, serialize install state, preserve retry on recoverable failure and refuse foreign/incomplete payloads.
+- **FR-009**: AsterDream Linux/IME packaging MUST reuse qualified module/protocol mechanisms with the AsterDream product layout and fail on missing required resources.
+- **FR-010**: AsterDream MUST preserve dockContent, background timer/focus, Paperloom/ComposerMode, tenant and data ownership. Synchronization MUST NOT replace these with Work's differing application behavior.
 - **FR-011**: New product configuration MUST remain ACL; state/identity/meaning MUST come from explicit typed sources rather than name/intent guessing.
 - **FR-012**: Every changed behavior MUST carry hermetic regression coverage, current build/interactive evidence and independent review; weak or missing evidence MUST NOT be labeled complete.
 
 ### Key Entities
 
-Studio owns submitted plan posture, rendered plan review, task/goal projection, approval execution binding, model device preferences, and update staging. ACP/Core owns execution/goal/memory/tool semantics. No store is moved between products.
+AsterDream owns submitted plan posture, rendered plan review, task/goal projection, approval execution binding, model device preferences, and update staging. ACP/Core owns execution/goal/memory/tool semantics. No store is moved between products.
 
 ## House Checklist
 
@@ -78,8 +82,8 @@ Studio owns submitted plan posture, rendered plan review, task/goal projection, 
 ## Success Criteria
 
 - **SC-001**: All new behavior cases and owning focused regressions pass; failures from a broader run are isolated, triaged and do not hide new regressions.
-- **SC-002**: `just build-studio`, the Studio renderer production build and the applicable local release/package gates succeed with exact companion identity.
-- **SC-003**: Native interactive Studio evidence proves Chinese input, plan review/execute/cleanup, approval recovery/stop, rapid reply, model persistence and isolated old-package upgrade.
+- **SC-002**: `just build-studio`, the AsterDream renderer production build and the applicable local release/package gates succeed with exact companion identity.
+- **SC-003**: Native interactive AsterDream evidence proves Chinese input, plan review/execute/cleanup, approval recovery/stop, rapid reply, model persistence and isolated old-package upgrade.
 - **SC-004**: Root fmt, local-dependency/workspace and relevant UI ratchets are executed; final outcome records commands/counts, remaining independent baseline failures and a requirement-by-requirement audit.
 
 ## Assumptions

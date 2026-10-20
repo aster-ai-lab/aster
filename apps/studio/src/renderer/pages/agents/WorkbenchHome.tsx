@@ -45,7 +45,7 @@ import {
 } from '@renderer/components/composer/variants/agent/agentDraftCache'
 import { queueWorkbenchDroppedFiles } from '@renderer/components/composer/workbenchDroppedFiles'
 import { useRestingDialog } from '@renderer/components/restingDialog'
-import { ToWorkWordmark } from '@renderer/components/ToWorkWordmark'
+import { StudioProductMark } from '@renderer/components/StudioProductMark'
 import { useUpdateAgent } from '@renderer/hooks/agent/useAgent'
 import { useCommandHandler } from '@renderer/hooks/command'
 import {
@@ -62,6 +62,7 @@ import { studioProductName } from '@renderer/tenantBrand'
 import type { PermissionMode } from '@renderer/types/agent'
 import { cn } from '@renderer/utils/style'
 
+import { writeCodeSession } from './codeMode'
 import {
   type HomeComposerSendOutcome,
   CodeWorkspacePlacement,
@@ -71,13 +72,13 @@ import {
   useHomeComposerModeState
 } from './homeComposerMode'
 import { HomeComposerTaskBar } from './HomeComposerTaskBar'
-import { writeCodeSession } from './codeMode'
 import { OFFICIAL_WRITING_EVENT } from './officialWriting'
-import { codeWorkspaceErrorText, placeCodeSend } from './prepareCodeWorkspace'
 import { PAPERLOOM_OPEN, type PaperloomOpenRequest } from './paperloom/paperloomApi'
 import { PaperloomPanel } from './paperloom/PaperloomPanel'
+import { codeWorkspaceErrorText, placeCodeSend } from './prepareCodeWorkspace'
 import { armPresentationDeck } from './presentationDeck'
 import { useHomeComposerOptions } from './useHomeComposerOptions'
+import { WorkbenchCommandPalette } from './WorkbenchCommandPalette'
 import {
   clearWorkbenchComposer,
   fillWorkbenchComposer,
@@ -86,7 +87,6 @@ import {
   releaseSessionDraftWrites
 } from './workbenchComposerBridge'
 import { markPendingHomeSubmit, type WorkbenchHomeTaskBridge } from './workbenchComposerHost'
-import { WorkbenchCommandPalette } from './WorkbenchCommandPalette'
 import { WorkbenchFeatureStrip } from './WorkbenchFeatureStrip'
 import { WorkbenchComposerOptions } from './WorkbenchHomeComposerExtras'
 import { WorkbenchPermissionPicker } from './WorkbenchPermissionPicker'
@@ -1945,7 +1945,7 @@ export function WorkbenchHome({
                   data-ui="workbench.wordmark"
                   aria-label={studioProductName()}
                   className="workbench-wordmark mb-5 flex justify-center text-center text-[40px] leading-none text-[#1a1a1a]">
-                  {studioProductName() === 'ToWork' ? <ToWorkWordmark /> : studioProductName()}
+                  <StudioProductMark />
                 </h1>
                 <HomeComposerModeTrack active />
                 <HomeComposerTaskBar
@@ -2019,7 +2019,10 @@ export function WorkbenchHome({
                               void (async () => {
                                 if (permissionAgentId) {
                                   await updateAgent(
-                                    { id: permissionAgentId, configuration: { permission_mode: mode as PermissionMode } },
+                                    {
+                                      id: permissionAgentId,
+                                      configuration: { permission_mode: mode as PermissionMode }
+                                    },
                                     { showSuccessToast: false }
                                   )
                                 }

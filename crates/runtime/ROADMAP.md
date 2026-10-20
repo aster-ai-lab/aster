@@ -36,7 +36,7 @@ state reads validate the complete record. See [ADR 0009](docs/adr/0009-preserve-
 and [retained evidence](../../docs/evidence/studio/20261017-runtime-contract-compatibility/OUTCOME.md).
 
 This does not certify a rolling upgrade over noncanonical null-digest state,
-OS credential injection, Studio automatic composition or host cleanup. The Node
+OS credential injection, AsterDream automatic composition or host cleanup. The Node
 RAM fixture cleanup now verifies exact unmount/detach and retains ownership on
 failure; its full regression passes. Production Secret lifecycle and full
 clean-host EXIT remain open.

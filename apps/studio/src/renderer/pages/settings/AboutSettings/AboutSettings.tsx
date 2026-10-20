@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 
 import { DoctorPopup } from '@renderer/components/doctor'
 import { SettingGroup, SettingsContentColumn } from '@renderer/components/SettingsPrimitives'
-import { ToWorkWordmark } from '@renderer/components/ToWorkWordmark'
+import { StudioProductMark } from '@renderer/components/StudioProductMark'
 import { useAppUpdateState } from '@renderer/hooks/useAppUpdateState'
 import { useTheme } from '@renderer/hooks/useTheme'
 import { ipcApi } from '@renderer/ipc'
@@ -286,11 +286,13 @@ const AboutSettings: FC = () => {
   return (
     <SettingsContentColumn theme={theme} className="pt-16">
       <h1 aria-label={productName} className="m-0 mb-6 flex items-center">
-        {productName === 'ToWork' ? (
-          <ToWorkWordmark className="h-14" />
-        ) : (
-          <span className="text-[28px] leading-none font-semibold tracking-tight text-[#1a1a1a]">{productName}</span>
-        )}
+        <StudioProductMark
+          className={
+            productName === 'ToWork' || productName === 'AsterDream'
+              ? 'h-14'
+              : 'text-[28px] leading-none font-semibold tracking-tight text-[#1a1a1a]'
+          }
+        />
       </h1>
 
       <SettingGroup theme={theme} data-ui="settings.about" className="mt-0 overflow-hidden p-0">

@@ -1,0 +1,6 @@
+{
+  "exact_before_HEAD_comparable_files": 90,
+  "protected_parts_changed_candidates": [],
+  "non_HEAD_or_imported_before_files": 82,
+  "not_claimed": "Does not treat unrelated prior dirty docs or intentional rewritten runbooks as mechanical-rename changes."
+}

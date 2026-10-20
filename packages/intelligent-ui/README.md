@@ -1,6 +1,6 @@
 # Intelligent UI
 
-Intelligent UI renders model-generated interactions inside Studio messages.
+Intelligent UI renders model-generated interactions inside AsterDream messages.
 Its current source language is OpenUI Lang: `name = Component(args)`.
 A completed `json` fence is a form only when its body is a display document with `state.form`. That document is projected into OpenUI and painted with this catalog. Other JSON, MDX, and HTML stay source.
 
@@ -33,10 +33,12 @@ npm run build
 ```
 
 Build emits ESM renderer/parser modules in `dist/`. It does not create an AIX
-archive. Studio imports the library directly; rendering an OpenUI message
+archive. AsterDream imports the library directly; rendering an OpenUI message
 does not require installing a plugin. The optional adapter has a separate build.
 
-## Studio integration
+<a id="studio-integration"></a>
+
+## AsterDream integration
 
 - `openui` fences appear inside ordinary and task messages. A closed statement
   can paint before the fence ends. Plain `mdx` fences remain code examples.
@@ -56,7 +58,7 @@ does not require installing a plugin. The optional adapter has a separate build.
   pending form part displays source only.
 
 The catalog and source rules are documented in
-[the model authoring Skill](skills/intelligent-ui/SKILL.md). Studio renders `openui`
+[the model authoring Skill](skills/intelligent-ui/SKILL.md). AsterDream renders `openui`
 source with the exported catalog component in the session tree.
 
 ## Execution boundary
@@ -78,7 +80,7 @@ next-turn submission status are not persisted across message remounts.
 ## Verification
 
 `npm test` checks OpenUI calculations, bounded expansion, literal text and denied
-source. `npm run typecheck` checks the renderer types. Studio's message/form tests
+source. `npm run typecheck` checks the renderer types. AsterDream's message/form tests
 check user interactions and same-turn submission. Native package admission and
 archive/browser checks belong to the [AIX adapter](../intelligent-ui-aix/README.md).
 

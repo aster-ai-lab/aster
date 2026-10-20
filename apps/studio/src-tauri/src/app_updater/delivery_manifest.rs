@@ -47,6 +47,7 @@ fn read_delivery(bundle: &Path) -> Result<Delivery, UpdateFail> {
 }
 
 pub(super) fn validate(bundle: &Path, version: &str, tenant: &str) -> Result<(), UpdateFail> {
+    let identity = HostIdentity::parse(tenant).map_err(|_| UpdateFail::ProductMismatch)?;
     let delivery = read_delivery(bundle)?;
     if delivery.schema != 1
         || delivery.product != "a3s-studio"
@@ -55,6 +56,26 @@ pub(super) fn validate(bundle: &Path, version: &str, tenant: &str) -> Result<(),
     {
         return Err(UpdateFail::ProductMismatch);
     }
+    let brand = format!("Contents/Resources/tenant/{tenant}");
+    let info = format!("{brand}/INFO.md");
+    regular_file(bundle, Path::new(&info), true)?;
+    let mut text = String::new();
+    File::open(bundle.join(&info))
+        .map_err(|_| UpdateFail::InvalidPackage)?
+        .take(MAX_JSON as u64 + 1)
+        .read_to_string(&mut text)
+        .map_err(|_| UpdateFail::InvalidPackage)?;
+    if text.len() > MAX_JSON {
+        return Err(UpdateFail::InvalidPackage);
+    }
+    let logo = crate::tenant::delivery_logo_name(&text, identity)
+        .map_err(|_| UpdateFail::ProductMismatch)?;
+    let brand_files = [
+        info,
+        format!("{brand}/{logo}"),
+        format!("{brand}/mark-light.png"),
+        format!("{brand}/icon.png"),
+    ];
     if delivery.files.len() > MAX_ENTRIES
         || REQUIRED.iter().any(|path| {
             !delivery
@@ -62,9 +83,9 @@ pub(super) fn validate(bundle: &Path, version: &str, tenant: &str) -> Result<(),
                 .get(*path)
                 .is_some_and(|entry| entry.size > 0)
         })
-        || !delivery
-            .files
-            .contains_key(&format!("Contents/Resources/tenant/{tenant}/INFO.md"))
+        || brand_files
+            .iter()
+            .any(|path| !delivery.files.get(path).is_some_and(|entry| entry.size > 0))
     {
         return Err(UpdateFail::InvalidPackage);
     }
@@ -142,7 +163,8 @@ pub(super) fn installed_tenant(exe: &Path) -> Result<Option<String>, UpdateFail>
     let tenant = crate::tenant::slug_from_env(Some(&delivery.tenant))
         .map_err(|_| UpdateFail::ProductMismatch)?;
     validate(bundle, env!("CARGO_PKG_VERSION"), &tenant)?;
-    super::verify_signature(bundle, env!("CARGO_PKG_VERSION"))?;
+    let identity = HostIdentity::parse(&tenant).map_err(|_| UpdateFail::ProductMismatch)?;
+    super::verify_signature(bundle, env!("CARGO_PKG_VERSION"), identity)?;
     Ok(Some(tenant))
 }
 

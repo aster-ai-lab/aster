@@ -15,6 +15,8 @@ vi.mock('react-i18next', async (importOriginal) => ({
     t: (key: string, options?: Record<string, unknown>) => {
       const template =
         {
+          'message.tools.labels.edit': 'Edit file',
+          'message.tools.labels.bash': 'Run task',
           'agent.toolPermission.addNote': 'Add a note',
           'agent.toolPermission.defaultDenyMessage': 'User denied permission for this tool.',
           'agent.toolPermission.confirmAction': 'Allow this action?',
@@ -102,6 +104,19 @@ function makeRequest(overrides: Partial<PermissionRequestComposerRequest> = {}):
 }
 
 describe('PermissionRequestComposer', () => {
+  it('localizes the exact built-in tool in the approval title without guessing unknown names', () => {
+    const request = makeRequest({ title: 'Edit' })
+    request.toolResponse.tool.name = 'Edit'
+    request.toolResponse.arguments = { file_path: '/tmp/note.txt', old_string: 'before', new_string: 'after' }
+    const view = render(<PermissionRequestComposer request={request} onRespond={vi.fn()} />)
+    expect(screen.getByRole('heading', { name: 'Allow Edit file?' })).toBeInTheDocument()
+    view.unmount()
+    const unknown = makeRequest({ title: 'EditCustom' })
+    unknown.toolResponse.tool.name = 'EditCustom'
+    render(<PermissionRequestComposer request={unknown} onRespond={vi.fn()} />)
+    expect(screen.getByRole('heading', { name: 'Allow EditCustom?' })).toBeInTheDocument()
+  })
+
   it('marks the root panel as a composer viewport inset target', () => {
     const { container } = render(<PermissionRequestComposer request={makeRequest()} onRespond={vi.fn()} />)
 
@@ -310,7 +325,7 @@ describe('PermissionRequestComposer', () => {
       />
     )
 
-    const heading = screen.getByRole('heading', { name: 'Allow Bash?' })
+    const heading = screen.getByRole('heading', { name: 'Allow Run task?' })
     expect(heading.querySelector('.lucide-square-terminal')).toBeInTheDocument()
     expect(screen.queryByText('Allow tool call?')).not.toBeInTheDocument()
   })

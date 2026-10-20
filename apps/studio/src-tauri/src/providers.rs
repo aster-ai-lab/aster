@@ -15,6 +15,10 @@ use serde_json::{Value, json};
 #[path = "providers_default_alignment_tests.rs"]
 mod default_alignment_tests;
 
+#[cfg(test)]
+#[path = "providers_local_tenant_tests.rs"]
+pub(crate) mod local_tenant_tests;
+
 const CATALOG: &str = include_str!("../../packages/provider-registry/data/providers.json");
 
 #[derive(Clone)]
@@ -131,11 +135,17 @@ pub struct ProviderStore {
     catalog: Vec<CatalogProvider>,
     saved: HashMap<String, SavedProvider>,
     defaults: ModelDefaults,
+    policy: crate::tenant::RuntimePolicy,
 }
 
 impl ProviderStore {
     pub fn open(slug: &str) -> Self {
-        Self::open_at(store_path(slug))
+        let mut store = Self::open_at(store_path(slug));
+        store.policy = crate::tenant::RuntimePolicy::for_storage(
+            slug,
+            crate::tenant::instance_name().ok().flatten().as_deref(),
+        );
+        store
     }
 
     fn open_at(path: Option<PathBuf>) -> Self {
@@ -149,6 +159,7 @@ impl ProviderStore {
             catalog: parse_catalog(),
             saved: disk.providers,
             defaults: disk.defaults,
+            policy: crate::tenant::RuntimePolicy::ManagedOrganization,
         }
     }
 
@@ -189,11 +200,38 @@ impl ProviderStore {
         let patch: UpdateBody =
             serde_json::from_slice(body).map_err(|_| Fail::Bad("bad_request"))?;
         if patch.api_key.is_some() || patch.base_url.is_some() {
+            #[cfg(not(feature = "tenant-aster"))]
             return Err(Fail::Bad("managed_gateway"));
+            #[cfg(feature = "tenant-aster")]
+            {
+                if !self.policy.allows_local() || id == "a3s" || is_managed(id) {
+                    return Err(Fail::Bad("managed_gateway"));
+                }
+                if patch
+                    .api_key
+                    .as_deref()
+                    .is_some_and(|key| !key.is_empty() && !valid_api_key(key))
+                    || patch
+                        .base_url
+                        .as_deref()
+                        .is_some_and(|base| !base.trim().is_empty() && !valid_base_url(base))
+                {
+                    return Err(Fail::Bad("bad_request"));
+                }
+            }
         }
         let saved = self.saved.entry(item.id.clone()).or_default();
         if let Some(enabled) = patch.enabled {
             saved.enabled = enabled;
+        }
+        #[cfg(feature = "tenant-aster")]
+        {
+            if let Some(key) = patch.api_key {
+                saved.api_key = key;
+            }
+            if let Some(base) = patch.base_url {
+                saved.base_url = base.trim().trim_end_matches('/').to_owned();
+            }
         }
         self.persist()?;
         Ok(detail_json(&item, self.saved.get(&item.id)).to_string())
@@ -340,6 +378,42 @@ impl ProviderStore {
                     .models
                     .iter()
                     .any(|item| item.id == model.model_id && item.enabled && item.chat)
+        })
+    }
+
+    /// Organization credentials and local keys have separate admission paths.
+    pub(crate) fn execution_credentials(
+        &self,
+        provider_id: &str,
+        member: Option<&str>,
+    ) -> Option<ProviderCredentials> {
+        if provider_id == "a3s" {
+            return signed_in_gateway_credentials(provider_id, member);
+        }
+        #[cfg(feature = "tenant-aster")]
+        if self.policy.allows_local() {
+            return self.local_credentials(provider_id);
+        }
+        None
+    }
+
+    #[cfg(feature = "tenant-aster")]
+    fn local_credentials(&self, provider_id: &str) -> Option<ProviderCredentials> {
+        if !is_provider_id(provider_id) || provider_id == "a3s" || is_managed(provider_id) {
+            return None;
+        }
+        let item = self.catalog_item(provider_id).ok()?;
+        let saved = self.saved.get(provider_id).filter(|saved| saved.enabled)?;
+        let base_url = effective_base(item, Some(saved));
+        if !valid_base_url(&base_url)
+            || (saved.api_key.is_empty() && !item.auth_optional)
+            || (!saved.api_key.is_empty() && !valid_api_key(&saved.api_key))
+        {
+            return None;
+        }
+        Some(ProviderCredentials {
+            base_url,
+            api_key: saved.api_key.clone(),
         })
     }
 

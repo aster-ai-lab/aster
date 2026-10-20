@@ -3,7 +3,7 @@
 This optional distribution adapter packages the Intelligent UI authoring Skill
 and a self-contained HTML message document as `a3s/intelligent-ui` version 0.1.0.
 The renderer/parser library lives in [intelligent-ui](../intelligent-ui/README.md)
-and does not depend on this adapter. Studio's built-in OpenUI renderer works
+and does not depend on this adapter. AsterDream's built-in OpenUI renderer works
 without this package being installed.
 
 The adapter owns `a3s-use-extension.acl`, the standalone connection, CSS and

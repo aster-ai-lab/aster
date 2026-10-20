@@ -1,0 +1,13 @@
+{
+  "counts": {
+    "requests": 64,
+    "streams": 5,
+    "auxiliary": 2
+  },
+  "queued": 0,
+  "result_absent": true,
+  "files": {
+    "note.txt": "a7c24941283de2ff0f3f0e2183ad24e16c21d103e623868139259317ae941a01",
+    "sentinel.txt": "cb9f89b56bb853b6321d8ab7d8990462fcfba4b71fe9510714336ea890ec60e7"
+  }
+}

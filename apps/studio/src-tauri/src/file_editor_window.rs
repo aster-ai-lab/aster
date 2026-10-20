@@ -251,29 +251,33 @@ pub fn open_file_editor_window(
         crate::boot_initialization_script(true, false, &slug, &product, &runtime, false);
     script.push_str("document.documentElement.dataset.a3sFileEditorPopout='true';");
 
-    let builder = WebviewWindowBuilder::new(&app, &label, WebviewUrl::External(url))
-        .initialization_script(script)
-        .data_store_identifier(data_store_id(&file_path))
-        .title(title)
-        .inner_size(FILE_EDITOR_WINDOW_WIDTH, FILE_EDITOR_WINDOW_HEIGHT)
-        .min_inner_size(720.0, 520.0)
-        .resizable(true)
-        .maximizable(true)
-        .minimizable(true)
-        .closable(true)
-        .visible(false)
-        .focused(false)
-        .center()
-        .background_color(tauri::webview::Color(255, 255, 255, 255))
-        .on_page_load(|window, payload| {
-            if payload.event() != tauri::webview::PageLoadEvent::Finished {
-                return;
-            }
-            if !is_file_editor_label(window.label()) {
-                return;
-            }
-            crate::applet_window::reveal(&window);
-        });
+    let builder = crate::tenant::isolate_webview(
+        WebviewWindowBuilder::new(&app, &label, WebviewUrl::External(url))
+            .initialization_script(script)
+            .data_store_identifier(data_store_id(&file_path)),
+        data_store_id(&file_path),
+    )
+    .map_err(|error| error.to_string())?
+    .title(title)
+    .inner_size(FILE_EDITOR_WINDOW_WIDTH, FILE_EDITOR_WINDOW_HEIGHT)
+    .min_inner_size(720.0, 520.0)
+    .resizable(true)
+    .maximizable(true)
+    .minimizable(true)
+    .closable(true)
+    .visible(false)
+    .focused(false)
+    .center()
+    .background_color(tauri::webview::Color(255, 255, 255, 255))
+    .on_page_load(|window, payload| {
+        if payload.event() != tauri::webview::PageLoadEvent::Finished {
+            return;
+        }
+        if !is_file_editor_label(window.label()) {
+            return;
+        }
+        crate::applet_window::reveal(&window);
+    });
     #[cfg(target_os = "macos")]
     let builder = builder
         .hidden_title(true)

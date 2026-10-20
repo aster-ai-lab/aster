@@ -4,7 +4,7 @@ description: The Test Plan process for beta and rc testing, covering user partic
 
 # Test Plan
 
-To provide users with a more stable application experience and faster iteration speed, Cherry Studio has launched the "Test Plan".
+To provide users with a more stable application experience and faster iteration speed, AsterDream has launched the "Test Plan".
 
 ## User Guide
 

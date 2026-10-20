@@ -15,6 +15,15 @@ import { listenerCwd, portOwnedBy } from './renderer-owner.mjs'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 process.chdir(root)
+const tenant = process.env.A3S_TENANT_SLUG ?? 'aster'
+if (!/^[a-z][a-z0-9-]{0,31}$/.test(tenant)) fail(`just studio: invalid tenant slug: ${tenant}`)
+process.env.A3S_TENANT_SLUG = tenant
+const feature = execFileSync('python3', ['scripts/studio_product.py', tenant, 'feature'], {
+  cwd: root,
+  encoding: 'utf8'
+}).trim()
+const instance = process.env.A3S_STUDIO_INSTANCE || ''
+if (instance && !/^[a-z][a-z0-9-]{0,31}$/.test(instance)) fail(`just studio: invalid instance: ${instance}`)
 
 const port = Number(process.env.STUDIO_RENDERER_PORT || 4318)
 const rendererUrl = `http://127.0.0.1:${port}/windows/main/index.html`
@@ -22,11 +31,9 @@ const rsbuild = path.join('node_modules', '@rsbuild', 'core', 'bin', 'rsbuild.js
 
 function runtimePath() {
   if (process.env.STUDIO_RUNTIME_FILE) return process.env.STUDIO_RUNTIME_FILE
-  const slug = process.env.A3S_TENANT_SLUG || 'studio'
-  if (process.env.A3S_STUDIO_INSTANCE === 'fork') {
-    return path.join(os.tmpdir(), `a3s-studio-runtime-${slug}-fork-${process.pid}.json`)
-  }
-  return path.join(os.tmpdir(), 'a3s-studio-runtime.json')
+  const directory = path.join(os.tmpdir(), 'a3s-studio', tenant)
+  if (instance === 'fork') return path.join(directory, `runtime-fork-${process.pid}.json`)
+  return path.join(directory, ...(instance ? ['instances', instance] : []), 'runtime.json')
 }
 
 const runtime = runtimePath()
@@ -183,7 +190,6 @@ function reportDevErrors() {
   }
 }
 
-const instance = process.env.A3S_STUDIO_INSTANCE || ''
 const dev = process.env.STUDIO_RENDERER_DEV === '1'
 let renderer = null
 
@@ -214,9 +220,7 @@ if (instance === 'fork') {
     console.error(`just studio: reusing the client dev server on 127.0.0.1:${port}`)
   } else if (await probe(rendererUrl, 1_000)) {
     const cwd = listenerCwd(port)
-    fail(
-      `just studio: 127.0.0.1:${port} belongs to another app${cwd ? ` (${cwd})` : ''}. ToWork uses this port.`
-    )
+    fail(`just studio: 127.0.0.1:${port} belongs to another app${cwd ? ` (${cwd})` : ''}. Studio uses this port.`)
   } else {
     await ensurePortFree()
     console.error(`just studio: client dev server on 127.0.0.1:${port} (hot reload)`)
@@ -253,16 +257,31 @@ const debugBinary = path.join(targetDir, 'debug', debugName)
 if (instance === 'fork') {
   if (!existsSync(debugBinary)) fail('just fork: no compiled Studio app. Run just studio first.')
 } else {
+  if (tenant === 'aster' || tenant === 'toyou') {
+    const identity = JSON.parse(
+      execFileSync('python3', ['scripts/studio_product.py', tenant, 'tauri-config'], { cwd: root, encoding: 'utf8' })
+    )
+    const config = JSON.parse(process.env.TAURI_CONFIG || '{}')
+    process.env.TAURI_CONFIG = JSON.stringify({
+      ...config,
+      ...identity,
+      bundle: { ...config.bundle, ...identity.bundle }
+    })
+  }
   execFileSync('cargo', ['build', '--locked', '-p', 'a3s-code-acp', '-p', 'a3s-office-cli'], {
     cwd: root,
     stdio: 'inherit',
     windowsHide: true
   })
-  execFileSync('cargo', ['build', '--locked', '--manifest-path', 'src-tauri/Cargo.toml'], {
-    cwd: root,
-    stdio: 'inherit',
-    windowsHide: true
-  })
+  execFileSync(
+    'cargo',
+    ['build', '--locked', '--manifest-path', 'src-tauri/Cargo.toml', '--no-default-features', '--features', feature],
+    {
+      cwd: root,
+      stdio: 'inherit',
+      windowsHide: true
+    }
+  )
 }
 
 if (renderer) {

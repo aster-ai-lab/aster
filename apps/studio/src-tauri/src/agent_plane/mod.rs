@@ -141,7 +141,8 @@ impl PlaneConfig {
             credentials: Arc::new(move |provider| {
                 let token =
                     crate::member_session::MemberSessionStore::open(&credential_slug).token();
-                crate::providers::signed_in_gateway_credentials(provider, token.as_deref())
+                crate::providers::ProviderStore::open(&credential_slug)
+                    .execution_credentials(provider, token.as_deref())
             }),
             binary: None,
             workspace_documents: None,

@@ -32,4 +32,4 @@
 
 运行前保留真实工具名称及 schema 摘要，与本表逐项比较。缺失项标记条件不满足或 BLOCKED，不能算正向通过；新增项必须单独建功能行并补至少 5 例，再更新计数与源码快照。每个 MCP/插件工具须验证自己的参数、返回值、副作用、权限和取消语义，不能仅由五条通用连接用例替代。
 
-`program` 未在该会话能力构建路径注册；`parallel_task` 不单独注册，fan-out 由 `task` 承担并映射 EX04。`open_local_asset`、`search_wiki` 的 Studio 宿主桥不能仅凭 ACP 中存在实现就算独立 TUI 可触达；实际正式启动链如广告这两个工具，同样先各补五例。
+`program` 未在该会话能力构建路径注册；`parallel_task` 不单独注册，fan-out 由 `task` 承担并映射 EX04。`open_local_asset`、`search_wiki` 的 AsterDream 宿主桥不能仅凭 ACP 中存在实现就算独立 TUI 可触达；实际正式启动链如广告这两个工具，同样先各补五例。

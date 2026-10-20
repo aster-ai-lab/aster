@@ -1,9 +1,11 @@
-# Cherry Studio Shadcn Variable System
+<a id="cherry-studio-shadcn-variable-system"></a>
+
+# AsterDream Shadcn Variable System
 
 > Status: normative v2 contract. Exact renderer aliases and temporary product parity variables have been
 > migrated; runtime compatibility bridges have been removed.
 
-This document defines the current variable system for Cherry Studio. It is intentionally focused on the Shadcn
+This document defines the current variable system for AsterDream. It is intentionally focused on the Shadcn
 semantic contract and its migration boundary. Historical public usage is recorded in the migration registry and
 enforcement tooling. A matching `--cs-*` spelling may remain in the runtime graph only as an internal value
 provider; it is not a compatibility alias or component-facing role.
@@ -23,7 +25,7 @@ The repository contains multiple variable families with different responsibiliti
 | `--cs-{palette}-{step}` | Primitive palette and foundation values | Internal provider; regular components do not consume it directly |
 | existing semantic `--cs-*` | Internal providers and migration sources | Internal only; never a component-facing role |
 | controlled `--cs-theme-*` | Host-written runtime input | Runtime theme logic writes it; only semantic layers consume it |
-| unprefixed product semantics | Consumer-backed Cherry Studio extensions | Stable public API when Shadcn has no matching role |
+| unprefixed product semantics | Consumer-backed AsterDream extensions | Stable public API when Shadcn has no matching role |
 | generated `--color-*` | Tailwind theme adapter output | Generated only; authored runtime styles do not write or consume it |
 | retired renderer semantic `--app-*` aliases | Removed runtime compatibility bridges | Tooling-only migration sources; forbidden from returning |
 | genuine host/component/page variables | Locally owned implementation details | Stay scoped to their owner; never generated globally |
@@ -31,7 +33,7 @@ The repository contains multiple variable families with different responsibiliti
 | official Shadcn variables | Complete shared contract | Canonical public API and first choice for consumers |
 
 The current system does not create another independent palette. It provides one public semantic namespace with
-separate Shadcn and Cherry Studio ownership inventories over the values already shipped by Cherry Studio:
+separate Shadcn and AsterDream ownership inventories over the values already shipped by AsterDream:
 
 ```text
 foundation values
@@ -70,7 +72,7 @@ This contract includes:
 
 1. the complete Shadcn color contract for light and dark modes;
 2. a controlled runtime-input boundary between the host theme service and semantic outputs;
-3. unprefixed Cherry Studio product semantics in the same public namespace as the Shadcn contract;
+3. unprefixed AsterDream product semantics in the same public namespace as the Shadcn contract;
 4. a canonical `--radius` input and Tailwind radius mappings;
 5. an explicit Tailwind CSS v4 `@theme inline` adapter;
 6. a machine-readable registry and syntax-aware exact-migration codemod;
@@ -100,7 +102,7 @@ Public product semantics are unprefixed and listed by the generated contract. Th
 visible in the name: canonical unprefixed semantics are public, while shared `--cs-*` values are implementation
 details.
 
-`product.css` is the authored Cherry Studio product layer. Every entry is stable public API. Historical renderer
+`product.css` is the authored AsterDream product layer. Every entry is stable public API. Historical renderer
 values without a durable shared meaning stay with their component, feature, or host owner; they are not promoted
 merely to give migration tooling a destination. New code must prefer an official Shadcn role, then a stable
 product role.
@@ -152,7 +154,9 @@ Rules:
 - official variables must not reference Tailwind `--color-*` output;
 - runtime customization enters through an approved input and resolves into canonical output.
 
-### 3.4 Cherry Studio product semantic layer
+<a id="34-cherry-studio-product-semantic-layer"></a>
+
+### 3.4 AsterDream product semantic layer
 
 Product concepts that Shadcn does not define extend the same unprefixed public semantic namespace:
 
@@ -181,7 +185,7 @@ Rules:
 - do not encode palette names or add a token for a single use site;
 - new product variables require addition to the explicit generated allowlist.
 
-All product variables are stable, consumer-backed Cherry Studio semantics not covered by Shadcn.
+All product variables are stable, consumer-backed AsterDream semantics not covered by Shadcn.
 `CHERRY_PRODUCT_VARIABLE_TOKENS` is the explicit runtime allowlist. Tailwind exposure is a separate concern and
 does not change API stability.
 
@@ -323,7 +327,9 @@ The contract preserves current design decisions by using the existing semantic l
 Charts are additive because the shared layer currently has no complete chart contract. They use an explicit,
 mode-aware five-color sequence and do not change existing component rendering until consumed.
 
-### 4.3 Cherry Studio product color extensions
+<a id="43-cherry-studio-product-color-extensions"></a>
+
+### 4.3 AsterDream product color extensions
 
 Only product-wide intent that Shadcn does not express belongs in the shared extension set. The stable core starts
 with:

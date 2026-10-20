@@ -11,7 +11,7 @@ sources:
 
 # Local Models
 
-Cherry Studio can run two models on the user's own machine: the knowledge-base
+AsterDream can run two models on the user's own machine: the knowledge-base
 embedding model and the PaddleOCR text recognizer. Neither ships in the installer —
 both are fetched on demand, together with the native onnxruntime binary they share.
 

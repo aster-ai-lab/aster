@@ -176,6 +176,21 @@ describe('AboutSettings', () => {
     expect(screen.queryByText(/通友科技|Toyou AI Labs/)).not.toBeInTheDocument()
   })
 
+  it('shows the aster star in the about identity', async () => {
+    document.documentElement.dataset.tenant = 'aster'
+    document.documentElement.dataset.a3sProduct = 'AsterDream'
+    try {
+      await renderAboutSettings()
+      expect(screen.getByRole('heading', { name: 'AsterDream' }).querySelector('img')).toHaveAttribute(
+        'src',
+        '/tenant-mark.png'
+      )
+      expect(screen.getByRole('heading', { name: 'AsterDream' }).querySelector('svg')).toBeNull()
+    } finally {
+      delete document.documentElement.dataset.tenant
+    }
+  })
+
   it('draws the ToWork wordmark when the tenant product is ToWork', async () => {
     document.documentElement.dataset.a3sProduct = 'ToWork'
     await renderAboutSettings()

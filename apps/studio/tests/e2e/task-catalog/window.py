@@ -651,8 +651,11 @@ def owned_command(pid: int) -> str:
 
 
 def runtime_for(slug: str, pid: int) -> dict[str, Any] | None:
-    tmp = Path(os.environ.get("TMPDIR", "/tmp"))
-    for path in tmp.glob(f"a3s-studio-runtime-{slug}-fork*.json"):
+    tmp = Path(os.environ.get("TMPDIR", "/tmp")) / "a3s-studio" / slug
+    override = os.environ.get("STUDIO_RUNTIME_FILE")
+    candidates = [Path(override)] if override else [
+        *tmp.glob("runtime-fork-*.json"), *tmp.glob("instances/*/runtime.json")]
+    for path in candidates:
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):

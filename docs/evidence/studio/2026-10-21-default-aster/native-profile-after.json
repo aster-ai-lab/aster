@@ -1,0 +1,17 @@
+{
+  "compile_rc": 0,
+  "test_rc": 0,
+  "elapsed": 21.84967613220215,
+  "source_before": {
+    "apps/studio/src-tauri/src/tenant.rs": "9eeb04ab5ba79e7cb8f7704571a16c85dc7e1021df6e686d4da8c47038cb9a5a",
+    "apps/studio/src-tauri/src/tenant_identity_tests.rs": "0641d881dccd2d04985a57cfe8dd965e5076930676d9abb7d312612105c5e415",
+    "apps/studio/src-tauri/src/member_session.rs": "aec1cc5b1db78728f45af22414e95f765581e3eb07aad6e2c8e192cfc9e60750",
+    "apps/studio/src-tauri/src/lib.rs": "f26d059ab548023d02569944e25743aaaf4647bb5226c56de07804c79e4868b5",
+    "apps/studio/src-tauri/src/macos_app.rs": "fa39e0741702bf68fbd2680e0448ead60e5f68e8fb6fbb760fb125d6c2625bc8",
+    "apps/studio/src-tauri/src/desktop_settings.rs": "b2d9670334591127dcaacd12260f5f15b92ccd10523aa87d59526f51d2c94ab6",
+    "apps/studio/src-tauri/src/applet_window.rs": "f5aa18b9ff90507a640ad1123b0819c29fd020829b10865d7f11c37439b1093b",
+    "apps/studio/src-tauri/src/authority.rs": "04d36eb57b90f3a14bca6db80e191cd82b596340e2630d5ac5255209def4a116"
+  },
+  "source_unchanged": true,
+  "scope": "Exact real Studio test crate compiled with Cargo fingerprint dependency snapshots; full Cargo and bundle gates remain required"
+}

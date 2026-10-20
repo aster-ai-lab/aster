@@ -1,4 +1,6 @@
-# Explicit Studio contract proof
+<a id="explicit-studio-contract-proof"></a>
+
+# Explicit AsterDream contract proof
 
 This independent archive declares contract version 1 and append composition for
 each view. It reuses the view-commands provider assets and package identity so the

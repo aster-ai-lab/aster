@@ -13,7 +13,7 @@ sources:
 > Last Updated: 2026-06
 > **This document is the authoritative source. `CLAUDE.md` only links here.**
 
-This document defines naming rules for files, directories, and identifiers across the Cherry Studio monorepo. It encodes both industry consensus (React/TypeScript, Node.js, shadcn/Next.js) and project-specific conventions.
+This document defines naming rules for files, directories, and identifiers across the AsterDream monorepo. It encodes both industry consensus (React/TypeScript, Node.js, shadcn/Next.js) and project-specific conventions.
 
 ---
 

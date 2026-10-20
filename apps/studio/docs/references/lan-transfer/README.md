@@ -6,11 +6,13 @@ sources:
   - src/shared/types/lanTransfer.ts
 ---
 
-# Cherry Studio LAN Transfer Protocol Specification
+<a id="cherry-studio-lan-transfer-protocol-specification"></a>
+
+# AsterDream LAN Transfer Protocol Specification
 
 > Protocol version: 1
 
-This document defines the LAN file transfer protocol between the Cherry Studio desktop client (Electron) and mobile client (Expo).
+This document defines the LAN file transfer protocol between the AsterDream desktop client (Electron) and mobile client (Expo).
 
 ---
 

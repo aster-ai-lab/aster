@@ -2,7 +2,7 @@
 
 The module also exports `PdfjsBundledCMapReaderFactory` and
 `PdfjsBundledStandardFontDataFactory` for PDF readers whose byte source has its
-own authority boundary. Both use Studio's packaged fonts over IPC; they do not
+own authority boundary. Both use AsterDream's packaged fonts over IPC; they do not
 grant file or network access. `FilePreview` itself retains the local-path
 contract below.
 

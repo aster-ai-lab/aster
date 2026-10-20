@@ -18,6 +18,8 @@ use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use tauri::{AppHandle, Manager};
 
+use crate::tenant::HostIdentity;
+
 const MAX_BYTES: u64 = 512 * 1024 * 1024;
 const MAX_ENTRIES: usize = 4096;
 const MAX_UNPACKED: u64 = 2 * 1024 * 1024 * 1024;
@@ -25,6 +27,7 @@ const MAX_JSON: usize = 1024 * 1024;
 
 #[derive(Clone)]
 struct ReadyUpdate {
+    identity: HostIdentity,
     version: String,
     notes: String,
     sha256: String,
@@ -196,7 +199,8 @@ pub async fn app_updater_notes() -> Result<Option<Vec<NoteRow>>, String> {
     }
     let platform = desktop_platform().ok_or_else(|| "update_failed".to_string())?;
     let origin = crate::org_login::default_origin();
-    tokio::task::spawn_blocking(move || match fetch_current(&origin, platform) {
+    let identity = current_identity().map_err(|fail| fail.as_str().to_owned())?;
+    tokio::task::spawn_blocking(move || match fetch_current(&origin, platform, identity) {
         Ok(release) if !release.notes.trim().is_empty() => Ok(Some(vec![NoteRow {
             release_notes: release.notes,
             version: release.version,
@@ -221,10 +225,12 @@ fn check_and_download(app: &AppHandle) -> Result<(), UpdateFail> {
     require_update_family(crate::host_family::updates_supported(
         crate::host_family::current_family(),
     ))?;
+    let identity = current_identity()?;
+    update_channel(identity)?;
     let mut guard = BusyGuard::enter()?;
     let platform = desktop_platform().ok_or(UpdateFail::Failed)?;
     let origin = crate::org_login::default_origin();
-    let release = fetch_current(&origin, platform)?;
+    let release = fetch_current(&origin, platform, identity)?;
     let local = env!("CARGO_PKG_VERSION");
     if !remote_is_newer(&release.version, local)? {
         if let Some(previous) = guard.previous.take() {
@@ -235,7 +241,7 @@ fn check_and_download(app: &AppHandle) -> Result<(), UpdateFail> {
     if let Some(ready) = guard
         .previous
         .as_ref()
-        .filter(|ready| matching_ready(ready, &release))
+        .filter(|ready| ready.identity == identity && matching_ready(ready, &release))
     {
         emit_available(app, &ready);
         store_ready(ready.clone())?;
@@ -244,9 +250,9 @@ fn check_and_download(app: &AppHandle) -> Result<(), UpdateFail> {
         return Ok(());
     }
     let bundle = running_bundle().ok_or(UpdateFail::Failed)?;
-    let info = ready_from_meta(&release, PathBuf::new());
+    let info = ready_from_meta(&release, PathBuf::new(), identity);
     emit_available(app, &info);
-    let ready = download_release(app, &origin, platform, &release, &bundle)?;
+    let ready = download_release(app, &origin, platform, &release, &bundle, identity)?;
     store_ready(ready.clone())?;
     emit_downloaded(app, &ready);
     guard.disarm();
@@ -262,6 +268,10 @@ fn install_staged(app: &AppHandle) -> Result<(), UpdateFail> {
         armed: true,
         previous: Some(ready.clone()),
     };
+    if ready.identity != current_identity()? {
+        guard.previous = None;
+        return Err(UpdateFail::ProductMismatch);
+    }
     let bundle = running_bundle().ok_or(UpdateFail::Failed)?;
     let mut last = 0u8;
     let hashed = hash_file(&ready.path, &ready.sha256, ready.size, &mut |percent| {
@@ -296,12 +306,9 @@ fn install_zip(app: &AppHandle, ready: &ReadyUpdate, bundle: &Path) -> Result<()
     let new_app =
         extract_app_zip(&ready.path, &unpacked).map_err(|_| UpdateFail::InvalidPackage)?;
     emit_percent(app, ready.size, ready.size, 80);
-    let tenant = crate::tenant::load()
-        .map_err(|_| UpdateFail::ProductMismatch)?
-        .slug;
-    delivery_manifest::validate(&new_app, &ready.version, &tenant)?;
+    delivery_manifest::validate(&new_app, &ready.version, ready.identity.as_str())?;
     ensure_bundle_executable(&new_app)?;
-    verify_signature(&new_app, &ready.version)?;
+    verify_signature(&new_app, &ready.version, ready.identity)?;
     clear_quarantine(&new_app);
     let backup = replace_bundle(&new_app, bundle).map_err(|_| UpdateFail::InstallFailed)?;
     emit_percent(app, ready.size, ready.size, 95);
@@ -330,8 +337,26 @@ fn connect_fail(error: &std::io::Error) -> UpdateFail {
     }
 }
 
-fn fetch_current(origin: &str, platform: &str) -> Result<ReleaseMeta, UpdateFail> {
-    let path = format!("/v1/api/admin/app-releases/current?channel=desktop&platform={platform}");
+fn current_identity() -> Result<HostIdentity, UpdateFail> {
+    let slug = crate::tenant::selected_slug().map_err(|_| UpdateFail::ProductMismatch)?;
+    HostIdentity::parse(&slug).map_err(|_| UpdateFail::ProductMismatch)
+}
+
+fn update_channel(identity: HostIdentity) -> Result<&'static str, UpdateFail> {
+    match identity {
+        HostIdentity::ToYou => Ok("desktop"),
+        // This product generation has no published feed; never query the other tenant's feed.
+        HostIdentity::Aster => Err(UpdateFail::NotPublished),
+    }
+}
+
+fn fetch_current(
+    origin: &str,
+    platform: &str,
+    identity: HostIdentity,
+) -> Result<ReleaseMeta, UpdateFail> {
+    let channel = update_channel(identity)?;
+    let path = format!("/v1/api/admin/app-releases/current?channel={channel}&platform={platform}");
     let (status, body) = exchange(origin, &path, MAX_JSON)?;
     if status == 404 {
         return Err(UpdateFail::NotPublished);
@@ -348,14 +373,16 @@ fn download_release(
     platform: &str,
     release: &ReleaseMeta,
     bundle: &Path,
+    identity: HostIdentity,
 ) -> Result<ReadyUpdate, UpdateFail> {
     let stage = stage_dir(bundle)?;
     fs::create_dir_all(&stage).map_err(|_| UpdateFail::Failed)?;
     let dest = stage.join("payload");
     let partial = stage.join("payload.partial");
     let _ = fs::remove_file(&partial);
+    let channel = update_channel(identity)?;
     let path =
-        format!("/v1/api/admin/app-releases/current/file?channel=desktop&platform={platform}");
+        format!("/v1/api/admin/app-releases/current/file?channel={channel}&platform={platform}");
     stream_verified(
         origin,
         &path,
@@ -368,6 +395,7 @@ fn download_release(
     )?;
     fs::rename(&partial, &dest).map_err(|_| UpdateFail::Failed)?;
     Ok(ReadyUpdate {
+        identity,
         version: release.version.clone(),
         notes: release.notes.clone(),
         sha256: release.sha256.clone(),
@@ -777,7 +805,11 @@ fn ensure_bundle_executable(app: &Path) -> Result<(), UpdateFail> {
     Ok(())
 }
 
-fn verify_signature(bundle: &Path, version: &str) -> Result<(), UpdateFail> {
+fn verify_signature(
+    bundle: &Path,
+    version: &str,
+    identity: HostIdentity,
+) -> Result<(), UpdateFail> {
     let output = Command::new("/usr/bin/codesign")
         .args(["--verify", "--deep", "--strict"])
         .arg(bundle)
@@ -788,7 +820,9 @@ fn verify_signature(bundle: &Path, version: &str) -> Result<(), UpdateFail> {
     }
     for (key, expected) in [
         ("CFBundleExecutable", "Studio"),
-        ("CFBundleIdentifier", "dev.a3s.studio"),
+        ("CFBundleIdentifier", identity.bundle_id()),
+        ("CFBundleName", identity.product()),
+        ("CFBundleDisplayName", identity.product()),
         ("CFBundleShortVersionString", version),
     ] {
         let output = Command::new("/usr/bin/plutil")
@@ -904,14 +938,14 @@ fn running_bundle() -> Option<PathBuf> {
 }
 
 fn stage_dir(bundle: &Path) -> Result<PathBuf, UpdateFail> {
-    bundle
-        .parent()
-        .map(|parent| parent.join(".a3s-update"))
-        .ok_or(UpdateFail::Failed)
+    let parent = bundle.parent().ok_or(UpdateFail::Failed)?;
+    let name = bundle.file_name().ok_or(UpdateFail::Failed)?;
+    Ok(parent.join(".a3s-update").join(name))
 }
 
 fn matching_ready(ready: &ReadyUpdate, release: &ReleaseMeta) -> bool {
     ready.version == release.version
+        && ready.size == release.size
         && digest_matches(&ready.sha256, &release.sha256)
         && fs::metadata(&ready.path).is_ok_and(|meta| meta.is_file() && meta.len() == ready.size)
 }
@@ -938,8 +972,9 @@ fn take_ready() -> Result<ReadyUpdate, UpdateFail> {
     }
 }
 
-fn ready_from_meta(release: &ReleaseMeta, path: PathBuf) -> ReadyUpdate {
+fn ready_from_meta(release: &ReleaseMeta, path: PathBuf, identity: HostIdentity) -> ReadyUpdate {
     ReadyUpdate {
+        identity,
         version: release.version.clone(),
         notes: release.notes.clone(),
         sha256: release.sha256.clone(),

@@ -8,7 +8,7 @@ sources:
 
 # Testing Reference
 
-Testing policy and harnesses for Cherry Studio: what makes a test worth writing and how to exercise each layer of the app, from renderer UI down to the SQLite data layer.
+Testing policy and harnesses for AsterDream: what makes a test worth writing and how to exercise each layer of the app, from renderer UI down to the SQLite data layer.
 
 | Document | Purpose |
 | --- | --- |

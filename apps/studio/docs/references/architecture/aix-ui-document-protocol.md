@@ -36,7 +36,7 @@ sources:
 AIX Package uses an ACL manifest. The protocol below carries runtime messages;
 these messages are not product configuration. Native admission verifies the
 selected package, generation, publication revision and declared assets before
-Studio mounts an isolated document. Installation alone grants no resource port.
+AsterDream mounts an isolated document. Installation alone grants no resource port.
 
 AIX UI governs plugin documents and workbench contributions. Model-generated
 OpenUI content uses the separate [Intelligent UI](./intelligent-ui.md) contract;
@@ -44,7 +44,7 @@ rendering a model interaction does not install a plugin or acquire an AIX port.
 
 ## Canonical extension point capability directory
 
-`a3s-use-extension` owns the eight Studio point contracts. Run
+`a3s-use-extension` owns the eight AsterDream point contracts. Run
 `pnpm plugins:contract:generate` after changing the Rust contracts and
 `pnpm plugins:contract:check` to refuse a stale TypeScript projection.
 The native catalogue advertises `extensionPoints`; renderer preflight rejects
@@ -67,7 +67,7 @@ Transient document state belongs to its owner. Layout and recipe choices use
 Preference, and business data belongs to its authority context.
 
 Harness recipe selection uses `app.harness.assemble` through Preference. The
-Studio bridge migrates `a3s.studio.harness-assemble.v1` once, gives an existing
+AsterDream bridge migrates `a3s.studio.harness-assemble.v1` once, gives an existing
 unified value precedence, persists before notification, and relays other windows’
 storage changes. This is a device-profile setting shared across sign-ins, without
 account credentials or execution grants. Team selection remains member-bound.
@@ -89,8 +89,8 @@ JSDOM checks; they cannot qualify real storage or platform isolation.
 
 ## Host compatibility and earlier installations
 
-Studio requires `requires_use` to match the Use contract compiled into the
-canonical manifest library. This is distinct from the Studio product version,
+AsterDream requires `requires_use` to match the Use contract compiled into the
+canonical manifest library. This is distinct from the AsterDream product version,
 manifest schema 3, catalogue protocol 1 and asset-session protocol 2. Parsing a
 valid requirement does not establish compatibility with the current host.
 
@@ -110,7 +110,7 @@ incompatible Skill, an omitted declaration or an undeclared native surface.
 
 Manifest parsing and asset responses consume bytes returned from Use's bounded
 `read_verified_file` payload. The complete collected content digest, entry and MCP
-projection are verified before returning those same owned bytes. Studio does not
+projection are verified before returning those same owned bytes. AsterDream does not
 verify a directory and then reopen a file for consumption. A missing manifest is
 optional only in a valid legacy generation; corruption is never absence. This
 read contract does not acquire a lease or grant execution/resource access.
@@ -210,11 +210,11 @@ certify live storage or platform WebView isolation.
 Each mounted document has its own native asset session, admission request and
 random document identifier. The identifier contains 32 random bytes, encoded
 as 64 lowercase hexadecimal characters. It differs from the native request ID
-and asset bearer ticket. Studio adds it to the admitted entry URL as
+and asset bearer ticket. AsterDream adds it to the admitted entry URL as
 `#aix-document=<identifier>`; it is not part of an HTTP request or Referer.
 
 The document creates a MessageChannel and transfers one endpoint to its parent.
-Studio accepts only a message from that exact iframe's WindowProxy, with the
+AsterDream accepts only a message from that exact iframe's WindowProxy, with the
 opaque origin `null`, the strict shape below and exactly one transferred port:
 
 ```typescript
@@ -225,7 +225,7 @@ opaque origin `null`, the strict shape below and exactly one transferred port:
 }
 ```
 
-Studio checks the identifier against the current admitted session. It accepts
+AsterDream checks the identifier against the current admitted session. It accepts
 one channel per session. Wrong identifiers, versions, shapes and port counts are
 refused; owned refused ports are closed. A replay cannot replace a healthy
 channel or reset its message budget. Unrelated frame messages cannot bind this
@@ -240,7 +240,7 @@ or delegate a port; this protocol does not claim to prevent that delegation.
 ## Package-side startup
 
 Install the handler before announcing readiness. Keep the package endpoint;
-Studio replies on the transferred endpoint and never sends state to a
+AsterDream replies on the transferred endpoint and never sends state to a
 WindowProxy. A minimal bootstrap is:
 
 ```javascript
@@ -284,7 +284,7 @@ Closure does not permit rebinding that same session.
 
 Appearance observations contain only light/dark theme, bounded locale,
 left-to-right/right-to-left direction and the 21 allowlisted design variables.
-They are readonly observations. A tree renders with Studio's native
+They are readonly observations. A tree renders with AsterDream's native
 `@a3s-lab/ui` TreeView and receives the separate tree contract. Node command
 identifiers are sent back to that provider; they are not global native commands.
 
@@ -433,7 +433,7 @@ Failure in either subprotocol withdraws the shared executing document.
 
 The independent [command proof package](../../../tests/fixtures/aix/view-commands/README.md)
 contains two webviews, a native tree and a mini app. Run
-`bash scripts/test-aix-view-commands.sh <new evidence directory>` from Studio to
+`bash scripts/test-aix-view-commands.sh <new evidence directory>` from AsterDream to
 build one archive, admit it through API publication/member pin and native install,
 then execute the actual provider script with the native-produced catalogue.
 Ordinary renderer runs explicitly skip these two archive-dependent cases when

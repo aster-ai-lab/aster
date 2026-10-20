@@ -388,29 +388,33 @@ pub fn open_aix_applet_window(
         crate::boot_initialization_script(true, false, &tenant, &product, &runtime, false);
     script.push_str("document.documentElement.dataset.a3sAixApplet='true';");
 
-    let builder = WebviewWindowBuilder::new(&app, &label, WebviewUrl::External(url))
-        .initialization_script(script)
-        .data_store_identifier(data_store_id(slug))
-        .title(title)
-        .inner_size(WINDOW_WIDTH, WINDOW_HEIGHT)
-        .min_inner_size(720.0, 520.0)
-        .resizable(true)
-        .maximizable(true)
-        .minimizable(true)
-        .closable(true)
-        .visible(false)
-        .focused(false)
-        .center()
-        .background_color(tauri::webview::Color(255, 255, 255, 255))
-        .on_page_load(|window, payload| {
-            if payload.event() != tauri::webview::PageLoadEvent::Finished {
-                return;
-            }
-            if !is_aix_applet_label(window.label()) {
-                return;
-            }
-            crate::applet_window::reveal(&window);
-        });
+    let builder = crate::tenant::isolate_webview(
+        WebviewWindowBuilder::new(&app, &label, WebviewUrl::External(url))
+            .initialization_script(script)
+            .data_store_identifier(data_store_id(slug)),
+        data_store_id(slug),
+    )
+    .map_err(|error| error.to_string())?
+    .title(title)
+    .inner_size(WINDOW_WIDTH, WINDOW_HEIGHT)
+    .min_inner_size(720.0, 520.0)
+    .resizable(true)
+    .maximizable(true)
+    .minimizable(true)
+    .closable(true)
+    .visible(false)
+    .focused(false)
+    .center()
+    .background_color(tauri::webview::Color(255, 255, 255, 255))
+    .on_page_load(|window, payload| {
+        if payload.event() != tauri::webview::PageLoadEvent::Finished {
+            return;
+        }
+        if !is_aix_applet_label(window.label()) {
+            return;
+        }
+        crate::applet_window::reveal(&window);
+    });
     #[cfg(target_os = "macos")]
     let builder = builder
         .hidden_title(true)

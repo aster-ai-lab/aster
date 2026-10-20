@@ -14,12 +14,15 @@ import {
   resetWorkbenchDefaultAgentForTests,
   resolvePublishedAutoModel,
   useWorkbenchAgentRuntimeUnavailable,
-  useWorkbenchDefaultAgent
+  useWorkbenchDefaultAgent,
+  useWorkbenchModel,
+  workbenchUsesSingleDefaultAgent
 } from '../useWorkbenchDefaultAgent'
 import { writePendingPermissionMode } from '../workbenchPermissionPostures'
 import { writePendingReasoningEffort } from '../workbenchReasoningEffort'
 
 const mocks = vi.hoisted(() => ({
+  product: 'ToWork',
   defaultModel: { id: 'openai::gpt-5' } as { id: string } | undefined,
   defaultModelId: 'openai::gpt-5' as string | null,
   models: [] as Model[],
@@ -69,12 +72,15 @@ vi.mock('@renderer/services/createAgent', () => ({
 vi.mock('@renderer/services/toast', () => ({
   toast: { error: vi.fn() }
 }))
-vi.mock('@renderer/tenantBrand', () => ({
-  studioProductName: () => 'ToWork'
+vi.mock('@renderer/tenantBrand', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@renderer/tenantBrand')>()),
+  studioProductName: () => mocks.product
 }))
 
 describe('useWorkbenchDefaultAgent', () => {
   beforeEach(() => {
+    mocks.product = 'ToWork'
+    document.documentElement.dataset.tenant = 'toyou'
     mocks.defaultModel = { id: 'openai::gpt-5' }
     mocks.defaultModelId = 'openai::gpt-5'
     mocks.models = []
@@ -87,6 +93,39 @@ describe('useWorkbenchDefaultAgent', () => {
     writePendingPermissionMode(null)
     writePendingReasoningEffort(null)
     resetWorkbenchDefaultAgentForTests()
+  })
+
+  it('uses explicit aster and toyou tenant capability rather than a displayed product alias', () => {
+    try {
+      for (const [tenant, product] of [
+        ['aster', 'AsterDream'],
+        ['toyou', 'ToWork'],
+        ['towork-cua', 'ToWork']
+      ]) {
+        document.documentElement.dataset.tenant = tenant
+        mocks.product = product
+        expect(workbenchUsesSingleDefaultAgent(), tenant).toBe(true)
+      }
+      document.documentElement.dataset.tenant = 'unrelated'
+      mocks.product = 'ToWork'
+      expect(workbenchUsesSingleDefaultAgent()).toBe(false)
+    } finally {
+      delete document.documentElement.dataset.tenant
+    }
+  })
+
+  it('uses an anonymous Aster local model while the optional org catalog is unsettled', () => {
+    vi.stubEnv('PUBLIC_STUDIO_TENANT', 'aster')
+    try {
+      mocks.defaultModelId = null
+      mocks.defaultModel = undefined
+      mocks.orgModels.phase = 'loading'
+      mocks.models = [model('openai::local-chat', { apiModelId: 'local-chat', name: 'Local chat' })]
+      mocks.providers = [{ id: 'openai', isEnabled: true }]
+      const { result } = renderHook(() => useWorkbenchModel())
+      expect(result.current.model?.id).toBe('openai::local-chat')
+      expect(mocks.createModel).not.toHaveBeenCalled()
+    } finally { vi.unstubAllEnvs() }
   })
 
   it('creates one a3s-code agent on the default model and opens it', async () => {
@@ -213,7 +252,9 @@ describe('useWorkbenchDefaultAgent', () => {
       refresh,
       failureMessage: 'workbench.default_agent.create_failed'
     }
-    mocks.createAgentAndRefresh.mockResolvedValueOnce({ id: 'agent-local' }).mockResolvedValueOnce({ id: 'agent-member' })
+    mocks.createAgentAndRefresh
+      .mockResolvedValueOnce({ id: 'agent-local' })
+      .mockResolvedValueOnce({ id: 'agent-member' })
 
     await expect(ensureWorkbenchDefaultAgent(base)).resolves.toBe('agent-local')
     await expect(ensureWorkbenchDefaultAgent({ ...base, memberId: 'member-a' })).resolves.toBe('agent-member')

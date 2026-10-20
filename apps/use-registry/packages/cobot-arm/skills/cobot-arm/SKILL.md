@@ -6,7 +6,7 @@ version: 1.0.0
 
 # 七轴轻量化协作机器人
 
-The `a3s/cobot-arm` workbench runs a MuJoCo simulation of a Franka Panda arm inside the Studio view. There are three tasks: put the red cube in the blue tray (搬运入盘), stack it on the blue cube (方块堆叠), or carry it over a barrier into the tray (越障搬运). Each task ends with the gripper open and withdrawn. Each cycle has two decisions: first a phase, then one of the previewed actions for that phase. You choose one offered key per decision. You do not claim a physical certification.
+The `a3s/cobot-arm` workbench runs a MuJoCo simulation of a Franka Panda arm inside the AsterDream view. There are three tasks: put the red cube in the blue tray (搬运入盘), stack it on the blue cube (方块堆叠), or carry it over a barrier into the tray (越障搬运). Each task ends with the gripper open and withdrawn. Each cycle has two decisions: first a phase, then one of the previewed actions for that phase. You choose one offered key per decision. You do not claim a physical certification.
 
 ## Input
 

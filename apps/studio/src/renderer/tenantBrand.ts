@@ -2,6 +2,23 @@ import AppLogo from '@renderer/assets/images/logo.png'
 
 const CHERRY_PRODUCT = 'Cherry Studio'
 
+export function studioIsAsterTenant(): boolean {
+  return typeof document !== 'undefined' && document.documentElement.dataset.tenant === 'aster'
+}
+
+/** Explicit desktop tenant capability; a displayed product name grants no behavior. */
+export function studioUsesWorkbenchShell(): boolean {
+  if (typeof document === 'undefined') return false
+  switch (document.documentElement.dataset.tenant) {
+    case 'aster':
+    case 'toyou':
+    case 'towork-cua': // Declared isolated ToWork fixture, with the same workbench behavior.
+      return true
+    default:
+      return false
+  }
+}
+
 export function studioProductName(): string {
   if (typeof document === 'undefined') return CHERRY_PRODUCT
   return document.documentElement.dataset.a3sProduct || CHERRY_PRODUCT
@@ -9,6 +26,7 @@ export function studioProductName(): string {
 
 export function studioProductMark(): string {
   if (typeof document === 'undefined' || !document.documentElement.dataset.tenant) return AppLogo
+  if (studioIsAsterTenant()) return '/tenant-logo.png'
   return '/tenant-icon.png'
 }
 

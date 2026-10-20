@@ -1,10 +1,9 @@
 import { execFile } from 'node:child_process'
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { createServer } from 'node:http'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { promisify } from 'node:util'
-
-import { createServer } from 'node:http'
 
 import { describe, expect, it } from 'vitest'
 
@@ -31,12 +30,17 @@ describe.skipIf(process.platform === 'win32')('fork build selection (POSIX execu
           { mode: 0o700 }
         )
         copyFileSync(launcher, path.join(root, 'scripts/studio-dev.mjs'))
+        copyFileSync(path.resolve(__dirname, '../studio_product.py'), path.join(root, 'scripts/studio_product.py'))
         copyFileSync(path.resolve(__dirname, '../renderer-owner.mjs'), path.join(root, 'scripts/renderer-owner.mjs'))
         const receipt = path.join(root, 'launched.txt')
         const install = (target: string, name: string) => {
           const binary = path.join(root, target, 'debug/Studio')
           mkdirSync(path.dirname(binary), { recursive: true })
-          writeFileSync(binary, `#!/bin/sh\nprintf '%s' '${name}' > "$STUDIO_FORK_TEST_RECEIPT"\n`, { mode: 0o700 })
+          writeFileSync(
+            binary,
+            `#!/bin/sh\nprintf '%s|%s|%s' '${name}' "$A3S_TENANT_SLUG" "$STUDIO_RUNTIME_FILE" > "$STUDIO_FORK_TEST_RECEIPT"\n`,
+            { mode: 0o700 }
+          )
         }
         install('target', 'shared')
         writeFileSync(path.join(root, 'Cargo.toml'), '[workspace]\n')
@@ -46,10 +50,15 @@ describe.skipIf(process.platform === 'win32')('fork build selection (POSIX execu
           PATH: path.join(root, 'scripts') + path.delimiter + process.env.PATH,
           A3S_STUDIO_INSTANCE: 'fork',
           STUDIO_RENDERER_PORT: String(address.port),
-          STUDIO_RUNTIME_FILE: path.join(root, 'runtime.json'),
           STUDIO_FORK_TEST_RECEIPT: receipt
         }
         delete env.CARGO_TARGET_DIR
+        delete env.A3S_TENANT_SLUG
+        delete env.STUDIO_RUNTIME_FILE
+        if (mode === 'absolute') {
+          env.A3S_TENANT_SLUG = 'toyou'
+          env.STUDIO_RUNTIME_FILE = path.join(root, 'explicit-runtime.json')
+        }
         if (mode !== 'default') {
           env.CARGO_TARGET_DIR = mode === 'relative' ? 'isolated target' : path.join(root, 'isolated target')
         }
@@ -63,7 +72,14 @@ describe.skipIf(process.platform === 'win32')('fork build selection (POSIX execu
           expect(existsSync(receipt)).toBe(false)
         } else {
           await run
-          expect(readFileSync(receipt, 'utf8')).toBe(mode === 'default' ? 'shared' : 'isolated')
+          const [target, tenant, runtime] = readFileSync(receipt, 'utf8').split('|')
+          expect(target).toBe(mode === 'default' ? 'shared' : 'isolated')
+          expect(tenant).toBe(mode === 'absolute' ? 'toyou' : 'aster')
+          if (mode === 'absolute') expect(runtime).toBe(path.join(root, 'explicit-runtime.json'))
+          else {
+            expect(path.dirname(runtime)).toBe(path.join(tmpdir(), 'a3s-studio/aster'))
+            expect(path.basename(runtime)).toMatch(/^runtime-fork-[0-9]+\.json$/)
+          }
         }
       } finally {
         await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())))

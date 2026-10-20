@@ -1,0 +1,35 @@
+{
+  "flow": [
+    "plan",
+    "draft_guard",
+    "revise_plan",
+    "execute",
+    "approval_reopen",
+    "approve_edit",
+    "approve_write",
+    "readback",
+    "completed_composer_cleanup"
+  ],
+  "counts": {
+    "requests": 96,
+    "streams": 18,
+    "auxiliary": 4
+  },
+  "files": {
+    "note.txt": {
+      "size": 49,
+      "sha256": "90f4699aa2cde2cba65e14175d5a0df945603779a36bd20020940666a6482e35"
+    },
+    "result.txt": {
+      "size": 25,
+      "sha256": "6b363f758db24b476dee2341df0c5de6a294697b9ccd617d01bc9f2ed8022f19"
+    },
+    "sentinel.txt": {
+      "size": 30,
+      "sha256": "cb9f89b56bb853b6321d8ab7d8990462fcfba4b71fe9510714336ea890ec60e7"
+    }
+  },
+  "native_generation": "r4",
+  "renderer": "final-renderer-frame-fix",
+  "scope": "actual CUA over native ToYou with deterministic local model, before new status-color and shared-switch renderer"
+}

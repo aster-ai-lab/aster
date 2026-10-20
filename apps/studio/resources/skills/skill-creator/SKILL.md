@@ -4,9 +4,11 @@ description: Create new skills, modify and improve existing skills, and measure 
 version: 1.0.0
 ---
 
-## Cherry Studio workflow (READ FIRST — overrides packaging / install steps below)
+<a id="cherry-studio-workflow-read-first--overrides-packaging--install-steps-below"></a>
 
-You are running inside Cherry Studio. Skills live in a managed registry that Cherry
+## AsterDream workflow (READ FIRST — overrides packaging / install steps below)
+
+You are running inside AsterDream. Skills live in a managed registry that Cherry
 keeps in sync with the filesystem automatically — there is **no** install or register
 tool to call, and you should **ignore** any `package_skill.py` / `.skill` packaging
 steps mentioned later in this file (they apply to Claude Code / Claude.ai, not here).

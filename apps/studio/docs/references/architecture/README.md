@@ -1,108 +1,46 @@
 ---
-description: >-
-  Cross-process architecture entry point covering the Electron process model,
-  data flow, data systems, and monorepo map
+description: AsterDream desktop host, renderer and local runtime ownership
 sources:
+  - src-tauri/src/lib.rs
+  - src-tauri/src/agent_plane
   - src/renderer
   - src/shared
 ---
 
 # Architecture Overview
 
-This is the cross-process entry point to Cherry Studio's architecture: the Electron process model, data flow, the data systems, the monorepo structure, and a map to the detailed per-process and per-subsystem references. Per-process directory layout and dependency rules live in their own documents — this page does not duplicate them.
+AsterDream uses one Tauri/Rust host and a React WebView. The default `aster` build enables local models and optional organization access. The explicit `toyou` build retains managed organization access. Product capabilities are selected by the build and checked against the installed tenant identity.
 
 ## Process Model
 
-Cherry Studio is an Electron app with two app processes (plus preload), each mapping to a `src/` root and its top-level directories:
+- The Rust host owns windows, tenant identity, native storage, organization credentials and the protected loopback API.
+- The renderer owns interaction and typed projections. It calls the existing host bridge; it does not receive organization secrets.
+- `a3s-code-acp` is the workspace coding/runtime companion. It owns tool execution and goal semantics through ACP.
+- `a3s-office` is the workspace Office companion. Both companions must be present in the same sealed delivery generation.
 
 ## Data Flow
 
-A typical user interaction follows this path:
-
-```
-User Input (React UI)
- │
- ├── Chat Message ──→ AI Core (provider middleware) ──→ LLM API
- │ │
- │ ├── Stream chunks ──→ renderer chat state ──→ UI update
- │ └── Message blocks ──→ DataApi ──→ SQLite (persist)
- │
- ├── Setting Change ──→ usePreference ──→ IPC ──→ PreferenceService ──→ SQLite
- │ └── broadcast to all windows
- │
- └── Business Data ──→ useQuery / useMutation ──→ IPC ──→ DataApi handler
- (topics, files) │
- ├── Service layer
- ├── Repository layer
- └── SQLite (Drizzle ORM)
-```
+A task submission crosses the typed native agent-plane boundary, enters ACP and returns structured events. The renderer projects planning, approvals and goal state from those events. It does not infer completion or authorization from assistant prose.
 
 ## Four Data Systems
 
-Cherry Studio uses four data systems, each optimized for different data characteristics:
-
-| System | Storage | Timing | Use Case |
-|--------|---------|--------|----------|
-| [**BootConfig**](../data/boot-config-overview.md) | JSON file | Pre-lifecycle (sync) | Chromium flags, hardware accel |
-| [**Cache**](../data/cache-overview.md) | Memory (per-process) / Shared (Main-relayed) / Persist (renderer localStorage or independent main JSON) | Runtime | Temp data, UI state, cross-window coordination |
-| [**Preference**](../data/preference-overview.md) | SQLite | Post-lifecycle | User settings (theme, language) |
-| [**DataApi**](../data/data-api-overview.md) | SQLite (Drizzle) | Post-lifecycle | Business data (topics, messages) |
-
-See [Data System Reference](../data/README.md) for detailed architecture, decision flowcharts, and usage patterns.
+The host owns task/message storage, native preferences, provider records and the member session. Each uses the selected product profile. The new `aster` profile is separate from legacy data. `toyou` retains its existing profile compatibility. WebView storage, instance locks and runtime discovery follow the same tenant/instance identity.
 
 ## Service Lifecycle
 
-Main-process services that own long-lived resources or persistent side effects run on an IoC container with a phased bootstrap (Background → BeforeReady → WhenReady), registered one line each in and resolved via `application.get('ServiceName')`. See Lifecycle Reference for the phases, decorators, and migration guide; see Main Process Architecture for where services sit in the directory layout.
+The native host creates owned stores and runtime services before opening the main window. Local identity and organization membership remain distinct; a local preference scope never provides an organization token or membership.
 
 ## AI Core Architecture
 
-The AI pipeline selects a provider, runs a middleware chain (context, knowledge, tools), streams via the Vercel AI SDK, and emits typed message blocks (text, code, image, tool-call). See [AI Reference](../ai/README.md) for the full pipeline and data flow.
+Core/ACP execute the task. The host serializes exact approval bindings and reports unavailable goal snapshots truthfully. The renderer supports plan review and revision before execution; execution retains the submitted permission posture.
 
 ## Monorepo Structure
 
-```
-cherry-studio
-├── src/
-│ ├── main/ # Main process (Node.js) — directory layout in./main-process.md
-│ │
-│ ├── renderer/ # Renderer process (React) — directory layout in./renderer.md
-│ │
-│ ├── preload/ # Preload scripts (IPC bridge)
-│ │
-│ └── shared/ # Cross-process primitives: types, schemas/contracts, pure logic — layout in./shared-layer.md
-│
-├── packages/
-│ ├── aiCore/ # @cherrystudio/ai-core
-│ ├── ai-sdk-provider/ # Custom AI SDK providers
-│ ├── provider-registry/ # Provider registry
-│ └── extension-table-plus/ # TipTap table extension
-│
-├── docs/ # Documentation (this directory)
-│ ├── contrib/ # Process & repo engineering
-│ └── references/ # Technical references
-│
-└── scripts/ # Build, lint, i18n, and CI scripts
-```
+The host is under `src-tauri`, the frontend under `src/renderer`, and shared transport/types under `src/shared`. Root Rust workspace membership and a single lockfile are authoritative. The retained legacy vendor tree supplies the Office frontend kernel build dependency.
 
-Main-process and renderer code is organized by **feature** (`features/` — high-cohesion domain modules) versus **type-bucket** (`services/`, `utils/`, `components/`, `hooks/` — small, independent pieces); see [Naming Conventions §4.10](./naming-conventions.md) for the placement rule. `src/shared/` is the **cross-process primitive layer** — types, schemas/contracts, and pure logic importable by **both** `main` and `renderer`, depending on no app code (being cross-process is the entry gate). Full layering and dependency rules live in the per-process docs below.
+## Further Reading
 
-## Reference Map
-
-Where to go for detail. The three process docs own per-process directory layout and dependency rules; subsystem internals live in their own references.
-
-| Area | Reference |
-|---|---|
-| Main-process directory charters & dependency rules | Main Process Architecture |
-| Renderer directory layering & dependency rules | [Renderer Architecture](./renderer.md) |
-| Cross-process primitives (`@shared`) | [Shared Layer Architecture](./shared-layer.md) |
-| Naming (files, directories, identifiers) | [Naming Conventions](./naming-conventions.md) |
-| Data systems (BootConfig / Cache / Preference / DataApi) | [Data System Reference](../data/README.md) |
-| IPC (IpcApi) | [IPC Reference](../ipc/README.md) |
-| Service lifecycle (IoC, phased bootstrap) | Lifecycle Reference |
-| Window manager (multi-window, pooling) | Window Manager Reference |
-| Utility processes (crash isolation, lifecycle, entry builds) | Utility Process Architecture |
-| Scheduler & jobs | Job & Scheduler Reference |
-| AI subsystem | [AI Reference](../ai/README.md) |
-| Path registry | |
-
-Cherry Studio runs multiple windows (main window, sub-windows, selection toolbar, …), all managed by `WindowManager` and communicating through IPC and shared state (Cache, Preference); see the Window Manager Reference.
+- [Shared contracts](./shared-layer.md)
+- [Runtime and sessions](../ai/agent-session-runtime.md)
+- [Preferences](../data/preference-overview.md)
+- [Build and upgrade](../../contrib/app-upgrade.md)

@@ -1,0 +1,13 @@
+{
+  "rc": 0,
+  "elapsed": 15.010195970535278,
+  "tenant": "toyou",
+  "ui_source": {
+    "apps/studio/src/renderer/pages/agents/taskConversation/turn.ts": "8a697cd952a90f6db90e54c9432df82ce87a6f01f83c53c1535be29c3621cc0e",
+    "apps/studio/src/renderer/pages/agents/taskConversation/TaskPlanSnapshot.tsx": "cbb2282f8113c482a6641cd766bfb284ccc76d118fd69e132b180780fc3fd630",
+    "apps/studio/src/renderer/pages/agents/workbenchComposer.css": "7fb11fbe7c5beaa7458aedcf874e2fbf5b5f1b66be606d0039a92b39ebfe470c",
+    "apps/studio/src/renderer/pages/agents/WorkbenchHomeComposerExtras.tsx": "1e83abebe0ed176331e7b5f4b5b6831c00aaaa3798523aa9f9b30ed9b44a9cae"
+  },
+  "unchanged": true,
+  "scope": "real renderer for orange progress, one stable plan and switch size cascade repair"
+}

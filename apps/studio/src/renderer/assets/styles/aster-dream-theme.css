@@ -1,0 +1,105 @@
+/* AsterDream's existing blue/silver palette, scoped to its declared tenant. */
+html[data-tenant='aster'] {
+  --cs-theme-primary: #005abb;
+  --cs-theme-primary-foreground: #ffffff;
+  --cs-primary: var(--cs-theme-primary);
+  --cs-primary-foreground: var(--cs-theme-primary-foreground);
+  --primary: var(--cs-theme-primary);
+  --primary-foreground: var(--cs-theme-primary-foreground);
+  --color-brand: var(--cs-theme-primary);
+  --color-on-brand: var(--cs-theme-primary-foreground);
+  --cs-accent: #e6f1fb;
+  --accent: #e6f1fb;
+  --cs-accent-foreground: #063a73;
+  --accent-foreground: #063a73;
+  --cs-ring: color-mix(in srgb, var(--cs-theme-primary) 32%, transparent);
+  --ring: var(--cs-ring);
+  --aster-dream-hover: #004e9f;
+  --aster-dream-wash: #e6f1fb;
+  --aster-dream-canvas: #f7f9fc;
+  --aster-dream-nav: #e9edf3;
+  --aster-dream-border: #dfe5ed;
+  --aster-dream-ink: #0b3a6e;
+}
+
+html[data-tenant='aster'].dark {
+  --cs-theme-primary: #4c9be6;
+  --cs-theme-primary-foreground: #ffffff;
+  --cs-accent: #16324d;
+  --accent: #16324d;
+  --cs-accent-foreground: #d6e9fa;
+  --accent-foreground: #d6e9fa;
+  --aster-dream-hover: #2789ed;
+  --aster-dream-wash: #16324d;
+  --aster-dream-canvas: #111112;
+  --aster-dream-nav: #122033;
+  --aster-dream-border: #294057;
+  --aster-dream-ink: #d6e9fa;
+}
+
+html[data-tenant='aster'] .page-loader-handoff > .aster-dream-mark {
+  animation: pageLoaderMarkOut 180ms ease 800ms both;
+}
+
+html[data-tenant='aster'] :is(.sidebar-activity, .activity-bar-canvas) {
+  background-color: var(--aster-dream-nav);
+}
+
+html[data-tenant='aster'] :is(#workbench-sidebar, [data-composer-inputbar]) {
+  border-color: var(--aster-dream-border);
+}
+
+html[data-tenant='aster'] [data-ui~='workbench.canvas'] {
+  background-color: var(--aster-dream-canvas);
+  background-image: radial-gradient(ellipse 52% 40% at 50% 40%, rgba(0, 90, 187, 0.07), transparent 72%);
+}
+
+html[data-tenant='aster'] :is([data-ui~='workbench.greeting'], .workbench-wordmark) {
+  color: var(--aster-dream-ink);
+}
+
+html[data-tenant='aster'] :is([data-ui~='workbench.search.trigger'], [data-ui~='workbench.session']) {
+  background-color: var(--aster-dream-wash);
+}
+
+html[data-tenant='aster']
+  :is(
+    [data-new-task-trigger],
+    .sidebar-activity .activity-bar-item[aria-current='page'],
+    [data-ui~='workbench.nav'] [aria-current='page'],
+    [data-ui~='settings.navigation'] [data-active='true'],
+    [data-ui~='chat.composer.action.send'][aria-disabled='false']
+  ) {
+  background-color: var(--cs-theme-primary);
+  color: var(--cs-theme-primary-foreground);
+}
+
+/* Limit raw legacy action fills to controls; document ink and code remain unchanged. */
+html[data-tenant='aster'] button:is(.bg-\[\#171717\], .bg-black, .bg-\[\#262626\], .bg-\[\#3a3a3a\]) {
+  background-color: var(--cs-theme-primary);
+  color: var(--cs-theme-primary-foreground);
+}
+
+html[data-tenant='aster']
+  :is(
+    [data-new-task-trigger],
+    [data-ui~='chat.composer.action.send'][aria-disabled='false'],
+    button.bg-\[\#171717\]
+  ):hover:not(:disabled) {
+  background-color: var(--aster-dream-hover);
+  color: var(--cs-theme-primary-foreground);
+}
+
+html[data-tenant='aster'] [data-slot='switch'][data-state='checked'] {
+  background-color: var(--cs-theme-primary);
+}
+
+html[data-tenant='aster'] .task-conversation {
+  --task-accent: var(--cs-theme-primary);
+}
+
+html[data-tenant='aster'] [data-workspace-file-editor] :is(.a3s-office, .work-pdf-viewer, .work-office-ribbon) {
+  --work-office-accent: var(--cs-theme-primary);
+  --work-office-control-accent: var(--cs-theme-primary);
+  --work-pdf-accent: var(--cs-theme-primary);
+}

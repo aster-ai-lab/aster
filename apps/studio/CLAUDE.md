@@ -85,7 +85,9 @@ Before upgrading any dependency, check `patches/` for custom patches.
 
 Some families only work on one shared release: every `@tiptap/*` package (except `@tiptap/y-tiptap`), and `react` with `react-dom`. Upgrade a family as a whole — `package.json`, the `pnpm-workspace.yaml` overrides, and the patch file names together — then run `pnpm deps:check` and a renderer build (`rsbuild build`). A passing `pnpm install` and Vitest run do not prove the bundle links.
 
-### Launching Studio
+<a id="launching-studio"></a>
+
+### Launching AsterDream
 
 `just studio` owns the tenant's single window: each launch stops the running bundle for that tenant, and the window needs the client server on 127.0.0.1:4318 that `scripts/studio-shell.sh` starts. Agents testing a build use `just fork <slug>`. The tenant is required. That opens a separate window and leaves the user's window running. Do not `kill` the user's bundle or run `src-tauri/target/debug/Studio` directly.
 
@@ -179,7 +181,7 @@ Non-data command IPC (window/system/shell/notification/external/file) goes throu
 
 ### Desktop Window
 
-The desktop window is the Tauri ToWork host. The renderer reads window init data via `useWindowInitData`.
+The desktop window is the Tauri toyou host. The renderer reads window init data via `useWindowInitData`.
 
 ## Schema & Migration Rules
 

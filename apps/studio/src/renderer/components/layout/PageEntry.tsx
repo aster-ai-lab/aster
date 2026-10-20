@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { ToWorkWordmark } from '@renderer/components/ToWorkWordmark'
+import { StudioProductMark } from '@renderer/components/StudioProductMark'
 
 /** One left-to-right write. The CSS draws once in the same 500ms, then hands over to the ring. */
 const HOLD_MS = 500
@@ -83,7 +83,7 @@ export function ToWorkPageLoading({ label, leaving = false }: { label: string; l
       aria-label={label}
       aria-busy={leaving ? 'false' : 'true'}>
       <div className="page-loader-spinner-wrap page-loader-handoff">
-        <ToWorkWordmark drawn />
+        <StudioProductMark drawn />
         <span className="page-loader-ring">
           <PageLoaderRing />
         </span>

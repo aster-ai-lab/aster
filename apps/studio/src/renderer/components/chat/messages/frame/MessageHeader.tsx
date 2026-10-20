@@ -13,7 +13,9 @@ import {
   WorkbenchProjectLockedContext,
   WorkbenchTurnStreamContext
 } from '@renderer/components/composer/workbenchComposerHost'
+import { StudioProductMark } from '@renderer/components/StudioProductMark'
 import { useTheme } from '@renderer/hooks/useTheme'
+import { studioIsAsterTenant, studioProductName } from '@renderer/tenantBrand'
 import type { Model } from '@renderer/types/model'
 import { getModelLogoRef } from '@renderer/utils/model'
 import { firstLetter, removeLeadingEmoji } from '@renderer/utils/naming'
@@ -153,7 +155,7 @@ const MessageHeader: FC<Props> = memo(
     const authorSnapshot = message.messageSnapshot
     const authorName = authorSnapshot ? authorSnapshot.name : assistantProfile?.name
     const authorAvatar = authorSnapshot ? authorSnapshot.emoji : assistantProfile?.avatar
-    const conversationAgentName = t('workbench.conversation.agent')
+    const conversationAgentName = studioIsAsterTenant() ? studioProductName() : t('workbench.conversation.agent')
     const getUserName = useCallback(() => {
       if (message.role === 'assistant') {
         if (workbenchConversation) return conversationAgentName
@@ -200,7 +202,11 @@ const MessageHeader: FC<Props> = memo(
       <div
         className={`message-header group/header relative flex gap-2.5 ${hasBodySlot ? 'mb-0 items-start' : 'mb-2 items-center'}`}>
         {isAssistantMessage ? (
-          workbenchConversation ? (
+          workbenchConversation && studioIsAsterTenant() ? (
+            <MessageAvatarFrame>
+              <StudioProductMark mark="workbench.assistant.mark" className="h-full w-full object-contain" />
+            </MessageAvatarFrame>
+          ) : workbenchConversation ? (
             <A3SBotAvatar
               activity={assistantActivity}
               animated={animateAssistant}

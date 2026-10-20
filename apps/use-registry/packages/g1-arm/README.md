@@ -5,10 +5,10 @@ Package `a3s/g1-arm@1.0.0`. One self-contained `.aix` package, three surfaces:
 | Surface | Id | Role |
 | --- | --- | --- |
 | Skill | `g1-arm` | Reads one observation and returns exactly one offered `choice`. |
-| Agent | `g1-arm` | Edge package harness, entry `agent/run.mjs`, 500 cpu millis, 256 MiB. Studio keeps one warm `a3s-box` per open view. |
+| Agent | `g1-arm` | Edge package harness, entry `agent/run.mjs`, 500 cpu millis, 256 MiB. AsterDream keeps one warm `a3s-box` per open view. |
 | UI | `workbench` | Mini app (`studio.applets`): no Activity Bar entry; after install, 打开 opens it in its own system window. Root `ui/workbench`. |
 
-Nothing runs on the host outside Studio. There is no lab server, no port, and no Python.
+Nothing runs on the host outside AsterDream. There is no lab server, no port, and no Python.
 
 The package is the EmbodiedJev G1 integration (`apps/studio/g1.zip`) ported onto the same workbench as `a3s/cobot-arm`: the same layout, controls, tasks, planner, session, agent, and view policy. The robot is different.
 
@@ -32,9 +32,9 @@ The 观测方式 switch chooses what a decision sees. The cameras are EmbodiedJe
 
 ## Decisions
 
-Each cycle has two decisions: a phase, then an action. When only one key is offered, the page takes it without a call. Otherwise it sends the observation to the package agent with `aix.agent.invoke`. Studio runs `agent/run.mjs` in a warm edge box for the life of the view:
+Each cycle has two decisions: a phase, then an action. When only one key is offered, the page takes it without a call. Otherwise it sends the observation to the package agent with `aix.agent.invoke`. AsterDream runs `agent/run.mjs` in a warm edge box for the life of the view:
 
-1. The agent emits a `model_request`. For the default decision model `platform/apofasi`, the request has `api: "systemone"` and a System One body: one `choice` question whose criteria are exactly the offered keys. For any other model given in `parameters.model`, it is a chat-completion body. Studio checks the body, calls the a3s gateway (`/v1/systemone` or `/v1/chat/completions`) with the member session, and posts the reply to `/v1/agent/model-responses`. The box never holds a credential.
+1. The agent emits a `model_request`. For the default decision model `platform/apofasi`, the request has `api: "systemone"` and a System One body: one `choice` question whose criteria are exactly the offered keys. For any other model given in `parameters.model`, it is a chat-completion body. AsterDream checks the body, calls the a3s gateway (`/v1/systemone` or `/v1/chat/completions`) with the member session, and posts the reply to `/v1/agent/model-responses`. The box never holds a credential.
 2. A System One reply counts only when it chooses an offered key and publishes a probability for exactly the offered keys, summing to 1. A chat reply counts only when it names one offered option. Otherwise, or when the gateway is unavailable, the agent uses the rule: the only option, else an offered `baseline_choice`, else the first option.
 3. The output is `{"choice", "source": "model" | "rule", ...}`, plus `probabilities`, `confidence`, and the serving `model` from the decision model. The page refuses a choice it did not offer.
 
@@ -42,13 +42,15 @@ Each cycle has two decisions: a phase, then an action. When only one key is offe
 
 When the agent cannot run (for example, `a3s-box` is not installed), the page chooses with the same rule and labels the step `规则控制器（agent 不可用）` with the reason.
 
-A vision decision is different. The page sends the two camera frames with the turn as named JPEG data URLs (`external`, `wrist`, each ≤ 256 KiB). Studio checks them and gives the agent only a manifest (`name`, `media_type`, `bytes`). The agent's chat request to `bailian/deepseek-v4.1-flash` labels each view and names it as `aix-image:<name>`; Studio puts the bytes in before calling the gateway, so the box never holds an image or a credential. The request sets `reasoning_effort: "none"`: with hidden reasoning on, this model spent all 4096 output tokens per step and answered nothing. An answer counts only as one finished JSON object with an offered `choice` and optional short public `intent` and `visual_evidence`, which the panel shows.
+A vision decision is different. The page sends the two camera frames with the turn as named JPEG data URLs (`external`, `wrist`, each ≤ 256 KiB). AsterDream checks them and gives the agent only a manifest (`name`, `media_type`, `bytes`). The agent's chat request to `bailian/deepseek-v4.1-flash` labels each view and names it as `aix-image:<name>`; AsterDream puts the bytes in before calling the gateway, so the box never holds an image or a credential. The request sets `reasoning_effort: "none"`: with hidden reasoning on, this model spent all 4096 output tokens per step and answered nothing. An answer counts only as one finished JSON object with an offered `choice` and optional short public `intent` and `visual_evidence`, which the panel shows.
 
 ## Batch evaluation
 
-批量评测 runs the chosen observation modes × tasks × seeds (1–10 per pair) in order, with shorter animation pauses than a single run, and reports, per mode and task, the success count, mean steps, model calls, and mean model latency. Each row keeps the fields of an EmbodiedJev batch result. The report is stored as view state, so it survives reopening the view, and 导出报告 shows it as JSON to copy; the view cannot download files. A step below 决策门槛 ends that episode as 等待人工处理. Vision episodes need Studio, since each step is a model call.
+批量评测 runs the chosen observation modes × tasks × seeds (1–10 per pair) in order, with shorter animation pauses than a single run, and reports, per mode and task, the success count, mean steps, model calls, and mean model latency. Each row keeps the fields of an EmbodiedJev batch result. The report is stored as view state, so it survives reopening the view, and 导出报告 shows it as JSON to copy; the view cannot download files. A step below 决策门槛 ends that episode as 等待人工处理. Vision episodes need AsterDream, since each step is a model call.
 
-## Studio view policy
+<a id="studio-view-policy"></a>
+
+## AsterDream view policy
 
 The view document is sandboxed (`allow-scripts`, opaque origin) with `connect-src 'none'` and no `'unsafe-eval'`. The page fetches nothing; scripts and fonts load as view files:
 
@@ -69,13 +71,13 @@ node tests/browser.proof.mjs
 node tests/load.proof.mjs
 ```
 
-The unit tests cover the agent protocol, the world (upstream travel pose, degrees of freedom, mass, colliders), the planner, the session, perception, the vision menu, batch evaluation, and the package shape. The browser proof loads the view in Chromium under Studio's exact view policy and sandbox, and drives the real `agent/run.mjs` through the host turn loop. It runs System One replies at 0.8, a 401 gateway (the agent uses its rule), a refused agent turn (the page uses its rule and labels it), the three tasks on RGB-D estimates, two vision episodes (a scripted answer that stalls, and an unoffered answer that must stop), System One replies at 0.4, which must stop in 等待人工处理, and a 12-episode batch whose stored report must survive a reload. It needs the Playwright install in `apps/studio`.
+The unit tests cover the agent protocol, the world (upstream travel pose, degrees of freedom, mass, colliders), the planner, the session, perception, the vision menu, batch evaluation, and the package shape. The browser proof loads the view in Chromium under AsterDream's exact view policy and sandbox, and drives the real `agent/run.mjs` through the host turn loop. It runs System One replies at 0.8, a 401 gateway (the agent uses its rule), a refused agent turn (the page uses its rule and labels it), the three tasks on RGB-D estimates, two vision episodes (a scripted answer that stalls, and an unoffered answer that must stop), System One replies at 0.4, which must stop in 等待人工处理, and a 12-episode batch whose stored report must survive a reload. It needs the Playwright install in `apps/studio`.
 
 The load proof measures navigation to the first robot frame, phase by phase, in Chromium, in WebKit when Playwright has it, and on macOS with `swift` in WKWebView on the GPU (`tests/webview-load.swift`). It fails when a median exceeds 1000 ms (`LOAD_BUDGET_MS`).
 
-`tests/studio-open.swift` measures the same load in a running Studio window, by hand: it opens the installed workbench from the activity bar and times the press to the first robot frame on screen.
+`tests/studio-open.swift` measures the same load in a running AsterDream window, by hand: it opens the installed workbench from the activity bar and times the press to the first robot frame on screen.
 
-The end-to-end test runs Studio's real authority: catalog install, view session, asset route, view-agent turn route, a warm `a3s-box`, and the member gateway. `tests/studio.e2e.mjs` plays the renderer in Chromium. It is the ignored Rust test `g1_arm_runs_end_to_end_through_studio` in `apps/studio/src-tauri`. Without environment it serves a fake gateway; with `A3S_STUDIO_E2E_GATEWAY` and `A3S_STUDIO_E2E_MEMBER_SESSION` it runs against a real one, and the member token stays in Rust.
+The end-to-end test runs AsterDream's real authority: catalog install, view session, asset route, view-agent turn route, a warm `a3s-box`, and the member gateway. `tests/studio.e2e.mjs` plays the renderer in Chromium. It is the ignored Rust test `g1_arm_runs_end_to_end_through_studio` in `apps/studio/src-tauri`. Without environment it serves a fake gateway; with `A3S_STUDIO_E2E_GATEWAY` and `A3S_STUDIO_E2E_MEMBER_SESSION` it runs against a real one, and the member token stays in Rust.
 
 `tests/PLAN.md` is the functional test plan. It maps each case to the test that proves it.
 

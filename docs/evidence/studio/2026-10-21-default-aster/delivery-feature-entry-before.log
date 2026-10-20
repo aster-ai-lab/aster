@@ -1,0 +1,23 @@
+
+======================================================================
+FAIL: test_product_build_selects_exactly_one_feature_without_default_product (__main__.StudioLauncherTest) (tenant='aster')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/just_work.py", line 81, in test_product_build_selects_exactly_one_feature_without_default_product
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : error: justfile does not contain recipe `aster`
+
+
+======================================================================
+FAIL: test_product_build_selects_exactly_one_feature_without_default_product (__main__.StudioLauncherTest) (tenant='toyou')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/just_work.py", line 81, in test_product_build_selects_exactly_one_feature_without_default_product
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : error: justfile does not contain recipe `toyou`
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.052s
+
+FAILED (failures=2)

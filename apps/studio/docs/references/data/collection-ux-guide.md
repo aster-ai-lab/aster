@@ -1,6 +1,6 @@
 ---
 description: >-
-  Studio implementation mapping for the root DESIGN.md collection standard,
+  AsterDream implementation mapping for the root DESIGN.md collection standard,
   including shared components, transport boundaries and acceptance evidence
 sources:
   - src/renderer/components/collection/CollectionPagination.tsx
@@ -25,7 +25,7 @@ sources:
 # Collection UX implementation guide
 
 The normative product contract is [DESIGN.md section 14](../../../../../DESIGN.md#14-collection-development-standard).
-This guide maps that standard to Studio implementations. It does not define a
+This guide maps that standard to AsterDream implementations. It does not define a
 second design specification or certify existing screens. The
 [pagination guide](./data-pagination-guide.md) and
 [API guidelines](./api-design-guidelines.md) own wire types, hooks and transport
@@ -33,7 +33,7 @@ mechanics; they must implement the root interaction contract.
 
 ## Implementation map
 
-| Requirement | Studio implementation / development obligation |
+| Requirement | AsterDream implementation / development obligation |
 |---|---|
 | Resource capabilities and sidebar coverage (§14.1–2) | Declare the actual owner, scope, lifecycle and operations before adding controls; `PlatformPage.tsx` exposes current views, not universal CRUD support |
 | Query and authority identity (§14.3) | Scope list memory and every SWR key to the exact account/team/resource/parent and committed query; validate shareable route state |
@@ -49,9 +49,9 @@ mechanics; they must implement the root interaction contract.
 
 ## Table presentation and performance
 
-The visual rules live in [DESIGN.md §6 Table](../../../../../DESIGN.md#table). Studio implements them as follows:
+The visual rules live in [DESIGN.md §6 Table](../../../../../DESIGN.md#table). AsterDream implements them as follows:
 
-| Rule | Studio implementation |
+| Rule | AsterDream implementation |
 |---|---|
 | Result count in the control row | Pass the count as `CollectionToolbar` `summary`; it renders in the right group before refresh/create, never as its own row |
 | 16px checkbox, 24px target | `RecordTable` uses the default `Checkbox` size with an `after:-inset-1` pseudo-element; do not pass `size="lg"`. The `data-selection-cell` cell toggles selection and is excluded from the row's expand click |
@@ -69,9 +69,9 @@ The visual rules live in [DESIGN.md §6 Table](../../../../../DESIGN.md#table). 
 ## Optimistic list writes
 
 [DESIGN.md §14.10](../../../../../DESIGN.md#1410-loading-errors-feedback-and-reconciliation) makes list edits
-and removals optimistic, and the §6 table rules define the row motion. Studio implements them as follows:
+and removals optimistic, and the §6 table rules define the row motion. AsterDream implements them as follows:
 
-| Rule | Studio implementation |
+| Rule | AsterDream implementation |
 |---|---|
 | Overlay store | `beginOptimistic(collection, { remove, patch })` in `optimisticRows.ts` returns a handle. Call `confirm()` on acceptance or `rollback()` on rejection, then `release()` after the list reconciles. A confirmed overlay releases itself after 8s. A later change to the same row supersedes the earlier one; a rollback after a confirm does nothing |
 | Reading the overlay | `useOptimisticRows(collection, ownerRows, idOf)` returns the projected `rows`, a `removed` count for totals, and `motion(id)`. Pass a module-level `idOf`. Use the same collection string at the writer and the reader, scoped like the list's SWR key (`supplierCollection(scope)`, `org/<orgId>/members`, `backup/local/<dir>`) |
@@ -138,7 +138,7 @@ upstream model IDs with their individual dependency counts.
 offerings that route through the supplier, including undeclared upstream IDs.
 Both require current supplier read authority; they grant no full model-management
 capability. The old admin-only array endpoint remains a compatibility surface;
-Studio no longer calls it.
+AsterDream no longer calls it.
 
 The strict query DTO accepts only `page`, `limit`, `search` and `model`. Defaults
 are page 1 and limit 20; page bounds are 1–1,000,000 and limits are 10/20/50/100.

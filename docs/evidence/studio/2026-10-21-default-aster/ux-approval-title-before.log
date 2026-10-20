@@ -1,0 +1,306 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:404) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/studio
+
+ ❯ |renderer| src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx (30 tests | 1 failed | 29 skipped) 168ms
+   ❯ PermissionRequestComposer (30)
+     × localizes the exact built-in tool in the approval title without guessing unknown names 53ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx > PermissionRequestComposer > localizes the exact built-in tool in the approval title without guessing unknown names
+TestingLibraryElementError: Unable to find an accessible element with the role "heading" and name "Allow Edit file?"
+
+Here are the accessible roles:
+
+  heading:
+
+  Name "Allow Edit?":
+  [36m<h2[39m
+    [33mclass[39m=[32m"flex shrink-0 items-center gap-2 text-[14px] leading-5 font-medium text-[#171717]"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  button:
+
+  Name "message.tools.activity.modify note.txt /tmp/note.txt":
+  [36m<button[39m
+    [33maria-expanded[39m=[32m"true"[39m
+    [33mclass[39m=[32m"flex w-fit items-center rounded-md border-0 bg-transparent text-left transition-colors outline-none focus-visible:bg-accent/50 disabled:pointer-events-none disabled:opacity-50 min-h-7 justify-start gap-2 text-[13px] leading-5 font-normal text-muted-foreground hover:no-underline px-3 py-2"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Add a note":
+  [36m<button[39m
+    [33mclass[39m=[32m"mr-auto inline-flex h-9 items-center rounded-[8px] px-2 text-[13px] text-[#8a8a8a] hover:bg-[#fafafa] hover:text-[#171717] focus-visible:ring-2 focus-visible:ring-black/10"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Deny":
+  [36m<button[39m
+    [33mclass[39m=[32m"inline-flex h-9 items-center gap-2 rounded-[8px] border border-[#e5e5e5] bg-white px-3 text-[13px] text-[#171717] hover:bg-[#fafafa] focus-visible:ring-2 focus-visible:ring-black/10"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Allow":
+  [36m<button[39m
+    [33mclass[39m=[32m"inline-flex h-9 items-center gap-2 rounded-[8px] bg-[#171717] px-3 text-[13px] text-white focus-visible:ring-2 focus-visible:ring-black/10"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  status:
+
+  Name "":
+  [36m<div[39m
+    [33maria-live[39m=[32m"polite"[39m
+    [33mclass[39m=[32m"sr-only"[39m
+    [33mdata-ui[39m=[32m"chat.permission-request-composer.status"[39m
+    [33mrole[39m=[32m"status"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"pointer-events-auto relative z-2 flex flex-col px-4.5 pt-0 pb-4.5"[39m
+      [33mdata-composer-viewport-inset-target[39m=[32m""[39m
+      [33mdata-ui[39m=[32m"chat.permission-request-composer"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"rounded-[14px] border border-[#ececec] bg-white p-3 text-[#171717] shadow-[0_8px_22px_rgba(20,40,80,0.04)]"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex min-w-0 items-center gap-2 px-1"[39m
+        [36m>[39m
+          [36m<h2[39m
+            [33mclass[39m=[32m"flex shrink-0 items-center gap-2 text-[14px] leading-5 font-medium text-[#171717]"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"inline-flex shrink-0 text-[#3f3f3f]"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"lucide lucide-file-text size-4"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mheight[39m=[32m"24"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.7"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [33mwidth[39m=[32m"24"[39m
+                [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M14 2v4a2 2 0 0 0 2 2h4"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M10 9H8"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M16 13H8"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M16 17H8"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+            [36m</span>[39m
+            [0mAllow Edit?[0m
+          [36m</h2>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"mt-2 overflow-hidden rounded-[8px] bg-[#f5f5f5]"[39m
+          [33mdata-testid[39m=[32m"permission-preview"[39m
+          [33mdata-ui[39m=[32m"chat.permission-request-composer.permission-preview"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"overflow-hidden bg-transparent w-full"[39m
+            [33mdata-ui[39m=[32m"chat.tool-disclosure"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"border-none"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"flex w-fit items-center"[39m
+              [36m>[39m
+                [36m<button[39m
+                  [33maria-expanded[39m=[32m"true"[39m
+                  [33mclass[39m=[32m"flex w-fit items-center rounded-md border-0 bg-transparent text-left transition-colors outline-none focus-visible:bg-accent/50 disabled:pointer-events-none disabled:opacity-50 min-h-7 justify-start gap-2 text-[13px] leading-5 font-normal text-muted-foreground hover:no-underline px-3 py-2"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"flex min-w-0 max-w-full items-center gap-1 overflow-hidden text-[13px] leading-5"[39m
+                    [33mdata-ui[39m=[32m"chat.label"[39m
+                  [36m>[39m
+                    [36m<div[39m
+                      [33mclass[39m=[32m"min-w-0 max-w-full shrink items-center overflow-hidden items-center gap-1.5 font-normal text-muted-foreground group-hover/tool-group-trigger:text-foreground [&_.tool-icon]:text-foreground-tertiary"[39m
+                      [33mdata-testid[39m=[32m"flex"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"name min-w-0 max-w-full truncate"[39m
+                      [36m>[39m
+                        [0mmessage.tools.activity.modify[0m
+                      [36m</span>[39m
+                    [36m</div>[39m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"inline-block min-w-0 max-w-full shrink truncate font-normal text-[13px] text-muted-foreground"[39m
+                      [33mdata-ui[39m=[32m"chat.description"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"inline-flex items-center gap-0.5"[39m
+                        [33mdata-ui[39m=[32m"chat.clickable-file-path"[39m
+                      [36m>[39m
+                        [36m<div[39m
+                          [33mclass[39m=[32m"flex flex-row items-center"[39m
+                          [33mdata-slot[39m=[32m"tooltip-trigger"[39m
+                          [33mdata-testid[39m=[32m"tooltip"[39m
+                          [33mdata-title[39m=[32m"/tmp/note.txt"[39m
+                          [33mdelay[39m=[32m"500"[39m
+                        [36m>[39m
+                          [36m<span[39m
+                            [33mclass[39m=[32m"inline-flex items-center gap-1 break-all cursor-default text-muted-foreground"[39m
+                          [36m>[39m
+                            [36m<span[39m
+                              [33mclass[39m=[32m"shrink-0"[39m
+                              [33mdata-icon[39m=[32m"material-icon-theme:document"[39m
+                              [33mdata-testid[39m=[32m"iconify-icon"[39m
+                              [33mstyle[39m=[32m"font-size: 1.1em;"[39m
+                            [36m/>[39m
+                            [0mnote.txt[0m
+                          [36m</span>[39m
+                          [36m<div[39m
+                            [33mdata-testid[39m=[32m"tooltip-content"[39m
+                          [36m>[39m
+                            [0m/tmp/note.txt[0m
+                          [36m</div>[39m
+                        [36m</div>[39m
+                      [36m</span>[39m
+                    [36m</span>[39m
+                  [36m</div>[39m
+                [36m</button>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"mt-1.5 max-h-[min(32rem,60dvh)] overscroll-contain rounded-xl text-[13px] leading-5 max-h-none overflow-visible bg-transparent p-2 text-foreground"[39m
+                [33mdata-testid[39m=[32m"collapse-content-Edit"[39m
+                [33mdata-ui[39m=[32m"chat.deferred-disclosure-content"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"overflow-y-auto max-h-60 overflow-x-hidden"[39m
+                  [33mdata-testid[39m=[32m"permission-builtin-body-scroll"[39m
+                  [33mdata-ui[39m=[32m"ui.scrollbar"[39m
+                [36m>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"relative"[39m
+                    [33mdata-ui[39m=[32m"chat.agent-file-diff-view"[39m
+                  [36m/>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"mt-2.5 flex items-center justify-end gap-2 px-1 pb-0.5"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"mr-auto inline-flex h-9 items-center rounded-[8px] px-2 text-[13px] text-[#8a8a8a] hover:bg-[#fafafa] hover:text-[#171717] focus-visible:ring-2 focus-visible:ring-black/10"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0mAdd a note[0m
+          [36m</button>[39m
+          [36m<div[39m
+            [33maria-live[39m=[32m"polite"[39m
+            [33mclass[39m=[32m"sr-only"[39m
+            [33mdata-ui[39m=[32m"chat.permission-request-composer.status"[39m
+            [33mrole[39m=[32m"status"[39m
+          [36m/>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"inline-flex h-9 items-center gap-2 rounded-[8px] border border-[#e5e5e5] bg-white px-3 text-[13px] text-[#171717] hover:bg-[#fafafa] focus-visible:ring-2 focus-visible:ring-black/10"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0mDeny[0m
+            [36m<kbd[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"bg-[#f5f5f5] text-[#8a8a8a]"[39m
+            [36m>[39m
+              [0mEsc[0m
+            [36m</kbd>[39m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"inline-flex h-9 items-center gap-2 rounded-[8px] bg-[#171717] px-3 text-[13px] text-white focus-visible:ring-2 focus-visible:ring-black/10"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0mAllow[0m
+            [36m<kbd[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"bg-white/15 text-white"[39m
+            [36m>[39m
+              [0mEnter[0m
+            [36m</kbd>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx:111:19
+    109|     request.toolResponse.arguments = { file_path: '/tmp/note.txt', old…
+    110|     const view = render(<PermissionRequestComposer request={request} o…
+    111|     expect(screen.getByRole('heading', { name: 'Allow Edit file?' })).…
+       |                   ^
+    112|     view.unmount()
+    113|     const unknown = makeRequest({ title: 'EditCustom' })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 29 skipped (30)
+   Start at  23:16:04
+   Duration  2.31s (transform 43%, import 35%, environment 12%, tests 8%, setup 3%)
+

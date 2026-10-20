@@ -8,13 +8,13 @@ Package `a3s/presenton@1.0.0`. The member surface is the homepage composer mode 
 | Agent | `presenton` | Edge package harness, entry `agent/run.mjs`, 500 cpu millis, 256 MiB. |
 | Composer mode | `slides` | Homepage work mode. Controls are page count, language, tone, verbosity, title slide, and instructions. |
 
-Nothing runs on the host outside Studio. There is no FastAPI or Next.js server, no port, no Python, and no Docker.
+Nothing runs on the host outside AsterDream. There is no FastAPI or Next.js server, no port, no Python, and no Docker.
 
-The package runs [Presenton](https://github.com/presenton/presenton) (Apache-2.0) in the same form as `a3s/g1-arm`: the view is Presenton's own frontend, the package agent calls the model through the a3s gateway turn by turn, and everything renders locally under the Studio view policy.
+The package runs [Presenton](https://github.com/presenton/presenton) (Apache-2.0) in the same form as `a3s/g1-arm`: the view is Presenton's own frontend, the package agent calls the model through the a3s gateway turn by turn, and everything renders locally under the AsterDream view policy.
 
 ## Workbench
 
-Studio does not mount these files and does not open them in a window. The bundled `ui/workbench` document remains in the package archive.
+AsterDream does not mount these files and does not open them in a window. The bundled `ui/workbench` document remains in the package archive.
 
 The view is Presenton's Next.js frontend (upload, outline, and presentation pages), built into one document by `tools/build-view.mjs`, with Chinese copy:
 
@@ -57,12 +57,14 @@ Adaptations to the box:
 
 ## Not in this package
 
-- **PPTX / PDF export.** The view has no downloads, no network, and no file access. Export would need a Studio host surface (for example, a save-file bridge). That is a change to the view's least-privilege boundary and is not made here.
+- **PPTX / PDF export.** The view has no downloads, no network, and no file access. Export would need a AsterDream host surface (for example, a save-file bridge). That is a change to the view's least-privilege boundary and is not made here.
 - **Images.** No image generation, stock search, or upload: the box has no network, the gateway has no image route for packages, and the 64 KiB view state cannot hold images. The image picker says so.
 - **AI chat, web search, document input, Smart mode, custom templates.**
 - **Upstream's other 12 templates.** Each is 0.7–2.3 MB of layout data and 3–13 MB of images; the four kept templates fit the package.
 
-## Studio view policy
+<a id="studio-view-policy"></a>
+
+## AsterDream view policy
 
 The view document is sandboxed (`allow-scripts`, opaque origin) with `connect-src 'none'`, `img-src 'self' data:`, and no `'unsafe-eval'`. The page fetches nothing: every file it loads is a view file, and every file is under the API's 8 MiB limit.
 
@@ -87,7 +89,7 @@ node --test tests/*.test.mjs
 node tests/browser.proof.mjs [out-dir]
 ```
 
-The unit tests cover the package shape and the view's Studio policy, the agent's prompts, schemas, validation and feedback loop, the edge protocol, and the view backend (hydration, icons, slide patches). The browser proof runs the view under Studio's exact document policy in Playwright and, for every template, goes through upstream's pages with the real agent step code and a fake model that answers each schema: input, outline, template, generation, a text edit, a title change, present mode, and a reload that restores the deck without new turns. It checks for console errors, broken images, and requests outside the package. `tests/`, `tools/`, `view/`, and `brand/` are package source only. The API publishes an explicit file list (`apps/api/src/contexts/plugin/infrastructure/presenton_package.rs`) that excludes them; its test fails when this directory and the list differ.
+The unit tests cover the package shape and the view's AsterDream policy, the agent's prompts, schemas, validation and feedback loop, the edge protocol, and the view backend (hydration, icons, slide patches). The browser proof runs the view under AsterDream's exact document policy in Playwright and, for every template, goes through upstream's pages with the real agent step code and a fake model that answers each schema: input, outline, template, generation, a text edit, a title change, present mode, and a reload that restores the deck without new turns. It checks for console errors, broken images, and requests outside the package. `tests/`, `tools/`, `view/`, and `brand/` are package source only. The API publishes an explicit file list (`apps/api/src/contexts/plugin/infrastructure/presenton_package.rs`) that excludes them; its test fails when this directory and the list differ.
 
 ## Supply
 

@@ -330,7 +330,9 @@ fn relaunch_next_fork(brand: &tenant::TenantBrand, current: &Path) {
             std::env::set_var("A3S_STUDIO_FORK_ALLOC", "1");
             std::env::set_var(
                 "STUDIO_RUNTIME_FILE",
-                std::env::temp_dir().join(format!("a3s-studio-runtime-{}-{id}.json", brand.slug)),
+                // The loaded brand and generated fork id are valid slugs.
+                tenant::runtime_path_under(&std::env::temp_dir(), &brand.slug, Some(&id))
+                    .expect("validated fork identity"),
             );
         }
         let exit = spawn_bundle(brand, Some(&id), current);

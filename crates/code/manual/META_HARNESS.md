@@ -56,7 +56,7 @@ a listener or lease does not undo a committed external write.
 
 These are live host-settlement guarantees. Durable external cleanup receipts,
 crash recovery of foreign resources, uncooperative extension containment and
-Studio document mutation admission still need their own qualification. They do
+AsterDream document mutation admission still need their own qualification. They do
 not follow from the model's completion fact or package generation pin.
 
 ## Stock components

@@ -1,0 +1,13 @@
+..F.....
+======================================================================
+FAIL: test_foreign_renderer_cannot_be_sealed_under_selected_tenant (__main__.StudioDeliveryTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/apps/studio/scripts/tests/studio_delivery_test.py", line 75, in test_foreign_renderer_cannot_be_sealed_under_selected_tenant
+    DELIVERY.seal(self.app, self.renderer, "toyou", self.root / "tenant")
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.045s
+
+FAILED (failures=1)

@@ -36,10 +36,10 @@ class DeliveryTests(unittest.TestCase):
         self.put(self.build / "NotoSansHans-Regular.otf", b"test font")
         self.put(self.build / "font-LICENSE", b"test font license")
         self.put(self.build / "icon-128.png", b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR" + struct.pack(">II", 128, 128))
-        self.put(self.renderer / "windows/main/index.html", b"<p>Studio fixture</p>")
+        self.put(self.renderer / "windows/main/index.html", b'<html data-tenant="aster" data-a3s-product="AsterDream"></html>')
         for name in delivery.BRAND_FILES:
-            self.put(self.tenants / "test" / name, b"test brand asset")
-        self.put(self.tenants / "test/model-market.json", b"must not ship")
+            self.put(self.tenants / "aster" / name, b"test brand asset")
+        self.put(self.tenants / "aster/model-market.json", b"must not ship")
         for name in delivery.IM_FILES:
             data = ELF if name in delivery.R4_BINARIES else b"fixture input"
             self.put(self.im / name, data, executable=name in delivery.R4_BINARIES)
@@ -56,7 +56,7 @@ class DeliveryTests(unittest.TestCase):
         self.sources.start()
         self.addCleanup(self.sources.stop)
         delivery.record_ime(self.im, "synthetic test fixtures")
-        delivery.build_receipt(self.build, self.renderer, "test", "2.1.3", "fixture-revision")
+        delivery.build_receipt(self.build, self.renderer, "aster", "2.1.3", "fixture-revision", self.tenants)
 
     @staticmethod
     def put(path, data, executable=False):
@@ -70,15 +70,45 @@ class DeliveryTests(unittest.TestCase):
     def test_complete_generation_has_studio_layout_and_independent_cache_paths(self):
         self.stage()
         result = delivery.verify(self.out)
-        self.assertEqual(result["product"], "dev.a3s.studio")
+        self.assertEqual(result["product"], "dev.a3s.studio.aster")
         self.assertEqual((self.out / "bin/agent/a3s-code-acp").read_bytes(), ELF)
         self.assertEqual((self.out / "bin/a3s-office").read_bytes(), ELF)
-        self.assertEqual((self.out / "Resources/studio-tenant").read_text(), "test\n")
-        self.assertFalse((self.out / "Resources/tenant/test/model-market.json").exists())
+        self.assertEqual((self.out / "Resources/studio-tenant").read_text(), "aster\n")
+        self.assertFalse((self.out / "Resources/tenant/aster/model-market.json").exists())
+        desktop = (self.out / "share/applications/dev.a3s.studio.aster.desktop").read_text()
+        self.assertIn("Name=AsterDream\n", desktop)
+        self.assertIn("Icon=dev.a3s.studio.aster\n", desktop)
+        self.assertFalse((self.out / "share/applications/dev.a3s.studio.desktop").exists())
         for version, module in (("fcitx4", "im-fcitx.so"), ("fcitx5", "im-fcitx5.so")):
             cache = (self.out / f"lib/im/{version}/immodules.cache").read_text()
             self.assertIn(f'"/app/lib/im/{version}/{module}"', cache)
             self.assertNotIn("/build/", cache)
+
+    def test_cross_product_build_receipt_is_refused(self):
+        path = self.build / "studio-build.json"
+        receipt = json.loads(path.read_text())
+        receipt["product"] = "dev.a3s.studio"
+        path.write_text(json.dumps(receipt))
+        with self.assertRaisesRegex(ValueError, "identity"):
+            self.stage()
+
+    def test_unknown_product_receipt_is_refused(self):
+        with self.assertRaisesRegex(ValueError, "product tenant"):
+            delivery.build_receipt(self.build, self.renderer, "test", "2.1.3", "fixture")
+
+    def test_toyou_has_its_own_desktop_identity_without_aster_assets(self):
+        shutil.copytree(self.tenants / "aster", self.tenants / "toyou")
+        self.put(self.renderer / "windows/main/index.html", b'<html data-tenant="toyou" data-a3s-product="ToWork"></html>')
+        delivery.build_receipt(self.build, self.renderer, "toyou", "2.1.3", "fixture-revision", self.tenants)
+        self.stage()
+        result = delivery.verify(self.out)
+        self.assertEqual(result["product"], "dev.a3s.studio")
+        desktop = (self.out / "share/applications/dev.a3s.studio.desktop").read_text()
+        self.assertIn("Name=ToWork\n", desktop)
+        self.assertIn("Icon=dev.a3s.studio\n", desktop)
+        self.assertFalse((self.out / "Resources/tenant/aster").exists())
+        self.assertFalse((self.out / "share/applications/dev.a3s.studio.aster.desktop").exists())
+        self.assertTrue((self.out / "libexec/studio_product.py").is_file())
 
     def test_each_companion_or_host_from_another_generation_is_refused(self):
         for name in ("Studio", "a3s-code-acp", "a3s-office"):
@@ -90,9 +120,22 @@ class DeliveryTests(unittest.TestCase):
                 self.assertFalse(self.out.exists())
 
     def test_renderer_changes_after_host_build_are_refused(self):
-        self.put(self.renderer / "windows/main/index.html", b"new renderer")
+        self.put(self.renderer / "windows/main/index.html", b'<html data-tenant="aster" data-a3s-product="AsterDream">new renderer</html>')
         with self.assertRaisesRegex(ValueError, "renderer generation changed"):
             self.stage()
+
+    def test_brand_and_desktop_icon_changes_after_build_are_refused(self):
+        for path in (self.tenants / "aster/INFO.md", self.build / "icon-128.png"):
+            with self.subTest(path=path):
+                original = path.read_bytes()
+                path.write_bytes(original + b"different generation")
+                try:
+                    with self.assertRaisesRegex(ValueError, "brand generation"):
+                        self.stage()
+                finally:
+                    path.write_bytes(original)
+                    if self.out.exists():
+                        shutil.rmtree(self.out)
 
     def test_missing_input_method_asset_is_refused(self):
         (self.im / "immodules/fcitx4/libfcitx-gclient.so.1").unlink()

@@ -6,7 +6,7 @@ version: 1.0.0
 
 # 宇树 G1 人形机器人
 
-The `a3s/g1-arm` workbench runs a MuJoCo simulation of the right arm of a Unitree G1 humanoid inside the Studio view. The torso is fixed at the table edge, and the arm carries a Panda parallel gripper. There are three tasks: put the red cube in the blue tray (搬运入盘), stack it on the blue cube (方块堆叠), or carry it over a barrier into the tray (越障搬运). Each task ends with the gripper open and withdrawn. Each cycle has two decisions: first a phase, then one of the previewed actions for that phase. You choose one offered key per decision. You do not claim a physical certification.
+The `a3s/g1-arm` workbench runs a MuJoCo simulation of the right arm of a Unitree G1 humanoid inside the AsterDream view. The torso is fixed at the table edge, and the arm carries a Panda parallel gripper. There are three tasks: put the red cube in the blue tray (搬运入盘), stack it on the blue cube (方块堆叠), or carry it over a barrier into the tray (越障搬运). Each task ends with the gripper open and withdrawn. Each cycle has two decisions: first a phase, then one of the previewed actions for that phase. You choose one offered key per decision. You do not claim a physical certification.
 
 ## Input
 

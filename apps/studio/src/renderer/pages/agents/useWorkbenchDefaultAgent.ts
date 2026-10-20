@@ -11,7 +11,7 @@ import { useDefaultModel, useModelMutations, useModels } from '@renderer/hooks/u
 import { useProviders } from '@renderer/hooks/useProvider'
 import { createAgentAndRefresh } from '@renderer/services/createAgent'
 import { toast } from '@renderer/services/toast'
-import { studioProductName } from '@renderer/tenantBrand'
+import { studioProductName, studioUsesWorkbenchShell } from '@renderer/tenantBrand'
 import { formatErrorMessageWithPrefix } from '@renderer/utils/error'
 import { AGENT_RUNTIME_CAPABILITIES } from '@shared/ai/agentRuntimeCapabilities'
 import { createUniqueModelId, type Model } from '@shared/data/types/model'
@@ -26,9 +26,9 @@ const logger = loggerService.withContext('useWorkbenchDefaultAgent')
 
 export const WORKBENCH_DEFAULT_AGENT_TYPE = 'a3s-code' as const
 
-/** ToWork keeps one auto-created agent. Cherry Studio keeps its agent catalog. */
+/** The declared workbench tenants keep one auto-created agent. Other tenants keep their catalog. */
 export function workbenchUsesSingleDefaultAgent(): boolean {
-  return studioProductName() === 'ToWork'
+  return studioUsesWorkbenchShell()
 }
 
 /**
@@ -237,19 +237,22 @@ export function useWorkbenchModel(options: { enabled?: boolean } = {}) {
   const { defaultModel } = useDefaultModel({ enabled })
   const [defaultModelId] = usePreference('chat.default_model_id')
   const auto = !defaultModelId
-  const org = useOrgModels({ enabled: enabled && auto })
+  const member = useMemberProfile()
+  const localBuild = import.meta.env.PUBLIC_STUDIO_TENANT === 'aster'
+  const organizationEnabled = !localBuild || member !== null
+  const org = useOrgModels({ enabled: enabled && auto && organizationEnabled })
   const { providers } = useProviders(undefined, { enabled: enabled && auto })
   const { models } = useModels(undefined, { fetchEnabled: enabled && auto })
   const { createModel } = useModelMutations()
-  const catalogSettled = org.phase === 'ready' || org.phase === 'error'
-  const alias = org.phase === 'ready' && org.catalog.autoModel ? OS_GATEWAY_AUTO_MODEL_ID : undefined
+  const catalogSettled = localBuild || org.phase === 'ready' || org.phase === 'error'
+  const alias = organizationEnabled && org.phase === 'ready' && org.catalog.autoModel ? OS_GATEWAY_AUTO_MODEL_ID : undefined
   const stored = enabled && auto && alias && Array.isArray(models) ? modelForCatalogAlias(models, alias) : undefined
   const published = enabled && auto && alias ? publishedAutoModel(alias) : undefined
   const fallback =
     enabled && auto && catalogSettled && !alias && Array.isArray(models) && Array.isArray(providers)
-      ? firstUsableChatModel(models, providers)
+      ? firstUsableChatModel(models, organizationEnabled ? providers : providers.filter((provider) => provider.id !== OS_GATEWAY_PROVIDER_ID))
       : undefined
-  const model = !auto ? defaultModel : (stored ?? published ?? fallback)
+  const model = !auto ? (!organizationEnabled && defaultModel?.providerId === OS_GATEWAY_PROVIDER_ID ? undefined : defaultModel) : (stored ?? published ?? fallback)
 
   const creating = useRef(false)
   useEffect(() => {

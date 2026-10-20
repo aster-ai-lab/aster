@@ -12,7 +12,7 @@ sources:
 
 # Intelligent UI and AIX UI
 
-Studio has two independent contracts.
+AsterDream has two independent contracts.
 
 | Contract | Producer | Host responsibility | Consumer |
 |---|---|---|---|
@@ -21,7 +21,7 @@ Studio has two independent contracts.
 
 OpenUI Lang is the current source language for Intelligent UI. It is not the
 AIX package format or its plugin contribution protocol. An OpenUI program
-cannot register a view, replace Studio UI, invoke native commands or obtain
+cannot register a view, replace AsterDream UI, invoke native commands or obtain
 plugin permissions. AIX remains an ACL-described `.aix` archive.
 
 `@a3s-lab/intelligent-ui` owns the renderer and closed catalog.

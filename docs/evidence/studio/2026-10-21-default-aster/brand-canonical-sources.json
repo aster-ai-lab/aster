@@ -1,0 +1,36 @@
+{
+  "canonical_brand_sources": [
+    {
+      "path": "apps/work/logo.svg",
+      "sha256": "6e921dc1f81a06048dd1ded567f91af030b026b0926d6103b15b5b1e24e75cb6",
+      "bytes": 1098
+    },
+    {
+      "path": "apps/work/logo.png",
+      "sha256": "f33b3fc51c503065d4199679f3290a6a057aab23c1cf92ab093d133b83c6ccaa",
+      "bytes": 64779
+    },
+    {
+      "path": "apps/work/build/app-icon.svg",
+      "sha256": "ba03e2eb6f5e4afd01e4f0831d62783b7973d047dd0b5aca4b184915fa133d41",
+      "bytes": 1809
+    },
+    {
+      "path": "apps/work/build/icon.png",
+      "sha256": "b0503de5e517a3d3e5d01b5aa000dd18c27ce2076c791bc68dbdb502cb4c156c",
+      "bytes": 224492
+    },
+    {
+      "path": "apps/work/build/icon.ico",
+      "sha256": "146df350f7180a73732c671995a5ff49ae2d20a9b4b21ea2728aa459bab32fe8",
+      "bytes": 74349
+    },
+    {
+      "path": "apps/work/build/icon.icns",
+      "sha256": "8bb605d6b8e785abf502ba42f7357246812404c2b50830f6dbfb760324a5902c",
+      "bytes": 540535
+    }
+  ],
+  "excluded_stale_asset": "apps/work/build/tray_icon.png: actual inspection confirms old ToWork lettering; derive new tray only from canonical logo.svg",
+  "ui_baseline_receipt_sha256": "2445a685bb44f3c54c514ddbaf57424b423d6f04d2e4b637bd2c005a2c56fb54"
+}

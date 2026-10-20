@@ -1,10 +1,10 @@
 ---
 name: paperloom
-description: Read one explicitly selected paper inside Studio's native paper workspace.
+description: Read one explicitly selected paper inside AsterDream's native paper workspace.
 ---
 
 Use the `paperloom` host workflow with one explicitly selected workspace PDF.
-Reuse Studio file selection and saving; do not create another library or ask the
+Reuse AsterDream file selection and saving; do not create another library or ask the
 user to import the same file again. Original reading does not start processing.
 Bind jobs, answers and saved artifacts to the workspace file and source digest.
 The host reads the PDF text layer in-process. It does not call an external processing service.

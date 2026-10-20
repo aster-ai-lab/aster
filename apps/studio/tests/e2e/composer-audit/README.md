@@ -1,6 +1,6 @@
 # Composer business acceptance audit
 
-This suite tests the production Studio renderer and composer logic against the
+This suite tests the production AsterDream renderer and composer logic against the
 requested Work review/provenance behavior. Open acceptance findings stay red;
 they are not marked as expected failures. The dedicated Playwright config keeps
 this audit separate from the existing Office regression suite.

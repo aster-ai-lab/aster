@@ -1,0 +1,328 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:8756) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/studio
+
+ ❯ |renderer| src/renderer/pages/agents/__tests__/WorkbenchModelPicker.popup.test.tsx (3 tests | 1 failed | 2 skipped) 1061ms
+   ❯ WorkbenchModelPicker popup (3)
+     × selects an anonymous local model without waiting for or calling the organization 1050ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/WorkbenchModelPicker.popup.test.tsx > WorkbenchModelPicker popup > selects an anonymous local model without waiting for or calling the organization
+TestingLibraryElementError: Unable to find role="option" and name `/Private chat/`
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mdata-testid[39m=[32m"popover"[39m
+    [36m>[39m
+      [36m<button[39m
+        [33mdata-testid[39m=[32m"popover-trigger"[39m
+        [33mdata-ui[39m=[32m""[39m
+      [36m>[39m
+        [0mLocal models[0m
+      [36m</button>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+  [36m<div[39m
+    [33maria-label[39m=[32m"workbench.model_picker.title"[39m
+    [33mclass[39m=[32m"relative w-[384px] overflow-visible rounded-[14px] border border-[#ebebeb] bg-white p-0 shadow-[0_12px_40px_rgba(0,0,0,0.12)]"[39m
+    [33mdata-testid[39m=[32m"popover-content"[39m
+    [33mdata-workbench-model-picker[39m=[32m"true"[39m
+  [36m>[39m
+    [36m<header[39m
+      [33mclass[39m=[32m"flex items-center gap-2 px-3 pt-3 pb-2"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"min-w-0 flex-1"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"text-[14px] font-medium text-[#171717]"[39m
+        [36m>[39m
+          [0mworkbench.model_picker.title[0m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"truncate text-[12px] text-[#8a8a8a]"[39m
+        [36m>[39m
+          [0mworkbench.composer.auto_model[0m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<button[39m
+        [33maria-label[39m=[32m"workbench.model_picker.close"[39m
+        [33mclass[39m=[32m"flex size-7 items-center justify-center rounded-[8px] text-[#8a8a8a] hover:bg-[#f5f5f5] hover:text-[#171717]"[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [36m<svg[39m
+          [33maria-hidden[39m=[32m"true"[39m
+          [33mclass[39m=[32m"lucide lucide-x"[39m
+          [33mfill[39m=[32m"none"[39m
+          [33mheight[39m=[32m"15"[39m
+          [33mstroke[39m=[32m"currentColor"[39m
+          [33mstroke-linecap[39m=[32m"round"[39m
+          [33mstroke-linejoin[39m=[32m"round"[39m
+          [33mstroke-width[39m=[32m"1.8"[39m
+          [33mviewBox[39m=[32m"0 0 24 24"[39m
+          [33mwidth[39m=[32m"15"[39m
+          [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+        [36m>[39m
+          [36m<path[39m
+            [33md[39m=[32m"M18 6 6 18"[39m
+          [36m/>[39m
+          [36m<path[39m
+            [33md[39m=[32m"m6 6 12 12"[39m
+          [36m/>[39m
+        [36m</svg>[39m
+      [36m</button>[39m
+    [36m</header>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"px-3 pb-2"[39m
+    [36m>[39m
+      [36m<label[39m
+        [33mclass[39m=[32m"flex h-8 items-center gap-2 rounded-[8px] bg-[#f5f5f5] px-2.5 text-[13px] focus-within:ring-2 focus-within:ring-[#171717]/10"[39m
+      [36m>[39m
+        [36m<svg[39m
+          [33maria-hidden[39m=[32m"true"[39m
+          [33mclass[39m=[32m"lucide lucide-search shrink-0 text-[#a3a3a3]"[39m
+          [33mfill[39m=[32m"none"[39m
+          [33mheight[39m=[32m"14"[39m
+          [33mstroke[39m=[32m"currentColor"[39m
+          [33mstroke-linecap[39m=[32m"round"[39m
+          [33mstroke-linejoin[39m=[32m"round"[39m
+          [33mstroke-width[39m=[32m"1.8"[39m
+          [33mviewBox[39m=[32m"0 0 24 24"[39m
+          [33mwidth[39m=[32m"14"[39m
+          [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+        [36m>[39m
+          [36m<path[39m
+            [33md[39m=[32m"m21 21-4.34-4.34"[39m
+          [36m/>[39m
+          [36m<circle[39m
+            [33mcx[39m=[32m"11"[39m
+            [33mcy[39m=[32m"11"[39m
+            [33mr[39m=[32m"8"[39m
+          [36m/>[39m
+        [36m</svg>[39m
+        [36m<input[39m
+          [33maria-label[39m=[32m"workbench.model_picker.search"[39m
+          [33mclass[39m=[32m"min-w-0 flex-1 bg-transparent text-[#171717] outline-none placeholder:text-[#a3a3a3]"[39m
+          [33mplaceholder[39m=[32m"workbench.model_picker.search"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+      [36m</label>[39m
+    [36m</div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"h-[280px] overflow-y-auto px-2 pb-2"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex h-full items-center justify-center gap-2 text-[13px] text-[#8a8a8a]"[39m
+        [33mdata-ui[39m=[32m"agents.workbench-model-picker.status"[39m
+        [33mrole[39m=[32m"status"[39m
+      [36m>[39m
+        [36m<svg[39m
+          [33maria-hidden[39m=[32m"true"[39m
+          [33mclass[39m=[32m"lucide lucide-loader-circle animate-spin"[39m
+          [33mfill[39m=[32m"none"[39m
+          [33mheight[39m=[32m"14"[39m
+          [33mstroke[39m=[32m"currentColor"[39m
+          [33mstroke-linecap[39m=[32m"round"[39m
+          [33mstroke-linejoin[39m=[32m"round"[39m
+          [33mstroke-width[39m=[32m"2"[39m
+          [33mviewBox[39m=[32m"0 0 24 24"[39m
+          [33mwidth[39m=[32m"14"[39m
+          [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+        [36m>[39m
+          [36m<path[39m
+            [33md[39m=[32m"M21 12a9 9 0 1 1-6.219-8.56"[39m
+          [36m/>[39m
+        [36m</svg>[39m
+        [0mworkbench.model_picker.loading[0m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mdata-testid[39m=[32m"popover"[39m
+    [36m>[39m
+      [36m<button[39m
+        [33mdata-testid[39m=[32m"popover-trigger"[39m
+        [33mdata-ui[39m=[32m""[39m
+      [36m>[39m
+        [0mLocal models[0m
+      [36m</button>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+  [36m<div[39m
+    [33maria-label[39m=[32m"workbench.model_picker.title"[39m
+    [33mclass[39m=[32m"relative w-[384px] overflow-visible rounded-[14px] border border-[#ebebeb] bg-white p-0 shadow-[0_12px_40px_rgba(0,0,0,0.12)]"[39m
+    [33mdata-testid[39m=[32m"popover-content"[39m
+    [33mdata-workbench-model-picker[39m=[32m"true"[39m
+  [36m>[39m
+    [36m<header[39m
+      [33mclass[39m=[32m"flex items-center gap-2 px-3 pt-3 pb-2"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"min-w-0 flex-1"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"text-[14px] font-medium text-[#171717]"[39m
+        [36m>[39m
+          [0mworkbench.model_picker.title[0m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"truncate text-[12px] text-[#8a8a8a]"[39m
+        [36m>[39m
+          [0mworkbench.composer.auto_model[0m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<button[39m
+        [33maria-label[39m=[32m"workbench.model_picker.close"[39m
+        [33mclass[39m=[32m"flex size-7 items-center justify-center rounded-[8px] text-[#8a8a8a] hover:bg-[#f5f5f5] hover:text-[#171717]"[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [36m<svg[39m
+          [33maria-hidden[39m=[32m"true"[39m
+          [33mclass[39m=[32m"lucide lucide-x"[39m
+          [33mfill[39m=[32m"none"[39m
+          [33mheight[39m=[32m"15"[39m
+          [33mstroke[39m=[32m"currentColor"[39m
+          [33mstroke-linecap[39m=[32m"round"[39m
+          [33mstroke-linejoin[39m=[32m"round"[39m
+          [33mstroke-width[39m=[32m"1.8"[39m
+          [33mviewBox[39m=[32m"0 0 24 24"[39m
+          [33mwidth[39m=[32m"15"[39m
+          [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+        [36m>[39m
+          [36m<path[39m
+            [33md[39m=[32m"M18 6 6 18"[39m
+          [36m/>[39m
+          [36m<path[39m
+            [33md[39m=[32m"m6 6 12 12"[39m
+          [36m/>[39m
+        [36m</svg>[39m
+      [36m</button>[39m
+    [36m</header>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"px-3 pb-2"[39m
+    [36m>[39m
+      [36m<label[39m
+        [33mclass[39m=[32m"flex h-8 items-center gap-2 rounded-[8px] bg-[#f5f5f5] px-2.5 text-[13px] focus-within:ring-2 focus-within:ring-[#171717]/10"[39m
+      [36m>[39m
+        [36m<svg[39m
+          [33maria-hidden[39m=[32m"true"[39m
+          [33mclass[39m=[32m"lucide lucide-search shrink-0 text-[#a3a3a3]"[39m
+          [33mfill[39m=[32m"none"[39m
+          [33mheight[39m=[32m"14"[39m
+          [33mstroke[39m=[32m"currentColor"[39m
+          [33mstroke-linecap[39m=[32m"round"[39m
+          [33mstroke-linejoin[39m=[32m"round"[39m
+          [33mstroke-width[39m=[32m"1.8"[39m
+          [33mviewBox[39m=[32m"0 0 24 24"[39m
+          [33mwidth[39m=[32m"14"[39m
+          [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+        [36m>[39m
+          [36m<path[39m
+            [33md[39m=[32m"m21 21-4.34-4.34"[39m
+          [36m/>[39m
+          [36m<circle[39m
+            [33mcx[39m=[32m"11"[39m
+            [33mcy[39m=[32m"11"[39m
+            [33mr[39m=[32m"8"[39m
+          [36m/>[39m
+        [36m</svg>[39m
+        [36m<input[39m
+          [33maria-label[39m=[32m"workbench.model_picker.search"[39m
+          [33mclass[39m=[32m"min-w-0 flex-1 bg-transparent text-[#171717] outline-none placeholder:text-[#a3a3a3]"[39m
+          [33mplaceholder[39m=[32m"workbench.model_picker.search"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+      [36m</label>[39m
+    [36m</div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"h-[280px] overflow-y-auto px-2 pb-2"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex h-full items-center justify-center gap-2 text-[13px] text-[#8a8a8a]"[39m
+        [33mdata-ui[39m=[32m"agents.workbench-model-picker.status"[39m
+        [33mrole[39m=[32m"status"[39m
+      [36m>[39m
+        [36m<svg[39m
+          [33maria-hidden[39m=[32m"true"[39m
+          [33mclass[39m=[32m"lucide lucide-loader-circle animate-spin"[39m
+          [33mfill[39m=[32m"none"[39m
+          [33mheight[39m=[32m"14"[39m
+          [33mstroke[39m=[32m"currentColor"[39m
+          [33mstroke-linecap[39m=[32m"round"[39m
+          [33mstroke-linejoin[39m=[32m"round"[39m
+          [33mstroke-width[39m=[32m"2"[39m
+          [33mviewBox[39m=[32m"0 0 24 24"[39m
+          [33mwidth[39m=[32m"14"[39m
+          [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+        [36m>[39m
+          [36m<path[39m
+            [33md[39m=[32m"M21 12a9 9 0 1 1-6.219-8.56"[39m
+          [36m/>[39m
+        [36m</svg>[39m
+        [0mworkbench.model_picker.loading[0m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ waitForWrapper node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/renderer/pages/agents/__tests__/WorkbenchModelPicker.popup.test.tsx:86:37
+     84|       render(<WorkbenchModelPicker trigger={<button>Local models</butt…
+     85|       await user.click(screen.getByRole('button', { name: 'Local model…
+     86|       await user.click(await screen.findByRole('option', { name: /Priv…
+       |                                     ^
+     87|       expect(mocks.fetchOrgModels).not.toHaveBeenCalled()
+     88|       expect(mocks.writeShellModelDefault).toHaveBeenCalledWith({ prov…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 skipped (3)
+   Start at  23:31:38
+   Duration  2.01s (tests 54%, import 15%, transform 14%, environment 13%, setup 3%)
+

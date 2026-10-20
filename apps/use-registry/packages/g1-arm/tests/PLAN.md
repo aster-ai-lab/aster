@@ -6,12 +6,12 @@ this plan. The tests run at five levels, cheapest first:
 | Level | What runs | Command |
 | --- | --- | --- |
 | Package | Node unit tests over the agent, world, planner, session, perception, vision menu, batch evaluation, and package shape | `node --test tests/*.test.mjs` |
-| Browser | The view in Chromium under Studio's exact headers, sandbox, and handshake; the real `agent/run.mjs`; RGB-D, vision, and batch episodes | `node tests/browser.proof.mjs` |
+| Browser | The view in Chromium under AsterDream's exact headers, sandbox, and handshake; the real `agent/run.mjs`; RGB-D, vision, and batch episodes | `node tests/browser.proof.mjs` |
 | Load | View load time per phase, Chromium and WebKit, fresh context per run | `node tests/load.proof.mjs [runs]` |
-| Studio native | Rust tests in `apps/studio/src-tauri` (authority, view sessions, view-agent binding, warm box) and the renderer tests | see below |
-| End to end | Studio's authority, catalog sync, asset route, turn route, warm `a3s-box`, and a gateway; Chromium plays the renderer | see below |
+| AsterDream native | Rust tests in `apps/studio/src-tauri` (authority, view sessions, view-agent binding, warm box) and the renderer tests | see below |
+| End to end | AsterDream's authority, catalog sync, asset route, turn route, warm `a3s-box`, and a gateway; Chromium plays the renderer | see below |
 
-Studio native:
+AsterDream native:
 
 ```sh
 cd apps/studio/src-tauri
@@ -54,19 +54,19 @@ renderer test in `apps/studio/src/renderer`, `api:` is a test in
 | P-06 | Seed list does not drift | The API's `include_bytes!` list equals the package directory minus `tests/`, `tools/`, `brand/` | api:`each_workbench_published_list_matches_the_package_directory` |
 | P-07 | Listed as a plugin, not an agent | The plugin page offers it beside the cobot; the experts (智能体) catalog skips a package with a `ui` surface | api:`the_plugin_page_offers_g1_arm_beside_cobot_arm`, `the_catalog_stores_g1_arm_for_the_plugin_page`; ui:`lists an agent package but leaves a package with a view to the plugin catalog` |
 | P-08 | Seeds stay apart and pins follow | The cobot and G1 seeds share no name, slug, package id, or directory; a retired G1 pin follows the activity-bar generation | api:`workbench_seeds_do_not_collide`, `a_retired_g1_arm_pin_follows_the_activity_bar_generation` |
-| P-09 | Install through the catalog | `PUT /api/capabilities/installations/a3s-g1-arm` reaches the gateway once, Studio syncs the bundle, and the view appears in the catalogue | e2e `install`, `catalogue` (hermetic: installs 1, bundles ≥ 1) |
+| P-09 | Install through the catalog | `PUT /api/capabilities/installations/a3s-g1-arm` reaches the gateway once, AsterDream syncs the bundle, and the view appears in the catalogue | e2e `install`, `catalogue` (hermetic: installs 1, bundles ≥ 1) |
 
 ## 2. View load and view policy
 
 | ID | Case | Expected | Test |
 | --- | --- | --- | --- |
-| V-01 | Studio's view policy | CSP allows `'wasm-unsafe-eval'` only; `connect-src 'none'`; no `'unsafe-eval'` | studio:authority `a_view_compiles_wasm_but_reaches_nothing`; e2e asset header checks |
+| V-01 | AsterDream's view policy | CSP allows `'wasm-unsafe-eval'` only; `connect-src 'none'`; no `'unsafe-eval'` | studio:authority `a_view_compiles_wasm_but_reaches_nothing`; e2e asset header checks |
 | V-02 | The view loads under that policy in a sandboxed frame | AIX handshake completes; no console error or policy violation | browser proof `problems: []`; e2e `problems: []` |
 | V-03 | Fonts and icons are served from the package | Three Ubuntu weights load | browser proof `fonts` |
 | V-04 | Asset sessions read only the owned surface | Foreign token, agent source, the manifest, and `%2e%2e` traversal are 404 | e2e `refused`; studio:workbench_projection `asset_sessions_only_read_the_owned_surface…` |
 | V-05 | Sessions revoke | Upgrade, uninstall, owner change, close, and expiry end the session; after close the asset and turn routes are 404 | studio:workbench_projection (20 tests); e2e `afterClose` |
 | V-06 | Tampering is refused | A changed file on disk is refused and drops the verified cache | studio:workbench_projection tamper test; reconcile `reading_every_file_verifies_the_surface_once_and_refuses_tampering` |
-| V-07 | Centered loader | Studio's shared loader covers the view until its document loads | ui:`covers a loading view with the shared centered loader until its document loads` |
+| V-07 | Centered loader | AsterDream's shared loader covers the view until its document loads | ui:`covers a loading view with the shared centered loader until its document loads` |
 
 ## 3. Simulation and tasks
 
@@ -134,7 +134,7 @@ renderer test in `apps/studio/src/renderer`, `api:` is a test in
 | C-12 | Vision request | Chat to `bailian/deepseek-v4.1-flash`, `response_format` JSON, `reasoning_effort` `none`; an answer counts only as one finished offered choice with short public summaries | pkg:agent `a vision request labels each view…`, `a planning answer counts only…`; studio:aix_episodes `view_turns_and_model_bodies_accept_only_the_closed_shape` (`reasoning_effort` closed set) |
 | E-01 | Batch plan | Every chosen mode, task, and seed once, in a fixed order; an empty or unknown choice is refused | pkg:evaluation `the plan runs every chosen mode…` |
 | E-02 | Batch rows and summary | Success, status, cycles, model calls and latency per episode; success rate and cost per mode and task | pkg:evaluation `a batch row reports…`, `the summary gives…` |
-| E-03 | Report storage and export | The largest batch (90 episodes) fits Studio's view state; the stored report equals the exported JSON and survives a reload | pkg:evaluation `the largest batch report fits…`; browser proof `batch` |
+| E-03 | Report storage and export | The largest batch (90 episodes) fits AsterDream's view state; the stored report equals the exported JSON and survives a reload | pkg:evaluation `the largest batch report fits…`; browser proof `batch` |
 
 ## 8. Performance budgets
 
@@ -144,13 +144,13 @@ renderer test in `apps/studio/src/renderer`, `api:` is a test in
 | L-02 | Host: catalogue, open, all view assets (debug build) | Reported; 19 files in tens of ms | studio:`g1_arm_view_load_timing` (ignored probe) |
 | L-03 | Warm agent turn | Reported; e2e records first-turn and later-turn median | e2e `episode.firstTurnMs`, `laterTurnMedianMs`; live box test |
 | L-04 | Cold browser first frame | Reported, not budgeted: it is the GPU process starting | `tests/load.proof.mjs` `coldStart` |
-| L-05 | In a running Studio window: press the activity-bar entry → view DOM ready → first robot frame on screen; first open after a launch and later opens | Reported, manual (needs Studio in front and the Accessibility and Screen Recording permissions) | `tests/studio-open.swift` |
+| L-05 | In a running AsterDream window: press the activity-bar entry → view DOM ready → first robot frame on screen; first open after a launch and later opens | Reported, manual (needs AsterDream in front and the Accessibility and Screen Recording permissions) | `tests/studio-open.swift` |
 
 ## Not covered by automation
 
-- A running Studio window, in CI. `tests/studio-open.swift` measures the load
-  in one by hand; the end-to-end test uses Studio's real authority and
-  Playwright Chromium as the renderer. No episode is run in Studio's own
+- A running AsterDream window, in CI. `tests/studio-open.swift` measures the load
+  in one by hand; the end-to-end test uses AsterDream's real authority and
+  Playwright Chromium as the renderer. No episode is run in AsterDream's own
   window. WebView2 (Windows) is not measured.
 - GPU frame rate during an episode.
 - The operator path `a3s-use-registry-tools assemble`.

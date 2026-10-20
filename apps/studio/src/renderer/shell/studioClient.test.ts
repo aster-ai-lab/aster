@@ -110,6 +110,20 @@ describe('studio shell client', () => {
     expect(document.getElementById('login')?.hidden).toBe(false)
   })
 
+  it('paints the aster star without changing the returned product identity', () => {
+    document.body.innerHTML = '<h1 id="product"></h1>'
+    document.documentElement.dataset.tenant = 'aster'
+    try {
+      paintStudioWelcome(document, { tenant: 'aster', product: 'AsterDream' })
+      expect(document.getElementById('product')?.querySelector('img')).toHaveAttribute('src', '/mark.png')
+      expect(document.getElementById('product')).toHaveAttribute('aria-label', 'AsterDream')
+      expect(document.title).toBe('AsterDream')
+      expect(document.querySelectorAll('.towork-stroke')).toHaveLength(0)
+    } finally {
+      delete document.documentElement.dataset.tenant
+    }
+  })
+
   it('paints the ToWork geometric wordmark instead of the product name', () => {
     document.body.innerHTML = '<h1 id="product">ToWork</h1>'
     paintStudioWelcome(document, { product: 'ToWork' })

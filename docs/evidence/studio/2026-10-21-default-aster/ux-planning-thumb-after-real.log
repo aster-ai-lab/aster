@@ -1,0 +1,1555 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:99619) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/studio
+
+stderr | src/renderer/pages/agents/__tests__/homeComposerChrome.test.tsx > homepage composer chrome > left-aligns the work-mode track and lays quick tasks in one chip row
+An update to HomeComposerModeTrack inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerSendDialog inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerModeNotice inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerTaskBar inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerTaskBar inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerTaskBar inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerModeTrack inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerSendDialog inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerModeNotice inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerTaskBar inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerSendDialog inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerModeNotice inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to Presence inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to Presence inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to ForwardRef(DialogOverlayImpl) inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to ForwardRef(FocusScope) inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to Presence inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to Presence inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to DialogContent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to ForwardRef(DismissableLayer) inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to Dialog inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to Dialog inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to SwitchProvider inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+stderr | src/renderer/pages/agents/__tests__/homeComposerChrome.test.tsx > homepage composer chrome > keeps 日常办公 checked and uses 代码开发 only after it is chosen
+An update to HomeComposerModeTrack inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerSendDialog inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerModeNotice inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to CodeWorkspacePlacement inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerModeTrack inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerSendDialog inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerModeNotice inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to CodeWorkspacePlacement inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to Tooltip inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to Tooltip inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to CodeWorkspacePlacement inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+stderr | src/renderer/pages/agents/__tests__/homeComposerChrome.test.tsx > homepage composer chrome > picks an existing branch or creates one from a dialog
+An update to HomeComposerModeTrack inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerSendDialog inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerModeNotice inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to CodeWorkspacePlacement inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerModeTrack inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerSendDialog inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerModeNotice inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to CodeWorkspacePlacement inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to Tooltip inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to Tooltip inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to Tooltip inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to CodeWorkspacePlacement inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+stderr | src/renderer/pages/agents/__tests__/homeComposerChrome.test.tsx > homepage composer chrome > keeps the dialog open and shows 这个分支已经存在 when 新建分支 confirms a branch name that is already listed
+An update to HomeComposerModeTrack inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerSendDialog inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerModeNotice inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to CodeWorkspacePlacement inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerModeTrack inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerSendDialog inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerModeNotice inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to CodeWorkspacePlacement inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to Tooltip inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to Tooltip inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to Tooltip inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to CodeWorkspacePlacement inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+stderr | src/renderer/pages/agents/__tests__/homeComposerChrome.test.tsx > homepage composer chrome > keeps the generated branch when 新建分支 confirms a blank name
+An update to HomeComposerModeTrack inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerSendDialog inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerModeNotice inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to CodeWorkspacePlacement inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerModeTrack inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerSendDialog inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HomeComposerModeNotice inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to CodeWorkspacePlacement inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to CodeWorkspacePlacement inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to Tooltip inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to Tooltip inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to Tooltip inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to CodeWorkspacePlacement inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+ ❯ |renderer| src/renderer/pages/agents/__tests__/homeComposerChrome.test.tsx (15 tests | 5 failed) 2503ms
+   ❯ homepage composer chrome (15)
+     × left-aligns the work-mode track and lays quick tasks in one chip row 83ms
+     × keeps 日常办公 checked and uses 代码开发 only after it is chosen 22ms
+     × picks an existing branch or creates one from a dialog 1021ms
+     × keeps the dialog open and shows 这个分支已经存在 when 新建分支 confirms a branch name that is already listed 1017ms
+     × keeps the generated branch when 新建分支 confirms a blank name 23ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/homeComposerChrome.test.tsx > homepage composer chrome > left-aligns the work-mode track and lays quick tasks in one chip row
+Error: expect(received).toHaveAttribute()
+
+received value must be an HTMLElement or an SVGElement.
+Received has type:  Null
+Received has value: null
+ ❯ src/renderer/pages/agents/__tests__/homeComposerChrome.test.tsx:352:18
+    350|     expect(pages).toHaveValue('8')
+    351|     const tone = dialog.querySelector('[data-control-id="tone"] [data-…
+    352|     expect(tone).toHaveAttribute('aria-label', '语气')
+       |                  ^
+    353|     expect(tone).toHaveAttribute('data-value', 'default')
+    354|     fireEvent.click(within(tone).getByRole('button', { name: '专业' }))
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/homeComposerChrome.test.tsx > homepage composer chrome > keeps 日常办公 checked and uses 代码开发 only after it is chosen
+Error: expect(received).toHaveAttribute()
+
+received value must be an HTMLElement or an SVGElement.
+Received has type:  Null
+Received has value: null
+ ❯ src/renderer/pages/agents/__tests__/homeComposerChrome.test.tsx:437:57
+    435|     const worktree = within(placement).getByRole('radio', { name: /^新工…
+    436|     expect(checkout).toHaveAttribute('aria-checked', 'true')
+    437|     expect(checkout.closest('[data-testid="tooltip"]')).toHaveAttribut…
+       |                                                         ^
+    438|     expect(checkout.className).toContain('h-8')
+    439|     expect(checkout.className).toContain('w-8')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/homeComposerChrome.test.tsx > homepage composer chrome > picks an existing branch or creates one from a dialog
+TestingLibraryElementError: Unable to find role="combobox" and name "分支"
+
+Ignored nodes: comments, script, style
+[36m<div[39m
+  [33maria-label[39m=[32m"工作区"[39m
+  [33mclass[39m=[32m"flex min-w-0 items-center gap-0.5"[39m
+  [33mdata-ui[39m=[32m"workbench.composer.code.placement"[39m
+  [33mrole[39m=[32m"radiogroup"[39m
+[36m>[39m
+  [36m<button[39m
+    [33maria-checked[39m=[32m"false"[39m
+    [33maria-label[39m=[32m"当前目录"[39m
+    [33mclass[39m=[32m"inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] outline-none focus-visible:ring-2 focus-visible:ring-black/10 text-[#3f3f3f] hover:bg-[#f7f7f7] hover:text-[#171717]"[39m
+    [33mdata-slot[39m=[32m"tooltip-trigger"[39m
+    [33mdata-state[39m=[32m"closed"[39m
+    [33mdata-ui[39m=[32m"agents.code-workspace-placement.radio"[39m
+    [33mrole[39m=[32m"radio"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m>[39m
+    [36m<svg[39m
+      [33maria-hidden[39m=[32m"true"[39m
+      [33mclass[39m=[32m"lucide lucide-folder"[39m
+      [33mfill[39m=[32m"none"[39m
+      [33mheight[39m=[32m"16"[39m
+      [33mstroke[39m=[32m"currentColor"[39m
+      [33mstroke-linecap[39m=[32m"round"[39m
+      [33mstroke-linejoin[39m=[32m"round"[39m
+      [33mstroke-width[39m=[32m"1.7"[39m
+      [33mviewBox[39m=[32m"0 0 24 24"[39m
+      [33mwidth[39m=[32m"16"[39m
+      [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+    [36m>[39m
+      [36m<path[39m
+        [33md[39m=[32m"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"[39m
+      [36m/>[39m
+    [36m</svg>[39m
+  [36m</button>[39m
+  [36m<button[39m
+    [33maria-checked[39m=[32m"true"[39m
+    [33maria-label[39m=[32m"新工作树"[39m
+    [33mclass[39m=[32m"inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] outline-none focus-visible:ring-2 focus-visible:ring-black/10 bg-[#f2f3f5] text-[#171717]"[39m
+    [33mdata-slot[39m=[32m"tooltip-trigger"[39m
+    [33mdata-state[39m=[32m"closed"[39m
+    [33mdata-ui[39m=[32m"agents.code-workspace-placement.radio"[39m
+    [33mrole[39m=[32m"radio"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m>[39m
+    [36m<svg[39m
+      [33maria-hidden[39m=[32m"true"[39m
+      [33mclass[39m=[32m"lucide lucide-git-branch"[39m
+      [33mfill[39m=[32m"none"[39m
+      [33mheight[39m=[32m"16"[39m
+      [33mstroke[39m=[32m"currentColor"[39m
+      [33mstroke-linecap[39m=[32m"round"[39m
+      [33mstroke-linejoin[39m=[32m"round"[39m
+      [33mstroke-width[39m=[32m"1.7"[39m
+      [33mviewBox[39m=[32m"0 0 24 24"[39m
+      [33mwidth[39m=[32m"16"[39m
+      [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+    [36m>[39m
+      [36m<line[39m
+        [33mx1[39m=[32m"6"[39m
+        [33mx2[39m=[32m"6"[39m
+        [33my1[39m=[32m"3"[39m
+        [33my2[39m=[32m"15"[39m
+      [36m/>[39m
+      [36m<circle[39m
+        [33mcx[39m=[32m"18"[39m
+        [33mcy[39m=[32m"6"[39m
+        [33mr[39m=[32m"3"[39m
+      [36m/>[39m
+      [36m<circle[39m
+        [33mcx[39m=[32m"6"[39m
+        [33mcy[39m=[32m"18"[39m
+        [33mr[39m=[32m"3"[39m
+      [36m/>[39m
+      [36m<path[39m
+        [33md[39m=[32m"M18 9a9 9 0 0 1-9 9"[39m
+      [36m/>[39m
+    [36m</svg>[39m
+  [36m</button>[39m
+  [36m<span[39m
+    [33mclass[39m=[32m"inline-flex max-w-[9.5rem] min-w-0 [&_.ui-search-select]:!max-w-full [&_.ui-search-select]:!min-w-0 [&_.ui-search-select__trigger]:!min-w-0"[39m
+    [33mdata-code-branch[39m=[32m"code/task-463d"[39m
+    [33mdata-slot[39m=[32m"tooltip-trigger"[39m
+    [33mdata-state[39m=[32m"closed"[39m
+    [33mdata-ui[39m=[32m""[39m
+  [36m>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"ui-search-select relative max-w-full ui-search-select--sm w-auto min-w-[7.5rem]"[39m
+      [33mdata-size[39m=[32m"sm"[39m
+    [36m>[39m
+      [36m<button[39m
+        [33maria-controls[39m=[32m"_r_19_"[39m
+        [33maria-expanded[39m=[32m"false"[39m
+        [33maria-haspopup[39m=[32m"listbox"[39m
+        [33maria-label[39m=[32m"分支"[39m
+        [33mclass[39m=[32m"ui-search-select__trigger flex w-full cursor-pointer items-center justify-between gap-1.5 border border-transparent bg-[var(--color-control-fill)] text-left text-[13px] font-normal leading-none text-[var(--color-ink)] outline-none transition-colors hover:bg-[var(--color-control-fill-hover)] focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-black/10 disabled:cursor-not-allowed disabled:opacity-40 h-[30px] min-w-[7.5rem] rounded-[8px] ps-2.5 pe-2"[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"ui-search-select__value inline-flex min-w-0 items-center gap-1.5 overflow-hidden"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"truncate"[39m
+            [33mtitle[39m=[32m"code/task-463d"[39m
+          [36m>[39m
+            [0mcode/task-463d[0m
+          [36m</span>[39m
+        [36m</span>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"inline-flex shrink-0 items-center gap-0.5"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"ui-search-select__chevron shrink-0 text-[var(--color-ink-faint)] transition-transform"[39m
+            [33mfill[39m=[32m"none"[39m
+            [33mheight[39m=[32m"12"[39m
+            [33mstroke[39m=[32m"currentColor"[39m
+            [33mstroke-width[39m=[32m"1.75"[39m
+            [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [33mwidth[39m=[32m"12"[39m
+          [36m>[39m
+            [36m<path[39m
+              [33md[39m=[32m"m6 9 6 6 6-6"[39m
+            [36m/>[39m
+          [36m</svg>[39m
+        [36m</span>[39m
+      [36m</button>[39m
+    [36m</div>[39m
+  [36m</span>[39m
+[36m</div>[39m
+
+Ignored nodes: comments, script, style
+[36m<div[39m
+  [33maria-label[39m=[32m"工作区"[39m
+  [33mclass[39m=[32m"flex min-w-0 items-center gap-0.5"[39m
+  [33mdata-ui[39m=[32m"workbench.composer.code.placement"[39m
+  [33mrole[39m=[32m"radiogroup"[39m
+[36m>[39m
+  [36m<button[39m
+    [33maria-checked[39m=[32m"false"[39m
+    [33maria-label[39m=[32m"当前目录"[39m
+    [33mclass[39m=[32m"inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] outline-none focus-visible:ring-2 focus-visible:ring-black/10 text-[#3f3f3f] hover:bg-[#f7f7f7] hover:text-[#171717]"[39m
+    [33mdata-slot[39m=[32m"tooltip-trigger"[39m
+    [33mdata-state[39m=[32m"closed"[39m
+    [33mdata-ui[39m=[32m"agents.code-workspace-placement.radio"[39m
+    [33mrole[39m=[32m"radio"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m>[39m
+    [36m<svg[39m
+      [33maria-hidden[39m=[32m"true"[39m
+      [33mclass[39m=[32m"lucide lucide-folder"[39m
+      [33mfill[39m=[32m"none"[39m
+      [33mheight[39m=[32m"16"[39m
+      [33mstroke[39m=[32m"currentColor"[39m
+      [33mstroke-linecap[39m=[32m"round"[39m
+      [33mstroke-linejoin[39m=[32m"round"[39m
+      [33mstroke-width[39m=[32m"1.7"[39m
+      [33mviewBox[39m=[32m"0 0 24 24"[39m
+      [33mwidth[39m=[32m"16"[39m
+      [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+    [36m>[39m
+      [36m<path[39m
+        [33md[39m=[32m"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"[39m
+      [36m/>[39m
+    [36m</svg>[39m
+  [36m</button>[39m
+  [36m<button[39m
+    [33maria-checked[39m=[32m"true"[39m
+    [33maria-label[39m=[32m"新工作树"[39m
+    [33mclass[39m=[32m"inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] outline-none focus-visible:ring-2 focus-visible:ring-black/10 bg-[#f2f3f5] text-[#171717]"[39m
+    [33mdata-slot[39m=[32m"tooltip-trigger"[39m
+    [33mdata-state[39m=[32m"closed"[39m
+    [33mdata-ui[39m=[32m"agents.code-workspace-placement.radio"[39m
+    [33mrole[39m=[32m"radio"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m>[39m
+    [36m<svg[39m
+      [33maria-hidden[39m=[32m"true"[39m
+      [33mclass[39m=[32m"lucide lucide-git-branch"[39m
+      [33mfill[39m=[32m"none"[39m
+      [33mheight[39m=[32m"16"[39m
+      [33mstroke[39m=[32m"currentColor"[39m
+      [33mstroke-linecap[39m=[32m"round"[39m
+      [33mstroke-linejoin[39m=[32m"round"[39m
+      [33mstroke-width[39m=[32m"1.7"[39m
+      [33mviewBox[39m=[32m"0 0 24 24"[39m
+      [33mwidth[39m=[32m"16"[39m
+      [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+    [36m>[39m
+      [36m<line[39m
+        [33mx1[39m=[32m"6"[39m
+        [33mx2[39m=[32m"6"[39m
+        [33my1[39m=[32m"3"[39m
+        [33my2[39m=[32m"15"[39m
+      [36m/>[39m
+      [36m<circle[39m
+        [33mcx[39m=[32m"18"[39m
+        [33mcy[39m=[32m"6"[39m
+        [33mr[39m=[32m"3"[39m
+      [36m/>[39m
+      [36m<circle[39m
+        [33mcx[39m=[32m"6"[39m
+        [33mcy[39m=[32m"18"[39m
+        [33mr[39m=[32m"3"[39m
+      [36m/>[39m
+      [36m<path[39m
+        [33md[39m=[32m"M18 9a9 9 0 0 1-9 9"[39m
+      [36m/>[39m
+    [36m</svg>[39m
+  [36m</button>[39m
+  [36m<span[39m
+    [33mclass[39m=[32m"inline-flex max-w-[9.5rem] min-w-0 [&_.ui-search-select]:!max-w-full [&_.ui-search-select]:!min-w-0 [&_.ui-search-select__trigger]:!min-w-0"[39m
+    [33mdata-code-branch[39m=[32m"code/task-463d"[39m
+    [33mdata-slot[39m=[32m"tooltip-trigger"[39m
+    [33mdata-state[39m=[32m"closed"[39m
+    [33mdata-ui[39m=[32m""[39m
+  [36m>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"ui-search-select relative max-w-full ui-search-select--sm w-auto min-w-[7.5rem]"[39m
+      [33mdata-size[39m=[32m"sm"[39m
+    [36m>[39m
+      [36m<button[39m
+        [33maria-controls[39m=[32m"_r_19_"[39m
+        [33maria-expanded[39m=[32m"false"[39m
+        [33maria-haspopup[39m=[32m"listbox"[39m
+        [33maria-label[39m=[32m"分支"[39m
+        [33mclass[39m=[32m"ui-search-select__trigger flex w-full cursor-pointer items-center justify-between gap-1.5 border border-transparent bg-[var(--color-control-fill)] text-left text-[13px] font-normal leading-none text-[var(--color-ink)] outline-none transition-colors hover:bg-[var(--color-control-fill-hover)] focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-black/10 disabled:cursor-not-allowed disabled:opacity-40 h-[30px] min-w-[7.5rem] rounded-[8px] ps-2.5 pe-2"[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"ui-search-select__value inline-flex min-w-0 items-center gap-1.5 overflow-hidden"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"truncate"[39m
+            [33mtitle[39m=[32m"code/task-463d"[39m
+          [36m>[39m
+            [0mcode/task-463d[0m
+          [36m</span>[39m
+        [36m</span>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"inline-flex shrink-0 items-center gap-0.5"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"ui-search-select__chevron shrink-0 text-[var(--color-ink-faint)] transition-transform"[39m
+            [33mfill[39m=[32m"none"[39m
+            [33mheight[39m=[32m"12"[39m
+            [33mstroke[39m=[32m"currentColor"[39m
+            [33mstroke-width[39m=[32m"1.75"[39m
+            [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [33mwidth[39m=[32m"12"[39m
+          [36m>[39m
+            [36m<path[39m
+              [33md[39m=[32m"m6 9 6 6 6-6"[39m
+            [36m/>[39m
+          [36m</svg>[39m
+        [36m</span>[39m
+      [36m</button>[39m
+    [36m</div>[39m
+  [36m</span>[39m
+[36m</div>[39m
+ ❯ waitForWrapper node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/renderer/pages/agents/__tests__/homeComposerChrome.test.tsx:503:45
+    501|     const placement = screen.getByRole('radiogroup', { name: '工作区' })
+    502|     fireEvent.click(within(placement).getByRole('radio', { name: '新工作树…
+    503|     fireEvent.click(await within(placement).findByRole('combobox', { n…
+       |                                             ^
+    504|     fireEvent.click(await screen.findByRole('option', { name: 'release…
+    505|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/homeComposerChrome.test.tsx > homepage composer chrome > keeps the dialog open and shows 这个分支已经存在 when 新建分支 confirms a branch name that is already listed
+TestingLibraryElementError: Unable to find role="combobox" and name "分支"
+
+Ignored nodes: comments, script, style
+[36m<div[39m
+  [33maria-label[39m=[32m"工作区"[39m
+  [33mclass[39m=[32m"flex min-w-0 items-center gap-0.5"[39m
+  [33mdata-ui[39m=[32m"workbench.composer.code.placement"[39m
+  [33mrole[39m=[32m"radiogroup"[39m
+[36m>[39m
+  [36m<button[39m
+    [33maria-checked[39m=[32m"false"[39m
+    [33maria-label[39m=[32m"当前目录"[39m
+    [33mclass[39m=[32m"inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] outline-none focus-visible:ring-2 focus-visible:ring-black/10 text-[#3f3f3f] hover:bg-[#f7f7f7] hover:text-[#171717]"[39m
+    [33mdata-slot[39m=[32m"tooltip-trigger"[39m
+    [33mdata-state[39m=[32m"closed"[39m
+    [33mdata-ui[39m=[32m"agents.code-workspace-placement.radio"[39m
+    [33mrole[39m=[32m"radio"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m>[39m
+    [36m<svg[39m
+      [33maria-hidden[39m=[32m"true"[39m
+      [33mclass[39m=[32m"lucide lucide-folder"[39m
+      [33mfill[39m=[32m"none"[39m
+      [33mheight[39m=[32m"16"[39m
+      [33mstroke[39m=[32m"currentColor"[39m
+      [33mstroke-linecap[39m=[32m"round"[39m
+      [33mstroke-linejoin[39m=[32m"round"[39m
+      [33mstroke-width[39m=[32m"1.7"[39m
+      [33mviewBox[39m=[32m"0 0 24 24"[39m
+      [33mwidth[39m=[32m"16"[39m
+      [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+    [36m>[39m
+      [36m<path[39m
+        [33md[39m=[32m"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"[39m
+      [36m/>[39m
+    [36m</svg>[39m
+  [36m</button>[39m
+  [36m<button[39m
+    [33maria-checked[39m=[32m"true"[39m
+    [33maria-label[39m=[32m"新工作树"[39m
+    [33mclass[39m=[32m"inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] outline-none focus-visible:ring-2 focus-visible:ring-black/10 bg-[#f2f3f5] text-[#171717]"[39m
+    [33mdata-slot[39m=[32m"tooltip-trigger"[39m
+    [33mdata-state[39m=[32m"closed"[39m
+    [33mdata-ui[39m=[32m"agents.code-workspace-placement.radio"[39m
+    [33mrole[39m=[32m"radio"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m>[39m
+    [36m<svg[39m
+      [33maria-hidden[39m=[32m"true"[39m
+      [33mclass[39m=[32m"lucide lucide-git-branch"[39m
+      [33mfill[39m=[32m"none"[39m
+      [33mheight[39m=[32m"16"[39m
+      [33mstroke[39m=[32m"currentColor"[39m
+      [33mstroke-linecap[39m=[32m"round"[39m
+      [33mstroke-linejoin[39m=[32m"round"[39m
+      [33mstroke-width[39m=[32m"1.7"[39m
+      [33mviewBox[39m=[32m"0 0 24 24"[39m
+      [33mwidth[39m=[32m"16"[39m
+      [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+    [36m>[39m
+      [36m<line[39m
+        [33mx1[39m=[32m"6"[39m
+        [33mx2[39m=[32m"6"[39m
+        [33my1[39m=[32m"3"[39m
+        [33my2[39m=[32m"15"[39m
+      [36m/>[39m
+      [36m<circle[39m
+        [33mcx[39m=[32m"18"[39m
+        [33mcy[39m=[32m"6"[39m
+        [33mr[39m=[32m"3"[39m
+      [36m/>[39m
+      [36m<circle[39m
+        [33mcx[39m=[32m"6"[39m
+        [33mcy[39m=[32m"18"[39m
+        [33mr[39m=[32m"3"[39m
+      [36m/>[39m
+      [36m<path[39m
+        [33md[39m=[32m"M18 9a9 9 0 0 1-9 9"[39m
+      [36m/>[39m
+    [36m</svg>[39m
+  [36m</button>[39m
+  [36m<span[39m
+    [33mclass[39m=[32m"inline-flex max-w-[9.5rem] min-w-0 [&_.ui-search-select]:!max-w-full [&_.ui-search-select]:!min-w-0 [&_.ui-search-select__trigger]:!min-w-0"[39m
+    [33mdata-code-branch[39m=[32m"code/task-ace9"[39m
+    [33mdata-slot[39m=[32m"tooltip-trigger"[39m
+    [33mdata-state[39m=[32m"closed"[39m
+    [33mdata-ui[39m=[32m""[39m
+  [36m>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"ui-search-select relative max-w-full ui-search-select--sm w-auto min-w-[7.5rem]"[39m
+      [33mdata-size[39m=[32m"sm"[39m
+    [36m>[39m
+      [36m<button[39m
+        [33maria-controls[39m=[32m"_r_1t_"[39m
+        [33maria-expanded[39m=[32m"false"[39m
+        [33maria-haspopup[39m=[32m"listbox"[39m
+        [33maria-label[39m=[32m"分支"[39m
+        [33mclass[39m=[32m"ui-search-select__trigger flex w-full cursor-pointer items-center justify-between gap-1.5 border border-transparent bg-[var(--color-control-fill)] text-left text-[13px] font-normal leading-none text-[var(--color-ink)] outline-none transition-colors hover:bg-[var(--color-control-fill-hover)] focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-black/10 disabled:cursor-not-allowed disabled:opacity-40 h-[30px] min-w-[7.5rem] rounded-[8px] ps-2.5 pe-2"[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"ui-search-select__value inline-flex min-w-0 items-center gap-1.5 overflow-hidden"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"truncate"[39m
+            [33mtitle[39m=[32m"code/task-ace9"[39m
+          [36m>[39m
+            [0mcode/task-ace9[0m
+          [36m</span>[39m
+        [36m</span>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"inline-flex shrink-0 items-center gap-0.5"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"ui-search-select__chevron shrink-0 text-[var(--color-ink-faint)] transition-transform"[39m
+            [33mfill[39m=[32m"none"[39m
+            [33mheight[39m=[32m"12"[39m
+            [33mstroke[39m=[32m"currentColor"[39m
+            [33mstroke-width[39m=[32m"1.75"[39m
+            [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [33mwidth[39m=[32m"12"[39m
+          [36m>[39m
+            [36m<path[39m
+              [33md[39m=[32m"m6 9 6 6 6-6"[39m
+            [36m/>[39m
+          [36m</svg>[39m
+        [36m</span>[39m
+      [36m</button>[39m
+    [36m</div>[39m
+  [36m</span>[39m
+[36m</div>[39m
+
+Ignored nodes: comments, script, style
+[36m<div[39m
+  [33maria-label[39m=[32m"工作区"[39m
+  [33mclass[39m=[32m"flex min-w-0 items-center gap-0.5"[39m
+  [33mdata-ui[39m=[32m"workbench.composer.code.placement"[39m
+  [33mrole[39m=[32m"radiogroup"[39m
+[36m>[39m
+  [36m<button[39m
+    [33maria-checked[39m=[32m"false"[39m
+    [33maria-label[39m=[32m"当前目录"[39m
+    [33mclass[39m=[32m"inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] outline-none focus-visible:ring-2 focus-visible:ring-black/10 text-[#3f3f3f] hover:bg-[#f7f7f7] hover:text-[#171717]"[39m
+    [33mdata-slot[39m=[32m"tooltip-trigger"[39m
+    [33mdata-state[39m=[32m"closed"[39m
+    [33mdata-ui[39m=[32m"agents.code-workspace-placement.radio"[39m
+    [33mrole[39m=[32m"radio"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m>[39m
+    [36m<svg[39m
+      [33maria-hidden[39m=[32m"true"[39m
+      [33mclass[39m=[32m"lucide lucide-folder"[39m
+      [33mfill[39m=[32m"none"[39m
+      [33mheight[39m=[32m"16"[39m
+      [33mstroke[39m=[32m"currentColor"[39m
+      [33mstroke-linecap[39m=[32m"round"[39m
+      [33mstroke-linejoin[39m=[32m"round"[39m
+      [33mstroke-width[39m=[32m"1.7"[39m
+      [33mviewBox[39m=[32m"0 0 24 24"[39m
+      [33mwidth[39m=[32m"16"[39m
+      [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+    [36m>[39m
+      [36m<path[39m
+        [33md[39m=[32m"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"[39m
+      [36m/>[39m
+    [36m</svg>[39m
+  [36m</button>[39m
+  [36m<button[39m
+    [33maria-checked[39m=[32m"true"[39m
+    [33maria-label[39m=[32m"新工作树"[39m
+    [33mclass[39m=[32m"inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] outline-none focus-visible:ring-2 focus-visible:ring-black/10 bg-[#f2f3f5] text-[#171717]"[39m
+    [33mdata-slot[39m=[32m"tooltip-trigger"[39m
+    [33mdata-state[39m=[32m"closed"[39m
+    [33mdata-ui[39m=[32m"agents.code-workspace-placement.radio"[39m
+    [33mrole[39m=[32m"radio"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m>[39m
+    [36m<svg[39m
+      [33maria-hidden[39m=[32m"true"[39m
+      [33mclass[39m=[32m"lucide lucide-git-branch"[39m
+      [33mfill[39m=[32m"none"[39m
+      [33mheight[39m=[32m"16"[39m
+      [33mstroke[39m=[32m"currentColor"[39m
+      [33mstroke-linecap[39m=[32m"round"[39m
+      [33mstroke-linejoin[39m=[32m"round"[39m
+      [33mstroke-width[39m=[32m"1.7"[39m
+      [33mviewBox[39m=[32m"0 0 24 24"[39m
+      [33mwidth[39m=[32m"16"[39m
+      [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+    [36m>[39m
+      [36m<line[39m
+        [33mx1[39m=[32m"6"[39m
+        [33mx2[39m=[32m"6"[39m
+        [33my1[39m=[32m"3"[39m
+        [33my2[39m=[32m"15"[39m
+      [36m/>[39m
+      [36m<circle[39m
+        [33mcx[39m=[32m"18"[39m
+        [33mcy[39m=[32m"6"[39m
+        [33mr[39m=[32m"3"[39m
+      [36m/>[39m
+      [36m<circle[39m
+        [33mcx[39m=[32m"6"[39m
+        [33mcy[39m=[32m"18"[39m
+        [33mr[39m=[32m"3"[39m
+      [36m/>[39m
+      [36m<path[39m
+        [33md[39m=[32m"M18 9a9 9 0 0 1-9 9"[39m
+      [36m/>[39m
+    [36m</svg>[39m
+  [36m</button>[39m
+  [36m<span[39m
+    [33mclass[39m=[32m"inline-flex max-w-[9.5rem] min-w-0 [&_.ui-search-select]:!max-w-full [&_.ui-search-select]:!min-w-0 [&_.ui-search-select__trigger]:!min-w-0"[39m
+    [33mdata-code-branch[39m=[32m"code/task-ace9"[39m
+    [33mdata-slot[39m=[32m"tooltip-trigger"[39m
+    [33mdata-state[39m=[32m"closed"[39m
+    [33mdata-ui[39m=[32m""[39m
+  [36m>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"ui-search-select relative max-w-full ui-search-select--sm w-auto min-w-[7.5rem]"[39m
+      [33mdata-size[39m=[32m"sm"[39m
+    [36m>[39m
+      [36m<button[39m
+        [33maria-controls[39m=[32m"_r_1t_"[39m
+        [33maria-expanded[39m=[32m"false"[39m
+        [33maria-haspopup[39m=[32m"listbox"[39m
+        [33maria-label[39m=[32m"分支"[39m
+        [33mclass[39m=[32m"ui-search-select__trigger flex w-full cursor-pointer items-center justify-between gap-1.5 border border-transparent bg-[var(--color-control-fill)] text-left text-[13px] font-normal leading-none text-[var(--color-ink)] outline-none transition-colors hover:bg-[var(--color-control-fill-hover)] focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-black/10 disabled:cursor-not-allowed disabled:opacity-40 h-[30px] min-w-[7.5rem] rounded-[8px] ps-2.5 pe-2"[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"ui-search-select__value inline-flex min-w-0 items-center gap-1.5 overflow-hidden"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"truncate"[39m
+            [33mtitle[39m=[32m"code/task-ace9"[39m
+          [36m>[39m
+            [0mcode/task-ace9[0m
+          [36m</span>[39m
+        [36m</span>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"inline-flex shrink-0 items-center gap-0.5"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"ui-search-select__chevron shrink-0 text-[var(--color-ink-faint)] transition-transform"[39m
+            [33mfill[39m=[32m"none"[39m
+            [33mheight[39m=[32m"12"[39m
+            [33mstroke[39m=[32m"currentColor"[39m
+            [33mstroke-width[39m=[32m"1.75"[39m
+            [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [33mwidth[39m=[32m"12"[39m
+          [36m>[39m
+            [36m<path[39m
+              [33md[39m=[32m"m6 9 6 6 6-6"[39m
+            [36m/>[39m
+          [36m</svg>[39m
+        [36m</span>[39m
+      [36m</button>[39m
+    [36m</div>[39m
+  [36m</span>[39m
+[36m</div>[39m
+ ❯ waitForWrapper node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/renderer/pages/agents/__tests__/homeComposerChrome.test.tsx:591:45
+    589|     const placement = screen.getByRole('radiogroup', { name: '工作区' })
+    590|     fireEvent.click(within(placement).getByRole('radio', { name: '新工作树…
+    591|     fireEvent.click(await within(placement).findByRole('combobox', { n…
+       |                                             ^
+    592|     expect(await screen.findByRole('option', { name: 'release' })).toB…
+    593|     const before = await requestHomeComposerSend({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/homeComposerChrome.test.tsx > homepage composer chrome > keeps the generated branch when 新建分支 confirms a blank name
+TestingLibraryElementError: Unable to find an accessible element with the role "combobox" and name "分支"
+
+Here are the accessible roles:
+
+  radio:
+
+  Name "当前目录":
+  [36m<button[39m
+    [33maria-checked[39m=[32m"false"[39m
+    [33maria-label[39m=[32m"当前目录"[39m
+    [33mclass[39m=[32m"inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] outline-none focus-visible:ring-2 focus-visible:ring-black/10 text-[#3f3f3f] hover:bg-[#f7f7f7] hover:text-[#171717]"[39m
+    [33mdata-slot[39m=[32m"tooltip-trigger"[39m
+    [33mdata-state[39m=[32m"closed"[39m
+    [33mdata-ui[39m=[32m"agents.code-workspace-placement.radio"[39m
+    [33mrole[39m=[32m"radio"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------radio:
+
+  Name "新工作树":
+  [36m<button[39m
+    [33maria-checked[39m=[32m"true"[39m
+    [33maria-label[39m=[32m"新工作树"[39m
+    [33mclass[39m=[32m"inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] outline-none focus-visible:ring-2 focus-visible:ring-black/10 bg-[#f2f3f5] text-[#171717]"[39m
+    [33mdata-slot[39m=[32m"tooltip-trigger"[39m
+    [33mdata-state[39m=[32m"closed"[39m
+    [33mdata-ui[39m=[32m"agents.code-workspace-placement.radio"[39m
+    [33mrole[39m=[32m"radio"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------button:
+
+  Name "分支":
+  [36m<button[39m
+    [33maria-controls[39m=[32m"_r_25_"[39m
+    [33maria-expanded[39m=[32m"false"[39m
+    [33maria-haspopup[39m=[32m"listbox"[39m
+    [33maria-label[39m=[32m"分支"[39m
+    [33mclass[39m=[32m"ui-search-select__trigger flex w-full cursor-pointer items-center justify-between gap-1.5 border border-transparent bg-[var(--color-control-fill)] text-left text-[13px] font-normal leading-none text-[var(--color-ink)] outline-none transition-colors hover:bg-[var(--color-control-fill-hover)] focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-black/10 disabled:cursor-not-allowed disabled:opacity-40 h-[30px] min-w-[7.5rem] rounded-[8px] ps-2.5 pe-2"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<div[39m
+  [33maria-label[39m=[32m"工作区"[39m
+  [33mclass[39m=[32m"flex min-w-0 items-center gap-0.5"[39m
+  [33mdata-ui[39m=[32m"workbench.composer.code.placement"[39m
+  [33mrole[39m=[32m"radiogroup"[39m
+[36m>[39m
+  [36m<button[39m
+    [33maria-checked[39m=[32m"false"[39m
+    [33maria-label[39m=[32m"当前目录"[39m
+    [33mclass[39m=[32m"inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] outline-none focus-visible:ring-2 focus-visible:ring-black/10 text-[#3f3f3f] hover:bg-[#f7f7f7] hover:text-[#171717]"[39m
+    [33mdata-slot[39m=[32m"tooltip-trigger"[39m
+    [33mdata-state[39m=[32m"closed"[39m
+    [33mdata-ui[39m=[32m"agents.code-workspace-placement.radio"[39m
+    [33mrole[39m=[32m"radio"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m>[39m
+    [36m<svg[39m
+      [33maria-hidden[39m=[32m"true"[39m
+      [33mclass[39m=[32m"lucide lucide-folder"[39m
+      [33mfill[39m=[32m"none"[39m
+      [33mheight[39m=[32m"16"[39m
+      [33mstroke[39m=[32m"currentColor"[39m
+      [33mstroke-linecap[39m=[32m"round"[39m
+      [33mstroke-linejoin[39m=[32m"round"[39m
+      [33mstroke-width[39m=[32m"1.7"[39m
+      [33mviewBox[39m=[32m"0 0 24 24"[39m
+      [33mwidth[39m=[32m"16"[39m
+      [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+    [36m>[39m
+      [36m<path[39m
+        [33md[39m=[32m"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"[39m
+      [36m/>[39m
+    [36m</svg>[39m
+  [36m</button>[39m
+  [36m<button[39m
+    [33maria-checked[39m=[32m"true"[39m
+    [33maria-label[39m=[32m"新工作树"[39m
+    [33mclass[39m=[32m"inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] outline-none focus-visible:ring-2 focus-visible:ring-black/10 bg-[#f2f3f5] text-[#171717]"[39m
+    [33mdata-slot[39m=[32m"tooltip-trigger"[39m
+    [33mdata-state[39m=[32m"closed"[39m
+    [33mdata-ui[39m=[32m"agents.code-workspace-placement.radio"[39m
+    [33mrole[39m=[32m"radio"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m>[39m
+    [36m<svg[39m
+      [33maria-hidden[39m=[32m"true"[39m
+      [33mclass[39m=[32m"lucide lucide-git-branch"[39m
+      [33mfill[39m=[32m"none"[39m
+      [33mheight[39m=[32m"16"[39m
+      [33mstroke[39m=[32m"currentColor"[39m
+      [33mstroke-linecap[39m=[32m"round"[39m
+      [33mstroke-linejoin[39m=[32m"round"[39m
+      [33mstroke-width[39m=[32m"1.7"[39m
+      [33mviewBox[39m=[32m"0 0 24 24"[39m
+      [33mwidth[39m=[32m"16"[39m
+      [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+    [36m>[39m
+      [36m<line[39m
+        [33mx1[39m=[32m"6"[39m
+        [33mx2[39m=[32m"6"[39m
+        [33my1[39m=[32m"3"[39m
+        [33my2[39m=[32m"15"[39m
+      [36m/>[39m
+      [36m<circle[39m
+        [33mcx[39m=[32m"18"[39m
+        [33mcy[39m=[32m"6"[39m
+        [33mr[39m=[32m"3"[39m
+      [36m/>[39m
+      [36m<circle[39m
+        [33mcx[39m=[32m"6"[39m
+        [33mcy[39m=[32m"18"[39m
+        [33mr[39m=[32m"3"[39m
+      [36m/>[39m
+      [36m<path[39m
+        [33md[39m=[32m"M18 9a9 9 0 0 1-9 9"[39m
+      [36m/>[39m
+    [36m</svg>[39m
+  [36m</button>[39m
+  [36m<span[39m
+    [33mclass[39m=[32m"inline-flex max-w-[9.5rem] min-w-0 [&_.ui-search-select]:!max-w-full [&_.ui-search-select]:!min-w-0 [&_.ui-search-select__trigger]:!min-w-0"[39m
+    [33mdata-code-branch[39m=[32m"code/fix-login-f10b"[39m
+    [33mdata-slot[39m=[32m"tooltip-trigger"[39m
+    [33mdata-state[39m=[32m"closed"[39m
+    [33mdata-ui[39m=[32m""[39m
+  [36m>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"ui-search-select relative max-w-full ui-search-select--sm w-auto min-w-[7.5rem]"[39m
+      [33mdata-size[39m=[32m"sm"[39m
+    [36m>[39m
+      [36m<button[39m
+        [33maria-controls[39m=[32m"_r_25_"[39m
+        [33maria-expanded[39m=[32m"false"[39m
+        [33maria-haspopup[39m=[32m"listbox"[39m
+        [33maria-label[39m=[32m"分支"[39m
+        [33mclass[39m=[32m"ui-search-select__trigger flex w-full cursor-pointer items-center justify-between gap-1.5 border border-transparent bg-[var(--color-control-fill)] text-left text-[13px] font-normal leading-none text-[var(--color-ink)] outline-none transition-colors hover:bg-[var(--color-control-fill-hover)] focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-black/10 disabled:cursor-not-allowed disabled:opacity-40 h-[30px] min-w-[7.5rem] rounded-[8px] ps-2.5 pe-2"[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"ui-search-select__value inline-flex min-w-0 items-center gap-1.5 overflow-hidden"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"truncate"[39m
+            [33mtitle[39m=[32m"code/fix-login-f10b"[39m
+          [36m>[39m
+            [0mcode/fix-login-f10b[0m
+          [36m</span>[39m
+        [36m</span>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"inline-flex shrink-0 items-center gap-0.5"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"ui-search-select__chevron shrink-0 text-[var(--color-ink-faint)] transition-transform"[39m
+            [33mfill[39m=[32m"none"[39m
+            [33mheight[39m=[32m"12"[39m
+            [33mstroke[39m=[32m"currentColor"[39m
+            [33mstroke-width[39m=[32m"1.75"[39m
+            [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [33mwidth[39m=[32m"12"[39m
+          [36m>[39m
+            [36m<path[39m
+              [33md[39m=[32m"m6 9 6 6 6-6"[39m
+            [36m/>[39m
+          [36m</svg>[39m
+        [36m</span>[39m
+      [36m</button>[39m
+    [36m</div>[39m
+  [36m</span>[39m
+[36m</div>[39m
+ ❯ Object.getElementError node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/renderer/pages/agents/__tests__/homeComposerChrome.test.tsx:630:39
+    628|     expect(generated).toMatch(/^code\/fix-login-[a-z0-9]{4}$/)
+    629|
+    630|     fireEvent.click(within(placement).getByRole('combobox', { name: '分…
+       |                                       ^
+    631|     fireEvent.click(await screen.findByRole('option', { name: '新建分支' }…
+    632|     const dialog = await screen.findByRole('dialog')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 10 passed (15)
+   Start at  23:14:08
+   Duration  12.67s (transform 43%, import 34%, tests 20%, environment 2%, setup 1%)
+
+  Transform  |renderer| transforming modules took 5.46s · 43% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+

@@ -157,29 +157,33 @@ pub fn open_notice_window(
         return Ok(());
     }
 
-    let builder = WebviewWindowBuilder::new(&app, &label, WebviewUrl::External(target))
-        .initialization_script(notice_initialization_script(&origin))
-        .data_store_identifier(data_store_id(slug))
-        .title(title)
-        .inner_size(NOTICE_WINDOW_WIDTH, NOTICE_WINDOW_HEIGHT)
-        .min_inner_size(640.0, 480.0)
-        .resizable(true)
-        .maximizable(true)
-        .minimizable(true)
-        .closable(true)
-        .visible(false)
-        .focused(false)
-        .center()
-        .background_color(tauri::webview::Color(255, 255, 255, 255))
-        .on_page_load(|window, payload| {
-            if payload.event() != tauri::webview::PageLoadEvent::Finished {
-                return;
-            }
-            if !is_notice_label(window.label()) {
-                return;
-            }
-            crate::applet_window::reveal(&window);
-        });
+    let builder = crate::tenant::isolate_webview(
+        WebviewWindowBuilder::new(&app, &label, WebviewUrl::External(target))
+            .initialization_script(notice_initialization_script(&origin))
+            .data_store_identifier(data_store_id(slug)),
+        data_store_id(slug),
+    )
+    .map_err(|error| error.to_string())?
+    .title(title)
+    .inner_size(NOTICE_WINDOW_WIDTH, NOTICE_WINDOW_HEIGHT)
+    .min_inner_size(640.0, 480.0)
+    .resizable(true)
+    .maximizable(true)
+    .minimizable(true)
+    .closable(true)
+    .visible(false)
+    .focused(false)
+    .center()
+    .background_color(tauri::webview::Color(255, 255, 255, 255))
+    .on_page_load(|window, payload| {
+        if payload.event() != tauri::webview::PageLoadEvent::Finished {
+            return;
+        }
+        if !is_notice_label(window.label()) {
+            return;
+        }
+        crate::applet_window::reveal(&window);
+    });
     #[cfg(target_os = "macos")]
     let builder = builder
         .hidden_title(true)

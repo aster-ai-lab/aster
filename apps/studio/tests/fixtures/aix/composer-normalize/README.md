@@ -12,7 +12,7 @@ a draft revision and at most 64 KiB of UTF-8 text. It never receives the draft
 identity, conversation identity, runtime token or host services. Each invocation
 uses a fresh document and may return one replacement or refuse.
 
-Build an immutable archive from the Studio directory:
+Build an immutable archive from the AsterDream directory:
 
 ```sh
 node scripts/build-aix-proof.mjs /tmp/composer-proof.aix composer

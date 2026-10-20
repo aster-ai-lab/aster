@@ -1,0 +1,95 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:8501) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/studio
+
+ ❯ |renderer| src/renderer/pages/agents/__tests__/useWorkbenchDefaultAgent.test.ts (22 tests | 1 failed | 21 skipped) 33ms
+   ❯ useWorkbenchDefaultAgent (15)
+     × uses an anonymous Aster local model while the optional org catalog is unsettled 12ms
+ ❯ |renderer| src/renderer/pages/agents/__tests__/WorkbenchModelPicker.popup.test.tsx (3 tests | 1 failed | 2 skipped) 151ms
+   ❯ WorkbenchModelPicker popup (3)
+     × selects an anonymous local model without waiting for or calling the organization 146ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/WorkbenchModelPicker.popup.test.tsx > WorkbenchModelPicker popup > selects an anonymous local model without waiting for or calling the organization
+TypeError: Cannot read properties of undefined (reading 'then')
+ ❯ src/renderer/pages/agents/useOrgModels.ts:18:38
+     16|     const controller = new AbortController()
+     17|     setPhase('loading')
+     18|     fetchOrgModels(controller.signal).then(
+       |                                      ^
+     19|       (next) => {
+     20|         if (controller.signal.aborted) return
+ ❯ Object.react_stack_bottom_frame node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom-client.development.js:28656:20
+ ❯ runWithFiberInDEV node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom-client.development.js:1048:13
+ ❯ commitHookEffectListMount node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom-client.development.js:13748:29
+ ❯ commitHookPassiveMountEffects node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom-client.development.js:13835:11
+ ❯ commitPassiveMountOnFiber node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom-client.development.js:16906:13
+ ❯ recursivelyTraversePassiveMountEffects node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom-client.development.js:16851:13
+ ❯ commitPassiveMountOnFiber node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom-client.development.js:16941:11
+ ❯ flushPassiveEffects node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom-client.development.js:20134:9
+ ❯ flushPendingEffects node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom-client.development.js:20060:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/useWorkbenchDefaultAgent.test.ts > useWorkbenchDefaultAgent > uses an anonymous Aster local model while the optional org catalog is unsettled
+AssertionError: expected undefined to be 'openai::local-chat' // Object.is equality
+
+- Expected:
+"openai::local-chat"
+
++ Received:
+undefined
+
+ ❯ src/renderer/pages/agents/__tests__/useWorkbenchDefaultAgent.test.ts:126:40
+    124|       mocks.providers = [{ id: 'openai', isEnabled: true }]
+    125|       const { result } = renderHook(() => useWorkbenchModel())
+    126|       expect(result.current.model?.id).toBe('openai::local-chat')
+       |                                        ^
+    127|       expect(mocks.createModel).not.toHaveBeenCalled()
+    128|     } finally { vi.unstubAllEnvs() }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 23 skipped (25)
+   Start at  23:30:58
+   Duration  2.26s (environment 43%, transform 24%, import 21%, setup 7%, tests 5%)
+

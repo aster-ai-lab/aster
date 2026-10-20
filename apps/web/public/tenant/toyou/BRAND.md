@@ -29,7 +29,7 @@
 
 ## 平台名
 
-中文名是通友科技，英文名是 Toyou AI Labs。桌面产品名是 ToWork，写在 `INFO.md` 的 `product`。文档标题因此是 `通友科技 - 管理后台` 或 `通友科技 - 用户中心`，英文界面是 `Toyou AI Labs - Admin Console` 或 `Toyou AI Labs - User Center`。未登录的 `/` 只显示当前语言的平台名。
+中文名是通友科技，英文名是 Toyou AI Labs。桌面产品名是 toyou，写在 `INFO.md` 的 `product`。文档标题因此是 `通友科技 - 管理后台` 或 `通友科技 - 用户中心`，英文界面是 `Toyou AI Labs - Admin Console` 或 `Toyou AI Labs - User Center`。未登录的 `/` 只显示当前语言的平台名。
 
 工作区 API 标题沿用现有表达式。这两个名字都不以 ` OS` 结尾，所以显示为 `通友科技 Work API` 和 `Toyou AI Labs Work API`。
 

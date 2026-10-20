@@ -6,14 +6,20 @@ runtime=org.gnome.Platform
 branch=50
 work="${STUDIO_KYLIN_WORK:-dist/kylin/flatpak-build}"
 repo="${STUDIO_KYLIN_REPO:-dist/kylin/flatpak-repo}"
-bundle="${STUDIO_KYLIN_BUNDLE:-dist/kylin/dev.a3s.studio.flatpak}"
 tenant_root="${STUDIO_TENANT_ROOT:-../web/public/tenant}"
 renderer="${STUDIO_RENDERER_DIST:-.studio-package}"
 inputs="${STUDIO_KYLIN_INPUTS:-dist/kylin}"
 im_assets="${STUDIO_KYLIN_IM_ASSETS:-$inputs}"
+tenant="$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["tenant"])' "$inputs/studio-build.json")"
+if [[ "${A3S_TENANT_SLUG+x}" == x && "$A3S_TENANT_SLUG" != "$tenant" ]]; then
+  echo 'package tenant differs from built generation' >&2
+  exit 1
+fi
+app_id="$(python3 scripts/studio_product.py "$tenant" identifier)"
+bundle="${STUDIO_KYLIN_BUNDLE:-dist/kylin/$app_id.flatpak}"
 test ! -e "$work" || { echo "refusing existing work directory: $work" >&2; exit 1; }
 flatpak info --user "$runtime//$branch" >/dev/null
-flatpak build-init "$work" dev.a3s.studio "$runtime" "$runtime" "$branch"
+flatpak build-init "$work" "$app_id" "$runtime" "$runtime" "$branch"
 python3 scripts/kylin-flatpak/delivery.py stage "$inputs" "$renderer" "$tenant_root" "$im_assets" "$work/files"
 for binary in /app/bin/Studio /app/bin/agent/a3s-code-acp /app/bin/a3s-office /app/bin/kylin-im-backend \
   /app/lib/im/fcitx4/im-fcitx.so /app/lib/im/fcitx5/im-fcitx5.so; do
@@ -37,6 +43,6 @@ bash scripts/kylin-flatpak/test-input-method.sh "$work/files" "$runtime_dir"
 python3 scripts/kylin-flatpak/delivery.py verify "$work/files"
 mkdir -p "$repo" "$(dirname "$bundle")"
 flatpak build-export "$repo" "$work" "$branch"
-flatpak build-bundle "$repo" "$bundle" dev.a3s.studio "$branch"
+flatpak build-bundle "$repo" "$bundle" "$app_id" "$branch"
 sha256sum "$bundle" >"$bundle.sha256"
 echo "studio-kylin-bundle $bundle"

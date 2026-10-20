@@ -9,15 +9,23 @@ import re
 import shutil
 import sys
 
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from studio_product import identity, validate_brand, validate_renderer
+
 
 def seal(app, renderer, tenant, tenant_root):
     app, renderer, tenant_root = map(pathlib.Path, (app, renderer, tenant_root))
     if not re.fullmatch(r"[a-z][a-z0-9-]{0,31}", tenant):
         raise ValueError("invalid tenant slug")
+    product = identity(tenant)
     with (app / "Contents/Info.plist").open("rb") as stream:
         info = plistlib.load(stream)
-    if info.get("CFBundleExecutable") != "Studio" or info.get("CFBundleIdentifier") != "dev.a3s.studio":
-        raise ValueError("not a Studio application")
+    expected = {"CFBundleExecutable": "Studio", "CFBundleIdentifier": product["identifier"],
+                "CFBundleName": product["product"], "CFBundleDisplayName": product["product"]}
+    if any(info.get(key) != value for key, value in expected.items()):
+        raise ValueError("not a Studio product identity")
+    validate_brand(tenant_root, tenant)
+    validate_renderer(renderer, tenant)
     version = info["CFBundleShortVersionString"]
     resources = app / "Contents/Resources"
     marker = resources / "studio-delivery.json"

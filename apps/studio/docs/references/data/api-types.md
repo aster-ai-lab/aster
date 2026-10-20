@@ -11,7 +11,7 @@ sources:
 
 # Data API Type System
 
-This directory contains the type definitions and utilities for Cherry Studio's Data API system, which provides type-safe IPC communication between renderer and main processes.
+This directory contains the type definitions and utilities for AsterDream's Data API system, which provides type-safe IPC communication between renderer and main processes.
 
 ## Directory Structure
 

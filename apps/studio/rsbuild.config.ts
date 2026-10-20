@@ -18,6 +18,9 @@ const projectRoot = dirname(fileURLToPath(import.meta.url))
 const rendererRoot = resolve(projectRoot, 'src/renderer')
 const brand = loadStudioTenantBrand(projectRoot, process.env.A3S_TENANT_SLUG)
 const version = loadStudioPackageVersion(projectRoot)
+const buildTenant = brand?.slug === 'aster' ? 'aster'
+  : brand?.slug === 'toyou' || brand?.slug === 'towork-cua' ? 'toyou' : null
+if (!buildTenant) throw new Error('The desktop renderer requires the aster or toyou build tenant')
 
 const URL_QUERY = /[?&]url(?:&|=|$)/
 const UI_THEME_IMPORTS = new Set(['@a3s-lab/ui/styles/theme.css'])
@@ -156,6 +159,7 @@ export default defineConfig({
     },
     define: {
       __APP_EDITION__: JSON.stringify('global'),
+      'import.meta.env.PUBLIC_STUDIO_TENANT': JSON.stringify(buildTenant),
       __APP_RELEASE_HISTORY__: JSON.stringify([]),
       __APP_RELEASE_NOTES__: JSON.stringify(''),
       __APP_RELEASE_VERSION__: JSON.stringify(version),

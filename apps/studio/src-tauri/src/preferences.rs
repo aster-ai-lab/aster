@@ -75,6 +75,7 @@ impl HarnessRecipe {
 
 pub(crate) struct PreferenceStore {
     root: PathBuf,
+    scope_root: PathBuf,
 }
 
 const DEVICE_SCOPE: &str = "00000000-0000-0000-0000-000000000000";
@@ -106,7 +107,18 @@ fn merge(member: &Snapshot, device: &Snapshot) -> Result<Snapshot, PreferenceErr
 
 impl PreferenceStore {
     pub fn new(root: PathBuf) -> Self {
-        Self { root }
+        Self {
+            scope_root: root.clone(),
+            root,
+        }
+    }
+
+    #[cfg(feature = "tenant-aster")]
+    fn new_local(root: PathBuf) -> Self {
+        Self {
+            scope_root: root.join("local"),
+            root,
+        }
     }
 
     fn locked<T>(
@@ -118,7 +130,12 @@ impl PreferenceStore {
         if id.to_string() != scope {
             return Err(PreferenceError::Denied);
         }
-        fs::create_dir_all(&self.root).map_err(|_| PreferenceError::Unavailable)?;
+        let root = if scope == DEVICE_SCOPE {
+            &self.root
+        } else {
+            &self.scope_root
+        };
+        fs::create_dir_all(root).map_err(|_| PreferenceError::Unavailable)?;
         let mut options = OpenOptions::new();
         options.read(true).write(true).create(true).truncate(false);
         #[cfg(unix)]
@@ -127,10 +144,10 @@ impl PreferenceStore {
             options.mode(0o600);
         }
         let lock = options
-            .open(self.root.join(format!("{scope}.lock")))
+            .open(root.join(format!("{scope}.lock")))
             .map_err(|_| PreferenceError::Unavailable)?;
         lock.lock().map_err(|_| PreferenceError::Unavailable)?;
-        let path = self.root.join(format!("{scope}.acl"));
+        let path = root.join(format!("{scope}.acl"));
         let snapshot = read_snapshot(&path, scope)?;
         action(&path, snapshot)
     }
@@ -430,10 +447,13 @@ fn from_acl(value: &AclValue, depth: usize) -> Result<Value, PreferenceError> {
     }
 }
 
+#[derive(Clone)]
 pub(crate) struct PreferenceHost {
     store: Arc<PreferenceStore>,
     member: Arc<crate::member_session::MemberSessionStore>,
     token: String,
+    #[cfg(feature = "tenant-aster")]
+    local_store: Option<Arc<PreferenceStore>>,
 }
 
 impl PreferenceHost {
@@ -446,7 +466,54 @@ impl PreferenceHost {
             store: Arc::new(PreferenceStore::new(root)),
             member,
             token,
+            #[cfg(feature = "tenant-aster")]
+            local_store: None,
         }
+    }
+
+    pub(crate) fn for_tenant(
+        root: PathBuf,
+        member: Arc<crate::member_session::MemberSessionStore>,
+        token: String,
+        tenant: &str,
+    ) -> Self {
+        #[cfg(feature = "tenant-aster")]
+        let local_store = crate::tenant::RuntimePolicy::for_storage(tenant, None)
+            .allows_local()
+            .then(|| Arc::new(PreferenceStore::new_local(root.clone())));
+        let mut host = Self::new(root, member, token);
+        #[cfg(feature = "tenant-aster")]
+        {
+            host.local_store = local_store;
+        }
+        let _ = tenant;
+        host
+    }
+
+    fn scoped<T>(
+        &self,
+        action: impl FnOnce(&PreferenceStore, &str) -> Result<T, PreferenceError>,
+    ) -> Result<T, PreferenceError> {
+        self.member.with_optional_preference_scope(|scope| {
+            if let Some(scope) = scope {
+                return action(&self.store, scope);
+            }
+            #[cfg(feature = "tenant-aster")]
+            if let Some(local) = &self.local_store {
+                // This UUID labels only this profile's local ACL; it is never a member or API token.
+                return action(local, "00000000-0000-4000-8000-000000000001");
+            }
+            Err(PreferenceError::Denied)
+        })
+    }
+
+    fn commit_scoped(&self, input: &Commit) -> Result<Snapshot, PreferenceError> {
+        self.scoped(|store, scope| {
+            if scope != input.scope {
+                return Err(PreferenceError::Denied);
+            }
+            store.commit(input)
+        })
     }
 }
 
@@ -481,9 +548,8 @@ pub(crate) async fn preference_read<R: tauri::Runtime>(
         &host_token,
         &state.token,
     )?;
-    let store = Arc::clone(&state.store);
-    let member = Arc::clone(&state.member);
-    tokio::task::spawn_blocking(move || member.with_preference_scope(|scope| store.read(scope)))
+    let state = state.inner().clone();
+    tokio::task::spawn_blocking(move || state.scoped(|store, scope| store.read(scope)))
         .await
         .map_err(|_| PreferenceError::Unavailable)?
 }
@@ -502,19 +568,13 @@ pub(crate) async fn preference_commit<R: tauri::Runtime>(
         &host_token,
         &state.token,
     )?;
-    let store = Arc::clone(&state.store);
-    let member = Arc::clone(&state.member);
+    let state = state.inner().clone();
     let app = webview.app_handle().clone();
     tokio::task::spawn_blocking(move || {
-        member.with_preference_scope(|scope| {
-            if scope != input.scope {
-                return Err(PreferenceError::Denied);
-            }
-            let snapshot = store.commit(&input)?;
-            // A missed event is repaired by the next read; a committed write must never appear failed.
-            let _ = app.emit_to(tauri::EventTarget::webview_window("main"), EVENT, ());
-            Ok(snapshot)
-        })
+        let snapshot = state.commit_scoped(&input)?;
+        // A missed event is repaired by the next read; a committed write must never appear failed.
+        let _ = app.emit_to(tauri::EventTarget::webview_window("main"), EVENT, ());
+        Ok(snapshot)
     })
     .await
     .map_err(|_| PreferenceError::Unavailable)?
@@ -527,3 +587,7 @@ mod tests;
 #[cfg(test)]
 #[path = "preferences_device_alignment_tests.rs"]
 mod device_alignment_tests;
+
+#[cfg(test)]
+#[path = "preferences_local_tenant_tests.rs"]
+mod local_tenant_tests;

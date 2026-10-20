@@ -3,7 +3,7 @@
 The package extends the installed `@` agent list. It has no standalone UI or
 mini-app window. The former package-picker fixture is retired.
 
-From `apps/studio`, with the Studio renderer running on port 4537:
+From `apps/studio`, with the AsterDream renderer running on port 4537:
 
 ```sh
 STUDIO_E2E_BASE_URL=http://127.0.0.1:4537 ./node_modules/.bin/playwright test \

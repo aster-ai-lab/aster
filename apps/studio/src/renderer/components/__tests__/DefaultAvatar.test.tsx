@@ -8,6 +8,15 @@ describe('DefaultAvatar', () => {
     delete document.documentElement.dataset.tenant
   })
 
+  it('uses the aster transparent star rather than its desktop icon plate', () => {
+    document.documentElement.dataset.tenant = 'aster'
+    render(<DefaultAvatar label="AsterDream" />)
+    expect(screen.getByRole('img', { name: 'AsterDream' }).querySelector('img')).toHaveAttribute(
+      'src',
+      '/tenant-logo.png'
+    )
+  })
+
   it('uses the app icon for every name', () => {
     document.documentElement.dataset.tenant = 'toyou'
     const { container } = render(<DefaultAvatar label="通友" />)

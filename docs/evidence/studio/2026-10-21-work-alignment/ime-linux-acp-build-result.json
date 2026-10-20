@@ -1,0 +1,16 @@
+{
+  "command": [
+    "docker",
+    "exec",
+    "aster-studio-kylin-ime",
+    "bash",
+    "/aster/target/evaluations/studio-work-alignment/ime-native/build-acp.sh"
+  ],
+  "exit_code": 0,
+  "started_utc": "2026-10-20T22:51:17.569398+00:00",
+  "elapsed_seconds": 913.183,
+  "worktree_source_proof": "ime-linux-cli-pair-source-proof.json",
+  "expected_pair_source_digest": "9d19105abe11072a6eb48e8fedc1bc5765099fd1",
+  "ort_native_dependency": "ime-linux-onnx-runtime-source.json",
+  "boundary": "Qualified native dependency location; Cargo registry remains --offline --locked; final Studio host is a later required build"
+}

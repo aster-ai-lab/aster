@@ -109,5 +109,8 @@ tauri = { version = "2.11.5", features = ["test"] }
 tokio = { version = "1", features = ["test-util"] }
 
 [features]
+default = ["tenant-aster"]
+tenant-aster = []
+tenant-toyou = []
 custom-protocol = ["tauri/custom-protocol"]
 

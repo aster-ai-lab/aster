@@ -51,20 +51,19 @@ impl MemberSessionStore {
         if cfg!(test) {
             return Self::open_with(None, None);
         }
-        let Some(root) = machine_root() else {
+        let Some(location) = crate::tenant::profile_location(slug) else {
             return Self::open_with(None, None);
         };
-        let instance = crate::tenant::instance_name().ok().flatten();
-        let dir = crate::tenant::profile_dir_under(&root, slug, instance.as_deref());
-        if dir.parent() == Some(root.as_path()) {
-            return Self::open_app(&root, slug);
-        }
+        Self::open_profile(location, slug)
+    }
+
+    pub(crate) fn open_profile(location: crate::tenant::ProfileLocation, slug: &str) -> Self {
         let session = if app_id_ok(slug) {
-            Some(dir.join("member-session.json"))
+            Some(location.directory.join("member-session.json"))
         } else {
             None
         };
-        Self::open_with(session, Some(root.join("computer-id")))
+        Self::open_with(session, Some(location.machine_root.join("computer-id")))
     }
 
     /// One directory per app under a shared machine root. Every app reads the same computer id.
@@ -299,6 +298,15 @@ impl MemberSessionStore {
         &self,
         action: impl FnOnce(&str) -> Result<T, crate::preferences::PreferenceError>,
     ) -> Result<T, crate::preferences::PreferenceError> {
+        self.with_optional_preference_scope(|scope| {
+            action(scope.ok_or(crate::preferences::PreferenceError::Denied)?)
+        })
+    }
+
+    pub(crate) fn with_optional_preference_scope<T>(
+        &self,
+        action: impl FnOnce(Option<&str>) -> Result<T, crate::preferences::PreferenceError>,
+    ) -> Result<T, crate::preferences::PreferenceError> {
         let guard = self
             .session
             .lock()
@@ -306,8 +314,7 @@ impl MemberSessionStore {
         let id = guard
             .as_ref()
             .map(|stored| stored.member_id.as_str())
-            .filter(|id| member_uuid_ok(id))
-            .ok_or(crate::preferences::PreferenceError::Denied)?;
+            .filter(|id| member_uuid_ok(id));
         action(id)
     }
 
@@ -396,11 +403,6 @@ fn clean_phone(value: &str) -> Result<String, u16> {
         return Err(400u16);
     }
     Ok(trimmed.to_owned())
-}
-
-fn machine_root() -> Option<PathBuf> {
-    let home = std::env::var_os("HOME")?;
-    Some(PathBuf::from(home).join("Library/Application Support/dev.a3s.studio"))
 }
 
 fn member_uuid_ok(id: &str) -> bool {

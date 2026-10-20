@@ -21,7 +21,7 @@ sources:
    existing question machinery.
 2. ACP sends `_a3s/form/request` with `formId`, `prompt`, `format: "openui"`
    and the OpenUI Lang string in `spec`. The request waits until submitted or
-   cancelled. Studio refuses an untagged new request instead of parking on
+   cancelled. AsterDream refuses an untagged new request instead of parking on
    retired JSON.
 3. The host assigns a random request ID, independent of the agent's `formId`.
    A TurnService-owned registry binds it to Session, Execution, attempt, anchor,

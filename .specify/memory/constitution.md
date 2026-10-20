@@ -18,7 +18,7 @@ Paths: `apps/aster`, `apps/work`, `apps/studio`, `crates/code`,
 `crates/terminal`.
 
 Obligations: a small hermetic test for new behavior; Tauri commands
-for AsterDream and Studio; membership in the root Cargo workspace;
+for AsterDream desktop tenants; membership in the root Cargo workspace;
 `publish = false`.
 
 ### Control-plane regime
@@ -87,7 +87,7 @@ coerced. **NON-NEGOTIABLE.**
 ### V. Workspaces and Published APIs
 
 Library code does not depend on a desktop shell. On a product path,
-AsterDream and Studio share the root Cargo workspace and lockfile
+AsterDream desktop tenants share the root Cargo workspace and lockfile
 and do not grow another workspace. Cross-crate use goes through the
 owning crate's public API. Preserve upstream package names and
 public Rust APIs unless a task explicitly requires a rename.

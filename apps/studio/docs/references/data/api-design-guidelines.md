@@ -8,7 +8,7 @@ sources:
 
 # API Design Guidelines
 
-Guidelines for designing RESTful APIs in the Cherry Studio Data API system.
+Guidelines for designing RESTful APIs in the AsterDream Data API system.
 
 [Root DESIGN.md section 14](../../../../../DESIGN.md#14-collection-development-standard)
 owns collection behavior, authorization, reviewed writes and acceptance. This
@@ -655,7 +655,7 @@ Don't mix both forms for the same resource inside one module — although cache 
 
 ## Matcher Semantics: Cache vs DataApi
 
-Cherry Studio has two cache layers with different key shapes and different invalidation matchers. They look similar but **are not interchangeable**:
+AsterDream has two cache layers with different key shapes and different invalidation matchers. They look similar but **are not interchangeable**:
 
 | Layer | Key shape | Match syntax | Example |
 |---|---|---|---|

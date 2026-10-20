@@ -3,7 +3,7 @@
 This document is a lightweight index for the active style sources used by `@a3s/ui`.
 
 The v2 architecture and migration contract are defined in
-[design-token-system.md](./design-token-system.md). Official Shadcn and approved Cherry Studio product semantics
+[design-token-system.md](./design-token-system.md). Official Shadcn and approved AsterDream product semantics
 share the unprefixed public namespace. The full theme entry exposes both through Tailwind utilities.
 
 For variable selection, intended CSS properties, stability, and AI rules, use

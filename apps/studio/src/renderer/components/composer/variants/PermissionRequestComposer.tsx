@@ -10,6 +10,7 @@ import { isValidAgentToolsType, renderTool, UnknownToolRenderer } from '@rendere
 import { AgentToolsType } from '@renderer/components/chat/messages/tools/shared/agentToolTypes'
 import { ToolArgsTable } from '@renderer/components/chat/messages/tools/shared/ArgsTable'
 import { ToolDisclosure, type ToolDisclosureItem } from '@renderer/components/chat/messages/tools/shared/ToolDisclosure'
+import { TOOL_HEADER_UI } from '@renderer/components/chat/messages/tools/ToolHeader'
 import type { ToolResponseLike } from '@renderer/components/chat/messages/tools/toolResponse'
 import type { MessageToolApprovalInput } from '@renderer/components/chat/messages/types'
 import Scrollbar from '@renderer/components/Scrollbar'
@@ -238,11 +239,13 @@ export default function PermissionRequestComposer({
     ? (commandFromArgs(request.toolResponse.arguments) ?? commandInText(toolName) ?? commandInText(request.title))
     : undefined
   const target = permissionDecisionTarget(request.toolResponse)
+  const targetLabelKey = toolName === AgentToolsType.Skill ? undefined : TOOL_HEADER_UI[toolName]?.labelKey
+  const targetLabel = targetLabelKey ? t(targetLabelKey) : target
   const subtitle = prose ? null : getPermissionRequestSubtitle(request, target)
   const ToolIcon = getToolGroupIcon(request.toolResponse.tool, request.toolResponse.arguments)
   const decisionTitle = prose
     ? t(command ? 'agent.toolPermission.runCommand' : 'agent.toolPermission.confirmAction')
-    : t('agent.toolPermission.decisionTitle', { target })
+    : t('agent.toolPermission.decisionTitle', { target: targetLabel })
   const proseDetail = command ?? (prose ? toolName.replace(/\s*[?？]\s*$/, '').trim() : '')
 
   const respond = useCallback(

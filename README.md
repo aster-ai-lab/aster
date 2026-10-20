@@ -2,10 +2,10 @@
 
 **把模型的建议，变成有边界、有记录、可验证的执行。**
 
-Aster 提供终端编程工具 **Aster CLI** 和桌面工作台 **Aster Work**。
+Aster 提供终端编程工具 **Aster CLI** 和桌面工作台 **AsterDream**。
 它们使用本仓库维护的 Rust Harness：连接模型、组织上下文、调用工具，并由宿主控制权限和完成条件。
 
-[快速开始](#快速开始) · [安装、更新和卸载](#安装更新和卸载) · [理解 Meta Harness](#理解-meta-harness) · [开发 Aster Work](#开发-aster-work) · [参与开发](#参与开发)
+[快速开始](#快速开始) · [安装、更新和卸载](#安装更新和卸载) · [理解 Meta Harness](#理解-meta-harness) · [开发桌面应用](#开发桌面应用) · [参与开发](#参与开发)
 
 ![Aster Meta Harness：装配工作台的底座固定，推演、执行、核验三个工位可以组合；所有工作遵守同一执行边界。](assets/readme/meta-harness.svg)
 
@@ -236,8 +236,8 @@ Remove-Item -Force "$env:LOCALAPPDATA\Aster\bin\aster.exe", "$env:LOCALAPPDATA\A
 **Harness 把一次模型调用接入可执行的任务过程；Meta Harness 让宿主在同一内核上组合这个过程。**
 
 这里的 **Meta** 指 Harness 本身可以被装配：宿主选择部件和扩展组件来组织任务行为。
-每个组件从事实记录计算当前视图和可执行转换。
-一份会话事实日志提供控制依据，运行时执行已启用的转换，再把结果追加为新事实：
+每个组件只根据事实日志计算当前视图和可执行转换。进程内存里的等待表不参与恢复。
+运行时执行一个已启用的转换，再把结果追加为新事实，然后重新计算：
 
 ```text
 状态 = 按顺序折叠事实日志
@@ -246,13 +246,38 @@ Remove-Item -Force "$env:LOCALAPPDATA\Aster\bin\aster.exe", "$env:LOCALAPPDATA\A
 ```
 
 这对应源码里的 Moore 组件接口：`initial / step / output`。
-每个转换有唯一键；已记录完成键的转换不会再次调度。
-确认与提问会停在等待状态，直到答案事实到达。
+每个转换有唯一键；原因已经写入日志的转换不会再次调度。
+确认与提问停住，直到对应的答案事实写入。计时器不能代替这个答案。
 实现见 [Effect 运行时](crates/effect/src/actor.rs) 和 [Core 组合入口](crates/code/core/src/meta_harness.rs)。
+
+### 一步怎么留下记录
+
+用户文字先成为 `user.message`。调度器只读日志。下一步是推理、工具、压缩、等待确认，或结束。
+
+工具调用先追加准备事实，执行结束后再追加收据。进程若停在这两笔事实之间，恢复不把该工具再执行一次，只补一条未知结果。键和载荷都相同的再次写入保持原样。键相同而载荷不同则拒绝写入。追加之后日志落盘。
+
+压缩把较早的上下文收成一条摘要事实。下一次推理读摘要和保留的尾部。
+
+### 谁有权做决定
+
+| 决定 | 权威 | 不由谁决定 |
+| --- | --- | --- |
+| 这次运行的历史 | 事实日志 | 运行存储和界面事件只是投影 |
+| 工具能不能执行 | 本次运行准入时冻结的权限策略 | 后到的姿态不改写已冻结的工具名单 |
+| 运行能不能完成 | 完成门禁 | 模型正文不是证据 |
+| 命令在什么边界里跑 | 沙箱 | `bash` 不直接生成宿主进程 |
+
+权限按 Deny、Allow、Ask 的顺序匹配。壳命令先做一次解析分类，策略再读这个分类。子运行继承工作策略，只能收窄权限，不能自带目标。
+
+没有文件修改时，最终回答可以结束这次运行。有修改时，验证报告或宿主显式豁免必须绑定同一次效果摘要。未收回的工具效应，或尚未观察的后台写入，都不能算完成。`GoalAchieved` 只在完成门禁允许之后发出。
+
+宿主组件不能禁用权限检查，也不能禁用完成门禁。宿主可以提交一份绑定效果摘要的通过报告。那份报告是证据，不是绕过。运行返回成功之前要完成资源作用域的清理。清理失败则拒绝成功。墙钟、工具回合、模型重试和上下文长度各有自己的上限。
+
+工作策略和长期目标记在同一份日志里。目标按原有 Run 分段推进，受宿主预算和等待条件限制。细节见 [持续工程与目标](crates/code/manual/DURABLE_ENGINEERING.md)。事实重放恢复的是控制状态。外部副作用的崩溃恢复要另行验证。记忆仓库负责隔离和修订，不判断一句话是否为真。未激活的候选不进入提示。边界见 [持久记忆](crates/code/manual/DURABLE_MEMORY.md)。
 
 ### 可以组合什么
 
-默认组合由五个部件构成，省略自定义配置时继续使用默认 `coding_actor`：
+默认组合由五个部件构成。省略自定义配置时，会话继续使用默认 `coding_actor`：
 
 | 部件 | 职责 |
 | --- | --- |
@@ -285,37 +310,28 @@ fn session_options() -> anyhow::Result<SessionOptions> {
 }
 ```
 
-这是 Rust 嵌入接口，CLI 使用产品默认组合。完整契约见 [Meta Harness 手册](crates/code/manual/META_HARNESS.md)。
-
-### 内核始终负责什么
-
-组合行为时，以下约束仍由 Core 执行：
-
-- **调用前授权：**每次工具调用经过权限判定，宿主组件不能移除这层检查。
-- **修改后验收：**发生修改的运行需要与实际效果摘要绑定的验证报告或宿主显式豁免。
-- **一致的控制来源：**组件共用事实日志；重复的转换键在执行前拒绝。
-- **运行结算：**运行成功返回前需要完成资源作用域的清理结算，清理失败会拒绝成功。
-
-工作策略和长期目标也记录在同一日志中。目标按原有 Run 分段推进，受宿主预算和等待条件限制；
-详细行为见 [持续工程与目标](crates/code/manual/DURABLE_ENGINEERING.md)。
-事实重放用于恢复控制状态；外部副作用的崩溃恢复和跨系统幂等性需要各自的验证。
+这是 Rust 嵌入接口。CLI 使用产品默认组合。完整契约见 [Meta Harness 手册](crates/code/manual/META_HARNESS.md)。
 
 ## 从哪里读源码
 
 ```text
-Aster CLI / Aster Work
-          │ ACP 会话协议
+Aster CLI / AsterDream
+          │ ACP，标准输入输出
           ▼
-     a3s-code-acp
+     伴随进程
           │
           ▼
-   Core · Meta Harness ── 模型、工具与能力适配
+   Meta Harness · 会话、工具、完成门禁
           │
           ▼
    Effect · 组件与事实日志
 ```
 
-这张图表示两个产品的智能体会话路径。桌面窗口、文档和系统集成还包含各自的宿主代码。
+这张图是两个产品的智能体会话路径。桌面窗口、文档和系统集成还有各自的宿主代码。
+
+普通交互会话由宿主启动旁边的伴随进程。找不到该进程时，启动失败，不改用进程内代理。带 `--leader` 的终端会话仍使用进程内代理，工具表与伴随进程不同。
+
+工作区路径是模型工具的根目录。它不限制伴随进程读取本机配置，也不限制会话上另行启动的 MCP 进程。产品会话的模型回合只走这份事实日志。仓库里仍留有旧的独立循环。新运行不走它，旧入口只减少。
 
 | 你要修改的行为 | 先读这里 |
 | --- | --- |
@@ -325,40 +341,47 @@ Aster CLI / Aster Work
 | Harness 组合、权限与完成门禁 | [crates/code/core](crates/code/core) |
 | 组件投影、效果执行和事实重放 | [crates/effect](crates/effect) |
 | 扩展能力、检索与持久化记忆 | [Use](crates/use)、[Search](crates/search)、[Memory](crates/memory)、[Vec](crates/vec) |
-| Studio 界面与原生宿主 | [apps/studio](apps/studio) |
-| 桌面界面与原生宿主 | [apps/work](apps/work) |
+| AsterDream / toyou 共享桌面宿主 | [apps/studio](apps/studio) |
+| AsterDream 旧版源码与 Office vendor 依赖 | [apps/work](apps/work) |
 | Office 引擎与编辑器 | [crates/office](crates/office)、[Office 编辑器源码](apps/work/vendor/packages/office) |
 
 所有 A3S Rust 依赖随仓库维护，成员均为 `publish = false`，共享根目录工作区和 `Cargo.lock`。
-构建 Aster 和 Aster Work 无需先发布 `a3s-code`，也无需相邻的 `../a3s` 仓库。
+构建 Aster 和 Aster Work 不需要先发布独立的 Harness 包，也不需要相邻的 `../a3s` 仓库。
 Cargo 和 pnpm 仍会下载普通第三方依赖。
 Code 只保留 Rust SDK；内部 `a3s-*` 包名用于保留现有 Rust API 兼容性。
 
-## 开发 Aster Work
+## 开发桌面应用
 
-Aster Work 的 Rust 宿主在 `apps/work/src-tauri`，前端在 `apps/work` 的 pnpm 工作区。
-需要 Node 和 pnpm 12.6.0；Node 版本范围见 [package.json](apps/work/package.json)。
+桌面应用统一使用 `apps/studio` 的 Rust 宿主和前端。默认 `aster` 租户为 AsterDream，
+保留星标和蓝银主题；`toyou` 租户保留原有通友品牌。
+需要 Node 和 pnpm 12.6.0；Node 版本范围见 [package.json](apps/studio/package.json)。
 
 ```sh
-cd apps/work
+cd apps/studio
 pnpm install --frozen-lockfile
 cd ../..
-just build-work
+just build-studio
+just studio
+# 原 Studio / ToWork 产品
+just studio toyou
 ```
 
-`just build-work` 先构建 ACP、Office，再构建桌面宿主并放入配套程序。
-`just dev` 启动带前端热更新的开发窗口，页面在 `http://127.0.0.1:4320`。`just studio` 使用 `4318`。macOS 安装包：
+`just build-studio` 先构建 ACP、Office，再构建共享宿主。
+`just dev`、`just work` 和 `just studio` 使用 AsterDream 开发入口，默认租户为 `aster`（AsterDream），
+前端热更新端口为 `4318`。macOS 安装包：
 
 ```sh
-just build-work-release
+just build-studio-release
+# 显式生成 ToWork 包
+A3S_TENANT_SLUG=toyou just build-studio-release
 ```
 
-`just work` 会先执行 `just build-work`，再启动这次构建的 debug `aster-dream`。构建失败时不会启动。仍在运行的旧主实例会被替换。Office 编辑器和 `a3s-office` 都从本仓库的 [crates/office](crates/office) 构建。`pnpm build:office` 会在内核源码更新后重编 WASM。说明见 [Office 编辑器](apps/work/vendor/packages/office/README.md)。
-
-Studio 同样接入根 Rust 工作区。先在 `apps/studio` 中运行
-`pnpm install --frozen-lockfile`，再在根目录运行 `just build-studio` 和
-`just studio`。macOS 打包使用 `just build-studio-release`。
-范围与来源见 [Studio 迁移记录](docs/migration.md#studio-import)。
+新 AsterDream 使用独立应用标识和新数据目录，本次合并不读取或迁移旧版会话、项目和凭据。
+`apps/work` 和 `just build-work` 保留为旧版源码与构建入口；默认启动不再终止旧版进程。
+Office 编辑器和 `a3s-office` 仍从本仓库的 [crates/office](crates/office) 构建，
+Office 内核构建保留现有 vendor 路径。说明见 [Office 编辑器](apps/work/vendor/packages/office/README.md)。
+范围与来源见 [AsterDream 迁移记录](docs/migration.md#studio-import) 和
+[默认 AsterDream 租户规格](specs/004-studio-default-aster/spec.md)。
 
 ## 参与开发
 
@@ -378,7 +401,7 @@ cargo test --locked -p aster
 ```
 
 - [CI](https://github.com/aster-ai-lab/aster/actions/workflows/ci.yml)：查看当前分支的实际检查结果。
-- [本地验证记录](docs/validation.md)：已验证的范围、macOS 限制及 Aster Work 尚未通过的完整质量检查。
+- [本地验证记录](docs/validation.md)：已验证的范围、macOS 限制及 旧版桌面应用尚未通过的完整质量检查。
 - [迁移与来源](docs/migration.md)：依赖内化、兼容性选择和来源清单。
 - [README 图形源码与重建](assets/readme/README.md)：Hairline 工作台的交互页与静态预览。
 - [问题与缺陷](https://github.com/aster-ai-lab/aster/issues)：报告时附操作系统、复现步骤、预期结果和去除凭据的日志。
@@ -387,6 +410,6 @@ cargo test --locked -p aster
 
 ## 许可证
 
-根目录代码见 [Apache-2.0](LICENSE)；Code / Effect 保留各自的 [MIT](crates/code/LICENSE) [许可](crates/effect/LICENSE)，
-Aster Work 保留 [AGPL-3.0](apps/work/LICENSE)。分发时请按组件保留原有许可证和第三方声明。
+Aster 入口和仓库根许可证是 [MIT](LICENSE)。终端树保留 [Apache-2.0](crates/terminal/LICENSE)。Code / Effect 的许可见 [MIT](crates/code/LICENSE) 与 [Effect 许可](crates/effect/LICENSE)。
+桌面组件保留 [AGPL-3.0](apps/studio/LICENSE)，旧版组件许可见 [旧版许可证](apps/work/LICENSE)。分发时请按组件保留原有许可证和第三方声明。
 Hairline 图形引擎的 MIT 许可证随[图形资产](assets/readme/hairline-license.txt)保留。

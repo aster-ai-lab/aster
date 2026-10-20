@@ -5,10 +5,10 @@ Package `a3s/iris@1.0.0`. One self-contained `.aix` package, three surfaces:
 | Surface | Id | Role |
 | --- | --- | --- |
 | Skill | `iris` | Reads one observation and returns exactly one offered `choice`. |
-| Agent | `iris` | Edge package harness, entry `agent/run.mjs`, 500 cpu millis, 256 MiB. Studio keeps one warm `a3s-box` per open view. |
+| Agent | `iris` | Edge package harness, entry `agent/run.mjs`, 500 cpu millis, 256 MiB. AsterDream keeps one warm `a3s-box` per open view. |
 | UI | `workbench` | Mini app (`studio.applets`): no Activity Bar entry; after install, 打开 opens it in its own system window. Root `ui/workbench`. |
 
-Nothing runs on the host outside Studio. There is no lab server, no port, and no Python.
+Nothing runs on the host outside AsterDream. There is no lab server, no port, and no Python.
 
 The package is the EmbodiedJev Iris integration (`iris.zip` at the repository root) ported onto the same workbench form as `a3s/g1-arm`: the same page shell, decision loop, edge agent, and view policy. The vehicle and the three missions are the quadrotor's.
 
@@ -26,9 +26,9 @@ The page uses the simulator's privileged state only. The source cameras and the 
 
 ## Decisions
 
-Each cycle has two decisions: a phase, then an action. When only one key is offered, the page takes it without a call. Otherwise it sends the observation to the package agent with `aix.agent.invoke`. Studio runs `agent/run.mjs` in a warm edge box for the life of the view:
+Each cycle has two decisions: a phase, then an action. When only one key is offered, the page takes it without a call. Otherwise it sends the observation to the package agent with `aix.agent.invoke`. AsterDream runs `agent/run.mjs` in a warm edge box for the life of the view:
 
-1. The agent emits a `model_request`. For the default decision model `platform/apofasi`, the request has `api: "systemone"` and a System One body: one `choice` question whose criteria are exactly the offered keys. For any other model given in `parameters.model`, it is a chat-completion body. Studio checks the body, calls the a3s gateway (`/v1/systemone` or `/v1/chat/completions`) with the member session, and posts the reply to `/v1/agent/model-responses`. The box never holds a credential.
+1. The agent emits a `model_request`. For the default decision model `platform/apofasi`, the request has `api: "systemone"` and a System One body: one `choice` question whose criteria are exactly the offered keys. For any other model given in `parameters.model`, it is a chat-completion body. AsterDream checks the body, calls the a3s gateway (`/v1/systemone` or `/v1/chat/completions`) with the member session, and posts the reply to `/v1/agent/model-responses`. The box never holds a credential.
 2. A System One reply counts only when it chooses an offered key and publishes a probability for exactly the offered keys, summing to 1. The declared `apofasi-lexical-*` engine ranks text overlap; it cannot authorize a flight action. Iris refuses that result, uses the existing rule controller and explains why in the view. A chat reply counts only when it names one offered option. Otherwise, or when the gateway is unavailable, the agent uses the rule: the only option, else an offered `baseline_choice`, else the first option.
 3. The output is `{"choice", "source": "model" | "rule", ...}`, plus `probabilities`, `confidence`, and the serving `model` from the decision model. The page refuses a choice it did not offer.
 
@@ -36,7 +36,9 @@ Each cycle has two decisions: a phase, then an action. When only one key is offe
 
 When the agent cannot run (for example, `a3s-box` is not installed), the page chooses with the same rule and labels the step `规则控制器（agent 不可用）` with the reason.
 
-## Studio view policy
+<a id="studio-view-policy"></a>
+
+## AsterDream view policy
 
 The view document is sandboxed (`allow-scripts`, opaque origin) with `connect-src 'none'` and no `'unsafe-eval'`. The page fetches nothing; scripts and fonts load as view files:
 
@@ -56,9 +58,9 @@ node tests/browser.proof.mjs
 
 The tests cover the flight world (mass, rest pose, crash, hook, the three missions on the rule controller) and the package shape. `tests/`, `tools/`, and `brand/` are package source only. The API publishes an explicit file list (`apps/api/src/contexts/plugin/infrastructure/iris_package.rs`) that excludes them; its test fails when this directory and the list differ.
 
-The browser proof uses G1's view host with Studio's exact sandbox and CSP. Chromium and WebKit check controls during slow startup, actual scene pixels, reset and all three missions on the rule controller, one-time confirmation of low-probability actions, cancellation of an unanswered decision, and disabled controls when a mesh pack fails to load. It requires Studio's Playwright install and its Chromium and WebKit browsers. Set `PROOF_SCREENSHOTS` to retain the completed mission screenshots.
+The browser proof uses G1's view host with AsterDream's exact sandbox and CSP. Chromium and WebKit check controls during slow startup, actual scene pixels, reset and all three missions on the rule controller, one-time confirmation of low-probability actions, cancellation of an unanswered decision, and disabled controls when a mesh pack fails to load. It requires AsterDream's Playwright install and its Chromium and WebKit browsers. Set `PROOF_SCREENSHOTS` to retain the completed mission screenshots.
 
-`IRIS_NATIVE_RUNTIME=<Studio runtime receipt> IRIS_NATIVE_EVIDENCE=<output directory> node tests/native.proof.mjs` additionally verifies installed browser assets against this source and drives all three missions through a running Studio's view-bound edge agent and gateway. Iris must already be installed. The proof closes only its own view, uses G1's browser host, and records whether actions came from a planning model or the explicitly labelled refusal of a lexical engine; it does not claim a native-window GUI test or a neural-planning result for rule actions.
+`IRIS_NATIVE_RUNTIME=<Studio runtime receipt> IRIS_NATIVE_EVIDENCE=<output directory> node tests/native.proof.mjs` additionally verifies installed browser assets against this source and drives all three missions through a running AsterDream's view-bound edge agent and gateway. Iris must already be installed. The proof closes only its own view, uses G1's browser host, and records whether actions came from a planning model or the explicitly labelled refusal of a lexical engine; it does not claim a native-window GUI test or a neural-planning result for rule actions.
 
 ## Supply
 

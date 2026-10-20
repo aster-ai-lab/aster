@@ -5,9 +5,11 @@ import { useTranslation } from 'react-i18next'
 
 import { inferReasoningControls, REASONING_EFFORT_ORDER, type ReasoningEffort } from '@cherrystudio/provider-registry'
 import { usePreference } from '@data/hooks/usePreference'
+import { useMemberProfile } from '@renderer/components/account/memberProfile'
 import { type ModelEntry, OFFICIAL_PROVIDERS, providerLogoId, studioProviderId } from '@renderer/data/modelProviders'
 import { orgModelAsCatalogEntry, type OrgModel } from '@renderer/data/orgModels'
 import { OS_GATEWAY_AUTO_MODEL_ID, OS_GATEWAY_PROVIDER_ID } from '@renderer/data/osGateway'
+import { useProviders } from '@renderer/hooks/useProvider'
 import { useModelMutations, useModels } from '@renderer/hooks/useModel'
 import { ProviderAvatar } from '@renderer/pages/settings/ProviderSettings/components/ProviderAvatar'
 import { toast } from '@renderer/services/toast'
@@ -16,6 +18,8 @@ import { formatErrorMessageWithPrefix } from '@renderer/utils/error'
 import { cn } from '@renderer/utils/style'
 import { MODEL_CAPABILITY, type ModelCapability } from '@shared/data/types/model'
 import { createUniqueModelId, type Model } from '@shared/data/types/model'
+import type { Provider } from '@shared/data/types/provider'
+import { isEmbeddingModel, isGenerateImageModel, isRerankModel } from '@shared/utils/model'
 
 import { useOrgModels } from './useOrgModels'
 import { writePendingReasoningEffort } from './workbenchReasoningEffort'
@@ -98,6 +102,29 @@ export function catalogPickerGroups(models: readonly OrgModel[], query: string):
     if (model.available) available.add(entries[index].key)
   })
   return buildPickerGroups(filterOrgEntries(entries, query), new Set(), new Set(), available)
+}
+
+/** Local rows are selectable only from the enabled native provider/model records. */
+export function localPickerGroups(models: readonly Model[], providers: readonly Provider[], query: string): PickerGroup[] {
+  const groups: PickerGroup[] = []
+  for (const provider of providers) {
+    if (!provider.isEnabled || provider.id === OS_GATEWAY_PROVIDER_ID) continue
+    const entries: PickerOption[] = models.filter((model) => model.providerId === provider.id && model.isEnabled && !model.isHidden &&
+      !isEmbeddingModel(model) && !isRerankModel(model) && !isGenerateImageModel(model)).map((model) => ({
+      key: `local:${model.id}`, providerId: provider.id, providerName: provider.name, logoId: provider.id,
+      id: model.apiModelId, name: model.name || model.apiModelId,
+      description: model.description, reasoning: model.capabilities?.includes(MODEL_CAPABILITY.REASONING) ?? false,
+      toolCall: model.capabilities?.includes(MODEL_CAPABILITY.FUNCTION_CALL) ?? false,
+      attachment: model.inputModalities?.includes('image') ?? false,
+      contextWindow: model.contextWindow ?? null, outputLimit: model.maxOutputTokens ?? null,
+      inputModalities: model.inputModalities ?? ['text'], outputModalities: model.outputModalities ?? ['text'],
+      inputCost: null, outputCost: null, endpointTypes: model.endpointTypes,
+      studioProviderId: provider.id, configured: true
+    }))
+    const filtered = filterOrgEntries(entries, query) as PickerOption[]
+    if (filtered.length > 0) groups.push({ key: `local:${provider.id}`, providerName: provider.name, logoId: provider.id, configured: true, options: filtered })
+  }
+  return groups
 }
 
 /** Case-insensitive match on name, upstream id, and provider. */
@@ -397,14 +424,21 @@ export function WorkbenchModelPicker({
   const contentRef = useRef<HTMLDivElement>(null)
   const dismissTimer = useRef<number | undefined>(undefined)
 
-  const { models } = useModels(undefined, { fetchEnabled: open })
+  const { models, isLoading: localModelsLoading } = useModels(undefined, { fetchEnabled: open })
+  const { providers } = useProviders(undefined, { enabled: open && import.meta.env.PUBLIC_STUDIO_TENANT === 'aster' })
+  const member = useMemberProfile()
+  const localBuild = import.meta.env.PUBLIC_STUDIO_TENANT === 'aster'
+  const organizationEnabled = !localBuild || member !== null
   const { createModel } = useModelMutations()
-  const org = useOrgModels({ enabled: open, revision })
-  const phase = org.phase
-  const catalogItems = org.catalog.items
+  const org = useOrgModels({ enabled: open && organizationEnabled, revision })
+  const phase = localBuild ? (localModelsLoading && models.length === 0 ? 'loading' : 'ready') : org.phase
+  const catalogItems = organizationEnabled ? org.catalog.items : []
   const [defaultModelId, setDefaultModelId] = usePreference('chat.default_model_id')
   const autoSelected = !defaultModelId
-  const groups = useMemo(() => catalogPickerGroups(catalogItems, query), [catalogItems, query])
+  const groups = useMemo(() => [
+    ...(localBuild ? localPickerGroups(models, providers, query) : []),
+    ...catalogPickerGroups(catalogItems, query)
+  ], [localBuild, models, providers, catalogItems, query])
   const visibleGroups =
     activeProvider === ALL_PROVIDERS ? groups : groups.filter((group) => group.key === activeProvider)
   const total = groups.reduce((sum, group) => sum + group.options.length, 0)
@@ -465,6 +499,10 @@ export function WorkbenchModelPicker({
     setSaving(true)
     try {
       const picked = await resolveModel({ ...option, studioProviderId: studioId })
+      if (import.meta.env.PUBLIC_STUDIO_TENANT === 'aster' && picked.providerId !== OS_GATEWAY_PROVIDER_ID) {
+        const { writeShellModelDefault } = await import('@renderer/data/studioLocalProviderPlane')
+        await writeShellModelDefault({ providerId: picked.providerId, modelId: picked.apiModelId })
+      }
       await setDefaultModelId(picked.id)
       if (onSelect) await onSelect(picked)
       handleOpenChange(false)
@@ -476,7 +514,7 @@ export function WorkbenchModelPicker({
   }
 
   const chooseAuto = async () => {
-    if (!org.catalog.autoModel) {
+    if (!organizationEnabled || !org.catalog.autoModel) {
       toast.error(t('workbench.model_picker.auto_unavailable'))
       return
     }
@@ -503,6 +541,7 @@ export function WorkbenchModelPicker({
   const autoQuery = query.trim().toLowerCase()
   const showAuto =
     phase === 'ready' &&
+    organizationEnabled && Boolean(org.catalog.autoModel) &&
     activeProvider === ALL_PROVIDERS &&
     (autoQuery.length === 0 ||
       t('workbench.model_picker.auto').toLowerCase().includes(autoQuery) ||

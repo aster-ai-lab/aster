@@ -9,6 +9,9 @@ import { WorkbenchModelPicker } from '../WorkbenchModelPicker'
 
 const mocks = vi.hoisted(() => ({
   fetchOrgModels: vi.fn(),
+  models: [] as import('@shared/data/types/model').Model[],
+  providers: [] as import('@shared/data/types/provider').Provider[],
+  writeShellModelDefault: vi.fn(),
   createModel: vi.fn(),
   setDefaultModelId: vi.fn()
 }))
@@ -26,9 +29,12 @@ vi.mock('@renderer/data/orgModels', async (importOriginal) => {
 })
 
 vi.mock('@renderer/hooks/useModel', () => ({
-  useModels: () => ({ models: [], isLoading: false, refetch: vi.fn() }),
+  useModels: () => ({ models: mocks.models, isLoading: false, refetch: vi.fn() }),
   useModelMutations: () => ({ createModel: mocks.createModel })
 }))
+
+vi.mock('@renderer/hooks/useProvider', () => ({ useProviders: () => ({ providers: mocks.providers }) }))
+vi.mock('@renderer/data/studioLocalProviderPlane', () => ({ writeShellModelDefault: mocks.writeShellModelDefault }))
 
 vi.mock('@data/hooks/usePreference', () => ({
   usePreference: () => [undefined, mocks.setDefaultModelId]
@@ -46,6 +52,9 @@ class ResizeObserverStub {
 
 describe('WorkbenchModelPicker popup', () => {
   beforeEach(() => {
+    mocks.models = []
+    mocks.providers = []
+    mocks.writeShellModelDefault.mockReset().mockResolvedValue(undefined)
     mocks.fetchOrgModels.mockReset()
     mocks.createModel.mockReset()
     mocks.setDefaultModelId.mockReset()
@@ -62,6 +71,24 @@ describe('WorkbenchModelPicker popup', () => {
     HTMLElement.prototype.setPointerCapture ??= () => undefined
     HTMLElement.prototype.releasePointerCapture ??= () => undefined
     HTMLElement.prototype.scrollIntoView ??= () => undefined
+  })
+
+  it('selects an anonymous local model without waiting for or calling the organization', async () => {
+    vi.stubEnv('PUBLIC_STUDIO_TENANT', 'aster')
+    try {
+      mocks.fetchOrgModels.mockImplementation(() => new Promise(() => undefined))
+      mocks.models = [{ id: 'openai::local-chat', providerId: 'openai', apiModelId: 'local-chat', name: 'Private chat', isEnabled: true, capabilities: [] } as import('@shared/data/types/model').Model]
+      mocks.providers = [{ id: 'openai', name: 'Private endpoint', isEnabled: true } as import('@shared/data/types/provider').Provider]
+      const user = userEvent.setup()
+      const onSelect = vi.fn()
+      render(<WorkbenchModelPicker trigger={<button>Local models</button>} onSelect={onSelect} />)
+      await user.click(screen.getByRole('button', { name: 'Local models' }))
+      await user.click(await screen.findByRole('option', { name: /Private chat/ }))
+      expect(mocks.fetchOrgModels).not.toHaveBeenCalled()
+      expect(mocks.writeShellModelDefault).toHaveBeenCalledWith({ providerId: 'openai', modelId: 'local-chat' })
+      expect(mocks.setDefaultModelId).toHaveBeenCalledWith('openai::local-chat')
+      expect(onSelect).toHaveBeenCalledWith(mocks.models[0])
+    } finally { vi.unstubAllEnvs() }
   })
 
   it('lists models from the member catalog and selects one without throwing', async () => {

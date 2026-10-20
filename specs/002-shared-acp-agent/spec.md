@@ -6,7 +6,7 @@
 
 **Status**: Draft
 
-**Input**: Align Aster TUI product entries with the `a3s-code-acp` process AsterDream and Studio already start.
+**Input**: Align Aster TUI product entries with the `a3s-code-acp` process legacy AsterDream and the shared desktop host already start.
 
 **Gate context**: Product path `apps/aster` and `crates/terminal` pager. The desktop hosts already start `a3s-code-acp`. This epic moves the remaining product entries onto that process. It has no roadmap row; the route is the approved shared-agent plan.
 
@@ -42,7 +42,7 @@ The interactive client still sends its initialize capability advertisements. A s
 
 ### Edge Cases
 
-- When `A3S_ACP_AGENT_BIN` is set to an empty value, a missing path, or a Unix file without an execute bit, AsterDream, Studio, and the Aster TUI reject that path and do not start another `a3s-code-acp` found as a sibling, a bundled resource, under `~/.a3s/bin`, or on `PATH`. The TUI returns the interactive missing-backend sentence.
+- When `A3S_ACP_AGENT_BIN` is set to an empty value, a missing path, or a Unix file without an execute bit, AsterDream, AsterDream, and the Aster TUI reject that path and do not start another `a3s-code-acp` found as a sibling, a bundled resource, under `~/.a3s/bin`, or on `PATH`. The TUI returns the interactive missing-backend sentence.
 - When `A3S_ACP_AGENT_BIN` names an executable file, that file is the one selected.
 - When `A3S_ACP_AGENT_BIN` is unset, the TUI accepts only an executable sibling. The desktop hosts keep their current search order and their current not-found sentence.
 - A desktop executable outside a Cargo `target/` directory does not prefer the compile-time `target/debug/a3s-code-acp` over a bundled agent. An executable under `target/` still prefers the workspace debug binary when that file exists.

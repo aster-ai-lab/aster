@@ -206,29 +206,33 @@ pub fn open_mail_compose_window(app: tauri::AppHandle, draft: String) -> Result<
     script.push_str(&assign_script(&seed)?);
     script.push_str("document.documentElement.dataset.a3sMailCompose='true';");
 
-    let builder = WebviewWindowBuilder::new(&app, LABEL, WebviewUrl::External(url))
-        .initialization_script(script)
-        .data_store_identifier(data_store_id())
-        .title(title)
-        .inner_size(WINDOW_WIDTH, WINDOW_HEIGHT)
-        .min_inner_size(720.0, 560.0)
-        .resizable(true)
-        .maximizable(true)
-        .minimizable(true)
-        .closable(true)
-        .visible(false)
-        .focused(false)
-        .center()
-        .background_color(tauri::webview::Color(255, 255, 255, 255))
-        .on_page_load(|window, payload| {
-            if payload.event() != tauri::webview::PageLoadEvent::Finished {
-                return;
-            }
-            if !is_mail_compose_label(window.label()) {
-                return;
-            }
-            crate::applet_window::reveal(&window);
-        });
+    let builder = crate::tenant::isolate_webview(
+        WebviewWindowBuilder::new(&app, LABEL, WebviewUrl::External(url))
+            .initialization_script(script)
+            .data_store_identifier(data_store_id()),
+        data_store_id(),
+    )
+    .map_err(|error| error.to_string())?
+    .title(title)
+    .inner_size(WINDOW_WIDTH, WINDOW_HEIGHT)
+    .min_inner_size(720.0, 560.0)
+    .resizable(true)
+    .maximizable(true)
+    .minimizable(true)
+    .closable(true)
+    .visible(false)
+    .focused(false)
+    .center()
+    .background_color(tauri::webview::Color(255, 255, 255, 255))
+    .on_page_load(|window, payload| {
+        if payload.event() != tauri::webview::PageLoadEvent::Finished {
+            return;
+        }
+        if !is_mail_compose_label(window.label()) {
+            return;
+        }
+        crate::applet_window::reveal(&window);
+    });
     #[cfg(target_os = "macos")]
     let builder = builder
         .hidden_title(true)

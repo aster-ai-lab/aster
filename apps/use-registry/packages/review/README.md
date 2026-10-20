@@ -1,6 +1,6 @@
 # 合同审查 · A3S Review
 
-Package source `a3s/review@1.3.0` (unreleased). The Studio plugin page presents this `.aix` package as **合同审查**. It extends the composer's installed-agent list, with two declared surfaces:
+Package source `a3s/review@1.3.0` (unreleased). The AsterDream plugin page presents this `.aix` package as **合同审查**. It extends the composer's installed-agent list, with two declared surfaces:
 
 | Surface | Id | Role |
 | --- | --- | --- |

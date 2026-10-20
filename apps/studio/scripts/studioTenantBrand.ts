@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, lstatSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
 export interface StudioTenantBrand {
@@ -20,18 +20,18 @@ export interface StudioTenantBrand {
 
 const CHERRY_PRODUCT = 'Cherry Studio'
 
-export function loadStudioTenantBrand(projectRoot: string, envSlug: string | undefined): StudioTenantBrand | null {
-  const slug = (envSlug ?? 'toyou').trim() || 'toyou'
-  if (!isSlug(slug)) return null
+export function loadStudioTenantBrand(projectRoot: string, envSlug: string | undefined): StudioTenantBrand {
+  const slug = (envSlug ?? 'aster').trim()
+  if (!isSlug(slug)) throw new Error(`invalid tenant slug: ${slug}`)
   const directory = resolve(projectRoot, '../../apps/web/public/tenant', slug)
   const infoPath = resolve(directory, 'INFO.md')
-  if (!existsSync(infoPath)) return null
+  requireTenantFile(infoPath)
   const parsed = parseTenantInfo(readFileSync(infoPath, 'utf8'))
-  if (!parsed) return null
+  if (!parsed) throw new Error(`invalid tenant INFO.md: ${slug}`)
   const iconPath = resolve(directory, 'icon.png')
   const markPath = resolve(directory, 'mark-light.png')
   const logoPath = resolve(directory, parsed.lightLogo)
-  if (!existsSync(iconPath) || !existsSync(markPath) || !existsSync(logoPath)) return null
+  for (const asset of [iconPath, markPath, logoPath]) requireTenantFile(asset)
   const modelMarketPath = resolve(directory, 'model-market.json')
   return {
     slug,
@@ -45,6 +45,12 @@ export function loadStudioTenantBrand(projectRoot: string, envSlug: string | und
     logoPath,
     modelMarketPath: existsSync(modelMarketPath) ? modelMarketPath : null
   }
+}
+
+function requireTenantFile(path: string): void {
+  if (!existsSync(path)) throw new Error(`missing tenant asset: ${path}`)
+  const file = lstatSync(path)
+  if (!file.isFile() || file.isSymbolicLink() || file.size === 0) throw new Error(`invalid tenant asset: ${path}`)
 }
 
 export function parseTenantInfo(text: string): {
@@ -118,9 +124,7 @@ export function stampTenantHtml(
 ): string {
   if (html.includes('data-a3s-product=')) return html
   const brandStyle = brand.brand ? ` style="--a3s-tenant-brand:${brand.brand}"` : ''
-  const modelService = brand.modelService
-    ? ` data-a3s-model-service="${escapeHtml(brand.modelService)}"`
-    : ''
+  const modelService = brand.modelService ? ` data-a3s-model-service="${escapeHtml(brand.modelService)}"` : ''
   const companyZh = brand.companyZh ? ` data-a3s-company-zh="${escapeHtml(brand.companyZh)}"` : ''
   const companyEn = brand.companyEn ? ` data-a3s-company-en="${escapeHtml(brand.companyEn)}"` : ''
   const stamped = html.replace(
@@ -168,9 +172,5 @@ function isSlug(slug: string): boolean {
 }
 
 function escapeHtml(value: string): string {
-  return value
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
+  return value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;')
 }

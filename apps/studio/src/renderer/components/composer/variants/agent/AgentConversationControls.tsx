@@ -1,15 +1,15 @@
+import { Button, NormalTooltip, Tooltip } from '@a3s-lab/ui'
 import { Bot, ChevronDown, CircleSlash, Folder, Sparkles, TriangleAlert, X } from 'lucide-react'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Button, NormalTooltip, Tooltip } from '@a3s-lab/ui'
 import ModelAvatar from '@renderer/components/Avatar/ModelAvatar'
 import { ModelSelector, type ModelSelectorFilter } from '@renderer/components/ModelSelector'
 import { OpenTargetButton } from '@renderer/components/OpenTarget'
 import { type ResourceEditDialogTarget } from '@renderer/components/resourceCatalog/dialogs/edit'
 import { AgentSelector, WorkspaceSelector } from '@renderer/components/resourceCatalog/selectors'
 import { useProviderDisplayName } from '@renderer/hooks/useProvider'
-import { studioProductName } from '@renderer/tenantBrand'
+import { studioUsesWorkbenchShell } from '@renderer/tenantBrand'
 import { getProviderDisplayNameById } from '@renderer/utils/naming'
 import { cn } from '@renderer/utils/style'
 import type { AgentWorkspaceEntity } from '@shared/data/api/schemas/agentWorkspaces'
@@ -80,7 +80,7 @@ function AgentControl({
   | 'onAgentChange'
 >) {
   const [agentEditDialogTarget, setAgentEditDialogTarget] = useState<ResourceEditDialogTarget | null>(null)
-  if (studioProductName() === 'ToWork') return null
+  if (studioUsesWorkbenchShell()) return null
   const baseTriggerClassName = side === 'bottom' ? COMPOSER_BELOW_SELECTOR_BUTTON_CLASS : COMPOSER_SELECTOR_BUTTON_CLASS
   const triggerClassName = cn(baseTriggerClassName, iconOnly && COMPOSER_ICON_ONLY_SELECTOR_BUTTON_CLASS)
   const labelClassName = cn('truncate', iconOnly && COMPOSER_ICON_ONLY_LABEL_CLASS)

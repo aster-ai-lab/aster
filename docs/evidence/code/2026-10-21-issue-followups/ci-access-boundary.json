@@ -1,0 +1,14 @@
+{
+  "work_deploy_key_creation": {
+    "status": 422,
+    "message": "Deploy keys are disabled for this repository"
+  },
+  "organization_secret_inventory": {
+    "status": 403,
+    "message": "You must be an org admin or have the actions secrets fine-grained permission."
+  },
+  "keys_created": 0,
+  "secrets_written": 0,
+  "private_keys_retained": false,
+  "fallback": "Dedicated GitHub App installed for work/api/cloud; per-checkout token narrowed to one repository and contents:read; persist-credentials false"
+}

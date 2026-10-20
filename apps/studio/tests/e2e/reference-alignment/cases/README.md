@@ -26,7 +26,7 @@ Run `run.py --task studio-tables --source <this-directory>` with the same explic
 binary arguments as the terminal lane. The optional `--verifier-image` accepts
 the separately prepared `a3s-studio-reference:verifier-ubuntu24.04` tool cache;
 it changes neither `test.sh` nor its versions. This is a text-PDF/data-transform
-leg. Passing it does not certify scanned-PDF OCR, Studio attachment selection,
+leg. Passing it does not certify scanned-PDF OCR, AsterDream attachment selection,
 spreadsheet rendering, the native GUI, or the entire F01-F04 acceptance matrix.
 
 `studio-content` covers C10:C17 (F09-F16) with eight independent Markdown

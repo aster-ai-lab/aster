@@ -6,7 +6,7 @@ description: >-
 
 # 🌿 Branching Strategy
 
-Cherry Studio implements a structured branching strategy to maintain code quality and streamline the development process.
+AsterDream implements a structured branching strategy to maintain code quality and streamline the development process.
 
 > **Current model.** `main` is the default branch for all active development — submit features, refactors, optimizations, and fixes here.
 
@@ -28,7 +28,7 @@ For details about the `testplan` branch used in the Test Plan, please refer to t
 
 ## Contributing Branches
 
-When contributing to Cherry Studio, please follow these guidelines:
+When contributing to AsterDream, please follow these guidelines:
 
 1. **Feature Branches:**
 

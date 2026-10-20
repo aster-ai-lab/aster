@@ -1,6 +1,6 @@
 """Drive the messages page on the new toyou fork with background CUA.
 
-Binds the pid in $TMPDIR/a3s-studio-runtime-toyou-fork1.json. Refuses the
+Binds the pid in $TMPDIR/a3s-studio/toyou/instances/fork1/runtime.json. Refuses the
 preexisting towork-cua window. Every press uses delivery_mode background.
 Does not send a message, confirm a reset, or start a model turn.
 
@@ -24,7 +24,7 @@ from typing import Any, Callable
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "towork"))
 from driver import Drive  # noqa: E402
 
-RUNTIME_NAME = "a3s-studio-runtime-toyou-fork1.json"
+RUNTIME_NAME = "a3s-studio/toyou/instances/fork1/runtime.json"
 FORBIDDEN_PRESS = {"发送", "重置", "解散群聊", "退出群聊", "保存", "创建群聊"}
 
 
@@ -769,7 +769,8 @@ def main() -> None:
         print(message, flush=True)
         lines.append(message)
 
-    runtime = Path(args.runtime) if args.runtime else Path(os.environ.get("TMPDIR", "/tmp")) / RUNTIME_NAME
+    explicit = args.runtime or os.environ.get("STUDIO_RUNTIME_FILE")
+    runtime = Path(explicit) if explicit else Path(os.environ.get("TMPDIR", "/tmp")) / RUNTIME_NAME
     data = json.loads(runtime.read_text()) if runtime.is_file() else {}
     pid = args.fork_pid or int(data["pid"])
     if args.user_pid and pid == args.user_pid:

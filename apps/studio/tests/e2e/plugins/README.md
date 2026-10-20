@@ -1,4 +1,6 @@
-# Studio plugin composition campaign
+<a id="studio-plugin-composition-campaign"></a>
+
+# AsterDream plugin composition campaign
 
 This fixture exercises the production `WorkbenchPluginHost`, scope provider,
 ActivityBar buttons, Sidebar registry provider, actual `/app/plugin` route,
@@ -8,7 +10,7 @@ verifies exact page URLs, isolated edits, generation replacement, closing only
 one workspace, removing both open pages and all contributions, and fencing old
 event listeners.
 
-It is a renderer integration campaign. It does not launch the complete Studio
+It is a renderer integration campaign. It does not launch the complete AsterDream
 shell, install native packages, execute ACP/Harness runs, or run VSX extensions.
 `ComposerSurface.lazy.test.tsx` additionally exercises the production shared
 Composer's plugin action placement and stale/rich-draft guards.

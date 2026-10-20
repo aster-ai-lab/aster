@@ -44,7 +44,7 @@ Every More options choice waits for that dialog's shared close animation to fini
 dialog, preventing overlapping overlays and focus restoration from the closing dialog.
 
 The diagnostic panel warns that application logs may contain sensitive data and must not be shared publicly or
-outside Cherry Studio support. Saving never uploads or attaches the bundle; metadata-only fallback is disclosed
+outside AsterDream support. Saving never uploads or attaches the bundle; metadata-only fallback is disclosed
 when logs cannot be included. After a successful local-only save, the only support actions reveal the file and
 copy `support@cherry-ai.com`; no mail client or prefilled email is provided. The V1 dialog also opens
 only when selected from More options. The window runs on the `simplest` preload (no shell access), so the

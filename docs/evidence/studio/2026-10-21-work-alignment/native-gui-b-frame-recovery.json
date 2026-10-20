@@ -1,0 +1,13 @@
+{
+  "counts_after_frame_reload": {
+    "requests": 18,
+    "streams": 1,
+    "auxiliary": 1
+  },
+  "reply_visible": "本地合成模型已回复。",
+  "error_boundary_absent": true,
+  "new_model_request_on_reload": false,
+  "next_fixture_actions": "qa-actions/plan-initial.json",
+  "sha256": "b60204362fc5bcdc0b58e5114a5d58ea9d080c48adcc038d9467cba7a165f646",
+  "scope": "actual native ToYou CUA after renderer scope repair; synthetic signed-in org and local model"
+}

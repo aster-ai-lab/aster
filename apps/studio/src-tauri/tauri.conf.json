@@ -1,9 +1,9 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "ToWork",
+  "productName": "AsterDream",
   "mainBinaryName": "Studio",
   "version": "2.1.3",
-  "identifier": "dev.a3s.studio",
+  "identifier": "dev.a3s.studio.aster",
   "build": {
     "devUrl": "http://127.0.0.1:4318",
     "frontendDist": "frontend-stub"
@@ -18,9 +18,9 @@
   "bundle": {
     "active": true,
     "icon": [
-      "../build/icon.icns",
-      "../build/icon.png",
-      "../build/icon.ico"
+      "../../web/public/tenant/aster/icon.icns",
+      "../../web/public/tenant/aster/icon.png",
+      "../../web/public/tenant/aster/icon.ico"
     ],
     "macOS": {
       "signingIdentity": "-"

@@ -1,4 +1,6 @@
-import { dirname, resolve } from 'node:path'
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { describe, expect, it } from 'vitest'
@@ -8,6 +10,32 @@ import { loadStudioTenantBrand, parseTenantInfo, stampTenantHtml } from './studi
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 
 describe('studio tenant brand', () => {
+  it('defaults to AsterDream and its existing blue brand', () => {
+    const brand = loadStudioTenantBrand(projectRoot, undefined)
+    expect(brand?.slug).toBe('aster')
+    expect(brand?.product).toBe('AsterDream')
+    expect(brand?.brand?.toLowerCase()).toBe('#005abb')
+    expect(brand?.modelMarketPath).toBeNull()
+  })
+
+  it.each(['', ' ', 'Bad', '../aster', 'missing-tenant'])('refuses explicit invalid or missing tenant %j', (slug) => {
+    expect(() => loadStudioTenantBrand(projectRoot, slug)).toThrow(/tenant/)
+  })
+
+  it('refuses missing brand assets instead of producing a Cherry build', () => {
+    const root = mkdtempSync(join(tmpdir(), 'studio-missing-brand-'))
+    try {
+      const project = join(root, 'apps/studio')
+      const tenant = join(root, 'apps/web/public/tenant/toyou')
+      mkdirSync(project, { recursive: true })
+      mkdirSync(tenant, { recursive: true })
+      writeFileSync(join(tenant, 'INFO.md'), '---\nproduct: "ToWork"\nlogos:\n  light_surface: logo-light.png\n---\n')
+      expect(() => loadStudioTenantBrand(project, 'toyou')).toThrow(/tenant/)
+    } finally {
+      rmSync(root, { recursive: true, force: true })
+    }
+  })
+
   it('reads the product and light-surface logo from tenant front matter', () => {
     const parsed = parseTenantInfo(
       '---\nname:\n  zh: "通友科技"\nproduct: "ToWork"\nlogos:\n  light_surface: logo-light.png\n---\n'

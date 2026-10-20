@@ -1,9 +1,10 @@
 import Color from 'color'
 
 import { usePreference } from '@data/hooks/usePreference'
+import { studioIsAsterTenant } from '@renderer/tenantBrand'
 import { applyAppearanceAttributes, readCachedAppearanceLayout } from '@renderer/utils/appearanceAttributes'
 import { getForegroundColor } from '@renderer/utils/style'
-import { resolveThemePrimary } from '@renderer/utils/tenantTheme'
+import { LEGACY_THEME_PRIMARY, resolveThemePrimary } from '@renderer/utils/tenantTheme'
 
 export default function useUserTheme() {
   const [colorPrimary, setColorPrimary] = usePreference('ui.theme_user.color_primary')
@@ -26,8 +27,18 @@ export default function useUserTheme() {
   const initUserTheme = (theme: { colorPrimary: string } = { colorPrimary }) => {
     const colorPrimary = Color(resolveThemePrimary(theme.colorPrimary))
 
-    document.documentElement.style.setProperty('--cs-theme-primary', colorPrimary.toString())
-    document.documentElement.style.setProperty('--cs-theme-primary-foreground', getForegroundColor(colorPrimary.hex()))
+    const savedPrimary = (theme.colorPrimary ?? '').trim()
+    if (studioIsAsterTenant() && (!savedPrimary || savedPrimary.toLowerCase() === LEGACY_THEME_PRIMARY)) {
+      // The tenant stylesheet changes its default with light/dark; a chosen color stays inline.
+      document.documentElement.style.removeProperty('--cs-theme-primary')
+      document.documentElement.style.removeProperty('--cs-theme-primary-foreground')
+    } else {
+      document.documentElement.style.setProperty('--cs-theme-primary', colorPrimary.toString())
+      document.documentElement.style.setProperty(
+        '--cs-theme-primary-foreground',
+        getForegroundColor(colorPrimary.hex())
+      )
+    }
     setOptionalCssVar('--app-user-font-family', userFontFamily)
     setOptionalCssVar('--app-user-code-font-family', userCodeFontFamily)
     const saved = readCachedAppearanceLayout()

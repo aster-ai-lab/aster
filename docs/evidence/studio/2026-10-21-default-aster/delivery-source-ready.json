@@ -1,0 +1,152 @@
+{
+  "status": "source-ready; actual selected renderer/host package and GUI remain pending",
+  "scope": "spec004 delivery/default entries plus retained spec003 Linux path",
+  "identities": {
+    "aster": {
+      "product": "AsterDream",
+      "identifier": "dev.a3s.studio.aster",
+      "feature": "tenant-aster"
+    },
+    "toyou": {
+      "product": "ToWork",
+      "identifier": "dev.a3s.studio",
+      "feature": "tenant-toyou"
+    }
+  },
+  "files": [
+    {
+      "path": "justfile",
+      "bytes": 4615,
+      "sha256": "9cb3149c97048154138bc7247570e0198f5e81c6013eb5c79515b29ea7db90af"
+    },
+    {
+      "path": "tests/just_work.py",
+      "bytes": 7031,
+      "sha256": "31c6d64ffa276090699e82286e34267ac901ee08c391ba31c2a7240443bc0d10"
+    },
+    {
+      "path": "apps/studio/src-tauri/tauri.conf.json",
+      "bytes": 1294,
+      "sha256": "5388dc27ca4ba2462bf02eb402116f0544a4d9e78075bbe472af9c2b44b3a3cf"
+    },
+    {
+      "path": "apps/studio/scripts/package-host.sh",
+      "bytes": 1767,
+      "sha256": "e76063edd4aec0b86fbdf47060a4a96fd0ce71e6fb935fe9ec94c098d2280bb1"
+    },
+    {
+      "path": "apps/studio/scripts/studio_delivery.py",
+      "bytes": 3336,
+      "sha256": "ece2ac7716af1867b13c881a728dccd98b3e2189a17b99351c1dfc23ce0f10de"
+    },
+    {
+      "path": "apps/studio/scripts/tests/studio_delivery_test.py",
+      "bytes": 6316,
+      "sha256": "5a8d3d697d59abc3cb49b6ad8b0586552b8b0bc3ece2731736289a180c754ea0"
+    },
+    {
+      "path": "apps/studio/scripts/studio_product.py",
+      "bytes": 3797,
+      "sha256": "670edfc97eab73a1d55997e3881e1805665f69e579f118e9ebe279346b48c780"
+    },
+    {
+      "path": "apps/studio/scripts/tests/studio_product_test.py",
+      "bytes": 8200,
+      "sha256": "6302d641e094b8ed563a2dce5deab7cc8b6361326fe3905ae7430ef0ebcf3267"
+    },
+    {
+      "path": "apps/studio/scripts/studio-dev.mjs",
+      "bytes": 9815,
+      "sha256": "b2892dc7867a7ac16e49e59072edc66c87a505c2363c4817279fc3c514673ecb"
+    },
+    {
+      "path": "apps/studio/scripts/__tests__/studioDev.test.ts",
+      "bytes": 5446,
+      "sha256": "417366d0ea26af8675392939e2f84fcd892a9e1f280bb94d176088054acc15f4"
+    },
+    {
+      "path": "apps/studio/scripts/studioTenantBrand.ts",
+      "bytes": 6512,
+      "sha256": "2761d9c6fed78d019607ba232e487ec494f6222c0df3236d081753c8d34d6da2"
+    },
+    {
+      "path": "apps/studio/scripts/studioTenantBrand.test.ts",
+      "bytes": 4723,
+      "sha256": "6b0a342b93ecce9b85fce7036fd7ce91a814c315acafda0ac72a17b901f8470a"
+    },
+    {
+      "path": "apps/studio/scripts/kylin-flatpak/build-host.sh",
+      "bytes": 2848,
+      "sha256": "b47898b53d08b5bc56ea002c097b8788db4de1fcd8a65e77b22519ca917a0980"
+    },
+    {
+      "path": "apps/studio/scripts/kylin-flatpak/package-bundle.sh",
+      "bytes": 2881,
+      "sha256": "d61db954d213a0b1867100a90fd1ab86b93a4d7f1ee76090b2e4b2b563a2ac99"
+    },
+    {
+      "path": "apps/studio/scripts/kylin-flatpak/delivery.py",
+      "bytes": 15464,
+      "sha256": "2432465beb8456c7dd5d2fcfbfc1d42903bade925dc0fa2595fa6fa819605c57"
+    },
+    {
+      "path": "apps/studio/scripts/kylin-flatpak/test_delivery.py",
+      "bytes": 11438,
+      "sha256": "0c239e42f8a657ad504154a0526fd536993d415b9119c1a31b25a02d0b203205"
+    },
+    {
+      "path": "apps/studio/scripts/kylin-flatpak/README.md",
+      "bytes": 6491,
+      "sha256": "aca1d5b6a44756a17d7127896a605828eb9c32d86bcad4ea938a536b9f2d4a7b"
+    },
+    {
+      "path": "apps/studio/tests/e2e/task-catalog/window.py",
+      "bytes": 47214,
+      "sha256": "f91c19eb30df02b05904cbb4f95e3e0ec37c432971b12c4037447e25fe11f2b6"
+    },
+    {
+      "path": "apps/studio/tests/e2e/task-catalog/window_runtime_test.py",
+      "bytes": 1742,
+      "sha256": "3ba6f682c3f37ef3cb5a4bf1cb42d27d822875ed63f37f77f8de0518a91dd258"
+    },
+    {
+      "path": "apps/studio/tests/e2e/messages/catalog.py",
+      "bytes": 35024,
+      "sha256": "41cba1b7658b20f1e3ce7cea7a52b4c7252c23595e5182ab77836cad423ce141"
+    },
+    {
+      "path": "apps/studio/src-tauri/Cargo.toml",
+      "bytes": 4206,
+      "sha256": "95ac9f7bd0567eabd73234084e761d2f062c7f5b7710193632c70eafd896dcda"
+    }
+  ],
+  "removed": [
+    "apps/studio/scripts/kylin-flatpak/dev.a3s.studio.desktop"
+  ],
+  "checks": {
+    "python": {
+      "entry": 5,
+      "macos_sealer_and_product": 14,
+      "linux_generation": 14,
+      "runtime_discovery": 2
+    },
+    "vitest_scripts": {
+      "files": 2,
+      "passed": 17
+    },
+    "format": "5 matched files passed",
+    "eslint": "0 diagnostics",
+    "shell_syntax": "3 changed scripts passed",
+    "installed_tauri_parser": "invalid top-level Cargo flag exits2; runner separator parses0 (help only)",
+    "native_required_brand_assets": "INFO + light logo/wordmark/icon required; 3 missing-image subcases fail before and pass after"
+  },
+  "not_claimed": [
+    "physical Kylin",
+    "stock sandbox support on this container kernel",
+    "final selected-tenant Linux host/package/GUI",
+    "final macOS code signature or native install from hermetic stubs",
+    "legacy AsterDream data migration or live updater publication"
+  ],
+  "supersedes": "delivery-source-ready-before-tauri-and-assets.json",
+  "build_feature_boundary": "Host build entrypoints disable defaults and select exactly one tenant feature; actual cfg guards/policy and two-product native builds are owned by the native/root agents and remain pending here."
+}

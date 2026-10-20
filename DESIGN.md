@@ -1,9 +1,9 @@
 # Aster Design
 
-This file, at the repository root, is the only product design spec. Studio, the web console, Work, Office, and the
+This file, at the repository root, is the only product design spec. AsterDream, the web console, Work, Office, and the
 official site share it. Product chrome uses these roles. Do not add a second `DESIGN.md` for an app or a package.
 
-The values were taken from the Studio work page, the plugin page, the settings page, and the shell around them.
+The values were taken from the AsterDream work page, the plugin page, the settings page, and the shell around them.
 New chrome uses the same color, type, rows, search, segmented control, cards, and dialogs.
 
 The visual values and the interaction contract in section 14 are the spec. Match them. Do not invent a second
@@ -227,7 +227,7 @@ scale, dark mode and the motion rules, and it differs per platform.
 
 - **Component.** `SearchSelect` from `@a3s-lab/ui` is the default for filters, toolbars, forms and settings.
   Use `Combobox` only when the trigger must read as a text field (free text plus suggestions). Vanilla shells
-  and non-React packages draw the same anatomy themselves (Studio's first-run shell picker; `SelectControl`
+  and non-React packages draw the same anatomy themselves (AsterDream's first-run shell picker; `SelectControl`
   in `@a3s-lab/form`). The Radix `Select` composite is legacy: existing screens are tracked in a shrink-only
   list and new code does not add it.
 - **Trigger.** Borderless field fill `#f5f5f5` (`--color-control-fill`), radius 8px, 13px `#171717`, value
@@ -258,7 +258,7 @@ scale, dark mode and the motion rules, and it differs per platform.
 - **Labels.** Values are i18n labels, never raw enum ids, except identifiers the user typed or that are their
   own name (model ids, file formats such as PNG / JPEG).
 
-Enforcement: `apps/studio/src/renderer/__tests__/noNativeSelect.test.ts` fails on any native dropdown in Studio,
+Enforcement: `apps/studio/src/renderer/__tests__/noNativeSelect.test.ts` fails on any native dropdown in AsterDream,
 `@a3s-lab/ui` and `@a3s-lab/intelligent-ui`, and holds the Radix `Select` list shrink-only;
 `crates/flow/packages/ui/tests/form-select-control.test.tsx` does the same for `@a3s-lab/form`.
 
@@ -597,8 +597,8 @@ These pages sit in the icon-rail frame.
 
 ## 12. Page entry
 
-A view that is not ready shows one ToWork wordmark. The mark is a left-to-right stroke of the letters, in ink
-`#303030` on white. Dark uses `#f2f2f3`. This is the Studio page entry. The shared `PageLoading` in
+A view that is not ready shows one toyou wordmark. The mark is a left-to-right stroke of the letters, in ink
+`#303030` on white. Dark uses `#f2f2f3`. This is the AsterDream page entry. The shared `PageLoading` in
 `packages/ui` stays a tenant-neutral mark and does not draw a tenant wordmark.
 
 The stroke runs for 500ms and repeats while the view is not ready. After the view is ready, the loader stays
@@ -632,7 +632,7 @@ user can already read, or periodic review on native `TurnEnd` during long work.
 ## 14. Collection development standard
 
 This is the shared development and review contract for CRUD, search, filters, sorting, pagination and list
-operations in Studio, the console, Work and Office. **MUST** is a release requirement. **SHOULD** is the default;
+operations in AsterDream, the console, Work and Office. **MUST** is a release requirement. **SHOULD** is the default;
 an alternative needs a recorded product reason and equivalent acceptance evidence. The constitution and
 [development standards](./docs/development-standards.md) continue to own security, layering and persistence.
 
@@ -1036,7 +1036,7 @@ authority for the addressed scope. Recheck write authority at commit with revoca
 revision and dependencies fenced through the transaction or an equivalent proven owner mechanism. Directory
 administration does not implicitly grant management of unrelated platform resources.
 
-Use typed QueryBus/CommandBus contracts for remote owners and published cross-context surfaces. Local Studio
+Use typed QueryBus/CommandBus contracts for remote owners and published cross-context surfaces. Local AsterDream
 DataApi keeps its database-only effect boundary; filesystem, process and network operations use their existing
 dedicated transport. A member session stays in the member plane. Do not add a generic operator/admin proxy.
 Reject unknown write fields, unknown query parameters and unsupported enum/query values at the boundary.
@@ -1064,13 +1064,13 @@ Reuse these implementations; extend the shared layer when a second surface needs
 | Concern | Existing implementation |
 | --- | --- |
 | Shared numbered/cursor pager | [Pagination.tsx](./packages/ui/src/components/console/Pagination.tsx) |
-| Studio localization/page-size adapter | [CollectionPagination.tsx](./apps/studio/src/renderer/components/collection/CollectionPagination.tsx) |
-| Studio table controls and page-scoped selection | [CollectionToolbar.tsx](./apps/studio/src/renderer/components/collection/CollectionToolbar.tsx), [useCollectionSelection.ts](./apps/studio/src/renderer/components/collection/useCollectionSelection.ts), [CollectionSelectionBar.tsx](./apps/studio/src/renderer/components/collection/CollectionSelectionBar.tsx) |
+| AsterDream localization/page-size adapter | [CollectionPagination.tsx](./apps/studio/src/renderer/components/collection/CollectionPagination.tsx) |
+| AsterDream table controls and page-scoped selection | [CollectionToolbar.tsx](./apps/studio/src/renderer/components/collection/CollectionToolbar.tsx), [useCollectionSelection.ts](./apps/studio/src/renderer/components/collection/useCollectionSelection.ts), [CollectionSelectionBar.tsx](./apps/studio/src/renderer/components/collection/CollectionSelectionBar.tsx) |
 | Local bounded-list page recovery | [useCollectionPage.ts](./apps/studio/src/renderer/components/collection/useCollectionPage.ts); remote queries page at their owner |
 | Optimistic rows and row motion | [optimisticRows.ts](./apps/studio/src/renderer/components/collection/optimisticRows.ts), [rowMotion.ts](./packages/ui/src/lib/rowMotion.ts) |
 | Pending/replaced confirmation protection | [use-confirmation-action.ts](./packages/ui/src/lib/use-confirmation-action.ts) |
 | Confirmation presentation | [ConfirmDialog.tsx](./packages/ui/src/components/console/ConfirmDialog.tsx), [PopConfirm.tsx](./packages/ui/src/components/console/PopConfirm.tsx) |
-| Studio implementation mapping | [Collection UX guide](./apps/studio/docs/references/data/collection-ux-guide.md) |
+| AsterDream implementation mapping | [Collection UX guide](./apps/studio/docs/references/data/collection-ux-guide.md) |
 | Wire types, hooks and codecs | [Pagination guide](./apps/studio/docs/references/data/data-pagination-guide.md), [API guidelines](./apps/studio/docs/references/data/api-design-guidelines.md) |
 
 ### 14.12 Accessibility, responsive layout and localization
@@ -1146,7 +1146,7 @@ A document update or scoped test pass does not waive full-lane acceptance.
 
 ## 15. Using this document
 
-Studio, the console, Work, Office, and the official site read this file. A control that already exists in
+AsterDream, the console, Work, Office, and the official site read this file. A control that already exists in
 section 6 is reused, not redrawn. Page sidebars share 260px (`PAGE_SIDEBAR_DEFAULT_WIDTH`): the work column
 and the settings nav. A layout number that belongs to one page (176px plugin categories, 920px work content
 column, 760px composer) stays on that page. Promote a new pattern into section 6 only after a second surface

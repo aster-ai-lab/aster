@@ -1,6 +1,6 @@
 # E2E Testing Guide
 
-This directory contains end-to-end (E2E) tests for the Cherry Studio Electron application using Playwright.
+This directory contains end-to-end (E2E) tests for the AsterDream Electron application using Playwright.
 
 ## Critical-path regression
 

@@ -5,10 +5,10 @@ Package `a3s/cobot-arm@1.0.0`. One self-contained `.aix` package, three surfaces
 | Surface | Id | Role |
 | --- | --- | --- |
 | Skill | `cobot-arm` | Reads one observation and returns exactly one offered `choice`. |
-| Agent | `cobot-arm` | Edge package harness, entry `agent/run.mjs`, 500 cpu millis, 256 MiB. Studio keeps one warm `a3s-box` per open view. |
+| Agent | `cobot-arm` | Edge package harness, entry `agent/run.mjs`, 500 cpu millis, 256 MiB. AsterDream keeps one warm `a3s-box` per open view. |
 | UI | `workbench` | Mini app (`studio.applets`): no Activity Bar entry; after install, 打开 opens it in its own system window. Root `ui/workbench`. |
 
-Nothing runs on the host outside Studio. There is no lab server, no port, and no Python.
+Nothing runs on the host outside AsterDream. There is no lab server, no port, and no Python.
 
 ## Workbench
 
@@ -23,9 +23,9 @@ The rule baseline completes each task in 8 cycles, the same as upstream `run_hea
 
 ## Decisions
 
-Each cycle has two decisions: a phase, then an action. When only one key is offered, the page takes it without a call. Otherwise it sends the observation to the package agent with `aix.agent.invoke`. Studio runs `agent/run.mjs` in a warm edge box for the life of the view:
+Each cycle has two decisions: a phase, then an action. When only one key is offered, the page takes it without a call. Otherwise it sends the observation to the package agent with `aix.agent.invoke`. AsterDream runs `agent/run.mjs` in a warm edge box for the life of the view:
 
-1. The agent emits a `model_request`. For the default decision model `platform/apofasi`, the request has `api: "systemone"` and a System One body: one `choice` question whose criteria are exactly the offered keys. For any other model given in `parameters.model`, it is a chat-completion body. Studio checks the body, calls the a3s gateway (`/v1/systemone` or `/v1/chat/completions`) with the member session, and posts the reply to `/v1/agent/model-responses`. The box never holds a credential.
+1. The agent emits a `model_request`. For the default decision model `platform/apofasi`, the request has `api: "systemone"` and a System One body: one `choice` question whose criteria are exactly the offered keys. For any other model given in `parameters.model`, it is a chat-completion body. AsterDream checks the body, calls the a3s gateway (`/v1/systemone` or `/v1/chat/completions`) with the member session, and posts the reply to `/v1/agent/model-responses`. The box never holds a credential.
 2. A System One reply counts only when it chooses an offered key and publishes a probability for exactly the offered keys, summing to 1. A chat reply counts only when it names one offered option. Otherwise, or when the gateway is unavailable, the agent uses the rule: the only option, else an offered `baseline_choice`, else the first option.
 3. The output is `{"choice", "source": "model" | "rule", ...}`, plus `probabilities`, `confidence`, and the serving `model` from the decision model. The page refuses a choice it did not offer.
 
@@ -44,12 +44,14 @@ The LIBERO 基准 section runs two libero_90 tasks (LIBERO revision `8f1084e3`, 
 
 Two planners:
 
-- 视觉模型 sends the two annotated JPEGs (a 64 px grid and a cyan cross at the projected TCP) and the robot's own state to the package agent. The agent asks the vision chat model (`bailian/deepseek-v4.1-flash`, or the chat model in `parameters.model`) through the gateway. The images go as `aix-image:` references that Studio fills in; the agent never sees the bytes. A malformed plan, an image set that is not exactly `external` + `wrist`, or an unavailable model stops the episode before any motion. There is no rule fallback.
+- 视觉模型 sends the two annotated JPEGs (a 64 px grid and a cyan cross at the projected TCP) and the robot's own state to the package agent. The agent asks the vision chat model (`bailian/deepseek-v4.1-flash`, or the chat model in `parameters.model`) through the gateway. The images go as `aix-image:` references that AsterDream fills in; the agent never sees the bytes. A malformed plan, an image set that is not exactly `external` + `wrist`, or an unavailable model stops the episode before any motion. There is no rule fallback.
 - 参考航点 is a privileged baseline: waypoints from the simulator's internal state. It pushes the microwave door at a point fixed in the door's frame, so it follows each init state's opening angle. From the 10 init states it closes the drawer in 156–157 steps and the microwave in 316–446, and makes no model call.
 
 批量评测 runs the chosen planners on the chosen tasks, 1 to 10 runs each. Run i starts from init state i, as LIBERO's own evaluation does. Per planner and task it reports the success rate, steps, plans, model calls, model latency, and wall time. It stores the report in the view state, and 导出报告 shows it as JSON to copy.
 
-## Studio view policy
+<a id="studio-view-policy"></a>
+
+## AsterDream view policy
 
 The view document is sandboxed (`allow-scripts`, opaque origin) with `connect-src 'none'` and no `'unsafe-eval'`. The page fetches nothing; scripts and fonts load as view files:
 
@@ -72,13 +74,13 @@ node tests/load.proof.mjs
 
 The unit tests cover the agent protocol, the world, planner, and session, the LIBERO replay, calibration, grounding, and budgets, and the package shape.
 
-The LIBERO proof runs the real agent in Chromium with a stand-in gateway. It compares each scene's first camera images with robosuite's (`tests/fixtures/libero/`). It then closes the drawer through the vision path, checks that a 401 stops with no motion, runs the reference batch on both tasks from init states 0 and 1, and loads the microwave's init state 9. The browser proof loads the view in Chromium under Studio's exact view policy and sandbox, and drives the real `agent/run.mjs` through the host turn loop. It runs four episodes: System One replies at 0.8, a 401 gateway (the agent uses its rule), a refused agent turn (the page uses its rule and labels it), and System One replies at 0.4, which must stop in 等待人工处理. It needs the Playwright install in `apps/studio`.
+The LIBERO proof runs the real agent in Chromium with a stand-in gateway. It compares each scene's first camera images with robosuite's (`tests/fixtures/libero/`). It then closes the drawer through the vision path, checks that a 401 stops with no motion, runs the reference batch on both tasks from init states 0 and 1, and loads the microwave's init state 9. The browser proof loads the view in Chromium under AsterDream's exact view policy and sandbox, and drives the real `agent/run.mjs` through the host turn loop. It runs four episodes: System One replies at 0.8, a 401 gateway (the agent uses its rule), a refused agent turn (the page uses its rule and labels it), and System One replies at 0.4, which must stop in 等待人工处理. It needs the Playwright install in `apps/studio`.
 
-The load proof measures navigation to the first robot frame, phase by phase, in Chromium, in WebKit when Playwright has it, and on macOS with `swift` in WKWebView on the GPU (`tests/webview-load.swift`), the engine of Studio's window. It fails when a median exceeds 1000 ms (`LOAD_BUDGET_MS`). `LOAD_VIEW_ROOT` measures another copy of the package, for a before/after comparison.
+The load proof measures navigation to the first robot frame, phase by phase, in Chromium, in WebKit when Playwright has it, and on macOS with `swift` in WKWebView on the GPU (`tests/webview-load.swift`), the engine of AsterDream's window. It fails when a median exceeds 1000 ms (`LOAD_BUDGET_MS`). `LOAD_VIEW_ROOT` measures another copy of the package, for a before/after comparison.
 
-`tests/studio-open.swift` measures the same load in a running Studio window, by hand: it opens the installed workbench from the activity bar and times the press to the first robot frame on screen.
+`tests/studio-open.swift` measures the same load in a running AsterDream window, by hand: it opens the installed workbench from the activity bar and times the press to the first robot frame on screen.
 
-The end-to-end test runs Studio's real authority: catalog install, view session, asset route, view-agent turn route, a warm `a3s-box`, and the member gateway. `tests/studio.e2e.mjs` plays the renderer in Chromium. It is the ignored Rust test `cobot_arm_runs_end_to_end_through_studio` in `apps/studio/src-tauri`. Without environment it serves a fake gateway; with `A3S_STUDIO_E2E_GATEWAY` and `A3S_STUDIO_E2E_MEMBER_SESSION` it runs against a real one, and the member token stays in Rust.
+The end-to-end test runs AsterDream's real authority: catalog install, view session, asset route, view-agent turn route, a warm `a3s-box`, and the member gateway. `tests/studio.e2e.mjs` plays the renderer in Chromium. It is the ignored Rust test `cobot_arm_runs_end_to_end_through_studio` in `apps/studio/src-tauri`. Without environment it serves a fake gateway; with `A3S_STUDIO_E2E_GATEWAY` and `A3S_STUDIO_E2E_MEMBER_SESSION` it runs against a real one, and the member token stays in Rust.
 
 `tests/PLAN.md` is the functional test plan. It maps each case to the test that proves it.
 

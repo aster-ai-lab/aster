@@ -1,0 +1,43 @@
+.......E.....
+======================================================================
+ERROR: test_native_daemon_identity_selects_only_its_own_module (__main__.DeliveryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/apps/studio/scripts/kylin-flatpak/test_delivery.py", line 198, in test_native_daemon_identity_selects_only_its_own_module
+    result = self.decision(owner)
+  File "/Users/roylin/code/aster/apps/studio/scripts/kylin-flatpak/test_delivery.py", line 192, in decision
+    result = subprocess.run(["bash", str(HERE / "kylin-launch.sh"), "--print"],
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 507, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1134, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1980, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1178, in _check_timeout
+    raise TimeoutExpired(
+subprocess.TimeoutExpired: Command '['bash', '/Users/roylin/code/aster/apps/studio/scripts/kylin-flatpak/kylin-launch.sh', '--print']' timed out after 3 seconds
+
+======================================================================
+FAIL: test_brand_and_desktop_icon_changes_after_build_are_refused (__main__.DeliveryTests) (path=PosixPath('/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/tmpxsursuer/tenants/aster/INFO.md'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/apps/studio/scripts/kylin-flatpak/test_delivery.py", line 133, in test_brand_and_desktop_icon_changes_after_build_are_refused
+    self.stage()
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_brand_and_desktop_icon_changes_after_build_are_refused (__main__.DeliveryTests) (path=PosixPath('/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/tmpxsursuer/build/icon-128.png'))
+----------------------------------------------------------------------
+ValueError: stage destination must be empty
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/apps/studio/scripts/kylin-flatpak/test_delivery.py", line 133, in test_brand_and_desktop_icon_changes_after_build_are_refused
+    self.stage()
+AssertionError: "brand generation" does not match "stage destination must be empty"
+
+----------------------------------------------------------------------
+Ran 14 tests in 3.581s
+
+FAILED (failures=2, errors=1)

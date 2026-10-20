@@ -164,7 +164,7 @@ default-members = ["apps/aster", "crates/code/acp"]
 [workspace.package]
 edition = "2024"
 rust-version = "1.97"
-license = "Apache-2.0"
+license = "MIT"
 
 [workspace.dependencies]
 agent-client-protocol = {features = ["unstable"], version = "0.10.4"}

@@ -1,4 +1,4 @@
-import { Popover, PopoverContent, PopoverTrigger } from '@a3s-lab/ui'
+import { Popover, PopoverContent, PopoverTrigger, Switch } from '@a3s-lab/ui'
 import { ChevronDown, Link2, Paperclip, Plus, Shield, Sparkles } from 'lucide-react'
 import {
   use,
@@ -503,38 +503,29 @@ export function useWorkbenchHomeComposer({
             permissionMode={shownPermissionMode}
             onPermissionModeChange={changePermissionMode}
           />
-          <button
-            type="button"
-            role="switch"
-            aria-checked={planFirst}
+          <Switch
+            size="xs"
+            checked={planFirst}
+            label={t('workbench.permission.plan_first')}
             aria-label={t('workbench.permission.plan_first')}
             disabled={!planSupported && !planFirst}
             title={!planSupported ? t('workbench.plan.unsupported_runtime') : t('workbench.permission.plan_first_hint')}
             data-workbench-plan-mode="true"
-            onClick={() =>
+            onKeyDown={(event) => {
+              if (event.nativeEvent.isComposing || event.keyCode === 229) event.preventDefault()
+            }}
+            onCheckedChange={(checked) =>
               writeTaskPermission(
                 permissionSessionId,
-                {
-                  mode: shownPermissionMode,
-                  planFirst: readTaskPermission(permissionSessionId, undefined, memberId)?.planFirst !== true
-                },
+                { mode: shownPermissionMode, planFirst: checked },
                 undefined,
                 memberId
               )
             }
-            className="inline-flex h-8 items-center gap-1.5 rounded-[8px] px-2 text-[13px] text-[#3f3f3f] hover:bg-[#f7f7f7] focus-visible:ring-2 focus-visible:ring-black/10">
-            <span
-              aria-hidden
-              className={`relative h-4 w-7 rounded-full ${planFirst ? 'bg-[#265bd7]' : 'bg-[#d4d4d4]'}`}>
-              <span
-                className={`absolute top-0.5 size-3 rounded-full bg-white transition-transform ${planFirst ? 'translate-x-3.5' : 'translate-x-0.5'}`}
-              />
-            </span>
-            {t('workbench.permission.plan_first')}
-            {!planSupported ? (
-              <span className="text-xs text-muted-foreground">{t('workbench.plan.unavailable')}</span>
-            ) : null}
-          </button>
+          />
+          {!planSupported ? (
+            <span className="text-xs text-muted-foreground">{t('workbench.plan.unavailable')}</span>
+          ) : null}
           <CodeWorkspacePlacement projectPath={projectSelection.selectedPath || null} />
         </div>
       )

@@ -1,0 +1,38 @@
+....
+======..
+======================================================================
+ERROR: test_package_entry_seals_the_selected_product_and_never_the_other_tenant (studio_product_test.ProductIdentityTests) (tenant='aster')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/apps/studio/scripts/tests/studio_product_test.py", line 117, in test_package_entry_seals_the_selected_product_and_never_the_other_tenant
+    run = subprocess.run(["bash", str(scripts / "package-host.sh")], env=env,
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 507, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1134, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1980, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1178, in _check_timeout
+    raise TimeoutExpired(
+subprocess.TimeoutExpired: Command '['bash', '/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/tmpn_vidsnx/apps/studio/scripts/package-host.sh']' timed out after 20 seconds
+
+======================================================================
+ERROR: test_package_entry_seals_the_selected_product_and_never_the_other_tenant (studio_product_test.ProductIdentityTests) (tenant='toyou')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/apps/studio/scripts/tests/studio_product_test.py", line 117, in test_package_entry_seals_the_selected_product_and_never_the_other_tenant
+    run = subprocess.run(["bash", str(scripts / "package-host.sh")], env=env,
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 507, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1134, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1980, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1178, in _check_timeout
+    raise TimeoutExpired(
+subprocess.TimeoutExpired: Command '['bash', '/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/tmpym8sntas/apps/studio/scripts/package-host.sh']' timed out after 20 seconds
+
+----------------------------------------------------------------------
+Ran 14 tests in 40.092s
+
+FAILED (errors=2)

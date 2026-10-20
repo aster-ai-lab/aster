@@ -1,0 +1,65 @@
+{
+  "scope": "spec004 native identity/profile/runtime and complete WebView caller closure; excludes root updater and renderer/packager ownership",
+  "files": {
+    "apps/studio/src-tauri/src/tenant.rs": {
+      "sha256": "aba73a710898aa9df91c94fd6640aa0087b450cb0ec0d2c6efca1ef849e01571",
+      "size": 19934
+    },
+    "apps/studio/src-tauri/src/tenant_profile.rs": {
+      "sha256": "a1df4a3c625a4ce912209b7a6f069c189d59eec809efc183095ecb7fe8f8c275",
+      "size": 4644
+    },
+    "apps/studio/src-tauri/src/tenant_webview.rs": {
+      "sha256": "ccd01477380e534ab37824d9b0fbd664e61a56eb2ea20a105fac535a574d6b0f",
+      "size": 2074
+    },
+    "apps/studio/src-tauri/src/tenant_identity_tests.rs": {
+      "sha256": "eed4260ed2aa95dc1ff80ce03801791d216d6ea762d73c612d52062937805261",
+      "size": 10072
+    },
+    "apps/studio/src-tauri/src/member_session.rs": {
+      "sha256": "aec1cc5b1db78728f45af22414e95f765581e3eb07aad6e2c8e192cfc9e60750",
+      "size": 25469
+    },
+    "apps/studio/src-tauri/src/lib.rs": {
+      "sha256": "f26d059ab548023d02569944e25743aaaf4647bb5226c56de07804c79e4868b5",
+      "size": 72849
+    },
+    "apps/studio/src-tauri/src/macos_app.rs": {
+      "sha256": "fa39e0741702bf68fbd2680e0448ead60e5f68e8fb6fbb760fb125d6c2625bc8",
+      "size": 29625
+    },
+    "apps/studio/src-tauri/src/desktop_settings.rs": {
+      "sha256": "b2d9670334591127dcaacd12260f5f15b92ccd10523aa87d59526f51d2c94ab6",
+      "size": 23052
+    },
+    "apps/studio/src-tauri/src/authority.rs": {
+      "sha256": "04d36eb57b90f3a14bca6db80e191cd82b596340e2630d5ac5255209def4a116",
+      "size": 219034
+    },
+    "apps/studio/src-tauri/src/applet_window.rs": {
+      "sha256": "f5aa18b9ff90507a640ad1123b0819c29fd020829b10865d7f11c37439b1093b",
+      "size": 31044
+    },
+    "apps/studio/src-tauri/src/aix_applet_window.rs": {
+      "sha256": "84262287160d85d013f1888891dfa6104aaaedcd2d8dbc41d0a4fdd9c984f7d9",
+      "size": 20965
+    },
+    "apps/studio/src-tauri/src/agent_wiki_window.rs": {
+      "sha256": "36bf1ad1fd206b69aeb85f5296fb86ba1bebf40019b3e306aa34e305094803e3",
+      "size": 5561
+    },
+    "apps/studio/src-tauri/src/file_editor_window.rs": {
+      "sha256": "fb9581981bb47f9945ef1d5c24b77e8e8607efddc51d2cb88fbe0eb965e820be",
+      "size": 13472
+    },
+    "apps/studio/src-tauri/src/mail_compose_window.rs": {
+      "sha256": "c3327d98a9536b47773455929cde1d95fec55425004470ce1b0dd940ec8271c6",
+      "size": 10468
+    },
+    "apps/studio/src-tauri/src/notice_window.rs": {
+      "sha256": "d7cc6ea8e05e993b68f15311b380dfa31250d599733c942c495d13bc89426fcd",
+      "size": 9934
+    }
+  }
+}

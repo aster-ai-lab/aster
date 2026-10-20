@@ -134,6 +134,23 @@
         color: #303030;
       }
 
+      .boot-loader .aster-dream-mark {
+        display: none;
+        height: 48px;
+        width: 48px;
+        grid-area: 1 / 1;
+        object-fit: contain;
+      }
+
+      html[data-tenant='aster'] .boot-loader .aster-dream-mark {
+        display: block;
+        animation: pageLoaderMarkOut 180ms ease 800ms both;
+      }
+
+      html[data-tenant='aster'] .boot-loader .towork-wordmark-draw {
+        display: none;
+      }
+
       html[data-theme='dark'] .boot-loader .towork-wordmark-draw {
         color: #f2f2f3;
       }
@@ -463,6 +480,7 @@
             pathLength="1"
             d="M2053.7 132V612M2053.7 396L2249.7 288M2053.7 396L2249.7 582" />
         </svg>
+        <img data-ui="page.loader.wordmark" class="aster-dream-mark" src="/tenant-mark.png" alt="" />
         <span class="page-loader-ring">
           <svg
             class="page-loader-spinner"

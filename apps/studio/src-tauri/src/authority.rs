@@ -70,6 +70,7 @@ pub(crate) mod resource_broker;
 struct Shared {
     shutdown: Arc<AtomicBool>,
     token: String,
+    tenant: String,
     name: String,
     product: String,
     logo_png: Vec<u8>,
@@ -256,6 +257,7 @@ impl StudioAuthority {
         let shared = Arc::new(Shared {
             shutdown: Arc::clone(&shutdown),
             token: token.clone(),
+            tenant: slug.clone(),
             name: name.clone(),
             product: product.clone(),
             logo_png: brand.logo_png,
@@ -2854,6 +2856,7 @@ fn bootstrap(shared: &Shared) -> Result<String, u16> {
     let state = shared.state.lock().expect("studio state");
     Ok(json!({
         "sessionId": state.session_id,
+        "tenant": shared.tenant,
         "name": shared.name,
         "product": shared.product,
         "orgOrigin": shared.org_origin,
@@ -3677,6 +3680,7 @@ mod tests {
             Some(authority.session_id().as_str())
         );
         assert_eq!(parsed["name"].as_str(), Some(authority.name()));
+        assert_eq!(parsed["tenant"].as_str(), Some(authority.slug()));
         assert_eq!(parsed["product"].as_str(), Some(authority.product()));
         assert!(!parsed["name"].as_str().unwrap_or("").is_empty());
         assert!(!parsed["product"].as_str().unwrap_or("").is_empty());

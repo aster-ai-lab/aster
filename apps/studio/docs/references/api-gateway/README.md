@@ -10,7 +10,7 @@ sources:
 
 # API Gateway Reference
 
-The **API Gateway** exposes Cherry Studio's AI capabilities over a local HTTP
+The **API Gateway** exposes AsterDream's AI capabilities over a local HTTP
 server that speaks the **OpenAI**, **Anthropic**, and **Gemini** wire protocols,
 plus Cherry REST and Streamable HTTP MCP endpoints. Compatible clients can point at
 `http://127.0.0.1:23333` and drive whatever provider/model the desktop app has
@@ -339,7 +339,7 @@ The QR code contains JSON, not a URL:
 {"v":2,"t":"cherry-studio-pair","name":"Desktop","port":34444,"ips":["192.168.1.8"],"invitationId":"…","invitationSecret":"…","desktopIdentity":"12D3Koo…","protocolVersions":[1]}
 ```
 
-`v` is the QR format version; `t` identifies a Cherry Studio pairing payload.
+`v` is the QR format version; `t` identifies a AsterDream pairing payload.
 `name` is the desktop hostname. `ips` contains its non-loopback IPv4 addresses;
 the mobile client must choose an address reachable on its network and open
 `ws://<ip>:<port>/v1/remote/connect`. `port` is the active gateway port, shared with local API clients. It stays

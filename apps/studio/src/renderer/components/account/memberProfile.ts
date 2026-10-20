@@ -21,6 +21,9 @@ function subscribe(listener: () => void) {
   return () => listeners.delete(listener)
 }
 
+/** Current published account; never creates a session for anonymous local access. */
+export function peekMemberProfile(): MemberAccount | null { return current }
+
 export function useMemberProfile(): MemberAccount | null {
   return useSyncExternalStore(
     subscribe,

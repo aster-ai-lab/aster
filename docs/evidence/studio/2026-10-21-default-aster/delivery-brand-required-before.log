@@ -1,0 +1,29 @@
+
+======================================================================
+FAIL: test_each_native_required_brand_asset_refuses_sealing_when_missing (__main__.StudioDeliveryTest) (name='logo-light.png')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/apps/studio/scripts/tests/studio_delivery_test.py", line 83, in test_each_native_required_brand_asset_refuses_sealing_when_missing
+    DELIVERY.seal(self.app, self.renderer, "toyou", self.root / "tenant")
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_each_native_required_brand_asset_refuses_sealing_when_missing (__main__.StudioDeliveryTest) (name='mark-light.png')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/apps/studio/scripts/tests/studio_delivery_test.py", line 83, in test_each_native_required_brand_asset_refuses_sealing_when_missing
+    DELIVERY.seal(self.app, self.renderer, "toyou", self.root / "tenant")
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_each_native_required_brand_asset_refuses_sealing_when_missing (__main__.StudioDeliveryTest) (name='icon.png')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/apps/studio/scripts/tests/studio_delivery_test.py", line 83, in test_each_native_required_brand_asset_refuses_sealing_when_missing
+    DELIVERY.seal(self.app, self.renderer, "toyou", self.root / "tenant")
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 0.018s
+
+FAILED (failures=3)

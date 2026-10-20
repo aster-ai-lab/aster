@@ -166,6 +166,7 @@ export function projectTaskConversationTurn(parts: readonly CherryMessagePart[],
   const structuredCalls = structuredCallIdentities(parts)
   const formSpecs = shownFormSpecs(parts)
   const items: TaskTurnItem[] = []
+  let plan: Extract<TaskTurnItem, { kind: 'plan' }> | undefined
   let leaked = 0
   let proseKey = 0
 
@@ -233,10 +234,15 @@ export function projectTaskConversationTurn(parts: readonly CherryMessagePart[],
       continue
     }
 
-    if (isToolUIPart(part) && part.state === 'output-available') {
+    if (isToolUIPart(part) && structuredToolState(part) === 'success') {
       const steps = taskPlanSteps(part.input)
       if (steps) {
-        items.push({ kind: 'plan', id: `plan-${index}`, steps })
+        // Keep one keyed card in place while accepted updates replace its progress.
+        if (plan) plan.steps = steps
+        else {
+          plan = { kind: 'plan', id: `plan-${index}`, steps }
+          items.push(plan)
+        }
         continue
       }
     }
@@ -272,7 +278,7 @@ export function projectTaskConversationTurn(parts: readonly CherryMessagePart[],
     }
   }
 
-  return items
+  return items.filter((item) => item.kind !== 'plan' || item.steps.length > 0)
 }
 
 /**

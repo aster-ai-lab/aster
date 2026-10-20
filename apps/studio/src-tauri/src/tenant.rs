@@ -7,6 +7,61 @@ use std::fs;
 use std::io;
 use std::path::PathBuf;
 
+/// Released desktop identities. Other declared tenants remain development brands.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum HostIdentity {
+    Aster,
+    ToYou,
+}
+
+impl HostIdentity {
+    pub(crate) const fn compiled() -> Self {
+        #[cfg(feature = "tenant-aster")]
+        {
+            Self::Aster
+        }
+        #[cfg(all(not(feature = "tenant-aster"), feature = "tenant-toyou"))]
+        {
+            Self::ToYou
+        }
+        #[cfg(not(any(feature = "tenant-aster", feature = "tenant-toyou")))]
+        {
+            Self::Aster
+        }
+    }
+    pub(crate) fn parse(slug: &str) -> io::Result<Self> {
+        match slug {
+            "aster" => Ok(Self::Aster),
+            "toyou" => Ok(Self::ToYou),
+            _ => Err(io::Error::new(
+                io::ErrorKind::InvalidInput,
+                "unknown released tenant",
+            )),
+        }
+    }
+
+    pub(crate) fn as_str(self) -> &'static str {
+        match self {
+            Self::Aster => "aster",
+            Self::ToYou => "toyou",
+        }
+    }
+
+    pub(crate) fn product(self) -> &'static str {
+        match self {
+            Self::Aster => "AsterDream",
+            Self::ToYou => "ToWork",
+        }
+    }
+
+    pub(crate) fn bundle_id(self) -> &'static str {
+        match self {
+            Self::Aster => "dev.a3s.studio.aster",
+            Self::ToYou => "dev.a3s.studio",
+        }
+    }
+}
+
 #[derive(Clone)]
 pub struct TenantBrand {
     pub slug: String,
@@ -66,37 +121,25 @@ pub fn storage_slug_for(brand_slug: &str, instance: Option<&str>) -> io::Result<
     Ok(storage)
 }
 
-/// Profile directory for `storage`.
-/// A new side instance is `<brand>/instances/<instance>`.
-/// A flat directory that already exists stays, so a running window keeps its files.
-pub fn profile_dir(storage: &str) -> Option<PathBuf> {
-    let home = std::env::var_os("HOME")?;
-    let root = PathBuf::from(home).join("Library/Application Support/dev.a3s.studio");
-    let instance = instance_name().ok().flatten();
-    Some(profile_dir_under(&root, storage, instance.as_deref()))
-}
+#[path = "tenant_profile.rs"]
+mod profile;
+pub(crate) use profile::runtime_path_under;
+pub(crate) use profile::{ProfileLocation, profile_location};
+pub use profile::{profile_dir, profile_dir_under};
 
-pub fn profile_dir_under(root: &std::path::Path, storage: &str, instance: Option<&str>) -> PathBuf {
-    let legacy = root.join(storage);
-    if legacy.is_dir() {
-        return legacy;
-    }
-    let Some(instance) = instance.filter(|name| is_slug(name)) else {
-        return legacy;
-    };
-    let Some(brand) = storage.strip_suffix(&format!("-{instance}")) else {
-        return legacy;
-    };
-    if brand.is_empty() || !is_slug(brand) {
-        return legacy;
-    }
-    root.join(brand).join("instances").join(instance)
-}
+#[path = "tenant_webview.rs"]
+mod webview;
+pub(crate) use webview::isolate_webview;
 
 /// Bundle id for this profile. A new side window is `dev.a3s.studio.<brand>.<instance>`.
 /// An existing flat directory keeps `dev.a3s.studio.<storage>`.
 pub fn bundle_identifier(storage: &str, instance: Option<&str>, legacy_exists: bool) -> String {
-    if !legacy_exists {
+    if storage == "toyou" && instance.is_none() {
+        return HostIdentity::ToYou.bundle_id().to_owned();
+    }
+    let aster = storage == "aster"
+        || instance.is_some_and(|name| storage.strip_suffix(&format!("-{name}")) == Some("aster"));
+    if !legacy_exists || aster {
         if let Some(instance) = instance.filter(|name| is_slug(name)) {
             if let Some(brand) = storage.strip_suffix(&format!("-{instance}")) {
                 if !brand.is_empty() && is_slug(brand) {
@@ -141,26 +184,90 @@ pub fn load() -> io::Result<TenantBrand> {
 }
 
 pub(crate) fn selected_slug() -> io::Result<String> {
-    let from_env = std::env::var("A3S_TENANT_SLUG").ok();
+    let from_env = match std::env::var("A3S_TENANT_SLUG") {
+        Ok(value) => Some(value),
+        Err(std::env::VarError::NotPresent) => None,
+        Err(error) => return Err(io::Error::new(io::ErrorKind::InvalidInput, error)),
+    };
     let installed = std::env::current_exe()
         .ok()
         .map(|exe| packaged_tenant_from(&exe))
         .transpose()?
         .flatten();
+    selected_slug_from(from_env.as_deref(), installed.as_deref())
+}
+
+fn selected_slug_from(from_env: Option<&str>, installed: Option<&str>) -> io::Result<String> {
+    selected_slug_for_identity(from_env, installed, HostIdentity::compiled())
+}
+
+fn selected_slug_for_identity(
+    from_env: Option<&str>,
+    installed: Option<&str>,
+    compiled: HostIdentity,
+) -> io::Result<String> {
     if let Some(installed) = installed {
-        if from_env.as_deref().is_some_and(|slug| slug != installed) {
+        if from_env.is_some_and(|slug| slug != installed) {
             return Err(io::Error::new(
                 io::ErrorKind::InvalidInput,
                 "packaged tenant mismatch",
             ));
         }
-        return Ok(installed);
+        if installed != compiled.as_str() {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidInput,
+                "compiled tenant mismatch",
+            ));
+        }
+        return slug_from_env(Some(installed));
     }
-    // Library tests share this process and do not set the variable.
-    // The shipped binary refuses an unset slug.
-    #[cfg(test)]
-    let from_env = from_env.or_else(|| Some("toyou".to_owned()));
-    slug_from_env(from_env.as_deref())
+    let selected = match from_env {
+        None => compiled.as_str().to_owned(),
+        Some(raw) => slug_from_env(Some(raw))?,
+    };
+    if selected != compiled.as_str() {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            "compiled tenant mismatch",
+        ));
+    }
+    Ok(selected)
+}
+
+fn selected_development_slug(raw: Option<&str>) -> io::Result<String> {
+    selected_slug_from(raw, None)
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum RuntimePolicy {
+    #[cfg(feature = "tenant-aster")]
+    LocalAndOrganization,
+    ManagedOrganization,
+}
+
+impl RuntimePolicy {
+    pub(crate) fn for_storage(storage: &str, instance: Option<&str>) -> Self {
+        #[cfg(feature = "tenant-aster")]
+        if storage == "aster"
+            || instance
+                .is_some_and(|name| storage.strip_suffix(&format!("-{name}")) == Some("aster"))
+        {
+            return Self::LocalAndOrganization;
+        }
+        let _ = (storage, instance);
+        Self::ManagedOrganization
+    }
+
+    pub(crate) fn allows_local(self) -> bool {
+        #[cfg(feature = "tenant-aster")]
+        {
+            self == Self::LocalAndOrganization
+        }
+        #[cfg(not(feature = "tenant-aster"))]
+        {
+            false
+        }
+    }
 }
 
 fn packaged_tenant_from(exe: &std::path::Path) -> io::Result<Option<String>> {
@@ -197,6 +304,10 @@ fn packaged_tenant_from(exe: &std::path::Path) -> io::Result<Option<String>> {
 #[path = "tenant_delivery_tests.rs"]
 mod delivery_tests;
 
+#[cfg(test)]
+#[path = "tenant_identity_tests.rs"]
+mod identity_tests;
+
 fn load_slug(slug: &str) -> io::Result<TenantBrand> {
     if !is_slug(slug) {
         return Err(io::Error::new(
@@ -212,6 +323,14 @@ fn load_slug(slug: &str) -> io::Result<TenantBrand> {
             format!("tenant {slug} INFO.md: {message}"),
         )
     })?;
+    if let Ok(identity) = HostIdentity::parse(slug) {
+        if parsed.product != identity.product() {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidData,
+                "tenant product identity mismatch",
+            ));
+        }
+    }
     let logo_path = directory.join(&parsed.light_logo);
     let mark_path = directory.join("mark-light.png");
     let icon_path = directory.join("icon.png");
@@ -257,6 +376,14 @@ struct ParsedInfo {
     product: String,
     light_logo: String,
     theme_light: (u8, u8, u8),
+}
+
+pub(crate) fn delivery_logo_name(text: &str, identity: HostIdentity) -> io::Result<String> {
+    let parsed = parse_info(text).map_err(|error| io::Error::new(io::ErrorKind::InvalidData, error))?;
+    if parsed.product != identity.product() {
+        return Err(io::Error::new(io::ErrorKind::InvalidData, "tenant product identity mismatch"));
+    }
+    Ok(parsed.light_logo)
 }
 
 fn parse_info(text: &str) -> Result<ParsedInfo, String> {

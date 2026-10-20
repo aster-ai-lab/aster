@@ -12,6 +12,7 @@ declare global {
   }>
 
   interface ImportMetaEnv {
+    readonly PUBLIC_STUDIO_TENANT: 'aster' | 'toyou'
     readonly RENDERER_VITE_AIHUBMIX_SECRET: string
     readonly RENDERER_VITE_PPIO_APP_SECRET: string
   }

@@ -31,7 +31,7 @@ collections and nested catalog histories still require migration.
 
 ## Platform supplier and model catalogs
 
-Studio calls `GET /api/member/platform/suppliers/page` or
+AsterDream calls `GET /api/member/platform/suppliers/page` or
 `GET /api/member/platform/models/page` through the member read proxy. The owner
 routes are `/v1/api/org/members/platform/{suppliers|models}/page`. Existing
 official-team directory-admin read authorization applies before query dispatch;

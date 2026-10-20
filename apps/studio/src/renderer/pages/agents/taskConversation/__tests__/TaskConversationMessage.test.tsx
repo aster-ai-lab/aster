@@ -53,7 +53,7 @@ import {
   readOfficialWritingSession,
   resetOfficialWritingSessionForTests
 } from '../../officialWritingAgentEdit'
-import { TaskConversationMessage } from '../TaskConversationMessage'
+import { TaskConversationMessage, TaskConversationTurn } from '../TaskConversationMessage'
 import { TaskPlanningTurnsContext } from '../taskPlanMode'
 
 const mermaidRender = vi.hoisted(() => vi.fn(async () => ({ svg: '<svg data-testid="task-mermaid-svg"></svg>' })))
@@ -134,6 +134,52 @@ function renderTurn(parts: CherryMessagePart[], status: MessageListItem['status'
 }
 
 describe('task conversation turn', () => {
+  const plan = (id: string, title: string, status = 'pending'): CherryMessagePart =>
+    ({
+      type: 'dynamic-tool',
+      toolName: 'TodoWrite',
+      toolCallId: id,
+      state: 'output-available',
+      input: { variant: 'TodoWrite', plan: [{ step: title, status }] },
+      output: {}
+    }) as CherryMessagePart
+
+  it('updates one stable plan card through a turn without repeating intermediate snapshots', () => {
+    const first = plan('p1', 'Read the fixture', 'in_progress')
+    const middle = { type: 'text', text: 'Checking the result.' } as CherryMessagePart
+    const final = plan('p2', 'Verify the fixture', 'completed')
+    const parts = [first, middle, final]
+    const original = JSON.stringify(parts)
+    const view = render(<TaskConversationTurn parts={[first]} streaming />)
+    const card = view.container.querySelector('[data-task-plan-snapshot]')
+    expect(card).not.toBeNull()
+
+    view.rerender(<TaskConversationTurn parts={parts} streaming={false} />)
+    expect(view.container.querySelectorAll('[data-task-plan-snapshot]')).toHaveLength(1)
+    expect(view.container.querySelector('[data-task-plan-snapshot]')).toBe(card)
+    expect(card).toHaveTextContent('Verify the fixture')
+    expect(card).not.toHaveTextContent('Read the fixture')
+    expect(screen.getByText('Checking the result.')).toBeInTheDocument()
+    expect(JSON.stringify(parts)).toBe(original)
+  })
+
+  it('clears the projected plan when a later accepted update explicitly empties it', () => {
+    const empty = {
+      ...plan('empty', 'unused'),
+      input: { variant: 'TodoWrite', plan: [] }
+    } as CherryMessagePart
+    const { container } = renderTurn([plan('p1', 'Old plan'), empty])
+    expect(container.querySelector('[data-task-plan-snapshot]')).toBeNull()
+  })
+
+  it('does not replace accepted progress with a failed plan-tool output', () => {
+    const failed = { ...plan('failed', 'Unverified result', 'completed'), output: { isError: true } } as CherryMessagePart
+    const { container } = renderTurn([plan('accepted', 'Verify the fixture', 'in_progress'), failed])
+    expect(container.querySelectorAll('[data-task-plan-snapshot]')).toHaveLength(1)
+    expect(container.querySelector('[data-task-plan-snapshot]')).toHaveTextContent('Verify the fixture')
+    expect(container.querySelector('[data-task-plan-status="completed"]')).toBeNull()
+  })
+
   it('labels the live planning turn before any plan content arrives', () => {
     render(
       <TaskPlanningTurnsContext value={new Set(['turn-1'])}>

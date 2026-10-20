@@ -1,0 +1,9 @@
+{
+  "argv": [
+    "just",
+    "build-studio"
+  ],
+  "rc": 0,
+  "elapsed": 78.4667546749115,
+  "target_dir": "/Users/roylin/code/aster/target/studio-macos-alignment"
+}

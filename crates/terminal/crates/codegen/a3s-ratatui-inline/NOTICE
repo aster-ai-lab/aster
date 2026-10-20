@@ -9,7 +9,7 @@ Copyright (c) 2023-2024 The Ratatui Developers
 Copyright (c) Florian Dehau (original tui-rs lineage, where applicable)
 
 The remainder of this crate is Copyright 2023-2026 xAI and licensed under the
-Apache License, Version 2.0 (see the repository root LICENSE).
+Apache License, Version 2.0 (see crates/terminal/LICENSE).
 
 Full license texts for third-party dependencies also appear in the repository
 root THIRD-PARTY-NOTICES file.

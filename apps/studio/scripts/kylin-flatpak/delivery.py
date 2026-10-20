@@ -14,7 +14,8 @@ import sys
 import tempfile
 
 HERE = Path(__file__).resolve().parent
-APP_ID = "dev.a3s.studio"
+sys.path.insert(0, str(HERE.parent if (HERE.parent / "studio_product.py").is_file() else HERE))
+from studio_product import desktop_entry, identity, validate_renderer
 FCITX4_SHA = "307bddeabbec383eb27c4ea222d9f71d8d9011d7942f4010368e5bc3ca7440a1"
 FCITX5_SHA = "92d7a5e3ed9eac8c8173983723013816f4706dddc3f019b4bb5c76c48cf4dd92"
 R4_BINARIES = {
@@ -133,12 +134,15 @@ def import_r4(source, out, fcitx5_source):
         stage.rename(out)
 
 
-def build_receipt(root, renderer, tenant, version, revision):
+def build_receipt(root, renderer, tenant, version, revision, tenant_root=None):
     for name in ("Studio", "a3s-code-acp", "a3s-office"):
         elf(root / name)
-    regular(renderer / "windows/main/index.html")
-    write_json(root / "studio-build.json", {"schema": 1, "product": APP_ID, "tenant": slug(tenant),
-        "version": version, "revision": revision, "binaries": {
+    product = identity(tenant)
+    validate_renderer(renderer, tenant)
+    tenant_root = Path(tenant_root) if tenant_root is not None else HERE.parents[2] / "web/public/tenant"
+    brand = {name: digest(tenant_root / tenant / name) for name in BRAND_FILES}
+    write_json(root / "studio-build.json", {"schema": 1, "product": product["identifier"], "tenant": slug(tenant),
+        "version": version, "revision": revision, "brand": brand, "desktop_icon": digest(root / "icon-128.png"), "binaries": {
             name: digest(root / name) for name in ("Studio", "a3s-code-acp", "a3s-office")},
         "renderer": files(renderer)})
 
@@ -152,9 +156,12 @@ def cache_module():
 
 def stage(build, renderer, tenant_root, im, destination):
     receipt = load(build / "studio-build.json")
-    if receipt.get("schema") != 1 or receipt.get("product") != APP_ID:
-        raise ValueError("not a Studio build receipt")
     tenant = slug(receipt["tenant"])
+    product = identity(tenant)
+    app_id = product["identifier"]
+    if receipt.get("schema") != 1 or receipt.get("product") != app_id:
+        raise ValueError("Studio build product identity mismatch")
+    validate_renderer(renderer, tenant)
     if receipt["renderer"] != files(renderer):
         raise ValueError("renderer generation changed after build")
     im_receipt = load(im / "ime-assets.json")
@@ -166,7 +173,10 @@ def stage(build, renderer, tenant_root, im, destination):
         elf(build / name)
         if receipt["binaries"].get(name) != digest(build / name):
             raise ValueError(f"binary generation changed: {name}")
-    regular(tenant_root / tenant / "INFO.md")
+    if receipt.get("brand") != {name: digest(tenant_root / tenant / name) for name in BRAND_FILES} or (
+        receipt.get("desktop_icon") != digest(build / "icon-128.png")
+    ):
+        raise ValueError("brand generation changed after build")
     regular(build / "icon-128.png")
     with (build / "icon-128.png").open("rb") as stream:
         icon = stream.read(24)
@@ -188,8 +198,11 @@ def stage(build, renderer, tenant_root, im, destination):
         copy(im / "kylin-im-backend", "bin/kylin-im-backend")
         copy(HERE / "kylin-launch.sh", "bin/kylin-launch")
         copy(HERE / "delivery.py", "libexec/studio-kylin-delivery.py")
-        copy(HERE / "dev.a3s.studio.desktop", "share/applications/dev.a3s.studio.desktop")
-        copy(build / "icon-128.png", "share/icons/hicolor/128x128/apps/dev.a3s.studio.png")
+        copy(HERE.parent / "studio_product.py", "libexec/studio_product.py")
+        desktop = out / f"share/applications/{app_id}.desktop"
+        desktop.parent.mkdir(parents=True)
+        desktop.write_text(desktop_entry(tenant))
+        copy(build / "icon-128.png", f"share/icons/hicolor/128x128/apps/{app_id}.png")
         copy(build / "NotoSansHans-Regular.otf", "share/fonts/NotoSansHans-Regular.otf")
         copy(build / "font-LICENSE", "share/licenses/noto-sans/LICENSE")
         for name in TRAY_LIBS:
@@ -220,7 +233,7 @@ def stage(build, renderer, tenant_root, im, destination):
             for name in (("COPYING", "fcitx-4.2.9.9.tar.xz", "fcitx4_legacy_portal.patch") if version == "fcitx4" else
                          ("LGPL-2.1-or-later.txt", "fcitx5-gtk-5.1.7.tar.gz")):
                 copy(src / name, f"share/licenses/{version}/{name}")
-        write_json(out / "studio-generation.json", {"schema": 1, "product": APP_ID, "tenant": tenant,
+        write_json(out / "studio-generation.json", {"schema": 1, "product": app_id, "tenant": tenant,
             "version": receipt["version"], "revision": receipt["revision"], "files": files(out)})
         hashes = files(out)
         (out / "SHA256SUMS").write_text("".join(f"{value}  {name}\n" for name, value in hashes.items()))
@@ -230,19 +243,20 @@ def stage(build, renderer, tenant_root, im, destination):
 
 def verify(root):
     receipt = load(root / "studio-generation.json")
-    if receipt.get("schema") != 1 or receipt.get("product") != APP_ID:
-        raise ValueError("not a Studio generation")
     tenant = slug(receipt["tenant"])
+    app_id = identity(tenant)["identifier"]
+    if receipt.get("schema") != 1 or receipt.get("product") != app_id:
+        raise ValueError("not a Studio generation product identity")
     required = {"bin/Studio", "bin/agent/a3s-code-acp", "bin/a3s-office", "bin/kylin-launch",
-        "bin/kylin-im-backend", "libexec/studio-kylin-delivery.py", "Resources/studio-tenant",
+        "bin/kylin-im-backend", "libexec/studio-kylin-delivery.py", "libexec/studio_product.py", "Resources/studio-tenant",
         "Resources/studio-frontend/windows/main/index.html", f"Resources/tenant/{tenant}/INFO.md",
         "lib/im/fcitx4/im-fcitx.so", "lib/im/fcitx4/immodules.cache", "lib/im/fcitx4/module-id",
         "lib/im/fcitx5/im-fcitx5.so", "lib/im/fcitx5/immodules.cache", "lib/im/fcitx5/module-id"}
     required.update("lib/" + name for name in TRAY_LIBS)
     required.update({"lib/im/fcitx4/libfcitx-gclient.so.1", "lib/im/fcitx4/libfcitx-utils.so.0",
         "share/licenses/fcitx4/fcitx-4.2.9.9.tar.xz", "share/licenses/fcitx4/fcitx4_legacy_portal.patch",
-        "share/licenses/fcitx5/fcitx5-gtk-5.1.7.tar.gz", "share/applications/dev.a3s.studio.desktop",
-        "share/icons/hicolor/128x128/apps/dev.a3s.studio.png", "share/fonts/NotoSansHans-Regular.otf",
+        "share/licenses/fcitx5/fcitx5-gtk-5.1.7.tar.gz", f"share/applications/{app_id}.desktop",
+        f"share/icons/hicolor/128x128/apps/{app_id}.png", "share/fonts/NotoSansHans-Regular.otf",
         "share/licenses/noto-sans/LICENSE"})
     required.update(f"share/licenses/native/{name}/copyright" for name in TRAY_LICENSES)
     required.update(f"Resources/tenant/{tenant}/{name}" for name in BRAND_FILES)
@@ -257,6 +271,7 @@ def verify(root):
     expected = "".join(f"{value}  {name}\n" for name, value in sorted(actual.items()))
     if (root / "SHA256SUMS").read_text() != expected:
         raise ValueError("Studio generation SHA256SUMS mismatch")
+    validate_renderer(root / "Resources/studio-frontend", tenant)
     if (root / "Resources/studio-tenant").read_text() != tenant + "\n":
         raise ValueError("tenant generation mismatch")
     for name in ("bin/Studio", "bin/agent/a3s-code-acp", "bin/a3s-office", "bin/kylin-im-backend", "bin/kylin-launch"):
@@ -274,6 +289,7 @@ def main():
     cmd = sub.add_parser("record-build")
     for name in ("root", "renderer"): cmd.add_argument(name, type=Path)
     for name in ("tenant", "version", "revision"): cmd.add_argument(name)
+    cmd.add_argument("--tenant-root", type=Path)
     cmd = sub.add_parser("stage")
     for name in ("build", "renderer", "tenant_root", "im", "destination"): cmd.add_argument(name, type=Path)
     cmd = sub.add_parser("verify"); cmd.add_argument("root", type=Path)
