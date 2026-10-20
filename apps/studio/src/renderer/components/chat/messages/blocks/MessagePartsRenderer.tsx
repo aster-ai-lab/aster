@@ -763,6 +763,7 @@ function renderPart(
       // Agent task events are hidden inline state consumed by the agent status panes.
       return null
 
+    case 'data-task-plan':
     case 'data-knowledge-scope':
     case 'data-review-source':
     case 'data-review-progress':

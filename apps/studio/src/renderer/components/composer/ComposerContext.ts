@@ -13,6 +13,8 @@ export type ComposerOverride = {
 
 export type ComposerContextValue = {
   overrides?: readonly ComposerOverride[]
+  /** Current host-owned wait. Keep reachable independently of replacement composer layers. */
+  stop?: () => Promise<void>
 }
 
 const ComposerContext = createContext<ComposerContextValue | null>(null)

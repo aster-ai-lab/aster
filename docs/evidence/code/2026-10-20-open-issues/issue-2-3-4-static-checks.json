@@ -1,0 +1,58 @@
+[
+  {
+    "command": [
+      "rustfmt",
+      "--check",
+      "--edition",
+      "2024",
+      "--config",
+      "skip_children=true",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/headless.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/headless_tests.rs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "rustfmt",
+      "--check",
+      "--edition",
+      "2021",
+      "--config",
+      "skip_children=true",
+      "crates/code/acp/src/agent.rs",
+      "crates/code/acp/src/agent/session_open.rs",
+      "crates/code/acp/src/agent/session_setup_tests.rs",
+      "crates/code/acp/src/agent/reasoning_transport_tests.rs",
+      "crates/code/core/src/tools/program_tool.rs",
+      "crates/code/core/src/tools/program_tool/tests.rs",
+      "crates/code/core/src/tools/program_tool/worker_deadline_tests.rs",
+      "crates/code/core/src/tools/presentation.rs",
+      "crates/code/core/src/tools/tests.rs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "git",
+      "diff",
+      "--check",
+      "--",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/headless.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/headless_tests.rs",
+      "crates/code/acp/src/agent.rs",
+      "crates/code/acp/src/agent/session_open.rs",
+      "crates/code/acp/src/agent/session_setup_tests.rs",
+      "crates/code/acp/src/agent/reasoning_transport_tests.rs",
+      "crates/code/core/src/tools/program_tool.rs",
+      "crates/code/core/src/tools/program_tool/tests.rs",
+      "crates/code/core/src/tools/program_tool/worker_deadline_tests.rs",
+      "crates/code/core/src/tools/presentation.rs",
+      "crates/code/core/src/tools/tests.rs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "source_ready_hashes_unchanged": true
+  }
+]

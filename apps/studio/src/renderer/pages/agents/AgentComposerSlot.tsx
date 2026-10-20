@@ -1,8 +1,8 @@
-import { memo, use, useMemo } from 'react'
+import { memo, use, useMemo, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useRightPanelPresentationMaximized } from '@renderer/components/chat/panes/Shell'
-import type { ComposerContextValue } from '@renderer/components/composer/ComposerContext'
+import { type ComposerContextValue, selectActiveComposerOverride } from '@renderer/components/composer/ComposerContext'
 import ConversationComposerSlot from '@renderer/components/composer/ConversationComposerSlot'
 import AgentComposer, {
   type AgentComposerLaunchOptions,
@@ -35,6 +35,9 @@ interface AgentComposerSlotProps {
   sessionId: string
   sendMessage: AgentChatRuntimeState['sendMessage']
   stop: AgentChatRuntimeState['stop']
+  planMessageId?: string
+  planRevision?: string
+  taskProgress?: ReactNode
   isStreaming: boolean
   sendDisabled: boolean
   onAgentChange?: (agentId: string | null) => void | Promise<void>
@@ -60,6 +63,9 @@ function AgentComposerSlot({
   sessionId,
   sendMessage,
   stop,
+  planMessageId,
+  planRevision,
+  taskProgress,
   isStreaming,
   sendDisabled,
   onAgentChange,
@@ -106,6 +112,9 @@ function AgentComposerSlot({
         canChangeModel={!isEditing}
         sendMessage={isEditing ? resendEditedMessage : sendMessage}
         stop={stop}
+        planMessageId={isEditing ? undefined : planMessageId}
+        planRevision={isEditing ? undefined : planRevision}
+        taskProgress={isEditing || hasOverride ? undefined : taskProgress}
         isStreaming={!isEditing && isStreaming}
         sendDisabled={sendDisabled || (isEditing && (isStreaming || editBusy))}
         onCreateEmptySession={isEditing ? undefined : onCreateEmptySession}
@@ -127,7 +136,13 @@ function AgentComposerSlot({
     ]
   }
 
-  return <ConversationComposerSlot composerContext={context} fallback={!isMultiSelectMode && renderComposer()} />
+  const hasOverride = Boolean(selectActiveComposerOverride(context.overrides))
+  return (
+    <>
+      {!isMultiSelectMode && !editing && hasOverride ? taskProgress : null}
+      <ConversationComposerSlot composerContext={context} fallback={!isMultiSelectMode && renderComposer()} />
+    </>
+  )
 }
 
 export default memo(AgentComposerSlot)

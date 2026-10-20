@@ -1,0 +1,105 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling a3s-code-tools-api v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-tools-api)
+   Compiling a3s-tool-runtime v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/a3s-tool-runtime)
+   Compiling a3s-computer-hub-core v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/a3s-computer-hub-core)
+   Compiling a3s-computer-hub-sdk v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/a3s-computer-hub-sdk)
+   Compiling a3s-code-tools v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-tools)
+   Compiling a3s-computer-hub-mcp-adapter v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/a3s-computer-hub-mcp-adapter)
+   Compiling a3s-code-workspace-client v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-workspace-client)
+   Compiling a3s-code-workspace-daemon v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-workspace-daemon)
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:145:26
+    |
+145 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:146:20
+    |
+146 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+   Compiling a3s-code-hooks v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-hooks)
+   Compiling a3s-code-mcp v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-mcp)
+   Compiling a3s-code-announcements v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-announcements)
+   Compiling a3s-code-pager-diff v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-pager-diff)
+warning: `a3s-code-tools` (lib) generated 2 warnings (run `cargo fix --lib -p a3s-code-tools` to apply 2 suggestions)
+   Compiling a3s-code-agent v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-agent)
+   Compiling a3s-code-config-types v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-config-types)
+   Compiling a3s-code-workspace v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-workspace)
+   Compiling a3s-code-subagent-resolution v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-subagent-resolution)
+   Compiling a3s-code-plugin-marketplace v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-plugin-marketplace)
+   Compiling a3s-code-http v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-http)
+   Compiling a3s-code-shell-terminal v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-shell-terminal)
+   Compiling a3s-code-pager-render v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-pager-render)
+   Compiling a3s-code-memory v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-memory)
+   Compiling a3s-code-shell-session-support v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-shell-session-support)
+   Compiling a3s-code-login v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-login)
+   Compiling a3s-code-shell v1.0.41 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-shell)
+   Compiling a3s-code-update v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-update)
+   Compiling a3s-code-pager v9.1.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-pager)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-pager` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2m 21s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_pager-8d0ac8819a5048b8)
+
+running 35 tests
+test headless::tests::headless_remote_miss_defers_to_worktree_when_requested ... ok
+test headless::tests::headless_materialize_ctx_stays_non_chat ... ok
+test headless::tests::headless_remote_miss_restores_conversation_instead_of_deferring_worktree ... ok
+test headless::tests::empty_inputs_produce_empty_rules ... ok
+test headless::tests::first_hard_write_error_wins_the_latch ... ok
+test headless::tests::hard_write_error_is_latched_and_surfaced_once ... ok
+test headless::tests::broken_pipe_write_is_a_clean_latched_stop ... ok
+warning: --deny "EnterWorktree(foo)": unsupported tool prefix: EnterWorktree, skipping
+test headless::tests::domain_mode_web_fetch ... ok
+test headless::tests::reap_request_for_subagent_cancels_with_typed_id ... ok
+test headless::tests::bash_colon_wildcard_deny_translates_to_prefix ... ok
+test headless::tests::lenient_skips_invalid_keeps_valid ... ok
+test headless::tests::strict_valid_rules_parse_deny_before_allow ... ok
+test headless::tests::reap_request_for_task_kills_with_session_scope ... ok
+test headless::tests::successful_write_leaves_no_latched_error ... ok
+test headless::tests::structured_output_without_meta_errors_never_parses_text ... ok
+test headless::tests::strict_invalid_rule_errors ... ok
+test headless::tests::strict_reports_all_invalid_rules ... ok
+{"type":"text","data":"{\"name\":"}
+test headless::tests::parse_json_schema_rejects_non_objects_and_invalid_json ... ok
+{"type":"text","data":"\"bob\"}"}
+test headless::tests::structured_output_from_meta_wins_over_text_buffer ... ok
+test headless::tests::worktree_with_fork_is_rejected_at_intent ... ok
+test headless::tests::local_config_agent_with_no_auth_methods_skips_acp_login ... ok
+test headless::tests::streaming_json_structured_output_emits_from_meta ... ok
+test headless::tests::grok_agent_with_no_auth_methods_still_requires_login ... ok
+test headless::tests::signalled_exit_stops_waiting_on_a_log_flush_that_never_answers ... ok
+test headless::tests::handler_answers_ext_method_instead_of_dropping ... ok
+test headless::tests::numeric_task_id_is_decoded_tracked_and_reaped ... ok
+test headless::tests::drain_records_task_backgrounded_delivered_at_exit ... ok
+test headless::tests::post_open_error_carries_real_session_context ... ok
+test headless::tests::headless_auth_keeps_advertised_noninteractive_methods_and_refuses_browser_login ... ok
+test headless::tests::worktree_create_failure_is_reported_before_any_session_opens ... ok
+test headless::tests::worktree_resume_failure_carries_local_miss_hint_like_the_tui ... ok
+test headless::tests::worktree_resume_loads_reported_session_without_re_restoring_code ... ok
+test headless::tests::worktree_create_with_session_id_names_worktree_and_session ... ok
+test headless::tests::worktree_create_then_session_failure_names_the_orphaned_worktree ... ok
+test headless::tests::worktree_create_opens_session_at_worktree_subdirectory ... ok
+
+test result: ok. 35 passed; 0 failed; 0 ignored; 0 measured; 10166 filtered out; finished in 13.97s
+

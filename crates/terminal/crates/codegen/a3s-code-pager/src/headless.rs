@@ -444,13 +444,18 @@ async fn spawn_agent(
     )
     .await
 }
-/// Authenticate via the agent's `defaultAuthMethodId`, failing closed when none is available.
+/// Match the TUI's local-config policy for empty methods; otherwise authenticate
+/// via the advertised method without starting interactive login.
 /// Returns whether the selected method is API-key auth.
 async fn authenticate(
     acp_tx: &AcpAgentTx,
     auths: &[acp::AuthMethod],
     default_auth_method_id: Option<&acp::AuthMethodId>,
+    is_grok_shell: bool,
 ) -> anyhow::Result<bool> {
+    if auths.is_empty() && !crate::acp::empty_auth_methods_needs_login(is_grok_shell) {
+        return Ok(false);
+    }
     let method_id = crate::acp::select_eager_auth_method(auths, default_auth_method_id)
         .ok_or_else(|| {
             use std::io::IsTerminal;
@@ -939,10 +944,17 @@ pub async fn run_single_turn(
     let t_auth = Instant::now();
     a3s_code_telemetry::startup::enter(crate::acp::StartupPhase::EagerAuth);
     let default_auth_method_id = crate::acp::parse_default_auth_method_id(init_resp.meta.as_ref());
+    let is_grok_shell = init_resp
+        .meta
+        .as_ref()
+        .and_then(|meta| meta.get("grokShell"))
+        .and_then(serde_json::Value::as_bool)
+        .unwrap_or(false);
     let is_api_key_auth = match authenticate(
         &acp_tx,
         &init_resp.auth_methods,
         default_auth_method_id.as_ref(),
+        is_grok_shell,
     )
     .await
     {

@@ -140,6 +140,28 @@ pub struct GatewayConfig {
         skip_serializing_if = "crate::agent_wake::AgentIdlePolicyTable::is_empty"
     )]
     pub agent_idle_policies: crate::agent_wake::AgentIdlePolicyTable,
+
+    /// One anonymous Chatbot published through the existing Applications
+    /// delivery API. Absent means `POST /v1/chatbot` fails closed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub anonymous_chatbot: Option<AnonymousChatbotUpstream>,
+}
+
+/// Fixed Applications authority for one anonymous Chatbot.
+///
+/// Gateway mints the session and invocation, then polls the public streaming
+/// observation. It does not own the run.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct AnonymousChatbotUpstream {
+    pub upstream: String,
+    pub organization_id: uuid::Uuid,
+    pub project_id: uuid::Uuid,
+    pub application_id: uuid::Uuid,
+    pub release_id: uuid::Uuid,
+    pub lookup_key: String,
+    pub ontology_id: uuid::Uuid,
+    pub ontology_revision_id: uuid::Uuid,
+    pub ontology_digest: String,
 }
 
 fn default_shutdown_timeout() -> u64 {
@@ -951,6 +973,7 @@ impl Default for GatewayConfig {
             shutdown_timeout_secs: default_shutdown_timeout(),
             hosted_function_activations: HashMap::new(),
             agent_idle_policies: Default::default(),
+            anonymous_chatbot: None,
         }
     }
 }

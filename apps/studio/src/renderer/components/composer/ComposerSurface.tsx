@@ -400,6 +400,7 @@ function DeferredComposerSurface(props: ComposerSurfaceProps) {
             }}
             onKeyDown={(event) => {
               if (props.editable === false) return
+              if (isComposing || event.nativeEvent.isComposing || event.nativeEvent.keyCode === 229) return
               requestRuntime()
               if (navigateInputHistory(event)) {
                 event.preventDefault()
@@ -407,8 +408,7 @@ function DeferredComposerSurface(props: ComposerSurfaceProps) {
               }
               // Same priority order as the runtime surface, so the two never drift: steer wins over
               // send, and every other Enter combination is swallowed rather than inserting a break.
-              const isEnterPressed =
-                (event.key === 'Enter' || event.key === 'NumpadEnter') && !event.nativeEvent.isComposing
+              const isEnterPressed = event.key === 'Enter' || event.key === 'NumpadEnter'
               if (!isEnterPressed) return
 
               event.preventDefault()

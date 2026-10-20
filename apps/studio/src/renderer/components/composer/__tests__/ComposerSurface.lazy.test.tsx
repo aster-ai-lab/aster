@@ -286,6 +286,30 @@ describe('deferred ComposerSurface', () => {
     expect(runtime).toHaveAttribute('data-selection', '10:10')
   })
 
+  it.each(['composition session', 'keyCode 229'])(
+    'keeps confirmation and candidate navigation with the IME during %s',
+    (mode) => {
+      const onInputHistoryNavigate = vi.fn(() => true)
+      render(<Harness text="ni" onInputHistoryNavigate={onInputHistoryNavigate} />)
+      const input = screen.getByRole('textbox', { name: 'Message' })
+      if (mode === 'composition session') fireEvent.compositionStart(input)
+
+      for (const key of ['Enter', 'ArrowUp']) {
+        const event = new KeyboardEvent('keydown', {
+          key,
+          keyCode: mode === 'keyCode 229' ? 229 : key === 'Enter' ? 13 : 38,
+          isComposing: false,
+          bubbles: true,
+          cancelable: true
+        })
+        fireEvent(input, event)
+        expect(event.defaultPrevented).toBe(false)
+      }
+      expect(mocks.onSendDraft).not.toHaveBeenCalled()
+      expect(onInputHistoryNavigate).not.toHaveBeenCalled()
+    }
+  )
+
   it('hands the whole clipboard payload to the runtime instead of inserting plain text', async () => {
     render(<Harness />)
 

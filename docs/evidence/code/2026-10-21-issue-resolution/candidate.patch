@@ -1,0 +1,3571 @@
+diff --git a/Cargo.lock b/Cargo.lock
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -9,16 +9,6 @@
+  "ryu-js",
+  "serde",
+  "serde_json",
+- "sha2 0.10.9",
+-]
+-
+-[[package]]
+-name = "a3s-acl"
+-version = "0.3.0"
+-source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "add06e627b80ea0d3f6de5ecfb2708cfcf4c6d022806ae33aec0905aeffde3ce"
+-dependencies = [
+- "ryu-js",
+  "sha2 0.10.9",
+ ]
+ 
+@@ -119,7 +109,7 @@
+ name = "a3s-boot"
+ version = "0.2.0"
+ dependencies = [
+- "a3s-acl 0.3.0",
++ "a3s-acl",
+  "a3s-boot-macros",
+  "a3s-event",
+  "a3s-lane",
+@@ -174,7 +164,7 @@
+ name = "a3s-box-core"
+ version = "3.2.7"
+ dependencies = [
+- "a3s-acl 0.3.0",
++ "a3s-acl",
+  "a3s-common",
+  "async-trait",
+  "base64 0.22.1",
+@@ -215,7 +205,7 @@
+ name = "a3s-box-runtime"
+ version = "3.2.7"
+ dependencies = [
+- "a3s-acl 0.3.0",
++ "a3s-acl",
+  "a3s-box-core",
+  "a3s-box-mkext4",
+  "a3s-box-netproxy",
+@@ -303,7 +293,7 @@
+ name = "a3s-code-acp"
+ version = "9.1.4"
+ dependencies = [
+- "a3s-acl 0.3.0",
++ "a3s-acl",
+  "a3s-code-core",
+  "a3s-code-mermaid",
+  "a3s-office",
+@@ -480,7 +470,7 @@
+ name = "a3s-code-core"
+ version = "9.1.4"
+ dependencies = [
+- "a3s-acl 0.3.0",
++ "a3s-acl",
+  "a3s-apofasi",
+  "a3s-common",
+  "a3s-effect",
+@@ -945,7 +935,7 @@
+ name = "a3s-code-pager"
+ version = "9.1.4"
+ dependencies = [
+- "a3s-acl 0.3.0",
++ "a3s-acl",
+  "a3s-acp-lib",
+  "a3s-chat-state",
+  "a3s-code-active-sessions",
+@@ -2328,7 +2318,7 @@
+ name = "a3s-form-core"
+ version = "0.1.0"
+ dependencies = [
+- "a3s-acl 0.3.0",
++ "a3s-acl",
+  "regress 0.10.5",
+  "ryu-js",
+  "serde",
+@@ -2376,10 +2366,10 @@
+ name = "a3s-gateway"
+ version = "1.1.1"
+ dependencies = [
+- "a3s-acl 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
++ "a3s-acl",
+  "a3s-apofasi",
+- "a3s-sentry 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
+- "a3s-updater 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
++ "a3s-sentry",
++ "a3s-updater",
+  "a3s-use-bge",
+  "a3s-use-ocr",
+  "ab_glyph",
+@@ -2857,7 +2847,7 @@
+ name = "a3s-runner"
+ version = "0.1.0"
+ dependencies = [
+- "a3s-acl 0.3.0",
++ "a3s-acl",
+  "async-trait",
+  "chrono",
+  "reqwest 0.12.24",
+@@ -2904,7 +2894,7 @@
+ name = "a3s-search"
+ version = "3.4.0"
+ dependencies = [
+- "a3s-acl 0.3.0",
++ "a3s-acl",
+  "a3s-use-browser",
+  "anyhow",
+  "async-trait",
+@@ -2946,25 +2936,10 @@
+ ]
+ 
+ [[package]]
+-name = "a3s-sentry"
+-version = "0.7.0"
+-source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "6726c7fb4b635dc39ffb3c8bd518f337c5e35376b560fc1154d925a968dc4c12"
+-dependencies = [
+- "anyhow",
+- "hcl-rs",
+- "libc",
+- "regex",
+- "serde",
+- "serde_json",
+- "ureq 2.12.1",
+-]
+-
+-[[package]]
+ name = "a3s-sms"
+ version = "0.1.0"
+ dependencies = [
+- "a3s-acl 0.3.0",
++ "a3s-acl",
+  "async-trait",
+  "md-5 0.10.6",
+  "reqwest 0.12.24",
+@@ -2991,7 +2966,7 @@
+ name = "a3s-studio"
+ version = "2.1.3"
+ dependencies = [
+- "a3s-acl 0.3.0",
++ "a3s-acl",
+  "a3s-boot",
+  "a3s-flow",
+  "a3s-okf",
+@@ -3175,25 +3150,6 @@
+ ]
+ 
+ [[package]]
+-name = "a3s-updater"
+-version = "0.3.0"
+-source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "2ec6f6a3004ac108482a751309e2c3f68edf6a68630131c56626d1341902dabe"
+-dependencies = [
+- "anyhow",
+- "flate2",
+- "reqwest 0.12.24",
+- "semver",
+- "serde",
+- "serde_json",
+- "sha2 0.10.9",
+- "tar",
+- "tempfile",
+- "tokio",
+- "zip 2.4.2",
+-]
+-
+-[[package]]
+ name = "a3s-use"
+ version = "0.3.3"
+ dependencies = [
+@@ -3288,7 +3244,7 @@
+ name = "a3s-use-extension"
+ version = "0.3.3"
+ dependencies = [
+- "a3s-acl 0.3.0",
++ "a3s-acl",
+  "a3s-use-core",
+  "async-trait",
+  "flate2",
+@@ -4089,7 +4045,7 @@
+ name = "aster-dream"
+ version = "0.1.2"
+ dependencies = [
+- "a3s-acl 0.3.0",
++ "a3s-acl",
+  "a3s-boot",
+  "a3s-flow",
+  "a3s-form-core",
+diff --git a/apps/aster/src/main.rs b/apps/aster/src/main.rs
+--- a/apps/aster/src/main.rs
++++ b/apps/aster/src/main.rs
+@@ -511,6 +511,24 @@
+     Disabled,
+     Unknown,
+ }
++impl WorkspaceGate {
++    fn require_enabled(self) -> Result<()> {
++        match self {
++            Self::Enabled => Ok(()),
++            Self::Disabled => anyhow::bail!(
++                "`aster workspace` is not enabled for this account \
++                 (gated by a server-side feature flag that is currently off)."
++            ),
++            Self::Unknown => anyhow::bail!(
++                "The feature gate for `aster workspace` could not be confirmed. \
++                 Set GROK_WORKSPACE_COMMAND=1 to enable it locally."
++            ),
++        }
++    }
++}
++
++#[cfg(test)]
++mod workspace_command_gate_tests;
+ /// The `GROK_WORKSPACE_COMMAND` override, if set (`Some(true)`/`Some(false)`); `None` defers to the remote settings flag.
+ fn workspace_command_env_override() -> Option<bool> {
+     std::env::var(WORKSPACE_COMMAND_ENV)
+@@ -593,22 +611,7 @@
+     } else {
+         None
+     };
+-    match workspace_command_gate(env_override, remote_settings.as_ref()) {
+-        WorkspaceGate::Enabled => {}
+-        WorkspaceGate::Disabled => {
+-            anyhow::bail!(
+-                "`aster workspace` is not enabled for this account \
+-             (gated by a server-side feature flag that is currently off)."
+-            )
+-        }
+-        WorkspaceGate::Unknown => {
+-            anyhow::bail!(
+-                "Could not load your settings for `aster workspace`. Check your \
+-             network connection (run `aster login` if you are signed out), then \
+-             try again."
+-            )
+-        }
+-    }
++    workspace_command_gate(env_override, remote_settings.as_ref()).require_enabled()?;
+     match args.command {
+         WorkspaceMgmtCommand::Start(a) => {
+             let settings = match remote_settings {
+diff --git a/apps/aster/src/workspace_command_gate_tests.rs b/apps/aster/src/workspace_command_gate_tests.rs
+--- /dev/null
++++ b/apps/aster/src/workspace_command_gate_tests.rs
+@@ -0,0 +1,24 @@
++use super::{WorkspaceGate, workspace_command_gate};
++
++#[test]
++fn unknown_gate_has_local_opt_in_and_no_auth_diagnosis() {
++    let error = workspace_command_gate(None, None)
++        .require_enabled()
++        .expect_err("unknown gate must refuse activation")
++        .to_string();
++    assert!(error.contains("feature gate"), "{error}");
++    assert!(error.contains("GROK_WORKSPACE_COMMAND=1"), "{error}");
++    assert!(!error.contains("network"), "{error}");
++    assert!(!error.contains("login"), "{error}");
++}
++
++#[test]
++fn activation_requires_an_enabled_gate() {
++    for (gate, expected) in [
++        (WorkspaceGate::Enabled, true),
++        (WorkspaceGate::Disabled, false),
++        (WorkspaceGate::Unknown, false),
++    ] {
++        assert_eq!(gate.require_enabled().is_ok(), expected);
++    }
++}
+diff --git a/apps/gateway/Cargo.toml b/apps/gateway/Cargo.toml
+--- a/apps/gateway/Cargo.toml
++++ b/apps/gateway/Cargo.toml
+@@ -3,6 +3,7 @@
+ version = "1.1.1"
+ edition = "2021"
+ rust-version = "1.88"
++publish = false
+ authors = ["Kense Labs"]
+ license = "MIT"
+ repository = "https://github.com/kense-labs/gateway"
+@@ -83,7 +84,7 @@
+ # Serialization
+ serde = { version = "1", features = ["derive"] }
+ serde_json = "1"
+-a3s-acl = "=0.3.0"
++a3s-acl = { path = "../../crates/acl", version = "=0.3.0" }
+ sha2 = "0.10"
+ argon2 = "0.5"
+ url = "2"
+@@ -145,7 +146,7 @@
+ k8s-openapi = { version = "0.26", features = ["latest"], optional = true }
+ 
+ # Self-update
+-a3s-updater = "=0.3.0"
++a3s-updater = { path = "../../crates/updater", version = "=0.3.0" }
+ # Lexical System One. Neural checkpoints stay out of the gateway binary.
+ a3s-apofasi = { path = "../../crates/apofasi", default-features = false }
+ # Platform PP-OCRv6. The weight bundle is installed at runtime, not vendored.
+@@ -153,7 +154,7 @@
+ a3s-use-ocr = { path = "../../crates/ocr", default-features = false, features = ["ppocr-v6"] }
+ 
+ # Inline LLM/MCP wire firewall (agentfw-style): the detection + masking brain (optional)
+-a3s-sentry = { version = "=0.7.0", optional = true }
++a3s-sentry = { path = "../../crates/sentry", version = "=0.7.0", optional = true }
+ 
+ [features]
+ default = []
+diff --git a/crates/code/acp/src/agent.rs b/crates/code/acp/src/agent.rs
+--- a/crates/code/acp/src/agent.rs
++++ b/crates/code/acp/src/agent.rs
+@@ -331,6 +331,24 @@
+         Some(existing) if !existing.is_empty() => format!("{existing}\n\n{body}"),
+         _ => body.to_string(),
+     });
++}
++
++fn initialize_rules_from_meta(meta: Option<&acp::Meta>) -> acp::Result<Option<String>> {
++    let read = |key: &str| -> acp::Result<Option<String>> {
++        match meta.and_then(|meta| meta.get(key)) {
++            None => Ok(None),
++            Some(serde_json::Value::String(value)) => Ok(Some(value.clone())),
++            Some(_) => Err(acp::Error::invalid_params().data(format!("{key} must be a string"))),
++        }
++    };
++    let rules = read("rules")?;
++    let replacement = read("systemPromptOverride")?;
++    if replacement.is_some_and(|value| !value.trim().is_empty()) {
++        return Err(acp::Error::invalid_params().data(
++            "systemPromptOverride is not supported: Aster preserves its core runtime and safety contracts. Use --rules / --append-system-prompt to append instructions.",
++        ));
++    }
++    Ok(rules.filter(|value| !value.trim().is_empty()))
+ }
+ 
+ fn interactive_skill_dirs(workspace: &std::path::Path, configured: &[PathBuf]) -> Vec<PathBuf> {
+@@ -518,6 +536,9 @@
+     /// What the untrusted workspace layer was refused or left pending.
+     workspace_admission: a3s_code_core::config::WorkspaceLayerAdmission,
+     client_reads_files: std::cell::Cell<bool>,
++    /// Trusted launcher instructions from initialize, kept separate from the
++    /// workspace configuration and applied whenever a session is opened.
++    client_rules: RefCell<Option<String>>,
+     /// This process created `~/.a3s/config.acl`. The pager opens `/config`.
+     first_run_config: bool,
+ }
+@@ -572,6 +593,7 @@
+             unattended: None,
+             workspace_admission: Default::default(),
+             client_reads_files: std::cell::Cell::new(false),
++            client_rules: RefCell::new(None),
+             first_run_config: false,
+         }
+     }
+@@ -906,6 +928,8 @@
+         &self,
+         args: acp::InitializeRequest,
+     ) -> acp::Result<acp::InitializeResponse> {
++        let rules = initialize_rules_from_meta(args.meta.as_ref())?;
++        *self.client_rules.borrow_mut() = rules;
+         self.client_reads_files
+             .set(args.client_capabilities.fs.read_text_file);
+         let cwd = self.launch.workspace.to_string_lossy().to_string();
+@@ -1461,6 +1485,9 @@
+ mod session_setup_tests;
+ 
+ #[cfg(test)]
++mod memory_sessions_tests;
++
++#[cfg(test)]
+ mod retrieval_seam_tests;
+ 
+ #[cfg(test)]
+diff --git a/crates/code/acp/src/agent/memory_sessions_tests.rs b/crates/code/acp/src/agent/memory_sessions_tests.rs
+--- /dev/null
++++ b/crates/code/acp/src/agent/memory_sessions_tests.rs
+@@ -0,0 +1,66 @@
++#![cfg(test)]
++
++use super::{test_launch, A3sCodeAgent};
++use agent_client_protocol::{self as acp, Agent as _};
++
++#[tokio::test]
++async fn two_acp_host_sessions_recall_and_write_the_same_durable_collection() {
++    let root = tempfile::tempdir().unwrap();
++    let mut launch = test_launch(Some(root.path().join("sessions")));
++    launch.workspace = root.path().into();
++    launch.config.memory_dir = Some(root.path().join("memory"));
++    let host = A3sCodeAgent::new(launch);
++    let mut sessions = Vec::new();
++    for _ in 0..2 {
++        let id = host
++            .new_session(acp::NewSessionRequest::new(root.path()))
++            .await
++            .unwrap()
++            .session_id;
++        sessions.push(
++            host.sessions.lock().await[&id.0.to_string()]
++                .session
++                .clone(),
++        );
++    }
++    let first = sessions[0].memory().unwrap().store();
++    let second = sessions[1].memory().unwrap().store();
++    let item = sessions[0]
++        .memory()
++        .unwrap()
++        .remember_success_item("shared acp durable handoff marker", &[], "private workflow")
++        .await
++        .unwrap();
++    assert_eq!(
++        second.retrieve(&item.id).await.unwrap().unwrap().content,
++        item.content
++    );
++    let second_item = sessions[1]
++        .memory()
++        .unwrap()
++        .remember_success_item("second acp durable marker", &[], "private workflow")
++        .await
++        .unwrap();
++    assert_eq!(
++        first
++            .retrieve(&second_item.id)
++            .await
++            .unwrap()
++            .unwrap()
++            .content,
++        second_item.content
++    );
++    assert_eq!(
++        sessions[1]
++            .memory()
++            .unwrap()
++            .recall_similar("handoff", 5)
++            .await
++            .unwrap()
++            .len(),
++        1
++    );
++    for session in sessions {
++        session.close().await;
++    }
++}
+diff --git a/crates/code/acp/src/agent/reasoning_transport_tests.rs b/crates/code/acp/src/agent/reasoning_transport_tests.rs
+--- a/crates/code/acp/src/agent/reasoning_transport_tests.rs
++++ b/crates/code/acp/src/agent/reasoning_transport_tests.rs
+@@ -187,11 +187,11 @@
+                 .await
+                 .unwrap();
+             socket.get_mut().shutdown().await.unwrap();
+-            if requests.len() == 4 {
++            if requests.len() == 5 {
+                 break;
+             }
+         }
+-        assert_eq!(requests.len(), 4);
++        assert_eq!(requests.len(), 5);
+         requests
+     });
+     let root = tempfile::tempdir().unwrap();
+@@ -204,7 +204,18 @@
+         ..Default::default()
+     });
+     let model = launch.model_id.clone();
+-    let host = A3sCodeAgent::new(launch);
++    let host = A3sCodeAgent::new(launch.clone());
++    let initialize = || {
++        acp::InitializeRequest::new(acp::ProtocolVersion::V1).meta(Some(
++            [(
++                "rules".into(),
++                serde_json::json!("Initialize rules marker: BLUE_WHALE_9090"),
++            )]
++            .into_iter()
++            .collect(),
++        ))
++    };
++    host.initialize(initialize()).await.unwrap();
+     let id = host
+         .new_session(acp::NewSessionRequest::new(root.path()))
+         .await
+@@ -255,8 +266,51 @@
+         .unwrap();
+         assert!(!session.is_closed());
+     }
++    let session = host
++        .sessions
++        .lock()
++        .await
++        .get(id.0.as_ref())
++        .unwrap()
++        .session
++        .clone();
++    session.close().await;
++    drop(session);
++    drop(host);
++    let reopened = A3sCodeAgent::new(launch);
++    reopened.initialize(initialize()).await.unwrap();
++    reopened
++        .load_session(acp::LoadSessionRequest::new(id.clone(), root.path()))
++        .await
++        .unwrap();
++    let session = reopened
++        .sessions
++        .lock()
++        .await
++        .get(id.0.as_ref())
++        .unwrap()
++        .session
++        .clone();
++    tokio::time::timeout(
++        std::time::Duration::from_secs(5),
++        session.send("marker-4", None),
++    )
++    .await
++    .unwrap()
++    .unwrap();
++    session.close().await;
+     let requests = provider.await.unwrap();
+     for (index, request) in requests.iter().enumerate() {
++        let system = request["system"].to_string();
++        assert_eq!(
++            system.matches("BLUE_WHALE_9090").count(),
++            1,
++            "initialize rules must reach request {index} exactly once"
++        );
++        assert!(
++            system.contains(SESSION_OUTCOME_BOUNDARY),
++            "core boundary must remain in request {index}"
++        );
+         let messages = request["messages"].to_string();
+         for earlier in 0..index {
+             assert!(
+diff --git a/crates/code/acp/src/agent/session_open.rs b/crates/code/acp/src/agent/session_open.rs
+--- a/crates/code/acp/src/agent/session_open.rs
++++ b/crates/code/acp/src/agent/session_open.rs
+@@ -204,6 +204,14 @@
+             Some(profile) => options.with_tool_presentation_profile(profile.clone()),
+             None => options,
+         };
++        if let Some(rules) = self.client_rules.borrow().as_ref() {
++            let mut slots = options.prompt_slots.clone().unwrap_or_default();
++            append_slot_extra(
++                &mut slots,
++                &format!("<human_rules>\n{rules}\n</human_rules>"),
++            );
++            options = options.with_prompt_slots(slots);
++        }
+         if let Some(reason) = unavailable {
+             tracing::error!(%reason, "configured local workspace retrieval is unavailable");
+             let mut slots = options.prompt_slots.clone().unwrap_or_default();
+diff --git a/crates/code/acp/src/agent/session_setup_tests.rs b/crates/code/acp/src/agent/session_setup_tests.rs
+--- a/crates/code/acp/src/agent/session_setup_tests.rs
++++ b/crates/code/acp/src/agent/session_setup_tests.rs
+@@ -2,6 +2,86 @@
+ 
+ use super::{A3sCodeAgent, SessionSetup};
+ use a3s_code_core::{sandbox::SandboxNetworkMode, CodeConfig};
++use agent_client_protocol::{self as acp, Agent as _};
++
++#[tokio::test]
++async fn initialize_refuses_invalid_prompt_metadata_instead_of_silently_ignoring_it() {
++    for (key, value) in [
++        ("rules", serde_json::json!(42)),
++        ("rules", serde_json::Value::Null),
++        ("systemPromptOverride", serde_json::json!(["not a string"])),
++        (
++            "systemPromptOverride",
++            serde_json::json!("Replace the whole system prompt"),
++        ),
++    ] {
++        let agent = A3sCodeAgent::new(super::tests::test_launch(None));
++        let error = agent
++            .initialize(
++                acp::InitializeRequest::new(acp::ProtocolVersion::V1)
++                    .meta(Some([(key.into(), value)].into_iter().collect())),
++            )
++            .await
++            .expect_err("unsupported prompt metadata must be explicit");
++        assert!(format!("{error:?}").contains(key));
++    }
++}
++
++#[tokio::test]
++async fn initialize_rules_append_without_replacing_host_or_unattended_contracts() {
++    for unattended in [false, true] {
++        let root = tempfile::tempdir().unwrap();
++        let mut launch = super::tests::test_launch(None);
++        launch.workspace = root.path().into();
++        let mut agent = A3sCodeAgent::new(launch);
++        if unattended {
++            agent =
++                agent.with_unattended(crate::unattended::Unattended::new(10_000, None).unwrap());
++        }
++        agent
++            .initialize(
++                acp::InitializeRequest::new(acp::ProtocolVersion::V1).meta(Some(
++                    [
++                        ("rules".into(), serde_json::json!("保留原文 APPEND_RULE_42")),
++                        ("systemPromptOverride".into(), serde_json::json!(" \n")),
++                    ]
++                    .into_iter()
++                    .collect(),
++                )),
++            )
++            .await
++            .unwrap();
++        let setup = SessionSetup {
++            workspace: root.path().into(),
++            model_id: "fixture/model",
++            effort: None,
++            host: crate::host_context::StudioHost {
++                guidelines: "Standing host instruction".into(),
++                source_review: true,
++                ..Default::default()
++            },
++            components: &[],
++            mcp_servers: Vec::new(),
++        };
++        let options = agent
++            .session_options_for("rules", &setup, &root.path().join("store"))
++            .await
++            .unwrap();
++        assert!(
++            options.permission_policy.is_some(),
++            "review restrictions stay installed"
++        );
++        let prompt = options.prompt_slots.unwrap().build();
++        assert_eq!(prompt.matches("APPEND_RULE_42").count(), 1);
++        assert!(prompt.contains("保留原文"));
++        if unattended {
++            assert!(prompt.contains("Host note: A host admission bind"));
++        } else {
++            assert!(prompt.contains("Standing host instruction"));
++            assert!(prompt.contains(super::SESSION_OUTCOME_BOUNDARY));
++        }
++    }
++}
+ 
+ #[test]
+ fn trusted_acl_presentation_reaches_the_host_session_without_changing_default() {
+diff --git a/crates/code/acp/src/agent/unattended_turn.rs b/crates/code/acp/src/agent/unattended_turn.rs
+--- a/crates/code/acp/src/agent/unattended_turn.rs
++++ b/crates/code/acp/src/agent/unattended_turn.rs
+@@ -139,7 +139,7 @@
+                 {
+                     a3s_code_core::GoalTickStream::Started(stream) => stream,
+                     a3s_code_core::GoalTickStream::Decided(decision) => {
+-                        bail!("the bound task goal did not advance: {}", decision.as_str())
++                        return Err(crate::goal::GoalContinuationStopped(decision).into());
+                     }
+                     a3s_code_core::GoalTickStream::Replayed(snapshot) => {
+                         bail!("the goal slice replayed Run {}", snapshot.id)
+@@ -202,10 +202,7 @@
+                     }
+                     crate::goal::BoundGoalStep::Finished => return Ok(None),
+                     crate::goal::BoundGoalStep::Stopped(reason) => {
+-                        bail!(
+-                            "the bound task goal stopped before it was finished: {}",
+-                            reason.as_str()
+-                        )
++                        return Err(crate::goal::GoalContinuationStopped(reason).into());
+                     }
+                 }
+             }
+diff --git a/crates/code/acp/src/goal.rs b/crates/code/acp/src/goal.rs
+--- a/crates/code/acp/src/goal.rs
++++ b/crates/code/acp/src/goal.rs
+@@ -434,6 +434,23 @@
+     Stopped(GoalTickDecisionV1),
+ }
+ 
++/// A terminal unattended admission refusal is a failure to finish the goal,
++/// even when the most recent individual turn was verified.
++#[derive(Debug)]
++pub(crate) struct GoalContinuationStopped(pub GoalTickDecisionV1);
++
++impl std::fmt::Display for GoalContinuationStopped {
++    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
++        write!(
++            formatter,
++            "goal.continuation_stopped: the task goal is unfinished; next={}",
++            self.0.as_str()
++        )
++    }
++}
++
++impl std::error::Error for GoalContinuationStopped {}
++
+ pub(crate) async fn bound_goal_step(
+     session: &a3s_code_core::AgentSession,
+ ) -> anyhow::Result<BoundGoalStep> {
+diff --git a/crates/code/acp/src/unattended.rs b/crates/code/acp/src/unattended.rs
+--- a/crates/code/acp/src/unattended.rs
++++ b/crates/code/acp/src/unattended.rs
+@@ -100,8 +100,8 @@
+     }
+ 
+     /// The `goal_control` policy a goal launch needs when the ACL declares
+-    /// none. Slices continue until the run deadline. One unfinished slice
+-    /// does not exhaust the goal.
++    /// none. Productive slices can continue until the run deadline; three
++    /// settled slices without a workspace mutation stop automatic admission.
+     pub fn goal_control(&self, now_unix_ms: u64) -> Result<Option<GoalContinuationPolicyV1>> {
+         if !self.goal_continuation {
+             return Ok(None);
+diff --git a/crates/code/acp/src/unattended/result.rs b/crates/code/acp/src/unattended/result.rs
+--- a/crates/code/acp/src/unattended/result.rs
++++ b/crates/code/acp/src/unattended/result.rs
+@@ -126,6 +126,15 @@
+     }
+ 
+     pub(crate) fn remember_failure(&mut self, error: &anyhow::Error) {
++        if error
++            .downcast_ref::<crate::goal::GoalContinuationStopped>()
++            .is_some()
++        {
++            // A recoverable tool error from an earlier slice must not hide
++            // the host's terminal refusal to continue this unfinished goal.
++            self.last_error = Some(bound_error(error.to_string()));
++            return;
++        }
+         self.remember_error(error);
+         if let Some(provider_error) =
+             error.downcast_ref::<a3s_code_core::llm::NonRetryableLlmError>()
+@@ -277,6 +286,15 @@
+             TerminalReason::EvidenceMissing,
+         );
+     }
++    if error
++        .downcast_ref::<crate::goal::GoalContinuationStopped>()
++        .is_some()
++    {
++        return (
++            ExecutionResultOutcomeV1::Failed,
++            TerminalReason::ExecutionFailed,
++        );
++    }
+     // Provider clients preserve terminal HTTP responses as a typed error. Do
+     // not infer this class from rendered text: bodies are bounded and may be
+     // localized or omit the word "provider" entirely.
+diff --git a/crates/code/acp/src/unattended/result_tests.rs b/crates/code/acp/src/unattended/result_tests.rs
+--- a/crates/code/acp/src/unattended/result_tests.rs
++++ b/crates/code/acp/src/unattended/result_tests.rs
+@@ -1,4 +1,30 @@
+ use super::*;
++
++#[test]
++fn an_unfinished_goal_refusal_is_a_failed_result_with_an_explicit_terminal_error() {
++    let mut progress = RunProgress::new();
++    progress.phase = ExecutionPhase::Streaming;
++    progress.terminal_event = true;
++    progress.remember_error("earlier recoverable tool failure");
++    let error: anyhow::Error = crate::goal::GoalContinuationStopped(
++        a3s_code_core::goal_control::GoalTickDecisionV1::NeedsInput,
++    )
++    .into();
++    progress.remember_failure(&error);
++    let (outcome, reason) = classify_failure(&progress, &error);
++    let report = serde_json::to_value(progress.report(outcome, reason)).unwrap();
++    assert_eq!(report["outcome"], "failed");
++    assert_eq!(report["reason"], "execution_failed");
++    assert_eq!(report["exitCode"], 1);
++    assert!(report["lastError"]
++        .as_str()
++        .unwrap()
++        .contains("goal.continuation_stopped"));
++    assert!(report["lastError"]
++        .as_str()
++        .unwrap()
++        .contains("next=needs_input"));
++}
+ 
+ #[test]
+ fn report_serializes_terminal_reason_and_counters() {
+diff --git a/crates/code/acp/src/unattended/tests.rs b/crates/code/acp/src/unattended/tests.rs
+--- a/crates/code/acp/src/unattended/tests.rs
++++ b/crates/code/acp/src/unattended/tests.rs
+@@ -210,12 +210,12 @@
+ }
+ 
+ #[test]
+-fn a_goal_launch_continues_until_the_run_deadline() {
++fn a_goal_launch_has_a_small_stall_bound_within_the_run_deadline() {
+     let goal = Unattended::new(1_000, None).expect("profile");
+     let policy = goal.goal_control(5_000).expect("policy").expect("goal");
+     assert!(policy.automatic_enabled);
+     assert_eq!(policy.max_slices.get(), 1_000);
+-    assert_eq!(policy.max_no_progress_slices.get(), 1_000);
++    assert_eq!(policy.max_no_progress_slices.get(), 3);
+     assert_eq!(policy.deadline_unix_ms.get(), 6_000);
+     policy.check_admission(5_000).expect("admissible");
+     let options = goal
+diff --git a/crates/code/acp/tests/unattended_e2e.rs b/crates/code/acp/tests/unattended_e2e.rs
+--- a/crates/code/acp/tests/unattended_e2e.rs
++++ b/crates/code/acp/tests/unattended_e2e.rs
+@@ -234,7 +234,7 @@
+         .flatten()
+         .filter_map(|tool| tool["function"]["name"].as_str())
+         .collect();
+-    let judgment = serde_json::json!({"achieved": script.written && script.verified,
++    let judgment = serde_json::json!({"achieved": script.written && script.verified && !raw.contains("STALLED-GOAL"),
+         "progress": if script.verified { 1.0 } else { 0.0 }, "remaining_criteria": []});
+     if tool_names.contains(&"emit_goal_achievement") {
+         script.tool_seq += 1;
+@@ -463,6 +463,83 @@
+     names
+ }
+ 
++fn private_fixture_facts(root: &Path) -> Vec<serde_json::Value> {
++    let mut pending = vec![root.to_path_buf()];
++    let mut facts = Vec::new();
++    while let Some(path) = pending.pop() {
++        for entry in std::fs::read_dir(path).unwrap().flatten() {
++            let kind = entry.file_type().unwrap();
++            if kind.is_dir() {
++                pending.push(entry.path());
++            } else if kind.is_file() && entry.path().extension().is_some_and(|ext| ext == "jsonl") {
++                let bytes = std::fs::read(entry.path()).unwrap();
++                assert!(bytes.len() < 4 * 1024 * 1024, "bounded synthetic fact log");
++                facts.extend(
++                    String::from_utf8(bytes)
++                        .unwrap()
++                        .lines()
++                        .map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap()),
++                );
++            }
++        }
++    }
++    facts
++}
++
++#[tokio::test(flavor = "current_thread")]
++async fn default_goal_stagnation_writes_a_terminal_result_before_the_deadline() {
++    tokio::task::LocalSet::new().run_until(async {
++        let workspace = isolate("stalled-goal-ws");
++        let outside = isolate("stalled-goal-state");
++        let home = isolate("stalled-goal-home");
++        let tmp = isolate("stalled-goal-tmp");
++        let (addr, script) = spawn_mock();
++        let config = write_acl(&outside, &format!("http://{addr}/v1"));
++        let result_file = outside.join("result.json");
++        let result_arg = result_file.display().to_string();
++        let agent = spawn_agent(&workspace, &config, &home, &tmp, &[
++            "--unattended", "--max-execution-ms", "60000", "--result-file", &result_arg,
++        ]).await;
++        let session = open(&agent, &workspace).await;
++        let response = tokio::time::timeout(Duration::from_secs(10), say(
++            &agent, &session, "UNATTENDED-TASK STALLED-GOAL write answer.txt and finish",
++        )).await;
++        // Check the same preconditions before interpreting a timeout: this
++        // fixture really wrote, verified, then repeated read-only slices.
++        let facts = private_fixture_facts(&tmp);
++        let verified = facts.iter().find(|fact| fact["type"] == "turn.complete" && fact["payload"]["terminal"] == "verified").expect("a gate-verified real mutation")["seq"].as_u64().unwrap();
++        assert!(facts.iter().any(|fact| fact["type"] == "tool.result"
++            && fact["payload"]["receipt"]["effects"]["completeness"] == "complete"
++            && fact["payload"]["receipt"]["effects"]["changes"].as_array().is_some_and(|changes| changes.iter().any(|change| change["path"] == "answer.txt" && change["before"]["kind"] == "missing" && change["after"]["kind"] == "file"))));
++        assert!(facts.iter().any(|fact| fact["seq"].as_u64() > Some(verified) && fact["type"] == "tool.result"
++            && fact["payload"]["receipt"]["outcome"] == "succeeded"
++            && fact["payload"]["receipt"]["effects"]["changes"].as_array().is_some_and(Vec::is_empty)));
++        assert!(!facts.iter().any(|fact| matches!(fact["type"].as_str(), Some("a3s.goal.step.accepted" | "a3s.goal.completed"))));
++        assert_eq!(std::fs::read_to_string(workspace.join("answer.txt")).unwrap(), "42\n");
++        let script = script.lock().unwrap();
++        eprintln!("STALLED_GOAL_OBSERVATION {}", serde_json::json!({
++            "workspace": workspace, "privateState": tmp,
++            "written": script.written, "verificationAttempts": script.verification_attempts,
++            "modelCalls": script.bodies.len(), "verifiedSequence": verified,
++            "slices": facts.iter().filter(|fact| fact["type"] == "a3s.goal.slice.admitted").count(),
++            "resultExists": result_file.is_file(), "timedOut": response.is_err(),
++        }));
++        assert!(script.verification_attempts > 0);
++        assert!(script.bodies.len() < 50, "{} local calls indicate continued idle admission", script.bodies.len());
++        drop(script);
++        let response = response.expect("default goal must stop admitting idle slices before the run deadline");
++        // A rejected goal judgment is not converted into a successful goal.
++        assert!(response.is_err());
++        let record: serde_json::Value = serde_json::from_slice(&std::fs::read(&result_file).expect("terminal result")).unwrap();
++        assert_eq!(record["outcome"], "failed", "{record}");
++        assert_eq!(record["reason"], "execution_failed", "{record}");
++        assert!(record["lastError"].as_str().unwrap().contains("goal.continuation_stopped"), "{record}");
++        assert!(record["lastError"].as_str().unwrap().contains("needs_input"), "{record}");
++        assert!(record["durationMs"].as_u64() < Some(10_000), "{record}");
++        eprintln!("STALLED_GOAL_RESULT {record}");
++    }).await;
++}
++
+ #[tokio::test(flavor = "current_thread")]
+ async fn unattended_prompt_binds_proves_and_records_without_touching_the_workspace() {
+     tokio::task::LocalSet::new()
+diff --git a/crates/code/core/src/agent_api/goal_facade.rs b/crates/code/core/src/agent_api/goal_facade.rs
+--- a/crates/code/core/src/agent_api/goal_facade.rs
++++ b/crates/code/core/src/agent_api/goal_facade.rs
+@@ -532,10 +532,12 @@
+         let Some(policy) = self.config.goal_control.clone() else {
+             return Ok(None);
+         };
+-        Ok(Some(crate::goal_control::ContinuationSource {
+-            policy,
+-            observed_unix_ms: host_clock_unix_ms()?,
+-        }))
++        Ok(Some(
++            crate::goal_control::ContinuationSource::observed_mutations(
++                policy,
++                host_clock_unix_ms()?,
++            ),
++        ))
+     }
+ 
+     async fn preview_goal_tick_with(
+diff --git a/crates/code/core/src/agent_api/goal_facade/tests/execution/attestation.rs b/crates/code/core/src/agent_api/goal_facade/tests/execution/attestation.rs
+--- a/crates/code/core/src/agent_api/goal_facade/tests/execution/attestation.rs
++++ b/crates/code/core/src/agent_api/goal_facade/tests/execution/attestation.rs
+@@ -114,6 +114,242 @@
+             .await
+             .unwrap(),
+         GoalTickDecisionV1::Advance
++    );
++    session.close().await;
++    agent.close().await;
++}
++
++#[tokio::test]
++async fn legacy_accepted_noop_history_reopens_but_new_opportunities_use_actual_progress() {
++    use crate::agent_api::AgentRunSpawn;
++    use crate::goal_control::GoalTickDecisionV1;
++
++    for file in [false, true] {
++        let root = tempfile::tempdir().unwrap();
++        let storage = tempfile::tempdir().unwrap();
++        std::fs::write(
++            root.path().join("source.txt"),
++            "independent expected source",
++        )
++        .unwrap();
++        let store: Arc<dyn SessionStore> = if file {
++            Arc::new(FileSessionStore::new(storage.path()).await.unwrap())
++        } else {
++            Arc::new(MemorySessionStore::new())
++        };
++        let limits = automatic::policy(true, 8, 1, automatic::now_ms() + 600_000);
++        let opts = options("goal-run")
++            .with_session_store(store.clone())
++            .with_assistant_final_response(true)
++            .with_completion_attestor(Arc::new(ByteAttestor {
++                root: root.path().into(),
++                calls: AtomicUsize::new(0),
++            }))
++            .with_permission_policy(crate::permissions::PermissionPolicy::new().allow("write(*)"));
++        let (agent, session, client) =
++            fixture_with(root.path(), true, opts, Some(limits.clone())).await;
++        // Absence is the exact private source shape emitted before actual
++        // mutation semantics. This does not alter the public ACL policy.
++        let legacy = serde_json::from_value(serde_json::json!({
++            "policy": limits, "observed_unix_ms": automatic::now_ms(),
++        }))
++        .unwrap();
++        script(&client, true);
++        let tick = automatic::request(&session, "legacy-noop");
++        let AgentRunSpawn::Started { worker, .. } =
++            crate::agent_api::conversation_runtime::spawn_goal_tick(
++                &session, tick, legacy, "inspect",
++            )
++            .await
++            .unwrap()
++        else {
++            panic!("first legacy slice must start");
++        };
++        tokio::time::timeout(std::time::Duration::from_secs(10), worker)
++            .await
++            .unwrap()
++            .unwrap();
++        let facts = crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap();
++        assert!(facts
++            .iter()
++            .any(|fact| fact.kind == "a3s.goal.step.accepted"));
++        assert!(facts.iter().any(|fact| fact.kind == "tool.result"
++            && fact.payload["receipt"]["effects"]["changes"]
++                .as_array()
++                .is_some_and(|changes| changes
++                    .iter()
++                    .any(|change| change["before"] == change["after"]))));
++        assert_eq!(
++            session
++                .preview_goal_tick(&automatic::request(&session, "new-strict"))
++                .await
++                .unwrap(),
++            GoalTickDecisionV1::NeedsInput
++        );
++        let view = session.goal_definition().unwrap().unwrap();
++        let legacy = serde_json::from_value(serde_json::json!({
++            "policy": limits, "observed_unix_ms": automatic::now_ms(),
++        }))
++        .unwrap();
++        // Protocol-history fixture for a previously legal next admission,
++        // not a claim that the historical second Run executed.
++        {
++            let lease = session.run_admission.try_acquire("goal-run").unwrap();
++            let log = lease
++                .nonexecuting_fact_log(&session.run_admission, "goal-run")
++                .unwrap();
++            let _writer = log.try_writer_fence().unwrap();
++            let pending = crate::goal_control::prepare_run(
++                &facts,
++                "goal-run",
++                &view.binding.workspace,
++                view.binding.work_policy_digest.as_deref(),
++                Some("historical-next"),
++                Some(&legacy),
++            )
++            .expect("the legacy source must retain its original admission semantics")
++            .unwrap()
++            .pending
++            .unwrap();
++            assert!(pending.payload["body"]["continuation"]
++                .get("progress_basis")
++                .is_none());
++            log.append("goal-run", &[pending], None).unwrap();
++        }
++        let recorded = crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap();
++        session.save().await.unwrap();
++        session.close().await;
++        agent.close().await;
++        let agent = Agent::from_config(test_config()).await.unwrap();
++        let store: Arc<dyn SessionStore> = if file {
++            Arc::new(FileSessionStore::new(storage.path()).await.unwrap())
++        } else {
++            store
++        };
++        let restored = agent
++            .resume_session_async("goal-run", options("goal-run").with_session_store(store))
++            .await
++            .unwrap();
++        assert_eq!(
++            restored.goal_definition().unwrap().unwrap().state,
++            GoalState::Active
++        );
++        assert_eq!(
++            crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap(),
++            recorded
++        );
++        restored.close().await;
++        agent.close().await;
++    }
++}
++
++#[tokio::test]
++async fn settled_workspace_mutation_is_progress_even_when_goal_judgment_is_not_achieved() {
++    use crate::agent_api::{AgentRunSpawn, GoalTickAdmission};
++    use crate::goal_control::GoalTickDecisionV1;
++
++    let root = tempfile::tempdir().unwrap();
++    std::fs::write(root.path().join("source.txt"), "old source").unwrap();
++    let opts = options("goal-run")
++        .with_assistant_final_response(true)
++        .with_completion_attestor(Arc::new(ByteAttestor {
++            root: root.path().into(),
++            calls: AtomicUsize::new(0),
++        }))
++        .with_permission_policy(crate::permissions::PermissionPolicy::new().allow("write(*)"));
++    let (agent, session, client) = fixture_with(
++        root.path(),
++        true,
++        opts,
++        Some(automatic::policy(true, 8, 1, automatic::now_ms() + 600_000)),
++    )
++    .await;
++    script(&client, true);
++    client.scripted.lock().unwrap().back_mut().unwrap().message = Message::assistant(
++        r#"{"achieved":false,"progress":0.5,"remaining_criteria":["more work"]}"#,
++    );
++    let tick = automatic::request(&session, "unfinished-write");
++    let GoalTickAdmission::Admitted(AgentRunSpawn::Started { worker, .. }) =
++        session.tick_goal(&tick).await.unwrap()
++    else {
++        panic!("first slice must start");
++    };
++    tokio::time::timeout(std::time::Duration::from_secs(10), worker)
++        .await
++        .unwrap()
++        .unwrap();
++    let facts = crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap();
++    let run_sequence = facts
++        .iter()
++        .find(|fact| fact.kind == "a3s.goal.slice.admitted")
++        .unwrap()
++        .seq;
++    assert!(crate::fact_control::goal_slice_made_progress(
++        &facts,
++        run_sequence,
++        "goal-run",
++        "unfinished-write"
++    ));
++    assert!(!crate::fact_control::goal_slice_made_progress(
++        &facts,
++        run_sequence,
++        "other-session",
++        "unfinished-write"
++    ));
++    assert!(!crate::fact_control::goal_slice_made_progress(
++        &facts,
++        run_sequence,
++        "goal-run",
++        "other-run"
++    ));
++    assert!(!facts
++        .iter()
++        .any(|fact| fact.kind == "a3s.goal.step.accepted"));
++    assert!(facts.iter().any(
++        |fact| fact.kind == crate::fact_control::TURN_COMPLETE_FACT_KIND
++            && fact.payload["terminal"] == "verified"
++    ));
++    assert_eq!(
++        session
++            .preview_goal_tick(&automatic::request(&session, "more-work"))
++            .await
++            .unwrap(),
++        GoalTickDecisionV1::Advance
++    );
++    // Rewriting the same bytes is not another delivery, even if the write succeeds.
++    script(&client, true);
++    client.scripted.lock().unwrap().back_mut().unwrap().message = Message::assistant(
++        r#"{"achieved":false,"progress":0.5,"remaining_criteria":["more work"]}"#,
++    );
++    let tick = automatic::request(&session, "same-bytes");
++    let GoalTickAdmission::Admitted(AgentRunSpawn::Started { worker, .. }) =
++        session.tick_goal(&tick).await.unwrap()
++    else {
++        panic!("changed prior slice must leave room for the next attempt");
++    };
++    tokio::time::timeout(std::time::Duration::from_secs(10), worker)
++        .await
++        .unwrap()
++        .unwrap();
++    let facts = crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap();
++    let run_sequence = facts
++        .iter()
++        .rev()
++        .find(|fact| fact.kind == "a3s.goal.slice.admitted")
++        .unwrap()
++        .seq;
++    assert!(!crate::fact_control::goal_slice_made_progress(
++        &facts,
++        run_sequence,
++        "goal-run",
++        "same-bytes"
++    ));
++    assert_eq!(
++        session
++            .preview_goal_tick(&automatic::request(&session, "idle-again"))
++            .await
++            .unwrap(),
++        GoalTickDecisionV1::NeedsInput
+     );
+     session.close().await;
+     agent.close().await;
+diff --git a/crates/code/core/src/agent_api/goal_facade/tests/execution/automatic.rs b/crates/code/core/src/agent_api/goal_facade/tests/execution/automatic.rs
+--- a/crates/code/core/src/agent_api/goal_facade/tests/execution/automatic.rs
++++ b/crates/code/core/src/agent_api/goal_facade/tests/execution/automatic.rs
+@@ -359,10 +359,7 @@
+         let (agent, session, client) =
+             fixture_with(root.path(), true, options("goal-run"), Some(limits.clone())).await;
+         let mut tick = request(&session, "wake-1");
+-        let mut source = ContinuationSource {
+-            policy: limits,
+-            observed_unix_ms: now_ms(),
+-        };
++        let mut source = ContinuationSource::observed_mutations(limits, now_ms());
+         match case {
+             0 => tick.expected_goal_sequence += 1,
+             1 => source.policy = policy(false, 8, 8, now_ms() + 600_000),
+diff --git a/crates/code/core/src/durable_memory_vec.rs b/crates/code/core/src/durable_memory_vec.rs
+--- a/crates/code/core/src/durable_memory_vec.rs
++++ b/crates/code/core/src/durable_memory_vec.rs
+@@ -16,7 +16,7 @@
+ use anyhow::{anyhow, Result};
+ use chrono::{DateTime, Utc};
+ use std::path::{Path, PathBuf};
+-use std::sync::OnceLock;
++use std::sync::{Arc, OnceLock, Weak};
+ 
+ static ENGINE_INIT: OnceLock<Result<(), String>> = OnceLock::new();
+ 
+@@ -303,8 +303,15 @@
+ /// Opens the durable a3s-vec collection on the first memory operation.
+ pub struct LazyFileMemoryStore {
+     directory: PathBuf,
+-    store: tokio::sync::OnceCell<VecMemoryStore>,
+-}
++    store: tokio::sync::OnceCell<Arc<VecMemoryStore>>,
++}
++
++// Lazy session adapters share one engine handle in this process. Weak entries
++// do not keep a collection open after the last session releases it. Direct
++// VecMemoryStore::open callers retain their exclusive-open contract.
++static SHARED_STORES: std::sync::LazyLock<
++    std::sync::Mutex<std::collections::HashMap<PathBuf, Weak<VecMemoryStore>>>,
++> = std::sync::LazyLock::new(|| std::sync::Mutex::new(std::collections::HashMap::new()));
+ 
+ impl LazyFileMemoryStore {
+     pub fn new(directory: impl Into<PathBuf>) -> Self {
+@@ -317,37 +324,9 @@
+     async fn inner(&self) -> Result<&VecMemoryStore> {
+         let directory = self.directory.clone();
+         self.store
+-            .get_or_try_init(|| async move {
+-                let store = VecMemoryStore::open(&directory)?;
+-                let legacy_items = directory.join("items");
+-                let legacy_index = directory.join("index.json");
+-                if legacy_items.is_dir() {
+-                    match store.import_legacy_json_items(&legacy_items) {
+-                        Ok(imported) if imported > 0 => {
+-                            tracing::info!(
+-                                imported,
+-                                dir = %directory.display(),
+-                                "imported legacy JSON memories into a3s-vec"
+-                            );
+-                        }
+-                        Ok(_) => {}
+-                        Err(error) => {
+-                            tracing::warn!(
+-                                error = %error,
+-                                "legacy memory import failed; legacy files kept"
+-                            );
+-                            return Ok::<VecMemoryStore, anyhow::Error>(store);
+-                        }
+-                    }
+-                    let _ = std::fs::rename(&legacy_items, directory.join("items.imported"));
+-                    if legacy_index.is_file() {
+-                        let _ =
+-                            std::fs::rename(&legacy_index, directory.join("index.json.imported"));
+-                    }
+-                }
+-                Ok::<VecMemoryStore, anyhow::Error>(store)
+-            })
++            .get_or_try_init(|| async move { Self::shared(&directory) })
+             .await
++            .map(Arc::as_ref)
+             .map_err(|error| {
+                 anyhow!(
+                     "failed to initialize a3s-vec Memory store at {}: {error:#}",
+@@ -356,9 +335,74 @@
+             })
+     }
+ 
++    fn shared(directory: &Path) -> Result<Arc<VecMemoryStore>> {
++        fs_err_create_dir_all(directory)?;
++        let canonical = directory.canonicalize().map_err(|error| {
++            anyhow!("canonicalize memory root {}: {error}", directory.display())
++        })?;
++        let mut stores = SHARED_STORES
++            .lock()
++            .map_err(|_| anyhow!("shared memory registry is poisoned"))?;
++        stores.retain(|_, store| store.strong_count() > 0);
++        if let Some(store) = stores.get(&canonical).and_then(Weak::upgrade) {
++            return Ok(store);
++        }
++        // Open and import are synchronous. Publish only after both finish so
++        // simultaneous first use cannot open or import the same collection twice.
++        // No synchronous registry guard is held across an await.
++        let store = Arc::new(Self::open_and_import(&canonical)?);
++        stores.insert(canonical, Arc::downgrade(&store));
++        Ok(store)
++    }
++
++    fn open_and_import(directory: &Path) -> Result<VecMemoryStore> {
++        let store = VecMemoryStore::open(directory)?;
++        let legacy_items = directory.join("items");
++        let legacy_index = directory.join("index.json");
++        if legacy_items.is_dir() {
++            match store.import_legacy_json_items(&legacy_items) {
++                Ok(imported) if imported > 0 => {
++                    tracing::info!(
++                        imported,
++                        dir = %directory.display(),
++                        "imported legacy JSON memories into a3s-vec"
++                    );
++                }
++                Ok(_) => {}
++                Err(error) => {
++                    tracing::warn!(
++                        error = %error,
++                        "legacy memory import failed; legacy files kept"
++                    );
++                    return Ok(store);
++                }
++            }
++            let _ = std::fs::rename(&legacy_items, directory.join("items.imported"));
++            if legacy_index.is_file() {
++                let _ = std::fs::rename(&legacy_index, directory.join("index.json.imported"));
++            }
++        }
++        Ok(store)
++    }
++
+     #[cfg(test)]
+     fn is_initialized(&self) -> bool {
+         self.store.get().is_some()
++    }
++}
++
++impl Drop for LazyFileMemoryStore {
++    fn drop(&mut self) {
++        let Some(store) = self.store.take() else {
++            return;
++        };
++        // All owned shared handles stay in lazy cells. Serialize the last
++        // release with upgrade/open, including the engine and lease destructor;
++        // a dead Weak must never race an otherwise still-open collection.
++        let _registry = SHARED_STORES
++            .lock()
++            .unwrap_or_else(std::sync::PoisonError::into_inner);
++        drop(store);
+     }
+ }
+ 
+@@ -427,390 +471,7 @@
+ }
+ 
+ #[cfg(test)]
+-mod tests {
+-    use super::*;
+-
+-    #[tokio::test]
+-    async fn lazy_store_opens_on_first_search_and_imports_legacy_json_once() {
+-        let root = tempfile::tempdir().unwrap();
+-        let memory_dir = root.path().join("memory");
+-        std::fs::create_dir_all(memory_dir.join("items")).unwrap();
+-        let item = MemoryItem::new("legacy memory about e2e fixtures");
+-        std::fs::write(
+-            memory_dir.join(format!("items/{}.json", item.id)),
+-            serde_json::to_vec(&item).unwrap(),
+-        )
+-        .unwrap();
+-
+-        let store = LazyFileMemoryStore::new(&memory_dir);
+-        assert!(!store.is_initialized());
+-        assert!(!memory_dir.join("durable_memory").exists());
+-
+-        let matches = MemoryStore::search(&store, "legacy e2e fixtures", 5)
+-            .await
+-            .unwrap();
+-        assert_eq!(matches.len(), 1);
+-        assert!(matches[0].content.contains("legacy memory"));
+-        assert!(store.is_initialized());
+-        assert!(memory_dir.join("durable_memory").exists());
+-        assert!(memory_dir.join("items.imported").is_dir());
+-        assert!(!memory_dir.join("items").exists());
+-
+-        drop(store);
+-        let store = LazyFileMemoryStore::new(&memory_dir);
+-        assert!(!store.is_initialized());
+-        assert_eq!(MemoryStore::count(&store).await.unwrap(), 1);
+-        assert!(!memory_dir.join("items").exists());
+-    }
+-
+-    #[tokio::test]
+-    async fn a_skipped_legacy_file_keeps_the_items_directory() {
+-        let root = tempfile::tempdir().unwrap();
+-        let memory_dir = root.path().join("memory");
+-        let items = memory_dir.join("items");
+-        std::fs::create_dir_all(&items).unwrap();
+-        let item = MemoryItem::new("legacy memory about e2e fixtures");
+-        std::fs::write(
+-            items.join(format!("{}.json", item.id)),
+-            serde_json::to_vec(&item).unwrap(),
+-        )
+-        .unwrap();
+-        std::fs::write(items.join("broken.json"), b"not-json").unwrap();
+-
+-        let store = LazyFileMemoryStore::new(&memory_dir);
+-        let matches = MemoryStore::search(&store, "legacy e2e fixtures", 5)
+-            .await
+-            .unwrap();
+-        assert_eq!(matches.len(), 1);
+-        assert!(items.join("broken.json").is_file());
+-        assert!(!memory_dir.join("items.imported").exists());
+-
+-        drop(store);
+-        let store = LazyFileMemoryStore::new(&memory_dir);
+-        assert_eq!(MemoryStore::count(&store).await.unwrap(), 1);
+-        assert!(items.join("broken.json").is_file());
+-        assert!(!memory_dir.join("items.imported").exists());
+-    }
+-
+-    #[test]
+-    fn an_existing_embedding_column_keeps_its_dimension() {
+-        let root = tempfile::tempdir().unwrap();
+-        let memory_dir = root.path().join("memory");
+-        let collection_path = create_embedding_collection(&memory_dir, 4);
+-        let store = VecMemoryStore::open(&memory_dir).unwrap();
+-        store
+-            .put(&record("m1", "legacy memory about e2e fixtures", 0.5))
+-            .unwrap();
+-        let hits = store.recall("legacy e2e fixtures", 5).unwrap();
+-        assert_eq!(hits.len(), 1);
+-        drop(store);
+-
+-        let collection = a3s_vec::Collection::open(&collection_path, None).unwrap();
+-        let schema = collection.schema().unwrap();
+-        assert_eq!(schema.vectors().len(), 1);
+-        assert_eq!(schema.vectors()[0].name(), "embedding");
+-        assert_eq!(schema.vectors()[0].dimension(), 4);
+-    }
+-
+-    #[test]
+-    fn a_new_collection_has_no_embedding_column() {
+-        let root = tempfile::tempdir().unwrap();
+-        let memory_dir = root.path().join("memory");
+-        drop(VecMemoryStore::open(&memory_dir).unwrap());
+-        let collection_path = memory_dir.join(COLLECTION_NAME);
+-        let collection =
+-            a3s_vec::Collection::open(collection_path.to_str().unwrap(), None).unwrap();
+-        assert!(collection.schema().unwrap().vectors().is_empty());
+-    }
+-
+-    #[test]
+-    fn a_foreign_schema_refuses_the_embedding_column() {
+-        let root = tempfile::tempdir().unwrap();
+-        let memory_dir = root.path().join("memory");
+-        let _path = create_named_vector_collection(&memory_dir, "other");
+-        let error = match VecMemoryStore::open(&memory_dir) {
+-            Ok(_) => panic!("foreign schema opened"),
+-            Err(error) => error,
+-        };
+-        assert!(error.to_string().contains("embedding column"), "{error}");
+-        assert!(memory_dir.join(COLLECTION_NAME).exists());
+-    }
+-
+-    #[test]
+-    fn a_second_open_is_refused_while_the_collection_is_already_open() {
+-        let root = tempfile::tempdir().unwrap();
+-        let memory_dir = root.path().join("memory");
+-        let first = VecMemoryStore::open(&memory_dir).unwrap();
+-        let error = match VecMemoryStore::open(&memory_dir) {
+-            Ok(_) => panic!("second open succeeded"),
+-            Err(error) => error,
+-        };
+-        assert!(error.to_string().contains("already open"), "{error}");
+-        drop(first);
+-        drop(VecMemoryStore::open(&memory_dir).unwrap());
+-    }
+-
+-    #[tokio::test]
+-    async fn lazy_store_writes_and_recalls_an_existing_embedding_column() {
+-        let root = tempfile::tempdir().unwrap();
+-        let memory_dir = root.path().join("memory");
+-        let collection_path = create_embedding_collection(&memory_dir, 4);
+-        let store = LazyFileMemoryStore::new(&memory_dir);
+-        MemoryStore::store(&store, MemoryItem::new("legacy memory about e2e fixtures"))
+-            .await
+-            .unwrap();
+-        let matches = MemoryStore::search(&store, "legacy e2e fixtures", 5)
+-            .await
+-            .unwrap();
+-        assert!(
+-            matches
+-                .iter()
+-                .any(|item| item.content.contains("legacy memory")),
+-            "{matches:?}"
+-        );
+-        drop(store);
+-
+-        let collection = a3s_vec::Collection::open(&collection_path, None).unwrap();
+-        let schema = collection.schema().unwrap();
+-        assert_eq!(schema.vectors().len(), 1);
+-        assert_eq!(schema.vectors()[0].name(), "embedding");
+-        assert_eq!(schema.vectors()[0].dimension(), 4);
+-    }
+-
+-    #[tokio::test]
+-    async fn lazy_store_opens_without_an_embedding_column() {
+-        let root = tempfile::tempdir().unwrap();
+-        let memory_dir = root.path().join("memory");
+-        let store = LazyFileMemoryStore::new(&memory_dir);
+-        assert_eq!(MemoryStore::count(&store).await.unwrap(), 0);
+-        drop(store);
+-        let collection_path = memory_dir.join(COLLECTION_NAME);
+-        let collection =
+-            a3s_vec::Collection::open(collection_path.to_str().unwrap(), None).unwrap();
+-        assert!(collection.schema().unwrap().vectors().is_empty());
+-    }
+-
+-    #[tokio::test]
+-    async fn a_foreign_schema_refuses_the_embedding_column_on_the_lazy_store() {
+-        let root = tempfile::tempdir().unwrap();
+-        let memory_dir = root.path().join("memory");
+-        create_named_vector_collection(&memory_dir, "other");
+-        let store = LazyFileMemoryStore::new(&memory_dir);
+-        let error = match MemoryStore::count(&store).await {
+-            Ok(count) => panic!("foreign schema opened and counted {count}"),
+-            Err(error) => error,
+-        };
+-        assert!(error.to_string().contains("embedding column"), "{error}");
+-        assert!(memory_dir.join(COLLECTION_NAME).exists());
+-    }
+-
+-    #[tokio::test]
+-    async fn a_second_lazy_store_is_refused_while_already_open() {
+-        let root = tempfile::tempdir().unwrap();
+-        let memory_dir = root.path().join("memory");
+-        let first = LazyFileMemoryStore::new(&memory_dir);
+-        assert_eq!(MemoryStore::count(&first).await.unwrap(), 0);
+-        let second = LazyFileMemoryStore::new(&memory_dir);
+-        let error = match MemoryStore::count(&second).await {
+-            Ok(count) => panic!("second store opened and counted {count}"),
+-            Err(error) => error,
+-        };
+-        assert!(error.to_string().contains("already open"), "{error}");
+-        drop(first);
+-        let third = LazyFileMemoryStore::new(&memory_dir);
+-        assert_eq!(MemoryStore::count(&third).await.unwrap(), 0);
+-    }
+-
+-    fn create_embedding_collection(memory_dir: &std::path::Path, dimension: u32) -> String {
+-        create_named_vector_collection_with(memory_dir, "embedding", dimension)
+-    }
+-
+-    fn create_named_vector_collection(memory_dir: &std::path::Path, name: &str) -> String {
+-        create_named_vector_collection_with(memory_dir, name, 4)
+-    }
+-
+-    fn create_named_vector_collection_with(
+-        memory_dir: &std::path::Path,
+-        vector_name: &str,
+-        dimension: u32,
+-    ) -> String {
+-        std::fs::create_dir_all(memory_dir).unwrap();
+-        a3s_vec::initialize(None).unwrap();
+-        let collection_path = memory_dir.join(COLLECTION_NAME);
+-        let path = collection_path.to_str().unwrap().to_owned();
+-        let mut content = FieldSchema::new("content", DataType::String, false, 0).unwrap();
+-        content
+-            .set_index_params(&IndexParams::fts(Some("whitespace"), None, None).unwrap())
+-            .unwrap();
+-        let schema = CollectionSchema::builder(COLLECTION_NAME)
+-            .add_field(content)
+-            .add_field(FieldSchema::new("tags", DataType::String, true, 0).unwrap())
+-            .add_field(FieldSchema::new("importance", DataType::Float, true, 0).unwrap())
+-            .add_field(FieldSchema::new("memory_type", DataType::String, true, 0).unwrap())
+-            .add_field(FieldSchema::new("timestamp", DataType::String, true, 0).unwrap())
+-            .add_field(FieldSchema::new("meta", DataType::String, true, 0).unwrap())
+-            .add_vector_field(
+-                vector_name,
+-                DataType::VectorFp32,
+-                dimension,
+-                IndexParams::flat(a3s_vec::MetricType::Cosine).unwrap(),
+-            )
+-            .build()
+-            .unwrap();
+-        drop(a3s_vec::Collection::create_and_open(&path, &schema, None).unwrap());
+-        path
+-    }
+-
+-    fn record(id: &str, content: &str, importance: f32) -> MemoryRecord {
+-        MemoryRecord {
+-            id: id.to_owned(),
+-            content: content.to_owned(),
+-            tags: vec!["testing".to_owned()],
+-            importance,
+-            memory_type: "semantic".to_owned(),
+-            timestamp: "2026-01-01T00:00:00+00:00".to_owned(),
+-            meta: "{}".to_owned(),
+-        }
+-    }
+-
+-    #[test]
+-    fn insert_and_fts_recall_roundtrip() {
+-        let root = tempfile::tempdir().unwrap();
+-        let store = VecMemoryStore::open(root.path()).unwrap();
+-        store
+-            .put(&record(
+-                "m1",
+-                "the workspace uses rust-analyzer for navigation",
+-                0.8,
+-            ))
+-            .unwrap();
+-        store
+-            .put(&record(
+-                "m2",
+-                "e2e fixtures live under tests/e2e/fixtures",
+-                0.6,
+-            ))
+-            .unwrap();
+-
+-        let hits = store.recall("rust-analyzer navigation", 5).unwrap();
+-        assert!(!hits.is_empty(), "expected at least one hit");
+-        assert_eq!(hits[0].0, "m1");
+-    }
+-
+-    #[test]
+-    fn reopen_sees_persisted_records() {
+-        let root = tempfile::tempdir().unwrap();
+-        {
+-            let store = VecMemoryStore::open(root.path()).unwrap();
+-            store
+-                .put(&record("m3", "memory survives process restart", 0.5))
+-                .unwrap();
+-        }
+-        let reopened = VecMemoryStore::open(root.path()).unwrap();
+-        let hits = reopened.recall("process restart", 5).unwrap();
+-        assert!(hits.iter().any(|(id, _)| id == "m3"));
+-    }
+-
+-    #[tokio::test]
+-    async fn memory_store_trait_roundtrip() {
+-        use a3s_memory::MemoryStore as _;
+-        let root = tempfile::tempdir().unwrap();
+-        let store = VecMemoryStore::open(root.path()).unwrap();
+-        let mut item = MemoryItem::new("the workspace prefers rust-analyzer navigation");
+-        item.importance = 0.9;
+-        item.tags = vec!["testing".to_owned()];
+-        item.memory_type = MemoryType::Procedural;
+-        store.store(item.clone()).await.unwrap();
+-
+-        assert_eq!(store.count().await.unwrap(), 1);
+-        let fetched = store
+-            .retrieve(&item.id)
+-            .await
+-            .unwrap()
+-            .expect("stored item");
+-        assert_eq!(fetched.content, item.content);
+-        assert_eq!(fetched.memory_type, item.memory_type);
+-
+-        let searched = store.search("rust-analyzer navigation", 5).await.unwrap();
+-        assert_eq!(searched.len(), 1);
+-        let by_tag = store
+-            .search_by_tags(&["testing".to_owned()], 5)
+-            .await
+-            .unwrap();
+-        assert_eq!(by_tag.len(), 1);
+-        let recent = store.get_recent(5).await.unwrap();
+-        assert_eq!(recent.len(), 1);
+-        let important = store.get_important(0.8, 5).await.unwrap();
+-        assert_eq!(important.len(), 1);
+-        let not_important = store.get_important(0.95, 5).await.unwrap();
+-        assert!(not_important.is_empty());
+-
+-        store.delete(&item.id).await.unwrap();
+-        assert_eq!(store.count().await.unwrap(), 0);
+-        assert!(store.retrieve(&item.id).await.unwrap().is_none());
+-    }
+-
+-    #[tokio::test]
+-    async fn search_over_many_records_returns_ranked_hits_without_scan_order() {
+-        // The id-mapping behind `search` runs on EVERY model prompt; it
+-        // once walked the whole collection. This pin holds the behavioral
+-        // contract of the primary-key fetch: the RIGHT hits, in FTS
+-        // ranking order, with unrelated records absent — across a store
+-        // large enough that a scan-order bug would surface as ordering
+-        // drift.
+-        use a3s_memory::MemoryStore as _;
+-        let root = tempfile::tempdir().unwrap();
+-        let store = VecMemoryStore::open(root.path()).unwrap();
+-        for index in 0..200 {
+-            let mut filler = MemoryItem::new(format!(
+-                "filler record {index} about harbor cranes and tide tables"
+-            ));
+-            filler.importance = 0.5;
+-            store.store(filler).await.unwrap();
+-        }
+-        for (id, content) in [
+-            ("m1", "the workspace prefers rust-analyzer navigation"),
+-            ("m2", "navigation preference: rust-analyzer over rls"),
+-            ("m3", "unrelated note about compiler flags"),
+-        ] {
+-            let mut item = MemoryItem::new(content);
+-            item.importance = 0.9;
+-            store.store(item).await.unwrap();
+-            let _ = id;
+-        }
+-        let hits = store
+-            .search("rust-analyzer navigation preference", 5)
+-            .await
+-            .unwrap();
+-        assert!(
+-            hits.len() >= 2,
+-            "both navigation memories must surface: {:?}",
+-            hits.iter()
+-                .map(|hit| hit.content.as_str())
+-                .collect::<Vec<_>>()
+-        );
+-        assert!(
+-            hits[0].content.contains("preference") || hits[0].content.contains("prefers"),
+-            "FTS ranking order preserved (the preference memories outrank filler): {:?}",
+-            hits.iter()
+-                .map(|hit| hit.content.as_str())
+-                .collect::<Vec<_>>()
+-        );
+-        assert!(
+-            hits.iter()
+-                .all(|hit| !hit.content.starts_with("filler record")),
+-            "filler must not crowd out the matches"
+-        );
+-    }
+-
+-    #[test]
+-    fn empty_query_returns_nothing() {
+-        let root = tempfile::tempdir().unwrap();
+-        let store = VecMemoryStore::open(root.path()).unwrap();
+-        store.put(&record("m4", "something", 0.5)).unwrap();
+-        assert!(store.recall("   ", 5).unwrap().is_empty());
+-    }
+-}
++mod tests;
+ 
+ /// Metadata that rides with a record but does not need to be queryable.
+ #[derive(serde::Serialize, serde::Deserialize, Default)]
+diff --git a/crates/code/core/src/fact_control.rs b/crates/code/core/src/fact_control.rs
+--- a/crates/code/core/src/fact_control.rs
++++ b/crates/code/core/src/fact_control.rs
+@@ -52,7 +52,8 @@
+ use fact_reads::{exit_to_error, message_from_fact};
+ pub use fact_reads::{phase_name, project_needs_confirmation, read_workspace_facts};
+ pub(crate) use goal_evidence::{
+-    assess_goal_step, commit_goal_step, evidence_for_goal_step, settle_goal_slice,
++    assess_goal_step, commit_goal_step, evidence_for_goal_step, goal_slice_made_progress,
++    settle_goal_slice,
+ };
+ #[cfg(test)]
+ use history_seed::recorded_tool_calls;
+diff --git a/crates/code/core/src/fact_control/goal_evidence.rs b/crates/code/core/src/fact_control/goal_evidence.rs
+--- a/crates/code/core/src/fact_control/goal_evidence.rs
++++ b/crates/code/core/src/fact_control/goal_evidence.rs
+@@ -260,5 +260,81 @@
+     if evidence.len() > 32 * 1024 {
+         return None;
+     }
++    // The legacy admission projection retains this original receipt meaning;
++    // current progress is separately derived from settled identity changes.
+     Some((reports, evidence, !ledger.is_empty()))
+ }
++
++/// Progress is an actual identity change in this slice's original receipts,
++/// independent of a goal judgment. A successful tool or an accepted read-only
++/// step cannot refresh the stall budget, nor can an earlier/foreign Run.
++pub(crate) fn goal_slice_made_progress(
++    facts: &[a3s_effect::Fact],
++    run_sequence: u64,
++    session_id: &str,
++    run_id: &str,
++) -> bool {
++    let Some(start) = facts.iter().position(|fact| fact.seq == run_sequence) else {
++        return false;
++    };
++    let end = facts[start + 1..]
++        .iter()
++        .position(|fact| fact.kind == crate::goal_control::GoalFactKindV1::SliceAdmitted.as_str())
++        .map_or(facts.len(), |offset| start + 1 + offset);
++    let window = &facts[start..end];
++    let debt = receipts::fold_cache_evidence(window);
++    if debt.integrity_invalid || !debt.unresolved.is_empty() || debt.results.is_empty() {
++        return false;
++    }
++    let mut capability = None;
++    let mut mutated = false;
++    for (_, result) in &debt.results {
++        let Some(admission) = result.identity.admission.as_ref() else {
++            return false;
++        };
++        if admission.run_id != run_id
++            || admission.thread_id != session_id
++            || capability.is_some_and(|digest| digest != admission.capability_binding_digest)
++        {
++            return false;
++        }
++        capability = Some(admission.capability_binding_digest.as_str());
++        mutated |= observed_workspace_mutation(&result.effects);
++    }
++    for (key, effects) in &debt.background_results {
++        // The receipt fold validates the exact child/terminal binding. The
++        // owner must also be this slice, rather than another session Run.
++        if !window
++            .iter()
++            .any(|fact| &fact.key == key && fact.payload["source_run"].as_str() == Some(run_id))
++        {
++            return false;
++        }
++        mutated |= observed_workspace_mutation(effects);
++    }
++    mutated
++}
++
++fn observed_workspace_mutation(effects: &a3s_effect::ToolEffectObservationV1) -> bool {
++    use a3s_effect::{ToolFileKind, ToolObservationCompleteness};
++    effects.completeness == ToolObservationCompleteness::Complete
++        && effects.changes.iter().any(|change| {
++            if crate::porcelain::is_harness_path(&change.path) {
++                return false;
++            }
++            let Some(before) = &change.before else {
++                return false;
++            };
++            before.kind != change.after.kind
++                || (matches!(before.kind, ToolFileKind::File | ToolFileKind::Symlink)
++                    && before.content_digest != change.after.content_digest)
++                || (before.kind != ToolFileKind::Missing
++                    && before
++                        .mode
++                        .zip(change.after.mode)
++                        .is_some_and(|(before, after)| before != after))
++        })
++}
++
++#[cfg(test)]
++mod tests;
+diff --git a/crates/code/core/src/fact_control/goal_evidence/tests.rs b/crates/code/core/src/fact_control/goal_evidence/tests.rs
+--- /dev/null
++++ b/crates/code/core/src/fact_control/goal_evidence/tests.rs
+@@ -0,0 +1,208 @@
++#![cfg(test)]
++
++use super::*;
++use a3s_effect::{
++    Fact, ToolAdmissionIdentityV1, ToolEffectObservationV1, ToolExecutionOutcome,
++    ToolExecutionResultV1, ToolFileIdentityV1, ToolFileKind, ToolInvocationIdentityV1,
++    ToolPathChangeV1, ToolPreparedV1, ToolRecoveryPolicy, TOOL_PREPARED_SCHEMA, TOOL_RESULT_SCHEMA,
++};
++use serde_json::json;
++
++fn observation() -> ToolEffectObservationV1 {
++    ToolEffectObservationV1::complete(vec![ToolPathChangeV1 {
++        path: "source.txt".into(),
++        before: Some(ToolFileIdentityV1 {
++            kind: ToolFileKind::Missing,
++            content_digest: None,
++            mode: None,
++        }),
++        after: ToolFileIdentityV1 {
++            kind: ToolFileKind::File,
++            content_digest: Some(format!("sha256:{}", sha256::digest("new bytes"))),
++            mode: Some(0o644),
++        },
++    }])
++}
++
++fn fact(seq: u64, kind: &str, key: &str, payload: serde_json::Value) -> Fact {
++    Fact {
++        seq,
++        kind: kind.into(),
++        key: key.into(),
++        cause: None,
++        payload,
++    }
++}
++
++fn receipt_pair(effects: ToolEffectObservationV1) -> Vec<Fact> {
++    let args = a3s_effect::tool_args_digest(&json!({"command":"fixture"})).unwrap();
++    let prepared = ToolPreparedV1 {
++        schema: TOOL_PREPARED_SCHEMA.into(),
++        identity: ToolInvocationIdentityV1 {
++            turn: 1,
++            cycle: 0,
++            tool_call_id: "current-tool".into(),
++            batch_index: 0,
++            admission: Some(ToolAdmissionIdentityV1 {
++                run_id: "current-run".into(),
++                thread_id: "current-session".into(),
++                capability_binding_digest: args.clone(),
++            }),
++        },
++        tool_name: "write".into(),
++        original_args_digest: args.clone(),
++        effective_args_digest: args,
++        recovery: ToolRecoveryPolicy::NeverReplay,
++        baseline: None,
++    };
++    let result = ToolExecutionResultV1 {
++        schema: TOOL_RESULT_SCHEMA.into(),
++        identity: prepared.identity.clone(),
++        prepared_digest: prepared.digest().unwrap(),
++        outcome: ToolExecutionOutcome::Succeeded,
++        exit_code: Some(0),
++        output: json!("done"),
++        effects,
++    };
++    vec![
++        fact(1, "a3s.goal.slice.admitted", "slice", json!({})),
++        fact(2, "tool.prepared", "prepared", json!({"prepared":prepared})),
++        fact(
++            3,
++            "tool.result",
++            "result",
++            json!({"receipt":result,"toolCallId":"current-tool","ok":true,"output":"done"}),
++        ),
++    ]
++}
++
++fn progress(facts: &[Fact]) -> bool {
++    goal_slice_made_progress(facts, 1, "current-session", "current-run")
++}
++
++#[test]
++fn only_complete_known_workspace_identity_changes_are_progress() {
++    assert!(progress(&receipt_pair(observation())));
++    let mut same = observation();
++    same.changes[0].before = Some(same.changes[0].after.clone());
++    assert!(!progress(&receipt_pair(same)));
++    let mut unknown = observation();
++    unknown.changes[0].before = None;
++    assert!(!progress(&receipt_pair(unknown)));
++    assert!(!progress(&receipt_pair(ToolEffectObservationV1::complete(
++        vec![]
++    ))));
++    assert!(!progress(&receipt_pair(
++        ToolEffectObservationV1::incomplete("scan unavailable")
++    )));
++    let mut harness = observation();
++    harness.changes[0].path = ".a3s/session.json".into();
++    assert!(!progress(&receipt_pair(harness)));
++}
++
++#[test]
++fn a_foreign_or_later_slice_cannot_refresh_this_slice() {
++    let facts = receipt_pair(observation());
++    assert!(!goal_slice_made_progress(
++        &facts,
++        1,
++        "other-session",
++        "current-run"
++    ));
++    assert!(!goal_slice_made_progress(
++        &facts,
++        1,
++        "current-session",
++        "other-run"
++    ));
++    let mut current = receipt_pair(ToolEffectObservationV1::complete(vec![]));
++    current.push(fact(4, "a3s.goal.slice.admitted", "later-slice", json!({})));
++    current.extend(facts.into_iter().skip(1).map(|mut fact| {
++        fact.seq += 3;
++        fact
++    }));
++    assert!(!progress(&current));
++}
++
++#[test]
++fn mixed_capability_receipts_and_unsettled_outcomes_do_not_refresh_progress() {
++    let mut facts = receipt_pair(ToolEffectObservationV1::complete(vec![]));
++    let mut extra = receipt_pair(observation());
++    let mut prepared: ToolPreparedV1 =
++        serde_json::from_value(extra[1].payload["prepared"].clone()).unwrap();
++    let mut result: ToolExecutionResultV1 =
++        serde_json::from_value(extra[2].payload["receipt"].clone()).unwrap();
++    prepared.identity.tool_call_id = "second-tool".into();
++    prepared.identity.turn = 2;
++    prepared
++        .identity
++        .admission
++        .as_mut()
++        .unwrap()
++        .capability_binding_digest =
++        a3s_effect::tool_args_digest(&json!({"other_capability":true})).unwrap();
++    result.identity = prepared.identity.clone();
++    result.prepared_digest = prepared.digest().unwrap();
++    extra[1] = fact(
++        4,
++        "tool.prepared",
++        "prepared-2",
++        json!({"prepared":prepared}),
++    );
++    extra[2] = fact(
++        5,
++        "tool.result",
++        "result-2",
++        json!({"receipt":result,"toolCallId":"second-tool","ok":true,"output":"done"}),
++    );
++    facts.extend(extra.into_iter().skip(1));
++    assert!(!progress(&facts));
++    let mut uncertain = receipt_pair(observation());
++    uncertain.pop();
++    assert!(!progress(&uncertain));
++    let mut failed = receipt_pair(observation());
++    failed[2].payload["receipt"]["outcome"] = json!("failed");
++    failed[2].payload["receipt"]["exit_code"] = json!(7);
++    assert!(
++        progress(&failed),
++        "an observed mutation does not depend on success status"
++    );
++}
++
++#[test]
++fn a_settled_background_mutation_must_belong_to_the_current_run() {
++    let mut facts = receipt_pair(ToolEffectObservationV1::complete(vec![]));
++    let mut result: ToolExecutionResultV1 =
++        serde_json::from_value(facts[2].payload["receipt"].clone()).unwrap();
++    result
++        .effects
++        .unresolved_external_operations
++        .push("workspace-child:child-one".into());
++    result.output = json!(serde_json::json!({
++        "kind":"a3s.fact_tool_result", "text":"accepted", "is_error":false,
++        "images":[], "workspace_child":"child-one",
++        "metadata":{"workspace_child":"child-one", "source_run":"current-run", "run":"effect-run"}
++    })
++    .to_string());
++    facts[2].payload["receipt"] = serde_json::to_value(result).unwrap();
++    facts.push(fact(
++        4,
++        "background.output",
++        "bg:child-one:2",
++        json!({
++            "event":"exited", "task_id":"child-one", "workspace_child":"child-one",
++            "changed_paths":["source.txt"], "observation_incomplete":false,
++            "output_complete":true, "exit_code":0, "cancelled":false, "timed_out":false,
++            "disposition":"completed", "process_settled":true,
++            "execution_future_released":true, "output_facts_retained":true,
++            "process_settlement_basis":"execution_returned", "source_run":"current-run",
++            "run":"effect-run", "effects":observation()
++        }),
++    ));
++    assert!(progress(&facts));
++    facts[3].payload["source_run"] = json!("other-run");
++    assert!(!progress(&facts));
++    facts[3].payload["source_run"] = json!("current-run");
++    facts[3].payload["process_settled"] = json!(false);
++    assert!(!progress(&facts));
++}
+diff --git a/crates/code/core/src/goal_control/continuation.rs b/crates/code/core/src/goal_control/continuation.rs
+--- a/crates/code/core/src/goal_control/continuation.rs
++++ b/crates/code/core/src/goal_control/continuation.rs
+@@ -17,11 +17,12 @@
+ /// them, so a log written before they existed stays readable.
+ pub(crate) const MAX_GOAL_SLICES: u64 = 1_000;
+ pub(crate) const MAX_GOAL_HORIZON_MS: u64 = 30 * 24 * 60 * 60 * 1_000;
++const DEFAULT_NO_PROGRESS_SLICES: u64 = 3;
+ 
+ impl GoalContinuationPolicyV1 {
+-    /// Slices may continue until `deadline_unix_ms`. The slice ceiling and the
+-    /// no-progress ceiling are the same admission maximum, so one slice that
+-    /// has not yet accepted a step does not stop the goal. The deadline does.
++    /// Productive slices may continue until `deadline_unix_ms`. Three settled
++    /// slices without an observed workspace mutation require new input or a
++    /// changed plan; a verified turn alone does not prove goal achievement.
+     pub fn until_deadline(deadline_unix_ms: NonZeroU64) -> Result<Self, GoalControlError> {
+         let Some(ceiling) = NonZeroU64::new(MAX_GOAL_SLICES) else {
+             return Err(GoalControlError::Invalid {
+@@ -32,7 +33,9 @@
+         let policy = Self {
+             automatic_enabled: true,
+             max_slices: ceiling,
+-            max_no_progress_slices: ceiling,
++            // The fixed default is 3, so this conversion cannot fail.
++            max_no_progress_slices: NonZeroU64::new(DEFAULT_NO_PROGRESS_SLICES)
++                .expect("the default no-progress bound is positive"),
+             deadline_unix_ms,
+         };
+         policy.check_bounds()?;
+diff --git a/crates/code/core/src/goal_control/continuation/tests.rs b/crates/code/core/src/goal_control/continuation/tests.rs
+--- a/crates/code/core/src/goal_control/continuation/tests.rs
++++ b/crates/code/core/src/goal_control/continuation/tests.rs
+@@ -145,7 +145,8 @@
+         GoalContinuationPolicyV1::until_deadline(NonZeroU64::new(5_000).unwrap()).expect("horizon");
+     assert!(horizon.automatic_enabled);
+     assert_eq!(horizon.max_slices.get(), MAX_GOAL_SLICES);
+-    assert_eq!(horizon.max_no_progress_slices.get(), MAX_GOAL_SLICES);
++    assert_eq!(horizon.max_no_progress_slices.get(), 3);
+     assert_eq!(horizon.deadline_unix_ms.get(), 5_000);
+     assert!(horizon.check_limits(1, 1, 1).is_ok());
++    assert!(horizon.check_limits(1, 3, 3).is_err());
+ }
+diff --git a/crates/code/core/src/goal_control/facts.rs b/crates/code/core/src/goal_control/facts.rs
+--- a/crates/code/core/src/goal_control/facts.rs
++++ b/crates/code/core/src/goal_control/facts.rs
+@@ -335,7 +335,13 @@
+                 session_id,
+                 workspace,
+                 policy_digest,
+-            )?,
++            )
++            .map(|(operation, digest, view, mutated)| {
++                if mutated {
++                    folded.continuation.slices_since_progress = 0;
++                }
++                (operation, digest, view)
++            })?,
+             GoalFactKindV1::Completed => complete::fold_complete(
+                 fact,
+                 folded.current.as_ref(),
+@@ -353,9 +359,7 @@
+                 policy_digest,
+             )
+             .map(|(operation, digest, view, _, mutated)| {
+-                if mutated {
+-                    folded.continuation.slices_since_progress = 0;
+-                }
++                folded.continuation.accepted_legacy_receipt(mutated);
+                 (operation, digest, view)
+             })?,
+             GoalFactKindV1::Paused | GoalFactKindV1::Resumed | GoalFactKindV1::Cancelled => {
+diff --git a/crates/code/core/src/goal_control/facts/run/continuation.rs b/crates/code/core/src/goal_control/facts/run/continuation.rs
+--- a/crates/code/core/src/goal_control/facts/run/continuation.rs
++++ b/crates/code/core/src/goal_control/facts/run/continuation.rs
+@@ -2,12 +2,33 @@
+ 
+ use super::*;
+ use crate::goal_control::GoalContinuationPolicyV1;
++
++closed_set!(ProgressBasis {
++    ObservedWorkspaceMutationV1 => "observed_workspace_mutation_v1",
++});
+ 
+ #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+ #[serde(deny_unknown_fields)]
+ pub(crate) struct ContinuationSource {
+     pub policy: GoalContinuationPolicyV1,
+     pub observed_unix_ms: u64,
++    // Absence preserves the original accepted-receipt admission semantics and
++    // exact command digest of old facts. All new host sources name this basis.
++    #[serde(default, skip_serializing_if = "Option::is_none")]
++    progress_basis: Option<ProgressBasis>,
++}
++
++impl ContinuationSource {
++    pub(crate) fn observed_mutations(
++        policy: GoalContinuationPolicyV1,
++        observed_unix_ms: u64,
++    ) -> Self {
++        Self {
++            policy,
++            observed_unix_ms,
++            progress_basis: Some(ProgressBasis::ObservedWorkspaceMutationV1),
++        }
++    }
+ }
+ 
+ /// Pending admissions remain counted; this projection never proves settlement.
+@@ -16,6 +37,8 @@
+ pub(crate) struct ContinuationUsage {
+     pub admitted_slices: u64,
+     pub slices_since_progress: u64,
++    /// Only for validating admissions already recorded with the legacy source.
++    legacy_slices_since_progress: u64,
+     pub last_observed_unix_ms: u64,
+     /// Identity of the currently accepted plan, and of the plan the last slice ran under.
+     pub accepted_plan: Option<ExecutionIdentityV1>,
+@@ -23,6 +46,12 @@
+ }
+ 
+ impl ContinuationUsage {
++    pub(crate) fn accepted_legacy_receipt(&mut self, mutated: bool) {
++        if mutated {
++            self.legacy_slices_since_progress = 0;
++        }
++    }
++
+     pub fn admit(&mut self, source: &ContinuationSource) -> Result<(), GoalControlError> {
+         if source.observed_unix_ms < self.last_observed_unix_ms {
+             return Err(refused(
+@@ -36,12 +65,15 @@
+         // At the stall bound, a changed accepted plan earns exactly one more slice;
+         // after it the count is past the bound, so a second replan earns nothing.
+         let stall = source.policy.max_no_progress_slices.get();
+-        let replanned =
+-            self.slices_since_progress == stall && self.accepted_plan != self.slice_plan;
+-        if self.slices_since_progress >= stall && !replanned {
++        let since_progress = match source.progress_basis {
++            None => self.legacy_slices_since_progress,
++            Some(ProgressBasis::ObservedWorkspaceMutationV1) => self.slices_since_progress,
++        };
++        let replanned = since_progress == stall && self.accepted_plan != self.slice_plan;
++        if since_progress >= stall && !replanned {
+             return Err(refused(
+                 GoalRefusal::Waiting,
+-                "goal stalled without accepted progress; a changed plan or input is required",
++                "goal stalled under its progress policy; a changed plan or input is required",
+             ));
+         }
+         let next = |value: u64| {
+@@ -54,8 +86,10 @@
+         };
+         let admitted = next(self.admitted_slices)?;
+         let since_progress = next(self.slices_since_progress)?;
++        let legacy_since_progress = next(self.legacy_slices_since_progress)?;
+         self.admitted_slices = admitted;
+         self.slices_since_progress = since_progress;
++        self.legacy_slices_since_progress = legacy_since_progress;
+         self.last_observed_unix_ms = source.observed_unix_ms;
+         self.slice_plan = self.accepted_plan.clone();
+         Ok(())
+diff --git a/crates/code/core/src/goal_control/facts/run/tests/continuation.rs b/crates/code/core/src/goal_control/facts/run/tests/continuation.rs
+--- a/crates/code/core/src/goal_control/facts/run/tests/continuation.rs
++++ b/crates/code/core/src/goal_control/facts/run/tests/continuation.rs
+@@ -13,6 +13,25 @@
+         "observed_unix_ms": clock,
+     }))
+     .unwrap()
++}
++
++#[test]
++fn progress_basis_preserves_legacy_bytes_and_refuses_unknown_semantics() {
++    let legacy = source(8, 1, 100);
++    let encoded = serde_json::to_value(&legacy).unwrap();
++    assert!(encoded.get("progress_basis").is_none());
++    assert_eq!(
++        serde_json::from_value::<ContinuationSource>(encoded.clone()).unwrap(),
++        legacy
++    );
++    let current = ContinuationSource::observed_mutations(legacy.policy.clone(), 100);
++    let mut current_json = serde_json::to_value(current).unwrap();
++    assert_eq!(
++        current_json["progress_basis"],
++        "observed_workspace_mutation_v1"
++    );
++    current_json["progress_basis"] = serde_json::json!("unknown_progress_semantics");
++    assert!(serde_json::from_value::<ContinuationSource>(current_json).is_err());
+ }
+ 
+ fn usage(log: &dyn LogStore, workspace: &WorkspaceRef) -> ContinuationUsage {
+diff --git a/crates/code/core/src/goal_control/facts/settle.rs b/crates/code/core/src/goal_control/facts/settle.rs
+--- a/crates/code/core/src/goal_control/facts/settle.rs
++++ b/crates/code/core/src/goal_control/facts/settle.rs
+@@ -188,7 +188,7 @@
+     session_id: &str,
+     workspace: &WorkspaceRef,
+     policy_digest: Option<&str>,
+-) -> Result<(String, String, DurableGoalDefinitionV1), GoalControlError> {
++) -> Result<(String, String, DurableGoalDefinitionV1, bool), GoalControlError> {
+     let current = current.ok_or_else(|| refused(GoalRefusal::NotFound, "goal is absent"))?;
+     let stored = SettledFact::deserialize(&fact.payload)
+         .map_err(|_| refused(GoalRefusal::Conflict, "invalid slice settlement fact"))?;
+@@ -234,5 +234,16 @@
+             "slice settlement differs from its original Run",
+         ));
+     }
+-    Ok((stored.operation_id, stored.command_digest, current.clone()))
+-}
++    let mutated = crate::fact_control::goal_slice_made_progress(
++        prefix,
++        body.run_sequence,
++        session_id,
++        &body.run_id,
++    );
++    Ok((
++        stored.operation_id,
++        stored.command_digest,
++        current.clone(),
++        mutated,
++    ))
++}
+diff --git a/crates/code/core/src/tools/presentation.rs b/crates/code/core/src/tools/presentation.rs
+--- a/crates/code/core/src/tools/presentation.rs
++++ b/crates/code/core/src/tools/presentation.rs
+@@ -298,7 +298,8 @@
+     let mut program = program.clone();
+     let catalog = compact_code_catalog(source);
+     program.description = format!(
+-        "Run a sandboxed JavaScript program through the governed Tool executor. Define async function run(ctx, inputs), call await ctx.tool(name, args), and set allowed_tools to the smallest required subset. Every nested call keeps the Run permission, confirmation, cancellation, and audit boundaries. Available Tool signatures: {catalog}"
++        "{}\n\nRun a sandboxed JavaScript program through the governed Tool executor. Define async function run(ctx, inputs), call await ctx.tool(name, args), and set allowed_tools to the smallest required subset. Every nested call keeps the Run permission, confirmation, cancellation, and audit boundaries. Available Tool signatures: {catalog}",
++        program.description,
+     );
+     vec![program]
+ }
+diff --git a/crates/code/core/src/tools/program_tool.rs b/crates/code/core/src/tools/program_tool.rs
+--- a/crates/code/core/src/tools/program_tool.rs
++++ b/crates/code/core/src/tools/program_tool.rs
+@@ -1,6 +1,6 @@
+ //! Tool wrapper for programmatic tool calling.
+ 
+-use crate::program::ProgramCatalog;
++use crate::program::{Program, ProgramCatalog};
+ use crate::text::truncate_utf8;
+ use crate::tools::types::{Tool, ToolContext, ToolOutput};
+ use crate::tools::{registry_bound_tool_invoker, registry_tool_invoker, ToolInvoker, ToolRegistry};
+@@ -23,33 +23,145 @@
+ const DEFAULT_SCRIPT_MAX_TOOL_CALLS: usize = 20;
+ const DEFAULT_SCRIPT_MAX_OUTPUT_BYTES: usize = 64 * 1024;
+ const PROGRAM_CANCELLATION_SETTLE_GRACE: Duration = Duration::from_millis(500);
++const SCRIPT_DESCRIPTION: &str = "Run a sandboxed JavaScript PTC script. The script defines async function run(ctx, inputs) and may call only allowed ctx tools.";
++// Template data is passed as JSON inputs, never interpolated into source. The
++// same VM and nested gateway enforce script limits and session governance.
++const TEMPLATE_RUNNER: &str = r#"
++async function run(ctx, program) {
++    const steps = [];
++    for (const step of program.steps) {
++        const result = await ctx.tool(step.tool_name, step.args);
++        steps.push({label: step.label, ...result});
++        if (result.exitCode !== 0) {
++            throw new Error("Template step " + step.tool_name + " failed: " + result.output);
++        }
++    }
++    return {summary: "Template " + program.name + " completed.", steps};
++}
++"#;
+ // Engineered workflows include planner, maker, checker, deterministic evidence
+ // gates, recovery, and event projection logic in one auditable script. Keep a
+ // firm bound while leaving enough room for explicit contracts and diagnostics.
+ pub const MAX_PROGRAM_SCRIPT_SOURCE_BYTES: usize = 192 * 1024;
+ 
++#[derive(Clone, Copy)]
++enum ProgramKind {
++    Script,
++    Template,
++}
++
++impl ProgramKind {
++    fn parse(value: &str) -> std::result::Result<Self, String> {
++        match value {
++            "script" => Ok(Self::Script),
++            "template" => Ok(Self::Template),
++            _ => Err(format!(
++                "Unsupported program type: {value}. Supported types are {:?} and {:?}.",
++                Self::Script.as_str(),
++                Self::Template.as_str(),
++            )),
++        }
++    }
++
++    fn as_str(self) -> &'static str {
++        match self {
++            Self::Script => "script",
++            Self::Template => "template",
++        }
++    }
++}
++
+ pub struct ProgramTool {
+     fallback_invoker: Arc<dyn ToolInvoker>,
++    catalog: ProgramCatalog,
++    description: String,
+ }
+ 
+ impl ProgramTool {
+     pub fn new(registry: Arc<ToolRegistry>) -> Self {
+-        Self {
+-            fallback_invoker: registry_tool_invoker(registry),
+-        }
+-    }
+-
+-    pub fn with_catalog(registry: Arc<ToolRegistry>, _catalog: ProgramCatalog) -> Self {
+-        Self::new(registry)
++        Self::with_catalog(registry, ProgramCatalog::new())
++    }
++
++    pub fn with_catalog(registry: Arc<ToolRegistry>, catalog: ProgramCatalog) -> Self {
++        Self::from_catalog(registry_tool_invoker(registry), catalog)
+     }
+ 
+     pub(crate) fn with_catalog_registry_bound(
+         registry: Arc<ToolRegistry>,
+-        _catalog: ProgramCatalog,
++        catalog: ProgramCatalog,
+     ) -> Self {
++        Self::from_catalog(registry_bound_tool_invoker(registry), catalog)
++    }
++
++    fn from_catalog(fallback_invoker: Arc<dyn ToolInvoker>, catalog: ProgramCatalog) -> Self {
++        let mut description = SCRIPT_DESCRIPTION.to_string();
++        if !catalog.list().is_empty() {
++            description.push_str(" Or run a registered template with type=\"template\", its exact name, and inputs. Available templates:");
++            for template in catalog.list() {
++                description.push_str(&format!(
++                    "\n- {}: {} Parameters: {}",
++                    template.name,
++                    template.description,
++                    serde_json::json!(template.parameters),
++                ));
++            }
++        }
+         Self {
+-            fallback_invoker: registry_bound_tool_invoker(registry),
+-        }
++            fallback_invoker,
++            catalog,
++            description,
++        }
++    }
++
++    fn instantiate_template(
++        &self,
++        args: &serde_json::Value,
++        invoker: &dyn ToolInvoker,
++    ) -> std::result::Result<Program, String> {
++        let name = args
++            .get("name")
++            .and_then(serde_json::Value::as_str)
++            .ok_or("template name parameter is required")?;
++        let template = self
++            .catalog
++            .get(name)
++            .ok_or_else(|| format!("Unknown program: {name}"))?;
++        for field in ["source", "path", "language"] {
++            if args.get(field).is_some() {
++                return Err(format!("{field} is only valid for script programs"));
++            }
++        }
++        let empty = serde_json::json!({});
++        let inputs = args.get("inputs").unwrap_or(&empty);
++        let object = inputs
++            .as_object()
++            .ok_or("template inputs must be an object")?;
++        for key in object.keys() {
++            if !template
++                .parameters
++                .iter()
++                .any(|parameter| parameter.name == *key)
++            {
++                return Err(format!("Unknown program parameter: {key}"));
++            }
++        }
++        let program = template
++            .instantiate(inputs)
++            .map_err(|error| error.to_string())?;
++        let available = invoker.available_tools();
++        let allowed = script_allowed_tools(args, available.clone());
++        let available = available.into_iter().collect();
++        for step in &program.steps {
++            if !script_tool_is_allowed(&allowed, &step.tool_name, &step.args)
++                || !script_tool_is_allowed(&available, &step.tool_name, &step.args)
++            {
++                return Err(format!(
++                    "tool '{}' is not allowed for this program template",
++                    step.tool_name
++                ));
++            }
++        }
++        Ok(program)
+     }
+ }
+ 
+@@ -60,29 +172,47 @@
+     }
+ 
+     fn description(&self) -> &str {
+-        "Run a sandboxed JavaScript PTC script. The script defines async function run(ctx, inputs) and may call only allowed ctx tools."
++        &self.description
+     }
+ 
+     fn capabilities(&self, args: &serde_json::Value) -> crate::tools::ToolCapabilities {
+         let mut capabilities = crate::tools::ToolCapabilities::conservative();
+-        capabilities.read_only =
+-            program_allowed_tools_are_read_only(self.fallback_invoker.as_ref(), args);
++        capabilities.read_only = match args
++            .get("type")
++            .and_then(serde_json::Value::as_str)
++            .and_then(|kind| ProgramKind::parse(kind).ok())
++        {
++            Some(ProgramKind::Script) => {
++                program_allowed_tools_are_read_only(self.fallback_invoker.as_ref(), args)
++            }
++            Some(ProgramKind::Template) => self
++                .instantiate_template(args, self.fallback_invoker.as_ref())
++                .is_ok_and(|program| {
++                    !program.steps.is_empty()
++                        && program.steps.iter().all(|step| {
++                            self.fallback_invoker
++                                .capabilities(&step.tool_name, &step.args)
++                                .is_some_and(|capabilities| capabilities.read_only)
++                        })
++                }),
++            _ => false,
++        };
+         capabilities
+     }
+ 
+     fn parameters(&self) -> serde_json::Value {
+-        serde_json::json!({
++        let mut schema = serde_json::json!({
+             "type": "object",
+             "additionalProperties": false,
+             "properties": {
+                 "type": {
+                     "type": "string",
+                     "description": "Required. Program kind. Only \"script\" is supported.",
+-                    "enum": ["script"]
++                    "enum": [ProgramKind::Script.as_str()]
+                 },
+                 "inputs": {
+                     "type": "object",
+-                    "description": "Optional. JSON inputs passed to the script as the second argument."
++                    "description": "JSON inputs passed to a script as its second argument, or the declared parameters of a named template."
+                 },
+                 "language": {
+                     "type": "string",
+@@ -114,26 +244,80 @@
+                 }
+             },
+             "required": ["type"]
+-        })
++        });
++        if !self.catalog.list().is_empty() {
++            schema["properties"]["type"] = serde_json::json!({"type":"string","description":"Required. Choose script for JavaScript source/path, or template for a registered name.","enum":[ProgramKind::Script.as_str(),ProgramKind::Template.as_str()]});
++            schema["properties"]["name"] = serde_json::json!({
++                "type":"string", "description":"Exact registered template name. Required for type=template.",
++                "enum":self.catalog.list().iter().map(|template| &template.name).collect::<Vec<_>>()
++            });
++            let mut variants = vec![
++                serde_json::json!({"properties":{"type":{"const":ProgramKind::Script.as_str()}},"required":["type"]}),
++            ];
++            for template in self.catalog.list() {
++                let mut properties = serde_json::Map::new();
++                let mut required = Vec::new();
++                for parameter in &template.parameters {
++                    let mut field = serde_json::json!({"description":parameter.description});
++                    if let Some(default) = &parameter.default {
++                        field["default"] = default.clone();
++                    }
++                    properties.insert(parameter.name.clone(), field);
++                    if parameter.required {
++                        required.push(parameter.name.clone());
++                    }
++                }
++                let mut variant = serde_json::json!({
++                    "properties":{
++                        "type":{"const":ProgramKind::Template.as_str()}, "name":{"const":template.name},
++                        "inputs":{"type":"object","additionalProperties":false,"properties":properties,"required":required}
++                    },
++                    "required":["type","name"]
++                });
++                if !required.is_empty() {
++                    variant["required"] = serde_json::json!(["type", "name", "inputs"]);
++                }
++                variants.push(variant);
++            }
++            schema["oneOf"] = serde_json::json!(variants);
++        }
++        schema
+     }
+ 
+     async fn execute(&self, args: &serde_json::Value, ctx: &ToolContext) -> Result<ToolOutput> {
+-        let Some(kind) = args.get("type").and_then(|value| value.as_str()) else {
++        let Some(value) = args.get("type").and_then(|value| value.as_str()) else {
+             return Ok(script_preflight_error("type parameter is required"));
+         };
+-        if kind != "script" {
+-            return Ok(script_preflight_error(format!(
+-                "Unsupported program type: {kind}. Only \"script\" is supported."
+-            )));
++        let kind = match ProgramKind::parse(value) {
++            Ok(kind) => kind,
++            Err(error) => return Ok(script_preflight_error(error)),
++        };
++        let invoker = ctx
++            .tool_invoker()
++            .unwrap_or_else(|| Arc::clone(&self.fallback_invoker));
++        if matches!(kind, ProgramKind::Template) {
++            let program = match self.instantiate_template(args, invoker.as_ref()) {
++                Ok(program) => program,
++                Err(error) => return Ok(script_preflight_error(error)),
++            };
++            let script_args = serde_json::json!({
++                "source":TEMPLATE_RUNNER,
++                "allowed_tools":program.steps.iter().map(|step| &step.tool_name).collect::<HashSet<_>>(),
++                "limits":args.get("limits"),
++            });
++            let mut output =
++                execute_script_program(&script_args, serde_json::to_value(&program)?, invoker, ctx)
++                    .await?;
++            if let Some(metadata) = output.metadata.as_mut() {
++                metadata["program"]["name"] = serde_json::json!(program.name);
++                metadata["program"]["type"] = serde_json::json!(kind.as_str());
++            }
++            return Ok(output);
+         }
+         let inputs = args
+             .get("inputs")
+             .cloned()
+             .unwrap_or_else(|| serde_json::json!({}));
+-
+-        let invoker = ctx
+-            .tool_invoker()
+-            .unwrap_or_else(|| Arc::clone(&self.fallback_invoker));
+         execute_script_program(args, inputs, invoker, ctx).await
+     }
+ }
+diff --git a/crates/code/core/src/tools/program_tool/tests.rs b/crates/code/core/src/tools/program_tool/tests.rs
+--- a/crates/code/core/src/tools/program_tool/tests.rs
++++ b/crates/code/core/src/tools/program_tool/tests.rs
+@@ -3,6 +3,226 @@
+ use std::path::PathBuf;
+ 
+ struct EchoTool;
++
++#[test]
++fn program_catalog_is_discoverable_in_the_published_tool_contract() {
++    let tool = ProgramTool::with_catalog(
++        Arc::new(ToolRegistry::new(PathBuf::from("/tmp"))),
++        ProgramCatalog::with_builtin_programs(),
++    );
++    for name in ["program_code_search", "program_repo_map"] {
++        assert!(tool.description().contains(name), "{}", tool.description());
++        assert!(tool.parameters().to_string().contains(name));
++    }
++    assert!(tool.description().contains("query"));
++    let validator = jsonschema::draft202012::options()
++        .build(&tool.parameters())
++        .unwrap();
++    for args in [
++        serde_json::json!({"type":"template","name":"program_code_search","inputs":{"query":"marker"}}),
++        serde_json::json!({"type":"template","name":"program_repo_map"}),
++        serde_json::json!({"type":"script","source":"async function run() { return {}; }"}),
++    ] {
++        assert!(validator.is_valid(&args), "{args}");
++    }
++    for args in [
++        serde_json::json!({"type":"template","name":"program_code_search"}),
++        serde_json::json!({"type":"template","name":"missing","inputs":{}}),
++        serde_json::json!({"type":"template","name":"program_repo_map","inputs":{"typo":true}}),
++    ] {
++        assert!(!validator.is_valid(&args), "{args}");
++    }
++    let projected = crate::tools::ToolPresentationProfileV1::code()
++        .present_for_prompt(
++            &[crate::llm::ToolDefinition {
++                name: tool.name().into(),
++                description: tool.description().into(),
++                parameters: tool.parameters(),
++            }],
++            "Inspect the repository",
++        )
++        .unwrap();
++    for name in ["program_code_search", "program_repo_map", "query"] {
++        assert!(
++            projected[0].description.contains(name),
++            "code presentation must retain {name}"
++        );
++    }
++    assert_eq!(projected[0].parameters, tool.parameters());
++    assert!(projected[0]
++        .description
++        .contains("permission, confirmation, cancellation, and audit boundaries"));
++}
++
++fn echo_catalog() -> ProgramCatalog {
++    let mut catalog = ProgramCatalog::new();
++    catalog.register(
++        crate::program::ProgramTemplate::new("custom_echo", "Echo an exact JSON input")
++            .with_parameter(crate::program::ProgramParameter::required(
++                "message", "Message",
++            ))
++            .with_step(crate::program::ProgramStepTemplate::new(
++                "echo",
++                serde_json::json!({"message":"{{message}}"}),
++            )),
++    );
++    catalog
++}
++
++struct DenyingTemplateInvoker {
++    origins: Arc<std::sync::Mutex<Vec<crate::tools::invocation::InvocationOrigin>>>,
++}
++
++#[async_trait]
++impl ToolInvoker for DenyingTemplateInvoker {
++    async fn invoke(
++        &self,
++        invocation: crate::tools::invocation::ToolInvocation,
++        _ctx: &ToolContext,
++    ) -> crate::tools::ToolResult {
++        self.origins.lock().unwrap().push(invocation.origin);
++        crate::tools::ToolResult::error(&invocation.name, "denied by the session gateway".into())
++    }
++
++    fn available_tools(&self) -> Vec<String> {
++        vec!["echo".into()]
++    }
++}
++
++#[tokio::test]
++async fn program_template_uses_the_scoped_nested_gateway_and_propagates_denial() {
++    let registry = Arc::new(ToolRegistry::new(PathBuf::from("/tmp")));
++    registry.register(Arc::new(EchoTool));
++    let tool = ProgramTool::with_catalog(registry, echo_catalog());
++    let origins = Arc::new(std::sync::Mutex::new(Vec::new()));
++    let ctx = ToolContext::new(PathBuf::from("/tmp")).with_tool_invoker(Arc::new(
++        DenyingTemplateInvoker {
++            origins: origins.clone(),
++        },
++    ));
++    let output = tool
++        .execute(
++            &serde_json::json!({
++                "type":"template", "name":"custom_echo", "inputs":{"message":"must not bypass"}
++            }),
++            &ctx,
++        )
++        .await
++        .unwrap();
++    assert!(!output.success, "{}", output.content);
++    assert!(
++        output.content.contains("denied by the session gateway"),
++        "{}",
++        output.content
++    );
++    assert_eq!(
++        *origins.lock().unwrap(),
++        vec![crate::tools::invocation::InvocationOrigin::Nested]
++    );
++    assert_eq!(
++        output.metadata.unwrap()["program"]["tool_calls"][0]["success"],
++        false
++    );
++}
++
++#[tokio::test]
++async fn program_template_rejects_unknown_names_and_invalid_inputs_before_dispatch() {
++    let registry = Arc::new(ToolRegistry::new(PathBuf::from("/tmp")));
++    let tool = ProgramTool::with_catalog(registry, echo_catalog());
++    for (args, expected) in [
++        (
++            serde_json::json!({"type":"template","name":"missing","inputs":{}}),
++            "Unknown program",
++        ),
++        (
++            serde_json::json!({"type":"template","name":"custom_echo","inputs":{}}),
++            "Missing required program parameter",
++        ),
++        (
++            serde_json::json!({"type":"template","name":"custom_echo","inputs":[]}),
++            "inputs must be an object",
++        ),
++        (
++            serde_json::json!({"type":"template","name":"custom_echo","inputs":{"message":"ok","typo":1}}),
++            "Unknown program parameter",
++        ),
++        (
++            serde_json::json!({"type":"template","name":"custom_echo","inputs":{"message":"ok"},"allowed_tools":["echo"]}),
++            "tool 'echo' is not allowed",
++        ),
++    ] {
++        let output = tool
++            .execute(&args, &ToolContext::new(PathBuf::from("/tmp")))
++            .await
++            .unwrap();
++        assert!(!output.success);
++        assert!(output.content.contains(expected), "{}", output.content);
++        assert_eq!(
++            output.metadata.unwrap()["program"]["tool_calls"],
++            serde_json::json!([])
++        );
++    }
++}
++
++#[tokio::test]
++async fn program_template_cannot_reenable_filtered_orchestrators() {
++    let registry = Arc::new(ToolRegistry::new(PathBuf::from("/tmp")));
++    registry.register(Arc::new(ParallelTaskProbeTool));
++    let mut catalog = ProgramCatalog::new();
++    catalog.register(
++        crate::program::ProgramTemplate::new("fanout", "Forbidden orchestrator").with_step(
++            crate::program::ProgramStepTemplate::new("parallel_task", serde_json::json!({})),
++        ),
++    );
++    let tool = ProgramTool::with_catalog(registry, catalog);
++    let args =
++        serde_json::json!({"type":"template","name":"fanout","allowed_tools":["parallel_task"]});
++    assert!(!tool.capabilities(&args).read_only);
++    let output = tool
++        .execute(&args, &ToolContext::new(PathBuf::from("/tmp")))
++        .await
++        .unwrap();
++    assert!(!output.success);
++    assert!(output.content.contains("not allowed"));
++    assert_eq!(
++        output.metadata.unwrap()["program"]["tool_calls"],
++        serde_json::json!([])
++    );
++}
++
++#[test]
++fn program_template_read_only_uses_instantiated_step_arguments() {
++    let root = tempfile::tempdir().unwrap();
++    let executor = crate::tools::ToolExecutor::new(root.path().display().to_string());
++    let mut catalog = ProgramCatalog::new();
++    for (name, args) in [
++        ("inspect", serde_json::json!({"command":"status"})),
++        (
++            "change",
++            serde_json::json!({"command":"checkout","ref":"fixture"}),
++        ),
++    ] {
++        catalog.register(
++            crate::program::ProgramTemplate::new(name, "Git operation")
++                .with_step(crate::program::ProgramStepTemplate::new("git", args)),
++        );
++    }
++    let tool = ProgramTool::with_catalog(Arc::clone(executor.registry()), catalog);
++    assert!(
++        tool.capabilities(&serde_json::json!({"type":"template","name":"inspect"}))
++            .read_only
++    );
++    assert!(
++        !tool
++            .capabilities(&serde_json::json!({"type":"template","name":"change"}))
++            .read_only
++    );
++    assert!(
++        !tool
++            .capabilities(&serde_json::json!({"type":"template","name":"missing"}))
++            .read_only
++    );
++}
+ 
+ #[async_trait]
+ impl Tool for EchoTool {
+@@ -114,7 +334,7 @@
+         .unwrap();
+ 
+     assert!(!output.success);
+-    assert!(output.content.contains("Only \"script\" is supported"));
++    assert!(output.content.contains("Unsupported program type"));
+ }
+ 
+ #[tokio::test]
+diff --git a/crates/code/core/src/tools/program_tool/worker_deadline_tests.rs b/crates/code/core/src/tools/program_tool/worker_deadline_tests.rs
+--- a/crates/code/core/src/tools/program_tool/worker_deadline_tests.rs
++++ b/crates/code/core/src/tools/program_tool/worker_deadline_tests.rs
+@@ -56,9 +56,7 @@
+         wait_for_read: !queued_only,
+     });
+     let released = Arc::downgrade(&invoker);
+-    let tool = ProgramTool {
+-        fallback_invoker: invoker,
+-    };
++    let tool = ProgramTool::from_catalog(invoker, ProgramCatalog::new());
+     drop(executor);
+     let ctx = ToolContext::new(workspace.path().to_owned()).with_session_id("owned-program-worker");
+     let cancel = ctx.cancellation_token();
+diff --git a/crates/code/core/src/tools/tests.rs b/crates/code/core/src/tools/tests.rs
+--- a/crates/code/core/src/tools/tests.rs
++++ b/crates/code/core/src/tools/tests.rs
+@@ -1051,7 +1051,7 @@
+ }
+ 
+ #[tokio::test]
+-async fn test_tool_executor_register_program_catalog_keeps_script_only_program_tool() {
++async fn test_tool_executor_register_program_catalog_runs_governed_template() {
+     let executor = ToolExecutor::new("/tmp".to_string());
+     let trace_sink = crate::trace::InMemoryTraceSink::default();
+     executor.set_trace_sink(Arc::new(trace_sink.clone()));
+@@ -1073,29 +1073,67 @@
+     );
+     executor.register_program_catalog(catalog);
+ 
++    let message = "hello from catalog: \"; throw new Error('injected'); // 中文";
++
+     let result = executor
+         .execute(
+             "program",
+             &serde_json::json!({
++                "type": "template",
+                 "name": "custom_echo",
+                 "inputs": {
+-                    "message": "hello from catalog"
++                    "message": message
+                 }
+             }),
+         )
+         .await
+         .unwrap();
+ 
+-    assert_eq!(result.exit_code, 1);
+-    assert!(result.output.contains("type parameter is required"));
++    assert_eq!(result.exit_code, 0, "{}", result.output);
++    assert!(result.output.contains("hello from catalog"));
++    assert_eq!(
++        result.metadata.as_ref().unwrap()["script_result"]["steps"][0]["output"],
++        message
++    );
+ 
+     let events = trace_sink.events();
+     assert!(events.iter().any(|event| {
+         event.kind == crate::trace::TraceEventKind::ToolExecution && event.name == "program"
+     }));
+-    assert!(!events.iter().any(|event| {
++    assert!(events.iter().any(|event| {
+         event.kind == crate::trace::TraceEventKind::ToolExecution && event.name == "echo"
+     }));
++}
++
++#[tokio::test]
++async fn test_builtin_program_templates_run_against_a_real_workspace() {
++    let root = tempfile::tempdir().unwrap();
++    std::fs::write(root.path().join("README.md"), "CATALOG_SEARCH_MARKER\n").unwrap();
++    let executor = ToolExecutor::new(root.path().display().to_string());
++    for (name, inputs, expected) in [
++        (
++            "program_code_search",
++            serde_json::json!({"query":"CATALOG_SEARCH_MARKER"}),
++            "CATALOG_SEARCH_MARKER",
++        ),
++        ("program_repo_map", serde_json::json!({}), "README.md"),
++    ] {
++        let result = executor
++            .execute(
++                "program",
++                &serde_json::json!({"type":"template","name":name,"inputs":inputs}),
++            )
++            .await
++            .unwrap();
++        assert_eq!(result.exit_code, 0, "{}", result.output);
++        assert!(result.output.contains(expected), "{}", result.output);
++        let metadata = result.metadata.unwrap();
++        assert_eq!(metadata["program"]["name"], name);
++        assert_eq!(metadata["program"]["runtime"], "embedded-quickjs");
++        assert!(metadata["program"]["tool_calls_complete"]
++            .as_bool()
++            .unwrap());
++    }
+ }
+ 
+ #[test]
+diff --git a/crates/code/manual/HOST_GOAL_CONTROL.md b/crates/code/manual/HOST_GOAL_CONTROL.md
+--- a/crates/code/manual/HOST_GOAL_CONTROL.md
++++ b/crates/code/manual/HOST_GOAL_CONTROL.md
+@@ -9,10 +9,19 @@
+ 
+ The declaration is optional. Core and SDK hosts disable automatic continuation
+ when absent. ACP/Code TUI instead supply product-host bounds: 8 slices, 2
+-successive slices without accepted progress, and a 24-hour deadline from host
++successive slices without observed workspace mutation, and a 24-hour deadline from host
+ initialization. They still require an explicit goal/wake and retain original
+ historical counts. A trusted declaration overrides these defaults, including
+ an explicit disabled policy. Workspace declarations remain withheld.
++For `a3s-code-acp --unattended`, the absent-policy defaults instead allow up to
++1000 slices within the run deadline, with a limit of 3 successive settled slices
++without observed workspace mutation. The trusted ACL declaration still wins.
++Progress comes from complete, identity-bound receipts for actual workspace
++changes in that slice. A successful tool, read-only accepted step, or identical
++rewrite does not refresh this limit. Mutation can refresh progress even when
++the goal judgment is not achieved; a verified turn alone cannot complete the
++goal. Historical admissions retain their recorded progress semantics, while
++new admissions use the actual-mutation basis.
+ When present, all four fields are required, including when disabled:
+ 
+ ```acl
+diff --git a/crates/code/manual/TERMINAL_BENCH.md b/crates/code/manual/TERMINAL_BENCH.md
+--- a/crates/code/manual/TERMINAL_BENCH.md
++++ b/crates/code/manual/TERMINAL_BENCH.md
+@@ -85,6 +85,13 @@
+ instead of the graded workspace, and `--result-file` writes the same
+ `a3s.code.terminal-bench-result.v1` record. Without `--unattended` the agent is
+ unchanged.
++
++With no trusted `goal_control` override, bound-goal continuation stops after
++3 settled slices without an observed workspace mutation, within the run's
++1000-slice ceiling and deadline. An unfinished goal stopped at this boundary
++writes `failed` / `execution_failed`, with `goal.continuation_stopped` and the
++next decision in `lastError`. A gate-verified turn is not reported as a completed
++goal. Explicit host ACL bounds and `--no-goal-continuation` remain available.
+ 
+ The ACP lane builds only inside the A3S OS monorepo (`kense-labs/os`), from its
+ `apps/code` submodule. `a3s-code-acp` depends on `a3s-okf` and
+diff --git a/crates/sentry/Cargo.toml b/crates/sentry/Cargo.toml
+--- a/crates/sentry/Cargo.toml
++++ b/crates/sentry/Cargo.toml
+@@ -13,6 +13,7 @@
+ edition = "2021"
+ name = "a3s-sentry"
+ version = "0.7.0"
++publish = false
+ build = false
+ autolib = false
+ autobins = false
+diff --git a/crates/terminal/crates/codegen/a3s-code-pager/src/headless.rs b/crates/terminal/crates/codegen/a3s-code-pager/src/headless.rs
+--- a/crates/terminal/crates/codegen/a3s-code-pager/src/headless.rs
++++ b/crates/terminal/crates/codegen/a3s-code-pager/src/headless.rs
+@@ -444,13 +444,18 @@
+     )
+     .await
+ }
+-/// Authenticate via the agent's `defaultAuthMethodId`, failing closed when none is available.
++/// Match the TUI's local-config policy for empty methods; otherwise authenticate
++/// via the advertised method without starting interactive login.
+ /// Returns whether the selected method is API-key auth.
+ async fn authenticate(
+     acp_tx: &AcpAgentTx,
+     auths: &[acp::AuthMethod],
+     default_auth_method_id: Option<&acp::AuthMethodId>,
++    is_grok_shell: bool,
+ ) -> anyhow::Result<bool> {
++    if auths.is_empty() && !crate::acp::empty_auth_methods_needs_login(is_grok_shell) {
++        return Ok(false);
++    }
+     let method_id = crate::acp::select_eager_auth_method(auths, default_auth_method_id)
+         .ok_or_else(|| {
+             use std::io::IsTerminal;
+@@ -939,10 +944,17 @@
+     let t_auth = Instant::now();
+     a3s_code_telemetry::startup::enter(crate::acp::StartupPhase::EagerAuth);
+     let default_auth_method_id = crate::acp::parse_default_auth_method_id(init_resp.meta.as_ref());
++    let is_grok_shell = init_resp
++        .meta
++        .as_ref()
++        .and_then(|meta| meta.get("grokShell"))
++        .and_then(serde_json::Value::as_bool)
++        .unwrap_or(false);
+     let is_api_key_auth = match authenticate(
+         &acp_tx,
+         &init_resp.auth_methods,
+         default_auth_method_id.as_ref(),
++        is_grok_shell,
+     )
+     .await
+     {
+diff --git a/crates/terminal/crates/codegen/a3s-code-pager/src/headless_tests.rs b/crates/terminal/crates/codegen/a3s-code-pager/src/headless_tests.rs
+--- a/crates/terminal/crates/codegen/a3s-code-pager/src/headless_tests.rs
++++ b/crates/terminal/crates/codegen/a3s-code-pager/src/headless_tests.rs
+@@ -1,4 +1,62 @@
+ use pretty_assertions::assert_eq;
++
++#[tokio::test]
++async fn local_config_agent_with_no_auth_methods_skips_acp_login() {
++    let (tx, mut rx) = tokio::sync::mpsc::unbounded_channel();
++    assert!(!super::authenticate(&tx, &[], None, false).await.unwrap());
++    assert!(
++        rx.try_recv().is_err(),
++        "local credentials need no ACP authentication"
++    );
++}
++
++#[tokio::test]
++async fn grok_agent_with_no_auth_methods_still_requires_login() {
++    let (tx, mut rx) = tokio::sync::mpsc::unbounded_channel();
++    let error = super::authenticate(&tx, &[], None, true).await.unwrap_err();
++    assert!(error.to_string().contains("Not signed in"));
++    assert!(rx.try_recv().is_err());
++}
++
++#[tokio::test]
++async fn headless_auth_keeps_advertised_noninteractive_methods_and_refuses_browser_login() {
++    for (id, expected_api_key) in [("a3s.api_key", true), ("cached_token", false)] {
++        let (tx, mut rx) = tokio::sync::mpsc::unbounded_channel();
++        let method = acp::AuthMethod::Agent(acp::AuthMethodAgent::new(
++            acp::AuthMethodId::new(id),
++            "Fixture",
++        ));
++        let expected = id.to_string();
++        let answer = tokio::spawn(async move {
++            let a3s_acp_lib::AcpAgentMessage::Authenticate(args) = rx.recv().await.unwrap() else {
++                panic!("expected authenticate");
++            };
++            assert_eq!(args.request.method_id.0.as_ref(), expected);
++            assert_eq!(args.request.meta.as_ref().unwrap()["headless"], true);
++            args.response_tx
++                .send(Ok(acp::AuthenticateResponse::default()))
++                .unwrap();
++        });
++        assert_eq!(
++            super::authenticate(&tx, &[method], None, true)
++                .await
++                .unwrap(),
++            expected_api_key
++        );
++        answer.await.unwrap();
++    }
++    let (tx, mut rx) = tokio::sync::mpsc::unbounded_channel();
++    let method = acp::AuthMethod::Agent(acp::AuthMethodAgent::new(
++        acp::AuthMethodId::new("a3s"),
++        "Browser login",
++    ));
++    assert!(
++        super::authenticate(&tx, &[method], None, true)
++            .await
++            .is_err()
++    );
++    assert!(rx.try_recv().is_err());
++}
+ 
+ #[tokio::test(start_paused = true)]
+ async fn signalled_exit_stops_waiting_on_a_log_flush_that_never_answers() {
+diff --git a/crates/updater/Cargo.toml b/crates/updater/Cargo.toml
+--- a/crates/updater/Cargo.toml
++++ b/crates/updater/Cargo.toml
+@@ -13,6 +13,7 @@
+ edition = "2021"
+ name = "a3s-updater"
+ version = "0.3.0"
++publish = false
+ authors = ["A3S Lab"]
+ build = false
+ autolib = false
+diff --git a/tests/workspace_dependencies.py b/tests/workspace_dependencies.py
+--- a/tests/workspace_dependencies.py
++++ b/tests/workspace_dependencies.py
+@@ -32,8 +32,23 @@
+             self.assertEqual(Path(dependencies[0]["path"]), ROOT / "crates/flow", consumer)
+ 
+     def test_desktop_sources_and_executable_fixtures_are_present(self):
+-        self.assertFalse((ROOT / "apps/work/.git").exists())
+-        self.assertFalse((ROOT / "apps/work/src-tauri/Cargo.lock").exists())
++        work = ROOT / "apps/work"
++        host = work / "src-tauri/Cargo.toml"
++        metadata = json.loads(subprocess.check_output([
++            "cargo", "metadata", "--locked", "--offline", "--no-deps",
++            "--format-version", "1", "--manifest-path", str(host),
++        ], cwd=ROOT))
++        self.assertEqual(Path(metadata["workspace_root"]).resolve(), ROOT)
++        hosts = [package for package in metadata["packages"]
++                 if Path(package["manifest_path"]).resolve() == host]
++        self.assertEqual(len(hosts), 1)
++        self.assertEqual(hosts[0]["name"], "aster-dream")
++        self.assertIn(hosts[0]["id"], metadata["workspace_members"])
++        for manifest in [work / "Cargo.toml", host]:
++            if manifest.is_file():
++                self.assertNotIn("workspace", tomllib.loads(manifest.read_text()), str(manifest))
++        for lock in [work / "Cargo.lock", work / "src-tauri/Cargo.lock"]:
++            self.assertFalse(lock.exists(), str(lock))
+         for path in [
+             "apps/work/vendor/packages/office/src/core.ts",
+             "apps/work/vendor/packages/office/generated/office-kernel.wasm",
+diff --git a/crates/code/core/src/durable_memory_vec/tests.rs b/crates/code/core/src/durable_memory_vec/tests.rs
+--- /dev/null
++++ b/crates/code/core/src/durable_memory_vec/tests.rs
+@@ -0,0 +1,463 @@
++#![cfg(test)]
++use super::*;
++
++#[tokio::test]
++async fn lazy_store_opens_on_first_search_and_imports_legacy_json_once() {
++    let root = tempfile::tempdir().unwrap();
++    let memory_dir = root.path().join("memory");
++    std::fs::create_dir_all(memory_dir.join("items")).unwrap();
++    let item = MemoryItem::new("legacy memory about e2e fixtures");
++    std::fs::write(
++        memory_dir.join(format!("items/{}.json", item.id)),
++        serde_json::to_vec(&item).unwrap(),
++    )
++    .unwrap();
++
++    let store = LazyFileMemoryStore::new(&memory_dir);
++    assert!(!store.is_initialized());
++    assert!(!memory_dir.join("durable_memory").exists());
++
++    let matches = MemoryStore::search(&store, "legacy e2e fixtures", 5)
++        .await
++        .unwrap();
++    assert_eq!(matches.len(), 1);
++    assert!(matches[0].content.contains("legacy memory"));
++    assert!(store.is_initialized());
++    assert!(memory_dir.join("durable_memory").exists());
++    assert!(memory_dir.join("items.imported").is_dir());
++    assert!(!memory_dir.join("items").exists());
++
++    drop(store);
++    let store = LazyFileMemoryStore::new(&memory_dir);
++    assert!(!store.is_initialized());
++    assert_eq!(MemoryStore::count(&store).await.unwrap(), 1);
++    assert!(!memory_dir.join("items").exists());
++}
++
++#[tokio::test]
++async fn a_skipped_legacy_file_keeps_the_items_directory() {
++    let root = tempfile::tempdir().unwrap();
++    let memory_dir = root.path().join("memory");
++    let items = memory_dir.join("items");
++    std::fs::create_dir_all(&items).unwrap();
++    let item = MemoryItem::new("legacy memory about e2e fixtures");
++    std::fs::write(
++        items.join(format!("{}.json", item.id)),
++        serde_json::to_vec(&item).unwrap(),
++    )
++    .unwrap();
++    std::fs::write(items.join("broken.json"), b"not-json").unwrap();
++
++    let store = LazyFileMemoryStore::new(&memory_dir);
++    let matches = MemoryStore::search(&store, "legacy e2e fixtures", 5)
++        .await
++        .unwrap();
++    assert_eq!(matches.len(), 1);
++    assert!(items.join("broken.json").is_file());
++    assert!(!memory_dir.join("items.imported").exists());
++
++    drop(store);
++    let store = LazyFileMemoryStore::new(&memory_dir);
++    assert_eq!(MemoryStore::count(&store).await.unwrap(), 1);
++    assert!(items.join("broken.json").is_file());
++    assert!(!memory_dir.join("items.imported").exists());
++}
++
++#[test]
++fn an_existing_embedding_column_keeps_its_dimension() {
++    let root = tempfile::tempdir().unwrap();
++    let memory_dir = root.path().join("memory");
++    let collection_path = create_embedding_collection(&memory_dir, 4);
++    let store = VecMemoryStore::open(&memory_dir).unwrap();
++    store
++        .put(&record("m1", "legacy memory about e2e fixtures", 0.5))
++        .unwrap();
++    let hits = store.recall("legacy e2e fixtures", 5).unwrap();
++    assert_eq!(hits.len(), 1);
++    drop(store);
++
++    let collection = a3s_vec::Collection::open(&collection_path, None).unwrap();
++    let schema = collection.schema().unwrap();
++    assert_eq!(schema.vectors().len(), 1);
++    assert_eq!(schema.vectors()[0].name(), "embedding");
++    assert_eq!(schema.vectors()[0].dimension(), 4);
++}
++
++#[test]
++fn a_new_collection_has_no_embedding_column() {
++    let root = tempfile::tempdir().unwrap();
++    let memory_dir = root.path().join("memory");
++    drop(VecMemoryStore::open(&memory_dir).unwrap());
++    let collection_path = memory_dir.join(COLLECTION_NAME);
++    let collection = a3s_vec::Collection::open(collection_path.to_str().unwrap(), None).unwrap();
++    assert!(collection.schema().unwrap().vectors().is_empty());
++}
++
++#[test]
++fn a_foreign_schema_refuses_the_embedding_column() {
++    let root = tempfile::tempdir().unwrap();
++    let memory_dir = root.path().join("memory");
++    let _path = create_named_vector_collection(&memory_dir, "other");
++    let error = match VecMemoryStore::open(&memory_dir) {
++        Ok(_) => panic!("foreign schema opened"),
++        Err(error) => error,
++    };
++    assert!(error.to_string().contains("embedding column"), "{error}");
++    assert!(memory_dir.join(COLLECTION_NAME).exists());
++}
++
++#[test]
++fn a_second_open_is_refused_while_the_collection_is_already_open() {
++    let root = tempfile::tempdir().unwrap();
++    let memory_dir = root.path().join("memory");
++    let first = VecMemoryStore::open(&memory_dir).unwrap();
++    let error = match VecMemoryStore::open(&memory_dir) {
++        Ok(_) => panic!("second open succeeded"),
++        Err(error) => error,
++    };
++    assert!(error.to_string().contains("already open"), "{error}");
++    drop(first);
++    drop(VecMemoryStore::open(&memory_dir).unwrap());
++}
++
++#[tokio::test]
++async fn lazy_store_writes_and_recalls_an_existing_embedding_column() {
++    let root = tempfile::tempdir().unwrap();
++    let memory_dir = root.path().join("memory");
++    let collection_path = create_embedding_collection(&memory_dir, 4);
++    let store = LazyFileMemoryStore::new(&memory_dir);
++    MemoryStore::store(&store, MemoryItem::new("legacy memory about e2e fixtures"))
++        .await
++        .unwrap();
++    let matches = MemoryStore::search(&store, "legacy e2e fixtures", 5)
++        .await
++        .unwrap();
++    assert!(
++        matches
++            .iter()
++            .any(|item| item.content.contains("legacy memory")),
++        "{matches:?}"
++    );
++    drop(store);
++
++    let collection = a3s_vec::Collection::open(&collection_path, None).unwrap();
++    let schema = collection.schema().unwrap();
++    assert_eq!(schema.vectors().len(), 1);
++    assert_eq!(schema.vectors()[0].name(), "embedding");
++    assert_eq!(schema.vectors()[0].dimension(), 4);
++}
++
++#[tokio::test]
++async fn lazy_store_opens_without_an_embedding_column() {
++    let root = tempfile::tempdir().unwrap();
++    let memory_dir = root.path().join("memory");
++    let store = LazyFileMemoryStore::new(&memory_dir);
++    assert_eq!(MemoryStore::count(&store).await.unwrap(), 0);
++    drop(store);
++    let collection_path = memory_dir.join(COLLECTION_NAME);
++    let collection = a3s_vec::Collection::open(collection_path.to_str().unwrap(), None).unwrap();
++    assert!(collection.schema().unwrap().vectors().is_empty());
++}
++
++#[tokio::test]
++async fn a_foreign_schema_refuses_the_embedding_column_on_the_lazy_store() {
++    let root = tempfile::tempdir().unwrap();
++    let memory_dir = root.path().join("memory");
++    create_named_vector_collection(&memory_dir, "other");
++    let store = LazyFileMemoryStore::new(&memory_dir);
++    let error = match MemoryStore::count(&store).await {
++        Ok(count) => panic!("foreign schema opened and counted {count}"),
++        Err(error) => error,
++    };
++    assert!(error.to_string().contains("embedding column"), "{error}");
++    assert!(memory_dir.join(COLLECTION_NAME).exists());
++}
++
++#[tokio::test]
++async fn lazy_stores_share_the_canonical_collection_until_the_last_handle_drops() {
++    let root = tempfile::tempdir().unwrap();
++    let memory_dir = root.path().join("memory");
++    let first = LazyFileMemoryStore::new(&memory_dir);
++    let item = MemoryItem::new("shared collection handoff fact");
++    MemoryStore::store(&first, item.clone()).await.unwrap();
++    let second = LazyFileMemoryStore::new(memory_dir.join("."));
++    assert_eq!(
++        MemoryStore::retrieve(&second, &item.id)
++            .await
++            .unwrap()
++            .unwrap()
++            .content,
++        item.content
++    );
++    drop(first);
++    assert_eq!(MemoryStore::count(&second).await.unwrap(), 1);
++    assert!(VecMemoryStore::open(&memory_dir).is_err());
++    drop(second);
++    let third = LazyFileMemoryStore::new(&memory_dir);
++    assert_eq!(MemoryStore::count(&third).await.unwrap(), 1);
++}
++
++#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
++async fn concurrent_lazy_first_use_shares_one_open_and_retries_a_failed_open() {
++    let root = tempfile::tempdir().unwrap();
++    let memory_dir = root.path().join("memory");
++    let owner = VecMemoryStore::open(&memory_dir).unwrap();
++    let first = std::sync::Arc::new(LazyFileMemoryStore::new(&memory_dir));
++    let legacy_items = memory_dir.join("items");
++    std::fs::create_dir_all(&legacy_items).unwrap();
++    let legacy = MemoryItem::new("legacy atomic import fact");
++    std::fs::write(
++        legacy_items.join(format!("{}.json", legacy.id)),
++        serde_json::to_vec(&legacy).unwrap(),
++    )
++    .unwrap();
++    assert!(MemoryStore::count(first.as_ref()).await.is_err());
++    assert!(!first.is_initialized());
++    assert!(legacy_items.is_dir());
++    drop(owner);
++    let second = std::sync::Arc::new(LazyFileMemoryStore::new(&memory_dir));
++    let barrier = std::sync::Arc::new(tokio::sync::Barrier::new(2));
++    let run = |store: std::sync::Arc<LazyFileMemoryStore>| {
++        let barrier = barrier.clone();
++        tokio::spawn(async move {
++            barrier.wait().await;
++            MemoryStore::count(store.as_ref()).await
++        })
++    };
++    let (left, right) = tokio::join!(run(first.clone()), run(second.clone()));
++    assert_eq!(left.unwrap().unwrap(), 1);
++    assert_eq!(right.unwrap().unwrap(), 1);
++    assert!(Arc::ptr_eq(
++        first.store.get().unwrap(),
++        second.store.get().unwrap()
++    ));
++    assert!(memory_dir.join("items.imported").is_dir());
++    assert!(!legacy_items.exists());
++    MemoryStore::store(first.as_ref(), MemoryItem::new("concurrent shared fact"))
++        .await
++        .unwrap();
++    assert_eq!(
++        MemoryStore::search(second.as_ref(), "concurrent", 1)
++            .await
++            .unwrap()
++            .len(),
++        1
++    );
++}
++
++#[tokio::test]
++async fn last_lazy_release_and_new_first_use_share_or_reopen_without_a_lock_collision() {
++    let root = tempfile::tempdir().unwrap();
++    let memory_dir = root.path().join("memory");
++    for _ in 0..16 {
++        let current = LazyFileMemoryStore::new(&memory_dir);
++        assert_eq!(MemoryStore::count(&current).await.unwrap(), 0);
++        let barrier = Arc::new(std::sync::Barrier::new(2));
++        let releasing = barrier.clone();
++        let (sender, receiver) = std::sync::mpsc::channel();
++        let dropper = std::thread::spawn(move || {
++            releasing.wait();
++            drop(current);
++            sender.send(()).unwrap();
++        });
++        barrier.wait();
++        let replacement = LazyFileMemoryStore::new(&memory_dir);
++        assert_eq!(MemoryStore::count(&replacement).await.unwrap(), 0);
++        receiver
++            .recv_timeout(std::time::Duration::from_secs(2))
++            .unwrap();
++        dropper.join().unwrap();
++        drop(replacement);
++    }
++    drop(VecMemoryStore::open(&memory_dir).unwrap());
++}
++
++fn create_embedding_collection(memory_dir: &std::path::Path, dimension: u32) -> String {
++    create_named_vector_collection_with(memory_dir, "embedding", dimension)
++}
++
++fn create_named_vector_collection(memory_dir: &std::path::Path, name: &str) -> String {
++    create_named_vector_collection_with(memory_dir, name, 4)
++}
++
++fn create_named_vector_collection_with(
++    memory_dir: &std::path::Path,
++    vector_name: &str,
++    dimension: u32,
++) -> String {
++    std::fs::create_dir_all(memory_dir).unwrap();
++    a3s_vec::initialize(None).unwrap();
++    let collection_path = memory_dir.join(COLLECTION_NAME);
++    let path = collection_path.to_str().unwrap().to_owned();
++    let mut content = FieldSchema::new("content", DataType::String, false, 0).unwrap();
++    content
++        .set_index_params(&IndexParams::fts(Some("whitespace"), None, None).unwrap())
++        .unwrap();
++    let schema = CollectionSchema::builder(COLLECTION_NAME)
++        .add_field(content)
++        .add_field(FieldSchema::new("tags", DataType::String, true, 0).unwrap())
++        .add_field(FieldSchema::new("importance", DataType::Float, true, 0).unwrap())
++        .add_field(FieldSchema::new("memory_type", DataType::String, true, 0).unwrap())
++        .add_field(FieldSchema::new("timestamp", DataType::String, true, 0).unwrap())
++        .add_field(FieldSchema::new("meta", DataType::String, true, 0).unwrap())
++        .add_vector_field(
++            vector_name,
++            DataType::VectorFp32,
++            dimension,
++            IndexParams::flat(a3s_vec::MetricType::Cosine).unwrap(),
++        )
++        .build()
++        .unwrap();
++    drop(a3s_vec::Collection::create_and_open(&path, &schema, None).unwrap());
++    path
++}
++
++fn record(id: &str, content: &str, importance: f32) -> MemoryRecord {
++    MemoryRecord {
++        id: id.to_owned(),
++        content: content.to_owned(),
++        tags: vec!["testing".to_owned()],
++        importance,
++        memory_type: "semantic".to_owned(),
++        timestamp: "2026-01-01T00:00:00+00:00".to_owned(),
++        meta: "{}".to_owned(),
++    }
++}
++
++#[test]
++fn insert_and_fts_recall_roundtrip() {
++    let root = tempfile::tempdir().unwrap();
++    let store = VecMemoryStore::open(root.path()).unwrap();
++    store
++        .put(&record(
++            "m1",
++            "the workspace uses rust-analyzer for navigation",
++            0.8,
++        ))
++        .unwrap();
++    store
++        .put(&record(
++            "m2",
++            "e2e fixtures live under tests/e2e/fixtures",
++            0.6,
++        ))
++        .unwrap();
++
++    let hits = store.recall("rust-analyzer navigation", 5).unwrap();
++    assert!(!hits.is_empty(), "expected at least one hit");
++    assert_eq!(hits[0].0, "m1");
++}
++
++#[test]
++fn reopen_sees_persisted_records() {
++    let root = tempfile::tempdir().unwrap();
++    {
++        let store = VecMemoryStore::open(root.path()).unwrap();
++        store
++            .put(&record("m3", "memory survives process restart", 0.5))
++            .unwrap();
++    }
++    let reopened = VecMemoryStore::open(root.path()).unwrap();
++    let hits = reopened.recall("process restart", 5).unwrap();
++    assert!(hits.iter().any(|(id, _)| id == "m3"));
++}
++
++#[tokio::test]
++async fn memory_store_trait_roundtrip() {
++    use a3s_memory::MemoryStore as _;
++    let root = tempfile::tempdir().unwrap();
++    let store = VecMemoryStore::open(root.path()).unwrap();
++    let mut item = MemoryItem::new("the workspace prefers rust-analyzer navigation");
++    item.importance = 0.9;
++    item.tags = vec!["testing".to_owned()];
++    item.memory_type = MemoryType::Procedural;
++    store.store(item.clone()).await.unwrap();
++
++    assert_eq!(store.count().await.unwrap(), 1);
++    let fetched = store
++        .retrieve(&item.id)
++        .await
++        .unwrap()
++        .expect("stored item");
++    assert_eq!(fetched.content, item.content);
++    assert_eq!(fetched.memory_type, item.memory_type);
++
++    let searched = store.search("rust-analyzer navigation", 5).await.unwrap();
++    assert_eq!(searched.len(), 1);
++    let by_tag = store
++        .search_by_tags(&["testing".to_owned()], 5)
++        .await
++        .unwrap();
++    assert_eq!(by_tag.len(), 1);
++    let recent = store.get_recent(5).await.unwrap();
++    assert_eq!(recent.len(), 1);
++    let important = store.get_important(0.8, 5).await.unwrap();
++    assert_eq!(important.len(), 1);
++    let not_important = store.get_important(0.95, 5).await.unwrap();
++    assert!(not_important.is_empty());
++
++    store.delete(&item.id).await.unwrap();
++    assert_eq!(store.count().await.unwrap(), 0);
++    assert!(store.retrieve(&item.id).await.unwrap().is_none());
++}
++
++#[tokio::test]
++async fn search_over_many_records_returns_ranked_hits_without_scan_order() {
++    // The id-mapping behind `search` runs on EVERY model prompt; it
++    // once walked the whole collection. This pin holds the behavioral
++    // contract of the primary-key fetch: the RIGHT hits, in FTS
++    // ranking order, with unrelated records absent — across a store
++    // large enough that a scan-order bug would surface as ordering
++    // drift.
++    use a3s_memory::MemoryStore as _;
++    let root = tempfile::tempdir().unwrap();
++    let store = VecMemoryStore::open(root.path()).unwrap();
++    for index in 0..200 {
++        let mut filler = MemoryItem::new(format!(
++            "filler record {index} about harbor cranes and tide tables"
++        ));
++        filler.importance = 0.5;
++        store.store(filler).await.unwrap();
++    }
++    for (id, content) in [
++        ("m1", "the workspace prefers rust-analyzer navigation"),
++        ("m2", "navigation preference: rust-analyzer over rls"),
++        ("m3", "unrelated note about compiler flags"),
++    ] {
++        let mut item = MemoryItem::new(content);
++        item.importance = 0.9;
++        store.store(item).await.unwrap();
++        let _ = id;
++    }
++    let hits = store
++        .search("rust-analyzer navigation preference", 5)
++        .await
++        .unwrap();
++    assert!(
++        hits.len() >= 2,
++        "both navigation memories must surface: {:?}",
++        hits.iter()
++            .map(|hit| hit.content.as_str())
++            .collect::<Vec<_>>()
++    );
++    assert!(
++        hits[0].content.contains("preference") || hits[0].content.contains("prefers"),
++        "FTS ranking order preserved (the preference memories outrank filler): {:?}",
++        hits.iter()
++            .map(|hit| hit.content.as_str())
++            .collect::<Vec<_>>()
++    );
++    assert!(
++        hits.iter()
++            .all(|hit| !hit.content.starts_with("filler record")),
++        "filler must not crowd out the matches"
++    );
++}
++
++#[test]
++fn empty_query_returns_nothing() {
++    let root = tempfile::tempdir().unwrap();
++    let store = VecMemoryStore::open(root.path()).unwrap();
++    store.put(&record("m4", "something", 0.5)).unwrap();
++    assert!(store.recall("   ", 5).unwrap().is_empty());
++}

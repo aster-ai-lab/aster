@@ -1,0 +1,71 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on build directory
+   Compiling a3s-code-tools-api v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-tools-api)
+   Compiling mermaid-to-svg v0.1.0 (/Users/roylin/code/aster/crates/terminal/third_party/mermaid-to-svg)
+   Compiling a3s-tool-runtime v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/a3s-tool-runtime)
+   Compiling a3s-code-mermaid v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-mermaid)
+   Compiling a3s-computer-hub-core v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/a3s-computer-hub-core)
+   Compiling a3s-computer-hub-sdk v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/a3s-computer-hub-sdk)
+   Compiling a3s-code-tools v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-tools)
+   Compiling a3s-code-workspace-client v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-workspace-client)
+   Compiling a3s-computer-hub-mcp-adapter v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/a3s-computer-hub-mcp-adapter)
+   Compiling a3s-code-workspace-daemon v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-workspace-daemon)
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:145:26
+    |
+145 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:146:20
+    |
+146 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+   Compiling a3s-code-hooks v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-hooks)
+   Compiling a3s-code-announcements v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-announcements)
+   Compiling a3s-code-mcp v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-mcp)
+   Compiling a3s-code-pager-diff v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-pager-diff)
+warning: `a3s-code-tools` (lib) generated 2 warnings (run `cargo fix --lib -p a3s-code-tools` to apply 2 suggestions)
+   Compiling a3s-code-agent v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-agent)
+   Compiling a3s-code-config-types v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-config-types)
+   Compiling a3s-code-workspace v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-workspace)
+   Compiling a3s-code-subagent-resolution v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-subagent-resolution)
+   Compiling a3s-code-plugin-marketplace v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-plugin-marketplace)
+   Compiling a3s-code-http v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-http)
+   Compiling a3s-code-shell-terminal v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-shell-terminal)
+   Compiling a3s-code-pager-render v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-pager-render)
+   Compiling a3s-code-memory v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-memory)
+   Compiling a3s-code-shell-session-support v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-shell-session-support)
+   Compiling a3s-code-login v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-login)
+   Compiling a3s-code-shell v1.0.41 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-shell)
+   Compiling a3s-code-update v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-update)
+   Compiling a3s-code-pager v9.1.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-pager)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-pager` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4m 18s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_pager-8d0ac8819a5048b8)
+
+running 1 test
+test acp::a3s_spawn::argument_tests::both_stdio_entry_points_forward_the_same_model_effort_workspace_and_acl ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 10197 filtered out; finished in 10.91s
+

@@ -1,0 +1,14 @@
+test_checksum_tampering_never_replaces_a_binary (tests.cli_pair_delivery.PairDelivery.test_checksum_tampering_never_replaces_a_binary) ... ok
+test_failed_first_install_leaves_neither_binary (tests.cli_pair_delivery.PairDelivery.test_failed_first_install_leaves_neither_binary) ... ok
+test_matching_checksums_do_not_allow_mixed_build_identity (tests.cli_pair_delivery.PairDelivery.test_matching_checksums_do_not_allow_mixed_build_identity) ... ok
+test_missing_binary_refuses_before_packaging (tests.cli_pair_delivery.PairDelivery.test_missing_binary_refuses_before_packaging) ... ok
+test_package_manifest_and_successful_install (tests.cli_pair_delivery.PairDelivery.test_package_manifest_and_successful_install) ... ok
+test_package_refuses_different_source_identities (tests.cli_pair_delivery.PairDelivery.test_package_refuses_different_source_identities) ... ok
+test_rollback_preserves_original_symlink (tests.cli_pair_delivery.PairDelivery.test_rollback_preserves_original_symlink) ... ok
+test_second_promotion_failure_rolls_back_first_binary (tests.cli_pair_delivery.PairDelivery.test_second_promotion_failure_rolls_back_first_binary) ... ok
+test_staging_failure_preserves_pair (tests.cli_pair_delivery.PairDelivery.test_staging_failure_preserves_pair) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 11.690s
+
+OK

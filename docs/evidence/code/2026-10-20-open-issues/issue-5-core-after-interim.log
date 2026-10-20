@@ -1,0 +1,21 @@
+
+running 16 tests
+test durable_memory_vec::tests::lazy_store_opens_without_an_embedding_column ... ok
+test durable_memory_vec::tests::a_second_open_is_refused_while_the_collection_is_already_open ... ok
+test durable_memory_vec::tests::a_foreign_schema_refuses_the_embedding_column ... ok
+test durable_memory_vec::tests::a_new_collection_has_no_embedding_column ... ok
+test durable_memory_vec::tests::reopen_sees_persisted_records ... ok
+test durable_memory_vec::tests::empty_query_returns_nothing ... ok
+test durable_memory_vec::tests::memory_store_trait_roundtrip ... ok
+test durable_memory_vec::tests::an_existing_embedding_column_keeps_its_dimension ... ok
+test durable_memory_vec::tests::insert_and_fts_recall_roundtrip ... ok
+test durable_memory_vec::tests::a_foreign_schema_refuses_the_embedding_column_on_the_lazy_store ... ok
+test durable_memory_vec::tests::lazy_store_opens_on_first_search_and_imports_legacy_json_once ... ok
+test durable_memory_vec::tests::a_skipped_legacy_file_keeps_the_items_directory ... ok
+test durable_memory_vec::tests::lazy_stores_share_the_canonical_collection_until_the_last_handle_drops ... ok
+test durable_memory_vec::tests::lazy_store_writes_and_recalls_an_existing_embedding_column ... ok
+test durable_memory_vec::tests::concurrent_lazy_first_use_shares_one_open_and_retries_a_failed_open ... ok
+test durable_memory_vec::tests::search_over_many_records_returns_ranked_hits_without_scan_order ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 5254 filtered out; finished in 17.80s
+

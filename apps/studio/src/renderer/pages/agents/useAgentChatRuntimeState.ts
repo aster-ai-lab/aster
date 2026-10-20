@@ -2,6 +2,7 @@ import { isToolUIPart } from 'ai'
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { dataApiService } from '@data/DataApiService'
 import {
   createOverlayRefreshHandoff,
   useMessageStreamingLayers
@@ -25,7 +26,6 @@ import {
 } from '@renderer/hooks/useConversationTurnController'
 import { useExecutionOverlay } from '@renderer/hooks/useExecutionOverlay'
 import { useTopicOverlayHandoffOnTerminal, useTopicStreamStatus } from '@renderer/hooks/useTopicStreamStatus'
-import { dataApiService } from '@data/DataApiService'
 import { ipcApi } from '@renderer/ipc'
 import type { AgentComposerSendOptions } from '@renderer/pages/agents/AgentComposer'
 import { turnFileEdits } from '@renderer/pages/agents/taskConversation/turn'
@@ -65,7 +65,10 @@ export interface AgentTurnInput {
 
 export function getAgentTurnParts(input: AgentTurnInput): CherryMessagePart[] {
   const parts = input.options?.body?.userMessageParts
-  return parts ?? (input.text ? [{ type: 'text', text: input.text }] : [])
+  const content: CherryMessagePart[] = parts ?? (input.text ? [{ type: 'text', text: input.text }] : [])
+  return input.options?.body?.turnContext?.planFirst === true
+    ? [...content.filter((part) => part.type !== 'data-task-plan'), { type: 'data-task-plan', data: { mode: 'plan' } }]
+    : content.filter((part) => part.type !== 'data-task-plan')
 }
 
 function getToolNameFromPart(part: AskUserQuestionApprovalPart): string {
@@ -135,7 +138,7 @@ export interface AgentChatRuntimeState {
   deleteMessage: (messageId: string) => Promise<void>
   respondToolApproval: (input: MessageToolApprovalInput) => Promise<void>
   composerContext: ComposerContextValue
-  editing?: AgentSessionEditDraft
+  editing?: AgentSessionEditDraft & { restoreFiles?: boolean }
   editBusy: boolean
   startEditing: (messageId: string) => Promise<void>
   cancelEditing: () => void
@@ -248,6 +251,7 @@ export function useAgentChatRuntimeState({
   }, [reservedMessages, seedReservedMessages, sessionMessagesEnabled])
 
   const { activeExecutions, setMessages, stop } = useChatWithHistory(sessionTopicId, uiMessages, refresh)
+  const { status: streamStatus, isPending, isTurnActive, pendingApprovals } = useTopicStreamStatus(sessionTopicId)
   const historyAdapter = useMemo<ConversationHistoryAdapter>(
     () => ({
       seedReservedMessages,
@@ -379,6 +383,13 @@ export function useAgentChatRuntimeState({
     async (input: MessageToolApprovalInput) => {
       const { match, approved, reason, updatedInput } = input
       const approvalId = match.approvalId
+      const binding = pendingApprovals?.find(
+        (approval) =>
+          approval.approvalId === approvalId &&
+          approval.messageId === match.messageId &&
+          approval.toolCallId === match.toolCallId
+      )
+      if (pendingApprovals && !binding) throw new Error('Tool approval is no longer available')
       const optimisticToolCallId = isAskUserQuestionApprovalResponse(input) ? match.toolCallId : undefined
 
       if (optimisticToolCallId) {
@@ -396,7 +407,15 @@ export function useAgentChatRuntimeState({
           reason,
           updatedInput,
           topicId: sessionTopicId,
-          anchorId: match.messageId
+          anchorId: match.messageId,
+          ...(binding
+            ? {
+                executionId: binding.executionId,
+                anchorMessageId: binding.anchorMessageId,
+                messageId: binding.messageId,
+                toolCallId: binding.toolCallId
+              }
+            : {})
         })
       } catch (error) {
         if (optimisticToolCallId) removeOptimisticAskUserQuestionInput(optimisticToolCallId)
@@ -417,17 +436,17 @@ export function useAgentChatRuntimeState({
       })
       void Promise.resolve(refresh()).catch(() => undefined)
     },
-    [refresh, removeOptimisticAskUserQuestionInput, sessionTopicId]
+    [pendingApprovals, refresh, removeOptimisticAskUserQuestionInput, sessionTopicId]
   )
   const toolApprovalComposerOverrides = useToolApprovalComposerOverrides({
     partsByMessageId,
     persistedPartsByMessageId,
     streamingLayers,
     dismissedApprovalIds,
+    pendingApprovals,
     onRespond: respondToolApproval
   })
-  const { isPending } = useTopicStreamStatus(sessionTopicId)
-  const editBusy = isPending || editPending || toolApprovalComposerOverrides.length > 0
+  const editBusy = isTurnActive || isPending || editPending || toolApprovalComposerOverrides.length > 0
   const cancelEditing = useCallback(() => {
     if (!editRequestRef.current) setEditDraft(undefined)
   }, [])
@@ -500,11 +519,20 @@ export function useAgentChatRuntimeState({
     [editBusy, editing, partsByMessageId, reportEditError, send, sessionId, t, uiMessages]
   )
 
+  const stopWaitingTurn = useCallback(async () => {
+    try {
+      await stop()
+    } catch {
+      toast.error(t('workbench.approval.stop_failed'))
+    }
+  }, [stop, t])
+
   const composerContext = useMemo<ComposerContextValue>(
     () => ({
-      overrides: toolApprovalComposerOverrides
+      overrides: toolApprovalComposerOverrides,
+      stop: streamStatus === 'awaiting-approval' || streamStatus === 'awaiting-form' ? stopWaitingTurn : undefined
     }),
-    [toolApprovalComposerOverrides]
+    [stopWaitingTurn, streamStatus, toolApprovalComposerOverrides]
   )
 
   return {

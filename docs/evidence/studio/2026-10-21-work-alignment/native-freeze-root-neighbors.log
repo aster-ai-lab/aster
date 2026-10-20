@@ -1,0 +1,29 @@
+
+running 24 tests
+test app_updater::delivery_manifest::tests::only_the_explicit_debug_relaunch_can_use_checkout_resources ... ok
+test app_updater::tests::a_missing_local_release_is_unpublished ... ok
+test app_updater::delivery_tests::bare_host_updates_are_refused ... ok
+test app_updater::delivery_tests::absent_or_failed_installed_identity_is_retried ... ok
+test app_updater::delivery_tests::update_errors_round_trip_and_refuse_unknown_codes ... ok
+test app_updater::delivery_tests::installed_identity_is_cached_only_after_success_and_for_the_exact_executable ... ok
+test app_updater::tests::progress_stops_before_one_hundred_until_the_file_is_complete ... ok
+test app_updater::tests::current_feed_rejects_a_missing_digest ... ok
+test app_updater::delivery_tests::recoverable_install_failure_restores_ready_and_blocks_another_installer ... ok
+test app_updater::tests::digest_compare_rejects_a_different_hash ... ok
+test app_updater::delivery_tests::a_previous_backup_is_preserved_without_touching_either_generation ... ok
+test app_updater::tests::newer_remote_versions_install_and_older_ones_do_not ... ok
+test app_updater::delivery_tests::a_failed_check_preserves_the_download_for_retry ... ok
+test app_updater::delivery_tests::an_executable_without_companions_is_not_a_studio_delivery ... ok
+test app_updater::delivery_tests::isolated_bundle_upgrade_and_rollback_keep_the_whole_generation ... ok
+test app_updater::delivery_tests::installing_owns_busy_until_settled ... ok
+test app_updater::tests::headers_expose_status_and_length ... ok
+test tenant::delivery_tests::linux_bundle_reads_its_explicit_tenant_without_checkout_or_process_environment ... ok
+test app_updater::delivery_manifest::tests::product_tenant_and_release_version_are_exact_even_with_a_shared_bundle_id ... ok
+test app_updater::delivery_manifest::tests::complete_generation_rejects_changed_or_missing_companions ... ok
+test app_updater::tests::zip_slip_and_extra_roots_are_refused ... ok
+test app_updater::delivery_manifest::tests::missing_declaration_and_resource_escape_refuse_activation ... ok
+test app_updater::delivery_tests::relaunch_open_failure_restores_the_old_bundle_and_retains_the_failed_generation ... ok
+test app_updater::delivery_tests::successful_relaunch_removes_only_the_supplied_backup ... ok
+
+test result: ok. 24 passed; 0 failed; 0 ignored; 0 measured; 846 filtered out; finished in 5.01s
+

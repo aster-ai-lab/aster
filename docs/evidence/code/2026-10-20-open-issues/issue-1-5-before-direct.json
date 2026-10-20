@@ -1,0 +1,22 @@
+{
+  "binary": "/Users/roylin/code/aster/target/debug/deps/a3s_code_core-3b568ae695dcf868",
+  "binarySha256": "3cb17562b572dfe8327a6e04b2dfae8f4bab67fd45189bdb53a51e11e8368270",
+  "compiledBy": "issue-4-before-regression.log",
+  "cases": [
+    {
+      "test": "durable_memory_vec::tests::lazy_stores_share_the_canonical_collection_until_the_last_handle_drops",
+      "exitCode": 101,
+      "log": "issue-5-core-before-direct.log"
+    },
+    {
+      "test": "agent_api::goal_facade::tests::execution::attestation::settled_workspace_mutation_is_progress_even_when_goal_judgment_is_not_achieved",
+      "exitCode": 101,
+      "log": "issue-1-progress-before-direct.log"
+    },
+    {
+      "test": "goal_control::continuation::tests::a_deadline_horizon_does_not_stop_after_one_unfinished_slice",
+      "exitCode": 101,
+      "log": "issue-1-policy-before-direct.log"
+    }
+  ]
+}

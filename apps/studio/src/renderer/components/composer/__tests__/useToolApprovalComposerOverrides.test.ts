@@ -1,5 +1,5 @@
 import { MockCacheUtils } from '@test-mocks/renderer/CacheService'
-import { act, renderHook } from '@testing-library/react'
+import { act, fireEvent, render, renderHook, screen, waitFor } from '@testing-library/react'
 import type { ReactElement } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -74,6 +74,37 @@ describe('useToolApprovalComposerOverrides', () => {
     expect(result.current.map((override) => override.priority)).toEqual([100, 90])
   })
 
+  it('renders native boolean approval without an unsupported rejection-note affordance', async () => {
+    const onRespond = vi.fn().mockResolvedValue(undefined)
+    const part = makePermissionPart()
+    const { result } = renderHook(() =>
+      useToolApprovalComposerOverrides({
+        persistedPartsByMessageId: { 'message-1': [part] },
+        partsByMessageId: { 'message-1': [part] },
+        pendingApprovals: [
+          {
+            executionId: 'run',
+            anchorMessageId: 'message-1',
+            messageId: 'message-1',
+            approvalId: 'approval-read',
+            toolCallId: 'call-read'
+          }
+        ],
+        onRespond
+      })
+    )
+    const element = result.current[0].render({}) as ReactElement
+    render(element)
+    expect(screen.queryByRole('button', { name: '添加说明' })).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: '拒绝' }))
+    await waitFor(() =>
+      expect(onRespond).toHaveBeenCalledWith({
+        match: expect.objectContaining({ approvalId: 'approval-read' }),
+        approved: false
+      })
+    )
+  })
+
   it('hides an approval the route already accepted', () => {
     const { result } = renderHook(() =>
       useToolApprovalComposerOverrides({
@@ -118,6 +149,93 @@ describe('useToolApprovalComposerOverrides', () => {
       })
     )
 
+    expect(result.current).toEqual([])
+  })
+
+  it('recovers only the current native approval when an older same-anchor overlay hides its persisted part', () => {
+    const previous = makePermissionPart({ state: 'approval-responded' })
+    const pending = makePermissionPart({ toolCallId: 'call-next', approval: { id: 'approval-next' } })
+    const { result } = renderHook(() =>
+      useToolApprovalComposerOverrides({
+        persistedPartsByMessageId: { 'message-1': [previous, pending] },
+        partsByMessageId: { 'message-1': [previous] },
+        streamingLayers: {
+          historyPartsByMessageId: { 'message-1': [previous, pending] },
+          liveMessageIds: ['message-1']
+        },
+        pendingApprovals: [
+          {
+            executionId: 'run-current',
+            anchorMessageId: 'message-1',
+            messageId: 'message-1',
+            approvalId: 'approval-next',
+            toolCallId: 'call-next'
+          }
+        ],
+        onRespond: vi.fn()
+      })
+    )
+
+    expect(result.current.map((override) => override.id)).toEqual(['tool-permission:approval-next'])
+  })
+
+  it('does not revive a persisted pending approval without a current native receiver', () => {
+    const { result } = renderHook(() =>
+      useToolApprovalComposerOverrides({
+        persistedPartsByMessageId: { 'message-1': [makePermissionPart()] },
+        partsByMessageId: { 'message-1': [makePermissionPart()] },
+        pendingApprovals: [],
+        onRespond: vi.fn()
+      })
+    )
+    expect(result.current).toEqual([])
+  })
+
+  it('does not offer legacy edited answers to a native boolean receiver and keeps settled answers settled', () => {
+    const pending = makeAskUserQuestionPart()
+    const binding = {
+      executionId: 'run-current',
+      anchorMessageId: 'main-anchor',
+      messageId: 'repair-message',
+      approvalId: 'approval-ask',
+      toolCallId: 'call-ask'
+    }
+    const { result, rerender } = renderHook(
+      ({ persistedPart }) =>
+        useToolApprovalComposerOverrides({
+          persistedPartsByMessageId: { 'repair-message': [persistedPart] },
+          partsByMessageId: {
+            'main-anchor': [makePermissionPart({ state: 'approval-responded' })],
+            'repair-message': [pending]
+          },
+          pendingApprovals: [binding],
+          onRespond: vi.fn()
+        }),
+      { initialProps: { persistedPart: pending } }
+    )
+    expect(result.current).toEqual([])
+    rerender({ persistedPart: makeAskUserQuestionPart({ state: 'approval-responded' }) })
+    expect(result.current).toEqual([])
+  })
+
+  it('does not recover a pending approval from another message or tool call', () => {
+    const pending = makePermissionPart()
+    const { result } = renderHook(() =>
+      useToolApprovalComposerOverrides({
+        persistedPartsByMessageId: { 'message-other': [pending] },
+        partsByMessageId: { 'message-other': [pending] },
+        pendingApprovals: [
+          {
+            executionId: 'run-current',
+            anchorMessageId: 'message-1',
+            messageId: 'message-1',
+            approvalId: 'approval-read',
+            toolCallId: 'call-other'
+          }
+        ],
+        onRespond: vi.fn()
+      })
+    )
     expect(result.current).toEqual([])
   })
 

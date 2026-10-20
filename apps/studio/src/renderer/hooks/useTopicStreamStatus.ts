@@ -6,9 +6,16 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { loggerService } from '@logger'
 import { useSharedCache, useSharedCacheValue } from '@renderer/data/hooks/useCache'
-import { type ActiveExecution, classifyTurn, type TopicStreamStatus } from '@shared/ai/transport'
+import {
+  type ActiveExecution,
+  classifyTurn,
+  type PendingToolApproval,
+  type TopicStreamStatus
+} from '@shared/ai/transport'
+import { readStudioRuntime } from '@shared/studioRuntime'
 
 const logger = loggerService.withContext('useTopicStreamStatus')
+const NO_APPROVALS: readonly PendingToolApproval[] = Object.freeze([])
 
 interface TopicStreamStatusView {
   status: TopicStreamStatus | undefined
@@ -20,6 +27,8 @@ interface TopicStreamStatusView {
    */
   awaitingApprovalAnchors: ActiveExecution[]
   isPending: boolean
+  isTurnActive: boolean
+  pendingApprovals?: readonly PendingToolApproval[]
   /**
    * `done` AND this window's `lastSeenCompletion` does not match the
    * authoritative `lastCompletedAt`. Read-receipt model: per-completion
@@ -46,6 +55,7 @@ export function useTopicStreamStatus(topicId: string): TopicStreamStatusView {
 
   const flags = classifyTurn(status)
   const isPending = flags.isStreamLive
+  const pendingApprovals = readStudioRuntime() ? (entry?.pendingApprovals ?? NO_APPROVALS) : undefined
   const isFulfilled = status === 'done' && lastCompletedAt !== lastSeenCompletion
 
   const markSeen = useCallback(() => {
@@ -54,7 +64,16 @@ export function useTopicStreamStatus(topicId: string): TopicStreamStatusView {
     }
   }, [lastCompletedAt, lastSeenCompletion, setLastSeenCompletion])
 
-  return { status, activeExecutions, awaitingApprovalAnchors, isPending, isFulfilled, markSeen }
+  return {
+    status,
+    activeExecutions,
+    awaitingApprovalAnchors,
+    isPending,
+    isTurnActive: flags.isTurnActive,
+    pendingApprovals,
+    isFulfilled,
+    markSeen
+  }
 }
 
 export function useTopicAwaitingApproval(topicId: string): boolean {
@@ -68,19 +87,26 @@ export function useTopicAwaitingApproval(topicId: string): boolean {
 export function useTopicDbRefreshOnAwaitingApproval(topicId: string, refresh: () => Promise<unknown>): void {
   const entry = useSharedCacheValue(`topic.stream.statuses.${topicId}` as const)
   const status = entry?.status
+  const pendingApprovalKey = entry?.pendingApprovals?.map((approval) => approval.approvalId).join('\0')
   const refreshRef = useRef(refresh)
   refreshRef.current = refresh
-  const prevRef = useRef<{ status: typeof status; topicId: string } | undefined>(undefined)
+  const prevRef = useRef<
+    { status: typeof status; topicId: string; pendingApprovalKey: typeof pendingApprovalKey } | undefined
+  >(undefined)
   useEffect(() => {
     const previous = prevRef.current
     const prev = previous?.topicId === topicId ? previous.status : undefined
-    prevRef.current = { status, topicId }
-    if (classifyTurn(prev).isStreamLive && classifyTurn(status).isAwaitingApproval) {
+    prevRef.current = { status, topicId, pendingApprovalKey }
+    const nativePendingChanged =
+      pendingApprovalKey !== undefined &&
+      pendingApprovalKey !== '' &&
+      (previous?.topicId !== topicId || previous.pendingApprovalKey !== pendingApprovalKey)
+    if ((classifyTurn(prev).isStreamLive || nativePendingChanged) && classifyTurn(status).isAwaitingApproval) {
       void refreshRef.current().catch(() => {
         // Caller logs; the invalidation signal must not throw out of the effect.
       })
     }
-  }, [status, topicId])
+  }, [status, topicId, pendingApprovalKey])
 }
 
 /**
@@ -102,18 +128,24 @@ export function useTopicOverlayHandoffOnTerminal(topicId: string, onHandoff: () 
   const status = entry?.status
   const onHandoffRef = useRef(onHandoff)
   onHandoffRef.current = onHandoff
-  const prevRef = useRef<{ status: typeof status; topicId: string } | undefined>(undefined)
+  const completion = entry?.turnId ?? entry?.lastCompletedAt
+  const prevRef = useRef<{ status: typeof status; topicId: string; completion: typeof completion } | undefined>(
+    undefined
+  )
   useEffect(() => {
     const previous = prevRef.current
-    const prev = previous?.topicId === topicId ? previous.status : undefined
-    prevRef.current = { status, topicId }
+    prevRef.current = { status, topicId, completion }
     const next = classifyTurn(status)
-    if (classifyTurn(prev).isStreamLive && next.isTerminal && !next.isAwaitingApproval) {
+    if (
+      next.isTerminal &&
+      !next.isAwaitingApproval &&
+      (previous?.topicId !== topicId || previous.status !== status || previous.completion !== completion)
+    ) {
       void (async () => {
         await onHandoffRef.current()
       })().catch((error) => {
         logger.warn('Topic overlay handoff failed', error as Error, { topicId })
       })
     }
-  }, [status, topicId])
+  }, [completion, status, topicId])
 }

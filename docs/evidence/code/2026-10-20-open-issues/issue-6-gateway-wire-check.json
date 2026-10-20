@@ -1,0 +1,16 @@
+{
+  "command": [
+    "cargo",
+    "check",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-gateway",
+    "--features",
+    "wire"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 151.58,
+  "log": "issue-6-gateway-wire-check.log",
+  "log_sha256": "779029748cdc01a23a935675b65d3dfe3a8bf57b47b1acdd943bb0488ff9fce8"
+}

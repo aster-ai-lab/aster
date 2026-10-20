@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'agent_plane::turns::goal_snapshot::tests::native_alignment_goal_plan_revision_requires_an_explicit_nullable_field' (52795224) panicked at /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/goal_snapshot_tests.rs:238:5:
+assertion `left == right` failed
+  left: Null
+ right: "invalid_snapshot"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agent_plane::turns::goal_snapshot::tests::native_alignment_goal_plan_revision_requires_an_explicit_nullable_field ... FAILED
+
+failures:
+
+failures:
+    agent_plane::turns::goal_snapshot::tests::native_alignment_goal_plan_revision_requires_an_explicit_nullable_field
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 866 filtered out; finished in 0.01s
+

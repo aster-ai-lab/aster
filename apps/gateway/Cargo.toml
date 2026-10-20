@@ -3,6 +3,7 @@ name = "a3s-gateway"
 version = "1.1.1"
 edition = "2021"
 rust-version = "1.88"
+publish = false
 authors = ["Kense Labs"]
 license = "MIT"
 repository = "https://github.com/kense-labs/gateway"
@@ -83,7 +84,7 @@ futures-util = "0.3"
 # Serialization
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-a3s-acl = "=0.3.0"
+a3s-acl = { path = "../../crates/acl", version = "=0.3.0" }
 sha2 = "0.10"
 argon2 = "0.5"
 url = "2"
@@ -145,7 +146,7 @@ kube = { version = "2.0", features = ["client", "runtime"], optional = true }
 k8s-openapi = { version = "0.26", features = ["latest"], optional = true }
 
 # Self-update
-a3s-updater = "=0.3.0"
+a3s-updater = { path = "../../crates/updater", version = "=0.3.0" }
 # Lexical System One. Neural checkpoints stay out of the gateway binary.
 a3s-apofasi = { path = "../../crates/apofasi", default-features = false }
 # Platform PP-OCRv6. The weight bundle is installed at runtime, not vendored.
@@ -153,7 +154,7 @@ a3s-use-bge = { path = "../../crates/bge", default-features = false, features = 
 a3s-use-ocr = { path = "../../crates/ocr", default-features = false, features = ["ppocr-v6"] }
 
 # Inline LLM/MCP wire firewall (agentfw-style): the detection + masking brain (optional)
-a3s-sentry = { version = "=0.7.0", optional = true }
+a3s-sentry = { path = "../../crates/sentry", version = "=0.7.0", optional = true }
 
 [features]
 default = []

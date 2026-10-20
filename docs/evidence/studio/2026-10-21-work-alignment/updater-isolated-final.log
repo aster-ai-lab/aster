@@ -1,0 +1,75 @@
+warning: fields `version`, `notes`, `sha256`, `path`, `size`, and `published_at` are never read
+ --> .tmp/studio-updater-final/source.rs:4:5
+  |
+3 | struct ReadyUpdate {
+  |        ----------- fields in this struct
+4 |     version: String,
+  |     ^^^^^^^
+5 |     notes: String,
+  |     ^^^^^
+6 |     sha256: String,
+  |     ^^^^^^
+7 |     path: PathBuf,
+  |     ^^^^
+8 |     size: u64,
+  |     ^^^^
+9 |     published_at: String,
+  |     ^^^^^^^^^^^^
+  |
+  = note: `ReadyUpdate` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: multiple variants are never constructed
+  --> .tmp/studio-updater-final/source.rs:22:5
+   |
+20 | enum UpdateFail {
+   |      ---------- variants in this enum
+21 |     InProgress,
+22 |     NotPublished,
+   |     ^^^^^^^^^^^^
+23 |     UpToDate,
+   |     ^^^^^^^^
+24 |     Unavailable,
+   |     ^^^^^^^^^^^
+...
+27 |     ProductMismatch,
+   |     ^^^^^^^^^^^^^^^
+28 |     IntegrityFailed,
+   |     ^^^^^^^^^^^^^^^
+29 |     InstallFailed,
+   |     ^^^^^^^^^^^^^
+30 |     RestartFailed,
+   |     ^^^^^^^^^^^^^
+   |
+   = note: `UpdateFail` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: method `disarm` is never used
+  --> .tmp/studio-updater-final/source.rs:56:8
+   |
+40 | impl BusyGuard {
+   | -------------- method in this implementation
+...
+56 |     fn disarm(&mut self) {
+   |        ^^^^^^
+
+warning: function `schedule_relaunch` is never used
+   --> .tmp/studio-updater-final/source.rs:215:4
+    |
+215 | fn schedule_relaunch(bundle: &Path, backup: Option<&Path>) -> Result<(), UpdateFail> {
+    |    ^^^^^^^^^^^^^^^^^
+
+warning: 4 warnings emitted
+
+
+running 8 tests
+test a_failed_check_preserves_the_download_for_retry ... ok
+test installing_owns_busy_until_settled ... ok
+test recoverable_install_failure_restores_ready_and_blocks_another_installer ... ok
+test bare_host_updates_are_refused ... ok
+test an_executable_without_companions_is_not_a_studio_delivery ... ok
+test isolated_bundle_upgrade_and_rollback_keep_the_whole_generation ... ok
+test relaunch_open_failure_restores_the_old_bundle_and_retains_the_failed_generation ... ok
+test successful_relaunch_removes_only_the_supplied_backup ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.52s
+

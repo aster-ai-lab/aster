@@ -1,0 +1,19 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "aster",
+    "--bin",
+    "aster",
+    "workspace_command",
+    "--",
+    "--nocapture"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 325.58,
+  "log": "issue-7-after.log",
+  "log_sha256": "44579cdf423a7dbfdf698f821b260c1ea8452b4d2d8531fa7a5b88d3715eb16f"
+}

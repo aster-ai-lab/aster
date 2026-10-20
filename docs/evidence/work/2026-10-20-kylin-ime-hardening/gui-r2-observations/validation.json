@@ -1,0 +1,318 @@
+{
+  "installed_commit": "d588d6d5e186e0b960198af3dd75956ea4cd890367e47d4dcccf519b5a369bc8",
+  "overall_gui_acceptance": "failed_default_async_snooper_off",
+  "runs": [
+    {
+      "run": "run-O2FBdB",
+      "dom_event_count": 83,
+      "renderer_error_count": 0,
+      "enter_capture_events": [
+        {
+          "sequence": 80,
+          "type": "keydown",
+          "repeat": false,
+          "timeStamp": 48349,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        },
+        {
+          "sequence": 82,
+          "type": "keyup",
+          "repeat": false,
+          "timeStamp": 48414,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        }
+      ],
+      "stream_requests": 0,
+      "nonstream_requests": 0,
+      "offline_reply_persisted": false
+    },
+    {
+      "run": "run-wCZiI4",
+      "dom_event_count": 219,
+      "renderer_error_count": 0,
+      "enter_capture_events": [
+        {
+          "sequence": 214,
+          "type": "keydown",
+          "repeat": true,
+          "timeStamp": 72003,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        },
+        {
+          "sequence": 216,
+          "type": "keyup",
+          "repeat": false,
+          "timeStamp": 72068,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        },
+        {
+          "sequence": 218,
+          "type": "keyup",
+          "repeat": false,
+          "timeStamp": 72068,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        }
+      ],
+      "stream_requests": 0,
+      "nonstream_requests": 0,
+      "offline_reply_persisted": false
+    },
+    {
+      "run": "run-o97yDH",
+      "dom_event_count": 187,
+      "renderer_error_count": 0,
+      "enter_capture_events": [
+        {
+          "sequence": 180,
+          "type": "keydown",
+          "repeat": false,
+          "timeStamp": 57210,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        },
+        {
+          "sequence": 182,
+          "type": "keyup",
+          "repeat": false,
+          "timeStamp": 57273,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        }
+      ],
+      "stream_requests": 1,
+      "nonstream_requests": 1,
+      "offline_reply_persisted": true
+    },
+    {
+      "run": "run-dTuzP4",
+      "dom_event_count": 445,
+      "renderer_error_count": 0,
+      "enter_capture_events": [
+        {
+          "sequence": 180,
+          "type": "keydown",
+          "repeat": false,
+          "timeStamp": 78592,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        },
+        {
+          "sequence": 182,
+          "type": "keyup",
+          "repeat": false,
+          "timeStamp": 78653,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        },
+        {
+          "sequence": 278,
+          "type": "keyup",
+          "repeat": false,
+          "timeStamp": 161158,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        },
+        {
+          "sequence": 280,
+          "type": "keydown",
+          "repeat": false,
+          "timeStamp": 196497,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        },
+        {
+          "sequence": 282,
+          "type": "keyup",
+          "repeat": false,
+          "timeStamp": 196558,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        },
+        {
+          "sequence": 424,
+          "type": "keydown",
+          "repeat": false,
+          "timeStamp": 218150,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        },
+        {
+          "sequence": 426,
+          "type": "keydown",
+          "repeat": true,
+          "timeStamp": 218812,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        },
+        {
+          "sequence": 428,
+          "type": "keydown",
+          "repeat": true,
+          "timeStamp": 218853,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        },
+        {
+          "sequence": 430,
+          "type": "keydown",
+          "repeat": true,
+          "timeStamp": 218893,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        },
+        {
+          "sequence": 432,
+          "type": "keydown",
+          "repeat": true,
+          "timeStamp": 218936,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        },
+        {
+          "sequence": 434,
+          "type": "keydown",
+          "repeat": true,
+          "timeStamp": 218977,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        },
+        {
+          "sequence": 436,
+          "type": "keydown",
+          "repeat": true,
+          "timeStamp": 219019,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        },
+        {
+          "sequence": 438,
+          "type": "keydown",
+          "repeat": true,
+          "timeStamp": 219064,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        },
+        {
+          "sequence": 440,
+          "type": "keydown",
+          "repeat": true,
+          "timeStamp": 219105,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        },
+        {
+          "sequence": 442,
+          "type": "keydown",
+          "repeat": true,
+          "timeStamp": 219146,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        },
+        {
+          "sequence": 444,
+          "type": "keyup",
+          "repeat": false,
+          "timeStamp": 219183,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        }
+      ],
+      "stream_requests": 3,
+      "nonstream_requests": 3,
+      "offline_reply_persisted": true
+    },
+    {
+      "run": "run-t8QUV5",
+      "dom_event_count": 219,
+      "renderer_error_count": 0,
+      "enter_capture_events": [
+        {
+          "sequence": 214,
+          "type": "keydown",
+          "repeat": true,
+          "timeStamp": 36136,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        },
+        {
+          "sequence": 216,
+          "type": "keyup",
+          "repeat": false,
+          "timeStamp": 36197,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        },
+        {
+          "sequence": 218,
+          "type": "keyup",
+          "repeat": false,
+          "timeStamp": 36197,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        }
+      ],
+      "stream_requests": 0,
+      "nonstream_requests": 0,
+      "offline_reply_persisted": false
+    },
+    {
+      "run": "run-vzqGQ5",
+      "dom_event_count": 187,
+      "renderer_error_count": 0,
+      "enter_capture_events": [
+        {
+          "sequence": 180,
+          "type": "keydown",
+          "repeat": false,
+          "timeStamp": 40665,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        },
+        {
+          "sequence": 182,
+          "type": "keyup",
+          "repeat": false,
+          "timeStamp": 40726,
+          "keyCode": 13,
+          "isComposing": false,
+          "viewComposing": false
+        }
+      ],
+      "stream_requests": 1,
+      "nonstream_requests": 1,
+      "offline_reply_persisted": true
+    }
+  ]
+}

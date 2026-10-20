@@ -1,0 +1,19 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "aster",
+    "--test",
+    "workspace",
+    "workspace_contains_local_rust_harness_and_both_product_binaries",
+    "--",
+    "--nocapture"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 361.43,
+  "log": "issue-6-rust-workspace-after.log",
+  "log_sha256": "25205f1c8b338b0aad0018e713f17bf72d63be20aa9c6b06dfa7647c12c4e3c7"
+}

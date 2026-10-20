@@ -1,9 +1,9 @@
 import { act, renderHook } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { TopicStreamStatus } from '@shared/ai/transport'
+import type { TopicStatusSnapshotEntry, TopicStreamStatus } from '@shared/ai/transport'
 
-const mockEntry = vi.fn<() => { status: TopicStreamStatus | undefined } | undefined>()
+const mockEntry = vi.fn<() => Partial<TopicStatusSnapshotEntry> | undefined>()
 
 // Mock at the cache layer (intra-module calls can't be intercepted at the hook).
 // The main-owned status entry is observed read-only via useSharedCacheValue.
@@ -18,6 +18,18 @@ const setStatus = (status: TopicStreamStatus | undefined) => mockEntry.mockRetur
 describe('useTopicOverlayHandoffOnTerminal', () => {
   beforeEach(() => {
     mockEntry.mockReset()
+  })
+
+  it('hands off a terminal topic first observed after its live stream ended', async () => {
+    const handoff = vi.fn(async () => {})
+    mockEntry.mockReturnValue({ status: 'done', turnId: 'completed-turn' })
+    const { rerender } = renderHook(() => useTopicOverlayHandoffOnTerminal('t', handoff))
+    expect(handoff).toHaveBeenCalledOnce()
+    rerender()
+    expect(handoff).toHaveBeenCalledOnce()
+    mockEntry.mockReturnValue({ status: 'done', turnId: 'next-completed-turn' })
+    await act(async () => rerender())
+    expect(handoff).toHaveBeenCalledTimes(2)
   })
 
   it.each<TopicStreamStatus>(['done', 'error', 'aborted'])('fires once on streaming → %s', async (terminal) => {
@@ -100,7 +112,7 @@ describe('useTopicOverlayHandoffOnTerminal', () => {
     expect(order).toEqual(['refresh', 'dispose'])
   })
 
-  it('does not carry a live edge across topic identities', async () => {
+  it('hands off the newly selected terminal topic independently of the previous live topic', async () => {
     const handoff = vi.fn(async () => {})
     setStatus('streaming')
     const { rerender } = renderHook(
@@ -113,6 +125,6 @@ describe('useTopicOverlayHandoffOnTerminal', () => {
       rerender({ topicId: 'topic-2' })
     })
 
-    expect(handoff).not.toHaveBeenCalled()
+    expect(handoff).toHaveBeenCalledOnce()
   })
 })

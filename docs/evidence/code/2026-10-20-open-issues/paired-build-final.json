@@ -1,0 +1,15 @@
+{
+  "command": [
+    "cargo",
+    "build",
+    "--locked",
+    "-p",
+    "aster",
+    "-p",
+    "a3s-code-acp"
+  ],
+  "returncode": 0,
+  "elapsed_seconds": 272.828,
+  "finished_at": "2026-10-20T12:01:53.914663+00:00",
+  "log_sha256": "4d29ce4d2e5294f14cb4b0ecf98e8a72921c3a37a3c9a849d6e716abfa479019"
+}

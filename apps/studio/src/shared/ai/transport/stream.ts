@@ -98,6 +98,15 @@ export interface ActiveExecution {
   seedFromEmpty?: boolean
 }
 
+/** A native approval receiver, bound to its current execution and transcript part. */
+export interface PendingToolApproval {
+  executionId: string
+  anchorMessageId: string
+  messageId: string
+  approvalId: string
+  toolCallId: string
+}
+
 /** Chat-tree target captured when a queued draft is created. */
 export interface ComposerChatTarget {
   parentAnchorId: string | null
@@ -116,6 +125,8 @@ export interface StudioHostContext {
 
 /** Constraints for one agent turn. They do not become the stored user message. */
 export interface StudioTurnContext {
+  /** Plan before acting; independent from the session permission posture. */
+  planFirst?: boolean
   reviewSource?: ReviewTextSource
   workbench?: import('@shared/types/workbenchProof').WorkbenchTurnPolicy
   directives: string[]
@@ -201,6 +212,9 @@ export interface TopicStatusSnapshotEntry {
   turnId?: string
   activeExecutions: ActiveExecution[]
   awaitingApprovalAnchors: ActiveExecution[]
+  /** Native receiver authority; an empty set withdraws all historical requests. */
+  pendingApprovals?: readonly PendingToolApproval[]
+  goalSnapshot?: import('@shared/types/studioGoal').StudioGoalSnapshot
   lastCompletedAt?: number
 }
 
@@ -317,6 +331,10 @@ export interface ApprovalDecision {
 }
 
 export interface AiToolApprovalRespondRequest extends ApprovalDecision {
+  executionId?: string
+  anchorMessageId?: string
+  messageId?: string
+  toolCallId?: string
   topicId?: string
   anchorId?: string
 }
@@ -373,7 +391,7 @@ export interface AiStreamAttachTerminal {
 }
 export type AiStreamAttachResponse =
   | { status: 'not-found' }
-  | { status: 'attached'; bufferedChunks: StreamChunkPayload[] }
+  | { status: 'attached'; bufferedChunks: StreamChunkPayload[]; streamStatus?: TopicStatusSnapshotEntry }
   | ({ status: 'done' } & AiStreamAttachTerminal)
   | ({ status: 'paused' } & AiStreamAttachTerminal)
   | { status: 'error'; error?: SerializedError }

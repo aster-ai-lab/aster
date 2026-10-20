@@ -1,0 +1,41 @@
+{
+  "source": "Work qualified Kylin R4 mechanisms; no installer or user data copied",
+  "files": {
+    "immodule_cache.py": {
+      "source": "apps/work/scripts/kylin-flatpak/immodule_cache.py",
+      "sha256": "c3c8432c7be945e8dc51d4b33f820ae2f083f0f8ed9866ce69c74897e162739b"
+    },
+    "kylin_im_backend.c": {
+      "source": "apps/work/scripts/kylin-flatpak/kylin_im_backend.c",
+      "sha256": "637ed80e13c8f16028d761a87e46dca670f323ba04e93eb0284eb94cee4b6d77"
+    },
+    "fcitx4_legacy_portal.patch": {
+      "source": "apps/work/scripts/kylin-flatpak/fcitx4_legacy_portal.patch",
+      "sha256": "a5330e62b2fa668920261857593b6efc38016cbcb72b4535e96091ac9e7d9755"
+    },
+    "build-fcitx4-immodule.sh": {
+      "source": "apps/work/scripts/kylin-flatpak/build-fcitx4-immodule.sh",
+      "sha256": "a1ec5ab09116e53a7f472cddfe913136f4b8f7ce6edcd99c0453f2763da68824"
+    },
+    "build-immodule.sh": {
+      "source": "apps/work/scripts/kylin-flatpak/build-immodule.sh",
+      "sha256": "5cef530f90644c3d599677732fb83f3f51f3a542cc16a92fa944b34c0d2614b9"
+    },
+    "fcitx_client_protocol_test.c": {
+      "source": "apps/work/scripts/kylin-flatpak/fcitx_client_protocol_test.c",
+      "sha256": "ced6920541e3e14b90431a9fe1042e71ea6b5a7dfedc84401e4d4e19ca69e69a"
+    },
+    "gtk_input_probe.c": {
+      "source": "apps/work/scripts/kylin-flatpak/gtk_input_probe.c",
+      "sha256": "506b6af6e683009933f0089b289f2aef2f19535239cd4b82ecf339f71b378c69"
+    },
+    "test-input-method.sh": {
+      "source": "apps/work/scripts/kylin-flatpak/test-input-method.sh",
+      "sha256": "8b1ae50be30604084fc27b1288c316a9bdca80fd709c4da49fe664a5253bd01f"
+    },
+    "kylin-launch.sh": {
+      "source": "apps/work/scripts/kylin-flatpak/kylin-launch.sh",
+      "sha256": "6a6f459d0b7561faf7de2b400012e10f5e4d34342861f25ac896f052f37a9f84"
+    }
+  }
+}

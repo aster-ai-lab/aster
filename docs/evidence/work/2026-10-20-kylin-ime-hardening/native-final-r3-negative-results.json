@@ -1,0 +1,89 @@
+{
+  "kind": "r3-final-stage-isolated-negative-results",
+  "supplied_app_commit": null,
+  "results": [
+    {
+      "name": "missing-module",
+      "command": [
+        "docker",
+        "exec",
+        "-w",
+        "/aster/target/worktrees/kylin-ime-hardening-20261020/apps/work",
+        "aster-kylin-ime-hardening",
+        "timeout",
+        "60",
+        "bash",
+        "scripts/kylin-flatpak/test-input-method.sh",
+        "/aster/target/evaluations/kylin-ime-hardening/final-r3-negatives/fixture/missing-module/files",
+        "/root/.local/share/flatpak/runtime/org.gnome.Platform/x86_64/50/7e410fa0d429fcc34f2ddd0d9b6224f1435d8640fb9759801db4f02700542353/files"
+      ],
+      "exit_status": 1,
+      "elapsed_seconds": 19.53,
+      "checks": {
+        "exit_status_1": true,
+        "protocol_exactly_8_named_passes": true,
+        "no_protocol_failures": true,
+        "gtk_started": true,
+        "gtk_phase0_timeout": true,
+        "no_controller_failure": true,
+        "no_daemon_readiness_failure": true,
+        "no_gtk_pass": true,
+        "no_chinese_commit": true,
+        "bounded_complete_log": true,
+        "specific_module_missing": true
+      },
+      "log": "native-final-r3-missing-module.log",
+      "log_sha256": "c39a52c70cb920f2fdcea8b9ba1396f231d0f2b03ffc6d78adbb01da253de113"
+    },
+    {
+      "name": "unpinned-bus",
+      "command": [
+        "docker",
+        "exec",
+        "-w",
+        "/aster/target/worktrees/kylin-ime-hardening-20261020/apps/work",
+        "aster-kylin-ime-hardening",
+        "timeout",
+        "60",
+        "bash",
+        "scripts/kylin-flatpak/test-input-method.sh",
+        "/aster/target/evaluations/kylin-ime-hardening/final-r3-negatives/fixture/unpinned-bus/files",
+        "/root/.local/share/flatpak/runtime/org.gnome.Platform/x86_64/50/7e410fa0d429fcc34f2ddd0d9b6224f1435d8640fb9759801db4f02700542353/files"
+      ],
+      "exit_status": 1,
+      "elapsed_seconds": 18.89,
+      "checks": {
+        "exit_status_1": true,
+        "protocol_exactly_8_named_passes": true,
+        "no_protocol_failures": true,
+        "gtk_started": true,
+        "gtk_phase0_timeout": true,
+        "no_controller_failure": true,
+        "no_daemon_readiness_failure": true,
+        "no_gtk_pass": true,
+        "no_chinese_commit": true,
+        "bounded_complete_log": true
+      },
+      "log": "native-final-r3-unpinned-bus.log",
+      "log_sha256": "2939f27f0b63ef0d2989f14ed2f0441aa24ddce353f09774f14e9b4bb1482a63"
+    }
+  ],
+  "all_expected_failure_causes_verified": true,
+  "app_commit": "9976324975943ee39ae5727d6c6f935b2d50e98bc1954992d7e9deda09124776",
+  "commit_binding": {
+    "status": "canonical-ship-and-installed-identity-verified",
+    "app_commit": "9976324975943ee39ae5727d6c6f935b2d50e98bc1954992d7e9deda09124776",
+    "canonical_ship": "target/packages/asterdream-0.1.2-kylin-x86_64-20261020-hardening-r3/ship",
+    "canonical_app_bundle_sha256": "5c80ccfed10fa6f3ec5fbaa140d61f2693daebee8cb754d1cc2776e67eb8d031",
+    "canonical_commit_file_sha256": "847f1304e7dbd742a71c542d752bd766aa892c65ec1f964474caed45962af749",
+    "identity_proof": "docs/evidence/work/2026-10-20-kylin-ime-hardening/native-r3-identity-proof.json",
+    "identity_proof_sha256": "71cd4289fb03d87647ae499cab567fc2b08a59b8a4cb1ed5452419a539a08592",
+    "run_receipt": "docs/evidence/work/2026-10-20-kylin-ime-hardening/native-r3-run-receipt.json",
+    "run_receipt_sha256": "5b264b6a8ff716caf2fa974ea47a78519bf4f9270e7ccb2d8e1705d4949010fb",
+    "stage_critical_files_matched_to_installed_identity_proof": 23,
+    "full_stage_manifest_rechecked_unchanged": true,
+    "raw_execution_logs_preserved": true,
+    "scope": "R3 native candidate only; no complete GUI acceptance or onefile claim. Any R4 reuse requires native identity equivalence.",
+    "fixture_identity_sha256": "d9376a7311831bfc7620769d46f73baa4adac7a523ec559a1cea48fad2f3b4f1"
+  }
+}

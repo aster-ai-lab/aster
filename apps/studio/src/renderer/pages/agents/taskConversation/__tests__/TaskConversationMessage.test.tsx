@@ -54,6 +54,7 @@ import {
   resetOfficialWritingSessionForTests
 } from '../../officialWritingAgentEdit'
 import { TaskConversationMessage } from '../TaskConversationMessage'
+import { TaskPlanningTurnsContext } from '../taskPlanMode'
 
 const mermaidRender = vi.hoisted(() => vi.fn(async () => ({ svg: '<svg data-testid="task-mermaid-svg"></svg>' })))
 const openArtifactFile = vi.hoisted(() => vi.fn())
@@ -133,6 +134,43 @@ function renderTurn(parts: CherryMessagePart[], status: MessageListItem['status'
 }
 
 describe('task conversation turn', () => {
+  it('labels the live planning turn before any plan content arrives', () => {
+    render(
+      <TaskPlanningTurnsContext value={new Set(['turn-1'])}>
+        <WorkbenchProjectLockedContext value={true}>
+          <WorkbenchAssistantMessageContext value={TaskConversationMessage}>
+            <MessagePartsScopeProvider messageId="turn-1" parts={[]}>
+              <MessageContent message={assistant('pending')} />
+            </MessagePartsScopeProvider>
+          </WorkbenchAssistantMessageContext>
+        </WorkbenchProjectLockedContext>
+      </TaskPlanningTurnsContext>
+    )
+    expect(screen.getByRole('status')).toHaveAttribute('aria-label', zhCn['workbench.plan.generating'])
+  })
+
+  it('renders canonical plan steps as persistent history without claiming unknown states completed', () => {
+    const { container } = renderTurn([
+      {
+        type: 'dynamic-tool',
+        toolName: 'TodoWrite',
+        toolCallId: 'plan',
+        state: 'output-available',
+        input: {
+          variant: 'TodoWrite',
+          plan: [
+            { step: 'Read inputs', status: 'completed' },
+            { step: 'Verify result', status: 'failed' }
+          ]
+        },
+        output: {}
+      }
+    ] as CherryMessagePart[])
+    expect(container.querySelector('[data-task-plan-snapshot]')).toHaveTextContent('Read inputs')
+    expect(container.querySelectorAll('[data-task-plan-status="completed"]')).toHaveLength(1)
+    expect(container.querySelectorAll('[data-task-plan-status="failed"]')).toHaveLength(1)
+  })
+
   it('mounts the OpenUI host while the model fence is still streaming', () => {
     render(
       <WorkbenchProjectLockedContext value={true}>

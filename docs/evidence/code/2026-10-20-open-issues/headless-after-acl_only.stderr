@@ -1,0 +1,5 @@
+[2m2026-10-20T12:03:52.443738Z[0m [33m WARN[0m [2ma3s_code_core::subagent::loader[0m[2m:[0m Failed to resolve agent directory: /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-issue2-w4jzb0a7/home/.claude/agents
+[2m2026-10-20T12:03:52.443801Z[0m [33m WARN[0m [2ma3s_code_core::subagent::loader[0m[2m:[0m Failed to resolve agent directory: /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-issue2-w4jzb0a7/home/.a3s/agents
+[2m2026-10-20T12:03:52.443825Z[0m [33m WARN[0m [2ma3s_code_core::subagent::loader[0m[2m:[0m Failed to resolve agent directory: /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-issue2-w4jzb0a7/workspace/.claude/agents
+[2m2026-10-20T12:03:52.443850Z[0m [33m WARN[0m [2ma3s_code_core::subagent::loader[0m[2m:[0m Failed to resolve agent directory: /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-issue2-w4jzb0a7/workspace/.a3s/agents
+[2m2026-10-20T12:03:52.544753Z[0m [33m WARN[0m headless: prompt response carried no requestId; emitting an empty requestId

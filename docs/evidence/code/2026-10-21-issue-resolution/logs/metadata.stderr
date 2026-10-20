@@ -1,0 +1,9 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml

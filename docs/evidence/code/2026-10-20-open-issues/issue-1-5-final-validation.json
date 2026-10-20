@@ -1,0 +1,105 @@
+{
+  "issues": [
+    1,
+    5
+  ],
+  "sourceManifest": "issue-1-5-source-ready.json",
+  "sourceManifestSha256": "c6919212d8da3cdc1e95415b5d80517d1c14d76bf2293501e9067cd003325622",
+  "ownedFileCount": 23,
+  "sourceMatchesReady": true,
+  "finalTests": [
+    {
+      "group": "core goal control",
+      "count": 40,
+      "exitCode": 0,
+      "log": "issue-1-control-after-final.log"
+    },
+    {
+      "group": "core goal execution",
+      "count": 51,
+      "exitCode": 0,
+      "log": "issue-1-execution-after-final.log"
+    },
+    {
+      "group": "core mutation provenance",
+      "count": 4,
+      "exitCode": 0,
+      "log": "issue-1-receipts-after-final.log"
+    },
+    {
+      "group": "core durable memory",
+      "count": 17,
+      "exitCode": 0,
+      "log": "issue-5-core-after-final.log"
+    },
+    {
+      "group": "ACP two host sessions",
+      "count": 1,
+      "exitCode": 0,
+      "log": "issue-5-acp-after-final.log"
+    },
+    {
+      "group": "ACP unattended units",
+      "count": 29,
+      "exitCode": 0,
+      "log": "issue-1-acp-unit-after-final.log"
+    },
+    {
+      "group": "ACP shipped-binary unattended e2e",
+      "count": 8,
+      "exitCode": 0,
+      "log": "issue-1-acp-e2e-after-final.log"
+    }
+  ],
+  "nonOverlappingFinalTestCount": 150,
+  "defaultGoalObservation": {
+    "modelCalls": 14,
+    "privateState": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/a3s-unattended-stalled-goal-tmp-86849-1792497960514650000",
+    "resultExists": true,
+    "slices": 4,
+    "timedOut": false,
+    "verificationAttempts": 4,
+    "verifiedSequence": 17,
+    "workspace": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/a3s-unattended-stalled-goal-ws-86849-1792497960511337000",
+    "written": true
+  },
+  "defaultGoalTerminalResult": {
+    "artifactEvidenceCount": 0,
+    "durationMs": 1464,
+    "errorCount": 0,
+    "exitCode": 1,
+    "lastError": "goal.continuation_stopped: the task goal is unfinished; next=needs_input",
+    "outcome": "failed",
+    "reason": "execution_failed",
+    "schema": "a3s.code.terminal-bench-result.v1",
+    "successfulToolCalls": 4,
+    "terminalEvent": true,
+    "toolCalls": 4,
+    "turns": 13
+  },
+  "coreHarness": "49aa924ed6a11a46a6ebae06bef4f9c7b1e738282c923de50f3b7ca4bb8fddb9",
+  "acpHarness": "e67afc08d30225c270a8ea258b8eb9915416a954ed5dfcb22fa6d3e38692a89f",
+  "staticChecks": [
+    {
+      "check": "rustfmt",
+      "exitCode": 0
+    },
+    {
+      "check": "diff-check",
+      "exitCode": 0
+    }
+  ],
+  "beforeEvidence": [
+    "issue-1-5-before-direct.json",
+    "issue-1-acp-before.log",
+    "issue-1-acp-before-preconditions.json",
+    "issue-1-acp-before-facts.jsonl",
+    "issue-5-acp-before.log"
+  ],
+  "compatibilityRegression": {
+    "before": "issue-1-replay-before.log",
+    "after": "issue-1-replay-after.log",
+    "includedInFinalExecutionGroup": true
+  },
+  "exclusions": "Before, interim, replay reruns, and interrupted/compile-error attempts are not added to final test counts."
+}

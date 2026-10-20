@@ -1,0 +1,3 @@
+error: Cannot find module '../apps/web/src/prefs/tenantInfo.ts' from '/Users/roylin/code/aster/scripts/tenant-fs.ts'
+
+Bun v1.4.2 (macOS arm64)

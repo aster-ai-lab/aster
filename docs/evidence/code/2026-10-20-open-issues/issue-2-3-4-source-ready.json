@@ -1,0 +1,32 @@
+{
+  "scope": [
+    "crates/terminal/crates/codegen/a3s-code-pager/src/headless.rs",
+    "crates/terminal/crates/codegen/a3s-code-pager/src/headless_tests.rs",
+    "crates/code/acp/src/agent.rs",
+    "crates/code/acp/src/agent/session_open.rs",
+    "crates/code/acp/src/agent/session_setup_tests.rs",
+    "crates/code/acp/src/agent/reasoning_transport_tests.rs",
+    "crates/code/core/src/tools/program_tool.rs",
+    "crates/code/core/src/tools/program_tool/tests.rs",
+    "crates/code/core/src/tools/program_tool/worker_deadline_tests.rs",
+    "crates/code/core/src/tools/presentation.rs",
+    "crates/code/core/src/tools/tests.rs"
+  ],
+  "sha256": {
+    "crates/terminal/crates/codegen/a3s-code-pager/src/headless.rs": "0f6fcbcc0cfb0f68038d40009e09b98cd97e402bbdbe52f0830e00b18f2f3240",
+    "crates/terminal/crates/codegen/a3s-code-pager/src/headless_tests.rs": "013f1965af626e38b7ca1fbd8cfc518dee3bd55719bf3b64c13d114ddc0e16c3",
+    "crates/code/acp/src/agent.rs": "080e299b6f32bc3f26bf3c39a5d51654aac08423df449d5da54e1acf1b562557",
+    "crates/code/acp/src/agent/session_open.rs": "e969d0e15a58222a36852ee3b04d23ca6ee0c9cba6acdffd54654df45a337411",
+    "crates/code/acp/src/agent/session_setup_tests.rs": "077c706501d3a7ff818be2121a8df40621361b9e66dddb1f12c109c47b963f8b",
+    "crates/code/acp/src/agent/reasoning_transport_tests.rs": "ebaa062dd66fec9f8bdca3727a6b08db6c555ede7898d1177ece990741864c6c",
+    "crates/code/core/src/tools/program_tool.rs": "2559b7ff8f9dfb8296a5e37453cd221557e5a9d4a2eb730237623b2a6658ce58",
+    "crates/code/core/src/tools/program_tool/tests.rs": "9e2fa06e591cf79943f2dbb03094695a76394218b7e4713996a4093f86560d96",
+    "crates/code/core/src/tools/program_tool/worker_deadline_tests.rs": "a2362cea0ef5693fd5f59b33a5391984e156ca3e2f6a0c187592ec51961fc7e7",
+    "crates/code/core/src/tools/presentation.rs": "0e1406944ca60d65f7713a14ae6b13af2c8a3aca77ba172683ba8a43cb941863",
+    "crates/code/core/src/tools/tests.rs": "ce2a236f28ea002b2b269e5e46bfcc9146537d4d12a5e5b557363710a9160645"
+  },
+  "notes": [
+    "agent.rs includes only test declaration for the separately owned issue #5 memory_sessions_tests module in addition to issue #3 changes.",
+    "No production edits after source-ready; other threads retain their own files."
+  ]
+}

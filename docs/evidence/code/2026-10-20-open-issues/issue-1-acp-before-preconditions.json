@@ -1,0 +1,565 @@
+{
+  "run": "issue-1-acp-before.log",
+  "fixtureProcessId": 64915,
+  "actualFactLog": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/a3s-unattended-stalled-goal-tmp-64915-1792496360384959000/a3s-code-acp-73fefd0d-8835-4a7d-814b-06ed17c20037/sessions/2026-10-20/c5ecdf79-cc50-4325-89dd-7cc43fcbadcc/c5ecdf79-cc50-4325-89dd-7cc43fcbadcc.jsonl",
+  "factLogSha256": "fc89b85edba5081facb94bd424a112a706808d6ff9b9592e2e424aab35caa576",
+  "counts": {
+    "a3s.standing-context": 2,
+    "a3s.work-policy.admitted": 1,
+    "a3s.goal.created": 1,
+    "a3s.goal.plan.proposed": 1,
+    "a3s.goal.plan.accepted": 1,
+    "a3s.goal.slice.admitted": 23,
+    "user.message": 23,
+    "context.sections": 23,
+    "model.turn": 46,
+    "tool.prepared": 23,
+    "tool.result": 23,
+    "turn.complete": 22,
+    "a3s.goal.slice.settled": 22
+  },
+  "answerBytes": "42\n",
+  "resultExists": false,
+  "completionMarkers": [
+    {
+      "seq": 17,
+      "terminal": "verified"
+    },
+    {
+      "seq": 26,
+      "terminal": "narrative"
+    },
+    {
+      "seq": 35,
+      "terminal": "narrative"
+    },
+    {
+      "seq": 44,
+      "terminal": "narrative"
+    },
+    {
+      "seq": 53,
+      "terminal": "narrative"
+    },
+    {
+      "seq": 62,
+      "terminal": "narrative"
+    },
+    {
+      "seq": 71,
+      "terminal": "narrative"
+    },
+    {
+      "seq": 80,
+      "terminal": "narrative"
+    },
+    {
+      "seq": 89,
+      "terminal": "narrative"
+    },
+    {
+      "seq": 98,
+      "terminal": "narrative"
+    },
+    {
+      "seq": 107,
+      "terminal": "narrative"
+    },
+    {
+      "seq": 116,
+      "terminal": "narrative"
+    },
+    {
+      "seq": 125,
+      "terminal": "narrative"
+    },
+    {
+      "seq": 134,
+      "terminal": "narrative"
+    },
+    {
+      "seq": 143,
+      "terminal": "narrative"
+    },
+    {
+      "seq": 152,
+      "terminal": "narrative"
+    },
+    {
+      "seq": 161,
+      "terminal": "narrative"
+    },
+    {
+      "seq": 170,
+      "terminal": "narrative"
+    },
+    {
+      "seq": 179,
+      "terminal": "narrative"
+    },
+    {
+      "seq": 188,
+      "terminal": "narrative"
+    },
+    {
+      "seq": 197,
+      "terminal": "narrative"
+    },
+    {
+      "seq": 206,
+      "terminal": "narrative"
+    }
+  ],
+  "tools": [
+    {
+      "seq": 12,
+      "outcome": "succeeded",
+      "identity": {
+        "admission": {
+          "capability_binding_digest": "sha256:868621312a254b1cca347f7cc2de1754e95e3be99d7db9988c40ab66a5121858",
+          "run_id": "acp-tick-4cab169b-7d63-4608-a11a-51d381b306ce",
+          "thread_id": "c5ecdf79-cc50-4325-89dd-7cc43fcbadcc"
+        },
+        "batch_index": 0,
+        "cycle": 0,
+        "tool_call_id": "call_write_1",
+        "turn": 1
+      },
+      "effects": {
+        "changes": [
+          {
+            "after": {
+              "content_digest": "sha256:084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+              "kind": "file",
+              "mode": 33188
+            },
+            "before": {
+              "kind": "missing"
+            },
+            "path": "answer.txt"
+          }
+        ],
+        "completeness": "complete"
+      }
+    },
+    {
+      "seq": 15,
+      "outcome": "succeeded",
+      "identity": {
+        "admission": {
+          "capability_binding_digest": "sha256:868621312a254b1cca347f7cc2de1754e95e3be99d7db9988c40ab66a5121858",
+          "run_id": "acp-tick-4cab169b-7d63-4608-a11a-51d381b306ce",
+          "thread_id": "c5ecdf79-cc50-4325-89dd-7cc43fcbadcc"
+        },
+        "batch_index": 0,
+        "cycle": 1,
+        "tool_call_id": "call_bash_2",
+        "turn": 1
+      },
+      "effects": {
+        "changes": [],
+        "completeness": "complete"
+      }
+    },
+    {
+      "seq": 24,
+      "outcome": "succeeded",
+      "identity": {
+        "admission": {
+          "capability_binding_digest": "sha256:868621312a254b1cca347f7cc2de1754e95e3be99d7db9988c40ab66a5121858",
+          "run_id": "acp-tick-5ea554d2-a769-40dd-8adc-c628799ccbe3",
+          "thread_id": "c5ecdf79-cc50-4325-89dd-7cc43fcbadcc"
+        },
+        "batch_index": 0,
+        "cycle": 0,
+        "tool_call_id": "call_bash_4",
+        "turn": 2
+      },
+      "effects": {
+        "changes": [],
+        "completeness": "complete"
+      }
+    },
+    {
+      "seq": 33,
+      "outcome": "succeeded",
+      "identity": {
+        "admission": {
+          "capability_binding_digest": "sha256:868621312a254b1cca347f7cc2de1754e95e3be99d7db9988c40ab66a5121858",
+          "run_id": "acp-tick-c46db364-5ad9-4fa8-b0c0-5183b56af2ec",
+          "thread_id": "c5ecdf79-cc50-4325-89dd-7cc43fcbadcc"
+        },
+        "batch_index": 0,
+        "cycle": 0,
+        "tool_call_id": "call_bash_6",
+        "turn": 3
+      },
+      "effects": {
+        "changes": [],
+        "completeness": "complete"
+      }
+    },
+    {
+      "seq": 42,
+      "outcome": "denied",
+      "identity": {
+        "admission": {
+          "capability_binding_digest": "sha256:868621312a254b1cca347f7cc2de1754e95e3be99d7db9988c40ab66a5121858",
+          "run_id": "acp-tick-81826e89-1f6a-4267-9e29-0e178b04a2e0",
+          "thread_id": "c5ecdf79-cc50-4325-89dd-7cc43fcbadcc"
+        },
+        "batch_index": 0,
+        "cycle": 0,
+        "tool_call_id": "call_bash_8",
+        "turn": 4
+      },
+      "effects": {
+        "changes": [],
+        "completeness": "complete"
+      }
+    },
+    {
+      "seq": 51,
+      "outcome": "denied",
+      "identity": {
+        "admission": {
+          "capability_binding_digest": "sha256:868621312a254b1cca347f7cc2de1754e95e3be99d7db9988c40ab66a5121858",
+          "run_id": "acp-tick-8610cebb-7161-49e2-93ff-e4fe650fc869",
+          "thread_id": "c5ecdf79-cc50-4325-89dd-7cc43fcbadcc"
+        },
+        "batch_index": 0,
+        "cycle": 0,
+        "tool_call_id": "call_bash_10",
+        "turn": 5
+      },
+      "effects": {
+        "changes": [],
+        "completeness": "complete"
+      }
+    },
+    {
+      "seq": 60,
+      "outcome": "denied",
+      "identity": {
+        "admission": {
+          "capability_binding_digest": "sha256:868621312a254b1cca347f7cc2de1754e95e3be99d7db9988c40ab66a5121858",
+          "run_id": "acp-tick-1e92f5a5-836c-458f-aa2b-3ac4294aedac",
+          "thread_id": "c5ecdf79-cc50-4325-89dd-7cc43fcbadcc"
+        },
+        "batch_index": 0,
+        "cycle": 0,
+        "tool_call_id": "call_bash_12",
+        "turn": 6
+      },
+      "effects": {
+        "changes": [],
+        "completeness": "complete"
+      }
+    },
+    {
+      "seq": 69,
+      "outcome": "denied",
+      "identity": {
+        "admission": {
+          "capability_binding_digest": "sha256:868621312a254b1cca347f7cc2de1754e95e3be99d7db9988c40ab66a5121858",
+          "run_id": "acp-tick-7d9cda6c-19a5-4923-b9f7-42b33ff1b5ab",
+          "thread_id": "c5ecdf79-cc50-4325-89dd-7cc43fcbadcc"
+        },
+        "batch_index": 0,
+        "cycle": 0,
+        "tool_call_id": "call_bash_14",
+        "turn": 7
+      },
+      "effects": {
+        "changes": [],
+        "completeness": "complete"
+      }
+    },
+    {
+      "seq": 78,
+      "outcome": "denied",
+      "identity": {
+        "admission": {
+          "capability_binding_digest": "sha256:868621312a254b1cca347f7cc2de1754e95e3be99d7db9988c40ab66a5121858",
+          "run_id": "acp-tick-92e629c9-c7f3-4fde-ac05-f073cf4059c1",
+          "thread_id": "c5ecdf79-cc50-4325-89dd-7cc43fcbadcc"
+        },
+        "batch_index": 0,
+        "cycle": 0,
+        "tool_call_id": "call_bash_16",
+        "turn": 8
+      },
+      "effects": {
+        "changes": [],
+        "completeness": "complete"
+      }
+    },
+    {
+      "seq": 87,
+      "outcome": "denied",
+      "identity": {
+        "admission": {
+          "capability_binding_digest": "sha256:868621312a254b1cca347f7cc2de1754e95e3be99d7db9988c40ab66a5121858",
+          "run_id": "acp-tick-1551c229-9e53-45b7-a41b-1b314e1b67ec",
+          "thread_id": "c5ecdf79-cc50-4325-89dd-7cc43fcbadcc"
+        },
+        "batch_index": 0,
+        "cycle": 0,
+        "tool_call_id": "call_bash_18",
+        "turn": 9
+      },
+      "effects": {
+        "changes": [],
+        "completeness": "complete"
+      }
+    },
+    {
+      "seq": 96,
+      "outcome": "denied",
+      "identity": {
+        "admission": {
+          "capability_binding_digest": "sha256:868621312a254b1cca347f7cc2de1754e95e3be99d7db9988c40ab66a5121858",
+          "run_id": "acp-tick-f2e8a8f3-861e-4bc6-8f05-2a53366889cf",
+          "thread_id": "c5ecdf79-cc50-4325-89dd-7cc43fcbadcc"
+        },
+        "batch_index": 0,
+        "cycle": 0,
+        "tool_call_id": "call_bash_20",
+        "turn": 10
+      },
+      "effects": {
+        "changes": [],
+        "completeness": "complete"
+      }
+    },
+    {
+      "seq": 105,
+      "outcome": "denied",
+      "identity": {
+        "admission": {
+          "capability_binding_digest": "sha256:868621312a254b1cca347f7cc2de1754e95e3be99d7db9988c40ab66a5121858",
+          "run_id": "acp-tick-008e709e-b1a6-4fcf-bfd8-7a42bf6fcf9a",
+          "thread_id": "c5ecdf79-cc50-4325-89dd-7cc43fcbadcc"
+        },
+        "batch_index": 0,
+        "cycle": 0,
+        "tool_call_id": "call_bash_22",
+        "turn": 11
+      },
+      "effects": {
+        "changes": [],
+        "completeness": "complete"
+      }
+    },
+    {
+      "seq": 114,
+      "outcome": "denied",
+      "identity": {
+        "admission": {
+          "capability_binding_digest": "sha256:868621312a254b1cca347f7cc2de1754e95e3be99d7db9988c40ab66a5121858",
+          "run_id": "acp-tick-9524fcf9-e12f-402e-938e-8aee2a8e8ede",
+          "thread_id": "c5ecdf79-cc50-4325-89dd-7cc43fcbadcc"
+        },
+        "batch_index": 0,
+        "cycle": 0,
+        "tool_call_id": "call_bash_24",
+        "turn": 12
+      },
+      "effects": {
+        "changes": [],
+        "completeness": "complete"
+      }
+    },
+    {
+      "seq": 123,
+      "outcome": "denied",
+      "identity": {
+        "admission": {
+          "capability_binding_digest": "sha256:868621312a254b1cca347f7cc2de1754e95e3be99d7db9988c40ab66a5121858",
+          "run_id": "acp-tick-e2e16ae6-e9c5-41ad-bb33-4d478f625a79",
+          "thread_id": "c5ecdf79-cc50-4325-89dd-7cc43fcbadcc"
+        },
+        "batch_index": 0,
+        "cycle": 0,
+        "tool_call_id": "call_bash_26",
+        "turn": 13
+      },
+      "effects": {
+        "changes": [],
+        "completeness": "complete"
+      }
+    },
+    {
+      "seq": 132,
+      "outcome": "denied",
+      "identity": {
+        "admission": {
+          "capability_binding_digest": "sha256:868621312a254b1cca347f7cc2de1754e95e3be99d7db9988c40ab66a5121858",
+          "run_id": "acp-tick-939e81fb-f393-4c21-a73d-7c61327bfcf5",
+          "thread_id": "c5ecdf79-cc50-4325-89dd-7cc43fcbadcc"
+        },
+        "batch_index": 0,
+        "cycle": 0,
+        "tool_call_id": "call_bash_28",
+        "turn": 14
+      },
+      "effects": {
+        "changes": [],
+        "completeness": "complete"
+      }
+    },
+    {
+      "seq": 141,
+      "outcome": "denied",
+      "identity": {
+        "admission": {
+          "capability_binding_digest": "sha256:868621312a254b1cca347f7cc2de1754e95e3be99d7db9988c40ab66a5121858",
+          "run_id": "acp-tick-a70db642-fb65-4150-8a74-4eb2a1121ef9",
+          "thread_id": "c5ecdf79-cc50-4325-89dd-7cc43fcbadcc"
+        },
+        "batch_index": 0,
+        "cycle": 0,
+        "tool_call_id": "call_bash_30",
+        "turn": 15
+      },
+      "effects": {
+        "changes": [],
+        "completeness": "complete"
+      }
+    },
+    {
+      "seq": 150,
+      "outcome": "denied",
+      "identity": {
+        "admission": {
+          "capability_binding_digest": "sha256:868621312a254b1cca347f7cc2de1754e95e3be99d7db9988c40ab66a5121858",
+          "run_id": "acp-tick-1a4f2fbd-c627-4e97-ae06-7ae999dadc57",
+          "thread_id": "c5ecdf79-cc50-4325-89dd-7cc43fcbadcc"
+        },
+        "batch_index": 0,
+        "cycle": 0,
+        "tool_call_id": "call_bash_32",
+        "turn": 16
+      },
+      "effects": {
+        "changes": [],
+        "completeness": "complete"
+      }
+    },
+    {
+      "seq": 159,
+      "outcome": "denied",
+      "identity": {
+        "admission": {
+          "capability_binding_digest": "sha256:868621312a254b1cca347f7cc2de1754e95e3be99d7db9988c40ab66a5121858",
+          "run_id": "acp-tick-32602f51-9a3f-48c0-a595-d8af7cefc72d",
+          "thread_id": "c5ecdf79-cc50-4325-89dd-7cc43fcbadcc"
+        },
+        "batch_index": 0,
+        "cycle": 0,
+        "tool_call_id": "call_bash_34",
+        "turn": 17
+      },
+      "effects": {
+        "changes": [],
+        "completeness": "complete"
+      }
+    },
+    {
+      "seq": 168,
+      "outcome": "denied",
+      "identity": {
+        "admission": {
+          "capability_binding_digest": "sha256:868621312a254b1cca347f7cc2de1754e95e3be99d7db9988c40ab66a5121858",
+          "run_id": "acp-tick-3351aec9-ce9d-44fd-abfa-a99011d1a777",
+          "thread_id": "c5ecdf79-cc50-4325-89dd-7cc43fcbadcc"
+        },
+        "batch_index": 0,
+        "cycle": 0,
+        "tool_call_id": "call_bash_36",
+        "turn": 18
+      },
+      "effects": {
+        "changes": [],
+        "completeness": "complete"
+      }
+    },
+    {
+      "seq": 177,
+      "outcome": "denied",
+      "identity": {
+        "admission": {
+          "capability_binding_digest": "sha256:868621312a254b1cca347f7cc2de1754e95e3be99d7db9988c40ab66a5121858",
+          "run_id": "acp-tick-0d65ba2a-6716-40f4-b992-595b88888253",
+          "thread_id": "c5ecdf79-cc50-4325-89dd-7cc43fcbadcc"
+        },
+        "batch_index": 0,
+        "cycle": 0,
+        "tool_call_id": "call_bash_38",
+        "turn": 19
+      },
+      "effects": {
+        "changes": [],
+        "completeness": "complete"
+      }
+    },
+    {
+      "seq": 186,
+      "outcome": "denied",
+      "identity": {
+        "admission": {
+          "capability_binding_digest": "sha256:868621312a254b1cca347f7cc2de1754e95e3be99d7db9988c40ab66a5121858",
+          "run_id": "acp-tick-a6e69237-0857-411e-862d-cedba318c5a9",
+          "thread_id": "c5ecdf79-cc50-4325-89dd-7cc43fcbadcc"
+        },
+        "batch_index": 0,
+        "cycle": 0,
+        "tool_call_id": "call_bash_40",
+        "turn": 20
+      },
+      "effects": {
+        "changes": [],
+        "completeness": "complete"
+      }
+    },
+    {
+      "seq": 195,
+      "outcome": "denied",
+      "identity": {
+        "admission": {
+          "capability_binding_digest": "sha256:868621312a254b1cca347f7cc2de1754e95e3be99d7db9988c40ab66a5121858",
+          "run_id": "acp-tick-1c02b4a7-a5e2-4b95-85f9-8f73436d4753",
+          "thread_id": "c5ecdf79-cc50-4325-89dd-7cc43fcbadcc"
+        },
+        "batch_index": 0,
+        "cycle": 0,
+        "tool_call_id": "call_bash_42",
+        "turn": 21
+      },
+      "effects": {
+        "changes": [],
+        "completeness": "complete"
+      }
+    },
+    {
+      "seq": 204,
+      "outcome": "denied",
+      "identity": {
+        "admission": {
+          "capability_binding_digest": "sha256:868621312a254b1cca347f7cc2de1754e95e3be99d7db9988c40ab66a5121858",
+          "run_id": "acp-tick-e4775d8f-a958-4ff9-9455-42b55c7f64b6",
+          "thread_id": "c5ecdf79-cc50-4325-89dd-7cc43fcbadcc"
+        },
+        "batch_index": 0,
+        "cycle": 0,
+        "tool_call_id": "call_bash_44",
+        "turn": 22
+      },
+      "effects": {
+        "changes": [],
+        "completeness": "complete"
+      }
+    }
+  ],
+  "note": "Captured after the bounded 10-second timeout from only this synthetic test fixture; model.turn counts are durable callbacks, not a count of every auxiliary LLM request."
+}

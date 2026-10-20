@@ -1,0 +1,133 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /aster/target/worktrees/studio-linux-alignment-20261021/apps/gateway/Cargo.toml
+workspace: /aster/target/worktrees/studio-linux-alignment-20261021/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /aster/target/worktrees/studio-linux-alignment-20261021/crates/sentry/Cargo.toml
+workspace: /aster/target/worktrees/studio-linux-alignment-20261021/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /aster/target/worktrees/studio-linux-alignment-20261021/crates/use/Cargo.toml
+workspace: /aster/target/worktrees/studio-linux-alignment-20261021/Cargo.toml
+   Compiling ort-sys v2.0.0-rc.10
+   Compiling derive_builder v0.20.2
+   Compiling fraction v0.15.3
+   Compiling rand v0.9.5
+   Compiling tiny-skia v0.12.0
+   Compiling esaxx-rs v0.1.10
+   Compiling ghash v0.5.1
+   Compiling ndarray v0.16.1
+   Compiling cron v0.17.0
+   Compiling regress v0.10.5
+   Compiling fancy-regex v0.18.0
+   Compiling ctr v0.9.2
+   Compiling roaring v0.11.1
+   Compiling rgb v0.8.52
+   Compiling jsonschema-regex v0.47.0
+   Compiling xattr v1.6.1
+   Compiling aead v0.5.2
+   Compiling unicode-normalization-alignments v0.1.12
+   Compiling bincode v1.3.3
+   Compiling rust-stemmers v1.2.0
+   Compiling email_address v0.2.9
+   Compiling dary_heap v0.3.9
+   Compiling filetime v0.2.29
+   Compiling num_cpus v1.17.0
+   Compiling serde_repr v0.1.20
+   Compiling async-stream-impl v0.3.6
+   Compiling num-cmp v0.1.0
+   Compiling hex v0.4.3
+   Compiling notify-types v2.0.0
+   Compiling typed-path v0.12.3
+   Compiling unicode_categories v0.1.1
+   Compiling smallvec v2.0.0-alpha.10
+   Compiling bytecount v0.6.9
+   Compiling jsonschema v0.47.0
+   Compiling zip v7.2.0
+   Compiling ort v2.0.0-rc.10
+   Compiling tokenizers v0.21.4
+   Compiling notify v8.2.0
+   Compiling sha256 v1.6.0
+   Compiling async-stream v0.3.6
+   Compiling axum-core v0.5.5
+   Compiling lsp-types v0.97.0
+   Compiling a3s-lane v0.5.1 (/aster/target/worktrees/studio-linux-alignment-20261021/crates/lane)
+   Compiling tar v0.4.46
+   Compiling a3s-vec v0.1.8 (/aster/target/worktrees/studio-linux-alignment-20261021/crates/vec)
+   Compiling aes-gcm v0.10.3
+   Compiling resvg v0.47.0
+   Compiling a3s-form-core v0.1.0 (/aster/target/worktrees/studio-linux-alignment-20261021/crates/form-core)
+   Compiling mermaid-to-svg v0.1.0 (/aster/target/worktrees/studio-linux-alignment-20261021/crates/terminal/third_party/mermaid-to-svg)
+   Compiling rquickjs v0.11.0
+   Compiling a3s-effect v0.2.1 (/aster/target/worktrees/studio-linux-alignment-20261021/crates/effect)
+   Compiling a3s-tty-utils v0.1.0 (/aster/target/worktrees/studio-linux-alignment-20261021/crates/terminal/crates/codegen/a3s-tty-utils)
+   Compiling htmd v0.5.4
+   Compiling a3s-search v3.4.0 (/aster/target/worktrees/studio-linux-alignment-20261021/crates/search)
+   Compiling a3s-sandbox v0.2.3 (/aster/target/worktrees/studio-linux-alignment-20261021/crates/sandbox)
+   Compiling agent-client-protocol-schema v0.11.4
+   Compiling libsqlite3-sys v0.35.0
+   Compiling pdf-inspector v1.17.0
+   Compiling ignore v0.4.24
+   Compiling hashlink v0.10.0
+   Compiling toml v0.8.23
+   Compiling a3s-common v0.1.1 (/aster/target/worktrees/studio-linux-alignment-20261021/crates/common)
+   Compiling a3s-memory v0.1.5 (/aster/target/worktrees/studio-linux-alignment-20261021/crates/memory)
+   Compiling html2text v0.16.7
+   Compiling which v8.0.0
+   Compiling zip v0.6.6
+   Compiling async-broadcast v0.7.2
+   Compiling serde_path_to_error v0.1.20
+   Compiling wait-timeout v0.2.1
+   Compiling fallible-iterator v0.3.0
+   Compiling a3s-code-acp v9.1.4 (/aster/target/worktrees/studio-linux-alignment-20261021/crates/code/acp)
+   Compiling base64 v0.21.7
+   Compiling fallible-streaming-iterator v0.1.9
+   Compiling shell-words v1.1.0
+   Compiling similar v2.7.0
+   Compiling a3s-code-core v9.1.4 (/aster/target/worktrees/studio-linux-alignment-20261021/crates/code/core)
+   Compiling a3s-okf v0.1.0 (/aster/target/worktrees/studio-linux-alignment-20261021/crates/okf)
+   Compiling rusqlite v0.37.0
+   Compiling axum v0.8.6
+   Compiling a3s-code-mermaid v0.1.0 (/aster/target/worktrees/studio-linux-alignment-20261021/crates/terminal/crates/codegen/a3s-code-mermaid)
+   Compiling agent-client-protocol v0.10.4
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:429:21
+    |
+429 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+   Compiling rmcp v0.8.5
+   Compiling a3s-use-bge v0.1.0 (/aster/target/worktrees/studio-linux-alignment-20261021/crates/bge)
+warning: function `sigmoid` is never used
+  --> crates/bge/src/math.rs:18:15
+   |
+18 | pub(crate) fn sigmoid(logit: f32) -> f32 {
+   |               ^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `encode_pairs` is never used
+  --> crates/bge/src/tokenizer.rs:91:19
+   |
+28 | impl PairTokenizer {
+   | ------------------ method in this implementation
+...
+91 |     pub(crate) fn encode_pairs(
+   |                   ^^^^^^^^^^^^
+
+warning: `a3s-use-bge` (lib) generated 2 warnings
+   Compiling a3s-use-reconcile v0.2.10 (/aster/target/worktrees/studio-linux-alignment-20261021/crates/use/reconcile)
+warning: method `as_str` is never used
+  --> crates/code/acp/src/host_context.rs:49:12
+   |
+42 | impl CompletionAttestation {
+   | -------------------------- method in this implementation
+...
+49 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-acp` (lib) generated 1 warning
+   Compiling a3s-office-cli v0.45.0 (/aster/target/worktrees/studio-linux-alignment-20261021/crates/office/crates/cli)
+warning: `a3s-code-core` (lib) generated 1 warning

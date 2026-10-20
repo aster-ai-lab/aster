@@ -9,6 +9,7 @@ import { cacheService } from '../CacheService'
 import {
   answerStudioAgentRequest,
   installStudioAgentIpc,
+  loadStudioGoalSnapshot,
   resetStudioAgentPlaneForTests,
   submitAgentForm
 } from '../studioAgentPlane'
@@ -392,7 +393,17 @@ describe('studioAgentPlane', () => {
     await expect(
       bridge.request('ai.stream.open', { topicId: 'agent-session:s1', trigger: 'submit-message', userMessageParts: [] })
     ).resolves.toEqual({ ok: true, data: { mode: 'started' } })
-    await expect(bridge.request('ai.tool.respond_approval', { approvalId: 'ap1', approved: true })).resolves.toEqual({
+    await expect(
+      bridge.request('ai.tool.respond_approval', {
+        topicId: 'agent-session:s1',
+        approvalId: 'ap1',
+        approved: true,
+        executionId: 'run',
+        anchorMessageId: 'main',
+        messageId: 'repair',
+        toolCallId: 'tool'
+      })
+    ).resolves.toEqual({
       ok: true,
       data: { ok: true }
     })
@@ -413,7 +424,14 @@ describe('studioAgentPlane', () => {
     expect(calls.map((call) => call.body)).toEqual([
       { type: 'claude-code', name: 'x' },
       { topicId: 'agent-session:s1', trigger: 'submit-message', userMessageParts: [] },
-      { approved: true },
+      {
+        approved: true,
+        sessionId: 's1',
+        executionId: 'run',
+        anchorMessageId: 'main',
+        messageId: 'repair',
+        toolCallId: 'tool'
+      },
       { messageId: '22222222-2222-4222-8222-222222222222' },
       { sessionIds: ['s1'] },
       { sessionIds: ['s1'] }
@@ -489,6 +507,7 @@ describe('studioAgentPlane', () => {
     expect(chunks).toEqual([{ topicId: 'agent-session:s1', chunk: {} }])
     expect(cacheService.getShared('topic.stream.statuses.agent-session:s1')).toEqual({
       status: 'pending',
+      pendingApprovals: [],
       activeExecutions: []
     })
     expect(effects).toContainEqual({
@@ -528,7 +547,10 @@ describe('studioAgentPlane', () => {
       }
     })
     expect(cacheService.get(executionCache)?.['agent-session:s1']?.modelTurn).toBeNull()
-    expect(cacheService.getShared('topic.stream.statuses.agent-session:s1')).toEqual({ status: 'streaming' })
+    expect(cacheService.getShared('topic.stream.statuses.agent-session:s1')).toEqual({
+      status: 'streaming',
+      pendingApprovals: []
+    })
 
     source.disconnect()
     expect(cacheService.get(executionCache)).toBeNull()
@@ -584,10 +606,253 @@ describe('studioAgentPlane', () => {
     })
     expect(cacheService.getShared('topic.stream.statuses.agent-session:s1')).toEqual({
       status: 'streaming',
+      pendingApprovals: [],
       activeExecutions: [{ executionId: 'm' }]
     })
     expect(cacheService.get(executionCache)).toEqual({})
   })
+
+  it('refuses legacy edited question answers without sending a boolean-only approval', async () => {
+    Object.defineProperty(globalThis, '__A3S_STUDIO_RUNTIME__', { value: runtime, configurable: true })
+    installBridge()
+    const calls = stubFetch(() => json({ ok: true }))
+    installStudioAgentIpc()
+    await expect(
+      globalThis.api!.ipcApi.request('ai.tool.respond_approval', {
+        topicId: 'agent-session:s1',
+        executionId: 'run',
+        anchorMessageId: 'main',
+        messageId: 'repair',
+        toolCallId: 'tool',
+        approvalId: 'ap1',
+        approved: true,
+        updatedInput: { answers: { Question: 'Never discard this answer' } }
+      })
+    ).resolves.toEqual({ ok: true, data: { ok: false } })
+    expect(calls).toHaveLength(0)
+  })
+
+  it('refuses a non-boolean approval decision without changing a receiver', async () => {
+    Object.defineProperty(globalThis, '__A3S_STUDIO_RUNTIME__', { value: runtime, configurable: true })
+    installBridge()
+    const calls = stubFetch(() => json({ ok: true }))
+    installStudioAgentIpc()
+    await expect(
+      globalThis.api!.ipcApi.request('ai.tool.respond_approval', {
+        topicId: 'agent-session:s1',
+        executionId: 'run',
+        anchorMessageId: 'main',
+        messageId: 'repair',
+        toolCallId: 'tool',
+        approvalId: 'ap1',
+        approved: 'yes'
+      })
+    ).resolves.toEqual({ ok: true, data: { ok: false } })
+    expect(calls).toHaveLength(0)
+  })
+
+  it('refuses an approval decision without its native receiver binding', async () => {
+    Object.defineProperty(globalThis, '__A3S_STUDIO_RUNTIME__', { value: runtime, configurable: true })
+    const { original } = installBridge()
+    const calls = stubFetch(() => json({ ok: true }))
+    installStudioAgentIpc()
+    await expect(
+      globalThis.api!.ipcApi.request('ai.tool.respond_approval', {
+        topicId: 'agent-session:s1',
+        approvalId: 'ap1',
+        approved: true
+      })
+    ).resolves.toEqual({ ok: true, data: { ok: false } })
+    expect(calls).toHaveLength(0)
+    expect(original.request).not.toHaveBeenCalled()
+  })
+
+  it('loads only a typed current-session goal and refuses foreign session or execution observations', async () => {
+    const source = await connectEvents()
+    const goal = {
+      status: 'known',
+      sessionId: 's1',
+      acpSessionId: 'acp',
+      executionId: 'run',
+      goal: {
+        goalId: 'goal',
+        goalRevision: 1,
+        planRevision: null,
+        goalSequence: 1,
+        state: 'active',
+        objective: 'Verify outputs',
+        tick: 'advance'
+      }
+    }
+    stubFetch((call) => (call.url === `${plane}/api/agent-sessions/s1/goal` ? json(goal) : undefined))
+    expect(await loadStudioGoalSnapshot('s1')).toEqual(goal)
+    const status = {
+      status: 'streaming',
+      turnId: 'run',
+      activeExecutions: [],
+      awaitingApprovalAnchors: [],
+      goalSnapshot: goal
+    }
+    source.send({ channel: 'topic.status', payload: { topicId: 'agent-session:s1', status } })
+    expect(cacheService.getShared('topic.stream.statuses.agent-session:s1')?.goalSnapshot).toEqual(goal)
+    source.send({
+      channel: 'topic.status',
+      payload: { topicId: 'agent-session:s1', status: { ...status, goalSnapshot: { ...goal, sessionId: 's2' } } }
+    })
+    expect(cacheService.getShared('topic.stream.statuses.agent-session:s1')?.goalSnapshot).toMatchObject({
+      status: 'unavailable',
+      goal: null
+    })
+    source.send({
+      channel: 'topic.status',
+      payload: { topicId: 'agent-session:s1', status: { ...status, goalSnapshot: { ...goal, executionId: 'old-run' } } }
+    })
+    expect(cacheService.getShared('topic.stream.statuses.agent-session:s1')?.goalSnapshot).toMatchObject({
+      status: 'unavailable',
+      reason: 'stale_binding',
+      goal: null
+    })
+  })
+
+  it('recovers only current receiver identities from snapshots and withdraws them on disconnect', async () => {
+    const source = await connectEvents()
+    const approval = {
+      executionId: 'run',
+      anchorMessageId: 'main',
+      messageId: 'repair',
+      approvalId: 'approval',
+      toolCallId: 'tool'
+    }
+    const status = {
+      status: 'awaiting-approval',
+      turnId: 'run',
+      activeExecutions: [{ executionId: 'run', anchorMessageId: 'main' }],
+      awaitingApprovalAnchors: [],
+      pendingApprovals: [approval]
+    }
+    source.send({
+      channel: 'execution.snapshot',
+      payload: { protocolVersion: 1, topics: [], liveStatuses: [{ topicId: 'agent-session:s1', status }] }
+    })
+    expect(cacheService.getShared('topic.stream.statuses.agent-session:s1')?.pendingApprovals).toEqual([approval])
+    source.send({
+      channel: 'topic.status',
+      payload: {
+        topicId: 'agent-session:s1',
+        status: { ...status, activeExecutions: [{ executionId: 'run', anchorMessageId: 'foreign-anchor' }] }
+      }
+    })
+    expect(cacheService.getShared('topic.stream.statuses.agent-session:s1')?.pendingApprovals).toEqual([])
+    source.disconnect()
+    expect(cacheService.getShared('topic.stream.statuses.agent-session:s1')?.pendingApprovals).toEqual([])
+    source.open()
+    source.send({
+      channel: 'execution.snapshot',
+      payload: { protocolVersion: 1, topics: [], liveStatuses: [{ topicId: 'agent-session:s1', status }] }
+    })
+    expect(cacheService.getShared('topic.stream.statuses.agent-session:s1')?.pendingApprovals).toEqual([approval])
+    source.send({
+      channel: 'topic.status',
+      payload: { topicId: 'agent-session:s1', status: { ...status, turnId: 'another-run' } }
+    })
+    expect(cacheService.getShared('topic.stream.statuses.agent-session:s1')?.pendingApprovals).toEqual([])
+  })
+
+  it('does not let an older attach snapshot replace a newer same-Run or other-Run SSE status', async () => {
+    const source = await connectEvents()
+    let resolveAttach: ((response: globalThis.Response) => void) | undefined
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(
+        () =>
+          new Promise<globalThis.Response>((resolve) => {
+            resolveAttach = resolve
+          })
+      )
+    )
+    const request = globalThis.api!.ipcApi.request('ai.stream.attach', { topicId: 'agent-session:s1' })
+    await vi.waitFor(() => expect(resolveAttach).toBeDefined())
+    const newer = { status: 'awaiting-approval', turnId: 'new-run', pendingApprovals: [] }
+    source.send({ channel: 'topic.status', payload: { topicId: 'agent-session:s1', status: newer } })
+    resolveAttach!(
+      json({
+        status: 'attached',
+        bufferedChunks: [],
+        streamStatus: {
+          status: 'awaiting-approval',
+          turnId: 'old-run',
+          pendingApprovals: [
+            {
+              executionId: 'old-run',
+              anchorMessageId: 'old-message',
+              messageId: 'old-message',
+              approvalId: 'old-approval',
+              toolCallId: 'old-tool'
+            }
+          ]
+        }
+      })
+    )
+    await request
+    expect(cacheService.getShared('topic.stream.statuses.agent-session:s1')).toEqual(newer)
+  })
+
+  it.each(['cleared-status', 'disconnect'])(
+    'does not revive an old attach approval across %s from an initially empty cache',
+    async (boundary) => {
+      const source = await connectEvents()
+      source.send({ channel: 'execution.snapshot', payload: { protocolVersion: 1, topics: [] } })
+      const key = 'topic.stream.statuses.agent-session:aba' as const
+      cacheService.deleteShared(key)
+      let resolveAttach: ((response: globalThis.Response) => void) | undefined
+      vi.stubGlobal(
+        'fetch',
+        vi.fn(
+          () =>
+            new Promise<globalThis.Response>((resolve) => {
+              resolveAttach = resolve
+            })
+        )
+      )
+      const request = globalThis.api!.ipcApi.request('ai.stream.attach', { topicId: 'agent-session:aba' })
+      await vi.waitFor(() => expect(resolveAttach).toBeDefined())
+      if (boundary === 'cleared-status') {
+        source.send({
+          channel: 'topic.status',
+          payload: {
+            topicId: 'agent-session:aba',
+            status: { status: 'awaiting-approval', turnId: 'new-run', pendingApprovals: [] }
+          }
+        })
+        source.send({ channel: 'topic.status', payload: { topicId: 'agent-session:aba', status: null } })
+        cacheService.deleteShared(key)
+      } else {
+        source.disconnect()
+      }
+      resolveAttach!(
+        json({
+          status: 'attached',
+          bufferedChunks: [],
+          streamStatus: {
+            status: 'awaiting-approval',
+            turnId: 'old-run',
+            activeExecutions: [{ executionId: 'old-run', anchorMessageId: 'old-message' }],
+            pendingApprovals: [
+              {
+                executionId: 'old-run',
+                anchorMessageId: 'old-message',
+                messageId: 'old-message',
+                approvalId: 'old-approval',
+                toolCallId: 'old-tool'
+              }
+            ]
+          }
+        })
+      )
+      await request
+      expect(cacheService.getSharedSnapshot(key)).toBeUndefined()
+    }
+  )
 
   // Catch malformed bootstrap selecting an arbitrary owner, and one malformed delta withdrawing a healthy sibling.
   it('refuses incompatible or ambiguous snapshots and contains malformed topic observations', async () => {

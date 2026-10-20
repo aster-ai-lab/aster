@@ -2262,6 +2262,25 @@ impl MvpAgent {
         );
         Some(cfg)
     }
+    fn note_in_process_shell_agent() {
+        let Some(home) = a3s_dirs::resolve_grok_home() else {
+            return;
+        };
+        let path = home.join("shell-agent.log");
+        if let Some(parent) = path.parent() {
+            let _ = std::fs::create_dir_all(parent);
+        }
+        let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(&path)
+        else {
+            return;
+        };
+        use std::io::Write as _;
+        let _ = writeln!(file, "constructed in-process shell agent");
+        let _ = file.flush();
+    }
     /// The caller at the process boundary renders the [`crate::agent::init::BootstrapError`] and exits.
     pub fn new(
         gateway: GatewaySender,
@@ -2270,6 +2289,7 @@ impl MvpAgent {
         prefetched_models: Option<IndexMap<String, ModelEntry>>,
         boot: Option<crate::agent::init::BootstrapPrefetch>,
     ) -> Result<Self, crate::agent::init::BootstrapError> {
+        Self::note_in_process_shell_agent();
         let (cfg, models_manager) = crate::agent::init::bootstrap_with_cancel(
             cfg,
             &auth_manager,
@@ -2318,6 +2338,7 @@ impl MvpAgent {
         auth_manager: Arc<AuthManager>,
         models_manager: crate::agent::remote_config::ModelsManager,
     ) -> Self {
+        Self::note_in_process_shell_agent();
         models_manager.set_gateway(gateway.clone());
         let sampling_config = models_manager.sampling_config();
         if !cfg.grok_com_config.api_key_auth_disabled() {

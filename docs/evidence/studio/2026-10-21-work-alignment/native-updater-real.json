@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "/Users/roylin/code/aster/.tmp/studio-native-direct/test",
+    "app_updater::",
+    "--nocapture"
+  ],
+  "rc": 0,
+  "elapsed": 0.5012691020965576,
+  "scope": "Actual Studio native test crate, exact Cargo dependency snapshot build from native-before-direct-r4"
+}

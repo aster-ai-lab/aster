@@ -22,10 +22,11 @@ cargo build --locked --release -p a3s-code-acp -p a3s-office-cli
 ./node_modules/.bin/tauri build --features custom-protocol \
   --config "{\"build\":{\"frontendDist\":\"../${dist}\"},\"bundle\":{\"macOS\":{\"signingIdentity\":\"-\"}}}"
 
-app="$(find "$target_dir/release/bundle/macos" -name '*.app' -print | head -1)"
-test -n "$app"
-rm -rf "$app/Contents/Resources/studio-frontend"
-mkdir -p "$app/Contents/Resources/studio-frontend"
-cp -R "$dist"/. "$app/Contents/Resources/studio-frontend/"
-test -f "$app/Contents/Resources/studio-frontend/windows/main/index.html"
+app="$target_dir/release/bundle/macos/ToWork.app"
+test -d "$app"
+python3 scripts/studio_delivery.py "$app" "$dist" "$A3S_TENANT_SLUG" ../web/public/tenant
+codesign --force --deep --sign - "$app"
+codesign --verify --deep --strict "$app"
+# Publish the sealed complete bundle, never the main executable alone.
+ditto -c -k --sequesterRsrc --keepParent "$app" "$target_dir/release/bundle/macos/ToWork.zip"
 echo "studio-package $app"

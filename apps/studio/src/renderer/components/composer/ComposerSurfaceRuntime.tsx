@@ -1714,6 +1714,7 @@ export default function ComposerSurfaceRuntime({
         return true
       },
       handleDOMEvents: {
+        keydown: (view, event) => view.composing || event.isComposing || event.keyCode === 229,
         copy: (view, event) => handleComposerCopy(view, event, tokenByIdRef.current),
         cut: (view, event) => {
           if (!handleComposerCopy(view, event, tokenByIdRef.current)) return false
@@ -1741,8 +1742,7 @@ export default function ComposerSurfaceRuntime({
           const selectedPromptVariable = getSelectedPromptVariableToken(editor)
           if (selectedPromptVariable?.token.id !== composingToken.tokenId) return false
 
-          const data = 'data' in event && typeof event.data === 'string' ? event.data : ''
-          composingToken.text = data || composingToken.text
+          if ('data' in event && typeof event.data === 'string') composingToken.text = event.data
           return true
         },
         compositionend: (_view, event) => {
@@ -1754,20 +1754,19 @@ export default function ComposerSurfaceRuntime({
           const selectedPromptVariable = getSelectedPromptVariableToken(editor)
           if (selectedPromptVariable?.token.id !== composingToken.tokenId) return false
 
-          const data = 'data' in event && typeof event.data === 'string' ? event.data : ''
-          const nextValue = data || composingToken.text
-          if (!nextValue) return true
+          const nextValue = 'data' in event && typeof event.data === 'string' ? event.data : composingToken.text
+          if (!nextValue) return false
           const limitedNextValue = getComposerInputTextWithinLimit(
             textRef.current,
             nextValue,
             selectedPromptVariable.token.promptText ?? ''
           )
-          if (!limitedNextValue) return true
+          if (!limitedNextValue) return false
 
           updateSelectedPromptVariableToken(editor, limitedNextValue)
           promptVariableEditRef.current = { tokenId: selectedPromptVariable.token.id, started: true }
           promptVariableSkipTextInputRef.current = { tokenId: selectedPromptVariable.token.id, text: limitedNextValue }
-          return true
+          return false
         }
       }
     }),

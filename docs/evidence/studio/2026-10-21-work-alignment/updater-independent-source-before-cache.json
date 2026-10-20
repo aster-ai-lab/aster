@@ -1,0 +1,29 @@
+{
+  "review": "two findings fixed and reviewed; native signed artifact gate owned by root",
+  "files": [
+    {
+      "path": "apps/studio/src-tauri/src/app_updater.rs",
+      "sha256": "d3ad0590327f2153806a61f2fee06b3d8cb4028bc9ac412cebe6485acc7f5552"
+    },
+    {
+      "path": "apps/studio/src-tauri/src/app_updater/delivery_manifest.rs",
+      "sha256": "36a72ba8d3bd52cca27f47a443b97d2f9fa593636c04532f37a67cc2772a957a"
+    },
+    {
+      "path": "apps/studio/src-tauri/src/tenant.rs",
+      "sha256": "290c519fb07ae6887af3c4ba4835a08a315203c8ac9bace8842aca61f9253e13"
+    },
+    {
+      "path": "apps/studio/scripts/package-host.sh",
+      "sha256": "6df1bec0c385cfa0ad6a5d4b4d2b2b24f5c54f93dcac6c6ba704602922a539a9"
+    },
+    {
+      "path": "apps/studio/scripts/studio-delivery.py",
+      "sha256": "0dbc023c6296b85585d97e0a3f113df6c26f14d91cd8910d67158161d4f93c8e"
+    },
+    {
+      "path": "apps/studio/src-tauri/src/app_updater/delivery_tests.rs",
+      "sha256": "8b8a723fd515a8b63a2c4885c2cccf344211ca6db8d71410c8dd202a34f148d5"
+    }
+  ]
+}

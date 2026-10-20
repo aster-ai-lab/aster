@@ -37,6 +37,7 @@
 
 pub mod agent;
 pub mod agent_wake;
+mod anonymous_chatbot;
 pub mod config;
 pub(crate) mod entrypoint;
 pub mod error;

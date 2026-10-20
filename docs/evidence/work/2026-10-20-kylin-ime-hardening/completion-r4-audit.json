@@ -1,0 +1,30 @@
+{
+  "status": "passed",
+  "scope": "R1-R13 and V1-V2 bounded Linux IME fix, build, static/native/GUI validation and owned cleanup",
+  "source_files_verified": 33,
+  "app_commit": "9ccb0ea27ee2a19dd63506f3d5ed79be7a88856869b74a7fe74231d2378410af",
+  "app_bundle_sha256": "62840dfddea793ae675627be7247307cf46b2fdcb92e3c55705cbdb16918f4e1",
+  "onefile_sha256": "f5afb90acbea7d624a46fefd02a92e8831d8516b7ae12612b7a8a96f5fcdbc06",
+  "source_patch_sha256": "b62d9db899d7d0624e7daacaed5ab72e7ac3a81e44c9d67dda5622b879725e91",
+  "final_reports": {
+    "OUTCOME.md": "df6f47f9a714615aa5a99d9d8c4878f2730c1a301c40a7bcf56fe41e603c0f02",
+    "PLAN.md": "52607223838cf49de947e202598892185cfe26e7e41d89acfb30b5f22f1c6754",
+    "GUI-R4-REVIEW.md": "cf9dbfac3da751a7fe626f90be9dba1c547e575124aaa18ef905dee04be59832"
+  },
+  "local_links_verified": 58,
+  "history_preserved": true,
+  "gui_manifest_files_verified": 68,
+  "root_selected_screenshots_visually_reviewed": {
+    "run-7fnFml/r4-modern-05.png": "f3a7b75d7570cf09c07570be32c545a3c58dfb0f7f324e0e3542492070ec2c7c",
+    "run-7fnFml/r4-modern-12.png": "e70e95b112ff6cda8860d26b5a4596fcb0e72656f12edc1e2c39b5f55858418b",
+    "run-V6V5Mp/r4-old-08.png": "9ac69dc6ab9504b85dc81be62d581bbeaa99b5da0f97ba128dd258b7ca26c7ea",
+    "run-V6V5Mp/r4-old-13.png": "5c12873b5f779f130d8d9794e9cb1011e9aee94be4c40d2c214c33467bfcedfa",
+    "run-Wfa1CS/r4-uninstrumented-09.png": "d74a8034d3392b26d7c609937c95b1f2dbcb8cceedf5fb30b5b5831832e6ac8b"
+  },
+  "no_commit_merge_push_publish_performed": true,
+  "limits": [
+    "No physical Kylin desktop acceptance; Linux Xvfb/GTK/WebKit and test-only Rosetta seccomp workaround.",
+    "Full TypeScript has 278 unchanged baseline diagnostics; workspace check retains two baseline failures.",
+    "R3 single-point native negative injections are reused by exact unchanged native identity, not rerun on R4."
+  ]
+}

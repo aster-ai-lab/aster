@@ -1,0 +1,73 @@
+bundled agent=dist/kylin/a3s-code-acp office=dist/kylin/a3s-office
+kylin-package: this kernel rejects PR_SET_SECCOMP; checking org.gnome.Platform//50 through bwrap
+kylin-package: this kernel rejects PR_SET_SECCOMP; checking org.gnome.Platform//50 through bwrap
+kylin-package: this kernel rejects PR_SET_SECCOMP; checking org.gnome.Platform//50 through bwrap
+kylin-package: this kernel rejects PR_SET_SECCOMP; checking org.gnome.Platform//50 through bwrap
+kylin-package: this kernel rejects PR_SET_SECCOMP; checking org.gnome.Platform//50 through bwrap
+kylin-package: this kernel rejects PR_SET_SECCOMP; checking org.gnome.Platform//50 through bwrap
+kylin-package: fcitx4 and fcitx5 modules link libgtk-3.so.0 and the runtime cache has ibus
+Exporting share/applications/dev.a3s.AsterDream.desktop
+Exporting share/icons/hicolor/128x128/apps/dev.a3s.AsterDream.png
+Please review the exported files and the metadata
+new-success: PASS new=1 old=0 connected=1 focus=1 commit=1
+unknown-object: PASS new=1 old=1 connected=1 focus=1 commit=1
+unknown-method: PASS new=1 old=1 connected=1 focus=1 commit=1
+access-denied: PASS new=1 old=0 connected=0 focus=0 commit=0
+failed: PASS new=1 old=0 connected=0 focus=0 commit=0
+both-unknown-method: PASS new=1 old=1 connected=0 focus=0 commit=0
+cancelled: PASS new=1 old=0 connected=0 focus=0 commit=0
+no-reply: PASS new=1 old=0 connected=0 focus=0 commit=0
+kylin-ime: host-display (host DISPLAY=:100)
+GTK client DISPLAY=:100
+Fcitx state ready for phase 0
+Chinese text committed through GTK: 你好
+Fcitx state ready for phase 2
+GTK English key presses: a=1 b=1 c=1
+Fcitx state ready for phase 3
+PASS: Chinese commit, mixed English, Escape cancellation
+kylin-ime: flatpak-display (host DISPLAY=:100)
+GTK client DISPLAY=:99.0
+Fcitx state ready for phase 0
+Chinese text committed through GTK: 你好
+Fcitx state ready for phase 2
+GTK English key presses: a=1 b=1 c=1
+Fcitx state ready for phase 3
+PASS: Chinese commit, mixed English, Escape cancellation
+Commit: 9976324975943ee39ae5727d6c6f935b2d50e98bc1954992d7e9deda09124776
+Metadata Total: 1241
+Metadata Written: 9
+Content Total: 2973
+Content Written: 4
+Content Bytes Written: 191944 (191.9?kB)
+kylin-bundle dist/kylin/dev.a3s.AsterDream.flatpak
+-rw-r--r-- 1 root root 135M Oct 20 10:27 dist/kylin/dev.a3s.AsterDream.flatpak
+
+(flatpak build-import-bundle:55135): GLib-CRITICAL **: 10:27:39.077: g_str_has_prefix: assertion 'str != NULL' failed
+
+(flatpak build-import-bundle:55135): OSTree-CRITICAL **: 10:27:39.078: _ostree_repo_get_remote: assertion 'name != NULL' failed
+
+(flatpak build-import-bundle:55135): GLib-CRITICAL **: 10:27:39.078: g_propagate_error: assertion 'src != NULL' failed
+
+(flatpak build-import-bundle:55175): GLib-CRITICAL **: 10:28:27.657: g_str_has_prefix: assertion 'str != NULL' failed
+
+(flatpak build-import-bundle:55175): OSTree-CRITICAL **: 10:28:27.658: _ostree_repo_get_remote: assertion 'name != NULL' failed
+
+(flatpak build-import-bundle:55175): GLib-CRITICAL **: 10:28:27.658: g_propagate_error: assertion 'src != NULL' failed
+
+(flatpak build-import-bundle:55197): GLib-CRITICAL **: 10:28:44.503: g_str_has_prefix: assertion 'str != NULL' failed
+
+(flatpak build-import-bundle:55197): OSTree-CRITICAL **: 10:28:44.504: _ostree_repo_get_remote: assertion 'name != NULL' failed
+
+(flatpak build-import-bundle:55197): GLib-CRITICAL **: 10:28:44.504: g_propagate_error: assertion 'src != NULL' failed
+kylin-ship dist/kylin/ship
+total 506M
+-rw-rw-rw- 1 root root  21K Oct 20 10:28 SHA256SUMS
+-rw-r--r-- 1 root root 135M Oct 20 10:27 dev.a3s.AsterDream.flatpak
+-rw-rw-rw- 1 root root   65 Oct 20 10:28 dev.a3s.AsterDream.flatpak.commit
+-rw-r--r-- 1 root root  93M Oct 20 10:27 gl-default-25.08.flatpak
+-rw-rw-rw- 1 root root   65 Oct 20 10:28 gl-default-25.08.flatpak.commit
+-rw-r--r-- 1 root root 279M Oct 20 10:27 gnome-platform-50.flatpak
+-rw-rw-rw- 1 root root   65 Oct 20 10:28 gnome-platform-50.flatpak.commit
+-rwxr-xr-x 1 root root  11K Oct 20 10:27 install-on-kylin.sh
+drwxr-xr-x 1 root root 5.1K Oct 20 08:42 offline-flatpak
+-rw-r--r-- 1 root root 2.9K Oct 20 10:27 安装说明.txt

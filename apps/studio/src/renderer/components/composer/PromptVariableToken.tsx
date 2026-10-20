@@ -55,6 +55,7 @@ export function PromptVariableToken({
 
   useLayoutEffect(() => {
     if (!isEditing) {
+      isComposingRef.current = false
       activeEditTokenIdRef.current = null
       isDirtyRef.current = false
       hasFinishedCurrentDraftRef.current = false
@@ -96,7 +97,7 @@ export function PromptVariableToken({
     }
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.isComposing || isComposingRef.current) return
+      if (event.isComposing || event.keyCode === 229 || isComposingRef.current) return
 
       if ((event.metaKey || event.ctrlKey) && !event.shiftKey && !event.altKey && event.key.toLowerCase() === 'a') {
         event.preventDefault()
@@ -123,6 +124,7 @@ export function PromptVariableToken({
     }
 
     const handleBlur = () => {
+      isComposingRef.current = false
       finishEditing('blur')
     }
 
@@ -135,6 +137,7 @@ export function PromptVariableToken({
 
     let focusFrame: number | undefined
     if (activeEditTokenIdRef.current !== token.id) {
+      isComposingRef.current = false
       activeEditTokenIdRef.current = token.id
       isDirtyRef.current = false
       hasFinishedCurrentDraftRef.current = false

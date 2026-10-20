@@ -1,0 +1,33 @@
+{
+  "binary": "/Users/roylin/code/aster/target/debug/deps/a3s_code_core-3b568ae695dcf868",
+  "compiledBy": "issue-1-control-after-final.log",
+  "binarySha256Before": "49aa924ed6a11a46a6ebae06bef4f9c7b1e738282c923de50f3b7ca4bb8fddb9",
+  "binarySha256After": "49aa924ed6a11a46a6ebae06bef4f9c7b1e738282c923de50f3b7ca4bb8fddb9",
+  "sourceMatchesReady": true,
+  "cases": [
+    {
+      "selector": "agent_api::goal_facade::tests::execution",
+      "exitCode": 0,
+      "log": "issue-1-execution-after-final.log",
+      "result": [
+        "test result: ok. 51 passed; 0 failed; 0 ignored; 0 measured; 5223 filtered out; finished in 7.50s"
+      ]
+    },
+    {
+      "selector": "fact_control::goal_evidence::tests",
+      "exitCode": 0,
+      "log": "issue-1-receipts-after-final.log",
+      "result": [
+        "test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 5270 filtered out; finished in 0.01s"
+      ]
+    },
+    {
+      "selector": "durable_memory_vec::tests",
+      "exitCode": 0,
+      "log": "issue-5-core-after-final.log",
+      "result": [
+        "test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 5257 filtered out; finished in 16.57s"
+      ]
+    }
+  ]
+}

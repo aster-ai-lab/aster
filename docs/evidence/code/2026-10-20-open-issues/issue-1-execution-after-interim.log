@@ -1,0 +1,57 @@
+
+running 50 tests
+test agent_api::goal_facade::tests::execution::accepted_goal_plan_refuses_the_legacy_opener_without_original_worker ... ok
+test agent_api::goal_facade::tests::execution::accepted_goal_does_not_bypass_unknown_host_mount_admission ... ok
+test agent_api::goal_facade::tests::execution::accepted_goal_plan_binds_the_original_run_without_another_planner ... ok
+test agent_api::goal_facade::tests::execution::acceptance::goal_step_judges_a_bounded_observation_that_names_its_omission ... ok
+test agent_api::goal_facade::tests::execution::automatic::goal_stream_tick_hands_the_slice_events_to_the_host_and_accepts_like_tick ... ok
+test agent_api::goal_facade::tests::execution::acceptance::goal_step_oversized_original_observation_cannot_be_silently_truncated ... ok
+test agent_api::goal_facade::tests::execution::acceptance::goal_step_original_structured_repair_usage_is_included_once ... ok
+test agent_api::goal_facade::tests::execution::acceptance::goal_step_late_workspace_acceptance_still_requires_its_original_report ... ok
+test agent_api::goal_facade::tests::execution::attestation::goal_step_fresh_host_report_with_wrong_effect_digest_is_not_authority ... ok
+test agent_api::goal_facade::tests::execution::automatic::goal_tick_occupied_session_reconciles_without_admission ... ok
+test agent_api::goal_facade::tests::execution::attestation::automatic_slice_resets_stall_only_after_an_accepted_workspace_mutation ... ok
+test agent_api::goal_facade::tests::execution::attestation::goal_step_denied_attempt_preserves_verified_current_write ... ok
+test agent_api::goal_facade::tests::execution::automatic::goal_tick_refuses_a_policy_above_the_admission_ceilings_without_a_run ... ok
+test agent_api::goal_facade::tests::execution::automatic::goal_tick_without_progress_stops_at_the_stall_bound ... ok
+test agent_api::goal_facade::tests::execution::automatic::goal_tick_refuses_without_trusted_enabled_unexpired_bounds ... ok
+test agent_api::goal_facade::tests::execution::attestation::settled_workspace_mutation_is_progress_even_when_goal_judgment_is_not_achieved ... ok
+test agent_api::goal_facade::tests::execution::completion::an_earlier_unclosed_slice_holds_completion_until_reconcile ... ok
+test agent_api::goal_facade::tests::execution::completion::an_unmet_goal_criterion_keeps_the_last_step_open_and_the_goal_active ... ok
+test agent_api::goal_facade::tests::execution::automatic::goal_tick_writer_revalidation_refuses_stale_or_invalid_origins ... ok
+test agent_api::goal_facade::tests::execution::completion::the_last_step_judges_the_goal_and_its_owner_records_completion_once ... ok
+test agent_api::goal_facade::tests::execution::acceptance::goal_step_failed_source_or_current_judgment_cannot_unlock_dependencies ... ok
+test agent_api::goal_facade::tests::execution::acceptance::goal_step_current_source_and_original_judgment_accept_only_the_ready_step ... ok
+test agent_api::goal_facade::tests::execution::control::replayed_goal_control_does_not_cancel_a_later_slice ... ok
+CHILD-COST closeout=14 governed=21
+test agent_api::goal_facade::tests::execution::automatic::goal_tick_admits_one_original_run_and_persists_finite_use_across_reopen ... ok
+test agent_api::goal_facade::tests::execution::proposed_goal_plan_still_refuses_before_explicit_planning_model ... ok
+test agent_api::goal_facade::tests::execution::cumulative::an_automatic_slice_child_task_is_billed_once_through_the_original_guard ... ok
+test agent_api::goal_facade::tests::execution::evidence::goal_step_cached_pass_narrative_and_display_events_do_not_admit_progress ... ok
+test agent_api::goal_facade::tests::execution::control::refused_goal_control_does_not_cancel_the_running_run ... ok
+test agent_api::goal_facade::tests::execution::review_binding::review_binding_names_the_current_step_run_and_findings_never_accept_it ... ok
+test agent_api::goal_facade::tests::execution::settlement::the_original_owner_closes_a_completed_slice_and_a_forged_closeout_refuses ... ok
+test agent_api::goal_facade::tests::execution::control::goal_control_settles_the_running_slice_and_an_old_wake_executes_nothing ... ok
+test agent_api::goal_facade::tests::execution::attestation::goal_step_late_artifact_drift_refuses_original_completion_and_progress ... ok
+test agent_api::goal_facade::tests::execution::tick::goal_tick_preview_rejects_stale_scope_and_operation_without_execution ... ok
+test agent_api::goal_facade::tests::execution::review_binding::engineering_findings_lifecycle_survives_both_stores_and_replan_stales_the_step ... ok
+test agent_api::goal_facade::tests::execution::tick::goal_tick_preview_requires_plan_acceptance_and_respects_imported_pause ... ok
+test agent_api::goal_facade::tests::execution::evidence::goal_step_original_read_receipts_bind_exact_run_on_both_stores ... ok
+test agent_api::goal_facade::tests::execution::control::a_plan_revision_during_a_running_slice_waits_for_the_next_slice ... ok
+test agent_api::goal_facade::tests::execution::evidence::goal_step_real_mutation_cannot_borrow_a_foreign_passed_report ... ok
+test agent_api::goal_facade::tests::execution::tick::goal_tick_preview_reads_original_debt_without_starting_recovery ... ok
+test agent_api::goal_facade::tests::execution::evidence::goal_step_current_run_does_not_inherit_prior_run_verification_authority ... ok
+test agent_api::goal_facade::tests::execution::waits::goal_due_wait_wakes_only_after_a_host_clock_observation ... ok
+test agent_api::goal_facade::tests::execution::waits::goal_wait_gates_only_its_step_and_an_answer_reaches_the_next_run ... ok
+test agent_api::goal_facade::tests::execution::completion::a_stopped_owner_after_the_last_acceptance_completes_on_reconcile ... ok
+test agent_api::goal_facade::tests::execution::attestation::goal_step_fresh_host_attestation_accepts_write_and_preserves_original_probe ... ok
+test agent_api::goal_facade::tests::execution::continuation::read_only_step_acceptance_does_not_reset_continuation_stall_across_reopen ... ok
+test agent_api::goal_facade::tests::execution::tick::goal_tick_preview_is_read_only_and_missing_activation_survives_reopen ... ok
+test agent_api::goal_facade::tests::execution::tick::goal_tick_exact_operation_tracks_the_original_run_across_replan_cancel_and_reopen ... ok
+test agent_api::goal_facade::tests::execution::attestation::goal_step_replan_revalidates_retained_bytes_without_replaying_the_write ... ok
+BARRIERS closed=["a3s.goal.slice.admitted", "user.message", "context.sections", "model.turn", "tool.result", "model.turn", "turn.complete", "a3s.goal.step.accepted"] unknown=["tool.prepared"]
+test agent_api::goal_facade::tests::execution::settlement::a_stopped_owner_at_each_barrier_reconciles_without_replay_or_new_usage ... ok
+test agent_api::goal_facade::tests::execution::goal_run_binding_survives_all_original_recovery_ingresses_and_two_stores ... ok
+
+test result: ok. 50 passed; 0 failed; 0 ignored; 0 measured; 5220 filtered out; finished in 8.93s
+

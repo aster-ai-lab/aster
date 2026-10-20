@@ -1,0 +1,33 @@
+test_cache_registration_must_match_its_module_id (test_delivery.DeliveryTests) ... ok
+test_complete_generation_has_studio_layout_and_independent_cache_paths (test_delivery.DeliveryTests) ... ok
+test_each_companion_or_host_from_another_generation_is_refused (test_delivery.DeliveryTests) ... ok
+test_foreign_generation_and_checksum_changes_are_refused (test_delivery.DeliveryTests) ... ok
+test_launch_verification_refuses_missing_tampered_extra_or_symlink_files (test_delivery.DeliveryTests) ... ok
+test_missing_input_method_asset_is_refused (test_delivery.DeliveryTests) ... ok
+test_native_daemon_identity_selects_only_its_own_module (test_delivery.DeliveryTests) ... ERROR
+test_renderer_changes_after_host_build_are_refused (test_delivery.DeliveryTests) ... ok
+test_wayland_does_not_force_an_x11_module (test_delivery.DeliveryTests) ... ok
+test_wrong_elf_and_modified_corresponding_source_are_refused (test_delivery.DeliveryTests) ... ok
+
+======================================================================
+ERROR: test_native_daemon_identity_selects_only_its_own_module (test_delivery.DeliveryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/apps/studio/scripts/kylin-flatpak/test_delivery.py", line 157, in test_native_daemon_identity_selects_only_its_own_module
+    result = self.decision(owner)
+  File "/Users/roylin/code/aster/apps/studio/scripts/kylin-flatpak/test_delivery.py", line 151, in decision
+    result = subprocess.run(["bash", str(HERE / "kylin-launch.sh"), "--print"],
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 507, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1134, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1980, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1178, in _check_timeout
+    raise TimeoutExpired(
+subprocess.TimeoutExpired: Command '['bash', '/Users/roylin/code/aster/apps/studio/scripts/kylin-flatpak/kylin-launch.sh', '--print']' timed out after 3 seconds
+
+----------------------------------------------------------------------
+Ran 10 tests in 3.637s
+
+FAILED (errors=1)

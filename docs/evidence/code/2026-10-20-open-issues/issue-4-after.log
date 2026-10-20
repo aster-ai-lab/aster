@@ -1,0 +1,193 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on build directory
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5m 21s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 88 tests
+test program::tests::program_catalog_instantiate_unknown_program_errors ... ok
+test program::tests::builtin_program_catalog_contains_first_ptc_programs ... ok
+test program::tests::program_catalog_try_register_rejects_invalid_template ... ok
+test program::tests::program_catalog_register_overwrites_existing_template ... ok
+test program::tests::code_search_program_uses_query_path_and_glob ... ok
+test program::tests::program_template_instantiates_step_args ... ok
+test program::tests::program_executor_summarizes_completed_runs ... ok
+test program::tests::program_template_optional_parameter_may_be_omitted ... ok
+test program::tests::program_template_renders_whole_value_numeric_placeholders ... ok
+test program::tests::program_template_requires_declared_inputs ... ok
+test program::tests::program_template_validation_accepts_builtin_templates ... ok
+test program::tests::program_template_renders_nested_arrays_objects_and_boolean_placeholders ... ok
+test program::tests::program_template_validation_rejects_empty_steps_and_duplicate_labels ... ok
+test program::tests::program_template_validation_rejects_empty_name_and_empty_parameter ... ok
+test program::tests::program_template_validation_reports_name_parameter_and_placeholder_issues ... ok
+test program::tests::program_template_validation_reports_asset_issues ... ok
+test program::tests::program_trace_from_result_counts_failed_steps ... ok
+test harness_loop::tests::nested_program_write_opens_the_gate ... ok
+test program::tests::program_verification_hints_cover_failed_run_without_failed_steps ... ok
+test program::tests::program_trace_serializes_with_stable_schema ... ok
+test program::tests::program_verification_hints_include_program_contract ... ok
+test program::tests::repo_map_program_uses_bounded_root_steps ... ok
+test program::tests::program_verification_hints_include_failures_and_artifacts ... ok
+test program::tests::program_verification_hint_to_values_serializes_hints ... ok
+test program::tests::program_executor_stops_after_failed_step ... ok
+test program::tests::program_executor_errors_when_tool_is_missing ... ok
+test program::tests::program_executor_runs_steps_in_order ... ok
+test tools::program_tool::failure_receipt_tests::pre_worker_rejections_publish_native_empty_child_receipts ... ok
+
+thread 'tools::program_tool::failure_receipt_tests::child_panic_keeps_prior_receipts_without_claiming_an_exact_count' (52016360) panicked at crates/code/core/src/tools/program_tool/failure_receipt_tests.rs:20:9:
+assertion `left != right` failed: controlled child panic
+  left: Bool(true)
+ right: true
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test tools::program_tool::failure_receipt_tests::read_then_js_throw_preserves_the_real_child_receipt_and_parent_failure ... ok
+test tools::program_tool::failure_receipt_tests::write_then_failed_check_and_throw_preserves_both_child_receipts ... ok
+test tools::program_tool::tests::program_catalog_is_discoverable_in_the_published_tool_contract ... ok
+test agent::tests::nested_tool_governance_tests::trusted_host_batch_and_program_propagate_only_builtin_nested_authority ... ok
+test tools::program_tool::tests::program_child_truncation_preserves_structured_flags_original_bytes_and_source ... ok
+test tools::program_tool::tests::program_output_byte_limit_also_bounds_the_truncation_marker ... ok
+test agent::tool_invoker::tests::verifier_program_cannot_write_through_a_nested_tool ... ok
+test agent_api::direct_tools::tests::host_direct_policy_propagates_to_nested_program_calls ... ok
+test tools::program_tool::tests::program_read_text_rejects_malformed_anchors_and_none_metadata ... ok
+test fact_control::receipts::tests::readonly_effect::all_read_batch_and_program_do_not_watch_or_freeze_a_later_read ... ok
+test tools::program_tool::tests::program_read_text_uses_range_metadata_not_content_heuristics ... ok
+test tools::program_tool::tests::program_deadline_settles_an_active_child_before_returning ... ok
+test tools::program_tool::tests::program_dependent_write_then_read_observes_saved_bytes ... ok
+test tools::program_tool::tests::program_template_cannot_reenable_filtered_orchestrators ... ok
+test tools::program_tool::tests::program_tool_accepts_plain_function_run_entrypoint ... ok
+test tools::program_tool::tests::program_template_rejects_unknown_names_and_invalid_inputs_before_dispatch ... ok
+test tools::program_tool::tests::program_template_uses_the_scoped_nested_gateway_and_propagates_denial ... ok
+test tools::program_tool::tests::program_tool_accepts_auditable_workflow_above_legacy_limit ... ok
+test tools::program_tool::tests::program_template_read_only_uses_instantiated_step_arguments ... ok
+test tools::program_tool::tests::program_structured_failure_can_be_checked_and_recovered_without_erasing_receipts ... ok
+test tools::program_tool::tests::program_tool_default_allowed_tools_include_registry_tools_except_program ... ok
+
+thread 'tools::program_tool::failure_receipt_tests::child_panic_keeps_prior_receipts_without_claiming_an_exact_count' (52016360) panicked at crates/code/core/src/tools/program_tool/failure_receipt_tests.rs:20:9:
+assertion `left != right` failed: controlled child panic
+  left: Bool(true)
+ right: true
+test tools::program_tool::tests::program_tool_ctx_tools_proxy_respects_allowed_tools ... ok
+test tools::program_tool::tests::program_tool_explicit_allowed_tools_restrict_default_tools ... ok
+test tools::program_tool::tests::program_tool_exposes_ctx_tools_proxy_for_named_tools ... ok
+test tools::program_tool::tests::program_tool_enforces_max_tool_calls ... ok
+test tools::program_tool::tests::program_tool_cancellation_stops_vm_and_settles_nested_call ... ok
+test tools::program_tool::tests::program_tool_forbids_recursive_or_legacy_orchestrators_in_scripts ... ok
+test tools::program_tool::tests::program_tool_rejects_fetch_source_access ... ok
+test tools::program_tool::tests::program_tool_rejects_forbidden_script_constructs ... ok
+test tools::program_tool::tests::program_tool_rejects_missing_script_source_and_path ... ok
+test tools::program_tool::failure_receipt_tests::deadline_after_read_preserves_completed_child_receipts ... ok
+test tools::program_tool::failure_receipt_tests::child_panic_keeps_prior_receipts_without_claiming_an_exact_count ... ok
+test tools::program_tool::tests::program_tool_rejects_source_above_engineered_workflow_limit ... ok
+test tools::program_tool::tests::program_tool_rejects_non_script_type ... ok
+test tools::program_tool::tests::program_tool_rejects_parallel_task_even_when_explicitly_allowed ... ok
+test tools::program_tool::tests::program_tool_rejects_unified_task_fanout_but_keeps_single_delegation ... ok
+test tools::program_tool::tests::program_tool_renders_result_summary_and_tool_records ... ok
+test tools::program_tool::tests::script_allowed_tools_strips_orchestrators_even_when_explicit ... ok
+test tools::program_tool::tests::script_limits_defaults_when_missing_or_invalid ... ok
+test tools::program_tool::tests::program_tool_rejects_unsupported_language ... ok
+test tools::program_tool::tests::program_tool_source_uses_default_all_registered_tools ... ok
+test verification::tests::program_verification_hint_builds_required_and_optional_checks ... ok
+test trace::tests::program_trace_event_stores_compact_summary ... ok
+test verification::tests::report_from_required_program_hint_needs_review ... ok
+test tools::program_tool::tests::program_tool_ctx_read_file_passes_offset_and_limit ... ok
+test tools::program_tool::tests::program_tool_rejects_unsupported_script_path ... ok
+test tools::program_tool::tests::program_parallel_reads_record_real_overlapping_intervals_and_sources ... ok
+test tools::program_tool::tests::program_tool_loads_script_from_workspace_js_path ... ok
+
+thread 'tools::tests::test_tool_executor_register_program_catalog_runs_governed_template' (52016728) panicked at crates/code/core/src/tools/tests.rs:1094:5:
+assertion `left == right` failed
+  left: String("hello from catalog: \"; throw new Error('injected'); // 中文")
+ right: "echo:hello from catalog: \"; throw new Error('injected'); // 中文"
+test agent::tests::nested_tool_governance_tests::program_nested_tool_obeys_budget_deny_without_side_effects ... ok
+test tools::tests::test_builtin_program_templates_run_against_a_real_workspace ... ok
+test tools::tests::test_tool_executor_register_program_catalog_runs_governed_template ... FAILED
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5266 filtered out; finished in 0.14s
+
+test agent_api::tests::fact_log::program_failure_receipts::read_then_throw_keeps_a_failed_parent_and_the_actual_nested_read ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_cancellation_settles_program_children_on_the_original_run ... 
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... ok
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5266 filtered out; finished in 0.02s
+
+test agent_api::tests::fact_log::nested_governance::fact_run_program_nested_call_obeys_the_session_deny ... ok
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5266 filtered out; finished in 0.01s
+
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... test agent_api::tests::fact_log::program_failure_receipts::write_then_failed_check_and_throw_keeps_both_original_child_results ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_program_children_share_the_run_budget_and_keep_denied_receipts ... ok
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5266 filtered out; finished in 0.11s
+
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5266 filtered out; finished in 0.01s
+
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5266 filtered out; finished in 0.01s
+
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... test tools::program_tool::failure_receipt_tests::deadline_keeps_ownership_past_grace_and_certifies_the_final_receipts ... ok
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5266 filtered out; finished in 0.04s
+
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5266 filtered out; finished in 0.04s
+
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... test agent_api::tests::fact_log::nested_shell_verification::a_later_parent_write_cannot_reuse_a_previously_bound_program_report ... ok
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5266 filtered out; finished in 0.04s
+
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5266 filtered out; finished in 0.04s
+
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... ok
+test agent_api::tests::fact_log::nested_shell_verification::direct_and_program_formal_bash_checks_bind_the_actual_parent_effect ... ok
+
+failures:
+
+failures:
+    tools::tests::test_tool_executor_register_program_catalog_runs_governed_template
+
+test result: FAILED. 87 passed; 1 failed; 0 ignored; 0 measured; 5179 filtered out; finished in 1.45s
+
+error: test failed, to rerun pass `-p a3s-code-core --lib`

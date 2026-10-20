@@ -1,0 +1,21 @@
+{
+  "fixture": "/Users/roylin/code/aster/target/evaluations/studio-work-alignment/gui-1021b",
+  "sessionId": "01a15b83-4598-75aa-848d-e359d7208230",
+  "workspace": "/Users/roylin/code/aster/target/evaluations/studio-work-alignment/gui-1021b/workspace",
+  "files": {
+    "note.txt": {
+      "sha256": "a7c24941283de2ff0f3f0e2183ad24e16c21d103e623868139259317ae941a01",
+      "size": 50
+    },
+    "sentinel.txt": {
+      "sha256": "cb9f89b56bb853b6321d8ab7d8990462fcfba4b71fe9510714336ea890ec60e7",
+      "size": 30
+    }
+  },
+  "result_absent": true,
+  "control_unchanged": true,
+  "control_sha256": "2cf641402aafa3a886b44f72b227d16df42447685ab6558e9f2dd7a0b1da4a4a",
+  "actions_prepared_only": true,
+  "message_sent": false,
+  "wire_tool_ids": "fixture-<global stream counter>, generated atomically by native-gui-fixture.py; qaActionId is a static review label, not an execution identity"
+}

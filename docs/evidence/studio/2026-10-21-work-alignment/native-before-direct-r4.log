@@ -1,0 +1,154 @@
+warning: unused import: `Ordering`
+ --> /Users/roylin/code/aster/apps/studio/src-tauri/src/desktop_settings.rs:8:36
+  |
+8 | use std::sync::atomic::{AtomicU32, Ordering};
+  |                                    ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `POLL_LIMIT` is never used
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:29:7
+   |
+29 | const POLL_LIMIT: usize = 100;
+   |       ^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: struct `SseEvent` is never constructed
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:838:19
+    |
+838 | pub(super) struct SseEvent {
+    |                   ^^^^^^^^
+
+warning: function `stream_agent_events` is never used
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:845:21
+    |
+845 | pub(super) async fn stream_agent_events(
+    |                     ^^^^^^^^^^^^^^^^^^^
+
+warning: function `recall_note` is never used
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/tobot_memory.rs:20:15
+   |
+20 | pub(crate) fn recall_note(origin: &str, slug: &str, query: &str) -> Option<String> {
+   |               ^^^^^^^^^^^
+
+warning: function `retain_exchange` is never used
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/tobot_memory.rs:39:15
+   |
+39 | pub(crate) fn retain_exchange(origin: &str, slug: &str, key: &str, user: &str, assistant: &str) {
+   |               ^^^^^^^^^^^^^^^
+
+warning: field `tool_call_id` is never read
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/local_acp_tests.rs:843:5
+    |
+841 | struct Approval {
+    |        -------- field in this struct
+842 |     id: String,
+843 |     tool_call_id: String,
+    |     ^^^^^^^^^^^^
+
+warning: function `boot` is never used
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/channel_gateway.rs:22:8
+   |
+22 | pub fn boot(token: &str, plane_url: &str) {
+   |        ^^^^
+
+warning: static `SLEEP_ASSERTION` is never used
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/desktop_settings.rs:72:8
+   |
+72 | static SLEEP_ASSERTION: AtomicU32 = AtomicU32::new(0);
+   |        ^^^^^^^^^^^^^^^
+
+warning: function `boot` is never used
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/desktop_settings.rs:181:8
+    |
+181 | pub fn boot(slug: &str, product: &str, logo: &Path) {
+    |        ^^^^
+
+warning: function `verified_picker` is never used
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/review_plugin.rs:462:8
+    |
+462 | pub fn verified_picker() -> Option<(PathBuf, String)> {
+    |        ^^^^^^^^^^^^^^^
+
+warning: 11 warnings emitted
+
+
+running 13 tests
+
+thread 'agent_plane::turns::native_approval_alignment_tests::native_alignment_plan_first_is_explicit_prompt_metadata' (52580481) panicked at /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/native_approval_alignment_tests.rs:101:62:
+called `Option::unwrap()` on a `None` value
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'agent_plane::acp::native_acp_alignment_tests::native_alignment_typed_reconciliation_cannot_be_retried_as_an_internal_error' (52580477) panicked at /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/native_acp_alignment_tests.rs:11:5:
+assertion failed: message.contains("reconciliation")
+test agent_plane::acp::native_acp_alignment_tests::native_alignment_typed_reconciliation_cannot_be_retried_as_an_internal_error ... FAILED
+test agent_plane::turns::native_approval_alignment_tests::native_alignment_plan_first_is_explicit_prompt_metadata ... FAILED
+
+thread 'preferences::device_alignment_tests::native_alignment_reserved_device_scope_cannot_be_opened_as_a_member' (52580485) panicked at /Users/roylin/code/aster/apps/studio/src-tauri/src/preferences_device_alignment_tests.rs:50:5:
+assertion failed: matches!(store.read(reserved), Err(PreferenceError::Denied))
+test preferences::device_alignment_tests::native_alignment_reserved_device_scope_cannot_be_opened_as_a_member ... FAILED
+
+thread 'preferences::device_alignment_tests::native_alignment_model_preferences_are_device_scoped_and_other_values_are_private' (52580484) panicked at /Users/roylin/code/aster/apps/studio/src-tauri/src/preferences_device_alignment_tests.rs:30:24:
+no entry found for key
+test preferences::device_alignment_tests::native_alignment_model_preferences_are_device_scoped_and_other_values_are_private ... FAILED
+
+thread 'providers::default_alignment_tests::native_alignment_provider_write_failure_rolls_back_in_memory_defaults' (52580487) panicked at /Users/roylin/code/aster/apps/studio/src-tauri/src/providers_default_alignment_tests.rs:116:5:
+assertion `left == right` failed
+  left: Object {"defaultModel": Object {"modelId": String("new-model"), "providerId": String("openai")}, "quickModel": Object {"modelId": String("new-model"), "providerId": String("openai")}, "translateModel": Object {"modelId": String("new-model"), "providerId": String("openai")}}
+ right: Object {"defaultModel": Object {"modelId": String("old-model"), "providerId": String("openai")}, "quickModel": Object {"modelId": String("old-model"), "providerId": String("openai")}, "translateModel": Object {"modelId": String("old-model"), "providerId": String("openai")}}
+test providers::default_alignment_tests::native_alignment_provider_write_failure_rolls_back_in_memory_defaults ... FAILED
+
+thread 'providers::default_alignment_tests::native_alignment_unavailable_preferences_roll_back_defaults' (52580488) panicked at /Users/roylin/code/aster/apps/studio/src-tauri/src/providers_default_alignment_tests.rs:91:5:
+assertion failed: store.set_defaults(choices("new-model").to_string().as_bytes()).is_err()
+test providers::default_alignment_tests::native_alignment_unavailable_preferences_roll_back_defaults ... FAILED
+
+thread 'providers::default_alignment_tests::native_alignment_defaults_update_all_three_preferences_after_reopen' (52580486) panicked at /Users/roylin/code/aster/apps/studio/src-tauri/src/providers_default_alignment_tests.rs:75:9:
+assertion `left == right` failed: chat.default_model_id
+  left: String("openai::old-model")
+ right: "openai::new-model"
+test providers::default_alignment_tests::native_alignment_defaults_update_all_three_preferences_after_reopen ... FAILED
+
+thread 'agent_plane::turns::native_approval_alignment_tests::native_alignment_invalid_plan_first_is_refused_before_admission' (52580480) panicked at /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/native_approval_alignment_tests.rs:114:13:
+assertion failed: h.turns.open(&h.session_id, &body).is_err()
+test agent_plane::turns::native_approval_alignment_tests::native_alignment_invalid_plan_first_is_refused_before_admission ... FAILED
+
+thread 'agent_plane::acp::native_acp_alignment_tests::native_alignment_timed_out_readonly_rpc_drops_its_pending_callback' (52580476) panicked at /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/native_acp_alignment_tests.rs:46:13:
+cancelled read must release callback ownership
+test agent_plane::acp::native_acp_alignment_tests::native_alignment_timed_out_readonly_rpc_drops_its_pending_callback ... FAILED
+
+thread 'agent_plane::turns::native_approval_alignment_tests::native_alignment_plan_first_preserves_permission_posture_on_the_wire' (52580482) panicked at /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/turns.rs:6745:18:
+turn timed out: Elapsed(())
+
+thread 'agent_plane::turns::native_approval_alignment_tests::native_alignment_abort_revokes_approval_before_settlement' (52580478) panicked at /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/native_approval_alignment_tests.rs:11:14:
+approval deadline: Elapsed(())
+
+thread 'agent_plane::turns::native_approval_alignment_tests::native_alignment_reconnect_recovers_the_live_approval_identity' (52580483) panicked at /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/native_approval_alignment_tests.rs:11:14:
+approval deadline: Elapsed(())
+
+thread 'agent_plane::turns::native_approval_alignment_tests::native_alignment_incomplete_stop_is_not_reported_as_success' (52580479) panicked at /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/turns.rs:6745:18:
+turn timed out: Elapsed(())
+test agent_plane::turns::native_approval_alignment_tests::native_alignment_reconnect_recovers_the_live_approval_identity ... FAILED
+test agent_plane::turns::native_approval_alignment_tests::native_alignment_abort_revokes_approval_before_settlement ... FAILED
+test agent_plane::turns::native_approval_alignment_tests::native_alignment_incomplete_stop_is_not_reported_as_success ... FAILED
+test agent_plane::turns::native_approval_alignment_tests::native_alignment_plan_first_preserves_permission_posture_on_the_wire ... FAILED
+
+failures:
+
+failures:
+    agent_plane::acp::native_acp_alignment_tests::native_alignment_timed_out_readonly_rpc_drops_its_pending_callback
+    agent_plane::acp::native_acp_alignment_tests::native_alignment_typed_reconciliation_cannot_be_retried_as_an_internal_error
+    agent_plane::turns::native_approval_alignment_tests::native_alignment_abort_revokes_approval_before_settlement
+    agent_plane::turns::native_approval_alignment_tests::native_alignment_incomplete_stop_is_not_reported_as_success
+    agent_plane::turns::native_approval_alignment_tests::native_alignment_invalid_plan_first_is_refused_before_admission
+    agent_plane::turns::native_approval_alignment_tests::native_alignment_plan_first_is_explicit_prompt_metadata
+    agent_plane::turns::native_approval_alignment_tests::native_alignment_plan_first_preserves_permission_posture_on_the_wire
+    agent_plane::turns::native_approval_alignment_tests::native_alignment_reconnect_recovers_the_live_approval_identity
+    preferences::device_alignment_tests::native_alignment_model_preferences_are_device_scoped_and_other_values_are_private
+    preferences::device_alignment_tests::native_alignment_reserved_device_scope_cannot_be_opened_as_a_member
+    providers::default_alignment_tests::native_alignment_defaults_update_all_three_preferences_after_reopen
+    providers::default_alignment_tests::native_alignment_provider_write_failure_rolls_back_in_memory_defaults
+    providers::default_alignment_tests::native_alignment_unavailable_preferences_roll_back_defaults
+
+test result: FAILED. 0 passed; 13 failed; 0 ignored; 0 measured; 836 filtered out; finished in 30.04s
+

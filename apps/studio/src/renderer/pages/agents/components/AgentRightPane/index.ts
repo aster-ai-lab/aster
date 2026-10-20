@@ -3,6 +3,7 @@ export { AgentWorkspaceTerminal } from './AgentWorkspaceTerminal'
 export {
   AgentRightPane,
   AgentTaskProgressCapsule,
+  AgentTaskProgressBar,
   useAgentRightPaneActions,
   useOptionalAgentFileNavigation
 } from './AgentRightPane'

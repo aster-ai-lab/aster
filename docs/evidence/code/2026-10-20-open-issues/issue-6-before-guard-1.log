@@ -1,0 +1,14 @@
+$ python3.12 tests/workspace_dependencies.py WorkspaceDependenciesTest.test_desktop_sources_and_executable_fixtures_are_present
+F
+======================================================================
+FAIL: test_desktop_sources_and_executable_fixtures_are_present (__main__.WorkspaceDependenciesTest.test_desktop_sources_and_executable_fixtures_are_present)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/workspace_dependencies.py", line 35, in test_desktop_sources_and_executable_fixtures_are_present
+    self.assertFalse((ROOT / "apps/work/.git").exists())
+AssertionError: True is not false
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (failures=1)

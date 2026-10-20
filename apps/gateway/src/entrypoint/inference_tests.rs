@@ -407,6 +407,7 @@ fn gateway_state_with_runtime(
         access_log_enabled: false,
         tracing_enabled: false,
         agent_billing: None,
+        anonymous_chatbot: config.anonymous_chatbot.clone(),
     })
 }
 

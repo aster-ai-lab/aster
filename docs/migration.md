@@ -262,6 +262,18 @@ and `crates/oci-runtime` (from the pinned A3S-Lab/OCI-Runtime source), the
 - Validation: `cargo check` on contracts, node-agent, runtime, sms,
   form-core, and box-runtime, plus workspace-wide `cargo fmt --check`.
 
+## Studio delivery resource repair
+
+The web application remains removed. Studio still consumes its public tenant
+brand records and the launch check's pure tenant parser. The 2026-10-21 Studio
+alignment restores only those source assets from the parent of `e07fd7c`;
+the exact file hashes are in
+`docs/evidence/studio/2026-10-21-work-alignment/tenant-restored-source.json`.
+The removed JSON model-market configuration is not restored. Studio retains
+its existing native provider and organization eligibility boundaries.
+Packaged Studio carries the selected tenant with its renderer and companions,
+so an installed application no longer needs this checkout for branding.
+
 ## Gateway, runner, and the full-module state
 
 `apps/gateway` registers with the bge embedding crate and the vendored

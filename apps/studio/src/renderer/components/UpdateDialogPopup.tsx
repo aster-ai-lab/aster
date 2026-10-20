@@ -46,9 +46,9 @@ const PopupContainer: React.FC<Props> = ({ releaseInfo, open, resolve }) => {
       await ipcApi.request('app.updater.quit_and_install')
       resolve({})
     } catch (error) {
-      logger.error('Failed to save data before update', error as Error)
+      logger.error('Failed to install update', error as Error)
       setIsInstalling(false)
-      toast.error(t('update.saveDataError'))
+      toast.error(t('settings.about.updateError'))
     }
   }
 

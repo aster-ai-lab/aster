@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'agent_plane::acp::native_acp_alignment_tests::native_alignment_incomplete_or_conflicting_replies_are_not_acknowledgements' (52817385) panicked at /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/native_acp_alignment_tests.rs:143:13:
+malformed missing response is not an acknowledgement: Ok(Null)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agent_plane::acp::native_acp_alignment_tests::native_alignment_incomplete_or_conflicting_replies_are_not_acknowledgements ... FAILED
+
+failures:
+
+failures:
+    agent_plane::acp::native_acp_alignment_tests::native_alignment_incomplete_or_conflicting_replies_are_not_acknowledgements
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 869 filtered out; finished in 0.38s
+

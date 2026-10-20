@@ -17,7 +17,7 @@ use super::catalog::{AgentCatalog, PinCatalog, SessionCatalog};
 use super::error::PlaneError;
 use super::session_query::{ExecutionStatus, SessionQuery};
 use super::tasks::TaskService;
-use super::turns::{EventHub, TurnService};
+use super::turns::{ApprovalBinding, EventHub, TurnService};
 
 static HOST_SEAL_SEQ: AtomicU64 = AtomicU64::new(1);
 static HOST_SEALS: Mutex<Option<HashMap<String, String>>> = Mutex::new(None);
@@ -566,6 +566,12 @@ impl SessionsController {
         Ok(json!(self.sessions.set_workspace(&id, &body)?))
     }
 
+    #[get("/{id}/goal")]
+    async fn goal(&self, #[param("id")] id: String) -> Result<Value> {
+        let id = self.turns.resolve_session_id(&id)?;
+        Ok(self.turns.goal_snapshot(&id).await?)
+    }
+
     #[get("/{id}/messages")]
     async fn messages(
         &self,
@@ -703,16 +709,35 @@ pub struct ApprovalsController {
     pub turns: Arc<TurnService>,
 }
 
+#[derive(serde::Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct ApprovalAnswer {
+    approved: bool,
+    session_id: String,
+    execution_id: String,
+    anchor_message_id: String,
+    message_id: String,
+    tool_call_id: String,
+}
+
 #[controller("/api/agent-approvals")]
 impl ApprovalsController {
     /// `ai.tool.respond_approval`.
     #[post("/{id}")]
     async fn respond(&self, #[param("id")] id: String, #[body] body: Value) -> Result<Value> {
-        let approved = body
-            .get("approved")
-            .and_then(Value::as_bool)
-            .ok_or_else(|| BootError::BadRequest("approved is required".into()))?;
-        Ok(json!({ "ok": self.turns.respond_approval(&id, approved) }))
+        let answer: ApprovalAnswer = serde_json::from_value(body)
+            .map_err(|_| BootError::BadRequest("invalid approval answer binding".into()))?;
+        let session_id = self.turns.resolve_session_id(&answer.session_id)?;
+        let binding = ApprovalBinding {
+            execution_id: answer.execution_id,
+            anchor_message_id: answer.anchor_message_id,
+            message_id: answer.message_id,
+            approval_id: id,
+            tool_call_id: answer.tool_call_id,
+        };
+        Ok(
+            json!({ "ok": self.turns.respond_bound_approval(&session_id, &binding, answer.approved) }),
+        )
     }
 }
 
@@ -759,3 +784,7 @@ fn number(raw: Option<String>, default: usize) -> Result<usize> {
             .map_err(|_| BootError::BadRequest(format!("{value} is not a number"))),
     }
 }
+
+#[cfg(test)]
+#[path = "native_approval_contract_tests.rs"]
+mod native_approval_contract_tests;

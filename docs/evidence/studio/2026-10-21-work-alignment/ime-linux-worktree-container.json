@@ -1,0 +1,18 @@
+{
+  "alias": {
+    "container_repository_alias": "/Users/roylin/code/aster",
+    "target": "/aster"
+  },
+  "show_toplevel": "/aster/target/worktrees/studio-linux-alignment-20261021",
+  "command": [
+    "docker",
+    "exec",
+    "aster-studio-kylin-ime",
+    "git",
+    "-C",
+    "/aster/target/worktrees/studio-linux-alignment-20261021",
+    "rev-parse",
+    "--show-toplevel"
+  ],
+  "boundary": "Alias reaches only the already mounted repository; no HOME or user configuration is mapped/copied."
+}

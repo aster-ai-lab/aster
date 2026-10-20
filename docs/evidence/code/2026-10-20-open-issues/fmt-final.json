@@ -1,0 +1,14 @@
+{
+  "command": [
+    "cargo",
+    "fmt",
+    "--all",
+    "--",
+    "--check"
+  ],
+  "returncode": 0,
+  "elapsed_seconds": 16.836,
+  "finished_at": "2026-10-20T12:08:17.227694+00:00",
+  "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "rerun_reason": "unattended.rs received a final documentation-only comment update after the previous full check"
+}

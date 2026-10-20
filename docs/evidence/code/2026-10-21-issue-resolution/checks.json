@@ -1,0 +1,113 @@
+{
+  "captured_at": "2026-10-20T22:45:03.058850+00:00",
+  "cargo_test_target_dir": "/Users/roylin/code/aster/target",
+  "checks": [
+    {
+      "command": [
+        "cargo",
+        "metadata",
+        "--locked",
+        "--offline",
+        "--no-deps",
+        "--format-version",
+        "1",
+        "--manifest-path",
+        "/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml"
+      ],
+      "exit_code": 0,
+      "workspace_members": 161
+    },
+    {
+      "command": [
+        "cargo",
+        "check",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml",
+        "-p",
+        "a3s-gateway",
+        "--features",
+        "wire"
+      ],
+      "exit_code": 0,
+      "log": "logs/gateway-check.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "fmt",
+        "--manifest-path",
+        "/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit_code": 0,
+      "log": "logs/format-final.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml",
+        "-p",
+        "a3s-code-core",
+        "-p",
+        "a3s-code-acp",
+        "-p",
+        "a3s-code-pager",
+        "--lib",
+        "--",
+        "goal_control::",
+        "agent_api::goal_facade::tests::execution",
+        "fact_control::goal_evidence::tests",
+        "durable_memory_vec::tests",
+        "program_",
+        "tools::presentation::tests",
+        "unattended::",
+        "agent::session_setup_tests",
+        "agent::reasoning_transport_tests",
+        "agent::memory_sessions_tests",
+        "headless::tests",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "package_results": {
+        "a3s-code-core": 205,
+        "a3s-code-acp": 50,
+        "a3s-code-pager": 36
+      },
+      "log": "logs/focused-tests.log.gz",
+      "log_encoding": "gzip"
+    },
+    {
+      "command": [
+        "python3.13",
+        "/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/tests/workspace_dependencies.py",
+        "-v"
+      ],
+      "exit_code": 1,
+      "passed": 5,
+      "failed": 1,
+      "log": "logs/workspace-python.log"
+    },
+    {
+      "command": [
+        "python3.13",
+        "/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/tests/workspace_dependencies.py",
+        "WorkspaceDependenciesTest.test_desktop_sources_and_executable_fixtures_are_present",
+        "-v"
+      ],
+      "exit_code": 1,
+      "failed": 1,
+      "log": "logs/workspace-python-alone.log"
+    }
+  ],
+  "gate_regression_status": "prior_4_passes_reused_with_exact_source_equivalence",
+  "gate_evidence": "logs/gate-source-equivalence.json",
+  "ci_comparison": "logs/ci-comparison.json"
+}

@@ -32,6 +32,7 @@ export type {
   ApprovalDecision,
   ComposerChatTarget,
   ComposerQueuedMessagePayload,
+  PendingToolApproval,
   StudioHostContext,
   StudioTurnContext,
   StreamChunkPayload,

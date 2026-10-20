@@ -1,0 +1,16 @@
+[
+  {
+    "synthetic_text": "ime-plain-control",
+    "json_encoded_bytes": 19,
+    "sha256": "7a96f41d9aaa364873390331c64245a7ece1b2ae0012d7cf7edd36e555f4ecb5",
+    "wire_sequence": 2,
+    "matches": true
+  },
+  {
+    "synthetic_text": "你好nihao",
+    "json_encoded_bytes": 13,
+    "sha256": "f18e836c3f08b6a07ad3146abf8942c36a7095f8ee2b87d5aab6b7ace56aa13a",
+    "wire_sequence": 4,
+    "matches": true
+  }
+]

@@ -19,7 +19,7 @@ pub(crate) use version_mismatch::{is_version_mismatch_banner, version_mismatch_b
 pub(crate) fn is_session_update_ext_method(method: &str) -> bool {
     matches!(method, "x.ai/session_notification" | "x.ai/session/update")
 }
-use crate::client_identity::{HEADLESS_CLIENT_TYPE, PAGER_CLIENT_TYPE, PAGER_CLIENT_VERSION};
+use crate::client_identity::{PAGER_CLIENT_TYPE, PAGER_CLIENT_VERSION};
 use a3s_acp_lib::{AcpAgentTx, AcpClientRx, acp_send};
 use a3s_code_shell::agent::auth_method::AuthMethodKind;
 use a3s_code_shell::agent::config::Config as AgentConfig;
@@ -222,17 +222,14 @@ pub async fn connect(cancel: &CancellationToken, flags: ConnectFlags) -> Result<
         leader: LeaderMode::Standalone,
         interactivity: Interactivity::Interactive,
     });
-    // Product path: forked pager UI + a3s-code-core 9.1.4 ACP agent subprocess.
+    // Product path: forked pager UI + a3s-code-core ACP agent subprocess.
     // No sidecar fails closed. The legacy shell is not a fallback.
+    // The prompt model is the ACL `default_model` the child loads. TOML
+    // theme and key bindings stay on this process and are not passed as
+    // `--model`. An inherited `A3S_DEFAULT_MODEL` still applies inside the child.
     let cwd = std::env::current_dir().ok();
-    let model = std::env::var("A3S_DEFAULT_MODEL")
-        .ok()
-        .filter(|value| !value.trim().is_empty())
-        .or_else(|| agent_config.default_model_override.clone())
-        .or_else(|| agent_config.models.default.clone());
     let spawned =
-        a3s_spawn::spawn_required_sidecar(&agent_config, cancel, cwd.as_deref(), model.as_deref())
-            .await?;
+        a3s_spawn::spawn_required_sidecar(&agent_config, cancel, cwd.as_deref(), None).await?;
     let auth_manager = spawned.auth_manager.clone();
     initialize_connection(AgentEndpoint::from(spawned), &flags, auth_manager).await
 }
@@ -297,100 +294,32 @@ pub(in crate::acp) async fn initialize_connection(
         auth_manager,
     })
 }
-/// Connect to a leader process and return an `AcpConnection`. The leader provides the ACP transport via IPC (raw
-/// JSON strings over a Unix socket). This function bridges that transport into the same typed `(AcpAgentTx,
-/// AcpClientRx)` pair that `connect()` produces. It then runs the standard initialize and authenticate sequence.
+/// Forward a leader-mode TUI connection to the same ACP child as [`connect`].
+///
+/// `aster agent serve` and `aster agent leader` still construct the in-process
+/// shell agent. This TUI path does not.
 pub async fn connect_via_leader(
     cancel: &CancellationToken,
     flags: ConnectFlags,
-    raw_config: &toml::Value,
+    _raw_config: &toml::Value,
 ) -> Result<AcpConnection> {
-    use a3s_code_shell::leader::{
-        ClientCapabilities, ClientMode, LeaderReconnector, ReconnectPolicy, connect_or_spawn,
-    };
-    warn_ignored_flags(
-        &unsupported_leader_flags(&flags),
-        "in leader mode (agent config is set at leader startup)",
-    );
-    apply_config_writes(&flags);
-    startup::enter(StartupPhase::ConfigLoad);
-    startup::set_auth_mode(a3s_code_shell::managed_config::classify_auth_mode());
-    let mut agent_config = AgentConfig::new_from_toml_cfg(raw_config)
-        .map_err(|e| anyhow::anyhow!("Failed to create agent config: {e}"))?;
-    agent_config.remote_settings = flags.remote_settings.clone();
-    let client_type = flags
-        .client_identifier
-        .as_deref()
-        .unwrap_or(HEADLESS_CLIENT_TYPE);
-    let env_urls = a3s_code_shell::leader::LeaderEnvUrls::from(&agent_config.grok_com_config);
-    let capabilities = ClientCapabilities {
-        yolo_mode: flags.default_yolo_mode,
-        auto_mode: flags.default_auto_mode && !flags.default_yolo_mode,
-        default_model: agent_config.models.default.clone(),
-        client_version: Some(PAGER_CLIENT_VERSION.to_string()),
-        code_nav_enabled: false,
-        terminal: flags.terminal,
-        fs_read: flags.fs_read,
-        fs_write: flags.fs_write,
-        status_line: flags.status_line,
-        user_message_echo: true,
-    };
-    startup::enter(StartupPhase::LeaderConnect);
-    let conn = {
-        let _t = a3s_code_telemetry::instrumentation::timer("startup.leader_connect.connect");
-        connect_or_spawn(
-            client_type,
-            ClientMode::Stdio,
-            &env_urls,
-            capabilities.clone(),
-        )
-        .await?
-    };
-    let (status_tx, status_rx) = LeaderReconnector::status_channel();
-    let reconnector = LeaderReconnector::new(
-        client_type,
-        ClientMode::Stdio,
-        env_urls,
-        capabilities,
-        status_tx,
-    );
-    let bridge = leader_bridge::bridge_leader_connection(
-        conn,
-        cancel.clone(),
-        Some(reconnector),
-        ReconnectPolicy::unbounded(),
-    )?;
-    let auth_manager = std::sync::Arc::new(a3s_code_login::AuthManager::new_with_proxy_base_url(
-        &a3s_code_shell::util::grok_home::grok_home(),
-        agent_config.grok_com_config.clone(),
-        agent_config.endpoints.proxy_url(),
-    ));
-    set_identity(ProcessIdentity {
-        entrypoint: Entrypoint::Pager,
-        leader: LeaderMode::Attached,
-        interactivity: Interactivity::Interactive,
-    });
-    a3s_code_shell::agent::init::update_telemetry_config(&agent_config, &auth_manager);
-    let endpoint = AgentEndpoint {
-        tx: bridge.channel.tx,
-        rx: bridge.channel.rx,
-        cancel: bridge.cancel,
-        location: AgentLocation::Leader(status_rx),
-    };
-    initialize_connection(endpoint, &flags, auth_manager).await
+    record_leader_forward();
+    connect(cancel, flags).await
 }
-/// Prints one warning per flag the chosen backend ignores. `reason` finishes the sentence "has no effect ...".
-/// This runs before tracing is set up, and the pager has already redirected fd 2, so the saved terminal stderr is the sink.
-pub(in crate::acp) fn warn_ignored_flags(flags: &[&'static str], reason: &str) {
-    if flags.is_empty() {
+
+fn record_leader_forward() {
+    let path = a3s_code_shell::util::grok_home::grok_home().join("leader-forward.log");
+    let Ok(mut file) = std::fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(&path)
+    else {
         return;
-    }
-    a3s_code_shell::util::with_locked_stderr(|stderr| {
-        for flag in flags {
-            let _ = writeln!(stderr, "warning: {flag} has no effect {reason}");
-        }
-    });
+    };
+    let _ = writeln!(file, "leader connection forwarded to ACP child");
+    let _ = file.flush();
 }
+#[cfg(test)]
 fn unsupported_leader_flags(flags: &ConnectFlags) -> Vec<&'static str> {
     let mut out = Vec::new();
     if let Some(flag) = flags.memory_override_flag {

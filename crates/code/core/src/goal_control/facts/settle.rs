@@ -188,7 +188,7 @@ pub(super) fn fold_settle(
     session_id: &str,
     workspace: &WorkspaceRef,
     policy_digest: Option<&str>,
-) -> Result<(String, String, DurableGoalDefinitionV1), GoalControlError> {
+) -> Result<(String, String, DurableGoalDefinitionV1, bool), GoalControlError> {
     let current = current.ok_or_else(|| refused(GoalRefusal::NotFound, "goal is absent"))?;
     let stored = SettledFact::deserialize(&fact.payload)
         .map_err(|_| refused(GoalRefusal::Conflict, "invalid slice settlement fact"))?;
@@ -234,5 +234,16 @@ pub(super) fn fold_settle(
             "slice settlement differs from its original Run",
         ));
     }
-    Ok((stored.operation_id, stored.command_digest, current.clone()))
+    let mutated = crate::fact_control::goal_slice_made_progress(
+        prefix,
+        body.run_sequence,
+        session_id,
+        &body.run_id,
+    );
+    Ok((
+        stored.operation_id,
+        stored.command_digest,
+        current.clone(),
+        mutated,
+    ))
 }

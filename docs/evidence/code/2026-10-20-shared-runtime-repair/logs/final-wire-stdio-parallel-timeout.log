@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-shared-runtime-repair/probes/stdio_probe.py", line 24, in <module>
+    result = subprocess.run([str(ROOT/'target/debug/aster'), 'agent', '--model', 'mock/a',
+        '--reasoning-effort', 'high', 'stdio'], cwd=workspace, env=env,
+        stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=20)
+  File "/opt/homebrew/Cellar/python@3.13/3.13.15/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 556, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.15/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1222, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.15/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 2155, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.15/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1269, in _check_timeout
+    raise TimeoutExpired(
+    ...<2 lines>...
+            stderr=b''.join(stderr_seq) if stderr_seq else None)
+subprocess.TimeoutExpired: Command '['/Users/roylin/code/aster/target/debug/aster', 'agent', '--model', 'mock/a', '--reasoning-effort', 'high', 'stdio']' timed out after 20 seconds

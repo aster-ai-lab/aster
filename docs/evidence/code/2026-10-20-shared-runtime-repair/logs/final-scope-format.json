@@ -1,0 +1,28 @@
+[
+  {
+    "command": [
+      "rustfmt",
+      "--edition",
+      "2021",
+      "--check",
+      "crates/code/core/src/fact_control/receipts.rs",
+      "crates/code/core/src/fact_control/receipts/tests/batch_evidence.rs"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "--check",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/acp/a3s_spawn.rs",
+      "crates/terminal/crates/codegen/a3s-code-pager/src/acp/a3s_spawn/argument_tests.rs"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  }
+]

@@ -551,6 +551,9 @@ pub(super) async fn prepare_tools(
                 for id in workspace_child_bindings(
                     "batch",
                     envelope.as_ref().and_then(|value| value.metadata.as_ref()),
+                    envelope
+                        .as_ref()
+                        .and_then(|value| value.workspace_child.as_deref()),
                 )
                 .into_keys()
                 {
@@ -1016,6 +1019,9 @@ fn fold_receipts(facts: &[a3s_effect::Fact], include_covered: bool) -> ReceiptDe
                                 envelope
                                     .as_ref()
                                     .and_then(|envelope| envelope.metadata.as_ref()),
+                                envelope
+                                    .as_ref()
+                                    .and_then(|value| value.workspace_child.as_deref()),
                             );
                             for child in result
                                 .effects
@@ -1488,6 +1494,7 @@ mod tests;
 fn workspace_child_bindings(
     tool: &str,
     metadata: Option<&serde_json::Value>,
+    root_child: Option<&str>,
 ) -> std::collections::BTreeMap<String, Option<(String, String)>> {
     let mut bindings = std::collections::BTreeMap::new();
     let nested = metadata
@@ -1497,13 +1504,22 @@ fn workspace_child_bindings(
         .into_iter()
         .flatten()
         .take(crate::tools::builtin::MAX_BATCH_INVOCATIONS)
-        .filter_map(|value| value.get("metadata"));
-    for value in metadata.into_iter().chain(nested) {
-        let Some(id) = value
-            .get("workspace_child")
-            .and_then(serde_json::Value::as_str)
-            .filter(|id| !id.is_empty())
-        else {
+        .filter_map(|value| value.get("metadata"))
+        .map(|value| {
+            (
+                value
+                    .get("workspace_child")
+                    .and_then(serde_json::Value::as_str),
+                value,
+            )
+        });
+    // The envelope's typed child field is authoritative for an ordinary receipt.
+    for (id, value) in metadata
+        .map(|value| (root_child, value))
+        .into_iter()
+        .chain(nested)
+    {
+        let Some(id) = id.filter(|id| !id.is_empty()) else {
             continue;
         };
         let binding = value
@@ -1534,7 +1550,10 @@ pub(super) fn observe_live_child(
     metadata: Option<&serde_json::Value>,
     tool: &str,
 ) {
-    for child in workspace_child_bindings(tool, metadata).into_keys() {
+    let root_child = metadata
+        .and_then(|value| value.get("workspace_child"))
+        .and_then(serde_json::Value::as_str);
+    for child in workspace_child_bindings(tool, metadata, root_child).into_keys() {
         ledger
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner)

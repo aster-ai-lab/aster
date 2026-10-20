@@ -1,0 +1,14 @@
+{
+  "fixture_only": true,
+  "production_module": "actual Studio PreferenceStore via maintained test stdio helper",
+  "read_result": {
+    "error": {
+      "code": "invalid"
+    },
+    "id": 2,
+    "ok": false
+  },
+  "fixture_acl_unchanged": true,
+  "exit_code": 0,
+  "no_real_profile_access": true
+}

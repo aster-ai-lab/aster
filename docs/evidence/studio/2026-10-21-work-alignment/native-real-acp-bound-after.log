@@ -1,0 +1,59 @@
+
+running 1 test
+STUDIO_FIXTURE_EVENT phase=plan channel="topic.status" status={"activeExecutions":[{"anchorMessageId":"01a15b77-f1f9-778e-9e0f-3c8df3692022","attemptId":1,"executionId":"01a15b77-f1f9-778e-9e0f-3c8df3692022"}],"awaitingApprovalAnchors":[],"goalSnapshot":{"acpSessionId":null,"executionId":"01a15b77-f1f9-778e-9e0f-3c8df3692022","goal":null,"reason":"runtime_unavailable","sessionId":"01a15b77-f1eb-77ae-8d1d-0e3cb7be3268","status":"unavailable"},"pendingApprovals":[],"status":"pending","turnId":"01a15b77-f1f9-778e-9e0f-3c8df3692022"}
+STUDIO_FIXTURE_EVENT phase=plan channel="data.changed" status=null
+STUDIO_FIXTURE_EVENT phase=plan channel="topic.status" status={"activeExecutions":[{"anchorMessageId":"01a15b77-f1f9-778e-9e0f-3c8df3692022","attemptId":1,"executionId":"01a15b77-f1f9-778e-9e0f-3c8df3692022"}],"awaitingApprovalAnchors":[],"goalSnapshot":{"acpSessionId":"e79bd2cc-cb09-499c-a7cc-d03aa959adea","executionId":"01a15b77-f1f9-778e-9e0f-3c8df3692022","goal":null,"sessionId":"01a15b77-f1eb-77ae-8d1d-0e3cb7be3268","status":"known"},"pendingApprovals":[],"status":"pending","turnId":"01a15b77-f1f9-778e-9e0f-3c8df3692022"}
+STUDIO_FIXTURE_EVENT phase=plan channel="topic.status" status={"activeExecutions":[{"anchorMessageId":"01a15b77-f1f9-778e-9e0f-3c8df3692022","attemptId":1,"executionId":"01a15b77-f1f9-778e-9e0f-3c8df3692022"}],"awaitingApprovalAnchors":[],"goalSnapshot":{"acpSessionId":"e79bd2cc-cb09-499c-a7cc-d03aa959adea","executionId":"01a15b77-f1f9-778e-9e0f-3c8df3692022","goal":null,"sessionId":"01a15b77-f1eb-77ae-8d1d-0e3cb7be3268","status":"known"},"pendingApprovals":[],"status":"streaming","turnId":"01a15b77-f1f9-778e-9e0f-3c8df3692022"}
+STUDIO_FIXTURE_EVENT phase=plan channel="data.changed" status=null
+STUDIO_FIXTURE_EVENT phase=plan channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=plan channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_REQUEST route=/v1/chat/completions stream=true
+STUDIO_FIXTURE_EVENT phase=plan channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=plan channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=plan channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_REQUEST route=/v1/chat/completions stream=true
+STUDIO_FIXTURE_EVENT phase=plan channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=plan channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=plan channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=plan channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=plan channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=plan channel="ai.stream.done" status="success"
+STUDIO_FIXTURE_REQUEST route=/v1/chat/completions stream=false
+STUDIO_FIXTURE_EVENT phase=execute channel="topic.status" status={"activeExecutions":[],"awaitingApprovalAnchors":[],"goalSnapshot":{"acpSessionId":"e79bd2cc-cb09-499c-a7cc-d03aa959adea","executionId":"01a15b77-f1f9-778e-9e0f-3c8df3692022","goal":null,"sessionId":"01a15b77-f1eb-77ae-8d1d-0e3cb7be3268","status":"known"},"lastCompletedAt":1792535950387,"pendingApprovals":[],"status":"done","turnId":"01a15b77-f1f9-778e-9e0f-3c8df3692022"}
+STUDIO_FIXTURE_EVENT phase=execute channel="data.changed" status=null
+STUDIO_FIXTURE_EVENT phase=execute channel="data.changed" status=null
+STUDIO_FIXTURE_EVENT phase=execute channel="topic.status" status={"activeExecutions":[{"anchorMessageId":"01a15b77-f43b-74a7-9c09-03b997a84e3f","attemptId":1,"executionId":"01a15b77-f43b-74a7-9c09-03b997a84e3f"}],"awaitingApprovalAnchors":[],"goalSnapshot":{"acpSessionId":null,"executionId":"01a15b77-f43b-74a7-9c09-03b997a84e3f","goal":null,"reason":"runtime_unavailable","sessionId":"01a15b77-f1eb-77ae-8d1d-0e3cb7be3268","status":"unavailable"},"pendingApprovals":[],"status":"pending","turnId":"01a15b77-f43b-74a7-9c09-03b997a84e3f"}
+STUDIO_FIXTURE_EVENT phase=execute channel="data.changed" status=null
+STUDIO_FIXTURE_EVENT phase=execute channel="topic.status" status={"activeExecutions":[{"anchorMessageId":"01a15b77-f43b-74a7-9c09-03b997a84e3f","attemptId":1,"executionId":"01a15b77-f43b-74a7-9c09-03b997a84e3f"}],"awaitingApprovalAnchors":[],"goalSnapshot":{"acpSessionId":"e79bd2cc-cb09-499c-a7cc-d03aa959adea","executionId":"01a15b77-f43b-74a7-9c09-03b997a84e3f","goal":null,"sessionId":"01a15b77-f1eb-77ae-8d1d-0e3cb7be3268","status":"known"},"pendingApprovals":[],"status":"pending","turnId":"01a15b77-f43b-74a7-9c09-03b997a84e3f"}
+STUDIO_FIXTURE_EVENT phase=execute channel="topic.status" status={"activeExecutions":[{"anchorMessageId":"01a15b77-f43b-74a7-9c09-03b997a84e3f","attemptId":1,"executionId":"01a15b77-f43b-74a7-9c09-03b997a84e3f"}],"awaitingApprovalAnchors":[],"goalSnapshot":{"acpSessionId":"e79bd2cc-cb09-499c-a7cc-d03aa959adea","executionId":"01a15b77-f43b-74a7-9c09-03b997a84e3f","goal":null,"sessionId":"01a15b77-f1eb-77ae-8d1d-0e3cb7be3268","status":"known"},"pendingApprovals":[],"status":"streaming","turnId":"01a15b77-f43b-74a7-9c09-03b997a84e3f"}
+STUDIO_FIXTURE_EVENT phase=execute channel="data.changed" status=null
+STUDIO_FIXTURE_EVENT phase=execute channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=execute channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_REQUEST route=/v1/chat/completions stream=true
+STUDIO_FIXTURE_EVENT phase=execute channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=execute channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=execute channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=execute channel="topic.status" status={"activeExecutions":[{"anchorMessageId":"01a15b77-f43b-74a7-9c09-03b997a84e3f","attemptId":1,"executionId":"01a15b77-f43b-74a7-9c09-03b997a84e3f"}],"awaitingApprovalAnchors":[{"anchorMessageId":"01a15b77-f43b-74a7-9c09-03b997a84e3f","attemptId":1,"executionId":"01a15b77-f43b-74a7-9c09-03b997a84e3f"}],"goalSnapshot":{"acpSessionId":"e79bd2cc-cb09-499c-a7cc-d03aa959adea","executionId":"01a15b77-f43b-74a7-9c09-03b997a84e3f","goal":null,"sessionId":"01a15b77-f1eb-77ae-8d1d-0e3cb7be3268","status":"known"},"pendingApprovals":[{"anchorMessageId":"01a15b77-f43b-74a7-9c09-03b997a84e3f","approvalId":"01a15b77-f4a7-76ec-b519-e62583df96f9","executionId":"01a15b77-f43b-74a7-9c09-03b997a84e3f","messageId":"01a15b77-f43b-74a7-9c09-03b997a84e3f","toolCallId":"synthetic-2-write"}],"status":"awaiting-approval","turnId":"01a15b77-f43b-74a7-9c09-03b997a84e3f"}
+STUDIO_FIXTURE_EVENT phase=execute channel="data.changed" status=null
+STUDIO_FIXTURE_EVENT phase=execute channel="topic.status" status={"activeExecutions":[{"anchorMessageId":"01a15b77-f43b-74a7-9c09-03b997a84e3f","attemptId":1,"executionId":"01a15b77-f43b-74a7-9c09-03b997a84e3f"}],"awaitingApprovalAnchors":[{"anchorMessageId":"01a15b77-f43b-74a7-9c09-03b997a84e3f","attemptId":1,"executionId":"01a15b77-f43b-74a7-9c09-03b997a84e3f"}],"goalSnapshot":{"acpSessionId":"e79bd2cc-cb09-499c-a7cc-d03aa959adea","executionId":"01a15b77-f43b-74a7-9c09-03b997a84e3f","goal":null,"sessionId":"01a15b77-f1eb-77ae-8d1d-0e3cb7be3268","status":"known"},"pendingApprovals":[],"status":"awaiting-approval","turnId":"01a15b77-f43b-74a7-9c09-03b997a84e3f"}
+STUDIO_FIXTURE_EVENT phase=execute channel="topic.status" status={"activeExecutions":[{"anchorMessageId":"01a15b77-f43b-74a7-9c09-03b997a84e3f","attemptId":1,"executionId":"01a15b77-f43b-74a7-9c09-03b997a84e3f"}],"awaitingApprovalAnchors":[],"goalSnapshot":{"acpSessionId":"e79bd2cc-cb09-499c-a7cc-d03aa959adea","executionId":"01a15b77-f43b-74a7-9c09-03b997a84e3f","goal":null,"sessionId":"01a15b77-f1eb-77ae-8d1d-0e3cb7be3268","status":"known"},"pendingApprovals":[],"status":"streaming","turnId":"01a15b77-f43b-74a7-9c09-03b997a84e3f"}
+STUDIO_FIXTURE_EVENT phase=execute channel="data.changed" status=null
+STUDIO_FIXTURE_EVENT phase=execute channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_REQUEST route=/v1/chat/completions stream=true
+STUDIO_FIXTURE_EVENT phase=execute channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=execute channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=execute channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_REQUEST route=/v1/chat/completions stream=true
+STUDIO_FIXTURE_EVENT phase=execute channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=execute channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=execute channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=execute channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=execute channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=execute channel="ai.stream.done" status="success"
+STUDIO_REAL_ACP_RESULT {"binary":"/Users/roylin/code/aster/target/studio-macos-alignment/debug/a3s-code-acp","bound_approvals":1,"execution_marker":true,"main_streams":5,"planning_mutation":false}
+STUDIO_FIXTURE_REQUEST route=/v1/chat/completions stream=false
+STUDIO_FIXTURE_SERVER Ok(Ok(()))
+test agent_plane::turns::native_local_acp_alignment_tests::native_alignment_real_local_acp_planning_then_execution ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 864 filtered out; finished in 1.30s
+

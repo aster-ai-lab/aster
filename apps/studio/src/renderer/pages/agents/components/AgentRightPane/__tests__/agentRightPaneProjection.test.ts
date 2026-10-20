@@ -335,6 +335,46 @@ describe('agent right pane projections', () => {
     expect(projection.partsByMessageId['root:agent-flow-assistant']).toHaveLength(1)
   })
 
+  it('keeps skipped and cancelled canonical plan steps distinct', () => {
+    const parts = [
+      toolPart('plan', 'TodoWrite', undefined, 'output-available', {
+        variant: 'TodoWrite',
+        plan: [
+          { step: 'Optional check', status: 'skipped' },
+          { step: 'Cancelled work', status: 'cancelled' }
+        ]
+      })
+    ]
+    const status = buildAgentRightPaneStatus([message('m1', parts)], { m1: parts })
+    expect(status.tasks.map((task) => task.status)).toEqual(['skipped', 'stopped'])
+    expect(status.completedTaskCount).toBe(0)
+  })
+
+  it('projects canonical update_plan steps and refuses unknown plan states', () => {
+    const parts = [
+      toolPart('plan-1', 'TodoWrite', undefined, 'output-available', {
+        variant: 'TodoWrite',
+        plan: [
+          { id: 'a', step: 'Read input', status: 'completed' },
+          { id: 'b', step: 'Write output', status: 'in_progress' }
+        ]
+      })
+    ]
+    const status = buildAgentRightPaneStatus([message('m1', parts)], { m1: parts })
+    expect(status.tasks).toEqual([
+      { id: 'a', title: 'Read input', status: 'completed' },
+      { id: 'b', title: 'Write output', status: 'in_progress' }
+    ])
+    expect(status.completedTaskCount).toBe(1)
+    const invalid = [
+      toolPart('bad', 'TodoWrite', undefined, 'output-available', {
+        variant: 'TodoWrite',
+        plan: [{ step: 'Do not invent a state', status: 'mystery' }]
+      })
+    ]
+    expect(buildAgentRightPaneStatus([message('m2', invalid)], { m2: invalid }).tasks).toEqual([])
+  })
+
   // TodoWrite snapshots and the task ledger both describe the same plan, so the most
   // recently written source owns the status list.
   it('lets the most recent plan writer win between TodoWrite snapshots and the task ledger', () => {

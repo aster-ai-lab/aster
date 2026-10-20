@@ -1,0 +1,336 @@
+warning: method `ensure_builtin_tobot` is never used
+   --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/catalog.rs:332:12
+    |
+223 | impl SessionCatalog {
+    | ------------------- method in this implementation
+...
+332 |     pub fn ensure_builtin_tobot(&self) -> Result<Session, PlaneError> {
+    |            ^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `POLL_LIMIT` is never used
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:29:7
+   |
+29 | const POLL_LIMIT: usize = 100;
+   |       ^^^^^^^^^^
+
+warning: struct `SseEvent` is never constructed
+   --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:838:19
+    |
+838 | pub(super) struct SseEvent {
+    |                   ^^^^^^^^
+
+warning: function `stream_agent_events` is never used
+   --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:845:21
+    |
+845 | pub(super) async fn stream_agent_events(
+    |                     ^^^^^^^^^^^^^^^^^^^
+
+warning: constant `LISTEN_LIMIT` is never used
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:22:7
+   |
+22 | const LISTEN_LIMIT: Duration = Duration::from_secs(2);
+   |       ^^^^^^^^^^^^
+
+warning: constant `REQUEST_LIMIT` is never used
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:23:7
+   |
+23 | const REQUEST_LIMIT: Duration = Duration::from_secs(2);
+   |       ^^^^^^^^^^^^^
+
+warning: constant `PACKAGE_TURN_LIMIT` is never used
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:24:7
+   |
+24 | const PACKAGE_TURN_LIMIT: Duration = Duration::from_secs(5);
+   |       ^^^^^^^^^^^^^^^^^^
+
+warning: struct `PeerState` is never constructed
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:38:8
+   |
+38 | struct PeerState {
+   |        ^^^^^^^^^
+
+warning: struct `BuiltinPeer` is never constructed
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:42:12
+   |
+42 | pub struct BuiltinPeer {
+   |            ^^^^^^^^^^^
+
+warning: associated items `start`, `endpoint`, and `stop` are never used
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:49:18
+   |
+48 | impl BuiltinPeer {
+   | ---------------- associated items in this implementation
+49 |     pub async fn start() -> Result<Self, String> {
+   |                  ^^^^^
+...
+76 |     pub fn endpoint(&self) -> String {
+   |            ^^^^^^^^
+...
+80 |     pub async fn stop(mut self) {
+   |                  ^^^^
+
+warning: function `admit_command` is never used
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:88:10
+   |
+88 | async fn admit_command(
+   |          ^^^^^^^^^^^^^
+
+warning: function `page_events` is never used
+   --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:101:10
+    |
+101 | async fn page_events(
+    |          ^^^^^^^^^^^
+
+warning: function `admitted_prompt` is never used
+   --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:114:4
+    |
+114 | fn admitted_prompt(body: &Value) -> Result<String, ()> {
+    |    ^^^^^^^^^^^^^^^
+
+warning: struct `PackageRun` is never constructed
+   --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:186:12
+    |
+186 | pub struct PackageRun {
+    |            ^^^^^^^^^^
+
+warning: associated items `spawn`, `endpoint`, `stop`, and `finish` are never used
+   --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:193:18
+    |
+192 | impl PackageRun {
+    | --------------- associated items in this implementation
+193 |     pub async fn spawn(program: &Path, args: &[String]) -> Result<Self, String> {
+    |                  ^^^^^
+...
+253 |     pub fn endpoint(&self) -> &str {
+    |            ^^^^^^^^
+...
+257 |     pub async fn stop(self) -> Result<(), String> {
+    |                  ^^^^
+...
+262 |     async fn finish(mut self) -> Result<String, String> {
+    |              ^^^^^^
+
+warning: function `listen_error` is never used
+   --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:274:10
+    |
+274 | async fn listen_error(child: Child, stderr: JoinHandle<Vec<u8>>, error: &str) -> String {
+    |          ^^^^^^^^^^^^
+
+warning: function `stderr_text` is never used
+   --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:279:10
+    |
+279 | async fn stderr_text(task: JoinHandle<Vec<u8>>) -> String {
+    |          ^^^^^^^^^^^
+
+warning: function `bounded_text` is never used
+   --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:287:4
+    |
+287 | fn bounded_text(bytes: &[u8]) -> String {
+    |    ^^^^^^^^^^^^
+
+warning: function `with_diagnostic` is never used
+   --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:293:4
+    |
+293 | fn with_diagnostic(error: String, stderr: &str) -> String {
+    |    ^^^^^^^^^^^^^^^
+
+warning: function `post_json` is never used
+   --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:302:14
+    |
+302 | pub async fn post_json(endpoint: &str, path: &str, body: &Value) -> Result<Value, String> {
+    |              ^^^^^^^^^
+
+warning: function `exchange_turn` is never used
+   --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:396:21
+    |
+396 | pub(super) async fn exchange_turn(endpoint: &str, body: &Value) -> Result<Vec<String>, String> {
+    |                     ^^^^^^^^^^^^^
+
+warning: function `package_turn_text` is never used
+   --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:402:14
+    |
+402 | pub async fn package_turn_text(entry: &Path, body: &Value) -> Result<Vec<String>, String> {
+    |              ^^^^^^^^^^^^^^^^^
+
+warning: method `ticker_started` is never used
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/tasks.rs:75:19
+   |
+33 | impl TaskService {
+   | ---------------- method in this implementation
+...
+75 |     pub(super) fn ticker_started(&self) -> bool {
+   |                   ^^^^^^^^^^^^^^
+
+warning: function `recall_note` is never used
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/tobot_memory.rs:20:15
+   |
+20 | pub(crate) fn recall_note(origin: &str, slug: &str, query: &str) -> Option<String> {
+   |               ^^^^^^^^^^^
+
+warning: function `retain_exchange` is never used
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/tobot_memory.rs:39:15
+   |
+39 | pub(crate) fn retain_exchange(origin: &str, slug: &str, key: &str, user: &str, assistant: &str) {
+   |               ^^^^^^^^^^^^^^^
+
+warning: function `acp_mode_id` is never used
+    --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/turns.rs:3807:4
+     |
+3807 | fn acp_mode_id(permission_mode: &str) -> &'static str {
+     |    ^^^^^^^^^^^
+
+warning: constant `INTERRUPTED_RUN` is never used
+    --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/agent_plane/turns.rs:3871:18
+     |
+3871 | pub(super) const INTERRUPTED_RUN: &str = INTERRUPTED_EXHAUSTED;
+     |                  ^^^^^^^^^^^^^^^
+
+warning: field `name` is never read
+   --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/authority.rs:171:5
+    |
+167 | pub struct StudioAuthority {
+    |            --------------- field in this struct
+...
+171 |     name: String,
+    |     ^^^^
+
+warning: method `name` is never used
+   --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/authority.rs:370:12
+    |
+180 | impl StudioAuthority {
+    | -------------------- method in this implementation
+...
+370 |     pub fn name(&self) -> &str {
+    |            ^^^^
+
+warning: field `http` is never read
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/binary_tools.rs:50:5
+   |
+47 | struct BinaryState {
+   |        ----------- field in this struct
+...
+50 |     http: HttpSource,
+   |     ^^^^
+   |
+   = note: `BinaryState` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: function `installed_agent_entry` is never used
+    --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/capabilities.rs:1472:15
+     |
+1472 | pub(crate) fn installed_agent_entry(caps: &Path, slug: &str) -> io::Result<PathBuf> {
+     |               ^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `acp_session_servers` is never used
+    --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/capabilities.rs:2641:15
+     |
+2641 | pub(crate) fn acp_session_servers(root: &Path) -> Vec<Value> {
+     |               ^^^^^^^^^^^^^^^^^^^
+
+warning: function `installed_flow_specs` is never used
+    --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/capabilities.rs:2698:15
+     |
+2698 | pub(crate) fn installed_flow_specs(root: &Path) -> Vec<Value> {
+     |               ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `source_hash_ok` is never used
+    --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/capabilities.rs:2718:4
+     |
+2718 | fn source_hash_ok(value: &str) -> bool {
+     |    ^^^^^^^^^^^^^^
+
+warning: variant `Unavailable` is never constructed
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/folder_dialog.rs:56:5
+   |
+53 | pub enum DirectoryChoice {
+   |          --------------- variant in this enum
+...
+56 |     Unavailable,
+   |     ^^^^^^^^^^^
+
+warning: function `retrieve_passages` is never used
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/local_documents.rs:22:8
+   |
+22 | pub fn retrieve_passages(raw_root: &str, query: &str) -> Vec<String> {
+   |        ^^^^^^^^^^^^^^^^^
+
+warning: function `query_tokens` is never used
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/local_documents.rs:53:4
+   |
+53 | fn query_tokens(query: &str) -> Vec<String> {
+   |    ^^^^^^^^^^^^
+
+warning: function `collect_note_passages` is never used
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/local_documents.rs:65:4
+   |
+65 | fn collect_note_passages(
+   |    ^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated function `open_at` is never used
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/member_session.rs:80:12
+   |
+47 | impl MemberSessionStore {
+   | ----------------------- associated function in this implementation
+...
+80 |     pub fn open_at(path: Option<PathBuf>) -> Self {
+   |            ^^^^^^^
+
+warning: function `search_paths` is never used
+   --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/plugin_okf.rs:436:4
+    |
+436 | fn search_paths(dir: &Path, query: &str) -> io::Result<Vec<String>> {
+    |    ^^^^^^^^^^^^
+
+warning: function `first_chat_model_for_key` is never used
+   --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/providers.rs:453:15
+    |
+453 | pub(crate) fn first_chat_model_for_key(key: &str) -> Option<String> {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: fields `skill`, `ui`, `title`, and `steps` are never read
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/review_plugin.rs:82:9
+   |
+81 | pub struct ReconcileReport {
+   |            --------------- fields in this struct
+82 |     pub skill: bool,
+   |         ^^^^^
+83 |     pub ui: bool,
+   |         ^^
+84 |     pub title: String,
+   |         ^^^^^
+85 |     pub steps: Vec<&'static str>,
+   |         ^^^^^
+
+warning: function `review_facade_script` is never used
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/review_plugin.rs:97:8
+   |
+97 | pub fn review_facade_script() -> String {
+   |        ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `cached_picker_http` is never used
+   --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/review_plugin.rs:438:4
+    |
+438 | fn cached_picker_http() -> (u16, &'static str, &'static str, Vec<u8>) {
+    |    ^^^^^^^^^^^^^^^^^^
+
+warning: function `verified_picker` is never used
+   --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/review_plugin.rs:462:8
+    |
+462 | pub fn verified_picker() -> Option<(PathBuf, String)> {
+    |        ^^^^^^^^^^^^^^^
+
+warning: function `hit_window_drag` is never used
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/window_drag.rs:22:15
+   |
+22 | pub(crate) fn hit_window_drag(x: f64, y: f64, drag: &[CssRect], block: &[CssRect]) -> bool {
+   |               ^^^^^^^^^^^^^^^
+
+warning: function `hit_window_chrome` is never used
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source-r2/apps/studio/src-tauri/src/window_drag.rs:32:15
+   |
+32 | pub(crate) fn hit_window_chrome(
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: 47 warnings emitted
+

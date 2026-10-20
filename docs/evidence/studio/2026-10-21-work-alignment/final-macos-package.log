@@ -1,0 +1,1104 @@
+$ bash scripts/package-host.sh
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+Collecting fonttools>=4.55
+  Using cached fonttools-4.60.2-cp39-cp39-macosx_10_9_universal2.whl (2.9 MB)
+Installing collected packages: fonttools
+Successfully installed fonttools-4.60.2
+$ pnpm --filter @a3s-lab/office build
+$ bash scripts/build-office-kernel.sh && rslib
+Office kernel is current
+Rslib v0.23.2
+
+info    build started...
+start   generating declaration files... (library)
+ready   built in 0.20s (office-kernel-worker)
+ready   built in 0.34s (library)
+ready   declaration files generated in 10.7 s (library)
+
+File (library)                                 Size         Gzip   
+dist/styles.js                                 0.00 kB      0.02 kB
+dist/5654.js                                   0.21 kB      0.17 kB
+dist/0~work-spreadsheet-formula-support.js     0.27 kB      0.20 kB
+dist/0~work-document-page-color.js             0.33 kB      0.25 kB
+dist/5173.js                                   0.34 kB      0.27 kB
+dist/0~rslib-runtime.js                        0.40 kB      0.26 kB
+dist/0~work-document-links.js                  0.40 kB      0.33 kB
+dist/576.js                                    0.48 kB      0.29 kB
+dist/0~work-presentation-visual-scale.js       0.59 kB      0.33 kB
+dist/spreadsheet.js                            0.89 kB      0.53 kB
+dist/react.js                                  0.92 kB      0.41 kB
+dist/0~345.js                                  1.0 kB       0.51 kB
+dist/4650.js                                   1.7 kB       0.77 kB
+dist/9356.js                                   2.1 kB       0.92 kB
+dist/6908.js                                   2.4 kB       1.0 kB
+dist/7060.js                                   2.6 kB       1.2 kB
+dist/0~3557.js                                 3.1 kB       1.3 kB
+dist/0~4980.js                                 3.4 kB       1.5 kB
+dist/6489.js                                   3.4 kB       1.9 kB
+dist/0~work-document-import-worker-client.js   4.0 kB       1.6 kB
+dist/2591.js                                   4.0 kB       1.5 kB
+dist/0~1403.js                                 4.1 kB       1.6 kB
+dist/8465.js                                   4.1 kB       1.6 kB
+dist/index.js                                  4.2 kB       1.3 kB
+dist/0~pdf-page-organization-engine.js         4.7 kB       2.0 kB
+dist/0~9445.js                                 4.7 kB       1.9 kB
+dist/vue.js                                    4.8 kB       1.2 kB
+dist/0~office-color-picker.js                  5.4 kB       2.2 kB
+dist/315.js                                    5.6 kB       2.5 kB
+dist/0~controlled-editor-composition.js        6.1 kB       1.6 kB
+dist/0~3789.js                                 6.4 kB       2.4 kB
+dist/web-component.js                          8.5 kB       2.0 kB
+dist/0~work-docx-large-document-import.js      9.9 kB       3.9 kB
+dist/0~5870.js                                 11.0 kB      3.5 kB
+dist/432.js                                    16.5 kB      5.7 kB
+dist/4560.js                                   20.2 kB      6.3 kB
+dist/0~work-pptx-export.js                     22.0 kB      7.5 kB
+dist/0~4541.js                                 22.9 kB      6.2 kB
+dist/0~9073.js                                 23.3 kB      7.4 kB
+dist/3818.js                                   23.5 kB      7.1 kB
+dist/noto-sans-hebrew-regular.ttf              25.7 kB   
+dist/0~work-pptx-import.js                     26.8 kB      9.8 kB
+dist/827.js                                    29.1 kB      9.5 kB
+dist/0~5860.js                                 30.9 kB      10.2 kB
+dist/0~work-spreadsheet-compatibility.js       35.3 kB      11.5 kB
+dist/0~6628.js                                 35.6 kB      11.1 kB
+dist/7376.js                                   38.0 kB      11.9 kB
+dist/5601.js                                   39.7 kB      12.5 kB
+dist/0~9457.js                                 45.3 kB      14.0 kB
+dist/0~7831.js                                 48.5 kB      14.5 kB
+dist/0~markdown-editor.js                      53.0 kB      17.4 kB
+dist/0~work-office-diagnostics.js              76.5 kB      21.6 kB
+dist/0~pdf-viewer.js                           76.5 kB      22.7 kB
+dist/core.js                                   93.7 kB      23.9 kB
+dist/0~work-docx-import.js                     110.8 kB     31.8 kB
+dist/noto-naskh-arabic-regular.ttf             134.0 kB  
+dist/940.js                                    172.8 kB     53.4 kB
+dist/0~9303.js                                 177.9 kB     47.2 kB
+dist/0~presentation-editor.js                  185.2 kB     51.9 kB
+dist/2611.js                                   210.5 kB     66.1 kB
+dist/8476.js                                   271.9 kB     79.9 kB
+dist/0~work-docx-export.js                     281.8 kB     70.6 kB
+dist/8471.js                                   438.2 kB     116.8 kB
+dist/0~document-editor.js                      454.8 kB     117.9 kB
+dist/pptxgen.bundle.js                         460.9 kB     156.9 kB
+dist/2343.js                                   491.2 kB     107.6 kB
+dist/styles.css                                529.5 kB     75.9 kB
+dist/0~spreadsheet-editor.js                   531.2 kB     138.7 kB
+dist/noto-sans-regular.ttf                     629.0 kB  
+dist/office-kernel.wasm                        1481.4 kB    519.1 kB
+dist/pdfium.wasm                               4633.0 kB    2137.7 kB
+dist/noto-sans-hans-regular.otf                8364.6 kB 
+
+                                      Total:   20453.5 kB   13199.2 kB
+
+File (office-kernel-worker)                    Size        Gzip   
+dist/work-document-import.worker.js            23.9 kB     5.3 kB
+dist/work-spreadsheet-package-scan.worker.js   267.8 kB    43.2 kB
+dist/office-kernel.worker.js                   740.6 kB    101.1 kB
+dist/work-spreadsheet-import.worker.js         923.4 kB    164.1 kB
+dist/pdf-page-organization.worker.js           1038.6 kB   222.4 kB
+
+                                      Total:   2994.3 kB   536.1 kB
+
+Rsbuild v2.2.7
+
+(node:53134) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/roylin/code/aster/apps/studio/rsbuild.config.ts?fresh-import-cinzq6v73rf=0,file:///Users/roylin/code/aster/apps/studio/rsbuild.config.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/roylin/code/aster/apps/studio/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+info    build started...
+warn    Build warnings: 
+File: ./src/renderer/pages/agents/pdfToolsPdfium.ts:1:1
+  ⚠ Critical dependency: the request of a dependency is an expression
+     ╭─[163:53]
+ 161 │     const index = await fromHere(PDFIUM_INDEX);
+ 162 │     const { pathToFileURL } = await import(/* @vite-ignore */ 'node:url');
+ 163 │     const imported = await import(/* @vite-ignore */ pathToFileURL(index).href);
+     ·                                                      ─────────────────────────
+ 164 │     return imported.init({
+ 165 │         wasmBinary: wasm
+     ╰────
+
+File: ./src/renderer/workers/pyodide.worker.ts:1:1
+  ⚠ Critical dependency: the request of a dependency is an expression
+    ╭─[57:62]
+ 55 │     try {
+ 56 │         // 动态加载 Pyodide 脚本
+ 57 │         const pyodideModule = await import(/* @vite-ignore */ PYODIDE_MODULE_URL);
+    ·                                                               ──────────────────
+ 58 │         // 加载 Pyodide 并捕获标准输出/错误
+ 59 │         return await pyodideModule.loadPyodide({
+    ╰────
+
+ready   built in 10.5s
+noto-sans-hans-regular.d18c903672.otf 2082148
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: function `sigmoid` is never used
+  --> crates/bge/src/math.rs:18:15
+   |
+18 | pub(crate) fn sigmoid(logit: f32) -> f32 {
+   |               ^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `encode_pairs` is never used
+  --> crates/bge/src/tokenizer.rs:91:19
+   |
+28 | impl PairTokenizer {
+   | ------------------ method in this implementation
+...
+91 |     pub(crate) fn encode_pairs(
+   |                   ^^^^^^^^^^^^
+
+warning: `a3s-use-bge` (lib) generated 2 warnings
+warning: unused imports: `guest_agent_hello` and `host_runtime_version`
+  --> crates/code/core/src/sandbox/oci.rs:25:26
+   |
+25 | pub(crate) use version::{guest_agent_hello, host_runtime_version};
+   |                          ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:429:21
+    |
+429 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `HOST_MISMATCH` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:10:7
+   |
+10 | const HOST_MISMATCH: &[u8] = b"guest agent version does not match the host runtime version";
+   |       ^^^^^^^^^^^^^
+
+warning: function `host_runtime_version` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:13:15
+   |
+13 | pub(crate) fn host_runtime_version(host: &[u8]) -> Option<&str> {
+   |               ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `guest_agent_hello` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:18:15
+   |
+18 | pub(crate) fn guest_agent_hello<'a>(agent: &'a [u8], architecture: &str) -> Option<&'a str> {
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: function `version_immediately_before` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:26:4
+   |
+26 | fn version_immediately_before<'a>(bytes: &'a [u8], marker: &[u8]) -> Option<&'a str> {
+   |    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `semver_ending_at` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:44:4
+   |
+44 | fn semver_ending_at(bytes: &[u8], end: usize) -> Option<&str> {
+   |    ^^^^^^^^^^^^^^^^
+
+warning: `a3s-code-core` (lib) generated 7 warnings (run `cargo fix --lib -p a3s-code-core` to apply 1 suggestion)
+warning: method `as_str` is never used
+  --> crates/code/acp/src/host_context.rs:49:12
+   |
+42 | impl CompletionAttestation {
+   | -------------------------- method in this implementation
+...
+49 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-acp` (lib) generated 1 warning
+    Finished `release` profile [optimized] target(s) in 1.37s
+        Info Looking up installed tauri packages to check mismatched versions...
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling proc-macro2 v1.0.106
+   Compiling typenum v1.19.0
+   Compiling log v0.4.32
+   Compiling serde_core v1.0.229
+   Compiling bytes v1.12.1
+   Compiling num-traits v0.2.19
+   Compiling pin-project-lite v0.2.16
+   Compiling smallvec v1.15.1
+   Compiling objc2 v0.6.5
+   Compiling objc2-encode v4.1.0
+   Compiling dunce v1.0.5
+   Compiling jobserver v0.1.34
+   Compiling bitflags v2.13.0
+   Compiling errno v0.3.14
+   Compiling futures-core v0.3.34
+   Compiling zmij v1.0.19
+   Compiling socket2 v0.6.4
+   Compiling mio v1.2.1
+   Compiling stable_deref_trait v1.2.1
+   Compiling percent-encoding v2.3.2
+   Compiling futures-sink v0.3.34
+   Compiling signal-hook-registry v1.4.8
+   Compiling memchr v2.8.2
+   Compiling base64 v0.22.1
+   Compiling serde v1.0.229
+   Compiling cc v1.2.48
+   Compiling serde_json v1.0.154
+   Compiling futures-channel v0.3.34
+   Compiling writeable v0.6.1
+   Compiling litemap v0.8.0
+   Compiling slab v0.4.11
+   Compiling http v1.4.0
+   Compiling futures-task v0.3.34
+   Compiling futures-io v0.3.34
+   Compiling fs_extra v1.3.0
+   Compiling icu_properties_data v2.0.1
+   Compiling icu_normalizer_data v2.0.0
+   Compiling form_urlencoded v1.2.2
+   Compiling typeid v1.0.3
+   Compiling hashbrown v0.17.0
+   Compiling tracing-core v0.1.36
+   Compiling aws-lc-rs v1.18.1
+   Compiling utf8_iter v1.0.4
+   Compiling erased-serde v0.4.10
+   Compiling zerocopy v0.8.48
+   Compiling zeroize v1.8.2
+   Compiling parking_lot_core v0.9.12
+   Compiling rustls-pki-types v1.14.0
+   Compiling untrusted v0.7.1
+   Compiling scopeguard v1.2.0
+   Compiling untrusted v0.9.0
+   Compiling new_debug_unreachable v1.0.6
+   Compiling lock_api v0.4.14
+   Compiling cmake v0.1.54
+   Compiling getrandom v0.4.1
+   Compiling indexmap v2.14.0
+   Compiling rustls v0.23.46
+   Compiling quote v1.0.45
+   Compiling precomputed-hash v0.1.1
+   Compiling sha1_smol v1.0.1
+   Compiling winnow v1.0.4
+   Compiling parking_lot v0.12.5
+   Compiling regex-automata v0.4.18
+   Compiling syn v2.0.117
+   Compiling syn v3.0.4
+   Compiling objc2-exception-helper v0.1.1
+   Compiling aws-lc-sys v0.45.0
+   Compiling ring v0.17.14
+   Compiling string_cache_codegen v0.6.1
+   Compiling generic-array v0.14.7
+   Compiling hybrid-array v0.4.10
+   Compiling toml_parser v1.1.5+spec-1.1.0
+   Compiling uuid v1.26.1
+   Compiling sha2-asm v0.6.4
+   Compiling http-body v1.0.1
+   Compiling toml_writer v1.1.3+spec-1.1.0
+   Compiling simd-adler32 v0.3.7
+   Compiling subtle v2.6.1
+   Compiling web_atoms v0.2.3
+   Compiling string_cache v0.9.0
+   Compiling httparse v1.10.1
+   Compiling ryu v1.0.20
+   Compiling dtoa v1.0.10
+   Compiling cmov v0.5.4
+   Compiling tower-service v0.3.3
+   Compiling crypto-common v0.1.6
+   Compiling block-buffer v0.10.4
+   Compiling miniz_oxide v0.8.9
+   Compiling ctutils v0.4.2
+   Compiling block-buffer v0.12.0
+   Compiling crypto-common v0.2.2
+   Compiling digest v0.10.7
+   Compiling dtoa-short v0.3.5
+   Compiling tendril v0.5.0
+   Compiling aho-corasick v1.1.3
+   Compiling indexmap v1.9.3
+   Compiling camino v1.2.1
+   Compiling powerfmt v0.2.0
+   Compiling alloc-no-stdlib v3.0.0
+   Compiling byteorder v1.5.0
+   Compiling const-oid v0.10.2
+   Compiling try-lock v0.2.5
+   Compiling regex-syntax v0.8.11
+   Compiling winnow v0.7.14
+   Compiling want v0.3.1
+   Compiling flate2 v1.1.5
+   Compiling alloc-stdlib v0.3.0
+   Compiling sha2 v0.10.9
+   Compiling deranged v0.5.5
+   Compiling selectors v0.38.0
+   Compiling getrandom v0.3.4
+   Compiling thiserror v1.0.69
+   Compiling core-foundation v0.10.1
+   Compiling serde_spanned v1.1.2
+   Compiling semver v1.0.28
+   Compiling toml_datetime v0.7.5+spec-1.1.0
+   Compiling digest v0.11.2
+   Compiling sync_wrapper v1.0.2
+   Compiling servo_arc v0.4.3
+   Compiling thiserror v2.0.20
+   Compiling hashbrown v0.12.3
+   Compiling pin-utils v0.1.0
+   Compiling equivalent v1.0.2
+   Compiling bit-vec v0.8.0
+   Compiling atomic-waker v1.1.2
+   Compiling httpdate v1.0.3
+   Compiling rustc-hash v2.1.1
+   Compiling siphasher v1.0.3
+   Compiling schemars v0.8.22
+   Compiling tower-layer v0.3.3
+   Compiling web-time v1.1.0
+   Compiling objc2-core-foundation v0.3.2
+   Compiling block2 v0.6.2
+   Compiling cfb v0.14.0
+   Compiling phf_shared v0.13.1
+   Compiling bit-set v0.8.0
+   Compiling time v0.3.47
+   Compiling toml v0.9.12+spec-1.1.0
+   Compiling brotli-decompressor v6.0.1
+   Compiling anyhow v1.0.104
+   Compiling quick-xml v0.41.0
+   Compiling dyn-clone v1.0.20
+   Compiling base64 v0.21.7
+   Compiling tauri-utils v2.10.2
+   Compiling foldhash v0.2.0
+   Compiling bytemuck v1.25.2
+   Compiling same-file v1.0.6
+   Compiling ipnet v2.11.0
+   Compiling serde-untagged v0.1.9
+   Compiling darling_core v0.24.1
+   Compiling walkdir v2.5.0
+   Compiling infer v0.22.0
+   Compiling regex v1.12.4
+   Compiling http-body-util v0.1.3
+   Compiling num-integer v0.1.46
+   Compiling cpufeatures v0.3.0
+   Compiling rustix v1.1.5
+   Compiling brotli v9.0.0
+   Compiling objc2-foundation v0.3.2
+   Compiling objc2-core-video v0.3.2
+   Compiling objc2-core-graphics v0.3.2
+   Compiling synstructure v0.13.2
+   Compiling serde_derive_internals v0.29.1
+   Compiling objc2-core-text v0.3.2
+   Compiling glob v0.3.3
+   Compiling unsafe-libyaml v0.2.11
+   Compiling ctor v1.0.13
+   Compiling sha2 v0.11.0
+   Compiling hmac v0.13.0
+   Compiling md-5 v0.11.0
+   Compiling serde_derive v1.0.229
+   Compiling thiserror-impl v2.0.20
+   Compiling futures-macro v0.3.34
+   Compiling async-trait v0.1.92
+   Compiling cssparser-macros v0.7.1
+   Compiling rustc_version v0.4.1
+   Compiling toml_datetime v1.1.2+spec-1.1.0
+   Compiling block-padding v0.3.3
+   Compiling crossbeam-channel v0.5.15
+   Compiling option-ext v0.2.0
+   Compiling fallible-iterator v0.2.0
+   Compiling either v1.15.0
+   Compiling zerofrom-derive v0.1.6
+   Compiling yoke-derive v0.8.2
+   Compiling zerovec-derive v0.11.1
+   Compiling displaydoc v0.2.5
+   Compiling tokio-macros v2.7.0
+   Compiling phf_macros v0.13.1
+   Compiling futures-util v0.3.34
+   Compiling tracing-attributes v0.1.31
+   Compiling zerocopy-derive v0.8.48
+   Compiling tokio v1.53.3
+   Compiling thiserror-impl v1.0.69
+   Compiling phf v0.13.1
+   Compiling derive_more-impl v2.1.1
+   Compiling zerofrom v0.1.6
+   Compiling yoke v0.8.3
+   Compiling darling_macro v0.24.1
+   Compiling tracing v0.1.44
+   Compiling zerovec v0.11.4
+   Compiling zerotrie v0.2.2
+   Compiling derive_more v2.1.1
+   Compiling markup5ever v0.39.0
+   Compiling darling v0.24.1
+   Compiling cssparser v0.37.0
+   Compiling html5ever v0.39.0
+   Compiling schemars_derive v0.8.22
+   Compiling postgres-protocol v0.6.12
+   Compiling serde_with_macros v3.24.0
+   Compiling tinystr v0.8.1
+   Compiling potential_utf v0.1.3
+   Compiling icu_locale_core v2.0.0
+   Compiling icu_collections v2.0.0
+   Compiling dirs-sys v0.5.0
+   Compiling inout v0.1.4
+   Compiling toml v1.1.8+spec-1.1.0
+   Compiling embed-resource v3.0.8
+   Compiling num-complex v0.4.6
+   Compiling serde_with v3.24.0
+   Compiling webpki-roots v1.0.9
+   Compiling icu_provider v2.0.0
+   Compiling swift-rs v1.0.9
+   Compiling chrono v0.4.45
+   Compiling cargo-platform v0.1.8
+   Compiling jsonptr v0.7.1
+   Compiling icu_properties v2.0.1
+   Compiling icu_normalizer v2.0.0
+   Compiling json-patch v4.2.0
+   Compiling cargo_metadata v0.19.0
+   Compiling dom_query v0.28.0
+   Compiling plist v1.10.0
+   Compiling olpc-cjson v0.1.4
+   Compiling serde_yaml_ng v0.10.0
+   Compiling idna_adapter v1.2.1
+   Compiling idna v1.1.0
+   Compiling dpi v0.1.2
+   Compiling url v2.5.8
+   Compiling fdeflate v0.3.7
+   Compiling matrixmultiply v0.3.11
+   Compiling iri-string v0.7.9
+   Compiling bumpalo v3.19.0
+   Compiling ttf-parser v0.25.1
+   Compiling unicase v2.8.1
+   Compiling urlpattern v0.6.0
+   Compiling array-init v2.1.0
+   Compiling libsqlite3-sys v0.35.0
+   Compiling postgres-types v0.2.14
+   Compiling pulldown-cmark v0.13.0
+   Compiling zopfli v0.8.3
+   Compiling tokio-util v0.7.19
+   Compiling ppv-lite86 v0.2.21
+   Compiling hyper v1.8.1
+   Compiling tower v0.5.2
+   Compiling png v0.18.0
+   Compiling tower-http v0.6.8
+   Compiling cargo_toml v1.0.1
+   Compiling serde_urlencoded v0.7.1
+   Compiling hyper-util v0.1.20
+   Compiling tauri-winres v0.3.5
+   Compiling ureq-proto v0.5.2
+   Compiling cipher v0.4.4
+   Compiling dirs v7.0.0
+   Compiling der_derive v0.7.3
+   Compiling fax_derive v0.2.0
+   Compiling objc2-system-configuration v0.3.2
+   Compiling rand_core v0.9.3
+   Compiling security-framework-sys v2.15.0
+   Compiling jiff v0.2.28
+   Compiling cookie v0.18.2
+   Compiling fnv v1.0.7
+   Compiling const-oid v0.9.6
+   Compiling raw-window-handle v0.6.2
+   Compiling zune-core v0.5.1
+   Compiling quick-error v2.0.1
+   Compiling static_vcruntime v3.0.0
+   Compiling rawpointer v0.2.1
+   Compiling flagset v0.4.7
+   Compiling foldhash v0.1.5
+   Compiling zune-jpeg v0.5.15
+   Compiling hashbrown v0.15.5
+   Compiling der v0.7.10
+   Compiling fax v0.2.6
+   Compiling security-framework v3.5.1
+   Compiling rand_chacha v0.9.0
+   Compiling ureq v3.1.4
+   Compiling whoami v2.1.3
+   Compiling a3s-use-core v0.2.4 (/Users/roylin/code/aster/crates/use/core)
+   Compiling half v2.7.1
+   Compiling foreign-types-macros v0.2.4
+   Compiling objc2-security v0.3.2
+   Compiling num-bigint v0.4.6
+   Compiling safe_arch v0.7.4
+   Compiling objc2-javascript-core v0.3.2
+   Compiling pxfm v0.1.25
+   Compiling fs2 v0.4.3
+   Compiling foreign-types-shared v0.3.1
+   Compiling byteorder-lite v0.1.0
+   Compiling bitflags v1.3.2
+   Compiling color_quant v1.1.0
+   Compiling png v0.17.16
+   Compiling gif v0.14.1
+   Compiling num-rational v0.4.2
+   Compiling image-webp v0.2.4
+   Compiling moxcms v0.8.1
+   Compiling tiff v0.11.3
+   Compiling objc2-core-image v0.3.2
+   Compiling objc2-core-data v0.3.2
+   Compiling objc2-quartz-core v0.3.2
+   Compiling objc2-cloud-kit v0.3.2
+   Compiling tauri-build v2.7.3
+   Compiling objc2-app-kit v0.3.2
+   Compiling foreign-types v0.5.0
+   Compiling ort-sys v2.0.0-rc.10
+   Compiling spki v0.7.3
+   Compiling wide v0.7.33
+   Compiling wry v0.57.0
+   Compiling rayon v1.12.0
+   Compiling tokio-postgres v0.7.18
+   Compiling rand v0.9.5
+   Compiling hashlink v0.10.0
+   Compiling rand_chacha v0.3.1
+   Compiling deadpool-runtime v0.1.4
+   Compiling xattr v1.6.1
+   Compiling pin-project-internal v1.1.11
+   Compiling core-graphics-types v0.2.0
+   Compiling sha1 v0.10.6
+   Compiling clipper2c-sys v0.1.6
+   Compiling approx v0.5.1
+   Compiling num_cpus v1.17.0
+   Compiling filetime v0.2.29
+   Compiling bstr v1.12.1
+   Compiling fallible-iterator v0.3.0
+   Compiling fallible-streaming-iterator v0.1.9
+   Compiling rust_decimal v1.43.0
+   Compiling muda v0.20.0
+   Compiling data-encoding v2.9.0
+   Compiling mime v0.3.17
+   Compiling lazy_static v1.5.0
+   Compiling cfg_aliases v0.1.1
+   Compiling utf-8 v0.7.6
+   Compiling tauri-runtime v2.12.2
+   Compiling globset v0.4.18
+   Compiling tungstenite v0.28.0
+   Compiling nix v0.28.0
+   Compiling rusqlite v0.37.0
+   Compiling deadpool v0.12.3
+   Compiling pin-project v1.1.11
+   Compiling tar v0.4.46
+   Compiling tauri v2.12.4
+   Compiling simba v0.8.1
+   Compiling image v0.25.10
+   Compiling core-graphics v0.25.0
+   Compiling rand v0.8.8
+   Compiling x509-cert v0.2.5
+   Compiling ico v0.5.0
+   Compiling zip v2.4.2
+   Compiling ecb v0.1.2
+   Compiling aes v0.8.4
+   Compiling cbc v0.1.2
+   Compiling owned_ttf_parser v0.25.1
+   Compiling keyboard-types v0.8.3
+   Compiling futures-executor v0.3.34
+   Compiling ref-cast-impl v1.0.25
+   Compiling snafu-derive v0.8.9
+   Compiling env_filter v0.1.4
+   Compiling num-iter v0.1.45
+   Compiling serde_derive_internals v0.30.0
+   Compiling dispatch2 v0.3.0
+   Compiling md-5 v0.10.6
+   Compiling tray-icon v0.25.1
+   Compiling tauri-runtime-wry v2.12.2
+   Compiling fastrand v2.3.0
+   Compiling bitmaps v3.1.0
+   Compiling ab_glyph_rasterizer v0.1.10
+   Compiling base64 v0.23.1
+   Compiling arrayvec v0.7.6
+   Compiling ryu-js v1.0.3
+   Compiling imbl-sized-chunks v0.1.3
+   Compiling tauri-codegen v2.7.3
+   Compiling schemars_derive v1.2.3
+   Compiling ab_glyph v0.2.32
+   Compiling tempfile v3.27.0
+   Compiling snafu v0.8.9
+   Compiling lopdf v0.42.0
+   Compiling num v0.4.3
+   Compiling env_logger v0.11.8
+   Compiling ref-cast v1.0.25
+   Compiling futures v0.3.34
+   Compiling rand_distr v0.4.3
+   Compiling tokio-rusqlite v0.7.0
+   Compiling nalgebra v0.32.6
+   Compiling tokio-tungstenite v0.28.0
+   Compiling deadpool-postgres v0.14.1
+   Compiling axum-core v0.5.5
+   Compiling ndarray v0.16.1
+   Compiling serde_plain v1.0.2
+   Compiling rmp v0.8.14
+   Compiling async-recursion v1.1.1
+   Compiling serialize-to-javascript-impl v0.1.2
+   Compiling itertools v0.12.1
+   Compiling rand_xoshiro v0.6.0
+   Compiling pem v3.0.6
+   Compiling serde_path_to_error v0.1.20
+   Compiling typed-path v0.12.3
+   Compiling smallvec v2.0.0-alpha.10
+   Compiling hex v0.4.3
+   Compiling typed-path v0.9.3
+   Compiling matchit v0.8.4
+   Compiling imbl v3.0.0
+   Compiling axum v0.8.6
+   Compiling serialize-to-javascript v0.1.2
+   Compiling zip v7.2.0
+   Compiling rmp-serde v1.3.0
+   Compiling schemars v1.2.3
+   Compiling tauri-macros v2.7.3
+   Compiling unicode-general-category v1.1.0
+   Compiling a3s-acl v0.3.0 (/Users/roylin/code/aster/crates/acl)
+   Compiling a3s-studio v2.1.3 (/Users/roylin/code/aster/apps/studio/src-tauri)
+   Compiling filedescriptor v0.8.3
+   Compiling bincode v1.3.3
+   Compiling rust-stemmers v1.2.0
+   Compiling serde_yaml v0.9.34+deprecated
+   Compiling roaring v0.11.1
+   Compiling serde_repr v0.1.20
+   Compiling a3s-boot-macros v0.1.2 (/Users/roylin/code/aster/crates/boot/macros)
+   Compiling ort v2.0.0-rc.10
+   Compiling memmap2 v0.9.11
+   Compiling serial2 v0.2.34
+   Compiling fsevent-sys v4.1.0
+   Compiling notify-types v2.0.0
+   Compiling heck v0.5.0
+   Compiling shell-words v1.1.0
+   Compiling embed_plist v1.2.2
+   Compiling downcast-rs v1.2.1
+   Compiling portable-pty v0.9.0
+   Compiling a3s-boot v0.2.0 (/Users/roylin/code/aster/crates/boot)
+   Compiling a3s-vec v0.1.8 (/Users/roylin/code/aster/crates/vec)
+   Compiling notify v8.2.0
+   Compiling a3s-flow v2.0.0 (/Users/roylin/code/aster/crates/flow)
+   Compiling a3s-use-reconcile v0.2.10 (/Users/roylin/code/aster/crates/use/reconcile)
+warning: a3s-studio@2.1.3: STATIC_VCRUNTIME is deprecated; use build.windows.staticVCRuntime in tauri.conf.json or tauri_build::WindowsAttributes::static_vc_runtime instead.
+   Compiling imageproc v0.25.0
+   Compiling ignore v0.4.24
+   Compiling objc2-user-notifications v0.3.2
+   Compiling tokio-stream v0.1.17
+warning: function `upsert_instance_map` is never used
+   --> crates/boot/src/service_discovery/mod.rs:203:15
+    |
+203 | pub(crate) fn upsert_instance_map(
+    |               ^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `remove_instance_map` is never used
+   --> crates/boot/src/service_discovery/mod.rs:215:15
+    |
+215 | pub(crate) fn remove_instance_map(
+    |               ^^^^^^^^^^^^^^^^^^^
+
+   Compiling clipper2 v0.5.3
+   Compiling objc2-web-kit v0.3.2
+   Compiling tao v0.37.1
+   Compiling window-vibrancy v0.8.1
+   Compiling rustls-webpki v0.103.15
+   Compiling tokio-rustls v0.26.6
+   Compiling rustls-platform-verifier v0.6.2
+   Compiling rustls-platform-verifier v0.7.1
+   Compiling hyper-rustls v0.27.7
+   Compiling tokio-postgres-rustls v0.14.0
+   Compiling reqwest v0.12.24
+   Compiling reqwest v0.13.5
+   Compiling a3s-orm v0.3.1 (/Users/roylin/code/aster/crates/orm)
+   Compiling tough v0.24.0
+   Compiling a3s-use-ocr v0.3.2 (/Users/roylin/code/aster/crates/ocr)
+   Compiling a3s-use-tool-acquire v0.2.4 (/Users/roylin/code/aster/crates/use/tool-acquire)
+   Compiling a3s-studio-data-sqlite v0.1.0 (/Users/roylin/code/aster/apps/studio/native/data-sqlite)
+   Compiling a3s-use-extension v0.3.3 (/Users/roylin/code/aster/crates/use/extension)
+   Compiling pdf-inspector v1.17.0
+warning: `a3s-boot` (lib) generated 2 warnings
+   Compiling a3s-okf v0.1.0 (/Users/roylin/code/aster/crates/okf)
+warning: method `ensure_builtin_tobot` is never used
+   --> apps/studio/src-tauri/src/agent_plane/catalog.rs:332:12
+    |
+223 | impl SessionCatalog {
+    | ------------------- method in this implementation
+...
+332 |     pub fn ensure_builtin_tobot(&self) -> Result<Session, PlaneError> {
+    |            ^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `POLL_LIMIT` is never used
+  --> apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:29:7
+   |
+29 | const POLL_LIMIT: usize = 100;
+   |       ^^^^^^^^^^
+
+warning: struct `SseEvent` is never constructed
+   --> apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:838:19
+    |
+838 | pub(super) struct SseEvent {
+    |                   ^^^^^^^^
+
+warning: function `stream_agent_events` is never used
+   --> apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:845:21
+    |
+845 | pub(super) async fn stream_agent_events(
+    |                     ^^^^^^^^^^^^^^^^^^^
+
+warning: constant `LISTEN_LIMIT` is never used
+  --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:22:7
+   |
+22 | const LISTEN_LIMIT: Duration = Duration::from_secs(2);
+   |       ^^^^^^^^^^^^
+
+warning: constant `REQUEST_LIMIT` is never used
+  --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:23:7
+   |
+23 | const REQUEST_LIMIT: Duration = Duration::from_secs(2);
+   |       ^^^^^^^^^^^^^
+
+warning: constant `PACKAGE_TURN_LIMIT` is never used
+  --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:24:7
+   |
+24 | const PACKAGE_TURN_LIMIT: Duration = Duration::from_secs(5);
+   |       ^^^^^^^^^^^^^^^^^^
+
+warning: struct `PeerState` is never constructed
+  --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:38:8
+   |
+38 | struct PeerState {
+   |        ^^^^^^^^^
+
+warning: struct `BuiltinPeer` is never constructed
+  --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:42:12
+   |
+42 | pub struct BuiltinPeer {
+   |            ^^^^^^^^^^^
+
+warning: associated items `start`, `endpoint`, and `stop` are never used
+  --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:49:18
+   |
+48 | impl BuiltinPeer {
+   | ---------------- associated items in this implementation
+49 |     pub async fn start() -> Result<Self, String> {
+   |                  ^^^^^
+...
+76 |     pub fn endpoint(&self) -> String {
+   |            ^^^^^^^^
+...
+80 |     pub async fn stop(mut self) {
+   |                  ^^^^
+
+warning: function `admit_command` is never used
+  --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:88:10
+   |
+88 | async fn admit_command(
+   |          ^^^^^^^^^^^^^
+
+warning: function `page_events` is never used
+   --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:101:10
+    |
+101 | async fn page_events(
+    |          ^^^^^^^^^^^
+
+warning: function `admitted_prompt` is never used
+   --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:114:4
+    |
+114 | fn admitted_prompt(body: &Value) -> Result<String, ()> {
+    |    ^^^^^^^^^^^^^^^
+
+warning: struct `PackageRun` is never constructed
+   --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:186:12
+    |
+186 | pub struct PackageRun {
+    |            ^^^^^^^^^^
+
+warning: associated items `spawn`, `endpoint`, `stop`, and `finish` are never used
+   --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:193:18
+    |
+192 | impl PackageRun {
+    | --------------- associated items in this implementation
+193 |     pub async fn spawn(program: &Path, args: &[String]) -> Result<Self, String> {
+    |                  ^^^^^
+...
+253 |     pub fn endpoint(&self) -> &str {
+    |            ^^^^^^^^
+...
+257 |     pub async fn stop(self) -> Result<(), String> {
+    |                  ^^^^
+...
+262 |     async fn finish(mut self) -> Result<String, String> {
+    |              ^^^^^^
+
+warning: function `listen_error` is never used
+   --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:274:10
+    |
+274 | async fn listen_error(child: Child, stderr: JoinHandle<Vec<u8>>, error: &str) -> String {
+    |          ^^^^^^^^^^^^
+
+warning: function `stderr_text` is never used
+   --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:279:10
+    |
+279 | async fn stderr_text(task: JoinHandle<Vec<u8>>) -> String {
+    |          ^^^^^^^^^^^
+
+warning: function `bounded_text` is never used
+   --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:287:4
+    |
+287 | fn bounded_text(bytes: &[u8]) -> String {
+    |    ^^^^^^^^^^^^
+
+warning: function `with_diagnostic` is never used
+   --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:293:4
+    |
+293 | fn with_diagnostic(error: String, stderr: &str) -> String {
+    |    ^^^^^^^^^^^^^^^
+
+warning: function `post_json` is never used
+   --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:302:14
+    |
+302 | pub async fn post_json(endpoint: &str, path: &str, body: &Value) -> Result<Value, String> {
+    |              ^^^^^^^^^
+
+warning: function `exchange_turn` is never used
+   --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:396:21
+    |
+396 | pub(super) async fn exchange_turn(endpoint: &str, body: &Value) -> Result<Vec<String>, String> {
+    |                     ^^^^^^^^^^^^^
+
+warning: function `package_turn_text` is never used
+   --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:402:14
+    |
+402 | pub async fn package_turn_text(entry: &Path, body: &Value) -> Result<Vec<String>, String> {
+    |              ^^^^^^^^^^^^^^^^^
+
+warning: method `ticker_started` is never used
+  --> apps/studio/src-tauri/src/agent_plane/tasks.rs:75:19
+   |
+33 | impl TaskService {
+   | ---------------- method in this implementation
+...
+75 |     pub(super) fn ticker_started(&self) -> bool {
+   |                   ^^^^^^^^^^^^^^
+
+warning: function `recall_note` is never used
+  --> apps/studio/src-tauri/src/agent_plane/tobot_memory.rs:20:15
+   |
+20 | pub(crate) fn recall_note(origin: &str, slug: &str, query: &str) -> Option<String> {
+   |               ^^^^^^^^^^^
+
+warning: function `retain_exchange` is never used
+  --> apps/studio/src-tauri/src/agent_plane/tobot_memory.rs:39:15
+   |
+39 | pub(crate) fn retain_exchange(origin: &str, slug: &str, key: &str, user: &str, assistant: &str) {
+   |               ^^^^^^^^^^^^^^^
+
+warning: method `respond_approval` is never used
+    --> apps/studio/src-tauri/src/agent_plane/turns.rs:1510:12
+     |
+ 376 | impl TurnService {
+     | ---------------- method in this implementation
+...
+1510 |     pub fn respond_approval(&self, approval_id: &str, approved: bool) -> bool {
+     |            ^^^^^^^^^^^^^^^^
+
+warning: constant `INTERRUPTED_RUN` is never used
+    --> apps/studio/src-tauri/src/agent_plane/turns.rs:4201:18
+     |
+4201 | pub(super) const INTERRUPTED_RUN: &str = INTERRUPTED_EXHAUSTED;
+     |                  ^^^^^^^^^^^^^^^
+
+warning: field `name` is never read
+   --> apps/studio/src-tauri/src/authority.rs:171:5
+    |
+167 | pub struct StudioAuthority {
+    |            --------------- field in this struct
+...
+171 |     name: String,
+    |     ^^^^
+
+warning: method `name` is never used
+   --> apps/studio/src-tauri/src/authority.rs:370:12
+    |
+180 | impl StudioAuthority {
+    | -------------------- method in this implementation
+...
+370 |     pub fn name(&self) -> &str {
+    |            ^^^^
+
+warning: field `http` is never read
+  --> apps/studio/src-tauri/src/binary_tools.rs:50:5
+   |
+47 | struct BinaryState {
+   |        ----------- field in this struct
+...
+50 |     http: HttpSource,
+   |     ^^^^
+   |
+   = note: `BinaryState` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: function `installed_agent_entry` is never used
+    --> apps/studio/src-tauri/src/capabilities.rs:1472:15
+     |
+1472 | pub(crate) fn installed_agent_entry(caps: &Path, slug: &str) -> io::Result<PathBuf> {
+     |               ^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `acp_session_servers` is never used
+    --> apps/studio/src-tauri/src/capabilities.rs:2641:15
+     |
+2641 | pub(crate) fn acp_session_servers(root: &Path) -> Vec<Value> {
+     |               ^^^^^^^^^^^^^^^^^^^
+
+warning: function `installed_flow_specs` is never used
+    --> apps/studio/src-tauri/src/capabilities.rs:2698:15
+     |
+2698 | pub(crate) fn installed_flow_specs(root: &Path) -> Vec<Value> {
+     |               ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `source_hash_ok` is never used
+    --> apps/studio/src-tauri/src/capabilities.rs:2718:4
+     |
+2718 | fn source_hash_ok(value: &str) -> bool {
+     |    ^^^^^^^^^^^^^^
+
+warning: variant `Unavailable` is never constructed
+  --> apps/studio/src-tauri/src/folder_dialog.rs:56:5
+   |
+53 | pub enum DirectoryChoice {
+   |          --------------- variant in this enum
+...
+56 |     Unavailable,
+   |     ^^^^^^^^^^^
+
+warning: function `retrieve_passages` is never used
+  --> apps/studio/src-tauri/src/local_documents.rs:22:8
+   |
+22 | pub fn retrieve_passages(raw_root: &str, query: &str) -> Vec<String> {
+   |        ^^^^^^^^^^^^^^^^^
+
+warning: function `query_tokens` is never used
+  --> apps/studio/src-tauri/src/local_documents.rs:53:4
+   |
+53 | fn query_tokens(query: &str) -> Vec<String> {
+   |    ^^^^^^^^^^^^
+
+warning: function `collect_note_passages` is never used
+  --> apps/studio/src-tauri/src/local_documents.rs:65:4
+   |
+65 | fn collect_note_passages(
+   |    ^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated function `open_at` is never used
+  --> apps/studio/src-tauri/src/member_session.rs:80:12
+   |
+47 | impl MemberSessionStore {
+   | ----------------------- associated function in this implementation
+...
+80 |     pub fn open_at(path: Option<PathBuf>) -> Self {
+   |            ^^^^^^^
+
+warning: function `search_paths` is never used
+   --> apps/studio/src-tauri/src/plugin_okf.rs:436:4
+    |
+436 | fn search_paths(dir: &Path, query: &str) -> io::Result<Vec<String>> {
+    |    ^^^^^^^^^^^^
+
+warning: function `first_chat_model_for_key` is never used
+   --> apps/studio/src-tauri/src/providers.rs:492:15
+    |
+492 | pub(crate) fn first_chat_model_for_key(key: &str) -> Option<String> {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: fields `skill`, `ui`, `title`, and `steps` are never read
+  --> apps/studio/src-tauri/src/review_plugin.rs:82:9
+   |
+81 | pub struct ReconcileReport {
+   |            --------------- fields in this struct
+82 |     pub skill: bool,
+   |         ^^^^^
+83 |     pub ui: bool,
+   |         ^^
+84 |     pub title: String,
+   |         ^^^^^
+85 |     pub steps: Vec<&'static str>,
+   |         ^^^^^
+
+warning: function `review_facade_script` is never used
+  --> apps/studio/src-tauri/src/review_plugin.rs:97:8
+   |
+97 | pub fn review_facade_script() -> String {
+   |        ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `cached_picker_http` is never used
+   --> apps/studio/src-tauri/src/review_plugin.rs:438:4
+    |
+438 | fn cached_picker_http() -> (u16, &'static str, &'static str, Vec<u8>) {
+    |    ^^^^^^^^^^^^^^^^^^
+
+warning: function `verified_picker` is never used
+   --> apps/studio/src-tauri/src/review_plugin.rs:462:8
+    |
+462 | pub fn verified_picker() -> Option<(PathBuf, String)> {
+    |        ^^^^^^^^^^^^^^^
+
+warning: function `hit_window_drag` is never used
+  --> apps/studio/src-tauri/src/window_drag.rs:22:15
+   |
+22 | pub(crate) fn hit_window_drag(x: f64, y: f64, drag: &[CssRect], block: &[CssRect]) -> bool {
+   |               ^^^^^^^^^^^^^^^
+
+warning: function `hit_window_chrome` is never used
+  --> apps/studio/src-tauri/src/window_drag.rs:32:15
+   |
+32 | pub(crate) fn hit_window_chrome(
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: `a3s-studio` (lib) generated 47 warnings
+    Finished `release` profile [optimized] target(s) in 6m 00s
+       Built application at: /Users/roylin/code/aster/target/studio-macos-alignment/release/Studio
+    Bundling ToWork.app (/Users/roylin/code/aster/target/studio-macos-alignment/release/bundle/macos/ToWork.app)
+     Signing with identity "-"
+Signing with identity "-"
+Signing /Users/roylin/code/aster/target/studio-macos-alignment/release/bundle/macos/ToWork.app/Contents/MacOS/Studio
+/Users/roylin/code/aster/target/studio-macos-alignment/release/bundle/macos/ToWork.app/Contents/MacOS/Studio: replacing existing signature
+Signing with identity "-"
+Signing /Users/roylin/code/aster/target/studio-macos-alignment/release/bundle/macos/ToWork.app
+/Users/roylin/code/aster/target/studio-macos-alignment/release/bundle/macos/ToWork.app: replacing existing signature
+        Warn skipping app notarization, no APPLE_ID & APPLE_PASSWORD & APPLE_TEAM_ID or APPLE_API_KEY & APPLE_API_ISSUER & APPLE_API_KEY_PATH environment variables found
+    Bundling ToWork_2.1.3_aarch64.dmg (/Users/roylin/code/aster/target/studio-macos-alignment/release/bundle/dmg/ToWork_2.1.3_aarch64.dmg)
+     Running bundle_dmg.sh
+    Finished 2 bundles at:
+        /Users/roylin/code/aster/target/studio-macos-alignment/release/bundle/macos/ToWork.app
+        /Users/roylin/code/aster/target/studio-macos-alignment/release/bundle/dmg/ToWork_2.1.3_aarch64.dmg
+
+/Users/roylin/code/aster/target/studio-macos-alignment/release/bundle/macos/ToWork.app/Contents/Resources/studio-delivery.json
+/Users/roylin/code/aster/target/studio-macos-alignment/release/bundle/macos/ToWork.app: replacing existing signature
+studio-package /Users/roylin/code/aster/target/studio-macos-alignment/release/bundle/macos/ToWork.app

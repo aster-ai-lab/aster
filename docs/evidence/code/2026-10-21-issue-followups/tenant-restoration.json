@@ -1,0 +1,159 @@
+{
+  "source_revision": "69693d6a29423936ad861764de95bfa6957c985a",
+  "files": {
+    "apps/web/public/tenant/a3s/BRAND.md": {
+      "blob": "da747fccc4158dd594bd3e7248fd3d69d1009982",
+      "sha256": "117001e2703e48fb181dfdfaa05b18fc94d86b94635d2bd4735aac402e41702e"
+    },
+    "apps/web/public/tenant/a3s/INFO.md": {
+      "blob": "91802923fe2d9b85a4ae77cfa4e67354efbdb324",
+      "sha256": "fb49b31b3498f362769b10cc50803a908b0e8494c71a1ab88e0ff35a963e70f9"
+    },
+    "apps/web/public/tenant/a3s/icon.icns": {
+      "blob": "01e6285de2ac123ae5f4f35b9f74f98a4c22a223",
+      "sha256": "7d11778781d5e229e93f1aaf2af67a3cde219e7f1706b7f41428fe1e8f5a0a1b"
+    },
+    "apps/web/public/tenant/a3s/icon.ico": {
+      "blob": "dcc084cd813b2f7ef1cd62383841062ca7289376",
+      "sha256": "4c85b8bfb018c8d6c060145a71293f3320aa93e273381bdaf3ae4270fbbb8ea5"
+    },
+    "apps/web/public/tenant/a3s/icon.png": {
+      "blob": "957dd063f2a249366eed1b4547705a9535839174",
+      "sha256": "4fb1b1d649f85d76451fcd3169f97e0c915a3629cd8f47692971f63309d11e40"
+    },
+    "apps/web/public/tenant/a3s/logo-dark.png": {
+      "blob": "358315b93fb9435cc232d3ef470ecca5d57cd8fc",
+      "sha256": "acc986cd1e58ca234af082d54c72c17fcabec127438be417c72fb09fe6e7df1c"
+    },
+    "apps/web/public/tenant/a3s/logo-light.png": {
+      "blob": "e44db69cf92b9fdd5834623e7d48c5044459879e",
+      "sha256": "51bed068f305b71e565ec8dac598d1196065400a8eed014572301ba3e9b5f0b6"
+    },
+    "apps/web/public/tenant/a3s/mark-dark.png": {
+      "blob": "0b2f7783ef64095663aebcb317c0e02a9909381e",
+      "sha256": "b006e96d3bbf2e385c38090a14a06c1e0e968f307465b44567c6dd26c1e64bc9"
+    },
+    "apps/web/public/tenant/a3s/mark-light.png": {
+      "blob": "08c0db7f3b3e6bbee3c54ce4f23e90bc26ea9669",
+      "sha256": "01d9f8afedebcf6b013046d9091d59b22d0d599e7ebdffe88ccc3c4dcbf1b6f3"
+    },
+    "apps/web/public/tenant/kense/BRAND.md": {
+      "blob": "2c3df40647e4b2f51eaf92a246ca68e23f6d5b53",
+      "sha256": "21f10d1c49960301a03d9bacb73e716c98b6b2914af475eb1d20dce0c2ba195d"
+    },
+    "apps/web/public/tenant/kense/INFO.md": {
+      "blob": "8c699f0c7ddcfd9c9a680a5aa334ccc631df2c84",
+      "sha256": "447295b3c634d98b1788ef2545e7c19f9f63b93fc2834c659bd230dd4436cd20"
+    },
+    "apps/web/public/tenant/kense/icon.icns": {
+      "blob": "fa07766aeef26a60e3142393d2ad78b702342c3f",
+      "sha256": "ca7236113cbe9326b19bb3f3f23fa6996c638468e5e3dc8aa049965e1fa79558"
+    },
+    "apps/web/public/tenant/kense/icon.ico": {
+      "blob": "0f2aa3e6694f918e52b3d756ba9d332ba7b28963",
+      "sha256": "849c39e423a78bc986fe2f0ce5106b3a4e7aa22cdc06e805e936c79ddd5b5147"
+    },
+    "apps/web/public/tenant/kense/icon.png": {
+      "blob": "c5ec19ff123772c9ab1c48fa7cddb8247dd76233",
+      "sha256": "ab0c24eddb0edbf184411bb4c2b712c3486c44fc2fd7094c75706e1d6ff38b38"
+    },
+    "apps/web/public/tenant/kense/logo-dark.png": {
+      "blob": "7911c23bd45673054e601898833680b1994f5d30",
+      "sha256": "e18b31fe573688d8b8eef806b44e6d780d11951f639e7270ac2fef9d1a6f3f53"
+    },
+    "apps/web/public/tenant/kense/logo-light.png": {
+      "blob": "6b9dda2ca01f3c6ce6ca6ba0f292d6e876fefe02",
+      "sha256": "2597eb05c39d8ef11cb78c2451dce1bb11e1dd040e1d982f268b238b2033d128"
+    },
+    "apps/web/public/tenant/kense/mark-dark.png": {
+      "blob": "8ad057364b43c250e41cdac0601ecf1653a0492e",
+      "sha256": "092e950523d7997fb686d559fb28ba0f32fe98490cb901686ccdf5e6ab6dcc3d"
+    },
+    "apps/web/public/tenant/kense/mark-light.png": {
+      "blob": "e08c2a7f8aba514f51c30ed58b317a7133c8c23b",
+      "sha256": "28a962a6144b4f2c10b42238ae29d8f85a3d358c7fe10eadcc05f86aa436aacc"
+    },
+    "apps/web/public/tenant/towork-cua/INFO.md": {
+      "blob": "24c69fea9d4b98556a38e46670def6acb628d401",
+      "sha256": "39ea6dd79da61a50b57a30dc1381976f37fabd67632c3ec27a81f57fb30f91e8"
+    },
+    "apps/web/public/tenant/towork-cua/icon.icns": {
+      "blob": "9524d688f53d5e79092e7573ca38df7c208c5de8",
+      "sha256": "c66c6bb78815fc785fcfbdaa9c6b9865154a6d21bdb214d495efb54d67b24f09"
+    },
+    "apps/web/public/tenant/towork-cua/icon.ico": {
+      "blob": "cba00ba394e6ed9324a8751f05626ab348afe906",
+      "sha256": "3bf5290a014ea375b3ab8930f528bf7073e216a006b1518669f52d428a9dbef8"
+    },
+    "apps/web/public/tenant/towork-cua/icon.png": {
+      "blob": "db6874459c9939e9233a29a81fc4157b9c80c02c",
+      "sha256": "3e9fc64b9582ce452bf8c6fafb611bcdc5a58954c8b00267fdd3c9823c68594e"
+    },
+    "apps/web/public/tenant/towork-cua/logo-dark.png": {
+      "blob": "2a635e21c4285d248414400ce477166d5b806a40",
+      "sha256": "d6a247b664dc62e7c7e202d5bd159102f7fa6985656811113a15b65091b09fba"
+    },
+    "apps/web/public/tenant/towork-cua/logo-light.png": {
+      "blob": "52fcf047aa814349d1a02f384e8331eabaac034e",
+      "sha256": "1fbaa0b5918dcecd72db6b7f0c963587956043af4436a1f218d46c8cb19a09a3"
+    },
+    "apps/web/public/tenant/towork-cua/mark-dark.png": {
+      "blob": "c2d5a81d4f020eac2cc31c8b5a13abce905e3fb0",
+      "sha256": "e81088db6c8b862527bbc69167ebf63b00d31028aaddf578f425095b94da5980"
+    },
+    "apps/web/public/tenant/towork-cua/mark-light.png": {
+      "blob": "ef712d491c3261d675cea68481ad3d9798e2fb60",
+      "sha256": "cbdaea097374bbf933705fab98aa125a91d359df9e80eece83ba68f77936d54b"
+    },
+    "apps/web/public/tenant/towork-cua/tray.png": {
+      "blob": "34bd1358325f0c7544d8b8f10eee3b03199ea866",
+      "sha256": "3382b8761bf4489cb5abccbd700722c89b98b32a4691b6af27139fa650c136c7"
+    },
+    "apps/web/public/tenant/toyou/BRAND.md": {
+      "blob": "5b7fea5299c47af60b2e8419a05604cb607ffdc6",
+      "sha256": "7f67e55a460565de03f3c4c46b1704727349c8ab07f44e401ada7f18820051ac"
+    },
+    "apps/web/public/tenant/toyou/INFO.md": {
+      "blob": "741a4ea1f5f4481c837d1ad9e2fd70fd2d882cb0",
+      "sha256": "6ea8cf6c4c0a365e520919630ed690c5be79034b7ae9643ef53d9cc22b5f903c"
+    },
+    "apps/web/public/tenant/toyou/icon.icns": {
+      "blob": "9524d688f53d5e79092e7573ca38df7c208c5de8",
+      "sha256": "c66c6bb78815fc785fcfbdaa9c6b9865154a6d21bdb214d495efb54d67b24f09"
+    },
+    "apps/web/public/tenant/toyou/icon.ico": {
+      "blob": "cba00ba394e6ed9324a8751f05626ab348afe906",
+      "sha256": "3bf5290a014ea375b3ab8930f528bf7073e216a006b1518669f52d428a9dbef8"
+    },
+    "apps/web/public/tenant/toyou/icon.png": {
+      "blob": "db6874459c9939e9233a29a81fc4157b9c80c02c",
+      "sha256": "3e9fc64b9582ce452bf8c6fafb611bcdc5a58954c8b00267fdd3c9823c68594e"
+    },
+    "apps/web/public/tenant/toyou/logo-dark.png": {
+      "blob": "2a635e21c4285d248414400ce477166d5b806a40",
+      "sha256": "d6a247b664dc62e7c7e202d5bd159102f7fa6985656811113a15b65091b09fba"
+    },
+    "apps/web/public/tenant/toyou/logo-light.png": {
+      "blob": "52fcf047aa814349d1a02f384e8331eabaac034e",
+      "sha256": "1fbaa0b5918dcecd72db6b7f0c963587956043af4436a1f218d46c8cb19a09a3"
+    },
+    "apps/web/public/tenant/toyou/mark-dark.png": {
+      "blob": "c2d5a81d4f020eac2cc31c8b5a13abce905e3fb0",
+      "sha256": "e81088db6c8b862527bbc69167ebf63b00d31028aaddf578f425095b94da5980"
+    },
+    "apps/web/public/tenant/toyou/mark-light.png": {
+      "blob": "ef712d491c3261d675cea68481ad3d9798e2fb60",
+      "sha256": "cbdaea097374bbf933705fab98aa125a91d359df9e80eece83ba68f77936d54b"
+    },
+    "apps/web/public/tenant/toyou/model-market.json": {
+      "blob": "f67fcca69d4eb640ef118a804943039202c7c46a",
+      "sha256": "47091d1c25918c9a013d0f0f1678fe85641746a32c6e09b68a98531927e253af"
+    },
+    "apps/web/public/tenant/toyou/tray.png": {
+      "blob": "34bd1358325f0c7544d8b8f10eee3b03199ea866",
+      "sha256": "3382b8761bf4489cb5abccbd700722c89b98b32a4691b6af27139fa650c136c7"
+    }
+  },
+  "bytes": 2760723,
+  "source": "Historical public Aster tenant source; no original dirty files copied"
+}

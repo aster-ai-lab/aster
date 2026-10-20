@@ -150,6 +150,8 @@ import {
   reviewDraftNeedsSource,
   reviewFillFromText
 } from '@renderer/pages/agents/reviewHandoff'
+import { supportsTaskPlanning, planReviewIsCurrent } from '@renderer/pages/agents/taskConversation/taskPlanMode'
+import { TaskPlanReview } from '@renderer/pages/agents/taskConversation/TaskPlanReview'
 import {
   resolvePublishedAutoModel,
   useWorkbenchAgentRuntimeUnavailable,
@@ -176,9 +178,16 @@ import {
   WorkbenchSessionHasMessagesContext
 } from '@renderer/pages/agents/workbenchComposerHost'
 import { homeTurnContext, researchBlocksSend } from '@renderer/pages/agents/workbenchHomeCapabilities'
-import { displayedTaskPermissionMode } from '@renderer/pages/agents/workbenchPermissionPostures'
 import { useWorkbenchHomeComposer } from '@renderer/pages/agents/WorkbenchHomeComposerExtras'
-import { WorkbenchWorktreeSlot } from '@renderer/pages/agents/WorkbenchWorktreeSlot'
+import {
+  displayedTaskPermissionMode,
+  readTaskPermission,
+  writeTaskPermission,
+  withPlanFirstDirectives,
+  EXECUTE_PLAN_DIRECTIVE,
+  readTaskPermissionRevision,
+  storedPermissionMode
+} from '@renderer/pages/agents/workbenchPermissionPostures'
 import {
   readPendingProject,
   selectWorkbenchProject,
@@ -189,6 +198,7 @@ import {
   writePendingReasoningEffort
 } from '@renderer/pages/agents/workbenchReasoningEffort'
 import { selectedWorkspacePaths, type WorkspaceFileChoice } from '@renderer/pages/agents/WorkbenchWorkspaceFiles'
+import { WorkbenchWorktreeSlot } from '@renderer/pages/agents/WorkbenchWorktreeSlot'
 import { fileMentionRoot, useDisplayedWorkspacePath } from '@renderer/pages/settings/GeneralSettings'
 import { EVENT_NAMES, EventEmitter } from '@renderer/services/EventService'
 import { toast } from '@renderer/services/toast'
@@ -430,6 +440,9 @@ type Props = {
   isStreaming: boolean
   sendDisabled?: boolean
   compactWhenSingleLine?: boolean
+  planMessageId?: string
+  planRevision?: string
+  taskProgress?: React.ReactNode
   launchOptions?: AgentComposerLaunchOptions
 }
 
@@ -477,6 +490,9 @@ const AgentComposerRoot = ({
   isStreaming,
   sendDisabled = false,
   compactWhenSingleLine = false,
+  planMessageId,
+  planRevision,
+  taskProgress,
   launchOptions,
   renderControls,
   forceNarrowLayout = false,
@@ -600,6 +616,9 @@ const AgentComposerRoot = ({
         actionsRef={actionsRef}
         chatSendMessage={sendMessage}
         chatStop={stop}
+        planMessageId={planMessageId}
+        planRevision={planRevision}
+        taskProgress={taskProgress}
         onCreateEmptySession={onCreateEmptySession}
         onAgentChange={onAgentChange}
         agentChanging={agentChanging}
@@ -652,6 +671,9 @@ interface InnerProps {
   isStreaming: boolean
   sendDisabled: boolean
   compactWhenSingleLine: boolean
+  planMessageId?: string
+  planRevision?: string
+  taskProgress?: React.ReactNode
   launchOptions?: AgentComposerLaunchOptions
   renderControls: AgentComposerControlsRenderer
   forceNarrowLayout?: boolean
@@ -878,6 +900,9 @@ const AgentComposerInner = ({
   isStreaming,
   sendDisabled,
   compactWhenSingleLine,
+  planMessageId,
+  planRevision,
+  taskProgress,
   launchOptions,
   renderControls,
   forceNarrowLayout = false,
@@ -1748,7 +1773,7 @@ const AgentComposerInner = ({
     ]
   )
   const buildQueuedPayload = useCallback(
-    (draft: ComposerSerializedDraft): ComposerQueuedMessagePayload | null => {
+    (draft: ComposerSerializedDraft, planFirstOverride?: boolean): ComposerQueuedMessagePayload | null => {
       const mentionId = draft.tokens.map((token) => agentIdFromMentionToken(token.id)).find((id) => id)
       const parameterTurn = agentParameterTurn(
         mentionId && /^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$/.test(mentionId) ? mentionId : undefined,
@@ -1766,7 +1791,14 @@ const AgentComposerInner = ({
           .join('\n\n')
           .slice(0, 8000)
       }
-      const homeTurn = workbenchSurface ? homeTurnContext(homeComposer.options) : null
+      const planFirst =
+        planFirstOverride ??
+        (workbenchSurface &&
+          readTaskPermission(homeActive ? 'draft' : sessionId, undefined, memberId)?.planFirst === true)
+      const sourced = workbenchSurface ? homeTurnContext(homeComposer.options) : null
+      const homeTurn = sourced
+        ? { ...sourced, planFirst, directives: withPlanFirstDirectives(sourced.directives, planFirst) }
+        : null
       const agentId = mentionId && /^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$/.test(mentionId) ? mentionId : undefined
       const mentionToken = draft.tokens.find((token) => agentIdFromMentionToken(token.id) === agentId)
       const mentionPayload =
@@ -1797,6 +1829,7 @@ const AgentComposerInner = ({
       const turn =
         homeTurn || agentId
           ? {
+              ...(homeTurn?.planFirst ? { planFirst: true } : {}),
               directives: homeTurn?.directives ?? [],
               research: homeTurn?.research ?? false,
               ...(homeTurn ? { workbench: homeTurn.workbench } : {}),
@@ -1845,6 +1878,9 @@ const AgentComposerInner = ({
       fastMode,
       files,
       homeComposer.options,
+      homeActive,
+      memberId,
+      sessionId,
       i18n,
       launchOptions?.editing,
       launchOptions?.initialParts,
@@ -1858,7 +1894,11 @@ const AgentComposerInner = ({
   )
 
   const sendQueuedPayload = useCallback(
-    async (payload: ComposerQueuedMessagePayload) => {
+    async (payload: ComposerQueuedMessagePayload, reviewGuard?: () => boolean) => {
+      if (payload.turnContext?.planFirst && payload.turnContext.agentRuntime) {
+        toast.error(t('workbench.plan.unsupported_runtime'))
+        return false
+      }
       if (autoModel && agent) {
         try {
           const resolved = await resolvePublishedAutoModel(catalogModels, createModel)
@@ -1890,6 +1930,7 @@ const AgentComposerInner = ({
         let addedIndex = 0
         const fileParts = retainedParts.map((part) => part ?? addedParts[addedIndex++])
         const taskMode = workbenchSurface ? displayedTaskPermissionMode(sessionId, memberId) : undefined
+        if (reviewGuard && !reviewGuard()) return false
         const sent = await chatSendMessage(
           { text: payload.text },
           {
@@ -1995,7 +2036,7 @@ const AgentComposerInner = ({
     setPaused: setFollowupPaused
   } = useFollowupQueue({
     scopeKey: launchOptions?.editing ? `${sessionTopicId}:edit:${launchOptions.editing.messageId}` : sessionTopicId,
-    isFulfilled: !launchOptions?.editing && sessionFulfilled,
+    isFulfilled: !launchOptions?.editing && sessionFulfilled && !planMessageId,
     markSeen: markSessionSeen,
     onDrain: sendQueuedPayload
   })
@@ -2041,14 +2082,21 @@ const AgentComposerInner = ({
       if (directSendInFlightRef.current) return
       const paperloomQuestion = paperloomDraftQuestion(draft)
       const homeDraft = homeActive && !launchOptions?.editing && !homeDraftHandoffActive(sessionId)
+      const submittedPlanFirst =
+        workbenchSurface && readTaskPermission(homeDraft ? 'draft' : sessionId, undefined, memberId)?.planFirst === true
+      if (
+        workbenchSurface &&
+        submittedPlanFirst &&
+        !supportsTaskPlanning(draft, !homeActive || (!composerMode.selected && !composerMode.hostCode))
+      ) {
+        toast.error(t('workbench.plan.unsupported_runtime'))
+        return
+      }
       const taskMode = workbenchSurface
         ? displayedTaskPermissionMode(homeDraft ? 'draft' : sessionId, memberId)
         : (agent?.configuration?.permission_mode ?? 'default')
       if (workbenchSurface && agent && (agent.configuration?.permission_mode ?? 'default') !== taskMode) {
-        await updateAgent(
-          { id: agent.id, configuration: { permission_mode: taskMode } },
-          { showSuccessToast: false }
-        )
+        await updateAgent({ id: agent.id, configuration: { permission_mode: taskMode } }, { showSuccessToast: false })
       }
       if (workbenchSurface && !launchOptions?.editing && paperloomQuestion !== null) {
         if (
@@ -2091,7 +2139,8 @@ const AgentComposerInner = ({
         const outcome = await requestHomeComposerSend({
           surface: 'live',
           text: draft.text,
-          permissionMode: taskMode
+          permissionMode: taskMode,
+          planFirst: submittedPlanFirst
         })
         if (outcome.handled) {
           if (outcome.cleared) clearCurrentDraft()
@@ -2166,6 +2215,14 @@ const AgentComposerInner = ({
             toast.error(t('agent.session.create.error.failed'))
             return
           }
+          const permissionMode = storedPermissionMode(taskMode)
+          if (permissionMode)
+            writeTaskPermission(
+              created.id,
+              { mode: permissionMode, planFirst: submittedPlanFirst },
+              undefined,
+              memberId
+            )
           if (codeRecord) writeCodeSession(created.id, codeRecord)
           if (created.id !== sessionId) {
             if (deck) armPresentationDeck(created.id, deck)
@@ -2193,7 +2250,7 @@ const AgentComposerInner = ({
         clearCurrentDraft()
         return
       }
-      const payload = buildQueuedPayload(outgoing)
+      const payload = buildQueuedPayload(outgoing, submittedPlanFirst)
       if (!payload) return
 
       // Busy (streaming) → queue the follow-up; the head auto-drains when the session goes idle and
@@ -2218,8 +2275,11 @@ const AgentComposerInner = ({
     [
       agent,
       agentId,
+      actionsRef,
       appWorkspacePath,
       buildQueuedPayload,
+      composerMode.selected,
+      composerMode.hostCode,
       clearCurrentDraft,
       enqueueFollowup,
       homeActive,
@@ -2247,6 +2307,107 @@ const AgentComposerInner = ({
       workspaceWarning
     ]
   )
+
+  const planHasDraft = text.trim().length > 0 || files.length > 0 || selectedSkills.length > 0 || draftTokens.length > 0
+  const planBlocked =
+    sendDisabled ||
+    modelPending ||
+    !model ||
+    !!workspaceWarning ||
+    isStreaming ||
+    queuedFollowups.length > 0 ||
+    !!launchOptions?.editing
+  const planBindingRef = useRef({
+    sessionId,
+    memberId,
+    planMessageId,
+    planRevision,
+    blocked: planBlocked,
+    hasDraft: planHasDraft
+  })
+  planBindingRef.current = {
+    sessionId,
+    memberId,
+    planMessageId,
+    planRevision,
+    blocked: planBlocked,
+    hasDraft: planHasDraft
+  }
+  const planOwnerMounted = useRef(true)
+  useEffect(() => {
+    planOwnerMounted.current = true
+    return () => {
+      planOwnerMounted.current = false
+    }
+  }, [])
+  const startPlan = async () => {
+    const expected = { sessionId, memberId, planMessageId, planRevision }
+    const canSend = () => {
+      const current = planBindingRef.current
+      const draft = actionsRef.current.getDraft()
+      return (
+        planOwnerMounted.current &&
+        planReviewIsCurrent(expected, current) &&
+        !current.blocked &&
+        !current.hasDraft &&
+        !draft.text.trim() &&
+        draft.tokens.length === 0 &&
+        filesRef.current.length === 0
+      )
+    }
+    if (!canSend() || directSendInFlightRef.current) return
+    directSendInFlightRef.current = true
+    setIsDirectSending(true)
+    const permission = readTaskPermission(sessionId, undefined, memberId) ?? {
+      mode: displayedTaskPermissionMode(sessionId, memberId),
+      planFirst: false
+    }
+    let sent = false
+    let permissionRevision: number | undefined
+    try {
+      writeTaskPermission(sessionId, { ...permission, planFirst: false }, undefined, memberId)
+      permissionRevision = readTaskPermissionRevision()
+      const payload = buildQueuedPayload({ text: t('workbench.plan.execute_prompt'), tokens: [] }, false)
+      if (payload) {
+        payload.turnContext = {
+          ...payload.turnContext,
+          planFirst: false,
+          directives: [EXECUTE_PLAN_DIRECTIVE, ...(payload.turnContext?.directives ?? [])].slice(0, 8),
+          research: payload.turnContext?.research ?? false
+        }
+        sent = await sendQueuedPayload(payload, canSend)
+      }
+    } catch (error) {
+      logger.warn('Failed to start the reviewed plan', error as Error)
+      toast.error(t('chat.input.send_failed'))
+    } finally {
+      const current = readTaskPermission(sessionId, undefined, memberId)
+      if (
+        !sent &&
+        permissionRevision === readTaskPermissionRevision() &&
+        current?.mode === permission.mode &&
+        current.planFirst === false
+      )
+        writeTaskPermission(sessionId, permission, undefined, memberId)
+      directSendInFlightRef.current = false
+      setIsDirectSending(false)
+    }
+  }
+  const revisePlan = () => {
+    const current = planBindingRef.current
+    if (
+      !planOwnerMounted.current ||
+      !planReviewIsCurrent({ sessionId, memberId, planMessageId, planRevision }, current)
+    )
+      return
+    writeTaskPermission(
+      sessionId,
+      { mode: displayedTaskPermissionMode(sessionId, memberId), planFirst: true },
+      undefined,
+      memberId
+    )
+    actionsRef.current.focus('end')
+  }
 
   const homeSubmitSent = useRef(false)
   useEffect(() => {
@@ -2487,33 +2648,53 @@ const AgentComposerInner = ({
             launchOptions?.editing ? { ...launchOptions.editing, cancelDisabled: isDirectSending } : undefined
           }
           onPause={abortAgentSession}
+          topContent={
+            !launchOptions?.editing && !homeDraftActive ? (
+              <>
+                {taskProgress}
+                {planMessageId ? (
+                  <TaskPlanReview
+                    blockedReason={queuedFollowups.length > 0 ? t('workbench.plan.queue_blocked') : undefined}
+                    disabled={planBlocked}
+                    hasDraft={planHasDraft}
+                    busy={isDirectSending}
+                    onStart={() => void startPlan()}
+                    onRevise={revisePlan}
+                  />
+                ) : null}
+              </>
+            ) : null
+          }
           queueContent={
             homeDraftActive ? undefined : (
-            <>
-              {queuedFollowups.length > 0 ? (
-                <QueuedFollowupsDock
-                  items={queuedFollowups}
-                  paused={followupPaused}
-                  onTogglePause={() => setFollowupPaused(!followupPaused)}
-                  onSteer={async (id) => {
-                    const item = queuedFollowups.find((entry) => entry.id === id)
-                    if (!item) return
-                    // Only drop the item once the send actually succeeds; a failed manual
-                    // steer keeps it in the dock + toasts, matching the direct-send/auto-drain paths.
-                    const sent = await sendQueuedPayload(item.payload)
-                    if (sent) removeFollowup(id)
-                  }}
-                  onEdit={(id) => {
-                    const item = queuedFollowups.find((entry) => entry.id === id)
-                    if (!item) return
-                    restoreFollowupDraft(item)
-                    removeFollowup(id)
-                  }}
-                  onRemove={removeFollowup}
-                  onReorder={reorderFollowups}
-                />
-              ) : undefined}
-            </>
+              <>
+                {queuedFollowups.length > 0 ? (
+                  <QueuedFollowupsDock
+                    items={queuedFollowups}
+                    paused={followupPaused}
+                    onTogglePause={() => setFollowupPaused(!followupPaused)}
+                    onSteer={async (id) => {
+                      if (planMessageId) return
+                      const item = queuedFollowups.find((entry) => entry.id === id)
+                      if (!item) return
+                      // Only drop the item once the send actually succeeds; a failed manual
+                      // steer keeps it in the dock + toasts, matching the direct-send/auto-drain paths.
+                      const sent = await sendQueuedPayload(item.payload)
+                      if (sent) removeFollowup(id)
+                    }}
+                    onEdit={(id) => {
+                      const item = queuedFollowups.find((entry) => entry.id === id)
+                      if (!item) return
+                      restoreFollowupDraft(item)
+                      removeFollowup(id)
+                    }}
+                    isSteerDisabled={() => Boolean(planMessageId)}
+                    steerDisabledReason={planMessageId ? t('workbench.plan.queue_blocked') : undefined}
+                    onRemove={removeFollowup}
+                    onReorder={reorderFollowups}
+                  />
+                ) : undefined}
+              </>
             )
           }
           supportedExts={supportedExts}
@@ -2759,6 +2940,18 @@ const MissingAgentHomeComposerInner = ({
   const handleHomeSend = useCallback(
     async (draft: ComposerSerializedDraft) => {
       if (sendingHomeRef.current) return
+      const submittedPermission = readTaskPermission('draft', undefined, homeMemberId) ?? {
+        mode: displayedTaskPermissionMode('draft', homeMemberId),
+        planFirst: false
+      }
+      const submittedPlanFirst = Boolean(workbenchComposerHost) && submittedPermission.planFirst === true
+      if (
+        submittedPlanFirst &&
+        !supportsTaskPlanning(draft, !homeActive || (!composerMode.selected && !composerMode.hostCode))
+      ) {
+        toast.error(t('workbench.plan.unsupported_runtime'))
+        return
+      }
       const question = paperloomDraftQuestion(draft)
       if (workbenchComposerHost && question !== null) {
         if (
@@ -2793,7 +2986,7 @@ const MissingAgentHomeComposerInner = ({
       let deck: HomeComposerDeck | undefined
       let codePlan: HomeComposerCodePlan | undefined
       if (homeActive) {
-        const mode = displayedTaskPermissionMode('draft', homeMemberId)
+        const mode = submittedPermission.mode
         if (permissionAgentId) {
           await updateAgent(
             { id: permissionAgentId, configuration: { permission_mode: mode as PermissionMode } },
@@ -2803,7 +2996,8 @@ const MissingAgentHomeComposerInner = ({
         const outcome = await requestHomeComposerSend({
           surface: 'live',
           text: draft.text,
-          permissionMode: mode
+          permissionMode: mode,
+          planFirst: submittedPlanFirst
         })
         if (outcome.handled) {
           if (outcome.cleared) {
@@ -2856,6 +3050,12 @@ const MissingAgentHomeComposerInner = ({
           if (codeRecord?.placement === 'worktree') writePendingProject(null)
           return
         }
+        writeTaskPermission(
+          created.id,
+          { ...submittedPermission, planFirst: submittedPlanFirst },
+          undefined,
+          homeMemberId
+        )
         if (codeRecord) writeCodeSession(created.id, codeRecord)
         if (deck) armPresentationDeck(created.id, deck)
         writeAgentDraftCache(getAgentDraftCacheKey(created.id), {
@@ -2877,6 +3077,8 @@ const MissingAgentHomeComposerInner = ({
       }
     },
     [
+      composerMode.selected,
+      composerMode.hostCode,
       actionsRef,
       agentRuntimeUnavailable,
       appWorkspacePath,

@@ -1,0 +1,72 @@
+warning: fields `version`, `notes`, `sha256`, `path`, `size`, and `published_at` are never read
+ --> .tmp/studio-updater-before/source.rs:4:5
+  |
+3 | struct ReadyUpdate {
+  |        ----------- fields in this struct
+4 |     version: String,
+  |     ^^^^^^^
+5 |     notes: String,
+  |     ^^^^^
+6 |     sha256: String,
+  |     ^^^^^^
+7 |     path: PathBuf,
+  |     ^^^^
+8 |     size: u64,
+  |     ^^^^
+9 |     published_at: String,
+  |     ^^^^^^^^^^^^
+  |
+  = note: `ReadyUpdate` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: variants `NotPublished`, `UpToDate`, and `Unavailable` are never constructed
+  --> .tmp/studio-updater-before/source.rs:22:5
+   |
+20 | enum UpdateFail {
+   |      ---------- variants in this enum
+21 |     InProgress,
+22 |     NotPublished,
+   |     ^^^^^^^^^^^^
+23 |     UpToDate,
+   |     ^^^^^^^^
+24 |     Unavailable,
+   |     ^^^^^^^^^^^
+   |
+   = note: `UpdateFail` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: method `disarm` is never used
+  --> .tmp/studio-updater-before/source.rs:44:8
+   |
+34 | impl BusyGuard {
+   | -------------- method in this implementation
+...
+44 |     fn disarm(&mut self) {
+   |        ^^^^^^
+
+warning: 3 warnings emitted
+
+
+running 3 tests
+
+thread 'installing_owns_busy_until_settled' (52484624) panicked at .tmp/studio-updater-before/source.rs:137:1:
+taking an installer must retain exclusive ownership
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'a_failed_check_preserves_the_download_for_retry' (52484622) panicked at .tmp/studio-updater-before/source.rs:148:1:
+transient check errors must not lose a ready download
+test installing_owns_busy_until_settled ... FAILED
+test a_failed_check_preserves_the_download_for_retry ... FAILED
+
+thread 'an_executable_without_companions_is_not_a_studio_delivery' (52484623) panicked at .tmp/studio-updater-before/source.rs:157:5:
+assertion failed: ensure_bundle_executable(temp.path()).is_err()
+test an_executable_without_companions_is_not_a_studio_delivery ... FAILED
+
+failures:
+
+failures:
+    a_failed_check_preserves_the_download_for_retry
+    an_executable_without_companions_is_not_a_studio_delivery
+    installing_owns_busy_until_settled
+
+test result: FAILED. 0 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

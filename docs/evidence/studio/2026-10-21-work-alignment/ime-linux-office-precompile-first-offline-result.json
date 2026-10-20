@@ -1,0 +1,13 @@
+{
+  "command": [
+    "docker",
+    "exec",
+    "aster-studio-kylin-ime",
+    "bash",
+    "/aster/target/evaluations/studio-work-alignment/ime-native/precompile-office.sh"
+  ],
+  "exit_code": 101,
+  "started_utc": "2026-10-20T22:20:33.622157+00:00",
+  "elapsed_seconds": 1.269,
+  "boundary": "Office and dependency preparation only; Studio/ACP final native build not started"
+}

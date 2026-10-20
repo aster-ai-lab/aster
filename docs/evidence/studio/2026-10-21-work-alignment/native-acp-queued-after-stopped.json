@@ -1,0 +1,7 @@
+{
+  "pid": 22920,
+  "matched_owned": true,
+  "signal": "SIGINT",
+  "time": 1792535355.049675,
+  "reason": "root canonical private target build priority; later shared ACP after will use private target"
+}

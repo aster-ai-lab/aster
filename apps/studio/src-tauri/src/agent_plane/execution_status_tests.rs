@@ -116,6 +116,8 @@ fn orphan_recovery_preserves_live_and_terminal_execution_ownership() {
     turns.lock_live().insert(
         ids[0].0.clone(),
         LiveTurn {
+            acp_session: None,
+            attempt_id: 1,
             owner: ids[0].1.clone(),
             execution_id: "live-execution".into(),
             status: "awaiting-approval".into(),
@@ -203,7 +205,9 @@ async fn status_publication_requires_the_current_live_owner_and_withdraws_at_set
     turns.lock_live().insert(
         "session".into(),
         LiveTurn {
-            execution_id: String::new(),
+            acp_session: None,
+            attempt_id: 1,
+            execution_id: "execution".into(),
             owner: "current".into(),
             status: "pending".into(),
             observed: Some(observation),

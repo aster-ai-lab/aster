@@ -1,0 +1,57 @@
+{
+  "status": "passed: bounded read-only final source review; no unresolved source findings",
+  "source_ready_manifest": "issue-1-5-source-ready.json",
+  "all_11_production_hashes_match": true,
+  "production_files": {
+    "crates/code/core/src/durable_memory_vec.rs": "269b72540fbbd78de534a26aaacccb3ac4826ac4231b3237a69f7d405a6995b2",
+    "crates/code/core/src/goal_control/continuation.rs": "659769c3cbc8af535532c8dbf88b12e8685d4ac3e53e70f7ccb9b411636e4274",
+    "crates/code/core/src/goal_control/facts.rs": "63cafccc1ad293f8c694b0b697bd580a2740d404a71b669856e02e02cf61ec57",
+    "crates/code/core/src/goal_control/facts/run/continuation.rs": "3288fd29f537fb0d9257d99172da5284793b3d1f08e11dad7d1df8a934d510ed",
+    "crates/code/core/src/goal_control/facts/settle.rs": "a8304017aefea0e49c46a206dc8cf82c86a46600434a16bece45ce8f086962ac",
+    "crates/code/core/src/fact_control.rs": "9f466da0963bacafd3d6940a6d7e9dc66827ce8381952cb4868756d11e096e37",
+    "crates/code/core/src/fact_control/goal_evidence.rs": "38cd66339a4464464810296086037ec2014d71de1a2b260b0543e4c7fe2419d8",
+    "crates/code/core/src/agent_api/goal_facade.rs": "a8b6f3b2e28b9bbd5bf7382693e1241bbfbb2bc0b0957a6449ab32bf8f1cd06d",
+    "crates/code/acp/src/goal.rs": "68ccab9b701f111103a0c920b722f9b378e2a40285aab500b03fa0bf8c55982d",
+    "crates/code/acp/src/agent/unattended_turn.rs": "ae3fa849b289cf6418fdc8e5332c01348fd80ebb3320b662c7926d7955c03bcc",
+    "crates/code/acp/src/unattended/result.rs": "c75d9f7b9c5e781581660c4b6ecb706f57b36c741fe60068be424db626289d63"
+  },
+  "additional_context_files": {
+    "crates/code/core/src/goal_control/facts/run.rs": "c876499f779ea393e94ef24aecb95a5cebf9c5fc0ece5bd48600139ff77f7229",
+    "crates/code/core/src/goal_control/facts/step.rs": "e0b3e457e30789f6a403797fc625fb1a4c27370f1a3e33a863d0317f74d2c13e",
+    "crates/code/core/src/fact_control/receipts.rs": "cdea7bada802b79a963d1ac2d77870a41fd06554fb080a0adedbe49693ca3233",
+    "crates/code/core/src/agent_api/goal_facade/tests/execution/attestation.rs": "697a9acd424da558e5c311f3478bdd12db747da20a5baeac385cf7e41d0e6a2f",
+    "crates/code/core/src/goal_control/facts/run/tests/continuation.rs": "cd1848ea7a5bfbef6a8d6d19231a68c00484834ec71bc8f381bb820af657f972"
+  },
+  "checks": {
+    "legacy_progress_basis_absent_is_omitted_on_serialization": true,
+    "unknown_progress_basis_is_closed_set_rejection": true,
+    "sole_production_source_factory_is_explicit_observed_mutations": true,
+    "recorded_admissions_keep_source_specific_stall_validation": true,
+    "both_derived_counters_increment_on_each_admission": true,
+    "step_acceptance_resets_only_legacy_counter": true,
+    "complete_known_settled_mutation_resets_only_actual_counter": true,
+    "current_admissions_never_read_legacy_counter": true,
+    "existing_tick_identity_reconciles_before_new_admission": true,
+    "memory_last_owned_arc_drop_serializes_with_upgrade_and_open": true,
+    "progress_basis_uses_existing_closed_set_macro_with_same_wire_literal": true
+  },
+  "observed_before_log": {
+    "file": "issue-1-replay-before.log",
+    "sha256": "e3ab5b33bfabfcfb9c11cc9bec4852346eaecba1dac0f09f364c3276f13aeb02",
+    "result": "1 failed: historical next legacy admission incorrectly refused Waiting after an actual accepted identical-byte Run"
+  },
+  "reviewer_executed_cargo_or_apps": false,
+  "boundaries": [
+    "After runtime tests are performed by the implementation owner/root and are not inferred from this static review.",
+    "Historical protocol fixture executes the first legacy-shaped Run, then appends a previously legal next admission. It is not an old release binary E2E or a claim that the second Run executed.",
+    "Memory release race test is a bounded concurrent exercise, not deterministic fault injection into the old destructor gap."
+  ],
+  "final_macro_only_followup": {
+    "file": "crates/code/core/src/goal_control/facts/run/continuation.rs",
+    "previous_sha256": "5f5ab18d5b1f23b2f80797a8ceeb5178efa5906e003f11078aa01a436a26f981",
+    "final_sha256": "3288fd29f537fb0d9257d99172da5284793b3d1f08e11dad7d1df8a934d510ed",
+    "remaining_10_production_files_unchanged": true,
+    "runtime_rerun_by_reviewer": false,
+    "replacing_only_macro_declaration_restores_previously_reviewed_file_sha256": true
+  }
+}

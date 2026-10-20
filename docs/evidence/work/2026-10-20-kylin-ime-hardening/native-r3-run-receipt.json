@@ -1,0 +1,90 @@
+{
+  "app_commit": "9976324975943ee39ae5727d6c6f935b2d50e98bc1954992d7e9deda09124776",
+  "cases": [
+    {
+      "name": "flatpak16-r3-prepare",
+      "command": [
+        "docker",
+        "exec",
+        "aster-kylin-ime-hardening",
+        "bash",
+        "/aster/target/evaluations/kylin-ime-hardening/prepare-flatpak16-r3.sh",
+        "9976324975943ee39ae5727d6c6f935b2d50e98bc1954992d7e9deda09124776"
+      ],
+      "exit_code": 0,
+      "expected": 0,
+      "log": "flatpak16-r3-prepare.log"
+    },
+    {
+      "name": "native-installed-r3",
+      "command": [
+        "docker",
+        "exec",
+        "aster-kylin-ime-hardening",
+        "bash",
+        "/aster/target/worktrees/kylin-ime-hardening-20261020/apps/work/scripts/kylin-flatpak/test-input-method.sh",
+        "/root/.local/share/flatpak/app/dev.a3s.AsterDream/x86_64/50/9976324975943ee39ae5727d6c6f935b2d50e98bc1954992d7e9deda09124776/files",
+        "/root/.local/share/flatpak/runtime/org.gnome.Platform/x86_64/50/active/files"
+      ],
+      "exit_code": 0,
+      "expected": 0,
+      "log": "native-installed-r3.log"
+    },
+    {
+      "name": "flatpak16-r3-no-seccomp",
+      "command": [
+        "docker",
+        "exec",
+        "aster-kylin-ime-hardening",
+        "bash",
+        "/aster/target/evaluations/kylin-ime-hardening/run-flatpak16-r3.sh",
+        "no-seccomp"
+      ],
+      "exit_code": 0,
+      "expected": 0,
+      "log": "flatpak16-r3-no-seccomp.log"
+    },
+    {
+      "name": "flatpak16-r3-legacy",
+      "command": [
+        "docker",
+        "exec",
+        "aster-kylin-ime-hardening",
+        "bash",
+        "/aster/target/evaluations/kylin-ime-hardening/run-flatpak16-r3.sh",
+        "legacy"
+      ],
+      "exit_code": 0,
+      "expected": 0,
+      "log": "flatpak16-r3-legacy.log"
+    },
+    {
+      "name": "flatpak16-r3-portal-disabled",
+      "command": [
+        "docker",
+        "exec",
+        "aster-kylin-ime-hardening",
+        "bash",
+        "/aster/target/evaluations/kylin-ime-hardening/run-flatpak16-r3.sh",
+        "portal-disabled"
+      ],
+      "exit_code": 1,
+      "expected": 1,
+      "log": "flatpak16-r3-portal-disabled.log"
+    },
+    {
+      "name": "flatpak16-r3-stock",
+      "command": [
+        "docker",
+        "exec",
+        "aster-kylin-ime-hardening",
+        "bash",
+        "/aster/target/evaluations/kylin-ime-hardening/run-flatpak16-r3.sh",
+        "stock"
+      ],
+      "exit_code": 1,
+      "expected": 1,
+      "log": "flatpak16-r3-stock.log"
+    }
+  ]
+}

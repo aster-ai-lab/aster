@@ -130,6 +130,7 @@ fn gateway_config(
         shutdown_timeout_secs: 0,
         hosted_function_activations: Default::default(),
         agent_idle_policies: Default::default(),
+        anonymous_chatbot: None,
     }
 }
 

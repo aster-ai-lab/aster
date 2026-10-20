@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "node",
+    "node_modules/@rsbuild/core/bin/rsbuild.js",
+    "build"
+  ],
+  "rc": 0,
+  "elapsed": 8.60493516921997,
+  "ux_receipt_sha256": "4def8612ab1d37546e91c3d97c93ba1da08a793ec05040786c518ba210da6dd1",
+  "ux_receipt_unchanged": true,
+  "office_build": "final-renderer-build-r2.json",
+  "dist": "apps/studio/.studio-package"
+}

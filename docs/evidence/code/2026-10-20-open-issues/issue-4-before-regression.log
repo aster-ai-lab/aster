@@ -1,0 +1,103 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on build directory
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5m 54s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 65 tests
+test program::tests::program_catalog_instantiate_unknown_program_errors ... ok
+test program::tests::builtin_program_catalog_contains_first_ptc_programs ... ok
+test event_protocol::tests::event_type_catalog_is_non_empty_and_stable ... ok
+test llm::cursor_account::tests::account_catalog_maps_selectors_onto_model_id ... ok
+test program::tests::program_catalog_try_register_rejects_invalid_template ... ok
+test program::tests::program_catalog_register_overwrites_existing_template ... ok
+test session_folder::catalog::tests::empty_workspace_is_read_only_and_complete ... ok
+test capability::run_binding::tests::binding_round_trips_and_rejects_catalog_or_ceiling_drift ... ok
+test context::skill_catalog_provider::tests::reflects_registry_changes_on_each_query ... ok
+test capability::selection_identity_tests::native_provider_without_spatial_binding_cannot_admit_even_a_directly_published_catalog ... ok
+test agent_api::capability_runtime_tests::access_projection::projected_tool_refuses_unscoped_stale_denied_and_other_catalog_calls ... ok
+test agent_api::capability_runtime_tests::mcp_projection::projected_mcp_tool_rejects_a_denied_catalog_context_before_transport_use ... ok
+test session_folder::catalog::tests::exact_resolution_does_not_create_missing_state ... ok
+test agent_api::retrieval_tests::session_chunking_options_cannot_override_a_host_owned_catalog ... ok
+test agent_api::retrieval_tests::custom_workspace_without_a_catalog_is_rejected_before_provider_calls ... ok
+test agent_api::tests::agents_workers::test_live_worker_catalog_is_model_visible_and_tracks_registry_changes ... ok
+test session_folder::catalog::tests::counts_user_and_model_turns_but_not_tools_or_control_facts ... ok
+test session_folder::catalog::tests::a_moved_workspace_uses_its_opened_root_not_the_stored_path ... ok
+test session_folder::catalog::tests::dated_and_legacy_facts_share_a_catalog_without_a_snapshot_store ... ok
+test session_folder::catalog::tests::directory_budget_is_shared_between_layouts ... ok
+test session_folder::catalog::tests::corrupt_preferred_folder_does_not_fall_back_to_different_facts ... ok
+test session_folder::catalog::tests::fifo_is_rejected_before_open_without_waiting_for_a_writer ... ok
+test session_folder::catalog::tests::exact_original_unicode_id_comes_from_marker ... ok
+test agent::tests::permission_visibility_precedes_code_profile_catalog_generation ... ok
+test session_folder::catalog::tests::exact_resolution_does_not_equate_colliding_encoded_ids ... ok
+test session_folder::catalog::tests::duplicate_dated_identity_is_ambiguous_even_with_a_legacy_log ... ok
+test session_folder::catalog::tests::exact_resolution_accepts_dated_original_ids_and_legacy_thread_ids ... ok
+test session_folder::catalog::tests::opened_handle_gate_rejects_a_fifo_swapped_in_after_the_precheck ... ok
+test session_folder::catalog::tests::literal_query_runs_before_page_limit_and_prompt_is_utf8_bounded ... ok
+test surface_decision::tests::numbers_and_a_chart_use_the_catalog ... ok
+test session_folder::catalog::tests::nofollow_open_rejects_a_symlink_swapped_in_after_the_precheck ... ok
+
+thread 'tools::program_tool::tests::program_catalog_is_discoverable_in_the_published_tool_contract' (51988107) panicked at crates/code/core/src/tools/program_tool/tests.rs:14:9:
+Run a sandboxed JavaScript PTC script. The script defines async function run(ctx, inputs) and may call only allowed ctx tools.
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'tools::tests::test_tool_executor_register_program_catalog_runs_governed_template' (51988108) panicked at crates/code/core/src/tools/tests.rs:1090:5:
+assertion `left == right` failed: Unsupported program type: template. Only "script" is supported.
+  left: 1
+ right: 0
+test session_folder::catalog::tests::malformed_facts_order_and_duplicate_keys_are_reported_as_incomplete ... ok
+test session_folder::catalog::tests::exact_resolution_refuses_linked_state_and_writerless_fifo ... ok
+test workspace::manifest::tests::configuring_chunk_catalog_does_not_open_durable_a3s_vec ... ok
+test session_folder::catalog::tests::exact_resolution_refuses_corrupt_or_oversized_preferred_logs ... ok
+test session_folder::catalog::tests::exact_resolution_refuses_ambiguous_dated_identity_and_legacy_substitution ... ok
+test session_folder::catalog::tests::folder_has_runtime_precedence_over_the_legacy_log ... ok
+test session_folder::catalog::tests::oversized_files_and_aggregate_budget_never_report_complete ... ok
+test session_folder::catalog::tests::marker_cannot_select_another_log_or_another_id ... ok
+test workspace::retrieval::tests::catalog_rejects_root_and_parent_traversal_paths ... ok
+test tools::program_tool::tests::program_catalog_is_discoverable_in_the_published_tool_contract ... FAILED
+test tools::tests::test_tool_executor_register_program_catalog_runs_governed_template ... FAILED
+test workspace::retrieval::tests::chunking_strategies::built_in_options_are_bounded_by_catalog_chunk_limits ... ok
+test agent_api::tests::fact_log::fact_log_session_send_projects_the_skill_catalog ... ok
+test workspace::retrieval::runtime::tests::report_reconciliation_warns_on_catalog_error ... ok
+test standing_context::tests::a_new_tool_catalog_admits_again_when_the_files_stay ... ok
+test mcp::binding::tests::binding_canonicalizes_tools_and_rejects_duplicate_or_oversized_catalogs ... ok
+test workspace::manifest::tests::host_can_configure_the_manifest_catalog_exactly_once_before_services_attach ... ok
+test session_folder::catalog::tests::query_preserves_permissions_and_all_stored_bytes ... ok
+test workspace::retrieval::tests::lifecycle::plain_manifest_services_do_not_enable_the_chunk_catalog ... ok
+test workspace::retrieval::tests::lifecycle::catalog_attach_does_not_open_durable_a3s_vec ... ok
+test workspace::retrieval::tests::lifecycle::host_configured_catalog_still_defers_durable_a3s_vec ... ok
+test workspace::retrieval::tests::lifecycle::retrieval_services_lazily_attach_lexical_catalog ... ok
+test workspace::retrieval::tests::lifecycle::dropping_manifest_backend_releases_catalog_and_background_owner ... ok
+test workspace::retrieval::tests::hybrid_query::structural_channel_maps_symbols_to_catalog_chunks_and_marks_identifier_evidence ... ok
+test tools::builtin::bm25::tests::manifest_backed_bm25_uses_the_incremental_catalog_without_query_reads ... ok
+test workspace::manifest::tests::source_egress_catalog_does_not_change_ordinary_workspace_reads ... ok
+test session_folder::catalog::tests::symlinks_at_every_repository_controlled_level_are_refused ... ok
+test workspace::retrieval::tests::catalog_queries_hold_immutable_snapshots_during_replacement ... ok
+test workspace::retrieval::tests::catalog_budget_failure_preserves_the_published_snapshot ... ok
+test workspace::retrieval::runtime::tests::catalog_runtime_seeds_from_an_already_scanned_manifest_with_persistent ... ok
+test workspace::retrieval::tests::semantic_batching::adversarial::catalog_update_cancels_the_whole_batch_and_preserves_stable_sibling_ids ... ok
+test tools::builtin::bm25::tests::persistent_bm25_falls_back_to_the_catalog_before_native_ready ... ok
+test session_folder::catalog::tests::exact_resolution_ignores_other_logs_and_a_catalog_page_limit ... ok
+test session_folder::catalog::tests::exact_resolution_requires_complete_identity_traversal ... ok
+
+failures:
+
+failures:
+    tools::program_tool::tests::program_catalog_is_discoverable_in_the_published_tool_contract
+    tools::tests::test_tool_executor_register_program_catalog_runs_governed_template
+
+test result: FAILED. 63 passed; 2 failed; 0 ignored; 0 measured; 5201 filtered out; finished in 2.01s
+
+error: test failed, to rerun pass `-p a3s-code-core --lib`

@@ -1,0 +1,19 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "aster",
+    "--bin",
+    "aster",
+    "workspace_command_gate_tests",
+    "--",
+    "--nocapture"
+  ],
+  "exit_code": 101,
+  "elapsed_seconds": 456.58,
+  "log": "issue-7-before.log",
+  "log_sha256": "aca61b56037f93518b6b799e36e73e0070cf0e3573bc96a5df2f093bdf9e815a"
+}

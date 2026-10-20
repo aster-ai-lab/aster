@@ -1,0 +1,24 @@
+new-success: PASS new=1 old=0 connected=1 focus=1 commit=1
+unknown-object: PASS new=1 old=1 connected=1 focus=1 commit=1
+unknown-method: PASS new=1 old=1 connected=1 focus=1 commit=1
+access-denied: PASS new=1 old=0 connected=0 focus=0 commit=0
+failed: PASS new=1 old=0 connected=0 focus=0 commit=0
+both-unknown-method: PASS new=1 old=1 connected=0 focus=0 commit=0
+cancelled: PASS new=1 old=0 connected=0 focus=0 commit=0
+no-reply: PASS new=1 old=0 connected=0 focus=0 commit=0
+kylin-ime: host-display (host DISPLAY=:100)
+GTK client DISPLAY=:100
+Fcitx state ready for phase 0
+Chinese text committed through GTK: 你好
+Fcitx state ready for phase 2
+GTK English key presses: a=1 b=1 c=1
+Fcitx state ready for phase 3
+PASS: Chinese commit, mixed English, Escape cancellation
+kylin-ime: flatpak-display (host DISPLAY=:100)
+GTK client DISPLAY=:99.0
+Fcitx state ready for phase 0
+Chinese text committed through GTK: 你好
+Fcitx state ready for phase 2
+GTK English key presses: a=1 b=1 c=1
+Fcitx state ready for phase 3
+PASS: Chinese commit, mixed English, Escape cancellation

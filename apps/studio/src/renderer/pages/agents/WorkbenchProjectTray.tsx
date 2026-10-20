@@ -1,3 +1,4 @@
+import { Popover, PopoverContent, PopoverTrigger } from '@a3s-lab/ui'
 import { ChevronDown, Folder, X } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -6,8 +7,26 @@ import { WorkspaceSelector } from '@renderer/components/resourceCatalog/selector
 import { useQuery } from '@renderer/data/hooks/useDataApi'
 import { isKnowledgeCompileWorkbenchRow } from '@renderer/pages/knowledge/knowledgeCompileAgent'
 import { AGENT_WORKSPACE_TYPE } from '@shared/data/api/schemas/agentWorkspaces'
+import type { StudioGoal, StudioGoalSnapshot } from '@shared/types/studioGoal'
 
 import { WorkbenchWorkspaceFilePicker, type WorkbenchWorkspaceFilesControl } from './WorkbenchWorkspaceFiles'
+
+const GOAL_STATE_KEYS: Record<StudioGoal['state'], string> = {
+  active: 'workbench.goal.state.active',
+  paused: 'workbench.goal.state.paused',
+  waiting: 'workbench.goal.state.waiting',
+  completed: 'workbench.goal.state.completed',
+  cancelled: 'workbench.goal.state.cancelled'
+}
+const GOAL_TICK_KEYS: Record<NonNullable<StudioGoal['tick']>, string> = {
+  advance: 'workbench.goal.tick.advance',
+  wait: 'workbench.goal.tick.wait',
+  needs_input: 'workbench.goal.tick.needs_input',
+  paused: 'workbench.goal.tick.paused',
+  budget_exhausted: 'workbench.goal.tick.budget_exhausted',
+  reconcile: 'workbench.goal.tick.reconcile',
+  complete: 'workbench.goal.tick.complete'
+}
 
 const PENDING_PROJECT_KEY = 'workbench.pending_project:v1'
 
@@ -136,6 +155,7 @@ export interface WorkbenchProjectTrayProps {
   onClearGoal: () => void
   /** Task conversations do not show this tray. */
   locked?: boolean
+  goalSnapshot?: StudioGoalSnapshot
   goalPaused?: boolean
   /** Stored goals are cleared with `/goal clear`, not by editing the draft. */
   goalClearable?: boolean
@@ -147,14 +167,20 @@ function ComposerGoalChip({
   goal,
   paused = false,
   clearable = true,
+  snapshot,
   onClear
 }: {
   goal: string
   paused?: boolean
   clearable?: boolean
+  snapshot?: StudioGoalSnapshot
   onClear: () => void
 }) {
   const { t } = useTranslation()
+  const [detailsOpen, setDetailsOpen] = useState(false)
+  const goalId = snapshot?.status === 'known' ? snapshot.goal?.goalId : undefined
+  useEffect(() => setDetailsOpen(false), [goalId, snapshot?.sessionId])
+
   return (
     <span
       data-composer-goal="true"
@@ -165,8 +191,33 @@ function ComposerGoalChip({
           : t('workbench.composer.goal_durable', '持续目标。发送 /goal clear 后清除，/goal pause 后暂停。')
       }
       className="ml-auto inline-flex h-7 min-w-0 items-center gap-1 rounded-[8px] bg-white px-2 text-[13px] text-[#60646c]">
-      <span className="shrink-0">{t('workbench.composer.goal', '目标')}</span>
-      <span className="max-w-56 truncate text-[#171717]">{goal || t('workbench.composer.goal_empty', '未填写')}</span>
+      {snapshot?.status === 'known' && snapshot.goal ? (
+        <Popover open={detailsOpen} onOpenChange={setDetailsOpen}>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              aria-label={t('workbench.goal.details')}
+              className="flex min-w-0 items-center gap-1 text-start">
+              <span className="shrink-0">{t('workbench.composer.goal', '目标')}</span>
+              <span className="max-w-56 truncate text-[#171717]">{goal}</span>
+            </button>
+          </PopoverTrigger>
+          <PopoverContent side="top" align="end" className="max-w-sm space-y-2 p-3 text-[13px]">
+            <p className="break-words">{goal}</p>
+            <p>{t(GOAL_STATE_KEYS[snapshot.goal.state])}</p>
+            {snapshot.goal.tick ? (
+              <p className="text-muted-foreground">{t(GOAL_TICK_KEYS[snapshot.goal.tick])}</p>
+            ) : null}
+          </PopoverContent>
+        </Popover>
+      ) : (
+        <>
+          <span className="shrink-0">{t('workbench.composer.goal', '目标')}</span>
+          <span className="max-w-56 truncate text-[#171717]">
+            {goal || t('workbench.composer.goal_empty', '未填写')}
+          </span>
+        </>
+      )}
       {paused ? <span className="shrink-0 text-[#8a8a8a]">{t('workbench.composer.goal_paused', '已暂停')}</span> : null}
       {clearable ? (
         <button
@@ -187,6 +238,7 @@ export function WorkbenchProjectTray({
   goal,
   onClearGoal,
   locked = false,
+  goalSnapshot,
   goalPaused = false,
   goalClearable = true,
   files
@@ -194,9 +246,21 @@ export function WorkbenchProjectTray({
   const { t } = useTranslation()
   const { selectedId, selectedName, selectedPath, bound, changeProject, pickerOpen, setPickerOpen } = selection
   const filePicker = files ? <WorkbenchWorkspaceFilePicker {...files} /> : null
+  const nativeGoal = goalSnapshot?.status === 'known' ? goalSnapshot.goal : null
+  const visibleGoal = goalSnapshot
+    ? nativeGoal && nativeGoal.state !== 'completed' && nativeGoal.state !== 'cancelled'
+      ? nativeGoal.objective
+      : null
+    : goal
   const goalChip =
-    goal === null ? null : (
-      <ComposerGoalChip goal={goal} paused={goalPaused} clearable={goalClearable} onClear={onClearGoal} />
+    visibleGoal === null ? null : (
+      <ComposerGoalChip
+        goal={visibleGoal}
+        paused={goalSnapshot ? nativeGoal?.state === 'paused' : goalPaused}
+        clearable={goalSnapshot ? false : goalClearable}
+        snapshot={goalSnapshot}
+        onClear={onClearGoal}
+      />
     )
   if (locked) {
     if (!filePicker && goalChip === null) return null

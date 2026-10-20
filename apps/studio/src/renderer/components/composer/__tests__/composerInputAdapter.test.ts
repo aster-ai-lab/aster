@@ -1,3 +1,4 @@
+import { fireEvent, waitFor } from '@testing-library/react'
 import { Editor } from '@tiptap/core'
 import { afterEach, describe, expect, it } from 'vitest'
 
@@ -68,5 +69,16 @@ describe('createComposerInputAdapter', () => {
 
     expect(adapter.getCursorOffset?.()).toBe(7)
     expect(adapter.getSelectionEndOffset?.()).toBe(15)
+  })
+
+  it('reports the live composition session to panels outside the editor event path', async () => {
+    const currentEditor = createEditor()
+    const adapter = createComposerInputAdapter(currentEditor)
+
+    fireEvent.compositionStart(currentEditor.view.dom)
+    expect(adapter.isComposing?.()).toBe(true)
+
+    fireEvent.compositionEnd(currentEditor.view.dom)
+    await waitFor(() => expect(adapter.isComposing?.()).toBe(false))
   })
 })

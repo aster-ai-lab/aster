@@ -3,13 +3,13 @@
 mod inference;
 
 use super::{
-    default_management_allowed_ips, default_shutdown_timeout, DiscoveryConfig, DiscoverySeedConfig,
-    DockerProviderConfig, EntrypointConfig, FailoverConfig, FileProviderConfig, GatewayConfig,
-    HealthCheckConfig, KubernetesProviderConfig, LoadBalancerConfig, ManagedConfig,
-    ManagedTargetConfig, ManagementConfig, ManagementTlsConfig, MiddlewareConfig, MirrorConfig,
-    OperatingMode, Protocol, ProviderConfig, RevisionConfig, RolloutConfig, ScalingConfig,
-    ServerConfig, ServiceConfig, StaticBundleConfig, StaticBundleManifestConfig, StickyConfig,
-    Strategy, TlsConfig, UsageSpoolConfig,
+    default_management_allowed_ips, default_shutdown_timeout, AnonymousChatbotUpstream,
+    DiscoveryConfig, DiscoverySeedConfig, DockerProviderConfig, EntrypointConfig, FailoverConfig,
+    FileProviderConfig, GatewayConfig, HealthCheckConfig, KubernetesProviderConfig,
+    LoadBalancerConfig, ManagedConfig, ManagedTargetConfig, ManagementConfig, ManagementTlsConfig,
+    MiddlewareConfig, MirrorConfig, OperatingMode, Protocol, ProviderConfig, RevisionConfig,
+    RolloutConfig, ScalingConfig, ServerConfig, ServiceConfig, StaticBundleConfig,
+    StaticBundleManifestConfig, StickyConfig, Strategy, TlsConfig, UsageSpoolConfig,
 };
 use crate::error::{GatewayError, Result};
 use crate::static_object::StaticObjectEntry;
@@ -37,6 +37,7 @@ pub(crate) fn parse_gateway_config(content: &str) -> Result<GatewayConfig> {
         shutdown_timeout_secs: default_shutdown_timeout(),
         hosted_function_activations: HashMap::new(),
         agent_idle_policies: Default::default(),
+        anonymous_chatbot: None,
     };
 
     for block in &doc.blocks {
@@ -103,6 +104,12 @@ pub(crate) fn parse_gateway_config(content: &str) -> Result<GatewayConfig> {
                     crate::agent_wake::AgentIdlePolicyTable::from_acl_block_children(&block.blocks)
                         .map_err(config_error)?;
             }
+            "anonymous_chatbot" => {
+                if config.anonymous_chatbot.is_some() {
+                    return Err(config_error("Duplicate top-level anonymous_chatbot block"));
+                }
+                config.anonymous_chatbot = Some(parse_anonymous_chatbot_block(block)?);
+            }
             "hosted_function_service_edge_traffic_intents" => {
                 if hosted_function_block.is_some() {
                     return Err(config_error(
@@ -124,6 +131,91 @@ pub(crate) fn parse_gateway_config(content: &str) -> Result<GatewayConfig> {
         super::hosted_function::install_hosted_function_routes(&mut config, &block)?;
     }
     Ok(config)
+}
+
+fn parse_anonymous_chatbot_block(block: &Block) -> Result<AnonymousChatbotUpstream> {
+    if !block.labels.is_empty() {
+        return Err(config_error(
+            "anonymous_chatbot rejects a block label".to_string(),
+        ));
+    }
+    if !block.blocks.is_empty() {
+        return Err(config_error(
+            "anonymous_chatbot rejects nested blocks".to_string(),
+        ));
+    }
+    const KEYS: [&str; 9] = [
+        "upstream",
+        "organization_id",
+        "project_id",
+        "application_id",
+        "release_id",
+        "lookup_key",
+        "ontology_id",
+        "ontology_revision_id",
+        "ontology_digest",
+    ];
+    for key in block.attributes.keys() {
+        if !KEYS.contains(&key.as_str()) {
+            return Err(config_error(format!(
+                "anonymous_chatbot rejects attribute '{key}'"
+            )));
+        }
+    }
+    let upstream = required_string_attr(block, &["upstream"])?;
+    let parsed = url::Url::parse(&upstream)
+        .map_err(|error| config_error(format!("anonymous_chatbot upstream is invalid: {error}")))?;
+    if !matches!(parsed.scheme(), "http" | "https") || parsed.host_str().is_none() {
+        return Err(config_error(
+            "anonymous_chatbot upstream must be an http(s) URL with a host".to_string(),
+        ));
+    }
+    if parsed.username() != "" || parsed.password().is_some() {
+        return Err(config_error(
+            "anonymous_chatbot upstream rejects userinfo".to_string(),
+        ));
+    }
+    let lookup_key = required_string_attr(block, &["lookup_key"])?;
+    if lookup_key.is_empty()
+        || lookup_key.len() > 64
+        || !lookup_key.chars().all(|character| {
+            character.is_ascii_alphanumeric() || character == '-' || character == '_'
+        })
+        || lookup_key.starts_with('-')
+        || lookup_key.ends_with('-')
+        || lookup_key.contains("--")
+    {
+        return Err(config_error(
+            "anonymous_chatbot lookup_key is invalid".to_string(),
+        ));
+    }
+    let ontology_digest = required_string_attr(block, &["ontology_digest"])?;
+    let digest_hex = ontology_digest
+        .strip_prefix("sha256:")
+        .filter(|hex| hex.len() == 64 && hex.chars().all(|character| character.is_ascii_hexdigit()))
+        .ok_or_else(|| config_error("anonymous_chatbot ontology_digest is invalid".to_string()))?;
+    let _ = digest_hex;
+    Ok(AnonymousChatbotUpstream {
+        upstream: upstream.trim_end_matches('/').to_string(),
+        organization_id: parse_chatbot_uuid(block, "organization_id")?,
+        project_id: parse_chatbot_uuid(block, "project_id")?,
+        application_id: parse_chatbot_uuid(block, "application_id")?,
+        release_id: parse_chatbot_uuid(block, "release_id")?,
+        lookup_key,
+        ontology_id: parse_chatbot_uuid(block, "ontology_id")?,
+        ontology_revision_id: parse_chatbot_uuid(block, "ontology_revision_id")?,
+        ontology_digest,
+    })
+}
+
+fn parse_chatbot_uuid(block: &Block, key: &str) -> Result<uuid::Uuid> {
+    let value = required_string_attr(block, &[key])?;
+    let parsed = uuid::Uuid::parse_str(&value)
+        .map_err(|error| config_error(format!("anonymous_chatbot {key} is invalid: {error}")))?;
+    if parsed.is_nil() {
+        return Err(config_error(format!("anonymous_chatbot {key} is nil")));
+    }
+    Ok(parsed)
 }
 
 fn parse_mode_block(block: &Block) -> Result<OperatingMode> {

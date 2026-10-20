@@ -1819,7 +1819,7 @@ describe('ComposerSurface', () => {
     expect(mocks.transaction.setNodeMarkup).not.toHaveBeenCalled()
 
     mocks.editorViewComposing = false
-    expect(mocks.editorOptions.editorProps.handleDOMEvents.compositionend(null, { data: '上海' })).toBe(true)
+    expect(mocks.editorOptions.editorProps.handleDOMEvents.compositionend(null, { data: '上海' })).toBe(false)
     expect(mocks.transaction.setNodeMarkup).toHaveBeenCalledWith(
       5,
       undefined,
@@ -5076,6 +5076,51 @@ describe('ComposerSurface', () => {
     expect(mocks.quickPanelDispatchKeyDown).toHaveBeenCalledWith(event)
     expect(event.defaultPrevented).toBe(false)
     expect(onSendDraft).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    { key: 'Enter', keyCode: 229 },
+    { key: 'ArrowUp', keyCode: 229 },
+    { key: 'Escape', keyCode: 229 },
+    { key: 'Enter', keyCode: 13, isComposing: true }
+  ])('leaves IME $key/$keyCode to the browser across the suggestion plugin chain', async (init) => {
+    const onSendDraft = vi.fn()
+    mocks.quickPanelIsVisible = true
+    mocks.quickPanelDispatchKeyDown.mockReturnValue(true)
+    render(
+      <ComposerSurface
+        {...baseProps}
+        quickPanelEnabled
+        onSendDraft={onSendDraft}
+        suggestionSources={[{ pluginKey: 'ime-candidates', char: '@', items: () => [] }]}
+      />
+    )
+    const { createComposerEditorPreset } = await vi.importActual<typeof ComposerPreset>('../composerPreset')
+    const editor = new Editor({
+      extensions: createComposerEditorPreset(mocks.editorPresetOptions),
+      editorProps: mocks.editorOptions.editorProps
+    })
+
+    try {
+      await act(async () => {
+        editor.commands.insertContent('@ni')
+      })
+      mocks.quickPanelDispatchKeyDown.mockClear()
+      const event = new KeyboardEvent('keydown', { ...init, bubbles: true, cancelable: true })
+      fireEvent(editor.view.dom, event)
+
+      expect(event.defaultPrevented).toBe(false)
+      expect(mocks.quickPanelDispatchKeyDown).not.toHaveBeenCalled()
+      expect(onSendDraft).not.toHaveBeenCalled()
+      expect(editor.getText()).toBe('@ni')
+
+      const confirm = new KeyboardEvent('keydown', { key: 'Enter', keyCode: 13, bubbles: true, cancelable: true })
+      fireEvent(editor.view.dom, confirm)
+      expect(confirm.defaultPrevented).toBe(true)
+      expect(mocks.quickPanelDispatchKeyDown).toHaveBeenCalledWith(confirm)
+    } finally {
+      editor.destroy()
+    }
   })
 
   it('preserves the newline shortcut while the visible QuickPanel has no active key handler', async () => {

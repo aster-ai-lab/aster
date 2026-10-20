@@ -1,0 +1,120 @@
+{
+  "verified_at": "2026-10-20T22:48:04.185301+00:00",
+  "pr": {
+    "baseRefOid": "eb17c6ce5aa4c9ef785c12d56515e146866b1506",
+    "headRefOid": "c12d8f456c9f82a65956f9457cf00c83f830d282",
+    "isDraft": false,
+    "mergeCommit": {
+      "oid": "0fd4689df8f586f2092e5fb6e674957e2caf35c5"
+    },
+    "mergedAt": "2026-10-20T22:47:17Z",
+    "mergedBy": {
+      "id": "MDQ6VXNlcjE5OTY1NzY4",
+      "is_bot": false,
+      "login": "ZhiXiao-Lin",
+      "name": "Roy Lin"
+    },
+    "number": 8,
+    "state": "MERGED",
+    "url": "https://github.com/aster-ai-lab/aster/pull/8"
+  },
+  "remote_main": "0fd4689df8f586f2092e5fb6e674957e2caf35c5",
+  "source_files": {
+    "Cargo.lock": "ae38273eaa1f8d4180d338bd7cdeaec3cc5b811df1364b77b8a05e40576f14d6",
+    "apps/aster/src/main.rs": "ec72c05a38042d57d81931eb5c4c6749efd15cee294fde221b246f2c2bf127f6",
+    "apps/aster/src/workspace_command_gate_tests.rs": "16a2023a8910300fcd11f9a7cda2982c80c098ecc35c17851994c5651489070c",
+    "apps/gateway/Cargo.toml": "74a005af7d60b92ac619d4388a7cc4dad143359182e8934cf6a380b9c4850c2b",
+    "crates/code/acp/src/agent.rs": "080e299b6f32bc3f26bf3c39a5d51654aac08423df449d5da54e1acf1b562557",
+    "crates/code/acp/src/agent/memory_sessions_tests.rs": "00cf946a5fd9e29cbcc02fe184765a5854effc3daa05fa0368b331a29af78d5f",
+    "crates/code/acp/src/agent/reasoning_transport_tests.rs": "ebaa062dd66fec9f8bdca3727a6b08db6c555ede7898d1177ece990741864c6c",
+    "crates/code/acp/src/agent/session_open.rs": "e969d0e15a58222a36852ee3b04d23ca6ee0c9cba6acdffd54654df45a337411",
+    "crates/code/acp/src/agent/session_setup_tests.rs": "077c706501d3a7ff818be2121a8df40621361b9e66dddb1f12c109c47b963f8b",
+    "crates/code/acp/src/agent/unattended_turn.rs": "ae3fa849b289cf6418fdc8e5332c01348fd80ebb3320b662c7926d7955c03bcc",
+    "crates/code/acp/src/goal.rs": "68ccab9b701f111103a0c920b722f9b378e2a40285aab500b03fa0bf8c55982d",
+    "crates/code/acp/src/unattended.rs": "66734c0d319c86b84d42e63efc747c12d1be551a27cfc6e4ea5d0f2c1f547e18",
+    "crates/code/acp/src/unattended/result.rs": "c75d9f7b9c5e781581660c4b6ecb706f57b36c741fe60068be424db626289d63",
+    "crates/code/acp/src/unattended/result_tests.rs": "e5c4b05ded8a11010c858fff67a5b313ab7e8e9d9b8f8d03c9284b49194c2f81",
+    "crates/code/acp/src/unattended/tests.rs": "d383757844d15e9e191823a930ac3c3dc0c473d221db74f18db03c1dc8617dad",
+    "crates/code/acp/tests/unattended_e2e.rs": "03856d10ddf51173d522a0af22c6877b12839c97587b02e8199b2820d697c001",
+    "crates/code/core/src/agent_api/goal_facade.rs": "a8b6f3b2e28b9bbd5bf7382693e1241bbfbb2bc0b0957a6449ab32bf8f1cd06d",
+    "crates/code/core/src/agent_api/goal_facade/tests/execution/attestation.rs": "697a9acd424da558e5c311f3478bdd12db747da20a5baeac385cf7e41d0e6a2f",
+    "crates/code/core/src/agent_api/goal_facade/tests/execution/automatic.rs": "c8f7f2d4e4d68e2191b4fad55f2f9eb95deb320a94f4cc2c35057f13b8d6403c",
+    "crates/code/core/src/durable_memory_vec.rs": "a5fddcaba204d83710e203affd9deae21a364bf249ada60fe2262f8c091c0e73",
+    "crates/code/core/src/fact_control.rs": "9f466da0963bacafd3d6940a6d7e9dc66827ce8381952cb4868756d11e096e37",
+    "crates/code/core/src/fact_control/goal_evidence.rs": "38cd66339a4464464810296086037ec2014d71de1a2b260b0543e4c7fe2419d8",
+    "crates/code/core/src/fact_control/goal_evidence/tests.rs": "e21948133ad6627c95d7637a87c43cbdcbd97b7f6b7c8314a1134ab094a6759d",
+    "crates/code/core/src/goal_control/continuation.rs": "659769c3cbc8af535532c8dbf88b12e8685d4ac3e53e70f7ccb9b411636e4274",
+    "crates/code/core/src/goal_control/continuation/tests.rs": "7bdb753a5b3dd0cbf958c965cea26435ba6d8b28f36d96f216e5b7d9b36e16e3",
+    "crates/code/core/src/goal_control/facts.rs": "63cafccc1ad293f8c694b0b697bd580a2740d404a71b669856e02e02cf61ec57",
+    "crates/code/core/src/goal_control/facts/run/continuation.rs": "3288fd29f537fb0d9257d99172da5284793b3d1f08e11dad7d1df8a934d510ed",
+    "crates/code/core/src/goal_control/facts/run/tests/continuation.rs": "cd1848ea7a5bfbef6a8d6d19231a68c00484834ec71bc8f381bb820af657f972",
+    "crates/code/core/src/goal_control/facts/settle.rs": "a8304017aefea0e49c46a206dc8cf82c86a46600434a16bece45ce8f086962ac",
+    "crates/code/core/src/tools/presentation.rs": "0e1406944ca60d65f7713a14ae6b13af2c8a3aca77ba172683ba8a43cb941863",
+    "crates/code/core/src/tools/program_tool.rs": "5cc243fc424d9ee5a782afd3cc456c058909b04a078ca74b4e9713f2c5c2a278",
+    "crates/code/core/src/tools/program_tool/tests.rs": "9e2fa06e591cf79943f2dbb03094695a76394218b7e4713996a4093f86560d96",
+    "crates/code/core/src/tools/program_tool/worker_deadline_tests.rs": "a2362cea0ef5693fd5f59b33a5391984e156ca3e2f6a0c187592ec51961fc7e7",
+    "crates/code/core/src/tools/tests.rs": "ce2a236f28ea002b2b269e5e46bfcc9146537d4d12a5e5b557363710a9160645",
+    "crates/code/manual/HOST_GOAL_CONTROL.md": "eff391fc3d3c53a596be815d41ee5d7d8ac85ddec76efbdd482d2c5b52f59d83",
+    "crates/code/manual/TERMINAL_BENCH.md": "8f4fa88338f26ee00ad00098314d6a3bcbb6c49c62409da0946e056961cccfb4",
+    "crates/sentry/Cargo.toml": "94698ac265934dadd73a4a23527a47268e0e3b163edf76f6e4bf657fe5efe123",
+    "crates/terminal/crates/codegen/a3s-code-pager/src/headless.rs": "0f6fcbcc0cfb0f68038d40009e09b98cd97e402bbdbe52f0830e00b18f2f3240",
+    "crates/terminal/crates/codegen/a3s-code-pager/src/headless_tests.rs": "013f1965af626e38b7ca1fbd8cfc518dee3bd55719bf3b64c13d114ddc0e16c3",
+    "crates/updater/Cargo.toml": "1190f3a50edebefa69914b8826cbb31c59a218a28b628ed1e0979df08ceb5324",
+    "tests/workspace_dependencies.py": "4de23b517086945f001d9a67571300edea2c3de8754944b3c492484ead71d7c4",
+    "crates/code/core/src/durable_memory_vec/tests.rs": "a0c959e54454b86f994ea6c20dba21f3ba31fc08a9b54912ab671160a767dcd3"
+  },
+  "open_issues": [],
+  "closed_issues": [
+    {
+      "number": 7,
+      "state": "closed",
+      "state_reason": "completed",
+      "closed_at": "2026-10-20T22:47:21Z",
+      "url": "https://github.com/aster-ai-lab/aster/issues/7"
+    },
+    {
+      "number": 6,
+      "state": "closed",
+      "state_reason": "completed",
+      "closed_at": "2026-10-20T22:47:20Z",
+      "url": "https://github.com/aster-ai-lab/aster/issues/6"
+    },
+    {
+      "number": 5,
+      "state": "closed",
+      "state_reason": "completed",
+      "closed_at": "2026-10-20T22:47:20Z",
+      "url": "https://github.com/aster-ai-lab/aster/issues/5"
+    },
+    {
+      "number": 4,
+      "state": "closed",
+      "state_reason": "completed",
+      "closed_at": "2026-10-20T22:47:20Z",
+      "url": "https://github.com/aster-ai-lab/aster/issues/4"
+    },
+    {
+      "number": 3,
+      "state": "closed",
+      "state_reason": "completed",
+      "closed_at": "2026-10-20T22:47:19Z",
+      "url": "https://github.com/aster-ai-lab/aster/issues/3"
+    },
+    {
+      "number": 2,
+      "state": "closed",
+      "state_reason": "completed",
+      "closed_at": "2026-10-20T22:47:19Z",
+      "url": "https://github.com/aster-ai-lab/aster/issues/2"
+    },
+    {
+      "number": 1,
+      "state": "closed",
+      "state_reason": "completed",
+      "closed_at": "2026-10-20T22:47:18Z",
+      "url": "https://github.com/aster-ai-lab/aster/issues/1"
+    }
+  ],
+  "original_local_main": "eb17c6ce5aa4c9ef785c12d56515e146866b1506",
+  "original_worktree_not_switched_or_reset": true
+}

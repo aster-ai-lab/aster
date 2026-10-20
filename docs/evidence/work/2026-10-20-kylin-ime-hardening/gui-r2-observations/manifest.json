@@ -1,0 +1,412 @@
+[
+  {
+    "path": "bwrap-experiment-through-r2.jsonl",
+    "bytes": 10691,
+    "sha256": "699920503dbcc1dc681022fd7cbfd8ba3456c6cd7cb568b82c68c97c6c9b4b7e"
+  },
+  {
+    "path": "cleanup.json",
+    "bytes": 699,
+    "sha256": "f9e6f95844954b171c58cd5755d064ca95d074f7367431424d40a9f4f3b58b99"
+  },
+  {
+    "path": "fixture/R2-ACCEPTANCE-PLAN.md",
+    "bytes": 4200,
+    "sha256": "ff5d912375581d5a5120bebada6c9eb5278b235a5fc1bb234a529061a821a030"
+  },
+  {
+    "path": "fixture/archive-r2.py",
+    "bytes": 3512,
+    "sha256": "2dae4b2c6ea837fb61a449b0aa61aeab9837317fb7fd06e1ee14813ba8fd17fd"
+  },
+  {
+    "path": "fixture/bwrap-without-seccomp.py",
+    "bytes": 2717,
+    "sha256": "9eb57651c7ad4ec7df8d77aeeed5e82856cb4490864e5471e5d0137c2b3855a9"
+  },
+  {
+    "path": "fixture/collect-proof-r2.py",
+    "bytes": 2137,
+    "sha256": "b2dff79bbc6edf91fca8f3280ce412f7f1e002f81144b8d79a4a82a902ac0af9"
+  },
+  {
+    "path": "fixture/driver.py",
+    "bytes": 1969,
+    "sha256": "14ab1152c9ba73d25cb1b328015fa12eb2b96edcb67e00ad8cca10998b69d41b"
+  },
+  {
+    "path": "fixture/observe.py",
+    "bytes": 1981,
+    "sha256": "df7a8e1a57f7843c914de7afd85450f04193a4b9601fdfc7e896eec5a331f440"
+  },
+  {
+    "path": "fixture/offline-gateway.py",
+    "bytes": 4794,
+    "sha256": "62379eaf50e5a77ad2a74f9aa0e6cd77816e88fb0779b8d2a9f83d57b5f048ff"
+  },
+  {
+    "path": "fixture/readonly-observer/README.md",
+    "bytes": 2496,
+    "sha256": "11a32970f735f6ba45d3a17a26c0c9cb2286d5628cafaeb017a66396bd7c3b5b"
+  },
+  {
+    "path": "fixture/readonly-observer/ime-dom-observer.c",
+    "bytes": 3817,
+    "sha256": "f3565dbd3bc0d40d6c04cdfbaa5a4ecb8d09053277e2a17209bbe56a36da784b"
+  },
+  {
+    "path": "fixture/readonly-observer/ime-dom-observer.h",
+    "bytes": 2102,
+    "sha256": "ff5c245026b7d87cb31d0e2eb766b209f37ef252af63ca41b2592513a143dc2e"
+  },
+  {
+    "path": "fixture/readonly-observer/ime-dom-observer.js",
+    "bytes": 1976,
+    "sha256": "6dd92acf2420749469d62412d43d58df13fd8f75cd7ac553103e88b6d898caac"
+  },
+  {
+    "path": "fixture/run-r2-snooper.sh",
+    "bytes": 7548,
+    "sha256": "5204be2dec37d6266044e51f829037f067aecb08c20d395b8778c21f72354410"
+  },
+  {
+    "path": "fixture/run-r2.sh",
+    "bytes": 7428,
+    "sha256": "29de35442bfc52749687f9f53be400fb0f58daded398150b3005cff84945d539"
+  },
+  {
+    "path": "fixture/xkb-repeat.py",
+    "bytes": 2244,
+    "sha256": "9db663d6f6ced838b601b27e9a953d6baf97f4c13a425dee50bee094be76ec0a"
+  },
+  {
+    "path": "run-O2FBdB/actions.jsonl",
+    "bytes": 779,
+    "sha256": "cbad51ff6c7f27e8a54424b80293d51ed4d46215d5bfcf833c13251544f93a0d"
+  },
+  {
+    "path": "run-O2FBdB/daemon-mode.txt",
+    "bytes": 5,
+    "sha256": "fcf33dfbe13c2354bf0e1b063f9fb422747a46cee00b7420bceff2b81457b345"
+  },
+  {
+    "path": "run-O2FBdB/daemon-version.txt",
+    "bytes": 21,
+    "sha256": "d96f1a3465d569231e82ec5c35e7b304e1adc42a9218357a1531de4230cbd649"
+  },
+  {
+    "path": "run-O2FBdB/dom-events.jsonl",
+    "bytes": 43525,
+    "sha256": "a028de098b28843f6a757edeb17072992d05dde2cb9500e41d1ff81b312f3afb"
+  },
+  {
+    "path": "run-O2FBdB/expected-commit.txt",
+    "bytes": 65,
+    "sha256": "aa11da6082c709d64877d5c7b58bcb0d150e122a89c41631bcde09b6c2e477a9"
+  },
+  {
+    "path": "run-O2FBdB/r2-none-05.png",
+    "bytes": 68328,
+    "sha256": "de8fb086ce263b77b9c3a67cfa46106bbb67fa18cd1c9db8fb0930f564006bbd"
+  },
+  {
+    "path": "run-O2FBdB/r2-none-06.png",
+    "bytes": 76349,
+    "sha256": "8f48fe9214509548b141032d843772794b64f4a521349d5e898b906966a0b5b9"
+  },
+  {
+    "path": "run-O2FBdB/render-errors.json",
+    "bytes": 3,
+    "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+  },
+  {
+    "path": "run-O2FBdB/startup-proof.json",
+    "bytes": 1749,
+    "sha256": "47f4586a847707a65f31366a9c8e17eebbefb6e6609b1b3b3e4f3c9da1ce6327"
+  },
+  {
+    "path": "run-dTuzP4/actions.jsonl",
+    "bytes": 3292,
+    "sha256": "fecc37e6a466e6c0e25ee09d2b1bc4067e3a1c11805becf0e99b7b9fdbdb6878"
+  },
+  {
+    "path": "run-dTuzP4/daemon-mode.txt",
+    "bytes": 7,
+    "sha256": "59932af361bcd10a1e1301fb378d3371940383c4053f6b5aa99140783f5c710d"
+  },
+  {
+    "path": "run-dTuzP4/daemon-version.txt",
+    "bytes": 23,
+    "sha256": "f70319350fb2c383a5626fe47431761ff2d663ec19d5122051c749ea232504ca"
+  },
+  {
+    "path": "run-dTuzP4/dom-events.jsonl",
+    "bytes": 236331,
+    "sha256": "3b879f07ec179aa90ab23850bdaafc649d6b6ab004b5f924da491f7a2aed0fc9"
+  },
+  {
+    "path": "run-dTuzP4/expected-commit.txt",
+    "bytes": 65,
+    "sha256": "aa11da6082c709d64877d5c7b58bcb0d150e122a89c41631bcde09b6c2e477a9"
+  },
+  {
+    "path": "run-dTuzP4/gateway-wire.jsonl",
+    "bytes": 1929,
+    "sha256": "2ec5ac5aac6b879a3a1e855dc6db0ccb1340aa3616df61f40030fa6f31731cba"
+  },
+  {
+    "path": "run-dTuzP4/r2-snooper-07.png",
+    "bytes": 35929,
+    "sha256": "838bbfee7dc5f3100913cdd35f4f2fa234ad59045d1732ac202b48a38633331e"
+  },
+  {
+    "path": "run-dTuzP4/r2-snooper-08.png",
+    "bytes": 36399,
+    "sha256": "c123df2405163e85e1745bd18e53642fa8e0a3f4b78be3b4278e683dd20c5ca6"
+  },
+  {
+    "path": "run-dTuzP4/r2-snooper-09.png",
+    "bytes": 36391,
+    "sha256": "07c62934730fe029400881048b064dd6b3cdc5ba1d151e14b631e192234dd69d"
+  },
+  {
+    "path": "run-dTuzP4/r2-snooper-10.png",
+    "bytes": 36433,
+    "sha256": "0c3e5e6126f7e74f8babb0b0b920ad9f373b95f7e337d9bd4cd72e92ce885199"
+  },
+  {
+    "path": "run-dTuzP4/r2-snooper-11.png",
+    "bytes": 36798,
+    "sha256": "15a4d479d543929be02952c3239560be709fe8962832c375b7e175ff883c3034"
+  },
+  {
+    "path": "run-dTuzP4/r2-snooper-12.png",
+    "bytes": 44936,
+    "sha256": "01bb2542bb3c66d184b32cda97257e635322c81e5b873610492f8445a5b96fc4"
+  },
+  {
+    "path": "run-dTuzP4/r2-snooper-13.png",
+    "bytes": 50696,
+    "sha256": "865dbff7d2feaf602b6a9d0907c9fbf6adb6fa0b46bc4b98a1cd9578e08d9fa9"
+  },
+  {
+    "path": "run-dTuzP4/render-errors.json",
+    "bytes": 3,
+    "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+  },
+  {
+    "path": "run-dTuzP4/startup-proof.json",
+    "bytes": 1962,
+    "sha256": "0fac69d8a361c0ef5fe27e90807be0e7c41abfaa0ee028be87e36de0582e2343"
+  },
+  {
+    "path": "run-dTuzP4/wire-content-checks.json",
+    "bytes": 609,
+    "sha256": "5bfbda4f086aa3c53b272a3543de72be9fe0958b08033eeeb5e92a73afcd796d"
+  },
+  {
+    "path": "run-dTuzP4/xkb-repeat.jsonl",
+    "bytes": 154,
+    "sha256": "0dd0c4bfe17edb5c277e5bc460d4ded53d991dca8798d8cd8f6b2bab6bb986b3"
+  },
+  {
+    "path": "run-o97yDH/actions.jsonl",
+    "bytes": 1000,
+    "sha256": "6de53bc938babb5ba84029eb477164ed8db5225091bf0dfe95a798d26db57a61"
+  },
+  {
+    "path": "run-o97yDH/daemon-mode.txt",
+    "bytes": 7,
+    "sha256": "59932af361bcd10a1e1301fb378d3371940383c4053f6b5aa99140783f5c710d"
+  },
+  {
+    "path": "run-o97yDH/daemon-version.txt",
+    "bytes": 23,
+    "sha256": "f70319350fb2c383a5626fe47431761ff2d663ec19d5122051c749ea232504ca"
+  },
+  {
+    "path": "run-o97yDH/dom-events.jsonl",
+    "bytes": 98767,
+    "sha256": "39c5eb300048d40937f0abd55592df13dcf87ccb9dcbc4123cd2d58ed6ca4f7c"
+  },
+  {
+    "path": "run-o97yDH/expected-commit.txt",
+    "bytes": 65,
+    "sha256": "aa11da6082c709d64877d5c7b58bcb0d150e122a89c41631bcde09b6c2e477a9"
+  },
+  {
+    "path": "run-o97yDH/gateway-wire.jsonl",
+    "bytes": 707,
+    "sha256": "9f62c9acb66327092e1aaef62f87c78df5915312d2d8fcbe01da68edf4586958"
+  },
+  {
+    "path": "run-o97yDH/r2-sync-08.png",
+    "bytes": 39397,
+    "sha256": "ba1ba423492d79d92512dba8d0436201d6c2080c622325cc159c9cf508f7471c"
+  },
+  {
+    "path": "run-o97yDH/render-errors.json",
+    "bytes": 3,
+    "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+  },
+  {
+    "path": "run-o97yDH/startup-proof.json",
+    "bytes": 1930,
+    "sha256": "f0933599ccd464c8150fe4e17df4bd1beccc2ceebe7059bfe26ab3e85b0b7dba"
+  },
+  {
+    "path": "run-o97yDH/xkb-repeat.jsonl",
+    "bytes": 154,
+    "sha256": "0dd0c4bfe17edb5c277e5bc460d4ded53d991dca8798d8cd8f6b2bab6bb986b3"
+  },
+  {
+    "path": "run-t8QUV5/actions.jsonl",
+    "bytes": 865,
+    "sha256": "484d0c60c07b6f8ceb55bcafe329f178be6f56c71de6c30ad7a2e54466b0c673"
+  },
+  {
+    "path": "run-t8QUV5/daemon-mode.txt",
+    "bytes": 7,
+    "sha256": "59932af361bcd10a1e1301fb378d3371940383c4053f6b5aa99140783f5c710d"
+  },
+  {
+    "path": "run-t8QUV5/daemon-version.txt",
+    "bytes": 23,
+    "sha256": "f70319350fb2c383a5626fe47431761ff2d663ec19d5122051c749ea232504ca"
+  },
+  {
+    "path": "run-t8QUV5/dom-events.jsonl",
+    "bytes": 115613,
+    "sha256": "8b549a0046e5ed37decfc5e578d6a607b3b395b1a5281944a07e0fce1383e57a"
+  },
+  {
+    "path": "run-t8QUV5/expected-commit.txt",
+    "bytes": 65,
+    "sha256": "aa11da6082c709d64877d5c7b58bcb0d150e122a89c41631bcde09b6c2e477a9"
+  },
+  {
+    "path": "run-t8QUV5/gateway-wire.jsonl",
+    "bytes": 98,
+    "sha256": "7fdb25692fa7cae294067fd7785346adf4aec84feb8c8d1f8d0cb34388e5abfc"
+  },
+  {
+    "path": "run-t8QUV5/r2-repeat-off-03.png",
+    "bytes": 71165,
+    "sha256": "7d4a97fa8a3de89773dcd236acc44290bf1512d30b99c7b375144d2649e46c5f"
+  },
+  {
+    "path": "run-t8QUV5/render-errors.json",
+    "bytes": 3,
+    "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+  },
+  {
+    "path": "run-t8QUV5/startup-proof.json",
+    "bytes": 1895,
+    "sha256": "7d5282c4b995fb0c9375f30b2168f572f5920d0972feca9c01b66bb06b97cf1f"
+  },
+  {
+    "path": "run-t8QUV5/xkb-repeat.jsonl",
+    "bytes": 307,
+    "sha256": "c044de0733bf00d08a00efed303ba456ae2c5b2061ee03d62783b1ec1245f8c9"
+  },
+  {
+    "path": "run-vzqGQ5/actions.jsonl",
+    "bytes": 760,
+    "sha256": "7aec1a2823307a3f7d5eb52233eef383df266547b0e5a7b630c2a302481dba24"
+  },
+  {
+    "path": "run-vzqGQ5/daemon-mode.txt",
+    "bytes": 5,
+    "sha256": "fcf33dfbe13c2354bf0e1b063f9fb422747a46cee00b7420bceff2b81457b345"
+  },
+  {
+    "path": "run-vzqGQ5/daemon-version.txt",
+    "bytes": 21,
+    "sha256": "d96f1a3465d569231e82ec5c35e7b304e1adc42a9218357a1531de4230cbd649"
+  },
+  {
+    "path": "run-vzqGQ5/dom-events.jsonl",
+    "bytes": 98767,
+    "sha256": "e881725a9b6e7ab4ab87902fec49e97e4910a3946c26ddc42cfc56aae916e1e5"
+  },
+  {
+    "path": "run-vzqGQ5/expected-commit.txt",
+    "bytes": 65,
+    "sha256": "aa11da6082c709d64877d5c7b58bcb0d150e122a89c41631bcde09b6c2e477a9"
+  },
+  {
+    "path": "run-vzqGQ5/gateway-wire.jsonl",
+    "bytes": 707,
+    "sha256": "1b67b6c984dddeb8bc78d86a783f65fd17c34ab66aaa1cbb2d31789d46b0a54c"
+  },
+  {
+    "path": "run-vzqGQ5/r2-nodaemon-04.png",
+    "bytes": 42040,
+    "sha256": "2bfa1c74292b7877f1634c27601742399dfa1ee6ff8da8912edcc4164c8b2fad"
+  },
+  {
+    "path": "run-vzqGQ5/render-errors.json",
+    "bytes": 3,
+    "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+  },
+  {
+    "path": "run-vzqGQ5/startup-proof.json",
+    "bytes": 1801,
+    "sha256": "1228646d99b2411cf10fb5a8b9d037baf8eec863df20f7f0872a2a69a8490883"
+  },
+  {
+    "path": "run-vzqGQ5/xkb-repeat.jsonl",
+    "bytes": 154,
+    "sha256": "0dd0c4bfe17edb5c277e5bc460d4ded53d991dca8798d8cd8f6b2bab6bb986b3"
+  },
+  {
+    "path": "run-wCZiI4/actions.jsonl",
+    "bytes": 1000,
+    "sha256": "6de53bc938babb5ba84029eb477164ed8db5225091bf0dfe95a798d26db57a61"
+  },
+  {
+    "path": "run-wCZiI4/daemon-mode.txt",
+    "bytes": 7,
+    "sha256": "59932af361bcd10a1e1301fb378d3371940383c4053f6b5aa99140783f5c710d"
+  },
+  {
+    "path": "run-wCZiI4/daemon-version.txt",
+    "bytes": 23,
+    "sha256": "f70319350fb2c383a5626fe47431761ff2d663ec19d5122051c749ea232504ca"
+  },
+  {
+    "path": "run-wCZiI4/dom-events.jsonl",
+    "bytes": 115613,
+    "sha256": "53feea7440ea381261f0325f9643bf21792c8ff4409d7b0f1fb939cf18d7c427"
+  },
+  {
+    "path": "run-wCZiI4/expected-commit.txt",
+    "bytes": 65,
+    "sha256": "aa11da6082c709d64877d5c7b58bcb0d150e122a89c41631bcde09b6c2e477a9"
+  },
+  {
+    "path": "run-wCZiI4/gateway-wire.jsonl",
+    "bytes": 98,
+    "sha256": "9dd928f31bc9ce6e198ca01148660d0e8feff3d689b00e7a100b221f044702bd"
+  },
+  {
+    "path": "run-wCZiI4/r2-live-05.png",
+    "bytes": 71165,
+    "sha256": "7d4a97fa8a3de89773dcd236acc44290bf1512d30b99c7b375144d2649e46c5f"
+  },
+  {
+    "path": "run-wCZiI4/render-errors.json",
+    "bytes": 3,
+    "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+  },
+  {
+    "path": "run-wCZiI4/startup-proof.json",
+    "bytes": 1895,
+    "sha256": "bc533947dcaf6d5bd5ce854b1e638595c772a9cfbfe349d67502972bb87d3feb"
+  },
+  {
+    "path": "validation.json",
+    "bytes": 7866,
+    "sha256": "e9f64e46e4366787920061a278c9169d6c208b8e456a205ec1b0b8b3a96dd15f"
+  }
+]

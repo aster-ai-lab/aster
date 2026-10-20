@@ -1,0 +1,19 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on build directory
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+error[E0063]: missing fields `catalog` and `description` in initializer of `program_tool::ProgramTool`
+  --> crates/code/core/src/tools/program_tool/worker_deadline_tests.rs:59:16
+   |
+59 |     let tool = ProgramTool {
+   |                ^^^^^^^^^^^ missing `catalog` and `description`
+
+For more information about this error, try `rustc --explain E0063`.
+error: could not compile `a3s-code-core` (lib test) due to 1 previous error

@@ -1,0 +1,27 @@
+Diff in /Users/roylin/code/aster/apps/studio/src-tauri/src/app_updater/delivery_tests.rs:6:
+ 
+ fn ready() -> ReadyUpdate {
+     ReadyUpdate {
+[31m-        version: "2.1.4".into(), notes: String::new(), sha256: "ab".repeat(32),
+(B[m[31m-        path: PathBuf::from("unused-update-fixture"), size: 4, published_at: String::new(),
+(B[m[32m+        version: "2.1.4".into(),
+(B[m[32m+        notes: String::new(),
+(B[m[32m+        sha256: "ab".repeat(32),
+(B[m[32m+        path: PathBuf::from("unused-update-fixture"),
+(B[m[32m+        size: 4,
+(B[m[32m+        published_at: String::new(),
+(B[m     }
+ }
+ 
+Diff in /Users/roylin/code/aster/apps/studio/src-tauri/src/app_updater/delivery_tests.rs:28:
+     drop(BusyGuard::enter().unwrap());
+     let retained = matches!(*PHASE.lock().unwrap(), Phase::Ready(_));
+     *PHASE.lock().unwrap() = Phase::Idle;
+[31m-    assert!(retained, "transient check errors must not lose a ready download");
+(B[m[32m+    assert!(
+(B[m[32m+        retained,
+(B[m[32m+        "transient check errors must not lose a ready download"
+(B[m[32m+    );
+(B[m }
+ 
+ #[test]

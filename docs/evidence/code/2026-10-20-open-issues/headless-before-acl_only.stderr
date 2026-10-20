@@ -1,0 +1,4 @@
+Error: Not signed in. To authenticate without a browser, run:
+  aster login --device-code
+
+Alternatively, set the A3S_API_KEY environment variable or run `aster login` on a machine with a browser.

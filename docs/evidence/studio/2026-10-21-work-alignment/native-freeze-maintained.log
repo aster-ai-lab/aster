@@ -1,0 +1,34 @@
+
+running 29 tests
+test agent_plane::acp::native_acp_alignment_tests::native_alignment_typed_reconciliation_cannot_be_retried_as_an_internal_error ... ok
+test agent_plane::turns::native_approval_alignment_tests::native_alignment_plan_first_is_explicit_prompt_metadata ... ok
+test agent_plane::turns::native_approval_alignment_tests::native_alignment_unknown_forced_stop_never_upgrades_to_success ... ok
+test agent_plane::controllers::native_approval_contract_tests::native_alignment_approval_http_dto_requires_the_exact_owned_tuple ... ok
+test agent_plane::turns::native_local_acp_alignment_tests::native_alignment_real_local_acp_planning_then_execution ... ignored, requires just build-studio workspace ACP companion; uses only a private loopback provider
+test agent_plane::turns::goal_snapshot::tests::native_alignment_goal_plan_revision_requires_an_explicit_nullable_field ... ok
+test agent_plane::turns::turns_form_tests::native_alignment_form_ownership_checks_execution_and_attempt_even_with_the_same_anchor ... ok
+test preferences::device_alignment_tests::native_alignment_reserved_device_scope_cannot_be_opened_as_a_member ... ok
+test preferences::device_alignment_tests::native_alignment_mixed_commit_overflow_is_refused_before_either_write ... ok
+test preferences::device_alignment_tests::native_alignment_exhausted_member_revision_does_not_write_device_values ... ok
+test providers::default_alignment_tests::native_alignment_session_identity_is_explicit_and_invalid_instance_has_no_fallback ... ok
+test preferences::device_alignment_tests::native_alignment_model_preferences_are_device_scoped_and_other_values_are_private ... ok
+test agent_plane::turns::native_approval_alignment_tests::native_alignment_invalid_plan_first_is_refused_before_admission ... ok
+test agent_plane::acp::native_acp_alignment_tests::native_alignment_timed_out_readonly_rpc_drops_its_pending_callback ... ok
+test providers::default_alignment_tests::native_alignment_provider_write_failure_rolls_back_in_memory_defaults ... ok
+test providers::default_alignment_tests::native_alignment_defaults_do_not_admit_managed_or_disabled_models ... ok
+test providers::default_alignment_tests::native_alignment_unavailable_preferences_roll_back_defaults ... ok
+test providers::default_alignment_tests::native_alignment_defaults_update_all_three_preferences_after_reopen ... ok
+test agent_plane::acp::native_acp_alignment_tests::native_alignment_raw_extension_notifications_decode_exactly_one_prefix ... ok
+test agent_plane::acp::native_acp_alignment_tests::native_alignment_incomplete_or_conflicting_replies_are_not_acknowledgements ... ok
+test agent_plane::turns::native_approval_alignment_tests::native_alignment_abort_revokes_approval_before_settlement ... ok
+test agent_plane::turns::native_approval_alignment_tests::native_alignment_plan_first_preserves_permission_posture_on_the_wire ... ok
+test agent_plane::turns::native_approval_alignment_tests::native_alignment_bound_approval_rejects_every_wrong_identity_and_is_single_use ... ok
+test agent_plane::turns::native_approval_alignment_tests::native_alignment_reconnect_recovers_the_live_approval_identity ... ok
+test agent_plane::turns::goal_snapshot::tests::native_alignment_goal_response_cannot_cross_an_idle_nonlocal_admission ... ok
+test agent_plane::turns::goal_snapshot::tests::native_alignment_goal_reads_do_not_overlap_for_the_same_runtime ... ok
+test agent_plane::turns::goal_snapshot::tests::native_alignment_goal_read_deadline_includes_the_runtime_registry_lock ... ok
+test agent_plane::turns::native_approval_alignment_tests::native_alignment_permission_and_form_requests_require_the_active_acp_session ... ok
+test agent_plane::turns::native_approval_alignment_tests::native_alignment_incomplete_stop_is_not_reported_as_success ... ok
+
+test result: ok. 28 passed; 0 failed; 1 ignored; 0 measured; 841 filtered out; finished in 14.11s
+

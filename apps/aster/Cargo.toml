@@ -23,7 +23,12 @@ path = "src/main.rs"
 # Agent runtime + leader/stdio/headless entry points.
 
 # Async runtime + misc.
+flate2 = {workspace = true}
+reqwest = {workspace = true}
+sha2 = {workspace = true}
+tar = {workspace = true}
 tokio = {version = "1", features = ["full", "sync", "rt", "macros", "rt-multi-thread", "signal", "io-util", "io-std"]}
+zip = {workspace = true}
 tokio-util = {version = "0.7", features = ["rt", "compat"]}
 anyhow = {workspace = true}
 tracing = {workspace = true}
@@ -65,6 +70,7 @@ tikv-jemalloc-sys = {version = "0.7", optional = true}
 tikv-jemalloc-ctl = {version = "0.7", optional = true, features = ["stats", "use_std"]}
 
 [dev-dependencies]
+portable-pty = {workspace = true}
 serial_test = {workspace = true}
 # `PagerArgs::try_parse_from` in the CLI-parsing unit tests (needs the
 # `clap::Parser` trait in scope).

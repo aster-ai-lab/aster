@@ -60,6 +60,30 @@ describe('AgentComposerSlot', () => {
     rightPanelPresentationMock.maximized = false
   })
 
+  it('keeps progress visible during approval replacement and binds review to the current revision', () => {
+    const view = render(
+      <AgentComposerSlot
+        {...baseProps}
+        taskProgress={<span>Current plan</span>}
+        planMessageId="plan-1"
+        planRevision="revision-1"
+      />
+    )
+    expect(agentComposerPropsMock.last?.planMessageId).toBe('plan-1')
+    expect(agentComposerPropsMock.last?.planRevision).toBe('revision-1')
+    expect(agentComposerPropsMock.last?.taskProgress).toBeDefined()
+    view.rerender(
+      <AgentComposerSlot
+        {...baseProps}
+        taskProgress={<span>Current plan</span>}
+        composerContext={{ overrides: [{ id: 'native-approval', priority: 100, render: () => <span>Approval</span> }] }}
+      />
+    )
+    expect(screen.getByText('Current plan')).toBeVisible()
+    expect(agentComposerPropsMock.last?.planMessageId).toBeUndefined()
+    expect(agentComposerPropsMock.last?.taskProgress).toBeUndefined()
+  })
+
   it('mounts the real composer while agent metadata is resolving', () => {
     render(<AgentComposerSlot {...baseProps} />)
 

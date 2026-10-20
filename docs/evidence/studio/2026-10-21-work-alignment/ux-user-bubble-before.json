@@ -1,0 +1,7 @@
+{
+  "head": "eb17c6ce5aa4c9ef785c12d56515e146866b1506",
+  "path": "apps/studio/src/renderer/components/chat/messages/frame/MessageFrame.tsx",
+  "source_sha256": "2df19cec1831399717fd4a094b6f6fd5e888e2cab04e847b3be093134cfe95d8",
+  "source_clean_before": true,
+  "fault": "UserBubbleMessage references isLatestAssistantMessage from another component scope"
+}

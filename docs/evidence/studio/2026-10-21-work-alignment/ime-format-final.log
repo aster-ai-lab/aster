@@ -1,0 +1,7 @@
+$ bun x --no-install oxfmt --check src/renderer/components/composer/ComposerSurface.tsx src/renderer/components/composer/ComposerSurfaceRuntime.tsx src/renderer/components/composer/composerInputAdapter.ts src/renderer/components/composer/PromptVariableToken.tsx src/renderer/components/composer/variants/PermissionRequestComposer.tsx src/renderer/components/composer/variants/AskUserQuestionComposer.tsx src/renderer/components/composer/variants/shared/useComposerFileCapabilities.ts src/renderer/components/QuickPanel/QuickPanelView.tsx src/renderer/components/QuickPanel/types.ts src/renderer/hooks/useAgentSessionParts.ts src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx src/renderer/components/composer/__tests__/ComposerSurface.lifecycle.test.tsx src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx src/renderer/components/composer/__tests__/ComposerSurface.lazy.test.tsx src/renderer/components/composer/__tests__/ComposerSurface.test.tsx src/renderer/components/QuickPanel/__tests__/view.test.tsx src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx src/renderer/components/composer/variants/__tests__/AskUserQuestionComposer.test.tsx src/renderer/components/composer/__tests__/ComposerToken.test.tsx src/renderer/components/composer/__tests__/composerInputAdapter.test.ts
+Checking formatting...
+
+All matched files use the correct format.
+Finished in 126ms on 20 files using 18 threads.
+
+exit_code=0

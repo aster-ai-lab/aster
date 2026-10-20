@@ -174,6 +174,26 @@ export const QuickPanelView: React.FC<Props> = ({ inputAdapter }) => {
   const footerRef = useRef<HTMLDivElement>(null)
   const readOnlyHeaderRef = useRef<HTMLDivElement>(null)
   const emptyStateRef = useRef<HTMLDivElement>(null)
+  const composingTargetRef = useRef<EventTarget | null>(null)
+
+  useEffect(() => {
+    const start = (event: CompositionEvent) => {
+      composingTargetRef.current = event.target
+    }
+    const end = (event: Event) => {
+      if (event.target === event.currentTarget || composingTargetRef.current === event.target) {
+        composingTargetRef.current = null
+      }
+    }
+    window.addEventListener('compositionstart', start, true)
+    window.addEventListener('compositionend', end, true)
+    window.addEventListener('blur', end, true)
+    return () => {
+      window.removeEventListener('compositionstart', start, true)
+      window.removeEventListener('compositionend', end, true)
+      window.removeEventListener('blur', end, true)
+    }
+  }, [])
   // Home placement only: the available height cap on the side the panel opens toward.
   const [availableHeight, setAvailableHeight] = useState<number | null>(null)
   // Home placement opens above the input, or below when the content only fits there (flip).
@@ -765,6 +785,15 @@ export const QuickPanelView: React.FC<Props> = ({ inputAdapter }) => {
 
   const handlePanelKeyDown = useCallback(
     (e: QuickPanelKeyDownEvent) => {
+      const nativeEvent = 'nativeEvent' in e ? e.nativeEvent : e
+      if (
+        nativeEvent.isComposing ||
+        nativeEvent.keyCode === 229 ||
+        inputAdapter?.isComposing?.() ||
+        (composingTargetRef.current && composingTargetRef.current === e.target)
+      )
+        return false
+
       const isReadOnlyHeaderButton =
         ctx.readOnly && e.target instanceof HTMLButtonElement && readOnlyHeaderRef.current?.contains(e.target)
       if (isReadOnlyHeaderButton && ['Enter', 'NumpadEnter', 'Tab'].includes(e.key)) return false
@@ -862,8 +891,7 @@ export const QuickPanelView: React.FC<Props> = ({ inputAdapter }) => {
           return true
 
         case 'Tab': {
-          const isComposing = 'nativeEvent' in e ? e.nativeEvent.isComposing : e.isComposing
-          if (isComposing || e.shiftKey || e.ctrlKey || e.metaKey || e.altKey) return false
+          if (e.shiftKey || e.ctrlKey || e.metaKey || e.altKey) return false
 
           e.preventDefault()
           e.stopPropagation()
@@ -882,9 +910,6 @@ export const QuickPanelView: React.FC<Props> = ({ inputAdapter }) => {
 
         case 'Enter':
         case 'NumpadEnter': {
-          const isComposing = 'nativeEvent' in e ? e.nativeEvent.isComposing : e.isComposing
-          if (isComposing) return false
-
           if (e.shiftKey && !e.ctrlKey && !e.metaKey && !e.altKey) {
             setIsMouseOver(false)
             return false
@@ -933,7 +958,17 @@ export const QuickPanelView: React.FC<Props> = ({ inputAdapter }) => {
 
       return false
     },
-    [activeIndex, ctx, footerActions, list, navigationItems, handleItemAction, handleClose, activeSearchQuery]
+    [
+      activeIndex,
+      ctx,
+      footerActions,
+      inputAdapter,
+      list,
+      navigationItems,
+      handleItemAction,
+      handleClose,
+      activeSearchQuery
+    ]
   )
 
   useLayoutEffect(() => {
@@ -945,7 +980,7 @@ export const QuickPanelView: React.FC<Props> = ({ inputAdapter }) => {
     if (!isPanelVisible) return
 
     const handleGlobalEscape = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape' || event.isComposing) return
+      if (event.key !== 'Escape') return
       handlePanelKeyDown(event)
     }
 

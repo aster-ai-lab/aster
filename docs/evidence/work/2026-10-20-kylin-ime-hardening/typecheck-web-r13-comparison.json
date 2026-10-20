@@ -1,0 +1,14 @@
+{
+  "baseline": "typecheck-web-r2-final.log",
+  "current": "typecheck-web-r13.log",
+  "baseline_errors": 278,
+  "current_errors": 278,
+  "same_file_error_code_counts": true,
+  "added": [],
+  "removed": [],
+  "changed_file_errors": {
+    "src/renderer/hooks/useAgentSessionParts.ts": 0,
+    "src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx": 0
+  },
+  "scope": "Full web TypeScript check exits2 with278 existing diagnostics; R13 adds none."
+}

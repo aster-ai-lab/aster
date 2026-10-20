@@ -162,6 +162,8 @@ function readCodeTopic() {
 
 export type HomeComposerSendInput = {
   surface: 'fallback' | 'live'
+  /** Submitted local-ACP planning choice; it cannot authorize a different composer action. */
+  planFirst?: boolean
   text: string
   permissionMode: string
 }
@@ -497,6 +499,7 @@ function taskDeck(mode: HomeComposerMode, seed: HomeComposerSeed): HomeComposerD
 }
 
 export async function submitHomeComposerDraft(input: HomeComposerSendInput): Promise<HomeComposerSendOutcome> {
+  if (refuseUnsupportedPlanning(input)) return { handled: true, cleared: false }
   const mode = resolvedMode()
   const start = selection
   const topic = input.text.trim()
@@ -661,8 +664,16 @@ function readConfirmingSend() {
   return confirmingSend
 }
 
+/** Re-check the current explicit action before opening controls or creating files/views. */
+function refuseUnsupportedPlanning(input: HomeComposerSendInput): boolean {
+  if (input.planFirst !== true || selection.modeId === HOST_CHAT_MODE_ID) return false
+  writeSelection({ ...selection, fieldError: i18next.t('workbench.plan.unsupported_runtime') })
+  return true
+}
+
 /** Opens the mode's control form when that mode declares controls. Otherwise commits immediately. */
 export function requestHomeComposerSend(input: HomeComposerSendInput): Promise<HomeComposerSendOutcome> {
+  if (refuseUnsupportedPlanning(input)) return Promise.resolve({ handled: true, cleared: false })
   const mode = resolvedMode()
   const topic = input.text.trim()
   if (!mode || mode.controls.length === 0 || topic.length === 0) return submitHomeComposerDraft(input)

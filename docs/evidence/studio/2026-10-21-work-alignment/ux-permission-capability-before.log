@@ -1,0 +1,110 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:25773) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/studio
+
+ ❯ |renderer| src/renderer/components/composer/__tests__/useToolApprovalComposerOverrides.test.ts (17 tests | 1 failed | 15 skipped) 217ms
+   ❯ useToolApprovalComposerOverrides (11)
+     × renders native boolean approval without an unsupported rejection-note affordance 65ms
+ ❯ |renderer| src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx (29 tests | 1 failed | 28 skipped) 302ms
+   ❯ PermissionRequestComposer (29)
+     × withdraws a typed note when the receiver supports only a boolean decision 148ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/useToolApprovalComposerOverrides.test.ts > useToolApprovalComposerOverrides > renders native boolean approval without an unsupported rejection-note affordance
+AssertionError: expected <button type="button" …(1)></button> to be null
+
+- Expected:
+null
+
++ Received:
+<button
+  class="mr-auto inline-flex h-9 items-center rounded-[8px] px-2 text-[13px] text-[#8a8a8a] hover:bg-[#fafafa] hover:text-[#171717] focus-visible:ring-2 focus-visible:ring-black/10"
+  type="button"
+>
+  添加说明
+</button>
+
+ ❯ src/renderer/components/composer/__tests__/useToolApprovalComposerOverrides.test.ts:87:60
+     85|     const element = result.current[0].render({}) as ReactElement
+     86|     render(element)
+     87|     expect(screen.queryByRole('button', { name: '添加说明' })).toBeNull()
+       |                                                            ^
+     88|     fireEvent.click(screen.getByRole('button', { name: '拒绝' }))
+     89|     await waitFor(() => expect(onRespond).toHaveBeenCalledWith({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx > PermissionRequestComposer > withdraws a typed note when the receiver supports only a boolean decision
+AssertionError: expected <textarea …(5)></textarea> to be null
+
+- Expected:
+null
+
++ Received:
+<textarea
+  aria-label="Reason for rejection (optional)"
+  class="min-h-16 w-full rounded-[8px] bg-[#f5f5f5] px-3 py-2 text-[13px] mt-1 min-h-14 resize-none rounded-[8px] border-0 bg-[#f5f5f5] px-3 py-2 text-[13px] text-[#171717] placeholder:text-[#c5c5c5]"
+  maxlength="500"
+  placeholder="Tell the Agent what to do instead"
+  rows="2"
+>
+  use a copy instead
+</textarea>
+
+ ❯ src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx:170:88
+    168|     await user.type(await openNote(user), 'use a copy instead')
+    169|     view.rerender(<PermissionRequestComposer request={request} onRespo…
+    170|     expect(screen.queryByRole('textbox', { name: 'Reason for rejection…
+       |                                                                                        ^
+    171|     expect(screen.queryByRole('button', { name: 'Add a note' })).toBeN…
+    172|     await user.click(screen.getByRole('button', { name: 'Deny' }))
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 1 passed | 43 skipped (46)
+   Start at  22:27:50
+   Duration  3.76s (transform 45%, import 32%, environment 13%, tests 7%, setup 3%)
+
+  Transform  |renderer| transforming modules took 3.27s · 45% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+

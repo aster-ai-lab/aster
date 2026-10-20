@@ -1,0 +1,50 @@
+{"kind": "r3-final-stage-isolated-negative", "supplied_app_commit": null, "command": ["docker", "exec", "-w", "/aster/target/worktrees/kylin-ime-hardening-20261020/apps/work", "aster-kylin-ime-hardening", "timeout", "60", "bash", "scripts/kylin-flatpak/test-input-method.sh", "/aster/target/evaluations/kylin-ime-hardening/final-r3-negatives/fixture/unpinned-bus/files", "/root/.local/share/flatpak/runtime/org.gnome.Platform/x86_64/50/7e410fa0d429fcc34f2ddd0d9b6224f1435d8640fb9759801db4f02700542353/files"]}
+
+new-success: PASS new=1 old=0 connected=1 focus=1 commit=1
+unknown-object: PASS new=1 old=1 connected=1 focus=1 commit=1
+unknown-method: PASS new=1 old=1 connected=1 focus=1 commit=1
+access-denied: PASS new=1 old=0 connected=0 focus=0 commit=0
+failed: PASS new=1 old=0 connected=0 focus=0 commit=0
+both-unknown-method: PASS new=1 old=1 connected=0 focus=0 commit=0
+cancelled: PASS new=1 old=0 connected=0 focus=0 commit=0
+no-reply: PASS new=1 old=0 connected=0 focus=0 commit=0
+kylin-ime: host-display (host DISPLAY=:100)
+GTK client DISPLAY=:100
+Observed Fcitx state: 0
+IME test timed out at phase 0; committed text: 
+==> /tmp/tmp.r6brweEsui/fcitx.log <==
+(INFO-54329 addon.c:151) Load Addon Config File:fcitx-remote-module.conf
+(INFO-54329 addon.c:151) Load Addon Config File:fcitx-spell.conf
+(INFO-54329 addon.c:151) Load Addon Config File:fcitx-unicode.conf
+(INFO-54329 addon.c:151) Load Addon Config File:fcitx-dbus.conf
+(INFO-54329 addon.c:151) Load Addon Config File:fcitx-freedesktop-notify.conf
+(INFO-54329 addon.c:151) Load Addon Config File:fcitx-ipc.conf
+(INFO-54329 addon.c:151) Load Addon Config File:fcitx-vk.conf
+(INFO-54329 addon.c:151) Load Addon Config File:fcitx-x11.conf
+(INFO-54329 addon.c:151) Load Addon Config File:fcitx-xim.conf
+(INFO-54329 addon.c:151) Load Addon Config File:fcitx-xkb.conf
+(INFO-54329 addon.c:151) Load Addon Config File:fcitx-xkbdbus.conf
+(INFO-54329 addon.c:151) Load Addon Config File:fcitx-pinyin-enhance.conf
+(INFO-54329 addon.c:151) Load Addon Config File:fcitx-pinyin.conf
+(INFO-54329 addon.c:151) Load Addon Config File:fcitx-classic-ui.conf
+(INFO-54329 addon.c:151) Load Addon Config File:fcitx-notificationitem.conf
+(ERROR-54329 ime.c:432) fcitx-keyboard-us already exists
+(WARN-54329 xim.c:161) Please set XMODIFIERS.
+=========================
+FCITX 4.2.9.9 -- Get Signal No.: 15
+Date: try "date -d @1792491980" if you are using GNU date ***
+ProcessID: 54329
+fcitx(+0x19ba)[0x5555555559ba]
+/lib/x86_64-linux-gnu/libc.so.6(+0x45330)[0x7fffff59d330]
+/lib/x86_64-linux-gnu/libc.so.6(__select+0x147)[0x7fffff67efa7]
+/lib/x86_64-linux-gnu/libfcitx-core.so.0(+0x1411c)[0x7fffff7af11c]
+/lib/x86_64-linux-gnu/libfcitx-core.so.0(FcitxInstanceRun+0x5f)[0x7fffff7af81f]
+fcitx(+0x14c7)[0x5555555554c7]
+/lib/x86_64-linux-gnu/libc.so.6(+0x2a1ca)[0x7fffff5821ca]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x8b)[0x7fffff58228b]
+fcitx(+0x1585)[0x555555555585]
+
+==> /tmp/tmp.r6brweEsui/proxy.log <==
+
+exit_status: 1
+checks: {"bounded_complete_log": true, "exit_status_1": true, "gtk_phase0_timeout": true, "gtk_started": true, "no_chinese_commit": true, "no_controller_failure": true, "no_daemon_readiness_failure": true, "no_gtk_pass": true, "no_protocol_failures": true, "protocol_exactly_8_named_passes": true}

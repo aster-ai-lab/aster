@@ -38,7 +38,7 @@ export const AgentSessionExecutionStatusSchema = z.enum([
 ])
 export type AgentSessionExecutionStatus = z.infer<typeof AgentSessionExecutionStatusSchema>
 
-const AgentSessionExecutionSchema = z.strictObject({
+export const AgentSessionExecutionSchema = z.strictObject({
   status: AgentSessionExecutionStatusSchema,
   executionId: z.string().min(1),
   anchorMessageId: z.string().min(1),

@@ -50,7 +50,7 @@ describe('studio tenant brand', () => {
     expect(brand?.iconPath.endsWith('/tenant/toyou/icon.png')).toBe(true)
     expect(brand?.markPath.endsWith('/tenant/toyou/mark-light.png')).toBe(true)
     expect(brand?.logoPath.endsWith('/tenant/toyou/logo-light.png')).toBe(true)
-    expect(brand?.modelMarketPath?.endsWith('/tenant/toyou/model-market.json')).toBe(true)
+    expect(brand?.modelMarketPath).toBeNull()
   })
 
   it('stamps the main window with the tenant and replaces the Cherry title', () => {

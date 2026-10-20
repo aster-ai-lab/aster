@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { TopicStreamStatus } from '@shared/ai/transport'
+import type { TopicStreamStatus, PendingToolApproval } from '@shared/ai/transport'
 
 const mockEntry = vi.fn<
   () =>
@@ -10,6 +10,7 @@ const mockEntry = vi.fn<
         lastCompletedAt?: number
         activeExecutions: []
         awaitingApprovalAnchors: []
+        pendingApprovals?: PendingToolApproval[]
       }
     | undefined
 >()
@@ -121,6 +122,36 @@ describe('useTopicAwaitingApproval', () => {
       expect(refresh).not.toHaveBeenCalled()
     }
   )
+
+  it('refreshes a current native pending approval on mount and when the receiver changes at the same status', async () => {
+    const refresh = vi.fn(async () => {})
+    const pending = {
+      executionId: 'run',
+      anchorMessageId: 'message',
+      messageId: 'message',
+      approvalId: 'approval-1',
+      toolCallId: 'call-1'
+    }
+    const entry = {
+      status: 'awaiting-approval' as const,
+      activeExecutions: [] as [],
+      awaitingApprovalAnchors: [] as [],
+      pendingApprovals: [pending]
+    }
+    mockEntry.mockReturnValue(entry)
+    const { rerender } = renderHook(() => useTopicDbRefreshOnAwaitingApproval('t', refresh))
+    expect(refresh).toHaveBeenCalledTimes(1)
+    rerender()
+    expect(refresh).toHaveBeenCalledTimes(1)
+    mockEntry.mockReturnValue({
+      ...entry,
+      pendingApprovals: [{ ...pending, approvalId: 'approval-2', toolCallId: 'call-2' }]
+    })
+    await act(async () => {
+      rerender()
+    })
+    expect(refresh).toHaveBeenCalledTimes(2)
+  })
 
   it('does not carry a live edge across topic identities', async () => {
     const refresh = vi.fn(async () => {})

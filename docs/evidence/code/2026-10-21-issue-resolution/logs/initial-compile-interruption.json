@@ -1,0 +1,6 @@
+{
+  "pid": 5807,
+  "command": "/Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/bin/cargo test --locked --offline --manifest-path /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml -p a3s-code-core -p a3s-code-acp -p a3s-code-pager --lib -- goal_control:: agent_api::goal_facade::tests::execution fact_control::goal_evidence::tests durable_memory_vec::tests program_ tools::presentation::tests unattended:: agent::session_setup_tests agent::reasoning_transport_tests agent::memory_sessions_tests headless::tests --test-threads=1",
+  "signal": "SIGINT",
+  "reason": "Finish private program-kind boundary review before the final isolated source validation."
+}

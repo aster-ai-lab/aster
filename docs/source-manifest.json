@@ -1202,5 +1202,10 @@
       }
     ],
     "verification": "cargo check --tests on the five members; workspace cargo fmt --check; clean-room boot of a3s-config :7654, a3s-auth :7642, a3s-billing :7655, a3s-api :3000 against the live middleware with fresh databases: /health all up, admin login through the auth directory, notes round-trip."
+  },
+  "studio_brand_resource_repair_20261021": {
+    "source_commit": "e07fd7c69307e33239053c7bb3c5cdb64d78b80d^",
+    "scope": "Only tenant brand assets and pure tenantInfo parser; no web application or JSON model-market configuration",
+    "file_receipt": "docs/evidence/studio/2026-10-21-work-alignment/tenant-restored-source.json"
   }
 }

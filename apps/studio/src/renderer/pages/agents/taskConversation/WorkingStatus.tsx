@@ -46,22 +46,23 @@ function nextVerb(current: number): number {
 }
 
 /** Cycling working verbs, in the latest-message slot. Reduced motion keeps one verb. */
-export function WorkingStatus() {
+export function WorkingStatus({ label }: { label?: string }) {
   const { t } = useTranslation()
   const [index, setIndex] = useState(() => Math.floor(Math.random() * VERBS.length))
 
   useEffect(() => {
+    if (label) return
     if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
     const timer = window.setInterval(() => setIndex(nextVerb), HOLD_MS)
     return () => window.clearInterval(timer)
-  }, [])
+  }, [label])
 
   return (
-    <p className="task-pending" data-testid="task-pending" role="status" aria-label={t('agent.working.label')}>
+    <p className="task-pending" data-testid="task-pending" role="status" aria-label={label ?? t('agent.working.label')}>
       <span className="task-pending__mark" aria-hidden="true" data-tool-spinner="" />
       <span className="task-pending__line" aria-hidden="true">
         <span className="task-pending__verb" data-testid="task-pending-verb">
-          {t(VERBS[index])}
+          {label ?? t(VERBS[index])}
         </span>
         <span className="task-pending__dots">...</span>
       </span>

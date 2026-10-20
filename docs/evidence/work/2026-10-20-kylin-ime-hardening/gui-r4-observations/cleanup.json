@@ -1,0 +1,20 @@
+[
+  {
+    "run": "run-7fnFml",
+    "app_pid": 59076,
+    "app_pid_still_present": false,
+    "stop_exists": true
+  },
+  {
+    "run": "run-V6V5Mp",
+    "app_pid": 61374,
+    "app_pid_still_present": false,
+    "stop_exists": true
+  },
+  {
+    "run": "run-Wfa1CS",
+    "app_pid": 63458,
+    "app_pid_still_present": false,
+    "stop_exists": true
+  }
+]

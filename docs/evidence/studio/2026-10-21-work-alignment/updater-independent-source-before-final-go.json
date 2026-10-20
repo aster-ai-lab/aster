@@ -1,0 +1,46 @@
+{
+  "review": "read-only final follow-up: exact-path success-only installation cache and compile-time debug relaunch exception; no new test or package execution",
+  "reviewed_on": "2026-10-21",
+  "files": [
+    {
+      "path": "apps/studio/src-tauri/src/app_updater.rs",
+      "sha256": "ec11ce02dd78e33e6772d13c8e0eb4888f99264c9ee891f4010c0d4f1b224aae",
+      "bytes": 42220
+    },
+    {
+      "path": "apps/studio/src-tauri/src/app_updater/delivery_manifest.rs",
+      "sha256": "9a3e7bce4b697ce16ebb0f96977f0a50659ca4567d4cbc489d050335dc906e81",
+      "bytes": 4920
+    },
+    {
+      "path": "apps/studio/src-tauri/src/tenant.rs",
+      "sha256": "290c519fb07ae6887af3c4ba4835a08a315203c8ac9bace8842aca61f9253e13",
+      "bytes": 18690
+    },
+    {
+      "path": "apps/studio/scripts/package-host.sh",
+      "sha256": "cdd905134fd3cfbe32fb0382dc0e8a48a0c7fa76ca5283dcdf0f9f983eb819e7",
+      "bytes": 1562
+    },
+    {
+      "path": "apps/studio/scripts/studio_delivery.py",
+      "sha256": "0dbc023c6296b85585d97e0a3f113df6c26f14d91cd8910d67158161d4f93c8e",
+      "bytes": 2929
+    },
+    {
+      "path": "apps/studio/src-tauri/src/app_updater/delivery_tests.rs",
+      "sha256": "ba0cdb5b89712c3c364a75010f60936bfc732f429878e8077432a4006e3497dc",
+      "bytes": 8106
+    },
+    {
+      "path": "apps/studio/src-tauri/src/app_updater/delivery_manifest_tests.rs",
+      "sha256": "3ab1ec0ffe7251eea6cd5a88c04a2a78c42730e4271501c0e911c7150ab6fca4",
+      "bytes": 3465
+    },
+    {
+      "path": "apps/studio/src-tauri/src/macos_app.rs",
+      "sha256": "651036ed75bc07d99c143a60dba46b0438a3f190d6fef6772a1b54106fa6ff4d",
+      "bytes": 29503
+    }
+  ]
+}

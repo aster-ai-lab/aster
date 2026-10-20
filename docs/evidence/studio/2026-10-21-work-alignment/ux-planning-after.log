@@ -1,0 +1,239 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:8228) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/studio
+
+ ❯ |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx (78 tests | 78 failed) 316ms
+   ❯ AgentPage (78)
+     × uses a prepared feedback session as a transient launch and skips the normal resume path 23ms
+     × consumes a prepared Skill intent once and creates a composer token from the installed Skill 4ms
+     × clears an invalid Skill intent without creating a composer draft 4ms
+     × starts the model read from the visible list agent hint 3ms
+     × shows both agent and session panes by default when sessions are on the right 4ms
+     × renders the classic agent layout for the new-user display default 4ms
+     × passes the same agent session source to the classic rail and right panel 6ms
+     × opens agent management from the entity rail when sessions are on the right 3ms
+     × does not render the session resource pane when the classic session position is left 4ms
+     × does not auto-open the session right pane when switching to agent display mode with left session position 3ms
+     × marks the sidebar collapse control as a manual pane toggle 3ms
+     × records a user open intent when the rail header opens the classic session pane 3ms
+     × does not record a user open intent when the rail header closes the classic session pane 3ms
+     × toggles the classic session pane when the selected agent is clicked again 3ms
+     × closes classic-layout history records when the active agent is clicked 3ms
+     × renders the modern session sidebar when session display mode is time 3ms
+     × opens the agent create dialog from the modern add entry 4ms
+     × switches to agent grouping when changing session position from the left sidebar 3ms
+     × expands only the active session agent when changing session position to the left sidebar 4ms
+     × renders the agent resource view inside the stable AgentChat shell 3ms
+     × renders history records inside the stable AgentChat shell and toggles them from the sidebar 6ms
+     × replaces the history center surface when opening agent management 3ms
+     × keeps the agent resource view open while opening the classic-layout agent create dialog 3ms
+     × keeps the agent resource view open until the created agent session is ready 3ms
+     × prevents duplicate empty session creation from rapid classic-layout agent creation callback 3ms
+     × keeps a sidebar toggle beside agent resource search so a collapsed pane can be reopened 3ms
+     × preserves a manually closed classic-layout agent right pane across remounts 3ms
+     × passes the current agent task count to the classic-layout top button 3ms
+     × keeps modern first entry empty when there are no sessions 3ms
+     × selects the latest remaining session after deleting the active agent in classic layout 2ms
+     × does not overwrite a route change while active-agent fallback is loading 3ms
+     × clears the active session without creating a fallback after deleting the final agent session 2ms
+     × isolates latest-session fallback failure after deleting the active agent 2ms
+     × returns to the bare route when the session panel clears its active session 6ms
+     × clears the remembered session id and converges when the bound route resolves NOT_FOUND 3ms
+     × settles fork navigation from a fresh destination query, ignoring cached errors: success 3ms
+     × settles fork navigation from a fresh destination query, ignoring cached errors: not-found 3ms
+     × settles fork navigation from a fresh destination query, ignoring cached errors: failure 3ms
+     × settles fork navigation from a fresh destination query, ignoring cached errors: cancelled 2ms
+     × creates and activates an empty session after creating an agent from the classic-layout add entry 3ms
+     × does not reuse the remembered workspace when creating an empty session for a new agent 3ms
+     × reuses the agent latest empty session instead of creating another one from the classic-layout agent create dialog 3ms
+     × reuses the latest empty system session and deletes duplicate empty system sessions from the classic-layout agent create dialog 3ms
+     × reuses the latest empty session when an older candidate has an invalid timestamp 3ms
+     × reuses the current agent empty session from the classic-layout composer button 2ms
+     × reuses the latest empty system session and deletes duplicate empty system sessions from the composer button 2ms
+     × does not reuse an empty session from a different workspace from the classic-layout composer button 3ms
+     × prevents duplicate empty session creation from rapid classic-layout composer clicks 5ms
+     × creates a fresh session from the classic-layout composer button when the latest is chatted-in with a blank name (auto-naming off) 3ms
+     × reuses the exact server placeholder without bounded client message probes 3ms
+     × toasts when the classic-layout composer empty-session creation fails 3ms
+     × starts a review task in the system workspace when the pending project is gone 3ms
+     × updates the active classic-layout session workspace through the composer control 2ms
+     × updates the active modern-layout session workspace through the composer control 3ms
+     × creates a new session when the agent latest session is not empty from the classic-layout agent create dialog 3ms
+     × updates the controlled session selection when the active session changes inside the tab 2ms
+     × keeps history open after replacing or clearing the active session without creating one 3ms
+     × writes locate state into the current tab for a global-search session message 3ms
+     × cancels a pending message locate when the user selects another session 3ms
+     × drops a pending message locate when the route swaps the session underneath 3ms
+     × waits for file-navigation confirmation before applying a global-search session jump 3ms
+     × opens the session pane when a global-search locate targets a session in the current tab 6ms
+     × ignores a global-search session message targeted at another tab 3ms
+     × forwards a reveal request when navigation asks the current agent tab to reveal its selection 3ms
+     × collapses the agent sidebar when the shared shell requests it 3ms
+     × temporarily hides and restores the agent sidebar for responsive auto-collapse without changing the user preference 3ms
+     × keeps the agent sidebar open after selecting a session from the sidebar 3ms
+     × keeps detached session sidebar state local, default-closed, and fixed on the left 3ms
+     × shows the missing-agent home composer by default when there are no agents 3ms
+     × creates a real empty session after selecting an agent from missing-agent selection 3ms
+     × preserves the requested workspace until a missing agent is selected 3ms
+     × does not expose the previous session while the new route session is loading 3ms
+     × does not create a first-launch session from remembered agent and workspace state 2ms
+     × does not activate a source placeholder from a bare page entry 3ms
+     × creates and activates a conversation for an agentId entry with no session yet 3ms
+     × does not let a stale agentId entry replace a newer Agent conversation 6ms
+     × records the visible agent reported by the chat body 3ms
+     × records the visible workspace reported by the chat body 2ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 78 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > uses a prepared feedback session as a transient launch and skips the normal resume path
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > consumes a prepared Skill intent once and creates a composer token from the installed Skill
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > clears an invalid Skill intent without creating a composer draft
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > starts the model read from the visible list agent hint
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > shows both agent and session panes by default when sessions are on the right
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > renders the classic agent layout for the new-user display default
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > passes the same agent session source to the classic rail and right panel
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > opens agent management from the entity rail when sessions are on the right
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > does not render the session resource pane when the classic session position is left
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > does not auto-open the session right pane when switching to agent display mode with left session position
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > marks the sidebar collapse control as a manual pane toggle
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > records a user open intent when the rail header opens the classic session pane
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > does not record a user open intent when the rail header closes the classic session pane
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > toggles the classic session pane when the selected agent is clicked again
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > closes classic-layout history records when the active agent is clicked
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > renders the modern session sidebar when session display mode is time
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > opens the agent create dialog from the modern add entry
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > switches to agent grouping when changing session position from the left sidebar
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > expands only the active session agent when changing session position to the left sidebar
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > renders the agent resource view inside the stable AgentChat shell
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > renders history records inside the stable AgentChat shell and toggles them from the sidebar
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > replaces the history center surface when opening agent management
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > keeps the agent resource view open while opening the classic-layout agent create dialog
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > keeps the agent resource view open until the created agent session is ready
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > prevents duplicate empty session creation from rapid classic-layout agent creation callback
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > keeps a sidebar toggle beside agent resource search so a collapsed pane can be reopened
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > preserves a manually closed classic-layout agent right pane across remounts
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > passes the current agent task count to the classic-layout top button
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > keeps modern first entry empty when there are no sessions
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > selects the latest remaining session after deleting the active agent in classic layout
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > does not overwrite a route change while active-agent fallback is loading
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > clears the active session without creating a fallback after deleting the final agent session
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > isolates latest-session fallback failure after deleting the active agent
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > returns to the bare route when the session panel clears its active session
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > clears the remembered session id and converges when the bound route resolves NOT_FOUND
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > settles fork navigation from a fresh destination query, ignoring cached errors: success
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > settles fork navigation from a fresh destination query, ignoring cached errors: not-found
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > settles fork navigation from a fresh destination query, ignoring cached errors: failure
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > settles fork navigation from a fresh destination query, ignoring cached errors: cancelled
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > creates and activates an empty session after creating an agent from the classic-layout add entry
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > does not reuse the remembered workspace when creating an empty session for a new agent
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > reuses the agent latest empty session instead of creating another one from the classic-layout agent create dialog
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > reuses the latest empty system session and deletes duplicate empty system sessions from the classic-layout agent create dialog
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > reuses the latest empty session when an older candidate has an invalid timestamp
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > reuses the current agent empty session from the classic-layout composer button
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > reuses the latest empty system session and deletes duplicate empty system sessions from the composer button
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > does not reuse an empty session from a different workspace from the classic-layout composer button
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > prevents duplicate empty session creation from rapid classic-layout composer clicks
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > creates a fresh session from the classic-layout composer button when the latest is chatted-in with a blank name (auto-naming off)
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > reuses the exact server placeholder without bounded client message probes
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > toasts when the classic-layout composer empty-session creation fails
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > starts a review task in the system workspace when the pending project is gone
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > updates the active classic-layout session workspace through the composer control
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > updates the active modern-layout session workspace through the composer control
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > creates a new session when the agent latest session is not empty from the classic-layout agent create dialog
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > updates the controlled session selection when the active session changes inside the tab
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > keeps history open after replacing or clearing the active session without creating one
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > writes locate state into the current tab for a global-search session message
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > cancels a pending message locate when the user selects another session
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > drops a pending message locate when the route swaps the session underneath
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > waits for file-navigation confirmation before applying a global-search session jump
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > opens the session pane when a global-search locate targets a session in the current tab
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > ignores a global-search session message targeted at another tab
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > forwards a reveal request when navigation asks the current agent tab to reveal its selection
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > collapses the agent sidebar when the shared shell requests it
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > temporarily hides and restores the agent sidebar for responsive auto-collapse without changing the user preference
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > keeps the agent sidebar open after selecting a session from the sidebar
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > keeps detached session sidebar state local, default-closed, and fixed on the left
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > shows the missing-agent home composer by default when there are no agents
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > creates a real empty session after selecting an agent from missing-agent selection
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > preserves the requested workspace until a missing agent is selected
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > does not expose the previous session while the new route session is loading
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > does not create a first-launch session from remembered agent and workspace state
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > does not activate a source placeholder from a bare page entry
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > creates and activates a conversation for an agentId entry with no session yet
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > does not let a stale agentId entry replace a newer Agent conversation
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > records the visible agent reported by the chat body
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > records the visible workspace reported by the chat body
+Error: [vitest] No "useUpdateAgent" export is defined on the "@renderer/hooks/agent/useAgent" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+vi.mock(import("@renderer/hooks/agent/useAgent"), async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    // your mocked methods
+  }
+})
+
+ ❯ WorkbenchHome src/renderer/pages/agents/WorkbenchHome.tsx:614:27
+    612|   const [draft, setDraft] = useState('')
+    613|   const memberId = useMemberProfile()?.id ?? null
+    614|   const { updateAgent } = useUpdateAgent()
+       |                           ^
+    615|   const permissionRevision = useSyncExternalStore(subscribeTaskPermiss…
+    616|   const permissionSessionId = !homeActive && activeSessionId ? activeS…
+ ❯ Object.react_stack_bottom_frame node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom-client.development.js:28571:20
+ ❯ renderWithHooks node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom-client.development.js:8030:22
+ ❯ updateFunctionComponent node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom-client.development.js:10569:19
+ ❯ beginWork node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom-client.development.js:12205:18
+ ❯ runWithFiberInDEV node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom-client.development.js:1048:13
+ ❯ performUnitOfWork node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom-client.development.js:19176:22
+ ❯ workLoopSync node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom-client.development.js:19004:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/78]⎯
+
+
+ Test Files  1 failed | 7 passed (8)
+      Tests  78 failed | 227 passed (305)
+   Start at  21:30:48
+   Duration  8.99s (transform 47%, import 34%, tests 12%, environment 5%, setup 2%)
+
+  Transform  |renderer| transforming modules took 16.52s · 47% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+

@@ -1,0 +1,119 @@
+{
+  "scope": "Studio renderer IME / rich composer / reserved-message handoff",
+  "head": "eb17c6ce5aa4c9ef785c12d56515e146866b1506",
+  "files": [
+    {
+      "path": "apps/studio/src/renderer/components/composer/ComposerSurface.tsx",
+      "sha256": "718639d87c6683f8491d992da9f97a60ee8470d799a4dddc0b18edc73d2ad6f4",
+      "bytes": 25521
+    },
+    {
+      "path": "apps/studio/src/renderer/components/composer/ComposerSurfaceRuntime.tsx",
+      "sha256": "6621634b62faee163fd9084961f98855597b2b9515d66fda8503c2daeb4e05e8",
+      "bytes": 97900
+    },
+    {
+      "path": "apps/studio/src/renderer/components/composer/composerInputAdapter.ts",
+      "sha256": "c66ff7fb7e38c5e90e55fbded2662500a5b8e4b5d5302c9dfc46b3ef0c0dfa17",
+      "bytes": 3873
+    },
+    {
+      "path": "apps/studio/src/renderer/components/composer/PromptVariableToken.tsx",
+      "sha256": "a6aec97b77f798f280af5cb9a5a573bee957fd0ba6989e3c5a127576d4090f06",
+      "bytes": 6713
+    },
+    {
+      "path": "apps/studio/src/renderer/components/composer/variants/PermissionRequestComposer.tsx",
+      "sha256": "2d42e7f7a0848649a56cde964cceab31ad17a173bf70ab278352501791ea611e",
+      "bytes": 16515
+    },
+    {
+      "path": "apps/studio/src/renderer/components/composer/variants/AskUserQuestionComposer.tsx",
+      "sha256": "f63d7bfd98c7c2bec72ef66a94f5e6b750602fcd0b187a1ac56d305c97a4fd20",
+      "bytes": 15248
+    },
+    {
+      "path": "apps/studio/src/renderer/components/composer/variants/shared/useComposerFileCapabilities.ts",
+      "sha256": "45d6692cb67f10561f2bda6bbec0c8e32bcd8a71a95290d03b901a8861fcd91a",
+      "bytes": 3909
+    },
+    {
+      "path": "apps/studio/src/renderer/components/QuickPanel/QuickPanelView.tsx",
+      "sha256": "5e104acc78c5188dc2269e44fe33815e025ef091b7fc55889d5e85f34c1bb82f",
+      "bytes": 49123
+    },
+    {
+      "path": "apps/studio/src/renderer/components/QuickPanel/types.ts",
+      "sha256": "01b1b7897ad8d887f4b9fbdd62884c5ecb797dd453a966ba69464fe11a65e5ec",
+      "bytes": 8850
+    },
+    {
+      "path": "apps/studio/src/renderer/hooks/useAgentSessionParts.ts",
+      "sha256": "1bb55efa6d601c504849cd4d02e41ba69f1d6c47edffda951cafda073b04af99",
+      "bytes": 17850
+    },
+    {
+      "path": "apps/studio/src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx",
+      "sha256": "e5c61b28be360c2cc6e1d638cfcf9928df4a0a4d2c7e155a604e73672a08d163",
+      "bytes": 5898
+    },
+    {
+      "path": "apps/studio/src/renderer/components/composer/__tests__/ComposerSurface.lifecycle.test.tsx",
+      "sha256": "2d851c09abf26909446af2ea2980716f6c4e66e9445afbb6a90142bace957179",
+      "bytes": 3661
+    },
+    {
+      "path": "apps/studio/src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx",
+      "sha256": "f9be76ca9b57d4b0425276b2fd75a26a0eaf100d83dc43aa41787a12bb3428d0",
+      "bytes": 11721
+    },
+    {
+      "path": "apps/studio/src/renderer/components/composer/__tests__/ComposerSurface.lazy.test.tsx",
+      "sha256": "1052f85100c92e3332d23171024e9a4dc21a1319948057fe94f8c3006825686c",
+      "bytes": 29804
+    },
+    {
+      "path": "apps/studio/src/renderer/components/composer/__tests__/ComposerSurface.test.tsx",
+      "sha256": "19e790d3e439e5994fa4a7d6d68e8a850267e153133890b227daeace49bf48a8",
+      "bytes": 195506
+    },
+    {
+      "path": "apps/studio/src/renderer/components/QuickPanel/__tests__/view.test.tsx",
+      "sha256": "80cffb49e1330b0cb108ca9f0d7ce451d33a76103604d3d080f5ed837fa1afb5",
+      "bytes": 80455
+    },
+    {
+      "path": "apps/studio/src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx",
+      "sha256": "3be265b8b0a529731bc069c3cbe080cbe53dc288886645f04e39a8e57bac207c",
+      "bytes": 22246
+    },
+    {
+      "path": "apps/studio/src/renderer/components/composer/variants/__tests__/AskUserQuestionComposer.test.tsx",
+      "sha256": "53dae40377380a7a451c11ec3a42f58106ae8459f58f35afb7bffc6829f332f3",
+      "bytes": 15903
+    },
+    {
+      "path": "apps/studio/src/renderer/components/composer/__tests__/ComposerToken.test.tsx",
+      "sha256": "1543a748e4297052e59454ca60993cb1785ed51e280a11004e288428532839e4",
+      "bytes": 63148
+    },
+    {
+      "path": "apps/studio/src/renderer/components/composer/__tests__/composerInputAdapter.test.ts",
+      "sha256": "051eaab7804c1a9539fc72e965c745f82f5aae9fc3d4c4f36b58c3a967a80484",
+      "bytes": 3271
+    }
+  ],
+  "final_regression": {
+    "log": "ime-final-regression.log",
+    "suites": 13,
+    "tests": 429,
+    "passed": 429
+  },
+  "checks": {
+    "oxfmt": "20 owned files pass",
+    "eslint": "exit0; 2 pre-existing ComposerSurface exhaustive-deps warnings",
+    "oxlint": "exit1; 4 pre-existing React default-import warnings, 0 production errors; original source reproduced via same tsconfig"
+  },
+  "full_tsc": "root owns; not run by this agent",
+  "native_gui": "pending root integration; renderer tests do not certify native IME"
+}

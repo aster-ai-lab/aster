@@ -272,3 +272,21 @@ describe('ai.agent.skill_session.create IPC schema', () => {
     expect(createSkillSessionResult.safeParse({ sessionId: 'session-1', skillId: 'skill-1' }).success).toBe(false)
   })
 })
+
+describe('independent Studio planning contract', () => {
+  it('keeps plan-first separate from the permission posture and refuses unknown flag values', () => {
+    const open = aiRequestSchemas['ai.stream.open'].input
+    const body = {
+      trigger: 'submit-message',
+      topicId: 'agent-session:s1',
+      userMessageParts: [{ type: 'text', text: 'Read inputs' }],
+      permissionMode: 'auto',
+      turnContext: { planFirst: true, directives: [], research: false }
+    }
+    expect(open.parse(body)).toMatchObject({ permissionMode: 'auto', turnContext: { planFirst: true } })
+    expect(
+      open.parse({ ...body, permissionMode: 'plan', turnContext: { ...body.turnContext, planFirst: false } })
+    ).toMatchObject({ permissionMode: 'plan', turnContext: { planFirst: false } })
+    expect(open.safeParse({ ...body, turnContext: { ...body.turnContext, planFirst: 'plan' } }).success).toBe(false)
+  })
+})

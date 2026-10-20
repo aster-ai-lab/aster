@@ -1,0 +1,47 @@
+{
+  "review": "Read-only final native-GO follow-up: exact-path successful identity cache, compile-time debug boundary and UpdateFail closed-set parse/as_str contract; no new test execution by reviewer.",
+  "reviewed_on": "2026-10-21",
+  "files": [
+    {
+      "path": "apps/studio/src-tauri/src/app_updater.rs",
+      "sha256": "d80e819f339a7cc1740e2b47b6773f0e922ac11b05b83810da3317e5ddda23f1",
+      "bytes": 43129
+    },
+    {
+      "path": "apps/studio/src-tauri/src/app_updater/delivery_manifest.rs",
+      "sha256": "9a3e7bce4b697ce16ebb0f96977f0a50659ca4567d4cbc489d050335dc906e81",
+      "bytes": 4920
+    },
+    {
+      "path": "apps/studio/src-tauri/src/tenant.rs",
+      "sha256": "290c519fb07ae6887af3c4ba4835a08a315203c8ac9bace8842aca61f9253e13",
+      "bytes": 18690
+    },
+    {
+      "path": "apps/studio/scripts/package-host.sh",
+      "sha256": "cdd905134fd3cfbe32fb0382dc0e8a48a0c7fa76ca5283dcdf0f9f983eb819e7",
+      "bytes": 1562
+    },
+    {
+      "path": "apps/studio/scripts/studio_delivery.py",
+      "sha256": "3362b521c19e84016b819503f657722ecad16ac1d1fa711f0c80ece155fe7a41",
+      "bytes": 2929
+    },
+    {
+      "path": "apps/studio/src-tauri/src/app_updater/delivery_tests.rs",
+      "sha256": "093596b99f2a96563558a3f2cdb1263574a30e5fada2d13cd62fc05ba45c9f62",
+      "bytes": 8824
+    },
+    {
+      "path": "apps/studio/src-tauri/src/app_updater/delivery_manifest_tests.rs",
+      "sha256": "3ab1ec0ffe7251eea6cd5a88c04a2a78c42730e4271501c0e911c7150ab6fca4",
+      "bytes": 3465
+    },
+    {
+      "path": "apps/studio/src-tauri/src/macos_app.rs",
+      "sha256": "651036ed75bc07d99c143a60dba46b0438a3f190d6fef6772a1b54106fa6ff4d",
+      "bytes": 29503
+    }
+  ],
+  "native_go_source_receipt": "ime-linux-native-source-final.json"
+}

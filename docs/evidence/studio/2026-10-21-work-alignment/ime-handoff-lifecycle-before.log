@@ -1,0 +1,197 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:6547) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/studio
+
+ ❯ |renderer| src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx (8 tests | 4 failed) 3180ms
+   ❯ agent session reservation and terminal history handoff (8)
+     × keeps final text when terminal refresh is in flight before the acknowledgement 1015ms
+     × keeps final text when a duplicate acknowledgement overlaps terminal refresh 1006ms
+     × ignores a reservation callback retained from a previous session 4ms
+     × accepts the send before history resolves and retains it if the background refresh fails 1002ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx > agent session reservation and terminal history handoff > keeps final text when terminal refresh is in flight before the acknowledgement
+AssertionError: expected [] to deep equally contain { type: 'text', …(2) }
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+
+- Expected:
+{
+  "state": "done",
+  "text": "reply-session-1",
+  "type": "text",
+}
+
++ Received:
+[]
+
+ ❯ expectReply src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx:136:5
+    134|   expect(
+    135|     h.result.current.history.messages.find((message) => message.id ===…
+    136|   ).toContainEqual({ type: 'text', text: `reply-${sessionId}`, state: …
+       |     ^
+    137| }
+    138|
+ ❯ src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx:179:25
+ ❯ runWithExpensiveErrorDiagnosticsDisabled node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  |renderer| src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx > agent session reservation and terminal history handoff > keeps final text when a duplicate acknowledgement overlaps terminal refresh
+AssertionError: expected [] to deep equally contain { type: 'text', …(2) }
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+
+- Expected:
+{
+  "state": "done",
+  "text": "reply-session-1",
+  "type": "text",
+}
+
++ Received:
+[]
+
+ ❯ expectReply src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx:136:5
+    134|   expect(
+    135|     h.result.current.history.messages.find((message) => message.id ===…
+    136|   ).toContainEqual({ type: 'text', text: `reply-${sessionId}`, state: …
+       |     ^
+    137| }
+    138|
+ ❯ src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx:189:25
+ ❯ runWithExpensiveErrorDiagnosticsDisabled node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  |renderer| src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx > agent session reservation and terminal history handoff > ignores a reservation callback retained from a previous session
+AssertionError: expected [ { …(4) }, …(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "id": "assistant-session-1",
++     "metadata": {
++       "createdAt": "2026-10-20T21:22:51.552Z",
++       "status": "pending",
++       "updatedAt": "2026-10-20T21:22:51.552Z",
++     },
++     "parts": [],
++     "role": "assistant",
++   },
++   {
++     "id": "user-session-1",
++     "metadata": {
++       "createdAt": "2026-10-20T21:22:51.552Z",
++       "status": "success",
++       "updatedAt": "2026-10-20T21:22:51.552Z",
++     },
++     "parts": [
++       {
++         "text": "request",
++         "type": "text",
++       },
++     ],
++     "role": "user",
++   },
++ ]
+
+ ❯ src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx:220:47
+    218|     h.get.mockClear()
+    219|     await act(async () => oldSeed(reservedAck('session-1').reservedMes…
+    220|     expect(h.result.current.history.messages).toEqual([])
+       |                                               ^
+    221|     expect(h.get).not.toHaveBeenCalled()
+    222|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  |renderer| src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx > agent session reservation and terminal history handoff > accepts the send before history resolves and retains it if the background refresh fails
+AssertionError: expected "vi.fn()" to be called at least once
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+ ❯ src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx:263:39
+    261|     expect(h.result.current.turn.phase).toBe('streaming')
+    262|     expect(h.result.current.history.messages.map((message) => message.…
+    263|     await waitFor(() => expect(h.get).toHaveBeenCalled())
+       |                                       ^
+    264|     const error = new Error('history temporarily unavailable')
+    265|     await act(async () => h.histories['session-1'].reject(error))
+ ❯ runWithExpensiveErrorDiagnosticsDisabled node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  4 failed | 5 passed (9)
+   Start at  21:22:48
+   Duration  7.26s (tests 45%, transform 34%, import 15%, environment 4%, setup 1%)
+
+  Transform  |renderer| transforming modules took 2.43s · 34% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+

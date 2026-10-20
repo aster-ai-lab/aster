@@ -62,3 +62,22 @@ fn batched_background_identity_settles_only_with_its_matching_terminal() {
         assert!(debt.unresolved.contains("workspace-child:two"));
     }
 }
+
+#[test]
+fn typed_child_identity_does_not_need_a_duplicate_in_opaque_metadata() {
+    let mut facts = background_debt_fixture(false);
+    let mut receipt: ToolExecutionResultV1 =
+        serde_json::from_value(facts[1].payload["receipt"].clone()).unwrap();
+    let mut envelope: serde_json::Value =
+        serde_json::from_str(receipt.output.as_str().unwrap()).unwrap();
+    assert_eq!(envelope["workspace_child"], "one");
+    envelope["metadata"]
+        .as_object_mut()
+        .unwrap()
+        .remove("workspace_child");
+    receipt.output = json!(envelope.to_string());
+    facts[1] = result_fact(&receipt);
+    let debt = fold_debt(&facts);
+    assert!(!debt.unresolved.contains("workspace-child:one"));
+    assert!(debt.unresolved.contains("workspace-child:two"));
+}

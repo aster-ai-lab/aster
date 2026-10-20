@@ -1,0 +1,9 @@
+{
+  "command": "just build-studio",
+  "rc": null,
+  "status": "infrastructure_timeout",
+  "timeout_seconds": 1800,
+  "companion_step": "passed; see Finished dev profile in log",
+  "studio_step": "waited for shared Cargo target lock; no host compile result",
+  "not_claimed": "baseline host success or product compile failure"
+}

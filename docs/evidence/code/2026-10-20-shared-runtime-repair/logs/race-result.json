@@ -1,0 +1,12 @@
+{
+  "research_result": {
+    "jsonrpc": "2.0",
+    "id": 4,
+    "result": {
+      "stopReason": "end_turn"
+    }
+  },
+  "reported_posture": "plan",
+  "write_executed_after_plan": false,
+  "prompt_bound_plan_enforced": true
+}

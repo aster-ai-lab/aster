@@ -1,0 +1,2 @@
+{"status": "preparation-only; final native/renderer re-freeze still required before Studio/ACP build", "head": "eb17c6ce5aa4c9ef785c12d56515e146866b1506", "snapshot": "/Users/roylin/code/aster/target/worktrees/studio-linux-alignment-20261021", "bytes": 693227786, "elapsed_seconds": 6.815}
+{"copied": 24112, "excluded": 12}

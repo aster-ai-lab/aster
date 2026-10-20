@@ -1,0 +1,23 @@
+[
+  {
+    "synthetic_text": "ime-plain-control",
+    "json_encoded_bytes": 19,
+    "sha256": "7a96f41d9aaa364873390331c64245a7ece1b2ae0012d7cf7edd36e555f4ecb5",
+    "wire_sequence": 2,
+    "matches": true
+  },
+  {
+    "synthetic_text": "你好好nihao",
+    "json_encoded_bytes": 16,
+    "sha256": "154ffcbac41eed6cabb25e6e8eca2692d59ee98355ef4794fad65cad4ad9769e",
+    "wire_sequence": 4,
+    "matches": true
+  },
+  {
+    "synthetic_text": "nihao",
+    "json_encoded_bytes": 7,
+    "sha256": "3aa49a9faf2dc9ab817d97f422ead111cb970410ea8c6539fc48c508cf3d04dc",
+    "wire_sequence": 6,
+    "matches": true
+  }
+]

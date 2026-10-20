@@ -1,5 +1,63 @@
 use pretty_assertions::assert_eq;
 
+#[tokio::test]
+async fn local_config_agent_with_no_auth_methods_skips_acp_login() {
+    let (tx, mut rx) = tokio::sync::mpsc::unbounded_channel();
+    assert!(!super::authenticate(&tx, &[], None, false).await.unwrap());
+    assert!(
+        rx.try_recv().is_err(),
+        "local credentials need no ACP authentication"
+    );
+}
+
+#[tokio::test]
+async fn grok_agent_with_no_auth_methods_still_requires_login() {
+    let (tx, mut rx) = tokio::sync::mpsc::unbounded_channel();
+    let error = super::authenticate(&tx, &[], None, true).await.unwrap_err();
+    assert!(error.to_string().contains("Not signed in"));
+    assert!(rx.try_recv().is_err());
+}
+
+#[tokio::test]
+async fn headless_auth_keeps_advertised_noninteractive_methods_and_refuses_browser_login() {
+    for (id, expected_api_key) in [("a3s.api_key", true), ("cached_token", false)] {
+        let (tx, mut rx) = tokio::sync::mpsc::unbounded_channel();
+        let method = acp::AuthMethod::Agent(acp::AuthMethodAgent::new(
+            acp::AuthMethodId::new(id),
+            "Fixture",
+        ));
+        let expected = id.to_string();
+        let answer = tokio::spawn(async move {
+            let a3s_acp_lib::AcpAgentMessage::Authenticate(args) = rx.recv().await.unwrap() else {
+                panic!("expected authenticate");
+            };
+            assert_eq!(args.request.method_id.0.as_ref(), expected);
+            assert_eq!(args.request.meta.as_ref().unwrap()["headless"], true);
+            args.response_tx
+                .send(Ok(acp::AuthenticateResponse::default()))
+                .unwrap();
+        });
+        assert_eq!(
+            super::authenticate(&tx, &[method], None, true)
+                .await
+                .unwrap(),
+            expected_api_key
+        );
+        answer.await.unwrap();
+    }
+    let (tx, mut rx) = tokio::sync::mpsc::unbounded_channel();
+    let method = acp::AuthMethod::Agent(acp::AuthMethodAgent::new(
+        acp::AuthMethodId::new("a3s"),
+        "Browser login",
+    ));
+    assert!(
+        super::authenticate(&tx, &[method], None, true)
+            .await
+            .is_err()
+    );
+    assert!(rx.try_recv().is_err());
+}
+
 #[tokio::test(start_paused = true)]
 async fn signalled_exit_stops_waiting_on_a_log_flush_that_never_answers() {
     let prompt_unacknowledged = false;

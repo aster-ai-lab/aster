@@ -1,0 +1,18 @@
+{
+  "status": "native GO applied; custom-protocol host still waits final renderer",
+  "changed": [
+    "apps/studio/src-tauri/src/agent_plane/controllers.rs",
+    "apps/studio/src-tauri/src/agent_plane/events.rs",
+    "apps/studio/src-tauri/src/agent_plane/execution_status_tests.rs",
+    "apps/studio/src-tauri/src/agent_plane/goal_snapshot.rs",
+    "apps/studio/src-tauri/src/agent_plane/goal_snapshot_tests.rs",
+    "apps/studio/src-tauri/src/agent_plane/native_approval_alignment_tests.rs",
+    "apps/studio/src-tauri/src/agent_plane/native_approval_contract_tests.rs",
+    "apps/studio/src-tauri/src/agent_plane/native_local_acp_alignment_tests.rs",
+    "apps/studio/src-tauri/src/agent_plane/turns.rs",
+    "apps/studio/src-tauri/src/preferences.rs",
+    "apps/studio/src-tauri/src/preferences_device_alignment_tests.rs",
+    "apps/studio/src-tauri/src/providers_default_alignment_tests.rs"
+  ],
+  "source_files": 11250
+}

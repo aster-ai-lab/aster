@@ -10,7 +10,7 @@ use std::io::{Read, Write};
 use std::net::TcpStream;
 use std::path::{Component, Path, PathBuf};
 use std::process::Command;
-use std::sync::Mutex;
+use std::sync::{Mutex, OnceLock};
 use std::time::Duration;
 
 use serde::Serialize;
@@ -48,19 +48,67 @@ enum Phase {
     Ready(ReadyUpdate),
 }
 
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum UpdateFail {
     InProgress,
     NotPublished,
     UpToDate,
     Unavailable,
     Failed,
+    InvalidPackage,
+    ProductMismatch,
+    IntegrityFailed,
+    InstallFailed,
+    RestartFailed,
+}
+
+impl UpdateFail {
+    // Output-only today; retain the closed protocol parser for any input boundary.
+    #[allow(dead_code)]
+    fn parse(value: &str) -> Result<Self, String> {
+        match value {
+            "update_in_progress" => Ok(Self::InProgress),
+            "not_published" => Ok(Self::NotPublished),
+            "up_to_date" => Ok(Self::UpToDate),
+            crate::host_family::CAPABILITY_UNAVAILABLE => Ok(Self::Unavailable),
+            "update_failed" => Ok(Self::Failed),
+            "update_invalid_package" => Ok(Self::InvalidPackage),
+            "update_product_mismatch" => Ok(Self::ProductMismatch),
+            "update_integrity_failed" => Ok(Self::IntegrityFailed),
+            "update_install_failed" => Ok(Self::InstallFailed),
+            "update_restart_failed" => Ok(Self::RestartFailed),
+            _ => Err(format!("UpdateFail: unsupported value {value:?}")),
+        }
+    }
+
+    fn as_str(self) -> &'static str {
+        match self {
+            Self::InProgress => "update_in_progress",
+            Self::NotPublished => "not_published",
+            Self::UpToDate => "up_to_date",
+            Self::Unavailable => crate::host_family::CAPABILITY_UNAVAILABLE,
+            Self::Failed => "update_failed",
+            Self::InvalidPackage => "update_invalid_package",
+            Self::ProductMismatch => "update_product_mismatch",
+            Self::IntegrityFailed => "update_integrity_failed",
+            Self::InstallFailed => "update_install_failed",
+            Self::RestartFailed => "update_restart_failed",
+        }
+    }
 }
 
 static PHASE: Mutex<Phase> = Mutex::new(Phase::Idle);
 
+#[path = "app_updater/delivery_manifest.rs"]
+mod delivery_manifest;
+
+#[cfg(test)]
+#[path = "app_updater/delivery_tests.rs"]
+mod delivery_tests;
+
 struct BusyGuard {
     armed: bool,
+    previous: Option<ReadyUpdate>,
 }
 
 impl BusyGuard {
@@ -69,8 +117,14 @@ impl BusyGuard {
         if matches!(*phase, Phase::Busy) {
             return Err(UpdateFail::InProgress);
         }
-        *phase = Phase::Busy;
-        Ok(Self { armed: true })
+        let previous = match std::mem::replace(&mut *phase, Phase::Busy) {
+            Phase::Ready(ready) => Some(ready),
+            _ => None,
+        };
+        Ok(Self {
+            armed: true,
+            previous,
+        })
     }
 
     fn disarm(&mut self) {
@@ -85,7 +139,7 @@ impl Drop for BusyGuard {
         }
         if let Ok(mut phase) = PHASE.lock() {
             if matches!(*phase, Phase::Busy) {
-                *phase = Phase::Idle;
+                *phase = self.previous.take().map_or(Phase::Idle, Phase::Ready);
             }
         }
     }
@@ -122,11 +176,11 @@ pub async fn app_updater_install(app: AppHandle) -> Result<(), String> {
         Ok(Ok(())) => std::process::exit(0),
         Ok(Err(fail)) => {
             report(&app, Err(fail));
-            Ok(())
+            Err(fail.as_str().to_string())
         }
         Err(fail) => {
             report(&app, Err(fail));
-            Ok(())
+            Err(fail.as_str().to_string())
         }
     }
 }
@@ -159,9 +213,7 @@ fn report(app: &AppHandle, outcome: Result<(), UpdateFail>) {
     match outcome {
         Ok(()) | Err(UpdateFail::InProgress) => {}
         Err(UpdateFail::UpToDate) => emit(app, "app.updater.not_available", Value::Null),
-        Err(UpdateFail::NotPublished) => emit_error(app, "not_published"),
-        Err(UpdateFail::Unavailable) => emit_error(app, crate::host_family::CAPABILITY_UNAVAILABLE),
-        Err(UpdateFail::Failed) => emit_error(app, "update_failed"),
+        Err(fail) => emit_error(app, fail.as_str()),
     }
 }
 
@@ -169,27 +221,29 @@ fn check_and_download(app: &AppHandle) -> Result<(), UpdateFail> {
     require_update_family(crate::host_family::updates_supported(
         crate::host_family::current_family(),
     ))?;
+    let mut guard = BusyGuard::enter()?;
     let platform = desktop_platform().ok_or(UpdateFail::Failed)?;
     let origin = crate::org_login::default_origin();
     let release = fetch_current(&origin, platform)?;
     let local = env!("CARGO_PKG_VERSION");
     if !remote_is_newer(&release.version, local)? {
-        clear_ready()?;
+        if let Some(previous) = guard.previous.take() {
+            let _ = fs::remove_file(previous.path);
+        }
         return Err(UpdateFail::UpToDate);
     }
-    if let Some(ready) = matching_ready(&release)? {
+    if let Some(ready) = guard
+        .previous
+        .as_ref()
+        .filter(|ready| matching_ready(ready, &release))
+    {
         emit_available(app, &ready);
-        emit_downloaded(app, &ready);
-        return Ok(());
-    }
-    let bundle = running_bundle().ok_or(UpdateFail::Failed)?;
-    let mut guard = BusyGuard::enter()?;
-    if let Some(ready) = matching_ready(&release)? {
-        emit_available(app, &ready);
+        store_ready(ready.clone())?;
         emit_downloaded(app, &ready);
         guard.disarm();
         return Ok(());
     }
+    let bundle = running_bundle().ok_or(UpdateFail::Failed)?;
     let info = ready_from_meta(&release, PathBuf::new());
     emit_available(app, &info);
     let ready = download_release(app, &origin, platform, &release, &bundle)?;
@@ -204,6 +258,10 @@ fn install_staged(app: &AppHandle) -> Result<(), UpdateFail> {
         return Err(UpdateFail::Unavailable);
     }
     let ready = take_ready()?;
+    let mut guard = BusyGuard {
+        armed: true,
+        previous: Some(ready.clone()),
+    };
     let bundle = running_bundle().ok_or(UpdateFail::Failed)?;
     let mut last = 0u8;
     let hashed = hash_file(&ready.path, &ready.sha256, ready.size, &mut |percent| {
@@ -215,60 +273,43 @@ fn install_staged(app: &AppHandle) -> Result<(), UpdateFail> {
     });
     if hashed.is_err() {
         let _ = fs::remove_file(&ready.path);
-        return Err(UpdateFail::Failed);
+        guard.previous = None;
+        return Err(UpdateFail::IntegrityFailed);
     }
-    match classify(&ready.path)? {
-        Payload::Zip => install_zip(app, &ready, &bundle),
-        Payload::MachO => install_macho(app, &ready, &bundle),
+    let result = classify(&ready.path).and_then(|()| install_zip(app, &ready, &bundle));
+    match result {
+        Ok(()) => guard.disarm(),
+        Err(
+            UpdateFail::InvalidPackage | UpdateFail::ProductMismatch | UpdateFail::IntegrityFailed,
+        ) => {
+            guard.previous = None;
+            let _ = fs::remove_file(&ready.path);
+        }
+        _ => {}
     }
-}
-
-enum Payload {
-    Zip,
-    MachO,
+    result
 }
 
 fn install_zip(app: &AppHandle, ready: &ReadyUpdate, bundle: &Path) -> Result<(), UpdateFail> {
     let stage = stage_dir(bundle)?;
     let unpacked = stage.join("unpacked");
-    let new_app = extract_app_zip(&ready.path, &unpacked)?;
+    let new_app =
+        extract_app_zip(&ready.path, &unpacked).map_err(|_| UpdateFail::InvalidPackage)?;
     emit_percent(app, ready.size, ready.size, 80);
-    clear_quarantine(&new_app);
+    let tenant = crate::tenant::load()
+        .map_err(|_| UpdateFail::ProductMismatch)?
+        .slug;
+    delivery_manifest::validate(&new_app, &ready.version, &tenant)?;
     ensure_bundle_executable(&new_app)?;
-    let backup = replace_bundle(&new_app, bundle)?;
+    verify_signature(&new_app, &ready.version)?;
+    clear_quarantine(&new_app);
+    let backup = replace_bundle(&new_app, bundle).map_err(|_| UpdateFail::InstallFailed)?;
     emit_percent(app, ready.size, ready.size, 95);
     if schedule_relaunch(bundle, Some(&backup)).is_err() {
-        restore_bundle(bundle, &backup);
-        return Err(UpdateFail::Failed);
+        restore_bundle(bundle, &backup)?;
+        return Err(UpdateFail::RestartFailed);
     }
     Ok(())
-}
-
-fn install_macho(app: &AppHandle, ready: &ReadyUpdate, bundle: &Path) -> Result<(), UpdateFail> {
-    #[cfg(not(target_os = "macos"))]
-    {
-        let _ = (app, ready, bundle);
-        return Err(UpdateFail::Failed);
-    }
-    #[cfg(target_os = "macos")]
-    {
-        let exe = std::env::current_exe().map_err(|_| UpdateFail::Failed)?;
-        if !crate::macos_app::is_app_executable(&exe) {
-            return Err(UpdateFail::Failed);
-        }
-        let backup = replace_executable(&ready.path, &exe)?;
-        emit_percent(app, ready.size, ready.size, 80);
-        if codesign_adhoc(bundle).is_err() {
-            restore_file(&backup, &exe);
-            return Err(UpdateFail::Failed);
-        }
-        emit_percent(app, ready.size, ready.size, 95);
-        if schedule_relaunch(bundle, Some(&backup)).is_err() {
-            restore_file(&backup, &exe);
-            return Err(UpdateFail::Failed);
-        }
-        Ok(())
-    }
 }
 
 fn require_update_family(supported: bool) -> Result<(), UpdateFail> {
@@ -547,6 +588,9 @@ fn hash_file(
         }
         hasher.update(&buf[..read]);
         read_total += read as u64;
+        if read_total > total {
+            return Err(UpdateFail::IntegrityFailed);
+        }
         if total > 0 {
             let percent = ((read_total.saturating_mul(100)) / total).min(100) as u8;
             if percent != last {
@@ -566,17 +610,15 @@ fn hash_file(
     }
 }
 
-fn classify(path: &Path) -> Result<Payload, UpdateFail> {
+fn classify(path: &Path) -> Result<(), UpdateFail> {
     let mut file = File::open(path).map_err(|_| UpdateFail::Failed)?;
     let mut magic = [0u8; 4];
     file.read_exact(&mut magic)
         .map_err(|_| UpdateFail::Failed)?;
     if magic.starts_with(b"PK") {
-        Ok(Payload::Zip)
-    } else if is_macho(&magic) {
-        Ok(Payload::MachO)
+        Ok(())
     } else {
-        Err(UpdateFail::Failed)
+        Err(UpdateFail::InvalidPackage)
     }
 }
 
@@ -677,7 +719,7 @@ fn replace_bundle(new_app: &Path, current: &Path) -> Result<PathBuf, UpdateFail>
     backup_name.push(".previous");
     let backup = current.with_file_name(backup_name);
     if backup.exists() {
-        fs::remove_dir_all(&backup).map_err(|_| UpdateFail::Failed)?;
+        return Err(UpdateFail::InstallFailed);
     }
     fs::rename(current, &backup).map_err(|_| UpdateFail::Failed)?;
     if fs::rename(new_app, current).is_err() {
@@ -687,34 +729,20 @@ fn replace_bundle(new_app: &Path, current: &Path) -> Result<PathBuf, UpdateFail>
     Ok(backup)
 }
 
-fn restore_bundle(current: &Path, backup: &Path) {
+fn restore_bundle(current: &Path, backup: &Path) -> Result<(), UpdateFail> {
     let mut failed_name = current.file_name().unwrap_or_default().to_os_string();
-    failed_name.push(".failed");
+    failed_name.push(format!(".failed-{}", std::process::id()));
     let failed = current.with_file_name(failed_name);
-    if fs::rename(current, &failed).is_ok() {
-        if fs::rename(backup, current).is_ok() {
-            let _ = fs::remove_dir_all(&failed);
-        } else {
-            let _ = fs::rename(&failed, current);
-        }
+    if failed.exists() {
+        return Err(UpdateFail::InstallFailed);
     }
-}
-
-fn replace_executable(source: &Path, dest: &Path) -> Result<PathBuf, UpdateFail> {
-    let backup = dest.with_extension("previous");
-    fs::copy(dest, &backup).map_err(|_| UpdateFail::Failed)?;
-    let temporary = dest.with_extension("new");
-    fs::copy(source, &temporary).map_err(|_| UpdateFail::Failed)?;
-    set_executable(&temporary)?;
-    if fs::rename(&temporary, dest).is_err() {
-        let _ = fs::remove_file(&temporary);
-        return Err(UpdateFail::Failed);
+    fs::rename(current, &failed).map_err(|_| UpdateFail::InstallFailed)?;
+    if fs::rename(backup, current).is_err() {
+        let _ = fs::rename(&failed, current);
+        return Err(UpdateFail::InstallFailed);
     }
-    Ok(backup)
-}
-
-fn restore_file(backup: &Path, dest: &Path) {
-    let _ = fs::rename(backup, dest);
+    let _ = fs::remove_dir_all(&failed);
+    Ok(())
 }
 
 fn set_executable(path: &Path) -> Result<(), UpdateFail> {
@@ -735,34 +763,68 @@ fn set_executable(path: &Path) -> Result<(), UpdateFail> {
 }
 
 fn ensure_bundle_executable(app: &Path) -> Result<(), UpdateFail> {
-    let macos = app.join("Contents/MacOS");
-    let entries = fs::read_dir(&macos).map_err(|_| UpdateFail::Failed)?;
-    let mut found = false;
-    for entry in entries {
-        let entry = entry.map_err(|_| UpdateFail::Failed)?;
-        if entry.path().is_file() {
-            set_executable(&entry.path())?;
-            found = true;
+    for name in [
+        "Contents/MacOS/Studio",
+        "Contents/Resources/agent/a3s-code-acp",
+        "Contents/Resources/agent/a3s-office",
+    ] {
+        let path = app.join(name);
+        if !path.is_file() {
+            return Err(UpdateFail::InvalidPackage);
         }
+        set_executable(&path)?;
     }
-    if found {
-        Ok(())
-    } else {
-        Err(UpdateFail::Failed)
-    }
+    Ok(())
 }
 
-fn codesign_adhoc(bundle: &Path) -> Result<(), UpdateFail> {
+fn verify_signature(bundle: &Path, version: &str) -> Result<(), UpdateFail> {
     let output = Command::new("/usr/bin/codesign")
-        .args(["--force", "--sign", "-"])
+        .args(["--verify", "--deep", "--strict"])
         .arg(bundle)
         .output()
-        .map_err(|_| UpdateFail::Failed)?;
-    if output.status.success() {
-        Ok(())
-    } else {
-        Err(UpdateFail::Failed)
+        .map_err(|_| UpdateFail::IntegrityFailed)?;
+    if !output.status.success() {
+        return Err(UpdateFail::IntegrityFailed);
     }
+    for (key, expected) in [
+        ("CFBundleExecutable", "Studio"),
+        ("CFBundleIdentifier", "dev.a3s.studio"),
+        ("CFBundleShortVersionString", version),
+    ] {
+        let output = Command::new("/usr/bin/plutil")
+            .args(["-extract", key, "raw", "-o", "-"])
+            .arg(bundle.join("Contents/Info.plist"))
+            .output()
+            .map_err(|_| UpdateFail::ProductMismatch)?;
+        if !output.status.success()
+            || std::str::from_utf8(&output.stdout).map(str::trim) != Ok(expected)
+        {
+            return Err(UpdateFail::ProductMismatch);
+        }
+    }
+    Ok(())
+}
+
+pub(crate) fn installed_tenant(exe: &Path) -> std::io::Result<Option<String>> {
+    static IDENTITY: OnceLock<(PathBuf, String)> = OnceLock::new();
+    cached_installed_tenant(&IDENTITY, exe, delivery_manifest::installed_tenant)
+        .map_err(|fail| std::io::Error::new(std::io::ErrorKind::InvalidData, fail.as_str()))
+}
+
+fn cached_installed_tenant(
+    cache: &OnceLock<(PathBuf, String)>,
+    exe: &Path,
+    validate: impl FnOnce(&Path) -> Result<Option<String>, UpdateFail>,
+) -> Result<Option<String>, UpdateFail> {
+    if let Some((_, tenant)) = cache.get().filter(|(path, _)| path == exe) {
+        return Ok(Some(tenant.clone()));
+    }
+    let tenant = validate(exe)?;
+    if let Some(tenant) = &tenant {
+        // An installed process keeps one generation until the updater exits it.
+        let _ = cache.set((exe.to_path_buf(), tenant.clone()));
+    }
+    Ok(tenant)
 }
 
 fn clear_quarantine(path: &Path) {
@@ -772,16 +834,37 @@ fn clear_quarantine(path: &Path) {
         .status();
 }
 
-fn schedule_relaunch(bundle: &Path, backup: Option<&Path>) -> Result<(), UpdateFail> {
+const RELAUNCH_SCRIPT: &str = r#"while kill -0 "$1" 2>/dev/null; do sleep 0.2; done
+sleep 0.3
+if "$4" "$2"; then
+  if [ -n "$3" ]; then rm -rf "$3"; fi
+else
+  if [ -n "$3" ] && [ -d "$3" ]; then
+    failed="$2.failed-$$"
+    if mv "$2" "$failed"; then
+      if mv "$3" "$2"; then "$4" "$2" || true
+      else mv "$failed" "$2" || true; fi
+    fi
+  fi
+  exit 1
+fi"#;
+
+fn relaunch_command(
+    bundle: &Path,
+    backup: Option<&Path>,
+    parent_pid: u32,
+    open_program: &Path,
+) -> Command {
     let backup = backup.unwrap_or(Path::new(""));
     let mut command = Command::new("/bin/sh");
     command
         .arg("-c")
-        .arg("while kill -0 \"$1\" 2>/dev/null; do sleep 0.2; done; sleep 0.3; /usr/bin/open \"$2\"; if [ -n \"$3\" ]; then rm -rf \"$3\"; fi")
+        .arg(RELAUNCH_SCRIPT)
         .arg("a3s-update")
-        .arg(std::process::id().to_string())
+        .arg(parent_pid.to_string())
         .arg(bundle)
         .arg(backup)
+        .arg(open_program)
         .stdin(std::process::Stdio::null())
         .stdout(std::process::Stdio::null())
         .stderr(std::process::Stdio::null());
@@ -790,7 +873,18 @@ fn schedule_relaunch(bundle: &Path, backup: Option<&Path>) -> Result<(), UpdateF
         use std::os::unix::process::CommandExt;
         command.process_group(0);
     }
-    command.spawn().map_err(|_| UpdateFail::Failed)?;
+    command
+}
+
+fn schedule_relaunch(bundle: &Path, backup: Option<&Path>) -> Result<(), UpdateFail> {
+    relaunch_command(
+        bundle,
+        backup,
+        std::process::id(),
+        Path::new("/usr/bin/open"),
+    )
+    .spawn()
+    .map_err(|_| UpdateFail::RestartFailed)?;
     Ok(())
 }
 
@@ -816,22 +910,10 @@ fn stage_dir(bundle: &Path) -> Result<PathBuf, UpdateFail> {
         .ok_or(UpdateFail::Failed)
 }
 
-fn matching_ready(release: &ReleaseMeta) -> Result<Option<ReadyUpdate>, UpdateFail> {
-    let phase = PHASE.lock().map_err(|_| UpdateFail::Failed)?;
-    let Phase::Ready(ready) = &*phase else {
-        return Ok(None);
-    };
-    if ready.version != release.version || !digest_matches(&ready.sha256, &release.sha256) {
-        return Ok(None);
-    }
-    let len_ok = fs::metadata(&ready.path)
-        .map(|meta| meta.len() == ready.size)
-        .unwrap_or(false);
-    if ready.path.is_file() && len_ok {
-        Ok(Some(ready.clone()))
-    } else {
-        Ok(None)
-    }
+fn matching_ready(ready: &ReadyUpdate, release: &ReleaseMeta) -> bool {
+    ready.version == release.version
+        && digest_matches(&ready.sha256, &release.sha256)
+        && fs::metadata(&ready.path).is_ok_and(|meta| meta.is_file() && meta.len() == ready.size)
 }
 
 fn store_ready(ready: ReadyUpdate) -> Result<(), UpdateFail> {
@@ -842,21 +924,18 @@ fn store_ready(ready: ReadyUpdate) -> Result<(), UpdateFail> {
 
 fn take_ready() -> Result<ReadyUpdate, UpdateFail> {
     let mut phase = PHASE.lock().map_err(|_| UpdateFail::Failed)?;
-    match std::mem::replace(&mut *phase, Phase::Idle) {
+    match std::mem::replace(&mut *phase, Phase::Busy) {
         Phase::Ready(ready) => Ok(ready),
         other => {
+            let fail = if matches!(other, Phase::Busy) {
+                UpdateFail::InProgress
+            } else {
+                UpdateFail::InvalidPackage
+            };
             *phase = other;
-            Err(UpdateFail::Failed)
+            Err(fail)
         }
     }
-}
-
-fn clear_ready() -> Result<(), UpdateFail> {
-    let mut phase = PHASE.lock().map_err(|_| UpdateFail::Failed)?;
-    if let Phase::Ready(ready) = std::mem::replace(&mut *phase, Phase::Idle) {
-        let _ = fs::remove_file(ready.path);
-    }
-    Ok(())
 }
 
 fn ready_from_meta(release: &ReleaseMeta, path: PathBuf) -> ReadyUpdate {
@@ -1074,6 +1153,7 @@ fn safe_rel(name: &str) -> Option<PathBuf> {
     }
 }
 
+#[cfg(test)]
 fn is_macho(magic: &[u8; 4]) -> bool {
     let le = u32::from_le_bytes(*magic);
     let be = u32::from_be_bytes(*magic);

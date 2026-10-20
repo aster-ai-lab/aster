@@ -19,6 +19,7 @@ function WorkbenchProjectTray({
   locked,
   goalPaused,
   goalClearable,
+  goalSnapshot,
   files,
   ...args
 }: WorkbenchProjectSelectionArgs & {
@@ -26,6 +27,7 @@ function WorkbenchProjectTray({
   onClearGoal: () => void
   goalPaused?: boolean
   goalClearable?: boolean
+  goalSnapshot?: ComponentProps<typeof TrayView>['goalSnapshot']
   files?: ComponentProps<typeof TrayView>['files']
 }) {
   const selection = useWorkbenchProjectSelection({ ...args, locked })
@@ -36,6 +38,7 @@ function WorkbenchProjectTray({
       goal={goal}
       goalPaused={goalPaused}
       goalClearable={goalClearable}
+      goalSnapshot={goalSnapshot}
       files={files}
       onClearGoal={onClearGoal}
     />
@@ -131,6 +134,50 @@ describe('WorkbenchProjectTray', () => {
     fireEvent.click(screen.getByRole('button', { name: 'pick alpha' }))
     expect(onWorkspaceChange).toHaveBeenCalledWith('p1')
     expect(readPendingProject()).toBeNull()
+  })
+
+  it('uses current typed goal details and clears terminal or unavailable controls without deleting history', () => {
+    const active = {
+      status: 'known' as const,
+      sessionId: 's1',
+      acpSessionId: 'acp',
+      executionId: 'run',
+      goal: {
+        goalId: 'g',
+        goalRevision: 1,
+        goalSequence: 2,
+        planRevision: 1,
+        state: 'active' as const,
+        objective: '当前目标',
+        tick: 'needs_input' as const
+      }
+    }
+    const onClear = vi.fn()
+    const view = render(<WorkbenchProjectTray locked goal="过期目标" goalSnapshot={active} onClearGoal={onClear} />)
+    expect(screen.getByRole('toolbar')).toHaveTextContent('当前目标')
+    expect(screen.queryByText('过期目标')).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: '移除目标' })).not.toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'workbench.goal.details' }))
+    expect(screen.getByText('workbench.goal.tick.needs_input')).toBeVisible()
+    view.rerender(
+      <WorkbenchProjectTray
+        locked
+        goal="过期目标"
+        goalSnapshot={{ ...active, goal: { ...active.goal, state: 'completed', tick: 'complete' } }}
+        onClearGoal={onClear}
+      />
+    )
+    expect(document.querySelector('[data-composer-goal]')).toBeNull()
+    view.rerender(
+      <WorkbenchProjectTray
+        locked
+        goal="过期目标"
+        goalSnapshot={{ ...active, status: 'unavailable', goal: null, reason: 'stale_binding' }}
+        onClearGoal={onClear}
+      />
+    )
+    expect(document.querySelector('[data-composer-goal]')).toBeNull()
+    expect(onClear).not.toHaveBeenCalled()
   })
 
   it('keeps the goal chip in the tray', () => {

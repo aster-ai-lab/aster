@@ -1,0 +1,276 @@
+{
+  "baseline": "eb17c6ce5aa4c9ef785c12d56515e146866b1506",
+  "scopeFiles": 59,
+  "before": [
+    {
+      "file": "src/renderer/pages/agents/AgentComposerSlot.tsx",
+      "code": 2339,
+      "line": 89,
+      "text": "Property 'restoreFiles' does not exist on type 'AgentSessionEditDraft'.",
+      "target": "restoreFiles"
+    },
+    {
+      "file": "src/renderer/pages/agents/__tests__/AgentPage.test.tsx",
+      "code": 2339,
+      "line": 2186,
+      "text": "Property 'mock' does not exist on type '(arg: string | ToastConfig) => string'.",
+      "target": "mock"
+    },
+    {
+      "file": "src/renderer/pages/agents/components/AgentRightPane/AgentRightPane.tsx",
+      "code": 2741,
+      "line": 1727,
+      "text": "Property 'onStreamData' is missing in type '{ isStreaming: any; text: any; }' but required in type '{ isStreaming: boolean; text: string; onStreamData: ((delta: string) => void) | undefined; }'.",
+      "target": "CloudStreamingText"
+    },
+    {
+      "file": "src/renderer/pages/agents/components/AgentRightPane/AgentRightPane.tsx",
+      "code": 2339,
+      "line": 1727,
+      "text": "Property 'isStreaming' does not exist on type 'AgentRightPaneStatus'.",
+      "target": "isStreaming"
+    },
+    {
+      "file": "src/renderer/pages/agents/components/AgentRightPane/AgentRightPane.tsx",
+      "code": 2339,
+      "line": 1727,
+      "text": "Property 'lastStreamedText' does not exist on type 'AgentRightPaneStatus'.",
+      "target": "lastStreamedText"
+    },
+    {
+      "file": "src/renderer/pages/agents/components/AgentRightPane/AgentRightPane.tsx",
+      "code": 2339,
+      "line": 1741,
+      "text": "Property 'session' does not exist on type 'AgentRightPaneStatus'.",
+      "target": "session"
+    },
+    {
+      "file": "src/renderer/pages/agents/components/AgentRightPane/AgentRightPane.tsx",
+      "code": 2345,
+      "line": 1863,
+      "text": "Argument of type 'unknown' is not assignable to parameter of type 'UIMessagePart<UIDataTypes, UITools>'.",
+      "target": "part"
+    },
+    {
+      "file": "src/renderer/pages/agents/taskConversation/turn.ts",
+      "code": 2345,
+      "line": 741,
+      "text": "Argument of type 'CherryMessagePart' is not assignable to parameter of type 'DynamicToolUIPart | ({ type: `tool-${string}`; } & UIToolInvocation<UITool>)'.\n  Type 'TextUIPart' is not assignable to type 'DynamicToolUIPart | ({ type: `tool-${string}`; } & UIToolInvocation<UITool>)'.\n    Type 'TextUIPart' is not assignable to type '{ type: `tool-${string}`; } & { toolCallId: string; title?: string | undefined; toolMetadata?: JSONObject | undefined; providerExecuted?: boolean | undefined; } & { state: \"output-denied\"; ... 4 more ...; approval: { ...; }; }'.\n      Type 'TextUIPart' is not assignable to type '{ type: `tool-${string}`; }'.\n        Types of property 'type' are incompatible.\n          Type '\"text\"' is not assignable to type '`tool-${string}`'.",
+      "target": "part"
+    },
+    {
+      "file": "src/renderer/pages/agents/taskConversation/TaskConversationMessage.tsx",
+      "code": 1360,
+      "line": 139,
+      "text": "Type '{ a: ({ children, href }: { children?: ReactNode; href?: string; }) => JSX.Element; code: ({ children, className }: { children?: ReactNode; className?: string; }) => JSX.Element; inlineCode: ({ children, className }: { children?: ReactNode; className?: string; }) => JSX.Element; p: ({ children }: { children?: ReactN...' does not satisfy the expected type 'Partial<Components>'.\n  Property 'a' is incompatible with index signature.\n    Type '({ children, href }: { children?: ReactNode; href?: string | undefined; }) => Element' is not assignable to type 'keyof IntrinsicElements | ComponentType<Record<string, unknown> & ExtraProps> | undefined'.\n      Type '({ children, href }: { children?: ReactNode; href?: string | undefined; }) => Element' is not assignable to type 'FunctionComponent<Record<string, unknown> & ExtraProps>'.\n        Types of parameters '__0' and 'props' are incompatible.\n          Type 'Record<string, unknown> & ExtraProps' has no properties in common with type '{ children?: ReactNode; href?: string | undefined; }'.",
+      "target": "satisfies"
+    },
+    {
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "code": 2352,
+      "line": 307,
+      "text": "Conversion of type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; state: \"output-available\"; input: {}; output: string; files: string[]; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.\n  Object literal may only specify known properties, and 'files' does not exist in type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; title?: string | undefined; toolMetadata?: JSONObject | undefined; providerExecuted?: boolean | undefined; } & { ...; }'.",
+      "target": "files"
+    },
+    {
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "code": 2352,
+      "line": 413,
+      "text": "Conversion of type '{ type: \"tool-write_file\"; state: \"output-available\"; input: { file_path: string; content: string; }; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.\n  Type '{ type: \"tool-write_file\"; state: \"output-available\"; input: { file_path: string; content: string; }; }' is not comparable to type 'CherryMessagePart'.\n    Type '{ type: \"tool-write_file\"; state: \"output-available\"; input: { file_path: string; content: string; }; }' is not comparable to type '{ type: `tool-${string}`; } & { toolCallId: string; title?: string | undefined; toolMetadata?: JSONObject | undefined; providerExecuted?: boolean | undefined; } & { state: \"output-available\"; ... 6 more ...; approval?: { ...; } | undefined; }'.\n      Property 'toolCallId' is missing in type '{ type: \"tool-write_file\"; state: \"output-available\"; input: { file_path: string; content: string; }; }' but required in type '{ toolCallId: string; title?: string | undefined; toolMetadata?: JSONObject | undefined; providerExecuted?: boolean | undefined; }'.",
+      "target": "[ { type: 'tool-write_file', state: 'output-available', input: { file_path: '/tmp/a.ts', content: 'next\\n' } } ] as CherryMessagePart[]"
+    },
+    {
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "code": 2493,
+      "line": 1098,
+      "text": "Tuple type '[]' of length '0' has no element at index '1'.",
+      "target": "1"
+    },
+    {
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "code": 2493,
+      "line": 1109,
+      "text": "Tuple type '[]' of length '0' has no element at index '1'.",
+      "target": "1"
+    },
+    {
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "code": 2493,
+      "line": 1146,
+      "text": "Tuple type '[]' of length '0' has no element at index '1'.",
+      "target": "1"
+    },
+    {
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "code": 2352,
+      "line": 1435,
+      "text": "Conversion of type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; state: \"output-available\"; input: {}; files: string[]; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.\n  Object literal may only specify known properties, and 'files' does not exist in type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; title?: string | undefined; toolMetadata?: JSONObject | undefined; providerExecuted?: boolean | undefined; } & { ...; }'.",
+      "target": "files"
+    },
+    {
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "code": 2352,
+      "line": 1513,
+      "text": "Conversion of type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; state: \"output-error\"; input: { file_path: string; }; output: { filePath: string; }; errorText: string; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.\n  Type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; state: \"output-error\"; input: { file_path: string; }; output: { filePath: string; }; errorText: string; }' is not comparable to type 'CherryMessagePart'.\n    Types of property 'output' are incompatible.\n      Type '{ filePath: string; }' is not comparable to type 'undefined'.",
+      "target": "[ { type: 'dynamic-tool', toolName: 'Edit', toolCallId: 'e2', state: 'output-error', input: { file_path: '/workspace/notes.md' }, output: { filePath: '/workspace/notes.md' }, errorText: 'disk full' } ] as CherryMessagePart[]"
+    },
+    {
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "code": 2352,
+      "line": 1556,
+      "text": "Conversion of type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; state: \"output-available\"; input: {}; output: string; files: string[]; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.\n  Object literal may only specify known properties, and 'files' does not exist in type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; title?: string | undefined; toolMetadata?: JSONObject | undefined; providerExecuted?: boolean | undefined; } & { ...; }'.",
+      "target": "files"
+    },
+    {
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "code": 2352,
+      "line": 1592,
+      "text": "Conversion of type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; state: \"output-error\"; input: {}; errorText: string; files: string[]; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.\n  Object literal may only specify known properties, and 'files' does not exist in type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; title?: string | undefined; toolMetadata?: JSONObject | undefined; providerExecuted?: boolean | undefined; } & { ...; }'.",
+      "target": "files"
+    },
+    {
+      "file": "src/renderer/pages/agents/__tests__/WorkbenchPermissionPicker.test.tsx",
+      "code": 2769,
+      "line": 24,
+      "text": "No overload matches this call.\n  The last overload gave the following error.\n    Type '(open: boolean) => void' is not assignable to type '(_open: boolean) => undefined'.\n      Type 'void' is not assignable to type 'undefined'.",
+      "target": "onOpenChange"
+    },
+    {
+      "file": "src/renderer/components/chat/messages/frame/MessageFrame.tsx",
+      "code": 2304,
+      "line": 432,
+      "text": "Cannot find name 'isLatestAssistantMessage'.",
+      "target": "isLatestAssistantMessage"
+    }
+  ],
+  "after": [
+    {
+      "file": "src/renderer/pages/agents/__tests__/AgentPage.test.tsx",
+      "code": 2339,
+      "line": 2187,
+      "text": "Property 'mock' does not exist on type '(arg: string | ToastConfig) => string'.",
+      "target": "mock"
+    },
+    {
+      "file": "src/renderer/pages/agents/components/AgentRightPane/AgentRightPane.tsx",
+      "code": 2741,
+      "line": 1826,
+      "text": "Property 'onStreamData' is missing in type '{ isStreaming: any; text: any; }' but required in type '{ isStreaming: boolean; text: string; onStreamData: ((delta: string) => void) | undefined; }'.",
+      "target": "CloudStreamingText"
+    },
+    {
+      "file": "src/renderer/pages/agents/components/AgentRightPane/AgentRightPane.tsx",
+      "code": 2339,
+      "line": 1826,
+      "text": "Property 'isStreaming' does not exist on type 'AgentRightPaneStatus'.",
+      "target": "isStreaming"
+    },
+    {
+      "file": "src/renderer/pages/agents/components/AgentRightPane/AgentRightPane.tsx",
+      "code": 2339,
+      "line": 1826,
+      "text": "Property 'lastStreamedText' does not exist on type 'AgentRightPaneStatus'.",
+      "target": "lastStreamedText"
+    },
+    {
+      "file": "src/renderer/pages/agents/components/AgentRightPane/AgentRightPane.tsx",
+      "code": 2339,
+      "line": 1840,
+      "text": "Property 'session' does not exist on type 'AgentRightPaneStatus'.",
+      "target": "session"
+    },
+    {
+      "file": "src/renderer/pages/agents/components/AgentRightPane/AgentRightPane.tsx",
+      "code": 2345,
+      "line": 1962,
+      "text": "Argument of type 'unknown' is not assignable to parameter of type 'UIMessagePart<UIDataTypes, UITools>'.",
+      "target": "part"
+    },
+    {
+      "file": "src/renderer/pages/agents/taskConversation/turn.ts",
+      "code": 2345,
+      "line": 751,
+      "text": "Argument of type 'CherryMessagePart' is not assignable to parameter of type 'DynamicToolUIPart | ({ type: `tool-${string}`; } & UIToolInvocation<UITool>)'.\n  Type 'TextUIPart' is not assignable to type 'DynamicToolUIPart | ({ type: `tool-${string}`; } & UIToolInvocation<UITool>)'.\n    Type 'TextUIPart' is not assignable to type '{ type: `tool-${string}`; } & { toolCallId: string; title?: string | undefined; toolMetadata?: JSONObject | undefined; providerExecuted?: boolean | undefined; } & { state: \"output-denied\"; ... 4 more ...; approval: { ...; }; }'.\n      Type 'TextUIPart' is not assignable to type '{ type: `tool-${string}`; }'.\n        Types of property 'type' are incompatible.\n          Type '\"text\"' is not assignable to type '`tool-${string}`'.",
+      "target": "part"
+    },
+    {
+      "file": "src/renderer/pages/agents/taskConversation/TaskConversationMessage.tsx",
+      "code": 1360,
+      "line": 142,
+      "text": "Type '{ a: ({ children, href }: { children?: ReactNode; href?: string; }) => JSX.Element; code: ({ children, className }: { children?: ReactNode; className?: string; }) => JSX.Element; inlineCode: ({ children, className }: { children?: ReactNode; className?: string; }) => JSX.Element; p: ({ children }: { children?: ReactN...' does not satisfy the expected type 'Partial<Components>'.\n  Property 'a' is incompatible with index signature.\n    Type '({ children, href }: { children?: ReactNode; href?: string | undefined; }) => Element' is not assignable to type 'keyof IntrinsicElements | ComponentType<Record<string, unknown> & ExtraProps> | undefined'.\n      Type '({ children, href }: { children?: ReactNode; href?: string | undefined; }) => Element' is not assignable to type 'FunctionComponent<Record<string, unknown> & ExtraProps>'.\n        Types of parameters '__0' and 'props' are incompatible.\n          Type 'Record<string, unknown> & ExtraProps' has no properties in common with type '{ children?: ReactNode; href?: string | undefined; }'.",
+      "target": "satisfies"
+    },
+    {
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "code": 2352,
+      "line": 345,
+      "text": "Conversion of type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; state: \"output-available\"; input: {}; output: string; files: string[]; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.\n  Object literal may only specify known properties, and 'files' does not exist in type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; title?: string | undefined; toolMetadata?: JSONObject | undefined; providerExecuted?: boolean | undefined; } & { ...; }'.",
+      "target": "files"
+    },
+    {
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "code": 2352,
+      "line": 451,
+      "text": "Conversion of type '{ type: \"tool-write_file\"; state: \"output-available\"; input: { file_path: string; content: string; }; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.\n  Type '{ type: \"tool-write_file\"; state: \"output-available\"; input: { file_path: string; content: string; }; }' is not comparable to type 'CherryMessagePart'.\n    Type '{ type: \"tool-write_file\"; state: \"output-available\"; input: { file_path: string; content: string; }; }' is not comparable to type '{ type: `tool-${string}`; } & { toolCallId: string; title?: string | undefined; toolMetadata?: JSONObject | undefined; providerExecuted?: boolean | undefined; } & { state: \"output-available\"; ... 6 more ...; approval?: { ...; } | undefined; }'.\n      Property 'toolCallId' is missing in type '{ type: \"tool-write_file\"; state: \"output-available\"; input: { file_path: string; content: string; }; }' but required in type '{ toolCallId: string; title?: string | undefined; toolMetadata?: JSONObject | undefined; providerExecuted?: boolean | undefined; }'.",
+      "target": "[ { type: 'tool-write_file', state: 'output-available', input: { file_path: '/tmp/a.ts', content: 'next\\n' } } ] as CherryMessagePart[]"
+    },
+    {
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "code": 2493,
+      "line": 1136,
+      "text": "Tuple type '[]' of length '0' has no element at index '1'.",
+      "target": "1"
+    },
+    {
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "code": 2493,
+      "line": 1147,
+      "text": "Tuple type '[]' of length '0' has no element at index '1'.",
+      "target": "1"
+    },
+    {
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "code": 2493,
+      "line": 1184,
+      "text": "Tuple type '[]' of length '0' has no element at index '1'.",
+      "target": "1"
+    },
+    {
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "code": 2352,
+      "line": 1473,
+      "text": "Conversion of type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; state: \"output-available\"; input: {}; files: string[]; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.\n  Object literal may only specify known properties, and 'files' does not exist in type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; title?: string | undefined; toolMetadata?: JSONObject | undefined; providerExecuted?: boolean | undefined; } & { ...; }'.",
+      "target": "files"
+    },
+    {
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "code": 2352,
+      "line": 1551,
+      "text": "Conversion of type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; state: \"output-error\"; input: { file_path: string; }; output: { filePath: string; }; errorText: string; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.\n  Type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; state: \"output-error\"; input: { file_path: string; }; output: { filePath: string; }; errorText: string; }' is not comparable to type 'CherryMessagePart'.\n    Types of property 'output' are incompatible.\n      Type '{ filePath: string; }' is not comparable to type 'undefined'.",
+      "target": "[ { type: 'dynamic-tool', toolName: 'Edit', toolCallId: 'e2', state: 'output-error', input: { file_path: '/workspace/notes.md' }, output: { filePath: '/workspace/notes.md' }, errorText: 'disk full' } ] as CherryMessagePart[]"
+    },
+    {
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "code": 2352,
+      "line": 1594,
+      "text": "Conversion of type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; state: \"output-available\"; input: {}; output: string; files: string[]; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.\n  Object literal may only specify known properties, and 'files' does not exist in type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; title?: string | undefined; toolMetadata?: JSONObject | undefined; providerExecuted?: boolean | undefined; } & { ...; }'.",
+      "target": "files"
+    },
+    {
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "code": 2352,
+      "line": 1630,
+      "text": "Conversion of type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; state: \"output-error\"; input: {}; errorText: string; files: string[]; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.\n  Object literal may only specify known properties, and 'files' does not exist in type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; title?: string | undefined; toolMetadata?: JSONObject | undefined; providerExecuted?: boolean | undefined; } & { ...; }'.",
+      "target": "files"
+    },
+    {
+      "file": "src/renderer/pages/agents/__tests__/WorkbenchPermissionPicker.test.tsx",
+      "code": 2769,
+      "line": 24,
+      "text": "No overload matches this call.\n  The last overload gave the following error.\n    Type '(open: boolean) => void' is not assignable to type '(_open: boolean) => undefined'.\n      Type 'void' is not assignable to type 'undefined'.",
+      "target": "onOpenChange"
+    }
+  ],
+  "added": [],
+  "limitation": "Scoped compiler diagnostics with actual pre-change tracked source overlays; whole-tree tsc remains nonzero independently."
+}

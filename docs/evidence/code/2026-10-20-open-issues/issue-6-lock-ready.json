@@ -1,0 +1,23 @@
+{
+  "lock_refresh_command": [
+    "cargo",
+    "metadata",
+    "--offline",
+    "--format-version",
+    "1",
+    "--filter-platform",
+    "aarch64-apple-darwin"
+  ],
+  "exit_code": 0,
+  "cargo_lock_sha256": "8c722a2c9de1c26851077c7a7ebfdeb785e12639a13ac738f56613427a105ddf",
+  "cargo_lock_diff_sha256": "32caa6c0e798117901377ba78634ccf8e241c441c3d07916a39ab212f1e73149",
+  "existing_aster_dependency_additions_preserved": [
+    "flate2",
+    "portable-pty",
+    "reqwest 0.12.24",
+    "sha2 0.10.9",
+    "tar",
+    "zip 2.4.2"
+  ],
+  "remote_a3s_lock_entries_remaining": 0
+}

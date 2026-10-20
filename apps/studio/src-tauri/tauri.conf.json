@@ -25,8 +25,8 @@
     "macOS": {
       "signingIdentity": "-"
     },
-    "resources": [
-      "resources/agent/*"
-    ]
+    "resources": {
+      "resources/agent/": "agent/"
+    }
   }
 }

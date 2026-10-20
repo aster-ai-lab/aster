@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react'
+import i18next from 'i18next'
 import { useEffect, useState } from 'react'
 import { describe, expect, it, vi } from 'vitest'
 
@@ -51,6 +52,31 @@ function renderComposer(overrides: readonly ComposerOverride[], onMount: () => v
 }
 
 describe('ComposerCore', () => {
+  it.each([
+    { name: 'missing approval card', overrides: [] },
+    { name: 'permission card', overrides: [permissionOverride] },
+    { name: 'question card', overrides: [askUserQuestionOverride] }
+  ])('keeps a scoped Stop reachable through $name', async ({ overrides }) => {
+    const stop = vi.fn(async () => undefined)
+    const view = render(
+      <ComposerContextProvider value={{ overrides, stop }}>
+        <ComposerCore fallback={<textarea aria-label="waiting input" />} />
+      </ComposerContextProvider>
+    )
+    const button = screen.getByRole('button', { name: i18next.t('common.stop') })
+    expect(button.closest('[inert]')).toBeNull()
+    fireEvent.click(button)
+    expect(stop).toHaveBeenCalledOnce()
+    // An abort acknowledgement is not native terminal settlement.
+    expect(screen.getByRole('button', { name: i18next.t('common.stop') })).toBeInTheDocument()
+    view.rerender(
+      <ComposerContextProvider value={{ overrides: [] }}>
+        <ComposerCore fallback={<textarea aria-label="waiting input" />} />
+      </ComposerContextProvider>
+    )
+    expect(screen.queryByRole('button', { name: i18next.t('common.stop') })).not.toBeInTheDocument()
+  })
+
   it('keeps the primary composer instance and editor state mounted across approval overrides', () => {
     const onMount = vi.fn()
     const onUnmount = vi.fn()

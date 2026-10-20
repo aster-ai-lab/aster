@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "just",
+    "build-studio"
+  ],
+  "rc": 143,
+  "status": "completed",
+  "elapsed": 544.2948701381683,
+  "scope": "Root pinned workspace ACP+Office then Studio, exact just recipe"
+}

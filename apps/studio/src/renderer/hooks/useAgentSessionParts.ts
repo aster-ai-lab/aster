@@ -10,8 +10,9 @@
  * messages. Row fields carry identity, role, status, and timestamps.
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 
+import { loggerService } from '@logger'
 import { useSharedCacheSelector } from '@renderer/data/hooks/useCache'
 import {
   useDataChange,
@@ -29,6 +30,7 @@ import type { CherryMessagePart, CherryUIMessage } from '@shared/data/types/mess
 import { useConversationHistoryQuery } from './useConversationHistoryQuery'
 
 const PAGE_SIZE = 50
+const logger = loggerService.withContext('useAgentSessionParts')
 
 interface CachedAgentSessionMessage {
   liveParts: CherryMessagePart[] | undefined
@@ -192,6 +194,11 @@ export function useAgentSessionParts(sessionId: string, options: { enabled?: boo
   const projectionOwnerToken = useMemo(() => Symbol(sessionId), [sessionId])
   const currentProjectionOwnerTokenRef = useRef(projectionOwnerToken)
   currentProjectionOwnerTokenRef.current = projectionOwnerToken
+  const reservationOwnerTokenRef = useRef(projectionOwnerToken)
+  // A suspended selection must not take ownership of the visible session's reservation callbacks.
+  useLayoutEffect(() => {
+    reservationOwnerTokenRef.current = projectionOwnerToken
+  }, [projectionOwnerToken])
   // `updatedAt` is the persisted row revision. Reuse unchanged projections so
   // downstream WeakMap caches and message-group memoization survive revalidation.
   const projectMessages = useCallback(
@@ -267,6 +274,7 @@ export function useAgentSessionParts(sessionId: string, options: { enabled?: boo
 
   const seedReservedMessages = useCallback(
     async (messages: CherryUIMessage[]): Promise<void> => {
+      if (reservationOwnerTokenRef.current !== projectionOwnerToken) return
       const reservedRows = messages.map((message) => reservedUIMessageToAgentSessionMessage(sessionId, message))
       if (reservedRows.length === 0) return
 
@@ -290,8 +298,13 @@ export function useAgentSessionParts(sessionId: string, options: { enabled?: boo
         },
         { revalidate: false }
       )
+      if (reservationOwnerTokenRef.current !== projectionOwnerToken) return
+      // Even a duplicate reservation invalidates an in-flight terminal refresh in SWR.
+      void mutate().catch((error) => {
+        logger.warn('Failed to refresh reserved agent session messages', error as Error, { sessionId })
+      })
     },
-    [mutate, sessionId]
+    [mutate, projectionOwnerToken, sessionId]
   )
 
   const replaceMessageTail = useCallback(

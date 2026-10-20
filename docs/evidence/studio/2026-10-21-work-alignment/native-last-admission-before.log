@@ -1,0 +1,90 @@
+warning: unused import: `Ordering`
+ --> /Users/roylin/code/aster/apps/studio/src-tauri/src/desktop_settings.rs:8:36
+  |
+8 | use std::sync::atomic::{AtomicU32, Ordering};
+  |                                    ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `POLL_LIMIT` is never used
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:29:7
+   |
+29 | const POLL_LIMIT: usize = 100;
+   |       ^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: struct `SseEvent` is never constructed
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:838:19
+    |
+838 | pub(super) struct SseEvent {
+    |                   ^^^^^^^^
+
+warning: function `stream_agent_events` is never used
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:845:21
+    |
+845 | pub(super) async fn stream_agent_events(
+    |                     ^^^^^^^^^^^^^^^^^^^
+
+warning: function `recall_note` is never used
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/tobot_memory.rs:20:15
+   |
+20 | pub(crate) fn recall_note(origin: &str, slug: &str, query: &str) -> Option<String> {
+   |               ^^^^^^^^^^^
+
+warning: function `retain_exchange` is never used
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/tobot_memory.rs:39:15
+   |
+39 | pub(crate) fn retain_exchange(origin: &str, slug: &str, key: &str, user: &str, assistant: &str) {
+   |               ^^^^^^^^^^^^^^^
+
+warning: field `tool_call_id` is never read
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/local_acp_tests.rs:843:5
+    |
+841 | struct Approval {
+    |        -------- field in this struct
+842 |     id: String,
+843 |     tool_call_id: String,
+    |     ^^^^^^^^^^^^
+
+warning: function `boot` is never used
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/channel_gateway.rs:22:8
+   |
+22 | pub fn boot(token: &str, plane_url: &str) {
+   |        ^^^^
+
+warning: static `SLEEP_ASSERTION` is never used
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/desktop_settings.rs:72:8
+   |
+72 | static SLEEP_ASSERTION: AtomicU32 = AtomicU32::new(0);
+   |        ^^^^^^^^^^^^^^^
+
+warning: function `boot` is never used
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/desktop_settings.rs:181:8
+    |
+181 | pub fn boot(slug: &str, product: &str, logo: &Path) {
+    |        ^^^^
+
+warning: function `verified_picker` is never used
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/review_plugin.rs:462:8
+    |
+462 | pub fn verified_picker() -> Option<(PathBuf, String)> {
+    |        ^^^^^^^^^^^^^^^
+
+warning: 11 warnings emitted
+
+
+running 1 test
+
+thread 'agent_plane::turns::native_approval_alignment_tests::native_alignment_permission_and_form_requests_require_the_active_acp_session' (52817101) panicked at /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/native_approval_alignment_tests.rs:341:17:
+session/request_permission/foreign must not create current execution authority
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agent_plane::turns::native_approval_alignment_tests::native_alignment_permission_and_form_requests_require_the_active_acp_session ... FAILED
+
+failures:
+
+failures:
+    agent_plane::turns::native_approval_alignment_tests::native_alignment_permission_and_form_requests_require_the_active_acp_session
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 869 filtered out; finished in 0.37s
+

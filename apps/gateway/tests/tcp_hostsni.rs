@@ -184,6 +184,7 @@ fn hostsni_gateway_config(
         shutdown_timeout_secs: 0,
         hosted_function_activations: Default::default(),
         agent_idle_policies: Default::default(),
+        anonymous_chatbot: None,
     }
 }
 
@@ -356,6 +357,7 @@ fn pathprefix_tcp_gateway_config(
         shutdown_timeout_secs: 0,
         hosted_function_activations: Default::default(),
         agent_idle_policies: Default::default(),
+        anonymous_chatbot: None,
     }
 }
 

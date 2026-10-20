@@ -1,0 +1,15 @@
+{
+  "status": "final native protocol GO applied; final renderer r3 is copied; host compilation pending",
+  "changed": [
+    "apps/studio/src-tauri/src/agent_plane/acp.rs",
+    "apps/studio/src-tauri/src/agent_plane/fake_acp.rs",
+    "apps/studio/src-tauri/src/agent_plane/goal_snapshot.rs",
+    "apps/studio/src-tauri/src/agent_plane/goal_snapshot_tests.rs",
+    "apps/studio/src-tauri/src/agent_plane/native_acp_alignment_tests.rs",
+    "apps/studio/src-tauri/src/agent_plane/native_approval_alignment_tests.rs",
+    "apps/studio/src-tauri/src/agent_plane/native_local_acp_alignment_tests.rs",
+    "apps/studio/src-tauri/src/agent_plane/turns.rs",
+    "apps/studio/src-tauri/src/agent_plane/turns_form_tests.rs"
+  ],
+  "source_files": 11250
+}

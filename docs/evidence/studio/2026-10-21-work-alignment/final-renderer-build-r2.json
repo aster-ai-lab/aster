@@ -1,0 +1,23 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "pnpm",
+        "build:office"
+      ],
+      "rc": 0
+    },
+    {
+      "argv": [
+        "node",
+        "node_modules/@rsbuild/core/bin/rsbuild.js",
+        "build"
+      ],
+      "rc": 0
+    }
+  ],
+  "elapsed": 23.690063953399658,
+  "ux_receipt_sha256": "f4dabf78cf050c91e12edbc83ce0bfef46e656b4dff5e687e188e99a192db02a",
+  "ux_receipt_unchanged": true,
+  "dist": "apps/studio/.studio-package"
+}

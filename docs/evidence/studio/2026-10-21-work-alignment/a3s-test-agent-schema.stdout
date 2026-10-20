@@ -1,0 +1,1709 @@
+{
+  "action_ownership": {
+    "deterministic_runner": [
+      "verify_contract"
+    ],
+    "interactive": "actions listed in action_schema"
+  },
+  "action_schema": {
+    "$defs": {
+      "CaptureOperation": {
+        "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "start",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "type": {
+                "const": "stop",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "path"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "DialogOperation": {
+        "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "status",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "text": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "type": {
+                "const": "accept",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "dismiss",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ElementState": {
+        "enum": [
+          "enabled",
+          "checked",
+          "selected",
+          "focused",
+          "focus_within",
+          "expanded",
+          "pressed",
+          "readonly",
+          "required",
+          "invalid"
+        ],
+        "type": "string"
+      },
+      "Expectation": {
+        "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "text_visible",
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "url",
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "visible",
+                "type": "string"
+              },
+              "value": {
+                "$ref": "#/$defs/Target"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "in_viewport",
+                "type": "string"
+              },
+              "value": {
+                "$ref": "#/$defs/Target"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "viewport_coverage",
+                "type": "string"
+              },
+              "value": {
+                "additionalProperties": false,
+                "properties": {
+                  "comparison": {
+                    "$ref": "#/$defs/ViewportCoverageComparison"
+                  },
+                  "percent": {
+                    "format": "uint8",
+                    "maximum": 100,
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "target": {
+                    "$ref": "#/$defs/Target"
+                  }
+                },
+                "required": [
+                  "target",
+                  "comparison",
+                  "percent"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "pointer_reachable",
+                "type": "string"
+              },
+              "value": {
+                "$ref": "#/$defs/Target"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "rendered_text",
+                "type": "string"
+              },
+              "value": {
+                "additionalProperties": false,
+                "properties": {
+                  "target": {
+                    "$ref": "#/$defs/Target"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "target",
+                  "value"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "rendered_texts",
+                "type": "string"
+              },
+              "value": {
+                "additionalProperties": false,
+                "properties": {
+                  "target": {
+                    "$ref": "#/$defs/Target"
+                  },
+                  "values": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "maxItems": 256,
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "target",
+                  "values"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "visible_count",
+                "type": "string"
+              },
+              "value": {
+                "additionalProperties": false,
+                "properties": {
+                  "count": {
+                    "format": "uint32",
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "target": {
+                    "$ref": "#/$defs/Target"
+                  }
+                },
+                "required": [
+                  "target",
+                  "count"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "state",
+                "type": "string"
+              },
+              "value": {
+                "additionalProperties": false,
+                "properties": {
+                  "expected": {
+                    "type": "boolean"
+                  },
+                  "state": {
+                    "$ref": "#/$defs/ElementState"
+                  },
+                  "target": {
+                    "$ref": "#/$defs/Target"
+                  }
+                },
+                "required": [
+                  "target",
+                  "state",
+                  "expected"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "value",
+                "type": "string"
+              },
+              "value": {
+                "additionalProperties": false,
+                "properties": {
+                  "target": {
+                    "$ref": "#/$defs/Target"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "target",
+                  "value"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "selected_values",
+                "type": "string"
+              },
+              "value": {
+                "additionalProperties": false,
+                "properties": {
+                  "target": {
+                    "$ref": "#/$defs/Target"
+                  },
+                  "values": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "target",
+                  "values"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "layout",
+                "type": "string"
+              },
+              "value": {
+                "additionalProperties": false,
+                "properties": {
+                  "relation": {
+                    "$ref": "#/$defs/LayoutRelation"
+                  },
+                  "relative_to": {
+                    "$ref": "#/$defs/Target"
+                  },
+                  "target": {
+                    "$ref": "#/$defs/Target"
+                  },
+                  "tolerance_px": {
+                    "format": "uint32",
+                    "maximum": 1024,
+                    "minimum": 0,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "target",
+                  "relative_to",
+                  "relation",
+                  "tolerance_px"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "FrameTarget": {
+        "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "main",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "selector",
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "LayoutRelation": {
+        "enum": [
+          "above",
+          "below",
+          "left_of",
+          "right_of",
+          "contains",
+          "inside",
+          "overlaps",
+          "not_overlapping",
+          "aligned_left",
+          "aligned_right",
+          "aligned_top",
+          "aligned_bottom",
+          "aligned_center_x",
+          "aligned_center_y",
+          "same_width",
+          "same_height",
+          "same_size"
+        ],
+        "type": "string"
+      },
+      "LoadState": {
+        "enum": [
+          "networkidle",
+          "domcontentloaded"
+        ],
+        "type": "string"
+      },
+      "ModifierKey": {
+        "enum": [
+          "alt",
+          "control",
+          "meta",
+          "shift"
+        ],
+        "type": "string"
+      },
+      "NetworkRoute": {
+        "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "abort",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "body",
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "TabOperation": {
+        "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "list",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "label": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "type": {
+                "const": "new",
+                "type": "string"
+              },
+              "url": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "tab": {
+                "type": "string"
+              },
+              "type": {
+                "const": "switch",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "tab"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "tab": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "type": {
+                "const": "close",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "Target": {
+        "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "ref",
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "selector": {
+                "type": "string"
+              },
+              "type": {
+                "const": "css",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "selector"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "role": {
+                "type": "string"
+              },
+              "type": {
+                "const": "role",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "role",
+              "name"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "exact": {
+                "type": "boolean"
+              },
+              "type": {
+                "const": "text",
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "value",
+              "exact"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "automation_id",
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "snapshot": {
+                "type": "string"
+              },
+              "type": {
+                "const": "visual_point",
+                "type": "string"
+              },
+              "x": {
+                "format": "uint32",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "y": {
+                "format": "uint32",
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "type",
+              "snapshot",
+              "x",
+              "y"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "test_id",
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "label",
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "placeholder",
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "VideoOperation": {
+        "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "type": {
+                "const": "start",
+                "type": "string"
+              },
+              "url": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "path"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "stop",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ViewportCoverageComparison": {
+        "enum": [
+          "at_least",
+          "at_most"
+        ],
+        "type": "string"
+      },
+      "WaitCondition": {
+        "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "load",
+                "type": "string"
+              },
+              "value": {
+                "$ref": "#/$defs/LoadState"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "text",
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "regex",
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "url",
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "visible",
+                "type": "string"
+              },
+              "value": {
+                "$ref": "#/$defs/Target"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ],
+            "type": "object"
+          }
+        ]
+      }
+    },
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "oneOf": [
+      {
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "const": "navigate",
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "url"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "interactive": {
+            "type": "boolean"
+          },
+          "type": {
+            "const": "snapshot",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "interactive"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "target": {
+            "$ref": "#/$defs/Target"
+          },
+          "type": {
+            "const": "click",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "target"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "target": {
+            "$ref": "#/$defs/Target"
+          },
+          "type": {
+            "const": "hover",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "target"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "target": {
+            "$ref": "#/$defs/Target"
+          },
+          "type": {
+            "const": "focus",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "target"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "target": {
+            "$ref": "#/$defs/Target"
+          },
+          "type": {
+            "const": "double_click",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "target"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "target": {
+            "$ref": "#/$defs/Target"
+          },
+          "type": {
+            "const": "context_click",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "target"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "target": {
+            "$ref": "#/$defs/Target"
+          },
+          "type": {
+            "const": "fill",
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "target",
+          "value"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "target": {
+            "$ref": "#/$defs/Target"
+          },
+          "type": {
+            "const": "type",
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "target",
+          "value"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "const": "insert_text",
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "value"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "target": {
+            "$ref": "#/$defs/Target"
+          },
+          "type": {
+            "const": "check",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "target"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "target": {
+            "$ref": "#/$defs/Target"
+          },
+          "type": {
+            "const": "uncheck",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "target"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "target": {
+            "$ref": "#/$defs/Target"
+          },
+          "type": {
+            "const": "select",
+            "type": "string"
+          },
+          "values": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "type",
+          "target",
+          "values"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "source": {
+            "$ref": "#/$defs/Target"
+          },
+          "target": {
+            "$ref": "#/$defs/Target"
+          },
+          "type": {
+            "const": "drag",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "source",
+          "target"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "type": {
+            "const": "press",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "key"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "type": {
+            "const": "terminal_paste",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "text"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "columns": {
+            "format": "uint16",
+            "maximum": 65535,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "rows": {
+            "format": "uint16",
+            "maximum": 65535,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "type": {
+            "const": "terminal_resize",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "columns",
+          "rows"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "type": {
+            "const": "terminal_recording",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "path"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "delta_x": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "delta_y": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "modifiers": {
+            "items": {
+              "$ref": "#/$defs/ModifierKey"
+            },
+            "type": "array"
+          },
+          "target": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Target"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "type": {
+            "const": "wheel",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "delta_x",
+          "delta_y",
+          "modifiers"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "height": {
+            "format": "uint32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "scale": {
+            "format": "uint32",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "type": {
+            "const": "viewport",
+            "type": "string"
+          },
+          "width": {
+            "format": "uint32",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "type",
+          "width",
+          "height"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "condition": {
+            "$ref": "#/$defs/WaitCondition"
+          },
+          "type": {
+            "const": "wait",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "condition"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "expectation": {
+            "$ref": "#/$defs/Expectation"
+          },
+          "type": {
+            "const": "assert",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "expectation"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "type": {
+            "const": "screenshot",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "path"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "$ref": "#/$defs/TabOperation"
+          },
+          "type": {
+            "const": "tab",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "operation"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "target": {
+            "$ref": "#/$defs/FrameTarget"
+          },
+          "type": {
+            "const": "frame",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "target"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "$ref": "#/$defs/DialogOperation"
+          },
+          "type": {
+            "const": "dialog",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "operation"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "paths": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "target": {
+            "$ref": "#/$defs/Target"
+          },
+          "type": {
+            "const": "upload",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "target",
+          "paths"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "target": {
+            "$ref": "#/$defs/Target"
+          },
+          "type": {
+            "const": "download",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "target",
+          "path"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "pattern": {
+            "type": "string"
+          },
+          "route": {
+            "$ref": "#/$defs/NetworkRoute"
+          },
+          "type": {
+            "const": "network_route",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "pattern",
+          "route"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "pattern": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "type": {
+            "const": "network_unroute",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "$ref": "#/$defs/CaptureOperation"
+          },
+          "type": {
+            "const": "har",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "operation"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "$ref": "#/$defs/CaptureOperation"
+          },
+          "type": {
+            "const": "trace",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "operation"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "$ref": "#/$defs/VideoOperation"
+          },
+          "type": {
+            "const": "video",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "operation"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "interactive": {
+            "type": "boolean"
+          },
+          "path": {
+            "type": "string"
+          },
+          "type": {
+            "const": "accessibility",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "path",
+          "interactive"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "clear": {
+            "type": "boolean"
+          },
+          "path": {
+            "type": "string"
+          },
+          "type": {
+            "const": "console",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "path",
+          "clear"
+        ],
+        "type": "object"
+      },
+      {
+        "additionalProperties": false,
+        "properties": {
+          "clear": {
+            "type": "boolean"
+          },
+          "path": {
+            "type": "string"
+          },
+          "type": {
+            "const": "page_errors",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "path",
+          "clear"
+        ],
+        "type": "object"
+      }
+    ],
+    "title": "Action"
+  },
+  "invariants": {
+    "automatic_repair_resolution_is_session_scoped": true,
+    "automatic_repair_resolution_requires_all_gates": true,
+    "browser_network_is_domain_scoped": true,
+    "evidence_is_session_scoped": true,
+    "explicit_navigation_is_origin_scoped": true,
+    "human_repair_acceptance_is_default": true,
+    "one_workspace_mutation_at_a_time": true,
+    "ref_targets_require_latest_observation": true,
+    "sessions_are_workspace_local": true,
+    "typed_actions": true
+  },
+  "planner": "external_coding_agent",
+  "protocol_revision": 15,
+  "repair_resolution": {
+    "default": "human_review",
+    "session_option": "--auto-resolve-repairs",
+    "verified_transition_order": [
+      "review_ready",
+      "resolved"
+    ]
+  },
+  "turns": [
+    "start",
+    "observe",
+    "act",
+    "observe",
+    "finish"
+  ]
+}

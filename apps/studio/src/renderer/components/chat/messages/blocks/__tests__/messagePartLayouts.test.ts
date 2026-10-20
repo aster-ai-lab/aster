@@ -148,6 +148,7 @@ describe('projectLiveMessageParts', () => {
         { type: 'source-url' },
         { type: 'source-document' },
         { type: 'data-agent-task-event', data: {} },
+        { type: 'data-task-plan', data: { mode: 'plan' } },
         { type: 'data-knowledge-scope', data: { baseIds: ['kb-1'] } },
         { type: 'data-clear', data: {} }
       ])

@@ -1,7 +1,14 @@
+import { Square } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useLayoutEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 
-import { ComposerLayerActiveProvider, useActiveComposerOverride, useComposerLayerActive } from './ComposerContext'
+import {
+  ComposerLayerActiveProvider,
+  useActiveComposerOverride,
+  useComposerContext,
+  useComposerLayerActive
+} from './ComposerContext'
 
 type ComposerCoreProps = {
   fallback: ReactNode
@@ -9,6 +16,8 @@ type ComposerCoreProps = {
 }
 
 export default function ComposerCore({ fallback, className }: ComposerCoreProps) {
+  const { t } = useTranslation()
+  const stop = useComposerContext()?.stop
   const activeOverride = useActiveComposerOverride()
   const layerActive = useComposerLayerActive()
   const primaryLayerRef = useRef<HTMLDivElement>(null)
@@ -51,6 +60,19 @@ export default function ComposerCore({ fallback, className }: ComposerCoreProps)
       data-composer-core=""
       data-composer-active-override={activeOverrideId ?? undefined}
       className="relative w-full">
+      {stop && layerActive ? (
+        <div className="pointer-events-auto flex justify-end pb-1">
+          <button
+            data-ui="chat.composer.action.stop-wait"
+            type="button"
+            className="flex h-7.5 items-center justify-center gap-1.5 rounded-full px-2.5 text-xs text-error hover:bg-accent"
+            aria-label={t('common.stop')}
+            onClick={() => void stop()}>
+            <Square size={14} />
+            {t('common.stop')}
+          </button>
+        </div>
+      ) : null}
       <div
         ref={primaryLayerRef}
         data-composer-primary-layer=""

@@ -1,4 +1,5 @@
 import { cacheService } from '@renderer/data/CacheService'
+import { AgentSessionExecutionSchema } from '@shared/data/api/schemas/agentSessions'
 import type { DataApiDataChangeEffect, DataRequest, DataResponse } from '@shared/data/api/types'
 import { readStudioRuntime, type StudioRuntimeDescriptor } from '@shared/studioRuntime'
 import { agentFormSubmissionSchema, agentFormReceiptSchema, type AgentFormSubmission } from '@shared/types/agentForm'
@@ -8,7 +9,13 @@ import {
   agentSessionArchiveReceiptSchema,
   agentSessionArchiveLookupSchema
 } from '@shared/types/agentSessionArchive'
-import { studioExecutionObservationSchema, studioExecutionSnapshotSchema } from '@shared/types/studioExecution'
+import {
+  pendingToolApprovalsSchema,
+  studioActiveExecutionSchema,
+  studioExecutionObservationSchema,
+  studioExecutionSnapshotSchema
+} from '@shared/types/studioExecution'
+import { parseStudioGoalSnapshot, unavailableStudioGoal } from '@shared/types/studioGoal'
 import {
   workbenchProofSchema,
   workbenchProofActionSchema,
@@ -42,9 +49,20 @@ let planeUrl: Promise<string> | null = null
 let ipcInstalled = false
 let events: globalThis.EventSource | null = null
 let eventsConnected = false
+let eventsOpened = false
+let queuedEvents: string[] = []
+let approvalGeneration = 0
+const nativeStatusRevisions = new Map<string, number>()
 let executionReady = false
 const listeners = new Map<string, Set<Listener>>()
 const dataChangeListeners = new Set<DataChangeListener>()
+
+export async function loadStudioGoalSnapshot(sessionId: string, signal?: AbortSignal) {
+  return parseStudioGoalSnapshot(
+    await planeJson('GET', `/api/agent-sessions/${encodeURIComponent(sessionId)}/goal`, undefined, signal),
+    sessionId
+  )
+}
 
 export async function loadWorkbenchProofs(sessionId: string) {
   const value = await planeJson('GET', `/api/agent-sessions/${encodeURIComponent(sessionId)}/proofs`)
@@ -138,7 +156,10 @@ export function resetStudioAgentPlaneForTests() {
   events?.close()
   events = null
   eventsConnected = false
+  eventsOpened = false
+  queuedEvents = []
   invalidateExecutions()
+  nativeStatusRevisions.clear()
   listeners.clear()
   dataChangeListeners.clear()
 }
@@ -426,11 +447,32 @@ function routeIpc(route: string, input: unknown): Promise<unknown> | null {
     return Promise.resolve({ ok: true, data: undefined })
   }
   if (route === 'ai.tool.respond_approval') {
+    // Edited question answers belong to native forms; never silently turn one into boolean approval.
+    if (field(input, 'updatedInput') !== undefined || typeof field(input, 'approved') !== 'boolean')
+      return Promise.resolve({ ok: true, data: { ok: false } })
     const approvalId = field(input, 'approvalId')
-    if (typeof approvalId !== 'string') return null
+    if (typeof approvalId !== 'string' || !approvalId.trim()) return Promise.resolve({ ok: true, data: { ok: false } })
+    const session = sessionOf(input)
+    const executionId = field(input, 'executionId')
+    const anchorMessageId = field(input, 'anchorMessageId')
+    const messageId = field(input, 'messageId')
+    const toolCallId = field(input, 'toolCallId')
+    if (
+      !session ||
+      ![executionId, anchorMessageId, messageId, toolCallId].every(
+        (value) => typeof value === 'string' && value.length > 0
+      )
+    ) {
+      return Promise.resolve({ ok: true, data: { ok: false } })
+    }
     return ipcResult(
       planeJson('POST', `/api/agent-approvals/${encodeURIComponent(approvalId)}`, {
-        approved: field(input, 'approved') === true
+        approved: field(input, 'approved') === true,
+        sessionId: decodeURIComponent(session),
+        executionId,
+        anchorMessageId,
+        messageId,
+        toolCallId
       })
     )
   }
@@ -439,9 +481,62 @@ function routeIpc(route: string, input: unknown): Promise<unknown> | null {
   if (!session) return null
   ensureEvents()
   if (route === 'ai.stream.open') {
-    return ipcResult(planeJson('POST', `/api/agent-sessions/${session}/turns`, input))
+    const topicId = `${TOPIC_PREFIX}${decodeURIComponent(session)}`
+    const key = `topic.stream.statuses.${topicId}` as const
+    const before = cacheService.getSharedSnapshot(key)
+    return ipcResult(
+      planeJson('POST', `/api/agent-sessions/${session}/turns`, input).then((ack) => {
+        const executions = field(ack, 'activeExecutions')
+        const parsed = studioActiveExecutionSchema.safeParse(
+          Array.isArray(executions) && executions.length === 1 ? executions[0] : undefined
+        )
+        const current = cacheService.getSharedSnapshot(key)
+        if (
+          field(ack, 'mode') === 'started' &&
+          parsed.success &&
+          current?.turnId !== parsed.data.executionId &&
+          current?.turnId === before?.turnId
+        ) {
+          // The accepted reservation is observable even if SSE has not connected yet.
+          storeNativeStatus(topicId, {
+            status: 'pending',
+            turnId: parsed.data.executionId,
+            activeExecutions: [parsed.data],
+            awaitingApprovalAnchors: []
+          })
+        }
+        return ack
+      })
+    )
   }
-  if (route === 'ai.stream.attach') return ipcResult(planeJson('GET', `/api/agent-sessions/${session}/turn`))
+  if (route === 'ai.stream.attach') {
+    const topicId = `${TOPIC_PREFIX}${decodeURIComponent(session)}`
+    const key = `topic.stream.statuses.${topicId}` as const
+    const before = cacheService.getSharedSnapshot(key)
+    const generation = approvalGeneration
+    const revision = nativeStatusRevisions.get(topicId)
+    return ipcResult(
+      planeJson('GET', `/api/agent-sessions/${session}/turn`).then((result) => {
+        // A newer SSE update, including another Run, wins over this HTTP snapshot.
+        if (
+          approvalGeneration === generation &&
+          nativeStatusRevisions.get(topicId) === revision &&
+          cacheService.getSharedSnapshot(key) === before &&
+          result &&
+          typeof result === 'object'
+        ) {
+          const response = result as Record<string, unknown>
+          if (response.status === 'attached' && response.streamStatus && typeof response.streamStatus === 'object') {
+            storeNativeStatus(topicId, response.streamStatus as Record<string, unknown>, true)
+          } else if (response.status === 'not-found' && before) {
+            cacheService.setShared(key, { ...before, pendingApprovals: [] })
+            void recoverSettledTurn(topicId)
+          }
+        }
+        return result
+      })
+    )
+  }
   if (route === 'ai.stream.abort') {
     return ipcResult(planeJson('POST', `/api/agent-sessions/${session}/turn/abort`).then(() => undefined))
   }
@@ -546,12 +641,94 @@ function sessionsChanged(sessionIds: readonly string[]) {
 }
 
 function invalidateExecutions() {
+  approvalGeneration += 1
   executionReady = false
   cacheService.set('studio.execution.observations', null)
+  for (const topicId of nativeStatusRevisions.keys()) {
+    const key = `topic.stream.statuses.${topicId}` as const
+    const status = cacheService.getSharedSnapshot(key)
+    if (status)
+      cacheService.setShared(key, {
+        ...status,
+        pendingApprovals: [],
+        goalSnapshot: unavailableStudioGoal(topicId.slice(TOPIC_PREFIX.length), 'runtime_unavailable')
+      })
+  }
+}
+
+function storeNativeStatus(topicId: string, rawStatus: Record<string, unknown>, authoritative = executionReady) {
+  const { nativeExecution: _, pendingApprovals: rawApprovals, goalSnapshot: rawGoal, ...status } = rawStatus
+  const parsed = pendingToolApprovalsSchema.safeParse(rawApprovals)
+  const pendingApprovals =
+    authoritative &&
+    status.status === 'awaiting-approval' &&
+    parsed.success &&
+    parsed.data.every(
+      (approval) =>
+        approval.executionId === status.turnId &&
+        Array.isArray(status.activeExecutions) &&
+        status.activeExecutions.some(
+          (execution: unknown) =>
+            !!execution &&
+            typeof execution === 'object' &&
+            (execution as Record<string, unknown>).executionId === approval.executionId &&
+            (execution as Record<string, unknown>).anchorMessageId === approval.anchorMessageId
+        )
+    )
+      ? parsed.data
+      : []
+  const parsedGoal =
+    rawGoal === undefined ? undefined : parseStudioGoalSnapshot(rawGoal, topicId.slice(TOPIC_PREFIX.length))
+  const goalSnapshot =
+    parsedGoal?.status === 'known' && parsedGoal.goal && status.turnId && parsedGoal.executionId !== status.turnId
+      ? unavailableStudioGoal(topicId.slice(TOPIC_PREFIX.length), 'stale_binding')
+      : parsedGoal
+  nativeStatusRevisions.set(topicId, (nativeStatusRevisions.get(topicId) ?? 0) + 1)
+  cacheService.setShared(
+    `topic.stream.statuses.${topicId}` as never,
+    { ...status, pendingApprovals, ...(goalSnapshot ? { goalSnapshot } : {}) } as never
+  )
+}
+
+async function recoverSettledTurn(topicId: string) {
+  if (!topicId.startsWith(TOPIC_PREFIX)) return
+  const key = `topic.stream.statuses.${topicId}` as const
+  const before = cacheService.getSharedSnapshot(key)
+  if (!before?.turnId || !['pending', 'streaming', 'awaiting-approval', 'awaiting-form'].includes(before.status)) return
+  const revision = nativeStatusRevisions.get(topicId)
+  const sessionId = topicId.slice(TOPIC_PREFIX.length)
+  try {
+    const page = await planeJson('GET', `/api/agent-sessions${queryString({ ids: [sessionId], limit: 1 })}`)
+    const items = field(page, 'items')
+    const row = Array.isArray(items) ? items.find((item) => field(item, 'id') === sessionId) : undefined
+    const parsed = AgentSessionExecutionSchema.safeParse(field(row, 'execution'))
+    if (!parsed.success || parsed.data.executionId !== before.turnId) return
+    const execution = parsed.data
+    if (!['done', 'error', 'aborted'].includes(execution.status)) return
+    if (nativeStatusRevisions.get(topicId) !== revision || cacheService.getSharedSnapshot(key) !== before) return
+    if (!before.activeExecutions?.some((item) => item.anchorMessageId === execution.anchorMessageId)) return
+    storeNativeStatus(topicId, {
+      status: execution.status,
+      turnId: execution.executionId,
+      activeExecutions: [],
+      awaitingApprovalAnchors: [],
+      lastCompletedAt: Date.parse(execution.observedAt)
+    })
+    sessionChanged(sessionId)
+  } catch {
+    // A failed read cannot prove that a turn has ended. The next attach/reconnect retries.
+  }
 }
 
 function handleEvent(raw: string) {
-  if (!eventsConnected) return
+  if (!eventsConnected) {
+    if (!eventsOpened) queuedEvents.push(raw)
+    return
+  }
+  applyEvent(raw)
+}
+
+function applyEvent(raw: string) {
   let event: { channel?: unknown; payload?: unknown }
   try {
     event = JSON.parse(raw) as { channel?: unknown; payload?: unknown }
@@ -573,11 +750,13 @@ function handleEvent(raw: string) {
       Object.fromEntries(parsed.data.topics.map((topic) => [topic.topicId, topic.execution]))
     )
     for (const row of parsed.data.liveStatuses ?? []) {
-      const status = { ...row.status }
-      delete status.nativeExecution
-      cacheService.setShared(`topic.stream.statuses.${row.topicId}` as never, status as never)
+      storeNativeStatus(row.topicId, row.status, true)
     }
     executionReady = true
+    const liveTopics = new Set(parsed.data.liveStatuses?.map((row) => row.topicId))
+    for (const topicId of nativeStatusRevisions.keys()) {
+      if (!liveTopics.has(topicId)) void recoverSettledTurn(topicId)
+    }
     return
   }
   const payload = event.payload as Record<string, unknown> | undefined
@@ -595,8 +774,9 @@ function handleEvent(raw: string) {
           else delete observations[topicId]
           cacheService.set('studio.execution.observations', observations)
         }
-        cacheService.setShared(`topic.stream.statuses.${topicId}` as never, status as never)
+        storeNativeStatus(topicId, status)
       } else {
+        nativeStatusRevisions.set(topicId, (nativeStatusRevisions.get(topicId) ?? 0) + 1)
         if (executionReady) {
           const observations = { ...cacheService.get('studio.execution.observations') }
           delete observations[topicId]
@@ -632,10 +812,18 @@ function ensureEvents() {
       events = new globalThis.EventSource(`${base}/api/agent-events?token=${encodeURIComponent(runtime.token)}`)
       events.onopen = () => {
         eventsConnected = true
+        const firstOpen = !eventsOpened
+        eventsOpened = true
         invalidateExecutions()
+        const queued = queuedEvents
+        queuedEvents = []
+        if (firstOpen) {
+          for (const raw of queued) applyEvent(raw)
+        }
       }
       events.onerror = () => {
         eventsConnected = false
+        if (eventsOpened) queuedEvents = []
         invalidateExecutions()
       }
       events.onmessage = (message) => handleEvent(String(message.data))

@@ -1,0 +1,39 @@
+{
+  "finished_at": "2026-10-20T12:11:14.884792+00:00",
+  "source_files_without_drift": 41,
+  "local_markdown_links_checked": 104,
+  "missing_links": [],
+  "focused_test_groups": {
+    "issue-1-control-after-final.log": 40,
+    "issue-1-execution-after-final.log": 51,
+    "issue-1-receipts-after-final.log": 4,
+    "issue-5-core-after-final.log": 17,
+    "issue-5-acp-after-final.log": 1,
+    "issue-1-acp-unit-after-final.log": 29,
+    "issue-1-acp-e2e-after-final.log": 8,
+    "issue-2-after.log": 35,
+    "issue-3-after-setup.log": 10,
+    "issue-3-after-wire.log": 4,
+    "issue-4-after-final.log": 88,
+    "issue-4-after-presentation.log": 5,
+    "issue-7-after.log": 4,
+    "issue-6-rust-workspace-after.log": 1
+  },
+  "counts_are_separate_filter_runs_not_an_aggregate": true,
+  "paired_build_returncode": 0,
+  "workspace_fmt_returncode": 0,
+  "scoped_diff_check_returncode": 0,
+  "final_cli_cases": 4,
+  "known_full_python_result": "5/6; existing missing Web/tenant asset remains",
+  "github_issue_numbers": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "issue_changes_committed_or_pushed": false,
+  "published_release": "v0.1.2 frozen Kylin R4, without subsequent issue fixes"
+}

@@ -1,0 +1,9 @@
+
+running 4 tests
+test fact_control::goal_evidence::tests::mixed_capability_receipts_and_unsettled_outcomes_do_not_refresh_progress ... ok
+test fact_control::goal_evidence::tests::a_foreign_or_later_slice_cannot_refresh_this_slice ... ok
+test fact_control::goal_evidence::tests::a_settled_background_mutation_must_belong_to_the_current_run ... ok
+test fact_control::goal_evidence::tests::only_complete_known_workspace_identity_changes_are_progress ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 5270 filtered out; finished in 0.01s
+

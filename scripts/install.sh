@@ -158,8 +158,10 @@ fi
   echo "error: release is missing paired build identity or checksums" >&2; exit 1;
 }
 sha256_file() {
-  if command -v sha256sum >/dev/null 2>&1; then sha256sum "$1";
-  else shasum -a 256 "$1"; fi
+  local result
+  if command -v sha256sum >/dev/null 2>&1; then result="$(sha256sum -b "$1")";
+  else result="$(shasum -a 256 -b "$1")"; fi
+  printf '%s  %s\n' "${result%% *}" "$1"
 }
 name_aster="${src_aster##*/}"
 name_acp="${src_acp##*/}"

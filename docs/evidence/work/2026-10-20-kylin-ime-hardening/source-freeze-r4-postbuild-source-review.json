@@ -1,0 +1,426 @@
+{
+  "kind": "independent-r4-postbuild-source-and-receipt-review",
+  "status": "passed",
+  "phase": "after-r4-native-and-static-validation; final-gui-still-owned-by-parent",
+  "source_freeze_r4_sha256": "0ee581fee4f5e378fcf6185b30aa3cbac007fb167197474f651d5f8038b2d6a0",
+  "root_base": "d4a8393f12a6d526a4d08693ac76e73e87414b14",
+  "work_base": "9aad91f1e934c731e540cf99be25733e25c3a411",
+  "source_file_count": 33,
+  "original_and_isolated_match_freeze": true,
+  "r3_prior_files_unchanged": 31,
+  "tracked_work_files": 25,
+  "untracked_work_files": 6,
+  "scoped_original_patch_equals_full_isolated_patch": true,
+  "tracked_work_patch_sha256": "b62d9db899d7d0624e7daacaed5ab72e7ac3a81e44c9d67dda5622b879725e91",
+  "isolated_work_status_exact_allowed": true,
+  "isolated_root_status_exact_allowed": true,
+  "original_other_thread_work_paths_excluded": [
+    {
+      "path": "src-tauri/src/agent_plane/acp.rs",
+      "original_status": " M",
+      "not_copied_to_isolated": true
+    },
+    {
+      "path": "src-tauri/src/agent_plane/turns.rs",
+      "original_status": " M",
+      "not_copied_to_isolated": true
+    },
+    {
+      "path": "src-tauri/src/agent_plane/acp_reconciliation_tests.rs",
+      "original_status": "??",
+      "not_copied_to_isolated": true
+    }
+  ],
+  "original_other_thread_root_rust_paths_excluded": {
+    "Cargo.lock": " M",
+    "apps/aster/Cargo.toml": " M",
+    "apps/aster/src/main.rs": " M",
+    "crates/code/core/src/fact_control/receipts.rs": " M",
+    "crates/code/core/src/fact_control/receipts/tests/batch_evidence.rs": " M",
+    "crates/terminal/crates/codegen/a3s-code-pager/src/acp/a3s_spawn.rs": " M",
+    ".tmp/three-layer-audit.xpvRdQ/batch_metadata_probe.rs": "??",
+    ".tmp/three-layer-audit.xpvRdQ/porcelain_probe.rs": "??",
+    "apps/aster/src/cli_pair_update.rs": "??",
+    "apps/aster/tests/cli_update.rs": "??",
+    "crates/terminal/crates/codegen/a3s-code-pager/src/acp/a3s_spawn/argument_tests.rs": "??"
+  },
+  "source_identity_checks": [
+    {
+      "path": "apps/work/scripts/kylin-flatpak/README.md",
+      "sha256": "ffa595978ac9cf919c7b8e40e9f5d167176e7fb11cb632e19a59c9eec0c4a9a3",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/build-fcitx4-immodule.sh",
+      "sha256": "a1ec5ab09116e53a7f472cddfe913136f4b8f7ce6edcd99c0453f2763da68824",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/build-immodule.sh",
+      "sha256": "5cef530f90644c3d599677732fb83f3f51f3a542cc16a92fa944b34c0d2614b9",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/gtk_input_probe.c",
+      "sha256": "506b6af6e683009933f0089b289f2aef2f19535239cd4b82ecf339f71b378c69",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/install-on-kylin.sh",
+      "sha256": "bfe7837e6d93eb3a30dc5d642f5893a688beea24f347fe6251d22139cfbe4f4d",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/kylin-launch.sh",
+      "sha256": "6a6f459d0b7561faf7de2b400012e10f5e4d34342861f25ac896f052f37a9f84",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/pack-onefile.sh",
+      "sha256": "70da5c0f24b743a0430d4d2efdd1140f9f118ea8f5c869265380d5d4336cd58b",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/package-bundle.sh",
+      "sha256": "5932277350efd5a2558da42f23e4e9b4d0e4d221a52daab13b701d13600022e4",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/test-input-method.sh",
+      "sha256": "8b1ae50be30604084fc27b1288c316a9bdca80fd709c4da49fe664a5253bd01f",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/安装说明.txt",
+      "sha256": "b028b8081d6b08f9f6e06462986f65d3d18f3c6f389c969f80f49138969dc82d",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/QuickPanel/QuickPanelView.tsx",
+      "sha256": "5e104acc78c5188dc2269e44fe33815e025ef091b7fc55889d5e85f34c1bb82f",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/QuickPanel/__tests__/view.test.tsx",
+      "sha256": "ac147439e19935208f8e1b573feacd7487bab305058821b7873095f743f2c3be",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/QuickPanel/types.ts",
+      "sha256": "01b1b7897ad8d887f4b9fbdd62884c5ecb797dd453a966ba69464fe11a65e5ec",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/ComposerSurfaceRuntime.tsx",
+      "sha256": "e5d2644e12df78102d115f63ca245837c9f6c86cb8772b429aa5ec9207d3d997",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/PromptVariableToken.tsx",
+      "sha256": "2fd285a7fe327b25a8fda0fe8d925afd4565b6090246b0cf99a08044725ea3a9",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/__tests__/ComposerSurface.test.tsx",
+      "sha256": "7d282ae0611be2e73d189a622a2f61b539fc3e7fc4aee552dea38f6aea716838",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/__tests__/ComposerToken.test.tsx",
+      "sha256": "a0eea3d5209b1204534d5520bdc46a63f35102766a1cf9fdd584d8d014a22584",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/__tests__/composerInputAdapter.test.ts",
+      "sha256": "58c35c0543e70cae0c04ef5d3c26bb885324782a3aff240642a1a0d105cf93cf",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/composerInputAdapter.ts",
+      "sha256": "c66ff7fb7e38c5e90e55fbded2662500a5b8e4b5d5302c9dfc46b3ef0c0dfa17",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/variants/AskUserQuestionComposer.tsx",
+      "sha256": "ff2e6e02b7132586eb50f91e150fa531574118775a5be04eb97e87edb1c8d6b4",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/variants/PermissionRequestComposer.tsx",
+      "sha256": "249d8508e7aabc0cee93582d7f3af0ae79084d7c9e0cd010a684be5d5cde05a6",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/variants/__tests__/AskUserQuestionComposer.test.tsx",
+      "sha256": "83ea66c86694b7c7f4a1a6cfec2205868edc0ff6f60b6ce5ce7de4f82ec74423",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx",
+      "sha256": "6dcb24c135049288471942053c748ab01c9e44f5233f6cb133393f3bf5eca022",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/fcitx4_legacy_portal.patch",
+      "sha256": "a5330e62b2fa668920261857593b6efc38016cbcb72b4535e96091ac9e7d9755",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/fcitx_client_protocol_test.c",
+      "sha256": "ced6920541e3e14b90431a9fe1042e71ea6b5a7dfedc84401e4d4e19ca69e69a",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/kylin_im_backend.c",
+      "sha256": "637ed80e13c8f16028d761a87e46dca670f323ba04e93eb0284eb94cee4b6d77",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx",
+      "sha256": "e5c61b28be360c2cc6e1d638cfcf9928df4a0a4d2c7e155a604e73672a08d163",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "tests/kylin_input_method.py",
+      "sha256": "4e9707bf2c8fdf2260ecdfa01e0ef7999e30a9c329c1b47ba5d069de1dfe2240",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "tests/kylin_onefile.py",
+      "sha256": "cdba33614ec619646c0237e499fcf17231403d2e2c446fd6d31a83a7124285d4",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/variants/shared/useComposerFileCapabilities.ts",
+      "sha256": "5aab1708c81fb46f7a49cf2d828cc9dbac225fcc24b7336d7166f460b6656446",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/components/composer/__tests__/ComposerSurface.lifecycle.test.tsx",
+      "sha256": "dd61c6818eef31eb4de885c6c217581e2294bab472b3fc3925db8375f9ac8672",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/hooks/useAgentSessionParts.ts",
+      "sha256": "1bb55efa6d601c504849cd4d02e41ba69f1d6c47edffda951cafda073b04af99",
+      "original_matches": true,
+      "isolated_matches": true
+    },
+    {
+      "path": "apps/work/src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx",
+      "sha256": "cbf9ed88a88f9415b66502af511ced12274f6bfe8ddcb13cbcbf66ec3c36648a",
+      "original_matches": true,
+      "isolated_matches": true
+    }
+  ],
+  "existing_receipt_checks": {
+    "r1_r4_combined": {
+      "receipt": "frontend-regression-final.log",
+      "sha256": "eafbd6da87741f0b312f048053ef5d12c1eefbe7d75ad4cb9f6a76b2b377f4d2",
+      "summary_matches": true
+    },
+    "r2_r3_real_editor": {
+      "receipt": "composer-ime-final.log",
+      "sha256": "da28e6be255c497e4b9f00a9b375408b5a5e7ca7f6e04b8b3abf23f55007128a",
+      "summary_matches": true
+    },
+    "r11_related": {
+      "receipt": "composer-lifecycle-regression.log",
+      "sha256": "648a58bb494b9d0a809af5f013b808faef8aa6113b7e4c4e7e16161267f8e813",
+      "summary_matches": true
+    },
+    "r13_related": {
+      "receipt": "fast-completion-regression.log",
+      "sha256": "94827fc65e9b7b5ec7d278d40a62b00cc1e64c3020235896a85edbed99d9d07e",
+      "summary_matches": true
+    },
+    "r13_before_exact": {
+      "receipt": "fast-completion-exact-before.log",
+      "sha256": "73355b6598c94b6677ffde5c191a18535533109f8832251d73143863abbc2060",
+      "summary_matches": true
+    },
+    "r13_after": {
+      "receipt": "fast-completion-maintained-after.log",
+      "sha256": "76ce885bbbd60b0d32917c1a581c8745c95cbd42dec85c7c154ba1becfdfbd58",
+      "summary_matches": true
+    },
+    "installer": {
+      "receipt": "installer-after.log",
+      "sha256": "9d20acee696d6e3192f6bceb79a386ec6ec86a00322a996b2218bd07d0214329",
+      "summary_matches": true
+    },
+    "launcher_linux": {
+      "receipt": "backend-probe-after-linux.log",
+      "sha256": "1d270656806aedd4c1f5e23b6a1d90f9b19be5ebaef879431c060014028ed361",
+      "summary_matches": true
+    },
+    "workspace_existing_failures": {
+      "receipt": "workspace-dependencies-isolated.log",
+      "sha256": "88712390792d733b17d3bedd7ab32c2ed4c4182ba115c0a0201da14e47de7149",
+      "summary_matches": true
+    },
+    "frontend-a-validation.json": {
+      "receipt": "frontend-a-validation.json",
+      "sha256": "eee09a0823ec4c20dc11f4a3a635e07083407ccbe860f00d98cdcc48b37c7799",
+      "json_readable": true
+    },
+    "fcitx-protocol-validation.json": {
+      "receipt": "fcitx-protocol-validation.json",
+      "sha256": "de7612b7ca75eb34a883c2054a2ab74f2b25ad063fffe90ce723824be9ab1683",
+      "json_readable": true
+    },
+    "snooper-r12-before.json": {
+      "receipt": "snooper-r12-before.json",
+      "sha256": "525f197fe881d3c99c16c523cd8f3da050f82bd1df3bca3d29d2e2ded15b0a26",
+      "json_readable": true
+    },
+    "snooper-r12-after.json": {
+      "receipt": "snooper-r12-after.json",
+      "sha256": "e65e06a7f73be6717c53e78eb932f4c0e99a3ed4e9690fa532c5e5f61f43cadc",
+      "json_readable": true
+    },
+    "native-r3-identity-proof.json": {
+      "receipt": "native-r3-identity-proof.json",
+      "sha256": "71cd4289fb03d87647ae499cab567fc2b08a59b8a4cb1ed5452419a539a08592",
+      "json_readable": true
+    },
+    "flatpak16-r3-proof.json": {
+      "receipt": "flatpak16-r3-proof.json",
+      "sha256": "ec24ff5bcb433d83357c1d86eb8fd747757a9ce69a276f9ab6b64c836d417d51",
+      "json_readable": true
+    },
+    "native-final-r3-negative-results.json": {
+      "receipt": "native-final-r3-negative-results.json",
+      "sha256": "0a99ae35143b211a501766ecaac7b076ddb490a5c8cd11c7218f8b128095e12b",
+      "json_readable": true
+    },
+    "typecheck-web-r13-comparison.json": {
+      "receipt": "typecheck-web-r13-comparison.json",
+      "sha256": "55297bf94739ba93581f655f8748d347d8b8fc424707782ab57175c5f9fb5f3a",
+      "json_readable": true
+    }
+  },
+  "typecheck": {
+    "baseline_errors": 278,
+    "current_errors": 278,
+    "same_file_error_code_counts": true,
+    "added": [],
+    "removed": [],
+    "full_check_passed": false
+  },
+  "workspace": {
+    "recorded_passed": 4,
+    "recorded_failed": 2,
+    "failures": [
+      "Work nested .git layout vs test absence assertion",
+      "baseline a3s-gateway publish None vs []"
+    ],
+    "full_check_passed": false
+  },
+  "count_boundary": "384,33,58 are overlapping scoped runs and are not summed.",
+  "actions": {
+    "tests_rerun": false,
+    "product_or_tests_modified": false,
+    "app_or_container_accessed": false,
+    "build_or_package_run": false
+  },
+  "limits": [
+    "Source/receipt review does not prove final package or GUI acceptance.",
+    "Final GUI/cleanup/OUTCOME review remains pending parent completion."
+  ],
+  "root_other_thread_exclusion_checks": [
+    {
+      "path": "Cargo.lock",
+      "original_status": " M",
+      "isolated_matches_base": true
+    },
+    {
+      "path": "apps/aster/Cargo.toml",
+      "original_status": " M",
+      "isolated_matches_base": true
+    },
+    {
+      "path": "apps/aster/src/main.rs",
+      "original_status": " M",
+      "isolated_matches_base": true
+    },
+    {
+      "path": "crates/code/core/src/fact_control/receipts.rs",
+      "original_status": " M",
+      "isolated_matches_base": true
+    },
+    {
+      "path": "crates/code/core/src/fact_control/receipts/tests/batch_evidence.rs",
+      "original_status": " M",
+      "isolated_matches_base": true
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/acp/a3s_spawn.rs",
+      "original_status": " M",
+      "isolated_matches_base": true
+    },
+    {
+      "path": ".tmp/three-layer-audit.xpvRdQ/batch_metadata_probe.rs",
+      "original_status": "??",
+      "absent_in_isolated": true
+    },
+    {
+      "path": ".tmp/three-layer-audit.xpvRdQ/porcelain_probe.rs",
+      "original_status": "??",
+      "absent_in_isolated": true
+    },
+    {
+      "path": "apps/aster/src/cli_pair_update.rs",
+      "original_status": "??",
+      "absent_in_isolated": true
+    },
+    {
+      "path": "apps/aster/tests/cli_update.rs",
+      "original_status": "??",
+      "absent_in_isolated": true
+    },
+    {
+      "path": "crates/terminal/crates/codegen/a3s-code-pager/src/acp/a3s_spawn/argument_tests.rs",
+      "original_status": "??",
+      "absent_in_isolated": true
+    }
+  ],
+  "maintained_evidence_bindings": {
+    "frontend_a_15_fail_before_168_pass_after_files_sha_match": true,
+    "initial_guard_renderer_files_unchanged": 14,
+    "r11_typefixed_and_r13_sync_sha_match": true,
+    "fcitx_protocol_cases": 8,
+    "r12_before_exact_duplicate_failure_and_after_all_checks_match": true
+  }
+}

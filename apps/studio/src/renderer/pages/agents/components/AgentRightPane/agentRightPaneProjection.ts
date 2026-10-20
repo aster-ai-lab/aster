@@ -58,7 +58,7 @@ export interface AgentToolFlowProjection {
 export interface AgentStatusTask {
   id: string
   title: string
-  status: 'pending' | 'in_progress' | 'completed' | 'error'
+  status: 'pending' | 'in_progress' | 'completed' | 'skipped' | 'stopped' | 'error'
   activeText?: string
 }
 
@@ -649,6 +649,37 @@ function getTodoSnapshot(part: CherryMessagePart): AgentStatusTask[] | undefined
   }
 
   const input = getToolPartInput(part)
+  if (isRecord(input) && input.variant === 'TodoWrite' && Array.isArray(input.plan)) {
+    const tasks: AgentStatusTask[] = []
+    for (const [index, step] of input.plan.entries()) {
+      if (!isRecord(step) || typeof step.step !== 'string' || !step.step.trim()) return undefined
+      let status: AgentStatusTask['status']
+      switch (step.status) {
+        case 'pending':
+        case 'in_progress':
+        case 'completed':
+          status = step.status
+          break
+        case 'failed':
+          status = 'error'
+          break
+        case 'skipped':
+          status = 'skipped'
+          break
+        case 'cancelled':
+          status = 'stopped'
+          break
+        default:
+          return undefined
+      }
+      tasks.push({
+        id: typeof step.id === 'string' && step.id ? step.id : `plan-${index + 1}`,
+        title: step.step.trim(),
+        status
+      })
+    }
+    return tasks
+  }
   if (!isRecord(input) || !Array.isArray(input.todos)) return undefined
 
   return input.todos.flatMap((todo, index) => {

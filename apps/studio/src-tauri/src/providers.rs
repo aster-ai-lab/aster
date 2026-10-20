@@ -11,6 +11,10 @@ use std::sync::Mutex;
 use serde::Deserialize;
 use serde_json::{Value, json};
 
+#[cfg(test)]
+#[path = "providers_default_alignment_tests.rs"]
+mod default_alignment_tests;
+
 const CATALOG: &str = include_str!("../../packages/provider-registry/data/providers.json");
 
 #[derive(Clone)]
@@ -279,12 +283,43 @@ impl ProviderStore {
         {
             return Err(Fail::Bad("missing_model"));
         }
-        self.defaults = ModelDefaults {
-            default_model: Some(patch.default_model),
-            quick_model: Some(patch.quick_model),
-            translate_model: Some(patch.translate_model),
-        };
-        self.persist()?;
+        let updates = [
+            ("chat.default_model_id", &patch.default_model),
+            ("feature.quick_assistant.model_id", &patch.quick_model),
+            ("feature.translate.model_id", &patch.translate_model),
+        ]
+        .into_iter()
+        .map(|(key, model)| {
+            (
+                key.to_owned(),
+                json!(format!("{}::{}", model.provider_id, model.model_id)),
+            )
+        })
+        .collect();
+        let previous = std::mem::replace(
+            &mut self.defaults,
+            ModelDefaults {
+                default_model: Some(patch.default_model),
+                quick_model: Some(patch.quick_model),
+                translate_model: Some(patch.translate_model),
+            },
+        );
+        if let Err(error) = self.persist() {
+            self.defaults = previous;
+            return Err(error);
+        }
+        // The composer reads all three device defaults, including after restart.
+        // shortcut: separate stores are not crash-atomic; unify storage if crash recovery is required.
+        if let Some(root) = self.path.as_ref().and_then(|path| path.parent()) {
+            if crate::preferences::PreferenceStore::new(root.join("preferences"))
+                .set_device(updates)
+                .is_err()
+            {
+                self.defaults = previous;
+                self.persist()?;
+                return Err(Fail::Bad("preferences_unavailable"));
+            }
+        }
         Ok(json!(self.defaults).to_string())
     }
 
@@ -351,7 +386,10 @@ pub(crate) fn gateway_origin() -> String {
 /// fallback when nobody is signed in.
 pub(crate) fn gateway_decision_env() -> (String, Option<String>) {
     let origin = gateway_origin();
-    let member = crate::member_session::MemberSessionStore::open(&signed_in_session_slug()).token();
+    let Some(scope) = signed_in_session_slug() else {
+        return (origin, None);
+    };
+    let member = crate::member_session::MemberSessionStore::open(&scope).token();
     let key = member.filter(|token| valid_api_key(token)).or_else(|| {
         let configured = std::env::var("A3S_GATEWAY_KEY").ok();
         resolve_service_key(&origin, configured.as_deref())
@@ -438,7 +476,8 @@ fn fetch_service_models() -> Vec<String> {
 /// data-plane key is only a fallback when nobody is signed in.
 pub(crate) fn first_signed_in_model() -> Option<String> {
     let origin = gateway_origin();
-    let member = crate::member_session::MemberSessionStore::open(&signed_in_session_slug()).token();
+    let scope = signed_in_session_slug()?;
+    let member = crate::member_session::MemberSessionStore::open(&scope).token();
     let key = member.filter(|token| valid_api_key(token)).or_else(|| {
         let configured = std::env::var("A3S_GATEWAY_KEY").ok();
         resolve_service_key(&origin, configured.as_deref())
@@ -701,19 +740,24 @@ fn valid_base_url(value: &str) -> bool {
 }
 
 /// Member file for this process. A fork instance does not share the primary window's session.
-fn signed_in_session_slug() -> String {
-    let Ok(brand) = crate::tenant::slug_from_env(std::env::var("A3S_TENANT_SLUG").ok().as_deref())
-    else {
-        return String::new();
-    };
-    session_slug_for(
-        &brand,
-        crate::tenant::instance_name().ok().flatten().as_deref(),
+fn signed_in_session_slug() -> Option<String> {
+    session_scope_from(
+        crate::tenant::selected_slug(),
+        crate::tenant::instance_name(),
     )
 }
 
-fn session_slug_for(brand: &str, instance: Option<&str>) -> String {
-    crate::tenant::storage_slug_for(brand, instance).unwrap_or_else(|_| brand.to_owned())
+fn session_scope_from(
+    brand: std::io::Result<String>,
+    instance: std::io::Result<Option<String>>,
+) -> Option<String> {
+    let brand = brand.ok()?;
+    let instance = instance.ok()?;
+    session_slug_for(&brand, instance.as_deref())
+}
+
+fn session_slug_for(brand: &str, instance: Option<&str>) -> Option<String> {
+    crate::tenant::storage_slug_for(brand, instance).ok()
 }
 
 fn valid_api_key(value: &str) -> bool {
@@ -944,9 +988,12 @@ mod tests {
     fn fork_instance_session_is_not_the_primary_slug() {
         assert_eq!(
             session_slug_for("towork-cua", Some("fork1")),
-            "towork-cua-fork1"
+            Some("towork-cua-fork1".to_owned())
         );
-        assert_eq!(session_slug_for("towork-cua", None), "towork-cua");
+        assert_eq!(
+            session_slug_for("towork-cua", None),
+            Some("towork-cua".to_owned())
+        );
     }
 
     #[test]

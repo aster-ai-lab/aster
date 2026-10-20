@@ -1,0 +1,58 @@
+
+running 52 tests
+test agent_plane::events::tests::retained_core_runs_cross_the_native_observer_and_real_sse_encoder ... ignored, requires retained actual ACP packets and an explicit SSE artifact output
+test agent_plane::turns::turns_form_tests::native_owned_form_contract_built_for_sdk_and_renderer ... ignored, requires explicit A3S_CLOUD_TEST_AGENT_FORM_OUTPUT for the native/renderer campaign
+test agent_plane::turns::goal_snapshot::tests::only_a_typed_empty_snapshot_clears_the_goal ... ok
+test agent_plane::turns::goal_snapshot::tests::foreign_binding_and_lossy_javascript_sequences_fail_closed ... ok
+test agent_plane::turns::goal_snapshot::tests::native_alignment_goal_plan_revision_requires_an_explicit_nullable_field ... ok
+test agent_plane::turns::goal_snapshot::tests::typed_goal_snapshot_projects_native_state_without_prose ... ok
+test agent_plane::turns::turns_form_tests::native_alignment_form_ownership_checks_execution_and_attempt_even_with_the_same_anchor ... ok
+test agent_plane::turns::turns_form_tests::only_native_prompt_correlated_observations_are_included_in_form_ownership ... ok
+test agent_plane::turns::execution_status_tests::status_publication_requires_the_current_live_owner_and_withdraws_at_settlement ... ok
+test agent_plane::turns::turns_form_tests::a_form_is_bound_to_the_live_execution_and_is_revoked_synchronously_on_abort ... ok
+test agent_plane::turns::turns_form_tests::old_submission_and_cleanup_do_not_affect_the_new_execution ... ok
+test agent_plane::turns::turns_form_tests::waiting_on_a_form_retains_the_active_execution_in_status_and_reconnect ... ok
+test agent_plane::events::tests::snapshot_lists_only_live_topic_statuses ... ok
+test agent_plane::events::tests::snapshot_precedes_buffered_settlement_and_reconnect_withdraws_the_retired_run ... ok
+test preferences::device_alignment_tests::native_alignment_reserved_device_scope_cannot_be_opened_as_a_member ... ok
+test preferences::device_alignment_tests::native_alignment_mixed_commit_overflow_is_refused_before_either_write ... ok
+test preferences::device_alignment_tests::native_alignment_exhausted_member_revision_does_not_write_device_values ... ok
+test preferences::tests::native_preference_stdio ... ignored, stdio transport for the native Preference bridge campaign
+test agent_plane::events::tests::lag_invalidates_then_resubscribes_with_current_owners_before_new_deltas ... ok
+test preferences::tests::guests_and_foreign_origins_cannot_use_the_preference_command ... ok
+test agent_plane::turns::goal_snapshot::tests::a_cold_snapshot_does_not_start_a_process_or_restore_history_authority ... ok
+test preferences::tests::invalid_destination_is_preserved_without_publishing_a_snapshot ... ok
+test preferences::tests::invalid_batch_and_oversized_data_never_partially_commit ... ok
+test preferences::tests::corruption_and_duplicate_keys_refuse_reads_and_writes_without_overwriting_evidence ... ok
+test preferences::tests::acl_survives_restart_and_preserves_arbitrary_map_keys_and_numeric_precision ... ok
+test preferences::tests::missing_or_other_member_never_reads_the_first_members_values ... studio: interrupted execution summary was not settled: ok
+Is a directorytest providers::default_alignment_tests::native_alignment_session_identity_is_explicit_and_invalid_instance_has_no_fallback ...  (os error 21ok
+)
+test preferences::tests::actual_write_failure_keeps_the_previously_committed_acl_and_revision ... ok
+test preferences::tests::plugin_activity_choices_survive_restart_without_crossing_member_scope ... ok
+test preferences::device_alignment_tests::native_alignment_model_preferences_are_device_scoped_and_other_values_are_private ... ok
+test providers::tests::fork_instance_session_is_not_the_primary_slug ... ok
+test providers::tests::model_list_urls_follow_the_catalog_base ... ok
+test preferences::tests::stale_commit_does_not_replace_a_newer_choice ... ok
+test providers::tests::catalog_includes_openai_and_ollama_can_skip_a_key ... ok
+test providers::tests::embedding_models_do_not_satisfy_the_chat_gate ... ok
+test preferences::tests::simultaneous_native_stores_use_cas_and_retry_only_their_own_keys ... ok
+test providers::tests::service_key_stays_on_the_loopback_gateway ... ok
+test preferences::tests::strict_commit_rejects_extra_fields_and_unchanged_writes_keep_the_revision ... ok
+test providers::tests::service_models_unwrap_the_gateway_envelope ... ok
+test providers::tests::signed_in_calls_use_the_gateway_and_the_member_session ... ok
+test agent_plane::turns::execution_status_tests::orphan_execution_write_failure_remains_unknown_and_can_retry ... ok
+test providers::tests::reopens_a_saved_key_from_disk ... ok
+test agent_plane::turns::execution_status_tests::orphan_recovery_preserves_live_and_terminal_execution_ownership ... ok
+test providers::default_alignment_tests::native_alignment_defaults_do_not_admit_managed_or_disabled_models ... ok
+test providers::default_alignment_tests::native_alignment_provider_write_failure_rolls_back_in_memory_defaults ... ok
+test providers::default_alignment_tests::native_alignment_unavailable_preferences_roll_back_defaults ... ok
+test providers::default_alignment_tests::native_alignment_defaults_update_all_three_preferences_after_reopen ... ok
+test agent_plane::turns::execution_status_tests::orphan_recovery_fails_the_original_execution_after_restart ... ok
+test preferences::tests::preference_ipc_reads_and_commits_after_a_child_webview_is_created ... ok
+test agent_plane::turns::goal_snapshot::tests::native_alignment_goal_reads_do_not_overlap_for_the_same_runtime ... ok
+test agent_plane::turns::goal_snapshot::tests::native_alignment_goal_response_cannot_cross_an_idle_nonlocal_admission ... ok
+test agent_plane::turns::goal_snapshot::tests::native_alignment_goal_read_deadline_includes_the_runtime_registry_lock ... ok
+
+test result: ok. 49 passed; 0 failed; 3 ignored; 0 measured; 818 filtered out; finished in 1.72s
+

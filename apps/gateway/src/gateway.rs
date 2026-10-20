@@ -314,6 +314,7 @@ async fn build_runtime(
                 crate::entrypoint::agent_billing::require_billing_for_agent_routes(needed, billing)
                     .map_err(GatewayError::Config)?
             },
+            anonymous_chatbot: config.anonymous_chatbot.clone(),
         }),
         autoscaler,
         health_checks,

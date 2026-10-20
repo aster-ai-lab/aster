@@ -1,0 +1,33 @@
+{
+  "head": "eb17c6ce5aa4c9ef785c12d56515e146866b1506",
+  "production_files": {
+    "src/renderer/components/composer/ComposerCore.tsx": "b3de7ee57c562e5620b56bcdb469d6922343838dc22631de4b3db67b582792a0",
+    "src/renderer/components/composer/ComposerContext.ts": "0ec8a4d388d87d937d2181de9cb90d175ea2e091e5946c938c82e61f08d3f40b",
+    "src/renderer/components/composer/useToolApprovalComposerOverrides.ts": "b6b8793accaff76b24e56aa6ab0b8df4645e438ee0001c8e60d0eee08a20b7e7",
+    "src/renderer/hooks/useTopicStreamStatus.ts": "bc0f90ea22695c3406c0713f703153a8b3aa5f842537c0d9b0ef07737ddbd7fc",
+    "src/renderer/data/studioAgentPlane.ts": "de1ce676e68f9a9695aafd8542d584b5e159954ada229c7b4b4f57d17aa1b654",
+    "src/renderer/pages/agents/AgentComposer.tsx": "052e4ab55363de06af19ad6c80e2c122c68a1a3d56f018b9771fbb020a4e1679",
+    "src/renderer/pages/agents/AgentComposerSlot.tsx": "31c8fc716d22f3677bb278b83ea2efdbeffe0ecf7bc57cfc74ad443a3a2639a6",
+    "src/renderer/pages/agents/AgentPage.tsx": "c7277afe356214694342d25eb665d2b9618f73f8596afed6fde82bc77f8e5ff6",
+    "src/renderer/pages/agents/AgentChat.tsx": "d8c6b42f76be379653fdf2daf389b3b9d3035f807d1afc14614733eee8a8d31d",
+    "src/renderer/pages/agents/useAgentChatRuntimeState.ts": "c97001f7a6d66ad04a7b0addecf188c1bb104002eeb92814f1ae929beaa1abb6",
+    "src/renderer/pages/agents/WorkbenchProjectTray.tsx": "dda89a7484216501baedae89cba3828d0c8da3ec6327dee8625834ae9c4e924b",
+    "src/renderer/pages/agents/WorkbenchPermissionPicker.tsx": "96b8b2fe45dab00b50c062b449411edb3c9a9d21802019874c7de756755cf5cd",
+    "src/renderer/pages/agents/workbenchPermissionPostures.ts": "41f7b6208c3487342da08379310439e20b9af20fa91ea181cb4b551e87ce51ef",
+    "src/renderer/pages/agents/components/AgentRightPane/AgentRightPane.tsx": "66b5fe2963b92778a44d8d88c6f20ba66dda2a03c1baf5ab28d877789fd1ee8b",
+    "src/renderer/pages/agents/components/AgentRightPane/agentRightPaneProjection.ts": "c8dc3f93d252921cf3ad1d4917d26bf0db7bfadc945eaf5d4e79673e70eae7e4",
+    "src/renderer/pages/agents/components/AgentRightPane/index.ts": "f619723efcc94e94478815132050a6519a55315529575999fec1bbdaaef5292a",
+    "src/renderer/pages/agents/taskConversation/TaskConversationMessage.tsx": "8de56a93cf6406e1afa4670a07e782473d712642414b1f317ab52828fc25fc53",
+    "src/renderer/pages/agents/taskConversation/WorkingStatus.tsx": "04e6247a8bc003b27793352f03c6c33bae01936696e7f7eefc9ae9637d350493",
+    "src/renderer/pages/agents/taskConversation/turn.ts": "13c3d933083a1d2a091bc4db9a0478d8314228e8c01c5e3b771b0b45b10be323",
+    "src/shared/ai/transport/stream.ts": "f79d3e2e10544f46872fbdd13481cfcc5bbbcf44527eda06a2b59ff0be69e641",
+    "src/shared/ipc/schemas/ai.ts": "3dbd00e63e72d13f7594cf5b1bc05f47ed46fd7ceea795556126005f19e76a11",
+    "src/shared/types/studioExecution.ts": "423bfad0d1341986bd5cce857b39681b27e6d947248841d106354626517aed37",
+    "src/shared/data/types/uiParts.ts": "3d219ca9188c3d7422fdada0c1ac343521bf005c7465e138fbfa4b6c23ff7e41",
+    "src/shared/data/api/schemas/agentSessions.ts": "3bab884aa809f7daf8e145a5a5df8c9c186525335d393432e61d858c2155d227",
+    "src/renderer/i18n/locales/en-us.json": "7c82602086bab644594d2066357d9c212cf513a58d80e7ee5c91769f7ee32219",
+    "src/renderer/i18n/locales/zh-cn.json": "3aaa196fa18251b52e84e39afd89b92c82e5a31a310e06eb246e7ddbb7aad7af"
+  },
+  "studio_status_before": "",
+  "backup": "target/evaluations/studio-work-alignment/ux-before"
+}

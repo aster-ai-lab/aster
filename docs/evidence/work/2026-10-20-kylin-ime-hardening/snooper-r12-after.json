@@ -1,0 +1,28 @@
+{
+  "kind": "R12-real-module-positive-after",
+  "command": [
+    "docker",
+    "exec",
+    "-w",
+    "/aster/target/worktrees/kylin-ime-hardening-20261020/apps/work",
+    "aster-kylin-ime-hardening",
+    "timeout",
+    "60",
+    "bash",
+    "scripts/kylin-flatpak/test-input-method.sh",
+    "/aster/target/evaluations/kylin-ime-hardening/r12-snooper/fixture-stage/files",
+    "/root/.local/share/flatpak/runtime/org.gnome.Platform/x86_64/50/7e410fa0d429fcc34f2ddd0d9b6224f1435d8640fb9759801db4f02700542353/files"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 5.05,
+  "checks": {
+    "exit_code_0": true,
+    "protocol_8_pass": true,
+    "each_key_once_in_both_displays": true,
+    "GTK_pass_both_displays": true,
+    "host_and_mapped_display": true,
+    "no_timeout_or_control_failure": true,
+    "no_count_mismatch": true
+  },
+  "log_sha256": "01590d5a0197bb164efb735321e721ea8594a82d0ad63b3a883b628c9f399964"
+}

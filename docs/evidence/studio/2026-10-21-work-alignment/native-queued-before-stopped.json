@@ -1,0 +1,5 @@
+{
+  "pid": 8636,
+  "args": "/Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/bin/cargo test -p a3s-studio --lib --locked native_alignment_ -- --nocapture",
+  "reason": "real direct full-native before completed; stop redundant queued Cargo before to prevent after source being mislabeled before"
+}

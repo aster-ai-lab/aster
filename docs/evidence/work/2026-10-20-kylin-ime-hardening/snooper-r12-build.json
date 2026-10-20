@@ -1,0 +1,17 @@
+{
+  "kind": "R12-fcitx4-only-build",
+  "command": [
+    "docker",
+    "exec",
+    "-w",
+    "/aster/target/worktrees/kylin-ime-hardening-20261020/apps/work",
+    "aster-kylin-ime-hardening",
+    "timeout",
+    "180",
+    "bash",
+    "scripts/kylin-flatpak/build-fcitx4-immodule.sh"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 34.19,
+  "log_sha256": "48ca6f3611f46e77454bc401dc2c51af24734f2dd261e321bbf2b5da0ddb5c08"
+}

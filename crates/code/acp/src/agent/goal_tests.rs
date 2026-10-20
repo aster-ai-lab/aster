@@ -8,6 +8,82 @@ use a3s_code_core::workspace::WorkspaceServices;
 use agent_client_protocol::{self as acp, Agent as _};
 
 #[tokio::test]
+async fn goal_state_snapshot_previews_tick_without_queueing_or_appending_facts() {
+    let root = tempfile::tempdir().unwrap();
+    let mut launch = test_launch(Some(root.path().join("sessions")));
+    launch.workspace = root.path().into();
+    let host = A3sCodeAgent::new(launch);
+    let id = host
+        .new_session(acp::NewSessionRequest::new(root.path()))
+        .await
+        .unwrap()
+        .session_id;
+    let (session, queue) = {
+        let sessions = host.sessions.lock().await;
+        let live = &sessions[id.0.as_ref()];
+        (live.session.clone(), live.turn_queue.clone())
+    };
+    crate::goal::bind_task_goal(&session, "Read this synthetic workspace.").unwrap();
+    let thread = a3s_code_core::fact_control::thread_for_session(session.session_id());
+    let before = a3s_code_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap();
+    let permit = queue.acquire_owned().await.unwrap();
+    let value = tokio::time::timeout(
+        std::time::Duration::from_millis(500),
+        ext(
+            &host,
+            "a3s/goal/state",
+            serde_json::json!({"session_id":id.0}),
+        ),
+    )
+    .await
+    .expect("read-only state must not wait behind a running prompt")
+    .unwrap();
+    drop(permit);
+    assert_eq!(value["definition"]["state"], "active");
+    assert_eq!(
+        a3s_code_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap(),
+        before
+    );
+    assert_eq!(
+        value["tick"], "advance",
+        "the host needs an authoritative typed next decision"
+    );
+    crate::goal::apply_bound_goal(
+        &session,
+        &crate::goal::GoalOp::Pause,
+        crate::goal::GoalLanguage::English,
+    )
+    .await
+    .unwrap();
+    let paused = ext(
+        &host,
+        "a3s/goal/state",
+        serde_json::json!({"session_id":id.0}),
+    )
+    .await
+    .unwrap();
+    assert_eq!(paused["definition"]["state"], "paused");
+    assert_eq!(paused["tick"], "paused");
+    crate::goal::apply_bound_goal(
+        &session,
+        &crate::goal::GoalOp::Clear,
+        crate::goal::GoalLanguage::English,
+    )
+    .await
+    .unwrap();
+    let cancelled = ext(
+        &host,
+        "a3s/goal/state",
+        serde_json::json!({"session_id":id.0}),
+    )
+    .await
+    .unwrap();
+    assert_eq!(cancelled["definition"]["state"], "cancelled");
+    assert_eq!(cancelled.get("tick"), Some(&serde_json::Value::Null));
+    session.close().await;
+}
+
+#[tokio::test]
 async fn explicit_new_goals_use_default_bounds_and_trusted_disable_wins() {
     for disabled in [false, true] {
         let root = tempfile::tempdir().unwrap();
@@ -231,7 +307,7 @@ async fn bound_goal_verbs_and_typed_commands_share_core_and_respect_host_disable
     .unwrap();
     assert_eq!(
         unbound,
-        serde_json::json!({"definition": null, "work_policy_digest": null})
+        serde_json::json!({"definition": null, "work_policy_digest": null, "tick": null})
     );
     assert!(ext(
         &host,

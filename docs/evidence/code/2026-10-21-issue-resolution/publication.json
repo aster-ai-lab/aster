@@ -1,0 +1,14 @@
+{
+  "captured_at": "2026-10-20T22:50:13.528169+00:00",
+  "status": "merged_and_all_seven_issues_completed",
+  "pr": "https://github.com/aster-ai-lab/aster/pull/8",
+  "merge_commit": "0fd4689df8f586f2092e5fb6e674957e2caf35c5",
+  "code_commit": "834bcd3e90c1b1ba6a23e7018f4fd0c83b3b674f",
+  "evidence_commit": "c12d8f456c9f82a65956f9457cf00c83f830d282",
+  "source_hashes_verified": 42,
+  "resolution_comments_posted_and_read_back": 7,
+  "open_issues": 0,
+  "release_published": false,
+  "original_local_main": "eb17c6ce5aa4c9ef785c12d56515e146866b1506",
+  "original_worktree_not_switched_or_reset": true
+}

@@ -462,6 +462,8 @@ pub struct GatewayState {
     pub tracing_enabled: bool,
     /// Search and parse charges. Unset when billing credentials are absent.
     pub agent_billing: Option<agent_billing::AgentBilling>,
+    /// Anonymous Chatbot consumer. Absent fails `POST /v1/chatbot` closed.
+    pub anonymous_chatbot: Option<crate::config::AnonymousChatbotUpstream>,
 }
 
 impl GatewayState {
@@ -1444,6 +1446,12 @@ async fn handle_http_request_inner(
                 req.uri().path(),
             ));
         }
+    }
+
+    // Anonymous Chatbot owns this path before route match. An absent block
+    // fails closed and must not fall through to a snapshot catch-all.
+    if crate::anonymous_chatbot::owns_path(req.uri().path()) {
+        return Ok(crate::anonymous_chatbot::handle(req, state.anonymous_chatbot.clone()).await);
     }
 
     // WebSocket and gRPC require protocol-specific dispatch. SSE and ordinary

@@ -1,0 +1,6 @@
+{
+  "crates/terminal/crates/codegen/a3s-code-pager/src/headless.rs": "be4c207aa274ab2c2a69aeb7fd18b7eb28719692c64ba50835b823dea652b532",
+  "crates/code/acp/src/agent.rs": "6bb6b208ace249e9a3e0b7ef73609c344c2e38028a8d0a870c0cb7f8dfb364ae",
+  "crates/code/acp/src/agent/session_open.rs": "b588c44af418855cdde9f442700baf055b286e4a4cb9ebac19e51e6c05350b21",
+  "crates/code/core/src/tools/program_tool.rs": "3b7785a4587d1d97110975ca9edf23fbdae61b9540c7e4ab517bdcc6f473362d"
+}

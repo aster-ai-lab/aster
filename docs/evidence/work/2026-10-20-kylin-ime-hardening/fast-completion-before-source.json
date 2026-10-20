@@ -1,0 +1,14 @@
+{
+  "files": [
+    {
+      "source": "/Users/roylin/code/aster/target/worktrees/kylin-ime-hardening-20261020/apps/work/src/renderer/hooks/useAgentSessionParts.ts",
+      "fixture": "/Users/roylin/code/aster/target/evaluations/kylin-ime-hardening/fast-completion/before/useAgentSessionParts.ts",
+      "sha256": "851e02c8045e50fe764bb7e48170cdb6a4d81f502214a7d32ddf221d05eaf440"
+    },
+    {
+      "source": "/Users/roylin/code/aster/target/worktrees/kylin-ime-hardening-20261020/apps/work/src/renderer/hooks/useConversationHistoryQuery.ts",
+      "fixture": "/Users/roylin/code/aster/target/evaluations/kylin-ime-hardening/fast-completion/before/useConversationHistoryQuery.ts",
+      "sha256": "40271247bae1c4304edd36609e67c097e95daee01c386c88c1a7d5b7369e18ff"
+    }
+  ]
+}

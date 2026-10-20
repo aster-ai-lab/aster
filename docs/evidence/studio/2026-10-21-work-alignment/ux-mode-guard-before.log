@@ -1,0 +1,114 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - import "/Users/roylin/code/aster/apps/studio/vitest.config" without a file extension (../../target/evaluations/studio-work-alignment/ux-baseline.config.ts:1:22). Add the file extension
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/studio
+
+ ❯ |renderer| src/renderer/pages/agents/__tests__/homeComposerChrome.test.tsx (13 tests | 2 failed | 11 skipped) 125ms
+   ❯ homepage composer chrome (13)
+     × refuses an explicitly changed action in the request planning preflight without clearing the draft 5ms
+     × refuses an explicitly changed action in the submit planning preflight without clearing the draft 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/homeComposerChrome.test.tsx > homepage composer chrome > refuses an explicitly changed action in the request planning preflight without clearing the draft
+AssertionError: expected { Object (handled, cleared, ...) } to deeply equal { handled: true, cleared: false }
+
+- Expected
++ Received
+
+  {
+    "cleared": false,
+-   "handled": true,
++   "code": {
++     "base": null,
++     "branch": null,
++     "existing": false,
++     "placement": "checkout",
++     "suffix": "62fa",
++   },
++   "handled": false,
+  }
+
+ ❯ src/renderer/pages/agents/__tests__/homeComposerChrome.test.tsx:149:21
+    147|     selectHomeComposerMode(HOST_CODE_MODE_ID)
+    148|     const refused = await send({ surface: 'live', text: 'Keep this dra…
+    149|     expect(refused).toEqual({ handled: true, cleared: false })
+       |                     ^
+    150|     const supported = await send({ surface: 'live', text: 'Keep this d…
+    151|     expect(supported.code).toMatchObject({ placement: 'checkout' })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/homeComposerChrome.test.tsx > homepage composer chrome > refuses an explicitly changed action in the submit planning preflight without clearing the draft
+AssertionError: expected { Object (handled, cleared, ...) } to deeply equal { handled: true, cleared: false }
+
+- Expected
++ Received
+
+  {
+    "cleared": false,
+-   "handled": true,
++   "code": {
++     "base": null,
++     "branch": null,
++     "existing": false,
++     "placement": "checkout",
++     "suffix": "5708",
++   },
++   "handled": false,
+  }
+
+ ❯ src/renderer/pages/agents/__tests__/homeComposerChrome.test.tsx:149:21
+    147|     selectHomeComposerMode(HOST_CODE_MODE_ID)
+    148|     const refused = await send({ surface: 'live', text: 'Keep this dra…
+    149|     expect(refused).toEqual({ handled: true, cleared: false })
+       |                     ^
+    150|     const supported = await send({ surface: 'live', text: 'Keep this d…
+    151|     expect(supported.code).toMatchObject({ placement: 'checkout' })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 11 skipped (13)
+   Start at  21:58:40
+   Duration  6.69s (transform 57%, import 38%, environment 2%, tests 2%, setup 1%)
+
+  Transform  |renderer| transforming modules took 3.76s · 57% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+

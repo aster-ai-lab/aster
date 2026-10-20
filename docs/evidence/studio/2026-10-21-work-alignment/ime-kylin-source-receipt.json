@@ -1,0 +1,126 @@
+{
+  "scope": "Studio independent Linux/Kylin packaging mechanisms; no real Studio Linux binary built yet",
+  "files": [
+    {
+      "path": "apps/studio/scripts/kylin-flatpak/README.md",
+      "sha256": "7e9afffb62a74fb0c50bc2d4534d99acdb2f050885321dcc3585dece0bbb638f",
+      "bytes": 5555
+    },
+    {
+      "path": "apps/studio/scripts/kylin-flatpak/build-fcitx4-immodule.sh",
+      "sha256": "a1ec5ab09116e53a7f472cddfe913136f4b8f7ce6edcd99c0453f2763da68824",
+      "bytes": 2320
+    },
+    {
+      "path": "apps/studio/scripts/kylin-flatpak/build-host.sh",
+      "sha256": "8bfd136ef0e76cc425e0612acc9a22388dae0bd859c91d63d88bbbecfdb91e57",
+      "bytes": 2801
+    },
+    {
+      "path": "apps/studio/scripts/kylin-flatpak/build-immodule.sh",
+      "sha256": "09da6c35a94a838ca7340e9b9321d883afbf44c91ff21240804d002070b392f1",
+      "bytes": 3577
+    },
+    {
+      "path": "apps/studio/scripts/kylin-flatpak/delivery.py",
+      "sha256": "0af0e166d8f09931a6ce2573f9e1cffca65fa85aef9614dcb9a2c577ccdb4e27",
+      "bytes": 14371
+    },
+    {
+      "path": "apps/studio/scripts/kylin-flatpak/dev.a3s.studio.desktop",
+      "sha256": "25132c709f3d53b9fa0bfb3b9a01a44cef8c7ce7d0b37a9aee9d48eba2338a92",
+      "bytes": 188
+    },
+    {
+      "path": "apps/studio/scripts/kylin-flatpak/fcitx4_legacy_portal.patch",
+      "sha256": "a5330e62b2fa668920261857593b6efc38016cbcb72b4535e96091ac9e7d9755",
+      "bytes": 2151
+    },
+    {
+      "path": "apps/studio/scripts/kylin-flatpak/fcitx_client_protocol_test.c",
+      "sha256": "ced6920541e3e14b90431a9fe1042e71ea6b5a7dfedc84401e4d4e19ca69e69a",
+      "bytes": 10198
+    },
+    {
+      "path": "apps/studio/scripts/kylin-flatpak/gtk_input_probe.c",
+      "sha256": "506b6af6e683009933f0089b289f2aef2f19535239cd4b82ecf339f71b378c69",
+      "bytes": 6676
+    },
+    {
+      "path": "apps/studio/scripts/kylin-flatpak/immodule_cache.py",
+      "sha256": "c3c8432c7be945e8dc51d4b33f820ae2f083f0f8ed9866ce69c74897e162739b",
+      "bytes": 3025
+    },
+    {
+      "path": "apps/studio/scripts/kylin-flatpak/kylin-launch.sh",
+      "sha256": "0f6c54f9ef78480bbd11637a7d9676074e3b935a6ec6f351cf8e6b7cdca625db",
+      "bytes": 5083
+    },
+    {
+      "path": "apps/studio/scripts/kylin-flatpak/kylin_im_backend.c",
+      "sha256": "637ed80e13c8f16028d761a87e46dca670f323ba04e93eb0284eb94cee4b6d77",
+      "bytes": 877
+    },
+    {
+      "path": "apps/studio/scripts/kylin-flatpak/package-bundle.sh",
+      "sha256": "585f52503e03390a508923a91ebbf1518515515d5429e2ef0e4e0a6347a714d9",
+      "bytes": 2568
+    },
+    {
+      "path": "apps/studio/scripts/kylin-flatpak/test-input-method.sh",
+      "sha256": "8b1ae50be30604084fc27b1288c316a9bdca80fd709c4da49fe664a5253bd01f",
+      "bytes": 5626
+    },
+    {
+      "path": "apps/studio/scripts/kylin-flatpak/test_delivery.py",
+      "sha256": "3f40eb39b3f14b4e7b1f6ec5fadfcfc690023a6ff60f1a9b8de358f4ba25d367",
+      "bytes": 8901
+    },
+    {
+      "path": "apps/studio/scripts/kylin-flatpak/work-provenance.json",
+      "sha256": "25d63eb4181ee2c15218d060e6056767ddae6e787e2d92484dd6810ac897617a",
+      "bytes": 1836
+    }
+  ],
+  "qualified_assets": {
+    "files": {
+      "immodules/fcitx4/COPYING": "2c8fb343a0416cac19195886aec4075c54da075a6281437552895bb0abf511de",
+      "immodules/fcitx4/fcitx-4.2.9.9.tar.xz": "307bddeabbec383eb27c4ea222d9f71d8d9011d7942f4010368e5bc3ca7440a1",
+      "immodules/fcitx4/fcitx4_legacy_portal.patch": "a5330e62b2fa668920261857593b6efc38016cbcb72b4535e96091ac9e7d9755",
+      "immodules/fcitx4/im-fcitx.so": "73503354d8594dd03feb4cb27ad7a5e7f17a455eda58e2ea2e3138e8ed2d0734",
+      "immodules/fcitx4/immodules.cache": "9b320a6855967d3829646973b2b3b611d191d86e38b6d6c82f3fde36d5e43e91",
+      "immodules/fcitx4/libfcitx-gclient.so.1": "7db5cc21ed9c62933e4785b221773027b64d091e40b2d92a9a7d4b268fe091d3",
+      "immodules/fcitx4/libfcitx-utils.so.0": "10718ef3263b1b2b386e1fda073578526bbad3466acee01c9ef5ff69b2519cf0",
+      "immodules/fcitx4/module-id": "4eaa29bac0eb7a8c2f3566c7a9310399c1759381fe1c8f4e077c431f57092627",
+      "immodules/fcitx4/query-path": "0ca5e6218096b32d7ff3e9ce2b6eae276e151d0aff1675300dfb97d4d6c92677",
+      "immodules/fcitx5/LGPL-2.1-or-later.txt": "1ccf09bf2f598308df4bed9cd8e9657dc5cd0973d2800318f2e241486e2edf3f",
+      "immodules/fcitx5/fcitx5-gtk-5.1.7.tar.gz": "92d7a5e3ed9eac8c8173983723013816f4706dddc3f019b4bb5c76c48cf4dd92",
+      "immodules/fcitx5/im-fcitx5.so": "1d73f6d8d82abd06d2e8974842b5cf67baf7e1967f833e59391b99b5ef5a8346",
+      "immodules/fcitx5/immodules.cache": "b8f1f7c2aebe7604f9e67ab5fb0ebc11cc2f123d587a8cd55e127f40060511fc",
+      "immodules/fcitx5/module-id": "4eaa29bac0eb7a8c2f3566c7a9310399c1759381fe1c8f4e077c431f57092627",
+      "immodules/fcitx5/query-path": "676ba2f94ad9f11bbe95394bd31b40af6f024dd00b18f20dccd97829230f4bfe",
+      "kylin-im-backend": "34371bbf987e4620871845371734e8cdc11154bba4048b5688cd3acf4ad7f230"
+    },
+    "origin": "Work R4; exact binary hashes pinned in delivery.py",
+    "schema": 1
+  },
+  "container": {
+    "name": "aster-studio-kylin-ime",
+    "id": "b14992065ffbf35faf1527b28f7d46f1766f99fca3fb7d497257ae09f6478c5d",
+    "scope": "owned privileged test container; isolated root Flatpak profile; no user installation"
+  },
+  "proofs": {
+    "hermetic_final": "ime-kylin-hermetic-final.log",
+    "native_gtk": "ime-kylin-native-gtk.log",
+    "stock_flatpak_refusal": "ime-kylin-stock-flatpak.log",
+    "strict_package_refusal": "ime-kylin-strict-package.log",
+    "launch_refusals": "ime-kylin-launch-refusals.json",
+    "native_runtime": "ime-kylin-native-runtime.log"
+  },
+  "limitations": [
+    "Three binary slots in the native fixture are /usr/bin/true, explicitly synthetic",
+    "Native GTK probe and its direct bwrap use no seccomp filter and do not certify the production sandbox",
+    "Stock Flatpak runtime gate refuses PR_SET_SECCOMP EINVAL, so no final Studio Flatpak exported",
+    "Real Studio Linux host/paired build and physical Kylin GUI remain pending"
+  ]
+}

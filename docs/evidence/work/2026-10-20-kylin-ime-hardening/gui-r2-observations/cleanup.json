@@ -1,0 +1,38 @@
+[
+  {
+    "run": "run-O2FBdB",
+    "app_pid": 38257,
+    "app_pid_still_present": false,
+    "stop_exists": true
+  },
+  {
+    "run": "run-wCZiI4",
+    "app_pid": 41141,
+    "app_pid_still_present": false,
+    "stop_exists": true
+  },
+  {
+    "run": "run-o97yDH",
+    "app_pid": 43081,
+    "app_pid_still_present": false,
+    "stop_exists": true
+  },
+  {
+    "run": "run-dTuzP4",
+    "app_pid": 47078,
+    "app_pid_still_present": false,
+    "stop_exists": true
+  },
+  {
+    "run": "run-t8QUV5",
+    "app_pid": 49976,
+    "app_pid_still_present": false,
+    "stop_exists": true
+  },
+  {
+    "run": "run-vzqGQ5",
+    "app_pid": 51189,
+    "app_pid_still_present": false,
+    "stop_exists": true
+  }
+]

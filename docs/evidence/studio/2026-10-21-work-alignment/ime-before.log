@@ -1,0 +1,614 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:6213) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/studio
+
+ ❯ |renderer| src/renderer/components/QuickPanel/__tests__/view.test.tsx (58 tests | 7 failed | 51 skipped) 152ms
+   ❯ QuickPanelView (58)
+     × leaves IME Escape untouched in the global capture handler for a editor session 68ms
+     × leaves IME Escape untouched in the global capture handler for a nested input 11ms
+     × leaves IME Escape untouched in the global capture handler for a nested input blur 16ms
+     × leaves IME Escape untouched in the global capture handler for a window blur 9ms
+     × does not select or navigate the panel on IME Enter 9ms
+     × does not select or navigate the panel on IME Tab 7ms
+     × does not select or navigate the panel on IME ArrowDown 7ms
+ ❯ |renderer| src/renderer/components/composer/__tests__/ComposerToken.test.tsx (59 tests | 2 failed | 56 skipped) 69ms
+   ❯ ComposerToken (58)
+     × keeps IME Enter from finishing prompt-variable editing 9ms
+     × keeps IME Tab from finishing prompt-variable editing 5ms
+stderr | src/renderer/components/composer/__tests__/ComposerSurface.lazy.test.tsx > deferred ComposerSurface > keeps confirmation and candidate navigation with the IME during composition session
+An update to DeferredComposerSurface inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to DeferredComposerSurface inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to DeferredComposerSurface inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to DeferredComposerSurface inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+stderr | src/renderer/components/composer/__tests__/ComposerSurface.lazy.test.tsx > deferred ComposerSurface > keeps confirmation and candidate navigation with the IME during keyCode 229
+An update to DeferredComposerSurface inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to DeferredComposerSurface inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to DeferredComposerSurface inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to DeferredComposerSurface inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+ ❯ |renderer| src/renderer/components/composer/__tests__/ComposerSurface.lazy.test.tsx (41 tests | 2 failed | 37 skipped) 92ms
+   ❯ deferred ComposerSurface (41)
+     × keeps confirmation and candidate navigation with the IME during composition session 10ms
+     × keeps confirmation and candidate navigation with the IME during keyCode 229 5ms
+ ❯ |renderer| src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx (28 tests | 4 failed | 24 skipped) 255ms
+   ❯ PermissionRequestComposer (28)
+     × leaves IME Enter in the note to the input method 77ms
+     × leaves IME Escape in the note to the input method 20ms
+     × ignores a legacy IME Enter in the global permission hotkey 5ms
+     × ignores a legacy IME Escape in the global permission hotkey 5ms
+ ❯ |renderer| src/renderer/components/composer/variants/__tests__/AskUserQuestionComposer.test.tsx (17 tests | 1 failed | 16 skipped) 122ms
+   ❯ AskUserQuestionComposer (17)
+     × keeps IME confirmation separate from submitting a custom answer 63ms
+ ❯ |renderer| src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx (8 tests | 7 failed) 6117ms
+   ❯ agent session reservation and terminal history handoff (8)
+     × keeps final text when the acknowledgement precedes terminal refresh 1029ms
+     × keeps final text when terminal refresh is in flight before the acknowledgement 1003ms
+     × keeps final text when a duplicate acknowledgement overlaps terminal refresh 1004ms
+     × does not put an old session refresh into the newly selected session 1004ms
+     × ignores a reservation callback retained from a previous session 6ms
+     × keeps the visible session send while another session selection is suspended 1006ms
+     × accepts the send before history resolves and retains it if the background refresh fails 1004ms
+stdout | src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx > real composer prompt-variable composition > commits the final value, ends composition, and lets a later Enter send
+Global paste handler initialized
+
+ ❯ |renderer| src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx (5 tests | 5 failed) 136ms
+   ❯ real composer prompt-variable composition (5)
+     × commits the final value, ends composition, and lets a later Enter send 75ms
+     × preserves the old value when composition is canceled (empty update: false) 18ms
+     × preserves the old value when composition is canceled (empty update: true) 15ms
+     × uses the last composition update only when the end event has no data 15ms
+     × rejects a composition at the input limit, ends composition, and lets a later Enter send 11ms
+ ❯ |renderer| src/renderer/components/composer/__tests__/composerInputAdapter.test.ts (5 tests | 1 failed | 4 skipped) 73ms
+   ❯ createComposerInputAdapter (5)
+     × reports the live composition session to panels outside the editor event path 23ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 29 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx > agent session reservation and terminal history handoff > keeps final text when the acknowledgement precedes terminal refresh
+AssertionError: expected "vi.fn()" to be called at least once
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+ ❯ src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx:150:39
+    148|     expect(h.result.current.history.messages.find((message) => message…
+    149|     act(() => terminal('session-1'))
+    150|     await waitFor(() => expect(h.get).toHaveBeenCalled())
+       |                                       ^
+    151|     await act(async () => h.histories['session-1'].resolve(finalHistor…
+    152|     await waitFor(() => expectReply(h, 'session-1'))
+ ❯ runWithExpensiveErrorDiagnosticsDisabled node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/29]⎯
+
+ FAIL  |renderer| src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx > agent session reservation and terminal history handoff > keeps final text when terminal refresh is in flight before the acknowledgement
+AssertionError: expected "vi.fn()" to be called at least once
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+ ❯ src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx:162:39
+    160|     })
+    161|     act(() => terminal('session-1'))
+    162|     await waitFor(() => expect(h.get).toHaveBeenCalled())
+       |                                       ^
+    163|     await act(async () => {
+    164|       h.ack.resolve(reservedAck('session-1'))
+ ❯ runWithExpensiveErrorDiagnosticsDisabled node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/29]⎯
+
+ FAIL  |renderer| src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx > agent session reservation and terminal history handoff > keeps final text when a duplicate acknowledgement overlaps terminal refresh
+AssertionError: expected "vi.fn()" to be called at least once
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+ ❯ src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx:177:39
+    175|     await act(async () => h.result.current.history.seedReservedMessage…
+    176|     act(() => terminal('session-1'))
+    177|     await waitFor(() => expect(h.get).toHaveBeenCalled())
+       |                                       ^
+    178|     await act(async () => h.result.current.history.seedReservedMessage…
+    179|     await act(async () => h.histories['session-1'].resolve(finalHistor…
+ ❯ runWithExpensiveErrorDiagnosticsDisabled node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/29]⎯
+
+ FAIL  |renderer| src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx > agent session reservation and terminal history handoff > does not put an old session refresh into the newly selected session
+AssertionError: expected "vi.fn()" to be called at least once
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+ ❯ src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx:193:39
+    191|     await act(async () => h.result.current.history.seedReservedMessage…
+    192|     act(() => terminal('session-1'))
+    193|     await waitFor(() => expect(h.get).toHaveBeenCalled())
+       |                                       ^
+    194|     h.rerender({ sessionId: 'session-2' })
+    195|     expect(h.result.current.history.messages).toEqual([])
+ ❯ runWithExpensiveErrorDiagnosticsDisabled node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/29]⎯
+
+ FAIL  |renderer| src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx > agent session reservation and terminal history handoff > ignores a reservation callback retained from a previous session
+AssertionError: expected [ { …(4) }, …(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "id": "assistant-session-1",
++     "metadata": {
++       "createdAt": "2026-10-20T21:21:37.922Z",
++       "status": "pending",
++       "updatedAt": "2026-10-20T21:21:37.922Z",
++     },
++     "parts": [],
++     "role": "assistant",
++   },
++   {
++     "id": "user-session-1",
++     "metadata": {
++       "createdAt": "2026-10-20T21:21:37.922Z",
++       "status": "success",
++       "updatedAt": "2026-10-20T21:21:37.922Z",
++     },
++     "parts": [
++       {
++         "text": "request",
++         "type": "text",
++       },
++     ],
++     "role": "user",
++   },
++ ]
+
+ ❯ src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx:211:47
+    209|     h.get.mockClear()
+    210|     await act(async () => oldSeed(reservedAck('session-1').reservedMes…
+    211|     expect(h.result.current.history.messages).toEqual([])
+       |                                               ^
+    212|     expect(h.get).not.toHaveBeenCalled()
+    213|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/29]⎯
+
+ FAIL  |renderer| src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx > agent session reservation and terminal history handoff > keeps the visible session send while another session selection is suspended
+AssertionError: expected [] to deep equally contain { type: 'text', …(2) }
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+
+- Expected:
+{
+  "state": "done",
+  "text": "reply-session-1",
+  "type": "text",
+}
+
++ Received:
+[]
+
+ ❯ expectReply src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx:127:5
+    125|   expect(
+    126|     h.result.current.history.messages.find((message) => message.id ===…
+    127|   ).toContainEqual({ type: 'text', text: `reply-${sessionId}`, state: …
+       |     ^
+    128| }
+    129|
+ ❯ src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx:242:25
+ ❯ runWithExpensiveErrorDiagnosticsDisabled node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/29]⎯
+
+ FAIL  |renderer| src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx > agent session reservation and terminal history handoff > accepts the send before history resolves and retains it if the background refresh fails
+AssertionError: expected "vi.fn()" to be called at least once
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+ ❯ src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx:254:39
+    252|     expect(h.result.current.turn.phase).toBe('streaming')
+    253|     expect(h.result.current.history.messages.map((message) => message.…
+    254|     await waitFor(() => expect(h.get).toHaveBeenCalled())
+       |                                       ^
+    255|     const error = new Error('history temporarily unavailable')
+    256|     await act(async () => h.histories['session-1'].reject(error))
+ ❯ runWithExpensiveErrorDiagnosticsDisabled node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/29]⎯
+
+ FAIL  |renderer| src/renderer/components/QuickPanel/__tests__/view.test.tsx > QuickPanelView > leaves IME Escape untouched in the global capture handler for a editor session
+ FAIL  |renderer| src/renderer/components/QuickPanel/__tests__/view.test.tsx > QuickPanelView > leaves IME Escape untouched in the global capture handler for a nested input
+ FAIL  |renderer| src/renderer/components/QuickPanel/__tests__/view.test.tsx > QuickPanelView > leaves IME Escape untouched in the global capture handler for a nested input blur
+ FAIL  |renderer| src/renderer/components/QuickPanel/__tests__/view.test.tsx > QuickPanelView > leaves IME Escape untouched in the global capture handler for a window blur
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/renderer/components/QuickPanel/__tests__/view.test.tsx:629:93
+    627|       const target = screen.getByRole('textbox', { name: 'Composer tar…
+    628|       if (origin !== 'editor session') fireEvent.compositionStart(targ…
+    629|       expect(fireEvent.keyDown(target, { key: 'Escape', keyCode: 27, i…
+       |                                                                                             ^
+    630|       expect(onClose).not.toHaveBeenCalled()
+    631|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/29]⎯
+
+ FAIL  |renderer| src/renderer/components/QuickPanel/__tests__/view.test.tsx > QuickPanelView > does not select or navigate the panel on IME Enter
+ FAIL  |renderer| src/renderer/components/QuickPanel/__tests__/view.test.tsx > QuickPanelView > does not select or navigate the panel on IME Tab
+ FAIL  |renderer| src/renderer/components/QuickPanel/__tests__/view.test.tsx > QuickPanelView > does not select or navigate the panel on IME ArrowDown
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/renderer/components/QuickPanel/__tests__/view.test.tsx:673:7
+    671|     expect(
+    672|       fireEvent.keyDown(target, { key, keyCode: key === 'Enter' ? 13 :…
+    673|     ).toBe(true)
+       |       ^
+    674|     expect(firstAction).not.toHaveBeenCalled()
+    675|     expect(secondAction).not.toHaveBeenCalled()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/29]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx > real composer prompt-variable composition > commits the final value, ends composition, and lets a later Enter send
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx:92:35
+     90|     })
+     91|
+     92|     expect(editor.view.composing).toBe(false)
+       |                                   ^
+     93|     await send(input)
+     94|     expect(onSendDraft).toHaveBeenCalledExactlyOnceWith(expect.objectC…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/29]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx > real composer prompt-variable composition > preserves the old value when composition is canceled (empty update: false)
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx > real composer prompt-variable composition > preserves the old value when composition is canceled (empty update: true)
+AssertionError: expected 'shanghai' to be '${city}' // Object.is equality
+
+Expected: "${city}"
+Received: "shanghai"
+
+ ❯ src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx:107:73
+    105|       })
+    106|
+    107|       expect(editor.state.doc.firstChild?.firstChild?.attrs.promptText…
+       |                                                                         ^
+    108|       expect(editor.view.composing).toBe(false)
+    109|       await send(input)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/29]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx > real composer prompt-variable composition > uses the last composition update only when the end event has no data
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx:121:35
+    119|     })
+    120|
+    121|     expect(editor.view.composing).toBe(false)
+       |                                   ^
+    122|     await send(input)
+    123|     expect(onSendDraft).toHaveBeenCalledExactlyOnceWith(expect.objectC…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/29]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx > real composer prompt-variable composition > rejects a composition at the input limit, ends composition, and lets a later Enter send
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/renderer/components/composer/__tests__/ComposerSurface.ime.test.tsx:148:35
+    146|     })
+    147|
+    148|     expect(editor.view.composing).toBe(false)
+       |                                   ^
+    149|     expect(serializeComposerDocument(editor).text).toBe(text)
+    150|     expect(editor.state.doc.firstChild?.lastChild?.attrs.promptText).t…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/29]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.lazy.test.tsx > deferred ComposerSurface > keeps confirmation and candidate navigation with the IME during composition session
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.lazy.test.tsx > deferred ComposerSurface > keeps confirmation and candidate navigation with the IME during keyCode 229
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/renderer/components/composer/__tests__/ComposerSurface.lazy.test.tsx:306:40
+    304|         })
+    305|         fireEvent(input, event)
+    306|         expect(event.defaultPrevented).toBe(false)
+       |                                        ^
+    307|       }
+    308|       expect(mocks.onSendDraft).not.toHaveBeenCalled()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/29]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerToken.test.tsx > ComposerToken > keeps IME Enter from finishing prompt-variable editing
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerToken.test.tsx > ComposerToken > keeps IME Tab from finishing prompt-variable editing
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/renderer/components/composer/__tests__/ComposerToken.test.tsx:1395:81
+    1393|
+    1394|     fireEvent.compositionEnd(input, { data: '上海' })
+    1395|     expect(fireEvent.keyDown(input, { key, keyCode: 229, isComposing: …
+       |                                                                                 ^
+    1396|     expect(onCommit).not.toHaveBeenCalled()
+    1397|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/29]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/composerInputAdapter.test.ts > createComposerInputAdapter > reports the live composition session to panels outside the editor event path
+AssertionError: expected undefined to be true // Object.is equality
+
+- Expected:
+true
+
++ Received:
+undefined
+
+ ❯ src/renderer/components/composer/__tests__/composerInputAdapter.test.ts:79:37
+     77|
+     78|     fireEvent.compositionStart(currentEditor.view.dom)
+     79|     expect(adapter.isComposing?.()).toBe(true)
+       |                                     ^
+     80|
+     81|     fireEvent.compositionEnd(currentEditor.view.dom)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/29]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/variants/__tests__/AskUserQuestionComposer.test.tsx > AskUserQuestionComposer > keeps IME confirmation separate from submitting a custom answer
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/renderer/components/composer/variants/__tests__/AskUserQuestionComposer.test.tsx:88:90
+     86|     fireEvent.compositionStart(answer)
+     87|     fireEvent.change(answer, { target: { value: '使用中文日志' } })
+     88|     expect(fireEvent.keyDown(answer, { key: 'Enter', keyCode: 13, isCo…
+       |                                                                                          ^
+     89|     expect(onRespond).not.toHaveBeenCalled()
+     90|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/29]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx > PermissionRequestComposer > leaves IME Enter in the note to the input method
+ FAIL  |renderer| src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx > PermissionRequestComposer > leaves IME Escape in the note to the input method
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx:396:102
+    394|
+    395|     fireEvent.compositionStart(note)
+    396|     expect(fireEvent.keyDown(note, { key, keyCode: key === 'Enter' ? 1…
+       |                                                                                                      ^
+    397|     expect(onRespond).not.toHaveBeenCalled()
+    398|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/29]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx > PermissionRequestComposer > ignores a legacy IME Enter in the global permission hotkey
+ FAIL  |renderer| src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx > PermissionRequestComposer > ignores a legacy IME Escape in the global permission hotkey
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx:412:84
+    410|     render(<PermissionRequestComposer request={makeRequest()} onRespon…
+    411|
+    412|     expect(fireEvent.keyDown(document, { key, keyCode: 229, isComposin…
+       |                                                                                    ^
+    413|     expect(onRespond).not.toHaveBeenCalled()
+    414|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/29]⎯
+
+
+ Test Files  8 failed (8)
+      Tests  29 failed | 4 passed | 188 skipped (221)
+   Start at  21:21:27
+   Duration  15.58s (tests 46%, transform 22%, import 20%, environment 10%, setup 2%)
+
+    Isolate  8 workers spawned · ~227ms startup each (spawn + environment, per file)
+             at least ~1.59s faster with isolate: false — reuses workers across files instead of one per file
+

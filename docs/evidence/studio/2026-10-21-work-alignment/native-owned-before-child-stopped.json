@@ -1,0 +1,7 @@
+{
+  "pid": 21166,
+  "matched_owned_orphan": true,
+  "signal": "SIGTERM",
+  "time": 1792534919.242688,
+  "scope": "owned native before Cargo8636 child; no other processes signalled"
+}

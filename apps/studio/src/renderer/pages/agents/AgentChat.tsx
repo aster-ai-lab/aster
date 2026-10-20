@@ -1,6 +1,6 @@
 import { Checkbox, ConfirmDialog } from '@a3s-lab/ui'
 import type { ReactNode } from 'react'
-import { Suspense, use, useCallback, useEffect, useRef, useState } from 'react'
+import { Suspense, use, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { usePreference } from '@data/hooks/usePreference'
@@ -48,11 +48,12 @@ import AgentChatMain from './AgentChatMain'
 import AgentComposerSlot from './AgentComposerSlot'
 import { AgentChatNavbar } from './components/AgentChatNavbar'
 import AgentCitationsPanel from './components/AgentCitationsPanel'
-import { type AgentFileNavigationRequest, AgentRightPane, AgentTaskProgressCapsule } from './components/AgentRightPane'
+import { type AgentFileNavigationRequest, AgentRightPane, AgentTaskProgressBar } from './components/AgentRightPane'
 import { ApiGatewayRequiredDialog } from './components/ApiGatewayRequiredDialog'
 import { locateAgentMessageInList } from './messages/agentMessageListAdapter'
 import { OfficialWritingSessionPaper } from './OfficialWritingLiveDocument'
 import { PresentationGenerateBridge } from './presentationGenerate'
+import { taskPlanMode, TaskPlanningTurnsContext } from './taskConversation/taskPlanMode'
 import type { CreateAgentSessionDefaults } from './types'
 import { type AgentChatRuntimeState, useAgentChatRuntimeState } from './useAgentChatRuntimeState'
 import type { AgentConversationBootstrap } from './useAgentConversationBootstrap'
@@ -683,10 +684,13 @@ const AgentChatSessionCenter = ({
   onWorkspaceChange,
   workspaceChanging
 }: AgentChatSessionCenterProps) => {
+  const plan = useMemo(() => taskPlanMode(runtime.uiMessages), [runtime.uiMessages])
   const composer = (
     <div className="flex w-full flex-col">
-      {!isMultiSelectMode && <AgentTaskProgressCapsule />}
       <AgentComposerSlot
+        taskProgress={!isMultiSelectMode ? <AgentTaskProgressBar key={runtime.sessionId} /> : undefined}
+        planMessageId={!runtime.editBusy ? plan.readyMessageId : undefined}
+        planRevision={!runtime.editBusy ? plan.readyRevision : undefined}
         editBusy={runtime.editBusy}
         agentId={agentId}
         activeAgent={activeAgent}
@@ -713,27 +717,29 @@ const AgentChatSessionCenter = ({
     </div>
   )
   const messageList = (
-    <AgentChatMain
-      placement="docked"
-      sessionMessagesEnabled={sessionMessagesEnabled}
-      agentId={agentId}
-      sessionId={runtime.sessionId}
-      messages={runtime.uiMessages}
-      activeAgent={activeAgent}
-      partsByMessageId={runtime.partsByMessageId}
-      streamingLayers={runtime.streamingLayers}
-      optimisticAskUserQuestionInputsByToolCallId={runtime.optimisticAskUserQuestionInputsByToolCallId}
-      isLoading={runtime.isLoading}
-      hasOlder={runtime.hasOlder}
-      loadOlder={runtime.loadOlder}
-      selectAllPagination={runtime.selectAllPagination}
-      onOpenCitationsPanel={onOpenCitationsPanel}
-      openDiagnosticReport={openDiagnosticReport}
-      deleteMessage={runtime.deleteMessage}
-      startEditing={runtime.startEditing}
-      editBusy={runtime.editBusy}
-      respondToolApproval={runtime.respondToolApproval}
-    />
+    <TaskPlanningTurnsContext value={plan.messageIds}>
+      <AgentChatMain
+        placement="docked"
+        sessionMessagesEnabled={sessionMessagesEnabled}
+        agentId={agentId}
+        sessionId={runtime.sessionId}
+        messages={runtime.uiMessages}
+        activeAgent={activeAgent}
+        partsByMessageId={runtime.partsByMessageId}
+        streamingLayers={runtime.streamingLayers}
+        optimisticAskUserQuestionInputsByToolCallId={runtime.optimisticAskUserQuestionInputsByToolCallId}
+        isLoading={runtime.isLoading}
+        hasOlder={runtime.hasOlder}
+        loadOlder={runtime.loadOlder}
+        selectAllPagination={runtime.selectAllPagination}
+        onOpenCitationsPanel={onOpenCitationsPanel}
+        openDiagnosticReport={openDiagnosticReport}
+        deleteMessage={runtime.deleteMessage}
+        startEditing={runtime.startEditing}
+        editBusy={runtime.editBusy}
+        respondToolApproval={runtime.respondToolApproval}
+      />
+    </TaskPlanningTurnsContext>
   )
   const main = (
     <div className="relative flex h-full min-h-0 flex-1 flex-col overflow-hidden">

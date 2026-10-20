@@ -1,0 +1,7 @@
+{
+  "head": "eb17c6ce5aa4c9ef785c12d56515e146866b1506",
+  "main_sha256": "c96972d90e4a23b5deb40e9e02a7edbb62a4d9a3e75d7b71a8381d0b0631c92e",
+  "existing_main_diff_sha256": "d99feb061c12855ca213243163031fdec9543f53d43840a4020e6901a2b56cc8",
+  "existing_main_diff": "issue-7-main-before.patch",
+  "snapshot": "target/evaluations/open-issues/issue-7/main-before.rs"
+}

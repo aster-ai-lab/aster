@@ -107,6 +107,57 @@ impl EventHub {
                 .send(json!({"channel":channel,"payload":payload}));
         }
     }
+    pub(super) fn refresh_pending_approvals(
+        &self,
+        topic: &str,
+        execution_id: &str,
+        pending: Value,
+    ) {
+        let _observations = self
+            .observations
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner());
+        let mut statuses = self
+            .statuses
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner());
+        let Some(status) = statuses
+            .get_mut(topic)
+            .filter(|status| status["turnId"] == execution_id)
+        else {
+            return;
+        };
+        if status["pendingApprovals"] == pending {
+            return;
+        }
+        status["pendingApprovals"] = pending;
+        let _ = self.sender.send(json!({
+            "channel":"topic.status","payload":{"topicId":topic,"status":status}
+        }));
+    }
+    pub(super) fn refresh_goal_snapshot(&self, topic: &str, execution_id: &str, snapshot: Value) {
+        let _observations = self
+            .observations
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner());
+        let mut statuses = self
+            .statuses
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner());
+        let Some(status) = statuses
+            .get_mut(topic)
+            .filter(|status| status["turnId"] == execution_id)
+        else {
+            return;
+        };
+        if status["goalSnapshot"] == snapshot {
+            return;
+        }
+        status["goalSnapshot"] = snapshot;
+        let _ = self.sender.send(json!({
+            "channel":"topic.status","payload":{"topicId":topic,"status":status}
+        }));
+    }
 }
 
 pub(super) fn stream(hub: Arc<EventHub>) -> SseStream {

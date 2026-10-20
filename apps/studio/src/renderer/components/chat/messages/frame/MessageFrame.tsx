@@ -4,10 +4,10 @@ import type { FC } from 'react'
 import React, { createContext, memo, use, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { WorkbenchProjectLockedContext } from '@renderer/components/composer/workbenchComposerHost'
 import HorizontalScrollContainer from '@renderer/components/HorizontalScrollContainer'
 import { useTimer } from '@renderer/hooks/useTimer'
 import { scrollIntoView } from '@renderer/utils/dom'
-import { WorkbenchProjectLockedContext } from '@renderer/pages/agents/workbenchComposerHost'
 import { canEditAssistantMessageParts } from '@renderer/utils/message/partsHelpers'
 import { classNames, cn } from '@renderer/utils/style'
 import type { CherryMessagePart } from '@shared/data/types/message'
@@ -429,7 +429,7 @@ const UserBubbleMessage = ({
               overflowY: 'visible'
             }}>
             <MessageErrorBoundary>
-              <MessageContent hoistAttachments latest={isLatestAssistantMessage} message={message} />
+              <MessageContent hoistAttachments message={message} />
             </MessageErrorBoundary>
           </Scrollbar>
         </div>

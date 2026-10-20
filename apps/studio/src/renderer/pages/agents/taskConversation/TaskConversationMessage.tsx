@@ -19,6 +19,7 @@ import {
 import {
   lazy,
   Suspense,
+  use,
   useEffect,
   useId,
   useLayoutEffect,
@@ -81,6 +82,8 @@ import {
   type WikiSearchHit
 } from './taskDiff'
 import { TaskDiffView } from './TaskDiffView'
+import { TaskPlanningTurnsContext } from './taskPlanMode'
+import { TaskPlanSnapshot } from './TaskPlanSnapshot'
 import {
   normalizeTaskConversationMarkdown,
   prepareMermaidDiagram,
@@ -1239,6 +1242,7 @@ export function TaskConversationTurn({
   parts,
   streaming,
   awaiting = false,
+  planning = false,
   createdAt = '',
   children
 }: {
@@ -1246,9 +1250,11 @@ export function TaskConversationTurn({
   streaming: boolean
   /** The saved row has settled, but the topic stream is still live. */
   awaiting?: boolean
+  planning?: boolean
   createdAt?: string
   children?: ReactNode
 }) {
+  const { t } = useTranslation()
   const items = useMemo(() => projectTaskConversationTurn(parts, streaming), [parts, streaming])
   const views = useMemo(() => clusterConsecutiveTools(items), [items])
   const waiting = turnShowsWorkingStatus(streaming || awaiting, views[views.length - 1])
@@ -1280,6 +1286,9 @@ export function TaskConversationTurn({
           const part = item.partIndex === undefined ? leakedToolPart(item.input) : parts[item.partIndex]
           return <TaskToolRow key={item.id} name={item.name} part={part} state={item.state} />
         }
+        if (item.kind === 'plan') {
+          return <TaskPlanSnapshot key={item.id} steps={item.steps} />
+        }
         if (item.kind === 'note') {
           return (
             <p key={item.id} data-task-error="">
@@ -1303,7 +1312,7 @@ export function TaskConversationTurn({
         }
         return <TaskProse key={item.id} id={item.id} streaming={item.streaming} text={item.text} />
       })}
-      {waiting ? <WorkingStatus /> : null}
+      {waiting ? <WorkingStatus label={planning ? t('workbench.plan.generating') : undefined} /> : null}
       {children}
     </div>
   )
@@ -1325,10 +1334,7 @@ function TaskChangedFiles({
   const { t } = useTranslation()
   const openArtifactFile = useOptionalMessageListActions()?.openArtifactFile
   const parts = useMessageParts(messageId)
-  const edits = useMemo(
-    () => turnFileEdits(parts, streaming || turnActive),
-    [parts, streaming, turnActive]
-  )
+  const edits = useMemo(() => turnFileEdits(parts, streaming || turnActive), [parts, streaming, turnActive])
   const [openPath, setOpenPath] = useState<string | null>(null)
   const open = edits.find((edit) => edit.path === openPath)
   if (edits.length === 0) return null
@@ -1356,7 +1362,10 @@ function TaskChangedFiles({
         ))}
       </ul>
       {open ? (
-        <TaskDiffView diff={open.diff} onOpenFile={openArtifactFile ? (path) => void openArtifactFile(path) : undefined} />
+        <TaskDiffView
+          diff={open.diff}
+          onOpenFile={openArtifactFile ? (path) => void openArtifactFile(path) : undefined}
+        />
       ) : null}
     </section>
   )
@@ -1376,6 +1385,7 @@ export function TaskConversationMessage({
   createdAt: string
 }) {
   const parts = useMessageParts(messageId)
+  const planning = use(TaskPlanningTurnsContext).has(messageId)
   const hostProof = useMemo(() => proofFromParts(parts, messageId), [parts, messageId])
   const [localProof, setLocalProof] = useState<{ source: WorkbenchProof | null; value: WorkbenchProof | null }>({
     source: hostProof,
@@ -1403,7 +1413,12 @@ export function TaskConversationMessage({
   }, [agentProse, streaming])
 
   return (
-    <TaskConversationTurn parts={parts} streaming={streaming} awaiting={awaiting} createdAt={createdAt}>
+    <TaskConversationTurn
+      parts={parts}
+      streaming={streaming}
+      awaiting={awaiting}
+      planning={planning}
+      createdAt={createdAt}>
       {proof ? <TaskAutoReview proof={proof} onChange={setProof} /> : null}
       <TaskWorkspaceProducts messageId={messageId} streaming={streaming} proof={proof} />
       <TaskChangedFiles messageId={messageId} streaming={streaming} turnActive={turnActive} />

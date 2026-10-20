@@ -1,0 +1,103 @@
+warning: unused import: `Ordering`
+ --> /Users/roylin/code/aster/apps/studio/src-tauri/src/desktop_settings.rs:8:36
+  |
+8 | use std::sync::atomic::{AtomicU32, Ordering};
+  |                                    ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `POLL_LIMIT` is never used
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:29:7
+   |
+29 | const POLL_LIMIT: usize = 100;
+   |       ^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: struct `SseEvent` is never constructed
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:838:19
+    |
+838 | pub(super) struct SseEvent {
+    |                   ^^^^^^^^
+
+warning: function `stream_agent_events` is never used
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:845:21
+    |
+845 | pub(super) async fn stream_agent_events(
+    |                     ^^^^^^^^^^^^^^^^^^^
+
+warning: function `recall_note` is never used
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/tobot_memory.rs:20:15
+   |
+20 | pub(crate) fn recall_note(origin: &str, slug: &str, query: &str) -> Option<String> {
+   |               ^^^^^^^^^^^
+
+warning: function `retain_exchange` is never used
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/tobot_memory.rs:39:15
+   |
+39 | pub(crate) fn retain_exchange(origin: &str, slug: &str, key: &str, user: &str, assistant: &str) {
+   |               ^^^^^^^^^^^^^^^
+
+warning: field `tool_call_id` is never read
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/local_acp_tests.rs:843:5
+    |
+841 | struct Approval {
+    |        -------- field in this struct
+842 |     id: String,
+843 |     tool_call_id: String,
+    |     ^^^^^^^^^^^^
+
+warning: function `boot` is never used
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/channel_gateway.rs:22:8
+   |
+22 | pub fn boot(token: &str, plane_url: &str) {
+   |        ^^^^
+
+warning: static `SLEEP_ASSERTION` is never used
+  --> /Users/roylin/code/aster/apps/studio/src-tauri/src/desktop_settings.rs:72:8
+   |
+72 | static SLEEP_ASSERTION: AtomicU32 = AtomicU32::new(0);
+   |        ^^^^^^^^^^^^^^^
+
+warning: function `boot` is never used
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/desktop_settings.rs:181:8
+    |
+181 | pub fn boot(slug: &str, product: &str, logo: &Path) {
+    |        ^^^^
+
+warning: function `verified_picker` is never used
+   --> /Users/roylin/code/aster/apps/studio/src-tauri/src/review_plugin.rs:462:8
+    |
+462 | pub fn verified_picker() -> Option<(PathBuf, String)> {
+    |        ^^^^^^^^^^^^^^^
+
+warning: 11 warnings emitted
+
+
+running 23 tests
+test agent_plane::turns::native_local_acp_alignment_tests::native_alignment_real_local_acp_planning_then_execution ... ignored, requires just build-studio workspace ACP companion; uses only a private loopback provider
+test agent_plane::turns::native_approval_alignment_tests::native_alignment_plan_first_is_explicit_prompt_metadata ... ok
+test agent_plane::acp::native_acp_alignment_tests::native_alignment_typed_reconciliation_cannot_be_retried_as_an_internal_error ... ok
+test agent_plane::controllers::native_approval_contract_tests::native_alignment_approval_http_dto_requires_the_exact_owned_tuple ... ok
+test preferences::device_alignment_tests::native_alignment_reserved_device_scope_cannot_be_opened_as_a_member ... ok
+test providers::default_alignment_tests::native_alignment_session_identity_is_explicit_and_invalid_instance_has_no_fallback ... ok
+test preferences::device_alignment_tests::native_alignment_exhausted_member_revision_does_not_write_device_values ... ok
+test preferences::device_alignment_tests::native_alignment_mixed_commit_overflow_is_refused_before_either_write ... ok
+test preferences::device_alignment_tests::native_alignment_model_preferences_are_device_scoped_and_other_values_are_private ... ok
+test providers::default_alignment_tests::native_alignment_defaults_do_not_admit_managed_or_disabled_models ... ok
+test providers::default_alignment_tests::native_alignment_provider_write_failure_rolls_back_in_memory_defaults ... ok
+test providers::default_alignment_tests::native_alignment_defaults_update_all_three_preferences_after_reopen ... ok
+test agent_plane::turns::native_approval_alignment_tests::native_alignment_invalid_plan_first_is_refused_before_admission ... ok
+test providers::default_alignment_tests::native_alignment_unavailable_preferences_roll_back_defaults ... ok
+test agent_plane::acp::native_acp_alignment_tests::native_alignment_timed_out_readonly_rpc_drops_its_pending_callback ... ok
+test agent_plane::turns::goal_snapshot::tests::native_alignment_goal_reads_do_not_overlap_for_the_same_runtime ... ok
+test agent_plane::turns::native_approval_alignment_tests::native_alignment_reconnect_recovers_the_live_approval_identity ... ok
+test agent_plane::turns::native_approval_alignment_tests::native_alignment_abort_revokes_approval_before_settlement ... ok
+test agent_plane::turns::goal_snapshot::tests::native_alignment_goal_response_cannot_cross_an_idle_nonlocal_admission ... ok
+test agent_plane::turns::native_approval_alignment_tests::native_alignment_bound_approval_rejects_every_wrong_identity_and_is_single_use ... ok
+test agent_plane::turns::native_approval_alignment_tests::native_alignment_plan_first_preserves_permission_posture_on_the_wire ... ok
+test agent_plane::turns::goal_snapshot::tests::native_alignment_goal_read_deadline_includes_the_runtime_registry_lock ... ok
+test agent_plane::turns::native_approval_alignment_tests::native_alignment_incomplete_stop_is_not_reported_as_success ... ok
+
+test result: ok. 22 passed; 0 failed; 1 ignored; 0 measured; 841 filtered out; finished in 8.60s
+

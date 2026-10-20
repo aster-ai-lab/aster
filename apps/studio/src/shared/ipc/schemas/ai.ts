@@ -57,6 +57,7 @@ const studioHostContextSchema = z.object({
 }) satisfies z.ZodType<StudioHostContext>
 
 const studioTurnContextSchema = z.object({
+  planFirst: z.boolean().optional(),
   directives: z.array(z.string().max(500)).max(8),
   research: z.boolean(),
   agentId: z
@@ -381,7 +382,11 @@ export const aiRequestSchemas = {
       reason: z.string().optional(),
       updatedInput: z.record(z.string(), z.unknown()).optional(),
       topicId: z.string().optional(),
-      anchorId: z.string().optional()
+      anchorId: z.string().optional(),
+      executionId: z.string().min(1).optional(),
+      anchorMessageId: z.string().min(1).optional(),
+      messageId: z.string().min(1).optional(),
+      toolCallId: z.string().min(1).optional()
     }) satisfies z.ZodType<AiToolApprovalRespondRequest>,
     output: z.object({ ok: z.boolean() })
   }),

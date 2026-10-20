@@ -802,6 +802,8 @@ impl TurnService {
             live.insert(
                 session.id.clone(),
                 LiveTurn {
+                    acp_session: None,
+                    attempt_id: 1,
                     owner: message.id.clone(),
                     execution_id: execution.execution_id.clone(),
                     status: "streaming".into(),
@@ -813,6 +815,7 @@ impl TurnService {
                 },
             );
         }
+        self.reset_goal_snapshot(&execution);
         let epoch = self.turn_epoch.load(Ordering::SeqCst);
         if !is_resident_session(&session.id) {
             if let Err(error) = self.store.save_session_execution(

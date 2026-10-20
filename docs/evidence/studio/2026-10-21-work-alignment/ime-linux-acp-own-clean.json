@@ -1,0 +1,27 @@
+{
+  "command": [
+    "docker",
+    "exec",
+    "-w",
+    "/aster/target/worktrees/studio-linux-alignment-20261021",
+    "-e",
+    "PATH=/opt/rust-toolchain/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "-e",
+    "CARGO_HOME=/aster/target/evaluations/studio-work-alignment/ime-native/cargo-home",
+    "-e",
+    "CARGO_TARGET_DIR=/aster/target/evaluations/studio-work-alignment/ime-native/linux-cargo-target",
+    "-e",
+    "CARGO_NET_OFFLINE=true",
+    "aster-studio-kylin-ime",
+    "cargo",
+    "clean",
+    "--release",
+    "-p",
+    "a3s-code-acp"
+  ],
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "warning: profiles for the non root package will be ignored, specify profiles at the workspace root:\npackage:   /aster/target/worktrees/studio-linux-alignment-20261021/apps/gateway/Cargo.toml\nworkspace: /aster/target/worktrees/studio-linux-alignment-20261021/Cargo.toml\nwarning: profiles for the non root package will be ignored, specify profiles at the workspace root:\npackage:   /aster/target/worktrees/studio-linux-alignment-20261021/crates/sentry/Cargo.toml\nworkspace: /aster/target/worktrees/studio-linux-alignment-20261021/Cargo.toml\nwarning: patch for the non root package will be ignored, specify patch at the workspace root:\npackage:   /aster/target/worktrees/studio-linux-alignment-20261021/crates/use/Cargo.toml\nworkspace: /aster/target/worktrees/studio-linux-alignment-20261021/Cargo.toml\n     Removed 539 files, 400.5MiB total\n",
+  "elapsed_seconds": 2.739,
+  "boundary": "Only a3s-code-acp in the owned isolated target; shared root Cargo output is untouched."
+}

@@ -1,0 +1,132 @@
+{
+  "kind": "r3-final-stage-isolated-negative-fixtures",
+  "supplied_app_commit": null,
+  "source_stage": "target/worktrees/kylin-ime-hardening-20261020/apps/work/dist/kylin/flatpak-build",
+  "source_paths": 3598,
+  "source_manifest": "target/evaluations/kylin-ime-hardening/final-r3-negatives/source-stage-manifest.json",
+  "source_manifest_sha256": "7d5578673f7d25ecb436e9a5b517d1125f017779942a174e7772d91dd3529ed8",
+  "harness_sources": [
+    {
+      "path": "target/worktrees/kylin-ime-hardening-20261020/apps/work/scripts/kylin-flatpak/test-input-method.sh",
+      "sha256": "8b1ae50be30604084fc27b1288c316a9bdca80fd709c4da49fe664a5253bd01f"
+    },
+    {
+      "path": "target/worktrees/kylin-ime-hardening-20261020/apps/work/scripts/kylin-flatpak/gtk_input_probe.c",
+      "sha256": "506b6af6e683009933f0089b289f2aef2f19535239cd4b82ecf339f71b378c69"
+    },
+    {
+      "path": "target/worktrees/kylin-ime-hardening-20261020/apps/work/scripts/kylin-flatpak/fcitx_client_protocol_test.c",
+      "sha256": "ced6920541e3e14b90431a9fe1042e71ea6b5a7dfedc84401e4d4e19ca69e69a"
+    }
+  ],
+  "fixtures": [
+    {
+      "name": "missing-module",
+      "path": "target/evaluations/kylin-ime-hardening/final-r3-negatives/fixture/missing-module",
+      "only_changed_path": "files/lib/im/fcitx4/im-fcitx.so",
+      "before": {
+        "mode": 493,
+        "type": "file",
+        "size": 40176,
+        "sha256": "73503354d8594dd03feb4cb27ad7a5e7f17a455eda58e2ea2e3138e8ed2d0734"
+      },
+      "after": null,
+      "independent_regular_file_inodes": 2972
+    },
+    {
+      "name": "unpinned-bus",
+      "path": "target/evaluations/kylin-ime-hardening/final-r3-negatives/fixture/unpinned-bus",
+      "only_changed_path": "files/bin/kylin-launch",
+      "before": {
+        "mode": 493,
+        "type": "file",
+        "size": 4980,
+        "sha256": "6a6f459d0b7561faf7de2b400012e10f5e4d34342861f25ac896f052f37a9f84"
+      },
+      "after": {
+        "mode": 493,
+        "type": "file",
+        "size": 4746,
+        "sha256": "8c923b352d7c20d02d49b0836ab9dafbfe705f00819bb2015ede4d66742adcf5"
+      },
+      "independent_regular_file_inodes": 2972
+    }
+  ],
+  "independent_regular_inodes_between_fixtures": 2971,
+  "source_stage_unchanged_after_tests": true,
+  "fixtures_unchanged_after_tests": true,
+  "critical_stage_files": [
+    {
+      "path": "metadata",
+      "mode": 420,
+      "type": "file",
+      "size": 704,
+      "sha256": "fa8ffa59ec1534a75616b62dc440e6942f40c21de5cc3995fb693c79a7bfb957"
+    },
+    {
+      "path": "files/bin/aster-dream",
+      "mode": 493,
+      "type": "file",
+      "size": 79672672,
+      "sha256": "d19362ae9e5fb405c57a4e6a1b7027e97e46effbf28f1cfc82f0976c86a7d0f2"
+    },
+    {
+      "path": "files/bin/kylin-launch",
+      "mode": 493,
+      "type": "file",
+      "size": 4980,
+      "sha256": "6a6f459d0b7561faf7de2b400012e10f5e4d34342861f25ac896f052f37a9f84"
+    },
+    {
+      "path": "files/lib/im/fcitx4/im-fcitx.so",
+      "mode": 493,
+      "type": "file",
+      "size": 40176,
+      "sha256": "73503354d8594dd03feb4cb27ad7a5e7f17a455eda58e2ea2e3138e8ed2d0734"
+    },
+    {
+      "path": "files/lib/im/fcitx4/libfcitx-gclient.so.1",
+      "mode": 493,
+      "type": "file",
+      "size": 60400,
+      "sha256": "7db5cc21ed9c62933e4785b221773027b64d091e40b2d92a9a7d4b268fe091d3"
+    },
+    {
+      "path": "files/lib/im/fcitx4/libfcitx-utils.so.0",
+      "mode": 493,
+      "type": "file",
+      "size": 89048,
+      "sha256": "10718ef3263b1b2b386e1fda073578526bbad3466acee01c9ef5ff69b2519cf0"
+    },
+    {
+      "path": "files/share/licenses/fcitx4/build-fcitx4-immodule.sh",
+      "mode": 420,
+      "type": "file",
+      "size": 2320,
+      "sha256": "a1ec5ab09116e53a7f472cddfe913136f4b8f7ce6edcd99c0453f2763da68824"
+    }
+  ],
+  "orchestrator": {
+    "path": "target/evaluations/kylin-ime-hardening/run-final-r3-negatives.py",
+    "sha256": "110b44dfcb078187d49ba0e7aa7f142a06528979ebba1507d9a5c7b3ba6a8e1a",
+    "selftest_passed": true,
+    "declared_commit_pending_export": false,
+    "app_commit_was_pending_at_execution": true
+  },
+  "app_commit": "9976324975943ee39ae5727d6c6f935b2d50e98bc1954992d7e9deda09124776",
+  "commit_binding": {
+    "status": "canonical-ship-and-installed-identity-verified",
+    "app_commit": "9976324975943ee39ae5727d6c6f935b2d50e98bc1954992d7e9deda09124776",
+    "canonical_ship": "target/packages/asterdream-0.1.2-kylin-x86_64-20261020-hardening-r3/ship",
+    "canonical_app_bundle_sha256": "5c80ccfed10fa6f3ec5fbaa140d61f2693daebee8cb754d1cc2776e67eb8d031",
+    "canonical_commit_file_sha256": "847f1304e7dbd742a71c542d752bd766aa892c65ec1f964474caed45962af749",
+    "identity_proof": "docs/evidence/work/2026-10-20-kylin-ime-hardening/native-r3-identity-proof.json",
+    "identity_proof_sha256": "71cd4289fb03d87647ae499cab567fc2b08a59b8a4cb1ed5452419a539a08592",
+    "run_receipt": "docs/evidence/work/2026-10-20-kylin-ime-hardening/native-r3-run-receipt.json",
+    "run_receipt_sha256": "5b264b6a8ff716caf2fa974ea47a78519bf4f9270e7ccb2d8e1705d4949010fb",
+    "stage_critical_files_matched_to_installed_identity_proof": 23,
+    "full_stage_manifest_rechecked_unchanged": true,
+    "raw_execution_logs_preserved": true,
+    "scope": "R3 native candidate only; no complete GUI acceptance or onefile claim. Any R4 reuse requires native identity equivalence."
+  }
+}

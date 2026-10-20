@@ -79,6 +79,7 @@ export function buildInsertedInlineContent(
 export function createComposerInputAdapter(editor: Editor): QuickPanelInputAdapter {
   return {
     getText: () => getComposerInputText(editor),
+    isComposing: () => editor.view.composing,
     getCursorOffset: () => getComposerCursorTextOffset(editor),
     getSelectionEndOffset: () => getComposerTextOffset(editor, editor.state.selection.to),
     insertText: (insertedText, options) => {

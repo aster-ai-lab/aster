@@ -1,0 +1,13 @@
+{
+  "tsc_log": "typecheck-web.log",
+  "new_test_suite_diagnostics": [],
+  "pre_existing_diagnostic": {
+    "path": "apps/studio/src/renderer/components/QuickPanel/QuickPanelView.tsx",
+    "old_line": 1073,
+    "new_line": 1108,
+    "identical_source": "const anchor = caret ?? card!.getBoundingClientRect()\n        if (!caret && anchor.width <= 0) return",
+    "head_file_sha256": "b51287866e3b61673943b253276d4dc0d398ec9772247cbedcc108f480b852f0",
+    "current_file_sha256": "5e104acc78c5188dc2269e44fe33815e025ef091b7fc55889d5e85f34c1bb82f"
+  },
+  "full_tsc_outcome": "root-owned; nonzero baseline, not claimed clean"
+}

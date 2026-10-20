@@ -80,6 +80,8 @@ async fn delete_message_refuses_live_review_pending_and_warming_tasks() {
     turns.lock_live().insert(
         session.id.clone(),
         LiveTurn {
+            acp_session: None,
+            attempt_id: 1,
             owner: target.id.clone(),
             execution_id: "review".into(),
             status: "running".into(),

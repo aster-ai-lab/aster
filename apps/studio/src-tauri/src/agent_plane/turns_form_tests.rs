@@ -22,7 +22,9 @@ fn fixture() -> Fixture {
     turns.lock_live().insert(
         "session".into(),
         LiveTurn {
-            execution_id: String::new(),
+            acp_session: None,
+            attempt_id: 1,
+            execution_id: "model".into(),
             owner: "assistant".into(),
             status: "streaming".into(),
             observed: None,
@@ -79,6 +81,12 @@ async fn old_submission_and_cleanup_do_not_affect_the_new_execution() {
     let mut next_execution = fixture.execution.clone();
     next_execution.anchor_id = "replacement".into();
     next_execution.attempt_id = 2;
+    fixture
+        .turns
+        .lock_live()
+        .get_mut("session")
+        .unwrap()
+        .attempt_id = 2;
     let mut next = fixture
         .turns
         .register_form(&next_execution, "acp", "next-prompt", "source")
@@ -141,7 +149,10 @@ async fn waiting_on_a_form_retains_the_active_execution_in_status_and_reconnect(
     fixture
         .turns
         .status(&fixture.execution, "awaiting-form", true);
-    let status = events.recv().await.unwrap();
+    let status = tokio::time::timeout(Duration::from_secs(1), events.recv())
+        .await
+        .expect("owned status deadline")
+        .unwrap();
     assert_eq!(
         status["payload"]["status"]["activeExecutions"][0],
         fixture.execution.active()
@@ -197,4 +208,53 @@ async fn native_owned_form_contract_built_for_sdk_and_renderer() {
     use std::io::Write;
     file.write_all(&serde_json::to_vec_pretty(&artifact).unwrap())
         .unwrap();
+}
+
+#[test]
+fn native_alignment_form_ownership_checks_execution_and_attempt_even_with_the_same_anchor() {
+    let fixture = fixture();
+    let form = fixture
+        .turns
+        .register_form(&fixture.execution, "acp", "prompt", "source")
+        .unwrap();
+    fixture
+        .turns
+        .lock_live()
+        .get_mut("session")
+        .unwrap()
+        .execution_id = "replacement".into();
+    assert!(
+        !fixture
+            .turns
+            .submit_form(form.binding.clone(), FormValues::new())
+    );
+    assert!(
+        fixture
+            .turns
+            .register_form(&fixture.execution, "acp", "prompt", "source")
+            .is_none()
+    );
+    fixture
+        .turns
+        .lock_live()
+        .get_mut("session")
+        .unwrap()
+        .execution_id = fixture.execution.execution_id.clone();
+    fixture
+        .turns
+        .lock_live()
+        .get_mut("session")
+        .unwrap()
+        .attempt_id = 2;
+    assert!(
+        !fixture
+            .turns
+            .submit_form(form.binding.clone(), FormValues::new())
+    );
+    assert!(
+        fixture
+            .turns
+            .register_form(&fixture.execution, "acp", "prompt", "source")
+            .is_none()
+    );
 }

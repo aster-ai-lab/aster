@@ -46,6 +46,8 @@ rl.on('line', (line) => {
     return finish(result.outcome && result.outcome.optionId === 'question-1' ? 'selected B.docx' : 'no selection')
   }
   if (m.method === 'initialize') return send({ jsonrpc: '2.0', id: m.id, result: { protocolVersion: 1 } })
+  if (m.method === 'a3s/goal/state') return send({jsonrpc:'2.0',id:m.id,error:{code:-32601,message:'Method not found: raw extensions require underscore'}})
+  if (m.method === '_a3s/goal/state') return send({ jsonrpc:'2.0',id:m.id,result:{definition:null,tick:null} })
   if (m.method === 'session/new') {
     try {
       fs.writeFileSync(path.join(path.dirname(process.argv[1]), 'session-new.json'), JSON.stringify(m.params))

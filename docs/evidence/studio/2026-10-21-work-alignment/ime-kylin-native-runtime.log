@@ -1,0 +1,2 @@
+PASS both staged GTK modules load RTLD_NOW
+"ibus" "IBus (Intelligent Input Bus)" "ibus" "" "ja:ko:zh:*" 

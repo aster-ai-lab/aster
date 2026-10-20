@@ -1,0 +1,23 @@
+{
+  "status": "passed",
+  "source_files": 31,
+  "original_and_isolated_match": true,
+  "generated_env_files": [
+    {
+      "relative_path": "target/kylin-x86_64/release/build/aster-dream-95017ee1079fadf4/out/bundled_capability_env.rs",
+      "sha256": "89728628524898df2d72c937989cb16f79f036769b5829713bf535bb76c619da",
+      "capability_pairs": 0
+    },
+    {
+      "relative_path": "target/kylin-x86_64/release/build/aster-dream-7e62d8b7cac1f36e/out/bundled_capability_env.rs",
+      "sha256": "89728628524898df2d72c937989cb16f79f036769b5829713bf535bb76c619da",
+      "capability_pairs": 0
+    },
+    {
+      "relative_path": "target/kylin-x86_64/release/build/aster-dream-d7cf1ef3dc06a829/out/bundled_capability_env.rs",
+      "sha256": "89728628524898df2d72c937989cb16f79f036769b5829713bf535bb76c619da",
+      "capability_pairs": 0
+    }
+  ],
+  "env_placeholder_bytes": 0
+}

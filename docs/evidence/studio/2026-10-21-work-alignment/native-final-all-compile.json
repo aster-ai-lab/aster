@@ -1,0 +1,15 @@
+{
+  "compile_rc": 0,
+  "test_rc": 0,
+  "elapsed": 33.46348786354065,
+  "source_before": {
+    "apps/studio/src-tauri/src/agent_plane/turns.rs": "036da51a243bd5662cfd09de2666d7b64ad965b2262e9d35cba173ae3b853b66",
+    "apps/studio/src-tauri/src/agent_plane/controllers.rs": "2530451a81e890de304408af7fc36ab14217d080803c181d5d7d6bf07bf2c1da",
+    "apps/studio/src-tauri/src/agent_plane/events.rs": "af64a3b026d746dfe668f91488d2154785dda197aa73fa38793f6d11b4b48c8b",
+    "apps/studio/src-tauri/src/agent_plane/acp.rs": "4484e548841922eb210689b7ec09fa566359a475fc5e76cd03a1a2061000da76",
+    "apps/studio/src-tauri/src/providers.rs": "33bcb52196fe76f8b1cabd76231cc1485a928a066ec0217d08f9dfdf71e402da",
+    "apps/studio/src-tauri/src/preferences.rs": "76319fcdd4e27f4e42bcbd6a8faa73965849588c365b4ab91a92bb481d71e13b"
+  },
+  "source_unchanged": true,
+  "scope": "Exact real Studio test crate compiled with Cargo fingerprint dependency snapshots; full Cargo and bundle gates remain required"
+}

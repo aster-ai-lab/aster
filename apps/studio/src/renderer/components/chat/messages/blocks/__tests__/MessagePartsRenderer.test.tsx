@@ -490,6 +490,12 @@ describe('MessagePartsRenderer', () => {
   })
 
   describe('leaf rendering', () => {
+    it('keeps submitted plan metadata out of the visible transcript', () => {
+      const { container } = renderParts([{ type: 'data-task-plan', data: { mode: 'plan' } }], msg({ role: 'user' }))
+      expect(container.textContent).toBe('')
+      expect(mockMainTextRender).not.toHaveBeenCalled()
+      expect(mockMessageToolsRender).not.toHaveBeenCalled()
+    })
     it('does not rerender unrelated message content when another message becomes active', () => {
       const firstMessage = msg({ id: 'msg-1' })
       const secondMessage = msg({ id: 'msg-2' })

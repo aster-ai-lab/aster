@@ -78,6 +78,30 @@ describe('AskUserQuestionComposer', () => {
     MockCacheUtils.resetMocks()
   })
 
+  it('keeps IME confirmation separate from submitting a custom answer', async () => {
+    const onRespond = vi.fn().mockResolvedValue(undefined)
+    render(<AskUserQuestionComposer request={makeRequest([questions[0]])} onRespond={onRespond} />)
+    const answer = screen.getByRole('textbox', { name: 'Enter your answer...' })
+
+    fireEvent.compositionStart(answer)
+    fireEvent.change(answer, { target: { value: '使用中文日志' } })
+    expect(fireEvent.keyDown(answer, { key: 'Enter', keyCode: 13, isComposing: false })).toBe(true)
+    expect(onRespond).not.toHaveBeenCalled()
+
+    fireEvent.compositionEnd(answer)
+    expect(fireEvent.keyDown(answer, { key: 'Enter', keyCode: 229, isComposing: false })).toBe(true)
+    expect(onRespond).not.toHaveBeenCalled()
+
+    fireEvent.keyDown(answer, { key: 'Enter' })
+    await waitFor(() => expect(onRespond).toHaveBeenCalledTimes(1))
+    expect(onRespond).toHaveBeenCalledWith(
+      expect.objectContaining({
+        approved: true,
+        updatedInput: expect.objectContaining({ answers: { 'Choose logger': '使用中文日志' } })
+      })
+    )
+  })
+
   it('keeps the full question visible instead of clamping it to one line', () => {
     render(<AskUserQuestionComposer request={makeRequest()} onRespond={vi.fn()} />)
 

@@ -1,0 +1,115 @@
+diff --git a/apps/aster/src/main.rs b/apps/aster/src/main.rs
+index e21f3b4b2..44c0fb697 100644
+--- a/apps/aster/src/main.rs
++++ b/apps/aster/src/main.rs
+@@ -116,6 +116,7 @@ fn command_needs_pre_sandbox_policy_heal(command: Option<&Command>) -> bool {
+ use a3s_code_update::{UpdateConfig, auto_update, enforce_version_policy_or_exit};
+ use std::env;
+ 
++mod cli_pair_update;
+ mod startup;
+ #[cfg(all(feature = "test-seams", debug_assertions))]
+ mod test_seam {
+@@ -2045,7 +2046,10 @@ fn main() {
+         a3s_code_update::channel_name().unwrap_or_default(),
+     ));
+     let args = PagerArgs::parse_cli();
+-    if dispatch_version_if_requested(&args) || dispatch_doctor_if_requested(&args) {
++    if dispatch_version_if_requested(&args)
++        || dispatch_doctor_if_requested(&args)
++        || dispatch_pair_update_if_requested(&args)
++    {
+         return;
+     }
+     if let Some(summary) = startup::non_tty_summary(
+@@ -2643,40 +2647,67 @@ fn resolve_update_trigger(flag: Option<&str>, auto: bool) -> auto_update::CliUpd
+         auto_update::CliUpdateTrigger::UserCommand
+     }
+ }
++fn dispatch_pair_update_if_requested(args: &PagerArgs) -> bool {
++    let Some(Command::Update {
++        check,
++        json,
++        force_reinstall,
++        version,
++        alpha,
++        stable,
++        enterprise,
++        trigger,
++        auto,
++    }) = &args.command
++    else {
++        return false;
++    };
++    let _channel_switch = get_channel_switch(*alpha, *stable, *enterprise);
++    let trigger = resolve_update_trigger(trigger.as_deref(), *auto);
++    if let Err(error) = cli_pair_update::run(pair_update_request(
++        *check,
++        *json,
++        *force_reinstall,
++        version.clone(),
++        trigger,
++    )) {
++        eprintln!("Error: {error:#}");
++        std::process::exit(1);
++    }
++    true
++}
++fn pair_update_request(
++    check: bool,
++    json: bool,
++    force_reinstall: bool,
++    version: Option<String>,
++    trigger: auto_update::CliUpdateTrigger,
++) -> cli_pair_update::Request {
++    cli_pair_update::Request {
++        check,
++        json,
++        force_reinstall,
++        version,
++        background: !matches!(trigger, auto_update::CliUpdateTrigger::UserCommand),
++    }
++}
+ #[tracing::instrument(level = "debug", skip_all)]
+ async fn run_update_command(
+     check: bool,
+     json: bool,
+     force_reinstall: bool,
+     version: Option<String>,
+-    channel_switch: Option<&str>,
++    _channel_switch: Option<&str>,
+     trigger: auto_update::CliUpdateTrigger,
+-    base_update_config: &UpdateConfig,
++    _base_update_config: &UpdateConfig,
+ ) -> Result<()> {
+-    // A source build never downloads or replaces this binary. `--check` still
+-    // prints a machine-readable status when asked, and it does not install.
+-    if !check {
+-        anyhow::bail!("Aster is built from source; rebuild this workspace to update it");
+-    }
+-    let _ = (
++    cli_pair_update::run(pair_update_request(
++        check,
++        json,
+         force_reinstall,
+         version,
+-        channel_switch,
+         trigger,
+-        base_update_config,
+-    );
+-    let status = a3s_code_update::UpdateStatus {
+-        current_version: env!("VERSION_WITH_COMMIT").to_string(),
+-        latest_version: None,
+-        update_available: false,
+-        installer: None,
+-        channel: a3s_code_update::channel_name()
+-            .unwrap_or("unknown")
+-            .to_string(),
+-        auto_update: Some(false),
+-        error: Some("Aster is built from source; rebuild this workspace to update it".to_string()),
+-    };
+-    a3s_code_update::auto_update::print_update_status(&status, json)
++    ))
+ }
+ #[cfg(test)]
+ mod tests {

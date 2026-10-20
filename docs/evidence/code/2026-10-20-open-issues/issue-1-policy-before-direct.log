@@ -1,0 +1,17 @@
+
+running 1 test
+
+thread 'goal_control::continuation::tests::a_deadline_horizon_does_not_stop_after_one_unfinished_slice' (52015195) panicked at crates/code/core/src/goal_control/continuation/tests.rs:148:5:
+assertion `left == right` failed
+  left: 1000
+ right: 3
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test goal_control::continuation::tests::a_deadline_horizon_does_not_stop_after_one_unfinished_slice ... FAILED
+
+failures:
+
+failures:
+    goal_control::continuation::tests::a_deadline_horizon_does_not_stop_after_one_unfinished_slice
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5265 filtered out; finished in 0.02s
+

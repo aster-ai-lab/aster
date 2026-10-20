@@ -42,6 +42,7 @@ const HIDDEN_PART_TYPES = new Set([
   'source-document',
   'data-citation',
   'data-agent-task-event',
+  'data-task-plan',
   'data-knowledge-scope',
   'data-review-source',
   'data-review-progress',

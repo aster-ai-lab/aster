@@ -594,6 +594,96 @@ describe('QuickPanelView', () => {
     )
   })
 
+  it.each(['editor session', 'nested input', 'nested input blur', 'window blur'])(
+    'leaves IME Escape untouched in the global capture handler for a %s',
+    async (origin) => {
+      const onClose = vi.fn()
+      let composing = origin === 'editor session'
+      const inputAdapter: QuickPanelInputAdapter = {
+        getText: () => '',
+        isComposing: () => composing,
+        insertText: vi.fn(),
+        deleteTriggerRange: vi.fn(),
+        focus: vi.fn()
+      }
+      render(
+        <QuickPanelProvider>
+          <PanelHarness
+            captureDispatch={vi.fn()}
+            inputAdapter={inputAdapter}
+            items={[{ id: 'action', label: 'Action', icon: null }]}
+            triggerInfo={{ type: 'button' }}
+            trackInputQuery={false}
+            onClose={onClose}
+          />
+          <textarea
+            aria-label="Composer target"
+            onCompositionStart={(event) => event.stopPropagation()}
+            onCompositionEnd={(event) => event.stopPropagation()}
+          />
+        </QuickPanelProvider>
+      )
+      await screen.findByText('Action')
+      const target = screen.getByRole('textbox', { name: 'Composer target' })
+      if (origin !== 'editor session') fireEvent.compositionStart(target)
+      expect(fireEvent.keyDown(target, { key: 'Escape', keyCode: 27, isComposing: false })).toBe(true)
+      expect(onClose).not.toHaveBeenCalled()
+
+      composing = false
+      if (origin === 'nested input blur') fireEvent.blur(target)
+      else if (origin === 'window blur') fireEvent.blur(window)
+      else fireEvent.compositionEnd(target)
+      expect(fireEvent.keyDown(target, { key: 'Escape', keyCode: 229, isComposing: false })).toBe(true)
+      expect(onClose).not.toHaveBeenCalled()
+
+      fireEvent.keyDown(target, { key: 'Escape' })
+      expect(onClose).toHaveBeenCalledWith(expect.objectContaining({ action: 'esc' }))
+    }
+  )
+
+  it.each(['Enter', 'Tab', 'ArrowDown'])('does not select or navigate the panel on IME %s', async (key) => {
+    const firstAction = vi.fn()
+    const secondAction = vi.fn()
+    let composing = true
+    const inputAdapter: QuickPanelInputAdapter = {
+      getText: () => '',
+      isComposing: () => composing,
+      insertText: vi.fn(),
+      deleteTriggerRange: vi.fn(),
+      focus: vi.fn()
+    }
+    render(
+      <QuickPanelProvider>
+        <PanelHarness
+          captureDispatch={vi.fn()}
+          inputAdapter={inputAdapter}
+          items={[
+            { id: 'first', label: 'First action', icon: null, action: firstAction },
+            { id: 'second', label: 'Second action', icon: null, action: secondAction }
+          ]}
+          triggerInfo={{ type: 'button' }}
+          trackInputQuery={false}
+        />
+      </QuickPanelProvider>
+    )
+    await screen.findByText('First action')
+    const target = screen.getByTestId('quick-panel-body')
+    expect(
+      fireEvent.keyDown(target, { key, keyCode: key === 'Enter' ? 13 : key === 'Tab' ? 9 : 40, isComposing: false })
+    ).toBe(true)
+    expect(firstAction).not.toHaveBeenCalled()
+    expect(secondAction).not.toHaveBeenCalled()
+
+    composing = false
+    expect(fireEvent.keyDown(target, { key, keyCode: 229, isComposing: false })).toBe(true)
+    expect(firstAction).not.toHaveBeenCalled()
+    expect(secondAction).not.toHaveBeenCalled()
+
+    fireEvent.keyDown(target, { key: 'Enter' })
+    expect(firstAction).toHaveBeenCalledTimes(1)
+    expect(secondAction).not.toHaveBeenCalled()
+  })
+
   it('does not delete existing composer text after a button-triggered cursor move', async () => {
     const captureDispatch = vi.fn()
     const action = vi.fn()

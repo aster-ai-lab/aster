@@ -1,0 +1,394 @@
+{
+  "baseline": "eb17c6ce5aa4c9ef785c12d56515e146866b1506",
+  "head": "eb17c6ce5aa4c9ef785c12d56515e146866b1506",
+  "status": "source_ready",
+  "source_scope": "Studio UX only; other agents own native/composer/updater changes",
+  "files": [
+    {
+      "path": "apps/studio/src/renderer/components/chat/messages/blocks/MessagePartsRenderer.tsx",
+      "sha256": "40729699c5339495c83c7b773c111be118d74e64b93607de2ec1722545c09002",
+      "bytes": 63589
+    },
+    {
+      "path": "apps/studio/src/renderer/components/composer/ComposerContext.ts",
+      "sha256": "4bc08118ed4074ed2ff6ab30809eb66d603765ddaf024e550652a03e3499a531",
+      "bytes": 1483
+    },
+    {
+      "path": "apps/studio/src/renderer/components/composer/ComposerCore.tsx",
+      "sha256": "21efd17e1b29af5961892eea7e7e48fc03226a1e319678ea170883557d734175",
+      "bytes": 4082
+    },
+    {
+      "path": "apps/studio/src/renderer/components/composer/useToolApprovalComposerOverrides.ts",
+      "sha256": "91f45bf879673e389803fd504771751fd86435e72f92ccb37949c8c880f2a113",
+      "bytes": 6147
+    },
+    {
+      "path": "apps/studio/src/renderer/components/composer/__tests__/ComposerCore.test.tsx",
+      "sha256": "9b5c8fe3a9b6c49dfa655f9923050c5e8598ee372a589571f7a447f8de2c00d0",
+      "bytes": 5416
+    },
+    {
+      "path": "apps/studio/src/renderer/components/composer/__tests__/useToolApprovalComposerOverrides.test.ts",
+      "sha256": "0d2f07e26d8027211750ba0b0b81f3b1475e12ca4d7653eee1fee916822806ba",
+      "bytes": 14732
+    },
+    {
+      "path": "apps/studio/src/renderer/hooks/useTopicStreamStatus.ts",
+      "sha256": "4a6ff5022cae5b8f7c600c163143e6012b8d8c6319e2b6278c606666a39ab35a",
+      "bytes": 6495
+    },
+    {
+      "path": "apps/studio/src/renderer/hooks/useStudioGoal.ts",
+      "sha256": "5be6e1bc19f0909dfcff2ce04ea5844668e1a20bc5fe5dba1361bd4f68f53ec6",
+      "bytes": 2536
+    },
+    {
+      "path": "apps/studio/src/renderer/hooks/__tests__/useTopicAwaitingApproval.test.ts",
+      "sha256": "595c0400e0ecb6005caacdb714995d83a9f3a44257d8f843062862c937530fd1",
+      "bytes": 5342
+    },
+    {
+      "path": "apps/studio/src/renderer/hooks/__tests__/useTopicOverlayHandoffOnTerminal.test.ts",
+      "sha256": "0322b3e26477dfef32bf1bbf040c9279f7ef13b035089cdd64906cf64dbc0e02",
+      "bytes": 4203
+    },
+    {
+      "path": "apps/studio/src/renderer/hooks/__tests__/useStudioGoal.test.tsx",
+      "sha256": "8de8eb60555280f5545d6c0ec562b5729cf3c8ac8260c5629b7d23050e42a9da",
+      "bytes": 4758
+    },
+    {
+      "path": "apps/studio/src/renderer/data/studioAgentPlane.ts",
+      "sha256": "f426cd7890366fc1c3aa7ff2d70460b49eba6900c246e7e2ba258056c4e81a3a",
+      "bytes": 33624
+    },
+    {
+      "path": "apps/studio/src/renderer/data/__tests__/studioAgentPlane.test.ts",
+      "sha256": "775a669212d7e2dd3ab06ee7f93168b7cb4323b5abed9756911dda728250247e",
+      "bytes": 36628
+    },
+    {
+      "path": "apps/studio/src/shared/ai/transport/index.ts",
+      "sha256": "5bc3e677f7965bbb34305cddca6a3dfcfddcaff6d3c45478e6fbd6d23adb48ee",
+      "bytes": 1379
+    },
+    {
+      "path": "apps/studio/src/shared/ai/transport/stream.ts",
+      "sha256": "f1c3895af566a881c469a6bfc2550efec34201b98d8c69bbf2336ba8f2791c91",
+      "bytes": 17911
+    },
+    {
+      "path": "apps/studio/src/shared/ipc/schemas/ai.ts",
+      "sha256": "840d08fc7fd3311f3e3da83bf89f182f05539e5572e36aec0b774a45a1716e8e",
+      "bytes": 23971
+    },
+    {
+      "path": "apps/studio/src/shared/types/studioExecution.ts",
+      "sha256": "1c6f49279fd468c87c52e34fd9afb6c3b245ec5c1c512aa0fe10225959b1fb3e",
+      "bytes": 2147
+    },
+    {
+      "path": "apps/studio/src/shared/types/studioGoal.ts",
+      "sha256": "f418acd09a6445841956e2d7386e4c0b45e96076676ccaa9b30c3a323a2c246a",
+      "bytes": 1989
+    },
+    {
+      "path": "apps/studio/src/shared/data/api/schemas/agentSessions.ts",
+      "sha256": "3801c4d82b091b72d76dc27f8e5bc805b5ed29dae9a36d5efd183d13e11c2aa9",
+      "bytes": 11547
+    },
+    {
+      "path": "apps/studio/src/shared/data/types/uiParts.ts",
+      "sha256": "2ad18f429597918d07152ec4da74006dee7a3320bf24a8c0097286fdc65f32a3",
+      "bytes": 16996
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/AgentComposer.tsx",
+      "sha256": "d5dd8f56c320b852e39524030fdd57090e2c7e14cb2611821df5acf633e97854",
+      "bytes": 129032
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/AgentComposerSlot.tsx",
+      "sha256": "e59900ebec9bd78c7ea1b42be2556fa9a39ac2cda8d3f81791884495fca373d2",
+      "bytes": 5241
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/AgentChat.tsx",
+      "sha256": "569c07a354350925086016d1cbdaf9c2092576882fdde47d0ed976927e5a3c8a",
+      "bytes": 33470
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/useAgentChatRuntimeState.ts",
+      "sha256": "e5bb6697879f15cbbbbfb64d86ac46f2fea0e5afbaf7fb902dab63fceb6d6a36",
+      "bytes": 22120
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/WorkbenchHomeComposerExtras.tsx",
+      "sha256": "d0dc4246ed074b3191aae0c5f97c07a2b7ade830be55bebb65e54045a93c50b1",
+      "bytes": 24607
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/WorkbenchProjectTray.tsx",
+      "sha256": "927e25465be575b84cc2fa1081fc10a78e09fb92635601d6d039ea32aed864e1",
+      "bytes": 11624
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/workbenchPermissionPostures.ts",
+      "sha256": "b7d30ec2ee5d7d275a9aa0aa18eff416da97cc3e8f88e523628730b2ab8d4562",
+      "bytes": 9557
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/__tests__/AgentComposerSlot.test.tsx",
+      "sha256": "53a3b00904f6a77e2771f518eb1a9af44d62a2eb75b5cb2fdf757aa095701c69",
+      "bytes": 5316
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/__tests__/AgentPage.test.tsx",
+      "sha256": "0410ba76ab3270bf0c152c042c6484bcd56219c3f8f35ed389ad622e2516048e",
+      "bytes": 111608
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/__tests__/homeComposerChrome.test.tsx",
+      "sha256": "643fec6098b5393283de9882c3afc5284c48160ac8597b83cd1e7d17f0a1a2bf",
+      "bytes": 26031
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/__tests__/WorkbenchProjectTray.test.tsx",
+      "sha256": "486851799364e575aa41dbbc2455ae0f3da2209a2040d0cb94a69067614f6b05",
+      "bytes": 16655
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/__tests__/useAgentChatRuntimeState.test.tsx",
+      "sha256": "7a2e056f3b6073ae3ce9540ade3fbe636dc0dc8627ed75b9a00854b57cf36e9e",
+      "bytes": 33139
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/__tests__/workbenchPermissionPostures.test.ts",
+      "sha256": "4d4a240340b587eb1b043cf4bfc76fc7df8130560600bcc852deb5403f914533",
+      "bytes": 2959
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/components/AgentRightPane/AgentRightPane.tsx",
+      "sha256": "bb7da91e538f2cfc7ed337e7dba14cca9d3bbdea1832f33a39091f6a9c8bceb6",
+      "bytes": 83951
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/components/AgentRightPane/agentRightPaneProjection.ts",
+      "sha256": "adf3630498b5a12aaefcaf1a13b140099d9dff1750a94b2923004ca423160022",
+      "bytes": 30667
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/components/AgentRightPane/index.ts",
+      "sha256": "3a32b5f39f54a1f94cec2545716f9e472ed297c17b0a167feb85424b1fcb5916",
+      "bytes": 323
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/components/AgentRightPane/__tests__/AgentRightPane.test.tsx",
+      "sha256": "e0f0447f8b701453f7f705f806a94b67453af6d4b142ce71c00849fc60d73de5",
+      "bytes": 127046
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/components/AgentRightPane/__tests__/agentRightPaneProjection.test.ts",
+      "sha256": "910eb41cb3f75a514583ee96a946e98a80ae1634814a558af04ed97d8827591b",
+      "bytes": 33698
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/taskConversation/WorkingStatus.tsx",
+      "sha256": "af1bf25e310823b0166b65954abfe68c8570ee9f60af25b6e6fe46c7c37bfb49",
+      "bytes": 2504
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/taskConversation/turn.ts",
+      "sha256": "a1a13f5906492c230375d2e8c169d761ae0b5dc36322313d9cf1538620d70409",
+      "bytes": 39012
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/taskConversation/TaskConversationMessage.tsx",
+      "sha256": "7cc546cd444fd0c71d2b7cd12317b6f1748db13547d48f5a291b8e69b19b34e0",
+      "bytes": 49166
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/taskConversation/taskPlanMode.ts",
+      "sha256": "6661d668733f727bb35dd3e1301eaa51dfba9cbe819e9b4d479b871f66195f6f",
+      "bytes": 2956
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/taskConversation/taskPlanProjection.ts",
+      "sha256": "2bffac97f638da567fee647f9b9cef58afd17471167d287045c8bf5923fa58b8",
+      "bytes": 1249
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/taskConversation/TaskPlanReview.tsx",
+      "sha256": "9969599bab1907c14c87e78aef485df077c136222ccd101326995e297df9019a",
+      "bytes": 1515
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/taskConversation/TaskPlanSnapshot.tsx",
+      "sha256": "40833e38c38880ae315ef0e6153bc5bd1af80dd848c3b0bff66095e0da3df6f2",
+      "bytes": 1881
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/taskConversation/__tests__/taskPlanMode.test.ts",
+      "sha256": "37e4785d220ac9f95e74ab74b57240747430883fea9ef80d3ac064f29fb0a5ac",
+      "bytes": 6397
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/taskConversation/__tests__/TaskPlanReview.test.tsx",
+      "sha256": "a4fef2dc8693dcde24487461a781315e97d2c791a2a399d5792d5f1990c6a26a",
+      "bytes": 1253
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "sha256": "6b5d561e2b9008080fe2d69dfe1206e30b25da6961b978dc1695eee7d31eca8e",
+      "bytes": 94543
+    },
+    {
+      "path": "apps/studio/src/renderer/i18n/locales/en-us.json",
+      "sha256": "c1547b4fcbe145f606fa20deda8741324495d1fcf14a3e3ee4935e55c547f5b1",
+      "bytes": 718772
+    },
+    {
+      "path": "apps/studio/src/renderer/i18n/locales/zh-cn.json",
+      "sha256": "1531493866cd330f16149c8ab43ec97e862af529a40542f60f56aa3876ed9aeb",
+      "bytes": 701731
+    },
+    {
+      "path": "apps/studio/src/shared/ipc/schemas/__tests__/ai.test.ts",
+      "sha256": "22f6a6a80f339f3846d438f034b770e2ac3f266171d8a150b2bd01780ff77a9b",
+      "bytes": 11258
+    },
+    {
+      "path": "apps/studio/src/renderer/components/chat/messages/blocks/__tests__/MessagePartsRenderer.test.tsx",
+      "sha256": "c582fbd330d1b7fa43eee54ad35395c1a2b90142bca526fe6dc46e763ab7c291",
+      "bytes": 103231
+    },
+    {
+      "path": "apps/studio/src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx",
+      "sha256": "61c57afb0ead3b988fe916a63845f33f7f4c320ef632b192826b60e28ceb08a2",
+      "bytes": 205001
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/homeComposerMode.tsx",
+      "sha256": "31d2e36b7b7a91f61ba89bab6d533f1b45d952be7e9a6b537d1aa66ba32cbc3b",
+      "bytes": 51316
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/__tests__/WorkbenchPermissionPicker.test.tsx",
+      "sha256": "7ecb0b4981eedfd42c981c4ed16157d3e6e30cff489485102288c4542d4faa99",
+      "bytes": 11679
+    },
+    {
+      "path": "apps/studio/src/renderer/components/chat/messages/blocks/messagePartLayouts.ts",
+      "sha256": "13d418a6f07b09fce95257109e5535f84363b3bbc38802a4c528f15b3a8a7333",
+      "bytes": 13615
+    },
+    {
+      "path": "apps/studio/src/renderer/components/chat/messages/blocks/__tests__/messagePartLayouts.test.ts",
+      "sha256": "2ce56fbf6157423aa5de0c37c21dcc25331976c8e7e3c2c0cd96dad1e094bedd",
+      "bytes": 28933
+    },
+    {
+      "path": "apps/studio/src/renderer/components/composer/variants/PermissionRequestComposer.tsx",
+      "sha256": "bc949ceca2a518d024a5ac79f7fe3a46e75d20293c82255c19d22f1dc659442f",
+      "bytes": 16862
+    },
+    {
+      "path": "apps/studio/src/renderer/components/composer/variants/__tests__/PermissionRequestComposer.test.tsx",
+      "sha256": "1fef3cf8487577cd334a5f006bac2400e0252ce04171eb697975a1645e650353",
+      "bytes": 23080
+    }
+  ],
+  "validation": {
+    "focused": {
+      "files": 27,
+      "passed": 749,
+      "skipped": 1,
+      "failed": 0,
+      "command": "ux-final-suite-command.json",
+      "log": "ux-final-suite.log"
+    },
+    "eslint": {
+      "exit": 0,
+      "warnings": 10,
+      "errors": 0,
+      "log": "ux-eslint-final.log"
+    },
+    "format": {
+      "exit": 0,
+      "log": "ux-format-final.log"
+    },
+    "i18n": {
+      "exit": 0,
+      "translations": 21932,
+      "log": "ux-i18n-final.log"
+    },
+    "typecheck_comparison": {
+      "before": 19,
+      "after": 18,
+      "added": 0,
+      "log": "ux-typecheck-comparison.json"
+    },
+    "baseline_page": {
+      "failed": 6,
+      "passed": 72,
+      "log": "ux-agent-page-baseline.log"
+    },
+    "whole_web_tsc": {
+      "exit": 2,
+      "log": "ux-typecheck-web-final.log",
+      "note": "Whole tree remains nonzero; scope comparison establishes no newly added owned-file compiler diagnostic."
+    },
+    "plan_only": {
+      "before": {
+        "failed": 2,
+        "passed": 1
+      },
+      "after": {
+        "failed": 0,
+        "passed": 3
+      },
+      "logs": [
+        "ux-plan-only-before.log",
+        "ux-plan-only-after.log"
+      ]
+    },
+    "permission_capability": {
+      "before": {
+        "failed": 2,
+        "passed": 1
+      },
+      "after": {
+        "passed": 46,
+        "failed": 0
+      },
+      "scope": "Native boolean receivers cannot promise rejection notes; default true preserves legacy transports and existing IME handling.",
+      "logs": [
+        "ux-permission-capability-before.log",
+        "ux-permission-capability-after.log"
+      ]
+    }
+  },
+  "limits": [
+    "Native production/API and actual desktop GUI integration gates are pending; frontend hermetic tests do not replace them.",
+    "AgentPage existing sidebar six assertions fail unchanged in source-overlay baseline; not counted as passing.",
+    "One existing skipped data-plane test retained."
+  ],
+  "evidence": {
+    "ux-final-suite.log": "d8b0ec2d8478fed4071f4113861645dbf836fb75ff9e0bde30c668559718332e",
+    "ux-final-suite-command.json": "ae075a2012a78f31ad5a26d1d0cd98de315b04e79fdaca9d85fb74f9c1e6ba9e",
+    "ux-eslint-final.log": "95ed47075d9e41450061008bac3fc206fad11293038f8d9135f517ff62f348e7",
+    "ux-format-final.log": "a534ccd453696014f1fc47414027fae792cd81215b436f0b38010bd16051da14",
+    "ux-i18n-final.log": "472ce99f5d681e5f9bd59fafa975a866e62511afb2dce201ca63c356fb064542",
+    "ux-typecheck-comparison.json": "486f09fe5038c648c8e5422e59acd4cb0904861461458c9a718228692b2a301c",
+    "ux-agent-page-baseline.log": "1b5044ab67a8226a0485e7e8f60b6f23e67d7767868f0694ecf11b609fd8ff92",
+    "ux-plan-submit-before.log": "71c6e0b80e04ddeeb9478bf9229fb9e3858c607bc370a35206476d22219a2082",
+    "ux-goal-lane-before.log": "93f03c36d56aa9bec61472c1b16dcbbc153e7daf34f5af6a57859ca2919aef3c",
+    "ux-plan-only-before.log": "e7290362055398af7fc60579c600142988d544cbed2f7c93976eae0f76effcbe",
+    "ux-plan-only-after.log": "70933bef170dfa6f850197e2624fdb684dd866f5b469188b0173e876f8d618d2",
+    "ux-permission-capability-before.json": "42fb83ffb7bbcdc609a42cc05abd53ae6a77637b4784055563922aded3d57570",
+    "ux-permission-capability-before.log": "61b4066726e2e1b70951f2a9eccb676ecfab19a0d41155e9d5401b85f09a557b",
+    "ux-permission-capability-after.log": "09b1b21e697608b187565cf63afc647a1b18931a8d3006d4aa5d13efd2dd25ec"
+  }
+}

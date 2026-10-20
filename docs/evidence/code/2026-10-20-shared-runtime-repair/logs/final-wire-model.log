@@ -1,0 +1,14 @@
+{
+  "before_model": {
+    "file_created": false,
+    "permission_asks": 0
+  },
+  "after_model": {
+    "file_created": false,
+    "permission_asks": 0
+  },
+  "after_reselecting_yolo": {
+    "file_created": false,
+    "permission_asks": 0
+  }
+}

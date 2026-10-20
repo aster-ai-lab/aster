@@ -1,0 +1,19 @@
+{
+  "scope": "actual Studio launcher; synthetic three-binary slots; direct bwrap without seccomp, test only",
+  "cases": [
+    {
+      "case": "missing-office",
+      "passed": true,
+      "exit_code": 1,
+      "stderr": "studio-kylin: Studio generation hash or membership mismatch\n",
+      "target_executed": false
+    },
+    {
+      "case": "mixed-acp",
+      "passed": true,
+      "exit_code": 1,
+      "stderr": "studio-kylin: Studio generation hash or membership mismatch\n",
+      "target_executed": false
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "cargo",
+    "build",
+    "--locked",
+    "--release",
+    "-p",
+    "a3s-code-acp",
+    "-p",
+    "a3s-office-cli"
+  ],
+  "CARGO_TARGET_DIR": "/Users/roylin/code/aster/target/studio-macos-alignment",
+  "rc": 0,
+  "elapsed": 425.8421838283539
+}

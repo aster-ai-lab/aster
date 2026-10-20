@@ -1,0 +1,10 @@
+[
+  {
+    "check": "rustfmt",
+    "exitCode": 0
+  },
+  {
+    "check": "diff-check",
+    "exitCode": 0
+  }
+]

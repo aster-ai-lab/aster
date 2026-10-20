@@ -52,7 +52,23 @@ pub enum Inbound {
 
 type Pending = Arc<Mutex<HashMap<u64, oneshot::Sender<Result<Value, String>>>>>;
 
+struct PendingRequest {
+    id: u64,
+    pending: Pending,
+}
+
+impl Drop for PendingRequest {
+    fn drop(&mut self) {
+        self.pending
+            .lock()
+            .unwrap_or_else(|error| error.into_inner())
+            .remove(&self.id);
+    }
+}
+
 pub struct AcpClient {
+    #[cfg(test)]
+    raw_notification_methods: Arc<Mutex<Vec<String>>>,
     stdin: tokio::sync::Mutex<ChildStdin>,
     next_id: AtomicU64,
     pending: Pending,
@@ -68,7 +84,15 @@ impl AcpClient {
         args: &[String],
         cwd: &Path,
     ) -> std::io::Result<(Arc<Self>, mpsc::UnboundedReceiver<Inbound>)> {
-        let (gateway_origin, gateway_key) = crate::providers::gateway_decision_env();
+        Self::spawn_with_gateway(binary, args, cwd, crate::providers::gateway_decision_env())
+    }
+
+    fn spawn_with_gateway(
+        binary: &Path,
+        args: &[String],
+        cwd: &Path,
+        (gateway_origin, gateway_key): (String, Option<String>),
+    ) -> std::io::Result<(Arc<Self>, mpsc::UnboundedReceiver<Inbound>)> {
         let mut command = Command::new(binary);
         command
             .args(args)
@@ -84,6 +108,12 @@ impl AcpClient {
         if let Some(directory) = qualified_sibling_sandbox(binary) {
             command.env(SANDBOX_ASSETS_ENV, directory);
         }
+        Self::spawn_command(command)
+    }
+
+    fn spawn_command(
+        mut command: Command,
+    ) -> std::io::Result<(Arc<Self>, mpsc::UnboundedReceiver<Inbound>)> {
         let mut child = command.spawn()?;
         let stdin = child
             .stdin
@@ -102,6 +132,8 @@ impl AcpClient {
         let exited = Arc::new(AtomicBool::new(false));
         let exit_notify = Arc::new(Notify::new());
         let (inbound, receiver) = mpsc::unbounded_channel();
+        #[cfg(test)]
+        let raw_notification_methods = Arc::new(Mutex::new(Vec::new()));
 
         tokio::spawn(read_stdout(
             stdout,
@@ -109,11 +141,15 @@ impl AcpClient {
             inbound,
             Arc::clone(&exited),
             Arc::clone(&exit_notify),
+            #[cfg(test)]
+            Arc::clone(&raw_notification_methods),
         ));
         tokio::spawn(read_stderr(stderr, Arc::clone(&stderr_tail)));
 
         Ok((
             Arc::new(Self {
+                #[cfg(test)]
+                raw_notification_methods,
                 stdin: tokio::sync::Mutex::new(stdin),
                 next_id: AtomicU64::new(1),
                 pending,
@@ -124,6 +160,41 @@ impl AcpClient {
             }),
             receiver,
         ))
+    }
+
+    #[cfg(test)]
+    pub(super) fn spawn_fixture(
+        binary: &Path,
+        args: &[String],
+        cwd: &Path,
+        gateway: (String, Option<String>),
+    ) -> std::io::Result<(Arc<Self>, mpsc::UnboundedReceiver<Inbound>)> {
+        // An owned child receives only the fixture's dependencies. The host's HOME is unchanged.
+        let mut command = Command::new(binary);
+        command
+            .args(args)
+            .current_dir(cwd)
+            .env_clear()
+            .env("PATH", std::env::var_os("PATH").unwrap_or_default())
+            .env("A3S_HOME", cwd.join(".fixture-agent-home"))
+            .env("A3S_STATE_HOME", cwd.join(".fixture-agent-state"))
+            .env("A3S_GATEWAY_ORIGIN", gateway.0)
+            .env("A3S_DISABLE_CC_SWITCH", "1")
+            .env("A3S_DISABLE_GROK_ACCOUNT", "1")
+            .env("A3S_DISABLE_CURSOR_ACCOUNT", "1")
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .kill_on_drop(true);
+        if let Some(key) = gateway.1 {
+            command.env("A3S_GATEWAY_KEY", key);
+        }
+        Self::spawn_command(command)
+    }
+
+    #[cfg(test)]
+    pub(super) fn raw_notification_methods(&self) -> Vec<String> {
+        self.raw_notification_methods.lock().unwrap().clone()
     }
 
     /// Resolves when the agent stdout closes. A later wait still resolves.
@@ -143,6 +214,10 @@ impl AcpClient {
             .lock()
             .unwrap_or_else(|poisoned| poisoned.into_inner())
             .insert(id, sender);
+        let _pending = PendingRequest {
+            id,
+            pending: Arc::clone(&self.pending),
+        };
         let line = json!({ "jsonrpc": "2.0", "id": id, "method": method, "params": params });
         if let Err(error) = self.write(&line).await {
             self.pending
@@ -217,6 +292,7 @@ async fn read_stdout(
     inbound: mpsc::UnboundedSender<Inbound>,
     exited: Arc<AtomicBool>,
     exit_notify: Arc<Notify>,
+    #[cfg(test)] raw_notification_methods: Arc<Mutex<Vec<String>>>,
 ) {
     let mut lines = BufReader::new(stdout).lines();
     while let Ok(Some(line)) = lines.next_line().await {
@@ -234,6 +310,24 @@ async fn read_stdout(
                 let _ = inbound.send(Inbound::Request { id, method, params });
             }
             (None, Some(method)) => {
+                #[cfg(test)]
+                {
+                    let mut methods = raw_notification_methods.lock().unwrap();
+                    if methods.len() < 512 {
+                        methods.push(method.clone());
+                    }
+                }
+                // ACP adds one wire prefix to extension notifications. Requests retain raw names.
+                let method = if method == "session/update" {
+                    method
+                } else if let Some(extension) = method
+                    .strip_prefix('_')
+                    .filter(|method| !method.is_empty() && *method != "session/update")
+                {
+                    extension.to_owned()
+                } else {
+                    continue;
+                };
                 let _ = inbound.send(Inbound::Notification { method, params });
             }
             (Some(id), None) => {
@@ -243,9 +337,10 @@ async fn read_stdout(
                     .unwrap_or_else(|poisoned| poisoned.into_inner())
                     .remove(&id);
                 if let Some(sender) = sender {
-                    let result = match message.get("error") {
-                        Some(error) => Err(acp_error_text(error)),
-                        None => Ok(message.get("result").cloned().unwrap_or(Value::Null)),
+                    let result = match (message.get("result"), message.get("error")) {
+                        (Some(result), None) if message["jsonrpc"] == "2.0" => Ok(result.clone()),
+                        (None, Some(error)) if message["jsonrpc"] == "2.0" => Err(acp_error_text(error)),
+                        _ => Err("Malformed ACP response: expected JSON-RPC 2.0 with exactly one result or error".into()),
                     };
                     let _ = sender.send(result);
                 }
@@ -266,6 +361,13 @@ async fn read_stdout(
 /// "Internal error". The provider reason is in `data`.
 fn acp_error_text(error: &Value) -> String {
     let data = error.get("data");
+    if data
+        .and_then(|value| value.get("kind"))
+        .and_then(Value::as_str)
+        == Some("tool_effect_unresolved")
+    {
+        return "Tool execution needs reconciliation. Reconcile the original operations in this session before sending another task. Do not repeat them.".into();
+    }
     if let Some(text) = data.and_then(Value::as_str) {
         let trimmed = text.trim();
         if !trimmed.is_empty() {
@@ -556,3 +658,7 @@ mod sandbox_dir_handoff {
 #[cfg(all(test, target_os = "macos", target_arch = "aarch64"))]
 #[path = "sandbox_session_e2e.rs"]
 mod sandbox_session_e2e;
+
+#[cfg(test)]
+#[path = "native_acp_alignment_tests.rs"]
+mod native_acp_alignment_tests;

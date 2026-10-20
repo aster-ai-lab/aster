@@ -1,0 +1,9 @@
+{
+  "app_commit": "9ccb0ea27ee2a19dd63506f3d5ed79be7a88856869b74a7fe74231d2378410af",
+  "bundle": "target/packages/asterdream-0.1.2-kylin-x86_64-20261020-hardening-r4/ship/dev.a3s.AsterDream.flatpak",
+  "bundle_sha256": "62840dfddea793ae675627be7247307cf46b2fdcb92e3c55705cbdb16918f4e1",
+  "old_daemon_archive": "target/evaluations/kylin-ime-native-review/fcitx-4.2.9.6.tar.xz",
+  "old_daemon_archive_sha256": "d55eee3f094037b5c32f0c5397d585fdf932cbc7d2091ed6f78fd7a9ae512c47",
+  "old_reported_version": "4.2.9.5",
+  "old_fixture_qualification": "Built from official 4.2.9.6 archive; upstream version reports 4.2.9.5; not a Kylin distribution binary; fixture omits X11 candidate-window addon."
+}

@@ -1,0 +1,30 @@
+{
+  "phase": "before",
+  "fixture": "isolated child home, explicit local ACL, real CLI and ACP, loopback-only provider",
+  "cases": [
+    {
+      "case": "acl_only",
+      "returncode": 1,
+      "timed_out": false,
+      "elapsed_seconds": 0.185,
+      "provider_requests": [],
+      "stdout_contains_marker": false,
+      "stdout_bytes": 222,
+      "stderr_bytes": 197
+    },
+    {
+      "case": "acl_and_api_key",
+      "returncode": 1,
+      "timed_out": false,
+      "elapsed_seconds": 0.157,
+      "provider_requests": [],
+      "stdout_contains_marker": false,
+      "stdout_bytes": 222,
+      "stderr_bytes": 197
+    }
+  ],
+  "binary_sha256": {
+    "aster": "ce59aa87cc938f7aed020c77e3696fcf2678ea5ca3eec25b9df18824e4113e1a",
+    "a3s-code-acp": "a97d11dafd9d7c067819445d30487284da52294b7d821db7622621624f03bd98"
+  }
+}

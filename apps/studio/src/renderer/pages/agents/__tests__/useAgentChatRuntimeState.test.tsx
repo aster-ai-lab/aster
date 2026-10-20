@@ -1,19 +1,22 @@
-import { dataApiService } from '@data/DataApiService'
 import { MockCacheUtils } from '@test-mocks/renderer/CacheService'
 import { MockUseDataApiUtils } from '@test-mocks/renderer/useDataApi'
 import { act, render, renderHook } from '@testing-library/react'
 import { Activity } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { dataApiService } from '@data/DataApiService'
 import {
   readAskUserQuestionDraftCache,
   writeAskUserQuestionDraftCache
 } from '@renderer/components/composer/variants/askUserQuestionDraftCache'
 import type * as AgentSessionPartsModule from '@renderer/hooks/useAgentSessionParts'
+import type { TopicStreamStatus, PendingToolApproval } from '@shared/ai/transport'
 import type { AgentSessionMessageEntity } from '@shared/data/types/agent'
 import type { CherryMessagePart, CherryUIMessage } from '@shared/data/types/message'
 import { aiErrorCodes } from '@shared/ipc/errors/ai'
 import { IpcError } from '@shared/ipc/errors/IpcError'
+
+import { taskPlanMode } from '../taskConversation/taskPlanMode'
 
 const mocks = vi.hoisted(() => ({
   refresh: vi.fn(),
@@ -37,7 +40,15 @@ const mocks = vi.hoisted(() => ({
   invalidateMessages: vi.fn(),
   toastWarning: vi.fn(),
   scrollLatest: vi.fn(),
-  worktrees: vi.fn()
+  worktrees: vi.fn(),
+  topicStatus: {
+    value: { isPending: false } as {
+      isPending: boolean
+      isTurnActive?: boolean
+      status?: TopicStreamStatus
+      pendingApprovals?: PendingToolApproval[]
+    }
+  }
 }))
 
 // respondToolApproval now goes through ipcApi.request('ai.tool.respond_approval', …).
@@ -79,7 +90,7 @@ vi.mock('@renderer/hooks/useConversationTurnController', () => ({
 }))
 
 vi.mock('@renderer/hooks/useTopicStreamStatus', () => ({
-  useTopicStreamStatus: () => ({ isPending: false }),
+  useTopicStreamStatus: () => mocks.topicStatus.value,
   useTopicOverlayHandoffOnTerminal: mocks.useTopicOverlayHandoffOnTerminal
 }))
 
@@ -95,7 +106,7 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key })
 }))
 
-import { useAgentChatRuntimeState } from '../useAgentChatRuntimeState'
+import { getAgentTurnParts, useAgentChatRuntimeState } from '../useAgentChatRuntimeState'
 
 vi.mock('@renderer/services/toast', () => ({ toast: { error: mocks.toastError, warning: mocks.toastWarning } }))
 
@@ -187,6 +198,40 @@ function makeAskUserQuestionApproval(part = makeAskUserQuestionPart()) {
 }
 
 describe('useAgentChatRuntimeState', () => {
+  it('restores a planned turn from its submitted parts without guessing from text or the current switch', () => {
+    const parts = getAgentTurnParts({
+      text: 'Update note.txt',
+      options: {
+        body: {
+          agentId: 'agent',
+          sessionId: 'session',
+          userMessageParts: [{ type: 'text', text: 'Update note.txt' }],
+          turnContext: { planFirst: true, directives: [], research: false }
+        }
+      }
+    })
+    const assistant: CherryUIMessage = {
+      id: 'plan',
+      role: 'assistant',
+      parts: [{ type: 'text', text: 'Read, then update note.txt' }],
+      metadata: { status: 'success' }
+    }
+    expect(taskPlanMode([{ id: 'user', role: 'user', parts }, assistant]).readyMessageId).toBe('plan')
+    const executionParts = getAgentTurnParts({
+      text: '',
+      options: {
+        body: {
+          agentId: 'agent',
+          sessionId: 'session',
+          userMessageParts: parts,
+          turnContext: { planFirst: false, directives: [], research: false }
+        }
+      }
+    })
+    expect(
+      taskPlanMode([{ id: 'user', role: 'user', parts: executionParts }, assistant]).readyMessageId
+    ).toBeUndefined()
+  })
   it('replaces the edited tail before streaming even when history refresh still returns cached rows', async () => {
     MockUseDataApiUtils.resetMocks()
     const { useAgentSessionParts } = await vi.importActual<typeof AgentSessionPartsModule>(
@@ -449,6 +494,7 @@ describe('useAgentChatRuntimeState', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    mocks.topicStatus.value = { isPending: false }
     if (originalSessionGet) vi.mocked(dataApiService.get).mockImplementation(originalSessionGet)
     mocks.worktrees.mockReset()
     mocks.worktrees.mockResolvedValue(undefined)
@@ -617,6 +663,43 @@ describe('useAgentChatRuntimeState', () => {
     expect(result.current.streamingLayers).toBe(streamingLayers)
     expect(result.current.streamingLayers.liveMessageIds).toEqual(['assistant-1'])
     expect(result.current.sendMessage).toBe(sendMessage)
+  })
+
+  it('sends exact current receiver identity and withdraws stale decisions while Stop remains scoped', async () => {
+    const binding = {
+      executionId: 'run',
+      anchorMessageId: 'main',
+      messageId: 'assistant-1',
+      approvalId: 'approval-ask',
+      toolCallId: 'call-ask'
+    }
+    mocks.topicStatus.value = {
+      isPending: false,
+      isTurnActive: true,
+      status: 'awaiting-approval',
+      pendingApprovals: [binding]
+    }
+    const { result, rerender } = renderHook(() =>
+      useAgentChatRuntimeState({ sessionId: 'session-1', sessionMessagesEnabled: true, reservedMessages: [] })
+    )
+    expect(result.current.editBusy).toBe(true)
+    await act(async () =>
+      result.current.respondToolApproval({ ...makeAskUserQuestionApproval(), updatedInput: undefined })
+    )
+    expect(mocks.respondToolApproval).toHaveBeenCalledWith(
+      expect.objectContaining({ ...binding, topicId: 'agent-session:session-1', approved: true })
+    )
+    await act(async () => result.current.composerContext.stop?.())
+    expect(mocks.chatStop).toHaveBeenCalledOnce()
+    mocks.topicStatus.value = { ...mocks.topicStatus.value, pendingApprovals: [] }
+    rerender()
+    await expect(
+      result.current.respondToolApproval({ ...makeAskUserQuestionApproval(), updatedInput: undefined })
+    ).rejects.toThrow('no longer available')
+    expect(mocks.respondToolApproval).toHaveBeenCalledOnce()
+    mocks.topicStatus.value = { isPending: false, isTurnActive: false, status: 'done', pendingApprovals: [] }
+    rerender()
+    expect(result.current.composerContext.stop).toBeUndefined()
   })
 
   it('stores AskUserQuestion submitted input as a temporary tool input', async () => {

@@ -1,0 +1,7 @@
+{
+  "captured_at": "2026-10-20T11:19:31.997493+00:00",
+  "root_head": "eb17c6ce5aa4c9ef785c12d56515e146866b1506",
+  "work_head": "9aad91f1e934c731e540cf99be25733e25c3a411",
+  "tracked_status_before": " M Cargo.lock\n M README.md\n M apps/aster/Cargo.toml\n M apps/aster/src/main.rs\n m apps/cloud\n m apps/work\n M crates/code/core/src/fact_control/receipts.rs\n M crates/code/core/src/fact_control/receipts/tests/batch_evidence.rs\n M crates/terminal/crates/codegen/a3s-code-pager/src/acp/a3s_spawn.rs\n M docs/evidence/code/2026-10-20-shared-runtime-repair/OUTCOME.md\n M docs/evidence/code/2026-10-20-shared-runtime-repair/PLAN.md\n M docs/evidence/code/2026-10-20-shared-runtime-repair/logs/repair-core-acceptance.log\n M docs/evidence/work/2026-10-20-kylin-ime-hardening/OUTCOME.md\n M docs/evidence/work/2026-10-20-kylin-ime-hardening/PLAN.md\n M docs/evidence/work/2026-10-20-kylin-ime-hardening/R12-NATIVE-TRACE.md\n M scripts/install.sh\n M scripts/package-aster-cli.sh\n",
+  "scope_note": "Existing in-flight changes belong to other tasks; no blanket staging, commits, formatting or rollback."
+}

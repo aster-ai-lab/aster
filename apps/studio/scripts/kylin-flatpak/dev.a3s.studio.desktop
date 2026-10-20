@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Studio
+Comment=Studio desktop workspace
+Exec=kylin-launch %U
+Icon=dev.a3s.studio
+Terminal=false
+Categories=Development;Utility;
+StartupWMClass=Studio

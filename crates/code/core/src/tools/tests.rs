@@ -1051,7 +1051,7 @@ async fn test_tool_executor_respects_artifact_limits() {
 }
 
 #[tokio::test]
-async fn test_tool_executor_register_program_catalog_keeps_script_only_program_tool() {
+async fn test_tool_executor_register_program_catalog_runs_governed_template() {
     let executor = ToolExecutor::new("/tmp".to_string());
     let trace_sink = crate::trace::InMemoryTraceSink::default();
     executor.set_trace_sink(Arc::new(trace_sink.clone()));
@@ -1073,29 +1073,67 @@ async fn test_tool_executor_register_program_catalog_keeps_script_only_program_t
     );
     executor.register_program_catalog(catalog);
 
+    let message = "hello from catalog: \"; throw new Error('injected'); // 中文";
+
     let result = executor
         .execute(
             "program",
             &serde_json::json!({
+                "type": "template",
                 "name": "custom_echo",
                 "inputs": {
-                    "message": "hello from catalog"
+                    "message": message
                 }
             }),
         )
         .await
         .unwrap();
 
-    assert_eq!(result.exit_code, 1);
-    assert!(result.output.contains("type parameter is required"));
+    assert_eq!(result.exit_code, 0, "{}", result.output);
+    assert!(result.output.contains("hello from catalog"));
+    assert_eq!(
+        result.metadata.as_ref().unwrap()["script_result"]["steps"][0]["output"],
+        message
+    );
 
     let events = trace_sink.events();
     assert!(events.iter().any(|event| {
         event.kind == crate::trace::TraceEventKind::ToolExecution && event.name == "program"
     }));
-    assert!(!events.iter().any(|event| {
+    assert!(events.iter().any(|event| {
         event.kind == crate::trace::TraceEventKind::ToolExecution && event.name == "echo"
     }));
+}
+
+#[tokio::test]
+async fn test_builtin_program_templates_run_against_a_real_workspace() {
+    let root = tempfile::tempdir().unwrap();
+    std::fs::write(root.path().join("README.md"), "CATALOG_SEARCH_MARKER\n").unwrap();
+    let executor = ToolExecutor::new(root.path().display().to_string());
+    for (name, inputs, expected) in [
+        (
+            "program_code_search",
+            serde_json::json!({"query":"CATALOG_SEARCH_MARKER"}),
+            "CATALOG_SEARCH_MARKER",
+        ),
+        ("program_repo_map", serde_json::json!({}), "README.md"),
+    ] {
+        let result = executor
+            .execute(
+                "program",
+                &serde_json::json!({"type":"template","name":name,"inputs":inputs}),
+            )
+            .await
+            .unwrap();
+        assert_eq!(result.exit_code, 0, "{}", result.output);
+        assert!(result.output.contains(expected), "{}", result.output);
+        let metadata = result.metadata.unwrap();
+        assert_eq!(metadata["program"]["name"], name);
+        assert_eq!(metadata["program"]["runtime"], "embedded-quickjs");
+        assert!(metadata["program"]["tool_calls_complete"]
+            .as_bool()
+            .unwrap());
+    }
 }
 
 #[test]

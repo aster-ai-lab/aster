@@ -1,0 +1,61 @@
+error: couldn't read `/Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source/apps/studio/src-tauri/src/agent_plane/../../../../use-registry/packages/presenton/agent/languages.mjs`: No such file or directory (os error 2)
+   --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source/apps/studio/src-tauri/src/agent_plane/presenton_mcp.rs:345:12
+    |
+345 |       quoted(include_str!(
+    |  ____________^
+346 | |         "../../../../use-registry/packages/presenton/agent/languages.mjs"
+347 | |     ))
+    | |_____^
+
+error: couldn't read `/Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source/apps/studio/src-tauri/src/../../src/renderer/shell/index.html`: No such file or directory (os error 2)
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source/apps/studio/src-tauri/src/authority.rs:22:26
+   |
+22 | const INDEX_HTML: &str = include_str!("../../src/renderer/shell/index.html");
+   |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: couldn't read `/Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source/apps/studio/src-tauri/src/../../src/renderer/shell/studioClient.mjs`: No such file or directory (os error 2)
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source/apps/studio/src-tauri/src/authority.rs:23:25
+   |
+23 | const CLIENT_JS: &str = include_str!("../../src/renderer/shell/studioClient.mjs");
+   |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: couldn't read `/Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source/apps/studio/src-tauri/src/../../src/renderer/shell/wechat-qr.png`: No such file or directory (os error 2)
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source/apps/studio/src-tauri/src/authority.rs:53:26
+   |
+53 | const WECHAT_QR: &[u8] = include_bytes!("../../src/renderer/shell/wechat-qr.png");
+   |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: couldn't read `/Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source/apps/studio/src-tauri/src/../../src/renderer/shell/login-bg.jpg`: No such file or directory (os error 2)
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source/apps/studio/src-tauri/src/authority.rs:54:25
+   |
+54 | const LOGIN_BG: &[u8] = include_bytes!("../../src/renderer/shell/login-bg.jpg");
+   |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: couldn't read `/Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source/apps/studio/src-tauri/src/desktop_settings/../../../src/renderer/i18n/locales/en-us.json`: No such file or directory (os error 2)
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source/apps/studio/src-tauri/src/desktop_settings/menu_labels.rs:32:13
+   |
+32 |             include_str!("../../../src/renderer/i18n/locales/en-us.json")
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: couldn't read `/Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source/apps/studio/src-tauri/src/desktop_settings/../../../src/renderer/i18n/locales/zh-cn.json`: No such file or directory (os error 2)
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source/apps/studio/src-tauri/src/desktop_settings/menu_labels.rs:34:13
+   |
+34 |             include_str!("../../../src/renderer/i18n/locales/zh-cn.json")
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: couldn't read `/Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source/apps/studio/src-tauri/src/../../packages/provider-registry/data/providers.json`: No such file or directory (os error 2)
+  --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source/apps/studio/src-tauri/src/providers.rs:14:23
+   |
+14 | const CATALOG: &str = include_str!("../../packages/provider-registry/data/providers.json");
+   |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: proc macro panicked
+    --> /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source/apps/studio/src-tauri/src/lib.rs:1079:5
+     |
+1079 |     tauri::generate_context!()
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: message: failed to open icon /Users/roylin/code/aster/.tmp/studio-legacy-upgrade-source/apps/studio/src-tauri/../build/icon.png: No such file or directory (os error 2)
+
+error: aborting due to 9 previous errors
+

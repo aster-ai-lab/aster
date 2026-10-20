@@ -1,0 +1,65 @@
+{
+  "kind": "independent-r4-renderer-emitted-code-review",
+  "status": "passed",
+  "source_hook_sha256": "1bb55efa6d601c504849cd4d02e41ba69f1d6c47edffda951cafda073b04af99",
+  "html_entry": {
+    "path": "target/worktrees/kylin-ime-hardening-20261020/apps/work/.studio-package/windows/main/index.html",
+    "sha256": "4bfa7b80c433be10e3b0052296785f6cacb0da713bbac788ea9dc4953fa1031f",
+    "external_script_sources": [
+      "/static/js/lib-react.7866bf4227.js",
+      "/static/js/33.77777542e5.js",
+      "/static/js/xvx.111eea914d.js",
+      "/static/js/index.a3e19ed3e4.js"
+    ]
+  },
+  "entry_runtime": {
+    "path": "target/worktrees/kylin-ime-hardening-20261020/apps/work/.studio-package/static/js/index.a3e19ed3e4.js",
+    "sha256": "cc06b9c679e1f5b77b627238fcc201526ebe2b8f30310dd68d082ffdc9bb622c",
+    "bytes": 1256073
+  },
+  "bundles": [
+    {
+      "path": "target/worktrees/kylin-ime-hardening-20261020/apps/work/.studio-package/static/js/async/st7.9458d6ef0e.js",
+      "sha256": "1740970811ff3fa67ffbaebb6464d1a5adf6b2142ad26c4b11ca7455ccaa193e",
+      "bytes": 88314,
+      "seed_callback_offset_zero_based": 22626,
+      "observed_seed_callback": "R=(0,n.useCallback)(async t=>{if(P.current!==F)return;let r=t.map(t=>f(e,t));0===r.length||(await w(e=>{let t=e?.length?e:[{items:[],nextCursor:void 0}],n=new Set(t.flatMap(e=>e.items.map(e=>e.id))),i=r.filter(e=>!n.has(e.id));if(0===i.length)return e;let s=i.slice().sort((e,t)=>t.createdAt.localeCompare(e.createdAt)||t.id.localeCompare(e.id)),a=t.slice(),l=a[0];return a[0]={...l,items:[...s,...l.items]},a},{revalidate:!1}),P.current===F&&w().catch(t=>{u.warn(\"Failed to refresh reserved agent session messages\",t,{sessionId:e})}))},[w,F,e])",
+      "observed_committed_owner_layout_effect": "(0,n.useLayoutEffect)(()=>{P.current=F},[F])",
+      "entry_chunk_mapping": "st7:\"9458d6ef0e\"",
+      "entry_references_chunk": true,
+      "checks": {
+        "committed_owner_set_in_layout_effect": true,
+        "entry_owner_guard": true,
+        "local_seed_awaited_with_revalidate_false": true,
+        "post_seed_owner_guard": true,
+        "background_refresh_not_awaited_and_rejection_handled": true,
+        "duplicate_rows_return_inside_updater_preserves_post_seed_refresh": true
+      }
+    },
+    {
+      "path": "target/worktrees/kylin-ime-hardening-20261020/apps/work/.studio-package/static/js/async/x5.4843d93b5c.js",
+      "sha256": "c80d3457548aa4e6a65b43a3bc06a8344f221c37c0a7116db3356518cf0e5fa6",
+      "bytes": 69065,
+      "seed_callback_offset_zero_based": 52173,
+      "observed_seed_callback": "D=(0,a.useCallback)(async t=>{if(z.current!==F)return;let r=t.map(t=>m(e,t));0===r.length||(await S(e=>{let t=e?.length?e:[{items:[],nextCursor:void 0}],a=new Set(t.flatMap(e=>e.items.map(e=>e.id))),s=r.filter(e=>!a.has(e.id));if(0===s.length)return e;let n=s.slice().sort((e,t)=>t.createdAt.localeCompare(e.createdAt)||t.id.localeCompare(e.id)),o=t.slice(),i=o[0];return o[0]={...i,items:[...n,...i.items]},o},{revalidate:!1}),z.current===F&&S().catch(t=>{u.warn(\"Failed to refresh reserved agent session messages\",t,{sessionId:e})}))},[S,F,e])",
+      "observed_committed_owner_layout_effect": "(0,a.useLayoutEffect)(()=>{z.current=F},[F])",
+      "entry_chunk_mapping": "x5:\"4843d93b5c\"",
+      "entry_references_chunk": true,
+      "checks": {
+        "committed_owner_set_in_layout_effect": true,
+        "entry_owner_guard": true,
+        "local_seed_awaited_with_revalidate_false": true,
+        "post_seed_owner_guard": true,
+        "background_refresh_not_awaited_and_rejection_handled": true,
+        "duplicate_rows_return_inside_updater_preserves_post_seed_refresh": true
+      }
+    }
+  ],
+  "build_host_log_sha256": "44ca3263750011c5b5295f4fd7d39433acae62e5da7ffe780a9f93da7c62681f",
+  "main_buildid_recorded_by_build": "5734771caf4692dd74c1d52675531dbb67dce009",
+  "main_host_sha256": "5ee63ca6bb54fa1d347e45e063b78884adf1a965d65cc20c5d7d9cffe52023d1",
+  "limits": [
+    "Direct inspection of emitted code and current entry chunk map; not reverse recovery of source or GUI execution.",
+    "R4 canonical shipped/installed artifact identity remains pending root commit confirmation."
+  ]
+}

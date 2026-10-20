@@ -1,0 +1,50 @@
+{
+  "status": "published_and_verified",
+  "repository": "aster-ai-lab/aster",
+  "release_id": 418311392,
+  "tag": "v0.1.2",
+  "url": "https://github.com/aster-ai-lab/aster/releases/tag/v0.1.2",
+  "published_at": "2026-10-20T11:20:46Z",
+  "verified_at": "2026-10-20T11:21:18.678476+00:00",
+  "tag_commit": "d4a8393f12a6d526a4d08693ac76e73e87414b14",
+  "server_sha256_matches_all_assets": true,
+  "public_checksum_download_verified": true,
+  "existing_latest_release": "v0.1.1",
+  "existing_updater_feed_unchanged": {
+    "name": "latest.json",
+    "size": 1653,
+    "digest": "sha256:5cf08208a935604b29bf7c969c844280196e2d404a6f0245b7fafcd39aaf3310"
+  },
+  "assets": [
+    {
+      "name": "aster_0.1.2_kylin-v10_x86_64.run",
+      "size": 572006174,
+      "digest": "sha256:f5afb90acbea7d624a46fefd02a92e8831d8516b7ae12612b7a8a96f5fcdbc06",
+      "browser_download_url": "https://github.com/aster-ai-lab/aster/releases/download/v0.1.2/aster_0.1.2_kylin-v10_x86_64.run"
+    },
+    {
+      "name": "aster_0.1.2_kylin-v10_x86_64.run.sha256",
+      "size": 99,
+      "digest": "sha256:9822845b5d1b1a8d6a31afa033d85d608c97380e1678710246fa9cb97872176a",
+      "browser_download_url": "https://github.com/aster-ai-lab/aster/releases/download/v0.1.2/aster_0.1.2_kylin-v10_x86_64.run.sha256"
+    },
+    {
+      "name": "aster_0.1.2_kylin-v10_x86_64.source.tar.gz",
+      "size": 153887,
+      "digest": "sha256:38ba62488600920f3f672d47a4389bf1b0e436c93dcf81ca20e208f3afa38a7e",
+      "browser_download_url": "https://github.com/aster-ai-lab/aster/releases/download/v0.1.2/aster_0.1.2_kylin-v10_x86_64.source.tar.gz"
+    },
+    {
+      "name": "SHA256SUMS",
+      "size": 208,
+      "digest": "sha256:ede2e053ac5aec9ea882f8ff594ee68a8fcc5cd3bc8a2aa4565f2083c52e0bf9",
+      "browser_download_url": "https://github.com/aster-ai-lab/aster/releases/download/v0.1.2/SHA256SUMS"
+    },
+    {
+      "name": "SOURCE-MANIFEST.json",
+      "size": 6594,
+      "digest": "sha256:5e1e201381fea0889715294e49f1636f315fd47edeb27678062f341bfa0de42c",
+      "browser_download_url": "https://github.com/aster-ai-lab/aster/releases/download/v0.1.2/SOURCE-MANIFEST.json"
+    }
+  ]
+}

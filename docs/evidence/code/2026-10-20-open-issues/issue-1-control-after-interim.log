@@ -1,0 +1,44 @@
+
+running 39 tests
+test goal_control::continuation::tests::a_deadline_horizon_does_not_stop_after_one_unfinished_slice ... ok
+test goal_control::continuation::tests::a_new_policy_is_capped_at_1000_slices_and_30_days_but_replay_is_not ... ok
+test goal_control::continuation::tests::continuation_limits_refuse_disabled_expired_unknown_clock_and_exhausted_counts ... ok
+test config::goal_control::tests::goal_control_is_optional_and_requires_all_fields_even_when_disabled ... ok
+test goal_control::continuation::tests::continuation_limits_keep_u64_boundaries_without_saturation_or_wrap ... ok
+test config::goal_control::tests::goal_control_rejects_duplicate_unknown_and_nonliteral_values ... ok
+test config::goal_control::tests::goal_control_workspace_cannot_activate_enlarge_disable_or_erase_host_policy ... ok
+test config::goal_control::tests::goal_control_layer_validation_preserves_file_boundaries ... ok
+test config::goal_control::tests::goal_control_decimal_strings_are_exact_and_canonical ... ok
+test goal_control::continuation::tests::continuation_policy_requires_every_explicit_finite_field ... ok
+test goal_control::facts::tests::invalid_requests_and_ambiguous_wire_fields_never_prepare_a_write ... ok
+test config::goal_control::tests::goal_control_section_roundtrip_preserves_u64_and_unrelated_acl ... ok
+test goal_control::facts::control::tests::goal_control_rejects_foreign_stale_unsupported_and_ambiguous_input ... ok
+test goal_control::facts::tests::corrupted_or_future_definition_sources_fail_closed ... ok
+test goal_control::facts::run::tests::continuation::continuation_source_preserves_ordinary_wire_and_is_refused_by_the_original_body_reader ... ok
+test goal_control::facts::run::tests::continuation::continuation_source_cannot_disappear_by_substituting_its_fact_kind ... ok
+test goal_control::facts::run::tests::run_brief_keeps_refs_step_and_evidence_within_4kib_and_512_tokens ... ok
+test goal_control::facts::control::tests::goal_cancel_rejects_tampered_facts_and_changed_operation_replay ... ok
+test goal_control::facts::plan::tests::plan_wire_and_sources_refuse_unknown_missing_forged_and_stale_fields ... ok
+test goal_control::facts::wait::tests::a_new_plan_proposal_clears_waits_of_the_previous_revision ... ok
+test goal_control::tests::binding_preserves_existing_workspace_and_source_types ... ok
+test goal_control::tests::binding_validation_refuses_invalid_references_without_rewriting_them ... ok
+test goal_control::tests::closed_sets_share_canonical_serde_and_explicit_parsing ... ok
+test goal_control::tests::fact_keys_are_unambiguous_and_bound_to_goal_operation_and_kind ... ok
+test goal_control::tests::goal_content_is_original_type_and_client_progress_is_refused ... ok
+test goal_control::facts::control::tests::goal_cancel_preserves_history_and_terminal_state_in_original_stores ... ok
+test goal_control::tests::new_binding_wire_rejects_unknown_fields_including_nested_sources ... ok
+test goal_control::facts::tests::definitions_replay_revise_and_reopen_original_memory_and_file_logs ... ok
+test goal_control::tests::plan_limits_and_missing_duplicate_self_or_cyclic_dependencies_are_refused ... ok
+test goal_control::facts::tests::import::import_source_is_authenticated_and_pause_survives_revision_on_both_logs ... ok
+test goal_control::tests::graph_validation_matches_independent_reachability_for_every_four_node_graph ... ok
+test goal_control::tests::valid_plan_returns_original_identity_without_accepting_display_statuses ... ok
+test goal_control::facts::run::tests::goal_tick_preview_uses_both_original_logs_without_appending_or_recovering ... ok
+test goal_control::facts::run::tests::goal_run_binding_replays_and_reopens_original_memory_and_file_logs ... ok
+test goal_control::facts::plan::tests::plan_proposals_and_acceptance_share_original_memory_and_file_scenarios ... ok
+test goal_control::facts::run::tests::continuation::continuation_sources_refuse_recomputed_invalid_limits_clock_and_unbound_goal ... ok
+test goal_control::facts::run::tests::continuation::stall_bound_admits_exactly_one_slice_after_a_changed_plan ... ok
+test goal_control::facts::wait::tests::step_waits_gate_only_their_step_and_quiet_observations_append_nothing ... ok
+test goal_control::facts::run::tests::continuation::continuation_history_preserves_caps_across_replay_revision_replan_and_both_logs ... ok
+
+test result: ok. 39 passed; 0 failed; 0 ignored; 0 measured; 5231 filtered out; finished in 1.10s
+

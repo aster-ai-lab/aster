@@ -1,0 +1,25 @@
+{
+  "members": [
+    "aster",
+    "a3s-code-acp",
+    "BUILD_ID",
+    "SHA256SUMS"
+  ],
+  "build_id": "aster-cli-pair-v1:6cef66f5cdcf53cf33ffbb40c1f66a8a9d661ca4:aarch64-apple-darwin",
+  "sha256": {
+    "aster": "ce59aa87cc938f7aed020c77e3696fcf2678ea5ca3eec25b9df18824e4113e1a",
+    "a3s-code-acp": "a97d11dafd9d7c067819445d30487284da52294b7d821db7622621624f03bd98"
+  },
+  "checksums_verified": true,
+  "built_executables": {
+    "aster": {
+      "sha256": "ce59aa87cc938f7aed020c77e3696fcf2678ea5ca3eec25b9df18824e4113e1a",
+      "build_id": "aster-cli-pair-v1:6cef66f5cdcf53cf33ffbb40c1f66a8a9d661ca4:aarch64-apple-darwin"
+    },
+    "a3s-code-acp": {
+      "sha256": "a97d11dafd9d7c067819445d30487284da52294b7d821db7622621624f03bd98",
+      "build_id": "aster-cli-pair-v1:6cef66f5cdcf53cf33ffbb40c1f66a8a9d661ca4:aarch64-apple-darwin"
+    }
+  },
+  "built_executables_verified": true
+}

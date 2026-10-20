@@ -1,0 +1,86 @@
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent/reasoning_transport_tests.rs:205:
+     });
+     let model = launch.model_id.clone();
+     let host = A3sCodeAgent::new(launch);
+[31m-    host.initialize(acp::InitializeRequest::new(acp::ProtocolVersion::V1).meta(
+(B[m[31m-        Some([("rules".into(), serde_json::json!("Initialize rules marker: BLUE_WHALE_9090"))].into_iter().collect()),
+(B[m[31m-    )).await.unwrap();
+(B[m[32m+    host.initialize(
+(B[m[32m+        acp::InitializeRequest::new(acp::ProtocolVersion::V1).meta(Some(
+(B[m[32m+            [(
+(B[m[32m+                "rules".into(),
+(B[m[32m+                serde_json::json!("Initialize rules marker: BLUE_WHALE_9090"),
+(B[m[32m+            )]
+(B[m[32m+            .into_iter()
+(B[m[32m+            .collect(),
+(B[m[32m+        )),
+(B[m[32m+    )
+(B[m[32m+    .await
+(B[m[32m+    .unwrap();
+(B[m     let id = host
+         .new_session(acp::NewSessionRequest::new(root.path()))
+         .await
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent/session_setup_tests.rs:10:
+         ("rules", serde_json::json!(42)),
+         ("rules", serde_json::Value::Null),
+         ("systemPromptOverride", serde_json::json!(["not a string"])),
+[31m-        ("systemPromptOverride", serde_json::json!("Replace the whole system prompt")),
+(B[m[32m+        (
+(B[m[32m+            "systemPromptOverride",
+(B[m[32m+            serde_json::json!("Replace the whole system prompt"),
+(B[m[32m+        ),
+(B[m     ] {
+         let agent = A3sCodeAgent::new(super::tests::test_launch(None));
+[31m-        let error = agent.initialize(
+(B[m[31m-            acp::InitializeRequest::new(acp::ProtocolVersion::V1)
+(B[m[31m-                .meta(Some([(key.into(), value)].into_iter().collect())),
+(B[m[31m-        ).await.expect_err("unsupported prompt metadata must be explicit");
+(B[m[32m+        let error = agent
+(B[m[32m+            .initialize(
+(B[m[32m+                acp::InitializeRequest::new(acp::ProtocolVersion::V1)
+(B[m[32m+                    .meta(Some([(key.into(), value)].into_iter().collect())),
+(B[m[32m+            )
+(B[m[32m+            .await
+(B[m[32m+            .expect_err("unsupported prompt metadata must be explicit");
+(B[m         assert!(format!("{error:?}").contains(key));
+     }
+ }
+Diff in /Users/roylin/code/aster/crates/code/core/src/durable_memory_vec.rs:612:
+         let item = MemoryItem::new("shared collection handoff fact");
+         MemoryStore::store(&first, item.clone()).await.unwrap();
+         let second = LazyFileMemoryStore::new(memory_dir.join("."));
+[31m-        assert_eq!(MemoryStore::retrieve(&second, &item.id).await.unwrap(), Some(item));
+(B[m[32m+        assert_eq!(
+(B[m[32m+            MemoryStore::retrieve(&second, &item.id).await.unwrap(),
+(B[m[32m+            Some(item)
+(B[m[32m+        );
+(B[m         drop(first);
+         assert_eq!(MemoryStore::count(&second).await.unwrap(), 1);
+         assert!(VecMemoryStore::open(&memory_dir).is_err());
+Diff in /Users/roylin/code/aster/crates/code/core/src/durable_memory_vec.rs:645:
+         MemoryStore::store(first.as_ref(), MemoryItem::new("concurrent shared fact"))
+             .await
+             .unwrap();
+[31m-        assert_eq!(MemoryStore::search(second.as_ref(), "concurrent", 1).await.unwrap().len(), 1);
+(B[m[32m+        assert_eq!(
+(B[m[32m+            MemoryStore::search(second.as_ref(), "concurrent", 1)
+(B[m[32m+                .await
+(B[m[32m+                .unwrap()
+(B[m[32m+                .len(),
+(B[m[32m+            1
+(B[m[32m+        );
+(B[m     }
+ 
+     fn create_embedding_collection(memory_dir: &std::path::Path, dimension: u32) -> String {
+Diff in /Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-pager/src/headless_tests.rs:4:
+ async fn local_config_agent_with_no_auth_methods_skips_acp_login() {
+     let (tx, mut rx) = tokio::sync::mpsc::unbounded_channel();
+     assert!(!super::authenticate(&tx, &[], None).await.unwrap());
+[31m-    assert!(rx.try_recv().is_err(), "local credentials need no ACP authentication");
+(B[m[32m+    assert!(
+(B[m[32m+        rx.try_recv().is_err(),
+(B[m[32m+        "local credentials need no ACP authentication"
+(B[m[32m+    );
+(B[m }
+ 
+ #[tokio::test(start_paused = true)]

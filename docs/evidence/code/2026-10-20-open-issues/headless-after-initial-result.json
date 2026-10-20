@@ -1,0 +1,117 @@
+{
+  "phase": "after",
+  "fixture": "isolated child home, explicit local ACL, real CLI and ACP, loopback-only provider",
+  "cases": [
+    {
+      "case": "acl_only",
+      "returncode": 0,
+      "timed_out": false,
+      "elapsed_seconds": 16.409,
+      "provider_requests": [
+        {
+          "path": "/v1/chat/completions",
+          "stream": false,
+          "system_rule_marker_seen": false
+        },
+        {
+          "path": "/v1/chat/completions",
+          "stream": false,
+          "system_rule_marker_seen": false
+        },
+        {
+          "path": "/v1/chat/completions",
+          "stream": false,
+          "system_rule_marker_seen": false
+        },
+        {
+          "path": "/v1/chat/completions",
+          "stream": true,
+          "system_rule_marker_seen": false
+        }
+      ],
+      "stdout_contains_marker": true,
+      "explicit_override_rejection": false,
+      "stdout_bytes": 137,
+      "stderr_bytes": 1272
+    },
+    {
+      "case": "acl_and_api_key",
+      "returncode": 0,
+      "timed_out": false,
+      "elapsed_seconds": 0.416,
+      "provider_requests": [
+        {
+          "path": "/v1/chat/completions",
+          "stream": false,
+          "system_rule_marker_seen": false
+        },
+        {
+          "path": "/v1/chat/completions",
+          "stream": false,
+          "system_rule_marker_seen": false
+        },
+        {
+          "path": "/v1/chat/completions",
+          "stream": false,
+          "system_rule_marker_seen": false
+        },
+        {
+          "path": "/v1/chat/completions",
+          "stream": true,
+          "system_rule_marker_seen": false
+        }
+      ],
+      "stdout_contains_marker": true,
+      "explicit_override_rejection": false,
+      "stdout_bytes": 137,
+      "stderr_bytes": 1272
+    },
+    {
+      "case": "rules_cli",
+      "returncode": 0,
+      "timed_out": false,
+      "elapsed_seconds": 0.436,
+      "provider_requests": [
+        {
+          "path": "/v1/chat/completions",
+          "stream": false,
+          "system_rule_marker_seen": false
+        },
+        {
+          "path": "/v1/chat/completions",
+          "stream": false,
+          "system_rule_marker_seen": false
+        },
+        {
+          "path": "/v1/chat/completions",
+          "stream": false,
+          "system_rule_marker_seen": false
+        },
+        {
+          "path": "/v1/chat/completions",
+          "stream": true,
+          "system_rule_marker_seen": true
+        }
+      ],
+      "stdout_contains_marker": true,
+      "explicit_override_rejection": false,
+      "stdout_bytes": 137,
+      "stderr_bytes": 1272
+    },
+    {
+      "case": "unsupported_override",
+      "returncode": 1,
+      "timed_out": false,
+      "elapsed_seconds": 0.156,
+      "provider_requests": [],
+      "stdout_contains_marker": false,
+      "explicit_override_rejection": true,
+      "stdout_bytes": 225,
+      "stderr_bytes": 201
+    }
+  ],
+  "binary_sha256": {
+    "aster": "e67ccc832c1d3d48acf4031e50e6439098132a7fbcacbeb778234bedd2fc69cf",
+    "a3s-code-acp": "75b69a995f6b5035639aa4f7fec92ab72369efa198abf9636be4982f42d4994b"
+  }
+}

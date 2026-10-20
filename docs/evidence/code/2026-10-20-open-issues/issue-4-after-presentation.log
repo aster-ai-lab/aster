@@ -1,0 +1,26 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.80s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 5 tests
+test tools::presentation::tests::child_profile_partial_order_rejects_cross_mode_broadening ... ok
+test tools::presentation::tests::profiles_are_closed_serializable_values ... ok
+test tools::presentation::tests::projection_is_canonical_and_can_only_rephrase_existing_definitions ... ok
+test tools::presentation::tests::direct_and_adaptive_outputs_have_deterministic_order ... ok
+test tools::presentation::tests::code_profile_reduces_large_direct_definition_cost ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 5267 filtered out; finished in 0.00s
+

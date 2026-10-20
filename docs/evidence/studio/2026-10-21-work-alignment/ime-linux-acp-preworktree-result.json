@@ -1,0 +1,13 @@
+{
+  "command": [
+    "docker",
+    "exec",
+    "aster-studio-kylin-ime",
+    "bash",
+    "/aster/target/evaluations/studio-work-alignment/ime-native/build-acp.sh"
+  ],
+  "exit_code": 143,
+  "started_utc": "2026-10-20T22:31:13.719594+00:00",
+  "elapsed_seconds": 413.556,
+  "boundary": "Native GO permitted ACP/Office current authority; custom-protocol Studio host waits final renderer freeze"
+}

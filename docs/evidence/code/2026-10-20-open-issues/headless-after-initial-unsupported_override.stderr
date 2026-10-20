@@ -1,0 +1,1 @@
+Error: Couldn't initialize: Invalid params: "systemPromptOverride is not supported: Aster preserves its core runtime and safety contracts. Use --rules / --append-system-prompt to append instructions."

@@ -1,4 +1,4 @@
-//! Member-scoped Preference storage. ACL is committed before a snapshot is published.
+//! Member preferences and three device model defaults, stored as ACL snapshots.
 
 use std::collections::{BTreeMap, HashMap};
 use std::fs::{self, OpenOptions};
@@ -77,6 +77,33 @@ pub(crate) struct PreferenceStore {
     root: PathBuf,
 }
 
+const DEVICE_SCOPE: &str = "00000000-0000-0000-0000-000000000000";
+const DEVICE_KEYS: &[&str] = &[
+    "chat.default_model_id",
+    "feature.quick_assistant.model_id",
+    "feature.translate.model_id",
+];
+
+fn is_device_key(key: &str) -> bool {
+    DEVICE_KEYS.contains(&key)
+}
+
+fn merge(member: &Snapshot, device: &Snapshot) -> Result<Snapshot, PreferenceError> {
+    if device.values.keys().any(|key| !is_device_key(key)) {
+        return Err(PreferenceError::Invalid);
+    }
+    let mut values = member.values.clone();
+    values.extend(device.values.clone());
+    Ok(Snapshot {
+        scope: member.scope.clone(),
+        revision: member
+            .revision
+            .checked_add(device.revision)
+            .ok_or(PreferenceError::Invalid)?,
+        values,
+    })
+}
+
 impl PreferenceStore {
     pub fn new(root: PathBuf) -> Self {
         Self { root }
@@ -109,42 +136,111 @@ impl PreferenceStore {
     }
 
     pub fn read(&self, scope: &str) -> Result<Snapshot, PreferenceError> {
-        self.locked(scope, |_, snapshot| Ok(snapshot))
+        if scope == DEVICE_SCOPE {
+            return Err(PreferenceError::Denied);
+        }
+        self.locked(scope, |_, member| {
+            self.locked(DEVICE_SCOPE, |_, device| merge(&member, &device))
+        })
+    }
+
+    pub(crate) fn set_device(
+        &self,
+        updates: BTreeMap<String, Value>,
+    ) -> Result<(), PreferenceError> {
+        if updates.keys().any(|key| !is_device_key(key)) {
+            return Err(PreferenceError::Invalid);
+        }
+        validate_updates(&updates)?;
+        self.locked(DEVICE_SCOPE, |path, mut device| {
+            if updates
+                .iter()
+                .all(|(key, value)| device.values.get(key) == Some(value))
+            {
+                return Ok(());
+            }
+            device.values.extend(updates);
+            self.write(path, &mut device)
+        })
     }
 
     pub fn commit(&self, input: &Commit) -> Result<Snapshot, PreferenceError> {
+        if input.scope == DEVICE_SCOPE {
+            return Err(PreferenceError::Denied);
+        }
         validate_updates(&input.updates)?;
-        self.locked(&input.scope, |path, mut snapshot| {
-            if snapshot.revision != input.expected_revision {
-                return Err(PreferenceError::Conflict { snapshot });
-            }
-            if input
-                .updates
-                .iter()
-                .all(|(key, value)| snapshot.values.get(key) == Some(value))
-            {
-                return Ok(snapshot);
-            }
-            snapshot.values.extend(input.updates.clone());
-            snapshot.revision = snapshot
-                .revision
-                .checked_add(1)
-                .ok_or(PreferenceError::Invalid)?;
-            let text = encode(&snapshot)?;
-            let mut temporary = tempfile::NamedTempFile::new_in(&self.root)
-                .map_err(|_| PreferenceError::Unavailable)?;
-            temporary
-                .write_all(text.as_bytes())
-                .map_err(|_| PreferenceError::Unavailable)?;
-            temporary
-                .as_file()
-                .sync_all()
-                .map_err(|_| PreferenceError::Unavailable)?;
-            temporary
-                .persist(path)
-                .map_err(|_| PreferenceError::Unavailable)?;
-            Ok(snapshot)
+        // Every mixed commit takes member then device; default writes take only device.
+        self.locked(&input.scope, |member_path, mut member| {
+            self.locked(DEVICE_SCOPE, |device_path, mut device| {
+                let current = merge(&member, &device)?;
+                if current.revision != input.expected_revision {
+                    return Err(PreferenceError::Conflict { snapshot: current });
+                }
+                let changed: BTreeMap<_, _> = input
+                    .updates
+                    .iter()
+                    .filter(|(key, value)| current.values.get(*key) != Some(*value))
+                    .map(|(key, value)| (key.clone(), value.clone()))
+                    .collect();
+                if changed.is_empty() {
+                    return Ok(current);
+                }
+                let (device_updates, member_updates): (BTreeMap<_, _>, BTreeMap<_, _>) =
+                    changed.into_iter().partition(|(key, _)| is_device_key(key));
+                // Validate the final merged revision before either independently stored snapshot changes.
+                member
+                    .revision
+                    .checked_add(u64::from(!member_updates.is_empty()))
+                    .and_then(|revision| {
+                        device
+                            .revision
+                            .checked_add(u64::from(!device_updates.is_empty()))
+                            .and_then(|device_revision| revision.checked_add(device_revision))
+                    })
+                    .ok_or(PreferenceError::Invalid)?;
+                let previous_device = device.clone();
+                let changed_device = !device_updates.is_empty();
+                if changed_device {
+                    device.values.extend(device_updates);
+                    self.write(device_path, &mut device)?;
+                }
+                if !member_updates.is_empty() {
+                    member.values.extend(member_updates);
+                    if let Err(error) = self.write(member_path, &mut member) {
+                        if changed_device {
+                            self.persist(device_path, &previous_device)?;
+                        }
+                        return Err(error);
+                    }
+                }
+                merge(&member, &device)
+            })
         })
+    }
+
+    fn write(&self, path: &Path, snapshot: &mut Snapshot) -> Result<(), PreferenceError> {
+        snapshot.revision = snapshot
+            .revision
+            .checked_add(1)
+            .ok_or(PreferenceError::Invalid)?;
+        self.persist(path, snapshot)
+    }
+
+    fn persist(&self, path: &Path, snapshot: &Snapshot) -> Result<(), PreferenceError> {
+        let text = encode(snapshot)?;
+        let mut temporary = tempfile::NamedTempFile::new_in(&self.root)
+            .map_err(|_| PreferenceError::Unavailable)?;
+        temporary
+            .write_all(text.as_bytes())
+            .map_err(|_| PreferenceError::Unavailable)?;
+        temporary
+            .as_file()
+            .sync_all()
+            .map_err(|_| PreferenceError::Unavailable)?;
+        temporary
+            .persist(path)
+            .map_err(|_| PreferenceError::Unavailable)?;
+        Ok(())
     }
 }
 
@@ -427,3 +523,7 @@ pub(crate) async fn preference_commit<R: tauri::Runtime>(
 #[cfg(test)]
 #[path = "preferences_tests.rs"]
 mod tests;
+
+#[cfg(test)]
+#[path = "preferences_device_alignment_tests.rs"]
+mod device_alignment_tests;

@@ -1,0 +1,72 @@
+{
+  "kind": "independent-final-r4-artifact-review",
+  "status": "passed",
+  "app_commit": "9ccb0ea27ee2a19dd63506f3d5ed79be7a88856869b74a7fe74231d2378410af",
+  "findings": [],
+  "source_files_verified_two_trees": 33,
+  "tracked_work_patch_sha256": "b62d9db899d7d0624e7daacaed5ab72e7ac3a81e44c9d67dda5622b879725e91",
+  "isolated_git_status_exact_allowed": true,
+  "stage_installed_critical_files_matched": 23,
+  "r3_unchanged_non_host_critical_files": 22,
+  "r3_negative_reused_not_rerun": true,
+  "manifest_counts": {
+    "outer": 2,
+    "ship": 168
+  },
+  "tar_members": 172,
+  "tar_regular_files": 169,
+  "tar_ship_contents_modes_paths_equal": true,
+  "onefile_header_exact_frozen_recipe": true,
+  "onefile_payload_offset": 764,
+  "onefile_payload_equals_outer_tar": true,
+  "onefile_uncompressed_bytes": 572182528,
+  "onefile_required_extraction_kib": 575156,
+  "outer_file_sha256": {
+    "aster_0.1.2_kylin-v10_x86_64.tar.gz": "6b9445098f3fe219e7c471f9eec243a16d17af81de895f4025f2a5ced2f9c28b",
+    "aster_0.1.2_kylin-v10_x86_64.run": "f5afb90acbea7d624a46fefd02a92e8831d8516b7ae12612b7a8a96f5fcdbc06"
+  },
+  "app_bundle_sha256": "62840dfddea793ae675627be7247307cf46b2fdcb92e3c55705cbdb16918f4e1",
+  "elf_x86_64_count": 10,
+  "main_buildid": "5734771caf4692dd74c1d52675531dbb67dce009",
+  "upstream_source_archive_members": 869,
+  "flatpak16_trace_checks": {
+    "no-seccomp": {
+      "factory_path_order": [
+        "/org/freedesktop/portal/inputmethod"
+      ],
+      "key_calls": 38,
+      "trace_sha256": "fa04f47755fdb93998fd6f4e2292d54101f4eacee2f06b445e3ab4b2f2d04b4d"
+    },
+    "legacy": {
+      "factory_path_order": [
+        "/org/freedesktop/portal/inputmethod",
+        "/inputmethod"
+      ],
+      "key_calls": 38,
+      "trace_sha256": "388e76119a46a948ea29de518bcc27f86130ef871bf25f0e29d2ab6e0b2a4b6d"
+    },
+    "portal-disabled": {
+      "factory_path_order": [],
+      "key_calls": 0,
+      "trace_sha256": "0b25851f63e26e72de9e979ae181439e4117f76c1712e03771869366ec16aa58"
+    }
+  },
+  "bwrap_records_verified": 13,
+  "mapped_bwrap_records": 6,
+  "evidence_sha256": {
+    "artifact-r4-proof.json": "46db2e83e98daa75589a8529d3664499146362268d416680dc6ec3afd82c4743",
+    "flatpak16-r4-proof.json": "14675525ee280061ef8ab842e465772263fa2c85f8916fef513c6980086b168b",
+    "source-freeze-r4.json": "0ee581fee4f5e378fcf6185b30aa3cbac007fb167197474f651d5f8038b2d6a0",
+    "native-r4-r3-negative-reuse-identity.json": "e84d9cce40042759966b119d41d564f362d25988efac6d9cb81a0527ec49209b",
+    "native-r4-r3-negative-reuse-review.json": "f491dd9c840d83acbd03b0a170b6da4b4262d698da15332b4a2111839f827bee",
+    "renderer-r4-history-handoff-review.json": "22d8937f611ea9972b56331c3788662fe882abae02200a9c3106850a0ae4260f"
+  },
+  "unresolved": [
+    "Full GUI acceptance is being verified separately and is not inferred from this static/native review."
+  ],
+  "limits": [
+    "No app, installer, build, package, install, or process-control execution. Existing native traces were read; R3 injected negatives were not rerun for R4.",
+    "Actual Flatpak 1.6 modern/legacy positive cases use the documented test-only seccomp removal. Stock seccomp fails before GTK in this container.",
+    "ELF x86-64 headers do not prove a minimum CPU instruction baseline or real Kylin hardware coverage."
+  ]
+}

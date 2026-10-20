@@ -1,0 +1,85 @@
+{
+  "kind": "r4-native-r3-negative-reuse-independent-review",
+  "status": "passed",
+  "app_commit": "9ccb0ea27ee2a19dd63506f3d5ed79be7a88856869b74a7fe74231d2378410af",
+  "canonical_ship": "target/packages/asterdream-0.1.2-kylin-x86_64-20261020-hardening-r4/ship",
+  "canonical_commit_file_sha256": "2bc82c17e09f774d70c8c0c294fa32adc9f2d6c576d5e6abf670da78aee784d0",
+  "identity_proof": "docs/evidence/work/2026-10-20-kylin-ime-hardening/native-r4-r3-negative-reuse-identity.json",
+  "identity_proof_sha256": "e84d9cce40042759966b119d41d564f362d25988efac6d9cb81a0527ec49209b",
+  "r3_negative_fixtures": {
+    "path": "docs/evidence/work/2026-10-20-kylin-ime-hardening/native-final-r3-negative-fixtures.json",
+    "sha256": "d9376a7311831bfc7620769d46f73baa4adac7a523ec559a1cea48fad2f3b4f1"
+  },
+  "r3_negative_results": {
+    "path": "docs/evidence/work/2026-10-20-kylin-ime-hardening/native-final-r3-negative-results.json",
+    "sha256": "0a99ae35143b211a501766ecaac7b076ddb490a5c8cd11c7218f8b128095e12b"
+  },
+  "negative_tests_rerun_on_r4": false,
+  "reuse_approved_for_native_gtk_scope": true,
+  "reuse_basis": {
+    "all_22_non_host_critical_file_hashes_and_sizes_unchanged": true,
+    "stage_installed_hash_size_equal": true,
+    "stage_modes_equal_frozen_r3_stage_modes": true,
+    "four_installed_data_modes_only_remove_group_other_write": true,
+    "full_metadata_and_policy_unchanged": true,
+    "harness_protocol_gtk_backend_probe_sources_unchanged": true,
+    "same_resolved_gnome_runtime": true,
+    "original_r3_negative_logs_unchanged": true
+  },
+  "new_r13_host": {
+    "path": "bin/aster-dream",
+    "sha256": "5ee63ca6bb54fa1d347e45e063b78884adf1a965d65cc20c5d7d9cffe52023d1",
+    "bytes": 79672672,
+    "stage_mode": 493,
+    "installed_mode": 493,
+    "r3_sha256": "d19362ae9e5fb405c57a4e6a1b7027e97e46effbf28f1cfc82f0976c86a7d0f2",
+    "r13_host_rebuild_separately_identified": true
+  },
+  "r4_native_run_receipt_sha256": "68eb7432a742049ed8077aad8dc4c042a36e86ff936c5a65c1baae99cb747391",
+  "flatpak16_r4_proof_sha256": "14675525ee280061ef8ab842e465772263fa2c85f8916fef513c6980086b168b",
+  "r4_existing_run_log_checks": {
+    "all_six_exit_statuses_expected": true,
+    "installed_protocol_exact_8_pass": true,
+    "installed_two_displays_each_key_once_and_gtk_pass": true,
+    "flatpak16_modern_legacy_mapped_gtk_pass_each_key_once": true,
+    "portal_disabled_phase0_timeout_no_controller_failure": true,
+    "stock_seccomp_fails_before_gtk": true
+  },
+  "r4_existing_run_logs": [
+    {
+      "name": "flatpak16-r4-prepare",
+      "path": "flatpak16-r4-prepare.log",
+      "sha256": "205ffaf41062cc9941bffb29110bfc454e6140210e2659f5dc90d888c51f9e80"
+    },
+    {
+      "name": "native-installed-r4",
+      "path": "native-installed-r4.log",
+      "sha256": "c0e21348ce17faa5363c5eb942f7c0c39d039c298fc2cf6982454062f20fb6b8"
+    },
+    {
+      "name": "flatpak16-r4-no-seccomp",
+      "path": "flatpak16-r4-no-seccomp.log",
+      "sha256": "a967bc6fd8eeddab5381e64380193efd4ab5c131e4b52a8105fc99f0e6a8c36f"
+    },
+    {
+      "name": "flatpak16-r4-legacy",
+      "path": "flatpak16-r4-legacy.log",
+      "sha256": "038975fcd865b8d602802e70da3a8da4125c99298ac5c097b19a027fdc51f698"
+    },
+    {
+      "name": "flatpak16-r4-portal-disabled",
+      "path": "flatpak16-r4-portal-disabled.log",
+      "sha256": "569fba8f1ef54145f8b1c70bd4493d8d4b203eb8e13f9ab3144595cf1c4fc30e"
+    },
+    {
+      "name": "flatpak16-r4-stock",
+      "path": "flatpak16-r4-stock.log",
+      "sha256": "bad2ad091d0820b912cde3aa66281d6a697dc766aae703ede625c042c4536179"
+    }
+  ],
+  "limits": [
+    "No new native test execution, app launch, build, package, install, or kill. Only a read-only docker Python hash inspection was used for installed files.",
+    "Only the GTK native missing-module/unpinned-bus failure controls are reused. R4 main host/renderer and full GUI acceptance are separate.",
+    "Flatpak 1.6 stock seccomp fails in this container before GTK; modern/legacy positive paths use the established no-seccomp wrapper. No production seccomp compatibility claim."
+  ]
+}

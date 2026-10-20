@@ -1,0 +1,4 @@
+$ bun x --no-install oxlint --deny-warnings --config /Users/roylin/code/aster/apps/studio/.oxlintrc.json /Users/roylin/code/aster/target/evaluations/studio-work-alignment/ime-lint-baseline/src/renderer/components/QuickPanel/types.ts /Users/roylin/code/aster/target/evaluations/studio-work-alignment/ime-lint-baseline/src/renderer/components/composer/ComposerSurfaceRuntime.tsx /Users/roylin/code/aster/target/evaluations/studio-work-alignment/ime-lint-baseline/src/renderer/components/QuickPanel/__tests__/view.test.tsx /Users/roylin/code/aster/target/evaluations/studio-work-alignment/ime-lint-baseline/src/renderer/components/QuickPanel/QuickPanelView.tsx
+/Users/roylin/code/aster/target/evaluations/studio-work-alignment/ime-lint-baseline/src/renderer/components/composer/ComposerSurfaceRuntime.tsx:1490:25: error typescript(no-unnecessary-type-assertion): This assertion is unnecessary since it does not change the type of the expression.
+
+exit_code=1

@@ -160,6 +160,19 @@ describe('PermissionRequestComposer', () => {
     })
   })
 
+  it('withdraws a typed note when the receiver supports only a boolean decision', async () => {
+    const user = userEvent.setup()
+    const onRespond = vi.fn().mockResolvedValue(undefined)
+    const request = makeRequest()
+    const view = render(<PermissionRequestComposer request={request} onRespond={onRespond} />)
+    await user.type(await openNote(user), 'use a copy instead')
+    view.rerender(<PermissionRequestComposer request={request} onRespond={onRespond} allowRejectionReason={false} />)
+    expect(screen.queryByRole('textbox', { name: 'Reason for rejection (optional)' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Add a note' })).toBeNull()
+    await user.click(screen.getByRole('button', { name: 'Deny' }))
+    expect(onRespond).toHaveBeenCalledWith({ match: request.match, approved: false })
+  })
+
   it('renders MCP tool name with the argument preview', () => {
     render(
       <PermissionRequestComposer
@@ -385,6 +398,36 @@ describe('PermissionRequestComposer', () => {
       approved: false,
       reason: 'User denied permission for this tool.'
     })
+  })
+
+  it.each(['Enter', 'Escape'])('leaves IME %s in the note to the input method', async (key) => {
+    const onRespond = vi.fn().mockResolvedValue(undefined)
+    render(<PermissionRequestComposer request={makeRequest()} onRespond={onRespond} />)
+    const note = await openNote(userEvent.setup())
+
+    fireEvent.compositionStart(note)
+    expect(fireEvent.keyDown(note, { key, keyCode: key === 'Enter' ? 13 : 27, isComposing: false })).toBe(true)
+    expect(onRespond).not.toHaveBeenCalled()
+
+    fireEvent.compositionEnd(note)
+    expect(fireEvent.keyDown(note, { key, keyCode: 229, isComposing: false })).toBe(true)
+    expect(onRespond).not.toHaveBeenCalled()
+
+    fireEvent.keyDown(note, { key })
+    await waitFor(() => expect(onRespond).toHaveBeenCalledTimes(1))
+    expect(onRespond).toHaveBeenCalledWith(expect.objectContaining({ approved: key === 'Enter' }))
+  })
+
+  it.each(['Enter', 'Escape'])('ignores a legacy IME %s in the global permission hotkey', async (key) => {
+    const onRespond = vi.fn().mockResolvedValue(undefined)
+    render(<PermissionRequestComposer request={makeRequest()} onRespond={onRespond} />)
+
+    expect(fireEvent.keyDown(document, { key, keyCode: 229, isComposing: false })).toBe(true)
+    expect(onRespond).not.toHaveBeenCalled()
+
+    fireEvent.keyDown(document, { key })
+    await waitFor(() => expect(onRespond).toHaveBeenCalledTimes(1))
+    expect(onRespond).toHaveBeenCalledWith(expect.objectContaining({ approved: key === 'Enter' }))
   })
 
   it('keeps Shift+Enter as a newline inside the rejection reason', async () => {

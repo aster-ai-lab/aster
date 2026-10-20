@@ -1,0 +1,16 @@
+Host DISPLAY=:120
+org.fcitx.Fcitx-120:    boolean true
+org.fcitx.Fcitx-99:    boolean false
+org.fcitx.Fcitx:    boolean true
+org.freedesktop.portal.Fcitx:    boolean true
+dbus-daemon[56754]: [session uid=0 pid=56754] Connection :1.13 (uid=0 pid=56803 comm="dbus-monitor --session type='method_call',destinat") became a monitor.
+Flatpak 1.6.5
+xdg-dbus-proxy 0.1.2
+bubblewrap 0.4.0
+dbus-daemon[56754]: [session uid=0 pid=56754] Activating service name='org.freedesktop.Flatpak' requested by ':1.14' (uid=0 pid=56808 comm="/aster/target/evaluations/kylin-ime-hardening/flat")
+dbus-daemon[56754]: [session uid=0 pid=56754] Successfully activated service 'org.freedesktop.Flatpak'
+dbus-daemon[56754]: [session uid=0 pid=56754] Activating service name='org.a11y.Bus' requested by ':1.14' (uid=0 pid=56808 comm="/aster/target/evaluations/kylin-ime-hardening/flat")
+dbus-daemon[56754]: [session uid=0 pid=56754] Successfully activated service 'org.a11y.Bus'
+bwrap: bwrap: prctl(PR_SET_SECCOMP)prctl(PR_SET_SECCOMP): Invalid argument
+: Invalid argument
+dbus-daemon[56754]: [session uid=0 pid=56754] Monitoring connection :1.13 closed.

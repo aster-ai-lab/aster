@@ -386,6 +386,7 @@ pub fn ingress_to_config(ingresses: &[IngressResource]) -> crate::error::Result<
         shutdown_timeout_secs: 30,
         hosted_function_activations: HashMap::new(),
         agent_idle_policies: Default::default(),
+        anonymous_chatbot: None,
     })
 }
 

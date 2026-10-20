@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/target/evaluations/studio-work-alignment/goal-state-before-probe.py", line 37, in <module>
+    rpc(1,'initialize',{'protocolVersion':1,'clientCapabilities':{}})
+  File "/Users/roylin/code/aster/target/evaluations/studio-work-alignment/goal-state-before-probe.py", line 35, in rpc
+    raise TimeoutError(method)
+TimeoutError: initialize

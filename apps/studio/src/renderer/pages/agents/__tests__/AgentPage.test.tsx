@@ -242,6 +242,7 @@ vi.mock('@renderer/data/hooks/useCache', async () => {
 })
 
 vi.mock('@renderer/hooks/agent/useAgent', () => ({
+  useUpdateAgent: () => ({ updateAgent: vi.fn(async () => undefined) }),
   useAgents: () => ({
     agents: agentPageMocks.agents,
     isLoading: agentPageMocks.agentsLoading

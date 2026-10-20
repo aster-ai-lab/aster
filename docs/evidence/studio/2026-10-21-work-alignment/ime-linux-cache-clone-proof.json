@@ -1,0 +1,14 @@
+[
+  {
+    "source": "/Users/roylin/.cargo/registry/cache/index.crates.io-6f17d22bba15001f/thiserror-impl-1.0.69.crate",
+    "clone": "/Users/roylin/code/aster/target/evaluations/studio-work-alignment/ime-native/cargo-home/registry/cache/index.crates.io-6f17d22bba15001f/thiserror-impl-1.0.69.crate",
+    "distinct_inode": true,
+    "same_sha256": true
+  },
+  {
+    "source": "/Users/roylin/code/aster/target/kylin-x86_64/release/a3s-office",
+    "clone": "/Users/roylin/code/aster/target/evaluations/studio-work-alignment/ime-native/linux-cargo-target/release/a3s-office",
+    "distinct_inode": true,
+    "same_sha256": true
+  }
+]

@@ -1,0 +1,39 @@
+{
+  "status": "passed",
+  "owned_container_name": "aster-kylin-ime-hardening",
+  "owned_container_id": "d372d97bfef0259935355b89b36be275c22f8125f0ab10177290d2c293b7a84d",
+  "pre_cleanup_state": "running",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "stop",
+        "--time",
+        "10",
+        "d372d97bfef0259935355b89b36be275c22f8125f0ab10177290d2c293b7a84d"
+      ],
+      "exit_code": 0,
+      "stdout": "Flag --time has been deprecated, use --timeout instead\nd372d97bfef0259935355b89b36be275c22f8125f0ab10177290d2c293b7a84d",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "rm",
+        "d372d97bfef0259935355b89b36be275c22f8125f0ab10177290d2c293b7a84d"
+      ],
+      "exit_code": 0,
+      "stdout": "d372d97bfef0259935355b89b36be275c22f8125f0ab10177290d2c293b7a84d",
+      "stderr": ""
+    }
+  ],
+  "container_absent_after_cleanup": true,
+  "three_gui_app_pids_already_exited": true,
+  "retained": [
+    "frozen R4 package",
+    "historical packages and evidence",
+    "same-repository isolated worktree",
+    "synthetic reproduction profiles and fixture sources"
+  ],
+  "scope": "Only the exact owned test container stopped and removed; no images, volumes, unrelated containers, host applications or user files removed."
+}

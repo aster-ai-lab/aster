@@ -18,6 +18,8 @@ import {
   ArrowLeft,
   Bot,
   CheckCircle,
+  ChevronDown,
+  ListChecks,
   Circle,
   CircleStop,
   FileText,
@@ -39,6 +41,7 @@ import {
   use,
   useCallback,
   useEffect,
+  useId,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -1566,6 +1569,7 @@ function TaskStatusIcon({ status }: { status: AgentStatusTask['status'] | AgentR
     case 'error':
       icon = <Circle size={14} className="text-destructive" />
       break
+    case 'skipped':
     case 'stopped':
       icon = <CircleStop size={14} className="text-muted-foreground" />
       break
@@ -1699,6 +1703,101 @@ export function AgentTaskProgressCapsule() {
         </HoverCardContent>
       </HoverCard>
     </div>
+  )
+}
+
+const PLAN_TASK_STATUS_KEY: Record<AgentStatusTask['status'], string> = {
+  pending: 'workbench.run.plan.pending',
+  in_progress: 'workbench.run.plan.in_progress',
+  completed: 'workbench.run.plan.completed',
+  error: 'workbench.run.plan.failed',
+  skipped: 'workbench.run.plan.skipped',
+  stopped: 'workbench.run.plan.cancelled'
+}
+
+export function AgentTaskProgressBar() {
+  const { t } = useTranslation()
+  const status = useAgentRightPaneStatus()
+  const listId = useId()
+  const [open, setOpen] = useState(false)
+  const [expandedTaskId, setExpandedTaskId] = useState<string>()
+
+  if (status.totalTaskCount === 0 || status.completedTaskCount === status.totalTaskCount) return null
+  const activeTask = status.tasks.find((task) => task.status === 'in_progress')
+  const progressLabel = t('agent.right_pane.status.task_count', {
+    completed: status.completedTaskCount,
+    total: status.totalTaskCount
+  })
+
+  return (
+    <section
+      aria-label={t('workbench.run.plan.title')}
+      className="mx-3 min-w-0 border-b border-[#ececec] bg-white text-[#3f3f3f]"
+      data-testid="agent-task-progress-bar">
+      <Button
+        variant="ghost"
+        className="h-8 min-h-8 w-full justify-start gap-2 px-1 py-0 text-start hover:bg-[#f7f7f7]"
+        aria-label={t('workbench.run.plan.toggle')}
+        aria-describedby={`${listId}-progress`}
+        aria-expanded={open}
+        aria-controls={listId}
+        onClick={() => setOpen((value) => !value)}>
+        <ListChecks size={16} strokeWidth={1.7} aria-hidden className="shrink-0" />
+        <span className="min-w-0 flex-1 text-[13px] font-medium">{t('workbench.run.plan.title')}</span>
+        <span
+          id={`${listId}-progress`}
+          role="progressbar"
+          aria-label={progressLabel}
+          aria-valuemin={0}
+          aria-valuemax={status.totalTaskCount}
+          aria-valuenow={status.completedTaskCount}
+          aria-valuetext={progressLabel}
+          aria-live="polite"
+          className="shrink-0 text-[12px] font-normal text-[#3f3f3f] tabular-nums">
+          {progressLabel}
+        </span>
+        <ChevronDown size={16} strokeWidth={1.7} aria-hidden className={cn('shrink-0', open && 'rotate-180')} />
+      </Button>
+      {!open && activeTask ? (
+        <p className="line-clamp-1 px-1 pb-1 text-[12px] text-[#3f3f3f]">{activeTask.activeText || activeTask.title}</p>
+      ) : null}
+      {open ? (
+        <Scrollbar className="max-h-64" id={listId} data-testid="agent-task-progress-details">
+          <ol className="space-y-0.5 py-1">
+            {status.tasks.map((task) => {
+              const expanded = expandedTaskId === task.id
+              return (
+                <li key={task.id}>
+                  <Button
+                    variant="ghost"
+                    className="h-auto min-h-9 w-full items-start justify-start gap-2 px-1 py-2 text-start whitespace-normal hover:bg-[#f7f7f7]"
+                    aria-expanded={expanded}
+                    onClick={() => setExpandedTaskId(expanded ? undefined : task.id)}>
+                    <TaskStatusIcon status={task.status} />
+                    <span
+                      className={cn(
+                        'min-w-0 flex-1 text-[13px] leading-5 font-normal break-words',
+                        !expanded && 'line-clamp-1'
+                      )}>
+                      {task.title}
+                    </span>
+                    <span className="shrink-0 text-[12px] leading-5 font-normal text-[#3f3f3f]">
+                      {t(PLAN_TASK_STATUS_KEY[task.status])}
+                    </span>
+                    <ChevronDown
+                      size={14}
+                      strokeWidth={1.7}
+                      aria-hidden
+                      className={cn('mt-0.5 shrink-0', expanded && 'rotate-180')}
+                    />
+                  </Button>
+                </li>
+              )
+            })}
+          </ol>
+        </Scrollbar>
+      ) : null}
+    </section>
   )
 }
 

@@ -3,6 +3,7 @@ import { useEffect, useMemo } from 'react'
 
 import { isAskUserQuestionToolName } from '@renderer/components/chat/messages/tools/shared/agentToolTypes'
 import type { MessageStreamingLayers, MessageToolApprovalInput } from '@renderer/components/chat/messages/types'
+import type { PendingToolApproval } from '@shared/ai/transport'
 import type { CherryMessagePart } from '@shared/data/types/message'
 
 import type { ComposerOverride } from './ComposerContext'
@@ -19,6 +20,8 @@ type ToolApprovalComposerOverridesOptions = {
   streamingLayers?: MessageStreamingLayers
   /** Approvals the route already accepted. The card must not wait on a transcript reload. */
   dismissedApprovalIds?: ReadonlySet<string>
+  /** Undefined for legacy transports; an empty native set must hide historical pending parts. */
+  pendingApprovals?: readonly PendingToolApproval[]
   onRespond: (input: MessageToolApprovalInput) => void | Promise<void>
 }
 
@@ -27,6 +30,7 @@ export function useToolApprovalComposerOverrides({
   persistedPartsByMessageId,
   streamingLayers,
   dismissedApprovalIds,
+  pendingApprovals,
   onRespond
 }: ToolApprovalComposerOverridesOptions): readonly ComposerOverride[] {
   useEffect(() => {
@@ -65,13 +69,32 @@ export function useToolApprovalComposerOverrides({
     }
     return liveParts
   }, [streamingLayers, partsByMessageId])
+  const nativeParts = useMemo(() => {
+    if (!pendingApprovals) return null
+    const parts: Record<string, CherryMessagePart[]> = {}
+    for (const approval of pendingApprovals) {
+      const matches = (part: CherryMessagePart) =>
+        isToolUIPart(part) && part.toolCallId === approval.toolCallId && part.approval?.id === approval.approvalId
+      // A newer persisted request can be absent from an older execution overlay.
+      const part =
+        persistedPartsByMessageId[approval.messageId]?.find(matches) ??
+        partsByMessageId[approval.messageId]?.find(matches)
+      if (part && isToolUIPart(part) && part.state === 'approval-requested') {
+        const messageParts = (parts[approval.messageId] ??= [])
+        messageParts.push(part)
+      }
+    }
+    return parts
+  }, [pendingApprovals, partsByMessageId, persistedPartsByMessageId])
   const historyAskUserQuestionRequest = useMemo(
-    () => (settledHistoryParts ? findLatestPendingAskUserQuestionRequest(settledHistoryParts) : null),
-    [settledHistoryParts]
+    () =>
+      nativeParts === null && settledHistoryParts ? findLatestPendingAskUserQuestionRequest(settledHistoryParts) : null,
+    [nativeParts, settledHistoryParts]
   )
   const currentAskUserQuestionRequest = useMemo(
-    () => findLatestPendingAskUserQuestionRequest(currentParts),
-    [currentParts]
+    // Native questions use the owned form protocol; boolean approval receivers cannot accept edited answers.
+    () => (nativeParts === null ? findLatestPendingAskUserQuestionRequest(currentParts) : null),
+    [nativeParts, currentParts]
   )
   const askUserQuestionRequestRaw = currentAskUserQuestionRequest ?? historyAskUserQuestionRequest
   const askUserQuestionRequest =
@@ -79,10 +102,13 @@ export function useToolApprovalComposerOverrides({
       ? askUserQuestionRequestRaw
       : null
   const historyPermissionRequest = useMemo(
-    () => (settledHistoryParts ? findNextPendingPermissionRequest(settledHistoryParts) : null),
-    [settledHistoryParts]
+    () => (nativeParts === null && settledHistoryParts ? findNextPendingPermissionRequest(settledHistoryParts) : null),
+    [nativeParts, settledHistoryParts]
   )
-  const currentPermissionRequest = useMemo(() => findNextPendingPermissionRequest(currentParts), [currentParts])
+  const currentPermissionRequest = useMemo(
+    () => findNextPendingPermissionRequest(nativeParts ?? currentParts),
+    [nativeParts, currentParts]
+  )
   const permissionRequestRaw = currentPermissionRequest ?? historyPermissionRequest
   const permissionRequest =
     permissionRequestRaw && !dismissedApprovalIds?.has(permissionRequestRaw.approvalId) ? permissionRequestRaw : null
@@ -103,11 +129,12 @@ export function useToolApprovalComposerOverrides({
       overrides.push(
         createPermissionRequestComposerOverride({
           request: permissionRequest,
+          allowRejectionReason: nativeParts === null,
           onRespond
         })
       )
     }
 
     return overrides
-  }, [askUserQuestionRequest, dismissedApprovalIds, onRespond, permissionRequest])
+  }, [askUserQuestionRequest, nativeParts, onRespond, permissionRequest])
 }

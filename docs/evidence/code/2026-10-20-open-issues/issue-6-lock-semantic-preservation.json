@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "only_semantic_lock_changes": "Remove the three registry A3S packages and collapse their now-unambiguous dependency labels; preserve the six pre-existing aster dependency additions.",
+  "package_count_before": 1955,
+  "package_count_after": 1952,
+  "third_party_versions_changed": 0,
+  "preexisting_aster_dependency_additions_preserved": true,
+  "cargo_lock_sha256": "8c722a2c9de1c26851077c7a7ebfdeb785e12639a13ac738f56613427a105ddf"
+}

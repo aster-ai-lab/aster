@@ -15,6 +15,25 @@ fn source(max: u64, stalled: u64, clock: u64) -> ContinuationSource {
     .unwrap()
 }
 
+#[test]
+fn progress_basis_preserves_legacy_bytes_and_refuses_unknown_semantics() {
+    let legacy = source(8, 1, 100);
+    let encoded = serde_json::to_value(&legacy).unwrap();
+    assert!(encoded.get("progress_basis").is_none());
+    assert_eq!(
+        serde_json::from_value::<ContinuationSource>(encoded.clone()).unwrap(),
+        legacy
+    );
+    let current = ContinuationSource::observed_mutations(legacy.policy.clone(), 100);
+    let mut current_json = serde_json::to_value(current).unwrap();
+    assert_eq!(
+        current_json["progress_basis"],
+        "observed_workspace_mutation_v1"
+    );
+    current_json["progress_basis"] = serde_json::json!("unknown_progress_semantics");
+    assert!(serde_json::from_value::<ContinuationSource>(current_json).is_err());
+}
+
 fn usage(log: &dyn LogStore, workspace: &WorkspaceRef) -> ContinuationUsage {
     fold_definitions(
         &log.read("session").unwrap(),

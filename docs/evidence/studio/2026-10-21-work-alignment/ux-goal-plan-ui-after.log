@@ -1,0 +1,136 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:9593) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/studio
+
+ ❯ |renderer| src/renderer/pages/agents/__tests__/WorkbenchProjectTray.test.tsx (18 tests | 1 failed) 161ms
+   ❯ WorkbenchProjectTray (13)
+     × uses current typed goal details and clears terminal or unavailable controls without deleting history 7ms
+ ❯ |renderer| src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx (69 tests | 1 failed) 873ms
+   ❯ task conversation turn (69)
+     × peeks the newest reasoning lines while a turn is streaming 19ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/WorkbenchProjectTray.test.tsx > WorkbenchProjectTray > uses current typed goal details and clears terminal or unavailable controls without deleting history
+TestingLibraryElementError: Unable to find an element with the text: workbench.goal.tick.needs_input. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33maria-label[39m=[32m"任务范围"[39m
+      [33mclass[39m=[32m"flex min-h-[46px] w-full min-w-0 items-center gap-2 rounded-b-[14px] border border-t-0 border-[#ececec] bg-[#f5f5f7] px-2 pt-[18px] pb-1.5"[39m
+      [33mdata-ui[39m=[32m"agents.workbench-project-tray.toolbar"[39m
+      [33mdata-workbench-project-tray[39m=[32m"true"[39m
+      [33mrole[39m=[32m"toolbar"[39m
+    [36m>[39m
+      [36m<span[39m
+        [33mclass[39m=[32m"ml-auto inline-flex h-7 min-w-0 items-center gap-1 rounded-[8px] bg-white px-2 text-[13px] text-[#60646c]"[39m
+        [33mdata-composer-goal[39m=[32m"true"[39m
+        [33mdata-goal-paused[39m=[32m"false"[39m
+        [33mdata-ui[39m=[32m"agents.composer-goal-chip"[39m
+        [33mtitle[39m=[32m"持续目标。发送 /goal clear 后清除，/goal pause 后暂停。"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mdata-testid[39m=[32m"popover"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"workbench.goal.details"[39m
+            [33mclass[39m=[32m"flex min-w-0 items-center gap-1 text-start"[39m
+            [33mdata-testid[39m=[32m"popover-trigger"[39m
+            [33mdata-ui[39m=[32m""[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"shrink-0"[39m
+            [36m>[39m
+              [0m目标[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"max-w-56 truncate text-[#171717]"[39m
+            [36m>[39m
+              [0m当前目标[0m
+            [36m</span>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+      [36m</span>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/renderer/pages/agents/__tests__/WorkbenchProjectTray.test.tsx:147:19
+    145|     expect(screen.queryByRole('button', { name: '移除目标' })).not.toBeInT…
+    146|     fireEvent.click(screen.getByRole('button', { name: 'workbench.goal…
+    147|     expect(screen.getByText('workbench.goal.tick.needs_input')).toBeVi…
+       |                   ^
+    148|     view.rerender(<WorkbenchProjectTray locked goal="过期目标" goalSnapsho…
+    149|     expect(document.querySelector('[data-composer-goal]')).toBeNull()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx > task conversation turn > peeks the newest reasoning lines while a turn is streaming
+Error: expect(element).toHaveAttribute("data-open", "true") // element.getAttribute("data-open") === "true"
+
+Expected the element to have attribute:
+  data-open="true"
+Received:
+  null
+ ❯ src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx:1282:25
+    1280|       </WorkbenchProjectLockedContext>
+    1281|     )
+    1282|     expect(reasoning()).toHaveAttribute('data-open', 'true')
+       |                         ^
+    1283|     expect(body()?.textContent).toContain('step-1')
+    1284|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed | 3 passed (5)
+      Tests  2 failed | 94 passed (96)
+   Start at  21:40:32
+   Duration  7.19s (transform 45%, import 32%, tests 11%, environment 9%, setup 2%)
+
+  Transform  |renderer| transforming modules took 5.99s · 45% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+

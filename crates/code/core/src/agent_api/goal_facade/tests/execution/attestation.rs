@@ -120,6 +120,242 @@ async fn automatic_slice_resets_stall_only_after_an_accepted_workspace_mutation(
 }
 
 #[tokio::test]
+async fn legacy_accepted_noop_history_reopens_but_new_opportunities_use_actual_progress() {
+    use crate::agent_api::AgentRunSpawn;
+    use crate::goal_control::GoalTickDecisionV1;
+
+    for file in [false, true] {
+        let root = tempfile::tempdir().unwrap();
+        let storage = tempfile::tempdir().unwrap();
+        std::fs::write(
+            root.path().join("source.txt"),
+            "independent expected source",
+        )
+        .unwrap();
+        let store: Arc<dyn SessionStore> = if file {
+            Arc::new(FileSessionStore::new(storage.path()).await.unwrap())
+        } else {
+            Arc::new(MemorySessionStore::new())
+        };
+        let limits = automatic::policy(true, 8, 1, automatic::now_ms() + 600_000);
+        let opts = options("goal-run")
+            .with_session_store(store.clone())
+            .with_assistant_final_response(true)
+            .with_completion_attestor(Arc::new(ByteAttestor {
+                root: root.path().into(),
+                calls: AtomicUsize::new(0),
+            }))
+            .with_permission_policy(crate::permissions::PermissionPolicy::new().allow("write(*)"));
+        let (agent, session, client) =
+            fixture_with(root.path(), true, opts, Some(limits.clone())).await;
+        // Absence is the exact private source shape emitted before actual
+        // mutation semantics. This does not alter the public ACL policy.
+        let legacy = serde_json::from_value(serde_json::json!({
+            "policy": limits, "observed_unix_ms": automatic::now_ms(),
+        }))
+        .unwrap();
+        script(&client, true);
+        let tick = automatic::request(&session, "legacy-noop");
+        let AgentRunSpawn::Started { worker, .. } =
+            crate::agent_api::conversation_runtime::spawn_goal_tick(
+                &session, tick, legacy, "inspect",
+            )
+            .await
+            .unwrap()
+        else {
+            panic!("first legacy slice must start");
+        };
+        tokio::time::timeout(std::time::Duration::from_secs(10), worker)
+            .await
+            .unwrap()
+            .unwrap();
+        let facts = crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap();
+        assert!(facts
+            .iter()
+            .any(|fact| fact.kind == "a3s.goal.step.accepted"));
+        assert!(facts.iter().any(|fact| fact.kind == "tool.result"
+            && fact.payload["receipt"]["effects"]["changes"]
+                .as_array()
+                .is_some_and(|changes| changes
+                    .iter()
+                    .any(|change| change["before"] == change["after"]))));
+        assert_eq!(
+            session
+                .preview_goal_tick(&automatic::request(&session, "new-strict"))
+                .await
+                .unwrap(),
+            GoalTickDecisionV1::NeedsInput
+        );
+        let view = session.goal_definition().unwrap().unwrap();
+        let legacy = serde_json::from_value(serde_json::json!({
+            "policy": limits, "observed_unix_ms": automatic::now_ms(),
+        }))
+        .unwrap();
+        // Protocol-history fixture for a previously legal next admission,
+        // not a claim that the historical second Run executed.
+        {
+            let lease = session.run_admission.try_acquire("goal-run").unwrap();
+            let log = lease
+                .nonexecuting_fact_log(&session.run_admission, "goal-run")
+                .unwrap();
+            let _writer = log.try_writer_fence().unwrap();
+            let pending = crate::goal_control::prepare_run(
+                &facts,
+                "goal-run",
+                &view.binding.workspace,
+                view.binding.work_policy_digest.as_deref(),
+                Some("historical-next"),
+                Some(&legacy),
+            )
+            .expect("the legacy source must retain its original admission semantics")
+            .unwrap()
+            .pending
+            .unwrap();
+            assert!(pending.payload["body"]["continuation"]
+                .get("progress_basis")
+                .is_none());
+            log.append("goal-run", &[pending], None).unwrap();
+        }
+        let recorded = crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap();
+        session.save().await.unwrap();
+        session.close().await;
+        agent.close().await;
+        let agent = Agent::from_config(test_config()).await.unwrap();
+        let store: Arc<dyn SessionStore> = if file {
+            Arc::new(FileSessionStore::new(storage.path()).await.unwrap())
+        } else {
+            store
+        };
+        let restored = agent
+            .resume_session_async("goal-run", options("goal-run").with_session_store(store))
+            .await
+            .unwrap();
+        assert_eq!(
+            restored.goal_definition().unwrap().unwrap().state,
+            GoalState::Active
+        );
+        assert_eq!(
+            crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap(),
+            recorded
+        );
+        restored.close().await;
+        agent.close().await;
+    }
+}
+
+#[tokio::test]
+async fn settled_workspace_mutation_is_progress_even_when_goal_judgment_is_not_achieved() {
+    use crate::agent_api::{AgentRunSpawn, GoalTickAdmission};
+    use crate::goal_control::GoalTickDecisionV1;
+
+    let root = tempfile::tempdir().unwrap();
+    std::fs::write(root.path().join("source.txt"), "old source").unwrap();
+    let opts = options("goal-run")
+        .with_assistant_final_response(true)
+        .with_completion_attestor(Arc::new(ByteAttestor {
+            root: root.path().into(),
+            calls: AtomicUsize::new(0),
+        }))
+        .with_permission_policy(crate::permissions::PermissionPolicy::new().allow("write(*)"));
+    let (agent, session, client) = fixture_with(
+        root.path(),
+        true,
+        opts,
+        Some(automatic::policy(true, 8, 1, automatic::now_ms() + 600_000)),
+    )
+    .await;
+    script(&client, true);
+    client.scripted.lock().unwrap().back_mut().unwrap().message = Message::assistant(
+        r#"{"achieved":false,"progress":0.5,"remaining_criteria":["more work"]}"#,
+    );
+    let tick = automatic::request(&session, "unfinished-write");
+    let GoalTickAdmission::Admitted(AgentRunSpawn::Started { worker, .. }) =
+        session.tick_goal(&tick).await.unwrap()
+    else {
+        panic!("first slice must start");
+    };
+    tokio::time::timeout(std::time::Duration::from_secs(10), worker)
+        .await
+        .unwrap()
+        .unwrap();
+    let facts = crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap();
+    let run_sequence = facts
+        .iter()
+        .find(|fact| fact.kind == "a3s.goal.slice.admitted")
+        .unwrap()
+        .seq;
+    assert!(crate::fact_control::goal_slice_made_progress(
+        &facts,
+        run_sequence,
+        "goal-run",
+        "unfinished-write"
+    ));
+    assert!(!crate::fact_control::goal_slice_made_progress(
+        &facts,
+        run_sequence,
+        "other-session",
+        "unfinished-write"
+    ));
+    assert!(!crate::fact_control::goal_slice_made_progress(
+        &facts,
+        run_sequence,
+        "goal-run",
+        "other-run"
+    ));
+    assert!(!facts
+        .iter()
+        .any(|fact| fact.kind == "a3s.goal.step.accepted"));
+    assert!(facts.iter().any(
+        |fact| fact.kind == crate::fact_control::TURN_COMPLETE_FACT_KIND
+            && fact.payload["terminal"] == "verified"
+    ));
+    assert_eq!(
+        session
+            .preview_goal_tick(&automatic::request(&session, "more-work"))
+            .await
+            .unwrap(),
+        GoalTickDecisionV1::Advance
+    );
+    // Rewriting the same bytes is not another delivery, even if the write succeeds.
+    script(&client, true);
+    client.scripted.lock().unwrap().back_mut().unwrap().message = Message::assistant(
+        r#"{"achieved":false,"progress":0.5,"remaining_criteria":["more work"]}"#,
+    );
+    let tick = automatic::request(&session, "same-bytes");
+    let GoalTickAdmission::Admitted(AgentRunSpawn::Started { worker, .. }) =
+        session.tick_goal(&tick).await.unwrap()
+    else {
+        panic!("changed prior slice must leave room for the next attempt");
+    };
+    tokio::time::timeout(std::time::Duration::from_secs(10), worker)
+        .await
+        .unwrap()
+        .unwrap();
+    let facts = crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap();
+    let run_sequence = facts
+        .iter()
+        .rev()
+        .find(|fact| fact.kind == "a3s.goal.slice.admitted")
+        .unwrap()
+        .seq;
+    assert!(!crate::fact_control::goal_slice_made_progress(
+        &facts,
+        run_sequence,
+        "goal-run",
+        "same-bytes"
+    ));
+    assert_eq!(
+        session
+            .preview_goal_tick(&automatic::request(&session, "idle-again"))
+            .await
+            .unwrap(),
+        GoalTickDecisionV1::NeedsInput
+    );
+    session.close().await;
+    agent.close().await;
+}
+
+#[tokio::test]
 async fn goal_step_fresh_host_attestation_accepts_write_and_preserves_original_probe() {
     for file in [false, true] {
         for final_response in [false, true] {

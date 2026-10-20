@@ -37,7 +37,7 @@ WebKit 的统一 IM filter 对 release 返回未处理结果，即使 GTK IM 吞
 
 在机制成立时，OFF+async 应各观察两次，ON+async 应各观察一次。逐键断言比总数三更容易识别混合异常；在真实文本状态断言能避免额外固定睡眠。这里 `key()` 注入的是 GDK 事件，不能把它称为硬件物理事件或完整 WebKit 回归；它与 rich XTEST A/B 分别保护前置边界和最终 DOM 行为。
 
-该维护用例必须从私有环境清除两个 ENABLE_SYNC_MODE、两个 DISABLE_SNOOPER 和两个 NO_SNOOPER_APPS 覆盖。否则继承 sync=1 或显式 snooper=0 覆盖可使旧 OFF 配方也观察到各一次，造成错误通过。原 build OFF 的负向必须按该精确计数失败，才证明用例保护了本轮根因。
+该维护用例必须从私有环境清除两个 ENABLE_SYNC_MODE、两个 DISABLE_SNOOPER 和两个 NO_SNOOPER_APPS 覆盖。否则继承 sync=1 或显式 DISABLE_SNOOPER=0 覆盖可使旧 OFF 配方也观察到各一次，造成错误通过。原 build OFF 的负向必须按该精确计数失败，才证明用例保护了本轮根因。
 
 ## sync 等候边界
 
@@ -46,3 +46,5 @@ WebKit 的统一 IM filter 对 release 返回未处理结果，即使 GTK IM 吞
 本次未实测 runtime 的具体等待时长或 daemon 断线延迟，也不猜新的超时阈值。若最终方案仍采用 sync，至少需要分别测“未连接 daemon 的本地 fallback”、“已连通后 daemon 暂停不回复”和“已连通后 daemon 退出”，记录等待时长、UI 主循环是否继续以及后续按键恢复。异步前置 snooper若通过，可避免为 repeat 修复额外启用这个同步 UI 等候路径。
 
 本次事件计数、Enter 序列、原始输入与源归档身份保存于 [独立 trace](r12-native-independent-trace.json)。只读检查，没有产品修改、容器执行或 GUI 操作；A/B 结果由 proof 代理另行记录。
+
+以上保留实施前只读审查时的结论。随后获得授权的最小实现、旧 OFF 负向和新 ON 双 display 正向结果见 [R12 修复证据](SNOOPER-R12.md)。

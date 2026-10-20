@@ -1,0 +1,6 @@
+{
+  "rc": 0,
+  "scope": "exact production state/swap/rollback/relaunch functions and all owning delivery tests; native host integration still required",
+  "source_sha256": "dfb857730bef9014b4b0cb0a524b62df9de7e9da65581728f29ec36265f531a8",
+  "harness_sha256": "ef784d1bdeca7930c45828fb922e80994710e4bfc666f31a37a905810bd9276c"
+}

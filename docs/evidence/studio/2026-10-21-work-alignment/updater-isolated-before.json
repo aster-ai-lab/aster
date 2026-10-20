@@ -1,0 +1,6 @@
+{
+  "rc": 101,
+  "scope": "exact extracted production functions and same owning tests; native integration remains required",
+  "source_sha256": "9840b8d4e7041a2f3996dab01a059e1ce5a7366ebb7f7c956044aaf0861055dc",
+  "harness_sha256": "9a871ad5d5816f8f2394d801f5b9fd37c38e716b529eaa48e4acc526dc39fa70"
+}

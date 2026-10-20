@@ -1,0 +1,25 @@
+
+/Users/roylin/code/aster/apps/studio/src/renderer/pages/agents/AgentComposer.tsx
+  202:60  warning  Unexpected path "@renderer/pages/settings/GeneralSettings" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7  import-x/no-restricted-paths
+
+/Users/roylin/code/aster/apps/studio/src/renderer/pages/agents/WorkbenchHomeComposerExtras.tsx
+  33:33  warning  Unexpected path "@renderer/pages/settings/GeneralSettings" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7   import-x/no-restricted-paths
+  34:32  warning  Unexpected path "@renderer/pages/settings/ProviderSettings" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7  import-x/no-restricted-paths
+
+/Users/roylin/code/aster/apps/studio/src/renderer/pages/agents/WorkbenchProjectTray.tsx
+  8:48  warning  Unexpected path "@renderer/pages/knowledge/knowledgeCompileAgent" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7  import-x/no-restricted-paths
+
+/Users/roylin/code/aster/apps/studio/src/renderer/pages/agents/components/AgentRightPane/AgentRightPane.tsx
+   476:5  warning  React Hook useCallback has a missing dependency: 'panelState'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  1230:5  warning  React Hook useCallback has a missing dependency: 'actions'. Either include it or remove the dependency array     react-hooks/exhaustive-deps
+
+/Users/roylin/code/aster/apps/studio/src/renderer/pages/agents/taskConversation/TaskConversationMessage.tsx
+  54:38  warning  Unexpected path "@renderer/pages/knowledge/wikiRetrievalPhase" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7                 import-x/no-restricted-paths
+  59:8   warning  Unexpected path "@renderer/pages/settings/DependenciesSettings/pluginCatalog" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7  import-x/no-restricted-paths
+
+/Users/roylin/code/aster/apps/studio/src/renderer/pages/agents/useAgentChatRuntimeState.ts
+   32:34  warning  Unexpected path "@renderer/pages/settings/aligned/worktreeStore" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7  import-x/no-restricted-paths
+  223:15  warning  ⚠️ Avoid template literals in t() — they make rendering output unpredictable                                                                                                          i18n/no-template-in-t
+
+✖ 10 problems (0 errors, 10 warnings)
+

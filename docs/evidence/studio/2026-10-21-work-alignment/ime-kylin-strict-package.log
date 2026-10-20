@@ -1,0 +1,2 @@
+bwrap: Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configbwrap: ured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)
+Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)

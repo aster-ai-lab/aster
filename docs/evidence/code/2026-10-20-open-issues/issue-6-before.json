@@ -1,0 +1,53 @@
+{
+  "cargo_lock_sha256": "95e50fee0f98031ab6a0df34d8733d7147bc9529440b2b92f45c0ac9bc40517e",
+  "existing_cargo_lock_diff_sha256": "104b85012748f9606b88f8f7bf697ff2d0dc948978547b61b4ed982f0e7d1566",
+  "existing_cargo_lock_diff_file": "issue-6-cargo-lock-before.patch",
+  "remote_internal_dependencies": [
+    {
+      "package": "a3s-gateway",
+      "dependency": "a3s-acl",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "optional": false
+    },
+    {
+      "package": "a3s-gateway",
+      "dependency": "a3s-sentry",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "optional": true
+    },
+    {
+      "package": "a3s-gateway",
+      "dependency": "a3s-updater",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "optional": false
+    }
+  ],
+  "publish_not_false": [
+    "a3s-gateway",
+    "a3s-sentry",
+    "a3s-updater"
+  ],
+  "commands": [
+    {
+      "command": [
+        "python3.12",
+        "tests/workspace_dependencies.py",
+        "WorkspaceDependenciesTest.test_desktop_sources_and_executable_fixtures_are_present"
+      ],
+      "exit_code": 1,
+      "log": "issue-6-before-guard-1.log",
+      "log_sha256": "7c8a6233b1e791ed26ced32140b177c4137bc745e16fa5f6e564a4d6110da94a"
+    },
+    {
+      "command": [
+        "python3.12",
+        "tests/workspace_dependencies.py",
+        "WorkspaceDependenciesTest.test_internal_dependencies_are_local_and_unpublishable"
+      ],
+      "exit_code": 1,
+      "log": "issue-6-before-guard-2.log",
+      "log_sha256": "c8d76b8edafb9017b707a96766235c780ccc4e8775e5721170c4eee0b06a7165"
+    }
+  ],
+  "work_gitlink": "160000 commit 9aad91f1e934c731e540cf99be25733e25c3a411\tapps/work"
+}

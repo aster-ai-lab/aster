@@ -25,6 +25,7 @@ export interface QuickPanelInsertTokenOptions {
 
 export interface QuickPanelInputAdapter {
   getText: () => string
+  isComposing?: () => boolean
   getCursorOffset?: () => number
   getSelectionEndOffset?: () => number
   /**

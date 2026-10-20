@@ -19,12 +19,12 @@ interface ComposerFileCapabilitiesArgs {
 
 const EMPTY_MODELS: Model[] = []
 
+const ALL_FILE_EXTS = [...imageExts, ...audioExts, ...videoExts, ...documentExts, ...textExts, ...archiveExts]
+
 /** Agent attachments are file paths. The homepage can stage them before a model is chosen. */
 export function agentFileExtensions(): string[] {
-  return [...imageExts, ...audioExts, ...videoExts, ...documentExts, ...textExts, ...archiveExts]
+  return ALL_FILE_EXTS
 }
-
-const ALL_FILE_EXTS = agentFileExtensions()
 
 // audio/video are the only modalities the chat surface still gates on (images always work
 // via the OCR fallback, documents/text always extract). Each maps to the predicate pair

@@ -137,17 +137,65 @@ pub fn is_fork_request(instance: Option<&str>) -> bool {
 }
 
 pub fn load() -> io::Result<TenantBrand> {
-    load_slug(&process_slug()?)
+    load_slug(&selected_slug()?)
 }
 
-fn process_slug() -> io::Result<String> {
+pub(crate) fn selected_slug() -> io::Result<String> {
     let from_env = std::env::var("A3S_TENANT_SLUG").ok();
+    let installed = std::env::current_exe()
+        .ok()
+        .map(|exe| packaged_tenant_from(&exe))
+        .transpose()?
+        .flatten();
+    if let Some(installed) = installed {
+        if from_env.as_deref().is_some_and(|slug| slug != installed) {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidInput,
+                "packaged tenant mismatch",
+            ));
+        }
+        return Ok(installed);
+    }
     // Library tests share this process and do not set the variable.
     // The shipped binary refuses an unset slug.
     #[cfg(test)]
     let from_env = from_env.or_else(|| Some("toyou".to_owned()));
     slug_from_env(from_env.as_deref())
 }
+
+fn packaged_tenant_from(exe: &std::path::Path) -> io::Result<Option<String>> {
+    use std::io::Read;
+    if let Some(tenant) = crate::app_updater::installed_tenant(exe)? {
+        return Ok(Some(tenant));
+    }
+    let Some(directory) = exe.parent() else {
+        return Ok(None);
+    };
+    let marker = directory.join("../Resources/studio-tenant");
+    let read = || -> io::Result<Vec<u8>> {
+        let mut bytes = Vec::new();
+        fs::File::open(&marker)?.take(34).read_to_end(&mut bytes)?;
+        Ok(bytes)
+    };
+    match read() {
+        Ok(bytes) if bytes.len() <= 33 => {
+            let value = std::str::from_utf8(&bytes).map_err(|_| {
+                io::Error::new(io::ErrorKind::InvalidData, "invalid packaged tenant")
+            })?;
+            slug_from_env(Some(value.strip_suffix('\n').unwrap_or(value))).map(Some)
+        }
+        Ok(_) => Err(io::Error::new(
+            io::ErrorKind::InvalidData,
+            "invalid packaged tenant",
+        )),
+        Err(error) if error.kind() == io::ErrorKind::NotFound => Ok(None),
+        Err(error) => Err(error),
+    }
+}
+
+#[cfg(test)]
+#[path = "tenant_delivery_tests.rs"]
+mod delivery_tests;
 
 fn load_slug(slug: &str) -> io::Result<TenantBrand> {
     if !is_slug(slug) {
@@ -347,6 +395,11 @@ fn is_slug(slug: &str) -> bool {
 
 fn tenant_dir(slug: &str) -> io::Result<PathBuf> {
     let mut candidates = Vec::new();
+    if let Ok(exe) = std::env::current_exe() {
+        if let Some(directory) = exe.parent() {
+            candidates.push(directory.join("../Resources/tenant").join(slug));
+        }
+    }
     if let Ok(cwd) = std::env::current_dir() {
         candidates.push(cwd.join("apps/web/public/tenant").join(slug));
         candidates.push(cwd.join("../web/public/tenant").join(slug));

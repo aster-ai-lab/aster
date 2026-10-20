@@ -1,0 +1,24 @@
+{
+  "app": "/Users/roylin/code/aster/target/evaluations/studio-work-alignment/gui-1021a/StudioAlignment.app",
+  "inputs": [
+    {
+      "source": "target/studio-macos-alignment/debug/Studio",
+      "sha256": "219b27a7a9df97c7727d51d1c8c84ffd05716bcac7cff7aa2d1dffb17b607546",
+      "size": 181124680
+    },
+    {
+      "source": "target/studio-macos-alignment/debug/a3s-code-acp",
+      "sha256": "8e5f9091101103820aea922f0da5a24f0b167221c720dea7faa72a46b03226ad",
+      "size": 324638384
+    },
+    {
+      "source": "target/studio-macos-alignment/debug/a3s-office",
+      "sha256": "26afb0214e262cfbc1d3d854b41ee56045d7f31a8370b0cd3243395ca7137805",
+      "size": 135900472
+    }
+  ],
+  "profile": "/Users/roylin/Library/Application Support/dev.a3s.studio/toyou/instances/studioalign1021a",
+  "kind": "Actual canonical debug host/ACP/Office with explicit existing debug bundle flag and production renderer over owned loopback HTTP; release package validation is separate",
+  "HOME_unchanged": true,
+  "host_build": "final-host-build-r3.json"
+}

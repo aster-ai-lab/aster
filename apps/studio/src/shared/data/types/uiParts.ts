@@ -150,6 +150,7 @@ export type RetryPartData =
  * Used with `useChat({ dataPartSchemas })` to enable type-safe custom parts.
  */
 export type CherryDataPartTypes = {
+  'task-plan': { mode: 'plan' }
   'review-source': { kind: 'text'; text: string; sha256: string } | { kind: 'document'; path: string; sha256: string }
   'review-progress': { index: number; total: number; quote: string }
   'workbench-proof': WorkbenchProof

@@ -268,6 +268,7 @@ pub fn ingress_routes_to_config(
         shutdown_timeout_secs: 30,
         hosted_function_activations: HashMap::new(),
         agent_idle_policies: Default::default(),
+        anonymous_chatbot: None,
     })
 }
 

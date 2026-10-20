@@ -1,0 +1,1 @@
+{"type":"error","message":"Not signed in. To authenticate without a browser, run:\n  aster login --device-code\n\nAlternatively, set the A3S_API_KEY environment variable or run `aster login` on a machine with a browser."}

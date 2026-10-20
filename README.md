@@ -116,12 +116,17 @@ macOS 和 Linux 需要 `curl`。Windows 使用 PowerShell。安装程序不修�
 
 `just code` 只在仓库里启动调试构建，不把程序复制到系统目录。
 
-更新就是再执行一次该系统下面写出的安装命令。
-更新命令下载 v0.1.1 发布包，只覆盖安装目录里的 `aster` 和 `a3s-code-acp` 这两个程序。
-`~/.a3s` 保持不变。
+`aster update` 下载本仓库的 [aster-cli v0.1.1](https://github.com/aster-ai-lab/aster/releases/tag/aster-cli-v0.1.1) 归档，并替换所调用 `aster` 所在目录里的 `aster` 和 `a3s-code-acp`。
+这个发布包里是这两个程序。它们不提供 `--build-id`。归档另外同时带有 `BUILD_ID` 和 `SHA256SUMS` 时，两个程序必须带有同一个 `aster-cli-pair-v1` 构建身份。
+下载失败，或带身份文件时两个程序的身份不一致，原来的两个程序保持原字节并且仍可运行。
+下载在终端中进行，且输出不是 JSON 时，画面是 ascii.rest 的 [`progress-bar`](https://ascii.rest/progress-bar/)。填充随收到的字节增加，更新结束时动画停止。
+`aster update --check` 和任何带 `--json` 的状态只打印结果，不替换文件，输出里也没有这段动画。
+目录里已经是该发布包时，`aster update` 不改这两个文件的字节，也不报告安装完成。
+`~/.a3s` 和 `~/.grok` 保持不变。普通启动、leader 和 stdio 不会在后台自动更新。
+
+也可以再执行一次下面该系统的安装命令。
+安装命令下载同一个 v0.1.1 发布包，只覆盖安装目录里的这两个程序。
 然后执行 `aster version --json`，确认 `currentVersion` 以 `0.1.1` 开头。
-`aster update` 退出后不会替换已安装的文件。
-`aster update --check --json` 只打印状态：`updateAvailable` 为 false，文件长度不变。
 
 卸载只删除这两个程序。`~/.a3s` 和 `~/.grok` 都保留。
 装到其他目录时，更新和卸载都针对那个目录里的同名文件。

@@ -1,0 +1,28 @@
+{
+  "root": "/Users/roylin/code/aster",
+  "mode": "applied environment-only atomic dependency relink",
+  "links": [
+    {
+      "path": "packages/office/node_modules/@fortune-sheet/core",
+      "before": "../../../../node_modules/.bun/@fortune-sheet+core@1.0.4/node_modules/@fortune-sheet/core",
+      "after": "../../../../apps/studio/node_modules/.pnpm/@fortune-sheet+core@1.0.4_patch_hash=2fab56c09e15cb015281af06d8b0954a0f0cbfcb4cf1451d1c69a859911e35a3/node_modules/@fortune-sheet/core"
+    },
+    {
+      "path": "packages/office/node_modules/@fortune-sheet/react",
+      "before": "../../../../node_modules/.bun/@fortune-sheet+react@1.0.4+ab9c01e4ccdf52df/node_modules/@fortune-sheet/react",
+      "after": "../../../../apps/studio/node_modules/.pnpm/@fortune-sheet+react@1.0.4_patch_hash=2fc40248cb8d708a3bc668c5e9ef14bce270c8e33d59888b7_e5671ce499e7474db99d27e7e390258c/node_modules/@fortune-sheet/react"
+    }
+  ],
+  "patches": {
+    "core": "2fab56c09e15cb015281af06d8b0954a0f0cbfcb4cf1451d1c69a859911e35a3",
+    "react": "2fc40248cb8d708a3bc668c5e9ef14bce270c8e33d59888b73445c52ed3bee33"
+  },
+  "note": "Core source patch contains CRLF context; LF-normalized SHA matches existing pnpm lock/store identity. No source/lock/vendor edits required.",
+  "time": 1792534735.640183,
+  "source_and_locks_sha256": {
+    "bun.lock": "0f9dd9f3a4b016dffc18e097444d0b944a50f3272cf62c3d115886960e70dabc",
+    "apps/studio/pnpm-lock.yaml": "52d327ae996f5b4afcb8f42b7451ef77d6c4e8e46cdefe93d7647a8a752b2531",
+    "packages/office/package.json": "eac692ad9918931ff905795e73263e6f23b1b3c7cb9b7af05bc56652298b941d"
+  },
+  "source_and_locks_unchanged": true
+}

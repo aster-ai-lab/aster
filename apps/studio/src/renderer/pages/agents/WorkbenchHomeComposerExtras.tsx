@@ -25,11 +25,11 @@ import { useOptionalComposerToolLaunchers } from '@renderer/components/composer/
 import { ATTACHMENT_TOOLBAR_MANIFEST } from '@renderer/components/composer/tools/toolbarManifests'
 import { ModelSelector, type ModelSelectorFilter } from '@renderer/components/ModelSelector'
 import { type QuickPanelInputAdapter, useOptionalQuickPanel } from '@renderer/components/QuickPanel'
-import { useQuery } from '@renderer/data/hooks/useDataApi'
 import { usePreference } from '@renderer/data/hooks/usePreference'
 import { orgModelLogoId, type OrgModel } from '@renderer/data/orgModels'
 import { useAssistantsApi } from '@renderer/hooks/useAssistant'
 import { useAssistantCatalogPresets } from '@renderer/hooks/useAssistantCatalogPresets'
+import { useStudioGoal } from '@renderer/hooks/useStudioGoal'
 import { fileMentionRoot } from '@renderer/pages/settings/GeneralSettings'
 import { ProviderAvatar } from '@renderer/pages/settings/ProviderSettings'
 import type { ThinkingOption } from '@renderer/types/reasoning'
@@ -37,22 +37,19 @@ import { cn } from '@renderer/utils/style'
 import type { Model } from '@shared/data/types/model'
 
 import { homeAgentSuggestionItems, installedMentionAgents, rememberAgentAvatars } from './homeAgentCatalog'
-import { CodeWorkspacePlacement } from './homeComposerMode'
+import { CodeWorkspacePlacement, useHomeComposerModeState } from './homeComposerMode'
 import { homeSlashItems, useHomeLocalSkills } from './homeSlashCatalog'
 import { ReviewComposerSource } from './ReviewComposerSource'
 import { reviewDraftNeedsSource } from './reviewHandoff'
+import { supportsTaskPlanning } from './taskConversation/taskPlanMode'
 import { useHomeComposerOptions } from './useHomeComposerOptions'
 import { useOrgModels } from './useOrgModels'
 import { findWorkbenchComposerScope, WorkbenchComposerHostContext } from './workbenchComposerHost'
 import {
   type HomeComposerFlags,
   HOME_COMPOSER_PINNED_TOOL_IDS,
-  composerGoalObjective,
   composerGoalSummary,
   sameToolOrder,
-  sessionGoalFromUserTexts,
-  taskGoalPresentation,
-  userTextsFromSessionMessages,
   withoutComposerGoal
 } from './workbenchHomeCapabilities'
 import {
@@ -65,6 +62,7 @@ import {
 import { WorkbenchPermissionPicker } from './WorkbenchPermissionPicker'
 import {
   displayedTaskPermissionMode,
+  readTaskPermission,
   readTaskPermissionRevision,
   storedPermissionMode,
   subscribeTaskPermission,
@@ -102,7 +100,7 @@ export interface WorkbenchHomeComposerArgs {
   workspaceFileSelection?: Pick<WorkbenchWorkspaceFilesControl, 'selectedPaths' | 'onCommit'>
   /** Task conversations hide the project menu. The goal stays on the right of the bottom toolbar. */
   projectLocked?: boolean
-  /** The open task. Its own `/goal` messages are the only stored objective. */
+  /** The open task. Its current native snapshot owns the durable objective. */
   sessionId?: string | null
   /** Scope slot beside the conversation composer. Home finds its slot from the host. */
   scopeElement?: HTMLElement | null
@@ -130,12 +128,14 @@ export function WorkbenchComposerOptions({
   const [open, setOpen] = useState(false)
   const launchers = useOptionalComposerToolLaunchers()
   const quickPanel = useOptionalQuickPanel()
-  const attachment = launchers?.getLaunchers().find(
-    (launcher) =>
-      launcher.id === ATTACHMENT_TOOLBAR_MANIFEST.toolbar.id &&
-      !launcher.hidden &&
-      (!launcher.sources || launcher.sources.includes('popover'))
-  )
+  const attachment = launchers
+    ?.getLaunchers()
+    .find(
+      (launcher) =>
+        launcher.id === ATTACHMENT_TOOLBAR_MANIFEST.toolbar.id &&
+        !launcher.hidden &&
+        (!launcher.sources || launcher.sources.includes('popover'))
+    )
   const canUpload = Boolean(attachment?.action && quickPanel && !attachment.disabled)
   const uploadLabel = typeof attachment?.label === 'string' ? attachment.label : t('chat.input.upload.attachment')
   const review = t('workbench.composer.review')
@@ -314,12 +314,15 @@ export function useWorkbenchHomeComposer({
   const [inputbar, setInputbar] = useState<HTMLElement | null>(null)
   const [scopeSlot, setScopeSlot] = useState<HTMLElement | null>(null)
   const memberId = useMemberProfile()?.id ?? null
-  const permissionRevision = useSyncExternalStore(subscribeTaskPermission, readTaskPermissionRevision, () => 0)
-  const permissionSessionId = sessionId ?? 'draft'
-  const shownPermissionMode = useMemo(
-    () => displayedTaskPermissionMode(permissionSessionId, memberId),
-    [memberId, permissionRevision, permissionSessionId]
+  const composerMode = useHomeComposerModeState()
+  const planSupported = supportsTaskPlanning(
+    { text, tokens: [...tokens] },
+    projectLocked || (!composerMode.selected && !composerMode.hostCode)
   )
+  useSyncExternalStore(subscribeTaskPermission, readTaskPermissionRevision, () => 0)
+  const permissionSessionId = sessionId ?? 'draft'
+  const shownPermissionMode = displayedTaskPermissionMode(permissionSessionId, memberId)
+  const planFirst = readTaskPermission(permissionSessionId, undefined, memberId)?.planFirst === true
   const projectSelection = useWorkbenchProjectSelection({
     workspace,
     workspaceId,
@@ -345,7 +348,12 @@ export function useWorkbenchHomeComposer({
     (mode: string) => {
       const next = storedPermissionMode(mode)
       if (!next) return
-      writeTaskPermission(permissionSessionId, { mode: next }, undefined, memberId)
+      writeTaskPermission(
+        permissionSessionId,
+        { mode: next, planFirst: readTaskPermission(permissionSessionId, undefined, memberId)?.planFirst === true },
+        undefined,
+        memberId
+      )
       if (permissionSessionId === 'draft') writePendingPermissionMode(next, undefined, memberId)
       onPermissionModeChange?.(next)
     },
@@ -400,16 +408,17 @@ export function useWorkbenchHomeComposer({
   }, [enabled, installedAgents, t])
 
   const goal = composerGoalSummary(text)
-  const sessionMessages = useQuery('/agent-sessions/:sessionId/messages', {
-    params: { sessionId: sessionId ?? '' },
-    query: { limit: 200 },
-    enabled: Boolean(enabled && projectLocked && sessionId)
-  })
-  const sessionGoal = useMemo(() => {
-    const texts = userTextsFromSessionMessages(sessionMessages.data?.items)
-    return sessionGoalFromUserTexts([...texts].reverse())
-  }, [sessionMessages.data?.items])
-  const taskGoal = projectLocked ? taskGoalPresentation(composerGoalObjective(text), sessionGoal) : null
+  const observedGoalSnapshot = useStudioGoal(sessionId, Boolean(enabled && projectLocked && planSupported))
+  const goalSnapshot = planSupported ? observedGoalSnapshot : undefined
+  const durableGoal = goalSnapshot?.status === 'known' ? goalSnapshot.goal : null
+  const taskGoal =
+    durableGoal && durableGoal.state !== 'completed' && durableGoal.state !== 'cancelled'
+      ? {
+          text: durableGoal.objective,
+          paused: durableGoal.state === 'paused' || durableGoal.tick === 'paused',
+          clearable: false
+        }
+      : null
   const modelAlias = model?.apiModelId || model?.id || ''
   const catalogModel = useMemo(
     () => findCatalogModel(orgCatalog.catalog.items, model),
@@ -494,11 +503,55 @@ export function useWorkbenchHomeComposer({
             permissionMode={shownPermissionMode}
             onPermissionModeChange={changePermissionMode}
           />
+          <button
+            type="button"
+            role="switch"
+            aria-checked={planFirst}
+            aria-label={t('workbench.permission.plan_first')}
+            disabled={!planSupported && !planFirst}
+            title={!planSupported ? t('workbench.plan.unsupported_runtime') : t('workbench.permission.plan_first_hint')}
+            data-workbench-plan-mode="true"
+            onClick={() =>
+              writeTaskPermission(
+                permissionSessionId,
+                {
+                  mode: shownPermissionMode,
+                  planFirst: readTaskPermission(permissionSessionId, undefined, memberId)?.planFirst !== true
+                },
+                undefined,
+                memberId
+              )
+            }
+            className="inline-flex h-8 items-center gap-1.5 rounded-[8px] px-2 text-[13px] text-[#3f3f3f] hover:bg-[#f7f7f7] focus-visible:ring-2 focus-visible:ring-black/10">
+            <span
+              aria-hidden
+              className={`relative h-4 w-7 rounded-full ${planFirst ? 'bg-[#265bd7]' : 'bg-[#d4d4d4]'}`}>
+              <span
+                className={`absolute top-0.5 size-3 rounded-full bg-white transition-transform ${planFirst ? 'translate-x-3.5' : 'translate-x-0.5'}`}
+              />
+            </span>
+            {t('workbench.permission.plan_first')}
+            {!planSupported ? (
+              <span className="text-xs text-muted-foreground">{t('workbench.plan.unavailable')}</span>
+            ) : null}
+          </button>
           <CodeWorkspacePlacement projectPath={projectSelection.selectedPath || null} />
         </div>
       )
     },
-    [changeOptions, changePermissionMode, enabled, options, projectSelection.selectedPath, shownPermissionMode]
+    [
+      changeOptions,
+      changePermissionMode,
+      enabled,
+      memberId,
+      options,
+      planSupported,
+      planFirst,
+      permissionSessionId,
+      projectSelection.selectedPath,
+      shownPermissionMode,
+      t
+    ]
   )
 
   const accessory = enabled ? modelControl : null
@@ -514,6 +567,7 @@ export function useWorkbenchHomeComposer({
               selection={projectSelection}
               workspaceChanging={workspaceChanging}
               locked={projectLocked}
+              goalSnapshot={projectLocked ? goalSnapshot : undefined}
               goalPaused={Boolean(projectLocked && taskGoal?.paused)}
               goalClearable={projectLocked ? Boolean(taskGoal?.clearable) : true}
               goal={projectLocked ? (taskGoal?.text ?? null) : goal}

@@ -1,0 +1,24 @@
+{
+  "files": [
+    {
+      "source": "/Users/roylin/code/aster/docs/evidence/work/2026-10-20-kylin-ime-hardening/OUTCOME.md",
+      "preserved_copy": "/Users/roylin/code/aster/target/evaluations/kylin-ime-hardening/OUTCOME-PRE-R4-HISTORY.md",
+      "sha256": "ba9a7de40e7413b23fa930b28e61e3d7981d3412271470375ba8a4bccbe34f68",
+      "bytes": 11247,
+      "identical": true,
+      "evidence_copy": "/Users/roylin/code/aster/docs/evidence/work/2026-10-20-kylin-ime-hardening/OUTCOME-PRE-R4-HISTORY.md",
+      "evidence_copy_identical": true
+    },
+    {
+      "source": "/Users/roylin/code/aster/docs/evidence/work/2026-10-20-kylin-ime-hardening/PLAN.md",
+      "preserved_copy": "/Users/roylin/code/aster/target/evaluations/kylin-ime-hardening/PLAN-PRE-R4-HISTORY.md",
+      "sha256": "5a7a172bf489c653d80ff1df3ba35985d6ab512833495edb8287ff1179e46c48",
+      "bytes": 6284,
+      "identical": true,
+      "evidence_copy": "/Users/roylin/code/aster/docs/evidence/work/2026-10-20-kylin-ime-hardening/PLAN-PRE-R4-HISTORY.md",
+      "evidence_copy_identical": true
+    }
+  ],
+  "originals_modified": false,
+  "note": "Pre-finalization historical originals preserved unchanged; OUTCOME and PLAN may subsequently be updated to the final R4 state."
+}

@@ -1,6 +1,6 @@
 import { Kbd, Textarea } from '@a3s-lab/ui'
 import { Loader2 } from 'lucide-react'
-import { useCallback, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
 
@@ -26,19 +26,17 @@ export { findNextPendingPermissionRequest } from './permissionRequestComposerReq
 
 const logger = loggerService.withContext('PermissionRequestComposer')
 
-function isHandledElsewhere(event: KeyboardEvent) {
-  return event.defaultPrevented || event.isComposing
-}
-
 type PermissionRequestComposerProps = {
   request: PermissionRequestComposerRequest
   onRespond: (input: MessageToolApprovalInput) => void | Promise<void>
+  allowRejectionReason?: boolean
   className?: string
 }
 
 type PermissionRequestComposerOverrideOptions = {
   request: PermissionRequestComposerRequest
   onRespond: (input: MessageToolApprovalInput) => void | Promise<void>
+  allowRejectionReason?: boolean
 }
 
 function isMcpToolResponse(toolResponse: ToolResponseLike): toolResponse is McpToolResponse {
@@ -75,13 +73,19 @@ function renderBuiltinPreviewChildren(toolName: string, children: ToolDisclosure
 
 export function createPermissionRequestComposerOverride({
   request,
-  onRespond
+  onRespond,
+  allowRejectionReason = true
 }: PermissionRequestComposerOverrideOptions): ComposerOverride {
   return {
     id: `tool-permission:${request.approvalId}`,
     priority: 90,
     render: ({ className }) => (
-      <PermissionRequestComposer request={request} onRespond={onRespond} className={className} />
+      <PermissionRequestComposer
+        request={request}
+        onRespond={onRespond}
+        className={className}
+        allowRejectionReason={allowRejectionReason}
+      />
     )
   }
 }
@@ -204,14 +208,28 @@ function PermissionPreviewHeader({ toolName, description }: { toolName: string; 
   )
 }
 
-export default function PermissionRequestComposer({ request, onRespond, className }: PermissionRequestComposerProps) {
+export default function PermissionRequestComposer({
+  request,
+  onRespond,
+  className,
+  allowRejectionReason = true
+}: PermissionRequestComposerProps) {
   const { t } = useTranslation()
+  const composingApprovalIdRef = useRef<string | null>(null)
+  const isHandledElsewhere = useCallback(
+    (event: KeyboardEvent) =>
+      event.defaultPrevented ||
+      event.isComposing ||
+      event.keyCode === 229 ||
+      composingApprovalIdRef.current === request.approvalId,
+    [request.approvalId]
+  )
   const [submission, setSubmission] = useState<{ approvalId: string; action: 'approve' | 'deny' } | null>(null)
   const [noteDraft, setNoteDraft] = useState({ approvalId: request.approvalId, value: '', open: false })
   const isSubmitting = submission?.approvalId === request.approvalId
   const noteForRequest = noteDraft.approvalId === request.approvalId
-  const rejectionReason = noteForRequest ? noteDraft.value : ''
-  const noteOpen = noteForRequest && noteDraft.open
+  const rejectionReason = allowRejectionReason && noteForRequest ? noteDraft.value : ''
+  const noteOpen = allowRejectionReason && noteForRequest && noteDraft.open
   // A typed reason means the user is denying. Enter must not approve behind their back.
   const hasRejectionReason = rejectionReason.trim().length > 0
   const toolName = request.toolResponse.tool.name.trim()
@@ -263,11 +281,11 @@ export default function PermissionRequestComposer({ request, onRespond, classNam
       {
         match: request.match,
         approved: false,
-        reason
+        ...(allowRejectionReason ? { reason } : {})
       },
       'deny'
     )
-  }, [isSubmitting, rejectionReason, request.match, respond, t])
+  }, [allowRejectionReason, isSubmitting, rejectionReason, request.match, respond, t])
 
   useHotkeys(
     'enter',
@@ -323,8 +341,17 @@ export default function PermissionRequestComposer({ request, onRespond, classNam
               placeholder={t('agent.toolPermission.reasonPlaceholder')}
               className="mt-1 min-h-14 resize-none rounded-[8px] border-0 bg-[#f5f5f5] px-3 py-2 text-[13px] text-[#171717] placeholder:text-[#c5c5c5]"
               onValueChange={(value) => setNoteDraft({ approvalId: request.approvalId, value, open: true })}
+              onCompositionStart={() => {
+                composingApprovalIdRef.current = request.approvalId
+              }}
+              onCompositionEnd={() => {
+                composingApprovalIdRef.current = null
+              }}
+              onBlur={() => {
+                composingApprovalIdRef.current = null
+              }}
               onKeyDown={(event) => {
-                if (event.nativeEvent.isComposing) return
+                if (isHandledElsewhere(event.nativeEvent)) return
                 // The global Esc hotkey ignores form fields, so deny from the note itself.
                 if (event.key === 'Escape') {
                   event.preventDefault()
@@ -340,7 +367,7 @@ export default function PermissionRequestComposer({ request, onRespond, classNam
         ) : null}
 
         <div className="mt-2.5 flex items-center justify-end gap-2 px-1 pb-0.5">
-          {!isSubmitting && !noteOpen ? (
+          {allowRejectionReason && !isSubmitting && !noteOpen ? (
             <button
               type="button"
               onClick={() => setNoteDraft({ approvalId: request.approvalId, value: rejectionReason, open: true })}

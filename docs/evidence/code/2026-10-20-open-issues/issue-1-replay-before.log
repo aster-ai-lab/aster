@@ -1,0 +1,33 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on build directory
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 12s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 1 test
+
+thread 'agent_api::goal_facade::tests::execution::attestation::legacy_accepted_noop_history_reopens_but_new_opportunities_use_actual_progress' (52083225) panicked at crates/code/core/src/agent_api/goal_facade/tests/execution/attestation.rs:210:14:
+the legacy source must retain its original admission semantics: Refused { refusal: Waiting, reason: "goal stalled without workspace mutation; a changed plan or input is required" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agent_api::goal_facade::tests::execution::attestation::legacy_accepted_noop_history_reopens_but_new_opportunities_use_actual_progress ... FAILED
+
+failures:
+
+failures:
+    agent_api::goal_facade::tests::execution::attestation::legacy_accepted_noop_history_reopens_but_new_opportunities_use_actual_progress
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5271 filtered out; finished in 0.41s
+
+error: test failed, to rerun pass `-p a3s-code-core --lib`

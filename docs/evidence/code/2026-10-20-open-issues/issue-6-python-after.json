@@ -1,0 +1,10 @@
+{
+  "command": [
+    "python3.12",
+    "tests/workspace_dependencies.py"
+  ],
+  "exit_code": 1,
+  "elapsed_seconds": 4.19,
+  "log": "issue-6-python-after.log",
+  "log_sha256": "d084b2515c60174eff65b25647a8ed3bc5f0d5e0a16235a349b05c3a196945a1"
+}

@@ -1,6 +1,8 @@
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
+import type { ComposerSerializedToken } from '@renderer/components/composer/tokens'
+import { useStudioGoal } from '@renderer/hooks/useStudioGoal'
 import { dataWorkbenchCatalogue } from '@renderer/pages/data/dataPackageCatalogue'
 import { publishAixCatalogue } from '@renderer/services/plugins/aixCatalogueStore'
 import type { AixWorkbenchCatalogue } from '@shared/types/aixWorkbench'
@@ -11,12 +13,16 @@ import {
   HOST_CODE_MODE_ID,
   noteHomeComposerTopic,
   requestHomeComposerSend,
+  submitHomeComposerDraft,
   resetHomeComposerModeForTests,
   selectHomeComposerMode
 } from '../homeComposerMode'
 import { HomeComposerTaskBar } from '../HomeComposerTaskBar'
 import { writeHomePluginPins } from '../homePins'
 import { useWorkbenchHomeComposer } from '../WorkbenchHomeComposerExtras'
+import { readTaskPermission, writeTaskPermission } from '../workbenchPermissionPostures'
+
+vi.mock('@renderer/hooks/useStudioGoal', () => ({ useStudioGoal: vi.fn() }))
 
 const REVISION = `sha256:${'ab'.repeat(32)}`
 
@@ -119,13 +125,14 @@ function paint() {
 }
 
 /** The live home action row: permission picker, then workspace placement. */
-function ShippedHomeToolsRow() {
+function ShippedHomeToolsRow({ tokens = [] }: { tokens?: ComposerSerializedToken[] } = {}) {
   const home = useWorkbenchHomeComposer({
     enabled: true,
     fileCount: 0,
     text: '',
     onTextChange: () => undefined,
-    permissionMode: 'default'
+    permissionMode: 'default',
+    tokens
   })
   return home.renderLayout({})
 }
@@ -135,6 +142,117 @@ describe('homepage composer chrome', () => {
     publishAixCatalogue({ protocolVersion: 1, revision: '', packages: [] })
     writeHomePluginPins(null, [])
     resetHomeComposerModeForTests()
+  })
+
+  it.each([
+    ['request', requestHomeComposerSend],
+    ['submit', submitHomeComposerDraft]
+  ] as const)(
+    'refuses an explicitly changed action in the %s planning preflight without clearing the draft',
+    async (_name, send) => {
+      publishAixCatalogue({ protocolVersion: 1, revision: '', packages: [] })
+      resetHomeComposerModeForTests()
+      selectHomeComposerMode(HOST_CODE_MODE_ID)
+      const refused = await send({ surface: 'live', text: 'Keep this draft', permissionMode: 'auto', planFirst: true })
+      expect(refused).toEqual({ handled: true, cleared: false })
+      const supported = await send({
+        surface: 'live',
+        text: 'Keep this draft',
+        permissionMode: 'auto',
+        planFirst: false
+      })
+      expect(supported.code).toMatchObject({ placement: 'checkout' })
+    }
+  )
+
+  it('hides a known local goal when the draft selects an explicit non-local lane', () => {
+    const scope = document.createElement('div')
+    document.body.append(scope)
+    vi.mocked(useStudioGoal).mockReturnValue({
+      status: 'known',
+      sessionId: 's1',
+      acpSessionId: 'acp',
+      executionId: 'run',
+      goal: {
+        goalId: 'g',
+        goalRevision: 1,
+        goalSequence: 1,
+        planRevision: null,
+        state: 'active',
+        objective: 'Local goal',
+        tick: 'advance'
+      }
+    })
+    function TaskGoalChrome({ tokens = [] }: { tokens?: ComposerSerializedToken[] }) {
+      const home = useWorkbenchHomeComposer({
+        enabled: true,
+        fileCount: 0,
+        text: '',
+        tokens,
+        onTextChange: () => undefined,
+        projectLocked: true,
+        sessionId: 's1',
+        scopeElement: scope
+      })
+      return home.chrome
+    }
+    const view = render(<TaskGoalChrome />)
+    expect(within(scope).getByText('Local goal')).toBeVisible()
+    view.rerender(
+      <TaskGoalChrome
+        tokens={[
+          {
+            id: 'agent',
+            index: 0,
+            textOffset: 0,
+            kind: 'reference',
+            label: 'Cloud agent',
+            payload: { agentRuntime: { runtime: 'cloud' } }
+          }
+        ]}
+      />
+    )
+    expect(within(scope).queryByText('Local goal')).toBeNull()
+    view.unmount()
+    scope.remove()
+    vi.mocked(useStudioGoal).mockReset()
+  })
+
+  it('disables planning for a declared non-local lane while allowing an already enabled mode to be turned off', () => {
+    localStorage.clear()
+    const tokens = [
+      {
+        id: 'agent',
+        index: 0,
+        textOffset: 0,
+        kind: 'reference' as const,
+        label: 'Cloud agent',
+        payload: { agentRuntime: { runtime: 'cloud' } }
+      }
+    ]
+    const view = render(<ShippedHomeToolsRow tokens={tokens} />)
+    const toggle = screen.getByRole('switch', { name: '规划模式' })
+    expect(toggle).toBeDisabled()
+    expect(screen.getByText('当前不可用')).toBeVisible()
+    act(() => writeTaskPermission('draft', { mode: 'default', planFirst: true }))
+    expect(toggle).not.toBeDisabled()
+    expect(toggle).toHaveAttribute('aria-checked', 'true')
+    fireEvent.click(toggle)
+    expect(toggle).toHaveAttribute('aria-checked', 'false')
+    expect(readTaskPermission('draft')?.planFirst).toBe(false)
+    view.unmount()
+  })
+
+  it('shows an independent compact plan-first switch without a description row', () => {
+    localStorage.clear()
+    render(<ShippedHomeToolsRow />)
+    const toggle = screen.getByRole('switch', { name: '规划模式' })
+    expect(toggle).toHaveAttribute('aria-checked', 'false')
+    const approvalBefore = readTaskPermission('draft')?.mode ?? 'default'
+    fireEvent.click(toggle)
+    expect(toggle).toHaveAttribute('aria-checked', 'true')
+    expect(readTaskPermission('draft')).toMatchObject({ mode: approvalBefore, planFirst: true })
+    expect(screen.queryByText('下一条将先生成计划，等待审阅确认。正在运行的回合保留原模式。')).not.toBeInTheDocument()
   })
 
   it('left-aligns the work-mode track and lays quick tasks in one chip row', async () => {

@@ -1,0 +1,18 @@
+{
+  "files": [
+    {
+      "path": "src/renderer/hooks/useAgentSessionParts.ts",
+      "sha256": "1bb55efa6d601c504849cd4d02e41ba69f1d6c47edffda951cafda073b04af99",
+      "original": "/Users/roylin/code/aster/apps/work/src/renderer/hooks/useAgentSessionParts.ts",
+      "isolated": "/Users/roylin/code/aster/target/worktrees/kylin-ime-hardening-20261020/apps/work/src/renderer/hooks/useAgentSessionParts.ts",
+      "identical": true
+    },
+    {
+      "path": "src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx",
+      "sha256": "cbf9ed88a88f9415b66502af511ced12274f6bfe8ddcb13cbcbf66ec3c36648a",
+      "original": "/Users/roylin/code/aster/apps/work/src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx",
+      "isolated": "/Users/roylin/code/aster/target/worktrees/kylin-ime-hardening-20261020/apps/work/src/renderer/hooks/__tests__/useAgentSessionParts.handoff.test.tsx",
+      "identical": true
+    }
+  ]
+}

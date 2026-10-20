@@ -15,6 +15,16 @@ use tokio::sync::{mpsc, oneshot, watch};
 
 pub use super::events::EventHub;
 
+#[cfg(test)]
+#[path = "native_approval_alignment_tests.rs"]
+mod native_approval_alignment_tests;
+#[cfg(test)]
+#[path = "native_local_acp_alignment_tests.rs"]
+mod native_local_acp_alignment_tests;
+
+#[path = "goal_snapshot.rs"]
+mod goal_snapshot;
+
 #[path = "message_delete.rs"]
 mod message_delete;
 
@@ -135,19 +145,69 @@ struct PendingSteer {
     done: oneshot::Sender<Result<(), String>>,
 }
 
+#[derive(Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub(super) struct ApprovalBinding {
+    pub execution_id: String,
+    pub anchor_message_id: String,
+    pub message_id: String,
+    pub approval_id: String,
+    pub tool_call_id: String,
+}
+
+struct LiveApproval {
+    binding: ApprovalBinding,
+    sender: oneshot::Sender<bool>,
+}
+
 struct LiveTurn {
+    acp_session: Option<String>,
     owner: String,
     execution_id: String,
+    attempt_id: u32,
     status: String,
     observed: Option<super::execution_observation::Snapshot>,
     buffered: Vec<Value>,
     abort: watch::Sender<bool>,
-    approvals: HashMap<String, oneshot::Sender<bool>>,
+    approvals: HashMap<String, LiveApproval>,
     /// Accepts an inserted sentence and delivers it on the running prompt.
     steer_tx: mpsc::UnboundedSender<PendingSteer>,
 }
 
+impl LiveTurn {
+    fn pending_approvals(&self) -> Vec<&ApprovalBinding> {
+        self.approvals
+            .values()
+            .filter(|approval| {
+                !*self.abort.borrow()
+                    && !approval.sender.is_closed()
+                    && approval.binding.execution_id == self.execution_id
+                    && approval.binding.anchor_message_id == self.owner
+            })
+            .map(|approval| &approval.binding)
+            .collect()
+    }
+
+    fn respond_approval(
+        &mut self,
+        approval_id: &str,
+        binding: Option<&ApprovalBinding>,
+        approved: bool,
+    ) -> bool {
+        if !self.pending_approvals().iter().any(|pending| {
+            pending.approval_id == approval_id && binding.is_none_or(|binding| *pending == binding)
+        }) {
+            return false;
+        }
+        self.approvals
+            .remove(approval_id)
+            .is_some_and(|approval| approval.sender.send(approved).is_ok())
+    }
+}
+
 struct SessionRuntime {
+    /// Serialize bounded goal inspection through publication, including tick state.
+    goal_read: tokio::sync::Mutex<()>,
     client: Arc<AcpClient>,
     acp_session: String,
     model: String,
@@ -190,6 +250,98 @@ enum PromptEnd {
     Failed(String),
 }
 
+impl PromptEnd {
+    fn from_response(value: &Value, cancelled: bool, forced: Option<PromptForcedStop>) -> Self {
+        let reason = value.get("stopReason").and_then(Value::as_str);
+        if cancelled || reason == Some("cancelled") {
+            return Self::Cancelled;
+        }
+        if let Some(
+            forced @ (PromptForcedStop::ToolBudget
+            | PromptForcedStop::ResponseTruncated
+            | PromptForcedStop::InvalidOutcome),
+        ) = forced
+        {
+            return Self::Failed(format!(
+                "Agent stopped before completion: {}",
+                forced.as_str()
+            ));
+        }
+        match reason {
+            Some("end_turn") => Self::Finished("end_turn".into()),
+            Some("max_turn_requests") if forced == Some(PromptForcedStop::ReadOnlyEvidence) => {
+                Self::Finished("read_only_evidence".into())
+            }
+            Some(reason @ ("max_tokens" | "max_turn_requests" | "refusal")) => {
+                Self::Failed(format!("Agent stopped before completion: {reason}"))
+            }
+            Some(_) => Self::Failed("ACP prompt response has an unknown stopReason".into()),
+            None => Self::Failed("ACP prompt response is missing a valid stopReason".into()),
+        }
+    }
+}
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum PromptForcedStop {
+    ReadOnlyEvidence,
+    ToolBudget,
+    ResponseTruncated,
+    // Internal failure sentinel, never admitted as a known wire value.
+    InvalidOutcome,
+}
+
+impl PromptForcedStop {
+    fn parse(value: &str) -> Option<Self> {
+        match value {
+            "read_only_evidence" => Some(Self::ReadOnlyEvidence),
+            "tool_budget" => Some(Self::ToolBudget),
+            "response_truncated" => Some(Self::ResponseTruncated),
+            _ => None,
+        }
+    }
+    fn as_str(self) -> &'static str {
+        match self {
+            Self::ReadOnlyEvidence => "read_only_evidence",
+            Self::ToolBudget => "tool_budget",
+            Self::ResponseTruncated => "response_truncated",
+            Self::InvalidOutcome => "invalid_outcome",
+        }
+    }
+}
+
+struct PromptStop {
+    session: String,
+    prompt: String,
+    epoch: u64,
+    forced: Option<PromptForcedStop>,
+}
+
+impl PromptStop {
+    fn accept(&mut self, params: &Value, epoch: u64) {
+        if epoch != self.epoch
+            || params["sessionId"].as_str() != Some(self.session.as_str())
+            || params["promptId"].as_str() != Some(self.prompt.as_str())
+        {
+            return;
+        }
+        // Conflicting terminal notifications fail closed and cannot turn a budget failure into success.
+        let next = match params.pointer("/outcome/forced") {
+            None | Some(Value::Null) => None,
+            Some(value) => Some(
+                value
+                    .as_str()
+                    .and_then(PromptForcedStop::parse)
+                    .unwrap_or(PromptForcedStop::InvalidOutcome),
+            ),
+        };
+        self.forced = match (self.forced, next) {
+            (None, next) => next,
+            (Some(previous), Some(next)) if previous == next => Some(previous),
+            _ => Some(PromptForcedStop::InvalidOutcome),
+        };
+    }
+}
+
 #[derive(Clone)]
 struct ReviewMemory {
     document: String,
@@ -205,6 +357,7 @@ pub struct TurnService {
     sessions: Arc<SessionCatalog>,
     config: Arc<PlaneConfig>,
     hub: Arc<EventHub>,
+    goal_snapshots: Mutex<HashMap<String, Value>>,
     live: Mutex<HashMap<String, LiveTurn>>,
     forms: Arc<FormRegistry>,
     runtimes: tokio::sync::Mutex<HashMap<String, Arc<SessionRuntime>>>,
@@ -237,6 +390,7 @@ impl TurnService {
             sessions,
             config,
             hub,
+            goal_snapshots: Mutex::new(HashMap::new()),
             live: Mutex::new(HashMap::new()),
             forms: Arc::new(FormRegistry::default()),
             runtimes: tokio::sync::Mutex::new(HashMap::new()),
@@ -543,6 +697,12 @@ impl TurnService {
 
     /// `ai.stream.open` for `agent-session:<id>`.
     pub fn open(self: &Arc<Self>, session_id: &str, body: &Value) -> Result<Value, PlaneError> {
+        if body
+            .pointer("/turnContext/planFirst")
+            .is_some_and(|value| !value.is_boolean())
+        {
+            return Err(PlaneError::bad("turnContext.planFirst must be a boolean"));
+        }
         if let Some(mode) = body.get("permissionMode").and_then(Value::as_str) {
             let _ = self.store.set_session_permission_mode(session_id, mode);
         }
@@ -655,6 +815,14 @@ impl TurnService {
                 "This executor cannot provide independent review and native byte provenance. Use the default local agent or disable these options.",
             ));
         }
+        if body
+            .pointer("/turnContext/planFirst")
+            .and_then(Value::as_bool)
+            == Some(true)
+            && (cloud.is_some() || body.pointer("/turnContext/agentRuntime").is_some())
+        {
+            return Err(PlaneError::bad("Planning requires the local ACP runtime."));
+        }
         let cloud_call = if cloud.is_some() {
             let endpoint = self
                 .config
@@ -711,8 +879,10 @@ impl TurnService {
         live_turns.insert(
             session.id.clone(),
             LiveTurn {
+                acp_session: None,
                 owner: String::new(),
                 execution_id: String::new(),
+                attempt_id: 1,
                 status: "pending".into(),
                 observed: None,
                 buffered: Vec::new(),
@@ -818,7 +988,9 @@ impl TurnService {
         if let Some(live) = self.lock_live().get_mut(&session.id) {
             live.owner = execution.anchor_id.clone();
             live.execution_id = execution.execution_id.clone();
+            live.attempt_id = execution.attempt_id;
         }
+        self.reset_goal_snapshot(&execution);
         self.status(&execution, "pending", false);
         self.changed(&session.id);
 
@@ -1246,22 +1418,41 @@ impl TurnService {
 
     pub fn attach(&self, session_id: &str) -> Value {
         match self.lock_live().get(session_id) {
-            Some(turn) => json!({ "status": "attached", "bufferedChunks": turn.buffered }),
+            Some(turn) => {
+                let mut attached = json!({ "status": "attached", "bufferedChunks": turn.buffered });
+                if !turn.owner.is_empty() && !turn.execution_id.is_empty() {
+                    let active = json!({"executionId":turn.execution_id,"attemptId":turn.attempt_id,"anchorMessageId":turn.owner});
+                    attached["streamStatus"] = json!({
+                        "status":turn.status,
+                        "turnId":turn.execution_id,
+                        "activeExecutions":[active],
+                        "awaitingApprovalAnchors":if matches!(turn.status.as_str(), "awaiting-approval" | "awaiting-form") {vec![active]} else {vec![]},
+                        "pendingApprovals":turn.pending_approvals(),
+                        "goalSnapshot":self.cached_goal_snapshot(session_id, &turn.execution_id),
+                    });
+                }
+                attached
+            }
             None => json!({ "status": "not-found" }),
         }
     }
 
     pub fn abort(&self, session_id: &str) {
-        if let Some(turn) = self.lock_live().get(session_id) {
+        if let Some(turn) = self.lock_live().get_mut(session_id) {
             turn.abort.send_replace(true);
+            turn.approvals.clear();
             self.forms.withdraw_session(session_id);
+            self.refresh_pending_approvals(session_id, turn);
         }
     }
 
     pub(super) fn submit_form(&self, binding: FormBinding, values: FormValues) -> bool {
         let live = self.lock_live();
         if !live.get(&binding.owner.session_id).is_some_and(|turn| {
-            turn.owner == binding.owner.anchor_message_id && !*turn.abort.borrow()
+            turn.owner == binding.owner.anchor_message_id
+                && turn.execution_id == binding.owner.execution_id
+                && turn.attempt_id == binding.owner.attempt_id
+                && !*turn.abort.borrow()
         }) {
             return false;
         }
@@ -1289,7 +1480,11 @@ impl TurnService {
         prompt_id: &str,
         turn: &LiveTurn,
     ) -> Option<FormOwner> {
-        if turn.owner != execution.anchor_id || *turn.abort.borrow() {
+        if turn.owner != execution.anchor_id
+            || turn.execution_id != execution.execution_id
+            || turn.attempt_id != execution.attempt_id
+            || *turn.abort.borrow()
+        {
             return None;
         }
         let run = match &turn.observed {
@@ -1313,11 +1508,43 @@ impl TurnService {
     }
 
     pub fn respond_approval(&self, approval_id: &str, approved: bool) -> bool {
+        for (session_id, turn) in self.lock_live().iter_mut() {
+            let pending = turn.approvals.contains_key(approval_id);
+            let accepted = turn.respond_approval(approval_id, None, approved);
+            if pending {
+                self.refresh_pending_approvals(session_id, turn);
+            }
+            if accepted {
+                return true;
+            }
+        }
+        false
+    }
+
+    pub(super) fn respond_bound_approval(
+        &self,
+        session_id: &str,
+        binding: &ApprovalBinding,
+        approved: bool,
+    ) -> bool {
         let mut live = self.lock_live();
-        let sender = live
-            .values_mut()
-            .find_map(|turn| turn.approvals.remove(approval_id));
-        sender.is_some_and(|sender| sender.send(approved).is_ok())
+        let Some(turn) = live.get_mut(session_id) else {
+            return false;
+        };
+        let pending = turn.approvals.contains_key(&binding.approval_id);
+        let accepted = turn.respond_approval(&binding.approval_id, Some(binding), approved);
+        if pending {
+            self.refresh_pending_approvals(session_id, turn);
+        }
+        accepted
+    }
+
+    fn refresh_pending_approvals(&self, session_id: &str, turn: &LiveTurn) {
+        self.hub.refresh_pending_approvals(
+            &format!("agent-session:{session_id}"),
+            &turn.execution_id,
+            json!(turn.pending_approvals()),
+        );
     }
 
     /// A persisted pending row cannot resume without its owned live turn.
@@ -1576,10 +1803,22 @@ impl TurnService {
         let (sender, receiver) = oneshot::channel();
         {
             let mut live = self.lock_live();
-            let Some(turn) = live.get_mut(&execution.session_id) else {
+            let Some(turn) = live.get_mut(&execution.session_id).filter(|turn| {
+                turn.owner == execution.anchor_id
+                    && turn.execution_id == execution.execution_id
+                    && !*turn.abort.borrow()
+            }) else {
                 return true;
             };
-            turn.approvals.insert(approval_id.clone(), sender);
+            let binding = ApprovalBinding {
+                execution_id: execution.execution_id.clone(),
+                anchor_message_id: execution.anchor_id.clone(),
+                message_id: execution.anchor_id.clone(),
+                approval_id: approval_id.clone(),
+                tool_call_id: tool_id.to_owned(),
+            };
+            turn.approvals
+                .insert(approval_id.clone(), LiveApproval { binding, sender });
         }
         let chunks = stream.approval_request(&approval_id, tool_id);
         self.checkpoint_pending(execution, stream);
@@ -1596,6 +1835,9 @@ impl TurnService {
             _ = wait_for_abort(abort) => return true,
             approved = report_rx.recv() => approved.unwrap_or(false),
         };
+        if *abort.borrow() {
+            return true;
+        }
         let chunks = stream.decide_tool(tool_id, approved);
         self.checkpoint_pending(execution, stream);
         self.emit(execution, chunks);
@@ -1839,6 +2081,7 @@ impl TurnService {
             &outcome,
         )
         .await;
+        let _ = self.goal_snapshot(&session.id).await;
         let resume = self
             .runtimes
             .lock()
@@ -2020,6 +2263,10 @@ impl TurnService {
         {
             return Outcome::Failed(message);
         }
+        if !self.bind_goal_runtime(execution, &runtime.acp_session) {
+            return Outcome::Cancelled;
+        }
+        let _ = self.goal_snapshot(&session.id).await;
         self.status(execution, "streaming", false);
         let mut human = wire.human.clone();
         let reading = if wire.review_candidates.len() > 1 {
@@ -2365,6 +2612,9 @@ impl TurnService {
         permission_mode: &str,
         org_id: &str,
     ) -> PromptEnd {
+        if mirror && !self.bind_goal_runtime(execution, acp_session) {
+            return PromptEnd::Cancelled;
+        }
         let mut blocks = vec![json!({ "type": "text", "text": prompt })];
         blocks.extend(media.iter().cloned());
         let mut prompt_params = json!({
@@ -2372,8 +2622,17 @@ impl TurnService {
             "prompt": blocks,
         });
         let prompt_id = new_id();
+        let mut stop = PromptStop {
+            session: acp_session.to_owned(),
+            prompt: prompt_id.clone(),
+            epoch: self.turn_epoch.load(Ordering::SeqCst),
+            forced: None,
+        };
         let mut observer = super::execution_observation::Observer::new(acp_session, &prompt_id);
         prompt_params["_meta"] = json!({ "promptId": prompt_id, "a3sExecutionObservation": 1 });
+        if !permission_mode.is_empty() {
+            prompt_params["_meta"]["permissionPosture"] = json!(acp_mode_id(permission_mode));
+        }
         if let Some(turn) = turn {
             prompt_params["_meta"]["a3sTurn"] = turn.clone();
         }
@@ -2389,21 +2648,18 @@ impl TurnService {
                     while let Ok(message) = inbound.try_recv() {
                         if let Inbound::Notification { method, params } = message {
                             self.absorb_update(
-                                execution, runtime, stream, &method, &params, acp_session, collected, mirror, &mut observer,
+                                execution, runtime, stream, &method, &params, acp_session, collected, mirror, &mut observer, &mut stop,
                             );
                         }
                     }
                     return match result {
                         Ok(value) => {
-                            let reason = value
-                                .get("stopReason")
-                                .and_then(Value::as_str)
-                                .unwrap_or("end_turn");
-                            if cancelled || reason == "cancelled" {
-                                PromptEnd::Cancelled
-                            } else {
-                                PromptEnd::Finished(reason.to_owned())
+                            let end = PromptEnd::from_response(&value, cancelled, stop.forced);
+                            if matches!(&end, PromptEnd::Finished(reason) if reason == PromptForcedStop::ReadOnlyEvidence.as_str()) {
+                                let chunks = stream.budget_stop();
+                                if mirror { self.emit(execution, chunks); }
                             }
+                            end
                         }
                         Err(_) if cancelled => PromptEnd::Cancelled,
                         Err(message) => PromptEnd::Failed(message),
@@ -2413,10 +2669,15 @@ impl TurnService {
                     None => agent_gone = true,
                     Some(Inbound::Notification { method, params }) => {
                         self.absorb_update(
-                            execution, runtime, stream, &method, &params, acp_session, collected, mirror, &mut observer,
+                            execution, runtime, stream, &method, &params, acp_session, collected, mirror, &mut observer, &mut stop,
                         );
                     }
                     Some(Inbound::Request { id, method, params }) => {
+                        if matches!(method.as_str(), "session/request_permission" | "_a3s/form/request")
+                            && params.get("sessionId").and_then(Value::as_str) != Some(acp_session) {
+                            let _ = runtime.client.respond_error(id, -32602, "request session mismatch").await;
+                            continue;
+                        }
                         if method == "_a3s/encyclopedia/search" {
                             let query = params
                                 .get("query")
@@ -2579,7 +2840,12 @@ impl TurnService {
         collected: &mut String,
         mirror: bool,
         observer: &mut super::execution_observation::Observer,
+        stop: &mut PromptStop,
     ) {
+        if method == "x.ai/turn/outcome" {
+            stop.accept(params, self.turn_epoch.load(Ordering::SeqCst));
+            return;
+        }
         if method == super::execution_observation::METHOD {
             if (mirror || stream.capture().is_some())
                 && let Some(snapshot) = observer.accept(params)
@@ -2860,6 +3126,13 @@ impl TurnService {
         // A running turn already started under a mode the agent accepted.
         // This request is still decided here when the agent asks.
         let _ = apply_mode(runtime, &mode).await;
+        if *abort.borrow() {
+            let _ = runtime
+                .client
+                .respond(id, permission_outcome(&options, false))
+                .await;
+            return true;
+        }
         match tobot_permission_act(&execution.session_id, &mode, &tool_call) {
             PermissionAct::Allow => {
                 let _ = runtime
@@ -2885,8 +3158,37 @@ impl TurnService {
             .unwrap_or(&approval_id)
             .to_owned();
         let (sender, receiver) = oneshot::channel();
-        if let Some(turn) = self.lock_live().get_mut(&execution.session_id) {
-            turn.approvals.insert(approval_id.clone(), sender);
+        let binding = ApprovalBinding {
+            execution_id: execution.execution_id.clone(),
+            anchor_message_id: execution.anchor_id.clone(),
+            message_id: stream
+                .capture()
+                .map(|(id, _)| id)
+                .unwrap_or(&execution.anchor_id)
+                .to_owned(),
+            approval_id: approval_id.clone(),
+            tool_call_id: tool_call_id.clone(),
+        };
+        let registered = if let Some(turn) =
+            self.lock_live()
+                .get_mut(&execution.session_id)
+                .filter(|turn| {
+                    turn.owner == execution.anchor_id
+                        && turn.execution_id == execution.execution_id
+                        && !*turn.abort.borrow()
+                }) {
+            turn.approvals
+                .insert(approval_id.clone(), LiveApproval { binding, sender });
+            true
+        } else {
+            false
+        };
+        if !registered {
+            let _ = runtime
+                .client
+                .respond(id, permission_outcome(&options, false))
+                .await;
+            return true;
         }
         let chunks = stream.approval_request(&approval_id, &tool_call_id);
         // Persist before publish. A reload, or the live oracle on another
@@ -2900,18 +3202,27 @@ impl TurnService {
         self.status(execution, "awaiting-approval", true);
 
         let wait = tokio::select! {
-            answer = receiver => PermissionWait::Answer(answer.unwrap_or(false)),
+            biased;
             _ = wait_for_abort(abort) => PermissionWait::Stopped,
             _ = runtime.client.exited() => PermissionWait::Died,
+            answer = receiver => PermissionWait::Answer(answer.unwrap_or(false)),
         };
         let died = matches!(wait, PermissionWait::Died);
         let (approved, stopped) = match wait {
-            PermissionWait::Answer(approved) => (approved, false),
+            PermissionWait::Answer(approved) if !*abort.borrow() => (approved, false),
+            PermissionWait::Answer(_) => (false, true),
             PermissionWait::Stopped => (false, true),
             PermissionWait::Died => (false, false),
         };
-        if let Some(turn) = self.lock_live().get_mut(&execution.session_id) {
+        if let Some(turn) = self
+            .lock_live()
+            .get_mut(&execution.session_id)
+            .filter(|turn| {
+                turn.owner == execution.anchor_id && turn.execution_id == execution.execution_id
+            })
+        {
             turn.approvals.remove(&approval_id);
+            self.refresh_pending_approvals(&execution.session_id, turn);
         }
         if died {
             return false;
@@ -2983,6 +3294,7 @@ impl TurnService {
             }
             runtime.client.kill().await;
             runtimes.remove(&session.id);
+            self.withdraw_goal_runtime(&session.id);
         }
         let runtime = Arc::new(
             self.launch(
@@ -3071,8 +3383,22 @@ impl TurnService {
         if let Some(binding) = &plugin_selection {
             binding.append_launch_args(&mut args);
         }
-        let (client, inbound) = AcpClient::spawn(&binary, &args, &cwd)
-            .map_err(|error| format!("Could not start a3s-code: {error}"))?;
+        #[cfg(not(test))]
+        let spawned = AcpClient::spawn(&binary, &args, &cwd);
+        #[cfg(test)]
+        let spawned = {
+            // Hermetic fixtures never open the developer's member session store.
+            let base = credentials.base_url.trim_end_matches('/');
+            let origin = base.strip_suffix("/v1").unwrap_or(base).to_owned();
+            AcpClient::spawn_fixture(
+                &binary,
+                &args,
+                &cwd,
+                (origin, Some(credentials.api_key.clone())),
+            )
+        };
+        let (client, inbound) =
+            spawned.map_err(|error| format!("Could not start a3s-code: {error}"))?;
         let announced = mcp_servers.clone();
         let announced_tools = tools.clone();
         let handshake = async {
@@ -3125,6 +3451,7 @@ impl TurnService {
         };
         let acp_session = acp_session.to_owned();
         Ok(SessionRuntime {
+            goal_read: tokio::sync::Mutex::new(()),
             client,
             acp_session,
             model: model.to_owned(),
@@ -3155,6 +3482,7 @@ impl TurnService {
 
     async fn discard_runtime(&self, session_id: &str) {
         if let Some(runtime) = self.runtimes.lock().await.remove(session_id) {
+            self.withdraw_goal_runtime(session_id);
             runtime.client.kill().await;
         }
     }
@@ -3231,10 +3559,9 @@ impl TurnService {
     /// Mirrors the renderer's `topic.stream.statuses.<topicId>` shared-cache entry.
     fn status(&self, execution: &Execution, status: &str, awaiting: bool) {
         let mut live_turns = self.lock_live();
-        if live_turns
-            .get(&execution.session_id)
-            .is_some_and(|live| live.owner != execution.anchor_id)
-        {
+        if live_turns.get(&execution.session_id).is_some_and(|live| {
+            live.owner != execution.anchor_id || live.execution_id != execution.execution_id
+        }) {
             return;
         }
         let mut summary_changed = false;
@@ -3269,6 +3596,9 @@ impl TurnService {
         );
         let mut entry = json!({
             "status": status,
+            "turnId": execution.execution_id,
+            "goalSnapshot": self.cached_goal_snapshot(&execution.session_id, &execution.execution_id),
+            "pendingApprovals": live_turns.get(&execution.session_id).map(|turn| turn.pending_approvals()).unwrap_or_default(),
             "activeExecutions": if live { vec![execution.active()] } else { Vec::new() },
             "awaitingApprovalAnchors": if awaiting { vec![execution.active()] } else { Vec::new() },
         });
@@ -4696,10 +5026,18 @@ fn acp_turn(body: &Value) -> Option<Value> {
         .get("research")
         .and_then(Value::as_bool)
         .unwrap_or(false);
-    if directives.is_empty() && !research {
+    let plan_first = turn
+        .get("planFirst")
+        .and_then(Value::as_bool)
+        .unwrap_or(false);
+    if directives.is_empty() && !research && !plan_first {
         return None;
     }
-    Some(json!({ "directives": directives, "research": research }))
+    let mut value = json!({ "directives": directives, "research": research });
+    if plan_first {
+        value["planFirst"] = json!(true);
+    }
+    Some(value)
 }
 
 fn sanitize_host_text(raw: &str, limit: usize) -> String {
@@ -5544,6 +5882,7 @@ rl.on('line', (line) => {
         }
         let (client, inbound) = AcpClient::spawn(&binary, &[], &dir).expect("mode agent");
         let runtime = SessionRuntime {
+            goal_read: tokio::sync::Mutex::new(()),
             client,
             acp_session: "acp-session".into(),
             model: "test".into(),
@@ -6028,8 +6367,10 @@ rl.on('line', (line) => {
         turns.lock_live().insert(
             "tobot".into(),
             super::LiveTurn {
+                acp_session: None,
                 owner: String::new(),
                 execution_id: String::new(),
+                attempt_id: 1,
                 status: "pending".into(),
                 observed: None,
                 buffered: Vec::new(),

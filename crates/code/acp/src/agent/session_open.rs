@@ -204,6 +204,14 @@ impl A3sCodeAgent {
             Some(profile) => options.with_tool_presentation_profile(profile.clone()),
             None => options,
         };
+        if let Some(rules) = self.client_rules.borrow().as_ref() {
+            let mut slots = options.prompt_slots.clone().unwrap_or_default();
+            append_slot_extra(
+                &mut slots,
+                &format!("<human_rules>\n{rules}\n</human_rules>"),
+            );
+            options = options.with_prompt_slots(slots);
+        }
         if let Some(reason) = unavailable {
             tracing::error!(%reason, "configured local workspace retrieval is unavailable");
             let mut slots = options.prompt_slots.clone().unwrap_or_default();
@@ -261,6 +269,19 @@ impl A3sCodeAgent {
             }
         }
         .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
+        let names = session.tool_names();
+        let command_tool = if names.iter().any(|name| name == "bash") {
+            "bash"
+        } else if names.iter().any(|name| name == "run_terminal_command") {
+            "run_terminal_command"
+        } else {
+            "none"
+        };
+        tracing::info!(
+            command_tool,
+            model = %setup.model_id,
+            "acp session ready"
+        );
         if session
             .work_policy_digest()
             .map_err(|error| acp::Error::internal_error().data(error.to_string()))?

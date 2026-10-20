@@ -1,0 +1,733 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml
+    Blocking waiting for file lock on build directory
+   Compiling hyper v1.8.1
+   Compiling cookie_store v0.21.1
+   Compiling tokio-tungstenite v0.28.0
+   Compiling gix-hash v0.25.1
+   Compiling x509-cert v0.2.5
+   Compiling opentelemetry_sdk v0.32.1
+   Compiling hkdf v0.12.4
+   Compiling aws-sigv4 v1.3.5
+   Compiling rfc6979 v0.4.0
+   Compiling a3s-code-tools-api v0.1.220-alpha.4 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-tools-api)
+   Compiling a3s-tool-protocol v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/common/a3s-tool-protocol)
+   Compiling ed25519 v2.2.3
+   Compiling rsa v0.9.10
+   Compiling sentry-types v0.42.0
+   Compiling aws-smithy-checksums v0.63.13
+   Compiling a3s-code-compaction v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/common/a3s-code-compaction)
+   Compiling pdf_oxide v0.3.74
+   Compiling async-lsp v0.2.3
+   Compiling a3s-code-feedback v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-feedback)
+   Compiling gix-hashtable v0.15.1
+   Compiling elliptic-curve v0.13.8
+   Compiling gix-commitgraph v0.37.1
+   Compiling a3s-interjection-core v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/common/a3s-interjection-core)
+   Compiling aws-runtime v1.5.12
+   Compiling a3s-message-delivery-core v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/common/a3s-message-delivery-core)
+   Compiling gix-pathspec v0.18.1
+   Compiling hyper-util v0.1.20
+   Compiling fastrace-opentelemetry v0.18.1
+   Compiling sentry-core v0.42.0
+   Compiling gix-ignore v0.21.1
+   Compiling a3s-code-session-events v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-session-events)
+   Compiling rustix v0.38.44
+   Compiling gix-object v0.60.0
+   Compiling gix-transport v0.57.2
+   Compiling gix-shallow v0.12.1
+   Compiling a3s-sqlite-journal v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-sqlite-journal)
+   Compiling polling v3.11.0
+   Compiling aws-sdk-sso v1.86.0
+   Compiling hyper-rustls v0.27.7
+   Compiling axum v0.8.6
+   Compiling hyper-timeout v0.5.2
+   Compiling aws-sdk-sts v1.88.0
+   Compiling aws-sdk-ssooidc v1.89.0
+   Compiling aws-sdk-s3 v1.109.0
+   Compiling ed25519-dalek v2.2.0
+   Compiling sentry-backtrace v0.42.0
+   Compiling sentry-contexts v0.42.0
+   Compiling sentry-debug-images v0.42.0
+   Compiling gix-revwalk v0.31.0
+   Compiling gix-ref v0.63.0
+   Compiling gix-filter v0.30.0
+   Compiling gix-pack v0.70.0
+   Compiling async-io v2.6.0
+   Compiling reqwest v0.12.24
+   Compiling reqwest v0.13.5
+   Compiling aws-config v1.8.8
+   Compiling aws-smithy-http-client v1.1.9
+   Compiling ecdsa v0.16.9
+   Compiling primeorder v0.13.6
+   Compiling sentry-panic v0.42.0
+   Compiling sigstore-crypto v0.6.6
+   Compiling cms v0.2.3
+   Compiling sentry-tracing v0.42.0
+   Compiling gix-traverse v0.57.0
+   Compiling sentry-anyhow v0.42.0
+   Compiling gix-discover v0.51.0
+   Compiling gix-revision v0.45.0
+   Compiling gix-config v0.56.0
+   Compiling gix-odb v0.80.0
+   Compiling reqwest-middleware v0.4.2
+   Compiling opentelemetry-http v0.32.0
+   Compiling reqwest-eventsource v0.6.0
+   Compiling a3s-code-extra-ca v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-extra-ca)
+   Compiling gcloud-metadata v1.0.2
+   Compiling tonic v0.14.6
+   Compiling p384 v0.13.1
+   Compiling p256 v0.13.2
+   Compiling fastrace-reqwest v0.2.0
+   Compiling sigstore-merkle v0.6.6
+   Compiling crmf v0.2.0
+   Compiling reqwest-middleware v0.5.2
+   Compiling sigstore-trust-root v0.6.3
+   Compiling gix-index v0.51.0
+   Compiling sentry v0.42.0
+   Compiling a3s-mixpanel v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-mixpanel)
+   Compiling gix-refspec v0.41.0
+   Compiling gix-protocol v0.61.0
+   Compiling a3s-code-auth v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-auth)
+   Compiling oauth2 v5.0.0
+   Compiling async-openai v0.33.1 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/third-party/async-openai)
+   Compiling a3s-code-paths v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-paths)
+   Compiling cipher v0.4.4
+   Compiling a3s-acp-lib v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-acp-lib)
+   Compiling tonic-prost v0.14.6
+   Compiling tonic-types v0.14.5
+   Compiling jsonwebtoken v10.3.0
+   Compiling sigstore-rekor v0.6.6
+   Compiling cmpv2 v0.2.0
+   Compiling a3s-fuzzy-file-search v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-fuzzy-file-search)
+   Compiling a3s-code-diag-server v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-diag-server)
+   Compiling gix-worktree v0.52.0
+   Compiling gix-submodule v0.30.0
+   Compiling a3s-fsnotify v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-fsnotify)
+   Compiling a3s-use-core v0.2.4 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/use/core)
+   Compiling async-signal v0.2.13
+   Compiling rmcp v3.4.0
+   Compiling a3s-codebase-graph v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-codebase-graph)
+   Compiling async-global-executor v2.4.1
+   Compiling fs-set-times v0.20.3
+   Compiling opentelemetry-proto v0.32.0
+   Compiling gcloud-auth v1.3.0
+   Compiling x509-tsp v0.1.0
+   Compiling gix-dir v0.25.0
+   Compiling gix-diff v0.63.0
+   Compiling crossterm v0.28.1
+   Compiling zip v2.4.2
+   Compiling async-process v2.5.0
+   Compiling aes v0.8.4
+   Compiling markup5ever v0.39.0
+   Compiling tungstenite v0.23.0
+   Compiling cap-primitives v4.0.3
+   Compiling a3s-code-status-line v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-status-line)
+   Compiling opentelemetry-otlp v0.32.0
+   Compiling a3s-tool-runtime v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/common/a3s-tool-runtime)
+   Compiling a3s-code-models v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-models)
+   Compiling ecb v0.1.2
+   Compiling sigstore-tsa v0.6.6
+   Compiling gcloud-storage v1.3.0
+   Compiling cbc v0.1.2
+   Compiling ratatui v0.29.0
+   Compiling which v6.0.3
+   Compiling gix-status v0.30.0
+   Compiling async-std v1.13.2
+   Compiling a3s-acl v0.3.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/acl)
+   Compiling html5ever v0.39.0
+   Compiling console v0.15.11
+   Compiling cap-std v4.0.2
+   Compiling universal-hash v0.5.1
+   Compiling pprof v0.15.0
+   Compiling a3s-tracing v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/common/a3s-tracing)
+   Compiling a3s-code-otel v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-otel)
+   Compiling a3s-computer-hub-core v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/common/a3s-computer-hub-core)
+   Compiling a3s-code-sampling-types v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-sampling-types)
+   Compiling a3s-code-shared v0.0.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-shared)
+   Compiling sigstore-bundle v0.6.6
+   Compiling referencing v0.48.5
+   Compiling lopdf v0.42.0
+   Compiling jsonschema-value v0.48.5
+   Compiling gix v0.83.0
+   Compiling async-tungstenite v0.27.0
+   Compiling which v7.0.3
+   Compiling dom_query v0.28.0
+   Compiling oci-spec v0.10.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/oci-runtime/vendor/oci-spec-0.10.0)
+   Compiling cap-fs-ext v4.0.2
+   Compiling opentelemetry_sdk v0.21.2
+   Compiling referencing v0.30.0
+   Compiling polyval v0.6.2
+   Compiling a3s-code-markdown v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-markdown)
+   Compiling ghash v0.5.1
+   Compiling referencing v0.47.0
+   Compiling ctr v0.9.2
+   Compiling a3s-code-shell v1.0.41 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-shell)
+   Compiling scraper v0.22.0
+   Compiling process-wrap v9.0.0
+   Compiling backon v1.6.0
+   Compiling jsonschema v0.48.5
+   Compiling aead v0.5.2
+   Compiling dom_smoothie v0.18.2
+   Compiling a3s-hooks-plugins-types v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-hooks-plugins-types)
+   Compiling a3s-system-power v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-system-power)
+   Compiling indicatif v0.17.11
+   Compiling moka v0.12.11
+   Compiling jsonschema v0.47.0
+   Compiling aes-gcm v0.10.3
+   Compiling a3s-gix-status v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-gix-status)
+   Compiling chromiumoxide v0.7.0
+   Compiling a3s-lane v0.5.1 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/lane)
+   Compiling a3s-form-core v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/form-core)
+   Compiling a3s-vec v0.1.8 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/vec)
+   Compiling jsonschema v0.30.0
+   Compiling a3s-hunk-tracker v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-hunk-tracker)
+   Compiling a3s-fast-worktree v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-fast-worktree)
+   Compiling mermaid-to-svg v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/third_party/mermaid-to-svg)
+   Compiling a3s-effect v0.2.1 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/effect)
+   Compiling a3s-workflow v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-workflow)
+   Compiling a3s-code-foreign-sessions v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-foreign-sessions)
+   Compiling notify-debouncer-mini v0.6.0
+   Compiling a3s-code-bundle v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-bundle)
+   Compiling html2text v0.16.7
+   Compiling a3s-sandbox v0.2.3 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/sandbox)
+   Compiling a3s-code-markdown-core v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-markdown-core)
+   Compiling a3s-file-utils v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-file-utils)
+   Compiling a3s-memory v0.1.5 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/memory)
+   Compiling sha256 v1.6.0
+   Compiling a3s-common v0.1.1 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/common)
+   Compiling gethostname v1.1.0
+   Compiling a3s-agent-lifecycle v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-agent-lifecycle)
+   Compiling a3s-code-file-lock v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-file-lock)
+   Compiling a3s-prompt-queue v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-prompt-queue)
+   Compiling a3s-oci-sdk v0.3.2 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/oci-runtime/crates/sdk)
+   Compiling assert-json-diff v2.0.2
+   Compiling a3s-tracing-macros v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-tracing-macros)
+   Compiling tokenizers v0.21.4
+   Compiling a3s-use-browser v0.3.2 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/browser)
+   Compiling yrs v0.27.3
+   Compiling axum-server v0.8.0
+   Compiling a3s-code-mermaid v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-mermaid)
+   Compiling a3s-computer-hub-sdk v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/common/a3s-computer-hub-sdk)
+   Compiling a3s-ratatui-textarea v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-ratatui-textarea)
+   Compiling a3s-ratatui-inline v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-ratatui-inline)
+   Compiling pdf-inspector v1.17.0
+   Compiling sigstore-verify v0.6.3
+   Compiling a3s-code-sampler v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-sampler)
+   Compiling a3s-compaction-transcript v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-compaction-transcript)
+   Compiling a3s-code-shell-base v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-shell-base)
+   Compiling wiremock v0.6.5
+   Compiling a3s-code-gboom v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-gboom)
+   Compiling tinytemplate v1.2.1
+   Compiling ansi-to-tui v7.0.0
+   Compiling a3s-search v3.4.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/search)
+   Compiling a3s-code-test-support v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-test-support)
+   Compiling a3s-office v0.45.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/office/crates/core)
+   Compiling a3s-code-acp v9.1.4 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/code/acp)
+   Compiling a3s-code-voice v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-voice)
+   Compiling insta v1.43.2
+   Compiling a3s-use-reconcile v0.2.10 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/use/reconcile)
+   Compiling a3s-code-dashboard-store v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-dashboard-store)
+   Compiling a3s-code-workspace-daemon v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-workspace-daemon)
+   Compiling nono v0.53.0
+   Compiling a3s-code-workspace-client v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-workspace-client)
+   Compiling a3s-computer-hub-mcp-adapter v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/common/a3s-computer-hub-mcp-adapter)
+   Compiling a3s-chat-state v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-chat-state)
+   Compiling criterion v0.6.0
+   Compiling a3s-okf v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/okf)
+   Compiling a3s-code-active-sessions v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-active-sessions)
+   Compiling a3s-crash-handler v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-crash-handler)
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/code/core)
+   Compiling a3s-code-sandbox v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-sandbox)
+   Compiling a3s-code-telemetry v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-telemetry)
+   Compiling a3s-code-tools v0.1.220-alpha.4 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-tools)
+   Compiling a3s-code-session-search v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-session-search)
+warning: unused imports: `guest_agent_hello` and `host_runtime_version`
+  --> crates/code/core/src/sandbox/oci.rs:25:26
+   |
+25 | pub(crate) use version::{guest_agent_hello, host_runtime_version};
+   |                          ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+   Compiling a3s-use-bge v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/bge)
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:429:21
+    |
+429 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `HOST_MISMATCH` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:10:7
+   |
+10 | const HOST_MISMATCH: &[u8] = b"guest agent version does not match the host runtime version";
+   |       ^^^^^^^^^^^^^
+
+warning: function `host_runtime_version` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:13:15
+   |
+13 | pub(crate) fn host_runtime_version(host: &[u8]) -> Option<&str> {
+   |               ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `guest_agent_hello` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:18:15
+   |
+18 | pub(crate) fn guest_agent_hello<'a>(agent: &'a [u8], architecture: &str) -> Option<&'a str> {
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: function `version_immediately_before` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:26:4
+   |
+26 | fn version_immediately_before<'a>(bytes: &'a [u8], marker: &[u8]) -> Option<&'a str> {
+   |    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `semver_ending_at` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:44:4
+   |
+44 | fn semver_ending_at(bytes: &[u8], end: usize) -> Option<&str> {
+   |    ^^^^^^^^^^^^^^^^
+
+warning: function `sigmoid` is never used
+  --> crates/bge/src/math.rs:18:15
+   |
+18 | pub(crate) fn sigmoid(logit: f32) -> f32 {
+   |               ^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `encode_pairs` is never used
+  --> crates/bge/src/tokenizer.rs:91:19
+   |
+28 | impl PairTokenizer {
+   | ------------------ method in this implementation
+...
+91 |     pub(crate) fn encode_pairs(
+   |                   ^^^^^^^^^^^^
+
+warning: `a3s-use-bge` (lib) generated 2 warnings
+warning: `a3s-code-core` (lib) generated 7 warnings (run `cargo fix --lib -p a3s-code-core` to apply 1 suggestion)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-acp` (lib test) generated 1 warning
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:145:26
+    |
+145 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:146:20
+    |
+146 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+   Compiling a3s-code-hooks v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-hooks)
+   Compiling a3s-code-announcements v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-announcements)
+   Compiling a3s-code-mcp v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-mcp)
+   Compiling a3s-code-pager-diff v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-pager-diff)
+warning: `a3s-code-tools` (lib) generated 2 warnings (run `cargo fix --lib -p a3s-code-tools` to apply 2 suggestions)
+   Compiling a3s-code-agent v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-agent)
+   Compiling a3s-code-plugin-marketplace v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-plugin-marketplace)
+   Compiling a3s-code-subagent-resolution v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-subagent-resolution)
+   Compiling a3s-code-config-types v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-config-types)
+warning: `a3s-code-core` (lib test) generated 1 warning (1 duplicate)
+   Compiling a3s-code-workspace v0.1.220-alpha.4 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-workspace)
+   Compiling a3s-code-http v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-http)
+   Compiling a3s-code-shell-terminal v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-shell-terminal)
+   Compiling a3s-code-pager-render v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-pager-render)
+   Compiling a3s-code-memory v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-memory)
+   Compiling a3s-code-shell-session-support v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-shell-session-support)
+   Compiling a3s-code-login v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-login)
+   Compiling a3s-code-update v0.1.220-alpha.4 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-update)
+   Compiling a3s-code-pager v9.1.4 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-pager)
+warning: `a3s-code-pager` (lib test) generated 1 warning (1 duplicate)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 37m 24s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_acp-fa9067a06661ae53)
+
+running 50 tests
+test agent::memory_sessions_tests::two_acp_host_sessions_recall_and_write_the_same_durable_collection ... ok
+test agent::reasoning_transport_tests::effort_switch_preserves_history_and_exposes_existing_anthropic_none_semantics ... ok
+test agent::reasoning_transport_tests::explicit_effort_default_clears_override_and_absence_preserves_selection ... ok
+test agent::reasoning_transport_tests::terminal_initial_effort_reaches_new_session_and_allows_later_selection ... ok
+test agent::reasoning_transport_tests::unsupported_effort_is_refused_without_replacing_the_session ... ok
+test agent::session_setup_tests::disk_attestor_is_installed_only_for_opted_in_non_review_sessions ... ok
+test agent::session_setup_tests::durable_collection_stays_closed_until_the_first_recall ... ok
+test agent::session_setup_tests::host_contract_setup_is_scoped_and_refuses_invalid_roots_before_activation ... ok
+test agent::session_setup_tests::host_session_status_names_live_search_and_closed_semantic ... ok
+test agent::session_setup_tests::initialize_refuses_invalid_prompt_metadata_instead_of_silently_ignoring_it ... ok
+test agent::session_setup_tests::initialize_rules_append_without_replacing_host_or_unattended_contracts ... ok
+test agent::session_setup_tests::source_review_has_no_tools_even_after_a_yolo_mode_change ... ok
+test agent::session_setup_tests::trusted_acl_presentation_reaches_the_host_session_without_changing_default ... ok
+test agent::session_setup_tests::trusted_session_hook_runs_and_a_pending_hook_does_not ... ok
+test agent::session_setup_tests::typed_setup_preserves_host_safety_and_context_without_activation ... ok
+test approval_learning::tests::rules_are_program_plus_the_subcommand_that_carries_the_risk ... ok
+test config::tests::goal_control::goal_control_actual_workspace_layer_cannot_activate_or_override_host ... ok
+test config::tests::goal_control::goal_control_explicit_host_file_retains_authority ... ok
+test config::tests::goal_control::goal_control_layer_errors_refuse_instead_of_using_account_fallback ... ok
+test office_file::tests::nested_verification::native_png_proofs_survive_program_batch_and_parallel_nested_calls ... ok
+test office_file::tests::nested_verification::native_png_proofs_survive_program_boundaries_in_the_real_harness ... ok
+test unattended::result::tests::a_child_tool_http_401_outranks_stream_closed_class ... ok
+test unattended::result::tests::a_clean_worker_exit_is_not_the_generic_stream_closed_reason ... ok
+test unattended::result::tests::a_historical_boyue_invalid_token_line_is_still_provider_rejected ... ok
+test unattended::result::tests::an_unfinished_goal_refusal_is_a_failed_result_with_an_explicit_terminal_error ... ok
+test unattended::result::tests::artifact_evidence_counter_walks_nested_tool_metadata ... ok
+test unattended::result::tests::execution_deadline_is_reported_as_timed_out ... ok
+test unattended::result::tests::missing_action_evidence_is_a_terminal_failure ... ok
+test unattended::result::tests::remembered_http_402_outranks_stream_closed_class ... ok
+test unattended::result::tests::report_serializes_terminal_reason_and_counters ... ok
+test unattended::result::tests::reported_errors_are_bounded_without_breaking_utf8 ... ok
+test unattended::result::tests::result_persistence_is_atomic_and_replaces_previous_report ... ok
+test unattended::result::tests::retry_exhaustion_is_classified_as_provider_exhausted ... ok
+test unattended::result::tests::stream_eof_is_reported_as_a_failed_terminal_reason ... ok
+test unattended::result::tests::typed_provider_failure_metadata_is_retained_in_report ... ok
+test unattended::result::tests::typed_provider_response_is_classified_without_text_matching ... ok
+test unattended::result::tests::typed_provider_response_wins_over_deadline_words_in_body ... ok
+test unattended::result::tests::typed_retry_exhaustion_is_classified_without_rendered_text ... ok
+test unattended::result::tests::typed_retry_failure_status_is_retained_in_report ... ok
+test unattended::tests::a_failed_tool_that_reports_http_401_is_a_provider_rejection ... ok
+test unattended::tests::a_goal_launch_has_a_small_stall_bound_within_the_run_deadline ... ok
+test unattended::tests::a_tool_using_stop_after_a_bind_is_not_a_grade_until_the_cap ... ok
+test unattended::tests::an_engineering_launch_puts_the_named_policy_on_every_session ... ok
+test unattended::tests::auto_approval_never_parks_a_tool ... ok
+test unattended::tests::distinct_mutation_digests_do_not_consume_the_idle_retry_budget ... ok
+test unattended::tests::events_count_into_the_record_and_the_gate_digest_is_read_back ... ok
+test unattended::tests::host_notes_keep_the_bind_distinct_from_the_grader ... ok
+test unattended::tests::host_report_binds_a_passed_required_check_to_the_digest ... ok
+test unattended::tests::idle_and_non_terminal_retries_still_stop ... ok
+test unattended::tests::the_profile_answers_for_itself_with_every_capability_on ... ok
+
+test result: ok. 50 passed; 0 failed; 0 ignored; 0 measured; 306 filtered out; finished in 56.79s
+
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-f01de158084da49f)
+
+running 205 tests
+test agent::tests::nested_tool_governance_tests::program_nested_tool_obeys_budget_deny_without_side_effects ... ok
+test agent::tests::nested_tool_governance_tests::trusted_host_batch_and_program_propagate_only_builtin_nested_authority ... ok
+test agent::tool_invoker::tests::verifier_program_cannot_write_through_a_nested_tool ... ok
+test agent_api::direct_tools::tests::host_direct_policy_propagates_to_nested_program_calls ... ok
+test agent_api::goal_facade::tests::execution::acceptance::goal_step_current_source_and_original_judgment_accept_only_the_ready_step ... ok
+test agent_api::goal_facade::tests::execution::acceptance::goal_step_failed_source_or_current_judgment_cannot_unlock_dependencies ... ok
+test agent_api::goal_facade::tests::execution::acceptance::goal_step_judges_a_bounded_observation_that_names_its_omission ... ok
+test agent_api::goal_facade::tests::execution::acceptance::goal_step_late_workspace_acceptance_still_requires_its_original_report ... ok
+test agent_api::goal_facade::tests::execution::acceptance::goal_step_original_structured_repair_usage_is_included_once ... ok
+test agent_api::goal_facade::tests::execution::acceptance::goal_step_oversized_original_observation_cannot_be_silently_truncated ... ok
+test agent_api::goal_facade::tests::execution::accepted_goal_does_not_bypass_unknown_host_mount_admission ... ok
+test agent_api::goal_facade::tests::execution::accepted_goal_plan_binds_the_original_run_without_another_planner ... ok
+test agent_api::goal_facade::tests::execution::accepted_goal_plan_refuses_the_legacy_opener_without_original_worker ... ok
+test agent_api::goal_facade::tests::execution::attestation::automatic_slice_resets_stall_only_after_an_accepted_workspace_mutation ... ok
+test agent_api::goal_facade::tests::execution::attestation::goal_step_denied_attempt_preserves_verified_current_write ... ok
+test agent_api::goal_facade::tests::execution::attestation::goal_step_fresh_host_attestation_accepts_write_and_preserves_original_probe ... ok
+test agent_api::goal_facade::tests::execution::attestation::goal_step_fresh_host_report_with_wrong_effect_digest_is_not_authority ... ok
+test agent_api::goal_facade::tests::execution::attestation::goal_step_late_artifact_drift_refuses_original_completion_and_progress ... ok
+test agent_api::goal_facade::tests::execution::attestation::goal_step_replan_revalidates_retained_bytes_without_replaying_the_write ... ok
+test agent_api::goal_facade::tests::execution::attestation::legacy_accepted_noop_history_reopens_but_new_opportunities_use_actual_progress ... ok
+test agent_api::goal_facade::tests::execution::attestation::settled_workspace_mutation_is_progress_even_when_goal_judgment_is_not_achieved ... ok
+test agent_api::goal_facade::tests::execution::automatic::goal_stream_tick_hands_the_slice_events_to_the_host_and_accepts_like_tick ... ok
+test agent_api::goal_facade::tests::execution::automatic::goal_tick_admits_one_original_run_and_persists_finite_use_across_reopen ... ok
+test agent_api::goal_facade::tests::execution::automatic::goal_tick_occupied_session_reconciles_without_admission ... ok
+test agent_api::goal_facade::tests::execution::automatic::goal_tick_refuses_a_policy_above_the_admission_ceilings_without_a_run ... ok
+test agent_api::goal_facade::tests::execution::automatic::goal_tick_refuses_without_trusted_enabled_unexpired_bounds ... ok
+test agent_api::goal_facade::tests::execution::automatic::goal_tick_without_progress_stops_at_the_stall_bound ... ok
+test agent_api::goal_facade::tests::execution::automatic::goal_tick_writer_revalidation_refuses_stale_or_invalid_origins ... ok
+test agent_api::goal_facade::tests::execution::completion::a_stopped_owner_after_the_last_acceptance_completes_on_reconcile ... ok
+test agent_api::goal_facade::tests::execution::completion::an_earlier_unclosed_slice_holds_completion_until_reconcile ... ok
+test agent_api::goal_facade::tests::execution::completion::an_unmet_goal_criterion_keeps_the_last_step_open_and_the_goal_active ... ok
+test agent_api::goal_facade::tests::execution::completion::the_last_step_judges_the_goal_and_its_owner_records_completion_once ... ok
+test agent_api::goal_facade::tests::execution::continuation::read_only_step_acceptance_does_not_reset_continuation_stall_across_reopen ... ok
+test agent_api::goal_facade::tests::execution::control::a_plan_revision_during_a_running_slice_waits_for_the_next_slice ... ok
+test agent_api::goal_facade::tests::execution::control::goal_control_settles_the_running_slice_and_an_old_wake_executes_nothing ... ok
+test agent_api::goal_facade::tests::execution::control::refused_goal_control_does_not_cancel_the_running_run ... ok
+test agent_api::goal_facade::tests::execution::control::replayed_goal_control_does_not_cancel_a_later_slice ... ok
+test agent_api::goal_facade::tests::execution::cumulative::an_automatic_slice_child_task_is_billed_once_through_the_original_guard ... ok
+test agent_api::goal_facade::tests::execution::evidence::goal_step_cached_pass_narrative_and_display_events_do_not_admit_progress ... ok
+test agent_api::goal_facade::tests::execution::evidence::goal_step_current_run_does_not_inherit_prior_run_verification_authority ... ok
+test agent_api::goal_facade::tests::execution::evidence::goal_step_original_read_receipts_bind_exact_run_on_both_stores ... ok
+test agent_api::goal_facade::tests::execution::evidence::goal_step_real_mutation_cannot_borrow_a_foreign_passed_report ... ok
+test agent_api::goal_facade::tests::execution::goal_run_binding_survives_all_original_recovery_ingresses_and_two_stores ... ok
+test agent_api::goal_facade::tests::execution::proposed_goal_plan_still_refuses_before_explicit_planning_model ... ok
+test agent_api::goal_facade::tests::execution::review_binding::engineering_findings_lifecycle_survives_both_stores_and_replan_stales_the_step ... ok
+test agent_api::goal_facade::tests::execution::review_binding::review_binding_names_the_current_step_run_and_findings_never_accept_it ... ok
+test agent_api::goal_facade::tests::execution::settlement::a_stopped_owner_at_each_barrier_reconciles_without_replay_or_new_usage ... ok
+test agent_api::goal_facade::tests::execution::settlement::the_original_owner_closes_a_completed_slice_and_a_forged_closeout_refuses ... ok
+test agent_api::goal_facade::tests::execution::tick::goal_tick_exact_operation_tracks_the_original_run_across_replan_cancel_and_reopen ... ok
+test agent_api::goal_facade::tests::execution::tick::goal_tick_preview_is_read_only_and_missing_activation_survives_reopen ... ok
+test agent_api::goal_facade::tests::execution::tick::goal_tick_preview_reads_original_debt_without_starting_recovery ... ok
+test agent_api::goal_facade::tests::execution::tick::goal_tick_preview_rejects_stale_scope_and_operation_without_execution ... ok
+test agent_api::goal_facade::tests::execution::tick::goal_tick_preview_requires_plan_acceptance_and_respects_imported_pause ... ok
+test agent_api::goal_facade::tests::execution::waits::goal_due_wait_wakes_only_after_a_host_clock_observation ... ok
+test agent_api::goal_facade::tests::execution::waits::goal_wait_gates_only_its_step_and_an_answer_reaches_the_next_run ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_cancellation_settles_program_children_on_the_original_run ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_program_children_share_the_run_budget_and_keep_denied_receipts ... ok
+test agent_api::tests::fact_log::nested_governance::fact_run_program_nested_call_obeys_the_session_deny ... ok
+test agent_api::tests::fact_log::nested_shell_verification::a_later_parent_write_cannot_reuse_a_previously_bound_program_report ... ok
+test agent_api::tests::fact_log::nested_shell_verification::direct_and_program_formal_bash_checks_bind_the_actual_parent_effect ... ok
+test agent_api::tests::fact_log::program_failure_receipts::read_then_throw_keeps_a_failed_parent_and_the_actual_nested_read ... ok
+test agent_api::tests::fact_log::program_failure_receipts::write_then_failed_check_and_throw_keeps_both_original_child_results ... ok
+test config::goal_control::tests::goal_control_decimal_strings_are_exact_and_canonical ... ok
+test config::goal_control::tests::goal_control_is_optional_and_requires_all_fields_even_when_disabled ... ok
+test config::goal_control::tests::goal_control_layer_validation_preserves_file_boundaries ... ok
+test config::goal_control::tests::goal_control_rejects_duplicate_unknown_and_nonliteral_values ... ok
+test config::goal_control::tests::goal_control_section_roundtrip_preserves_u64_and_unrelated_acl ... ok
+test config::goal_control::tests::goal_control_workspace_cannot_activate_enlarge_disable_or_erase_host_policy ... ok
+test durable_memory_vec::tests::a_foreign_schema_refuses_the_embedding_column ... ok
+test durable_memory_vec::tests::a_foreign_schema_refuses_the_embedding_column_on_the_lazy_store ... ok
+test durable_memory_vec::tests::a_new_collection_has_no_embedding_column ... ok
+test durable_memory_vec::tests::a_second_open_is_refused_while_the_collection_is_already_open ... ok
+test durable_memory_vec::tests::a_skipped_legacy_file_keeps_the_items_directory ... ok
+test durable_memory_vec::tests::an_existing_embedding_column_keeps_its_dimension ... ok
+test durable_memory_vec::tests::concurrent_lazy_first_use_shares_one_open_and_retries_a_failed_open ... ok
+test durable_memory_vec::tests::empty_query_returns_nothing ... ok
+test durable_memory_vec::tests::insert_and_fts_recall_roundtrip ... ok
+test durable_memory_vec::tests::last_lazy_release_and_new_first_use_share_or_reopen_without_a_lock_collision ... ok
+test durable_memory_vec::tests::lazy_store_opens_on_first_search_and_imports_legacy_json_once ... ok
+test durable_memory_vec::tests::lazy_store_opens_without_an_embedding_column ... ok
+test durable_memory_vec::tests::lazy_store_writes_and_recalls_an_existing_embedding_column ... ok
+test durable_memory_vec::tests::lazy_stores_share_the_canonical_collection_until_the_last_handle_drops ... ok
+test durable_memory_vec::tests::memory_store_trait_roundtrip ... ok
+test durable_memory_vec::tests::reopen_sees_persisted_records ... ok
+test durable_memory_vec::tests::search_over_many_records_returns_ranked_hits_without_scan_order ... ok
+test fact_control::goal_evidence::tests::a_foreign_or_later_slice_cannot_refresh_this_slice ... ok
+test fact_control::goal_evidence::tests::a_settled_background_mutation_must_belong_to_the_current_run ... ok
+test fact_control::goal_evidence::tests::mixed_capability_receipts_and_unsettled_outcomes_do_not_refresh_progress ... ok
+test fact_control::goal_evidence::tests::only_complete_known_workspace_identity_changes_are_progress ... ok
+test fact_control::receipts::tests::readonly_effect::all_read_batch_and_program_do_not_watch_or_freeze_a_later_read ... ok
+test goal_control::continuation::tests::a_deadline_horizon_does_not_stop_after_one_unfinished_slice ... ok
+test goal_control::continuation::tests::a_new_policy_is_capped_at_1000_slices_and_30_days_but_replay_is_not ... ok
+test goal_control::continuation::tests::continuation_limits_keep_u64_boundaries_without_saturation_or_wrap ... ok
+test goal_control::continuation::tests::continuation_limits_refuse_disabled_expired_unknown_clock_and_exhausted_counts ... ok
+test goal_control::continuation::tests::continuation_policy_requires_every_explicit_finite_field ... ok
+test goal_control::facts::control::tests::goal_cancel_preserves_history_and_terminal_state_in_original_stores ... ok
+test goal_control::facts::control::tests::goal_cancel_rejects_tampered_facts_and_changed_operation_replay ... ok
+test goal_control::facts::control::tests::goal_control_rejects_foreign_stale_unsupported_and_ambiguous_input ... ok
+test goal_control::facts::plan::tests::plan_proposals_and_acceptance_share_original_memory_and_file_scenarios ... ok
+test goal_control::facts::plan::tests::plan_wire_and_sources_refuse_unknown_missing_forged_and_stale_fields ... ok
+test goal_control::facts::run::tests::continuation::continuation_history_preserves_caps_across_replay_revision_replan_and_both_logs ... ok
+test goal_control::facts::run::tests::continuation::continuation_source_cannot_disappear_by_substituting_its_fact_kind ... ok
+test goal_control::facts::run::tests::continuation::continuation_source_preserves_ordinary_wire_and_is_refused_by_the_original_body_reader ... ok
+test goal_control::facts::run::tests::continuation::continuation_sources_refuse_recomputed_invalid_limits_clock_and_unbound_goal ... ok
+test goal_control::facts::run::tests::continuation::progress_basis_preserves_legacy_bytes_and_refuses_unknown_semantics ... ok
+test goal_control::facts::run::tests::continuation::stall_bound_admits_exactly_one_slice_after_a_changed_plan ... ok
+test goal_control::facts::run::tests::goal_run_binding_replays_and_reopens_original_memory_and_file_logs ... ok
+test goal_control::facts::run::tests::goal_tick_preview_uses_both_original_logs_without_appending_or_recovering ... ok
+test goal_control::facts::run::tests::run_brief_keeps_refs_step_and_evidence_within_4kib_and_512_tokens ... ok
+test goal_control::facts::tests::corrupted_or_future_definition_sources_fail_closed ... ok
+test goal_control::facts::tests::definitions_replay_revise_and_reopen_original_memory_and_file_logs ... ok
+test goal_control::facts::tests::import::import_source_is_authenticated_and_pause_survives_revision_on_both_logs ... ok
+test goal_control::facts::tests::invalid_requests_and_ambiguous_wire_fields_never_prepare_a_write ... ok
+test goal_control::facts::wait::tests::a_new_plan_proposal_clears_waits_of_the_previous_revision ... ok
+test goal_control::facts::wait::tests::step_waits_gate_only_their_step_and_quiet_observations_append_nothing ... ok
+test goal_control::tests::binding_preserves_existing_workspace_and_source_types ... ok
+test goal_control::tests::binding_validation_refuses_invalid_references_without_rewriting_them ... ok
+test goal_control::tests::closed_sets_share_canonical_serde_and_explicit_parsing ... ok
+test goal_control::tests::fact_keys_are_unambiguous_and_bound_to_goal_operation_and_kind ... ok
+test goal_control::tests::goal_content_is_original_type_and_client_progress_is_refused ... ok
+test goal_control::tests::graph_validation_matches_independent_reachability_for_every_four_node_graph ... ok
+test goal_control::tests::new_binding_wire_rejects_unknown_fields_including_nested_sources ... ok
+test goal_control::tests::plan_limits_and_missing_duplicate_self_or_cyclic_dependencies_are_refused ... ok
+test goal_control::tests::valid_plan_returns_original_identity_without_accepting_display_statuses ... ok
+test harness_loop::tests::nested_program_write_opens_the_gate ... ok
+test program::tests::builtin_program_catalog_contains_first_ptc_programs ... ok
+test program::tests::code_search_program_uses_query_path_and_glob ... ok
+test program::tests::program_catalog_instantiate_unknown_program_errors ... ok
+test program::tests::program_catalog_register_overwrites_existing_template ... ok
+test program::tests::program_catalog_try_register_rejects_invalid_template ... ok
+test program::tests::program_executor_errors_when_tool_is_missing ... ok
+test program::tests::program_executor_runs_steps_in_order ... ok
+test program::tests::program_executor_stops_after_failed_step ... ok
+test program::tests::program_executor_summarizes_completed_runs ... ok
+test program::tests::program_template_instantiates_step_args ... ok
+test program::tests::program_template_optional_parameter_may_be_omitted ... ok
+test program::tests::program_template_renders_nested_arrays_objects_and_boolean_placeholders ... ok
+test program::tests::program_template_renders_whole_value_numeric_placeholders ... ok
+test program::tests::program_template_requires_declared_inputs ... ok
+test program::tests::program_template_validation_accepts_builtin_templates ... ok
+test program::tests::program_template_validation_rejects_empty_name_and_empty_parameter ... ok
+test program::tests::program_template_validation_rejects_empty_steps_and_duplicate_labels ... ok
+test program::tests::program_template_validation_reports_asset_issues ... ok
+test program::tests::program_template_validation_reports_name_parameter_and_placeholder_issues ... ok
+test program::tests::program_trace_from_result_counts_failed_steps ... ok
+test program::tests::program_trace_serializes_with_stable_schema ... ok
+test program::tests::program_verification_hint_to_values_serializes_hints ... ok
+test program::tests::program_verification_hints_cover_failed_run_without_failed_steps ... ok
+test program::tests::program_verification_hints_include_failures_and_artifacts ... ok
+test program::tests::program_verification_hints_include_program_contract ... ok
+test program::tests::repo_map_program_uses_bounded_root_steps ... ok
+test tools::presentation::tests::child_profile_partial_order_rejects_cross_mode_broadening ... ok
+test tools::presentation::tests::code_profile_reduces_large_direct_definition_cost ... ok
+test tools::presentation::tests::direct_and_adaptive_outputs_have_deterministic_order ... ok
+test tools::presentation::tests::profiles_are_closed_serializable_values ... ok
+test tools::presentation::tests::projection_is_canonical_and_can_only_rephrase_existing_definitions ... ok
+test tools::program_tool::failure_receipt_tests::child_panic_keeps_prior_receipts_without_claiming_an_exact_count ... ok
+test tools::program_tool::failure_receipt_tests::deadline_after_read_preserves_completed_child_receipts ... ok
+test tools::program_tool::failure_receipt_tests::deadline_keeps_ownership_past_grace_and_certifies_the_final_receipts ... ok
+test tools::program_tool::failure_receipt_tests::pre_worker_rejections_publish_native_empty_child_receipts ... ok
+test tools::program_tool::failure_receipt_tests::read_then_js_throw_preserves_the_real_child_receipt_and_parent_failure ... ok
+test tools::program_tool::failure_receipt_tests::write_then_failed_check_and_throw_preserves_both_child_receipts ... ok
+test tools::program_tool::tests::program_catalog_is_discoverable_in_the_published_tool_contract ... ok
+test tools::program_tool::tests::program_child_truncation_preserves_structured_flags_original_bytes_and_source ... ok
+test tools::program_tool::tests::program_deadline_settles_an_active_child_before_returning ... ok
+test tools::program_tool::tests::program_dependent_write_then_read_observes_saved_bytes ... ok
+test tools::program_tool::tests::program_output_byte_limit_also_bounds_the_truncation_marker ... ok
+test tools::program_tool::tests::program_parallel_reads_record_real_overlapping_intervals_and_sources ... ok
+test tools::program_tool::tests::program_read_text_rejects_malformed_anchors_and_none_metadata ... ok
+test tools::program_tool::tests::program_read_text_uses_range_metadata_not_content_heuristics ... ok
+test tools::program_tool::tests::program_structured_failure_can_be_checked_and_recovered_without_erasing_receipts ... ok
+test tools::program_tool::tests::program_template_cannot_reenable_filtered_orchestrators ... ok
+test tools::program_tool::tests::program_template_read_only_uses_instantiated_step_arguments ... ok
+test tools::program_tool::tests::program_template_rejects_unknown_names_and_invalid_inputs_before_dispatch ... ok
+test tools::program_tool::tests::program_template_uses_the_scoped_nested_gateway_and_propagates_denial ... ok
+test tools::program_tool::tests::program_tool_accepts_auditable_workflow_above_legacy_limit ... ok
+test tools::program_tool::tests::program_tool_accepts_plain_function_run_entrypoint ... ok
+test tools::program_tool::tests::program_tool_cancellation_stops_vm_and_settles_nested_call ... ok
+test tools::program_tool::tests::program_tool_ctx_read_file_passes_offset_and_limit ... ok
+test tools::program_tool::tests::program_tool_ctx_tools_proxy_respects_allowed_tools ... ok
+test tools::program_tool::tests::program_tool_default_allowed_tools_include_registry_tools_except_program ... ok
+test tools::program_tool::tests::program_tool_enforces_max_tool_calls ... ok
+test tools::program_tool::tests::program_tool_explicit_allowed_tools_restrict_default_tools ... ok
+test tools::program_tool::tests::program_tool_exposes_ctx_tools_proxy_for_named_tools ... ok
+test tools::program_tool::tests::program_tool_forbids_recursive_or_legacy_orchestrators_in_scripts ... ok
+test tools::program_tool::tests::program_tool_loads_script_from_workspace_js_path ... ok
+test tools::program_tool::tests::program_tool_rejects_fetch_source_access ... ok
+test tools::program_tool::tests::program_tool_rejects_forbidden_script_constructs ... ok
+test tools::program_tool::tests::program_tool_rejects_missing_script_source_and_path ... ok
+test tools::program_tool::tests::program_tool_rejects_non_script_type ... ok
+test tools::program_tool::tests::program_tool_rejects_parallel_task_even_when_explicitly_allowed ... ok
+test tools::program_tool::tests::program_tool_rejects_source_above_engineered_workflow_limit ... ok
+test tools::program_tool::tests::program_tool_rejects_unified_task_fanout_but_keeps_single_delegation ... ok
+test tools::program_tool::tests::program_tool_rejects_unsupported_language ... ok
+test tools::program_tool::tests::program_tool_rejects_unsupported_script_path ... ok
+test tools::program_tool::tests::program_tool_renders_result_summary_and_tool_records ... ok
+test tools::program_tool::tests::program_tool_source_uses_default_all_registered_tools ... ok
+test tools::program_tool::tests::script_allowed_tools_strips_orchestrators_even_when_explicit ... ok
+test tools::program_tool::tests::script_limits_defaults_when_missing_or_invalid ... ok
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... 
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5285 filtered out; finished in 0.10s
+
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5285 filtered out; finished in 0.01s
+
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5285 filtered out; finished in 0.01s
+
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5285 filtered out; finished in 0.10s
+
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5285 filtered out; finished in 0.01s
+
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5285 filtered out; finished in 0.01s
+
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5285 filtered out; finished in 0.04s
+
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5285 filtered out; finished in 0.04s
+
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5285 filtered out; finished in 0.04s
+
+
+running 1 test
+test tools::program_tool::worker_deadline_tests::post_read_tight_loop_workers_settle ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5285 filtered out; finished in 0.04s
+
+ok
+test tools::tests::test_builtin_program_templates_run_against_a_real_workspace ... ok
+test tools::tests::test_tool_executor_register_program_catalog_runs_governed_template ... ok
+test trace::tests::program_trace_event_stores_compact_summary ... ok
+test verification::tests::program_verification_hint_builds_required_and_optional_checks ... ok
+test verification::tests::report_from_required_program_hint_needs_review ... ok
+
+test result: ok. 205 passed; 0 failed; 0 ignored; 0 measured; 5081 filtered out; finished in 81.35s
+
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_pager-54d3088a69eedfb7)
+
+running 36 tests
+test headless::tests::bash_colon_wildcard_deny_translates_to_prefix ... ok
+test headless::tests::broken_pipe_write_is_a_clean_latched_stop ... ok
+test headless::tests::domain_mode_web_fetch ... ok
+test headless::tests::drain_records_task_backgrounded_delivered_at_exit ... ok
+test headless::tests::empty_inputs_produce_empty_rules ... ok
+test headless::tests::first_hard_write_error_wins_the_latch ... ok
+test headless::tests::grok_agent_with_no_auth_methods_still_requires_login ... ok
+test headless::tests::handler_answers_ext_method_instead_of_dropping ... ok
+test headless::tests::hard_write_error_is_latched_and_surfaced_once ... ok
+test headless::tests::headless_auth_keeps_advertised_noninteractive_methods_and_refuses_browser_login ... ok
+test headless::tests::headless_materialize_ctx_stays_non_chat ... ok
+test headless::tests::headless_remote_miss_defers_to_worktree_when_requested ... ok
+test headless::tests::headless_remote_miss_restores_conversation_instead_of_deferring_worktree ... ok
+test headless::tests::lenient_skips_invalid_keeps_valid ... ok
+test headless::tests::local_config_agent_with_no_auth_methods_skips_acp_login ... ok
+test headless::tests::numeric_task_id_is_decoded_tracked_and_reaped ... ok
+test headless::tests::parse_json_schema_rejects_non_objects_and_invalid_json ... ok
+test headless::tests::post_open_error_carries_real_session_context ... ok
+test headless::tests::reap_request_for_subagent_cancels_with_typed_id ... ok
+test headless::tests::reap_request_for_task_kills_with_session_scope ... ok
+test headless::tests::signalled_exit_stops_waiting_on_a_log_flush_that_never_answers ... ok
+test headless::tests::streaming_json_structured_output_emits_from_meta ... {"type":"text","data":"{\"name\":"}
+{"type":"text","data":"\"bob\"}"}
+ok
+test headless::tests::strict_invalid_rule_errors ... ok
+test headless::tests::strict_reports_all_invalid_rules ... ok
+test headless::tests::strict_valid_rules_parse_deny_before_allow ... ok
+test headless::tests::structured_output_from_meta_wins_over_text_buffer ... ok
+test headless::tests::structured_output_without_meta_errors_never_parses_text ... ok
+test headless::tests::successful_write_leaves_no_latched_error ... ok
+test headless::tests::worktree_create_failure_is_reported_before_any_session_opens ... ok
+test headless::tests::worktree_create_opens_session_at_worktree_subdirectory ... ok
+test headless::tests::worktree_create_then_session_failure_names_the_orphaned_worktree ... ok
+test headless::tests::worktree_create_with_session_id_names_worktree_and_session ... ok
+test headless::tests::worktree_resume_failure_carries_local_miss_hint_like_the_tui ... ok
+test headless::tests::worktree_resume_loads_reported_session_without_re_restoring_code ... ok
+test headless::tests::worktree_with_fork_is_rejected_at_intent ... ok
+test wrap_cmd::tests::resolvable_program_spawns_directly ... ok
+
+test result: ok. 36 passed; 0 failed; 0 ignored; 0 measured; 10165 filtered out; finished in 47.94s
+

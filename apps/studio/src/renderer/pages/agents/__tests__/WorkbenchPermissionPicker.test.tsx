@@ -243,11 +243,12 @@ describe('pending permission mode', () => {
     }
   }
 
-  it('copies an older unscoped mode onto the member key', () => {
+  it('keeps an older unscoped mode local rather than promoting it into a signed-in member', () => {
     const storage = memory()
     storage.setItem('workbench.pending_permission_mode:v1', 'plan')
-    expect(readPendingPermissionMode(storage, 'member-1')).toBe('plan')
-    expect(storage.getItem('workbench.composer.permission-mode:v1:member-1')).toBe('plan')
+    expect(readPendingPermissionMode(storage, 'member-1')).toBeNull()
+    expect(storage.getItem('workbench.composer.permission-mode:v1:member:member-1')).toBeNull()
+    expect(readPendingPermissionMode(storage, null)).toBe('plan')
   })
 
   it('remembers a mode picked before an agent exists and clears it once applied', () => {

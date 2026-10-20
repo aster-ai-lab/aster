@@ -1,0 +1,51 @@
+
+running 1 test
+STUDIO_FIXTURE_EVENT phase=plan channel="topic.status" status={"activeExecutions":[{"anchorMessageId":"01a15b75-57db-7475-9f7e-2bb3275c7256","attemptId":1,"executionId":"01a15b75-57db-7475-9f7e-2bb3275c7256"}],"awaitingApprovalAnchors":[],"goalSnapshot":{"acpSessionId":null,"executionId":"01a15b75-57db-7475-9f7e-2bb3275c7256","goal":null,"reason":"runtime_unavailable","sessionId":"01a15b75-57da-7411-bd13-6c94788e71fd","status":"unavailable"},"pendingApprovals":[],"status":"pending","turnId":"01a15b75-57db-7475-9f7e-2bb3275c7256"}
+STUDIO_FIXTURE_EVENT phase=plan channel="data.changed" status=null
+STUDIO_FIXTURE_EVENT phase=plan channel="topic.status" status={"activeExecutions":[{"anchorMessageId":"01a15b75-57db-7475-9f7e-2bb3275c7256","attemptId":1,"executionId":"01a15b75-57db-7475-9f7e-2bb3275c7256"}],"awaitingApprovalAnchors":[],"goalSnapshot":{"acpSessionId":"caacbb89-4f9f-41dd-941d-bd7b95649e0c","executionId":"01a15b75-57db-7475-9f7e-2bb3275c7256","goal":null,"sessionId":"01a15b75-57da-7411-bd13-6c94788e71fd","status":"known"},"pendingApprovals":[],"status":"pending","turnId":"01a15b75-57db-7475-9f7e-2bb3275c7256"}
+STUDIO_FIXTURE_EVENT phase=plan channel="topic.status" status={"activeExecutions":[{"anchorMessageId":"01a15b75-57db-7475-9f7e-2bb3275c7256","attemptId":1,"executionId":"01a15b75-57db-7475-9f7e-2bb3275c7256"}],"awaitingApprovalAnchors":[],"goalSnapshot":{"acpSessionId":"caacbb89-4f9f-41dd-941d-bd7b95649e0c","executionId":"01a15b75-57db-7475-9f7e-2bb3275c7256","goal":null,"sessionId":"01a15b75-57da-7411-bd13-6c94788e71fd","status":"known"},"pendingApprovals":[],"status":"streaming","turnId":"01a15b75-57db-7475-9f7e-2bb3275c7256"}
+STUDIO_FIXTURE_EVENT phase=plan channel="data.changed" status=null
+STUDIO_FIXTURE_EVENT phase=plan channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=plan channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_REQUEST route=/v1/chat/completions stream=true
+STUDIO_FIXTURE_EVENT phase=plan channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=plan channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=plan channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_REQUEST route=/v1/chat/completions stream=true
+STUDIO_FIXTURE_EVENT phase=plan channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=plan channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=plan channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=plan channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=plan channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=plan channel="ai.stream.done" status="success"
+STUDIO_FIXTURE_EVENT phase=execute channel="topic.status" status={"activeExecutions":[],"awaitingApprovalAnchors":[],"goalSnapshot":{"acpSessionId":"caacbb89-4f9f-41dd-941d-bd7b95649e0c","executionId":"01a15b75-57db-7475-9f7e-2bb3275c7256","goal":null,"sessionId":"01a15b75-57da-7411-bd13-6c94788e71fd","status":"known"},"lastCompletedAt":1792535784790,"pendingApprovals":[],"status":"done","turnId":"01a15b75-57db-7475-9f7e-2bb3275c7256"}
+STUDIO_FIXTURE_EVENT phase=execute channel="data.changed" status=null
+STUDIO_FIXTURE_EVENT phase=execute channel="data.changed" status=null
+STUDIO_FIXTURE_EVENT phase=execute channel="topic.status" status={"activeExecutions":[{"anchorMessageId":"01a15b75-6d58-7087-976a-bf3b27089955","attemptId":1,"executionId":"01a15b75-6d58-7087-976a-bf3b27089955"}],"awaitingApprovalAnchors":[],"goalSnapshot":{"acpSessionId":null,"executionId":"01a15b75-6d58-7087-976a-bf3b27089955","goal":null,"reason":"runtime_unavailable","sessionId":"01a15b75-57da-7411-bd13-6c94788e71fd","status":"unavailable"},"pendingApprovals":[],"status":"pending","turnId":"01a15b75-6d58-7087-976a-bf3b27089955"}
+STUDIO_FIXTURE_EVENT phase=execute channel="data.changed" status=null
+STUDIO_FIXTURE_EVENT phase=execute channel="topic.status" status={"activeExecutions":[{"anchorMessageId":"01a15b75-6d58-7087-976a-bf3b27089955","attemptId":1,"executionId":"01a15b75-6d58-7087-976a-bf3b27089955"}],"awaitingApprovalAnchors":[],"goalSnapshot":{"acpSessionId":"caacbb89-4f9f-41dd-941d-bd7b95649e0c","executionId":"01a15b75-6d58-7087-976a-bf3b27089955","goal":null,"sessionId":"01a15b75-57da-7411-bd13-6c94788e71fd","status":"known"},"pendingApprovals":[],"status":"pending","turnId":"01a15b75-6d58-7087-976a-bf3b27089955"}
+STUDIO_FIXTURE_EVENT phase=execute channel="topic.status" status={"activeExecutions":[{"anchorMessageId":"01a15b75-6d58-7087-976a-bf3b27089955","attemptId":1,"executionId":"01a15b75-6d58-7087-976a-bf3b27089955"}],"awaitingApprovalAnchors":[],"goalSnapshot":{"acpSessionId":"caacbb89-4f9f-41dd-941d-bd7b95649e0c","executionId":"01a15b75-6d58-7087-976a-bf3b27089955","goal":null,"sessionId":"01a15b75-57da-7411-bd13-6c94788e71fd","status":"known"},"pendingApprovals":[],"status":"streaming","turnId":"01a15b75-6d58-7087-976a-bf3b27089955"}
+STUDIO_FIXTURE_EVENT phase=execute channel="data.changed" status=null
+STUDIO_FIXTURE_REQUEST route=/v1/chat/completions stream=false
+STUDIO_FIXTURE_EVENT phase=execute channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=execute channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_REQUEST route=/v1/chat/completions stream=true
+STUDIO_FIXTURE_EVENT phase=execute channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=execute channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=execute channel="ai.stream.chunk" status=null
+STUDIO_FIXTURE_EVENT phase=execute channel="topic.status" status={"activeExecutions":[{"anchorMessageId":"01a15b75-6d58-7087-976a-bf3b27089955","attemptId":1,"executionId":"01a15b75-6d58-7087-976a-bf3b27089955"}],"awaitingApprovalAnchors":[{"anchorMessageId":"01a15b75-6d58-7087-976a-bf3b27089955","attemptId":1,"executionId":"01a15b75-6d58-7087-976a-bf3b27089955"}],"goalSnapshot":{"acpSessionId":"caacbb89-4f9f-41dd-941d-bd7b95649e0c","executionId":"01a15b75-6d58-7087-976a-bf3b27089955","goal":null,"sessionId":"01a15b75-57da-7411-bd13-6c94788e71fd","status":"known"},"pendingApprovals":[{"anchorMessageId":"01a15b75-6d58-7087-976a-bf3b27089955","approvalId":"01a15b75-6d8b-75ee-91cc-9d8291244a2f","executionId":"01a15b75-6d58-7087-976a-bf3b27089955","messageId":"01a15b75-6d58-7087-976a-bf3b27089955","toolCallId":"synthetic-write"}],"status":"awaiting-approval","turnId":"01a15b75-6d58-7087-976a-bf3b27089955"}
+STUDIO_FIXTURE_EVENT phase=execute channel="data.changed" status=null
+
+thread 'agent_plane::turns::native_local_acp_alignment_tests::native_alignment_real_local_acp_planning_then_execution' (52693101) panicked at /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/turns.rs:7045:18:
+turn timed out: Elapsed(())
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+STUDIO_FIXTURE_SERVER Ok(Ok(()))
+test agent_plane::turns::native_local_acp_alignment_tests::native_alignment_real_local_acp_planning_then_execution ... FAILED
+
+failures:
+
+failures:
+    agent_plane::turns::native_local_acp_alignment_tests::native_alignment_real_local_acp_planning_then_execution
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 863 filtered out; finished in 15.60s
+

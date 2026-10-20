@@ -1,0 +1,12 @@
+{
+  "owned_launch": "/Users/roylin/code/aster/target/evaluations/studio-work-alignment/gui-1021a/launch.json",
+  "profile": "/Users/roylin/Library/Application Support/dev.a3s.studio/toyou/instances/studioalign1021a",
+  "synthetic_identity_verified": true,
+  "keys": [
+    "chat.default_model_id",
+    "feature.quick_assistant.model_id",
+    "feature.translate.model_id"
+  ],
+  "method": "exact owned device ACL schema; managed a3s provider admission unchanged",
+  "no_other_profile_read": true
+}

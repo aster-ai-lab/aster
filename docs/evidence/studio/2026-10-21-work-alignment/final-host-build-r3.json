@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "just",
+    "build-studio"
+  ],
+  "CARGO_TARGET_DIR": "/Users/roylin/code/aster/target/studio-macos-alignment",
+  "rc": 0,
+  "elapsed": 13.217931032180786,
+  "goal_module_sha256": "ce7045503e6ca246c35c2e160e9086ef0e11e0c260bc76fce245380f76fef4af",
+  "goal_module_unchanged": true,
+  "reason": "Include actual ACP extension wire prefix found by real integration"
+}

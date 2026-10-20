@@ -1,8 +1,8 @@
+import { Button, Checkbox, Textarea } from '@a3s-lab/ui'
 import { ArrowRight, ChevronLeft, ChevronRight, Pencil, X } from 'lucide-react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Button, Checkbox, Textarea } from '@a3s-lab/ui'
 import { loggerService } from '@logger'
 import type { MessageToolApprovalInput } from '@renderer/components/chat/messages/types'
 import { toast } from '@renderer/services/toast'
@@ -42,6 +42,7 @@ export function createAskUserQuestionComposerOverride({
 
 export default function AskUserQuestionComposer({ request, onRespond, className }: AskUserQuestionComposerProps) {
   const { t } = useTranslation()
+  const isComposingRef = useRef(false)
   const questions = request.input.questions
   // Answers are restored from the cache so a remount (switching conversations and
   // coming back) does not discard what the user already answered but not submitted.
@@ -222,7 +223,7 @@ export default function AskUserQuestionComposer({ request, onRespond, className 
         className="rounded-[17px] border-[0.5px] border-border p-2.5 backdrop-blur"
         style={{ backgroundColor: 'color-mix(in srgb, var(--background) 88%, transparent)' }}>
         <div className="flex items-center justify-between gap-3 px-1">
-          <h2 className="max-h-36 min-w-0 flex-1 overflow-y-auto whitespace-pre-wrap break-words font-semibold text-foreground text-sm leading-5">
+          <h2 className="max-h-36 min-w-0 flex-1 overflow-y-auto text-sm leading-5 font-semibold break-words whitespace-pre-wrap text-foreground">
             {currentQuestion.question}
           </h2>
 
@@ -277,7 +278,7 @@ export default function AskUserQuestionComposer({ request, onRespond, className 
                 type="button"
                 variant="ghost"
                 className={cn(
-                  'group h-auto min-h-11 w-full justify-start gap-3 whitespace-normal rounded-[12px] px-3 py-2 text-left shadow-none',
+                  'group h-auto min-h-11 w-full justify-start gap-3 rounded-[12px] px-3 py-2 text-left whitespace-normal shadow-none',
                   'hover:bg-muted focus-visible:bg-muted',
                   isSelected && 'bg-muted'
                 )}
@@ -286,7 +287,7 @@ export default function AskUserQuestionComposer({ request, onRespond, className 
                 onClick={() => handleSelectOption(option.label)}>
                 <span
                   className={cn(
-                    'flex size-8 shrink-0 items-center justify-center rounded-full font-semibold text-sm transition-colors',
+                    'flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold transition-colors',
                     isSelected
                       ? 'bg-foreground text-background'
                       : 'bg-muted text-muted-foreground group-hover:bg-foreground group-hover:text-background'
@@ -295,9 +296,9 @@ export default function AskUserQuestionComposer({ request, onRespond, className 
                 </span>
 
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate font-semibold text-foreground text-sm leading-5">{option.label}</span>
+                  <span className="block truncate text-sm leading-5 font-semibold text-foreground">{option.label}</span>
                   {option.description && (
-                    <span className="block truncate font-medium text-muted-foreground text-xs leading-4">
+                    <span className="block truncate text-xs leading-4 font-medium text-muted-foreground">
                       {option.description}
                     </span>
                   )}
@@ -324,7 +325,7 @@ export default function AskUserQuestionComposer({ request, onRespond, className 
           })}
         </div>
 
-        <div className="mt-2 flex items-end gap-2 border-border-subtle border-t pt-2">
+        <div className="mt-2 flex items-end gap-2 border-t border-border-subtle pt-2">
           <div className="flex min-w-0 flex-1 items-start gap-2 rounded-[12px] bg-muted/70 px-3 py-2">
             <Pencil className="mt-0.5 size-3.5 shrink-0 text-muted-foreground" />
             <Textarea.Input
@@ -340,8 +341,24 @@ export default function AskUserQuestionComposer({ request, onRespond, className 
                   [currentIndex]: value
                 }))
               }
+              onCompositionStart={() => {
+                isComposingRef.current = true
+              }}
+              onCompositionEnd={() => {
+                isComposingRef.current = false
+              }}
+              onBlur={() => {
+                isComposingRef.current = false
+              }}
               onKeyDown={(event) => {
-                if (event.key !== 'Enter' || event.shiftKey || event.nativeEvent.isComposing) return
+                if (
+                  event.key !== 'Enter' ||
+                  event.shiftKey ||
+                  isComposingRef.current ||
+                  event.nativeEvent.isComposing ||
+                  event.nativeEvent.keyCode === 229
+                )
+                  return
                 event.preventDefault()
                 void handleCustomAction()
               }}
@@ -350,7 +367,7 @@ export default function AskUserQuestionComposer({ request, onRespond, className 
           <Button
             type="button"
             variant="ghost"
-            className="h-9 px-2.5 font-semibold text-muted-foreground text-sm shadow-none hover:bg-transparent hover:text-foreground"
+            className="h-9 px-2.5 text-sm font-semibold text-muted-foreground shadow-none hover:bg-transparent hover:text-foreground"
             loading={customActionSubmitsAll && isSubmitting}
             disabled={isSubmitting}
             onClick={handleCustomAction}>

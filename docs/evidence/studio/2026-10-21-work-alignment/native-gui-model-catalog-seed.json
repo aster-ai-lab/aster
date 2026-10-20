@@ -1,0 +1,36 @@
+{
+  "seeded": [
+    {
+      "path": "/api/providers/a3s",
+      "status": 200,
+      "keys": [
+        "apiKey",
+        "apiKeyUrl",
+        "authOptional",
+        "baseUrl",
+        "catalogBaseUrl",
+        "enabled",
+        "id",
+        "models",
+        "name"
+      ]
+    },
+    {
+      "path": "/api/providers/a3s/models",
+      "status": 200,
+      "keys": [
+        "apiKey",
+        "apiKeyUrl",
+        "authOptional",
+        "baseUrl",
+        "catalogBaseUrl",
+        "enabled",
+        "id",
+        "models",
+        "name"
+      ]
+    }
+  ],
+  "managed_defaults_endpoint_not_called": true,
+  "synthetic_profile_only": true
+}

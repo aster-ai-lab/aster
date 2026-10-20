@@ -136,6 +136,8 @@ fn scheduled_recovery_preserves_live_and_other_session_turns() {
     turns.lock_live().insert(
         "scheduled".into(),
         LiveTurn {
+            acp_session: None,
+            attempt_id: 1,
             execution_id: String::new(),
             owner: String::new(),
             status: "pending".into(),

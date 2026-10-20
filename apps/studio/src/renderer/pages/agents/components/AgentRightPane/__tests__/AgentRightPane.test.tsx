@@ -475,7 +475,12 @@ vi.mock('react-i18next', () => ({
 }))
 
 import { WorkbenchProjectLockedContext } from '../../../workbenchComposerHost'
-import { AgentRightPane, AgentTaskProgressCapsule, useAgentRightPaneActions } from '../AgentRightPane'
+import {
+  AgentRightPane,
+  AgentTaskProgressCapsule,
+  AgentTaskProgressBar,
+  useAgentRightPaneActions
+} from '../AgentRightPane'
 
 type TestAgentRightPaneProps = ComponentProps<typeof AgentRightPane.Scope>
 
@@ -756,6 +761,40 @@ describe('AgentRightPane', () => {
     } finally {
       openWindow.mockRestore()
     }
+  })
+
+  it('keeps a compact keyboard-expandable plan in the composer and clears it on completion', () => {
+    const parts = [
+      createTaskPart(1, 'Collect context'),
+      createTaskPart(2, 'Build the result'),
+      updateTaskPart(1, '1', 'completed'),
+      updateTaskPart(2, '2', 'in_progress')
+    ]
+    const view = render(
+      <TestAgentRightPane
+        sessionId="session-a"
+        messages={createTaskMessages(parts, 'pending')}
+        partsByMessageId={{ m1: parts }}>
+        <AgentTaskProgressBar />
+      </TestAgentRightPane>
+    )
+    const bar = screen.getByTestId('agent-task-progress-bar')
+    const button = within(bar).getByRole('button')
+    expect(button).toHaveAttribute('aria-expanded', 'false')
+    expect(within(bar).getByRole('progressbar')).toHaveAttribute('aria-valuenow', '1')
+    expect(screen.queryByTestId('agent-task-progress-details')).toBeNull()
+    fireEvent.click(button)
+    expect(within(screen.getByTestId('agent-task-progress-details')).getByText('Collect context')).toBeVisible()
+    const done = [...parts, updateTaskPart(3, '2', 'completed')]
+    view.rerender(
+      <TestAgentRightPane
+        sessionId="session-a"
+        messages={createTaskMessages(done, 'success')}
+        partsByMessageId={{ m1: done }}>
+        <AgentTaskProgressBar />
+      </TestAgentRightPane>
+    )
+    expect(screen.queryByTestId('agent-task-progress-bar')).toBeNull()
   })
 
   it('opens the current task plan from hover and keyboard focus, then hides it after completion', async () => {

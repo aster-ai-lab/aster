@@ -298,7 +298,8 @@ fn code_projection(source: &[ToolDefinition]) -> Vec<ToolDefinition> {
     let mut program = program.clone();
     let catalog = compact_code_catalog(source);
     program.description = format!(
-        "Run a sandboxed JavaScript program through the governed Tool executor. Define async function run(ctx, inputs), call await ctx.tool(name, args), and set allowed_tools to the smallest required subset. Every nested call keeps the Run permission, confirmation, cancellation, and audit boundaries. Available Tool signatures: {catalog}"
+        "{}\n\nRun a sandboxed JavaScript program through the governed Tool executor. Define async function run(ctx, inputs), call await ctx.tool(name, args), and set allowed_tools to the smallest required subset. Every nested call keeps the Run permission, confirmation, cancellation, and audit boundaries. Available Tool signatures: {catalog}",
+        program.description,
     );
     vec![program]
 }

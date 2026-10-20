@@ -1,0 +1,147 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:11438) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/studio
+
+stderr | src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx > AgentComposer > retains the submitted planning choice true across permission preflight
+Bundled catalog resources path is not ready { catalog: 'assistant presets' }
+
+stderr | src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx > AgentComposer > retains the submitted planning choice false across permission preflight
+Bundled catalog resources path is not ready { catalog: 'assistant presets' }
+
+stderr | src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx > AgentComposer > retains the submitted planning choice true when the homepage creates its task after mode preflight
+Bundled catalog resources path is not ready { catalog: 'assistant presets' }
+
+stderr | src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx > AgentComposer > retains the submitted planning choice false when the homepage creates its task after mode preflight
+Bundled catalog resources path is not ready { catalog: 'assistant presets' }
+
+ ❯ |renderer| src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx (153 tests | 4 failed | 149 skipped) 230ms
+   ❯ AgentComposer (153)
+     × retains the submitted planning choice true across permission preflight 46ms
+     × retains the submitted planning choice false across permission preflight 26ms
+     × retains the submitted planning choice true when the homepage creates its task after mode preflight 32ms
+     × retains the submitted planning choice false when the homepage creates its task after mode preflight 11ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx > AgentComposer > retains the submitted planning choice true across permission preflight
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx:1181:85
+    1179|     await act(async () => { finish(); await submitted })
+    1180|     expect(mocks.sendMessage).toHaveBeenCalledOnce()
+    1181|     expect(mocks.sendMessage.mock.calls[0][1].body.turnContext?.planFi…
+       |                                                                                     ^
+    1182|     localStorage.clear()
+    1183|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx > AgentComposer > retains the submitted planning choice false across permission preflight
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx:1181:85
+    1179|     await act(async () => { finish(); await submitted })
+    1180|     expect(mocks.sendMessage).toHaveBeenCalledOnce()
+    1181|     expect(mocks.sendMessage.mock.calls[0][1].body.turnContext?.planFi…
+       |                                                                                     ^
+    1182|     localStorage.clear()
+    1183|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx > AgentComposer > retains the submitted planning choice true when the homepage creates its task after mode preflight
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx:1206:68
+    1204|     await act(async () => { finish({ handled: false }); await submitte…
+    1205|     expect(create).toHaveBeenCalledOnce()
+    1206|     expect(readTaskPermission('planning-created-task')?.planFirst).toB…
+       |                                                                    ^
+    1207|     localStorage.clear()
+    1208|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx > AgentComposer > retains the submitted planning choice false when the homepage creates its task after mode preflight
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx:1206:68
+    1204|     await act(async () => { finish({ handled: false }); await submitte…
+    1205|     expect(create).toHaveBeenCalledOnce()
+    1206|     expect(readTaskPermission('planning-created-task')?.planFirst).toB…
+       |                                                                    ^
+    1207|     localStorage.clear()
+    1208|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 149 skipped (153)
+   Start at  21:55:49
+   Duration  5.42s (transform 50%, import 42%, tests 4%, environment 3%, setup 1%)
+
+  Transform  |renderer| transforming modules took 2.70s · 50% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+

@@ -208,6 +208,7 @@ fn gateway_state_with_static_bundles(
         access_log_enabled,
         tracing_enabled: false,
         agent_billing: None,
+        anonymous_chatbot: config.anonymous_chatbot.clone(),
     })
 }
 

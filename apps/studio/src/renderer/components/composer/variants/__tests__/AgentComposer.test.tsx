@@ -25,6 +25,7 @@ import {
   WorkbenchHomeTaskContext,
   WorkbenchProjectLockedContext
 } from '@renderer/pages/agents/workbenchComposerHost'
+import { readTaskPermission, writeTaskPermission } from '@renderer/pages/agents/workbenchPermissionPostures'
 import { EVENT_NAMES, EventEmitter } from '@renderer/services/EventService'
 import { toast } from '@renderer/services/toast'
 import type { FileMetadata } from '@renderer/types/file'
@@ -1160,6 +1161,88 @@ describe('AgentComposer', () => {
     await act(async () => queued.props.onEdit(queued.props.items[0].id))
     expect(mocks.selectedKnowledgeBases).toEqual([knowledgeBaseOne])
   })
+
+  it.each([true, false])('retains the submitted planning choice %s across permission preflight', async (planFirst) => {
+    localStorage.clear()
+    HomeComposerMode.resetHomeComposerModeForTests()
+    mocks.workbenchModel = model
+    mocks.agentConfiguration = { permission_mode: 'default' }
+    writeTaskPermission('planning-snapshot-task', { mode: 'auto', planFirst })
+    let finish!: () => void
+    const gate = new Promise<void>((resolve) => {
+      finish = resolve
+    })
+    mocks.updateAgent.mockImplementationOnce(() => gate)
+    render(
+      <WorkbenchProjectLockedContext value={true}>
+        <AgentComposer
+          agentId="agent-1"
+          sessionId="planning-snapshot-task"
+          sendMessage={mocks.sendMessage}
+          stop={mocks.stop}
+          isStreaming={false}
+        />
+      </WorkbenchProjectLockedContext>
+    )
+    let submitted: Promise<unknown> | undefined
+    act(() => {
+      submitted = Promise.resolve(
+        mocks.surfaceProps?.onSendDraft({ text: 'Keep the clicked planning mode', tokens: [] })
+      )
+    })
+    await waitFor(() => expect(mocks.updateAgent).toHaveBeenCalled())
+    act(() => writeTaskPermission('planning-snapshot-task', { mode: 'auto', planFirst: !planFirst }))
+    await act(async () => {
+      finish()
+      await submitted
+    })
+    expect(mocks.sendMessage).toHaveBeenCalledOnce()
+    expect(mocks.sendMessage.mock.calls[0][1].body.turnContext?.planFirst === true).toBe(planFirst)
+    localStorage.clear()
+  })
+
+  it.each([true, false])(
+    'retains the submitted planning choice %s when the homepage creates its task after mode preflight',
+    async (planFirst) => {
+      localStorage.clear()
+      HomeComposerMode.resetHomeComposerModeForTests()
+      mocks.workbenchModel = model
+      writeTaskPermission('draft', { mode: 'default', planFirst })
+      let finish!: (value: { handled: false; cleared: false }) => void
+      const gate = new Promise<{ handled: false; cleared: false }>((resolve) => {
+        finish = resolve
+      })
+      const request = vi.spyOn(HomeComposerMode, 'requestHomeComposerSend').mockReturnValueOnce(gate)
+      const create = vi.fn(async () => {
+        // AgentPage's existing bridge captures its defaults when create is invoked.
+        writeTaskPermission('planning-created-task', readTaskPermission('draft') ?? { mode: 'default' })
+        return { id: 'planning-created-task' }
+      })
+      const host = document.createElement('div')
+      render(
+        <WorkbenchHomeActiveContext value={true}>
+          <WorkbenchComposerHostContext value={host}>
+            <WorkbenchHomeTaskContext value={{ create, adopt: vi.fn() }}>
+              <MissingAgentHomeComposer onAgentChange={vi.fn()} />
+            </WorkbenchHomeTaskContext>
+          </WorkbenchComposerHostContext>
+        </WorkbenchHomeActiveContext>
+      )
+      let submitted: Promise<unknown> | undefined
+      act(() => {
+        submitted = Promise.resolve(mocks.surfaceProps?.onSendDraft({ text: 'Keep this submitted draft', tokens: [] }))
+      })
+      await waitFor(() => expect(request).toHaveBeenCalled())
+      act(() => writeTaskPermission('draft', { mode: 'default', planFirst: !planFirst }))
+      await act(async () => {
+        finish({ handled: false, cleared: false })
+        await submitted
+      })
+      expect(create).toHaveBeenCalledOnce()
+      expect(readTaskPermission('planning-created-task')?.planFirst).toBe(planFirst)
+      localStorage.clear()
+    }
+  )
 
   it('captures Fast in the submitted Work Agent turn', async () => {
     mocks.modelResult = { ...model, supportsFastMode: true }

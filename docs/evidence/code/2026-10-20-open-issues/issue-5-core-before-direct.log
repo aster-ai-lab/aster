@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'durable_memory_vec::tests::lazy_stores_share_the_canonical_collection_until_the_last_handle_drops' (52015064) panicked at crates/code/core/src/durable_memory_vec.rs:615:67:
+called `Result::unwrap()` on an `Err` value: failed to initialize a3s-vec Memory store at /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpnkmms3/memory/.: durable memory collection is already open at /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpnkmms3/memory
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test durable_memory_vec::tests::lazy_stores_share_the_canonical_collection_until_the_last_handle_drops ... FAILED
+
+failures:
+
+failures:
+    durable_memory_vec::tests::lazy_stores_share_the_canonical_collection_until_the_last_handle_drops
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5265 filtered out; finished in 0.14s
+

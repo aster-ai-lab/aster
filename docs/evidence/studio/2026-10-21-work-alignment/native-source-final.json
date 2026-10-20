@@ -1,0 +1,120 @@
+{
+  "scope": "Studio native alignment source and maintained tests; no root updater/tenant/renderer files claimed",
+  "files": [
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/acp.rs",
+      "sha256": "4484e548841922eb210689b7ec09fa566359a475fc5e76cd03a1a2061000da76",
+      "size": 21903
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/controllers.rs",
+      "sha256": "2530451a81e890de304408af7fc36ab14217d080803c181d5d7d6bf07bf2c1da",
+      "size": 27285
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/events.rs",
+      "sha256": "af64a3b026d746dfe668f91488d2154785dda197aa73fa38793f6d11b4b48c8b",
+      "size": 6614
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/turns.rs",
+      "sha256": "036da51a243bd5662cfd09de2666d7b64ad965b2262e9d35cba173ae3b853b66",
+      "size": 343031
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/stream.rs",
+      "sha256": "08ea5b627aa8682164f27c96886551b49ff615cfb9c8189b469a3c869691e781",
+      "size": 27756
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/workbench_turns.rs",
+      "sha256": "5f1306684a47a0401297eb103f1edb43489af940b274b6da7608e85092a2ff13",
+      "size": 34474
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/goal_snapshot.rs",
+      "sha256": "8694cd10e6a9d4d8db35ffae8f7886ddca1891763deb989de1b93b38bf9acafb",
+      "size": 11975
+    },
+    {
+      "path": "apps/studio/src-tauri/src/providers.rs",
+      "sha256": "33bcb52196fe76f8b1cabd76231cc1485a928a066ec0217d08f9dfdf71e402da",
+      "size": 34728
+    },
+    {
+      "path": "apps/studio/src-tauri/src/preferences.rs",
+      "sha256": "76319fcdd4e27f4e42bcbd6a8faa73965849588c365b4ab91a92bb481d71e13b",
+      "size": 17752
+    },
+    {
+      "path": "crates/code/acp/src/agent/goal_ext.rs",
+      "sha256": "0db19e5b27e74ded747ba39e2170eae1bc26470d8c4a0598857bd59dff446ac5",
+      "size": 13919
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/execution_status_tests.rs",
+      "sha256": "0108efdda28c9af156dcc3bfc04c106f193b91960d2f59143904fc6f442d3878",
+      "size": 9945
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/message_delete_tests.rs",
+      "sha256": "ef7097b5a90e472db713ca8f14a8b73172330e6bfbd85d83f3fd8dec7e8f2b93",
+      "size": 6895
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/scheduled_recovery_tests.rs",
+      "sha256": "6dfaa17ff8509bee4ebdc74398ac815e656e5a22c226b6667526e0b0a1682436",
+      "size": 23823
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/turns_form_tests.rs",
+      "sha256": "c36bbb3b7a5b1e11cc1be2e1d45ab4273ab52cedb5656b4eb8e85f646e6185da",
+      "size": 8652
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/fake_acp.rs",
+      "sha256": "89e98ff4d5d5cc3ea0bf9aa36a3da733f916575d3d72ae6d27d86d9e1872b3bc",
+      "size": 10140
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/native_acp_alignment_tests.rs",
+      "sha256": "0feb98a09bb1491831f90cfb20557499d4f059da2301d0fe52aa8bfaf7a03ede",
+      "size": 5476
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/native_approval_alignment_tests.rs",
+      "sha256": "627f7b3af9805443866fc8ca5e4bd107647cc1b91a9a25c56a1487dcadb30ff3",
+      "size": 14938
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/native_approval_contract_tests.rs",
+      "sha256": "1f9c44d31006cfa1fba872102c368ad09f751fb09c77296ec25446806f55cc97",
+      "size": 1007
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/native_local_acp_alignment_tests.rs",
+      "sha256": "097f77ee37cbafdb81138f388d819a25b0be61953d474d421c3e0a09574b64b6",
+      "size": 14634
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/goal_snapshot_tests.rs",
+      "sha256": "fe7e7a6a193fba099f3aa23a8111a329b8166e5450f254fa342479c101d279c6",
+      "size": 9236
+    },
+    {
+      "path": "apps/studio/src-tauri/src/providers_default_alignment_tests.rs",
+      "sha256": "2c996ebe5fdf98947a58276f966b5135e230ba08ec788e11b555f4f58183fe08",
+      "size": 5923
+    },
+    {
+      "path": "apps/studio/src-tauri/src/preferences_device_alignment_tests.rs",
+      "sha256": "fe51078343c7949283b072ee0f469546c3fb18ae2bf1d4bc84314b009bd4f20e",
+      "size": 4049
+    },
+    {
+      "path": "crates/code/acp/src/agent/goal_tests.rs",
+      "sha256": "9fe738b0bea6c45f577e08698ed77417a6b6f56bce62fea662379ac0c79a5fef",
+      "size": 38132
+    }
+  ]
+}

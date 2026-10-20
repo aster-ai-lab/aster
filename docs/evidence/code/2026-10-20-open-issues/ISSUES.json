@@ -1,0 +1,69 @@
+{
+  "repository": "aster-ai-lab/aster",
+  "captured_at": "2026-10-20T11:15:58.362601+00:00",
+  "issues": [
+    {
+      "body": "## 问题(minor)\n\n`aster workspace` 是 `GROK_WORKSPACE_COMMAND=1` 开启的隐藏命令族(start/pause/resume/stop/restart/status)。三种环境状态下错误信息不一致,未设置环境变量时的提示具有误导性(稳定复现,aster 0.1.1):\n\n| 环境 | exit | 首行错误 |\n|---|---|---|\n| `GROK_WORKSPACE_COMMAND` 未设置 | 1 | `Could not load your settings for \\`aster workspace\\`. Check your network connection (run \\`aster login\\` if you are signed out), then try again.` |\n| `=0` | 1 | `\\`aster workspace\\` is not enabled for this account (gated by a server-side feature flag that is currently off).` |\n| `=1` | 1 | `no running leader for this environment ... Start a grok session, or run \\`aster workspace start\\`.`(符合预期的优雅失败) |\n\n未设置 env 时实际走的是 settings 加载失败路径,错误文案把原因归为网络/登录状态,与真正的门控原因(特性开关未开)不符,排障时会被引向错误方向。\n\n## 期望\n\n- 未设置 `GROK_WORKSPACE_COMMAND` 时,与 `=0` 一致地报告特性开关门控(或给出\"该命令需 GROK_WORKSPACE_COMMAND=1 开启\"的明确说明)。\n\n## 范围之外\n\n- 三种状态下的退出码(均为 1)与功能行为不变。\n- server-side feature flag 的语义不变。\n",
+      "comments": [],
+      "labels": [],
+      "number": 7,
+      "title": "`aster workspace` 在 GROK_WORKSPACE_COMMAND 未设置时的错误信息误导(提示检查网络/登录)",
+      "updatedAt": "2026-10-20T11:04:24Z",
+      "url": "https://github.com/aster-ai-lab/aster/issues/7"
+    },
+    {
+      "body": "## 问题\n\n仓库约定(AGENTS.md):\"All members have publish = false; A3S dependencies, including optional ones, must resolve locally\",并由 `tests/workspace_dependencies.py` 与 `apps/aster/tests/workspace.rs` 双重守卫。但当前检出(75ab3a598e2a)中 workspace 成员 `a3s-gateway` 的三个内部依赖解析到 crates.io 注册表:\n\n```\n$ cargo metadata --no-deps | jq ...\na3s-gateway -> a3s-acl    (=0.3.0) source=registry+https://github.com/rust-lang/crates.io-index\na3s-gateway -> a3s-sentry (=0.7.0) source=registry+...\na3s-gateway -> a3s-updater(=0.3.0) source=registry+...\n```\n\n后果(稳定复现):\n\n- `cargo test -p aster --test workspace` 失败:`workspace_contains_local_rust_harness_and_both_product_binaries` panic \"internal dependency must be local\"(apps/aster/tests/workspace.rs:65)。\n- 同类守卫 `python3 tests/workspace_dependencies.py` 同样会失败(需 Python≥3.11)。\n- 与仓库内本地副本产生同名同版本双来源,锁文件解析与 supply-chain 审计都变复杂。\n\n## 期望\n\n- `apps/gateway` 的上述三个依赖改为 workspace 本地路径(与 `Cargo.toml` 中其它 `a3s-*` 依赖一致),使仓库自带守卫在干净检出上通过。\n\n## 范围之外\n\n- gateway 作为独立控制平面服务的部署形态不变。\n- 三个 crate 的版本号与公开 API 不变(仅依赖来源改为 path)。\n",
+      "comments": [],
+      "labels": [],
+      "number": 6,
+      "title": "a3s-gateway 的内部 A3S 依赖指向 crates.io 而非本地路径,违反仓库自身守卫,检出即 workspace 测试红",
+      "updatedAt": "2026-10-20T11:04:22Z",
+      "url": "https://github.com/aster-ai-lab/aster/issues/6"
+    },
+    {
+      "body": "## 问题\n\n一个 ACP 进程内同时存在两个以上会话时(例如 TUI Dashboard 开多会话;或任何在同一 a3s-code-acp 进程里连续/并发 `session/new` 的宿主),后建会话初始化 durable memory 存储失败,导致该会话:\n\n- 每轮 `Failed to recall memory context`(记忆注入失效);\n- 记忆提炼报 `Failed to load related memories for LLM extraction`(去重失效)。\n\n稳定复现(2/2,aster 0.1.1 / core 9.1.4):同一 ACP 进程先后 new 两个会话,session 1 记住独特事实(确认已写入 `.a3s/memory/durable_memory` snapshot),session 2 询问该事实——回答\"没有任何记忆\"。RUST_LOG=info 下 session 2 全程报:\n\n```\nWARN a3s_code_core::agent::turn_context::memory: Failed to recall memory context\n  error=failed to initialize a3s-vec Memory store at <ws>/.a3s/memory:\n  durable memory collection is alread[y locked ...]\nWARN a3s_code_core::agent::memory_extraction_runtime: Failed to load related memories for LLM extraction\n  error=failed to initialize a3s-vec Memory store ...\n```\n\n对照实验:单进程单会话(两会话分属先后两个 ACP 进程)时,recall 初始化不再报错(存储内容是否命中受 LLM 提炼策略影响,属另一语义)。即问题特定于**同进程多会话**——锁的粒度是集合文件,session 1 持有的 `LazyFileMemoryStore` 句柄在进程内阻塞了 session 2 的初始化。鉴于 pager 架构是一个 ACP 进程承载全部 TUI 会话(Dashboard 多会话是公开功能),该路径会被真实用户触发。\n\n## 期望\n\n- 同进程多会话共享或正确引用计数 durable memory 集合句柄,锁不跨会话互斥;或\n- 锁竞争时退化为只读/短占位而非整会话失效,并保留可重试的初始化。\n\n## 范围之外\n\n- 记忆写入的 LLM 提炼策略(哪些内容进入 durable memory)不变。\n- 跨进程(两个 ACP 进程先后运行)的锁行为与单进程单会话语义不变。\n- vec 存储格式与 snapshot/WAL 机制不变。\n",
+      "comments": [],
+      "labels": [],
+      "number": 5,
+      "title": "同进程多会话并发时 durable memory 集合锁互斥,后续会话记忆召回与提炼失效",
+      "updatedAt": "2026-10-20T11:03:51Z",
+      "url": "https://github.com/aster-ai-lab/aster/issues/5"
+    },
+    {
+      "body": "## 问题\n\n`builtin_program_templates()` 定义了两个内置 program 模板 `program_code_search` 与 `program_repo_map`(`crates/code/core/src/program.rs:760`),但 program 工具从未把模板目录暴露给模型——按名调用永远失败。\n\n实证(aster 0.1.1 / core 9.1.4):给模型的任务明确要求调用内置模板 `program_code_search`;模型依次尝试 `program_code_search`、`program-code-search`、Skill 工具、search 等全部路径,均报告模板不存在,最终只能用裸 PTC 脚本达到等价效果。多轮多次尝试一致复现。\n\n路径上的事实:\n\n1. `program.rs:758-762`:`builtin_program_templates()` 返回 `vec![program_code_search(), program_repo_map()]`,模板定义完整(参数、步骤、描述)。\n2. `crates/code/core/src/tools/program_tool.rs:42`:`pub fn with_catalog(registry: Arc<ToolRegistry>, _catalog: ProgramCatalog) -> Self` —— catalog 形参以下划线命名、函数体内未被使用;唯一另一个构造函数 `with_catalog_registry_bound`(`:46`)同样丢弃该参数。\n3. `ProgramCatalog::with_builtin_programs()`(`program.rs:678`)会注册全部内置模板,但调用链上没有消费者把它接到工具描述或执行路径。\n4. 结果:模板目录是死接线(dead wiring);功能在代码里存在但对模型完全不可见。\n\n## 期望\n\n- program 工具的工具描述中列出可用模板名与参数,并在执行路径支持按模板名实例化;或\n- 移除未接线的模板目录代码,避免\"功能存在却不可用\"的误导。\n\n## 范围之外\n\n- PTC(QuickJS 脚本)通用能力不受影响(已验证可用)。\n- 模板的具体内容(grep 搜索/repo map)定义不变。\n",
+      "comments": [],
+      "labels": [],
+      "number": 4,
+      "title": "program 工具的内置模板目录(program_code_search / program_repo_map)未接线,模型不可见",
+      "updatedAt": "2026-10-20T11:03:49Z",
+      "url": "https://github.com/aster-ai-lab/aster/issues/4"
+    },
+    {
+      "body": "## 问题\n\n`aster --rules <text>` 与 `--system-prompt-override` 是 CLI 公开参数,但经由 ACP 运行时注入的规则/系统提示永远不会到达模型,且无任何报错,用户无法察觉。\n\n实证(2/2 稳定复现,aster 0.1.1 / acp 9.1.4):\n\n1. 直连 ACP stdio 发送 initialize,`params._meta.rules` 携带暗号(如 `暗号:蓝鲸-9090`),随后 `session/new` + `session/prompt` 问\"系统是否给过你暗号相关规则\"。\n2. 模型明确回答没有收到任何注入规则(证据:`{\"reply\": \"...没有...\"}`,两轮不同暗号一致)。\n\n路径上的事实:\n\n1. 发送侧完整实现:`crates/terminal/crates/codegen/a3s-code-pager/src/acp/mod.rs:461` 在 initialize meta 中写入 `rules`,且有单测断言该 meta 构造(`acp/mod.rs:1088-1105` `build_initialize_meta_includes_rules_when_set` 等)。\n2. 接收侧零消费:`crates/code/acp/src/agent.rs:925-954` 的 initialize 只读取 `client_reads_files`、cwd、model 状态;在 `crates/code/acp/src` 全目录 grep `rules`/`systemPromptOverride` 无任何 initialize/session 路径的消费点(仅 approval_learning 的 ACL `rules` 块,属无关语义)。\n3. 结论:跨进程特性半截实现——pager 忠实发送,acp 静默忽略。\n\n## 期望\n\n- a3s-code-acp 在 initialize(或 session/new)消费 `rules`/`systemPromptOverride` meta,将其附加到会话系统提示(语义与 pager 侧参数说明一致),或\n- 明确不支持并在握手时返回错误/警告,避免静默失效。\n\n## 范围之外\n\n- 参数在 CLI 层面的解析与别名(`--append-system-prompt`)不变。\n- 只读 posture/权限语义不受影响;注入内容仍受 workspace 信任边界约束。\n",
+      "comments": [],
+      "labels": [],
+      "number": 3,
+      "title": "--rules / --system-prompt-override 被 a3s-code-acp 静默丢弃(pager 发送、acp 不消费)",
+      "updatedAt": "2026-10-20T11:03:12Z",
+      "url": "https://github.com/aster-ai-lab/aster/issues/3"
+    },
+    {
+      "body": "## 问题\n\n用 ACL 配置好 provider(如 `~/.a3s/config.acl` 中 `default_model` + `api_key`)后,TUI 交互会话正常,但任何 headless 调用立即失败:\n\n```\n$ aster -p \"say pong\" --cwd /tmp/ws\nError: Not signed in. To authenticate without a browser, run:\n  aster login --device-code\nAlternatively, set the A3S_API_KEY environment variable ...\n```\n\n输出 JSON 中 `num_turns: 0`、`model: \"unknown\"`,即模型从未被调用。稳定复现 5/5(隔离 HOME+config.acl 与真实 HOME 均如此)。版本:aster 0.1.1 (75ab3a598e2a) + a3s-code-acp 9.1.4。\n\n路径上的事实:\n\n1. `crates/code/acp/src/agent.rs:935` — ACP initialize 固定返回 `.auth_methods(Vec::new())`。这是设计:非 Grok agent 不走 ACP 登录面。\n2. TUI 路径对空 auth_methods 有明确豁免:`crates/terminal/crates/codegen/a3s-code-pager/src/acp/mod.rs:709-713` `empty_auth_methods_needs_login(is_grok_shell)`,注释写明非 Grok agent \"credentials come from local config; skip login\"。\n3. 但 headless 路径 `headless.rs:931-940` 直接调用 `authenticate()`(`headless.rs:443-447`):空列表使 `select_eager_auth_method` 返回 None,直接 `auth_required_message` 报错返回。headless 没有复用 TUI 的空列表豁免分支。\n\n附带疑点:设置 `A3S_API_KEY` 后 headless 不再报错,但进程无任何输出地挂住(观察到 180s 无事件,未定位挂点)。\n\n## 期望\n\n- headless 对空 auth_methods 采用与 TUI 一致的策略:凭据来自本地 ACL 配置时跳过登录,直接进入会话(与 README「把模型配置写入 ~/.a3s/config.acl 即可使用」的口径一致)。\n- 或:为 ACP 增加 api-key auth method 通告,使 headless 的 eager auth 有真实方法可选。\n- `A3S_API_KEY` 路径若不被支持,应 fail-fast 给出明确报错而非静默挂起。\n\n## 范围之外\n\n- TUI 的登录/模型配置引导流程(`/config`、openModelConfig)行为不变。\n- `aster login` 设备码流程本身不变。\n- ACP initialize 的 auth_methods 对其他(Grok shell 类)agent 的语义不变。\n",
+      "comments": [],
+      "labels": [],
+      "number": 2,
+      "title": "headless 模式(-p/--print)永远报 \"Not signed in\",与 TUI 的空 auth_methods 策略不一致",
+      "updatedAt": "2026-10-20T11:02:48Z",
+      "url": "https://github.com/aster-ai-lab/aster/issues/2"
+    },
+    {
+      "body": "\n## 问题\n\n以 `--unattended --goal-continuation`（9.1.4 起为默认）运行时，agent 完成任务、completion gate 判 verified 之后，会话不终止。宿主观察到：agent 反复声明完成、反复重跑同一条只读验证命令（不产生新的工作区改动，每个 turn 的 outcome 都是 `skipped/narrative`、`requiredChecks: 0`），持续数小时直到宿主按墙钟预算强杀；会话没有终态事件，不写结果文件。任何\"宣布完成后被重提示会再验证一遍\"的模型都会踩中这条路径，unattended 评测因此拿不到结果，配额被空转耗尽。\n\n路径上的事实：\n\n1. unattended 路径生效的 continuation 策略由 `Unattended::goal_control()`（`crates/code/acp/src/unattended.rs`，在 `crates/code/acp/src/bin/a3s-code-acp.rs` 启动时调用）构造为 `GoalContinuationPolicyV1::until_deadline(启动时刻 + max_execution_ms)`：`max_slices` 与 `max_no_progress_slices` 都取 `MAX_GOAL_SLICES = 1000`（`crates/code/core/src/goal_control/continuation.rs`），注释写明 \"The slice ceiling and the no-progress ceiling are the same admission maximum, so one slice that has not yet accepted a step does not stop the goal. The deadline does.\"。即自动 continuation 的停滞防线被设计性关闭，唯一终止边界是墙钟 deadline。\n2. 正常终止出口是 goal 被标记 Completed：`bound_goal_step`（`crates/code/acp/src/goal.rs`）在 goal 状态为 Completed/Cancelled 时返回 Finished，否则 `preview_goal_tick` 判 Advance 就继续准入下一个 slice。观测到的运行里 turn outcome 序列在 `{\"status\": \"passed\", \"terminal\": \"verified\"}` 之后跟随数百个 `skipped/narrative`，tick 判定一直是 Advance，goal 从未 Completed。goal 未 Completed 的直接原因未确认：候选是 core 的 LLM goal check 按 fail-closed 规则判定（`crates/code/core/prompts/planning/llm_goal_check_system.md`：\"Missing structured verification evidence (`Verification skipped: no reports`) requires `achieved: false`\"，过期结果也必须判 false），而 agent 的重验证不产生新工作区改动，没有新的 verification report 可供判 true——形成\"重验证 → 无新报告 → 判未完成 → 再准入 → 再重验证\"的循环。\n3. 另一个独立缺陷：`crates/code/core/src/goal_control/facts.rs` 的事实折叠对每个 `GoalFactKindV1::StepAccepted` 无条件执行 `folded.continuation.slices_since_progress = 0`。在 unattended 的 1000 上限下它不起作用，但对在 ACL `goal_control` 里显式配置小 `max_no_progress_slices` 的宿主，纯重验证加 plan 更新产生的 `StepAccepted` 即可让显式停滞边界永远不触发。\n\n最小复现：最小输入是一个 `--unattended --goal-continuation` 会话（策略取默认），模型行为为\"宣布完成，被重提示后重新执行只读验证并更新 plan\"，且 goal 始终未被标记 Completed。当前输出是 turn outcome 序列在 verified 之后跟随数量只受墙钟约束的 `skipped/narrative`，会话直到 deadline 才以 \"A3S Code execution deadline exceeded\" 结束，无结果文件。\n\n## 期望\n\n- completion gate 判 verified、且后续 slice 没有新工作区改动时，自动 continuation 停止准入新 slice，会话写出终态结果并退出。\n- `until_deadline` 构造的策略应给出真实的停滞边界（`max_no_progress_slices` 取一个小常数），而不是把它设为与 `max_slices` 相同的准入上限。\n- 停滞判定只把产生新交付物改动（工作区 mutation）的步骤计为进展；纯重验证、plan 文本更新、只读步骤产生的 `StepAccepted` 不重置 `slices_since_progress`。\n- 以上结束状态与已发布的语义一致：`--unattended` 帮助文本声明 \"Explicit goals use bounded continuation\"，goal control 的拒绝路径（`GoalRefusal::Waiting`、`GoalRefusal::BudgetExhausted`、`GoalRefusal::DeadlineExpired`）与 `/goal` 手动控制行为保持不变。本 issue 要求停滞边界按字段语义生效，不要求修改 ACL `goal_control` 的字段与默认值，不影响省略该配置的宿主以外的行为。\n\n## 范围之外\n\n- ACL `goal_control` 显式配置的优先级与各字段（`automatic_enabled`、`max_slices`、`max_no_progress_slices`、`deadline_unix_ms`）的解析语义保持不变。\n- `/goal` 手动控制（set / pause / resume / clear）的行为保持不变；本 issue 只涉及 automatic continuation 的准入与停滞判定。\n- commit `75ab3a59`（fix(acp-runtime): preserve long runs and bounded effect observations）移除的隐式工具与转换计数上限不要求恢复；本 issue 不要求重新引入任何全局 turn 数或工具数天花板。\n- completion gate 本身的验证规则（`requiredChecks` 的计算、mutation digest 的绑定）保持不变；本 issue 不涉及 gate 判 verified 的标准。\n",
+      "comments": [],
+      "labels": [],
+      "number": 1,
+      "title": "goal continuation 在 gate verified 后仍不终止：unattended 策略把停滞上限设为 1000，goal 无法完成时只能空转到墙钟 deadline",
+      "updatedAt": "2026-10-20T04:18:49Z",
+      "url": "https://github.com/aster-ai-lab/aster/issues/1"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "binary": "/Users/roylin/code/aster/target/debug/deps/a3s_code_acp-180b7ad9f0e54c0c",
+  "compiledBy": "issue-1-acp-unit-after-final.log",
+  "binarySha256Before": "e67afc08d30225c270a8ea258b8eb9915416a954ed5dfcb22fa6d3e38692a89f",
+  "binarySha256After": "e67afc08d30225c270a8ea258b8eb9915416a954ed5dfcb22fa6d3e38692a89f",
+  "exitCode": 0,
+  "log": "issue-5-acp-after-final.log",
+  "result": [
+    "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 355 filtered out; finished in 0.22s"
+  ]
+}

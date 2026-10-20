@@ -1,0 +1,57 @@
+{
+  "phase": "before behavior changes; test-only gateway injection present",
+  "files": [
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/turns.rs",
+      "sha256": "b6cf9313cdc48d081cd76e72bc01e4759daab9b35dbfc91dd26df99a22b71443"
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/acp.rs",
+      "sha256": "c2479ce615c596f19dad2829780c4c8142a8bda250a16a2cd9b35c7e74d73ee2"
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/controllers.rs",
+      "sha256": "ba5974998618f7b04d16f14428eabfda9d507c29d83792ac0637fa56ea74b571"
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/events.rs",
+      "sha256": "48ec691847ee8a24edc17209b906030c30aae4c98283a29a5db6ce5461776828"
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/stream.rs",
+      "sha256": "4192d882e3d82288374e4ee66dfe19629bd86d7d5f6d99682c60c748582866f8"
+    },
+    {
+      "path": "apps/studio/src-tauri/src/providers.rs",
+      "sha256": "65646d647d20821fe062b1ebf87070d80ace020828cdfb3c82b9a1b838159ce7"
+    },
+    {
+      "path": "apps/studio/src-tauri/src/preferences.rs",
+      "sha256": "889f3c998f52a19fe02e5e86506acd24d864f34173b2d00e57394aee6c121617"
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/native_approval_alignment_tests.rs",
+      "sha256": "6ef9d51f908a73d1519d75f5de3db4189113c8f69578a4bbf6f73f519b9697c4"
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/native_acp_alignment_tests.rs",
+      "sha256": "fd11578c46f9269b5f29a1acc11a611d6df57c859fa1e2afe49bd858b5d05c99"
+    },
+    {
+      "path": "apps/studio/src-tauri/src/providers_default_alignment_tests.rs",
+      "sha256": "bade37e239c08d2ea45de59517bb7d556db87c99c878a95cbdcd4b0df1d34cee"
+    },
+    {
+      "path": "apps/studio/src-tauri/src/preferences_device_alignment_tests.rs",
+      "sha256": "8804ed41184a7c29a87ca5d1239517628400c02cee3bebaea96de6aef11c72e3"
+    },
+    {
+      "path": "crates/code/acp/src/agent/goal_ext.rs",
+      "sha256": "3c813e316512d7453a163f3686839502d18ba1aa7c23c042a1913daff19b42e9"
+    },
+    {
+      "path": "crates/code/acp/src/agent/goal_tests.rs",
+      "sha256": "b63bb19204ccf95f9f242e82b23d2a5091372156e1f9a11f817d360d38220fb2"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+test_cache_registration_must_match_its_module_id (test_delivery.DeliveryTests) ... ok
+test_complete_generation_has_studio_layout_and_independent_cache_paths (test_delivery.DeliveryTests) ... ok
+test_each_companion_or_host_from_another_generation_is_refused (test_delivery.DeliveryTests) ... ok
+test_foreign_generation_and_checksum_changes_are_refused (test_delivery.DeliveryTests) ... ok
+test_launch_verification_refuses_missing_tampered_extra_or_symlink_files (test_delivery.DeliveryTests) ... ok
+test_missing_input_method_asset_is_refused (test_delivery.DeliveryTests) ... ok
+test_native_daemon_identity_selects_only_its_own_module (test_delivery.DeliveryTests) ... ok
+test_renderer_changes_after_host_build_are_refused (test_delivery.DeliveryTests) ... ok
+test_wayland_does_not_force_an_x11_module (test_delivery.DeliveryTests) ... ok
+test_wrong_elf_and_modified_corresponding_source_are_refused (test_delivery.DeliveryTests) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.951s
+
+OK

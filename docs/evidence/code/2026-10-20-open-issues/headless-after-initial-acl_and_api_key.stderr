@@ -1,0 +1,6 @@
+[2m2026-10-20T12:02:41.820760Z[0m [33m WARN[0m [2ma3s_code_core::subagent::loader[0m[2m:[0m Failed to resolve agent directory: /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-issue2-j2b7a_o8/home/.claude/agents
+[2m2026-10-20T12:02:41.820838Z[0m [33m WARN[0m [2ma3s_code_core::subagent::loader[0m[2m:[0m Failed to resolve agent directory: /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-issue2-j2b7a_o8/home/.a3s/agents
+[2m2026-10-20T12:02:41.820931Z[0m [33m WARN[0m [2ma3s_code_core::subagent::loader[0m[2m:[0m Failed to resolve agent directory: /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-issue2-j2b7a_o8/workspace/.claude/agents
+[2m2026-10-20T12:02:41.820978Z[0m [33m WARN[0m [2ma3s_code_core::subagent::loader[0m[2m:[0m Failed to resolve agent directory: /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-issue2-j2b7a_o8/workspace/.a3s/agents
+[2m2026-10-20T12:02:41.852986Z[0m [33m WARN[0m [2ma3s_code_core::agent::execution_mode[0m[2m:[0m Pre-analysis failed; using local style fallback [3merror[0m[2m=[0mLLM pre-analysis structured generation failed
+[2m2026-10-20T12:02:41.905850Z[0m [33m WARN[0m headless: prompt response carried no requestId; emitting an empty requestId

@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/opt/homebrew/bin/node",
+    "node_modules/vitest/vitest.mjs",
+    "run",
+    "--project",
+    "renderer",
+    "src/renderer/components/composer/__tests__/useToolApprovalComposerOverrides.test.ts",
+    "src/renderer/components/composer/__tests__/ComposerCore.test.tsx",
+    "src/renderer/hooks/__tests__/useTopicAwaitingApproval.test.ts"
+  ],
+  "exit_code": 1,
+  "elapsed_seconds": 3.21,
+  "log": "ux-approval-before.log",
+  "log_sha256": "b2d89a447dfe73095f5b81bd659a9956b9e88872bb2bc4a1c6b18349348d1236"
+}

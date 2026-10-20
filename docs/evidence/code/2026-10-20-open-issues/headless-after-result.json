@@ -1,0 +1,87 @@
+{
+  "phase": "after",
+  "fixture": "isolated child home, explicit local ACL, real CLI and ACP, loopback-only provider",
+  "cases": [
+    {
+      "case": "acl_only",
+      "returncode": 0,
+      "timed_out": false,
+      "elapsed_seconds": 6.707,
+      "provider_requests": [
+        {
+          "path": "/v1/chat/completions",
+          "stream": false,
+          "system_rule_marker_seen": false
+        },
+        {
+          "path": "/v1/chat/completions",
+          "stream": true,
+          "system_rule_marker_seen": false
+        }
+      ],
+      "stdout_contains_marker": true,
+      "explicit_override_rejection": false,
+      "stdout_bytes": 137,
+      "stderr_bytes": 1051
+    },
+    {
+      "case": "acl_and_api_key",
+      "returncode": 0,
+      "timed_out": false,
+      "elapsed_seconds": 0.417,
+      "provider_requests": [
+        {
+          "path": "/v1/chat/completions",
+          "stream": false,
+          "system_rule_marker_seen": false
+        },
+        {
+          "path": "/v1/chat/completions",
+          "stream": true,
+          "system_rule_marker_seen": false
+        }
+      ],
+      "stdout_contains_marker": true,
+      "explicit_override_rejection": false,
+      "stdout_bytes": 137,
+      "stderr_bytes": 1051
+    },
+    {
+      "case": "rules_cli",
+      "returncode": 0,
+      "timed_out": false,
+      "elapsed_seconds": 0.413,
+      "provider_requests": [
+        {
+          "path": "/v1/chat/completions",
+          "stream": false,
+          "system_rule_marker_seen": false
+        },
+        {
+          "path": "/v1/chat/completions",
+          "stream": true,
+          "system_rule_marker_seen": true
+        }
+      ],
+      "stdout_contains_marker": true,
+      "explicit_override_rejection": false,
+      "stdout_bytes": 137,
+      "stderr_bytes": 1051
+    },
+    {
+      "case": "unsupported_override",
+      "returncode": 1,
+      "timed_out": false,
+      "elapsed_seconds": 0.163,
+      "provider_requests": [],
+      "stdout_contains_marker": false,
+      "explicit_override_rejection": true,
+      "stdout_bytes": 225,
+      "stderr_bytes": 201
+    }
+  ],
+  "binary_sha256": {
+    "aster": "4068597c32ee5b44d9a9a0cbc5248d4d29affc692fd10e4a8e0cd31895d74c46",
+    "a3s-code-acp": "75b69a995f6b5035639aa4f7fec92ab72369efa198abf9636be4982f42d4994b"
+  }
+}

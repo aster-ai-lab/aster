@@ -486,6 +486,7 @@ async fn build_config(gateway_port: u16, backend_addr: SocketAddr, rule: &str) -
         shutdown_timeout_secs: 5,
         hosted_function_activations: Default::default(),
         agent_idle_policies: Default::default(),
+        anonymous_chatbot: None,
     }
 }
 

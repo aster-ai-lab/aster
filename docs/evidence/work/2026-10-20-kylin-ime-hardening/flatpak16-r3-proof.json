@@ -1,0 +1,237 @@
+{
+  "status": "passed_with_documented_seccomp_workaround",
+  "packages": {
+    "flatpak": {
+      "deb": "flatpak_1.6.5-0ubuntu0.5_amd64.deb",
+      "sha256": "3266add1d53ce37691d787ceca9929d9a423f2f2c3f71bcf8d6e1be2095a41bc",
+      "version": "1.6.5-0ubuntu0.5"
+    },
+    "bubblewrap": {
+      "deb": "bubblewrap_0.4.0-1ubuntu4.1_amd64.deb",
+      "sha256": "c8393a164df5850e65eae06c8c0e837c6752911e3720623dfe59d04024f38a17",
+      "version": "0.4.0-1ubuntu4.1"
+    },
+    "xdg-dbus-proxy": {
+      "deb": "xdg-dbus-proxy_0.1.2-1_amd64.deb",
+      "sha256": "416614cce46fa4c59bbd1032d9f508f86ebd062065b514b9e09b2a7ff7d89277",
+      "version": "0.1.2-1"
+    }
+  },
+  "binaries": {
+    "flatpak": {
+      "version": "Flatpak 1.6.5",
+      "sha256": "ae80fb645248e4d181c075e5d56f3987da9f3ad40b1b223eb8377cf1b596c16f"
+    },
+    "bwrap": {
+      "version": "bubblewrap 0.4.0",
+      "sha256": "af662c55cd85178a58da083220a9348c4a7d3c24333fd0bc7badb18c93392987"
+    },
+    "xdg-dbus-proxy": {
+      "version": "xdg-dbus-proxy 0.1.2",
+      "sha256": "0594c24b92f62fd1316188c5a6edfb532dc9abf21ca3c5d787d008be5894ef70"
+    }
+  },
+  "legacy_source_archive": {
+    "version_label": "official 4.2.9.6 source archive (internally reports 4.2.9.5)",
+    "sha256": "d55eee3f094037b5c32f0c5397d585fdf932cbc7d2091ed6f78fd7a9ae512c47"
+  },
+  "limits": [
+    "GTK protocol through final installed launcher/module; not full WebKit UI acceptance",
+    "Exact offline Flatpak/bwrap/proxy executables with modern Ubuntu dependency libraries",
+    "Only --seccomp FD pairs removed in test wrapper; product metadata unchanged; no seccomp security claim",
+    "Legacy official source-built daemon is not a Kylin distribution binary; no universal fork/version claim"
+  ],
+  "host_display": ":120",
+  "client_display": ":99.0",
+  "app_commit": "9976324975943ee39ae5727d6c6f935b2d50e98bc1954992d7e9deda09124776",
+  "app_bundle_sha256": "5c80ccfed10fa6f3ec5fbaa140d61f2693daebee8cb754d1cc2776e67eb8d031",
+  "runtime_commit": "7e410fa0d429fcc34f2ddd0d9b6224f1435d8640fb9759801db4f02700542353",
+  "traces": {
+    "no-seccomp": {
+      "create_calls": 1,
+      "key_calls": 38,
+      "legacy_factory_calls": 0,
+      "current_factory_calls": 1
+    },
+    "legacy": {
+      "create_calls": 2,
+      "key_calls": 38,
+      "legacy_factory_calls": 1,
+      "current_factory_calls": 1
+    },
+    "portal-disabled": {
+      "create_calls": 0,
+      "key_calls": 0,
+      "legacy_factory_calls": 0,
+      "current_factory_calls": 0
+    }
+  },
+  "bwrap_records": [
+    {
+      "removed_only_seccomp_fds": [],
+      "all_other_semantic_arguments_identical": true,
+      "original_argument_count": 39,
+      "forwarded_argument_count": 39,
+      "x11_socket_binds": [],
+      "wrapper_environment_DISPLAY": null
+    },
+    {
+      "removed_only_seccomp_fds": [],
+      "all_other_semantic_arguments_identical": true,
+      "original_argument_count": 86,
+      "forwarded_argument_count": 86,
+      "x11_socket_binds": [],
+      "wrapper_environment_DISPLAY": ":120"
+    },
+    {
+      "removed_only_seccomp_fds": [
+        "17"
+      ],
+      "all_other_semantic_arguments_identical": true,
+      "original_argument_count": 409,
+      "forwarded_argument_count": 407,
+      "x11_socket_binds": [
+        [
+          "--ro-bind",
+          "/tmp/.X11-unix/X120",
+          "/tmp/.X11-unix/X99"
+        ]
+      ],
+      "wrapper_environment_DISPLAY": null
+    },
+    {
+      "removed_only_seccomp_fds": [],
+      "all_other_semantic_arguments_identical": true,
+      "original_argument_count": 86,
+      "forwarded_argument_count": 86,
+      "x11_socket_binds": [],
+      "wrapper_environment_DISPLAY": ":120"
+    },
+    {
+      "removed_only_seccomp_fds": [
+        "17"
+      ],
+      "all_other_semantic_arguments_identical": true,
+      "original_argument_count": 411,
+      "forwarded_argument_count": 409,
+      "x11_socket_binds": [
+        [
+          "--ro-bind",
+          "/tmp/.X11-unix/X120",
+          "/tmp/.X11-unix/X99"
+        ]
+      ],
+      "wrapper_environment_DISPLAY": null
+    },
+    {
+      "removed_only_seccomp_fds": [],
+      "all_other_semantic_arguments_identical": true,
+      "original_argument_count": 86,
+      "forwarded_argument_count": 86,
+      "x11_socket_binds": [],
+      "wrapper_environment_DISPLAY": ":120"
+    },
+    {
+      "removed_only_seccomp_fds": [
+        "17"
+      ],
+      "all_other_semantic_arguments_identical": true,
+      "original_argument_count": 409,
+      "forwarded_argument_count": 407,
+      "x11_socket_binds": [
+        [
+          "--ro-bind",
+          "/tmp/.X11-unix/X120",
+          "/tmp/.X11-unix/X99"
+        ]
+      ],
+      "wrapper_environment_DISPLAY": null
+    },
+    {
+      "removed_only_seccomp_fds": [],
+      "all_other_semantic_arguments_identical": true,
+      "original_argument_count": 86,
+      "forwarded_argument_count": 86,
+      "x11_socket_binds": [],
+      "wrapper_environment_DISPLAY": ":120"
+    },
+    {
+      "removed_only_seccomp_fds": [
+        "17"
+      ],
+      "all_other_semantic_arguments_identical": true,
+      "original_argument_count": 411,
+      "forwarded_argument_count": 409,
+      "x11_socket_binds": [
+        [
+          "--ro-bind",
+          "/tmp/.X11-unix/X120",
+          "/tmp/.X11-unix/X99"
+        ]
+      ],
+      "wrapper_environment_DISPLAY": null
+    },
+    {
+      "removed_only_seccomp_fds": [],
+      "all_other_semantic_arguments_identical": true,
+      "original_argument_count": 86,
+      "forwarded_argument_count": 86,
+      "x11_socket_binds": [],
+      "wrapper_environment_DISPLAY": ":120"
+    },
+    {
+      "removed_only_seccomp_fds": [
+        "17"
+      ],
+      "all_other_semantic_arguments_identical": true,
+      "original_argument_count": 409,
+      "forwarded_argument_count": 407,
+      "x11_socket_binds": [
+        [
+          "--ro-bind",
+          "/tmp/.X11-unix/X120",
+          "/tmp/.X11-unix/X99"
+        ]
+      ],
+      "wrapper_environment_DISPLAY": null
+    },
+    {
+      "removed_only_seccomp_fds": [],
+      "all_other_semantic_arguments_identical": true,
+      "original_argument_count": 86,
+      "forwarded_argument_count": 86,
+      "x11_socket_binds": [],
+      "wrapper_environment_DISPLAY": ":120"
+    },
+    {
+      "removed_only_seccomp_fds": [
+        "17"
+      ],
+      "all_other_semantic_arguments_identical": true,
+      "original_argument_count": 411,
+      "forwarded_argument_count": 409,
+      "x11_socket_binds": [
+        [
+          "--ro-bind",
+          "/tmp/.X11-unix/X120",
+          "/tmp/.X11-unix/X99"
+        ]
+      ],
+      "wrapper_environment_DISPLAY": null
+    }
+  ],
+  "native_installed_protocol_cases": 8,
+  "native_installed_display_cases": 2,
+  "single_key_delivery": "a=b=c=1 in both installed display modes and both actual Flatpak modern/legacy modes",
+  "case_exit_codes": {
+    "flatpak16-r3-prepare": 0,
+    "native-installed-r3": 0,
+    "flatpak16-r3-no-seccomp": 0,
+    "flatpak16-r3-legacy": 0,
+    "flatpak16-r3-portal-disabled": 1,
+    "flatpak16-r3-stock": 1
+  },
+  "launcher_sha256": "6a6f459d0b7561faf7de2b400012e10f5e4d34342861f25ac896f052f37a9f84",
+  "fcitx4_gclient_sha256": "7db5cc21ed9c62933e4785b221773027b64d091e40b2d92a9a7d4b268fe091d3",
+  "backend_probe_sha256": "34371bbf987e4620871845371734e8cdc11154bba4048b5688cd3acf4ad7f230"
+}

@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'agent_plane::turns::native_local_acp_alignment_tests::native_alignment_real_local_acp_planning_then_execution' (52689644) panicked at /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/turns.rs:7045:18:
+turn timed out: Elapsed(())
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agent_plane::turns::native_local_acp_alignment_tests::native_alignment_real_local_acp_planning_then_execution ... FAILED
+
+failures:
+
+failures:
+    agent_plane::turns::native_local_acp_alignment_tests::native_alignment_real_local_acp_planning_then_execution
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 863 filtered out; finished in 10.54s
+

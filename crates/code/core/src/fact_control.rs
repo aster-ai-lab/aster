@@ -52,7 +52,8 @@ pub(crate) use fact_reads::{
 use fact_reads::{exit_to_error, message_from_fact};
 pub use fact_reads::{phase_name, project_needs_confirmation, read_workspace_facts};
 pub(crate) use goal_evidence::{
-    assess_goal_step, commit_goal_step, evidence_for_goal_step, settle_goal_slice,
+    assess_goal_step, commit_goal_step, evidence_for_goal_step, goal_slice_made_progress,
+    settle_goal_slice,
 };
 #[cfg(test)]
 use history_seed::recorded_tool_calls;

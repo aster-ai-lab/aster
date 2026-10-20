@@ -1,0 +1,27 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+error[E0369]: binary operation `==` cannot be applied to type `std::option::Option<a3s_memory::MemoryItem>`
+   --> crates/code/core/src/durable_memory_vec.rs:615:9
+    |
+615 |         assert_eq!(MemoryStore::retrieve(&second, &item.id).await.unwrap(), Some(item));
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |         |
+    |         std::option::Option<a3s_memory::MemoryItem>
+    |         std::option::Option<a3s_memory::MemoryItem>
+    |
+note: `a3s_memory::MemoryItem` does not implement `PartialEq`
+   --> crates/memory/src/lib.rs:138:1
+    |
+138 | pub struct MemoryItem {
+    | ^^^^^^^^^^^^^^^^^^^^^ `a3s_memory::MemoryItem` is defined in another crate
+
+For more information about this error, try `rustc --explain E0369`.
+error: could not compile `a3s-code-core` (lib test) due to 1 previous error

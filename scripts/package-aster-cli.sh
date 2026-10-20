@@ -40,11 +40,13 @@ if [[ "$aster_identity" != aster-cli-pair-v1:* || "$aster_identity" != "$acp_ide
   exit 1
 fi
 printf '%s\n' "$aster_identity" > "${stage}/BUILD_ID"
-if command -v sha256sum >/dev/null 2>&1; then
-  (cd "$stage" && sha256sum "aster${suffix}" "a3s-code-acp${suffix}") > "${stage}/SHA256SUMS"
-else
-  (cd "$stage" && shasum -a 256 "aster${suffix}" "a3s-code-acp${suffix}") > "${stage}/SHA256SUMS"
-fi
+sha256_file() {
+  local result
+  if command -v sha256sum >/dev/null 2>&1; then result="$(sha256sum -b "$1")";
+  else result="$(shasum -a 256 -b "$1")"; fi
+  printf '%s  %s\n' "${result%% *}" "$1"
+}
+(cd "$stage" && sha256_file "aster${suffix}" && sha256_file "a3s-code-acp${suffix}") > "${stage}/SHA256SUMS"
 case "$platform" in
   macos|linux)
     COPYFILE_DISABLE=1 tar -C "$stage" -czf "$out" aster a3s-code-acp BUILD_ID SHA256SUMS

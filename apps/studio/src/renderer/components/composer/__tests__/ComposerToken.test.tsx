@@ -1381,6 +1381,46 @@ describe('ComposerToken', () => {
     expect(input.style.height).toBe('48px')
   })
 
+  it.each(['Enter', 'Tab'])('keeps IME %s from finishing prompt-variable editing', (key) => {
+    const onCommit = vi.fn()
+    render(<PromptVariableToken token={promptVariableToken} selected editing onCommit={onCommit} />)
+    const input = screen.getByRole('textbox')
+
+    fireEvent.compositionStart(input)
+    fireEvent.change(input, { target: { value: '上海' } })
+    expect(fireEvent.keyDown(input, { key, keyCode: key === 'Enter' ? 13 : 9, isComposing: false })).toBe(true)
+    expect(onCommit).not.toHaveBeenCalled()
+
+    fireEvent.compositionEnd(input, { data: '上海' })
+    expect(fireEvent.keyDown(input, { key, keyCode: 229, isComposing: false })).toBe(true)
+    expect(onCommit).not.toHaveBeenCalled()
+
+    fireEvent.keyDown(input, { key })
+    expect(onCommit).toHaveBeenCalledWith('上海', key === 'Enter' ? 'enter' : 'tab', {
+      dirty: true,
+      ...(key === 'Tab' && { direction: 1 })
+    })
+  })
+
+  it.each(['close edit', 'change token', 'blur'])('does not retain IME ownership after %s', (transition) => {
+    const onCommit = vi.fn()
+    const { rerender } = render(
+      <PromptVariableToken token={promptVariableToken} selected editing onCommit={onCommit} />
+    )
+    fireEvent.compositionStart(screen.getByRole('textbox'))
+    if (transition === 'blur') fireEvent.blur(screen.getByRole('textbox'))
+    if (transition === 'close edit') {
+      rerender(<PromptVariableToken token={promptVariableToken} selected editing={false} onCommit={onCommit} />)
+    }
+    const nextToken =
+      transition === 'change token' ? { ...promptVariableToken, id: 'next-variable' } : promptVariableToken
+    rerender(<PromptVariableToken token={nextToken} selected editing onCommit={onCommit} />)
+    const input = screen.getByRole('textbox')
+    fireEvent.change(input, { target: { value: '上海' } })
+    fireEvent.keyDown(input, { key: 'Enter', keyCode: 13, isComposing: false })
+    expect(onCommit).toHaveBeenCalledWith('上海', 'enter', { dirty: true })
+  })
+
   it('does not enter prompt variable editing from selection alone', async () => {
     let editor: Editor | null = null
     render(<ComposerEditorHarness onEditor={(nextEditor) => (editor = nextEditor)} />)

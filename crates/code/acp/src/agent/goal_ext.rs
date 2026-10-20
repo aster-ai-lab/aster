@@ -287,12 +287,36 @@ impl A3sCodeAgent {
             Command::Control(command) => reply(session.apply_goal_control(command)),
             Command::Wait(command) => reply(session.apply_goal_wait(command)),
             // A policy session's create command needs the digest its Run admitted.
-            Command::State => reply(session.goal_definition().and_then(|definition| {
-                Ok(serde_json::json!({
+            Command::State => {
+                let definition = session
+                    .goal_definition()
+                    .map_err(|error| acp::Error::invalid_params().data(error.to_string()))?;
+                let tick = match definition.as_ref() {
+                    Some(definition) if definition.state != goal::GoalState::Cancelled => {
+                        // Preview the exact captured revision. Concurrent writes cause refusal, not a mixed snapshot.
+                        let command = goal::GoalControlCommandV1 {
+                            kind: goal::GoalCommandKindV1::Tick,
+                            operation_id: format!("state-preview-{}", uuid::Uuid::new_v4()),
+                            goal_id: definition.binding.goal_id.clone(),
+                            session_id: definition.binding.session_id.clone(),
+                            workspace: definition.binding.workspace.clone(),
+                            work_policy_digest: definition.binding.work_policy_digest.clone(),
+                            expected_goal_revision: definition.binding.goal_revision,
+                            expected_plan_revision: definition.plan_revision,
+                            expected_goal_sequence: definition.goal_sequence,
+                        };
+                        Some(session.preview_goal_tick(&command).await.map_err(|error| {
+                            acp::Error::invalid_params().data(error.to_string())
+                        })?)
+                    }
+                    _ => None,
+                };
+                reply(Ok(serde_json::json!({
                     "definition": definition,
-                    "work_policy_digest": session.work_policy_digest()?,
-                }))
-            })),
+                    "work_policy_digest": session.work_policy_digest().map_err(|error| acp::Error::invalid_params().data(error.to_string()))?,
+                    "tick": tick,
+                })))
+            }
         }?;
         if writes {
             self.goals.lock().await.remove(&session_id);

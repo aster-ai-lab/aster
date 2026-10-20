@@ -1,0 +1,162 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - import "/Users/roylin/code/aster/apps/studio/vitest.config" without a file extension (../../target/evaluations/studio-work-alignment/ux-baseline.config.ts:1:22). Add the file extension
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/studio
+
+ ❯ |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx (78 tests | 6 failed) 2265ms
+   ❯ AgentPage (78)
+     × shows both agent and session panes by default when sessions are on the right 8ms
+     × keeps a sidebar toggle beside agent resource search so a collapsed pane can be reopened 20ms
+     × collapses the agent sidebar when the shared shell requests it 3ms
+     × temporarily hides and restores the agent sidebar for responsive auto-collapse without changing the user preference 3ms
+     × keeps the agent sidebar open after selecting a session from the sidebar 15ms
+     × keeps detached session sidebar state local, default-closed, and fixed on the left 22ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > shows both agent and session panes by default when sessions are on the right
+Error: expect(element).toHaveTextContent()
+
+Expected element to have text content:
+  true
+Received:
+  false
+ ❯ src/renderer/pages/agents/__tests__/AgentPage.test.tsx:999:45
+    997|     render(<AgentPage />)
+    998|
+    999|     expect(screen.getByTestId('pane-open')).toHaveTextContent('true')
+       |                                             ^
+    1000|     expect(screen.getByTestId('agent-resource-list')).toHaveAttribute(…
+    1001|     expect(screen.getByTestId('agent-resource-list')).toHaveAttribute(…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > keeps a sidebar toggle beside agent resource search so a collapsed pane can be reopened
+Error: expect(element).toHaveTextContent()
+
+Expected element to have text content:
+  true
+Received:
+  false
+ ❯ src/renderer/pages/agents/__tests__/AgentPage.test.tsx:1381:61
+    1379|
+    1380|     const shell = screen.getByTestId('agent-conversation-page-shell')
+    1381|     expect(within(shell).getByTestId('resource-pane-open')).toHaveText…
+       |                                                             ^
+    1382|
+    1383|     const toolbarLeading = within(shell).getByTestId('resource-toolbar…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > collapses the agent sidebar when the shared shell requests it
+Error: expect(element).toHaveTextContent()
+
+Expected element to have text content:
+  true
+Received:
+  false
+ ❯ src/renderer/pages/agents/__tests__/AgentPage.test.tsx:2492:45
+    2490|     render(<AgentPage />)
+    2491|
+    2492|     expect(screen.getByTestId('pane-open')).toHaveTextContent('true')
+       |                                             ^
+    2493|
+    2494|     fireEvent.click(screen.getByRole('button', { name: 'Collapse pane'…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > temporarily hides and restores the agent sidebar for responsive auto-collapse without changing the user preference
+Error: expect(element).toHaveTextContent()
+
+Expected element to have text content:
+  true
+Received:
+  false
+ ❯ src/renderer/pages/agents/__tests__/AgentPage.test.tsx:2504:45
+    2502|     render(<AgentPage />)
+    2503|
+    2504|     expect(screen.getByTestId('pane-open')).toHaveTextContent('true')
+       |                                             ^
+    2505|
+    2506|     fireEvent.click(screen.getByRole('button', { name: 'Auto collapse …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > keeps the agent sidebar open after selecting a session from the sidebar
+Error: expect(element).toHaveTextContent()
+
+Expected element to have text content:
+  true
+Received:
+  false
+ ❯ src/renderer/pages/agents/__tests__/AgentPage.test.tsx:2528:45
+    2526|     await waitFor(() => expect(agentPageMocks.activeSessionOptions?.ac…
+    2527|     expect(agentPageMocks.setShowSidebar).not.toHaveBeenCalledWith(fal…
+    2528|     expect(screen.getByTestId('pane-open')).toHaveTextContent('true')
+       |                                             ^
+    2529|   })
+    2530|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  |renderer| src/renderer/pages/agents/__tests__/AgentPage.test.tsx > AgentPage > keeps detached session sidebar state local, default-closed, and fixed on the left
+Error: expect(element).toHaveTextContent()
+
+Expected element to have text content:
+  true
+Received:
+  false
+ ❯ src/renderer/pages/agents/__tests__/AgentPage.test.tsx:2554:45
+    2552|
+    2553|     fireEvent.click(screen.getByRole('button', { name: 'Toggle sidebar…
+    2554|     expect(screen.getByTestId('pane-open')).toHaveTextContent('true')
+       |                                             ^
+    2555|
+    2556|     fireEvent.click(screen.getByRole('button', { name: 'Select session…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 72 passed (78)
+   Start at  21:37:09
+   Duration  11.30s (transform 47%, import 30%, tests 20%, environment 2%, setup 1%)
+
+  Transform  |renderer| transforming modules took 5.25s · 47% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+

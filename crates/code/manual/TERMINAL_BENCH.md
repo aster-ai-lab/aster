@@ -86,6 +86,13 @@ instead of the graded workspace, and `--result-file` writes the same
 `a3s.code.terminal-bench-result.v1` record. Without `--unattended` the agent is
 unchanged.
 
+With no trusted `goal_control` override, bound-goal continuation stops after
+3 settled slices without an observed workspace mutation, within the run's
+1000-slice ceiling and deadline. An unfinished goal stopped at this boundary
+writes `failed` / `execution_failed`, with `goal.continuation_stopped` and the
+next decision in `lastError`. A gate-verified turn is not reported as a completed
+goal. Explicit host ACL bounds and `--no-goal-continuation` remain available.
+
 The ACP lane builds only inside the A3S OS monorepo (`kense-labs/os`), from its
 `apps/code` submodule. `a3s-code-acp` depends on `a3s-okf` and
 `a3s-use-reconcile`, which live in that monorepo's `crates/` and are not on

@@ -50,16 +50,20 @@ are not permission to edit another session's work.
 
 ## Completion ledger
 
-- [ ] 1 Research permission restoration
-- [ ] 2 Model and effort permission preservation
-- [ ] 3 Honest bounded file observation
-- [ ] 4 Background live / replay parity
-- [ ] 5 Refused mode switch stops prompt
-- [ ] 6 Unknown session admission
-- [ ] 7 Closed mode parsing
-- [ ] 8 Shared host permission contract
-- [ ] 9 Stdio option forwarding
-- [ ] 10 Batch lifecycle evidence retention
-- [ ] 11 Paired delivery and install recovery
-- [ ] 12 Typed reconciliation errors
-- [ ] Final adversarial review, build and required checks
+- [x] 1 Research permission restoration
+- [x] 2 Model and effort permission preservation
+- [x] 3 Honest bounded file observation
+- [x] 4 Background live / replay parity
+- [x] 5 Refused mode switch stops prompt
+- [x] 6 Unknown session admission
+- [x] 7 Closed mode parsing
+- [x] 8 Shared host permission contract
+- [x] 9 Stdio option forwarding
+- [x] 10 Batch lifecycle evidence retention
+- [x] 11 Paired delivery and install recovery
+- [x] 12 Typed reconciliation errors
+- [x] Final adversarial review, build and required checks
+
+Acceptance and expanded baseline failures are recorded in [OUTCOME.md](OUTCOME.md).
+All 12 original findings are closed; [FOLLOWUPS.md](FOLLOWUPS.md) records the
+separate pre-existing native contracts, Git attribution failure and instability.

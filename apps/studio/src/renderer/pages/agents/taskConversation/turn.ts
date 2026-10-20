@@ -9,6 +9,7 @@ import {
 import type { CherryMessagePart } from '@shared/data/types/message'
 
 import { extractTaskCodeDiff, isMutation, type TaskCodeDiff } from './taskDiff'
+import { taskPlanSteps, type TaskPlanStep } from './taskPlanProjection'
 
 export type TaskToolState = 'pending' | 'running' | 'success' | 'error'
 
@@ -22,6 +23,7 @@ export type TaskTurnItem =
       partIndex?: number
       input?: Record<string, unknown>
     }
+  | { kind: 'plan'; id: string; steps: TaskPlanStep[] }
   | { kind: 'note'; id: string; text: string }
   | { kind: 'block'; id: string; index: number; text?: string; quiet?: boolean }
 
@@ -32,6 +34,7 @@ const HIDDEN_TURN_PARTS = new Set([
   'source-document',
   'data-citation',
   'data-agent-task-event',
+  'data-task-plan',
   'data-knowledge-scope',
   'data-review-source',
   'data-review-progress',
@@ -230,6 +233,13 @@ export function projectTaskConversationTurn(parts: readonly CherryMessagePart[],
       continue
     }
 
+    if (isToolUIPart(part) && part.state === 'output-available') {
+      const steps = taskPlanSteps(part.input)
+      if (steps) {
+        items.push({ kind: 'plan', id: `plan-${index}`, steps })
+        continue
+      }
+    }
     const tool = readStructuredTool(part, index)
     if (tool) {
       if (!asksShownForm(part, formSpecs)) items.push(tool)

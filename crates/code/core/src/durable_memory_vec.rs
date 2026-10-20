@@ -16,7 +16,7 @@ use a3s_vec::{Collection, CollectionSchema, DataType, Doc, FieldSchema, IndexPar
 use anyhow::{anyhow, Result};
 use chrono::{DateTime, Utc};
 use std::path::{Path, PathBuf};
-use std::sync::OnceLock;
+use std::sync::{Arc, OnceLock, Weak};
 
 static ENGINE_INIT: OnceLock<Result<(), String>> = OnceLock::new();
 
@@ -303,8 +303,15 @@ impl VecMemoryStore {
 /// Opens the durable a3s-vec collection on the first memory operation.
 pub struct LazyFileMemoryStore {
     directory: PathBuf,
-    store: tokio::sync::OnceCell<VecMemoryStore>,
+    store: tokio::sync::OnceCell<Arc<VecMemoryStore>>,
 }
+
+// Lazy session adapters share one engine handle in this process. Weak entries
+// do not keep a collection open after the last session releases it. Direct
+// VecMemoryStore::open callers retain their exclusive-open contract.
+static SHARED_STORES: std::sync::LazyLock<
+    std::sync::Mutex<std::collections::HashMap<PathBuf, Weak<VecMemoryStore>>>,
+> = std::sync::LazyLock::new(|| std::sync::Mutex::new(std::collections::HashMap::new()));
 
 impl LazyFileMemoryStore {
     pub fn new(directory: impl Into<PathBuf>) -> Self {
@@ -317,37 +324,9 @@ impl LazyFileMemoryStore {
     async fn inner(&self) -> Result<&VecMemoryStore> {
         let directory = self.directory.clone();
         self.store
-            .get_or_try_init(|| async move {
-                let store = VecMemoryStore::open(&directory)?;
-                let legacy_items = directory.join("items");
-                let legacy_index = directory.join("index.json");
-                if legacy_items.is_dir() {
-                    match store.import_legacy_json_items(&legacy_items) {
-                        Ok(imported) if imported > 0 => {
-                            tracing::info!(
-                                imported,
-                                dir = %directory.display(),
-                                "imported legacy JSON memories into a3s-vec"
-                            );
-                        }
-                        Ok(_) => {}
-                        Err(error) => {
-                            tracing::warn!(
-                                error = %error,
-                                "legacy memory import failed; legacy files kept"
-                            );
-                            return Ok::<VecMemoryStore, anyhow::Error>(store);
-                        }
-                    }
-                    let _ = std::fs::rename(&legacy_items, directory.join("items.imported"));
-                    if legacy_index.is_file() {
-                        let _ =
-                            std::fs::rename(&legacy_index, directory.join("index.json.imported"));
-                    }
-                }
-                Ok::<VecMemoryStore, anyhow::Error>(store)
-            })
+            .get_or_try_init(|| async move { Self::shared(&directory) })
             .await
+            .map(Arc::as_ref)
             .map_err(|error| {
                 anyhow!(
                     "failed to initialize a3s-vec Memory store at {}: {error:#}",
@@ -356,9 +335,74 @@ impl LazyFileMemoryStore {
             })
     }
 
+    fn shared(directory: &Path) -> Result<Arc<VecMemoryStore>> {
+        fs_err_create_dir_all(directory)?;
+        let canonical = directory.canonicalize().map_err(|error| {
+            anyhow!("canonicalize memory root {}: {error}", directory.display())
+        })?;
+        let mut stores = SHARED_STORES
+            .lock()
+            .map_err(|_| anyhow!("shared memory registry is poisoned"))?;
+        stores.retain(|_, store| store.strong_count() > 0);
+        if let Some(store) = stores.get(&canonical).and_then(Weak::upgrade) {
+            return Ok(store);
+        }
+        // Open and import are synchronous. Publish only after both finish so
+        // simultaneous first use cannot open or import the same collection twice.
+        // No synchronous registry guard is held across an await.
+        let store = Arc::new(Self::open_and_import(&canonical)?);
+        stores.insert(canonical, Arc::downgrade(&store));
+        Ok(store)
+    }
+
+    fn open_and_import(directory: &Path) -> Result<VecMemoryStore> {
+        let store = VecMemoryStore::open(directory)?;
+        let legacy_items = directory.join("items");
+        let legacy_index = directory.join("index.json");
+        if legacy_items.is_dir() {
+            match store.import_legacy_json_items(&legacy_items) {
+                Ok(imported) if imported > 0 => {
+                    tracing::info!(
+                        imported,
+                        dir = %directory.display(),
+                        "imported legacy JSON memories into a3s-vec"
+                    );
+                }
+                Ok(_) => {}
+                Err(error) => {
+                    tracing::warn!(
+                        error = %error,
+                        "legacy memory import failed; legacy files kept"
+                    );
+                    return Ok(store);
+                }
+            }
+            let _ = std::fs::rename(&legacy_items, directory.join("items.imported"));
+            if legacy_index.is_file() {
+                let _ = std::fs::rename(&legacy_index, directory.join("index.json.imported"));
+            }
+        }
+        Ok(store)
+    }
+
     #[cfg(test)]
     fn is_initialized(&self) -> bool {
         self.store.get().is_some()
+    }
+}
+
+impl Drop for LazyFileMemoryStore {
+    fn drop(&mut self) {
+        let Some(store) = self.store.take() else {
+            return;
+        };
+        // All owned shared handles stay in lazy cells. Serialize the last
+        // release with upgrade/open, including the engine and lease destructor;
+        // a dead Weak must never race an otherwise still-open collection.
+        let _registry = SHARED_STORES
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        drop(store);
     }
 }
 
@@ -605,20 +649,102 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn a_second_lazy_store_is_refused_while_already_open() {
+    async fn lazy_stores_share_the_canonical_collection_until_the_last_handle_drops() {
         let root = tempfile::tempdir().unwrap();
         let memory_dir = root.path().join("memory");
         let first = LazyFileMemoryStore::new(&memory_dir);
-        assert_eq!(MemoryStore::count(&first).await.unwrap(), 0);
-        let second = LazyFileMemoryStore::new(&memory_dir);
-        let error = match MemoryStore::count(&second).await {
-            Ok(count) => panic!("second store opened and counted {count}"),
-            Err(error) => error,
-        };
-        assert!(error.to_string().contains("already open"), "{error}");
+        let item = MemoryItem::new("shared collection handoff fact");
+        MemoryStore::store(&first, item.clone()).await.unwrap();
+        let second = LazyFileMemoryStore::new(memory_dir.join("."));
+        assert_eq!(
+            MemoryStore::retrieve(&second, &item.id)
+                .await
+                .unwrap()
+                .unwrap()
+                .content,
+            item.content
+        );
         drop(first);
+        assert_eq!(MemoryStore::count(&second).await.unwrap(), 1);
+        assert!(VecMemoryStore::open(&memory_dir).is_err());
+        drop(second);
         let third = LazyFileMemoryStore::new(&memory_dir);
-        assert_eq!(MemoryStore::count(&third).await.unwrap(), 0);
+        assert_eq!(MemoryStore::count(&third).await.unwrap(), 1);
+    }
+
+    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+    async fn concurrent_lazy_first_use_shares_one_open_and_retries_a_failed_open() {
+        let root = tempfile::tempdir().unwrap();
+        let memory_dir = root.path().join("memory");
+        let owner = VecMemoryStore::open(&memory_dir).unwrap();
+        let first = std::sync::Arc::new(LazyFileMemoryStore::new(&memory_dir));
+        let legacy_items = memory_dir.join("items");
+        std::fs::create_dir_all(&legacy_items).unwrap();
+        let legacy = MemoryItem::new("legacy atomic import fact");
+        std::fs::write(
+            legacy_items.join(format!("{}.json", legacy.id)),
+            serde_json::to_vec(&legacy).unwrap(),
+        )
+        .unwrap();
+        assert!(MemoryStore::count(first.as_ref()).await.is_err());
+        assert!(!first.is_initialized());
+        assert!(legacy_items.is_dir());
+        drop(owner);
+        let second = std::sync::Arc::new(LazyFileMemoryStore::new(&memory_dir));
+        let barrier = std::sync::Arc::new(tokio::sync::Barrier::new(2));
+        let run = |store: std::sync::Arc<LazyFileMemoryStore>| {
+            let barrier = barrier.clone();
+            tokio::spawn(async move {
+                barrier.wait().await;
+                MemoryStore::count(store.as_ref()).await
+            })
+        };
+        let (left, right) = tokio::join!(run(first.clone()), run(second.clone()));
+        assert_eq!(left.unwrap().unwrap(), 1);
+        assert_eq!(right.unwrap().unwrap(), 1);
+        assert!(Arc::ptr_eq(
+            first.store.get().unwrap(),
+            second.store.get().unwrap()
+        ));
+        assert!(memory_dir.join("items.imported").is_dir());
+        assert!(!legacy_items.exists());
+        MemoryStore::store(first.as_ref(), MemoryItem::new("concurrent shared fact"))
+            .await
+            .unwrap();
+        assert_eq!(
+            MemoryStore::search(second.as_ref(), "concurrent", 1)
+                .await
+                .unwrap()
+                .len(),
+            1
+        );
+    }
+
+    #[tokio::test]
+    async fn last_lazy_release_and_new_first_use_share_or_reopen_without_a_lock_collision() {
+        let root = tempfile::tempdir().unwrap();
+        let memory_dir = root.path().join("memory");
+        for _ in 0..16 {
+            let current = LazyFileMemoryStore::new(&memory_dir);
+            assert_eq!(MemoryStore::count(&current).await.unwrap(), 0);
+            let barrier = Arc::new(std::sync::Barrier::new(2));
+            let releasing = barrier.clone();
+            let (sender, receiver) = std::sync::mpsc::channel();
+            let dropper = std::thread::spawn(move || {
+                releasing.wait();
+                drop(current);
+                sender.send(()).unwrap();
+            });
+            barrier.wait();
+            let replacement = LazyFileMemoryStore::new(&memory_dir);
+            assert_eq!(MemoryStore::count(&replacement).await.unwrap(), 0);
+            receiver
+                .recv_timeout(std::time::Duration::from_secs(2))
+                .unwrap();
+            dropper.join().unwrap();
+            drop(replacement);
+        }
+        drop(VecMemoryStore::open(&memory_dir).unwrap());
     }
 
     fn create_embedding_collection(memory_dir: &std::path::Path, dimension: u32) -> String {

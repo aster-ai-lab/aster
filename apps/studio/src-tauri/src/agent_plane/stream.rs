@@ -136,6 +136,15 @@ impl TurnStream {
         chunks
     }
 
+    pub(super) fn budget_stop(&mut self) -> Vec<Value> {
+        let mut chunks = self.ensure_started();
+        self.close_block(&mut chunks);
+        let part = json!({"type":"data-budget-stop","id":"read-only-evidence","data":{"reason":"read_only_evidence"}});
+        self.parts.push(part.clone());
+        chunks.push(part);
+        chunks
+    }
+
     pub fn approval_request(&mut self, approval_id: &str, tool_call_id: &str) -> Vec<Value> {
         let mut chunks = self.ensure_started();
         self.close_block(&mut chunks);

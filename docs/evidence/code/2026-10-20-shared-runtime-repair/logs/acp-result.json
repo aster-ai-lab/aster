@@ -1,0 +1,76 @@
+{
+  "unknown_mode_accepted": {
+    "jsonrpc": "2.0",
+    "id": 4,
+    "error": {
+      "code": -32602,
+      "message": "Invalid params",
+      "data": "unknown permission posture \"misspelled-mode\"; expected one of: default, plan, auto, yolo"
+    }
+  },
+  "before_model_change": {
+    "jsonrpc": "2.0",
+    "id": 6,
+    "result": {
+      "result": {
+        "sessionId": "f186b6ba-d19d-4eeb-ba16-09b633c22676",
+        "cwd": "/Users/roylin/code/aster/.tmp/three-layer-audit.xpvRdQ/final-wire/modes/acp-workspace",
+        "permissionPosture": "plan",
+        "model": "mock/a",
+        "resolvedModelId": "mock/a",
+        "modelFingerprint": null,
+        "turns": 0,
+        "turnIndex": 0,
+        "context": {
+          "used": 0,
+          "total": 128000,
+          "usagePct": 0,
+          "turnCount": 0,
+          "freeTokens": 128000
+        }
+      }
+    }
+  },
+  "after_model_change": {
+    "jsonrpc": "2.0",
+    "id": 8,
+    "result": {
+      "result": {
+        "sessionId": "f186b6ba-d19d-4eeb-ba16-09b633c22676",
+        "cwd": "/Users/roylin/code/aster/.tmp/three-layer-audit.xpvRdQ/final-wire/modes/acp-workspace",
+        "permissionPosture": "plan",
+        "model": "mock/b",
+        "resolvedModelId": "mock/b",
+        "modelFingerprint": null,
+        "turns": 0,
+        "turnIndex": 0,
+        "context": {
+          "used": 0,
+          "total": 128000,
+          "usagePct": 0,
+          "turnCount": 0,
+          "freeTokens": 128000
+        }
+      }
+    }
+  },
+  "unknown_session_model_change": {
+    "jsonrpc": "2.0",
+    "id": 9,
+    "error": {
+      "code": -32602,
+      "message": "Invalid params",
+      "data": "unknown session id"
+    }
+  },
+  "unknown_session_info": {
+    "jsonrpc": "2.0",
+    "id": 10,
+    "result": {
+      "result": null,
+      "error": "unknown session id"
+    }
+  },
+  "new_session_has_modes": true,
+  "yolo_seed_reported_posture": "yolo"
+}

@@ -1,0 +1,28 @@
+{
+  "sessionId": "01a15b83-4598-75aa-848d-e359d7208230",
+  "workspace_confirmed": "/Users/roylin/code/aster/target/evaluations/studio-work-alignment/gui-1021b/workspace",
+  "counts": {
+    "requests": 18,
+    "streams": 1,
+    "auxiliary": 1
+  },
+  "message_top_keys": [
+    "items"
+  ],
+  "messages": [
+    {
+      "id": "01a15b83-c471-7601-ac82-73f7d904bcfc",
+      "role": "assistant",
+      "status": "success",
+      "fixed_reply_marker_persisted": true
+    },
+    {
+      "id": "01a15b83-c471-7601-ac82-73f6a1e37948",
+      "role": "user",
+      "status": "success",
+      "fixed_reply_marker_persisted": false
+    }
+  ],
+  "attach_status": "not-found",
+  "has_active_execution": false
+}

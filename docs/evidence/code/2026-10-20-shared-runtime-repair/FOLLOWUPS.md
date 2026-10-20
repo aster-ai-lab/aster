@@ -44,3 +44,19 @@ suite is green.
 
 Both were reproduced alone. Their source owners and existing guards remain
 unchanged.
+
+## Concurrent source changes at final validation
+
+The latest whole-workspace format check fails on in-flight edits made after
+the earlier format pass, outside the original 12 repairs:
+
+- crates/code/acp/src/agent/reasoning_transport_tests.rs
+- crates/code/acp/src/agent/session_setup_tests.rs
+- crates/code/core/src/durable_memory_vec.rs
+- crates/terminal/crates/codegen/a3s-code-pager/src/headless_tests.rs
+
+These are not classified as failures at the original starting commit. Their
+changes were preserved. The final receipt compatibility and TUI argument-test
+files pass scoped rustfmt checks with their owning editions. See the
+[full format output](logs/repair-fmt-final.log) and
+[scoped commands / results](logs/final-scope-format.json).

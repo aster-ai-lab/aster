@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "just",
+    "build-studio"
+  ],
+  "CARGO_TARGET_DIR": "/Users/roylin/code/aster/target/studio-macos-alignment",
+  "rc": 0,
+  "status": "completed",
+  "elapsed": 166.77135610580444,
+  "scope": "Canonical root recipe and pinned workspace, independent output/cache; Cargo validates seeded artifacts"
+}

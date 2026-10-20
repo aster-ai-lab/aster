@@ -1,0 +1,276 @@
+{
+  "kind": "r4-installed-native-identity-for-r3-negative-reuse",
+  "app_commit": "9ccb0ea27ee2a19dd63506f3d5ed79be7a88856869b74a7fe74231d2378410af",
+  "r3_negative_commit": "9976324975943ee39ae5727d6c6f935b2d50e98bc1954992d7e9deda09124776",
+  "stage_files": "/aster/target/worktrees/kylin-ime-hardening-20261020/apps/work/dist/kylin/flatpak-build/files",
+  "installed_files": "/root/.local/share/flatpak/app/dev.a3s.AsterDream/x86_64/50/9ccb0ea27ee2a19dd63506f3d5ed79be7a88856869b74a7fe74231d2378410af/files",
+  "critical_files": [
+    {
+      "path": "bin/aster-dream",
+      "sha256": "5ee63ca6bb54fa1d347e45e063b78884adf1a965d65cc20c5d7d9cffe52023d1",
+      "bytes": 79672672,
+      "stage_mode": 493,
+      "installed_mode": 493,
+      "r3_sha256": "d19362ae9e5fb405c57a4e6a1b7027e97e46effbf28f1cfc82f0976c86a7d0f2",
+      "r13_host_rebuild_separately_identified": true
+    },
+    {
+      "path": "bin/agent/a3s-code-acp",
+      "sha256": "6d7319ca552d2a2e60436b3f226dd416cea54169511222f83c1b1d0c99a31914",
+      "bytes": 73697952,
+      "stage_mode": 493,
+      "installed_mode": 493,
+      "r3_sha256": "6d7319ca552d2a2e60436b3f226dd416cea54169511222f83c1b1d0c99a31914",
+      "r3_identity_unchanged": true
+    },
+    {
+      "path": "bin/a3s-office",
+      "sha256": "c5772e1ce0b985191a507fc4abe7d6edf1e4390fde1fe153ba9e8d8dccfcd09e",
+      "bytes": 23240056,
+      "stage_mode": 493,
+      "installed_mode": 493,
+      "r3_sha256": "c5772e1ce0b985191a507fc4abe7d6edf1e4390fde1fe153ba9e8d8dccfcd09e",
+      "r3_identity_unchanged": true
+    },
+    {
+      "path": "bin/node",
+      "sha256": "41fec36e5aaf730af1595aa1d9584b092986a7911a5711c7dadba646d9fb1343",
+      "bytes": 108684080,
+      "stage_mode": 493,
+      "installed_mode": 493,
+      "r3_sha256": "41fec36e5aaf730af1595aa1d9584b092986a7911a5711c7dadba646d9fb1343",
+      "r3_identity_unchanged": true
+    },
+    {
+      "path": "bin/uv",
+      "sha256": "769c24a5caef2e161adbad02cb1dc4a43235f9fd4b62d41aa3142f379630947f",
+      "bytes": 37853280,
+      "stage_mode": 493,
+      "installed_mode": 493,
+      "r3_sha256": "769c24a5caef2e161adbad02cb1dc4a43235f9fd4b62d41aa3142f379630947f",
+      "r3_identity_unchanged": true
+    },
+    {
+      "path": "bin/kylin-im-backend",
+      "sha256": "34371bbf987e4620871845371734e8cdc11154bba4048b5688cd3acf4ad7f230",
+      "bytes": 14472,
+      "stage_mode": 493,
+      "installed_mode": 493,
+      "r3_sha256": "34371bbf987e4620871845371734e8cdc11154bba4048b5688cd3acf4ad7f230",
+      "r3_identity_unchanged": true
+    },
+    {
+      "path": "lib/im/fcitx4/im-fcitx.so",
+      "sha256": "73503354d8594dd03feb4cb27ad7a5e7f17a455eda58e2ea2e3138e8ed2d0734",
+      "bytes": 40176,
+      "stage_mode": 493,
+      "installed_mode": 493,
+      "r3_sha256": "73503354d8594dd03feb4cb27ad7a5e7f17a455eda58e2ea2e3138e8ed2d0734",
+      "r3_identity_unchanged": true
+    },
+    {
+      "path": "lib/im/fcitx4/libfcitx-gclient.so.1",
+      "sha256": "7db5cc21ed9c62933e4785b221773027b64d091e40b2d92a9a7d4b268fe091d3",
+      "bytes": 60400,
+      "stage_mode": 493,
+      "installed_mode": 493,
+      "r3_sha256": "7db5cc21ed9c62933e4785b221773027b64d091e40b2d92a9a7d4b268fe091d3",
+      "r3_identity_unchanged": true
+    },
+    {
+      "path": "lib/im/fcitx4/libfcitx-utils.so.0",
+      "sha256": "10718ef3263b1b2b386e1fda073578526bbad3466acee01c9ef5ff69b2519cf0",
+      "bytes": 89048,
+      "stage_mode": 493,
+      "installed_mode": 493,
+      "r3_sha256": "10718ef3263b1b2b386e1fda073578526bbad3466acee01c9ef5ff69b2519cf0",
+      "r3_identity_unchanged": true
+    },
+    {
+      "path": "lib/im/fcitx5/im-fcitx5.so",
+      "sha256": "1d73f6d8d82abd06d2e8974842b5cf67baf7e1967f833e59391b99b5ef5a8346",
+      "bytes": 144184,
+      "stage_mode": 493,
+      "installed_mode": 493,
+      "r3_sha256": "1d73f6d8d82abd06d2e8974842b5cf67baf7e1967f833e59391b99b5ef5a8346",
+      "r3_identity_unchanged": true
+    },
+    {
+      "path": "bin/kylin-launch",
+      "sha256": "6a6f459d0b7561faf7de2b400012e10f5e4d34342861f25ac896f052f37a9f84",
+      "bytes": 4980,
+      "stage_mode": 493,
+      "installed_mode": 493,
+      "r3_sha256": "6a6f459d0b7561faf7de2b400012e10f5e4d34342861f25ac896f052f37a9f84",
+      "r3_identity_unchanged": true
+    },
+    {
+      "path": "share/applications/dev.a3s.AsterDream.desktop",
+      "sha256": "c4ef54cfb91ace4652c431a1f84cee77a4dd72e55f2284d7f6a1e1ad4a0bc972",
+      "bytes": 290,
+      "stage_mode": 420,
+      "installed_mode": 420,
+      "r3_sha256": "c4ef54cfb91ace4652c431a1f84cee77a4dd72e55f2284d7f6a1e1ad4a0bc972",
+      "r3_identity_unchanged": true
+    },
+    {
+      "path": "share/licenses/fcitx4/COPYING",
+      "sha256": "2c8fb343a0416cac19195886aec4075c54da075a6281437552895bb0abf511de",
+      "bytes": 17989,
+      "stage_mode": 420,
+      "installed_mode": 420,
+      "r3_sha256": "2c8fb343a0416cac19195886aec4075c54da075a6281437552895bb0abf511de",
+      "r3_identity_unchanged": true
+    },
+    {
+      "path": "share/licenses/fcitx4/fcitx-4.2.9.9.tar.xz",
+      "sha256": "307bddeabbec383eb27c4ea222d9f71d8d9011d7942f4010368e5bc3ca7440a1",
+      "bytes": 1708908,
+      "stage_mode": 420,
+      "installed_mode": 420,
+      "r3_sha256": "307bddeabbec383eb27c4ea222d9f71d8d9011d7942f4010368e5bc3ca7440a1",
+      "r3_identity_unchanged": true
+    },
+    {
+      "path": "share/licenses/fcitx4/build-fcitx4-immodule.sh",
+      "sha256": "a1ec5ab09116e53a7f472cddfe913136f4b8f7ce6edcd99c0453f2763da68824",
+      "bytes": 2320,
+      "stage_mode": 420,
+      "installed_mode": 420,
+      "r3_sha256": "a1ec5ab09116e53a7f472cddfe913136f4b8f7ce6edcd99c0453f2763da68824",
+      "r3_identity_unchanged": true
+    },
+    {
+      "path": "share/licenses/fcitx5-gtk/LGPL-2.1-or-later.txt",
+      "sha256": "1ccf09bf2f598308df4bed9cd8e9657dc5cd0973d2800318f2e241486e2edf3f",
+      "bytes": 25906,
+      "stage_mode": 420,
+      "installed_mode": 420,
+      "r3_sha256": "1ccf09bf2f598308df4bed9cd8e9657dc5cd0973d2800318f2e241486e2edf3f",
+      "r3_identity_unchanged": true
+    },
+    {
+      "path": "share/licenses/aster-dream/kylin_im_backend.c",
+      "sha256": "637ed80e13c8f16028d761a87e46dca670f323ba04e93eb0284eb94cee4b6d77",
+      "bytes": 877,
+      "stage_mode": 420,
+      "installed_mode": 420,
+      "r3_sha256": "637ed80e13c8f16028d761a87e46dca670f323ba04e93eb0284eb94cee4b6d77",
+      "r3_identity_unchanged": true
+    },
+    {
+      "path": "share/licenses/fcitx4/fcitx4_legacy_portal.patch",
+      "sha256": "a5330e62b2fa668920261857593b6efc38016cbcb72b4535e96091ac9e7d9755",
+      "bytes": 2151,
+      "stage_mode": 420,
+      "installed_mode": 420,
+      "r3_sha256": "a5330e62b2fa668920261857593b6efc38016cbcb72b4535e96091ac9e7d9755",
+      "r3_identity_unchanged": true
+    },
+    {
+      "path": "share/icons/hicolor/128x128/apps/dev.a3s.AsterDream.png",
+      "sha256": "25441d90d03f871c2be512de6b52bafc340cd33404e9274b0424cca594478029",
+      "bytes": 11281,
+      "stage_mode": 438,
+      "installed_mode": 420,
+      "r3_sha256": "25441d90d03f871c2be512de6b52bafc340cd33404e9274b0424cca594478029",
+      "r3_identity_unchanged": true
+    },
+    {
+      "path": "lib/im/fcitx4/immodules.cache",
+      "sha256": "e21f6d8892167b282467597d219abfbf1087adefe3d52b33f5e5f77cc67b2502",
+      "bytes": 308,
+      "stage_mode": 438,
+      "installed_mode": 420,
+      "r3_sha256": "e21f6d8892167b282467597d219abfbf1087adefe3d52b33f5e5f77cc67b2502",
+      "r3_identity_unchanged": true
+    },
+    {
+      "path": "lib/im/fcitx4/module-id",
+      "sha256": "4eaa29bac0eb7a8c2f3566c7a9310399c1759381fe1c8f4e077c431f57092627",
+      "bytes": 6,
+      "stage_mode": 420,
+      "installed_mode": 420,
+      "r3_sha256": "4eaa29bac0eb7a8c2f3566c7a9310399c1759381fe1c8f4e077c431f57092627",
+      "r3_identity_unchanged": true
+    },
+    {
+      "path": "lib/im/fcitx5/immodules.cache",
+      "sha256": "cecde40247b0ce9bdc223ca5f3ca8342b537b839197a6941fbeb8b636728f22c",
+      "bytes": 390,
+      "stage_mode": 438,
+      "installed_mode": 420,
+      "r3_sha256": "cecde40247b0ce9bdc223ca5f3ca8342b537b839197a6941fbeb8b636728f22c",
+      "r3_identity_unchanged": true
+    },
+    {
+      "path": "lib/im/fcitx5/module-id",
+      "sha256": "4eaa29bac0eb7a8c2f3566c7a9310399c1759381fe1c8f4e077c431f57092627",
+      "bytes": 6,
+      "stage_mode": 438,
+      "installed_mode": 420,
+      "r3_sha256": "4eaa29bac0eb7a8c2f3566c7a9310399c1759381fe1c8f4e077c431f57092627",
+      "r3_identity_unchanged": true
+    }
+  ],
+  "unchanged_critical_non_host_count": 22,
+  "metadata_sha256": "fa8ffa59ec1534a75616b62dc440e6942f40c21de5cc3995fb693c79a7bfb957",
+  "installed_metadata_bytes_equal": true,
+  "session_bus_policy": {
+    "org.freedesktop.portal.FileChooser": "talk",
+    "org.freedesktop.portal.Fcitx": "talk",
+    "org.freedesktop.Notifications": "talk",
+    "org.fcitx.*": "talk",
+    "org.freedesktop.portal.Desktop": "talk",
+    "org.freedesktop.IBus": "talk",
+    "org.freedesktop.portal.Documents": "talk"
+  },
+  "harness_and_probe_sources": [
+    {
+      "path": "target/worktrees/kylin-ime-hardening-20261020/apps/work/scripts/kylin-flatpak/test-input-method.sh",
+      "sha256": "8b1ae50be30604084fc27b1288c316a9bdca80fd709c4da49fe664a5253bd01f",
+      "unchanged": true
+    },
+    {
+      "path": "target/worktrees/kylin-ime-hardening-20261020/apps/work/scripts/kylin-flatpak/gtk_input_probe.c",
+      "sha256": "506b6af6e683009933f0089b289f2aef2f19535239cd4b82ecf339f71b378c69",
+      "unchanged": true
+    },
+    {
+      "path": "target/worktrees/kylin-ime-hardening-20261020/apps/work/scripts/kylin-flatpak/fcitx_client_protocol_test.c",
+      "sha256": "ced6920541e3e14b90431a9fe1042e71ea6b5a7dfedc84401e4d4e19ca69e69a",
+      "unchanged": true
+    },
+    {
+      "path": "target/worktrees/kylin-ime-hardening-20261020/apps/work/scripts/kylin-flatpak/kylin_im_backend.c",
+      "sha256": "637ed80e13c8f16028d761a87e46dca670f323ba04e93eb0284eb94cee4b6d77",
+      "unchanged": true
+    }
+  ],
+  "resolved_runtime_files": "/root/.local/share/flatpak/runtime/org.gnome.Platform/x86_64/50/7e410fa0d429fcc34f2ddd0d9b6224f1435d8640fb9759801db4f02700542353/files",
+  "r3_negative_runtime_unchanged": true,
+  "r3_negative_fixture_manifest_sha256": "7d5578673f7d25ecb436e9a5b517d1125f017779942a174e7772d91dd3529ed8",
+  "installed_permission_reductions_from_stage": [
+    {
+      "path": "share/icons/hicolor/128x128/apps/dev.a3s.AsterDream.png",
+      "stage_mode_octal": "0o666",
+      "installed_mode_octal": "0o644"
+    },
+    {
+      "path": "lib/im/fcitx4/immodules.cache",
+      "stage_mode_octal": "0o666",
+      "installed_mode_octal": "0o644"
+    },
+    {
+      "path": "lib/im/fcitx5/immodules.cache",
+      "stage_mode_octal": "0o666",
+      "installed_mode_octal": "0o644"
+    },
+    {
+      "path": "lib/im/fcitx5/module-id",
+      "stage_mode_octal": "0o666",
+      "installed_mode_octal": "0o644"
+    }
+  ],
+  "permission_reduction_note": "Four data files retain bytes/read/execute bits and only lose group/other write bits on installation. R4 stage modes match the frozen R3 stage modes. Stage/installed modes are not claimed fully identical."
+}

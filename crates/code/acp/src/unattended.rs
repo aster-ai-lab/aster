@@ -100,8 +100,8 @@ impl Unattended {
     }
 
     /// The `goal_control` policy a goal launch needs when the ACL declares
-    /// none. Slices continue until the run deadline. One unfinished slice
-    /// does not exhaust the goal.
+    /// none. Productive slices can continue until the run deadline; three
+    /// settled slices without a workspace mutation stop automatic admission.
     pub fn goal_control(&self, now_unix_ms: u64) -> Result<Option<GoalContinuationPolicyV1>> {
         if !self.goal_continuation {
             return Ok(None);

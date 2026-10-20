@@ -1,0 +1,190 @@
+{
+  "result": "passed_with_explicit_environment_qualifications",
+  "scope": "Isolated installed WebKit GUI input and instant offline reply; not physical Kylin/CUA/authentication/security acceptance",
+  "runs": [
+    {
+      "run": "run-7fnFml",
+      "app_pid": 59076,
+      "expected_commit": "9ccb0ea27ee2a19dd63506f3d5ed79be7a88856869b74a7fe74231d2378410af",
+      "default_ime_environment": true,
+      "observer": true,
+      "dom_event_records": 447,
+      "renderer_errors": 0,
+      "stream_requests": 3,
+      "nonstream_title_requests": 3,
+      "candidate_stream_requests": 1,
+      "ime_state_checks": [
+        "2",
+        "2"
+      ],
+      "persisted_reply_count": 3,
+      "visible_reply_screenshots_manually_reviewed": [
+        "r4-modern-05",
+        "r4-modern-06",
+        "r4-modern-07",
+        "r4-modern-08",
+        "r4-modern-09",
+        "r4-modern-10",
+        "r4-modern-12"
+      ],
+      "wire_content_checks": [
+        {
+          "synthetic_text": "ime-plain-control",
+          "json_encoded_bytes": 19,
+          "sha256": "7a96f41d9aaa364873390331c64245a7ece1b2ae0012d7cf7edd36e555f4ecb5",
+          "wire_sequence": 2,
+          "matches": true
+        },
+        {
+          "synthetic_text": "你好abc好nihao",
+          "json_encoded_bytes": 19,
+          "sha256": "0b2e15142839f6a02607945c5d433e1ef73a8449f2a5b80a3f4e69f4a92b2f51",
+          "wire_sequence": 4,
+          "matches": true
+        },
+        {
+          "synthetic_text": "repeat-control",
+          "json_encoded_bytes": 16,
+          "sha256": "42c8edcadbf76aec15e5ce5e59f19c41920ef0f723e62dd948131c56b983ef5f",
+          "wire_sequence": 6,
+          "matches": true
+        }
+      ],
+      "natural_second_enter_after_composition_ms": 12472,
+      "held_enter": {
+        "first_repeat": false,
+        "later_repeat_true_count": 10,
+        "first_repeat_delay_ms": 663,
+        "stream_requests_added": 1
+      }
+    },
+    {
+      "run": "run-V6V5Mp",
+      "app_pid": 61374,
+      "expected_commit": "9ccb0ea27ee2a19dd63506f3d5ed79be7a88856869b74a7fe74231d2378410af",
+      "default_ime_environment": true,
+      "observer": true,
+      "dom_event_records": 277,
+      "renderer_errors": 0,
+      "stream_requests": 3,
+      "nonstream_title_requests": 3,
+      "candidate_stream_requests": 1,
+      "ime_state_checks": [
+        "2",
+        "2",
+        "2"
+      ],
+      "persisted_reply_count": 3,
+      "visible_reply_screenshots_manually_reviewed": [
+        "r4-old-05",
+        "r4-old-06",
+        "r4-old-07",
+        "r4-old-08",
+        "r4-old-09",
+        "r4-old-11",
+        "r4-old-13"
+      ],
+      "wire_content_checks": [
+        {
+          "synthetic_text": "ime-plain-control",
+          "json_encoded_bytes": 19,
+          "sha256": "7a96f41d9aaa364873390331c64245a7ece1b2ae0012d7cf7edd36e555f4ecb5",
+          "wire_sequence": 2,
+          "matches": true
+        },
+        {
+          "synthetic_text": "你好好nihao",
+          "json_encoded_bytes": 16,
+          "sha256": "154ffcbac41eed6cabb25e6e8eca2692d59ee98355ef4794fad65cad4ad9769e",
+          "wire_sequence": 4,
+          "matches": true
+        },
+        {
+          "synthetic_text": "nihao",
+          "json_encoded_bytes": 7,
+          "sha256": "3aa49a9faf2dc9ab817d97f422ead111cb970410ea8c6539fc48c508cf3d04dc",
+          "wire_sequence": 6,
+          "matches": true
+        }
+      ],
+      "quick_second_enter_after_composition_ms": 370,
+      "quick_return_commands": {
+        "action": [
+          "quick-confirm-send"
+        ],
+        "commands": [
+          [
+            "xdotool",
+            "keydown",
+            "Return"
+          ],
+          [
+            "xdotool",
+            "keyup",
+            "Return"
+          ],
+          [
+            "xdotool",
+            "keydown",
+            "Return"
+          ],
+          [
+            "xdotool",
+            "keyup",
+            "Return"
+          ]
+        ],
+        "monotonic_ns_before_command": [
+          173748935574726,
+          173749012994408,
+          173749346899172,
+          173749425721753
+        ],
+        "press_gap_ms": 411.324446,
+        "key_hold_requested_ms": 40,
+        "release_gap_requested_ms": 300,
+        "returncode": 0
+      },
+      "quick_post_after_second_physical_keydown": true
+    },
+    {
+      "run": "run-Wfa1CS",
+      "app_pid": 63458,
+      "expected_commit": "9ccb0ea27ee2a19dd63506f3d5ed79be7a88856869b74a7fe74231d2378410af",
+      "default_ime_environment": true,
+      "observer": false,
+      "dom_event_records": 0,
+      "renderer_errors": 0,
+      "stream_requests": 2,
+      "nonstream_title_requests": 2,
+      "candidate_stream_requests": 1,
+      "ime_state_checks": [
+        "2",
+        "2"
+      ],
+      "persisted_reply_count": 2,
+      "visible_reply_screenshots_manually_reviewed": [
+        "r4-uninstrumented-05",
+        "r4-uninstrumented-06",
+        "r4-uninstrumented-07",
+        "r4-uninstrumented-09"
+      ],
+      "wire_content_checks": [
+        {
+          "synthetic_text": "ime-plain-control",
+          "json_encoded_bytes": 19,
+          "sha256": "7a96f41d9aaa364873390331c64245a7ece1b2ae0012d7cf7edd36e555f4ecb5",
+          "wire_sequence": 2,
+          "matches": true
+        },
+        {
+          "synthetic_text": "你好nihao",
+          "json_encoded_bytes": 13,
+          "sha256": "f18e836c3f08b6a07ad3146abf8942c36a7095f8ee2b87d5aab6b7ace56aa13a",
+          "wire_sequence": 4,
+          "matches": true
+        }
+      ]
+    }
+  ]
+}
