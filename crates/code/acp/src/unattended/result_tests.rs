@@ -1,6 +1,32 @@
 use super::*;
 
 #[test]
+fn an_unfinished_goal_refusal_is_a_failed_result_with_an_explicit_terminal_error() {
+    let mut progress = RunProgress::new();
+    progress.phase = ExecutionPhase::Streaming;
+    progress.terminal_event = true;
+    progress.remember_error("earlier recoverable tool failure");
+    let error: anyhow::Error = crate::goal::GoalContinuationStopped(
+        a3s_code_core::goal_control::GoalTickDecisionV1::NeedsInput,
+    )
+    .into();
+    progress.remember_failure(&error);
+    let (outcome, reason) = classify_failure(&progress, &error);
+    let report = serde_json::to_value(progress.report(outcome, reason)).unwrap();
+    assert_eq!(report["outcome"], "failed");
+    assert_eq!(report["reason"], "execution_failed");
+    assert_eq!(report["exitCode"], 1);
+    assert!(report["lastError"]
+        .as_str()
+        .unwrap()
+        .contains("goal.continuation_stopped"));
+    assert!(report["lastError"]
+        .as_str()
+        .unwrap()
+        .contains("next=needs_input"));
+}
+
+#[test]
 fn report_serializes_terminal_reason_and_counters() {
     let mut progress = RunProgress::new();
     progress.turns = 3;

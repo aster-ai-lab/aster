@@ -17,11 +17,12 @@ pub struct GoalContinuationPolicyV1 {
 /// them, so a log written before they existed stays readable.
 pub(crate) const MAX_GOAL_SLICES: u64 = 1_000;
 pub(crate) const MAX_GOAL_HORIZON_MS: u64 = 30 * 24 * 60 * 60 * 1_000;
+const DEFAULT_NO_PROGRESS_SLICES: u64 = 3;
 
 impl GoalContinuationPolicyV1 {
-    /// Slices may continue until `deadline_unix_ms`. The slice ceiling and the
-    /// no-progress ceiling are the same admission maximum, so one slice that
-    /// has not yet accepted a step does not stop the goal. The deadline does.
+    /// Productive slices may continue until `deadline_unix_ms`. Three settled
+    /// slices without an observed workspace mutation require new input or a
+    /// changed plan; a verified turn alone does not prove goal achievement.
     pub fn until_deadline(deadline_unix_ms: NonZeroU64) -> Result<Self, GoalControlError> {
         let Some(ceiling) = NonZeroU64::new(MAX_GOAL_SLICES) else {
             return Err(GoalControlError::Invalid {
@@ -32,7 +33,9 @@ impl GoalContinuationPolicyV1 {
         let policy = Self {
             automatic_enabled: true,
             max_slices: ceiling,
-            max_no_progress_slices: ceiling,
+            // The fixed default is 3, so this conversion cannot fail.
+            max_no_progress_slices: NonZeroU64::new(DEFAULT_NO_PROGRESS_SLICES)
+                .expect("the default no-progress bound is positive"),
             deadline_unix_ms,
         };
         policy.check_bounds()?;

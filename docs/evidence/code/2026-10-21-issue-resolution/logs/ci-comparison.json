@@ -1,0 +1,63 @@
+{
+  "captured_at": "2026-10-20T22:32:10.803865+00:00",
+  "base": "eb17c6ce5aa4c9ef785c12d56515e146866b1506",
+  "candidate": "834bcd3e90c1b1ba6a23e7018f4fd0c83b3b674f",
+  "status": "CI remains red; all observed failures reproduce the existing baseline diagnostics",
+  "failures": [
+    {
+      "workflow": "Rust",
+      "job": "check (ubuntu-latest)",
+      "failure_step": "Format",
+      "shared_exact_diagnostic": "failed to load manifest for workspace member `/home/runner/work/aster/aster/apps/work/src-tauri`",
+      "baseline_run": "https://github.com/aster-ai-lab/aster/actions/runs/39406671663",
+      "candidate_run": "https://github.com/aster-ai-lab/aster/actions/runs/39507487692"
+    },
+    {
+      "workflow": "Rust",
+      "job": "check (macos-latest)",
+      "failure_step": "Work launcher",
+      "shared_exact_diagnostic": "No such file or directory: '/Users/runner/work/aster/aster/apps/work/justfile'",
+      "baseline_run": "https://github.com/aster-ai-lab/aster/actions/runs/39406671663",
+      "candidate_run": "https://github.com/aster-ai-lab/aster/actions/runs/39507487692"
+    },
+    {
+      "workflow": "Rust",
+      "job": "work-frontend (work)",
+      "failure_step": "pnpm install",
+      "shared_exact_diagnostic": "ERR_PNPM_OTHER_PM_EXPECTED",
+      "baseline_run": "https://github.com/aster-ai-lab/aster/actions/runs/39406671663",
+      "candidate_run": "https://github.com/aster-ai-lab/aster/actions/runs/39507487692"
+    },
+    {
+      "workflow": "Rust",
+      "job": "work-frontend (studio)",
+      "failure_step": "pnpm install",
+      "shared_exact_diagnostic": "apps/work/vendor/packages/office/scripts: No such file or directory",
+      "baseline_run": "https://github.com/aster-ai-lab/aster/actions/runs/39406671663",
+      "candidate_run": "https://github.com/aster-ai-lab/aster/actions/runs/39507487692"
+    },
+    {
+      "workflow": "backend",
+      "job": "fmt",
+      "failure_step": "cargo fmt",
+      "shared_exact_diagnostic": "'cargo-fmt' is not installed for the toolchain '1.97.1-x86_64-unknown-linux-gnu'",
+      "baseline_run": "https://github.com/aster-ai-lab/aster/actions/runs/39406671651",
+      "candidate_run": "https://github.com/aster-ai-lab/aster/actions/runs/39507487815"
+    },
+    {
+      "workflow": "backend",
+      "job": "check",
+      "failure_step": "cargo check",
+      "shared_exact_diagnostic": "failed to load manifest for workspace member `/home/runner/work/aster/aster/apps/work/src-tauri`",
+      "baseline_run": "https://github.com/aster-ai-lab/aster/actions/runs/39406671651",
+      "candidate_run": "https://github.com/aster-ai-lab/aster/actions/runs/39507487815"
+    }
+  ],
+  "unchanged_workflow_sha256": {
+    ".github/workflows/ci.yml": "9b46074cf3e561c204432675948716fae07727da92f9aa71ee3aaefef1a93234",
+    ".github/workflows/backend.yml": "235051af53f90c9304521dc980a91208ebf4f78ad10b18b168b7f7e048331781"
+  },
+  "effective_branch_rules": [],
+  "no_ci_setting_or_check_was_disabled": true,
+  "limit": "Later CI stages did not run. Baseline equivalence does not establish a green workspace."
+}

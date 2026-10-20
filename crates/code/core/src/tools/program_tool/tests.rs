@@ -4,6 +4,226 @@ use std::path::PathBuf;
 
 struct EchoTool;
 
+#[test]
+fn program_catalog_is_discoverable_in_the_published_tool_contract() {
+    let tool = ProgramTool::with_catalog(
+        Arc::new(ToolRegistry::new(PathBuf::from("/tmp"))),
+        ProgramCatalog::with_builtin_programs(),
+    );
+    for name in ["program_code_search", "program_repo_map"] {
+        assert!(tool.description().contains(name), "{}", tool.description());
+        assert!(tool.parameters().to_string().contains(name));
+    }
+    assert!(tool.description().contains("query"));
+    let validator = jsonschema::draft202012::options()
+        .build(&tool.parameters())
+        .unwrap();
+    for args in [
+        serde_json::json!({"type":"template","name":"program_code_search","inputs":{"query":"marker"}}),
+        serde_json::json!({"type":"template","name":"program_repo_map"}),
+        serde_json::json!({"type":"script","source":"async function run() { return {}; }"}),
+    ] {
+        assert!(validator.is_valid(&args), "{args}");
+    }
+    for args in [
+        serde_json::json!({"type":"template","name":"program_code_search"}),
+        serde_json::json!({"type":"template","name":"missing","inputs":{}}),
+        serde_json::json!({"type":"template","name":"program_repo_map","inputs":{"typo":true}}),
+    ] {
+        assert!(!validator.is_valid(&args), "{args}");
+    }
+    let projected = crate::tools::ToolPresentationProfileV1::code()
+        .present_for_prompt(
+            &[crate::llm::ToolDefinition {
+                name: tool.name().into(),
+                description: tool.description().into(),
+                parameters: tool.parameters(),
+            }],
+            "Inspect the repository",
+        )
+        .unwrap();
+    for name in ["program_code_search", "program_repo_map", "query"] {
+        assert!(
+            projected[0].description.contains(name),
+            "code presentation must retain {name}"
+        );
+    }
+    assert_eq!(projected[0].parameters, tool.parameters());
+    assert!(projected[0]
+        .description
+        .contains("permission, confirmation, cancellation, and audit boundaries"));
+}
+
+fn echo_catalog() -> ProgramCatalog {
+    let mut catalog = ProgramCatalog::new();
+    catalog.register(
+        crate::program::ProgramTemplate::new("custom_echo", "Echo an exact JSON input")
+            .with_parameter(crate::program::ProgramParameter::required(
+                "message", "Message",
+            ))
+            .with_step(crate::program::ProgramStepTemplate::new(
+                "echo",
+                serde_json::json!({"message":"{{message}}"}),
+            )),
+    );
+    catalog
+}
+
+struct DenyingTemplateInvoker {
+    origins: Arc<std::sync::Mutex<Vec<crate::tools::invocation::InvocationOrigin>>>,
+}
+
+#[async_trait]
+impl ToolInvoker for DenyingTemplateInvoker {
+    async fn invoke(
+        &self,
+        invocation: crate::tools::invocation::ToolInvocation,
+        _ctx: &ToolContext,
+    ) -> crate::tools::ToolResult {
+        self.origins.lock().unwrap().push(invocation.origin);
+        crate::tools::ToolResult::error(&invocation.name, "denied by the session gateway".into())
+    }
+
+    fn available_tools(&self) -> Vec<String> {
+        vec!["echo".into()]
+    }
+}
+
+#[tokio::test]
+async fn program_template_uses_the_scoped_nested_gateway_and_propagates_denial() {
+    let registry = Arc::new(ToolRegistry::new(PathBuf::from("/tmp")));
+    registry.register(Arc::new(EchoTool));
+    let tool = ProgramTool::with_catalog(registry, echo_catalog());
+    let origins = Arc::new(std::sync::Mutex::new(Vec::new()));
+    let ctx = ToolContext::new(PathBuf::from("/tmp")).with_tool_invoker(Arc::new(
+        DenyingTemplateInvoker {
+            origins: origins.clone(),
+        },
+    ));
+    let output = tool
+        .execute(
+            &serde_json::json!({
+                "type":"template", "name":"custom_echo", "inputs":{"message":"must not bypass"}
+            }),
+            &ctx,
+        )
+        .await
+        .unwrap();
+    assert!(!output.success, "{}", output.content);
+    assert!(
+        output.content.contains("denied by the session gateway"),
+        "{}",
+        output.content
+    );
+    assert_eq!(
+        *origins.lock().unwrap(),
+        vec![crate::tools::invocation::InvocationOrigin::Nested]
+    );
+    assert_eq!(
+        output.metadata.unwrap()["program"]["tool_calls"][0]["success"],
+        false
+    );
+}
+
+#[tokio::test]
+async fn program_template_rejects_unknown_names_and_invalid_inputs_before_dispatch() {
+    let registry = Arc::new(ToolRegistry::new(PathBuf::from("/tmp")));
+    let tool = ProgramTool::with_catalog(registry, echo_catalog());
+    for (args, expected) in [
+        (
+            serde_json::json!({"type":"template","name":"missing","inputs":{}}),
+            "Unknown program",
+        ),
+        (
+            serde_json::json!({"type":"template","name":"custom_echo","inputs":{}}),
+            "Missing required program parameter",
+        ),
+        (
+            serde_json::json!({"type":"template","name":"custom_echo","inputs":[]}),
+            "inputs must be an object",
+        ),
+        (
+            serde_json::json!({"type":"template","name":"custom_echo","inputs":{"message":"ok","typo":1}}),
+            "Unknown program parameter",
+        ),
+        (
+            serde_json::json!({"type":"template","name":"custom_echo","inputs":{"message":"ok"},"allowed_tools":["echo"]}),
+            "tool 'echo' is not allowed",
+        ),
+    ] {
+        let output = tool
+            .execute(&args, &ToolContext::new(PathBuf::from("/tmp")))
+            .await
+            .unwrap();
+        assert!(!output.success);
+        assert!(output.content.contains(expected), "{}", output.content);
+        assert_eq!(
+            output.metadata.unwrap()["program"]["tool_calls"],
+            serde_json::json!([])
+        );
+    }
+}
+
+#[tokio::test]
+async fn program_template_cannot_reenable_filtered_orchestrators() {
+    let registry = Arc::new(ToolRegistry::new(PathBuf::from("/tmp")));
+    registry.register(Arc::new(ParallelTaskProbeTool));
+    let mut catalog = ProgramCatalog::new();
+    catalog.register(
+        crate::program::ProgramTemplate::new("fanout", "Forbidden orchestrator").with_step(
+            crate::program::ProgramStepTemplate::new("parallel_task", serde_json::json!({})),
+        ),
+    );
+    let tool = ProgramTool::with_catalog(registry, catalog);
+    let args =
+        serde_json::json!({"type":"template","name":"fanout","allowed_tools":["parallel_task"]});
+    assert!(!tool.capabilities(&args).read_only);
+    let output = tool
+        .execute(&args, &ToolContext::new(PathBuf::from("/tmp")))
+        .await
+        .unwrap();
+    assert!(!output.success);
+    assert!(output.content.contains("not allowed"));
+    assert_eq!(
+        output.metadata.unwrap()["program"]["tool_calls"],
+        serde_json::json!([])
+    );
+}
+
+#[test]
+fn program_template_read_only_uses_instantiated_step_arguments() {
+    let root = tempfile::tempdir().unwrap();
+    let executor = crate::tools::ToolExecutor::new(root.path().display().to_string());
+    let mut catalog = ProgramCatalog::new();
+    for (name, args) in [
+        ("inspect", serde_json::json!({"command":"status"})),
+        (
+            "change",
+            serde_json::json!({"command":"checkout","ref":"fixture"}),
+        ),
+    ] {
+        catalog.register(
+            crate::program::ProgramTemplate::new(name, "Git operation")
+                .with_step(crate::program::ProgramStepTemplate::new("git", args)),
+        );
+    }
+    let tool = ProgramTool::with_catalog(Arc::clone(executor.registry()), catalog);
+    assert!(
+        tool.capabilities(&serde_json::json!({"type":"template","name":"inspect"}))
+            .read_only
+    );
+    assert!(
+        !tool
+            .capabilities(&serde_json::json!({"type":"template","name":"change"}))
+            .read_only
+    );
+    assert!(
+        !tool
+            .capabilities(&serde_json::json!({"type":"template","name":"missing"}))
+            .read_only
+    );
+}
+
 #[async_trait]
 impl Tool for EchoTool {
     fn name(&self) -> &str {
@@ -114,7 +334,7 @@ async fn program_tool_rejects_non_script_type() {
         .unwrap();
 
     assert!(!output.success);
-    assert!(output.content.contains("Only \"script\" is supported"));
+    assert!(output.content.contains("Unsupported program type"));
 }
 
 #[tokio::test]

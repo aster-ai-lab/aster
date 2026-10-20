@@ -1,0 +1,23 @@
+[
+  {
+    "path": "candidate.patch.gz",
+    "encoding": "gzip",
+    "uncompressed_sha256": "e406d13f557a45352473fdc57bae785d9e746c40306e47d4878e9d20f6d1cfeb",
+    "compressed_sha256": "e94127265cf422c559ecfaf66d43a270fe246c5f589b3cd13dc7799ac4db6739",
+    "uncompressed_bytes": 141520
+  },
+  {
+    "path": "logs/focused-tests.log.gz",
+    "encoding": "gzip",
+    "uncompressed_sha256": "a18a3b0ed7b7e5da5f2cf07ce552a585fcbcac93be0534df85b7e10491f3243e",
+    "compressed_sha256": "707f345c64b3e727f5a9c9c1fd197f4ae79a19cbd7091832dc9d4549fc0805ea",
+    "uncompressed_bytes": 57327
+  },
+  {
+    "path": "logs/gate-prior.log.gz",
+    "encoding": "gzip",
+    "uncompressed_sha256": "44579cdf423a7dbfdf698f821b260c1ea8452b4d2d8531fa7a5b88d3715eb16f",
+    "compressed_sha256": "e891517d5da90a3c78b7cb912ac43c8f80c960e38f722ee8b0adaeaf88bdd6d3",
+    "uncompressed_bytes": 5942
+  }
+]

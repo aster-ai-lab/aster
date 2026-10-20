@@ -234,7 +234,7 @@ fn decide(raw: &str, script: &mut Script) -> String {
         .flatten()
         .filter_map(|tool| tool["function"]["name"].as_str())
         .collect();
-    let judgment = serde_json::json!({"achieved": script.written && script.verified,
+    let judgment = serde_json::json!({"achieved": script.written && script.verified && !raw.contains("STALLED-GOAL"),
         "progress": if script.verified { 1.0 } else { 0.0 }, "remaining_criteria": []});
     if tool_names.contains(&"emit_goal_achievement") {
         script.tool_seq += 1;
@@ -461,6 +461,83 @@ fn entries(dir: &Path) -> Vec<String> {
         .unwrap_or_default();
     names.sort();
     names
+}
+
+fn private_fixture_facts(root: &Path) -> Vec<serde_json::Value> {
+    let mut pending = vec![root.to_path_buf()];
+    let mut facts = Vec::new();
+    while let Some(path) = pending.pop() {
+        for entry in std::fs::read_dir(path).unwrap().flatten() {
+            let kind = entry.file_type().unwrap();
+            if kind.is_dir() {
+                pending.push(entry.path());
+            } else if kind.is_file() && entry.path().extension().is_some_and(|ext| ext == "jsonl") {
+                let bytes = std::fs::read(entry.path()).unwrap();
+                assert!(bytes.len() < 4 * 1024 * 1024, "bounded synthetic fact log");
+                facts.extend(
+                    String::from_utf8(bytes)
+                        .unwrap()
+                        .lines()
+                        .map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap()),
+                );
+            }
+        }
+    }
+    facts
+}
+
+#[tokio::test(flavor = "current_thread")]
+async fn default_goal_stagnation_writes_a_terminal_result_before_the_deadline() {
+    tokio::task::LocalSet::new().run_until(async {
+        let workspace = isolate("stalled-goal-ws");
+        let outside = isolate("stalled-goal-state");
+        let home = isolate("stalled-goal-home");
+        let tmp = isolate("stalled-goal-tmp");
+        let (addr, script) = spawn_mock();
+        let config = write_acl(&outside, &format!("http://{addr}/v1"));
+        let result_file = outside.join("result.json");
+        let result_arg = result_file.display().to_string();
+        let agent = spawn_agent(&workspace, &config, &home, &tmp, &[
+            "--unattended", "--max-execution-ms", "60000", "--result-file", &result_arg,
+        ]).await;
+        let session = open(&agent, &workspace).await;
+        let response = tokio::time::timeout(Duration::from_secs(10), say(
+            &agent, &session, "UNATTENDED-TASK STALLED-GOAL write answer.txt and finish",
+        )).await;
+        // Check the same preconditions before interpreting a timeout: this
+        // fixture really wrote, verified, then repeated read-only slices.
+        let facts = private_fixture_facts(&tmp);
+        let verified = facts.iter().find(|fact| fact["type"] == "turn.complete" && fact["payload"]["terminal"] == "verified").expect("a gate-verified real mutation")["seq"].as_u64().unwrap();
+        assert!(facts.iter().any(|fact| fact["type"] == "tool.result"
+            && fact["payload"]["receipt"]["effects"]["completeness"] == "complete"
+            && fact["payload"]["receipt"]["effects"]["changes"].as_array().is_some_and(|changes| changes.iter().any(|change| change["path"] == "answer.txt" && change["before"]["kind"] == "missing" && change["after"]["kind"] == "file"))));
+        assert!(facts.iter().any(|fact| fact["seq"].as_u64() > Some(verified) && fact["type"] == "tool.result"
+            && fact["payload"]["receipt"]["outcome"] == "succeeded"
+            && fact["payload"]["receipt"]["effects"]["changes"].as_array().is_some_and(Vec::is_empty)));
+        assert!(!facts.iter().any(|fact| matches!(fact["type"].as_str(), Some("a3s.goal.step.accepted" | "a3s.goal.completed"))));
+        assert_eq!(std::fs::read_to_string(workspace.join("answer.txt")).unwrap(), "42\n");
+        let script = script.lock().unwrap();
+        eprintln!("STALLED_GOAL_OBSERVATION {}", serde_json::json!({
+            "workspace": workspace, "privateState": tmp,
+            "written": script.written, "verificationAttempts": script.verification_attempts,
+            "modelCalls": script.bodies.len(), "verifiedSequence": verified,
+            "slices": facts.iter().filter(|fact| fact["type"] == "a3s.goal.slice.admitted").count(),
+            "resultExists": result_file.is_file(), "timedOut": response.is_err(),
+        }));
+        assert!(script.verification_attempts > 0);
+        assert!(script.bodies.len() < 50, "{} local calls indicate continued idle admission", script.bodies.len());
+        drop(script);
+        let response = response.expect("default goal must stop admitting idle slices before the run deadline");
+        // A rejected goal judgment is not converted into a successful goal.
+        assert!(response.is_err());
+        let record: serde_json::Value = serde_json::from_slice(&std::fs::read(&result_file).expect("terminal result")).unwrap();
+        assert_eq!(record["outcome"], "failed", "{record}");
+        assert_eq!(record["reason"], "execution_failed", "{record}");
+        assert!(record["lastError"].as_str().unwrap().contains("goal.continuation_stopped"), "{record}");
+        assert!(record["lastError"].as_str().unwrap().contains("needs_input"), "{record}");
+        assert!(record["durationMs"].as_u64() < Some(10_000), "{record}");
+        eprintln!("STALLED_GOAL_RESULT {record}");
+    }).await;
 }
 
 #[tokio::test(flavor = "current_thread")]

@@ -1,0 +1,348 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml
+    Checking a3s-use-core v0.2.4 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/use/core)
+   Compiling a3s-apofasi v0.1.1 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/apofasi)
+   Compiling a3s-gateway v1.1.1 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/apps/gateway)
+    Checking a3s-updater v0.3.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/updater)
+    Checking a3s-acl v0.3.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/acl)
+    Checking a3s-sentry v0.7.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/sentry)
+    Checking a3s-use-ocr v0.3.2 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/ocr)
+    Checking a3s-use-bge v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/bge)
+warning: unused imports: `DECISION_REQUEST_LIMIT_BYTES`, `DecisionAssessment`, `DecisionContentPart`, `DecisionDefinition`, `DecisionError`, `DecisionRequest`, `DecisionResponse`, `DecisionResult`, `DecisionStepPart`, and `DecisionVisibleTurn`
+  --> apps/gateway/src/inference/mod.rs:34:5
+   |
+34 |     DecisionAssessment, DecisionContentPart, DecisionDefinition, DecisionError, DecisionRequest,
+   |     ^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^
+35 |     DecisionResponse, DecisionResult, DecisionService, DecisionStepPart, DecisionVisibleTurn,
+   |     ^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^                   ^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^
+36 |     DECISION_REQUEST_LIMIT_BYTES,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused imports: `ChosenGroup`, `DecisionReason`, `FrozenDecision`, `TurnDecisionCache`, and `TurnIdentity`
+  --> apps/gateway/src/inference/mod.rs:39:5
+   |
+39 |     ChosenGroup, DecisionReason, FrozenDecision, TurnDecisionCache, TurnIdentity,
+   |     ^^^^^^^^^^^  ^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^
+
+warning: unused imports: `DecisionInputs`, `RouteDecision`, `decision_inputs`, `evaluate_routing`, and `plan_decision_definition`
+  --> apps/gateway/src/inference/mod.rs:61:29
+   |
+61 |     build_decision_request, decision_inputs, effective_targets, evaluate_routing,
+   |                             ^^^^^^^^^^^^^^^                     ^^^^^^^^^^^^^^^^
+62 |     plan_decision_definition, turn_identity_from_document, DecisionInputs, RouteDecision,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^                               ^^^^^^^^^^^^^^  ^^^^^^^^^^^^^
+
+warning: variable does not need to be mutable
+   --> apps/gateway/src/inference/authorization.rs:850:9
+    |
+850 |         mut service_is_available: F,
+    |         ----^^^^^^^^^^^^^^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `floor_bp`
+   --> apps/gateway/src/inference/decision.rs:354:5
+    |
+354 |     floor_bp: u32,
+    |     ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_floor_bp`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `floor_bp`
+   --> apps/gateway/src/inference/decision.rs:383:5
+    |
+383 |     floor_bp: u32,
+    |     ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_floor_bp`
+
+warning: associated function `dormant` is never used
+   --> apps/gateway/src/entrypoint.rs:393:19
+    |
+390 | impl AgentWakePlane {
+    | ------------------- associated function in this implementation
+...
+393 |     pub(crate) fn dormant() -> Self {
+    |                   ^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated function `with_previous` is never used
+   --> apps/gateway/src/inference/authorization.rs:285:19
+    |
+210 | impl InferenceAuthorizer {
+    | ------------------------ associated function in this implementation
+...
+285 |     pub(crate) fn with_previous(policy: &InferenceConfig, previous: Option<&Self>) -> Self {
+    |                   ^^^^^^^^^^^^^
+
+warning: function `resolve_upstream_keys` is never used
+    --> apps/gateway/src/inference/authorization.rs:1218:4
+     |
+1218 | fn resolve_upstream_keys(policy: &InferenceConfig) -> HashMap<Uuid, HeaderValue> {
+     |    ^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `remember_upstream_key` is never used
+    --> apps/gateway/src/inference/authorization.rs:1236:4
+     |
+1236 | fn remember_upstream_key(
+     |    ^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `BranchPrimary` is never constructed
+  --> apps/gateway/src/inference/decision_cache.rs:66:5
+   |
+57 | pub(crate) enum ChosenGroup {
+   |                 ----------- variant in this enum
+...
+66 |     BranchPrimary { category: String },
+   |     ^^^^^^^^^^^^^
+   |
+   = note: `ChosenGroup` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: methods `len` and `is_empty` are never used
+   --> apps/gateway/src/inference/decision_cache.rs:165:19
+    |
+125 | impl TurnDecisionCache {
+    | ---------------------- methods in this implementation
+...
+165 |     pub(crate) fn len(&self) -> usize {
+    |                   ^^^
+...
+169 |     pub(crate) fn is_empty(&self) -> bool {
+    |                   ^^^^^^^^
+
+warning: function `extract_model_alias` is never used
+  --> apps/gateway/src/inference/fast_model.rs:17:15
+   |
+17 | pub(crate) fn extract_model_alias(body: &[u8]) -> Option<String> {
+   |               ^^^^^^^^^^^^^^^^^^^
+
+warning: struct `LightweightInferenceRequest` is never constructed
+  --> apps/gateway/src/inference/fast_model.rs:26:19
+   |
+26 | pub(crate) struct LightweightInferenceRequest {
+   |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated items `try_from_body` and `into_full` are never used
+  --> apps/gateway/src/inference/fast_model.rs:35:19
+   |
+31 | impl LightweightInferenceRequest {
+   | -------------------------------- associated items in this implementation
+...
+35 |     pub(crate) fn try_from_body(body: Bytes) -> Option<Self> {
+   |                   ^^^^^^^^^^^^^
+...
+42 |     pub(crate) fn into_full(self) -> Result<super::OpenAiJsonRequest, super::OpenAiRequestError> {
+   |                   ^^^^^^^^^
+
+warning: struct `SseChunkAssembler` is never constructed
+  --> apps/gateway/src/inference/fast_model.rs:59:19
+   |
+59 | pub(crate) struct SseChunkAssembler {
+   |                   ^^^^^^^^^^^^^^^^^
+
+warning: associated items `new`, `feed`, and `remaining` are never used
+  --> apps/gateway/src/inference/fast_model.rs:64:19
+   |
+63 | impl SseChunkAssembler {
+   | ---------------------- associated items in this implementation
+64 |     pub(crate) fn new() -> Self {
+   |                   ^^^
+...
+70 |     pub(crate) fn feed(&mut self, chunk: &[u8]) -> Vec<Vec<u8>> {
+   |                   ^^^^
+...
+91 |     pub(crate) fn remaining(&self) -> &[u8] {
+   |                   ^^^^^^^^^
+
+warning: function `find_double_newline` is never used
+  --> apps/gateway/src/inference/fast_model.rs:96:4
+   |
+96 | fn find_double_newline(data: &[u8]) -> Option<usize> {
+   |    ^^^^^^^^^^^^^^^^^^^
+
+warning: variants `Messages`, `CountTokens`, and `Rerank` are never constructed
+  --> apps/gateway/src/inference/openai_request.rs:32:5
+   |
+22 | pub(crate) enum OpenAiRequestProfile {
+   |                 -------------------- variants in this enum
+...
+32 |     Messages,
+   |     ^^^^^^^^
+33 |     /// Count Anthropic message input tokens.
+34 |     CountTokens,
+   |     ^^^^^^^^^^^
+...
+40 |     Rerank,
+   |     ^^^^^^
+   |
+   = note: `OpenAiRequestProfile` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: method `estimate_token_reservation` is never used
+   --> apps/gateway/src/inference/openai_request.rs:261:19
+    |
+207 | impl OpenAiJsonRequest {
+    | ---------------------- method in this implementation
+...
+261 |     pub(crate) fn estimate_token_reservation(&self, profile: OpenAiRequestProfile) -> u64 {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: enum `ProxyJsonField` is never used
+   --> apps/gateway/src/inference/openai_request.rs:473:6
+    |
+473 | enum ProxyJsonField {
+    |      ^^^^^^^^^^^^^^
+
+warning: struct `ProxyJsonFieldVisitor` is never constructed
+   --> apps/gateway/src/inference/openai_request.rs:478:8
+    |
+478 | struct ProxyJsonFieldVisitor;
+    |        ^^^^^^^^^^^^^^^^^^^^^
+
+warning: struct `ProxyJsonMetadata` is never constructed
+   --> apps/gateway/src/inference/openai_request.rs:522:8
+    |
+522 | struct ProxyJsonMetadata {
+    |        ^^^^^^^^^^^^^^^^^
+
+warning: struct `ProxyJsonMetadataVisitor` is never constructed
+   --> apps/gateway/src/inference/openai_request.rs:526:8
+    |
+526 | struct ProxyJsonMetadataVisitor;
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `decision_inputs` is never used
+  --> apps/gateway/src/inference/routing.rs:53:15
+   |
+53 | pub(crate) fn decision_inputs(
+   |               ^^^^^^^^^^^^^^^
+
+warning: struct `SignedInCall` is never constructed
+  --> apps/gateway/src/inference/service_meter.rs:14:19
+   |
+14 | pub(crate) struct SignedInCall {
+   |                   ^^^^^^^^^^^^
+
+warning: struct `UsageFact` is never constructed
+  --> apps/gateway/src/inference/service_meter.rs:25:19
+   |
+25 | pub(crate) struct UsageFact {
+   |                   ^^^^^^^^^
+
+warning: enum `MeterError` is never used
+  --> apps/gateway/src/inference/service_meter.rs:34:17
+   |
+34 | pub(crate) enum MeterError {
+   |                 ^^^^^^^^^^
+
+warning: function `signed_in_catalog` is never used
+  --> apps/gateway/src/inference/service_meter.rs:53:15
+   |
+53 | pub(crate) fn signed_in_catalog() -> &'static [ModelStandard] {
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: function `meter` is never used
+  --> apps/gateway/src/inference/service_meter.rs:57:15
+   |
+57 | pub(crate) fn meter(call: &SignedInCall) -> Result<UsageFact, MeterError> {
+   |               ^^^^^
+
+warning: function `normalize_supplier` is never used
+  --> apps/gateway/src/inference/service_meter.rs:72:4
+   |
+72 | fn normalize_supplier(value: &str) -> Result<String, MeterError> {
+   |    ^^^^^^^^^^^^^^^^^^
+
+warning: enum `ServiceClass` is never used
+  --> apps/gateway/src/inference/standards.rs:10:17
+   |
+10 | pub(crate) enum ServiceClass {
+   |                 ^^^^^^^^^^^^
+
+warning: enum `ModelNamePlacement` is never used
+  --> apps/gateway/src/inference/standards.rs:18:17
+   |
+18 | pub(crate) enum ModelNamePlacement {
+   |                 ^^^^^^^^^^^^^^^^^^
+
+warning: enum `DecisionQuestionType` is never used
+  --> apps/gateway/src/inference/standards.rs:31:17
+   |
+31 | pub(crate) enum DecisionQuestionType {
+   |                 ^^^^^^^^^^^^^^^^^^^^
+
+warning: method `as_str` is never used
+  --> apps/gateway/src/inference/standards.rs:41:25
+   |
+40 | impl DecisionQuestionType {
+   | ------------------------- method in this implementation
+41 |     pub(crate) const fn as_str(self) -> &'static str {
+   |                         ^^^^^^
+
+warning: struct `UnknownModelStandard` is never constructed
+  --> apps/gateway/src/inference/standards.rs:92:19
+   |
+92 | pub(crate) struct UnknownModelStandard {
+   |                   ^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `DECISION_QUESTIONS` is never used
+   --> apps/gateway/src/inference/standards.rs:109:7
+    |
+109 | const DECISION_QUESTIONS: [DecisionQuestionType; 3] = [
+    |       ^^^^^^^^^^^^^^^^^^
+
+warning: associated items `as_str`, `class`, `parse`, `model_placement`, and `decision_questions` are never used
+   --> apps/gateway/src/inference/standards.rs:134:25
+    |
+115 | impl ModelStandard {
+    | ------------------ associated items in this implementation
+...
+134 |     pub(crate) const fn as_str(self) -> &'static str {
+    |                         ^^^^^^
+...
+154 |     pub(crate) const fn class(self) -> ServiceClass {
+    |                         ^^^^^
+...
+162 |     pub(crate) fn parse(value: &str) -> Result<Self, UnknownModelStandard> {
+    |                   ^^^^^
+...
+171 |     pub(crate) const fn model_placement(self) -> ModelNamePlacement {
+    |                         ^^^^^^^^^^^^^^^
+...
+187 |     pub(crate) const fn decision_questions(self) -> &'static [DecisionQuestionType] {
+    |                         ^^^^^^^^^^^^^^^^^^
+
+warning: function `expected_standards` is never used
+   --> apps/gateway/src/inference/standards.rs:325:4
+    |
+325 | fn expected_standards() -> String {
+    |    ^^^^^^^^^^^^^^^^^^
+
+warning: associated function `new` is never used
+   --> apps/gateway/src/proxy/http_proxy.rs:956:12
+    |
+954 | impl ForwardedContext {
+    | --------------------- associated function in this implementation
+955 |     /// Create a new forwarding context.
+956 |     pub fn new(remote_addr: SocketAddr, proto: ForwardedProto) -> Self {
+    |            ^^^
+
+warning: variable `baseUrl` should have a snake case name
+   --> apps/gateway/src/inference/console_catalog.rs:275:14
+    |
+275 | fn origin_of(baseUrl: &str) -> String {
+    |              ^^^^^^^ help: convert the identifier to snake case: `base_url`
+    |
+    = note: `#[warn(non_snake_case)]` (part of `#[warn(nonstandard_style)]`) on by default
+
+warning: `a3s-gateway` (lib) generated 41 warnings (run `cargo fix --lib -p a3s-gateway` to apply 6 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 7m 30s

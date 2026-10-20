@@ -434,6 +434,23 @@ pub(crate) enum BoundGoalStep {
     Stopped(GoalTickDecisionV1),
 }
 
+/// A terminal unattended admission refusal is a failure to finish the goal,
+/// even when the most recent individual turn was verified.
+#[derive(Debug)]
+pub(crate) struct GoalContinuationStopped(pub GoalTickDecisionV1);
+
+impl std::fmt::Display for GoalContinuationStopped {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            formatter,
+            "goal.continuation_stopped: the task goal is unfinished; next={}",
+            self.0.as_str()
+        )
+    }
+}
+
+impl std::error::Error for GoalContinuationStopped {}
+
 pub(crate) async fn bound_goal_step(
     session: &a3s_code_core::AgentSession,
 ) -> anyhow::Result<BoundGoalStep> {

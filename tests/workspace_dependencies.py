@@ -32,8 +32,23 @@ class WorkspaceDependenciesTest(unittest.TestCase):
             self.assertEqual(Path(dependencies[0]["path"]), ROOT / "crates/flow", consumer)
 
     def test_desktop_sources_and_executable_fixtures_are_present(self):
-        self.assertFalse((ROOT / "apps/work/.git").exists())
-        self.assertFalse((ROOT / "apps/work/src-tauri/Cargo.lock").exists())
+        work = ROOT / "apps/work"
+        host = work / "src-tauri/Cargo.toml"
+        metadata = json.loads(subprocess.check_output([
+            "cargo", "metadata", "--locked", "--offline", "--no-deps",
+            "--format-version", "1", "--manifest-path", str(host),
+        ], cwd=ROOT))
+        self.assertEqual(Path(metadata["workspace_root"]).resolve(), ROOT)
+        hosts = [package for package in metadata["packages"]
+                 if Path(package["manifest_path"]).resolve() == host]
+        self.assertEqual(len(hosts), 1)
+        self.assertEqual(hosts[0]["name"], "aster-dream")
+        self.assertIn(hosts[0]["id"], metadata["workspace_members"])
+        for manifest in [work / "Cargo.toml", host]:
+            if manifest.is_file():
+                self.assertNotIn("workspace", tomllib.loads(manifest.read_text()), str(manifest))
+        for lock in [work / "Cargo.lock", work / "src-tauri/Cargo.lock"]:
+            self.assertFalse(lock.exists(), str(lock))
         for path in [
             "apps/work/vendor/packages/office/src/core.ts",
             "apps/work/vendor/packages/office/generated/office-kernel.wasm",
