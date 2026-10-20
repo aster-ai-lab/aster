@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-20T22:16:43.788578+00:00",
+  "captured_at": "2026-10-20T22:45:03.058850+00:00",
   "cargo_test_target_dir": "/Users/roylin/code/aster/target",
   "checks": [
     {
@@ -107,5 +107,7 @@
       "log": "logs/workspace-python-alone.log"
     }
   ],
-  "gate_regression_status": "queued"
+  "gate_regression_status": "prior_4_passes_reused_with_exact_source_equivalence",
+  "gate_evidence": "logs/gate-source-equivalence.json",
+  "ci_comparison": "logs/ci-comparison.json"
 }

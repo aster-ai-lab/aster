@@ -13,8 +13,10 @@ refuses explicitly rather than being silently ignored.
 
 Isolated regression results: Core 205, ACP 50 and TUI 36 passed, zero failed.
 Gateway with wire, locked offline metadata (161 members), workspace formatting
-and patch applicability checks pass. The four workspace-gate cases are still
-queued; this PR remains draft until that validation completes. The complete
+and patch applicability checks pass. The four workspace-gate cases passed in the prior repair run; the gate implementation
+and sibling tests are byte-identical to the validated source. That evidence
+is reused explicitly; a new isolated binary retry did not complete because of
+shared build-lock and local-cache I/O contention. The complete
 Python workspace guard is 5/6 because the existing Web/tenant fixture is absent.
 
 The seven issue-specific acceptance cases, exact candidate identity, commands
@@ -23,7 +25,8 @@ and limits are recorded in
 
 No new release or installer is published by this source fix. The default
 branch's existing Web/tenant fixture and CI failures are recorded separately;
-this change does not remove their checks.
+all six observed CI failure classes match the base diagnostics, and both
+workflows are unchanged. Later CI stages did not run.
 
 Fixes #1
 Fixes #2
