@@ -68,12 +68,35 @@ pub struct TaskParams {
     /// Optional: run in background (default: false)
     #[serde(default)]
     pub background: bool,
-    /// Optional: maximum steps for this task
-    #[serde(skip_serializing_if = "Option::is_none")]
+    /// Optional: positive maximum steps for this task.
+    #[serde(
+        default,
+        deserialize_with = "deserialize_task_max_steps",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub max_steps: Option<usize>,
     /// Optional: JSON schema the child result must satisfy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub output_schema: Option<serde_json::Value>,
+}
+
+fn deserialize_task_max_steps<'de, D>(deserializer: D) -> Result<Option<usize>, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    let steps = Option::<usize>::deserialize(deserializer)?;
+    if steps == Some(0) {
+        return Err(serde::de::Error::custom("max_steps must be at least 1"));
+    }
+    Ok(steps)
+}
+
+fn tighten_child_role_round_limit(config: &mut AgentConfig, role_limit: Option<usize>) {
+    if let Some(limit) = role_limit.filter(|limit| *limit > 0) {
+        if config.max_tool_rounds == 0 || limit < config.max_tool_rounds {
+            config.max_tool_rounds = limit;
+        }
+    }
 }
 
 /// Task tool result
@@ -966,6 +989,10 @@ impl TaskExecutor {
         if let Some(ref parent_ctx) = self.parent_context {
             parent_ctx.apply_to(&mut child_config);
         }
+        // An explicit role limit can equal the SDK default, which parent
+        // inheritance cannot distinguish from an unset count. Restore only a
+        // known positive role narrowing, retaining a tighter inherited limit.
+        tighten_child_role_round_limit(&mut child_config, agent.max_steps);
         if let Some(profile) = self.child_tool_presentation.clone() {
             child_config.tool_presentation_profile = profile;
         }
@@ -1676,6 +1703,7 @@ pub(super) fn task_item_params_schema_for_agents(
             "max_steps".to_string(),
             serde_json::json!({
                 "type": "integer",
+                "minimum": 1,
                 "description": "Optional. Maximum number of steps for this task."
             }),
         ),

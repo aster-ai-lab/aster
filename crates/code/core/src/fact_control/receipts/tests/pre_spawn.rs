@@ -225,3 +225,46 @@ async fn a_shell_that_never_starts_on_a_missed_status_does_not_block_a_later_too
         "a write whose status could not be read stays unresolved"
     );
 }
+
+#[tokio::test]
+async fn missing_execution_evidence_overrides_a_path_budget() {
+    async fn spill(incomplete_evidence: bool) -> (ToolExecutionResultV1, bool) {
+        let root = tempfile::tempdir().unwrap();
+        let (tools, _) = executor_tools(root.path());
+        let mut args = json!({"spill": true});
+        if incomplete_evidence {
+            args["incomplete_evidence"] = json!(true);
+        }
+        let prepared = prepare_tools(
+            Arc::clone(&tools),
+            request("spill", args),
+            tokio_util::sync::CancellationToken::new(),
+        )
+        .await
+        .unwrap();
+        let result = execute_prepared(Arc::clone(&tools), prepared).await;
+        let uncertain = tools
+            .ledger
+            .as_ref()
+            .unwrap()
+            .lock()
+            .unwrap()
+            .has_uncertain_tool_invocations();
+        (result, uncertain)
+    }
+
+    let (budget, uncertain) = spill(false).await;
+    assert!(budget.validate().is_ok());
+    assert!(budget.effects.budget_exceeded);
+    assert!(budget.effects.changes.is_empty());
+    assert!(!uncertain);
+    let (missed, uncertain) = spill(true).await;
+    assert!(missed.validate().is_ok());
+    assert!(!missed.effects.budget_exceeded);
+    assert_eq!(
+        missed.effects.completeness,
+        a3s_effect::ToolObservationCompleteness::Incomplete
+    );
+    assert!(missed.effects.changes.is_empty());
+    assert!(uncertain);
+}

@@ -5,6 +5,8 @@ use std::collections::HashMap;
 
 #[path = "agent/approval_deadline_tests.rs"]
 mod approval_deadline;
+#[path = "agent/count_limit_tests.rs"]
+mod count_limits;
 
 #[test]
 fn cc_switch_picker_label_includes_other_profiles() {
@@ -78,7 +80,7 @@ async fn unknown_model_id_is_rejected_before_session_lookup() {
 }
 
 #[test]
-fn effort_tokens_keep_one_tool_ceiling() {
+fn effort_tokens_adjust_thinking_without_setting_a_tool_ceiling() {
     let meta = |effort: &str| {
         let mut m = acp::Meta::new();
         m.insert(
@@ -95,26 +97,20 @@ fn effort_tokens_keep_one_tool_ceiling() {
     let low = effort_limits("low").expect("low");
     let high = effort_limits("high").expect("high");
     let max = effort_limits("max").expect("max");
-    assert!(low.max_tool_rounds < high.max_tool_rounds);
-    assert!(high.max_tool_rounds < max.max_tool_rounds);
     assert!(low.thinking_budget < high.thinking_budget);
     assert!(high.thinking_budget < max.thinking_budget);
-    assert_eq!(
-        max.max_tool_rounds,
-        a3s_code_core::llm::TOOL_ROUND_SAFETY_CEILING
-    );
 
     let claude = A3sCodeAgent::core_session_options("sid", "anthropic/claude-opus-4-6", Some(high));
     assert_eq!(claude.reasoning_effort.as_deref(), Some("high"));
     assert_eq!(claude.thinking_budget, Some(high.thinking_budget));
-    assert_eq!(claude.max_tool_rounds, Some(high.max_tool_rounds));
+    assert_eq!(claude.max_tool_rounds, Some(0));
     let claude_budget = claude
         .prompt_slots
         .as_ref()
         .and_then(|slots| slots.guidelines.as_deref())
         .expect("native models still receive the budget line");
     assert!(claude_budget.contains(&format!("thinking_budget={}", high.thinking_budget)));
-    assert!(claude_budget.contains(&format!("tool_rounds={}", high.max_tool_rounds)));
+    assert!(!claude_budget.contains("tool_rounds="));
     assert!(claude.auto_compact);
     assert_eq!(
         claude.auto_compact_threshold,
@@ -136,20 +132,15 @@ fn effort_tokens_keep_one_tool_ceiling() {
 fn budget_line_states_a_maximum() {
     let high = effort_limits("high").expect("high");
     assert_eq!(high.thinking_budget, 16_384);
-    assert_eq!(high.max_tool_rounds, 128);
     let options = A3sCodeAgent::core_session_options("sid", "boyue/deepseek-v4-flash", Some(high));
     let text = options
         .prompt_slots
         .and_then(|slots| slots.guidelines)
         .expect("budget line");
-    assert!(text.contains("These limits are a maximum, not a quota."));
+    assert!(text.contains("The thinking budget is a maximum, not a quota."));
     assert!(text.contains("thinking_budget=16384"));
-    assert!(text.contains("tool_rounds=128"));
+    assert!(!text.contains("tool_rounds="));
     assert!(text.contains("Stop when the user's outcome is done."));
-    assert_eq!(
-        effort_limits("max").expect("max").max_tool_rounds,
-        a3s_code_core::llm::TOOL_ROUND_SAFETY_CEILING
-    );
 }
 
 #[test]
@@ -584,11 +575,9 @@ fn reasoning_meta_offers_parseable_budget_levels() {
 }
 
 #[test]
-fn effort_limits_share_the_tool_ceiling() {
+fn effort_limits_preserve_thinking_and_parallel_resource_settings() {
     let medium = effort_limits("medium").expect("medium");
-    assert!(medium.max_tool_rounds < a3s_code_core::llm::TOOL_ROUND_SAFETY_CEILING);
     assert_eq!(medium.thinking_budget, 8192);
-    assert_eq!(medium.max_tool_rounds, 48);
     assert_eq!(medium.max_parallel_tasks, HOST_PARALLEL_TASKS);
     assert_eq!(medium.max_continuation_turns, HOST_CONTINUATION_TURNS);
 
@@ -599,13 +588,7 @@ fn effort_limits_share_the_tool_ceiling() {
     assert_eq!(low.max_continuation_turns, max.max_continuation_turns);
     assert_eq!(ultra.max_parallel_tasks, max.max_parallel_tasks);
     assert_eq!(ultra.max_continuation_turns, max.max_continuation_turns);
-    assert_eq!(
-        max.max_tool_rounds,
-        a3s_code_core::llm::TOOL_ROUND_SAFETY_CEILING
-    );
-    assert_eq!(ultra.max_tool_rounds, max.max_tool_rounds);
     assert_eq!(ultra.thinking_budget, max.thinking_budget);
-    assert!(medium.max_tool_rounds < max.max_tool_rounds);
     let ultra_options =
         A3sCodeAgent::core_session_options("sid", "anthropic/claude-opus-4-6", Some(ultra));
     assert_eq!(
@@ -822,16 +805,12 @@ async fn unanswered_asks_fail_closed_at_the_deadline() {
 fn question_options_are_not_permission_grants() {
     let options = question_permission_options(&[" left ".into(), "  ".into(), "right".into()]);
     assert_eq!(options.len(), 2);
-    assert!(
-        options
-            .iter()
-            .all(|option| option.kind == acp::PermissionOptionKind::RejectOnce)
-    );
-    assert!(
-        options
-            .iter()
-            .all(|option| option.kind != acp::PermissionOptionKind::AllowOnce)
-    );
+    assert!(options
+        .iter()
+        .all(|option| option.kind == acp::PermissionOptionKind::RejectOnce));
+    assert!(options
+        .iter()
+        .all(|option| option.kind != acp::PermissionOptionKind::AllowOnce));
     assert_eq!(options[0].name, "left");
     assert_eq!(options[1].name, "right");
 }
@@ -1639,13 +1618,11 @@ fn tui_mappings_cover_cards_catalog_and_questions() {
     let long = "x".repeat(4_001);
     assert_eq!(tool_call_content("read", None, &long).len(), 1);
     assert!(edit_diff("read", Some(&edit)).is_none());
-    assert!(
-        edit_diff(
-            "write",
-            Some(&serde_json::json!({"path": "a", "content": "z"}))
-        )
-        .is_some()
-    );
+    assert!(edit_diff(
+        "write",
+        Some(&serde_json::json!({"path": "a", "content": "z"}))
+    )
+    .is_some());
     assert!(tool_raw_output("read", None, "out", 0).is_none());
     assert!(tool_raw_output("shell", None, "out", 1).is_some());
 
@@ -1715,24 +1692,20 @@ fn tui_mappings_cover_cards_catalog_and_questions() {
         answer_from_permission_outcome(&acp::RequestPermissionOutcome::Cancelled, &options)
             .is_none()
     );
-    assert!(
-        answer_from_permission_outcome(
-            &acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(
-                acp::PermissionOptionId::new("allow-once")
-            )),
-            &options
-        )
-        .is_none()
-    );
-    assert!(
-        answer_from_permission_outcome(
-            &acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(
-                acp::PermissionOptionId::new("question-0")
-            )),
-            &options
-        )
-        .is_none()
-    );
+    assert!(answer_from_permission_outcome(
+        &acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(
+            acp::PermissionOptionId::new("allow-once")
+        )),
+        &options
+    )
+    .is_none());
+    assert!(answer_from_permission_outcome(
+        &acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(
+            acp::PermissionOptionId::new("question-0")
+        )),
+        &options
+    )
+    .is_none());
     assert_eq!(
         answer_from_permission_outcome(
             &acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(
@@ -1775,9 +1748,9 @@ fn tui_mappings_cover_cards_catalog_and_questions() {
 
 #[tokio::test]
 async fn tui_turn_renders_every_pager_event() {
-    use a3s_code_core::TokenUsage;
     use a3s_code_core::planning::{Complexity, ExecutionPlan, Task, TaskStatus};
     use a3s_code_core::verification::VerificationSummary;
+    use a3s_code_core::TokenUsage;
 
     let root = std::env::temp_dir().join(format!("a3s-acp-events-{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(&root).expect("workspace");
@@ -2153,12 +2126,8 @@ fn tui_session_function_coverage_is_at_least_95_percent() {
     );
     record(
         "effort-high-budget",
-        effort_limits("high").is_some_and(|limits| {
-            limits.token == "high"
-                && limits.thinking_budget == 16_384
-                && limits.max_tool_rounds == 128
-                && limits.max_tool_rounds < a3s_code_core::llm::TOOL_ROUND_SAFETY_CEILING
-        }),
+        effort_limits("high")
+            .is_some_and(|limits| limits.token == "high" && limits.thinking_budget == 16_384),
     );
     record(
         "effort-medium-no-guideline",
@@ -2210,10 +2179,9 @@ fn watched_skill_dirs_include_home_agent_roots_before_they_exist() {
     let workspace = std::path::Path::new("/tmp/a3s-watch-skills-workspace");
     let dirs = watched_skill_dirs(workspace);
     assert!(dirs.iter().any(|dir| dir == &workspace.join("skills")));
-    assert!(
-        dirs.iter()
-            .any(|dir| dir == &workspace.join(".a3s").join("skills"))
-    );
+    assert!(dirs
+        .iter()
+        .any(|dir| dir == &workspace.join(".a3s").join("skills")));
     let home = std::env::var_os("HOME").or_else(|| std::env::var_os("USERPROFILE"));
     let Some(home) = home.filter(|value| !value.is_empty()) else {
         return;
@@ -2227,10 +2195,9 @@ fn watched_skill_dirs_include_home_agent_roots_before_they_exist() {
             personal.display()
         );
     }
-    assert!(
-        dirs.iter()
-            .all(|dir| !dir.components().any(|part| part.as_os_str() == ".grok"))
-    );
+    assert!(dirs
+        .iter()
+        .all(|dir| !dir.components().any(|part| part.as_os_str() == ".grok")));
 }
 
 #[test]

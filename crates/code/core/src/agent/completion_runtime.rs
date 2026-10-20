@@ -140,9 +140,9 @@ impl crate::agent::TurnEngine {
         let unseen = state
             .unseen_workspace_paths(memory_task_context.workspace.as_path())
             .await;
-        state
-            .mutations
-            .set_observation_incomplete(child_unobserved || unseen.incomplete);
+        state.mutations.set_observation_incomplete(
+            child_unobserved || unseen.incomplete || unseen.budget_exceeded,
+        );
         state.mutations.observe_unseen_paths(&unseen.paths);
         if !force_terminal
             && !state.verifier_spent

@@ -886,7 +886,8 @@ async fn execute_background(
     let observed = span.finish_observed(&ctx).await;
     let effects = crate::porcelain::observe_path_effects(ctx.workspace.as_path(), observed.clone());
     let observation_incomplete = observed.incomplete
-        || effects.completeness == a3s_effect::ToolObservationCompleteness::Incomplete
+        || (effects.completeness == a3s_effect::ToolObservationCompleteness::Incomplete
+            && !effects.budget_exceeded)
         || effects.validate().is_err();
     let paths = observed.paths;
     if observation_incomplete {

@@ -1,0 +1,65 @@
+[
+  {
+    "name": "isolated-workspace-format",
+    "command": [
+      "cargo",
+      "fmt",
+      "--all",
+      "--",
+      "--check"
+    ],
+    "exit_code": 1,
+    "seconds": 25.053,
+    "summaries": [
+      "Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/billing/src/architecture.rs:369:",
+      "Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/auth.rs:4:",
+      "Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/envelope.rs:29:",
+      "Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/http/router.rs:115:",
+      "Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/http/router.rs:140:",
+      "Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/http/router.rs:155:",
+      "Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/http/router.rs:501:",
+      "Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/http/router.rs:517:",
+      "Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/http/router.rs:539:",
+      "Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/http/router.rs:640:",
+      "Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/http/router.rs:997:",
+      "Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/http/router.rs:1050:",
+      "Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/http/router.rs:1057:",
+      "Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/http/router.rs:1221:",
+      "Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/http/router.rs:1233:",
+      "Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/input_contract.rs:21:",
+      "Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/providers/platform.rs:59:",
+      "Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/usage.rs:92:",
+      "Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/vault.rs:240:",
+      "Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/vault.rs:362:",
+      "Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/vault.rs:377:",
+      "Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/crates/code/acp/src/host_context.rs:278:",
+      "Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/crates/oci-runtime/crates/runtime/src/agent_session/tests.rs:444:",
+      "Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/crates/terminal/crates/codegen/a3s-code-pager/src/acp/a3s_spawn.rs:5:",
+      "Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/crates/terminal/crates/codegen/a3s-code-pager/src/acp/a3s_spawn.rs:12:",
+      "Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/crates/terminal/crates/codegen/a3s-code-pager/src/acp/a3s_spawn.rs:18:"
+    ]
+  },
+  {
+    "name": "isolated-workspace-dependencies",
+    "command": [
+      "/opt/homebrew/bin/python3.13",
+      "tests/workspace_dependencies.py"
+    ],
+    "exit_code": 1,
+    "seconds": 10.589,
+    "summaries": [
+      "Ran 6 tests in 10.510s",
+      "FAILED (failures=2)"
+    ]
+  },
+  {
+    "name": "work-lint",
+    "command": [
+      "pnpm",
+      "lint"
+    ],
+    "exit_code": 127,
+    "seconds": 0.003,
+    "summaries": []
+  }
+]

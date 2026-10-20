@@ -1,0 +1,15 @@
+{
+  "recorded_at_utc": "2026-10-19T22:54:48.072932+00:00",
+  "checks": [
+    {
+      "command": "rustup run 1.97.1 rustfmt --check --edition 2021 --config skip_children=true crates/code/acp/src/agent.rs crates/code/acp/src/agent/models.rs crates/code/acp/src/agent/session_open.rs crates/code/acp/src/agent/reasoning_transport_tests.rs crates/code/acp/src/agent/count_limit_tests.rs",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check -- crates/code/acp/src/agent.rs crates/code/acp/src/agent/models.rs crates/code/acp/src/agent/session_open.rs crates/code/acp/src/agent_tests.rs crates/code/acp/src/agent/reasoning_transport_tests.rs crates/code/acp/src/agent/count_limit_tests.rs",
+      "exit_code": 0
+    }
+  ],
+  "legacy_parent_note": "agent_tests.rs only received focused registration/assertion edits and was not recursively formatted; existing unrelated formatting was preserved.",
+  "cargo_run_by_this_agent": false
+}

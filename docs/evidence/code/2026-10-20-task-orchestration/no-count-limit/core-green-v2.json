@@ -1,0 +1,18 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-code-core",
+    "--lib",
+    "no_count",
+    "--",
+    "--test-threads=1"
+  ],
+  "exit_code": 101,
+  "wall_seconds": 85.065348042,
+  "root_sources_stable": true,
+  "parallel_sources_stable": false
+}

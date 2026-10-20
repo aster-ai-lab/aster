@@ -1,0 +1,41 @@
+{
+  "command": [
+    "/Users/roylin/code/aster/target/qualification/no-count-limit-20261020/work-r5/work-tests",
+    "agent_plane::turns::local_acp_tests::delivery::count_limits::real_acp_interactive_default_executes_64_reads_without_a_count_limit",
+    "--exact",
+    "--ignored",
+    "--test-threads=1",
+    "--nocapture"
+  ],
+  "exit_code": 0,
+  "seconds": 24.538415417,
+  "failure": null,
+  "proof": {
+    "approval_cards_answered": 0,
+    "binary": "/Users/roylin/code/aster/target/qualification/no-count-limit-20261020/work-r5/a3s-code-acp",
+    "main_requests": 65,
+    "mapped_executable": "/Users/roylin/code/aster/target/qualification/no-count-limit-20261020/work-r5/a3s-code-acp",
+    "max_tool_rounds_configured": false,
+    "owned_processes_remaining": [],
+    "paid_provider_calls": 0,
+    "pid": 87547,
+    "process_cwd": "/private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/a3s-studio-task-unbounded-count-87505/state/workspace/01a15675-96f3-75e7-89b2-e671dd599cfe",
+    "provider": "controlled loopback",
+    "saved_status": "success",
+    "session_cwd": "/private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/a3s-studio-task-unbounded-count-87505/state/workspace/01a15675-96f3-75e7-89b2-e671dd599cfe",
+    "sha256": "87e1ce16cc44e4efa8ea6b0fdeb2572079c6fc48a89f4e1e4ce077a1474b1780",
+    "tool_results": 64,
+    "vm_started": false
+  },
+  "tracked_owned_descendants": [
+    {
+      "pid": 87547,
+      "ppid": 87505,
+      "comm": "/Users/roylin/code/aster/target/qualification/no-count-limit-20261020/work-r5/a3s-code-acp"
+    }
+  ],
+  "forced_cleanup": [],
+  "owned_descendants_remaining": [],
+  "paid_provider_calls": 0,
+  "app_launched": false
+}

@@ -24,14 +24,14 @@ async fn terminal_initial_effort_reaches_new_session_and_allows_later_selection(
         .find(|model| model.model_id == models.current_model_id)
         .unwrap();
     assert_eq!(active.meta.as_ref().unwrap()["reasoningEffort"], "medium");
-    assert_eq!(host.effort.lock().await.unwrap().max_tool_rounds, 48);
+    assert_eq!(host.effort.lock().await.unwrap().thinking_budget, 8192);
     host.set_session_model(
         acp::SetSessionModelRequest::new(created.session_id, models.current_model_id)
             .meta(meta(serde_json::json!("low"))),
     )
     .await
     .unwrap();
-    assert_eq!(host.effort.lock().await.unwrap().max_tool_rounds, 16);
+    assert_eq!(host.effort.lock().await.unwrap().thinking_budget, 2048);
     assert!(A3sCodeAgent::new(tests::test_launch(None))
         .with_default_reasoning_effort("unknown")
         .is_err());

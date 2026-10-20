@@ -1,0 +1,62 @@
+[
+  {
+    "filter": "meta_harness::tests::",
+    "exit": 0,
+    "seconds": 0.011706082999999999,
+    "passed": 19
+  },
+  {
+    "filter": "invalid_numeric_session_options_return_field_specific_errors",
+    "exit": 0,
+    "seconds": 0.011209333000000002,
+    "passed": 1
+  },
+  {
+    "filter": "numeric_session_option_boundaries_are_valid",
+    "exit": 0,
+    "seconds": 0.010296208000000001,
+    "passed": 1
+  },
+  {
+    "filter": "effort_tool_rounds_are_the_fact_budget",
+    "exit": 0,
+    "seconds": 0.009152166999999996,
+    "passed": 1
+  },
+  {
+    "filter": "effort_tool_budget_runs_every_round_before_deny",
+    "exit": 0,
+    "seconds": 0.063687917,
+    "passed": 1
+  },
+  {
+    "filter": "fact_log_budget_does_not_call_the_tool_body",
+    "exit": 0,
+    "seconds": 0.03653841699999999,
+    "passed": 1
+  },
+  {
+    "filter": "effort_ceiling_asks_for_a_final_answer_before_denying",
+    "exit": 0,
+    "seconds": 0.04503916599999999,
+    "passed": 1
+  },
+  {
+    "filter": "fact_log_tool_round_cap_uses_an_empty_tool_list",
+    "exit": 0,
+    "seconds": 0.019846667000000012,
+    "passed": 1
+  },
+  {
+    "filter": "test_task_params_schema",
+    "exit": 0,
+    "seconds": 0.012964833000000009,
+    "passed": 5
+  },
+  {
+    "filter": "test_parallel_task_params_schema",
+    "exit": 0,
+    "seconds": 0.011351,
+    "passed": 3
+  }
+]

@@ -1,0 +1,104 @@
+
+FILTER meta_harness::tests::
+
+running 19 tests
+test meta_harness::tests::admit_component_tree_preserves_kernel ... ok
+test meta_harness::tests::admit_from_compose_wrapper_defaults_and_admits_stock ... ok
+test meta_harness::tests::builtin_registry_admits_mixed_tree ... ok
+test meta_harness::tests::components_list_accepts_host_mount_and_reorder ... ok
+test meta_harness::tests::compose_options_override_budget ... ok
+test meta_harness::tests::compose_parses_stock_part_names ... ok
+test meta_harness::tests::compose_step_limit_and_model_attempts_round_trip_independently ... ok
+test meta_harness::tests::default_admission_builds_stock_graph ... ok
+test meta_harness::tests::host_mount_without_registry_fails_closed ... ok
+test meta_harness::tests::host_prefix_is_case_insensitive_and_normalizes_id ... ok
+test meta_harness::tests::kernel_policy_cannot_disable_governance ... ok
+test meta_harness::tests::mixed_tree_includes_compact_and_empty_system_fallback ... ok
+test meta_harness::tests::parse_harness_parts_accepts_stock_names_and_rejects_unknown ... ok
+test meta_harness::tests::partition_and_intent_stamp_view_are_behavior_oracles ... ok
+test meta_harness::tests::reject_empty_and_invalid_host_ids ... ok
+test meta_harness::tests::resolved_components_falls_back_to_parts_then_default_stock ... ok
+test meta_harness::tests::stock_only_components_list_uses_spec_path ... ok
+test meta_harness::tests::to_spec_keeps_default_system_when_compose_system_empty ... ok
+test meta_harness::tests::unknown_host_id_fails_closed ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 5208 filtered out; finished in 0.00s
+
+
+FILTER invalid_numeric_session_options_return_field_specific_errors
+
+running 1 test
+test agent_api::session_config::tests::invalid_numeric_session_options_return_field_specific_errors ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5226 filtered out; finished in 0.00s
+
+
+FILTER numeric_session_option_boundaries_are_valid
+
+running 1 test
+test agent_api::session_config::tests::numeric_session_option_boundaries_are_valid ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5226 filtered out; finished in 0.00s
+
+
+FILTER effort_tool_rounds_are_the_fact_budget
+
+running 1 test
+test fact_control::tests::effort_tool_rounds_are_the_fact_budget ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5226 filtered out; finished in 0.00s
+
+
+FILTER effort_tool_budget_runs_every_round_before_deny
+
+running 1 test
+test fact_control::tests::effort_tool_budget_runs_every_round_before_deny ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5226 filtered out; finished in 0.05s
+
+
+FILTER fact_log_budget_does_not_call_the_tool_body
+
+running 1 test
+test fact_control::tests::fact_log_budget_does_not_call_the_tool_body ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5226 filtered out; finished in 0.03s
+
+
+FILTER effort_ceiling_asks_for_a_final_answer_before_denying
+
+running 1 test
+test fact_control::tests::effort_ceiling_asks_for_a_final_answer_before_denying ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5226 filtered out; finished in 0.03s
+
+
+FILTER fact_log_tool_round_cap_uses_an_empty_tool_list
+
+running 1 test
+test fact_control::tests::fact_log_tool_round_cap_uses_an_empty_tool_list ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5226 filtered out; finished in 0.01s
+
+
+FILTER test_task_params_schema
+
+running 5 tests
+test tools::task::tests::test_task_params_schema ... ok
+test tools::task::tests::test_task_params_schema_descriptions ... ok
+test tools::task::tests::test_task_params_schema_hides_permissive_field ... ok
+test tools::task::tests::test_task_params_schema_properties ... ok
+test tools::task::tests::test_task_params_schema_required_fields ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 5222 filtered out; finished in 0.00s
+
+
+FILTER test_parallel_task_params_schema
+
+running 3 tests
+test tools::task::tests::test_parallel_task_params_schema ... ok
+test tools::task::tests::test_parallel_task_params_schema_items ... ok
+test tools::task::tests::test_parallel_task_params_schema_required ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 5224 filtered out; finished in 0.00s
+

@@ -1,0 +1,21 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-code-core",
+    "--lib",
+    "fact_log_default_resume_retains_admitted_unbounded_and_explicit_step_limits",
+    "--",
+    "--test-threads=1"
+  ],
+  "exit_code": 0,
+  "seconds": 45.29949325,
+  "summary": [
+    "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5227 filtered out; finished in 0.32s"
+  ],
+  "frozen_binary": "/Users/roylin/code/aster/target/qualification/no-count-limit-20261020/core-tests-final",
+  "sha256": "b1dae8f49fe72400cfac93ba35f89c879dbaff723d6295db49b93227de214b4b"
+}

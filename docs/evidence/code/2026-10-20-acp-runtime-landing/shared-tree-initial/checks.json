@@ -1,0 +1,181 @@
+[
+  {
+    "name": "workspace-format",
+    "command": [
+      "cargo",
+      "fmt",
+      "--all",
+      "--",
+      "--check"
+    ],
+    "exit_code": 1,
+    "seconds": 16.789,
+    "summaries": [],
+    "log": "docs/evidence/code/2026-10-20-acp-runtime-landing/shared-tree-initial/workspace-format.log",
+    "original_log": "docs/evidence/code/2026-10-20-acp-runtime-landing/workspace-format.log"
+  },
+  {
+    "name": "scoped-format",
+    "command": [
+      "cargo",
+      "fmt",
+      "-p",
+      "a3s-effect",
+      "-p",
+      "a3s-code-core",
+      "-p",
+      "a3s-code-acp",
+      "--",
+      "--check"
+    ],
+    "exit_code": 1,
+    "seconds": 2.773,
+    "summaries": [],
+    "log": "docs/evidence/code/2026-10-20-acp-runtime-landing/shared-tree-initial/scoped-format.log",
+    "original_log": "docs/evidence/code/2026-10-20-acp-runtime-landing/scoped-format.log"
+  },
+  {
+    "name": "workspace-dependencies",
+    "command": [
+      "/opt/homebrew/bin/python3.13",
+      "tests/workspace_dependencies.py"
+    ],
+    "exit_code": 1,
+    "seconds": 3.674,
+    "summaries": [],
+    "log": "docs/evidence/code/2026-10-20-acp-runtime-landing/shared-tree-initial/workspace-dependencies.log",
+    "original_log": "docs/evidence/code/2026-10-20-acp-runtime-landing/workspace-dependencies.log"
+  },
+  {
+    "name": "effect",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-effect"
+    ],
+    "exit_code": 101,
+    "seconds": 0.333,
+    "summaries": [],
+    "log": "docs/evidence/code/2026-10-20-acp-runtime-landing/shared-tree-initial/effect.log",
+    "original_log": "docs/evidence/code/2026-10-20-acp-runtime-landing/effect.log"
+  },
+  {
+    "name": "core-connected",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-code-core",
+      "--lib",
+      "--",
+      "no_count",
+      "zero_tool_rounds",
+      "porcelain::",
+      "harness_loop::",
+      "fact_control::",
+      "child_run::",
+      "tools::task::",
+      "standing_context::",
+      "meta_harness",
+      "agent_api::tests::persistence::test_resume_run",
+      "fact_log_session_send_and_resume_use_the_stored_model_turn",
+      "fact_log_resume_run_emits_turn_boundaries_for_the_continued_model_turn",
+      "ordinary_log_and_checkpoint_resumes_admit_no_extraction_in_both_stores",
+      "--test-threads=4"
+    ],
+    "exit_code": 101,
+    "seconds": 0.296,
+    "summaries": [],
+    "log": "docs/evidence/code/2026-10-20-acp-runtime-landing/shared-tree-initial/core-connected.log",
+    "original_log": "docs/evidence/code/2026-10-20-acp-runtime-landing/core-connected.log"
+  },
+  {
+    "name": "capability",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-code-core",
+      "--test",
+      "capability_scope",
+      "--",
+      "--test-threads=1"
+    ],
+    "exit_code": 101,
+    "seconds": 0.281,
+    "summaries": [],
+    "log": "docs/evidence/code/2026-10-20-acp-runtime-landing/shared-tree-initial/capability.log",
+    "original_log": "docs/evidence/code/2026-10-20-acp-runtime-landing/capability.log"
+  },
+  {
+    "name": "acp-connected",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-code-acp",
+      "--lib",
+      "--",
+      "count_limits",
+      "effort_tokens_adjust_thinking",
+      "budget_line_states",
+      "effort_limits_preserve",
+      "studio_host_keeps_the_budget_line",
+      "tui_session_function_coverage",
+      "the_profile_answers_for_itself",
+      "reasoning_transport",
+      "unattended",
+      "--test-threads=4"
+    ],
+    "exit_code": 101,
+    "seconds": 0.3,
+    "summaries": [],
+    "log": "docs/evidence/code/2026-10-20-acp-runtime-landing/shared-tree-initial/acp-connected.log",
+    "original_log": "docs/evidence/code/2026-10-20-acp-runtime-landing/acp-connected.log"
+  },
+  {
+    "name": "acp-seam",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-code-acp",
+      "--test",
+      "v912_seam"
+    ],
+    "exit_code": 101,
+    "seconds": 0.29,
+    "summaries": [],
+    "log": "docs/evidence/code/2026-10-20-acp-runtime-landing/shared-tree-initial/acp-seam.log",
+    "original_log": "docs/evidence/code/2026-10-20-acp-runtime-landing/acp-seam.log"
+  },
+  {
+    "name": "paired-build",
+    "command": [
+      "cargo",
+      "build",
+      "--locked",
+      "--offline",
+      "-p",
+      "aster",
+      "-p",
+      "a3s-code-acp"
+    ],
+    "exit_code": 101,
+    "seconds": 0.281,
+    "summaries": [],
+    "log": "docs/evidence/code/2026-10-20-acp-runtime-landing/shared-tree-initial/paired-build.log",
+    "original_log": "docs/evidence/code/2026-10-20-acp-runtime-landing/paired-build.log"
+  }
+]

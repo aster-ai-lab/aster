@@ -100,6 +100,7 @@ fn observation_bound_and_missing_reason_refuse_complete_claims() {
         reason: None,
         changes: vec![],
         unresolved_external_operations: vec![],
+        budget_exceeded: false,
     };
     assert!(missing_reason.validate().is_err());
     let mut oversized = prepared();
@@ -122,6 +123,20 @@ fn observation_bound_and_missing_reason_refuse_complete_claims() {
             .validate()
             .is_err()
     );
+}
+
+#[test]
+fn a_budget_observation_validates_and_old_facts_default_the_flag() {
+    let budget = ToolEffectObservationV1::budget_exceeded();
+    assert!(budget.validate().is_ok());
+    assert!(budget.budget_exceeded);
+    assert!(budget.changes.is_empty());
+    assert!(!budget.exceeds_canonical_bound());
+    let wire = serde_json::to_value(ToolEffectObservationV1::incomplete("read failed")).unwrap();
+    assert!(wire.get("budget_exceeded").is_none());
+    let decoded: ToolEffectObservationV1 = serde_json::from_value(wire).unwrap();
+    assert!(!decoded.budget_exceeded);
+    decoded.validate().unwrap();
 }
 
 #[test]

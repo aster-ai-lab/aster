@@ -1,0 +1,83 @@
+--- a/crates/code/core/src/tools/task.rs
++++ b/crates/code/core/src/tools/task.rs
+@@ -89,6 +89,14 @@
+         return Err(serde::de::Error::custom("max_steps must be at least 1"));
+     }
+     Ok(steps)
++}
++
++fn tighten_child_role_round_limit(config: &mut AgentConfig, role_limit: Option<usize>) {
++    if let Some(limit) = role_limit.filter(|limit| *limit > 0) {
++        if config.max_tool_rounds == 0 || limit < config.max_tool_rounds {
++            config.max_tool_rounds = limit;
++        }
++    }
+ }
+ 
+ /// Task tool result
+@@ -981,6 +989,10 @@
+         if let Some(ref parent_ctx) = self.parent_context {
+             parent_ctx.apply_to(&mut child_config);
+         }
++        // An explicit role limit can equal the SDK default, which parent
++        // inheritance cannot distinguish from an unset count. Restore only a
++        // known positive role narrowing, retaining a tighter inherited limit.
++        tighten_child_role_round_limit(&mut child_config, agent.max_steps);
+         if let Some(profile) = self.child_tool_presentation.clone() {
+             child_config.tool_presentation_profile = profile;
+         }
+--- a/crates/code/core/src/tools/task/tests.rs
++++ b/crates/code/core/src/tools/task/tests.rs
+@@ -74,6 +74,52 @@
+     assert_eq!(params.agent, "plan");
+     assert_eq!(params.max_steps, Some(10));
+     assert!(!params.background);
++}
++
++#[test]
++fn task_positive_role_round_limit_survives_parent_default_alias() {
++    for (parent_rounds, role_rounds, expected) in [
++        (0, 50, 50),
++        (3, 50, 3),
++        (3_200, 50, 50),
++        (0, 3, 3),
++        (3, 3, 3),
++        (3_200, 3, 3),
++    ] {
++        let role =
++            AgentDefinition::new("worker", "Round-limited worker").with_max_steps(role_rounds);
++        let mut config = AgentConfig::default();
++        role.apply_to(&mut config);
++        let mut parent = redacting_parent_context();
++        parent.max_tool_rounds = Some(parent_rounds);
++        parent.apply_to(&mut config);
++        tighten_child_role_round_limit(&mut config, role.max_steps);
++        assert_eq!(
++            config.max_tool_rounds, expected,
++            "parent={parent_rounds}, role={role_rounds}"
++        );
++    }
++}
++
++#[test]
++fn task_role_round_tightening_preserves_absent_and_trusted_zero_roles() {
++    for parent_rounds in [None, Some(0), Some(3), Some(3_200)] {
++        for role_rounds in [None, Some(0)] {
++            let mut role = AgentDefinition::new("worker", "Trusted role");
++            role.max_steps = role_rounds;
++            let mut config = AgentConfig::default();
++            role.apply_to(&mut config);
++            let mut parent = redacting_parent_context();
++            parent.max_tool_rounds = parent_rounds;
++            parent.apply_to(&mut config);
++            let inherited = config.max_tool_rounds;
++            tighten_child_role_round_limit(&mut config, role.max_steps);
++            assert_eq!(
++                config.max_tool_rounds, inherited,
++                "parent={parent_rounds:?}, role={role_rounds:?}"
++            );
++        }
++    }
+ }
+ 
+ #[test]

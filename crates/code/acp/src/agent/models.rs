@@ -97,14 +97,11 @@ impl A3sCodeAgent {
 /// Effort selection for one session.
 ///
 /// `token` is the provider effort parameter when the model has one.
-/// `thinking_budget` and `max_tool_rounds` are the host budget. Each level
-/// has its own pair. `max` and `ultracode` keep the tool-round safety ceiling
-/// as their cap; every other level is strictly below it.
+/// `thinking_budget` controls provider reasoning independently of tool counts.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) struct EffortLimits {
     pub(super) token: &'static str,
     pub(super) thinking_budget: usize,
-    pub(super) max_tool_rounds: usize,
     pub(super) max_parallel_tasks: usize,
     pub(super) max_continuation_turns: u32,
 }
@@ -113,7 +110,7 @@ pub(super) struct EffortLimits {
 ///
 /// A native menu wins when the provider has one (GLM stays on low/high/max).
 /// Every other model still gets the host budget menu, because thinking budget
-/// and tool rounds apply whether or not the provider has an effort parameter.
+/// applies whether or not the provider has an effort parameter.
 /// Each entry includes `value` so the pager's `ReasoningEffortOption` parser
 /// accepts it.
 pub(super) fn reasoning_effort_catalog_meta(
@@ -202,22 +199,20 @@ fan-out. When a task genuinely needs many coordinated tool calls, call the \
 }
 
 pub(super) fn effort_limits(token: &str) -> Option<EffortLimits> {
-    let ceiling = a3s_code_core::llm::TOOL_ROUND_SAFETY_CEILING;
-    let (token, thinking_budget, max_tool_rounds) = match token.to_ascii_lowercase().as_str() {
-        "none" => ("none", 1024, 4),
-        "minimal" => ("minimal", 1536, 8),
-        "low" => ("low", 2048, 16),
-        "medium" => ("medium", 8192, 48),
-        "high" => ("high", 16_384, 128),
-        "xhigh" => ("xhigh", 32_768, 512),
-        "max" => ("max", 65_536, ceiling),
-        "ultracode" => ("ultracode", 65_536, ceiling),
+    let (token, thinking_budget) = match token.to_ascii_lowercase().as_str() {
+        "none" => ("none", 1024),
+        "minimal" => ("minimal", 1536),
+        "low" => ("low", 2048),
+        "medium" => ("medium", 8192),
+        "high" => ("high", 16_384),
+        "xhigh" => ("xhigh", 32_768),
+        "max" => ("max", 65_536),
+        "ultracode" => ("ultracode", 65_536),
         _ => return None,
     };
     Some(EffortLimits {
         token,
         thinking_budget,
-        max_tool_rounds,
         max_parallel_tasks: HOST_PARALLEL_TASKS,
         max_continuation_turns: HOST_CONTINUATION_TURNS,
     })

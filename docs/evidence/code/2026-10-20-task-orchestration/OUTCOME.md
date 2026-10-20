@@ -1,10 +1,13 @@
 # Task execution optimization and end-to-end qualification
 
-Status: eight live Core T01 attempts are terminal; none qualified for promotion.
-The final same-source four-cell screen is complete, with all original
-submissions scoring 8/9. The ninth, independent development-app CUA assessment
-ended with a host approval-recovery failure. Saved interrupted artifacts score
-8/9; no normal model completion or end-to-end improvement is claimed.
+Status: ten live T01 attempts are terminal; none qualified for promotion.
+The final same-source four-cell screen and ninth development-app assessment
+remain unchanged. The tenth, newly authorized CUA assessment reached
+`max_turn_requests` after 1892.931 seconds; its frozen original submission scored
+8/9, failing negative-zero formatting. It did not complete normally. See the
+[new assessment](goal-resumed-20261020/T032-OUTCOME.md) and
+[tool-budget analysis](goal-resumed-20261020/MAX-TURN-REQUESTS-ANALYSIS.md).
+No end-to-end speed improvement is claimed.
 
 Follow-up control repair (T029) passed its controlled regression gate under
 the reopened user goal: renderer recovery/Stop and connected regressions pass
@@ -25,8 +28,23 @@ and [T028 evidence](execution-environment/t028/OUTCOME.md).
 The final renderer builds successfully with unchanged inputs; all 43 scoped Rust
 files pass formatting. Whole-workspace failures remain separately recorded in
 [current workspace checks](goal-resumed-20261020/WORKSPACE-CHECKS.md).
-The final paired build and one new CUA assessment are in progress. No new task
-speed result is yet claimed.
+The new CUA assessment is terminal. Its R2 runtime was preserved; follow-up
+repairs were qualified separately and never substituted into the measured run.
+The OCI carrier now uses the existing recursive canonical JSON digest, with
+the same 29 attachment tests passing under both serde map feature modes.
+The [approval deadline and stale-answer repair](goal-resumed-20261020/approval-timeout/OUTCOME.md)
+passes 10 distinct controlled regressions, retaining legacy confirmations,
+owner boundaries and fail-closed timeout behavior. Duplicate prompts remain
+separate; their authorization paths were not merged.
+
+The final terminal/ACP/Office/Work paired build passed in 71.089 seconds with
+52 scoped source hashes stable. The R4 signed development bundle is prepared
+without launching a new desktop or paid task. Its exact signed ACP passed the
+real Work-to-Linux-guest Bash fixture in 23.256 seconds, with no remaining owned
+processes. See [final repair qualification](goal-resumed-20261020/R4-QUALIFICATION.md).
+Final scoped formatting passes 51 files; the retained 52-file check still finds
+pre-existing formatting in `agent_tests.rs`. Whole-workspace CI remains failing
+as documented; no parallel Flow migration changes were reverted.
 
 ## Scope and acceptance
 

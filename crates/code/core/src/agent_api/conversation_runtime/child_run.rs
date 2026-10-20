@@ -113,7 +113,7 @@ async fn continue_incomplete(
     let mut previous = incomplete_fingerprint(settled.view.assistant.as_deref().unwrap_or(""));
     while crate::agent::AgentLoop::looks_incomplete(settled.view.assistant.as_deref().unwrap_or(""))
     {
-        if continuations >= max_continuations || model_turns >= max_rounds {
+        if continuations >= max_continuations || (max_rounds != 0 && model_turns >= max_rounds) {
             return Ok(false);
         }
         continuations += 1;
@@ -150,4 +150,65 @@ fn budget_denied_since_last_user_message(
         .iter()
         .any(|fact| fact.kind == "budget.denied")
         .then_some(crate::harness_loop::ForcedStop::ToolBudget)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::sync::atomic::Ordering;
+
+    #[tokio::test]
+    async fn zero_tool_rounds_child_continues_without_removing_independent_guards() {
+        let incomplete = "Let me inspect the code...";
+        for (rounds, continuations, repeated, expected_calls, expected_text) in [
+            (0, 1, false, 2, "Completed the controlled task."),
+            (0, 0, false, 1, incomplete),
+            (1, 1, false, 1, incomplete),
+            (
+                0,
+                2,
+                true,
+                2,
+                crate::agent::AgentLoop::no_progress_failure_text(),
+            ),
+        ] {
+            let workspace = tempfile::tempdir().unwrap();
+            let client = Arc::new(crate::agent::tests::MockLlmClient::new(vec![
+                crate::agent::tests::MockLlmClient::text_response(incomplete),
+                crate::agent::tests::MockLlmClient::text_response(if repeated {
+                    incomplete
+                } else {
+                    "Completed the controlled task."
+                }),
+            ]));
+            let run = ChildRun {
+                agent: crate::agent::AgentLoop::new(
+                    client.clone(),
+                    Arc::new(crate::tools::ToolExecutor::new(
+                        workspace.path().display().to_string(),
+                    )),
+                    crate::tools::ToolContext::new(workspace.path().to_path_buf()),
+                    crate::agent::AgentConfig {
+                        max_tool_rounds: rounds,
+                        continuation_enabled: true,
+                        max_continuation_turns: continuations,
+                        planning_mode: crate::PlanningMode::Disabled,
+                        auto_compact: false,
+                        ..Default::default()
+                    },
+                ),
+                child_id: "controlled-continuation".into(),
+                budget_session: None,
+                events: None,
+                cancel: tokio_util::sync::CancellationToken::new(),
+            };
+            let result = run.run("Complete the controlled task").await.unwrap();
+            assert_eq!(
+                result.text, expected_text,
+                "rounds={rounds}, continuations={continuations}, repeated={repeated}"
+            );
+            assert_eq!(client.call_count.load(Ordering::SeqCst), expected_calls);
+            workspace.close().unwrap();
+        }
+    }
 }

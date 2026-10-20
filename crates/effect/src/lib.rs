@@ -21,24 +21,26 @@ pub mod fact;
 pub mod log;
 
 pub use actor::{
-    append_input, component, ingest, ingest_with_cancel, resume, resume_with_cancel, Actor,
-    ErasedComponent, PreparedTransition, Settlement, Transition, TransitionProgram,
+    append_input, component, ingest, ingest_with_cancel, ingest_with_optional_limit, resume,
+    resume_with_cancel, resume_with_optional_limit, Actor, ErasedComponent, PreparedTransition,
+    Settlement, Transition, TransitionProgram,
 };
 pub use coding::{
     answer_fact, background_output_fact, coding_actor, coding_scheduler, confirm_fact,
-    ingest_coding, ingest_coding_with_cancel, merge_coding_view, message_fact, resume_coding,
-    resume_coding_with_cancel, tool_args_digest, CodingPhase, CodingServices, CodingView,
-    Compactor, Completion, CompletionRequest, HarnessConfig, ModelDecision, PendingConfirmation,
-    PendingQuestion, PreparedToolExecution, ToolAdmissionIdentityV1, ToolCall,
-    ToolEffectObservationV1, ToolExecutionOutcome, ToolExecutionResultV1, ToolFileIdentityV1,
-    ToolFileKind, ToolInvocationIdentityV1, ToolObservationCompleteness, ToolPathChangeV1,
+    ingest_coding, ingest_coding_with_cancel, ingest_coding_with_optional_limit, merge_coding_view,
+    message_fact, resume_coding, resume_coding_with_cancel, resume_coding_with_optional_limit,
+    tool_args_digest, CodingPhase, CodingServices, CodingView, Compactor, Completion,
+    CompletionRequest, HarnessConfig, ModelDecision, PendingConfirmation, PendingQuestion,
+    PreparedToolExecution, ToolAdmissionIdentityV1, ToolCall, ToolEffectObservationV1,
+    ToolExecutionOutcome, ToolExecutionResultV1, ToolFileIdentityV1, ToolFileKind,
+    ToolInvocationIdentityV1, ToolObservationCompleteness, ToolPathChangeV1,
     ToolPreparationRequest, ToolPreparedV1, ToolRecoveryPolicy, ToolRunner, ToolSpec,
     MAX_TOOL_EFFECT_CANONICAL_BYTES, MAX_TOOL_EFFECT_PATHS, TOOL_PREPARED_SCHEMA,
     TOOL_RESULT_SCHEMA,
 };
 pub use compose::{
-    budget, compact, compose_coding_actor, infer, mount, namespace_transitions, system, tools,
-    with_key_namespace, HarnessGraph, HarnessPartId, HarnessView, MetaHarnessSpec,
+    budget, compact, compose_coding_actor, infer, mount, namespace_transitions, optional_budget,
+    system, tools, with_key_namespace, HarnessGraph, HarnessPartId, HarnessView, MetaHarnessSpec,
 };
 pub use effect::{Effect, Schedule, TraceEvent};
 pub use error::ActorError;

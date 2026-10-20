@@ -1,0 +1,24 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling a3s-effect v0.2.1 (/Users/roylin/code/aster/crates/effect)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.58s
+     Running tests/unbounded_counts.rs (target/debug/deps/unbounded_counts-1ab8c5edfb9d9a78)
+
+running 7 tests
+test optional_count_limits_preserve_zero_allowance_and_reject_zero_steps ... ok
+test old_and_optional_zero_step_entry_points_remain_nonexecuting_peeks ... ok
+test explicit_step_limit_still_blocks_preparation_without_a_tool_allowance ... ok
+test explicit_tool_allowances_keep_zero_and_positive_denials_with_unbounded_steps ... ok
+test no_count_limits_still_settle_cancellation_after_sixty_four_tools ... ok
+test numeric_meta_recipes_keep_their_bound_and_optional_graphs_keep_none ... ok
+test no_count_limits_pass_fifty_tools_and_two_hundred_transitions ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.38s
+

@@ -137,13 +137,19 @@ pub fn tools(specs: Vec<ToolSpec>) -> ErasedComponent<CodingServices, HarnessVie
 /// The stock infer scheduler still enforces the numeric limit from
 /// [`HarnessConfig`].
 pub fn budget(limit: u32) -> ErasedComponent<CodingServices, HarnessView> {
+    optional_budget(Some(limit))
+}
+
+/// Budget observability for a scheduler that may have no tool-count ceiling.
+/// `None` is retained as absence, while `Some(0)` is a zero allowance.
+pub fn optional_budget(limit: Option<u32>) -> ErasedComponent<CodingServices, HarnessView> {
     component(
         move || limit,
         |state, _fact| state,
         move |state| {
             (
                 CodingView {
-                    tool_budget: Some(*state),
+                    tool_budget: *state,
                     ..CodingView::empty()
                 },
                 Vec::new(),
@@ -319,6 +325,7 @@ mod execution_tests;
 
 fn compose_meta_harness_with<F>(
     spec: MetaHarnessSpec,
+    budget_limit: Option<u32>,
     mut make_scheduler: F,
 ) -> Actor<CodingServices, HarnessView>
 where
@@ -328,7 +335,6 @@ where
     let parts = spec.resolved_parts();
     let system_prompts = spec.system.clone();
     let tool_specs = spec.tools.clone();
-    let budget_limit = spec.budget;
     let compact_after = spec.compact_after_chars;
 
     let mut components = Vec::new();
@@ -336,7 +342,7 @@ where
         match part {
             HarnessPartId::System => components.push(system(system_prompts.clone())),
             HarnessPartId::Tools => components.push(tools(tool_specs.clone())),
-            HarnessPartId::Budget => components.push(budget(budget_limit)),
+            HarnessPartId::Budget => components.push(optional_budget(budget_limit)),
             HarnessPartId::Compact => components.push(compact(compact_after)),
             // Stock Infer mounts the scheduler without a key prefix so cause
             // keys (`infer:1:0`, `compact:1`, …) remain stable across resumes.
@@ -368,8 +374,22 @@ impl HarnessGraph {
     where
         F: FnMut() -> ErasedComponent<CodingServices, HarnessView>,
     {
+        let budget_limit = Some(spec.budget);
+        Self::from_spec_with_optional_budget(spec, budget_limit, &mut make_scheduler)
+    }
+
+    /// Compose without changing the public numeric recipe shape. The supplied
+    /// budget must match the scheduler's actual optional allowance.
+    pub fn from_spec_with_optional_budget<F>(
+        spec: MetaHarnessSpec,
+        budget_limit: Option<u32>,
+        mut make_scheduler: F,
+    ) -> Self
+    where
+        F: FnMut() -> ErasedComponent<CodingServices, HarnessView>,
+    {
         Self {
-            actor: compose_meta_harness_with(spec, &mut make_scheduler),
+            actor: compose_meta_harness_with(spec, budget_limit, &mut make_scheduler),
         }
     }
 

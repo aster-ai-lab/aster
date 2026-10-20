@@ -1,0 +1,50 @@
+[
+  {
+    "filter": "zero_tool_rounds_preserves_repair_and_continuation_limits",
+    "exit": 0,
+    "seconds": 2.736056333,
+    "passed": 1
+  },
+  {
+    "filter": "delegated_child_preserves_zero_round_inheritance_and_positive_overrides",
+    "exit": 0,
+    "seconds": 0.013797417000000145,
+    "passed": 1
+  },
+  {
+    "filter": "zero_tool_rounds_child_continues_without_removing_independent_guards",
+    "exit": 0,
+    "seconds": 0.14096916700000017,
+    "passed": 1
+  },
+  {
+    "filter": "task_tool_rejects_zero_max_steps_before_foreground_background_or_fanout_launch",
+    "exit": 0,
+    "seconds": 0.014067083000000036,
+    "passed": 1
+  },
+  {
+    "filter": "test_task_params_max_steps_zero_is_rejected",
+    "exit": 0,
+    "seconds": 0.01131033299999995,
+    "passed": 1
+  },
+  {
+    "filter": "task_positive_role_round_limit_survives_parent_default_alias",
+    "exit": 0,
+    "seconds": 0.012228165999999874,
+    "passed": 1
+  },
+  {
+    "filter": "task_role_round_tightening_preserves_absent_and_trusted_zero_roles",
+    "exit": 0,
+    "seconds": 0.012141624999999934,
+    "passed": 1
+  },
+  {
+    "filter": "standing_context::tests::",
+    "exit": 101,
+    "seconds": 0.12055662499999986,
+    "passed": 0
+  }
+]

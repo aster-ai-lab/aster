@@ -432,6 +432,8 @@ pub(super) async fn prepare_tools(
                     crate::porcelain::PathDelta {
                         paths: Vec::new(),
                         incomplete: !read_only,
+                        budget_exceeded: false,
+                        status_budget: false,
                     },
                 ),
             };
@@ -491,6 +493,8 @@ pub(super) async fn prepare_tools(
             if source_incomplete {
                 effects.completeness = ToolObservationCompleteness::Incomplete;
                 effects.reason = Some("tool_effect_observation_incomplete: execution did not return complete evidence".into());
+                // A real gap in execution evidence wins over a path budget.
+                effects.budget_exceeded = false;
             }
             // No process was created, so this call owns no workspace delta.
             // An incomplete watch of a tree that was already dirty must not

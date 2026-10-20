@@ -1,0 +1,57 @@
+
+FILTER agent::tests::count_limits
+
+running 2 tests
+test agent::tests::count_limits::interactive_count_is_unbounded_without_an_explicit_limit_for_every_effort ... ok
+test agent::tests::count_limits::interactive_explicit_acl_count_wins_over_every_effort_including_zero ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 339 filtered out; finished in 0.01s
+
+
+FILTER effort_tokens_adjust_thinking_without_setting_a_tool_ceiling
+
+running 1 test
+test agent::tests::effort_tokens_adjust_thinking_without_setting_a_tool_ceiling ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 340 filtered out; finished in 0.00s
+
+
+FILTER budget_line_states_a_maximum
+
+running 1 test
+test agent::tests::budget_line_states_a_maximum ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 340 filtered out; finished in 0.00s
+
+
+FILTER effort_limits_preserve_thinking_and_parallel_resource_settings
+
+running 1 test
+test agent::tests::effort_limits_preserve_thinking_and_parallel_resource_settings ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 340 filtered out; finished in 0.00s
+
+
+FILTER studio_host_keeps_the_budget_line_in_the_session_options
+
+running 1 test
+test agent::tests::studio_host_keeps_the_budget_line_in_the_session_options ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 340 filtered out; finished in 0.00s
+
+
+FILTER tui_session_function_coverage_is_at_least_95_percent
+
+running 1 test
+test agent::tests::tui_session_function_coverage_is_at_least_95_percent ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 340 filtered out; finished in 0.00s
+
+
+FILTER the_profile_answers_for_itself_with_every_capability_on
+
+running 1 test
+test unattended::tests::the_profile_answers_for_itself_with_every_capability_on ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 340 filtered out; finished in 0.00s
+

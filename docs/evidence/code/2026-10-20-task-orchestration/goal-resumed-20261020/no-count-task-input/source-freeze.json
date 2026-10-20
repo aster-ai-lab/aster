@@ -1,0 +1,46 @@
+{
+  "at_utc": "2026-10-19T23:01:01.534320+00:00",
+  "files": [
+    {
+      "path": "crates/code/core/src/tools/task.rs",
+      "sha256": "9569cb2b7c8c932e653758cc3b90205ea3f7b7b280a9f8c3f8dd1a69be0cdf34"
+    },
+    {
+      "path": "crates/code/core/src/tools/task/tests.rs",
+      "sha256": "8fa9130e6a5eec61a50954e639b5f990d6967f7f82952d763e42e2c8f96c6bab"
+    }
+  ],
+  "checks": [
+    {
+      "name": "scoped-rustfmt-check",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2021",
+        "--config",
+        "skip_children=true",
+        "--check",
+        "crates/code/core/src/tools/task.rs",
+        "crates/code/core/src/tools/task/tests.rs"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.06250541600000001
+    },
+    {
+      "name": "owned-diff-check",
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "crates/code/core/src/tools/task.rs",
+        "crates/code/core/src/tools/task/tests.rs"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.018501040999999996
+    }
+  ],
+  "cargo_or_tests_run": false,
+  "owned_patch_sha256": "5f8debc106f9d24786a9dfad9508d1b753ecab61bce19cb5bbe272436273dbe4",
+  "scope": "Reject model TaskParams max_steps zero through shared field deserialization and item schema; trusted AgentDefinition unchanged."
+}

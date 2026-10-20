@@ -816,6 +816,7 @@ impl SessionOptions {
     }
 
     /// Override the maximum number of tool execution rounds for this session.
+    /// Zero removes the count ceiling; timeouts, cancellation and permissions remain.
     ///
     /// Useful when binding a markdown-defined subagent to a session —
     /// pass the agent definition's `max_steps` value here to enforce its step budget.

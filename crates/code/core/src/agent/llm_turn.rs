@@ -264,8 +264,9 @@ impl crate::agent::TurnEngine {
             anyhow::bail!(error);
         }
 
-        let is_reserved_finalization_turn =
-            force_no_tools && turn == self.config.max_tool_rounds.saturating_add(1);
+        let is_reserved_finalization_turn = self.config.max_tool_rounds != 0
+            && force_no_tools
+            && turn == self.config.max_tool_rounds.saturating_add(1);
         if !is_reserved_finalization_turn {
             if let Some(error) = state.turn_limit_error(self.config.max_tool_rounds) {
                 self.emit_error(event_tx, error.clone()).await;

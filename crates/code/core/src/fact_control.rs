@@ -9,10 +9,10 @@ use std::sync::atomic::{AtomicBool, AtomicU64, AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 
 use a3s_effect::{
-    answer_fact, confirm_fact, ingest_coding_with_cancel, message_fact, resume_coding_with_cancel,
-    ActorError, CodingPhase, CodingServices, CodingView, Compactor, Completion, CompletionRequest,
-    Exit, FileLog, HarnessConfig, HarnessGraph, LogStore, ModelDecision, NewFact, ToolCall,
-    ToolRunner, ToolSpec,
+    answer_fact, confirm_fact, ingest_coding_with_optional_limit, message_fact,
+    resume_coding_with_cancel, resume_coding_with_optional_limit, ActorError, CodingPhase,
+    CodingServices, CodingView, Compactor, Completion, CompletionRequest, Exit, FileLog,
+    HarnessConfig, HarnessGraph, LogStore, ModelDecision, NewFact, ToolCall, ToolRunner, ToolSpec,
 };
 use anyhow::Result;
 
@@ -132,7 +132,7 @@ pub struct FactRun {
     thread: String,
     actor: a3s_effect::Actor<CodingServices, CodingView>,
     services: Arc<CodingServices>,
-    limit: u32,
+    limit: Option<u32>,
     /// Tool names exposed when this run was admitted. A later posture does not rewrite them.
     admitted_tools: Vec<String>,
     /// Copied from [`crate::meta_harness::KernelPolicy::admit`]. Hosts cannot clear it.
@@ -835,8 +835,9 @@ fn log_dir(workspace: &Path) -> PathBuf {
 
 /// Tool budget for one fact-log turn.
 ///
-/// `/effort` sets `max_tool_rounds`. That number is both the deny budget and
-/// the point where the next completion is asked to finish without tools. A
+/// A positive `max_tool_rounds` is both the deny budget and
+/// the point where the next completion is asked to finish without tools. Zero
+/// removes both count ceilings, including the derived actor step ceiling. A
 /// fixed budget of 8 ended the turn while tools were still offered. The step
 /// limit covers an infer and a tool result for every round, plus the prompt,
 /// compaction, and a closing answer.
@@ -875,21 +876,26 @@ pub(crate) fn session_harness_config_with(
     step_limit: Option<u32>,
     model_attempts: Option<u32>,
 ) -> Result<HarnessConfig> {
-    let rounds = u32::try_from(max_tool_rounds).unwrap_or(u32::MAX).max(1);
-    let derived_steps = rounds.saturating_mul(4).max(32);
-    let step_limit = step_limit.unwrap_or(derived_steps);
+    let rounds = (max_tool_rounds != 0).then(|| u32::try_from(max_tool_rounds).unwrap_or(u32::MAX));
+    let derived_steps = rounds.map(|rounds| rounds.saturating_mul(4).max(32));
+    let step_limit = step_limit.or(derived_steps);
     let model_attempts = model_attempts.unwrap_or(2);
-    Ok(HarnessConfig::new(
-        rounds,
+    let mut config = HarnessConfig::new(
+        rounds.unwrap_or(0),
         compact_after_chars,
-        step_limit,
+        step_limit.unwrap_or(1),
         model_attempts,
         Vec::new(),
         specs,
     )
     .map_err(|error| anyhow::anyhow!(error))?
-    .with_tool_round_cap(rounds)
-    .with_model_retry_delay(crate::retry::RetryConfig::default().delay_for_attempt(0)))
+    .with_tool_budget_limit(rounds)
+    .with_step_limit(step_limit)
+    .map_err(|error| anyhow::anyhow!(error))?;
+    if let Some(rounds) = rounds {
+        config = config.with_tool_round_cap(rounds);
+    }
+    Ok(config.with_model_retry_delay(crate::retry::RetryConfig::default().delay_for_attempt(0)))
 }
 
 /// Drop a previous process's fact log so a fixed test workspace starts idle.
@@ -942,10 +948,15 @@ impl FactRun {
         run_id: impl Into<String>,
         hosts: FactRunHostMounts<'_>,
     ) -> Result<Self> {
-        let step_limit = config.step_limit();
+        let step_limit = hosts
+            .compose
+            .and_then(|options| options.step_limit)
+            .or(config.step_limit_option());
         let graph = Self::admit_graph(config, &hosts)?;
         let compactor = hosts.compactor.clone();
-        Self::open_with_graph(dir, completion, tools, step_limit, run_id, graph, compactor)
+        Self::open_with_optional_step_limit(
+            dir, completion, tools, step_limit, run_id, graph, compactor,
+        )
     }
 
     fn admit_graph(config: HarnessConfig, hosts: &FactRunHostMounts<'_>) -> Result<HarnessGraph> {
@@ -970,6 +981,26 @@ impl FactRun {
         completion: Arc<dyn Completion>,
         tools: Arc<dyn ToolRunner>,
         step_limit: u32,
+        run_id: impl Into<String>,
+        graph: HarnessGraph,
+        compactor: Option<Arc<dyn Compactor>>,
+    ) -> Result<Self> {
+        Self::open_with_optional_step_limit(
+            dir,
+            completion,
+            tools,
+            Some(step_limit),
+            run_id,
+            graph,
+            compactor,
+        )
+    }
+
+    fn open_with_optional_step_limit(
+        dir: impl Into<PathBuf>,
+        completion: Arc<dyn Completion>,
+        tools: Arc<dyn ToolRunner>,
+        step_limit: Option<u32>,
         run_id: impl Into<String>,
         graph: HarnessGraph,
         compactor: Option<Arc<dyn Compactor>>,
@@ -1044,8 +1075,8 @@ impl FactRun {
             None,
             &[],
             &admitted_tools,
-            config.budget(),
-            config.step_limit(),
+            config.tool_budget_limit(),
+            config.step_limit_option(),
             config.model_attempts(),
         )?;
         let standing_digest = admission.as_ref().map(|item| item.digest.clone());
@@ -1092,8 +1123,13 @@ impl FactRun {
         &self.admitted_tools
     }
 
-    /// Step limit frozen at admission.
+    /// Legacy numeric step limit; zero projects an absent ceiling to zero.
     pub fn admitted_step_limit(&self) -> u32 {
+        self.limit.unwrap_or(0)
+    }
+
+    /// Actual transition ceiling, distinguishing no ceiling from an explicit zero peek.
+    pub fn admitted_step_limit_option(&self) -> Option<u32> {
         self.limit
     }
 
@@ -1297,8 +1333,10 @@ impl FactRun {
             config = config.with_token_compact(after_tokens, agent.fact_compact_keep_tokens());
         }
         config = config.with_duplicate_threshold(agent.duplicate_tool_threshold());
-        let budget = config.budget();
-        let step_limit = config.step_limit();
+        let budget = limits
+            .and_then(|options| options.tool_budget)
+            .or(config.tool_budget_limit());
+        let step_limit = config.step_limit_option();
         let model_attempts = config.model_attempts();
         let graph = Self::admit_graph(
             config,
@@ -1375,7 +1413,7 @@ impl FactRun {
             window_tokens: agent.context_window_tokens() as u64,
             prompt_tokens,
         });
-        let mut run = Self::open_with_graph(
+        let mut run = Self::open_with_optional_step_limit(
             effect_dir,
             completion,
             Arc::new(ExecutorTools {
@@ -1513,7 +1551,7 @@ impl FactRun {
     ) -> Result<a3s_effect::Settlement<CodingView>> {
         let log = self.open_log()?;
         let key = format!("m-{}", log.read(&self.thread).unwrap_or_default().len());
-        ingest_coding_with_cancel(
+        ingest_coding_with_optional_limit(
             &self.actor,
             log.as_ref(),
             Arc::clone(&self.services),
@@ -1528,6 +1566,21 @@ impl FactRun {
 
     pub async fn steer(&self, text: &str) -> Result<a3s_effect::Settlement<CodingView>> {
         self.user_text(text).await
+    }
+
+    /// Resume using the transition ceiling captured at admission.
+    pub async fn resume(&self) -> Result<a3s_effect::Settlement<CodingView>> {
+        let log = self.open_log()?;
+        resume_coding_with_optional_limit(
+            &self.actor,
+            log.as_ref(),
+            Arc::clone(&self.services),
+            &self.thread,
+            self.limit,
+            &self.cancel,
+        )
+        .await
+        .map_err(exit_to_error)
     }
 
     pub async fn resume_limit(&self, limit: u32) -> Result<a3s_effect::Settlement<CodingView>> {
@@ -1551,7 +1604,7 @@ impl FactRun {
     ) -> Result<a3s_effect::Settlement<CodingView>> {
         let log = self.open_log()?;
         let key = format!("c-{}", log.read(&self.thread).unwrap_or_default().len());
-        ingest_coding_with_cancel(
+        ingest_coding_with_optional_limit(
             &self.actor,
             log.as_ref(),
             Arc::clone(&self.services),
@@ -1595,7 +1648,7 @@ impl FactRun {
     pub async fn answer(&self, text: &str) -> Result<a3s_effect::Settlement<CodingView>> {
         let log = self.open_log()?;
         let key = format!("a-{}", log.read(&self.thread).unwrap_or_default().len());
-        ingest_coding_with_cancel(
+        ingest_coding_with_optional_limit(
             &self.actor,
             log.as_ref(),
             Arc::clone(&self.services),
@@ -1688,3 +1741,6 @@ mod conversation_history_tests;
 
 #[cfg(test)]
 mod tool_history_tests;
+
+#[cfg(test)]
+mod no_count_limit_tests;

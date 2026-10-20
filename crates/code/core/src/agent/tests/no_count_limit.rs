@@ -1,0 +1,234 @@
+#![cfg(test)]
+
+use super::*;
+
+fn recorded_response(index: usize, which: &str) -> LlmResponse {
+    MockLlmClient::tool_call_response(
+        &format!("round-{index}"),
+        "recorded_call",
+        serde_json::json!({"which": which}),
+    )
+}
+
+fn loop_config(max_tool_rounds: usize) -> AgentConfig {
+    AgentConfig {
+        max_tool_rounds,
+        tools: vec![model_tool_definition("recorded_call")],
+        permission_checker: Some(Arc::new(AllowAllTools)),
+        planning_mode: PlanningMode::Disabled,
+        continuation_enabled: false,
+        auto_compact: false,
+        ..Default::default()
+    }
+}
+
+#[tokio::test]
+async fn zero_tool_rounds_executes_beyond_fifty_without_budget_finalization() {
+    let workspace = tempfile::tempdir().unwrap();
+    let calls = Arc::new(std::sync::Mutex::new(Vec::new()));
+    let executor = Arc::new(ToolExecutor::new(workspace.path().display().to_string()));
+    executor.register_dynamic_tool(Arc::new(RecordedCallTool {
+        calls: Arc::clone(&calls),
+    }));
+    let mut responses: Vec<_> = (0..51)
+        .map(|index| recorded_response(index, &index.to_string()))
+        .collect();
+    responses.push(MockLlmClient::text_response("Finished all distinct calls."));
+    let client = Arc::new(MockLlmClient::new(responses));
+    let agent = AgentLoop::new(
+        client.clone(),
+        executor,
+        ToolContext::new(workspace.path().to_path_buf()),
+        loop_config(0),
+    );
+    let result = tokio::time::timeout(
+        std::time::Duration::from_secs(30),
+        agent.execute(&[], "Run the distinct controlled calls", None),
+    )
+    .await
+    .expect("controlled no-count run must finish")
+    .unwrap();
+
+    assert_eq!(result.text, "Finished all distinct calls.");
+    assert_eq!(result.tool_calls_count, 51);
+    assert_eq!(calls.lock().unwrap().len(), 51);
+    assert_eq!(client.call_count.load(Ordering::SeqCst), 52);
+    assert!(client
+        .request_tools
+        .lock()
+        .unwrap()
+        .iter()
+        .all(|tools| !tools.is_empty()));
+    assert!(!client
+        .request_texts
+        .lock()
+        .unwrap()
+        .iter()
+        .any(|text| text.contains("Tool-use budget reached")));
+}
+
+#[tokio::test]
+async fn positive_tool_rounds_still_stops_at_three() {
+    let workspace = tempfile::tempdir().unwrap();
+    let calls = Arc::new(std::sync::Mutex::new(Vec::new()));
+    let executor = Arc::new(ToolExecutor::new(workspace.path().display().to_string()));
+    executor.register_dynamic_tool(Arc::new(RecordedCallTool {
+        calls: Arc::clone(&calls),
+    }));
+    let client = Arc::new(MockLlmClient::new(
+        (0..4)
+            .map(|index| recorded_response(index, &index.to_string()))
+            .collect(),
+    ));
+    let agent = AgentLoop::new(
+        client.clone(),
+        executor,
+        ToolContext::new(workspace.path().to_path_buf()),
+        loop_config(3),
+    );
+    let error = agent
+        .execute(&[], "Respect three tool rounds", None)
+        .await
+        .unwrap_err();
+    assert!(error.to_string().contains("Max tool rounds (3) exceeded"));
+    assert_eq!(calls.lock().unwrap().len(), 3);
+    assert_eq!(client.call_count.load(Ordering::SeqCst), 4);
+    assert!(client
+        .request_tools
+        .lock()
+        .unwrap()
+        .last()
+        .unwrap()
+        .is_empty());
+}
+
+#[tokio::test]
+async fn zero_tool_rounds_retains_duplicate_finalization() {
+    let workspace = tempfile::tempdir().unwrap();
+    let calls = Arc::new(std::sync::Mutex::new(Vec::new()));
+    let executor = Arc::new(ToolExecutor::new(workspace.path().display().to_string()));
+    executor.register_dynamic_tool(Arc::new(RecordedCallTool {
+        calls: Arc::clone(&calls),
+    }));
+    let mut responses: Vec<_> = (0..3)
+        .map(|index| recorded_response(index, "same"))
+        .collect();
+    responses.push(MockLlmClient::text_response("Stopped repeating."));
+    let client = Arc::new(MockLlmClient::new(responses));
+    let config = AgentConfig {
+        duplicate_tool_call_threshold: 2,
+        ..loop_config(0)
+    };
+    let agent = AgentLoop::new(
+        client.clone(),
+        executor,
+        ToolContext::new(workspace.path().to_path_buf()),
+        config,
+    );
+    let result = agent
+        .execute(&[], "Stop repeated calls", None)
+        .await
+        .unwrap();
+    assert_eq!(result.text, "Stopped repeating.");
+    assert_eq!(calls.lock().unwrap().len(), 2);
+    assert!(client
+        .request_tools
+        .lock()
+        .unwrap()
+        .last()
+        .unwrap()
+        .is_empty());
+    assert!(result.messages.iter().any(|message| message
+        .text()
+        .contains("Repeated identical tool calls have no new evidence")));
+}
+
+#[tokio::test]
+async fn zero_tool_rounds_retains_one_reasoning_only_repair() {
+    let workspace = tempfile::tempdir().unwrap();
+    let client = Arc::new(MockLlmClient::new(vec![
+        MockLlmClient::reasoning_only_response("Controlled empty-content response."),
+        MockLlmClient::text_response("Repaired final answer."),
+    ]));
+    let config = AgentConfig {
+        continuation_enabled: true,
+        max_continuation_turns: 0,
+        ..loop_config(0)
+    };
+    let agent = AgentLoop::new(
+        client.clone(),
+        Arc::new(ToolExecutor::new(workspace.path().display().to_string())),
+        ToolContext::new(workspace.path().to_path_buf()),
+        config,
+    );
+    let result = agent
+        .execute(&[], "Return the controlled answer", None)
+        .await
+        .unwrap();
+    assert_eq!(result.text, "Repaired final answer.");
+    assert_eq!(client.call_count.load(Ordering::SeqCst), 2);
+}
+
+#[tokio::test]
+async fn zero_tool_rounds_retains_provider_timeout() {
+    let workspace = tempfile::tempdir().unwrap();
+    let client = Arc::new(HangingCompactionLlmClient::new());
+    let config = AgentConfig {
+        llm_api_timeout_ms: Some(20),
+        circuit_breaker_threshold: 1,
+        ..loop_config(0)
+    };
+    let agent = AgentLoop::new(
+        client.clone(),
+        Arc::new(ToolExecutor::new(workspace.path().display().to_string())),
+        ToolContext::new(workspace.path().to_path_buf()),
+        config,
+    );
+    let error = tokio::time::timeout(
+        std::time::Duration::from_secs(1),
+        agent.execute(&[], "Bound the stalled controlled provider", None),
+    )
+    .await
+    .expect("zero rounds must not disable the provider timeout")
+    .unwrap_err();
+    assert!(error.to_string().contains("timed out after 20 ms"));
+    assert_eq!(client.complete_calls.load(Ordering::SeqCst), 1);
+}
+
+#[tokio::test]
+async fn zero_tool_rounds_retains_cancellation() {
+    let workspace = tempfile::tempdir().unwrap();
+    let client = Arc::new(HangingCompactionLlmClient::new());
+    let owned_client = Arc::downgrade(&client);
+    let agent = AgentLoop::new(
+        client.clone(),
+        Arc::new(ToolExecutor::new(workspace.path().display().to_string())),
+        ToolContext::new(workspace.path().to_path_buf()),
+        loop_config(0),
+    );
+    let cancellation = tokio_util::sync::CancellationToken::new();
+    cancellation.cancel();
+    let error = tokio::time::timeout(
+        std::time::Duration::from_secs(1),
+        agent.execute_with_session(
+            &[],
+            "Cancel the controlled run",
+            None,
+            None,
+            Some(&cancellation),
+        ),
+    )
+    .await
+    .expect("zero rounds must not disable cancellation")
+    .expect_err("pre-cancel retains the existing error contract");
+    assert!(error.to_string().contains("Operation cancelled by user"));
+    assert!(cancellation.is_cancelled());
+    drop(error);
+    drop(agent);
+    drop(client);
+    assert!(
+        owned_client.upgrade().is_none(),
+        "cancelled owner released its provider"
+    );
+    workspace.close().unwrap();
+}

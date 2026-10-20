@@ -878,6 +878,20 @@ fn delegated_child_inherits_the_parent_safety_policy() {
     assert_eq!(tightened.max_context_tokens, 128_000);
 }
 
+#[test]
+fn delegated_child_preserves_zero_round_inheritance_and_positive_overrides() {
+    let parent = parent_safety_policy(0);
+    assert_eq!(delegated_child(&parent, None).max_tool_rounds, 0);
+    assert_eq!(delegated_child(&parent, Some(3)).max_tool_rounds, 3);
+
+    let mut role = AgentConfig {
+        max_tool_rounds: 7,
+        ..Default::default()
+    };
+    parent.apply_to(&mut role);
+    assert_eq!(role.max_tool_rounds, 7);
+}
+
 #[tokio::test]
 async fn delegated_child_finalizes_at_the_inherited_ceiling() {
     let hermetic_root = crate::test_support::hermetic_workspace();

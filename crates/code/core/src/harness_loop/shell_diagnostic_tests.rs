@@ -14,6 +14,8 @@ fn checked_scope(root: &std::path::Path) -> MutationLedger {
             crate::porcelain::PathDelta {
                 paths: vec!["checked.txt".into()],
                 incomplete: false,
+                budget_exceeded: false,
+                status_budget: false,
             },
         ),
     );
@@ -46,6 +48,8 @@ fn parent_receipt(root: &std::path::Path) -> a3s_effect::ToolExecutionResultV1 {
             crate::porcelain::PathDelta {
                 paths: vec!["checked.txt".into()],
                 incomplete: false,
+                budget_exceeded: false,
+                status_budget: false,
             },
         ),
     }
@@ -120,6 +124,8 @@ fn shell_proof_requires_a_complete_successful_exact_parent_and_current_effect_id
                     crate::porcelain::PathDelta {
                         paths: vec!["checked.txt".into(), "unobserved.txt".into()],
                         incomplete: false,
+                        budget_exceeded: false,
+                        status_budget: false,
                     },
                 );
             }
@@ -200,6 +206,8 @@ fn a_closed_wrapper_window_is_rechecked_after_a_sibling_restores_the_same_digest
             crate::porcelain::PathDelta {
                 paths: vec!["checked.txt".into(), "other.txt".into()],
                 incomplete: false,
+                budget_exceeded: false,
+                status_budget: false,
             },
         ),
     );
@@ -217,6 +225,8 @@ fn a_closed_wrapper_window_is_rechecked_after_a_sibling_restores_the_same_digest
                 crate::porcelain::PathDelta {
                     paths: vec!["other.txt".into()],
                     incomplete: false,
+                    budget_exceeded: false,
+                    status_budget: false,
                 },
             ),
         );

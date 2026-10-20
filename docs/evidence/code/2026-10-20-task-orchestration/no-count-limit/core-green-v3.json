@@ -1,0 +1,21 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-code-core",
+    "--lib",
+    "no_count",
+    "--",
+    "--test-threads=1"
+  ],
+  "exit": 0,
+  "summary": [
+    "test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 5215 filtered out; finished in 12.13s"
+  ],
+  "frozen_binary": "/Users/roylin/code/aster/target/qualification/no-count-limit-20261020/core-tests",
+  "sha256": "99269347d23542678a4164bd26c21f92523cf6402633ee6a90a1f86d1f4f9c9f",
+  "recorder_note": "Command passed; initial recorder failed after binary copy because system Python lacks hashlib.file_digest. SHA was recovered by streaming; total wall time unavailable."
+}

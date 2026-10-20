@@ -1,0 +1,12 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/Cargo.toml
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory

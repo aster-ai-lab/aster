@@ -1,0 +1,26 @@
+{
+  "command": [
+    "cargo",
+    "fmt",
+    "--all",
+    "--",
+    "--check"
+  ],
+  "exit_code": 1,
+  "seconds": 18.536569416000003,
+  "paths_with_differences": 12,
+  "paths": [
+    "/Users/roylin/code/aster/apps/billing/src/architecture.rs",
+    "/Users/roylin/code/aster/apps/runtime/src/auth.rs",
+    "/Users/roylin/code/aster/apps/runtime/src/envelope.rs",
+    "/Users/roylin/code/aster/apps/runtime/src/http/router.rs",
+    "/Users/roylin/code/aster/apps/runtime/src/input_contract.rs",
+    "/Users/roylin/code/aster/apps/runtime/src/providers/platform.rs",
+    "/Users/roylin/code/aster/apps/runtime/src/usage.rs",
+    "/Users/roylin/code/aster/apps/runtime/src/vault.rs",
+    "/Users/roylin/code/aster/crates/code/acp/src/agent_tests.rs",
+    "/Users/roylin/code/aster/crates/code/acp/src/host_context.rs",
+    "/Users/roylin/code/aster/crates/oci-runtime/crates/runtime/src/agent_session/tests.rs",
+    "/Users/roylin/code/aster/crates/terminal/crates/codegen/a3s-code-pager/src/acp/a3s_spawn.rs"
+  ]
+}

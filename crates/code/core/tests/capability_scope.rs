@@ -77,6 +77,63 @@ fn ceiling(
 }
 
 #[tokio::test]
+async fn zero_tool_round_ceiling_is_unbounded_without_widening_a_bounded_parent() {
+    let catalog = host_catalog();
+    let make_ceiling = |rounds| {
+        ceiling(
+            &catalog.set,
+            [],
+            WorkspaceCapabilityCeiling::none(),
+            GovernanceCapabilityCeiling::none_required(),
+            execution(rounds, 2),
+        )
+    };
+    let bounded = CapabilityScope::<Session>::new_session(
+        "bounded",
+        Arc::clone(&catalog.set),
+        make_ceiling(3),
+    )
+    .unwrap();
+    assert!(matches!(
+        bounded.admit_run("unbounded-child", make_ceiling(0)),
+        Err(CapabilityScopeError::CeilingExpansion {
+            dimension: "execution.max_tool_rounds"
+        })
+    ));
+    bounded.close().await.unwrap();
+
+    let unbounded = CapabilityScope::<Session>::new_session(
+        "unbounded",
+        Arc::clone(&catalog.set),
+        make_ceiling(0),
+    )
+    .unwrap();
+    let inherited = unbounded.admit_run("inherited", make_ceiling(0)).unwrap();
+    assert_eq!(inherited.ceiling().execution().max_tool_rounds(), 0);
+    inherited.close().await.unwrap();
+    let narrowed = unbounded.admit_run("narrowed", make_ceiling(3)).unwrap();
+    assert_eq!(narrowed.ceiling().execution().max_tool_rounds(), 3);
+    narrowed.close().await.unwrap();
+    unbounded.close().await.unwrap();
+}
+
+#[test]
+fn zero_tool_rounds_does_not_relax_parallel_or_timeout_validation() {
+    assert!(matches!(
+        CapabilityExecutionCeiling::new(0, 0, None, None, None),
+        Err(CapabilityScopeError::InvalidExecutionLimit {
+            field: "max_parallel_tasks"
+        })
+    ));
+    assert!(matches!(
+        CapabilityExecutionCeiling::new(0, 1, Some(0), None, None),
+        Err(CapabilityScopeError::InvalidExecutionLimit {
+            field: "tool_timeout_ms"
+        })
+    ));
+}
+
+#[tokio::test]
 async fn child_scopes_reject_every_authority_expansion_dimension() {
     let catalog = host_catalog();
     let parent = ceiling(

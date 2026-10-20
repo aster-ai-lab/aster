@@ -748,6 +748,8 @@ async fn v912_stream_end_waiver_and_cancel() {
         crate::porcelain::PathDelta {
             paths: vec!["notes.txt".into()],
             incomplete: false,
+            budget_exceeded: false,
+            status_budget: false,
         },
     );
     ledger.observe_tool_receipt(

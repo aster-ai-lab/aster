@@ -1,0 +1,32 @@
+{
+  "frozen_at_utc": "2026-10-19T22:54:48.072932+00:00",
+  "source_count": 6,
+  "sources": [
+    {
+      "path": "crates/code/acp/src/agent.rs",
+      "sha256": "acba634df42ac9d8de03f7352a33bf424f6b8e2788d15577e0dea64243cb9031"
+    },
+    {
+      "path": "crates/code/acp/src/agent/models.rs",
+      "sha256": "b10bb9c8213934d2e33b2b7137cc4fa50a40e647e54af9d6cc60d5e3db16767f"
+    },
+    {
+      "path": "crates/code/acp/src/agent/session_open.rs",
+      "sha256": "12d9bcb6a7d99eff360b61cd68b4336b482618b0c3f88102660a842e918505c5"
+    },
+    {
+      "path": "crates/code/acp/src/agent_tests.rs",
+      "sha256": "7d4651f21e84e0ce9ea000da18b3662e7a1289e2680656811614e184c1a38c1e"
+    },
+    {
+      "path": "crates/code/acp/src/agent/reasoning_transport_tests.rs",
+      "sha256": "e7e66208b262f8164e8533c379bc66ec33683f3852b5c4ad8a0359b68fa91b44"
+    },
+    {
+      "path": "crates/code/acp/src/agent/count_limit_tests.rs",
+      "sha256": "25fc4c14ccb9a76200cf44aef145283ee32e2496c3cca160d9c3f5d629066da9"
+    }
+  ],
+  "scope": "ACP interactive defaults to zero tool-count sentinel; explicit typed ACL count wins, independent of effort. Internal EffortLimits count removed. Core semantics/authority are owned by root, Effect optional limits by execution_target_prepare. Unattended and terminal native source unchanged.",
+  "green_status": "not yet run; root captured ACP contract RED before these production changes."
+}

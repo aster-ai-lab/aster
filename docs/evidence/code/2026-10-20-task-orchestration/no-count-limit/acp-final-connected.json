@@ -1,0 +1,44 @@
+[
+  {
+    "filter": "agent::tests::count_limits",
+    "exit": 0,
+    "seconds": 2.191484416999998,
+    "passed": 2
+  },
+  {
+    "filter": "effort_tokens_adjust_thinking_without_setting_a_tool_ceiling",
+    "exit": 0,
+    "seconds": 0.010416290999998523,
+    "passed": 1
+  },
+  {
+    "filter": "budget_line_states_a_maximum",
+    "exit": 0,
+    "seconds": 0.010761915999999871,
+    "passed": 1
+  },
+  {
+    "filter": "effort_limits_preserve_thinking_and_parallel_resource_settings",
+    "exit": 0,
+    "seconds": 0.009643833000001933,
+    "passed": 1
+  },
+  {
+    "filter": "studio_host_keeps_the_budget_line_in_the_session_options",
+    "exit": 0,
+    "seconds": 0.009579834000000176,
+    "passed": 1
+  },
+  {
+    "filter": "tui_session_function_coverage_is_at_least_95_percent",
+    "exit": 0,
+    "seconds": 0.010806334000001527,
+    "passed": 1
+  },
+  {
+    "filter": "the_profile_answers_for_itself_with_every_capability_on",
+    "exit": 0,
+    "seconds": 0.008700457999999855,
+    "passed": 1
+  }
+]

@@ -1,0 +1,38 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling a3s-effect v0.2.1 (/Users/roylin/code/aster/crates/effect)
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 47.78s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 2 tests
+test agent_api::tests::fact_log::no_count_limit::explicit_no_count_limit_runs_beyond_fifty_and_completes_normally ... FAILED
+test agent_api::tests::fact_log::no_count_limit::explicit_positive_tool_count_still_refuses_the_next_call ... ok
+
+failures:
+
+---- agent_api::tests::fact_log::no_count_limit::explicit_no_count_limit_runs_beyond_fifty_and_completes_normally stdout ----
+
+thread 'agent_api::tests::fact_log::no_count_limit::explicit_no_count_limit_runs_beyond_fifty_and_completes_normally' (50047294) panicked at crates/code/core/src/agent_api/tests/fact_log/no_count_limit.rs:68:13:
+a zero tool-count setting must admit an unbounded session: Invalid session configuration for 'max_tool_rounds': must be greater than zero
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    agent_api::tests::fact_log::no_count_limit::explicit_no_count_limit_runs_beyond_fifty_and_completes_normally
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 5212 filtered out; finished in 0.21s
+
+error: test failed, to rerun pass `-p a3s-code-core --lib`

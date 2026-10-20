@@ -1,0 +1,13 @@
+{
+  "commit": "33edc9a74f4042efca73157d815dfca139a53140",
+  "branch": "main",
+  "remote": "git@github.com:aster-ai-lab/work.git",
+  "pushed": true,
+  "local_gpgsig": true,
+  "dco_signoff": true,
+  "github_verification": {
+    "verified": false,
+    "reason": "unknown_key"
+  },
+  "account_key_registration_changed": false
+}

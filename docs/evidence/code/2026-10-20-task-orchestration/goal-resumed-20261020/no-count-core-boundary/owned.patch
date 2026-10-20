@@ -1,0 +1,492 @@
+diff --git a/crates/code/core/src/agent/execution_state.rs b/crates/code/core/src/agent/execution_state.rs
+index 822f598b0..7176ce149 100644
+--- a/crates/code/core/src/agent/execution_state.rs
++++ b/crates/code/core/src/agent/execution_state.rs
+@@ -216,7 +216,7 @@ impl ExecutionLoopState {
+     }
+ 
+     pub(super) fn turn_limit_error(&self, max_tool_rounds: usize) -> Option<String> {
+-        (self.turn > max_tool_rounds)
++        (max_tool_rounds != 0 && self.turn > max_tool_rounds)
+             .then(|| format!("Max tool rounds ({}) exceeded", max_tool_rounds))
+     }
+ 
+@@ -357,7 +357,7 @@ impl ExecutionLoopState {
+     ) -> bool {
+         if enabled
+             && self.continuation_count < max_continuation_turns
+-            && self.turn < max_tool_rounds
++            && (max_tool_rounds == 0 || self.turn < max_tool_rounds)
+             && looks_incomplete
+         {
+             self.continuation_count += 1;
+@@ -372,7 +372,10 @@ impl ExecutionLoopState {
+         enabled: bool,
+         max_tool_rounds: usize,
+     ) -> bool {
+-        if enabled && self.reasoning_only_repair_count == 0 && self.turn < max_tool_rounds {
++        if enabled
++            && self.reasoning_only_repair_count == 0
++            && (max_tool_rounds == 0 || self.turn < max_tool_rounds)
++        {
+             self.reasoning_only_repair_count += 1;
+             return true;
+         }
+@@ -879,6 +882,33 @@ mod tests {
+         assert!(!state.should_inject_continuation(false, true, 2, 5));
+     }
+ 
++    #[test]
++    fn zero_tool_rounds_preserves_repair_and_continuation_limits() {
++        let mut state = ExecutionLoopState::new_seeded(
++            &[],
++            Some(ExecutionSeed {
++                turn: 51,
++                ..Default::default()
++            }),
++        );
++        assert!(state.turn_limit_error(0).is_none());
++        assert!(state.turn_limit_error(3).is_some());
++        assert!(state.should_inject_continuation(true, true, 1, 0));
++        assert!(!state.should_inject_continuation(true, true, 1, 0));
++        assert!(state.should_inject_reasoning_only_repair(true, 0));
++        assert!(!state.should_inject_reasoning_only_repair(true, 0));
++
++        let mut bounded = ExecutionLoopState::new_seeded(
++            &[],
++            Some(ExecutionSeed {
++                turn: 3,
++                ..Default::default()
++            }),
++        );
++        assert!(!bounded.should_inject_continuation(true, true, 1, 3));
++        assert!(!bounded.should_inject_reasoning_only_repair(true, 3));
++    }
++
+     #[test]
+     fn repeated_incomplete_response_ignores_whitespace_and_case() {
+         let mut state = ExecutionLoopState::new(&[]);
+diff --git a/crates/code/core/src/agent/llm_turn.rs b/crates/code/core/src/agent/llm_turn.rs
+index e8665db2e..608569292 100644
+--- a/crates/code/core/src/agent/llm_turn.rs
++++ b/crates/code/core/src/agent/llm_turn.rs
+@@ -264,8 +264,9 @@ impl crate::agent::TurnEngine {
+             anyhow::bail!(error);
+         }
+ 
+-        let is_reserved_finalization_turn =
+-            force_no_tools && turn == self.config.max_tool_rounds.saturating_add(1);
++        let is_reserved_finalization_turn = self.config.max_tool_rounds != 0
++            && force_no_tools
++            && turn == self.config.max_tool_rounds.saturating_add(1);
+         if !is_reserved_finalization_turn {
+             if let Some(error) = state.turn_limit_error(self.config.max_tool_rounds) {
+                 self.emit_error(event_tx, error.clone()).await;
+diff --git a/crates/code/core/src/agent/loop_runtime.rs b/crates/code/core/src/agent/loop_runtime.rs
+index 561f4a3c8..e1074106c 100644
+--- a/crates/code/core/src/agent/loop_runtime.rs
++++ b/crates/code/core/src/agent/loop_runtime.rs
+@@ -185,7 +185,8 @@ impl crate::agent::TurnEngine {
+             // ability to return the evidence it already collected. The same
+             // reserved turn also stops repeated identical calls. Reading
+             // distinct sources need not change the workspace to make progress.
+-            let budget_hit = state.current_turn() >= self.config.max_tool_rounds;
++            let budget_hit = self.config.max_tool_rounds != 0
++                && state.current_turn() >= self.config.max_tool_rounds;
+             let repeated_tool = state.take_duplicate_finalization();
+             let force_finalization = budget_hit || repeated_tool;
+             if force_finalization {
+diff --git a/crates/code/core/src/agent/tests.rs b/crates/code/core/src/agent/tests.rs
+index 2aad00472..ef12d0edf 100644
+--- a/crates/code/core/src/agent/tests.rs
++++ b/crates/code/core/src/agent/tests.rs
+@@ -9,6 +9,8 @@ use std::path::PathBuf;
+ use std::sync::atomic::{AtomicUsize, Ordering};
+ use tokio::sync::mpsc;
+ 
++mod no_count_limit;
++
+ struct TurnEffectProbeTool {
+     log: Arc<std::sync::Mutex<Vec<String>>>,
+ }
+diff --git a/crates/code/core/src/capability/ceiling.rs b/crates/code/core/src/capability/ceiling.rs
+index 68f5e7bdc..4d76534cc 100644
+--- a/crates/code/core/src/capability/ceiling.rs
++++ b/crates/code/core/src/capability/ceiling.rs
+@@ -224,8 +224,8 @@ impl GovernanceCapabilityCeiling {
+     }
+ }
+ 
+-/// Numeric execution limits. `None` is unbounded and is therefore the widest
+-/// value for an optional duration ceiling.
++/// Numeric execution limits. Zero tool rounds and `None` durations are
++/// unbounded and therefore the widest values of their respective ceilings.
+ #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
+ #[serde(rename_all = "camelCase")]
+ pub struct CapabilityExecutionCeiling {
+@@ -244,7 +244,6 @@ impl CapabilityExecutionCeiling {
+         llm_api_timeout_ms: Option<u64>,
+         max_execution_time_ms: Option<u64>,
+     ) -> Result<Self, CapabilityScopeError> {
+-        validate_positive_usize("max_tool_rounds", max_tool_rounds)?;
+         validate_positive_usize("max_parallel_tasks", max_parallel_tasks)?;
+         validate_optional_positive("tool_timeout_ms", tool_timeout_ms)?;
+         validate_optional_positive("llm_api_timeout_ms", llm_api_timeout_ms)?;
+@@ -279,7 +278,9 @@ impl CapabilityExecutionCeiling {
+     }
+ 
+     fn expansion_from(self, parent: Self) -> Option<&'static str> {
+-        if self.max_tool_rounds > parent.max_tool_rounds {
++        if parent.max_tool_rounds != 0
++            && (self.max_tool_rounds == 0 || self.max_tool_rounds > parent.max_tool_rounds)
++        {
+             return Some("execution.max_tool_rounds");
+         }
+         if self.max_parallel_tasks > parent.max_parallel_tasks {
+diff --git a/crates/code/core/src/child_run.rs b/crates/code/core/src/child_run.rs
+index d0ac75179..53e16124e 100644
+--- a/crates/code/core/src/child_run.rs
++++ b/crates/code/core/src/child_run.rs
+@@ -80,7 +80,8 @@ pub struct ChildRunContext {
+     pub budget_guard: Option<Arc<dyn crate::budget::BudgetGuard>>,
+     /// Parent tool-round ceiling. Applied only while the child is still on the
+     /// default cap, so a role that already set `max_steps` keeps that cap.
+-    /// The task's own `max_steps` argument is applied after this.
++    /// Zero preserves an unbounded parent. The task's own `max_steps` argument
++    /// is applied after this.
+     pub max_tool_rounds: Option<usize>,
+     pub auto_compact: Option<bool>,
+     pub auto_compact_threshold: Option<f32>,
+@@ -713,7 +714,7 @@ impl ChildRunContext {
+         }
+         if let Some(rounds) = self.max_tool_rounds {
+             if config.max_tool_rounds == crate::agent::MAX_TOOL_ROUNDS {
+-                config.max_tool_rounds = rounds.max(1);
++                config.max_tool_rounds = rounds;
+             }
+         }
+         if let Some(enabled) = self.auto_compact {
+diff --git a/crates/code/core/src/child_run/tests.rs b/crates/code/core/src/child_run/tests.rs
+index 7a8b7baf5..8d8428634 100644
+--- a/crates/code/core/src/child_run/tests.rs
++++ b/crates/code/core/src/child_run/tests.rs
+@@ -878,6 +878,20 @@ fn delegated_child_inherits_the_parent_safety_policy() {
+     assert_eq!(tightened.max_context_tokens, 128_000);
+ }
+ 
++#[test]
++fn delegated_child_preserves_zero_round_inheritance_and_positive_overrides() {
++    let parent = parent_safety_policy(0);
++    assert_eq!(delegated_child(&parent, None).max_tool_rounds, 0);
++    assert_eq!(delegated_child(&parent, Some(3)).max_tool_rounds, 3);
++
++    let mut role = AgentConfig {
++        max_tool_rounds: 7,
++        ..Default::default()
++    };
++    parent.apply_to(&mut role);
++    assert_eq!(role.max_tool_rounds, 7);
++}
++
+ #[tokio::test]
+ async fn delegated_child_finalizes_at_the_inherited_ceiling() {
+     let hermetic_root = crate::test_support::hermetic_workspace();
+diff --git a/crates/code/core/tests/capability_scope.rs b/crates/code/core/tests/capability_scope.rs
+index 2c068d629..a6a53e4bb 100644
+--- a/crates/code/core/tests/capability_scope.rs
++++ b/crates/code/core/tests/capability_scope.rs
+@@ -76,6 +76,63 @@ fn ceiling(
+     CapabilityCeiling::new(set, capabilities, workspace, governance, execution).unwrap()
+ }
+ 
++#[tokio::test]
++async fn zero_tool_round_ceiling_is_unbounded_without_widening_a_bounded_parent() {
++    let catalog = host_catalog();
++    let make_ceiling = |rounds| {
++        ceiling(
++            &catalog.set,
++            [],
++            WorkspaceCapabilityCeiling::none(),
++            GovernanceCapabilityCeiling::none_required(),
++            execution(rounds, 2),
++        )
++    };
++    let bounded = CapabilityScope::<Session>::new_session(
++        "bounded",
++        Arc::clone(&catalog.set),
++        make_ceiling(3),
++    )
++    .unwrap();
++    assert!(matches!(
++        bounded.admit_run("unbounded-child", make_ceiling(0)),
++        Err(CapabilityScopeError::CeilingExpansion {
++            dimension: "execution.max_tool_rounds"
++        })
++    ));
++    bounded.close().await.unwrap();
++
++    let unbounded = CapabilityScope::<Session>::new_session(
++        "unbounded",
++        Arc::clone(&catalog.set),
++        make_ceiling(0),
++    )
++    .unwrap();
++    let inherited = unbounded.admit_run("inherited", make_ceiling(0)).unwrap();
++    assert_eq!(inherited.ceiling().execution().max_tool_rounds(), 0);
++    inherited.close().await.unwrap();
++    let narrowed = unbounded.admit_run("narrowed", make_ceiling(3)).unwrap();
++    assert_eq!(narrowed.ceiling().execution().max_tool_rounds(), 3);
++    narrowed.close().await.unwrap();
++    unbounded.close().await.unwrap();
++}
++
++#[test]
++fn zero_tool_rounds_does_not_relax_parallel_or_timeout_validation() {
++    assert!(matches!(
++        CapabilityExecutionCeiling::new(0, 0, None, None, None),
++        Err(CapabilityScopeError::InvalidExecutionLimit {
++            field: "max_parallel_tasks"
++        })
++    ));
++    assert!(matches!(
++        CapabilityExecutionCeiling::new(0, 1, Some(0), None, None),
++        Err(CapabilityScopeError::InvalidExecutionLimit {
++            field: "tool_timeout_ms"
++        })
++    ));
++}
++
+ #[tokio::test]
+ async fn child_scopes_reject_every_authority_expansion_dimension() {
+     let catalog = host_catalog();
+--- /dev/null
++++ b/crates/code/core/src/agent/tests/no_count_limit.rs
+@@ -0,0 +1,228 @@
++use super::*;
++
++fn recorded_response(index: usize, which: &str) -> LlmResponse {
++    MockLlmClient::tool_call_response(
++        &format!("round-{index}"),
++        "recorded_call",
++        serde_json::json!({"which": which}),
++    )
++}
++
++fn loop_config(max_tool_rounds: usize) -> AgentConfig {
++    AgentConfig {
++        max_tool_rounds,
++        tools: vec![model_tool_definition("recorded_call")],
++        permission_checker: Some(Arc::new(AllowAllTools)),
++        planning_mode: PlanningMode::Disabled,
++        continuation_enabled: false,
++        auto_compact: false,
++        ..Default::default()
++    }
++}
++
++#[tokio::test]
++async fn zero_tool_rounds_executes_beyond_fifty_without_budget_finalization() {
++    let workspace = tempfile::tempdir().unwrap();
++    let calls = Arc::new(std::sync::Mutex::new(Vec::new()));
++    let executor = Arc::new(ToolExecutor::new(workspace.path().display().to_string()));
++    executor.register_dynamic_tool(Arc::new(RecordedCallTool {
++        calls: Arc::clone(&calls),
++    }));
++    let mut responses: Vec<_> = (0..51)
++        .map(|index| recorded_response(index, &index.to_string()))
++        .collect();
++    responses.push(MockLlmClient::text_response("Finished all distinct calls."));
++    let client = Arc::new(MockLlmClient::new(responses));
++    let agent = AgentLoop::new(
++        client.clone(),
++        executor,
++        ToolContext::new(workspace.path().to_path_buf()),
++        loop_config(0),
++    );
++    let result = tokio::time::timeout(
++        std::time::Duration::from_secs(30),
++        agent.execute(&[], "Run the distinct controlled calls", None),
++    )
++    .await
++    .expect("controlled no-count run must finish")
++    .unwrap();
++
++    assert_eq!(result.text, "Finished all distinct calls.");
++    assert_eq!(result.tool_calls_count, 51);
++    assert_eq!(calls.lock().unwrap().len(), 51);
++    assert_eq!(client.call_count.load(Ordering::SeqCst), 52);
++    assert!(client
++        .request_tools
++        .lock()
++        .unwrap()
++        .iter()
++        .all(|tools| !tools.is_empty()));
++    assert!(!client
++        .request_texts
++        .lock()
++        .unwrap()
++        .iter()
++        .any(|text| text.contains("Tool-use budget reached")));
++}
++
++#[tokio::test]
++async fn positive_tool_rounds_still_stops_at_three() {
++    let workspace = tempfile::tempdir().unwrap();
++    let calls = Arc::new(std::sync::Mutex::new(Vec::new()));
++    let executor = Arc::new(ToolExecutor::new(workspace.path().display().to_string()));
++    executor.register_dynamic_tool(Arc::new(RecordedCallTool {
++        calls: Arc::clone(&calls),
++    }));
++    let client = Arc::new(MockLlmClient::new(
++        (0..4)
++            .map(|index| recorded_response(index, &index.to_string()))
++            .collect(),
++    ));
++    let agent = AgentLoop::new(
++        client.clone(),
++        executor,
++        ToolContext::new(workspace.path().to_path_buf()),
++        loop_config(3),
++    );
++    let error = agent
++        .execute(&[], "Respect three tool rounds", None)
++        .await
++        .unwrap_err();
++    assert!(error.to_string().contains("Max tool rounds (3) exceeded"));
++    assert_eq!(calls.lock().unwrap().len(), 3);
++    assert_eq!(client.call_count.load(Ordering::SeqCst), 4);
++    assert!(client
++        .request_tools
++        .lock()
++        .unwrap()
++        .last()
++        .unwrap()
++        .is_empty());
++}
++
++#[tokio::test]
++async fn zero_tool_rounds_retains_duplicate_finalization() {
++    let workspace = tempfile::tempdir().unwrap();
++    let calls = Arc::new(std::sync::Mutex::new(Vec::new()));
++    let executor = Arc::new(ToolExecutor::new(workspace.path().display().to_string()));
++    executor.register_dynamic_tool(Arc::new(RecordedCallTool {
++        calls: Arc::clone(&calls),
++    }));
++    let mut responses: Vec<_> = (0..3)
++        .map(|index| recorded_response(index, "same"))
++        .collect();
++    responses.push(MockLlmClient::text_response("Stopped repeating."));
++    let client = Arc::new(MockLlmClient::new(responses));
++    let config = AgentConfig {
++        duplicate_tool_call_threshold: 2,
++        ..loop_config(0)
++    };
++    let agent = AgentLoop::new(
++        client.clone(),
++        executor,
++        ToolContext::new(workspace.path().to_path_buf()),
++        config,
++    );
++    let result = agent
++        .execute(&[], "Stop repeated calls", None)
++        .await
++        .unwrap();
++    assert_eq!(result.text, "Stopped repeating.");
++    assert_eq!(calls.lock().unwrap().len(), 2);
++    assert!(client
++        .request_tools
++        .lock()
++        .unwrap()
++        .last()
++        .unwrap()
++        .is_empty());
++    assert!(result.messages.iter().any(|message| message
++        .text()
++        .contains("Repeated identical tool calls have no new evidence")));
++}
++
++#[tokio::test]
++async fn zero_tool_rounds_retains_one_reasoning_only_repair() {
++    let workspace = tempfile::tempdir().unwrap();
++    let client = Arc::new(MockLlmClient::new(vec![
++        MockLlmClient::reasoning_only_response("Controlled empty-content response."),
++        MockLlmClient::text_response("Repaired final answer."),
++    ]));
++    let config = AgentConfig {
++        continuation_enabled: true,
++        max_continuation_turns: 0,
++        ..loop_config(0)
++    };
++    let agent = AgentLoop::new(
++        client.clone(),
++        Arc::new(ToolExecutor::new(workspace.path().display().to_string())),
++        ToolContext::new(workspace.path().to_path_buf()),
++        config,
++    );
++    let result = agent
++        .execute(&[], "Return the controlled answer", None)
++        .await
++        .unwrap();
++    assert_eq!(result.text, "Repaired final answer.");
++    assert_eq!(client.call_count.load(Ordering::SeqCst), 2);
++}
++
++#[tokio::test]
++async fn zero_tool_rounds_retains_provider_timeout() {
++    let workspace = tempfile::tempdir().unwrap();
++    let client = Arc::new(HangingCompactionLlmClient::new());
++    let config = AgentConfig {
++        llm_api_timeout_ms: Some(20),
++        circuit_breaker_threshold: 1,
++        ..loop_config(0)
++    };
++    let agent = AgentLoop::new(
++        client.clone(),
++        Arc::new(ToolExecutor::new(workspace.path().display().to_string())),
++        ToolContext::new(workspace.path().to_path_buf()),
++        config,
++    );
++    let error = tokio::time::timeout(
++        std::time::Duration::from_secs(1),
++        agent.execute(&[], "Bound the stalled controlled provider", None),
++    )
++    .await
++    .expect("zero rounds must not disable the provider timeout")
++    .unwrap_err();
++    assert!(error.to_string().contains("timed out after 20 ms"));
++    assert_eq!(client.complete_calls.load(Ordering::SeqCst), 1);
++}
++
++#[tokio::test]
++async fn zero_tool_rounds_retains_cancellation() {
++    let workspace = tempfile::tempdir().unwrap();
++    let agent = AgentLoop::new(
++        Arc::new(HangingCompactionLlmClient::new()),
++        Arc::new(ToolExecutor::new(workspace.path().display().to_string())),
++        ToolContext::new(workspace.path().to_path_buf()),
++        loop_config(0),
++    );
++    let cancellation = tokio_util::sync::CancellationToken::new();
++    cancellation.cancel();
++    let result = tokio::time::timeout(
++        std::time::Duration::from_secs(1),
++        agent.execute_with_session(
++            &[],
++            "Cancel the controlled run",
++            None,
++            None,
++            Some(&cancellation),
++        ),
++    )
++    .await
++    .expect("zero rounds must not disable cancellation")
++    .unwrap();
++    assert!(result.text.is_empty());
++    assert_eq!(result.tool_calls_count, 0);
++    assert!(result
++        .messages
++        .last()
++        .unwrap()
++        .text()
++        .contains("interrupted"));
++}

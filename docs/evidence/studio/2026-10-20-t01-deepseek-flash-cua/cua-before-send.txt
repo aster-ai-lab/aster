@@ -1,0 +1,10 @@
+Task-scoped CUA excerpt; unrelated account/sidebar content omitted.
+Window: "AsterDream", App: AsterDream.
+0 standard window AsterDream, Secondary Actions: Raise
+				345 text entry area (settable) 描述会话，输入 / 使用指令或技能, Value: 请严格按照工作区中的 instruction.md 完成 T01 任务。先完整读取 instruction.md，再查看 input/ 的数据和政策。仅使用 Python 标准库编写单文件 pipeline.py，并实际运行 python3 pipeline.py --input input --output output，生成 output/results.json。不得修改任何输入文件；完成后说明运行结果并提供交付文件。
+				348 pop up button 授权模式: 逐次确认
+				349 switch (settable, boolean) 规划模式, Help: 不改变批准方式。这一轮只写步骤，不改文件、不跑命令。要执行时关掉。, Value: off
+				350 pop up button DeepSeek Flash
+				351 button 发送
+					353 pop up button 项目文件夹 T01-deepseek-flash-20261020-cua, Help: /Users/roylin/code/aster/target/evaluations/T01-deepseek-flash-20261020-cua
+The focused UI element is 345 text entry area (settable) 描述会话，输入 / 使用指令或技能, Value: 请严格按照工作区中的 instruction.md 完成 T01 任务。先完整读取 instruction.md，再查看 input/ 的数据和政策。仅使用 Python 标准库编写单文件 pipeline.py，并实际运行 python3 pipeline.py --input input --output output，生成 output/results.json。不得修改任何输入文件；完成后说明运行结果并提供交付文件。

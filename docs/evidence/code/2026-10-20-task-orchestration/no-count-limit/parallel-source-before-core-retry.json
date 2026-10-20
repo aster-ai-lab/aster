@@ -1,0 +1,14 @@
+[
+  {
+    "path": "crates/code/core/src/porcelain.rs",
+    "sha256": "01a9f015522bf03f4411db1a8460be3a134374f4e8bfba90455fad75cadfbfd2"
+  },
+  {
+    "path": "crates/code/core/src/porcelain/receipt_tests.rs",
+    "sha256": "5e9c30695cdfb061f5c62c9bb1d1a33da708af8eb98f4f33efa37f77204b9aa1"
+  },
+  {
+    "path": "crates/code/core/src/fact_control/receipts.rs",
+    "sha256": "e6efcb01fb9c1473b1286cbf4315d469ce5f7fdb758259888a2e98bb7e89e95a"
+  }
+]

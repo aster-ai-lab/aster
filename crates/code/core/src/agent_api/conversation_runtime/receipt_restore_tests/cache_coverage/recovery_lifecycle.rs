@@ -347,6 +347,8 @@ async fn full_log_negative_survives_compaction_settlement_later_original_proof_a
         crate::porcelain::PathDelta {
             paths: vec!["current.txt".into()],
             incomplete: false,
+            budget_exceeded: false,
+            status_budget: false,
         },
     );
     fixture.append(&CacheCoverageFixture::pair(

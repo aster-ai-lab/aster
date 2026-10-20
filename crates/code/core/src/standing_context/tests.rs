@@ -179,8 +179,8 @@ fn admit_with_log(
         agent_system,
         harness_system,
         tools,
-        tool_rounds,
-        step_limit,
+        Some(tool_rounds),
+        Some(step_limit),
         model_attempts,
     )
 }
@@ -208,6 +208,43 @@ fn admit(
         step_limit,
         model_attempts,
     )
+}
+
+#[test]
+fn optional_count_limits_keep_positive_digest_bytes_and_distinguish_zero_allowance() {
+    #[derive(serde::Serialize)]
+    struct LegacyStandingMaterial<'a> {
+        schema: &'static str,
+        context: &'a str,
+        tools: &'a [String],
+        tool_rounds: u32,
+        step_limit: u32,
+        model_attempts: u32,
+    }
+
+    let workspace = tempfile::tempdir().unwrap();
+    let tools = vec!["read".to_string()];
+    let (positive, context) =
+        super::standing_digest(workspace.path(), &tools, Some(3), Some(32), 2).unwrap();
+    let legacy = crate::content_digest::digest_json(
+        super::STANDING_CONTEXT_DOMAIN,
+        &LegacyStandingMaterial {
+            schema: super::STANDING_CONTEXT_DOMAIN,
+            context: &context,
+            tools: &tools,
+            tool_rounds: 3,
+            step_limit: 32,
+            model_attempts: 2,
+        },
+    )
+    .unwrap();
+    assert_eq!(positive, legacy);
+    let (unbounded, _) = super::standing_digest(workspace.path(), &tools, None, None, 2).unwrap();
+    let (zero, _) = super::standing_digest(workspace.path(), &tools, Some(0), None, 2).unwrap();
+    let (steps, _) = super::standing_digest(workspace.path(), &tools, None, Some(32), 2).unwrap();
+    assert_ne!(unbounded, zero);
+    assert_ne!(unbounded, steps);
+    assert_ne!(positive, unbounded);
 }
 
 #[test]

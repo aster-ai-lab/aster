@@ -1,0 +1,161 @@
+{
+  "at_utc": "2026-10-19T23:14:05.982297+00:00",
+  "files": [
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/local_acp_count_limit_tests.rs",
+      "sha256": "e65224da075c40eb8c596caa80b4141e9f6ccbbe1e9ed8be05fecf4560d401b2"
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/local_acp_delivery_tests.rs",
+      "sha256": "fe9ead45ae4c1d09018a98bd6c3a4848554e5bbfb9ad655c24786e213fcd3ff4"
+    },
+    {
+      "path": "crates/code/acp/src/agent.rs",
+      "sha256": "acba634df42ac9d8de03f7352a33bf424f6b8e2788d15577e0dea64243cb9031"
+    },
+    {
+      "path": "crates/code/acp/src/agent/count_limit_tests.rs",
+      "sha256": "25fc4c14ccb9a76200cf44aef145283ee32e2496c3cca160d9c3f5d629066da9"
+    },
+    {
+      "path": "crates/code/acp/src/agent/models.rs",
+      "sha256": "b10bb9c8213934d2e33b2b7137cc4fa50a40e647e54af9d6cc60d5e3db16767f"
+    },
+    {
+      "path": "crates/code/acp/src/agent/reasoning_transport_tests.rs",
+      "sha256": "e7e66208b262f8164e8533c379bc66ec33683f3852b5c4ad8a0359b68fa91b44"
+    },
+    {
+      "path": "crates/code/acp/src/agent/session_open.rs",
+      "sha256": "12d9bcb6a7d99eff360b61cd68b4336b482618b0c3f88102660a842e918505c5"
+    },
+    {
+      "path": "crates/code/acp/src/agent_tests.rs",
+      "sha256": "7d4651f21e84e0ce9ea000da18b3662e7a1289e2680656811614e184c1a38c1e"
+    },
+    {
+      "path": "crates/code/core/src/agent.rs",
+      "sha256": "efd5528fae442be2e910740ae34f7593edd3551b8a411d351555dca32ddd1d5f"
+    },
+    {
+      "path": "crates/code/core/src/agent/execution_state.rs",
+      "sha256": "d786672aef3c272f65e80e6a1419b54f60f6c5e689e2509b2328e989d26daeda"
+    },
+    {
+      "path": "crates/code/core/src/agent/llm_turn.rs",
+      "sha256": "63db0a282be669532c5cc166a2929ebbfd5c74ed63770427576ff4d877a1f324"
+    },
+    {
+      "path": "crates/code/core/src/agent/loop_runtime.rs",
+      "sha256": "617f04887f1c23e0644d099ddac9dc26e3aae52b490f705652a2f186fca44542"
+    },
+    {
+      "path": "crates/code/core/src/agent/tests.rs",
+      "sha256": "1bb7a125cc0bd5066c31fa449c1ba9da9bdcb33d4580ae55786fdccdec559138"
+    },
+    {
+      "path": "crates/code/core/src/agent/tests/no_count_limit.rs",
+      "sha256": "126ebe238a641de47e9b0aa9470373a102d585c31f15784ba11c028a6d0e993f"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/conversation_runtime/child_run.rs",
+      "sha256": "4da13924877ad5edc17775e79d99423b3e5cfa4a611639e38dc801a577dcdff8"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/conversation_runtime/owned_worker.rs",
+      "sha256": "2026510710ab97f9e677d96dd7fcac3165310b49f04adc4004344537721bdf15"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/goal_facade.rs",
+      "sha256": "ad73eb9443727ceb6c3977c9c1519054cebb0ce0d3841e1a375dc91be443edf4"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/session_config.rs",
+      "sha256": "714947fc89131eb6a1957079a00c291d5413475fa928d9894a11ef2f3467fe50"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/session_options.rs",
+      "sha256": "7dfb2b9988b99ff9c15b3aa20d8a435b04786700a7cfd115885aff2b8a27d593"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log.rs",
+      "sha256": "0447d63b67b58869bee922aa32170de2f94acf7417a50f4d53881ab5b71dad97"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/tests/fact_log/no_count_limit.rs",
+      "sha256": "f91781e06769c73385022e12e21da09dfb3e6332aeba4592affc95f7fd444527"
+    },
+    {
+      "path": "crates/code/core/src/capability/ceiling.rs",
+      "sha256": "5d8752bf0731293dddc966600133d80d732c56fcb2d348b3d93689a17f08661a"
+    },
+    {
+      "path": "crates/code/core/src/child_run.rs",
+      "sha256": "67a6f7af6fd47f8b1cbdd5fa5782f33ff96bf18103880328a67a736414475fc1"
+    },
+    {
+      "path": "crates/code/core/src/child_run/tests.rs",
+      "sha256": "14ea54707430db41157e0ba2252ea36b43176c3db3bec84282e1fec6975120fb"
+    },
+    {
+      "path": "crates/code/core/src/config/mod.rs",
+      "sha256": "e601792757f36cb38b478ed128c0e83107b72d34eb683cd0a3e91ca29f3bb6f0"
+    },
+    {
+      "path": "crates/code/core/src/fact_control.rs",
+      "sha256": "c6012fcbe7b643230721cd2406e2f93c3ea46a235bf11fc24b1778c6b316972c"
+    },
+    {
+      "path": "crates/code/core/src/fact_control/no_count_limit_tests.rs",
+      "sha256": "d9887fd49403ee572a175df67e2a0dd3b4c633a8b027330ed4ec41f8cdb1b71c"
+    },
+    {
+      "path": "crates/code/core/src/fact_control_tests.rs",
+      "sha256": "569f8570a587cfea34ade7a734ddf8ff5ac9f3d845c481f03589077130782081"
+    },
+    {
+      "path": "crates/code/core/src/meta_harness.rs",
+      "sha256": "7d52192dae793410fa23d5c6cc52d8363786d468a1d761964049ce0d5b4f7e80"
+    },
+    {
+      "path": "crates/code/core/src/standing_context.rs",
+      "sha256": "8ce1ad1b3908dafeedc5caff67d14a6d51dabe79931b9a87713a08fe19be9eb0"
+    },
+    {
+      "path": "crates/code/core/src/standing_context/tests.rs",
+      "sha256": "dcc8acf35ff09255e8944649644dc6b82215b34a0e181169b1202d307844f292"
+    },
+    {
+      "path": "crates/code/core/src/tools/task.rs",
+      "sha256": "314004ea067c7f1bb5e49700d5023aa6e478c5de6b57db6d97e50d65a15bdbfd"
+    },
+    {
+      "path": "crates/code/core/src/tools/task/tests.rs",
+      "sha256": "0c447bccaa560f3726334defd6bfcec75b51466cf707924bc44e6e7580da6c91"
+    },
+    {
+      "path": "crates/code/core/tests/capability_scope.rs",
+      "sha256": "b8a887fbf02e610a7f0587df77b8a66d947868603ca228f960806084ab72ca75"
+    },
+    {
+      "path": "crates/effect/src/actor.rs",
+      "sha256": "3674572f5fea2e3786160fd5b5858f5890aeb87e29ca40b320af478c7c90402c"
+    },
+    {
+      "path": "crates/effect/src/coding.rs",
+      "sha256": "e5848726cef25606c1bf22026400de6f9382d80eee7bcb81c552f5ba37cbe66e"
+    },
+    {
+      "path": "crates/effect/src/compose.rs",
+      "sha256": "9c7b42613d0445a1bb8047e0714736b5b0459d77dff30fad7cd6e0d02e0c7c6b"
+    },
+    {
+      "path": "crates/effect/src/lib.rs",
+      "sha256": "1237ac7455d0db336cdefab1915e14811e10a5cc25006d158d0d78dba7a14599"
+    },
+    {
+      "path": "crates/effect/tests/unbounded_counts.rs",
+      "sha256": "fe67b8e7a539325ab97ef969ce562f4b1f2ff5b3e4e8d1f0022be402177fc0a8"
+    }
+  ]
+}

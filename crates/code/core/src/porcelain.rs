@@ -55,6 +55,9 @@ pub(crate) struct Snapshot {
     /// the stamp budget stays false: the status diff is still the command delta.
     #[serde(default)]
     stamp_read_failed: bool,
+    /// Status hit its record or byte cap. The prefix is not a diff input.
+    #[serde(default)]
+    status_budget: bool,
     /// This directory is a git worktree, including when `status` itself
     /// failed. A failed git read must not fall through to the file walk.
     git_worktree: bool,
@@ -74,6 +77,7 @@ impl Snapshot {
             "status_count": self.porcelain.as_ref().map(Vec::len),
             "status_digest": self.porcelain.as_ref().map(|lines| digest_status(lines)),
             "status_complete": self.porcelain.is_some(),
+            "status_budget": self.status_budget,
             "stamp_count": self.stamps.len(),
             "stamp_digest": digest_stamps(&self.stamps),
             "stamps_incomplete": self.stamps_incomplete,
@@ -196,6 +200,17 @@ impl Watch {
                 None => None,
             };
         }
+        if effects.exceeds_canonical_bound() {
+            return if effects.completeness == a3s_effect::ToolObservationCompleteness::Incomplete
+                && !effects.budget_exceeded
+            {
+                a3s_effect::ToolEffectObservationV1::incomplete(
+                    "tool_effect_observation_incomplete: pre-image identity or canonical size bound failed",
+                )
+            } else {
+                a3s_effect::ToolEffectObservationV1::budget_exceeded()
+            };
+        }
         if effects.validate().is_err() {
             return a3s_effect::ToolEffectObservationV1::incomplete(
                 "tool_effect_observation_incomplete: pre-image identity or canonical size bound failed",
@@ -208,8 +223,15 @@ impl Watch {
         let mut observed = command_delta(root, &self.snapshot, attribute_revision).await;
         if let Some(files) = self.files.as_ref() {
             let files = file_delta(root, files);
-            observed.paths.extend(files.paths);
-            observed.incomplete |= files.incomplete;
+            if files.incomplete {
+                observed.incomplete = true;
+                observed.budget_exceeded = false;
+            } else if files.budget_exceeded {
+                observed.budget_exceeded = true;
+                observed.paths.clear();
+            } else {
+                observed.paths.extend(files.paths);
+            }
         }
         observed.paths.sort();
         observed.paths.dedup();
@@ -223,6 +245,12 @@ impl Watch {
 pub(crate) struct PathDelta {
     pub paths: Vec<String>,
     pub incomplete: bool,
+    /// A known cap was hit. Distinct from [`Self::incomplete`], which is a
+    /// failed read and still settles as an uncertain invocation.
+    pub budget_exceeded: bool,
+    /// The fresh or baseline git status hit its record or byte cap.
+    /// A revision-name list does not set this, and must not close the run.
+    pub status_budget: bool,
 }
 
 /// The one typed byte observer used by foreground and background receipts.
@@ -265,6 +293,11 @@ fn observe_path_effects_within(
     delta.incomplete |= invalid_scope;
     delta.paths.sort();
     delta.paths.dedup();
+    if !delta.incomplete
+        && (delta.budget_exceeded || delta.paths.len() > a3s_effect::MAX_TOOL_EFFECT_PATHS)
+    {
+        return ToolEffectObservationV1::budget_exceeded();
+    }
     let mut effects = ToolEffectObservationV1::complete(Vec::new());
     if delta.paths.len() > a3s_effect::MAX_TOOL_EFFECT_PATHS {
         delta.incomplete = true;
@@ -300,6 +333,16 @@ fn observe_path_effects_within(
             "tool_effect_observation_incomplete: workspace read or observation budget failed"
                 .into(),
         );
+        effects.budget_exceeded = false;
+    }
+    if effects.exceeds_canonical_bound() {
+        return if delta.incomplete {
+            ToolEffectObservationV1::incomplete(
+                "tool_effect_observation_incomplete: typed receipt contract or canonical size bound failed",
+            )
+        } else {
+            ToolEffectObservationV1::budget_exceeded()
+        };
     }
     if effects.validate().is_err() {
         return ToolEffectObservationV1::incomplete(
@@ -310,8 +353,10 @@ fn observe_path_effects_within(
 }
 
 pub(crate) async fn snapshot(root: &Path) -> Snapshot {
-    let porcelain = lines(root).await;
-    let git_worktree = porcelain.is_some() || inside_work_tree(root).await;
+    let status = read_status(root).await;
+    let porcelain = status.records;
+    let status_budget = status.budget;
+    let git_worktree = porcelain.is_some() || status_budget || inside_work_tree(root).await;
     let mut byte_budget = OBSERVATION_BYTE_CAP;
     let mut path_budget = FILE_WALK_CAP;
     let (mut stamps, mut stamps_incomplete) = match &porcelain {
@@ -323,10 +368,10 @@ pub(crate) async fn snapshot(root: &Path) -> Snapshot {
     // delta. Hitting the stamp budget on a fully read status list cannot
     // either be treated as a missed read: that froze every later mutating
     // call on a worktree that was already dirtier than FILE_WALK_CAP.
-    let mut stamp_read_failed = porcelain.is_none() && git_worktree;
+    let mut stamp_read_failed = porcelain.is_none() && !status_budget && git_worktree;
     if porcelain.is_some() {
         match hidden_index_paths(root).await {
-            Some((paths, parse_incomplete)) => {
+            HiddenIndex::Listed(paths, parse_incomplete) => {
                 let hidden_budget = parse_incomplete && paths.len() == FILE_WALK_CAP;
                 stamp_read_failed |= parse_incomplete && !hidden_budget;
                 stamps_incomplete |= parse_incomplete;
@@ -337,19 +382,23 @@ pub(crate) async fn snapshot(root: &Path) -> Snapshot {
                 stamps.sort_by(|left, right| left.path.cmp(&right.path));
                 stamps.dedup_by(|left, right| left.path == right.path);
             }
-            None => {
+            HiddenIndex::OverCap => {
+                stamps_incomplete = true;
+            }
+            HiddenIndex::Failed => {
                 stamp_read_failed = true;
                 stamps_incomplete = true;
             }
         }
     }
-    stamps_incomplete |= stamp_read_failed;
+    stamps_incomplete |= stamp_read_failed || status_budget;
     Snapshot {
         porcelain,
         head: revision(root).await,
         stamps,
         stamps_incomplete,
         stamp_read_failed,
+        status_budget,
         git_worktree,
     }
 }
@@ -362,13 +411,52 @@ async fn inside_work_tree(root: &Path) -> bool {
 }
 
 pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
-    let prefix = workspace_git_prefix(root).await?;
-    let output = git(root, &["status", "--porcelain", "-z", "-u", "--", "."]).await?;
-    let (records, incomplete) = porcelain_records(&output);
-    if incomplete {
-        return None;
+    read_status(root).await.records
+}
+
+struct StatusRead {
+    records: Option<Vec<String>>,
+    budget: bool,
+}
+
+/// A complete status list, a known cap, or a failed read. A cap does not
+/// keep the parsed prefix: comparing prefixes invents paths.
+async fn read_status(root: &Path) -> StatusRead {
+    let Some(prefix) = workspace_git_prefix(root).await else {
+        return StatusRead {
+            records: None,
+            budget: false,
+        };
+    };
+    match git_capture(root, &["status", "--porcelain", "-z", "-u", "--", "."]).await {
+        GitCapture::Failed => StatusRead {
+            records: None,
+            budget: false,
+        },
+        GitCapture::OverCap => StatusRead {
+            records: None,
+            budget: true,
+        },
+        GitCapture::Bytes(output) => {
+            let parsed = porcelain_records(&output);
+            if parsed.rejected {
+                StatusRead {
+                    records: None,
+                    budget: false,
+                }
+            } else if parsed.budget {
+                StatusRead {
+                    records: None,
+                    budget: true,
+                }
+            } else {
+                StatusRead {
+                    records: scope_porcelain_records(parsed.records, &prefix),
+                    budget: false,
+                }
+            }
+        }
     }
-    scope_porcelain_records(records, &prefix)
 }
 
 /// Porcelain always names paths relative to the repository top, even when
@@ -420,35 +508,56 @@ pub(crate) async fn delta(root: &Path, before: Snapshot) -> PathDelta {
 
 async fn command_delta(root: &Path, before: &Snapshot, attribute_revision: bool) -> PathDelta {
     let after = snapshot(root).await;
+    if before.status_budget || after.status_budget {
+        let failed = before.stamp_read_failed || after.stamp_read_failed;
+        return PathDelta {
+            paths: Vec::new(),
+            incomplete: failed,
+            budget_exceeded: !failed,
+            status_budget: !failed,
+        };
+    }
     let names = match (&before.head, &after.head) {
         (Some(before_head), Some(after_head)) if before_head != after_head => {
             names_between(root, before_head, after_head).await
         }
-        _ => Some(Vec::new()),
+        _ => RevisionNames::Listed(Vec::new()),
     };
     // A failed revision read stays incomplete. An unread move is not "no paths".
-    let names_for_combine = if attribute_revision || names.is_none() {
+    // A name list past the stamp cap is a budget, not a missed read.
+    let names_for_combine = if attribute_revision || matches!(names, RevisionNames::Unread) {
         names.clone()
     } else {
-        Some(Vec::new())
+        RevisionNames::Listed(Vec::new())
+    };
+    let listed = match &names_for_combine {
+        RevisionNames::Listed(names) => Some(names.clone()),
+        RevisionNames::Budget => Some(Vec::new()),
+        RevisionNames::Unread => None,
     };
     let mut observed = combine_delta(
         before.porcelain.as_deref(),
         after.porcelain.as_deref(),
         before.head.as_deref(),
         after.head.as_deref(),
-        names_for_combine,
+        listed,
     );
+    if matches!(names, RevisionNames::Budget) {
+        observed.budget_exceeded = true;
+    }
     // Stamp-budget overflow still leaves stamps_incomplete on the snapshot.
     // It must not turn a fully read status diff into an unresolved command.
     observed.incomplete |= before.stamp_read_failed || after.stamp_read_failed;
+    if observed.incomplete {
+        observed.budget_exceeded = false;
+    }
     observed
         .paths
         .extend(content_changes(&before.stamps, &after.stamps));
     if !attribute_revision && !observed.incomplete {
-        if let (Some(names), Some(lines)) = (names, after.porcelain.as_deref()) {
+        if let (RevisionNames::Listed(names), Some(lines)) = (&names, after.porcelain.as_deref()) {
             if let Some(still_dirty) = porcelain_paths(lines) {
-                drop_foreign_revision(&mut observed.paths, &names, &still_dirty);
+                drop_foreign_revision(&mut observed.paths, names, &still_dirty);
             }
         }
     }
@@ -516,7 +625,12 @@ fn combine_delta(
     }
     paths.sort();
     paths.dedup();
-    PathDelta { paths, incomplete }
+    PathDelta {
+        paths,
+        incomplete,
+        budget_exceeded: false,
+        status_budget: false,
+    }
 }
 
 #[allow(dead_code)] // bash unit tests compare porcelain lines through this helper
@@ -545,7 +659,12 @@ fn diff_porcelain(before: &[String], after: &[String]) -> PathDelta {
     }
     paths.sort();
     paths.dedup();
-    PathDelta { paths, incomplete }
+    PathDelta {
+        paths,
+        incomplete,
+        budget_exceeded: false,
+        status_budget: false,
+    }
 }
 
 pub(crate) const FILE_WALK_CAP: usize = 4_096;
@@ -553,7 +672,7 @@ pub(crate) const FILE_WALK_CAP: usize = 4_096;
 /// A dirty worktree past FILE_WALK_CAP is still a complete status read as
 /// long as it fits here and in the git output byte cap. Past this bound the
 /// read is missed, not a silent prefix.
-const STATUS_RECORD_CAP: usize = 65_536;
+pub(crate) const STATUS_RECORD_CAP: usize = 65_536;
 /// Entries a non-git walk may stat. Stat-only, so a dependency tree fits.
 const NONGIT_WALK_CAP: usize = 1 << 18;
 const OBSERVATION_PATH_BYTE_CAP: usize = 4_096;
@@ -574,7 +693,10 @@ const CHANGED_PATH_BYTE_CAP: u64 = 1 << 30;
 /// remain incomplete.
 pub(crate) struct FileIndex {
     entries: Vec<NodeStamp>,
+    /// A directory could not be read. Distinct from a walk that hit its cap.
     incomplete: bool,
+    /// The walk hit [`NONGIT_WALK_CAP`]. The prefix is not a diff input.
+    budget: bool,
     /// Before-content of a small tree, kept as receipt recovery evidence.
     content: Option<Vec<ContentStamp>>,
 }
@@ -612,7 +734,11 @@ impl FileIndex {
 
     fn summary(&self) -> Value {
         if let Some(content) = &self.content {
-            let full = serde_json::json!({"entries": content, "incomplete": self.incomplete});
+            let full = serde_json::json!({
+                "entries": content,
+                "incomplete": self.incomplete,
+                "budget_exceeded": self.budget,
+            });
             if serde_json::to_vec(&full).is_ok_and(|bytes| bytes.len() <= CONTENT_BASELINE_BYTE_CAP)
             {
                 return full;
@@ -628,6 +754,7 @@ impl FileIndex {
             "stat_digest": format!("sha256:{:x}", digest.finalize()),
             "content_omitted": true,
             "incomplete": self.incomplete,
+            "budget_exceeded": self.budget,
         })
     }
 }
@@ -639,15 +766,17 @@ pub(crate) fn index_files(root: &Path) -> FileIndex {
 fn index_files_within(root: &Path, cap: usize) -> FileIndex {
     let mut entries = Vec::new();
     let mut incomplete = false;
+    let mut budget = false;
     let mut visited = 0;
     let mut stack = vec![std::path::PathBuf::new()];
     while let Some(dir) = stack.pop() {
-        let Some((found, directory_incomplete)) = directory_entries(root, &dir, cap - visited)
+        let Some((found, directory_failed, capped)) = directory_entries(root, &dir, cap - visited)
         else {
             incomplete = true;
             continue;
         };
-        incomplete |= directory_incomplete;
+        incomplete |= directory_failed;
+        budget |= capped;
         for (name, stat) in found {
             visited += 1;
             if name == ".git" || name == ".a3s" || name == ".a3s-code" {
@@ -666,8 +795,8 @@ fn index_files_within(root: &Path, cap: usize) -> FileIndex {
             }
             entries.push(stamp);
         }
-        if visited >= cap && !stack.is_empty() {
-            incomplete = true;
+        if budget || (visited >= cap && !stack.is_empty()) {
+            budget = true;
             break;
         }
     }
@@ -675,6 +804,7 @@ fn index_files_within(root: &Path, cap: usize) -> FileIndex {
     FileIndex {
         entries,
         incomplete,
+        budget,
         content: None,
     }
 }
@@ -712,11 +842,21 @@ fn node_stamp(_relative: &str, _stat: &()) -> Option<NodeStamp> {
 pub(crate) fn file_delta(root: &Path, before: &FileIndex) -> PathDelta {
     let after = index_files(root);
     if before.incomplete || after.incomplete {
+        return PathDelta {
+            paths: Vec::new(),
+            incomplete: true,
+            budget_exceeded: false,
+            status_budget: false,
+        };
+    }
+    if before.budget || after.budget {
         // Directory order is unstable past the cap. Comparing a prefix would
         // invent paths; returning a complete empty delta would hide a write.
         return PathDelta {
             paths: Vec::new(),
-            incomplete: true,
+            incomplete: false,
+            budget_exceeded: true,
+            status_budget: false,
         };
     }
     let before_map: HashMap<&str, &NodeStamp> = before
@@ -745,6 +885,8 @@ pub(crate) fn file_delta(root: &Path, before: &FileIndex) -> PathDelta {
     PathDelta {
         paths,
         incomplete: false,
+        budget_exceeded: false,
+        status_budget: false,
     }
 }
 
@@ -777,6 +919,10 @@ impl RunWatch {
         self.snapshot.stamp_read_failed
     }
 
+    pub(crate) fn status_budget(&self) -> bool {
+        self.snapshot.status_budget
+    }
+
     pub(crate) fn head(&self) -> Option<String> {
         self.snapshot.head.clone()
     }
@@ -793,6 +939,45 @@ impl RunWatch {
         observed.paths = source_paths(observed.paths);
         observed
     }
+}
+
+/// Run-level gate input. A path-list cap on one command is not this budget.
+/// Status and the non-git walk are. A failed read wins over either budget.
+pub(crate) fn fold_run_observation(
+    mut observed: PathDelta,
+    status_failed: bool,
+    status_budget: bool,
+    files: Option<PathDelta>,
+) -> PathDelta {
+    if status_failed {
+        observed.incomplete = true;
+        observed.budget_exceeded = false;
+        observed.status_budget = false;
+    } else if status_budget || observed.status_budget {
+        // The baseline or the fresh status read hit its cap. Drop any prefix.
+        observed.paths.clear();
+        observed.incomplete = false;
+        observed.budget_exceeded = true;
+        observed.status_budget = true;
+    } else {
+        // A revision-name cap still leaves the status diff usable.
+        observed.budget_exceeded = false;
+        observed.status_budget = false;
+    }
+    if !observed.status_budget && observed.paths.is_empty() && !observed.incomplete {
+        if let Some(files) = files {
+            if files.incomplete {
+                observed.incomplete = true;
+                observed.budget_exceeded = false;
+            } else if files.budget_exceeded {
+                observed.paths.clear();
+                observed.budget_exceeded = true;
+            } else {
+                observed.paths = files.paths;
+            }
+        }
+    }
+    observed
 }
 
 pub(crate) async fn baseline_delta(
@@ -860,9 +1045,22 @@ fn stamp_paths(
 }
 
 /// Paths `git status` hides. `S` is skip-worktree, `h`/`s` is assume-unchanged.
-async fn hidden_index_paths(root: &Path) -> Option<(Vec<String>, bool)> {
-    let prefix = workspace_git_prefix(root).await?;
-    let output = git(root, &["ls-files", "--full-name", "-v", "-z", "--", "."]).await?;
+enum HiddenIndex {
+    Listed(Vec<String>, bool),
+    OverCap,
+    Failed,
+}
+
+async fn hidden_index_paths(root: &Path) -> HiddenIndex {
+    let Some(prefix) = workspace_git_prefix(root).await else {
+        return HiddenIndex::Failed;
+    };
+    let output = match git_capture(root, &["ls-files", "--full-name", "-v", "-z", "--", "."]).await
+    {
+        GitCapture::Bytes(output) => output,
+        GitCapture::OverCap => return HiddenIndex::OverCap,
+        GitCapture::Failed => return HiddenIndex::Failed,
+    };
     let (paths, mut incomplete) = parse_hidden_index_paths(&output);
     let mut scoped = Vec::new();
     for path in paths {
@@ -872,7 +1070,7 @@ async fn hidden_index_paths(root: &Path) -> Option<(Vec<String>, bool)> {
             Err(()) => incomplete = true,
         }
     }
-    Some((scoped, incomplete))
+    HiddenIndex::Listed(scoped, incomplete)
 }
 
 fn parse_hidden_index_paths(output: &[u8]) -> (Vec<String>, bool) {
@@ -1225,7 +1423,7 @@ fn directory_entries(
     root: &Path,
     relative: &Path,
     limit: usize,
-) -> Option<(Vec<(std::ffi::OsString, libc::stat)>, bool)> {
+) -> Option<(Vec<(std::ffi::OsString, libc::stat)>, bool, bool)> {
     use std::os::fd::IntoRawFd;
     use std::os::unix::ffi::{OsStrExt, OsStringExt};
     let errno = directory_errno()?;
@@ -1249,6 +1447,7 @@ fn directory_entries(
     }
     let mut names = Vec::new();
     let mut incomplete = false;
+    let mut capped = false;
     loop {
         // SAFETY: errno points to this thread's live errno cell; clearing it
         // distinguishes readdir EOF from failure. This stream is not shared.
@@ -1296,7 +1495,7 @@ fn directory_entries(
             continue;
         }
         if names.len() == limit {
-            incomplete = true;
+            capped = true;
             break;
         }
         let Ok(c_name) = std::ffi::CString::new(name.as_bytes()) else {
@@ -1322,7 +1521,7 @@ fn directory_entries(
         // cannot serve as a complete before/after authority baseline.
         incomplete = true;
     }
-    Some((names, incomplete))
+    Some((names, incomplete, capped))
 }
 
 #[cfg(all(unix, any(target_vendor = "apple", target_os = "freebsd")))]
@@ -1382,7 +1581,7 @@ fn directory_entries(
     _root: &Path,
     _relative: &Path,
     _limit: usize,
-) -> Option<(Vec<(std::ffi::OsString, ())>, bool)> {
+) -> Option<(Vec<(std::ffi::OsString, ())>, bool, bool)> {
     None
 }
 
@@ -1457,9 +1656,18 @@ async fn revision(root: &Path) -> Option<String> {
     }
 }
 
-async fn names_between(root: &Path, before: &str, after: &str) -> Option<Vec<String>> {
-    let prefix = workspace_git_prefix(root).await?;
-    let output = git(
+#[derive(Clone)]
+enum RevisionNames {
+    Listed(Vec<String>),
+    Budget,
+    Unread,
+}
+
+async fn names_between(root: &Path, before: &str, after: &str) -> RevisionNames {
+    let Some(prefix) = workspace_git_prefix(root).await else {
+        return RevisionNames::Unread;
+    };
+    let Some(output) = git(
         root,
         &[
             "diff",
@@ -1472,32 +1680,52 @@ async fn names_between(root: &Path, before: &str, after: &str) -> Option<Vec<Str
             ".",
         ],
     )
-    .await?;
+    .await
+    else {
+        return RevisionNames::Unread;
+    };
     let mut names = Vec::new();
     for name in output
         .split(|byte| *byte == 0)
         .filter(|name| !name.is_empty())
     {
-        let name = std::str::from_utf8(name).ok()?;
-        if name.is_empty()
-            || name.contains('\n')
-            || name.len() > OBSERVATION_PATH_BYTE_CAP
-            || names.len() == FILE_WALK_CAP
-        {
-            return None;
+        let Ok(name) = std::str::from_utf8(name) else {
+            return RevisionNames::Unread;
+        };
+        if name.is_empty() || name.contains('\n') || name.len() > OBSERVATION_PATH_BYTE_CAP {
+            return RevisionNames::Unread;
         }
-        if let Some(relative) = bind_git_path(name, &prefix).ok()? {
-            names.push(relative.to_string());
+        if names.len() == FILE_WALK_CAP {
+            return RevisionNames::Budget;
+        }
+        match bind_git_path(name, &prefix) {
+            Ok(Some(relative)) => names.push(relative.to_string()),
+            Ok(None) => {}
+            Err(()) => return RevisionNames::Unread,
         }
     }
-    Some(names)
+    RevisionNames::Listed(names)
 }
 
 async fn git(root: &Path, args: &[&str]) -> Option<Vec<u8>> {
+    match git_capture(root, args).await {
+        GitCapture::Bytes(bytes) => Some(bytes),
+        GitCapture::OverCap | GitCapture::Failed => None,
+    }
+}
+
+#[derive(Debug)]
+enum GitCapture {
+    Bytes(Vec<u8>),
+    OverCap,
+    Failed,
+}
+
+async fn git_capture(root: &Path, args: &[&str]) -> GitCapture {
     // Dropping the timeout future must kill git. A live `status` otherwise
     // keeps `index.lock` and the next read waits inside its own budget.
-    tokio::time::timeout(GIT_QUERY_TIMEOUT, async {
-        let mut child = tokio::process::Command::new("git")
+    let captured = tokio::time::timeout(GIT_QUERY_TIMEOUT, async {
+        let mut child = match tokio::process::Command::new("git")
             .args(args)
             .current_dir(root)
             .stdin(std::process::Stdio::null())
@@ -1505,77 +1733,106 @@ async fn git(root: &Path, args: &[&str]) -> Option<Vec<u8>> {
             .stderr(std::process::Stdio::null())
             .kill_on_drop(true)
             .spawn()
-            .ok()?;
-        let output = read_git_output(child.stdout.take()?).await?;
-        child.wait().await.ok()?.success().then_some(output)
+        {
+            Ok(child) => child,
+            Err(_) => return GitCapture::Failed,
+        };
+        let captured = match child.stdout.take() {
+            Some(stdout) => read_git_output(stdout).await,
+            None => GitCapture::Failed,
+        };
+        // An over-cap read must not wait for git. The pipe is full, and
+        // waiting would turn the cap into a timeout failure.
+        if matches!(captured, GitCapture::OverCap) {
+            drop(child);
+            return GitCapture::OverCap;
+        }
+        match child.wait().await {
+            Ok(status) if status.success() => captured,
+            _ => GitCapture::Failed,
+        }
     })
-    .await
-    .ok()?
+    .await;
+    match captured {
+        Ok(capture) => capture,
+        Err(_) => GitCapture::Failed,
+    }
 }
 
-async fn read_git_output(reader: impl tokio::io::AsyncRead + Unpin) -> Option<Vec<u8>> {
+async fn read_git_output(reader: impl tokio::io::AsyncRead + Unpin) -> GitCapture {
     use tokio::io::AsyncReadExt;
     let mut output = Vec::new();
-    reader
+    match reader
         .take(GIT_OUTPUT_BYTE_CAP + 1)
         .read_to_end(&mut output)
         .await
-        .ok()?;
-    (output.len() as u64 <= GIT_OUTPUT_BYTE_CAP).then_some(output)
+    {
+        Ok(_) if output.len() as u64 <= GIT_OUTPUT_BYTE_CAP => GitCapture::Bytes(output),
+        Ok(_) => GitCapture::OverCap,
+        Err(_) => GitCapture::Failed,
+    }
+}
+
+struct PorcelainParse {
+    records: Vec<String>,
+    budget: bool,
+    rejected: bool,
 }
 
 /// Status lines from `git status --porcelain -z`. A rename is two NUL fields.
-/// An unreadable record is incomplete, not an absent mutation.
-fn porcelain_records(output: &[u8]) -> (Vec<String>, bool) {
+/// An unreadable record is a rejected read, not an absent mutation.
+/// Hitting the record cap is a budget and does not keep a usable prefix.
+fn porcelain_records(output: &[u8]) -> PorcelainParse {
     let mut records = Vec::new();
-    let mut incomplete = false;
+    let mut budget = false;
+    let mut rejected = false;
     let mut parts = output
         .split(|byte| *byte == 0)
         .filter(|part| !part.is_empty());
     while let Some(part) = parts.next() {
         if records.len() == STATUS_RECORD_CAP {
-            incomplete = true;
+            budget = true;
             break;
         }
         if part.len() > OBSERVATION_PATH_BYTE_CAP + 3 {
-            incomplete = true;
+            rejected = true;
             continue;
         }
         let Ok(text) = std::str::from_utf8(part) else {
-            incomplete = true;
+            rejected = true;
             continue;
         };
         if text.len() < 4 || part[2] != b' ' {
-            incomplete = true;
+            rejected = true;
             continue;
         }
         let Some(status) = text.get(..2) else {
-            incomplete = true;
+            rejected = true;
             continue;
         };
         let Some(path) = text.get(3..) else {
-            incomplete = true;
+            rejected = true;
             continue;
         };
         let renamed = status.contains('R') || status.contains('C');
         if renamed {
             if records.len() + 2 > STATUS_RECORD_CAP {
-                incomplete = true;
+                budget = true;
                 break;
             }
             let Some(dest) = parts.next() else {
-                incomplete = true;
+                rejected = true;
                 if !path.is_empty() {
                     records.push(format!("{status} {}", quote_git_path(path)));
                 }
                 continue;
             };
             let Ok(dest) = std::str::from_utf8(dest) else {
-                incomplete = true;
+                rejected = true;
                 continue;
             };
             if dest.is_empty() || dest.len() > OBSERVATION_PATH_BYTE_CAP {
-                incomplete = true;
+                rejected = true;
             } else {
                 records.push(format!("{status} {}", quote_git_path(dest)));
             }
@@ -1585,12 +1842,16 @@ fn porcelain_records(output: &[u8]) -> (Vec<String>, bool) {
             continue;
         }
         if path.is_empty() {
-            incomplete = true;
+            rejected = true;
             continue;
         }
         records.push(format!("{status} {}", quote_git_path(path)));
     }
-    (records, incomplete)
+    PorcelainParse {
+        records,
+        budget,
+        rejected,
+    }
 }
 
 /// NUL porcelain fields are exact names, never C-quoted. Encode them for the
@@ -2050,6 +2311,7 @@ pub(crate) fn snapshot_from_parts(
         stamps,
         stamps_incomplete,
         stamp_read_failed: stamps_incomplete,
+        status_budget: false,
         git_worktree,
     }
 }

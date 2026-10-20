@@ -1,0 +1,130 @@
+已完成 T01 任务， pipeline.py  已按要求生成并实际运行，
++							971 container 在工作区中打开 output/results.json, Help: output/results.json
++								972 text output/results.json
++							973 text  已产出。
++						974 heading 交付文件, Value: 2
++							975 text 交付文件
++						976 table
++							977 row (selectable) 文件
+说明
++							978 row (selectable)
++								979 cell (selectable) pipeline.py
++								980 cell (selectable) 单文件，仅用 Python 标准库（
+argparse/csv/json/hashlib/decimal/array/datetime/os
+），761 行，无外部依赖、无预生成答案
++							981 row (selectable)
++								982 cell (selectable) 在工作区中打开 output/results.json, Value: output/results.json
++								983 cell (selectable) 由
+python3 pipeline.py --input input --output output
+生成，UTF-8，1 439 900 字节
++						984 heading 实际运行结果（公开 input）, Value: 2
++							985 text 实际运行结果（公开 input）
++						986 text python3 pipeline.py --input input --output output # 退出码 0 sha256(output/results.json) = 1410d96bf12818691780e94e03e6c58001060c9af862d092736f255b58c097e8
++						987 content list
++							988 container 明细：normalized_rows 1000 行（5 个市场，Order ID 重复 133 行全部保留），effective_rows 1000 行
++								989 list marker •
++								990 text 明细：
++								991 text normalized_rows
++								992 text  1000 行（5 个市场，Order ID 重复 133 行全部保留），
++								993 text effective_rows
++								994 text  1000 行
++							995 container 事件：48 条非空记录 → applied 37、duplicate_event 6、invalid_amount 2、order_cancelled 1、unknown_row 1、unknown_type 1；最终取消 13 行
++								996 list marker •
++								997 text 事件：48 条非空记录 → applied 37、duplicate_event 6、invalid_amount 2、order_cancelled 1、unknown_row 1、unknown_type 1；最终取消 13 行
++							998 container 汇总：active 987 行；sales_milli 1688849344、profit_milli 285536004、shipping_milli 267683856、contribution_milli 17852148；profit_margin_bp 1691、contribution_margin_bp 106
++								999 list marker •
++								1000 text 汇总：active 987 行；
++								1001 text sales_milli
++								1002 text  1688849344、
++								1003 text profit_milli
++								1004 text  285536004、
++								1005 text shipping_milli
++								1006 text  267683856、
++								1007 text contribution_milli
++								1008 text  17852148；
++								1009 text profit_margin_bp
++								1010 text  1691、
++								1011 text contribution_margin_bp
++								1012 text  106
++							1013 container 聚合分组数：market 5、market_category 15、segment 3、ship_mode 4、market_month 207
++								1014 list marker •
++								1015 text 聚合分组数：market 5、market_category 15、segment 3、ship_mode 4、market_month 207
++							1016 container 对账：31 个（分组, 字段）对象，match 全部为 true（用事件处理前明细精确重算，含 LATAM 三位小数运费、Avg_Discount 四位等）
++								1017 list marker •
++								1018 text 对账：31 个（分组, 字段）对象，
++								1019 text match
++								1020 text  全部为 true（用事件处理前明细精确重算，含 LATAM 三位小数运费、
++								1021 text Avg_Discount
++								1022 text  四位等）
++							1023 container 优化：252 个候选、入选 16 个，spent_units 64 / budget_units 64，gain_milli3165191，projected_contribution_milli 21017339
++								1024 list marker •
++								1025 text 优化：252 个候选、入选 16 个，
++								1026 text spent_units
++								1027 text  64 / 
++								1028 text budget_units
++								1029 text  64，
++								1030 text gain_milli
++								1031 text 3165191，
++								1032 text projected_contribution_milli
++								1033 text  21017339
++						1034 heading 验证证据, Value: 2
++							1035 text 验证证据
++						1036 content list
++							1037 container 重复执行一致性：连续 3 次运行（含不同输出目录）results.json 逐字节相同，SHA-256 均为1410d96b…8c097e8；输出中无时间戳、绝对路径、随机值。
++								1038 list marker 1
++								1039 text 重复执行一致性 ：连续 3 次运行（含不同输出目录）
++								1040 text results.json
++								1041 text  逐字节相同，SHA-256 均为
++								1042 text 1410d96b…8c097e8
++								1043 text ；输出中无时间戳、绝对路径、随机值。
++							1044 container 最优性与并列解：预算选择用精确（非贪心）多重选择背包；在 300 组随机小实例上与穷举结果一致（收益、成本、action_id 字典序三级目标全等），在 80 组 9–60 行实例上与另一套独立 DP（直接携带 id 元组比较）一致；公开数据上独立求解器亦得 3165191 / 64 / 同一 16 个 action_id。
++								1045 list marker 2
++								1046 text 最优性与并列解 ：预算选择用精确（非贪心）多重选择背包；在 300 组随机小实例上与穷举结果一致（收益、成本、action_id 字典序三级目标全等），在 80 组 9–60 行实例上与另一套独立 DP（直接携带 id 元组比较）一致；公开数据上独立求解器亦得 3165191 / 64 / 同一 16 个 action_id。
++							1047 container 边界用例（合成数据端到端）：乱序事件、同时间戳事件按 event_id 排序、true/字符串金额、cancel 非 0、refund 超过当前销售额、shipping_credit 恰好等于运费后再追加、未知 row_key 与未知 type 的优先级、重复 event_id 载荷不同仍忽略、整组取消后仍输出零指标与 null 比率、参考表错误值/缺失分组、0.999→1.00 与 20.005→20.01 的 ROUND_HALF_UP、预算 0 与预算充足两种路径——全部符合手工推演值。
++								1048 list marker 3
++								1049 text 边界用例 （合成数据端到端）：乱序事件、同时间戳事件按 event_id 排序、
++								1050 text true
++								1051 text /字符串金额、cancel 非 0、refund 超过当前销售额、shipping_credit 恰好等于运费后再追加、未知 row_key 与未知 type 的优先级、重复 event_id 载荷不同仍忽略、整组取消后仍输出零指标与 null 比率、参考表错误值/缺失分组、
++								1052 text 0.999→1.00
++								1053 text  与 
++								1054 text 20.005→20.01
++								1055 text  的 ROUND_HALF_UP、预算 0 与预算充足两种路径——全部符合手工推演值。
++							1056 container 输入未被修改：11 个输入文件运行前后大小与 mtime 完全一致；程序只写 。
++								1057 list marker 4
++								1058 text 输入未被修改 ：11 个输入文件运行前后大小与 mtime 完全一致；程序只写 
++								1059 container 在工作区中打开 output/results.json, Help: output/results.json
++									1060 text output/results.json
++								1061 text 。
++							1062 container 口径处理：金额/折扣按字符串精确转整数（不先舍入到分），比率与固定小数位格式化均用整数算术实现 ROUND_HALF_UP；参考表数值按题面规定小数位规范化后与 actual 做字符串完全比较（故313172.0 与 313172.00 视为一致）。
++								1063 list marker 5
++								1064 text 口径处理 ：金额/折扣按字符串精确转整数（不先舍入到分），比率与固定小数位格式化均用整数算术实现 ROUND_HALF_UP；参考表数值按题面规定小数位规范化后与 actual 做字符串完全比较（故
++								1065 text 313172.0
++								1066 text  与 
++								1067 text 313172.00
++								1068 text  视为一致）。
++						1069 text 未提供或未覆盖的部分：无（未使用任何外部数据源）。
++						1070 container 工作产物
++							1071 container
++								1072 text 工作产物  ·  10
++							1073 container
++								1074 button 打开 pipeline.py, Help: pipeline.py
++								1075 button 打开 results.json, Help: /tmp/out_a/results.json
++								1076 button 打开 results.json, Help: /tmp/out_b/results.json
++								1077 button 打开 test_knap.py, Help: /tmp/test_knap.py
++								1078 button 打开 results.json, Help: /tmp/chk1/results.json
++								1079 button 打开 results.json, Help: /tmp/chk2/results.json
++								1080 button 打开 results.json, Help: /tmp/d1/results.json
++								1081 button 打开 results.json, Help: /tmp/d2/results.json
++								1082 button 打开 results.json, Help: /tmp/f1/results.json
++								1083 button 打开 results.json, Help: /tmp/f2/results.json
++						1084 container 改了这些文件
++							1085 text 改了这些文件
++							1086 button pipeline.py
++						1087 button 复制
++						1088 button 保存到笔记
++						1089 button 删除
++						1090 pop up button 更多操作
+~				848 text entry area (settable) 描述会话，输入 / 使用指令或技能, Value: 
+
++					1091 text 描述会话，输入 / 使用指令或技能
++				1092 button (disabled) 发送

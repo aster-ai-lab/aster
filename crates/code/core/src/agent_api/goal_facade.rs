@@ -308,8 +308,10 @@ impl AgentSession {
             None,
             &[],
             &admitted_tools,
-            config.budget(),
-            config.step_limit(),
+            harness
+                .and_then(|options| options.tool_budget)
+                .or(config.tool_budget_limit()),
+            config.step_limit_option(),
             config.model_attempts(),
         )
         .map_err(goal_error)?;

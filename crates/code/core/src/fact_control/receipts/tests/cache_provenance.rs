@@ -43,6 +43,8 @@ fn actual_write_and_host_verifier_provenance_survive_unrelated_prepared_uncertai
         crate::porcelain::PathDelta {
             paths: vec!["changed.txt".into()],
             incomplete: false,
+            budget_exceeded: false,
+            status_budget: false,
         },
     );
     assert_eq!(

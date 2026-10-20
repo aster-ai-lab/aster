@@ -1,0 +1,21 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-code-acp",
+    "--lib",
+    "agent::reasoning_transport_tests",
+    "--",
+    "--test-threads=1"
+  ],
+  "exit_code": 0,
+  "seconds": 28.329539125,
+  "summary": [
+    "test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 337 filtered out; finished in 0.66s"
+  ],
+  "frozen_binary": "/Users/roylin/code/aster/target/qualification/no-count-limit-20261020/acp-tests-final",
+  "sha256": "0fe819904f73db52e728ba595f718f9ce7dea6b0ab48bb74ad692ca45475e613"
+}

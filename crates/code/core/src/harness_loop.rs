@@ -285,6 +285,8 @@ impl MutationLedger {
             crate::porcelain::PathDelta {
                 paths: expected.keys().map(|path| (*path).to_string()).collect(),
                 incomplete: false,
+                budget_exceeded: false,
+                status_budget: false,
             },
         );
         observed.completeness == a3s_effect::ToolObservationCompleteness::Complete
@@ -642,7 +644,8 @@ impl MutationLedger {
             self.rehash();
         }
         if result.outcome == a3s_effect::ToolExecutionOutcome::Unknown
-            || result.effects.completeness == a3s_effect::ToolObservationCompleteness::Incomplete
+            || (result.effects.completeness == a3s_effect::ToolObservationCompleteness::Incomplete
+                && !result.effects.budget_exceeded)
         {
             self.unresolved_tool_effects.insert(key);
         }
@@ -679,7 +682,9 @@ impl MutationLedger {
         for change in &effects.changes {
             self.observe_receipt_path("background", &change.path, &change.after);
         }
-        if effects.completeness == a3s_effect::ToolObservationCompleteness::Incomplete {
+        if effects.completeness == a3s_effect::ToolObservationCompleteness::Incomplete
+            && !effects.budget_exceeded
+        {
             self.unresolved_tool_effects
                 .insert(format!("background-receipt-incomplete:{fact_key}"));
         }
@@ -811,6 +816,8 @@ impl MutationLedger {
             crate::porcelain::PathDelta {
                 paths: vec![proof.file_path.clone()],
                 incomplete: false,
+                budget_exceeded: false,
+                status_budget: false,
             },
         );
         let [change] = observed.changes.as_slice() else {
@@ -997,6 +1004,8 @@ impl MutationLedger {
             crate::porcelain::PathDelta {
                 paths: checks.iter().map(|(path, _)| path.clone()).collect(),
                 incomplete: false,
+                budget_exceeded: false,
+                status_budget: false,
             },
         );
         if observed.completeness != a3s_effect::ToolObservationCompleteness::Complete {

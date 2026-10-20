@@ -1,0 +1,65 @@
+{
+  "observed_at_utc": "2026-10-19T22:46:35.897699+00:00",
+  "checks": [
+    {
+      "path": "instruction.md",
+      "matches_original": true
+    },
+    {
+      "path": "input/Africa_orders.csv",
+      "matches_original": true
+    },
+    {
+      "path": "input/Asia_Pacific_orders.csv",
+      "matches_original": true
+    },
+    {
+      "path": "input/Europe_orders.csv",
+      "matches_original": true
+    },
+    {
+      "path": "input/LATAM_orders.csv",
+      "matches_original": true
+    },
+    {
+      "path": "input/USCA_orders.csv",
+      "matches_original": true
+    },
+    {
+      "path": "input/adjustments.jsonl",
+      "matches_original": true
+    },
+    {
+      "path": "input/policy.json",
+      "matches_original": true
+    },
+    {
+      "path": "input/priority_codebook.txt",
+      "matches_original": true
+    },
+    {
+      "path": "input/product_info.csv",
+      "matches_original": true
+    },
+    {
+      "path": "input/segment_performance.csv",
+      "matches_original": true
+    },
+    {
+      "path": "input/shipping_by_mode.csv",
+      "matches_original": true
+    },
+    {
+      "path": "pipeline.py",
+      "workspace_matches_frozen": true,
+      "frozen_unchanged": true
+    },
+    {
+      "path": "output/results.json",
+      "workspace_matches_frozen": true,
+      "frozen_unchanged": true
+    }
+  ],
+  "passed": true,
+  "candidate_modified_or_fixed_by_evaluator": false
+}

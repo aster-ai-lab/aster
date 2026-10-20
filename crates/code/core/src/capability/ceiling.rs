@@ -224,8 +224,8 @@ impl GovernanceCapabilityCeiling {
     }
 }
 
-/// Numeric execution limits. `None` is unbounded and is therefore the widest
-/// value for an optional duration ceiling.
+/// Numeric execution limits. Zero tool rounds and `None` durations are
+/// unbounded and therefore the widest values of their respective ceilings.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CapabilityExecutionCeiling {
@@ -244,7 +244,6 @@ impl CapabilityExecutionCeiling {
         llm_api_timeout_ms: Option<u64>,
         max_execution_time_ms: Option<u64>,
     ) -> Result<Self, CapabilityScopeError> {
-        validate_positive_usize("max_tool_rounds", max_tool_rounds)?;
         validate_positive_usize("max_parallel_tasks", max_parallel_tasks)?;
         validate_optional_positive("tool_timeout_ms", tool_timeout_ms)?;
         validate_optional_positive("llm_api_timeout_ms", llm_api_timeout_ms)?;
@@ -279,7 +278,9 @@ impl CapabilityExecutionCeiling {
     }
 
     fn expansion_from(self, parent: Self) -> Option<&'static str> {
-        if self.max_tool_rounds > parent.max_tool_rounds {
+        if parent.max_tool_rounds != 0
+            && (self.max_tool_rounds == 0 || self.max_tool_rounds > parent.max_tool_rounds)
+        {
             return Some("execution.max_tool_rounds");
         }
         if self.max_parallel_tasks > parent.max_parallel_tasks {

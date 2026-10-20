@@ -361,9 +361,9 @@ pub(super) async fn settle_owned_fact(
                 }
                 fact.seed_recovery_history(&seed, &prompt)?;
             }
-            fact.resume_limit(32).await
+            fact.resume().await
         } else if checkpoint.is_some() {
-            fact.resume_limit(32).await
+            fact.resume().await
         } else {
             if let Some(history) = history.as_deref() {
                 fact.seed_history(history)?;

@@ -194,6 +194,88 @@ async fn fact_log_second_resume_does_not_call_the_model() {
 }
 
 #[tokio::test]
+async fn fact_log_default_resume_retains_admitted_unbounded_and_explicit_step_limits() {
+    for step_limit in [None, Some(3)] {
+        let dir = tempfile::tempdir().unwrap();
+        let model_calls = Arc::new(AtomicUsize::new(0));
+        let tool_calls = Arc::new(AtomicUsize::new(0));
+        let mut decisions: Vec<_> = (0..20)
+            .map(|index| {
+                Ok(ModelDecision::Tool {
+                    call: ToolCall {
+                        id: format!("recovery-read-{index}"),
+                        name: "read".into(),
+                        args: serde_json::json!({"index": index}),
+                        needs_confirmation: false,
+                        text: None,
+                        reasoning: None,
+                    },
+                    also: Vec::new(),
+                })
+            })
+            .collect();
+        decisions.push(Ok(ModelDecision::Text {
+            text: "recovery completed".into(),
+        }));
+        let fact = FactRun::open(
+            dir.path(),
+            Arc::new(ScriptModel {
+                decisions: Mutex::new(decisions.into_iter().rev().collect()),
+                calls: Arc::clone(&model_calls),
+                tool_counts: Mutex::new(Vec::new()),
+                messages: Mutex::new(Vec::new()),
+            }),
+            Arc::new(ScriptTools {
+                calls: Arc::clone(&tool_calls),
+                fail_first: AtomicUsize::new(0),
+            }),
+            session_harness_config_with(
+                0,
+                usize::MAX,
+                vec![ToolSpec {
+                    name: "read".into(),
+                    description: "Controlled read".into(),
+                }],
+                step_limit,
+                Some(1),
+            )
+            .unwrap(),
+            "admitted-recovery-resume",
+        )
+        .unwrap();
+        fact.open_log()
+            .unwrap()
+            .append(
+                THREAD,
+                &[message_fact("start", "resume the controlled input")],
+                None,
+            )
+            .unwrap();
+        let result = fact.resume().await;
+        if step_limit.is_none() {
+            let settled = result.unwrap();
+            assert!(settled.steps > 32);
+            assert_eq!(
+                settled.view.assistant.as_deref(),
+                Some("recovery completed")
+            );
+            assert_eq!(model_calls.load(Ordering::SeqCst), 21);
+            assert_eq!(tool_calls.load(Ordering::SeqCst), 20);
+        } else {
+            let error = result
+                .err()
+                .expect("the explicit three-transition ceiling must remain active");
+            assert!(error
+                .to_string()
+                .contains("StepLimit: settled after 3 transitions"));
+            assert_eq!(tool_calls.load(Ordering::SeqCst), 1);
+        }
+        drop(fact);
+        dir.close().unwrap();
+    }
+}
+
+#[tokio::test]
 async fn fact_log_non_decision_sets_schema_error_without_a_tool_or_parse_retry() {
     let (_dir, fact, calls, tools, _) = run_with(vec![], None, 4, false);
     fact.append_model_turn(serde_json::json!({"kind": "nope"}))

@@ -1,0 +1,19 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "aster-dream",
+    "--lib",
+    "--no-run",
+    "--message-format=json-render-diagnostics"
+  ],
+  "exit_code": 0,
+  "seconds": 11.403673208,
+  "artifacts": [
+    "/Users/roylin/code/aster/target/debug/deps/a3s_studio_lib-9c7d06d5a17857ce"
+  ],
+  "owned_sources_stable": true
+}

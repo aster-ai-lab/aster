@@ -254,6 +254,7 @@ pub struct CodeConfig {
 
     /// Maximum tool execution rounds per turn (default: 50)
     #[serde(default, alias = "max_tool_rounds")]
+    /// Zero removes the tool-count ceiling. Omitted inherits the host default.
     pub max_tool_rounds: Option<usize>,
 
     /// Maximum sibling branches/tools to run concurrently in bounded parallel fan-out paths.

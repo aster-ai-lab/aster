@@ -1,0 +1,42 @@
+{
+  "checks": [
+    {
+      "command": [
+        "rustup",
+        "run",
+        "1.97.1",
+        "rustfmt",
+        "--edition",
+        "2021",
+        "--config",
+        "skip_children=true",
+        "--check",
+        "crates/effect/src/actor.rs",
+        "crates/effect/src/coding.rs",
+        "crates/effect/src/compose.rs",
+        "crates/effect/src/lib.rs",
+        "crates/effect/tests/unbounded_counts.rs"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "crates/effect/src/actor.rs",
+        "crates/effect/src/coding.rs",
+        "crates/effect/src/compose.rs",
+        "crates/effect/src/lib.rs",
+        "crates/effect/tests/unbounded_counts.rs"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "cargo_run_by_this_agent": false
+}

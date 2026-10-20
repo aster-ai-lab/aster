@@ -1,0 +1,94 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling a3s-effect v0.2.1 (/Users/roylin/code/aster/crates/effect)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.05s
+     Running unittests src/lib.rs (target/debug/deps/a3s_effect-5499a9d6c3821ed5)
+
+running 77 tests
+test coding::conversation_history_tests::compact_tail_does_not_keep_a_record_with_another_calls_result ... ok
+test coding::conversation_history_tests::compact_tail_drops_a_closed_batch_that_exceeds_the_budget ... ok
+test coding::conversation_history_tests::compact_tail_keeps_a_closed_tool_batch_together ... ok
+test coding::conversation_history_tests::compact_tail_keeps_a_short_result_run_together ... ok
+test coding::conversation_history_tests::compact_tail_keeps_one_adjacent_pair_and_drops_the_earlier_pair ... ok
+test coding::background_fold_tests::malformed_background_fact_fails_the_fold ... ok
+test coding::revalidation_tests::progress_requires_comparable_byte_or_object_identity ... ok
+test coding::background_fold_tests::arrival_while_parked_lands_directly ... ok
+test coding::revalidation_tests::compaction_translates_only_a_known_retained_suffix ... ok
+test coding::background_fold_tests::exited_and_stderr_events_render_dispositions ... ok
+test coding::revalidation_tests::progress_waits_for_the_whole_model_tool_batch ... ok
+test coding::conversation_history_tests::model_question_survives_the_original_answer_fact ... ok
+test coding::background_fold_tests::arrival_during_model_call_waits_for_the_next_completed_step ... ok
+test coding::conversation_history_tests::ordinary_assistant_reply_survives_the_next_user_turn ... ok
+test coding::conversation_history_tests::compaction_prefix_contains_the_actual_assistant_fact ... ok
+test coding::background_fold_tests::arrival_during_tool_batch_lands_after_its_result ... ok
+test coding::tool_effects::tests::a_budget_observation_validates_and_old_facts_default_the_flag ... ok
+test coding::tool_effects::tests::closed_sets_refuse_unknown_values_and_round_trip ... ok
+test coding::tool_effects::tests::complete_changes_require_byte_identity ... ok
+test coding::tool_effects::tests::typed_paths_refuse_workspace_escape_and_preserve_legal_spelling ... ok
+test coding::background_fold_tests::pending_cap_records_one_truncation_marker ... ok
+test coding::tool_effects::tests::wire_unknown_outcome_names_the_closed_set ... ok
+test compose::tests::compose_meta_harness_builds ... ok
+test compose::execution_tests::service_mapping_keeps_cancellation_and_original_trace ... ok
+test compose::tests::custom_compose_includes_host_component ... ok
+test compose::tests::namespace_prefixes_keys ... ok
+test coding::tool_effects::tests::version_identity_and_prepared_digest_are_required ... ok
+test compose::tests::stock_spec_parts_include_budget_and_compact ... ok
+test compose::tests::spec_over_a_session_config_keeps_duplicate_guard_and_token_compaction ... ok
+test coding::batch_overlap_tests::duplicate_call_twins_stay_parked_even_in_parallel_batches ... ok
+test compose::execution_tests::composed_inference_uses_ordered_current_fact_derived_system_ports ... ok
+test coding::batch_overlap_tests::parallel_batch_overlaps_or_fails_closed ... ok
+test actor::tests::append_only_input_preserves_original_memory_log_without_dispatch ... ok
+test coding::tool_effects::tests::observation_bound_and_missing_reason_refuse_complete_claims ... ok
+test log::fencing::tests::child_process_probe ... ignored, invoked by the bounded parent process test with an explicit temporary log
+test log::fencing::tests::invalid_owner_thread_does_not_create_an_escaped_lock ... ok
+test log::security_tests::duplicate_keys_in_one_batch_refuse_atomically_on_both_stores ... ok
+test log::fencing::tests::a_replaced_writer_lock_refuses_the_old_handle_before_append ... ok
+test log::fencing::tests::a_child_parked_before_exec_does_not_extend_parent_fences ... ok
+test log::fencing::tests::owner_fence_uses_original_thread_and_keeps_status_reads_available ... ok
+test log::security_tests::append_refuses_a_thread_symlink_without_changing_its_target ... ok
+test log::fencing::tests::releasing_fences_does_not_wait_for_an_inherited_file_description ... ok
+test log::security_tests::duplicate_stored_keys_refuse_before_append_or_truncation ... ok
+test log::permission_tests::fact_log_state_is_owner_only ... ok
+test log::fencing::tests::writerless_fifo_lock_is_refused_without_waiting_for_a_writer ... ok
+test log::fencing::tests::writer_fence_is_exact_reentrant_and_survives_until_the_last_borrow ... ok
+test log::fencing::tests::nonempty_or_directory_lock_paths_refuse_without_touching_facts ... ok
+test log::security_tests::a_valid_final_line_without_a_newline_can_be_extended_and_reopened ... ok
+test log::security_tests::exclusive_creation_refuses_an_existing_scratch_file ... ok
+test log::security_tests::incomplete_tail_refuses_without_quarantine_or_rewrite ... ok
+test log::security_tests::non_contiguous_sequence_refuses_before_append_or_truncation ... ok
+test log::fencing::tests::real_child_process_observes_writer_owner_and_release_boundaries ... ok
+test log::security_tests::fifo_is_refused_before_open_for_all_operations ... ok
+test log::security_tests::missing_fact_fields_refuse_a_whole_batch_on_both_stores ... ok
+test log::security_tests::open_refuses_a_symlinked_log_directory ... ok
+test log::security_tests::from_directory_uses_the_supplied_capability_without_creating_state ... ok
+test log::security_tests::an_open_log_stays_bound_when_its_directory_path_is_replaced ... ok
+test log::security_tests::exclusive_creation_refuses_a_planted_scratch_symlink ... ok
+test actor::tests::append_only_input_preserves_reopened_file_log_without_dispatch ... ok
+test log::security_tests::hard_linked_thread_is_refused_without_changing_either_name ... ok
+test log::fencing::tests::linked_lock_paths_refuse_before_changing_the_external_file ... ok
+test log::security_tests::nofollow_gate_refuses_a_symlink_swapped_in_after_precheck ... ok
+test log::security_tests::read_refuses_a_thread_symlink ... ok
+test log::security_tests::opened_handle_gate_refuses_a_fifo_swapped_in_after_precheck ... ok
+test log::security_tests::truncate_refuses_a_thread_symlink_without_replacing_it ... ok
+test log::security_tests::replacing_a_validated_regular_file_refuses_the_pending_mutation ... ok
+test log::tests::truncate_after_rejects_an_invalid_thread_id ... ok
+test log::tests::truncate_after_beyond_the_end_removes_nothing ... ok
+test log::tests::truncate_after_on_a_corrupt_line_leaves_the_log_untouched ... ok
+test log::tests::truncate_after_at_the_same_cut_is_idempotent ... ok
+test log::tests::truncate_after_keeps_the_prefix_and_reports_the_removed_count ... ok
+test log::security_tests::oversized_read_refuses_instead_of_loading_a_valid_large_record ... ok
+test log::security_tests::oversized_append_refuses_before_creating_a_log_file ... ok
+test coding::batch_overlap_tests::parallel_batch_fanout_wall_clock_is_recorded ... ok
+test log::security_tests::exact_byte_limit_is_readable_but_growth_is_refused_without_rewriting ... ok
+test log::fencing::tests::same_handle_concurrent_fence_turnover_never_contends_with_itself ... ok
+test log::security_tests::fact_count_limit_refuses_growth_and_an_over_limit_stored_log ... ok
+
+test result: ok. 76 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 1.37s
+

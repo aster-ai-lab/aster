@@ -80,7 +80,8 @@ pub struct ChildRunContext {
     pub budget_guard: Option<Arc<dyn crate::budget::BudgetGuard>>,
     /// Parent tool-round ceiling. Applied only while the child is still on the
     /// default cap, so a role that already set `max_steps` keeps that cap.
-    /// The task's own `max_steps` argument is applied after this.
+    /// Zero preserves an unbounded parent. The task's own `max_steps` argument
+    /// is applied after this.
     pub max_tool_rounds: Option<usize>,
     pub auto_compact: Option<bool>,
     pub auto_compact_threshold: Option<f32>,
@@ -713,7 +714,7 @@ impl ChildRunContext {
         }
         if let Some(rounds) = self.max_tool_rounds {
             if config.max_tool_rounds == crate::agent::MAX_TOOL_ROUNDS {
-                config.max_tool_rounds = rounds.max(1);
+                config.max_tool_rounds = rounds;
             }
         }
         if let Some(enabled) = self.auto_compact {

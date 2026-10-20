@@ -1,0 +1,14 @@
+[
+  {
+    "filter": "task_tool_exposes_one_compact_model_schema_and_hides_parallel_alias",
+    "exit_code": 0,
+    "seconds": 0.013442958,
+    "output": "\nrunning 1 test\ntest tools::task::tests::task_tool_exposes_one_compact_model_schema_and_hides_parallel_alias ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5227 filtered out; finished in 0.00s\n\n"
+  },
+  {
+    "filter": "parallel_task_tool_emits_terminal_event_for_aborted_child",
+    "exit_code": 0,
+    "seconds": 0.13639620800000002,
+    "output": "\nrunning 1 test\ntest tools::task::tests::parallel_task_tool_emits_terminal_event_for_aborted_child ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5227 filtered out; finished in 0.13s\n\n"
+  }
+]

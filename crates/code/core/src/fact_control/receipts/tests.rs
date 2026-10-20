@@ -452,6 +452,8 @@ fn byte_receipts_keep_all_paths_and_explicit_deletion() {
         crate::porcelain::PathDelta {
             paths,
             incomplete: false,
+            budget_exceeded: false,
+            status_budget: false,
         },
     );
     observed.validate().unwrap();
@@ -531,11 +533,20 @@ impl crate::tools::Tool for ReceiptProbe {
             ctx.cancellation_token().cancel();
             std::future::pending::<()>().await;
         }
-        if args["fail"] == true {
-            Ok(crate::tools::ToolOutput::error("known failure after write"))
-        } else {
-            Ok(crate::tools::ToolOutput::success("observed"))
+        if args["spill"] == true {
+            for index in 0..=crate::porcelain::FILE_WALK_CAP {
+                std::fs::write(ctx.workspace.join(format!("w{index:04}.txt")), "x")?;
+            }
         }
+        let mut output = if args["fail"] == true {
+            crate::tools::ToolOutput::error("known failure after write")
+        } else {
+            crate::tools::ToolOutput::success("observed")
+        };
+        if args["incomplete_evidence"] == true {
+            output = output.with_metadata(json!({"observation_incomplete": true}));
+        }
+        Ok(output)
     }
 }
 fn executor_tools(root: &Path) -> (Arc<ExecutorTools>, Arc<AtomicUsize>) {

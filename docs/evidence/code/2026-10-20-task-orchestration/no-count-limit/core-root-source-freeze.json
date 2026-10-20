@@ -1,0 +1,50 @@
+[
+  {
+    "path": "crates/code/core/src/agent.rs",
+    "sha256": "efd5528fae442be2e910740ae34f7593edd3551b8a411d351555dca32ddd1d5f"
+  },
+  {
+    "path": "crates/code/core/src/agent_api/session_options.rs",
+    "sha256": "7dfb2b9988b99ff9c15b3aa20d8a435b04786700a7cfd115885aff2b8a27d593"
+  },
+  {
+    "path": "crates/code/core/src/agent_api/session_config.rs",
+    "sha256": "714947fc89131eb6a1957079a00c291d5413475fa928d9894a11ef2f3467fe50"
+  },
+  {
+    "path": "crates/code/core/src/config/mod.rs",
+    "sha256": "e601792757f36cb38b478ed128c0e83107b72d34eb683cd0a3e91ca29f3bb6f0"
+  },
+  {
+    "path": "crates/code/core/src/fact_control.rs",
+    "sha256": "10800010ec6fab372904ded89460405edc303f3b2e9bb5c5fddbdd7a4a1f8e7f"
+  },
+  {
+    "path": "crates/code/core/src/fact_control/no_count_limit_tests.rs",
+    "sha256": "d9887fd49403ee572a175df67e2a0dd3b4c633a8b027330ed4ec41f8cdb1b71c"
+  },
+  {
+    "path": "crates/code/core/src/meta_harness.rs",
+    "sha256": "7d52192dae793410fa23d5c6cc52d8363786d468a1d761964049ce0d5b4f7e80"
+  },
+  {
+    "path": "crates/code/core/src/standing_context.rs",
+    "sha256": "8ce1ad1b3908dafeedc5caff67d14a6d51dabe79931b9a87713a08fe19be9eb0"
+  },
+  {
+    "path": "crates/code/core/src/standing_context/tests.rs",
+    "sha256": "96a04920ebb62c53b86b912c4808f1b3d67b8aebc060ef719f11483fe1c7f1f3"
+  },
+  {
+    "path": "crates/code/core/src/agent_api/goal_facade.rs",
+    "sha256": "ad73eb9443727ceb6c3977c9c1519054cebb0ce0d3841e1a375dc91be443edf4"
+  },
+  {
+    "path": "crates/code/core/src/agent_api/tests/fact_log.rs",
+    "sha256": "0447d63b67b58869bee922aa32170de2f94acf7417a50f4d53881ab5b71dad97"
+  },
+  {
+    "path": "crates/code/core/src/agent_api/tests/fact_log/no_count_limit.rs",
+    "sha256": "f91781e06769c73385022e12e21da09dfb3e6332aeba4592affc95f7fd444527"
+  }
+]

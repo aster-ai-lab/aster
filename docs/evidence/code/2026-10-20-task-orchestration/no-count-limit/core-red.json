@@ -1,0 +1,17 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-code-core",
+    "--lib",
+    "agent_api::tests::fact_log::no_count_limit",
+    "--",
+    "--test-threads=1"
+  ],
+  "exit_code": 101,
+  "wall_seconds": 51.996344666000006,
+  "scope": "Core session admission remains old; Effect optional-limit API additions already applied but cannot change Core zero validation"
+}

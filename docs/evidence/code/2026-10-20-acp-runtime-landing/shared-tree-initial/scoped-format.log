@@ -1,0 +1,149 @@
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent_tests.rs:805:
+ fn question_options_are_not_permission_grants() {
+     let options = question_permission_options(&[" left ".into(), "  ".into(), "right".into()]);
+     assert_eq!(options.len(), 2);
+[31m-    assert!(
+(B[m[31m-        options
+(B[m[31m-            .iter()
+(B[m[31m-            .all(|option| option.kind == acp::PermissionOptionKind::RejectOnce)
+(B[m[31m-    );
+(B[m[31m-    assert!(
+(B[m[31m-        options
+(B[m[31m-            .iter()
+(B[m[31m-            .all(|option| option.kind != acp::PermissionOptionKind::AllowOnce)
+(B[m[31m-    );
+(B[m[32m+    assert!(options
+(B[m[32m+        .iter()
+(B[m[32m+        .all(|option| option.kind == acp::PermissionOptionKind::RejectOnce));
+(B[m[32m+    assert!(options
+(B[m[32m+        .iter()
+(B[m[32m+        .all(|option| option.kind != acp::PermissionOptionKind::AllowOnce));
+(B[m     assert_eq!(options[0].name, "left");
+     assert_eq!(options[1].name, "right");
+ }
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent_tests.rs:1622:
+     let long = "x".repeat(4_001);
+     assert_eq!(tool_call_content("read", None, &long).len(), 1);
+     assert!(edit_diff("read", Some(&edit)).is_none());
+[31m-    assert!(
+(B[m[31m-        edit_diff(
+(B[m[31m-            "write",
+(B[m[31m-            Some(&serde_json::json!({"path": "a", "content": "z"}))
+(B[m[31m-        )
+(B[m[31m-        .is_some()
+(B[m[31m-    );
+(B[m[32m+    assert!(edit_diff(
+(B[m[32m+        "write",
+(B[m[32m+        Some(&serde_json::json!({"path": "a", "content": "z"}))
+(B[m[32m+    )
+(B[m[32m+    .is_some());
+(B[m     assert!(tool_raw_output("read", None, "out", 0).is_none());
+     assert!(tool_raw_output("shell", None, "out", 1).is_some());
+ 
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent_tests.rs:1698:
+         answer_from_permission_outcome(&acp::RequestPermissionOutcome::Cancelled, &options)
+             .is_none()
+     );
+[31m-    assert!(
+(B[m[31m-        answer_from_permission_outcome(
+(B[m[31m-            &acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(
+(B[m[31m-                acp::PermissionOptionId::new("allow-once")
+(B[m[31m-            )),
+(B[m[31m-            &options
+(B[m[31m-        )
+(B[m[31m-        .is_none()
+(B[m[31m-    );
+(B[m[31m-    assert!(
+(B[m[31m-        answer_from_permission_outcome(
+(B[m[31m-            &acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(
+(B[m[31m-                acp::PermissionOptionId::new("question-0")
+(B[m[31m-            )),
+(B[m[31m-            &options
+(B[m[31m-        )
+(B[m[31m-        .is_none()
+(B[m[31m-    );
+(B[m[32m+    assert!(answer_from_permission_outcome(
+(B[m[32m+        &acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(
+(B[m[32m+            acp::PermissionOptionId::new("allow-once")
+(B[m[32m+        )),
+(B[m[32m+        &options
+(B[m[32m+    )
+(B[m[32m+    .is_none());
+(B[m[32m+    assert!(answer_from_permission_outcome(
+(B[m[32m+        &acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(
+(B[m[32m+            acp::PermissionOptionId::new("question-0")
+(B[m[32m+        )),
+(B[m[32m+        &options
+(B[m[32m+    )
+(B[m[32m+    .is_none());
+(B[m     assert_eq!(
+         answer_from_permission_outcome(
+             &acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent_tests.rs:1758:
+ 
+ #[tokio::test]
+ async fn tui_turn_renders_every_pager_event() {
+[31m-    use a3s_code_core::TokenUsage;
+(B[m     use a3s_code_core::planning::{Complexity, ExecutionPlan, Task, TaskStatus};
+     use a3s_code_core::verification::VerificationSummary;
+[32m+    use a3s_code_core::TokenUsage;
+(B[m 
+     let root = std::env::temp_dir().join(format!("a3s-acp-events-{}", uuid::Uuid::new_v4()));
+     std::fs::create_dir_all(&root).expect("workspace");
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent_tests.rs:2136:
+     );
+     record(
+         "effort-high-budget",
+[31m-        effort_limits("high").is_some_and(|limits| {
+(B[m[31m-            limits.token == "high" && limits.thinking_budget == 16_384
+(B[m[31m-        }),
+(B[m[32m+        effort_limits("high")
+(B[m[32m+            .is_some_and(|limits| limits.token == "high" && limits.thinking_budget == 16_384),
+(B[m     );
+     record(
+         "effort-medium-no-guideline",
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent_tests.rs:2190:
+     let workspace = std::path::Path::new("/tmp/a3s-watch-skills-workspace");
+     let dirs = watched_skill_dirs(workspace);
+     assert!(dirs.iter().any(|dir| dir == &workspace.join("skills")));
+[31m-    assert!(
+(B[m[31m-        dirs.iter()
+(B[m[31m-            .any(|dir| dir == &workspace.join(".a3s").join("skills"))
+(B[m[31m-    );
+(B[m[32m+    assert!(dirs
+(B[m[32m+        .iter()
+(B[m[32m+        .any(|dir| dir == &workspace.join(".a3s").join("skills")));
+(B[m     let home = std::env::var_os("HOME").or_else(|| std::env::var_os("USERPROFILE"));
+     let Some(home) = home.filter(|value| !value.is_empty()) else {
+         return;
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent_tests.rs:2207:
+             personal.display()
+         );
+     }
+[31m-    assert!(
+(B[m[31m-        dirs.iter()
+(B[m[31m-            .all(|dir| !dir.components().any(|part| part.as_os_str() == ".grok"))
+(B[m[31m-    );
+(B[m[32m+    assert!(dirs
+(B[m[32m+        .iter()
+(B[m[32m+        .all(|dir| !dir.components().any(|part| part.as_os_str() == ".grok")));
+(B[m }
+ 
+ #[test]
+Diff in /Users/roylin/code/aster/crates/code/acp/src/host_context.rs:278:
+ 
+     #[test]
+     fn completion_attestation_requires_a_known_explicit_host_mode() {
+[31m-        assert!(
+(B[m[31m-            studio_host_from_meta(None)
+(B[m[31m-                .unwrap()
+(B[m[31m-                .completion_attestation
+(B[m[31m-                .is_none()
+(B[m[31m-        );
+(B[m[32m+        assert!(studio_host_from_meta(None)
+(B[m[32m+            .unwrap()
+(B[m[32m+            .completion_attestation
+(B[m[32m+            .is_none());
+(B[m         let parsed = meta(serde_json::json!({"a3sHost":{"completionAttestation":"disk_content"}}));
+         assert_eq!(
+             studio_host_from_meta(Some(&parsed))

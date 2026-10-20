@@ -598,7 +598,7 @@ impl A3sCodeAgent {
         }
     }
 
-    /// Set the host's initial budget; later session model selections still win.
+    /// Set the host's initial reasoning effort; later session model selections still win.
     pub fn with_default_reasoning_effort(mut self, token: &str) -> anyhow::Result<Self> {
         let effort = effort_limits(token)
             .ok_or_else(|| anyhow::anyhow!("unsupported reasoning effort: {token}"))?;
@@ -760,6 +760,17 @@ impl A3sCodeAgent {
         trust_path: Option<&std::path::Path>,
         embedding: Option<Arc<dyn a3s_code_core::EmbeddingProvider>>,
     ) -> acp::Result<SessionOptions> {
+        let max_tool_rounds = config.max_tool_rounds.unwrap_or(0);
+        let count_guideline = if max_tool_rounds == 0 {
+            "Tool calls have no count limit. Stop when the user's outcome is done.".to_owned()
+        } else {
+            format!("Tool execution count limit: tool_rounds={max_tool_rounds}. Stop when the user's outcome is done.")
+        };
+        let guidelines = slots.guidelines.get_or_insert_with(String::new);
+        if !guidelines.is_empty() {
+            guidelines.push('\n');
+        }
+        guidelines.push_str(&count_guideline);
         let (hook_executor, hook_count, pending_hooks) = match trust_path {
             Some(path) => discovered_command_hooks(&setup.workspace, hook_home, path),
             None => (None, 0, 0),
@@ -780,6 +791,7 @@ impl A3sCodeAgent {
         let guardrail = a3s_code_core::permissions::InteractiveToolGuardrail::default()
             .with_workspace(&setup.workspace);
         let mut options = options
+            .with_max_tool_rounds(max_tool_rounds)
             .with_prompt_slots(slots.clone())
             .with_verification_contracts(contracts)
             .with_permission_checker(Arc::new(guardrail))

@@ -10,7 +10,7 @@
 //! factories stay Rust-side (no second imperative loop, no Effect-TS embed).
 
 use a3s_effect::{
-    budget, coding_scheduler, compact, component, compose_coding_actor, system, tools,
+    coding_scheduler, compact, component, compose_coding_actor, optional_budget, system, tools,
     CodingServices, ErasedComponent, HarnessGraph, HarnessView, MetaHarnessSpec, ToolSpec,
 };
 
@@ -39,7 +39,8 @@ pub struct HarnessComposeOptions {
     /// [`Self::parts`]. Entries are stock names or `host:<id>`.
     pub components: Vec<String>,
     /// Actor step limit. Omitted keeps the session's derived default
-    /// (`max_tool_rounds * 4`, at least 32). Independent of [`Self::tool_budget`].
+    /// (`max_tool_rounds * 4`, at least 32), or no ceiling when the session has
+    /// no count limit. Independent of [`Self::tool_budget`].
     pub step_limit: Option<u32>,
     /// Provider attempts for one infer, including the first call. Omitted keeps
     /// 2. Zero is rejected when the harness config is built.
@@ -47,6 +48,8 @@ pub struct HarnessComposeOptions {
 }
 
 impl HarnessComposeOptions {
+    /// Legacy numeric recipe. Use `admit_from_compose` for unbounded sessions
+    /// so absent ceilings remain distinct from explicit zero allowances.
     pub fn to_spec(&self, tools: Vec<ToolSpec>, defaults: &HarnessConfig) -> MetaHarnessSpec {
         MetaHarnessSpec {
             name: "a3s-code",
@@ -295,7 +298,10 @@ fn admit_spec_with_config(
     spec: MetaHarnessSpec,
     config: HarnessConfig,
 ) -> (HarnessGraph, KernelPolicy) {
-    let graph = HarnessGraph::from_spec(spec, || coding_scheduler(config.clone()));
+    let graph =
+        HarnessGraph::from_spec_with_optional_budget(spec, config.tool_budget_limit(), || {
+            coding_scheduler(config.clone())
+        });
     (graph, KernelPolicy::default().admit())
 }
 
@@ -328,21 +334,28 @@ pub fn admit_from_compose_with_registry(
         return Ok(admit_default_graph(config));
     };
     let refs = options.resolved_components()?;
+    let tools = config.tools().to_vec();
+    let mut spec = options.to_spec(tools, &config);
+    let step_limit = options.step_limit.or(config.step_limit_option());
+    let tool_budget = options.tool_budget.or(config.tool_budget_limit());
+    // The legacy numeric recipe cannot encode None; restore the typed limit before admission.
+    spec.step_limit = step_limit.unwrap_or(1);
+    let spec_config = spec
+        .clone()
+        .into_config_over(&config)
+        .map_err(|error| anyhow::anyhow!(error))?
+        .with_tool_budget_limit(tool_budget)
+        .with_step_limit(step_limit)
+        .map_err(|error| anyhow::anyhow!(error))?;
     let needs_host = refs
         .iter()
         .any(|entry| matches!(entry, HarnessComponentRef::Host(_)));
     if !needs_host {
         // Stock-only path keeps MetaHarnessSpec / cause-key stability.
-        let tools = config.tools().to_vec();
-        let mut spec = options.to_spec(tools, &config);
         if !options.components.is_empty() {
             let (stock_parts, _) = partition_components(&refs);
             spec.parts = stock_parts;
         }
-        let spec_config = spec
-            .clone()
-            .into_config_over(&config)
-            .map_err(|error| anyhow::anyhow!(error))?;
         return Ok(admit_spec_with_config(spec, spec_config));
     }
     let registry = registry.ok_or_else(|| {
@@ -350,7 +363,7 @@ pub fn admit_from_compose_with_registry(
             "harness components include host:* mounts but no HostHarnessRegistry was installed"
         )
     })?;
-    admit_mixed_tree(options, refs, registry, config)
+    admit_mixed_tree(options, refs, registry, spec_config)
 }
 
 fn admit_mixed_tree(
@@ -365,7 +378,7 @@ fn admit_mixed_tree(
         options.system.clone()
     };
     let tool_specs = config.tools().to_vec();
-    let budget_limit = options.tool_budget.unwrap_or_else(|| config.budget());
+    let budget_limit = config.tool_budget_limit();
     let compact_after = options
         .compact_after_chars
         .unwrap_or_else(|| config.compact_after_chars());
@@ -380,7 +393,7 @@ fn admit_mixed_tree(
                 components.push(tools(tool_specs.clone()));
             }
             HarnessComponentRef::Stock(HarnessPartId::Budget) => {
-                components.push(budget(budget_limit));
+                components.push(optional_budget(budget_limit));
             }
             HarnessComponentRef::Stock(HarnessPartId::Compact) => {
                 components.push(compact(compact_after));
@@ -399,6 +412,7 @@ fn admit_mixed_tree(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use a3s_effect::budget;
 
     #[test]
     fn kernel_policy_cannot_disable_governance() {

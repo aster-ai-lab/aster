@@ -1,0 +1,88 @@
+
+FILTER zero_tool_rounds_preserves_repair_and_continuation_limits
+
+running 1 test
+test agent::execution_state::tests::zero_tool_rounds_preserves_repair_and_continuation_limits ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5226 filtered out; finished in 0.00s
+
+
+FILTER delegated_child_preserves_zero_round_inheritance_and_positive_overrides
+
+running 1 test
+test child_run::tests::delegated_child_preserves_zero_round_inheritance_and_positive_overrides ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5226 filtered out; finished in 0.00s
+
+
+FILTER zero_tool_rounds_child_continues_without_removing_independent_guards
+
+running 1 test
+test agent_api::conversation_runtime::child_run::tests::zero_tool_rounds_child_continues_without_removing_independent_guards ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5226 filtered out; finished in 0.13s
+
+
+FILTER task_tool_rejects_zero_max_steps_before_foreground_background_or_fanout_launch
+
+running 1 test
+test tools::task::tests::task_tool_rejects_zero_max_steps_before_foreground_background_or_fanout_launch ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5226 filtered out; finished in 0.00s
+
+
+FILTER test_task_params_max_steps_zero_is_rejected
+
+running 1 test
+test tools::task::tests::test_task_params_max_steps_zero_is_rejected ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5226 filtered out; finished in 0.00s
+
+
+FILTER task_positive_role_round_limit_survives_parent_default_alias
+
+running 1 test
+test tools::task::tests::task_positive_role_round_limit_survives_parent_default_alias ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5226 filtered out; finished in 0.00s
+
+
+FILTER task_role_round_tightening_preserves_absent_and_trusted_zero_roles
+
+running 1 test
+test tools::task::tests::task_role_round_tightening_preserves_absent_and_trusted_zero_roles ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5226 filtered out; finished in 0.00s
+
+
+FILTER standing_context::tests::
+
+running 11 tests
+test standing_context::tests::a_legacy_log_does_not_gain_a_synthetic_digest ... ok
+test standing_context::tests::a_malformed_standing_fact_fails_closed ... ok
+test standing_context::tests::a_new_tool_catalog_admits_again_when_the_files_stay ... ok
+test standing_context::tests::a_session_folder_log_still_admits_the_workspace ... ok
+test standing_context::tests::instructions_change_the_digest_and_the_fact_keeps_only_the_digest ... ok
+test standing_context::tests::live_surfaces_stay_admitted_while_instructions_fail_closed ... ok
+test standing_context::tests::optional_count_limits_keep_positive_digest_bytes_and_distinguish_zero_allowance ... FAILED
+test standing_context::tests::raw_log_read_append_cannot_supply_goal_writer_exclusion ... ok
+test standing_context::tests::supplied_file_log_survives_actual_reopen_with_original_admission_semantics ... ok
+test standing_context::tests::supplied_memory_log_is_used_without_opening_a_second_file_log ... ok
+test standing_context::tests::turn_end_extraction_and_skill_install_keep_the_next_turn_admitted ... ok
+
+failures:
+
+---- standing_context::tests::optional_count_limits_keep_positive_digest_bytes_and_distinguish_zero_allowance stdout ----
+
+thread 'standing_context::tests::optional_count_limits_keep_positive_digest_bytes_and_distinguish_zero_allowance' (50084130) panicked at crates/code/core/src/standing_context/tests.rs:231:5:
+assertion `left == right` failed
+  left: "sha256:f11c8ebbe658ffd048b65e3e25fa1de0daef780238c9ac283e56440b531ba4fe"
+ right: "sha256:73ee420a3ee82b6e1f47726c716c5c7404ddda61c312bd9cbed7377ce1e16d33"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    standing_context::tests::optional_count_limits_keep_positive_digest_bytes_and_distinguish_zero_allowance
+
+test result: FAILED. 10 passed; 1 failed; 0 ignored; 0 measured; 5216 filtered out; finished in 0.11s
+

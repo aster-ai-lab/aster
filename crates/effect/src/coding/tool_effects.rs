@@ -131,6 +131,15 @@ pub struct ToolEffectObservationV1 {
     pub reason: Option<String>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub unresolved_external_operations: Vec<String>,
+    /// The path list or its canonical JSON exceeded a known bound.
+    /// This is not an unreadable workspace. Callers must not book it as an
+    /// uncertain invocation.
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub budget_exceeded: bool,
+}
+
+fn is_false(value: &bool) -> bool {
+    !*value
 }
 
 impl ToolEffectObservationV1 {
@@ -140,6 +149,7 @@ impl ToolEffectObservationV1 {
             completeness: ToolObservationCompleteness::Complete,
             reason: None,
             unresolved_external_operations: Vec::new(),
+            budget_exceeded: false,
         }
     }
 
@@ -149,7 +159,31 @@ impl ToolEffectObservationV1 {
             completeness: ToolObservationCompleteness::Incomplete,
             reason: Some(reason.into()),
             unresolved_external_operations: Vec::new(),
+            budget_exceeded: false,
         }
+    }
+
+    /// The observation finished, and the path list does not fit the fact.
+    /// The changes are omitted rather than replaced by a prefix.
+    pub fn budget_exceeded() -> Self {
+        Self {
+            changes: Vec::new(),
+            completeness: ToolObservationCompleteness::Incomplete,
+            reason: Some(
+                "tool_effect_observation_incomplete: observation exceeded its path or byte budget"
+                    .into(),
+            ),
+            unresolved_external_operations: Vec::new(),
+            budget_exceeded: true,
+        }
+    }
+
+    pub fn exceeds_canonical_bound(&self) -> bool {
+        self.changes.len() > MAX_TOOL_EFFECT_PATHS
+            || self.unresolved_external_operations.len() > MAX_TOOL_EFFECT_PATHS
+            || serde_json::to_vec(self)
+                .map(|bytes| bytes.len() > MAX_TOOL_EFFECT_CANONICAL_BYTES)
+                .unwrap_or(true)
     }
 
     pub fn validate(&self) -> Result<(), ActorError> {

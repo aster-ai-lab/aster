@@ -1,0 +1,47 @@
+{
+  "at_utc": "2026-10-19T23:04:29.297562+00:00",
+  "files": [
+    {
+      "path": "crates/code/core/src/tools/task.rs",
+      "sha256": "314004ea067c7f1bb5e49700d5023aa6e478c5de6b57db6d97e50d65a15bdbfd"
+    },
+    {
+      "path": "crates/code/core/src/tools/task/tests.rs",
+      "sha256": "0c447bccaa560f3726334defd6bfcec75b51466cf707924bc44e6e7580da6c91"
+    }
+  ],
+  "checks": [
+    {
+      "name": "scoped-rustfmt-check",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2021",
+        "--config",
+        "skip_children=true",
+        "--check",
+        "crates/code/core/src/tools/task.rs",
+        "crates/code/core/src/tools/task/tests.rs"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.07470891700000001
+    },
+    {
+      "name": "owned-diff-check",
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "crates/code/core/src/tools/task.rs",
+        "crates/code/core/src/tools/task/tests.rs"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.016122417
+    }
+  ],
+  "cargo_or_tests_run": false,
+  "patch_sha256": "7dc290035dfec01c49593ea48beaafc3aa7b104c7b1daf88918589968a31cd4b",
+  "new_test_count": 2,
+  "previous_slice_kept": "../no-count-task-input/source-freeze.json"
+}

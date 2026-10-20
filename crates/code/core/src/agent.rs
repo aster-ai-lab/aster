@@ -182,6 +182,7 @@ pub(crate) struct AgentConfig {
     /// Immutable model-facing Tool presentation policy for this loop.
     /// Execution continues through the separately owned `ToolExecutor`.
     pub tool_presentation_profile: crate::tools::ToolPresentationProfileV1,
+    /// Tool execution ceiling; zero disables only the count ceiling.
     pub max_tool_rounds: usize,
     /// Optional security provider for input taint tracking and output sanitization
     pub security_provider: Option<Arc<dyn crate::security::SecurityProvider>>,

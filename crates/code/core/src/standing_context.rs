@@ -42,8 +42,8 @@ struct StandingMaterial<'a> {
     schema: &'static str,
     context: &'a str,
     tools: &'a [String],
-    tool_rounds: u32,
-    step_limit: u32,
+    tool_rounds: Option<u32>,
+    step_limit: Option<u32>,
     model_attempts: u32,
 }
 
@@ -75,8 +75,8 @@ pub(crate) fn admit(
     agent_system: Option<&str>,
     harness_system: &[String],
     tools: &[String],
-    tool_rounds: u32,
-    step_limit: u32,
+    tool_rounds: Option<u32>,
+    step_limit: Option<u32>,
     model_attempts: u32,
 ) -> Result<Option<AdmittedStanding>> {
     let projection = projection_text(workspace, agent_system, harness_system);
@@ -184,8 +184,8 @@ fn instructions_text(workspace: &Path) -> Option<String> {
 fn standing_digest(
     workspace: &Path,
     tools: &[String],
-    tool_rounds: u32,
-    step_limit: u32,
+    tool_rounds: Option<u32>,
+    step_limit: Option<u32>,
     model_attempts: u32,
 ) -> Result<(String, String)> {
     let mut tools = tools.to_vec();

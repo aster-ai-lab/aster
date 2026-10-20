@@ -1,0 +1,24 @@
+{
+  "fresh_passed": 686,
+  "fresh_ignored": 2,
+  "production_acp_matches_qualified_r5_source": [
+    "crates/code/acp/src/agent.rs",
+    "crates/code/acp/src/agent/models.rs",
+    "crates/code/acp/src/agent/session_open.rs"
+  ],
+  "extra_queued_acp_check": {
+    "status": "interrupted_while_waiting_for_shared_build_lock",
+    "test_assertions_run": 0,
+    "counted_as_pass": false
+  },
+  "not_repeated": [
+    "ACP seam",
+    "latest paired binary build",
+    "real Work 64-read fixture"
+  ],
+  "prior_qualification": "Existing R5 ACP tests, paired build and actual Work fixture retained; the two Work test source hashes match that frozen qualification. New budget settlement code is covered by fresh Effect and Core tests.",
+  "owned_check_processes_interrupted": [
+    24750,
+    53907
+  ]
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "filter": "no_count",
+    "exit": 0,
+    "seconds": 13.866048125000006,
+    "passed": 12
+  },
+  {
+    "filter": "standing_context::tests::",
+    "exit": 0,
+    "seconds": 0.0807084580000037,
+    "passed": 11
+  },
+  {
+    "filter": "agent_api::tests::persistence::test_resume_run",
+    "exit": 0,
+    "seconds": 0.07681720800000136,
+    "passed": 3
+  },
+  {
+    "filter": "fact_log_session_send_and_resume_use_the_stored_model_turn",
+    "exit": 0,
+    "seconds": 0.05746487500000086,
+    "passed": 1
+  },
+  {
+    "filter": "fact_log_resume_run_emits_turn_boundaries_for_the_continued_model_turn",
+    "exit": 0,
+    "seconds": 0.10601204099999961,
+    "passed": 1
+  },
+  {
+    "filter": "ordinary_log_and_checkpoint_resumes_admit_no_extraction_in_both_stores",
+    "exit": 0,
+    "seconds": 0.11517058300000116,
+    "passed": 1
+  }
+]

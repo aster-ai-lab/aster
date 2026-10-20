@@ -1,0 +1,42 @@
+{
+  "created_at_utc": "2026-10-19T23:23:41.404174+00:00",
+  "source": "/Users/roylin/code/aster/tests/T01",
+  "workspace": "/Users/roylin/code/aster/target/evaluations/T01-deepseek-flash-20261020-cua",
+  "input_hashes": {
+    "instruction.md": "0cd971564a0655ae78bdba0ed472b1255ce323db6a19feb6b26b6d4dcd67c22c",
+    "input/Africa_orders.csv": "7c0b74268c52b75a9dc0d892e343855775ff2d1bdfe6ea544d77e343699db5bc",
+    "input/Asia_Pacific_orders.csv": "8c9aaeae2e3f340247f5c0472a5912cbe6d0d74e5c88e0b1d5efab4b5bfb8d5b",
+    "input/Europe_orders.csv": "b132f6dc46fe5894818bf4a85243a122b508a64e0e76b06f8e0834556070fc02",
+    "input/LATAM_orders.csv": "546ca18eff9190355307c935f95016bb21f94a07f13ded07b8bf8f4115c62a36",
+    "input/USCA_orders.csv": "a0931573a257d766a122bdbb0ad9007fb49bdec18ca25931ec43a5852faa775c",
+    "input/adjustments.jsonl": "f6f9c1a604c8531efa63ebf90904a3a90b9f9cbefefdd17dd9254b67b6f654d8",
+    "input/policy.json": "471f6e3a27d29b432454deae7223f1927740bdc67a6cb885a55bc90c42ef17c5",
+    "input/priority_codebook.txt": "5033d8d25338cd67fd93c72e13b7b036cdaab9bc102325534d6de90e65548e2d",
+    "input/product_info.csv": "a508c5c50582a72e741bfed176be8a1dcdf3cbd8914391c57110585c1e5cf8a7",
+    "input/segment_performance.csv": "f20fce60c51dc2bdfef77f7bf0b25dee4107c6f4e31cdd8f5e79fa3d01cf1dd2",
+    "input/shipping_by_mode.csv": "1922a7d1f651bf42c1ab05275b364a6669d9dd08c6f6c2adf106982d031336eb"
+  },
+  "copied_input_matches": true,
+  "app": "/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/AsterDream-TaskOptimization-R5.app",
+  "app_bundle_id": "dev.a3s.studio.aster.task-optimization-r5",
+  "binaries": {
+    "AsterDream": {
+      "path": "/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/AsterDream-TaskOptimization-R5.app/Contents/MacOS/AsterDream",
+      "sha256": "bbacd753c0c4c8e3276ddc5929a8f41183cd6b812437062efc1b5ec1171340a8",
+      "bytes": 186744688
+    },
+    "a3s-code-acp": {
+      "path": "/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/AsterDream-TaskOptimization-R5.app/Contents/MacOS/a3s-code-acp",
+      "sha256": "87e1ce16cc44e4efa8ea6b0fdeb2572079c6fc48a89f4e1e4ce077a1474b1780",
+      "bytes": 323647008
+    },
+    "a3s-office": {
+      "path": "/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/AsterDream-TaskOptimization-R5.app/Contents/MacOS/a3s-office",
+      "sha256": "5a53babadcb754cf29aef635ee6c025183c47a3dc584e1dcc1cccf44b4c528cf",
+      "bytes": 136677152
+    }
+  },
+  "model_requested": "DeepSeek Flash",
+  "control": "CUA native app API; AX controls and window Raise; no pointer movement API",
+  "prompt": "请严格按照工作区中的 instruction.md 完成 T01 任务。先完整读取 instruction.md，再查看 input/ 的数据和政策。仅使用 Python 标准库编写单文件 pipeline.py，并实际运行 python3 pipeline.py --input input --output output，生成 output/results.json。不得修改任何输入文件；完成后说明运行结果并提供交付文件。"
+}

@@ -40,6 +40,7 @@ impl A3sCodeAgent {
             .with_assistant_final_response(true)
             .with_session_id(session_id.to_string())
             .with_model(model_id.to_string())
+            .with_max_tool_rounds(0)
             .with_auto_compact(true)
             .with_auto_compact_threshold(a3s_code_core::store::DEFAULT_AUTO_COMPACT_THRESHOLD);
         let mut guideline = String::new();
@@ -47,7 +48,6 @@ impl A3sCodeAgent {
             options = options
                 .with_reasoning_effort(limits.token)
                 .with_thinking_budget(limits.thinking_budget)
-                .with_max_tool_rounds(limits.max_tool_rounds)
                 .with_max_parallel_tasks(limits.max_parallel_tasks)
                 .with_max_continuation_turns(limits.max_continuation_turns);
             if limits.token == "ultracode" {
@@ -57,11 +57,9 @@ impl A3sCodeAgent {
                     .with_auto_parallel_delegation(true)
                     .with_manual_delegation_enabled(true);
             }
-            // The numbers are a safety ceiling. Native-effort models still
-            // receive them because the provider parameter does not carry a count.
             guideline = format!(
-                "These limits are a maximum, not a quota. thinking_budget={} tool_rounds={}. Stop when the user's outcome is done.",
-                limits.thinking_budget, limits.max_tool_rounds
+                "The thinking budget is a maximum, not a quota. thinking_budget={}. Stop when the user's outcome is done.",
+                limits.thinking_budget
             );
             if !a3s_code_core::llm::model_sends_native_effort(model_id) {
                 if let Some(extra) = effort_guideline(limits.token) {

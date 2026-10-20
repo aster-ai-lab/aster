@@ -1,0 +1,51 @@
+{
+  "at_utc": "2026-10-19T23:13:10.537010+00:00",
+  "files": [
+    {
+      "path": "crates/code/core/src/fact_control.rs",
+      "sha256": "c6012fcbe7b643230721cd2406e2f93c3ea46a235bf11fc24b1778c6b316972c"
+    },
+    {
+      "path": "crates/code/core/src/fact_control_tests.rs",
+      "sha256": "569f8570a587cfea34ade7a734ddf8ff5ac9f3d845c481f03589077130782081"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/conversation_runtime/owned_worker.rs",
+      "sha256": "2026510710ab97f9e677d96dd7fcac3165310b49f04adc4004344537721bdf15"
+    }
+  ],
+  "checks": [
+    {
+      "name": "scoped-rustfmt-check",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2021",
+        "--config",
+        "skip_children=true",
+        "--check",
+        "crates/code/core/src/fact_control.rs",
+        "crates/code/core/src/fact_control_tests.rs",
+        "crates/code/core/src/agent_api/conversation_runtime/owned_worker.rs"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.057472375000000006
+    },
+    {
+      "name": "owned-diff-check",
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "crates/code/core/src/fact_control.rs",
+        "crates/code/core/src/fact_control_tests.rs",
+        "crates/code/core/src/agent_api/conversation_runtime/owned_worker.rs"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.016178166999999993
+    }
+  ],
+  "cargo_or_tests_run": false,
+  "patch_sha256": "99d6bfa367bed163d58294b7e962a9f991e4080436393ce421f0b4d3bbd22697"
+}

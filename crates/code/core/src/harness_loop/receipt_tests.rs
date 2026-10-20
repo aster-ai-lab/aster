@@ -39,6 +39,29 @@ fn receipt(id: &str, path: &str, after: ToolFileIdentityV1) -> ToolExecutionResu
 }
 
 #[test]
+fn a_path_budget_does_not_freeze_and_a_missed_read_still_does() {
+    let mut ledger = MutationLedger::default();
+    let mut budget = receipt("wide", "changed.txt", file_identity(b"wide", 0o644));
+    budget.effects = ToolEffectObservationV1::budget_exceeded();
+    ledger.observe_tool_receipt("bash", &budget);
+    assert!(!ledger.has_uncertain_tool_invocations());
+    assert!(!ledger.observation_incomplete());
+    let mut same_words = MutationLedger::default();
+    let mut words = receipt("words", "changed.txt", file_identity(b"wide", 0o644));
+    words.effects = ToolEffectObservationV1::incomplete(
+        "tool_effect_observation_incomplete: observation exceeded its path or byte budget",
+    );
+    same_words.observe_tool_receipt("bash", &words);
+    assert!(same_words.has_uncertain_tool_invocations());
+    let mut unknown_ledger = MutationLedger::default();
+    let mut unknown = receipt("unknown", "changed.txt", file_identity(b"wide", 0o644));
+    unknown.outcome = ToolExecutionOutcome::Unknown;
+    unknown.effects = ToolEffectObservationV1::budget_exceeded();
+    unknown_ledger.observe_tool_receipt("bash", &unknown);
+    assert!(unknown_ledger.has_uncertain_tool_invocations());
+}
+
+#[test]
 fn repeated_batch_observation_keeps_a_real_file_verification_bound() {
     let root = tempfile::tempdir().unwrap();
     let file = root.path().join("changed.txt");

@@ -1,0 +1,142 @@
+--- a/crates/code/core/src/fact_control.rs
++++ b/crates/code/core/src/fact_control.rs
+@@ -10,9 +10,9 @@
+ 
+ use a3s_effect::{
+     answer_fact, confirm_fact, ingest_coding_with_optional_limit, message_fact,
+-    resume_coding_with_cancel, ActorError, CodingPhase, CodingServices, CodingView, Compactor,
+-    Completion, CompletionRequest, Exit, FileLog, HarnessConfig, HarnessGraph, LogStore,
+-    ModelDecision, NewFact, ToolCall, ToolRunner, ToolSpec,
++    resume_coding_with_cancel, resume_coding_with_optional_limit, ActorError, CodingPhase,
++    CodingServices, CodingView, Compactor, Completion, CompletionRequest, Exit, FileLog,
++    HarnessConfig, HarnessGraph, LogStore, ModelDecision, NewFact, ToolCall, ToolRunner, ToolSpec,
+ };
+ use anyhow::Result;
+ 
+@@ -1568,6 +1568,21 @@
+         self.user_text(text).await
+     }
+ 
++    /// Resume using the transition ceiling captured at admission.
++    pub async fn resume(&self) -> Result<a3s_effect::Settlement<CodingView>> {
++        let log = self.open_log()?;
++        resume_coding_with_optional_limit(
++            &self.actor,
++            log.as_ref(),
++            Arc::clone(&self.services),
++            &self.thread,
++            self.limit,
++            &self.cancel,
++        )
++        .await
++        .map_err(exit_to_error)
++    }
++
+     pub async fn resume_limit(&self, limit: u32) -> Result<a3s_effect::Settlement<CodingView>> {
+         let log = self.open_log()?;
+         resume_coding_with_cancel(
+--- a/crates/code/core/src/fact_control_tests.rs
++++ b/crates/code/core/src/fact_control_tests.rs
+@@ -191,6 +191,88 @@
+     assert_eq!(tools.load(Ordering::SeqCst), 0);
+     let facts = fact.read_facts().unwrap();
+     assert!(facts.iter().any(|fact| fact.kind == "model.turn"));
++}
++
++#[tokio::test]
++async fn fact_log_default_resume_retains_admitted_unbounded_and_explicit_step_limits() {
++    for step_limit in [None, Some(3)] {
++        let dir = tempfile::tempdir().unwrap();
++        let model_calls = Arc::new(AtomicUsize::new(0));
++        let tool_calls = Arc::new(AtomicUsize::new(0));
++        let mut decisions: Vec<_> = (0..20)
++            .map(|index| {
++                Ok(ModelDecision::Tool {
++                    call: ToolCall {
++                        id: format!("recovery-read-{index}"),
++                        name: "read".into(),
++                        args: serde_json::json!({"index": index}),
++                        needs_confirmation: false,
++                        text: None,
++                        reasoning: None,
++                    },
++                    also: Vec::new(),
++                })
++            })
++            .collect();
++        decisions.push(Ok(ModelDecision::Text {
++            text: "recovery completed".into(),
++        }));
++        let fact = FactRun::open(
++            dir.path(),
++            Arc::new(ScriptModel {
++                decisions: Mutex::new(decisions.into_iter().rev().collect()),
++                calls: Arc::clone(&model_calls),
++                tool_counts: Mutex::new(Vec::new()),
++                messages: Mutex::new(Vec::new()),
++            }),
++            Arc::new(ScriptTools {
++                calls: Arc::clone(&tool_calls),
++                fail_first: AtomicUsize::new(0),
++            }),
++            session_harness_config_with(
++                0,
++                usize::MAX,
++                vec![ToolSpec {
++                    name: "read".into(),
++                    description: "Controlled read".into(),
++                }],
++                step_limit,
++                Some(1),
++            )
++            .unwrap(),
++            "admitted-recovery-resume",
++        )
++        .unwrap();
++        fact.open_log()
++            .unwrap()
++            .append(
++                THREAD,
++                &[message_fact("start", "resume the controlled input")],
++                None,
++            )
++            .unwrap();
++        let result = fact.resume().await;
++        if step_limit.is_none() {
++            let settled = result.unwrap();
++            assert!(settled.steps > 32);
++            assert_eq!(
++                settled.view.assistant.as_deref(),
++                Some("recovery completed")
++            );
++            assert_eq!(model_calls.load(Ordering::SeqCst), 21);
++            assert_eq!(tool_calls.load(Ordering::SeqCst), 20);
++        } else {
++            let error = result
++                .err()
++                .expect("the explicit three-transition ceiling must remain active");
++            assert!(error
++                .to_string()
++                .contains("StepLimit: settled after 3 transitions"));
++            assert_eq!(tool_calls.load(Ordering::SeqCst), 1);
++        }
++        drop(fact);
++        dir.close().unwrap();
++    }
+ }
+ 
+ #[tokio::test]
+--- a/crates/code/core/src/agent_api/conversation_runtime/owned_worker.rs
++++ b/crates/code/core/src/agent_api/conversation_runtime/owned_worker.rs
+@@ -361,9 +361,9 @@
+                 }
+                 fact.seed_recovery_history(&seed, &prompt)?;
+             }
+-            fact.resume_limit(32).await
++            fact.resume().await
+         } else if checkpoint.is_some() {
+-            fact.resume_limit(32).await
++            fact.resume().await
+         } else {
+             if let Some(history) = history.as_deref() {
+                 fact.seed_history(history)?;

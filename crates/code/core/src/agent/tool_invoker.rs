@@ -704,6 +704,8 @@ impl ToolInvoker for ScopedToolInvoker {
                 None => crate::porcelain::PathDelta {
                     paths: vec![],
                     incomplete: !read_only,
+                    budget_exceeded: false,
+                    status_budget: false,
                 },
             };
             let effects = crate::porcelain::observe_path_effects(&ctx.workspace, delta);

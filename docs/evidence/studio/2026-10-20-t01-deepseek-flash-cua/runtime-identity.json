@@ -1,0 +1,16 @@
+{
+  "observed_at_utc": "2026-10-19T23:26:16.205488+00:00",
+  "host_pid": 88658,
+  "acp_pid": 88823,
+  "processes": "  PID  PPID STAT COMMAND\n88658     1 S    /Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/AsterDream-TaskOptimization-R5.app/Contents/MacOS/AsterDream\n88823 88658 S    /Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/AsterDream-TaskOptimization-R5.app/Contents/MacOS/a3s-code-acp --cwd /Users/roylin/code/aster/target/evaluations/T01-deepseek-flash-20261020-cua --model deepseek/deepseek-flash --config /Users/roylin/Library/Application Support/dev.a3s.studio/aster/agent-plane/runtime/01a1567c-5be8-7724-99c2-638cee0a066d.acl\n",
+  "core_effect_log": "/Users/roylin/code/aster/target/evaluations/T01-deepseek-flash-20261020-cua/.a3s/sessions/2026-10-20/0873d082-244c-467b-9bfc-1ba9ad096051/0873d082-244c-467b-9bfc-1ba9ad096051.jsonl",
+  "model_id": "deepseek/deepseek-flash",
+  "host_session_id": "01a1567c-5be8-7724-99c2-638cee0a066d",
+  "runtime_config_safe_lines": [
+    "default_model = \"deepseek/deepseek-flash\"",
+    "  base_url = \"https://api.deepseek.com\"",
+    "    enabled = true",
+    "    enabled = true",
+    "workspace_retrieval { enabled = false }"
+  ]
+}

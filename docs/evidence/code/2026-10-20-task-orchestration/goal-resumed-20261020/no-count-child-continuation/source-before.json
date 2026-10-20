@@ -1,0 +1,13 @@
+{
+  "at_utc": "2026-10-19T23:08:11.078689+00:00",
+  "files": [
+    {
+      "path": "crates/code/core/src/agent/tests/no_count_limit.rs",
+      "sha256": "37f501a98e782586ec8c15e97e207c62f9b2bf12a200f52d3ef29a8acee9557b"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/conversation_runtime/child_run.rs",
+      "sha256": "081b4b7f489071bec6b450f533ddbaa773cbd25143018f6cd5e10fcba6636970"
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "checked_at_utc": "2026-10-19T23:54:29.721121+00:00",
+  "objective_completed": true,
+  "assessment_completed": true,
+  "submission_passes_all_local_cases": false,
+  "local_score": "8/9",
+  "official_hidden_score": null,
+  "requirements": [
+    {
+      "requirement": "CUA 前台、不抢占鼠标",
+      "evidence": [
+        "cua-before-send.txt",
+        "cua-final.png",
+        "OUTCOME.md"
+      ],
+      "result": "Window Raise and AX controls/app-scoped key input; no coordinate or pointer movement action used; no separate named mode switch exposed by API"
+    },
+    {
+      "requirement": "启动 AsterDream",
+      "evidence": [
+        "runtime-identity.json",
+        "setup.json",
+        "additional-verification.json"
+      ],
+      "result": "R5 host/ACP/Office live identity recorded; binary hashes unchanged"
+    },
+    {
+      "requirement": "使用 DeepSeek Flash",
+      "evidence": [
+        "runtime-identity.json",
+        "runtime-final.json",
+        "cua-final.png"
+      ],
+      "result": "deepseek::deepseek-flash"
+    },
+    {
+      "requirement": "评测 ./tests/T01 全部要求",
+      "evidence": [
+        "setup.json",
+        "submission-evaluation.json",
+        "negative-zero-details.json",
+        "additional-verification.json",
+        "OUTCOME.md"
+      ],
+      "result": "Original input/instruction preserved; public output verified in full; all nine local cases assessed and failure disclosed; original single-file submission frozen unmodified"
+    }
+  ],
+  "host_still_done": true,
+  "report_links_exist": true,
+  "frozen_hashes_match": true,
+  "product_source_modified_by_this_evaluation": false,
+  "limitations": [
+    "Only local independent cases; no official hidden evaluator available",
+    "One model run; wall time includes 64 approvals and CUA control overhead",
+    "Core terminal narrative, not verified; independent oracle supplies correctness evidence"
+  ]
+}

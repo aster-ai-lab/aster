@@ -1,0 +1,72 @@
+{
+  "checked_source_files": 51,
+  "checks": [
+    {
+      "edition": "2021",
+      "files": [
+        "crates/code/acp/src/agent.rs",
+        "crates/code/acp/src/agent/approval_deadline_tests.rs",
+        "crates/code/core/src/agent/turn_context.rs",
+        "crates/code/core/src/agent/turn_context/execution_target_tests.rs",
+        "crates/code/core/src/agent/turn_context/tests.rs",
+        "crates/code/core/src/agent_api/conversation_runtime/owned_fact.rs",
+        "crates/code/core/src/agent_api/conversation_runtime/turn_outcome.rs",
+        "crates/code/core/src/agent_api/governance_facade.rs",
+        "crates/code/core/src/agent_api/tests/fact_log.rs",
+        "crates/code/core/src/agent_api/tests/fact_log/confirmation_snapshot.rs",
+        "crates/code/core/src/agent_api/tests/fact_log/execution_target.rs",
+        "crates/code/core/src/agent_api/tests/fact_log/revalidation.rs",
+        "crates/code/core/src/agent_api/tests/fact_log/work_policy.rs",
+        "crates/code/core/src/agent_api/tests/fact_log/work_policy/confirmation.rs",
+        "crates/code/core/src/fact_control/model_call.rs",
+        "crates/code/core/src/fact_control/receipts.rs",
+        "crates/code/core/src/porcelain.rs",
+        "crates/code/core/src/porcelain/receipt_tests.rs",
+        "crates/code/core/src/sandbox.rs",
+        "crates/code/core/src/sandbox/guest.rs",
+        "crates/code/core/src/sandbox/native.rs",
+        "crates/code/core/src/sandbox/oci.rs",
+        "crates/code/core/src/sandbox/process_host.rs",
+        "crates/code/core/src/tools/builtin/bash.rs",
+        "crates/code/core/src/tools/builtin/bash/windows_shell.rs",
+        "crates/code/core/src/workspace/local.rs",
+        "crates/code/core/src/workspace/manifest.rs",
+        "crates/code/core/src/workspace/mod.rs",
+        "crates/effect/src/coding.rs",
+        "crates/effect/src/coding/revalidation_tests.rs",
+        "crates/effect/tests/tool_effects.rs",
+        "crates/effect/tests/tool_effects/revalidation.rs",
+        "crates/oci-runtime/crates/sdk/src/attachment.rs",
+        "crates/oci-runtime/crates/sdk/src/attachment/tests.rs"
+      ],
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "edition": "2024",
+      "files": [
+        "apps/work/src-tauri/src/agent_plane/approval_recovery_tests.rs",
+        "apps/work/src-tauri/src/agent_plane/approval_response_tests.rs",
+        "apps/work/src-tauri/src/agent_plane/controllers.rs",
+        "apps/work/src-tauri/src/agent_plane/events.rs",
+        "apps/work/src-tauri/src/agent_plane/events_tests.rs",
+        "apps/work/src-tauri/src/agent_plane/execution_status_tests.rs",
+        "apps/work/src-tauri/src/agent_plane/local_acp_delivery_tests.rs",
+        "apps/work/src-tauri/src/agent_plane/local_acp_program_tests.rs",
+        "apps/work/src-tauri/src/agent_plane/local_acp_provider_tests.rs",
+        "apps/work/src-tauri/src/agent_plane/local_acp_sandbox_tests.rs",
+        "apps/work/src-tauri/src/agent_plane/local_acp_search_tests.rs",
+        "apps/work/src-tauri/src/agent_plane/message_delete_tests.rs",
+        "apps/work/src-tauri/src/agent_plane/scheduled_recovery_tests.rs",
+        "apps/work/src-tauri/src/agent_plane/turns.rs",
+        "apps/work/src-tauri/src/agent_plane/turns_form_tests.rs",
+        "apps/work/src-tauri/src/agent_plane/workbench_turns.rs",
+        "apps/work/src-tauri/src/agent_plane/workbench_turns_tests.rs"
+      ],
+      "exit_code": 0,
+      "output": ""
+    }
+  ],
+  "excluded_file": "crates/code/acp/src/agent_tests.rs",
+  "exclusion_reason": "Formatting-only differences in pre-existing spans recorded in workspace-fmt.log before approval fix; original full 52-file check retained, not passing. Existing file was not reformatted to hide workspace failures."
+}

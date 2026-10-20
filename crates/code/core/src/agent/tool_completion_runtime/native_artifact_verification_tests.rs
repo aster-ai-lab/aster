@@ -91,6 +91,8 @@ fn receipt(
             crate::porcelain::PathDelta {
                 paths: vec![path.into()],
                 incomplete: false,
+                budget_exceeded: false,
+                status_budget: false,
             },
         ),
     };

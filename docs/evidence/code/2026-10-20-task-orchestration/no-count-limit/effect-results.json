@@ -1,0 +1,31 @@
+[
+  {
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-effect",
+      "--test",
+      "unbounded_counts",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 10.354841333
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "a3s-effect",
+      "--lib"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 7.103790958000001
+  }
+]

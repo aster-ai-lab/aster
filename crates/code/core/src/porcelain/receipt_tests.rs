@@ -337,6 +337,8 @@ fn typed_path_observation_keeps_missing_unknown_and_contract_bounds_distinct() {
         PathDelta {
             paths: vec!["absent".into()],
             incomplete: false,
+            budget_exceeded: false,
+            status_budget: false,
         },
     );
     assert!(missing.validate().is_ok());
@@ -352,6 +354,8 @@ fn typed_path_observation_keeps_missing_unknown_and_contract_bounds_distinct() {
                 "/.a3s/outside".into(),
             ],
             incomplete: false,
+            budget_exceeded: false,
+            status_budget: false,
         },
     );
     assert!(unknown.validate().is_ok());
@@ -374,6 +378,8 @@ fn typed_path_observation_keeps_missing_unknown_and_contract_bounds_distinct() {
                 "nul\0path".into(),
             ],
             incomplete: false,
+            budget_exceeded: false,
+            status_budget: false,
         },
     );
     assert!(escaped_metadata.validate().is_ok());
@@ -387,6 +393,8 @@ fn typed_path_observation_keeps_missing_unknown_and_contract_bounds_distinct() {
         PathDelta {
             paths: vec!["x".repeat(OBSERVATION_PATH_BYTE_CAP + 1)],
             incomplete: false,
+            budget_exceeded: false,
+            status_budget: false,
         },
     );
     assert!(invalid.validate().is_ok());
@@ -402,6 +410,8 @@ fn typed_path_observation_keeps_missing_unknown_and_contract_bounds_distinct() {
                 .map(|index| format!("absent-{index}"))
                 .collect(),
             incomplete: false,
+            budget_exceeded: false,
+            status_budget: false,
         },
     );
     assert!(too_many.validate().is_ok());
@@ -409,23 +419,46 @@ fn typed_path_observation_keeps_missing_unknown_and_contract_bounds_distinct() {
         too_many.completeness,
         ToolObservationCompleteness::Incomplete
     );
-    assert_eq!(too_many.changes.len(), FILE_WALK_CAP);
+    assert!(too_many.budget_exceeded);
+    assert!(too_many.changes.is_empty());
+    // A leaf longer than NAME_MAX is ENAMETOOLONG, a failed read, and must
+    // not be settled as a byte budget. These leaves stay under that limit.
+    // The joined paths stay under the path cap and over the 1 MiB fact.
+    let leaf = "n".repeat(200);
+    let wide = observe_path_effects(
+        root.path(),
+        PathDelta {
+            paths: (0..700)
+                .map(|index| {
+                    format!("{index:04}/{leaf}/{leaf}/{leaf}/{leaf}/{leaf}/{leaf}/{leaf}/{leaf}")
+                })
+                .collect(),
+            incomplete: false,
+            budget_exceeded: false,
+            status_budget: false,
+        },
+    );
+    assert!(wide.validate().is_ok());
+    assert!(wide.budget_exceeded);
+    assert!(wide.changes.is_empty());
 }
 
 #[tokio::test]
 async fn git_output_stops_at_its_byte_bound_and_never_returns_a_prefix_as_success() {
     let exact = vec![b'x'; GIT_OUTPUT_BYTE_CAP as usize];
-    assert_eq!(
-        read_git_output(exact.as_slice()).await.unwrap().len(),
-        exact.len()
-    );
-    assert!(tokio::time::timeout(
-        Duration::from_secs(1),
-        read_git_output(tokio::io::repeat(b'x')),
-    )
-    .await
-    .unwrap()
-    .is_none());
+    match read_git_output(exact.as_slice()).await {
+        GitCapture::Bytes(bytes) => assert_eq!(bytes.len(), exact.len()),
+        other => panic!("exact output was {other:?}"),
+    }
+    assert!(matches!(
+        tokio::time::timeout(
+            Duration::from_secs(1),
+            read_git_output(tokio::io::repeat(b'x'))
+        )
+        .await
+        .unwrap(),
+        GitCapture::OverCap
+    ));
 }
 
 #[tokio::test]
@@ -440,7 +473,7 @@ async fn git_output_read_failure_cannot_become_an_empty_success() {
             std::task::Poll::Ready(Err(io::Error::other("injected git read failure")))
         }
     }
-    assert!(read_git_output(Fails).await.is_none());
+    assert!(matches!(read_git_output(Fails).await, GitCapture::Failed));
 }
 
 #[test]
@@ -448,24 +481,25 @@ fn git_parsers_bound_paths_and_do_not_accept_overflow_as_complete() {
     let within_stamp_cap = (0..=FILE_WALK_CAP)
         .map(|index| format!("?? f{index:04}\0"))
         .collect::<String>();
-    let (records, incomplete) = porcelain_records(within_stamp_cap.as_bytes());
+    let parsed = porcelain_records(within_stamp_cap.as_bytes());
     assert!(
-        !incomplete,
+        !parsed.budget && !parsed.rejected,
         "a status list past the stamp cap is still a complete read"
     );
-    assert_eq!(records.len(), FILE_WALK_CAP + 1);
+    assert_eq!(parsed.records.len(), FILE_WALK_CAP + 1);
     let exact = (0..STATUS_RECORD_CAP)
         .map(|index| format!("?? f{index:05}\0"))
         .collect::<String>();
-    let (records, incomplete) = porcelain_records(exact.as_bytes());
-    assert!(!incomplete);
-    assert_eq!(records.len(), STATUS_RECORD_CAP);
+    let parsed = porcelain_records(exact.as_bytes());
+    assert!(!parsed.budget && !parsed.rejected);
+    assert_eq!(parsed.records.len(), STATUS_RECORD_CAP);
     let status = (0..=STATUS_RECORD_CAP)
         .map(|index| format!("?? f{index:05}\0"))
         .collect::<String>();
-    let (records, incomplete) = porcelain_records(status.as_bytes());
-    assert!(incomplete);
-    assert_eq!(records.len(), STATUS_RECORD_CAP);
+    let parsed = porcelain_records(status.as_bytes());
+    assert!(parsed.budget);
+    assert!(!parsed.rejected);
+    assert_eq!(parsed.records.len(), STATUS_RECORD_CAP);
     let hidden = (0..=FILE_WALK_CAP)
         .map(|index| format!("S f{index:04}\0"))
         .collect::<String>();
@@ -473,9 +507,10 @@ fn git_parsers_bound_paths_and_do_not_accept_overflow_as_complete() {
     assert!(incomplete);
     assert_eq!(paths.len(), FILE_WALK_CAP);
     let oversized = "x".repeat(OBSERVATION_PATH_BYTE_CAP + 1);
-    let (records, incomplete) = porcelain_records(format!("?? {oversized}\0").as_bytes());
-    assert!(incomplete);
-    assert!(records.is_empty());
+    let parsed = porcelain_records(format!("?? {oversized}\0").as_bytes());
+    assert!(parsed.rejected);
+    assert!(!parsed.budget);
+    assert!(parsed.records.is_empty());
     let (paths, incomplete) = parse_hidden_index_paths(format!("S {oversized}\0").as_bytes());
     assert!(incomplete);
     assert!(paths.is_empty());
@@ -487,12 +522,13 @@ fn a_rename_cannot_cross_the_path_bound_and_malformed_status_cannot_panic() {
         .map(|index| format!("?? f{index:05}\0"))
         .collect::<String>();
     status.push_str("R  new\0old\0");
-    let (records, incomplete) = porcelain_records(status.as_bytes());
-    assert!(incomplete);
-    assert_eq!(records.len(), STATUS_RECORD_CAP - 1);
-    let (records, incomplete) = porcelain_records("说 x\0".as_bytes());
-    assert!(incomplete);
-    assert!(records.is_empty());
+    let parsed = porcelain_records(status.as_bytes());
+    assert!(parsed.budget);
+    assert!(!parsed.rejected);
+    assert_eq!(parsed.records.len(), STATUS_RECORD_CAP - 1);
+    let parsed = porcelain_records("说 x\0".as_bytes());
+    assert!(parsed.rejected);
+    assert!(parsed.records.is_empty());
     assert!(paths_of("说 x").is_none());
 }
 
@@ -535,9 +571,9 @@ async fn real_git_nul_names_are_exact_before_hashing_even_with_quotes_spaces_and
 
 #[test]
 fn nul_rename_fields_and_legacy_unicode_renames_keep_exact_paths_without_panicking() {
-    let (records, incomplete) = porcelain_records("R  新 -> 名\0\"老\"\0".as_bytes());
-    assert!(!incomplete);
-    let paths = porcelain_paths(&records).unwrap();
+    let parsed = porcelain_records("R  新 -> 名\0\"老\"\0".as_bytes());
+    assert!(!parsed.budget && !parsed.rejected);
+    let paths = porcelain_paths(&parsed.records).unwrap();
     assert_eq!(paths.len(), 2);
     assert!(paths.iter().any(|path| path == "新 -> 名"));
     assert!(paths.iter().any(|path| path == "\"老\""));
@@ -640,20 +676,91 @@ fn non_git_delta_sees_preserved_mtime_writes_and_keeps_all_forty_paths() {
 
 #[test]
 #[cfg(unix)]
+fn a_non_git_read_failure_stays_incomplete() {
+    let root = tempfile::tempdir().unwrap();
+    let before = FileIndex {
+        entries: Vec::new(),
+        incomplete: true,
+        budget: false,
+        content: None,
+    };
+    let observed = file_delta(root.path(), &before);
+    assert!(observed.incomplete);
+    assert!(!observed.budget_exceeded);
+    assert!(observed.paths.is_empty());
+    std::fs::write(root.path().join("kept.txt"), "x").unwrap();
+    std::fs::write(root.path().join("new.txt"), "y").unwrap();
+    let before = FileIndex {
+        entries: vec![NodeStamp {
+            path: "kept.txt".into(),
+            kind: 0,
+            dev: 1,
+            ino: 1,
+            mode: 0o100644,
+            len: 1,
+            modified: (1, 0),
+            changed: (1, 0),
+        }],
+        incomplete: true,
+        budget: false,
+        content: None,
+    };
+    let observed = file_delta(root.path(), &before);
+    assert!(observed.incomplete);
+    assert!(!observed.budget_exceeded);
+    assert!(
+        observed.paths.is_empty(),
+        "a failed directory read was diffed as a prefix: {:?}",
+        observed.paths
+    );
+}
+
+#[test]
+#[cfg(unix)]
 fn path_budget_exhaustion_is_explicit_and_cannot_become_an_empty_success() {
     let root = tempfile::tempdir().unwrap();
     for index in 0..=16 {
         File::create(root.path().join(format!("f{index:04}"))).unwrap();
     }
     let before = index_files_within(root.path(), 16);
-    assert!(before.incomplete);
+    assert!(before.budget);
+    assert!(!before.incomplete);
     assert_eq!(before.entries.len(), 16);
-    assert!(file_delta(root.path(), &before).incomplete);
+    let observed = file_delta(root.path(), &before);
+    assert!(observed.budget_exceeded);
+    assert!(!observed.incomplete);
+    assert!(observed.paths.is_empty());
     let watch = Watch {
         snapshot: snapshot_from_parts(None, None, Vec::new()),
         files: Some(before),
     };
-    assert_eq!(watch.receipt_baseline()["nongit"]["incomplete"], true);
+    assert_eq!(watch.receipt_baseline()["nongit"]["incomplete"], false);
+    assert_eq!(watch.receipt_baseline()["nongit"]["budget_exceeded"], true);
+    let effects = observe_path_effects(root.path(), observed);
+    assert!(effects.budget_exceeded);
+    assert_ne!(
+        effects.completeness,
+        a3s_effect::ToolObservationCompleteness::Complete
+    );
+}
+
+#[test]
+#[cfg(unix)]
+fn a_non_git_walk_past_the_node_cap_is_a_budget_with_no_prefix() {
+    let root = tempfile::tempdir().unwrap();
+    for index in 0..=NONGIT_WALK_CAP {
+        File::create(root.path().join(format!("n{index:06}"))).unwrap();
+    }
+    let before = index_files(root.path());
+    assert_eq!(NONGIT_WALK_CAP, 1 << 18);
+    assert!(before.budget);
+    assert!(!before.incomplete);
+    assert_eq!(before.entries.len(), NONGIT_WALK_CAP);
+    File::create(root.path().join("after.txt")).unwrap();
+    let observed = file_delta(root.path(), &before);
+    assert!(observed.budget_exceeded);
+    assert!(!observed.incomplete);
+    assert!(observed.paths.is_empty());
 }
 
 #[test]
@@ -687,6 +794,8 @@ fn total_byte_budget_is_shared_and_overflow_marks_the_changed_paths_incomplete()
         PathDelta {
             paths: names,
             incomplete: false,
+            budget_exceeded: false,
+            status_budget: false,
         },
         16,
     );
@@ -941,6 +1050,8 @@ fn a_changed_data_file_larger_than_a_baseline_budget_has_byte_identity() {
         PathDelta {
             paths: vec!["hour_00.json".into()],
             incomplete: false,
+            budget_exceeded: false,
+            status_budget: false,
         },
     );
     assert_eq!(
@@ -979,6 +1090,7 @@ fn a_large_status_list_is_a_digest_in_the_prepared_baseline() {
             stamps,
             stamps_incomplete: true,
             stamp_read_failed: false,
+            status_budget: false,
             git_worktree: true,
         },
         files: None,
@@ -1008,6 +1120,7 @@ fn a_large_status_list_is_a_digest_in_the_prepared_baseline() {
             stamps: Vec::new(),
             stamps_incomplete: true,
             stamp_read_failed: true,
+            status_budget: false,
             git_worktree: true,
         },
         files: None,
@@ -1017,4 +1130,5 @@ fn a_large_status_list_is_a_digest_in_the_prepared_baseline() {
     assert!(missed["git"]["status_count"].is_null());
     assert_eq!(missed["git"]["status_complete"], false);
     assert_eq!(missed["git"]["stamp_read_failed"], true);
+    assert_eq!(missed["git"]["status_budget"], false);
 }

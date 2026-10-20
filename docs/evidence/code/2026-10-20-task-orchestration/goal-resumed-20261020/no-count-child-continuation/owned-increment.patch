@@ -1,0 +1,125 @@
+--- a/crates/code/core/src/agent/tests/no_count_limit.rs
++++ b/crates/code/core/src/agent/tests/no_count_limit.rs
+@@ -196,15 +196,17 @@
+ #[tokio::test]
+ async fn zero_tool_rounds_retains_cancellation() {
+     let workspace = tempfile::tempdir().unwrap();
+-    let agent = AgentLoop::new(
+-        Arc::new(HangingCompactionLlmClient::new()),
++    let client = Arc::new(HangingCompactionLlmClient::new());
++    let owned_client = Arc::downgrade(&client);
++    let agent = AgentLoop::new(
++        client.clone(),
+         Arc::new(ToolExecutor::new(workspace.path().display().to_string())),
+         ToolContext::new(workspace.path().to_path_buf()),
+         loop_config(0),
+     );
+     let cancellation = tokio_util::sync::CancellationToken::new();
+     cancellation.cancel();
+-    let result = tokio::time::timeout(
++    let error = tokio::time::timeout(
+         std::time::Duration::from_secs(1),
+         agent.execute_with_session(
+             &[],
+@@ -216,13 +218,15 @@
+     )
+     .await
+     .expect("zero rounds must not disable cancellation")
+-    .unwrap();
+-    assert!(result.text.is_empty());
+-    assert_eq!(result.tool_calls_count, 0);
+-    assert!(result
+-        .messages
+-        .last()
+-        .unwrap()
+-        .text()
+-        .contains("interrupted"));
+-}
++    .expect_err("pre-cancel retains the existing error contract");
++    assert!(error.to_string().contains("Operation cancelled by user"));
++    assert!(cancellation.is_cancelled());
++    drop(error);
++    drop(agent);
++    drop(client);
++    assert!(
++        owned_client.upgrade().is_none(),
++        "cancelled owner released its provider"
++    );
++    workspace.close().unwrap();
++}
+--- a/crates/code/core/src/agent_api/conversation_runtime/child_run.rs
++++ b/crates/code/core/src/agent_api/conversation_runtime/child_run.rs
+@@ -113,7 +113,7 @@
+     let mut previous = incomplete_fingerprint(settled.view.assistant.as_deref().unwrap_or(""));
+     while crate::agent::AgentLoop::looks_incomplete(settled.view.assistant.as_deref().unwrap_or(""))
+     {
+-        if continuations >= max_continuations || model_turns >= max_rounds {
++        if continuations >= max_continuations || (max_rounds != 0 && model_turns >= max_rounds) {
+             return Ok(false);
+         }
+         continuations += 1;
+@@ -151,3 +151,64 @@
+         .any(|fact| fact.kind == "budget.denied")
+         .then_some(crate::harness_loop::ForcedStop::ToolBudget)
+ }
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++    use std::sync::atomic::Ordering;
++
++    #[tokio::test]
++    async fn zero_tool_rounds_child_continues_without_removing_independent_guards() {
++        let incomplete = "Let me inspect the code...";
++        for (rounds, continuations, repeated, expected_calls, expected_text) in [
++            (0, 1, false, 2, "Completed the controlled task."),
++            (0, 0, false, 1, incomplete),
++            (1, 1, false, 1, incomplete),
++            (
++                0,
++                2,
++                true,
++                2,
++                crate::agent::AgentLoop::no_progress_failure_text(),
++            ),
++        ] {
++            let workspace = tempfile::tempdir().unwrap();
++            let client = Arc::new(crate::agent::tests::MockLlmClient::new(vec![
++                crate::agent::tests::MockLlmClient::text_response(incomplete),
++                crate::agent::tests::MockLlmClient::text_response(if repeated {
++                    incomplete
++                } else {
++                    "Completed the controlled task."
++                }),
++            ]));
++            let run = ChildRun {
++                agent: crate::agent::AgentLoop::new(
++                    client.clone(),
++                    Arc::new(crate::tools::ToolExecutor::new(
++                        workspace.path().display().to_string(),
++                    )),
++                    crate::tools::ToolContext::new(workspace.path().to_path_buf()),
++                    crate::agent::AgentConfig {
++                        max_tool_rounds: rounds,
++                        continuation_enabled: true,
++                        max_continuation_turns: continuations,
++                        planning_mode: crate::PlanningMode::Disabled,
++                        auto_compact: false,
++                        ..Default::default()
++                    },
++                ),
++                child_id: "controlled-continuation".into(),
++                budget_session: None,
++                events: None,
++                cancel: tokio_util::sync::CancellationToken::new(),
++            };
++            let result = run.run("Complete the controlled task").await.unwrap();
++            assert_eq!(
++                result.text, expected_text,
++                "rounds={rounds}, continuations={continuations}, repeated={repeated}"
++            );
++            assert_eq!(client.call_count.load(Ordering::SeqCst), expected_calls);
++            workspace.close().unwrap();
++        }
++    }
++}

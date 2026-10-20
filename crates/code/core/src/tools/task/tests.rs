@@ -77,6 +77,52 @@ fn test_task_params_with_max_steps() {
 }
 
 #[test]
+fn task_positive_role_round_limit_survives_parent_default_alias() {
+    for (parent_rounds, role_rounds, expected) in [
+        (0, 50, 50),
+        (3, 50, 3),
+        (3_200, 50, 50),
+        (0, 3, 3),
+        (3, 3, 3),
+        (3_200, 3, 3),
+    ] {
+        let role =
+            AgentDefinition::new("worker", "Round-limited worker").with_max_steps(role_rounds);
+        let mut config = AgentConfig::default();
+        role.apply_to(&mut config);
+        let mut parent = redacting_parent_context();
+        parent.max_tool_rounds = Some(parent_rounds);
+        parent.apply_to(&mut config);
+        tighten_child_role_round_limit(&mut config, role.max_steps);
+        assert_eq!(
+            config.max_tool_rounds, expected,
+            "parent={parent_rounds}, role={role_rounds}"
+        );
+    }
+}
+
+#[test]
+fn task_role_round_tightening_preserves_absent_and_trusted_zero_roles() {
+    for parent_rounds in [None, Some(0), Some(3), Some(3_200)] {
+        for role_rounds in [None, Some(0)] {
+            let mut role = AgentDefinition::new("worker", "Trusted role");
+            role.max_steps = role_rounds;
+            let mut config = AgentConfig::default();
+            role.apply_to(&mut config);
+            let mut parent = redacting_parent_context();
+            parent.max_tool_rounds = parent_rounds;
+            parent.apply_to(&mut config);
+            let inherited = config.max_tool_rounds;
+            tighten_child_role_round_limit(&mut config, role.max_steps);
+            assert_eq!(
+                config.max_tool_rounds, inherited,
+                "parent={parent_rounds:?}, role={role_rounds:?}"
+            );
+        }
+    }
+}
+
+#[test]
 fn task_executor_prefers_run_scope_over_session_scope_for_admission() {
     let workspace = tempfile::tempdir().unwrap();
     let executor = Arc::new(TaskExecutor::new(
@@ -757,6 +803,7 @@ fn test_task_params_schema_properties() {
     assert_eq!(props["background"]["type"], "boolean");
     assert_eq!(props["background"]["default"], false);
     assert_eq!(props["max_steps"]["type"], "integer");
+    assert_eq!(props["max_steps"]["minimum"], 1);
     assert_eq!(props["output_schema"]["type"], "object");
 }
 
@@ -1128,6 +1175,7 @@ fn test_parallel_task_params_schema_items() {
     assert!(item_required.contains(&serde_json::json!("prompt")));
     assert!(items["properties"].get("background").is_none());
     assert_eq!(items["properties"]["max_steps"]["type"], "integer");
+    assert_eq!(items["properties"]["max_steps"]["minimum"], 1);
     assert_eq!(items["properties"]["output_schema"]["type"], "object");
 }
 
@@ -1224,8 +1272,7 @@ fn test_parallel_task_params_large_count() {
 }
 
 #[test]
-fn test_task_params_max_steps_zero() {
-    // max_steps = 0 is a valid edge case (callers decide enforcement)
+fn test_task_params_max_steps_zero_is_rejected() {
     let params = TaskParams {
         agent: "explore".to_string(),
         description: "Edge case".to_string(),
@@ -1235,8 +1282,75 @@ fn test_task_params_max_steps_zero() {
         output_schema: None,
     };
     let json = serde_json::to_string(&params).unwrap();
-    let deserialized: TaskParams = serde_json::from_str(&json).unwrap();
-    assert_eq!(deserialized.max_steps, Some(0));
+    let error = serde_json::from_str::<TaskParams>(&json).unwrap_err();
+    assert!(error.to_string().contains("max_steps must be at least 1"));
+}
+
+#[tokio::test]
+async fn task_tool_rejects_zero_max_steps_before_foreground_background_or_fanout_launch() {
+    let workspace = tempfile::tempdir().unwrap();
+    let calls = Arc::new(AtomicUsize::new(0));
+    let executor = Arc::new(TaskExecutor::new(
+        test_registry_with_text_worker(),
+        Arc::new(BlockingTaskClient {
+            started: Arc::new(Notify::new()),
+            calls: Arc::clone(&calls),
+        }),
+        workspace.path().to_string_lossy().to_string(),
+    ));
+    let task = TaskTool::new(Arc::clone(&executor));
+    let parallel = ParallelTaskTool::new(executor);
+    let (event_tx, mut events) = broadcast::channel(16);
+    let context = ToolContext::new(workspace.path().to_path_buf()).with_agent_event_tx(event_tx);
+    let item = |background| {
+        serde_json::json!({
+            "agent": "worker",
+            "description": "reject an unbounded model task",
+            "prompt": "must not start a child",
+            "background": background,
+            "max_steps": 0
+        })
+    };
+    let assert_rejected = |output: ToolOutput| {
+        assert!(!output.success, "{output:#?}");
+        assert!(output.content.contains("max_steps must be at least 1"));
+        assert!(matches!(
+            output.error_kind,
+            Some(crate::tools::ToolErrorKind::InvalidArgument { .. })
+        ));
+    };
+    for background in [false, true] {
+        for args in [
+            item(background),
+            serde_json::json!({"tasks": [item(background)]}),
+        ] {
+            let output =
+                tokio::time::timeout(Duration::from_secs(1), task.execute(&args, &context))
+                    .await
+                    .expect("zero must be rejected before any child can block")
+                    .unwrap();
+            assert_rejected(output);
+        }
+    }
+    let fanout = serde_json::json!({
+        "tasks": [item(false), {
+            "agent": "worker", "description": "valid sibling",
+            "prompt": "must not start if a sibling is invalid", "max_steps": 1
+        }]
+    });
+    for tool in [&task as &dyn Tool, &parallel as &dyn Tool] {
+        let output = tokio::time::timeout(Duration::from_secs(1), tool.execute(&fanout, &context))
+            .await
+            .expect("fanout validation must finish before child execution")
+            .unwrap();
+        assert_rejected(output);
+    }
+    tokio::task::yield_now().await;
+    assert_eq!(calls.load(Ordering::SeqCst), 0);
+    assert!(matches!(
+        events.try_recv(),
+        Err(broadcast::error::TryRecvError::Empty)
+    ));
 }
 
 #[test]
@@ -5283,7 +5397,8 @@ async fn parallel_task_tool_emits_terminal_event_for_aborted_child() {
                         "agent": "worker",
                         "description": "fast branch",
                         "prompt": "complete the fast branch",
-                        "max_steps": 0
+                        // This fixture tests a fast text reply, not a zero-step override.
+                        "max_steps": 1
                     },
                     {
                         "agent": "worker",

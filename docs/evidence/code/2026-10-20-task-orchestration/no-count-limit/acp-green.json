@@ -1,0 +1,16 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-code-acp",
+    "--lib",
+    "agent::tests::count_limits",
+    "--",
+    "--test-threads=1"
+  ],
+  "exit_code": 0,
+  "wall_seconds": 53.378110125
+}

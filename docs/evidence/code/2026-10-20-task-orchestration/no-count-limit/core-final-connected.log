@@ -1,0 +1,71 @@
+
+FILTER no_count
+
+running 12 tests
+test agent::tests::no_count_limit::positive_tool_rounds_still_stops_at_three ... ok
+test agent::tests::no_count_limit::zero_tool_rounds_executes_beyond_fifty_without_budget_finalization ... ok
+test agent::tests::no_count_limit::zero_tool_rounds_retains_cancellation ... ok
+test agent::tests::no_count_limit::zero_tool_rounds_retains_duplicate_finalization ... ok
+test agent::tests::no_count_limit::zero_tool_rounds_retains_one_reasoning_only_repair ... ok
+test agent::tests::no_count_limit::zero_tool_rounds_retains_provider_timeout ... ok
+test agent_api::tests::fact_log::no_count_limit::an_explicit_composed_zero_allowance_is_not_an_absent_ceiling ... ok
+test agent_api::tests::fact_log::no_count_limit::explicit_composed_positive_allowance_still_bounds_an_unlimited_session ... ok
+test agent_api::tests::fact_log::no_count_limit::explicit_no_count_limit_runs_beyond_fifty_and_completes_normally ... ok
+test agent_api::tests::fact_log::no_count_limit::explicit_positive_tool_count_still_refuses_the_next_call ... ok
+test agent_api::tests::fact_log::no_count_limit::stock_and_host_composition_preserve_an_absent_count_ceiling ... ok
+test fact_control::no_count_limit_tests::no_count_ceiling_removes_only_derived_tool_and_transition_limits ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 5216 filtered out; finished in 11.59s
+
+
+FILTER standing_context::tests::
+
+running 11 tests
+test standing_context::tests::a_legacy_log_does_not_gain_a_synthetic_digest ... ok
+test standing_context::tests::a_malformed_standing_fact_fails_closed ... ok
+test standing_context::tests::a_new_tool_catalog_admits_again_when_the_files_stay ... ok
+test standing_context::tests::a_session_folder_log_still_admits_the_workspace ... ok
+test standing_context::tests::instructions_change_the_digest_and_the_fact_keeps_only_the_digest ... ok
+test standing_context::tests::live_surfaces_stay_admitted_while_instructions_fail_closed ... ok
+test standing_context::tests::optional_count_limits_keep_positive_digest_bytes_and_distinguish_zero_allowance ... ok
+test standing_context::tests::raw_log_read_append_cannot_supply_goal_writer_exclusion ... ok
+test standing_context::tests::supplied_file_log_survives_actual_reopen_with_original_admission_semantics ... ok
+test standing_context::tests::supplied_memory_log_is_used_without_opening_a_second_file_log ... ok
+test standing_context::tests::turn_end_extraction_and_skill_install_keep_the_next_turn_admitted ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 5217 filtered out; finished in 0.07s
+
+
+FILTER agent_api::tests::persistence::test_resume_run
+
+running 3 tests
+test agent_api::tests::persistence::test_resume_run_picks_up_from_persisted_checkpoint ... ok
+test agent_api::tests::persistence::test_resume_run_preserves_exhausted_tool_budget_for_finalization ... ok
+test agent_api::tests::persistence::test_resume_run_rejects_checkpoint_owned_by_another_session ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 5225 filtered out; finished in 0.07s
+
+
+FILTER fact_log_session_send_and_resume_use_the_stored_model_turn
+
+running 1 test
+test agent_api::tests::fact_log::fact_log_session_send_and_resume_use_the_stored_model_turn ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5227 filtered out; finished in 0.05s
+
+
+FILTER fact_log_resume_run_emits_turn_boundaries_for_the_continued_model_turn
+
+running 1 test
+test agent_api::tests::fact_log::fact_log_resume_run_emits_turn_boundaries_for_the_continued_model_turn ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5227 filtered out; finished in 0.10s
+
+
+FILTER ordinary_log_and_checkpoint_resumes_admit_no_extraction_in_both_stores
+
+running 1 test
+test agent_api::conversation_runtime::memory_retention_tests::ordinary_log_and_checkpoint_resumes_admit_no_extraction_in_both_stores ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5227 filtered out; finished in 0.11s
+

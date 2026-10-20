@@ -1,0 +1,47 @@
+{
+  "schema": "aster.no-count-limit.effect-source-freeze.v1",
+  "at_utc": "2026-10-19T22:57:10.895627+00:00",
+  "files": [
+    {
+      "path": "crates/effect/src/actor.rs",
+      "bytes": 11018,
+      "sha256": "3674572f5fea2e3786160fd5b5858f5890aeb87e29ca40b320af478c7c90402c"
+    },
+    {
+      "path": "crates/effect/src/coding.rs",
+      "bytes": 87100,
+      "sha256": "e5848726cef25606c1bf22026400de6f9382d80eee7bcb81c552f5ba37cbe66e"
+    },
+    {
+      "path": "crates/effect/src/compose.rs",
+      "bytes": 16335,
+      "sha256": "9c7b42613d0445a1bb8047e0714736b5b0459d77dff30fad7cd6e0d02e0c7c6b"
+    },
+    {
+      "path": "crates/effect/src/lib.rs",
+      "bytes": 2454,
+      "sha256": "1237ac7455d0db336cdefab1915e14811e10a5cc25006d158d0d78dba7a14599"
+    },
+    {
+      "path": "crates/effect/tests/unbounded_counts.rs",
+      "bytes": 10968,
+      "sha256": "fe67b8e7a539325ab97ef969ce562f4b1f2ff5b3e4e8d1f0022be402177fc0a8"
+    }
+  ],
+  "new_tests": 7,
+  "cargo_run_by_this_agent": false,
+  "effect_behavioral_red_run": false,
+  "root_core_existing_api_red": "core-red.log",
+  "green_command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "a3s-effect",
+    "--test",
+    "unbounded_counts",
+    "--",
+    "--nocapture"
+  ]
+}

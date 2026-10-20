@@ -14,8 +14,9 @@ use serde_json::{json, Value};
 use tokio_util::sync::CancellationToken;
 
 use crate::actor::{
-    component, ingest_with_cancel, resume_with_cancel, Actor, ErasedComponent, PreparedTransition,
-    Settlement, Transition, TransitionProgram,
+    component, ingest_with_cancel, ingest_with_optional_limit, resume_with_cancel,
+    resume_with_optional_limit, Actor, ErasedComponent, PreparedTransition, Settlement, Transition,
+    TransitionProgram,
 };
 use crate::effect::{Effect, Schedule};
 use crate::error::ActorError;
@@ -206,13 +207,13 @@ pub struct CodingServices {
 /// model attempt count cannot construct a harness.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct HarnessConfig {
-    budget: u32,
+    budget: Option<u32>,
     compact_after_chars: usize,
-    step_limit: u32,
+    step_limit: Option<u32>,
     model_attempts: u32,
     system: Vec<String>,
     tools: Vec<ToolSpec>,
-    /// After this many successful tool results in the current turn, the next
+    /// After this many counted tool results in the current turn, the next
     /// completion request carries an empty tool list. `None` does not cap.
     tool_round_cap: Option<u32>,
     /// Compact when the previous model turn reported at least this many prompt
@@ -248,9 +249,9 @@ impl HarnessConfig {
             ));
         }
         Ok(Self {
-            budget,
+            budget: Some(budget),
             compact_after_chars,
-            step_limit,
+            step_limit: Some(step_limit),
             model_attempts,
             system,
             tools,
@@ -310,12 +311,54 @@ impl HarnessConfig {
         self
     }
 
-    pub fn step_limit(&self) -> u32 {
+    /// Set the actual tool allowance. `Some(0)` permits no tools; `None`
+    /// removes the allowance and the automatic tools-off count ceiling.
+    pub fn with_tool_budget_limit(mut self, limit: Option<u32>) -> Self {
+        self.budget = limit;
+        if limit.is_none() {
+            self.tool_round_cap = None;
+        }
+        self
+    }
+
+    /// Set the actual actor transition ceiling independently of tool count.
+    /// An explicit zero remains invalid; use `None` to remove this ceiling.
+    pub fn with_step_limit(mut self, limit: Option<u32>) -> Result<Self, ActorError> {
+        if limit == Some(0) {
+            return Err(ActorError::Config("step_limit must be at least 1".into()));
+        }
+        self.step_limit = limit;
+        Ok(self)
+    }
+
+    /// Remove only tool/transition count ceilings, retaining every other policy.
+    pub fn without_count_limits(mut self) -> Self {
+        self.budget = None;
+        self.step_limit = None;
+        self.tool_round_cap = None;
+        self
+    }
+
+    /// Actual tool allowance, including the distinction between zero and none.
+    pub fn tool_budget_limit(&self) -> Option<u32> {
+        self.budget
+    }
+
+    /// Actual actor transition ceiling. `None` is not a large numeric limit.
+    pub fn step_limit_option(&self) -> Option<u32> {
         self.step_limit
     }
 
+    /// Legacy numeric projection. No count ceiling projects to zero; consumers
+    /// that execute actors must use [`Self::step_limit_option`] to distinguish it.
+    pub fn step_limit(&self) -> u32 {
+        self.step_limit.unwrap_or(0)
+    }
+
+    /// Legacy numeric projection. Zero and no allowance both project to zero;
+    /// consumers must use [`Self::tool_budget_limit`] to distinguish them.
     pub fn budget(&self) -> u32 {
-        self.budget
+        self.budget.unwrap_or(0)
     }
 
     pub fn compact_after_chars(&self) -> usize {
@@ -718,7 +761,10 @@ fn on_model(mut state: SchedulerState, config: &HarnessConfig, payload: &Value) 
                 legacy_pending,
                 ..state
             };
-            if recorded.tool_runs >= config.budget {
+            if config
+                .budget
+                .is_some_and(|budget| recorded.tool_runs >= budget)
+            {
                 SchedulerState {
                     phase: CodingPhase::Deny,
                     pending_call: Some(first),
@@ -1109,7 +1155,7 @@ fn step(mut state: SchedulerState, fact: &Fact, config: &HarnessConfig) -> Sched
                 }
                 let counts = payload.count_run.unwrap_or(payload.ok);
                 let folded = SchedulerState {
-                    tool_runs: state.tool_runs + u32::from(counts),
+                    tool_runs: state.tool_runs.saturating_add(u32::from(counts)),
                     cycle: state.cycle + 1,
                     messages: {
                         let mut messages = state.messages.clone();
@@ -1737,7 +1783,12 @@ pub fn coding_actor(config: HarnessConfig) -> Actor<CodingServices, CodingView> 
         tool_round_cap: config.tool_round_cap(),
         parts: Vec::new(),
     };
-    crate::compose::HarnessGraph::from_spec(spec, || coding_scheduler(config.clone())).into_actor()
+    crate::compose::HarnessGraph::from_spec_with_optional_budget(
+        spec,
+        config.tool_budget_limit(),
+        || coding_scheduler(config.clone()),
+    )
+    .into_actor()
 }
 
 pub fn message_fact(key: impl Into<String>, text: impl Into<String>) -> NewFact {
@@ -1828,6 +1879,19 @@ pub async fn ingest_coding_with_cancel(
     ingest_with_cancel(actor, log, services, thread_id, fact, limit, cancel).await
 }
 
+/// Coding-specific entry point retaining an absent transition-count ceiling.
+pub async fn ingest_coding_with_optional_limit(
+    actor: &Actor<CodingServices, CodingView>,
+    log: &dyn crate::log::LogStore,
+    services: Arc<CodingServices>,
+    thread_id: &str,
+    fact: NewFact,
+    limit: Option<u32>,
+    cancel: &CancellationToken,
+) -> Result<Settlement<CodingView>, Exit<ActorError>> {
+    ingest_with_optional_limit(actor, log, services, thread_id, fact, limit, cancel).await
+}
+
 pub async fn resume_coding(
     actor: &Actor<CodingServices, CodingView>,
     log: &dyn crate::log::LogStore,
@@ -1855,6 +1919,18 @@ pub async fn resume_coding_with_cancel(
     cancel: &CancellationToken,
 ) -> Result<Settlement<CodingView>, Exit<ActorError>> {
     resume_with_cancel(actor, log, services, thread_id, limit, cancel).await
+}
+
+/// Resume the same coding actor with an optional transition-count ceiling.
+pub async fn resume_coding_with_optional_limit(
+    actor: &Actor<CodingServices, CodingView>,
+    log: &dyn crate::log::LogStore,
+    services: Arc<CodingServices>,
+    thread_id: &str,
+    limit: Option<u32>,
+    cancel: &CancellationToken,
+) -> Result<Settlement<CodingView>, Exit<ActorError>> {
+    resume_with_optional_limit(actor, log, services, thread_id, limit, cancel).await
 }
 
 #[cfg(test)]

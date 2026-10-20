@@ -1,0 +1,271 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/Cargo.toml
+    Blocking waiting for file lock on build directory
+   Compiling proc-macro2 v1.0.106
+   Compiling libc v0.2.186
+   Compiling quote v1.0.45
+   Compiling unicode-ident v1.0.24
+   Compiling typenum v1.19.0
+   Compiling rustix v1.1.5
+   Compiling version_check v0.9.5
+   Compiling io-lifetimes v3.0.1
+   Compiling bitflags v2.13.0
+   Compiling io-lifetimes v2.0.4
+   Compiling io-extras v0.19.0
+   Compiling serde_core v1.0.229
+   Compiling cap-primitives v4.0.3
+   Compiling ambient-authority v0.0.2
+   Compiling cap-std v4.0.2
+   Compiling zmij v1.0.19
+   Compiling ipnet v2.11.0
+   Compiling cfg-if v1.0.4
+   Compiling maybe-owned v0.3.4
+   Compiling pin-project-lite v0.2.16
+   Compiling serde v1.0.229
+   Compiling generic-array v0.14.7
+   Compiling cap-fs-ext v4.0.2
+   Compiling serde_json v1.0.154
+   Compiling futures-task v0.3.34
+   Compiling slab v0.4.11
+   Compiling getrandom v0.3.4
+   Compiling thiserror v2.0.20
+   Compiling futures-core v0.3.34
+   Compiling futures-sink v0.3.34
+   Compiling itoa v1.0.17
+   Compiling memchr v2.8.2
+   Compiling bytes v1.12.1
+   Compiling fastrand v2.3.0
+   Compiling once_cell v1.21.4
+   Compiling errno v0.3.14
+   Compiling cpufeatures v0.2.17
+   Compiling fs2 v0.4.3
+   Compiling syn v3.0.4
+   Compiling syn v2.0.117
+   Compiling block-buffer v0.10.4
+   Compiling crypto-common v0.1.6
+   Compiling digest v0.10.7
+   Compiling fs-set-times v0.20.3
+   Compiling tempfile v3.27.0
+   Compiling sha2 v0.10.9
+   Compiling futures-macro v0.3.34
+   Compiling thiserror-impl v2.0.20
+   Compiling serde_derive v1.0.229
+   Compiling tokio-macros v2.7.0
+   Compiling tokio v1.53.3
+   Compiling futures-util v0.3.34
+   Compiling tokio-util v0.7.19
+   Compiling a3s-effect v0.2.1 (/Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/crates/effect)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2m 44s
+     Running unittests src/lib.rs (/Users/roylin/code/aster/target/debug/deps/a3s_effect-c5d4025f742ccf9d)
+
+running 77 tests
+test coding::conversation_history_tests::compact_tail_keeps_one_adjacent_pair_and_drops_the_earlier_pair ... ok
+test coding::conversation_history_tests::compact_tail_keeps_a_short_result_run_together ... ok
+test coding::conversation_history_tests::compact_tail_keeps_a_closed_tool_batch_together ... ok
+test coding::conversation_history_tests::compact_tail_drops_a_closed_batch_that_exceeds_the_budget ... ok
+test coding::background_fold_tests::exited_and_stderr_events_render_dispositions ... ok
+test coding::background_fold_tests::malformed_background_fact_fails_the_fold ... ok
+test coding::conversation_history_tests::compact_tail_does_not_keep_a_record_with_another_calls_result ... ok
+test coding::conversation_history_tests::compaction_prefix_contains_the_actual_assistant_fact ... ok
+test coding::background_fold_tests::arrival_while_parked_lands_directly ... ok
+test coding::conversation_history_tests::model_question_survives_the_original_answer_fact ... ok
+test coding::background_fold_tests::arrival_during_model_call_waits_for_the_next_completed_step ... ok
+test coding::background_fold_tests::arrival_during_tool_batch_lands_after_its_result ... ok
+test coding::revalidation_tests::progress_requires_comparable_byte_or_object_identity ... ok
+test coding::conversation_history_tests::ordinary_assistant_reply_survives_the_next_user_turn ... ok
+test coding::revalidation_tests::compaction_translates_only_a_known_retained_suffix ... ok
+test coding::revalidation_tests::progress_waits_for_the_whole_model_tool_batch ... ok
+test coding::tool_effects::tests::a_budget_observation_validates_and_old_facts_default_the_flag ... ok
+test coding::tool_effects::tests::closed_sets_refuse_unknown_values_and_round_trip ... ok
+test coding::tool_effects::tests::complete_changes_require_byte_identity ... ok
+test coding::tool_effects::tests::typed_paths_refuse_workspace_escape_and_preserve_legal_spelling ... ok
+test coding::tool_effects::tests::wire_unknown_outcome_names_the_closed_set ... ok
+test coding::tool_effects::tests::version_identity_and_prepared_digest_are_required ... ok
+test coding::background_fold_tests::pending_cap_records_one_truncation_marker ... ok
+test coding::batch_overlap_tests::duplicate_call_twins_stay_parked_even_in_parallel_batches ... ok
+test compose::execution_tests::service_mapping_keeps_cancellation_and_original_trace ... ok
+test coding::batch_overlap_tests::parallel_batch_overlaps_or_fails_closed ... ok
+test compose::execution_tests::composed_inference_uses_ordered_current_fact_derived_system_ports ... ok
+test actor::tests::append_only_input_preserves_original_memory_log_without_dispatch ... ok
+test compose::tests::compose_meta_harness_builds ... ok
+test compose::tests::custom_compose_includes_host_component ... ok
+test compose::tests::namespace_prefixes_keys ... ok
+test compose::tests::spec_over_a_session_config_keeps_duplicate_guard_and_token_compaction ... ok
+test compose::tests::stock_spec_parts_include_budget_and_compact ... ok
+test log::fencing::tests::child_process_probe ... ignored, invoked by the bounded parent process test with an explicit temporary log
+test log::fencing::tests::invalid_owner_thread_does_not_create_an_escaped_lock ... ok
+test coding::tool_effects::tests::observation_bound_and_missing_reason_refuse_complete_claims ... ok
+test log::fencing::tests::a_replaced_writer_lock_refuses_the_old_handle_before_append ... ok
+test log::fencing::tests::a_child_parked_before_exec_does_not_extend_parent_fences ... ok
+test log::fencing::tests::releasing_fences_does_not_wait_for_an_inherited_file_description ... ok
+test log::fencing::tests::owner_fence_uses_original_thread_and_keeps_status_reads_available ... ok
+test log::fencing::tests::writer_fence_is_exact_reentrant_and_survives_until_the_last_borrow ... ok
+test log::security_tests::a_valid_final_line_without_a_newline_can_be_extended_and_reopened ... ok
+test log::security_tests::append_refuses_a_thread_symlink_without_changing_its_target ... ok
+test log::fencing::tests::writerless_fifo_lock_is_refused_without_waiting_for_a_writer ... ok
+test log::fencing::tests::nonempty_or_directory_lock_paths_refuse_without_touching_facts ... ok
+test log::security_tests::duplicate_keys_in_one_batch_refuse_atomically_on_both_stores ... ok
+test log::permission_tests::fact_log_state_is_owner_only ... ok
+test log::security_tests::duplicate_stored_keys_refuse_before_append_or_truncation ... ok
+test log::security_tests::exclusive_creation_refuses_an_existing_scratch_file ... ok
+test log::security_tests::fifo_is_refused_before_open_for_all_operations ... ok
+test log::security_tests::incomplete_tail_refuses_without_quarantine_or_rewrite ... ok
+test log::fencing::tests::linked_lock_paths_refuse_before_changing_the_external_file ... ok
+test log::security_tests::missing_fact_fields_refuse_a_whole_batch_on_both_stores ... ok
+test log::security_tests::non_contiguous_sequence_refuses_before_append_or_truncation ... ok
+test log::security_tests::from_directory_uses_the_supplied_capability_without_creating_state ... ok
+test actor::tests::append_only_input_preserves_reopened_file_log_without_dispatch ... ok
+test log::security_tests::exclusive_creation_refuses_a_planted_scratch_symlink ... ok
+test log::security_tests::hard_linked_thread_is_refused_without_changing_either_name ... ok
+test log::security_tests::open_refuses_a_symlinked_log_directory ... ok
+test log::security_tests::an_open_log_stays_bound_when_its_directory_path_is_replaced ... ok
+test log::security_tests::nofollow_gate_refuses_a_symlink_swapped_in_after_precheck ... ok
+test log::security_tests::replacing_a_validated_regular_file_refuses_the_pending_mutation ... ok
+test log::security_tests::read_refuses_a_thread_symlink ... ok
+test log::security_tests::truncate_refuses_a_thread_symlink_without_replacing_it ... ok
+test log::security_tests::opened_handle_gate_refuses_a_fifo_swapped_in_after_precheck ... ok
+test log::fencing::tests::real_child_process_observes_writer_owner_and_release_boundaries ... ok
+test log::tests::truncate_after_beyond_the_end_removes_nothing ... ok
+test log::tests::truncate_after_on_a_corrupt_line_leaves_the_log_untouched ... ok
+test log::tests::truncate_after_rejects_an_invalid_thread_id ... ok
+test log::tests::truncate_after_keeps_the_prefix_and_reports_the_removed_count ... ok
+test log::tests::truncate_after_at_the_same_cut_is_idempotent ... ok
+test log::security_tests::oversized_read_refuses_instead_of_loading_a_valid_large_record ... ok
+test log::security_tests::oversized_append_refuses_before_creating_a_log_file ... ok
+test coding::batch_overlap_tests::parallel_batch_fanout_wall_clock_is_recorded ... ok
+test log::security_tests::exact_byte_limit_is_readable_but_growth_is_refused_without_rewriting ... ok
+test log::fencing::tests::same_handle_concurrent_fence_turnover_never_contends_with_itself ... ok
+test log::security_tests::fact_count_limit_refuses_growth_and_an_over_limit_stored_log ... ok
+
+test result: ok. 76 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 1.49s
+
+     Running tests/cancellation.rs (/Users/roylin/code/aster/target/debug/deps/cancellation-972f96b064a54a5f)
+
+running 2 tests
+test an_unobserved_transition_still_refuses_to_start_once_cancelled ... ok
+test a_cancelled_model_turn_settles_with_the_interrupted_answer ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/effect_ops.rs (/Users/roylin/code/aster/target/debug/deps/effect_ops-69ea36771fa55642)
+
+running 15 tests
+test config_is_rejected_before_an_actor_exists ... ok
+test infer_schedule_runs_a_defect_once ... ok
+test retry_with_no_remaining_runs_once_and_leaves_interrupt ... ok
+test catch_fail_leaves_interrupt_unchanged ... ok
+test run_with_cancel_lets_the_waiting_future_observe_the_token ... ok
+test constructing_an_effect_does_not_run_it ... ok
+test zip_par_cancels_the_sibling_after_a_failure ... ok
+test with_span_records_fail_die_and_interrupt ... ok
+test map_and_and_then_transform_success_and_skip_other_exits ... ok
+test catch_fail_handles_expected_errors_and_lets_defects_through ... ok
+test provide_swaps_the_service_environment ... ok
+test race_returns_the_first_result_and_awaits_the_loser ... ok
+test retry_repeats_expected_failures_and_stops_on_defects ... ok
+test timeout_returns_interrupt_without_running_the_child_continuation ... ok
+test bracket_releases_on_success_failure_and_cancellation ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests/file_reopen.rs (/Users/roylin/code/aster/target/debug/deps/file_reopen-528c5924cfc77b79)
+
+running 6 tests
+test finished_text_turn_does_not_call_the_model_after_reopen ... ok
+test a_corrupt_jsonl_line_makes_resume_return_schema_without_appending ... ok
+test duplicate_fact_after_a_finished_turn_does_not_call_the_model ... ok
+test parked_question_keeps_allow_free_text_across_reopen ... ok
+test failed_tool_records_unknown_and_is_not_repeated_after_reopen ... ok
+test parked_confirmation_survives_reopen_and_then_runs_once ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running tests/harness.rs (/Users/roylin/code/aster/target/debug/deps/harness-57cf8eb96e5a8e91)
+
+running 18 tests
+test a_corrupt_log_line_is_a_schema_error ... ok
+test duplicate_transition_keys_fail_before_any_effect_runs ... ok
+test infer_fail_invokes_completion_model_attempts_times ... ok
+test a_text_turn_runs_once_and_resume_does_not_call_the_model_again ... ok
+test a_model_turn_that_is_not_a_decision_settles_done ... ok
+test compaction_runs_once_before_inference ... ok
+test replaying_an_ingress_key_does_not_run_the_model_twice ... ok
+test confirmation_parks_until_a_fact_and_denial_does_not_run_the_tool ... ok
+test a_question_stays_parked_with_allow_free_text_until_an_answer_fact ... ok
+test a_later_call_that_needs_confirmation_stays_parked ... ok
+test budget_stops_a_second_tool_without_running_it ... ok
+test denying_a_parked_call_keeps_the_later_call ... ok
+test an_approved_tool_runs_once_across_resume ... ok
+test a_failed_tool_records_unknown_and_resume_does_not_repeat_it ... ok
+test one_model_message_runs_every_tool_call ... ok
+test pressure_that_returns_within_a_turn_compacts_again_after_a_model_call ... ok
+test file_log_recovery_runs_a_protocol_one_unprepared_call_once ... ok
+test a_retryable_model_failure_waits_and_a_defect_does_not ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests/store_rules.rs (/Users/roylin/code/aster/target/debug/deps/store_rules-75a57423b98d888e)
+
+running 6 tests
+test harness_config_rejects_zero_model_attempts ... ok
+test resume_of_a_log_with_no_transition_returns_zero_steps ... ok
+test parse_fact_json_round_trips_and_rejects_bad_shapes ... ok
+test resume_step_limit_stops_before_the_next_fresh_key ... ok
+test cut_log_digest_changes_with_seq_type_key_cause_and_payload ... ok
+test identical_append_is_a_noop_and_changed_payload_is_duplicate ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/tool_effects.rs (/Users/roylin/code/aster/target/debug/deps/tool_effects-56adbb99b559c1ab)
+
+running 14 tests
+test unsettled_legacy_call_is_never_replayed_or_promoted_on_both_logs ... ok
+test prepared_only_is_unknown_without_execution_on_both_logs ... ok
+test namespaced_composition_keeps_preparation_and_the_deferred_effect_on_both_logs ... ok
+test late_cancel_preserves_known_effect_and_skips_unstarted_sibling_on_both_logs ... ok
+test malformed_sibling_receipt_cannot_discard_a_known_result_on_both_logs ... ok
+test unknown_receipt_version_is_never_downgraded_to_legacy_on_both_logs ... ok
+test effective_args_and_foreign_terminal_identity_are_checked_on_both_logs ... ok
+test identical_arguments_with_distinct_intents_execute_separately_on_both_logs ... ok
+test append_faults_do_not_start_or_repeat_effects_on_both_logs ... ok
+test partial_sequential_and_parallel_results_survive_on_both_logs ... ok
+test revalidation::unchanged_bytes_keep_the_identical_call_repeat_limit ... ok
+test committed_terminal_prefix_does_not_hide_prepared_siblings_on_both_logs ... ok
+test revalidation::actual_byte_change_allows_identical_revalidation_after_the_repeat_limit ... ok
+test revalidation::same_byte_rewrites_and_incomplete_changes_do_not_reset_the_repeat_limit ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.51s
+
+     Running tests/tool_round_cap.rs (/Users/roylin/code/aster/target/debug/deps/tool_round_cap-fe79d5a91463dc8c)
+
+running 1 test
+test tool_round_cap_completes_once_with_an_empty_tool_list ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/unbounded_counts.rs (/Users/roylin/code/aster/target/debug/deps/unbounded_counts-6e9cad0e98cfe61f)
+
+running 7 tests
+test optional_count_limits_preserve_zero_allowance_and_reject_zero_steps ... ok
+test explicit_step_limit_still_blocks_preparation_without_a_tool_allowance ... ok
+test old_and_optional_zero_step_entry_points_remain_nonexecuting_peeks ... ok
+test explicit_tool_allowances_keep_zero_and_positive_denials_with_unbounded_steps ... ok
+test no_count_limits_still_settle_cancellation_after_sixty_four_tools ... ok
+test numeric_meta_recipes_keep_their_bound_and_optional_graphs_keep_none ... ok
+test no_count_limits_pass_fifty_tools_and_two_hundred_transitions ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.58s
+
+   Doc-tests a3s_effect
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

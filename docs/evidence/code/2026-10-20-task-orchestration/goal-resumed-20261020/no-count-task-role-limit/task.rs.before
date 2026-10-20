@@ -1,0 +1,1920 @@
+//! Task tools for delegated child runs.
+//!
+//! The Task tool allows the main agent to delegate one or more specialized
+//! tasks to focused child runs. Each child run gets bounded context and the
+//! permissions declared by its agent definition.
+//!
+//! ## Usage
+//!
+//! ```json
+//! {"tasks": [{
+//!   "agent": "explore",
+//!   "description": "Find authentication code",
+//!   "prompt": "Search for files related to user authentication..."
+//! }]}
+//! ```
+
+use crate::agent::{AgentConfig, AgentEvent, AgentLoop};
+use crate::llm::structured::{
+    generate_blocking_with_cancellation, parse_validated_output, StructuredMode, StructuredRequest,
+};
+use crate::llm::{LlmClient, ToolDefinition};
+use crate::mcp::{McpBinding, McpManager};
+use crate::orchestration::{AgentExecutor, AgentStepSpec, StepOutcome, ToolSourceAnchor};
+use crate::subagent::{AgentDefinition, AgentRegistry};
+use crate::tools::types::{Tool, ToolContext, ToolOutput};
+use anyhow::{Context, Result};
+use async_trait::async_trait;
+use futures::FutureExt;
+use serde::{Deserialize, Serialize};
+use std::any::Any;
+use std::collections::HashSet;
+use std::panic::AssertUnwindSafe;
+use std::path::PathBuf;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::{Arc, Mutex, MutexGuard};
+use tokio::sync::broadcast;
+use tokio::task::JoinSet;
+use tokio_util::sync::CancellationToken;
+
+// Test-only force switches. Always compiled so `--no-cfg-coverage` does not
+// leave dead `#[cfg(not(test))]` stubs diluting line coverage; production
+// never flips these atomics.
+static TEST_FORCE_IDENTITY_DERIVE_FAILURE: AtomicBool = AtomicBool::new(false);
+static TEST_FORCE_EMPTY_SCHEDULER_QUOTAS: AtomicBool = AtomicBool::new(false);
+static TEST_FORCE_EVENT_BRIDGE_JOIN_FAILURE: AtomicBool = AtomicBool::new(false);
+static TEST_FORCE_BACKGROUND_SPAWN_FAILURE: AtomicBool = AtomicBool::new(false);
+
+const TASK_OUTPUT_CONTEXT_LIMIT: usize = 4_000;
+const TASK_OUTPUT_CONTEXT_HEAD: usize = 3_000;
+const TASK_OUTPUT_CONTEXT_TAIL: usize = 800;
+const MAX_TASK_SOURCE_ANCHORS: usize = 64;
+const MAX_TASK_SOURCE_CANDIDATES: usize = MAX_TASK_SOURCE_ANCHORS * 4;
+const MAX_TASK_SOURCE_TOOL_BYTES: usize = 64;
+const MAX_TASK_SOURCE_VALUE_BYTES: usize = 4 * 1024;
+const MAX_PARALLEL_TASK_SOURCE_ANCHORS: usize = MAX_TASK_SOURCE_ANCHORS;
+const TASK_TOOL_DESCRIPTION: &str = "Delegate one or more bounded tasks to specialized child runs. Pass one item for a focused child run or multiple INDEPENDENT items for concurrent fan-out. A single item may run in the background; multi-item calls are collected by the parent. By default any failed child makes a multi-item call fail; evidence-gathering callers may set allow_partial_failure=true. Choose canonical worker names from the live agent catalog. Custom agents from agent_dirs and .a3s/agents are supported; .claude/agents is read for compatibility.";
+
+/// Task tool parameters
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct TaskParams {
+    /// Agent type to use (explore, general, plan, verification, review, etc.)
+    pub agent: String,
+    /// Short description of the task (for display)
+    pub description: String,
+    /// Detailed prompt for the agent
+    pub prompt: String,
+    /// Optional: run in background (default: false)
+    #[serde(default)]
+    pub background: bool,
+    /// Optional: positive maximum steps for this task.
+    #[serde(
+        default,
+        deserialize_with = "deserialize_task_max_steps",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub max_steps: Option<usize>,
+    /// Optional: JSON schema the child result must satisfy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub output_schema: Option<serde_json::Value>,
+}
+
+fn deserialize_task_max_steps<'de, D>(deserializer: D) -> Result<Option<usize>, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    let steps = Option::<usize>::deserialize(deserializer)?;
+    if steps == Some(0) {
+        return Err(serde::de::Error::custom("max_steps must be at least 1"));
+    }
+    Ok(steps)
+}
+
+/// Task tool result
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TaskResult {
+    /// Task output from the delegated child run.
+    pub output: String,
+    /// Child session ID
+    pub session_id: String,
+    /// Agent type used
+    pub agent: String,
+    /// Whether the task succeeded
+    pub success: bool,
+    /// Task ID for tracking
+    pub task_id: String,
+    /// Structured child output validated against an optional output schema.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub structured: Option<serde_json::Value>,
+    /// Source locations observed by successful built-in child tool calls.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub source_anchors: Vec<ToolSourceAnchor>,
+    /// Child completion terminal. Narrative is omitted so a read-only task
+    /// does not look like a bound closure.
+    #[serde(
+        default,
+        skip_serializing_if = "crate::harness_loop::CompletionTerminal::is_narrative"
+    )]
+    pub completion: crate::harness_loop::CompletionTerminal,
+}
+
+struct ScopedTaskExecution<'a> {
+    event_tx: Option<broadcast::Sender<AgentEvent>>,
+    parent_session_id: Option<&'a str>,
+    emit_start: bool,
+    parent_cancellation: Option<&'a CancellationToken>,
+    admitted_capability_subtask: Option<crate::capability::AgentCapabilitySubtask>,
+    parallel_lifecycle: Option<Arc<ParallelTaskLifecycle>>,
+}
+
+/// Coordinates terminal lifecycle events for one bounded parallel fan-out.
+///
+/// A child normally emits its own `SubagentEnd`, but an outer `JoinSet` may
+/// have to abort a child that is stuck in a non-cooperative provider or
+/// subprocess. The fan-out then emits a synthetic terminal event. Keeping
+/// this state separate from the public task tracker lets the natural and
+/// synthetic paths race safely while still guaranteeing exactly one end event
+/// for every emitted start event.
+#[derive(Default)]
+pub(super) struct ParallelTaskLifecycle {
+    state: Mutex<ParallelTaskLifecycleState>,
+}
+
+#[derive(Default)]
+struct ParallelTaskLifecycleState {
+    started: HashSet<String>,
+    ended: HashSet<String>,
+}
+
+impl ParallelTaskLifecycle {
+    fn lock_state(&self) -> MutexGuard<'_, ParallelTaskLifecycleState> {
+        match self.state.lock() {
+            Ok(guard) => guard,
+            // A poisoned lifecycle state still contains the authoritative
+            // event history. Recover it instead of turning cancellation
+            // cleanup into a process panic.
+            Err(poisoned) => poisoned.into_inner(),
+        }
+    }
+
+    /// Record that the start event has been written to the tracker/stream.
+    /// This method deliberately has no await point: once a start is observable
+    /// the enclosing task cannot be aborted between the write and this mark.
+    fn mark_started(&self, task_id: &str) {
+        self.lock_state().started.insert(task_id.to_string());
+    }
+
+    fn is_started(&self, task_id: &str) -> bool {
+        self.lock_state().started.contains(task_id)
+    }
+
+    /// Mark a started task as terminal after its terminal event has been
+    /// written. The parallel fan-out drains every child join before synthetic
+    /// cleanup, so natural and synthetic terminal emitters cannot overlap.
+    fn mark_ended(&self, task_id: &str) {
+        let mut state = self.lock_state();
+        if state.started.contains(task_id) {
+            state.ended.insert(task_id.to_string());
+        }
+    }
+
+    fn is_ended(&self, task_id: &str) -> bool {
+        self.lock_state().ended.contains(task_id)
+    }
+
+    #[cfg(test)]
+    pub(super) fn poison_for_test(&self) {
+        let _ = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            let _guard = self.state.lock().expect("lifecycle lock");
+            panic!("intentional parallel task lifecycle poison");
+        }));
+    }
+}
+
+mod result_projection;
+use result_projection::*;
+
+mod parallel_execution;
+
+const MAX_PARALLEL_TASKS_PER_CALL: usize = 32;
+
+fn provider_quota_for_client(
+    client: &dyn LlmClient,
+) -> Option<crate::task_scheduler::TaskSchedulerQuota> {
+    let pool = client.model_generation_pool()?;
+    crate::task_scheduler::TaskSchedulerQuota::new(
+        pool.identity.clone(),
+        pool.max_concurrency().get(),
+    )
+    .ok()
+}
+
+/// Task executor for delegated child runs.
+#[derive(Clone)]
+pub struct TaskExecutor {
+    /// Agent registry for looking up agent definitions
+    registry: Arc<AgentRegistry>,
+    /// LLM client used to power child agent loops
+    llm_client: Arc<dyn LlmClient>,
+    /// Workspace path shared with child agents
+    workspace: String,
+    /// Ordered MCP managers for registering inherited tools in child sessions.
+    mcp_managers: Vec<Arc<McpManager>>,
+    /// Exact projected MCP bindings inherited from the admitted parent Run.
+    mcp_bindings: Vec<Arc<McpBinding>>,
+    /// Optional Tool presentation profile forced onto delegated children.
+    /// Tests use Direct so Adaptive selection cannot hide manager-injected
+    /// MCP tools and mask OPT-MCP1 regressions.
+    child_tool_presentation: Option<crate::tools::ToolPresentationProfileV1>,
+    /// Exact host tools owned by this executor. They are installed only in
+    /// child executors and remain bounded by the composed parent/child
+    /// governance context.
+    scoped_tools: Vec<Arc<dyn Tool>>,
+    /// Parent capabilities to inherit into child runs.
+    parent_context: Option<crate::child_run::ChildRunContext>,
+    /// Search configuration captured from the invoking parent context.
+    search_config: Option<Arc<crate::config::SearchConfig>>,
+    /// Agent-scoped search admission shared with delegated child runs.
+    search_bulkhead: Option<a3s_search::Bulkhead>,
+    /// Agent-scoped headless retry allowance shared with delegated child runs.
+    search_retry_budget: Option<a3s_search::retry::RetryBudget>,
+    /// Parent-session request flights shared with delegated child runs.
+    search_request_coalescer: Option<a3s_search::SearchCoalescer>,
+    /// Weak capability parents captured from the invoking Tool Turn.
+    capability_context: Option<crate::capability::AgentToolCapabilityContext>,
+    /// Optional lifetime boundary inherited from the session that created this
+    /// executor. Keeping it on the executor prevents cached workflow/executor
+    /// handles from starting new child runs after their session is closed.
+    parent_cancellation: Option<CancellationToken>,
+    max_parallel_tasks: usize,
+    /// Shared across every fan-out started by this executor. Per-call wave
+    /// limits alone are insufficient when a dynamic workflow launches several
+    /// `parallel_task` host steps concurrently.
+    parallel_permits: Arc<tokio::sync::Semaphore>,
+    /// Optional shared tracker — when present each task registers a
+    /// `CancellationToken` so callers can cancel by `task_id`.
+    subagent_tracker: Option<Arc<crate::subagent_task_tracker::InMemorySubagentTaskTracker>>,
+    /// Agent-wide scheduler for independent delegated work.
+    task_scheduler: Option<Arc<crate::task_scheduler::TaskScheduler>>,
+    /// Host-started workflow executors have no parent lease, so their
+    /// foreground steps must be admitted independently. Model-invoked task
+    /// tools inherit the enclosing run's lease and leave this false.
+    schedule_foreground: bool,
+    /// Transient run/host scope used to derive the owner quota. Only the
+    /// digest-derived identity crosses into the scheduler actor.
+    admission_scope: Option<String>,
+    /// Provider/model capacity projected into the same scheduler actor as
+    /// owner admission. This is metadata only; the scheduler remains the
+    /// single live reservation authority.
+    provider_quota: Option<crate::task_scheduler::TaskSchedulerQuota>,
+    /// Shared provider admission for foreground child runs. Background runs
+    /// already hold `provider_quota` on their outer scheduler lease and use a
+    /// local child gate to avoid recursively reserving that same dimension.
+    provider_admission: Option<crate::llm::ModelGenerationAdmission>,
+}
+
+impl TaskExecutor {
+    /// Create a new task executor
+    pub fn new(
+        registry: Arc<AgentRegistry>,
+        llm_client: Arc<dyn LlmClient>,
+        workspace: String,
+    ) -> Self {
+        let provider_quota = provider_quota_for_client(llm_client.as_ref());
+        Self {
+            registry,
+            llm_client,
+            workspace,
+            mcp_managers: Vec::new(),
+            mcp_bindings: Vec::new(),
+            child_tool_presentation: None,
+            scoped_tools: Vec::new(),
+            parent_context: None,
+            search_config: None,
+            search_bulkhead: None,
+            search_retry_budget: None,
+            search_request_coalescer: None,
+            capability_context: None,
+            parent_cancellation: None,
+            max_parallel_tasks: crate::agent::DEFAULT_MAX_PARALLEL_TASKS,
+            parallel_permits: Arc::new(tokio::sync::Semaphore::new(
+                crate::agent::DEFAULT_MAX_PARALLEL_TASKS,
+            )),
+            subagent_tracker: None,
+            task_scheduler: None,
+            schedule_foreground: false,
+            admission_scope: None,
+            provider_quota,
+            provider_admission: None,
+        }
+    }
+
+    /// Create a new task executor with MCP manager for tool inheritance
+    pub fn with_mcp(
+        registry: Arc<AgentRegistry>,
+        llm_client: Arc<dyn LlmClient>,
+        workspace: String,
+        mcp_manager: Arc<McpManager>,
+    ) -> Self {
+        Self::with_mcp_managers(registry, llm_client, workspace, vec![mcp_manager])
+    }
+
+    /// Create a task executor with ordered MCP capability sources.
+    pub fn with_mcp_managers(
+        registry: Arc<AgentRegistry>,
+        llm_client: Arc<dyn LlmClient>,
+        workspace: String,
+        mcp_managers: Vec<Arc<McpManager>>,
+    ) -> Self {
+        let provider_quota = provider_quota_for_client(llm_client.as_ref());
+        Self {
+            registry,
+            llm_client,
+            workspace,
+            mcp_managers,
+            mcp_bindings: Vec::new(),
+            child_tool_presentation: None,
+            scoped_tools: Vec::new(),
+            parent_context: None,
+            search_config: None,
+            search_bulkhead: None,
+            search_retry_budget: None,
+            search_request_coalescer: None,
+            capability_context: None,
+            parent_cancellation: None,
+            max_parallel_tasks: crate::agent::DEFAULT_MAX_PARALLEL_TASKS,
+            parallel_permits: Arc::new(tokio::sync::Semaphore::new(
+                crate::agent::DEFAULT_MAX_PARALLEL_TASKS,
+            )),
+            subagent_tracker: None,
+            task_scheduler: None,
+            schedule_foreground: false,
+            admission_scope: None,
+            provider_quota,
+            provider_admission: None,
+        }
+    }
+
+    /// Add immutable MCP bindings already admitted by the parent capability
+    /// Run. These bindings are never rediscovered through a manager.
+    pub(crate) fn with_projected_mcp_bindings(mut self, bindings: Vec<Arc<McpBinding>>) -> Self {
+        self.mcp_bindings = bindings;
+        self
+    }
+
+    /// Force a Tool presentation profile on delegated children.
+    #[cfg(test)]
+    pub(crate) fn with_child_tool_presentation(
+        mut self,
+        profile: crate::tools::ToolPresentationProfileV1,
+    ) -> Self {
+        self.child_tool_presentation = Some(profile);
+        self
+    }
+
+    /// Install exact host-provided tools only in child runs created by this
+    /// executor. Registration does not grant invocation authority: every call
+    /// still crosses composed parent and child governance. A name collision
+    /// with another child capability fails before model execution.
+    pub fn with_scoped_tools(mut self, tools: Vec<Arc<dyn Tool>>) -> Self {
+        self.scoped_tools = tools;
+        self
+    }
+
+    /// Set parent session capabilities to inherit into child runs.
+    pub fn with_parent_context(mut self, ctx: crate::child_run::ChildRunContext) -> Self {
+        if let Some(max_parallel_tasks) = ctx.max_parallel_tasks {
+            let max_parallel_tasks = max_parallel_tasks.max(1);
+            self.max_parallel_tasks = max_parallel_tasks;
+            self.parallel_permits = Arc::new(tokio::sync::Semaphore::new(max_parallel_tasks));
+        }
+        self.parent_context = Some(ctx);
+        self
+    }
+
+    fn scoped_for_invocation(self: &Arc<Self>, ctx: &ToolContext) -> Arc<Self> {
+        let mut scoped = self.as_ref().clone();
+        scoped.search_config = ctx.search_config.clone();
+        scoped.search_bulkhead = Some(ctx.search_bulkhead());
+        scoped.search_retry_budget = Some(ctx.search_retry_budget());
+        scoped.search_request_coalescer = Some(ctx.search_request_coalescer());
+        scoped.capability_context = ctx.capability_context();
+        scoped.admission_scope = ctx
+            .run_id()
+            .map(|run_id| format!("run:{run_id}"))
+            .or_else(|| ctx.session_id.as_deref().map(|id| format!("session:{id}")));
+        if ctx.has_run_governance() {
+            scoped.parent_context = scoped.parent_context.take().map(|mut parent| {
+                parent.work_policy = ctx.run_work_policy.clone();
+                parent.with_run_governance(
+                    ctx.run_permission_checker(),
+                    ctx.run_confirmation_manager(),
+                )
+            });
+        }
+        Arc::new(scoped)
+    }
+
+    fn child_tool_context(
+        &self,
+        session_id: String,
+        cancellation: CancellationToken,
+    ) -> ToolContext {
+        let mut context = ToolContext::new(PathBuf::from(&self.workspace))
+            .with_session_id(session_id)
+            .with_cancellation(cancellation);
+        if let (Some(bulkhead), Some(retry_budget)) =
+            (&self.search_bulkhead, &self.search_retry_budget)
+        {
+            context = context.with_search_runtime(bulkhead.clone(), retry_budget.clone());
+        }
+        if let Some(search_config) = &self.search_config {
+            context = context.with_search_config(search_config.as_ref().clone());
+        }
+        if let Some(coalescer) = &self.search_request_coalescer {
+            context = context.with_search_request_coalescer(coalescer.clone());
+        }
+        context
+    }
+
+    /// Bind every run started by this executor to a parent lifetime.
+    ///
+    /// A token that is already cancelled makes execution fail before emitting
+    /// `SubagentStart` or performing MCP/LLM work. In-flight children derive
+    /// their own token so cancellation still cascades without granting them the
+    /// ability to cancel the parent.
+    pub fn with_parent_cancellation(mut self, cancellation: CancellationToken) -> Self {
+        self.parent_cancellation = Some(cancellation);
+        self
+    }
+
+    pub fn with_max_parallel_tasks(mut self, max_parallel_tasks: usize) -> Self {
+        let max_parallel_tasks = max_parallel_tasks.max(1);
+        self.max_parallel_tasks = max_parallel_tasks;
+        self.parallel_permits = Arc::new(tokio::sync::Semaphore::new(max_parallel_tasks));
+        self
+    }
+
+    /// Share a tracker with this executor. When set, each task registers
+    /// a `CancellationToken` against the tracker so the parent session
+    /// can cancel by `task_id`.
+    pub fn with_subagent_tracker(
+        mut self,
+        tracker: Arc<crate::subagent_task_tracker::InMemorySubagentTaskTracker>,
+    ) -> Self {
+        self.subagent_tracker = Some(tracker);
+        self
+    }
+
+    /// Admit independent delegated work through the owning agent's scheduler.
+    pub fn with_task_scheduler(
+        mut self,
+        scheduler: Arc<crate::task_scheduler::TaskScheduler>,
+        schedule_foreground: bool,
+    ) -> Self {
+        // OPT-POOL1: shared provider capacity requires a typed
+        // `ModelGenerationPool`. Without one, children keep a local-only gate
+        // and must not attach a scheduler quota that would look like a product
+        // shared pool.
+        self.provider_admission = self.llm_client.model_generation_pool().and_then(|pool| {
+            crate::llm::ModelGenerationAdmission::new(
+                self.llm_client.model_generation_concurrency(),
+            )
+            .with_model_generation_pool(
+                Arc::clone(&scheduler),
+                pool,
+                crate::task_scheduler::TaskPriority::Foreground,
+                "task-child-model-generation",
+            )
+            .ok()
+        });
+        self.task_scheduler = Some(scheduler);
+        self.schedule_foreground = schedule_foreground;
+        self
+    }
+
+    #[cfg(test)]
+    pub(crate) fn has_provider_model_generation_admission(&self) -> bool {
+        self.provider_admission.is_some()
+    }
+
+    #[cfg(test)]
+    pub(crate) fn provider_admission_publishes_typed_pool(&self) -> bool {
+        self.provider_admission
+            .as_ref()
+            .is_some_and(|admission| admission.publishes_model_generation_pool())
+    }
+
+    /// Test-only entry that runs the child path with an exact cancellation token
+    /// so MCP registration cancel branches can be forced hermetically.
+    #[cfg(test)]
+    pub(crate) async fn execute_with_cancel_token_for_test(
+        &self,
+        task_id: String,
+        params: TaskParams,
+        event_tx: Option<broadcast::Sender<AgentEvent>>,
+        parent_session_id: Option<&str>,
+        cancel_token: CancellationToken,
+    ) -> Result<TaskResult> {
+        self.execute_with_task_id_in_scope(
+            task_id,
+            params,
+            event_tx,
+            parent_session_id,
+            true,
+            cancel_token,
+            None,
+            None,
+        )
+        .await
+    }
+
+    fn visible_agents(&self) -> Vec<AgentDefinition> {
+        self.registry.list_visible()
+    }
+
+    /// Execute a task by spawning an isolated child AgentLoop.
+    ///
+    /// `parent_session_id` flows into the emitted `SubagentStart`/`SubagentEnd`
+    /// events so dashboards can associate child runs with the parent session.
+    pub async fn execute(
+        &self,
+        params: TaskParams,
+        event_tx: Option<broadcast::Sender<AgentEvent>>,
+        parent_session_id: Option<&str>,
+    ) -> Result<TaskResult> {
+        self.execute_with_parent_cancellation(
+            params,
+            event_tx,
+            parent_session_id,
+            self.parent_cancellation.as_ref(),
+        )
+        .await
+    }
+
+    async fn execute_with_parent_cancellation(
+        &self,
+        params: TaskParams,
+        event_tx: Option<broadcast::Sender<AgentEvent>>,
+        parent_session_id: Option<&str>,
+        parent_cancellation: Option<&CancellationToken>,
+    ) -> Result<TaskResult> {
+        let task_id = format!("task-{}", uuid::Uuid::new_v4());
+        self.execute_with_task_id_scoped(
+            task_id,
+            params,
+            ScopedTaskExecution {
+                event_tx,
+                parent_session_id,
+                emit_start: true,
+                parent_cancellation,
+                admitted_capability_subtask: None,
+                parallel_lifecycle: None,
+            },
+        )
+        .await
+    }
+
+    /// Execute a task using a caller-supplied task id. Used by `execute_background`
+    /// so the synchronously-returned task id matches the one in lifecycle events.
+    /// When `emit_start` is `false` the caller is responsible for emitting
+    /// `SubagentStart` themselves (e.g. to avoid a race against a tracker query).
+    pub async fn execute_with_task_id(
+        &self,
+        task_id: String,
+        params: TaskParams,
+        event_tx: Option<broadcast::Sender<AgentEvent>>,
+        parent_session_id: Option<&str>,
+        emit_start: bool,
+    ) -> Result<TaskResult> {
+        self.execute_with_task_id_scoped(
+            task_id,
+            params,
+            ScopedTaskExecution {
+                event_tx,
+                parent_session_id,
+                emit_start,
+                parent_cancellation: self.parent_cancellation.as_ref(),
+                admitted_capability_subtask: None,
+                parallel_lifecycle: None,
+            },
+        )
+        .await
+    }
+
+    async fn execute_with_task_id_scoped(
+        &self,
+        task_id: String,
+        params: TaskParams,
+        execution: ScopedTaskExecution<'_>,
+    ) -> Result<TaskResult> {
+        let ScopedTaskExecution {
+            event_tx,
+            parent_session_id,
+            emit_start,
+            parent_cancellation,
+            admitted_capability_subtask,
+            parallel_lifecycle,
+        } = execution;
+        let was_promoted = admitted_capability_subtask.is_some();
+        if !was_promoted && parent_cancellation.is_some_and(CancellationToken::is_cancelled) {
+            anyhow::bail!("Operation cancelled by parent session");
+        }
+
+        let capability_subtask = match admitted_capability_subtask {
+            Some(subtask) => Some(subtask),
+            None => self
+                .capability_context
+                .as_ref()
+                .map(|context| context.admit_subtask(task_id.clone(), params.background))
+                .transpose()?,
+        };
+        let cancel_token = capability_subtask.as_ref().map_or_else(
+            || {
+                parent_cancellation
+                    .map(CancellationToken::child_token)
+                    .unwrap_or_default()
+            },
+            crate::capability::AgentCapabilitySubtask::cancellation,
+        );
+        let capability_runtime = capability_subtask
+            .as_ref()
+            .map(crate::capability::AgentCapabilitySubtask::runtime);
+        let execution = self
+            .execute_with_task_id_in_scope(
+                task_id,
+                params,
+                event_tx,
+                parent_session_id,
+                emit_start,
+                cancel_token,
+                capability_runtime,
+                parallel_lifecycle,
+            )
+            .await;
+        let close = close_capability_subtask(capability_subtask.as_ref()).await;
+        settle_delegated_execution(execution, close)
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    async fn execute_with_task_id_in_scope(
+        &self,
+        task_id: String,
+        params: TaskParams,
+        event_tx: Option<broadcast::Sender<AgentEvent>>,
+        parent_session_id: Option<&str>,
+        emit_start: bool,
+        cancel_token: CancellationToken,
+        capability_runtime: Option<crate::capability::AgentCapabilityRuntime>,
+        parallel_lifecycle: Option<Arc<ParallelTaskLifecycle>>,
+    ) -> Result<TaskResult> {
+        // Register the canceller immediately for BOTH modes: an Interrupt
+        // aimed at a foreground task must reach it while it still waits on
+        // the scheduler lease and builds its child context — the same
+        // window background tasks already closed. Every early-exit error
+        // below clears the entry (a stale canceller would pin a dead task
+        // id); once the run starts, its own completion paths own it.
+        if let Some(ref tracker) = self.subagent_tracker {
+            tracker
+                .register_canceller(&task_id, cancel_token.clone())
+                .await;
+        }
+        let result = self
+            .execute_registered_task_in_scope(
+                task_id.clone(),
+                params,
+                event_tx,
+                parent_session_id,
+                emit_start,
+                cancel_token,
+                capability_runtime,
+                parallel_lifecycle,
+            )
+            .await;
+        if result.is_err() {
+            if let Some(ref tracker) = self.subagent_tracker {
+                tracker.clear_canceller(&task_id).await;
+            }
+        }
+        result
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    async fn execute_registered_task_in_scope(
+        &self,
+        task_id: String,
+        params: TaskParams,
+        event_tx: Option<broadcast::Sender<AgentEvent>>,
+        parent_session_id: Option<&str>,
+        emit_start: bool,
+        cancel_token: CancellationToken,
+        capability_runtime: Option<crate::capability::AgentCapabilityRuntime>,
+        parallel_lifecycle: Option<Arc<ParallelTaskLifecycle>>,
+    ) -> Result<TaskResult> {
+        let execution_identity =
+            if (params.background || self.schedule_foreground) && self.task_scheduler.is_some() {
+                let mut identity_spec = AgentStepSpec::new(
+                    task_id.clone(),
+                    params.agent.clone(),
+                    params.description.clone(),
+                    params.prompt.clone(),
+                );
+                if let Some(max_steps) = params.max_steps {
+                    identity_spec = identity_spec.with_max_steps(max_steps);
+                }
+                if let Some(output_schema) = params.output_schema.clone() {
+                    identity_spec = identity_spec.with_output_schema(output_schema);
+                }
+                if let Some(parent_session_id) = parent_session_id {
+                    identity_spec = identity_spec.with_parent_session_id(parent_session_id);
+                }
+                Some({
+                    if TEST_FORCE_IDENTITY_DERIVE_FAILURE.swap(false, Ordering::SeqCst) {
+                        return Err(anyhow::anyhow!(
+                            "derive delegated task execution identity: forced test failure"
+                        ));
+                    }
+                    crate::orchestration::workflow_step_execution_identity(
+                        parent_session_id.unwrap_or("host"),
+                        &identity_spec,
+                    )
+                    .map_err(|error| {
+                        anyhow::anyhow!("derive delegated task execution identity: {error}")
+                    })?
+                })
+            } else {
+                None
+            };
+        let admission_quota =
+            if (params.background || self.schedule_foreground) && self.task_scheduler.is_some() {
+                let scope = self.admission_scope.clone().unwrap_or_else(|| {
+                    parent_session_id
+                        .map(|session_id| format!("session:{session_id}"))
+                        .unwrap_or_else(|| "host".to_string())
+                });
+                Some(
+                    crate::task_scheduler::TaskSchedulerQuota::for_scope(
+                        &scope,
+                        self.max_parallel_tasks,
+                    )
+                    .map_err(|error| anyhow::anyhow!(error))?,
+                )
+            } else {
+                None
+            };
+        let _task_lease = if params.background || self.schedule_foreground {
+            match &self.task_scheduler {
+                Some(scheduler) => {
+                    let mut quotas = Vec::with_capacity(2);
+                    if let Some(quota) = admission_quota.as_ref() {
+                        quotas.push(quota.clone());
+                    }
+                    if let Some(quota) = self.provider_quota.as_ref() {
+                        if !quotas
+                            .iter()
+                            .any(|candidate| candidate.identity == quota.identity)
+                        {
+                            quotas.push(quota.clone());
+                        }
+                    }
+                    if TEST_FORCE_EMPTY_SCHEDULER_QUOTAS.swap(false, Ordering::SeqCst) {
+                        quotas.clear();
+                    }
+                    let priority = if params.background {
+                        crate::task_scheduler::TaskPriority::Background
+                    } else {
+                        crate::task_scheduler::TaskPriority::Foreground
+                    };
+                    let label = format!(
+                        "{}:subagent:{}",
+                        parent_session_id.unwrap_or("host"),
+                        task_id
+                    );
+                    Some(if quotas.is_empty() {
+                        scheduler
+                            .acquire_with_identity(
+                                priority,
+                                label,
+                                execution_identity.clone(),
+                                &cancel_token,
+                            )
+                            .await
+                            .map_err(|error| anyhow::anyhow!(error))?
+                    } else {
+                        scheduler
+                            .acquire_with_quotas(
+                                priority,
+                                label,
+                                &quotas,
+                                execution_identity.clone(),
+                                &cancel_token,
+                            )
+                            .await
+                            .map_err(|error| anyhow::anyhow!(error))?
+                    })
+                }
+                None => None,
+            }
+        } else {
+            None
+        };
+
+        let session_id = format!("task-run-{}", task_id);
+        // Drop releases claims if this function returns early or the future
+        // is cancelled after the child has written. The caller adopts the
+        // paths it observed after a normal return.
+        let _child_claims =
+            crate::external_observation::ChildWriteClaimGuard::new(session_id.clone());
+        let started_ms = epoch_ms();
+        let output_schema = params.output_schema.clone();
+
+        let agent = self
+            .registry
+            .get_arc(&params.agent)
+            .context(format!("Unknown agent type: '{}'", params.agent))?;
+        let tool_free = agent.tool_free;
+        let tool_free_system = agent.prompt.clone();
+        let inherited_security_provider = self
+            .parent_context
+            .as_ref()
+            .and_then(|context| context.security_provider.clone());
+
+        if emit_start {
+            let event = AgentEvent::SubagentStart {
+                task_id: task_id.clone(),
+                session_id: session_id.clone(),
+                parent_session_id: parent_session_id.unwrap_or_default().to_string(),
+                agent: params.agent.clone(),
+                description: params.description.clone(),
+                started_ms,
+            };
+            let event = inherited_security_provider
+                .as_deref()
+                .map(|provider| crate::security::sanitize_agent_event(provider, &event))
+                .unwrap_or(event);
+            if let Some(ref tracker) = self.subagent_tracker {
+                tracker.record_event(&event).await;
+            }
+            if let Some(ref tx) = event_tx {
+                let _ = tx.send(event);
+            }
+            if let Some(lifecycle) = &parallel_lifecycle {
+                // Keep this after the last await and after the broadcast so an
+                // abort can never suppress a start that the lifecycle thinks
+                // was emitted.
+                lifecycle.mark_started(&task_id);
+            }
+        }
+
+        // Build a child ToolExecutor. Task tools are intentionally omitted
+        // here to prevent unlimited delegation nesting.
+        let child_executor = if let Some(ref parent_ctx) = self.parent_context {
+            if let Some(ref services) = parent_ctx.workspace_services {
+                crate::tools::ToolExecutor::new_with_workspace_services_artifact_limits_and_immutable_content_adapter(
+                        self.workspace.clone(),
+                        Arc::clone(services),
+                        crate::tools::ArtifactStoreLimits::default(),
+                        parent_ctx.immutable_content_adapter.clone(),
+                    )
+            } else if let Some(adapter) = parent_ctx.immutable_content_adapter.clone() {
+                crate::tools::ToolExecutor::new_with_immutable_content_adapter(
+                    self.workspace.clone(),
+                    adapter,
+                )
+            } else {
+                crate::tools::ToolExecutor::new(self.workspace.clone())
+            }
+        } else {
+            crate::tools::ToolExecutor::new(self.workspace.clone())
+        };
+
+        // Register MCP tools so child agents can access MCP servers.
+        // When the parent Run already projected exact McpBindings, those
+        // bindings are the routing authority (OPT-MCP1). Manager snapshots are
+        // mutable refresh caches and must not inject unbound tools into the
+        // delegated child.
+        // When the parent Run already projected exact McpBindings, those
+        // bindings are the routing authority (OPT-MCP1). Manager snapshots are
+        // mutable refresh caches and must not inject unbound tools into the
+        // delegated child.
+        if self.mcp_bindings.is_empty() {
+            for mcp in &self.mcp_managers {
+                let all_tools = tokio::select! {
+                    biased;
+                    _ = cancel_token.cancelled() => {
+                        anyhow::bail!("Operation cancelled before child execution");
+                    }
+                    tools = mcp.get_all_tools() => tools,
+                };
+                let mut by_server: std::collections::HashMap<
+                    String,
+                    Vec<crate::mcp::protocol::McpTool>,
+                > = std::collections::HashMap::new();
+                for (server, tool) in all_tools {
+                    by_server.entry(server).or_default().push(tool);
+                }
+                for (server_name, tools) in by_server {
+                    let wrappers =
+                        crate::mcp::tools::create_mcp_tools(&server_name, tools, Arc::clone(mcp));
+                    for wrapper in wrappers {
+                        child_executor.register_dynamic_tool(wrapper);
+                    }
+                }
+            }
+        }
+        // Projected bindings are the Run-frozen MCP generation.
+        for binding in &self.mcp_bindings {
+            if cancel_token.is_cancelled() {
+                anyhow::bail!("Operation cancelled before child execution");
+            }
+            for wrapper in binding.projected_tools() {
+                let wrapper = if let Some(runtime) = &capability_runtime {
+                    let Some((id, digest)) = runtime.projected_identity(
+                        crate::capability::CapabilityKind::Mcp,
+                        binding.server_name(),
+                    )?
+                    else {
+                        continue;
+                    };
+                    crate::capability::ScopedProjectedTool::bind(wrapper, id, digest)
+                } else {
+                    wrapper
+                };
+                child_executor.register_dynamic_tool(wrapper);
+            }
+        }
+
+        // These exact Arc values belong only to this TaskExecutor. Install them
+        // after all inherited sources so no scoped tool can shadow a built-in,
+        // compatibility MCP tool, or Run-frozen projected binding.
+        for tool in &self.scoped_tools {
+            if !child_executor.register_dynamic_tool_if_absent(Arc::clone(tool)) {
+                anyhow::bail!(
+                    "Workflow-scoped tool '{}' conflicts with another child capability",
+                    tool.name()
+                );
+            }
+        }
+
+        let child_executor = Arc::new(child_executor);
+
+        let mut child_config = AgentConfig {
+            tools: child_executor.definitions(),
+            ..AgentConfig::default()
+        };
+        // Under a host work policy, review and audit are read-only: the read-heavy
+        // review checks narrow to the explicit allowlist (no shell, write or delegation).
+        if agent.name == "review"
+            && self
+                .parent_context
+                .as_ref()
+                .is_some_and(|parent| parent.work_policy.is_some())
+        {
+            let read_only =
+                crate::permissions::specialty_permission_policy(crate::prompts::AgentStyle::Plan)
+                    .ok_or_else(|| anyhow::anyhow!("read-only review policy is unavailable"))?;
+            child_config.permission_checker = Some(Arc::new(read_only.clone()));
+            child_config.permission_policy = Some(read_only);
+        }
+        agent.apply_to(&mut child_config);
+        if let Some(ref parent_ctx) = self.parent_context {
+            parent_ctx.apply_to(&mut child_config);
+        }
+        if let Some(profile) = self.child_tool_presentation.clone() {
+            child_config.tool_presentation_profile = profile;
+        }
+        // A delegated task is already the output of a parent planning
+        // decision. Running the generic pre-analysis/planning classifier again
+        // adds an unrelated LLM round to every child and can consume the whole
+        // fan-out deadline before any task tool runs.
+        child_config.planning_mode = crate::prompts::PlanningMode::Disabled;
+        if let Some(max_steps) = params.max_steps {
+            child_config.max_tool_rounds = max_steps;
+        }
+        let child_security_provider = child_config.security_provider.clone();
+        let source_security_provider = child_security_provider.clone();
+
+        let mut tool_context = self.child_tool_context(session_id.clone(), cancel_token.clone());
+        if let Some(ref parent_ctx) = self.parent_context {
+            if let Some(ref services) = parent_ctx.workspace_services {
+                tool_context = tool_context.with_workspace_services(Arc::clone(services));
+            }
+            if let Some(ref sandbox) = parent_ctx.sandbox_handle {
+                child_executor.registry().set_sandbox(Arc::clone(sandbox));
+                tool_context = tool_context.with_sandbox(Arc::clone(sandbox));
+            }
+        }
+
+        let source_context = tool_context.clone();
+        let mut agent_loop = AgentLoop::new(
+            Arc::clone(&self.llm_client),
+            child_executor,
+            tool_context,
+            child_config,
+        );
+        if !params.background && !self.schedule_foreground {
+            if let Some(admission) = &self.provider_admission {
+                agent_loop = agent_loop.with_model_generation_admission(admission.clone());
+            }
+        }
+        if let Some(runtime) = capability_runtime {
+            agent_loop = agent_loop.with_capability_runtime(runtime);
+        }
+
+        // Always observe the child event stream so successful source tool calls
+        // survive in TaskResult metadata even when nobody subscribed to live
+        // progress. Forward the same events when a parent broadcast exists.
+        let (mpsc_tx, mut mpsc_rx) = tokio::sync::mpsc::channel(100);
+        let broadcast_tx = event_tx.clone();
+        let progress_task_id = task_id.clone();
+        let progress_session_id = session_id.clone();
+        let child_event_forwarder = tokio::spawn(async move {
+            let mut source_anchors = Vec::new();
+            let mut seen_source_anchors = std::collections::HashSet::new();
+            let mut scanned_source_candidates = 0usize;
+            while let Some(event) = mpsc_rx.recv().await {
+                let event = source_security_provider
+                    .as_deref()
+                    .map(|provider| crate::security::sanitize_agent_event(provider, &event))
+                    .unwrap_or(event);
+                collect_tool_source_anchors(
+                    &event,
+                    &source_context,
+                    &mut source_anchors,
+                    &mut seen_source_anchors,
+                    &mut scanned_source_candidates,
+                );
+                if let Some(ref broadcast_tx) = broadcast_tx {
+                    if let Some(progress) = synthesize_subagent_progress(
+                        &event,
+                        &progress_task_id,
+                        &progress_session_id,
+                    ) {
+                        let _ = broadcast_tx.send(progress);
+                    }
+                    let _ = broadcast_tx.send(event);
+                }
+            }
+            source_anchors
+        });
+        let child_event_tx = Some(mpsc_tx);
+        let child_llm_event_tx = child_event_tx.clone();
+
+        let structured_prompt = output_schema
+            .as_ref()
+            .filter(|_| !tool_free)
+            .map(|schema| structured_task_prompt(&params.prompt, schema));
+        let execution_prompt = structured_prompt.as_deref().unwrap_or(&params.prompt);
+        let tool_free_system = if agent_loop.work_policy().is_some() {
+            Some(agent_loop.admitted_system_prompt())
+        } else {
+            tool_free_system
+        };
+
+        let mut structured = None;
+        let mut child_completion = crate::harness_loop::CompletionTerminal::Narrative;
+        let (mut output, mut success, raw_output) = if tool_free && output_schema.is_some() {
+            let operation = agent_loop.begin_capability_operation(
+                0,
+                &cancel_token,
+                "structured task generation",
+            )?;
+            let llm_client = agent_loop.scoped_llm_client_for_parts(
+                Some(&session_id),
+                &child_llm_event_tx,
+                operation.cancellation(),
+            );
+            let generation = Self::generate_structured_task(
+                &*llm_client,
+                &params.prompt,
+                tool_free_system.as_deref(),
+                output_schema.clone().expect("schema checked above"),
+                operation.cancellation(),
+            )
+            .await;
+            let generation = settle_task_capability_operation(
+                generation,
+                operation.close().await,
+                "structured task generation",
+            );
+            match generation {
+                Ok(object) => {
+                    let output = serde_json::to_string_pretty(&object)
+                        .unwrap_or_else(|_| object.to_string());
+                    structured = Some(object);
+                    (output, true, None)
+                }
+                Err(error) if cancel_token.is_cancelled() => {
+                    (format!("Task cancelled by caller: {error}"), false, None)
+                }
+                Err(error) => (format!("Task failed: {error}"), false, None),
+            }
+        } else {
+            // The delegated task is a child fact run on its own log. The
+            // parent context has no session id; the shared budget guard is
+            // the fan-out ledger, and this child's scope stays `task-run-*`.
+            match (crate::agent_api::ChildRun {
+                agent: agent_loop.clone(),
+                child_id: session_id.clone(),
+                budget_session: Some(session_id.clone()),
+                events: child_event_tx.clone(),
+                cancel: cancel_token.clone(),
+            }
+            .run(execution_prompt)
+            .await)
+            {
+                Ok(_) if cancel_token.is_cancelled() => {
+                    ("Task cancelled by caller".to_string(), false, None)
+                }
+                Ok(result)
+                    if result.forced_stop == Some(crate::harness_loop::ForcedStop::ToolBudget) =>
+                {
+                    let (_, _, rounds) = agent_loop.fact_execution_policy();
+                    (
+                        format!("Task failed: Max tool rounds ({rounds}) exceeded"),
+                        false,
+                        None,
+                    )
+                }
+                Ok(result) if result.text.trim().is_empty() => (
+                    "Task failed: child agent returned no final output".to_string(),
+                    false,
+                    None,
+                ),
+                Ok(result) if AgentLoop::is_synthetic_failure_output(&result.text) => {
+                    (format!("Task failed: {}", result.text), false, None)
+                }
+                Ok(result) => {
+                    child_completion = result.completion.clone();
+                    let raw_output = result
+                        .messages
+                        .last()
+                        .filter(|message| message.role == "assistant")
+                        .map(crate::llm::Message::text)
+                        .filter(|text| !text.trim().is_empty());
+                    (result.text, true, raw_output)
+                }
+                Err(e) if cancel_token.is_cancelled() => {
+                    (format!("Task cancelled by caller: {}", e), false, None)
+                }
+                Err(e) => (format!("Task failed: {}", e), false, None),
+            }
+        };
+
+        if success && !tool_free {
+            if let Some(schema) = output_schema.as_ref() {
+                if let Some(object) = raw_output
+                    .as_deref()
+                    .and_then(|raw| parse_validated_output(raw, schema))
+                    .or_else(|| parse_validated_output(&output, schema))
+                {
+                    structured = Some(object);
+                } else {
+                    let operation = agent_loop.begin_capability_operation(
+                        0,
+                        &cancel_token,
+                        "structured task coercion",
+                    )?;
+                    let llm_client = agent_loop.scoped_llm_client_for_parts(
+                        Some(&session_id),
+                        &child_llm_event_tx,
+                        operation.cancellation(),
+                    );
+                    let coercion = Self::coerce_to_schema(
+                        &*llm_client,
+                        &output,
+                        agent_loop.work_policy().and(tool_free_system.as_deref()),
+                        schema.clone(),
+                        operation.cancellation(),
+                    )
+                    .await;
+                    let coercion = settle_task_capability_operation(
+                        coercion,
+                        operation.close().await,
+                        "structured task coercion",
+                    );
+                    match coercion {
+                        Ok(object) => structured = Some(object),
+                        Err(error) => {
+                            success = false;
+                            output = format!("{output}\n\n[structured output failed: {error}]");
+                        }
+                    }
+                }
+            }
+        }
+        if let Some(provider) = child_security_provider.as_deref() {
+            output = crate::security::sanitize_text(provider, &output);
+            if let Some(value) = structured.take() {
+                match apply_structured_output_sanitization(provider, value, output_schema.as_ref())
+                {
+                    Ok(sanitized) => structured = Some(sanitized),
+                    Err(()) => success = false,
+                }
+            }
+        }
+
+        // The child loop and optional structured-output pass are the only
+        // producers. Close their sender and drain the bridge before emitting
+        // SubagentEnd so callers never observe a terminal event followed by
+        // stale child deltas or progress events.
+        drop(child_event_tx);
+        drop(child_llm_event_tx);
+        if TEST_FORCE_EVENT_BRIDGE_JOIN_FAILURE.swap(false, Ordering::SeqCst) {
+            child_event_forwarder.abort();
+        }
+        let source_anchors = match child_event_forwarder.await {
+            Ok(source_anchors) => source_anchors,
+            Err(error) => {
+                tracing::warn!(%error, task_id = %task_id, "subagent event bridge failed");
+                Vec::new()
+            }
+        };
+
+        let end_event = AgentEvent::SubagentEnd {
+            task_id: task_id.clone(),
+            session_id: session_id.clone(),
+            agent: params.agent.clone(),
+            output: output.clone(),
+            success,
+            finished_ms: epoch_ms(),
+        };
+        if let Some(ref tracker) = self.subagent_tracker {
+            // The tracker is authoritative even when a background child
+            // finishes after the parent run's event forwarder has closed.
+            if success {
+                tracker
+                    .record_source_anchors(&task_id, &source_anchors)
+                    .await;
+            }
+            tracker.record_event(&end_event).await;
+            tracker.clear_canceller(&task_id).await;
+        }
+        if let Some(ref tx) = event_tx {
+            let _ = tx.send(end_event);
+        }
+        if let Some(lifecycle) = &parallel_lifecycle {
+            // Keep this as the final synchronous operation. If the child was
+            // aborted at an earlier await, synthetic cleanup can still fill in
+            // the missing terminal event.
+            lifecycle.mark_ended(&task_id);
+        }
+
+        Ok(TaskResult {
+            output,
+            session_id,
+            agent: params.agent,
+            success,
+            task_id,
+            structured,
+            source_anchors,
+            completion: child_completion,
+        })
+    }
+
+    /// Execute a task in the background.
+    ///
+    /// Returns immediately with the task ID; the same id is used in the emitted
+    /// `SubagentStart`/`SubagentEnd` events so callers can correlate. Pre-emits
+    /// `SubagentStart` synchronously when an event channel is available so a
+    /// caller that queries the subagent task tracker right after this call
+    /// observes the task in `Running` state without a race window.
+    pub fn execute_background(
+        self: Arc<Self>,
+        params: TaskParams,
+        event_tx: Option<broadcast::Sender<AgentEvent>>,
+        parent_session_id: Option<String>,
+    ) -> String {
+        let parent_cancellation = self.parent_cancellation.clone();
+        self.execute_background_with_parent_cancellation(
+            format!("task-{}", uuid::Uuid::new_v4()),
+            params,
+            event_tx,
+            parent_session_id,
+            parent_cancellation,
+        )
+        .task_id
+    }
+
+    fn execute_background_with_parent_cancellation(
+        self: Arc<Self>,
+        task_id: String,
+        params: TaskParams,
+        event_tx: Option<broadcast::Sender<AgentEvent>>,
+        parent_session_id: Option<String>,
+        parent_cancellation: Option<CancellationToken>,
+    ) -> BackgroundLaunch {
+        let task_id = if task_id.trim().is_empty() {
+            format!("task-{}", uuid::Uuid::new_v4())
+        } else {
+            task_id
+        };
+        let session_id = format!("task-run-{}", task_id);
+        let failure_session_id = session_id.clone();
+        let failure_agent = params.agent.clone();
+        let start_event = AgentEvent::SubagentStart {
+            task_id: task_id.clone(),
+            session_id,
+            parent_session_id: parent_session_id.clone().unwrap_or_default(),
+            agent: params.agent.clone(),
+            description: params.description.clone(),
+            started_ms: epoch_ms(),
+        };
+        let security_provider = self
+            .parent_context
+            .as_ref()
+            .and_then(|context| context.security_provider.clone());
+        let start_event = security_provider
+            .as_deref()
+            .map(|provider| crate::security::sanitize_agent_event(provider, &start_event))
+            .unwrap_or(start_event);
+
+        if let Some(ref tx) = event_tx {
+            let _ = tx.send(start_event.clone());
+        }
+
+        let capability_admission = self
+            .capability_context
+            .as_ref()
+            .map(|context| {
+                context
+                    .admit_subtask(task_id.clone(), true)
+                    .map(|subtask| (context.background_scope().clone(), subtask))
+            })
+            .transpose();
+        let (capability_run, admitted_capability_subtask) = match capability_admission {
+            Ok(Some((run, subtask))) => (Some(run), Some(subtask)),
+            Ok(None) => (None, None),
+            Err(error) => {
+                let message = format!("Background task capability admission failed: {error}");
+                let end_event = AgentEvent::SubagentEnd {
+                    task_id: task_id.clone(),
+                    session_id: failure_session_id,
+                    agent: failure_agent,
+                    output: message.clone(),
+                    success: false,
+                    finished_ms: epoch_ms(),
+                };
+                let end_event = security_provider
+                    .as_deref()
+                    .map(|provider| crate::security::sanitize_agent_event(provider, &end_event))
+                    .unwrap_or(end_event);
+                if let Some(tx) = event_tx {
+                    let _ = tx.send(end_event);
+                }
+                tracing::error!(task_id = %task_id, "{message}");
+                return BackgroundLaunch {
+                    task_id,
+                    running: false,
+                };
+            }
+        };
+
+        let task_id_for_spawn = task_id.clone();
+        let task_id_for_log = task_id.clone();
+        let admission_failure_task_id = task_id.clone();
+        let admission_failure_session_id = failure_session_id.clone();
+        let admission_failure_agent = failure_agent.clone();
+        let admission_failure_events = event_tx.clone();
+        let admission_failure_security = security_provider.clone();
+        let workspace_root = PathBuf::from(&self.workspace);
+        let observed_task_id = task_id_for_spawn.clone();
+        let background = async move {
+            let mut workspace_child = crate::porcelain::WorkspaceChildGuard::new(&observed_task_id);
+            if let Some(ref tracker) = self.subagent_tracker {
+                tracker.record_event(&start_event).await;
+            }
+            let failure_event_tx = event_tx.clone();
+            let child_session_id = failure_session_id.clone();
+            if let Err(error) = self
+                .execute_with_task_id_scoped(
+                    task_id_for_spawn,
+                    params,
+                    ScopedTaskExecution {
+                        event_tx,
+                        parent_session_id: parent_session_id.as_deref(),
+                        emit_start: false,
+                        parent_cancellation: parent_cancellation.as_ref(),
+                        admitted_capability_subtask,
+                        parallel_lifecycle: None,
+                    },
+                )
+                .await
+            {
+                let end_event = AgentEvent::SubagentEnd {
+                    task_id: task_id_for_log.clone(),
+                    session_id: failure_session_id,
+                    agent: failure_agent,
+                    output: format!("Task failed before child execution started: {error}"),
+                    success: false,
+                    finished_ms: epoch_ms(),
+                };
+                let end_event = security_provider
+                    .as_deref()
+                    .map(|provider| crate::security::sanitize_agent_event(provider, &end_event))
+                    .unwrap_or(end_event);
+                if let Some(ref tracker) = self.subagent_tracker {
+                    tracker.record_event(&end_event).await;
+                    tracker.clear_canceller(&task_id_for_log).await;
+                }
+                if let Some(tx) = failure_event_tx {
+                    let _ = tx.send(end_event);
+                }
+                tracing::error!("Background task {} failed: {}", task_id_for_log, error);
+            }
+            crate::porcelain::settle_workspace_child_guard(&mut workspace_child, &workspace_root)
+                .await;
+            let paths = crate::porcelain::peek_settled_workspace_child(&observed_task_id)
+                .unwrap_or_default();
+            adopt_dirtied_paths(
+                parent_session_id.as_deref(),
+                &child_session_id,
+                &workspace_root,
+                &paths,
+            );
+        };
+        let mut running = true;
+        if let Some(run) = capability_run {
+            let task_name = format!("subagent.{task_id}");
+            let spawn_result = if TEST_FORCE_BACKGROUND_SPAWN_FAILURE.swap(false, Ordering::SeqCst)
+            {
+                Err(crate::capability::CapabilityScopeError::SupervisorClosed {
+                    scope_id: "forced-background-spawn-failure".to_string(),
+                })
+            } else {
+                run.spawn_task(task_name, async move {
+                    background.await;
+                    Ok(())
+                })
+                .map(|_| ())
+            };
+            if let Err(error) = spawn_result {
+                // Admission races with Run close fail closed: no detached
+                // child work may escape after the exact generation lease is
+                // released.
+                let message = format!("Background task capability admission failed: {error}");
+                let end_event = AgentEvent::SubagentEnd {
+                    task_id: admission_failure_task_id.clone(),
+                    session_id: admission_failure_session_id,
+                    agent: admission_failure_agent,
+                    output: message.clone(),
+                    success: false,
+                    finished_ms: epoch_ms(),
+                };
+                let end_event = admission_failure_security
+                    .as_deref()
+                    .map(|provider| crate::security::sanitize_agent_event(provider, &end_event))
+                    .unwrap_or(end_event);
+                if let Some(tx) = admission_failure_events {
+                    let _ = tx.send(end_event);
+                }
+                tracing::error!(task_id = %admission_failure_task_id, "{message}");
+                running = false;
+            }
+        } else {
+            tokio::spawn(background);
+        }
+
+        BackgroundLaunch { task_id, running }
+    }
+}
+
+struct BackgroundLaunch {
+    task_id: String,
+    running: bool,
+}
+
+async fn close_capability_subtask(
+    subtask: Option<&crate::capability::AgentCapabilitySubtask>,
+) -> Result<()> {
+    let Some(subtask) = subtask else {
+        return Ok(());
+    };
+    let report = subtask.close().await?;
+    reject_unclean_capability_subtask_close(&report)
+}
+
+fn reject_unclean_capability_subtask_close(
+    report: &crate::capability::ScopeCloseReport,
+) -> Result<()> {
+    if !report.is_clean() {
+        anyhow::bail!(
+            "Capability Subtask close was incomplete (tasks failed: {}, tasks timed out: {}, child scopes failed: {}, child scopes timed out: {}, effects failed: {}, effects timed out: {})",
+            report.tasks_failed,
+            report.tasks_timed_out,
+            report.child_scopes_failed,
+            report.child_scopes_timed_out,
+            report.effects_failed,
+            report.effects_timed_out,
+        );
+    }
+    Ok(())
+}
+
+fn settle_delegated_execution(
+    execution: Result<TaskResult>,
+    close: Result<()>,
+) -> Result<TaskResult> {
+    match (execution, close) {
+        (Ok(result), Ok(())) => Ok(result),
+        (Ok(_), Err(close_error)) => Err(close_error),
+        (Err(error), Ok(())) => Err(error),
+        (Err(error), Err(close_error)) => {
+            tracing::warn!(
+                error = %close_error,
+                "Capability Subtask close also failed after delegated execution failure"
+            );
+            Err(error)
+        }
+    }
+}
+
+fn settle_task_capability_operation<T>(
+    execution: Result<T>,
+    close: Result<()>,
+    label: &str,
+) -> Result<T> {
+    match (execution, close) {
+        (Ok(result), Ok(())) => Ok(result),
+        (Ok(_), Err(close_error)) => Err(close_error),
+        (Err(error), Ok(())) => Err(error),
+        (Err(error), Err(close_error)) => {
+            tracing::warn!(
+                error = %close_error,
+                operation = label,
+                "Capability orchestration Turn close also failed after model failure"
+            );
+            Err(error)
+        }
+    }
+}
+
+fn structured_task_prompt(prompt: &str, schema: &serde_json::Value) -> String {
+    let schema = serde_json::to_string_pretty(schema).unwrap_or_else(|_| schema.to_string());
+    format!(
+        "{prompt}\n\n\
+         FINAL OUTPUT CONTRACT\n\
+         Complete the requested investigation before answering. Your final response must contain \
+         exactly one JSON value matching the JSON Schema below, with no Markdown fence or prose \
+         outside the JSON. This contract applies to the final response only; use the available \
+         tools as needed before finalizing.\n\n\
+         {schema}"
+    )
+}
+
+fn value_matches_schema(value: &serde_json::Value, schema: &serde_json::Value) -> bool {
+    serde_json::to_string(value)
+        .ok()
+        .and_then(|encoded| parse_validated_output(&encoded, schema))
+        .is_some()
+}
+
+#[derive(Debug, Clone)]
+struct AgentCatalogEntry {
+    name: String,
+    description: String,
+}
+
+fn agent_catalog_entries(agents: &[AgentDefinition]) -> Vec<AgentCatalogEntry> {
+    let mut entries = agents
+        .iter()
+        .map(|agent| AgentCatalogEntry {
+            name: agent.name.clone(),
+            description: agent
+                .description
+                .split_whitespace()
+                .collect::<Vec<_>>()
+                .join(" "),
+        })
+        .collect::<Vec<_>>();
+    entries.sort_by(|left, right| left.name.cmp(&right.name));
+    entries
+}
+
+fn agent_catalog_text(agents: &[AgentDefinition]) -> String {
+    agent_catalog_entries(agents)
+        .into_iter()
+        .map(|entry| format!("{}: {}", entry.name, entry.description))
+        .collect::<Vec<_>>()
+        .join("\n")
+}
+
+fn delegation_tool_description(base: &str, agents: &[AgentDefinition]) -> String {
+    format!(
+        "{base}\n\nAvailable agents (live catalog; use canonical names):\n{}",
+        agent_catalog_text(agents)
+    )
+}
+
+pub(super) fn task_agent_parameter_schema(agents: &[AgentDefinition]) -> serde_json::Value {
+    let entries = agent_catalog_entries(agents);
+    let examples = entries
+        .iter()
+        .map(|entry| serde_json::Value::String(entry.name.clone()))
+        .collect::<Vec<_>>();
+    let catalog = entries
+        .into_iter()
+        .map(|entry| format!("{}: {}", entry.name, entry.description))
+        .collect::<Vec<_>>()
+        .join("\n");
+    serde_json::json!({
+        "type": "string",
+        "description": format!(
+            "Required. Canonical agent type to use. Always provide this exact field name: 'agent'. Live agent catalog:\n{catalog}"
+        ),
+        "examples": examples
+    })
+}
+
+/// Get the compatibility JSON schema accepted by the `task` executor.
+///
+/// The model sees the more compact array-only schema. This public schema also
+/// accepts the pre-6.8 single-task object so persisted and host-direct calls do
+/// not break during the tool-surface migration.
+pub fn task_params_schema() -> serde_json::Value {
+    task_params_schema_for_agents(&AgentRegistry::new().list_visible())
+}
+
+fn task_params_schema_for_agents(agents: &[AgentDefinition]) -> serde_json::Value {
+    serde_json::json!({
+        "oneOf": [
+            legacy_task_params_schema_for_agents(agents),
+            task_model_params_schema_for_agents(agents)
+        ]
+    })
+}
+
+fn legacy_task_params_schema_for_agents(agents: &[AgentDefinition]) -> serde_json::Value {
+    let mut schema = task_item_params_schema_for_agents(agents, true);
+    schema["examples"] = serde_json::json!([
+        {
+            "agent": "explore",
+            "description": "Find Rust files",
+            "prompt": "Search the workspace for Rust files and summarize the layout."
+        },
+        {
+            "agent": "general",
+            "description": "Investigate test failure",
+            "prompt": "Inspect the failing tests and explain the root cause.",
+            "max_steps": 6
+        }
+    ]);
+    schema
+}
+
+fn task_model_params_schema_for_agents(agents: &[AgentDefinition]) -> serde_json::Value {
+    parallel_params::task_tool_params_schema_for_agents(agents)
+}
+
+pub(super) fn task_item_params_schema_for_agents(
+    agents: &[AgentDefinition],
+    include_background: bool,
+) -> serde_json::Value {
+    let mut properties = serde_json::Map::from_iter([
+        ("agent".to_string(), task_agent_parameter_schema(agents)),
+        (
+            "description".to_string(),
+            serde_json::json!({
+                "type": "string",
+                "description": "Required. Short task label for display and tracking. Always provide this exact field name: 'description'."
+            }),
+        ),
+        (
+            "prompt".to_string(),
+            serde_json::json!({
+                "type": "string",
+                "description": "Required. Detailed instruction for the delegated child run. Always provide this exact field name: 'prompt'."
+            }),
+        ),
+        (
+            "max_steps".to_string(),
+            serde_json::json!({
+                "type": "integer",
+                "minimum": 1,
+                "description": "Optional. Maximum number of steps for this task."
+            }),
+        ),
+        (
+            "output_schema".to_string(),
+            serde_json::json!({
+                "type": "object",
+                "description": "Optional. JSON Schema object the delegated result must satisfy. When provided, the child output is coerced into a validated structured object and returned in metadata."
+            }),
+        ),
+    ]);
+    if include_background {
+        properties.insert(
+            "background".to_string(),
+            serde_json::json!({
+                "type": "boolean",
+                "description": "Optional. Run this task in the background. Only valid when the outer tasks array contains one item. Default: false.",
+                "default": false
+            }),
+        );
+    }
+
+    serde_json::json!({
+        "type": "object",
+        "additionalProperties": false,
+        "properties": properties,
+        "required": ["agent", "description", "prompt"]
+    })
+}
+
+/// TaskTool wraps TaskExecutor as a Tool for registration in ToolExecutor.
+/// This allows the LLM to delegate tasks through the standard tool interface.
+pub struct TaskTool {
+    executor: Arc<TaskExecutor>,
+}
+
+impl TaskTool {
+    /// Create a new TaskTool
+    pub fn new(executor: Arc<TaskExecutor>) -> Self {
+        Self { executor }
+    }
+
+    async fn execute_single(&self, params: TaskParams, ctx: &ToolContext) -> Result<ToolOutput> {
+        let parent_cancellation = ctx.cancellation_token();
+        let executor = self.executor.scoped_for_invocation(ctx);
+
+        if params.background {
+            let task_id = format!("task-{}", uuid::Uuid::new_v4());
+            crate::porcelain::reserve_workspace_child(&task_id);
+            crate::porcelain::begin_workspace_child(&task_id, ctx.workspace.as_path()).await;
+            let launch = executor.execute_background_with_parent_cancellation(
+                task_id.clone(),
+                params,
+                ctx.agent_event_tx.clone(),
+                ctx.session_id.clone(),
+                Some(parent_cancellation),
+            );
+            if !launch.running {
+                crate::porcelain::settle_workspace_child(&launch.task_id, ctx.workspace.as_path())
+                    .await;
+            }
+            let task_id = launch.task_id;
+            return Ok(ToolOutput::success(format!(
+                "Task started in background. Task ID: {}",
+                task_id
+            ))
+            .with_metadata(serde_json::json!({
+                "task_id": task_id,
+                "workspace_child": task_id,
+            })));
+        }
+
+        let watch = crate::porcelain::Watch::start(&ctx.workspace).await;
+        let result = executor
+            .execute_with_parent_cancellation(
+                params,
+                ctx.agent_event_tx.clone(),
+                ctx.session_id.as_deref(),
+                Some(&parent_cancellation),
+            )
+            .await?;
+        let changed = watch.finish(&ctx.workspace).await;
+        adopt_dirtied_paths(
+            ctx.session_id.as_deref(),
+            &result.session_id,
+            &ctx.workspace,
+            &changed,
+        );
+        let (content, truncated) = format_task_result_for_context(&result);
+        let mut metadata = Some(serde_json::json!({
+            "task_id": result.task_id,
+            "session_id": result.session_id,
+            "agent": result.agent,
+            "success": result.success,
+            "output_bytes": result.output.len(),
+            "truncated_for_context": truncated,
+            "artifact_id": task_artifact_id(&result),
+            "artifact_uri": task_artifact_uri(&result),
+            "structured": result.structured,
+            "source_anchors": result.source_anchors,
+        }));
+        if let Some(meta) = metadata.as_mut() {
+            if !result.completion.is_narrative() {
+                meta["completion"] =
+                    serde_json::to_value(&result.completion).unwrap_or(serde_json::Value::Null);
+            }
+        }
+        crate::porcelain::attach(&mut metadata, &changed);
+        let metadata = metadata.unwrap_or_else(|| serde_json::json!({}));
+
+        if result.success {
+            Ok(ToolOutput::success(content).with_metadata(metadata))
+        } else {
+            Ok(ToolOutput::error(content).with_metadata(metadata))
+        }
+    }
+}
+
+#[async_trait]
+impl Tool for TaskTool {
+    fn name(&self) -> &str {
+        "task"
+    }
+
+    fn description(&self) -> &str {
+        TASK_TOOL_DESCRIPTION
+    }
+
+    fn parameters(&self) -> serde_json::Value {
+        task_params_schema_for_agents(&self.executor.visible_agents())
+    }
+
+    fn definition(&self) -> ToolDefinition {
+        let agents = self.executor.visible_agents();
+        ToolDefinition {
+            name: self.name().to_string(),
+            description: delegation_tool_description(self.description(), &agents),
+            parameters: task_model_params_schema_for_agents(&agents),
+        }
+    }
+
+    async fn execute(&self, args: &serde_json::Value, ctx: &ToolContext) -> Result<ToolOutput> {
+        if args.get("tasks").is_some() {
+            let mut params: ParallelTaskParams = match serde_json::from_value(args.clone()) {
+                Ok(params) => params,
+                Err(error) => {
+                    return Ok(invalid_delegation_argument(format!(
+                        "Invalid task parameters: {error}"
+                    )));
+                }
+            };
+            if params.tasks.is_empty() {
+                return Ok(invalid_delegation_argument(
+                    "task requires at least 1 task".to_string(),
+                ));
+            }
+
+            let has_fanout_options = params.allow_partial_failure
+                || params.timeout_ms.is_some()
+                || params.min_success_count.is_some();
+            if params.tasks.len() == 1 && !has_fanout_options {
+                return self.execute_single(params.tasks.remove(0), ctx).await;
+            }
+
+            return ParallelTaskTool::new(Arc::clone(&self.executor))
+                .execute_params(params, ctx, "task", 1)
+                .await;
+        }
+
+        let params: TaskParams = match serde_json::from_value(args.clone()) {
+            Ok(params) => params,
+            Err(error) => {
+                return Ok(invalid_delegation_argument(format!(
+                    "Invalid task parameters: {error}"
+                )));
+            }
+        };
+        self.execute_single(params, ctx).await
+    }
+}
+
+mod parallel_params;
+#[cfg(test)]
+pub(crate) use parallel_params::parallel_task_params_schema;
+pub(crate) use parallel_params::ParallelTaskParams;
+
+mod parallel_task;
+pub(crate) use parallel_task::ParallelTaskTool;
+
+pub(crate) fn apply_structured_output_sanitization(
+    provider: &dyn crate::security::SecurityProvider,
+    value: serde_json::Value,
+    output_schema: Option<&serde_json::Value>,
+) -> Result<serde_json::Value, ()> {
+    let sanitized = match output_schema {
+        None => sanitize_task_json(provider, &value),
+        Some(schema) => sanitize_task_json_with_schema(provider, &value, schema),
+    };
+    if output_schema.is_none_or(|schema| value_matches_schema(&sanitized, schema)) {
+        Ok(sanitized)
+    } else {
+        Err(())
+    }
+}
+
+fn adopt_dirtied_paths(
+    parent_session: Option<&str>,
+    child_session: &str,
+    workspace: &std::path::Path,
+    paths: &[String],
+) {
+    crate::external_observation::settle_child_write_claims(
+        parent_session,
+        child_session,
+        workspace,
+        paths,
+    );
+}
+
+fn invalid_delegation_argument(message: String) -> ToolOutput {
+    ToolOutput::error(&message)
+        .with_error_kind(crate::tools::ToolErrorKind::InvalidArgument { message })
+}
+
+#[cfg(test)]
+mod tests;

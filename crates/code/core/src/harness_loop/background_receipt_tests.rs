@@ -39,6 +39,24 @@ fn background_fact_projection_binds_real_bytes_mode_and_exact_fact_key_once() {
 }
 
 #[test]
+fn a_background_path_budget_does_not_become_unresolved_debt() {
+    let mut ledger = MutationLedger::default();
+    ledger.observe_background_receipt(
+        "background:wide:exited",
+        &ToolEffectObservationV1::budget_exceeded(),
+    );
+    assert!(!ledger.has_uncertain_tool_invocations());
+    let mut same_words = ToolEffectObservationV1::incomplete(
+        "tool_effect_observation_incomplete: observation exceeded its path or byte budget",
+    );
+    same_words.budget_exceeded = false;
+    ledger.observe_background_receipt("background:words:exited", &same_words);
+    assert!(ledger
+        .unresolved_tool_effects
+        .contains("background-receipt-incomplete:background:words:exited"));
+}
+
+#[test]
 fn incomplete_invalid_and_external_background_observations_remain_debt() {
     let mut ledger = MutationLedger::default();
     let mut incomplete = observed(b"partial bytes", 0o644);

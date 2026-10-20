@@ -1,0 +1,26 @@
+{
+  "binaries": [
+    {
+      "name": "work-tests",
+      "source": "/Users/roylin/code/aster/target/debug/deps/a3s_studio_lib-9c7d06d5a17857ce",
+      "path": "/Users/roylin/code/aster/target/qualification/no-count-limit-20261020/work-r5/work-tests",
+      "sha256": "ccd7f3f127259285f73d2f5d77abccb57b11ad4af6e3b37d92273f45339fe65b"
+    },
+    {
+      "name": "a3s-code-acp",
+      "source": "/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/AsterDream-TaskOptimization-R5.app/Contents/MacOS/a3s-code-acp",
+      "path": "/Users/roylin/code/aster/target/qualification/no-count-limit-20261020/work-r5/a3s-code-acp",
+      "sha256": "87e1ce16cc44e4efa8ea6b0fdeb2572079c6fc48a89f4e1e4ce077a1474b1780"
+    },
+    {
+      "name": "a3s-office",
+      "source": "/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/AsterDream-TaskOptimization-R5.app/Contents/MacOS/a3s-office",
+      "path": "/Users/roylin/code/aster/target/qualification/no-count-limit-20261020/work-r5/a3s-office",
+      "sha256": "5a53babadcb754cf29aef635ee6c025183c47a3dc584e1dcc1cccf44b4c528cf"
+    }
+  ],
+  "exact_filter": "agent_plane::turns::local_acp_tests::delivery::count_limits::real_acp_interactive_default_executes_64_reads_without_a_count_limit",
+  "list_output": "agent_plane::turns::local_acp_tests::delivery::count_limits::real_acp_interactive_default_executes_64_reads_without_a_count_limit: test\n\n1 test, 0 benchmarks\n",
+  "paid_provider_calls": 0,
+  "app_launched": false
+}

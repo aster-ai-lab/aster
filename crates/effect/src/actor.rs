@@ -188,7 +188,25 @@ where
     S: Send + Sync + 'static,
     V: 'static,
 {
-    let mut steps = 0;
+    resume_with_optional_limit(actor, log, services, thread_id, Some(limit), cancel).await
+}
+
+/// Resume with an optional transition count. `None` removes only this count
+/// ceiling; cancellation and the preparation/commit boundary remain active.
+/// `Some(0)` retains the non-executing peek semantics of [`resume_with_cancel`].
+pub async fn resume_with_optional_limit<S, V>(
+    actor: &Actor<S, V>,
+    log: &dyn LogStore,
+    services: Arc<S>,
+    thread_id: &str,
+    limit: Option<u32>,
+    cancel: &CancellationToken,
+) -> Result<Settlement<V>, Exit<ActorError>>
+where
+    S: Send + Sync + 'static,
+    V: 'static,
+{
+    let mut steps = 0u32;
     let mut trace_events = Vec::new();
     loop {
         let facts = match log.read(thread_id) {
@@ -208,8 +226,10 @@ where
                 trace: trace_events,
             });
         };
-        if steps >= limit {
-            return Err(Exit::Fail(ActorError::StepLimit { limit }));
+        if let Some(limit) = limit {
+            if steps >= limit {
+                return Err(Exit::Fail(ActorError::StepLimit { limit }));
+            }
         }
         // The transition records its own cancel facts. Do not select around
         // this await: dropping it first would skip those facts, and a later
@@ -243,7 +263,7 @@ where
         if let Err(error) = log.append(thread_id, &produced, Some(next.key.as_str())) {
             return Err(Exit::Fail(error));
         }
-        steps += 1;
+        steps = steps.saturating_add(1);
         // A transition that completed and appended is durable work: settle
         // with it, never discard it. Cancellation is carried by the
         // transitions themselves — observed effects record their own
@@ -299,8 +319,25 @@ where
     S: Send + Sync + 'static,
     V: 'static,
 {
+    ingest_with_optional_limit(actor, log, services, thread_id, fact, Some(limit), cancel).await
+}
+
+/// Append one input and resume with an optional transition-count ceiling.
+pub async fn ingest_with_optional_limit<S, V>(
+    actor: &Actor<S, V>,
+    log: &dyn LogStore,
+    services: Arc<S>,
+    thread_id: &str,
+    fact: NewFact,
+    limit: Option<u32>,
+    cancel: &CancellationToken,
+) -> Result<Settlement<V>, Exit<ActorError>>
+where
+    S: Send + Sync + 'static,
+    V: 'static,
+{
     append_input(log, thread_id, fact).map_err(Exit::Fail)?;
-    resume_with_cancel(actor, log, services, thread_id, limit, cancel).await
+    resume_with_optional_limit(actor, log, services, thread_id, limit, cancel).await
 }
 
 #[cfg(test)]

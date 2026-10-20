@@ -1,0 +1,336 @@
+Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/billing/src/architecture.rs:369:
+                 let source = production_source(&source);
+                 for token in tokens {
+                     if source.contains(token) {
+[31m-                        hits.push(format!(
+(B[m[31m-                            "{} references {}",
+(B[m[31m-                            relative.display(),
+(B[m[31m-                            token
+(B[m[31m-                        ));
+(B[m[32m+                        hits.push(format!("{} references {}", relative.display(), token));
+(B[m                     }
+                 }
+             }
+Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/auth.rs:4:
+ 
+ pub const DEV_CAPABILITY_KEY: &str = "a3s_sk_devlocalgateway00000000000001";
+ 
+[31m-const ALLOWED: &[&str] = &[
+(B[m[31m-    DEV_CAPABILITY_KEY,
+(B[m[31m-    "a3s_sk_devlocalgateway00000000000002",
+(B[m[31m-];
+(B[m[32m+const ALLOWED: &[&str] = &[DEV_CAPABILITY_KEY, "a3s_sk_devlocalgateway00000000000002"];
+(B[m 
+ #[derive(Debug, Clone)]
+ pub struct AuthOk {
+Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/envelope.rs:29:
+     ok_envelope_msg(data, request_id, "OK")
+ }
+ 
+[31m-pub fn ok_envelope_msg<T: Serialize>(
+(B[m[31m-    data: T,
+(B[m[31m-    request_id: &str,
+(B[m[31m-    message: &str,
+(B[m[31m-) -> ApiEnvelope<T> {
+(B[m[32m+pub fn ok_envelope_msg<T: Serialize>(data: T, request_id: &str, message: &str) -> ApiEnvelope<T> {
+(B[m     ApiEnvelope {
+         success: true,
+         code: 0,
+Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/http/router.rs:115:
+             "/v1/api/services/{kind}/invoke/{*sku}",
+             post(service_invoke),
+         )
+[31m-        .route(
+(B[m[31m-            "/v1/api/__local/vault/materialize",
+(B[m[31m-            post(vault_materialize),
+(B[m[31m-        )
+(B[m[32m+        .route("/v1/api/__local/vault/materialize", post(vault_materialize))
+(B[m         .route("/v1/api/__local/vault/status", get(vault_status))
+         .route("/v1/api/__local/vault/receipts", get(vault_receipts))
+[31m-        .route(
+(B[m[31m-            "/v1/api/__local/queue/vault-apply",
+(B[m[31m-            post(vault_apply),
+(B[m[31m-        )
+(B[m[31m-        .route(
+(B[m[31m-            "/v1/api/__local/upstream-secrets",
+(B[m[31m-            put(upstream_secrets),
+(B[m[31m-        )
+(B[m[32m+        .route("/v1/api/__local/queue/vault-apply", post(vault_apply))
+(B[m[32m+        .route("/v1/api/__local/upstream-secrets", put(upstream_secrets))
+(B[m         // aliases without /v1 prefix (Console loopback)
+         .route("/__local/vault/materialize", post(vault_materialize))
+         .route("/__local/vault/status", get(vault_status))
+Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/http/router.rs:140:
+         .with_state(state)
+ }
+ 
+[31m-fn json_ok<T: serde::Serialize>(status: StatusCode, body: ApiEnvelope<T>, request_id: &str) -> Response {
+(B[m[32m+fn json_ok<T: serde::Serialize>(
+(B[m[32m+    status: StatusCode,
+(B[m[32m+    body: ApiEnvelope<T>,
+(B[m[32m+    request_id: &str,
+(B[m[32m+) -> Response {
+(B[m     let mut res = (status, Json(body)).into_response();
+     if let Ok(v) = HeaderValue::from_str(request_id) {
+         res.headers_mut().insert("x-request-id", v);
+Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/http/router.rs:155:
+ }
+ 
+ fn require_auth(headers: &HeaderMap, request_id: &str) -> Result<crate::auth::AuthOk, Response> {
+[31m-    authenticate(headers).map_err(|e| {
+(B[m[31m-        json_err(err_envelope(
+(B[m[31m-            request_id,
+(B[m[31m-            401,
+(B[m[31m-            e.message,
+(B[m[31m-            e.code,
+(B[m[31m-        ))
+(B[m[31m-    })
+(B[m[32m+    authenticate(headers).map_err(|e| json_err(err_envelope(request_id, 401, e.message, e.code)))
+(B[m }
+ 
+ fn is_loopback(headers: &HeaderMap) -> bool {
+Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/http/router.rs:501:
+             .filter(|value| !value.is_empty())
+             .map(str::to_string)
+             .unwrap_or_else(|| request_id.clone());
+[31m-        match deliver_platform_model(&state.http, &auth.key, &model, &transaction_id, &body).await
+(B[m[31m-        {
+(B[m[32m+        match deliver_platform_model(&state.http, &auth.key, &model, &transaction_id, &body).await {
+(B[m             Ok(delivery) if delivery.listed && delivery.available => {
+                 record_ok_once(
+                     &state,
+Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/http/router.rs:517:
+                 .await;
+                 return json_ok(
+                     StatusCode::OK,
+[31m-                    ok_envelope(json!({ "body": delivery.body, "available": true }), &request_id),
+(B[m[32m+                    ok_envelope(
+(B[m[32m+                        json!({ "body": delivery.body, "available": true }),
+(B[m[32m+                        &request_id,
+(B[m[32m+                    ),
+(B[m                     &request_id,
+                 );
+             }
+Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/http/router.rs:539:
+                             "reason": reason,
+                         })),
+                         request_id: request_id.clone(),
+[31m-                        timestamp: chrono::Utc::now().to_rfc3339_opts(
+(B[m[31m-                            chrono::SecondsFormat::Millis,
+(B[m[31m-                            true,
+(B[m[31m-                        ),
+(B[m[32m+                        timestamp: chrono::Utc::now()
+(B[m[32m+                            .to_rfc3339_opts(chrono::SecondsFormat::Millis, true),
+(B[m                         errors: None,
+                         error_code: Some("inference.unavailable".into()),
+                     },
+Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/http/router.rs:640:
+             .unwrap_or("env_local")
+             .to_string(),
+     };
+[31m-    let secret_ref = row
+(B[m[31m-        .get("secret_ref")
+(B[m[31m-        .and_then(|v| v.as_str())
+(B[m[31m-        .unwrap_or("");
+(B[m[32m+    let secret_ref = row.get("secret_ref").and_then(|v| v.as_str()).unwrap_or("");
+(B[m     let version = row.get("version").and_then(|v| v.as_i64()).unwrap_or(0);
+     let api_key = row.get("apiKey").and_then(|v| v.as_str()).unwrap_or("");
+     let base_url = row.get("baseUrl").and_then(|v| v.as_str());
+Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/http/router.rs:997:
+ 
+     async fn fake_deliver(Json(body): Json<Value>) -> Json<Value> {
+         let sku = body.get("sku").and_then(|item| item.as_str()).unwrap_or("");
+[31m-        let echoed = body.get("body").and_then(|item| item.as_str()).unwrap_or("");
+(B[m[32m+        let echoed = body
+(B[m[32m+            .get("body")
+(B[m[32m+            .and_then(|item| item.as_str())
+(B[m[32m+            .unwrap_or("");
+(B[m         let (listed, available, reason, response_body) = if sku.contains("idle") {
+             (true, false, "no worker", "")
+         } else if sku.contains("ready") {
+Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/http/router.rs:1050:
+     }
+ 
+     fn accepted_units(usage: &Value) -> (usize, f64) {
+[31m-        let items = usage["data"]["items"].as_array().cloned().unwrap_or_default();
+(B[m[32m+        let items = usage["data"]["items"]
+(B[m[32m+            .as_array()
+(B[m[32m+            .cloned()
+(B[m[32m+            .unwrap_or_default();
+(B[m         let ok: Vec<_> = items
+             .iter()
+             .filter(|item| item["status"] == "ok")
+Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/http/router.rs:1057:
+             .cloned()
+             .collect();
+[31m-        let units = ok.iter().map(|item| item["units"].as_f64().unwrap_or(0.0)).sum();
+(B[m[32m+        let units = ok
+(B[m[32m+            .iter()
+(B[m[32m+            .map(|item| item["units"].as_f64().unwrap_or(0.0))
+(B[m[32m+            .sum();
+(B[m         (ok.len(), units)
+     }
+ 
+Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/http/router.rs:1221:
+         .await;
+         assert_eq!(status, StatusCode::NOT_FOUND);
+         assert_eq!(agent["error_code"], "route.not_ready");
+[31m-        assert!(
+(B[m[31m-            agent["message"]
+(B[m[31m-                .as_str()
+(B[m[31m-                .unwrap_or("")
+(B[m[31m-                .contains("support-triage")
+(B[m[31m-        );
+(B[m[32m+        assert!(agent["message"]
+(B[m[32m+            .as_str()
+(B[m[32m+            .unwrap_or("")
+(B[m[32m+            .contains("support-triage"));
+(B[m 
+         server.abort();
+         let _ = std::fs::remove_dir_all(dir);
+Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/http/router.rs:1233:
+     }
+ }
+[32m+
+(B[mDiff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/input_contract.rs:7:
+ }
+ 
+ pub fn find_illegal_work_field(input: &serde_json::Map<String, Value>) -> Option<String> {
+[31m-    input
+(B[m[31m-        .keys()
+(B[m[31m-        .find(|k| is_illegal_work_field_key(k))
+(B[m[31m-        .cloned()
+(B[m[32m+    input.keys().find(|k| is_illegal_work_field_key(k)).cloned()
+(B[m }
+ 
+ pub fn str_field(input: &serde_json::Map<String, Value>, key: &str) -> Option<String> {
+Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/input_contract.rs:21:
+     }
+ }
+ 
+[31m-pub fn require_str(
+(B[m[31m-    input: &serde_json::Map<String, Value>,
+(B[m[31m-    key: &str,
+(B[m[31m-) -> Result<String, String> {
+(B[m[32m+pub fn require_str(input: &serde_json::Map<String, Value>, key: &str) -> Result<String, String> {
+(B[m     str_field(input, key).ok_or_else(|| format!("{key} is required"))
+ }
+ 
+Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/providers/platform.rs:59:
+     }
+     let data = value.get("data").unwrap_or(&value);
+     Ok(PlatformDelivery {
+[31m-        listed: data.get("listed").and_then(|item| item.as_bool()).unwrap_or(false),
+(B[m[32m+        listed: data
+(B[m[32m+            .get("listed")
+(B[m[32m+            .and_then(|item| item.as_bool())
+(B[m[32m+            .unwrap_or(false),
+(B[m         available: data
+             .get("available")
+             .and_then(|item| item.as_bool())
+Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/usage.rs:92:
+     }
+ 
+     pub fn record(&mut self, input: UsageInput) -> UsageRecord {
+[31m-        let amount_usd =
+(B[m[31m-            ((input.units * input.unit_price_usd) * 1_000_000.0).round() / 1_000_000.0;
+(B[m[32m+        let amount_usd = ((input.units * input.unit_price_usd) * 1_000_000.0).round() / 1_000_000.0;
+(B[m         let row = UsageRecord {
+             id: format!(
+                 "usage_{}_{}",
+Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/vault.rs:240:
+         }
+ 
+         let secret_ref = secret_ref.unwrap();
+[31m-        let material = self.sealed.iter().find(|r| {
+(B[m[31m-            r.secret_ref == secret_ref && r.version == version && r.provider == provider
+(B[m[31m-        });
+(B[m[32m+        let material = self
+(B[m[32m+            .sealed
+(B[m[32m+            .iter()
+(B[m[32m+            .find(|r| r.secret_ref == secret_ref && r.version == version && r.provider == provider);
+(B[m         if material.is_none() {
+             let receipt = VaultApplyReceipt {
+                 receipt_id,
+Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/vault.rs:362:
+                 self.apply_job(scope.clone(), provider, None, 0, None);
+                 return Ok(());
+             }
+[31m-            let entry = value
+(B[m[31m-                .as_object()
+(B[m[31m-                .ok_or_else(|| format!("{} must be {{ apiKey, baseUrl }} or null", provider.as_str()))?;
+(B[m[32m+            let entry = value.as_object().ok_or_else(|| {
+(B[m[32m+                format!(
+(B[m[32m+                    "{} must be {{ apiKey, baseUrl }} or null",
+(B[m[32m+                    provider.as_str()
+(B[m[32m+                )
+(B[m[32m+            })?;
+(B[m             let api_key = entry
+                 .get("apiKey")
+                 .and_then(|v| v.as_str())
+Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/apps/runtime/src/vault.rs:377:
+             let secret_ref = format!("inline://{}/{now}", provider.as_str());
+             let version = 1i64;
+             let base = entry.get("baseUrl").and_then(|v| v.as_str());
+[31m-            self.materialize(
+(B[m[31m-                scope.clone(),
+(B[m[31m-                provider,
+(B[m[31m-                &secret_ref,
+(B[m[31m-                version,
+(B[m[31m-                api_key,
+(B[m[31m-                base,
+(B[m[31m-            )?;
+(B[m[32m+            self.materialize(scope.clone(), provider, &secret_ref, version, api_key, base)?;
+(B[m             self.apply_job(scope.clone(), provider, Some(&secret_ref), version, base);
+             Ok(())
+         };
+Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/crates/code/acp/src/host_context.rs:278:
+ 
+     #[test]
+     fn completion_attestation_requires_a_known_explicit_host_mode() {
+[31m-        assert!(
+(B[m[31m-            studio_host_from_meta(None)
+(B[m[31m-                .unwrap()
+(B[m[31m-                .completion_attestation
+(B[m[31m-                .is_none()
+(B[m[31m-        );
+(B[m[32m+        assert!(studio_host_from_meta(None)
+(B[m[32m+            .unwrap()
+(B[m[32m+            .completion_attestation
+(B[m[32m+            .is_none());
+(B[m         let parsed = meta(serde_json::json!({"a3sHost":{"completionAttestation":"disk_content"}}));
+         assert_eq!(
+             studio_host_from_meta(Some(&parsed))
+Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/crates/oci-runtime/crates/runtime/src/agent_session/tests.rs:444:
+     // A shell script avoids the macOS code-signing restriction on copied
+     // system binaries: scripts are interpreted by the shebang target, so
+     // their signature is not path-bound.
+[31m-    std::fs::write(&shim, "#!/bin/sh\nprintf retained\n")
+(B[m[31m-        .expect("write a portable script fixture");
+(B[m[32m+    std::fs::write(&shim, "#!/bin/sh\nprintf retained\n").expect("write a portable script fixture");
+(B[m     std::fs::set_permissions(&shim, std::fs::Permissions::from_mode(0o755))
+         .expect("make executable fixture runnable");
+ 
+Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/crates/terminal/crates/codegen/a3s-code-pager/src/acp/a3s_spawn.rs:5:
+ use std::process::Stdio;
+ use std::thread;
+ 
+[31m-use anyhow::{anyhow, Context, Result};
+(B[m[32m+use anyhow::{Context, Result, anyhow};
+(B[m use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
+ use tokio::process::Command;
+ use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
+Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/crates/terminal/crates/codegen/a3s-code-pager/src/acp/a3s_spawn.rs:12:
+ use tokio_util::sync::CancellationToken;
+ 
+[31m-use a3s_acp_lib::{acp_channels, AcpGatewayReceiver, AcpGatewaySender, LineBufferedRead};
+(B[m[32m+use a3s_acp_lib::{AcpGatewayReceiver, AcpGatewaySender, LineBufferedRead, acp_channels};
+(B[m use a3s_code_shell::util::grok_home::grok_home;
+ use agent_client_protocol as acp;
+ 
+Diff in /Users/roylin/code/aster/target/worktrees/acp-runtime-20261020/crates/terminal/crates/codegen/a3s-code-pager/src/acp/a3s_spawn.rs:18:
+[31m-use super::spawn::{boot_auth_manager, SpawnedAgent};
+(B[m[32m+use super::spawn::{SpawnedAgent, boot_auth_manager};
+(B[m use a3s_code_shell::agent::config::Config as AgentConfig;
+ 
+ const MAX_BUF: usize = 8 * 1024 * 1024;

@@ -1,0 +1,50 @@
+{
+  "at_utc": "2026-10-19T22:52:45.086767+00:00",
+  "files": [
+    {
+      "path": "crates/code/core/src/capability/ceiling.rs",
+      "exists": true,
+      "sha256": "5515f67af861cf8b45d51c5f52777c1efe78eff7ae6462b5216c2f9f15840326"
+    },
+    {
+      "path": "crates/code/core/src/child_run.rs",
+      "exists": true,
+      "sha256": "0cb78d3669fce41846e83f1a690c733ee507c0c90de0eb2997d340b7a430e09c"
+    },
+    {
+      "path": "crates/code/core/src/child_run/tests.rs",
+      "exists": true,
+      "sha256": "7d8dce64e1c00b2aff0cd31c2d1d176ed160f13e13334b02f40901bd207be078"
+    },
+    {
+      "path": "crates/code/core/src/agent/loop_runtime.rs",
+      "exists": true,
+      "sha256": "7501dc8c82f035fdde06ae8e745f61c8e866aad7a0de9181dd155c678636883d"
+    },
+    {
+      "path": "crates/code/core/src/agent/execution_state.rs",
+      "exists": true,
+      "sha256": "52e4ac60931df8aa959988915b867de34bbb6d85862268359ad7d762ef63b1eb"
+    },
+    {
+      "path": "crates/code/core/src/agent/llm_turn.rs",
+      "exists": true,
+      "sha256": "9b384b5195637afec7d81fb14b7b5ace647b315e7e9adbcda21624e47a7df639"
+    },
+    {
+      "path": "crates/code/core/src/agent/tests.rs",
+      "exists": true,
+      "sha256": "f29b441b81b2b41a62c874cffe750484827968ed0a5509f68208d4ce6dd09508"
+    },
+    {
+      "path": "crates/code/core/src/agent/tests/no_count_limit.rs",
+      "exists": false,
+      "sha256": null
+    },
+    {
+      "path": "crates/code/core/tests/capability_scope.rs",
+      "exists": true,
+      "sha256": "792d0e567479e4c637224f8212c84d24071917586fde63dabee73999b117b1e8"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "frozen_at_utc": "2026-10-19T23:05:20.858879+00:00",
+  "source_count": 2,
+  "sources": [
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/local_acp_count_limit_tests.rs",
+      "sha256": "e65224da075c40eb8c596caa80b4141e9f6ccbbe1e9ed8be05fecf4560d401b2"
+    },
+    {
+      "path": "apps/work/src-tauri/src/agent_plane/local_acp_delivery_tests.rs",
+      "sha256": "fe9ead45ae4c1d09018a98bd6c3a4848554e5bbfb9ad655c24786e213fcd3ff4"
+    }
+  ],
+  "test_filter": "real_acp_interactive_default_executes_64_reads_without_a_count_limit",
+  "test_case_count": 1,
+  "ignored": true,
+  "rustfmt_command": "rustup run 1.97.1 rustfmt --check --edition 2024 --config skip_children=true apps/work/src-tauri/src/agent_plane/local_acp_count_limit_tests.rs apps/work/src-tauri/src/agent_plane/local_acp_delivery_tests.rs",
+  "rustfmt_exit_code": 0,
+  "diff_check_exit_code": 0,
+  "execution_status": "not executed by implementing agent; root owns Cargo/build/stage/exact signed adjacent ACP qualification",
+  "proof_scope": "Work native TurnService -> actual adjacent ACP/Core -> scripted loopback provider, 64 distinct read offsets and 65 main requests, saved final success, actual binary digest and macOS process cwd, finally close/reap; no Bash, VM, user state or paid provider.",
+  "full_test_name": "agent_plane::turns::local_acp_tests::delivery::count_limits::real_acp_interactive_default_executes_64_reads_without_a_count_limit",
+  "read_range_contract": "ReadTool offset is zero-based (core tools/builtin/read.rs schema and execution). Script offsets 0..63 with limit 1; each saved result must contain corresponding lines[0]..lines[63], including first and last lines.",
+  "static_review": "Independent sibling-agent source review found no scope/borrow/cleanup blocker; not compiled or executed by implementing/reviewing agent. macOS binary/cwd assertions are qualified only on that platform."
+}

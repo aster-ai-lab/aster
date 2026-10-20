@@ -1,0 +1,13 @@
+{
+  "at_utc": "2026-10-19T23:00:17.426402+00:00",
+  "files": [
+    {
+      "path": "crates/code/core/src/tools/task.rs",
+      "sha256": "0eb10d2fbc1a7ac97d803065666875eed428a0483fd3cb9bddc13b2d3d426753"
+    },
+    {
+      "path": "crates/code/core/src/tools/task/tests.rs",
+      "sha256": "ee8e86fa22fbad98a181f6de8c8e92169c0f18a6cf003b145fe4fd2f81ddefc9"
+    }
+  ]
+}

@@ -122,7 +122,7 @@ impl ExecutionLoopState {
         &self,
         workspace: &std::path::Path,
     ) -> crate::porcelain::PathDelta {
-        let mut observed = if self.workspace_watch_bound {
+        let observed = if self.workspace_watch_bound {
             crate::porcelain::baseline_delta(
                 workspace,
                 self.workspace_porcelain.clone(),
@@ -133,26 +133,30 @@ impl ExecutionLoopState {
         } else {
             crate::porcelain::PathDelta::default()
         };
-        if self
+        let status_failed = self
             .run_watch
             .as_ref()
-            .is_some_and(|watch| watch.stamp_read_failed())
+            .is_some_and(|watch| watch.stamp_read_failed());
+        let status_budget = self
+            .run_watch
+            .as_ref()
+            .is_some_and(|watch| watch.status_budget());
+        // File changes apply only while status was fully read and the status
+        // diff itself is empty. Compute that before the fold clears paths.
+        let files = if !status_failed
+            && !status_budget
+            && !observed.status_budget
+            && observed.paths.is_empty()
+            && !observed.incomplete
+            && self.run_watch_is_baseline
         {
-            // The run-start read missed. A later successful status cannot
-            // turn that missing before-image into an empty mutation.
-            observed.incomplete = true;
-        }
-        if observed.paths.is_empty() && !observed.incomplete && self.run_watch_is_baseline {
-            if let Some(watch) = &self.run_watch {
-                let files = watch.file_changes(workspace);
-                if files.incomplete {
-                    observed.incomplete = true;
-                } else {
-                    observed.paths = files.paths;
-                }
-            }
-        }
-        observed
+            self.run_watch
+                .as_ref()
+                .map(|watch| watch.file_changes(workspace))
+        } else {
+            None
+        };
+        crate::porcelain::fold_run_observation(observed, status_failed, status_budget, files)
     }
 
     pub(super) fn next_turn(&mut self) -> usize {
@@ -216,7 +220,7 @@ impl ExecutionLoopState {
     }
 
     pub(super) fn turn_limit_error(&self, max_tool_rounds: usize) -> Option<String> {
-        (self.turn > max_tool_rounds)
+        (max_tool_rounds != 0 && self.turn > max_tool_rounds)
             .then(|| format!("Max tool rounds ({}) exceeded", max_tool_rounds))
     }
 
@@ -357,7 +361,7 @@ impl ExecutionLoopState {
     ) -> bool {
         if enabled
             && self.continuation_count < max_continuation_turns
-            && self.turn < max_tool_rounds
+            && (max_tool_rounds == 0 || self.turn < max_tool_rounds)
             && looks_incomplete
         {
             self.continuation_count += 1;
@@ -372,7 +376,10 @@ impl ExecutionLoopState {
         enabled: bool,
         max_tool_rounds: usize,
     ) -> bool {
-        if enabled && self.reasoning_only_repair_count == 0 && self.turn < max_tool_rounds {
+        if enabled
+            && self.reasoning_only_repair_count == 0
+            && (max_tool_rounds == 0 || self.turn < max_tool_rounds)
+        {
             self.reasoning_only_repair_count += 1;
             return true;
         }
@@ -537,10 +544,86 @@ mod tests {
             "stamp-cap overflow was treated as a missed status: {observed:?}"
         );
         assert!(
+            !observed.budget_exceeded,
+            "a fully read status closed the run for a path list: {observed:?}"
+        );
+        assert!(
             observed.paths.iter().any(|path| path == "owned.txt"),
             "{:?}",
             observed.paths
         );
+    }
+
+    #[tokio::test]
+    async fn a_path_list_over_the_stamp_cap_stays_recorded_and_the_gate_stays_open() {
+        use crate::harness_loop::{decide_completion, CompletionGate, MutationLedger};
+        use crate::porcelain::FILE_WALK_CAP;
+        let workspace = tempfile::tempdir().unwrap();
+        let root = workspace.path();
+        assert!(std::process::Command::new("git")
+            .args(["init"])
+            .current_dir(root)
+            .status()
+            .unwrap()
+            .success());
+        let mut state = ExecutionLoopState::new(&[]);
+        state.bind_run_watch(root).await;
+        for index in 0..=FILE_WALK_CAP {
+            std::fs::write(root.join(format!("f{index:04}.txt")), "x").unwrap();
+        }
+        let observed = state.unseen_workspace_paths(root).await;
+        assert!(!observed.incomplete, "{observed:?}");
+        assert!(!observed.budget_exceeded, "{observed:?}");
+        assert!(!observed.status_budget, "{observed:?}");
+        assert_eq!(
+            observed.paths.len(),
+            FILE_WALK_CAP + 1,
+            "{:?}",
+            observed.paths
+        );
+        assert!(observed
+            .paths
+            .iter()
+            .any(|path| path == &format!("f{FILE_WALK_CAP:04}.txt")));
+        let mut ledger = MutationLedger::default();
+        ledger.set_observation_incomplete(observed.incomplete || observed.budget_exceeded);
+        assert!(matches!(
+            decide_completion(&ledger, &[], &[], false),
+            CompletionGate::Allow(_)
+        ));
+    }
+
+    #[tokio::test]
+    async fn a_fresh_status_record_cap_closes_the_gate() {
+        use crate::harness_loop::{decide_completion, CompletionGate, MutationLedger};
+        use crate::porcelain::STATUS_RECORD_CAP;
+        let workspace = tempfile::tempdir().unwrap();
+        let root = workspace.path();
+        assert!(std::process::Command::new("git")
+            .args(["init"])
+            .current_dir(root)
+            .status()
+            .unwrap()
+            .success());
+        let mut state = ExecutionLoopState::new(&[]);
+        state.bind_run_watch(root).await;
+        for index in 0..=STATUS_RECORD_CAP {
+            std::fs::write(root.join(format!("f{index:05}")), "x").unwrap();
+        }
+        let observed = state.unseen_workspace_paths(root).await;
+        assert!(observed.budget_exceeded, "{observed:?}");
+        assert!(observed.status_budget, "{observed:?}");
+        assert!(!observed.incomplete, "{observed:?}");
+        assert!(observed.paths.is_empty(), "{:?}", observed.paths);
+        let mut ledger = MutationLedger::default();
+        ledger.set_observation_incomplete(observed.incomplete || observed.budget_exceeded);
+        match decide_completion(&ledger, &[], &[], false) {
+            CompletionGate::Incomplete { message } => assert_eq!(
+                message,
+                "completion gate: workspace observation is incomplete, so this digest is not the effect. A final answer, a waiver, or a verification of a partial list does not close it."
+            ),
+            other => panic!("fresh status cap left the gate open: {other:?}"),
+        }
     }
 
     #[tokio::test]
@@ -877,6 +960,33 @@ mod tests {
         assert!(state.should_inject_continuation(true, true, 1, 5));
         assert!(!state.should_inject_continuation(true, true, 1, 5));
         assert!(!state.should_inject_continuation(false, true, 2, 5));
+    }
+
+    #[test]
+    fn zero_tool_rounds_preserves_repair_and_continuation_limits() {
+        let mut state = ExecutionLoopState::new_seeded(
+            &[],
+            Some(ExecutionSeed {
+                turn: 51,
+                ..Default::default()
+            }),
+        );
+        assert!(state.turn_limit_error(0).is_none());
+        assert!(state.turn_limit_error(3).is_some());
+        assert!(state.should_inject_continuation(true, true, 1, 0));
+        assert!(!state.should_inject_continuation(true, true, 1, 0));
+        assert!(state.should_inject_reasoning_only_repair(true, 0));
+        assert!(!state.should_inject_reasoning_only_repair(true, 0));
+
+        let mut bounded = ExecutionLoopState::new_seeded(
+            &[],
+            Some(ExecutionSeed {
+                turn: 3,
+                ..Default::default()
+            }),
+        );
+        assert!(!bounded.should_inject_continuation(true, true, 1, 3));
+        assert!(!bounded.should_inject_reasoning_only_repair(true, 3));
     }
 
     #[test]

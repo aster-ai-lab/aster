@@ -1,0 +1,28 @@
+{
+  "base_commit": "f35ab79dda494438a1d83471da672367293e14fb",
+  "work_base_commit": "1d4b901886cc251c62b46d704959c4a97ecfcb29",
+  "work_test_sources": {
+    "src-tauri/src/agent_plane/local_acp_delivery_tests.rs": "fe9ead45ae4c1d09018a98bd6c3a4848554e5bbfb9ad655c24786e213fcd3ff4",
+    "src-tauri/src/agent_plane/local_acp_count_limit_tests.rs": "e65224da075c40eb8c596caa80b4141e9f6ccbbe1e9ed8be05fecf4560d401b2"
+  },
+  "build_environment": {
+    "CARGO_TARGET_DIR": "/Users/roylin/code/aster/target",
+    "A3S_ACP_AGENT_BIN": "/Users/roylin/code/aster/target/debug/a3s-code-acp"
+  },
+  "isolated_worktree": "/Users/roylin/code/aster/target/worktrees/acp-runtime-20261020",
+  "excluded_changes": [
+    "Studio delivery alignment",
+    "ACP package identity and runtime-boundary ratchet",
+    "terminal startup and native refusal work"
+  ],
+  "initial_lock_failure": "Shared-tree terminal startup edits removed dependencies while the lockfile still contained them. A temporary whole-lock regeneration was discarded; no lockfile change is included. Isolated tests use the unchanged base lockfile.",
+  "test_file_adjustments": "Added cfg(test) headers to the five new test-only files and formatted the touched ACP test module. No additional production behavior was changed.",
+  "work_landed_commit": "33edc9a74f4042efca73157d815dfca139a53140",
+  "excluded_later_core_receipt_edits": [
+    "crates/code/core/src/fact_control/receipts.rs",
+    "crates/code/core/src/fact_control/receipts/tests.rs",
+    "crates/code/core/src/fact_control/receipts/tests/pre_spawn.rs",
+    "crates/code/core/src/harness_loop.rs",
+    "crates/code/core/src/harness_loop/receipt_tests.rs"
+  ]
+}

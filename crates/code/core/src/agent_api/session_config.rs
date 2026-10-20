@@ -386,12 +386,6 @@ fn validate_session_options(options: &SessionOptions) -> Result<String> {
             "must be greater than zero",
         ));
     }
-    if options.max_tool_rounds == Some(0) {
-        return Err(invalid_numeric_option(
-            "max_tool_rounds",
-            "must be greater than zero",
-        ));
-    }
     if options.max_parallel_tasks == Some(0) {
         return Err(invalid_numeric_option(
             "max_parallel_tasks",
@@ -831,7 +825,6 @@ mod tests {
             ("duplicate_tool_call_threshold", |opts| {
                 opts.duplicate_tool_call_threshold = Some(0)
             }),
-            ("max_tool_rounds", |opts| opts.max_tool_rounds = Some(0)),
             ("max_parallel_tasks", |opts| {
                 opts.max_parallel_tasks = Some(0)
             }),

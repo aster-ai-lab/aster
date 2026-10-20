@@ -1,0 +1,90 @@
+{
+  "at_utc": "2026-10-19T22:55:07.946205+00:00",
+  "files": [
+    {
+      "path": "crates/code/core/src/capability/ceiling.rs",
+      "sha256": "5d8752bf0731293dddc966600133d80d732c56fcb2d348b3d93689a17f08661a"
+    },
+    {
+      "path": "crates/code/core/src/child_run.rs",
+      "sha256": "67a6f7af6fd47f8b1cbdd5fa5782f33ff96bf18103880328a67a736414475fc1"
+    },
+    {
+      "path": "crates/code/core/src/child_run/tests.rs",
+      "sha256": "14ea54707430db41157e0ba2252ea36b43176c3db3bec84282e1fec6975120fb"
+    },
+    {
+      "path": "crates/code/core/src/agent/loop_runtime.rs",
+      "sha256": "436a5167019e72d61bbb302fa4618b02d5d1efdb58dbb8bb51190593b3bee505"
+    },
+    {
+      "path": "crates/code/core/src/agent/execution_state.rs",
+      "sha256": "b49c00868fab2f4cc93a75d937b966361aa98472fb2a0ceafa8f17cfe7c95708"
+    },
+    {
+      "path": "crates/code/core/src/agent/llm_turn.rs",
+      "sha256": "63db0a282be669532c5cc166a2929ebbfd5c74ed63770427576ff4d877a1f324"
+    },
+    {
+      "path": "crates/code/core/src/agent/tests.rs",
+      "sha256": "1bb7a125cc0bd5066c31fa449c1ba9da9bdcb33d4580ae55786fdccdec559138"
+    },
+    {
+      "path": "crates/code/core/src/agent/tests/no_count_limit.rs",
+      "sha256": "37f501a98e782586ec8c15e97e207c62f9b2bf12a200f52d3ef29a8acee9557b"
+    },
+    {
+      "path": "crates/code/core/tests/capability_scope.rs",
+      "sha256": "b8a887fbf02e610a7f0587df77b8a66d947868603ca228f960806084ab72ca75"
+    }
+  ],
+  "checks": [
+    {
+      "name": "scoped_rustfmt_check",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2021",
+        "--config",
+        "skip_children=true",
+        "--check",
+        "crates/code/core/src/capability/ceiling.rs",
+        "crates/code/core/src/child_run.rs",
+        "crates/code/core/src/child_run/tests.rs",
+        "crates/code/core/src/agent/loop_runtime.rs",
+        "crates/code/core/src/agent/execution_state.rs",
+        "crates/code/core/src/agent/llm_turn.rs",
+        "crates/code/core/src/agent/tests.rs",
+        "crates/code/core/src/agent/tests/no_count_limit.rs",
+        "crates/code/core/tests/capability_scope.rs"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.07715125,
+      "log": "scoped_rustfmt_check.log"
+    },
+    {
+      "name": "owned_diff_check",
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "crates/code/core/src/capability/ceiling.rs",
+        "crates/code/core/src/child_run.rs",
+        "crates/code/core/src/child_run/tests.rs",
+        "crates/code/core/src/agent/loop_runtime.rs",
+        "crates/code/core/src/agent/execution_state.rs",
+        "crates/code/core/src/agent/llm_turn.rs",
+        "crates/code/core/src/agent/tests.rs",
+        "crates/code/core/src/agent/tests/no_count_limit.rs",
+        "crates/code/core/tests/capability_scope.rs"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.018239709000000007,
+      "log": "owned_diff_check.log"
+    }
+  ],
+  "new_tests_expected": 10,
+  "cargo_or_tests_run": false,
+  "owned_patch_sha256": "8b7d5819a93be1c41f4584bf38d0066e4aefd722d4290a3fbbda6b4c255af7de"
+}

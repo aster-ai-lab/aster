@@ -185,7 +185,8 @@ impl crate::agent::TurnEngine {
             // ability to return the evidence it already collected. The same
             // reserved turn also stops repeated identical calls. Reading
             // distinct sources need not change the workspace to make progress.
-            let budget_hit = state.current_turn() >= self.config.max_tool_rounds;
+            let budget_hit = self.config.max_tool_rounds != 0
+                && state.current_turn() >= self.config.max_tool_rounds;
             let repeated_tool = state.take_duplicate_finalization();
             let force_finalization = budget_hit || repeated_tool;
             if force_finalization {
@@ -555,9 +556,9 @@ impl crate::agent::TurnEngine {
         )
         .await;
         let unseen = state.unseen_workspace_paths(workspace).await;
-        state
-            .mutations
-            .set_observation_incomplete(child_unobserved || unseen.incomplete);
+        state.mutations.set_observation_incomplete(
+            child_unobserved || unseen.incomplete || unseen.budget_exceeded,
+        );
         state.mutations.observe_unseen_paths(&unseen.paths);
         if state.mutations.observation_incomplete() {
             return Err(state.finish_failed(anyhow::anyhow!(

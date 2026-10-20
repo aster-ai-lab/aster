@@ -1,0 +1,17 @@
+{
+  "at_utc": "2026-10-19T23:12:42.985904+00:00",
+  "files": [
+    {
+      "path": "crates/code/core/src/fact_control.rs",
+      "sha256": "10800010ec6fab372904ded89460405edc303f3b2e9bb5c5fddbdd7a4a1f8e7f"
+    },
+    {
+      "path": "crates/code/core/src/fact_control_tests.rs",
+      "sha256": "aee5a7e0b93824820c012eeadc2f86023472978fdc52f5a5e114ea36f5615367"
+    },
+    {
+      "path": "crates/code/core/src/agent_api/conversation_runtime/owned_worker.rs",
+      "sha256": "00cb12bb1ab49714840fc693de80aceae71d51f0c484b7e4bee10a2c39f8222d"
+    }
+  ]
+}

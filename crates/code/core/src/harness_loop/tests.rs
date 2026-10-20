@@ -178,8 +178,10 @@ fn incomplete_observation_is_not_closed_by_a_waiver_of_a_partial_digest() {
         CompletionWaiverV1::new(ledger.digest(), "user accepted residual risk").expect("waiver");
     match decide_completion(&ledger, &[], std::slice::from_ref(&waiver), false) {
         CompletionGate::Incomplete { message } => {
-            assert!(message.contains("observation is incomplete"));
-            assert!(!message.contains("tests passed"));
+            assert_eq!(
+                message,
+                "completion gate: workspace observation is incomplete, so this digest is not the effect. A final answer, a waiver, or a verification of a partial list does not close it."
+            );
         }
         other => panic!("expected incomplete, got {other:?}"),
     }

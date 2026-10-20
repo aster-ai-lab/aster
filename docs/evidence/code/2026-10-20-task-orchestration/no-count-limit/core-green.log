@@ -1,0 +1,266 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling a3s-effect v0.2.1 (/Users/roylin/code/aster/crates/effect)
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+  --> crates/code/core/src/agent_api/conversation_runtime/receipt_restore_tests/cache_coverage.rs:50:13
+   |
+50 |             crate::porcelain::PathDelta {
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+   --> crates/code/core/src/fact_control/receipts.rs:432:21
+    |
+432 |                     crate::porcelain::PathDelta {
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^ missing `budget_exceeded`
+
+error[E0425]: cannot find function `git_capture` in this scope
+   --> crates/code/core/src/porcelain.rs:428:11
+    |
+428 |     match git_capture(root, &["status", "--porcelain", "-z", "-u", "--", "."]).await {
+    |           ^^^^^^^^^^^ not found in this scope
+
+error[E0609]: no field `rejected` on type `(Vec<std::string::String>, bool)`
+   --> crates/code/core/src/porcelain.rs:439:23
+    |
+439 |             if parsed.rejected {
+    |                       ^^^^^^^^ unknown field
+    |
+    = note: available fields are: `0`, `1`
+
+error[E0609]: no field `budget` on type `(Vec<std::string::String>, bool)`
+   --> crates/code/core/src/porcelain.rs:444:30
+    |
+444 |             } else if parsed.budget {
+    |                              ^^^^^^ unknown field
+    |
+    = note: available fields are: `0`, `1`
+
+error[E0609]: no field `records` on type `(Vec<std::string::String>, bool)`
+   --> crates/code/core/src/porcelain.rs:451:61
+    |
+451 |                     records: scope_porcelain_records(parsed.records, &prefix),
+    |                                                             ^^^^^^^ unknown field
+    |
+    = note: available fields are: `0`, `1`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+  --> crates/code/core/src/agent/tool_completion_runtime/native_artifact_verification_tests.rs:91:13
+   |
+91 |             crate::porcelain::PathDelta {
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+   --> crates/code/core/src/agent/tool_invoker.rs:704:25
+    |
+704 |                 None => crate::porcelain::PathDelta {
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+   --> crates/code/core/src/agent_api/conversation_runtime/receipt_restore_tests/cache_coverage.rs:313:9
+    |
+313 |         crate::porcelain::PathDelta {
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+   --> crates/code/core/src/agent_api/conversation_runtime/receipt_restore_tests/cache_coverage.rs:389:9
+    |
+389 |         crate::porcelain::PathDelta {
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+   --> crates/code/core/src/agent_api/conversation_runtime/receipt_restore_tests/cache_coverage.rs:470:9
+    |
+470 |         crate::porcelain::PathDelta {
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+   --> crates/code/core/src/agent_api/conversation_runtime/receipt_restore_tests/cache_coverage/recovery_lifecycle.rs:347:9
+    |
+347 |         crate::porcelain::PathDelta {
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+   --> crates/code/core/src/agent_api/tests/stream.rs:748:9
+    |
+748 |         crate::porcelain::PathDelta {
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+  --> crates/code/core/src/fact_control/receipts/tests/cache_provenance.rs:43:9
+   |
+43 |         crate::porcelain::PathDelta {
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+   --> crates/code/core/src/fact_control/receipts/tests.rs:452:9
+    |
+452 |         crate::porcelain::PathDelta {
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+   --> crates/code/core/src/harness_loop.rs:285:13
+    |
+285 |             crate::porcelain::PathDelta {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+   --> crates/code/core/src/harness_loop.rs:814:13
+    |
+814 |             crate::porcelain::PathDelta {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+    --> crates/code/core/src/harness_loop.rs:1000:13
+     |
+1000 |             crate::porcelain::PathDelta {
+     |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+  --> crates/code/core/src/harness_loop/shell_diagnostic_tests.rs:14:13
+   |
+14 |             crate::porcelain::PathDelta {
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+  --> crates/code/core/src/harness_loop/shell_diagnostic_tests.rs:46:13
+   |
+46 |             crate::porcelain::PathDelta {
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+   --> crates/code/core/src/harness_loop/shell_diagnostic_tests.rs:120:21
+    |
+120 |                     crate::porcelain::PathDelta {
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+   --> crates/code/core/src/harness_loop/shell_diagnostic_tests.rs:200:13
+    |
+200 |             crate::porcelain::PathDelta {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+   --> crates/code/core/src/harness_loop/shell_diagnostic_tests.rs:217:17
+    |
+217 |                 crate::porcelain::PathDelta {
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+   --> crates/code/core/src/porcelain.rs:810:16
+    |
+810 |         return PathDelta {
+    |                ^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+   --> crates/code/core/src/porcelain.rs:838:5
+    |
+838 |     PathDelta {
+    |     ^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `status_budget` in initializer of `porcelain::Snapshot`
+    --> crates/code/core/src/porcelain.rs:2140:5
+     |
+2140 |     Snapshot {
+     |     ^^^^^^^^ missing `status_budget`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+   --> crates/code/core/src/porcelain/receipt_tests.rs:337:9
+    |
+337 |         PathDelta {
+    |         ^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+   --> crates/code/core/src/porcelain/receipt_tests.rs:347:9
+    |
+347 |         PathDelta {
+    |         ^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+   --> crates/code/core/src/porcelain/receipt_tests.rs:370:9
+    |
+370 |         PathDelta {
+    |         ^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+   --> crates/code/core/src/porcelain/receipt_tests.rs:387:9
+    |
+387 |         PathDelta {
+    |         ^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+   --> crates/code/core/src/porcelain/receipt_tests.rs:400:9
+    |
+400 |         PathDelta {
+    |         ^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+   --> crates/code/core/src/porcelain/receipt_tests.rs:687:9
+    |
+687 |         PathDelta {
+    |         ^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `budget_exceeded` in initializer of `porcelain::PathDelta`
+   --> crates/code/core/src/porcelain/receipt_tests.rs:941:9
+    |
+941 |         PathDelta {
+    |         ^^^^^^^^^ missing `budget_exceeded`
+
+error[E0063]: missing field `status_budget` in initializer of `porcelain::Snapshot`
+   --> crates/code/core/src/porcelain/receipt_tests.rs:976:19
+    |
+976 |         snapshot: Snapshot {
+    |                   ^^^^^^^^ missing `status_budget`
+
+error[E0063]: missing field `status_budget` in initializer of `porcelain::Snapshot`
+    --> crates/code/core/src/porcelain/receipt_tests.rs:1005:19
+     |
+1005 |         snapshot: Snapshot {
+     |                   ^^^^^^^^ missing `status_budget`
+
+error[E0433]: cannot find type `HiddenIndex` in this scope
+   --> crates/code/core/src/porcelain.rs:371:13
+    |
+371 |             HiddenIndex::Listed(paths, parse_incomplete) => {
+    |             ^^^^^^^^^^^ use of undeclared type `HiddenIndex`
+
+error[E0433]: cannot find type `HiddenIndex` in this scope
+   --> crates/code/core/src/porcelain.rs:382:13
+    |
+382 |             HiddenIndex::OverCap => {
+    |             ^^^^^^^^^^^ use of undeclared type `HiddenIndex`
+
+error[E0433]: cannot find type `HiddenIndex` in this scope
+   --> crates/code/core/src/porcelain.rs:385:13
+    |
+385 |             HiddenIndex::Failed => {
+    |             ^^^^^^^^^^^ use of undeclared type `HiddenIndex`
+
+error[E0433]: cannot find type `GitCapture` in this scope
+   --> crates/code/core/src/porcelain.rs:429:9
+    |
+429 |         GitCapture::Failed => StatusRead {
+    |         ^^^^^^^^^^ use of undeclared type `GitCapture`
+
+error[E0433]: cannot find type `GitCapture` in this scope
+   --> crates/code/core/src/porcelain.rs:433:9
+    |
+433 |         GitCapture::OverCap => StatusRead {
+    |         ^^^^^^^^^^ use of undeclared type `GitCapture`
+
+error[E0433]: cannot find type `GitCapture` in this scope
+   --> crates/code/core/src/porcelain.rs:437:9
+    |
+437 |         GitCapture::Bytes(output) => {
+    |         ^^^^^^^^^^ use of undeclared type `GitCapture`
+
+Some errors have detailed explanations: E0063, E0425, E0433, E0609.
+For more information about an error, try `rustc --explain E0063`.
+error: could not compile `a3s-code-core` (lib test) due to 41 previous errors

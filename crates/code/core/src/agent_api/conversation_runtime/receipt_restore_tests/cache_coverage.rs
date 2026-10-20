@@ -50,6 +50,8 @@ impl CacheCoverageFixture {
             crate::porcelain::PathDelta {
                 paths: vec!["cached.txt".into()],
                 incomplete: false,
+                budget_exceeded: false,
+                status_budget: false,
             },
         );
         let written = ToolExecutionResultV1 {
@@ -313,6 +315,8 @@ async fn a_future_terminal_does_not_erase_prepared_debt_at_the_exact_cached_pref
         crate::porcelain::PathDelta {
             paths: vec!["cached.txt".into()],
             incomplete: false,
+            budget_exceeded: false,
+            status_budget: false,
         },
     );
     facts.push(fact(
@@ -389,6 +393,8 @@ async fn valid_older_cache_is_covered_before_a_later_known_write() {
         crate::porcelain::PathDelta {
             paths: vec!["cached.txt".into()],
             incomplete: false,
+            budget_exceeded: false,
+            status_budget: false,
         },
     );
     facts.extend(CacheCoverageFixture::pair(&later, &result));
@@ -470,6 +476,8 @@ async fn prior_settled_path_does_not_rebind_a_new_runs_distinct_effect_report() 
         crate::porcelain::PathDelta {
             paths: vec!["prior.txt".into()],
             incomplete: false,
+            budget_exceeded: false,
+            status_budget: false,
         },
     );
     let mut facts = CacheCoverageFixture::pair(&prior, &result);
