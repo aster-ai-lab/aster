@@ -1,0 +1,73 @@
+Window: "AsterDream", App: AsterDream.
+0 standard window AsterDream, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content Description: AsterDream, URL: tauri://localhost/windows/main/index.html
+			3 pop up button Bugfix E2E
+			4 button 工作
+			5 button 知识
+			6 button 设置
+			7 container
+				8 container 消息
+					9 container
+						10 text /goal status 10/20 12:01
+						11 button 从这里编辑
+						12 button 复制
+						13 button 删除
+						14 text AsterDream 10/20 12:01
+						15 text 当前未设置目标。发送 /goal <目标内容> 开始。
+						16 button 复制
+						17 button 保存到笔记
+						18 button 删除
+						19 pop up button 更多操作
+						20 text /goal Verify that note.txt contains UI_GOAL_QA. Read only and report the exact text. Do not change any files. 10/20 12:01
+						21 button 从这里编辑
+						22 button 复制
+						23 button 删除
+						24 text AsterDream 10/20 12:01
+						25 text 目标进行中 计划：已完成 0/1 项 正在继续执行。
+						26 text 目标进行中 计划：已完成 0/1 项 正在继续执行。
+						27 text HTTP request transport failed: error sending request for url (http://127.0.0.1:4607/old/v1/chat/completions): client error (Connect): tcp connect error: Connection refused (os error 61)
+						28 button 复制
+						29 button 保存到笔记
+						30 button 删除
+						31 pop up button 更多操作
+						32 text /goal pause 10/20 12:02
+						33 button 从这里编辑
+						34 button 复制
+						35 button 删除
+						36 text AsterDream 10/20 12:02
+						37 text 当前未设置目标。发送 /goal <目标内容> 开始。
+						38 button 复制
+						39 button 保存到笔记
+						40 button 删除
+						41 pop up button 更多操作
+				42 container 会话导航
+					43 button 跳转到第 1 轮对话
+					44 button 跳转到第 2 轮对话
+					45 button 跳转到第 3 轮对话
+				46 text entry area (settable) 描述会话，输入 / 使用指令或技能, Value: 
+
+					47 text 描述会话，输入 / 使用指令或技能
+				48 pop up button 更多选项
+				49 pop up button 授权模式: 逐次确认
+				50 switch (settable, boolean) 规划模式, Help: 对下一次发送生效：先生成计划，审阅确认后再执行。不改变工具授权方式，也不改变正在运行的回合。, Value: off
+				51 pop up button gpt-4.1-mini
+				52 button (disabled) 发送
+				53 toolbar 会话范围
+					54 pop up button 工作区文件
+				55 container
+					56 button 打开会话工作区
+					57 container 工作区快捷栏
+						58 button 浏览器
+						59 button 终端
+						60 button 文件
+						61 button (collapsed) 展开工作区快捷菜单, Secondary Actions: Expand
+				62 toggle button 展开侧边栏, Value: off
+	63 close button
+	64 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	65 minimize button
+66 menu bar
+	67 AsterDream
+	68 编辑
+
+The focused UI element is 46 text entry area (settable) 描述会话，输入 / 使用指令或技能, Value: 

@@ -38,6 +38,7 @@ async fn explicit_new_goals_use_default_bounds_and_trusted_disable_wins() {
         let reply = crate::goal::apply_bound_goal(
             &session,
             &crate::goal::GoalOp::Set("Explicit user outcome".into()),
+            crate::goal::GoalLanguage::English,
         )
         .await
         .unwrap()
@@ -52,7 +53,9 @@ async fn explicit_new_goals_use_default_bounds_and_trusted_disable_wins() {
         );
         match crate::goal::bound_goal_step(&session).await.unwrap() {
             crate::goal::BoundGoalStep::Advance(_) => assert!(!disabled),
-            crate::goal::BoundGoalStep::Stopped("budget_exhausted") => assert!(disabled),
+            crate::goal::BoundGoalStep::Stopped(
+                a3s_code_core::goal_control::GoalTickDecisionV1::BudgetExhausted,
+            ) => assert!(disabled),
             _ => panic!("unexpected default goal decision"),
         }
         let thread = a3s_code_core::fact_control::thread_for_session(session.session_id());
@@ -61,6 +64,58 @@ async fn explicit_new_goals_use_default_bounds_and_trusted_disable_wins() {
         assert!(!facts.iter().any(|fact| fact.kind == "model.turn"));
         session.close().await;
     }
+}
+
+#[tokio::test]
+async fn chinese_goal_status_is_concise_and_does_not_claim_completion_when_paused() {
+    use crate::goal::{apply_bound_goal, GoalLanguage, GoalOp};
+
+    let root = tempfile::tempdir().unwrap();
+    let host = A3sCodeAgent::new(test_launch(Some(root.path().join("store"))));
+    let id = host
+        .new_session(acp::NewSessionRequest::new(root.path()))
+        .await
+        .unwrap()
+        .session_id;
+    let session = host.sessions.lock().await[&id.0.to_string()]
+        .session
+        .clone();
+    let objective = "Complete every requirement in instruction.md";
+    let language = GoalLanguage::from_host(Some("zh-CN"));
+    let created = apply_bound_goal(&session, &GoalOp::Set(objective.into()), language)
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(
+        created.reply,
+        "目标进行中\n计划：已完成 0/1 项\n正在继续执行。"
+    );
+    assert!(!created.reply.contains(objective));
+    assert_eq!(
+        session.goal_definition().unwrap().unwrap().goal.description,
+        objective
+    );
+
+    let paused = apply_bound_goal(&session, &GoalOp::Pause, language)
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(
+        paused.reply,
+        "目标已暂停\n计划：已完成 0/1 项\n已暂停，可发送 /goal resume 继续。"
+    );
+    assert!(!paused.tick);
+    let cleared = apply_bound_goal(&session, &GoalOp::Clear, language)
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(
+        cleared.reply,
+        "目标已取消\n计划：已完成 0/1 项\n可新建会话开始其他任务。"
+    );
+    assert!(!cleared.reply.contains("目标已完成"));
+    assert_eq!(session.recorded_usage_tokens(), (0, 0, 0));
+    session.close().await;
 }
 
 async fn prompt(

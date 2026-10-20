@@ -20,6 +20,18 @@ const MAX_INPUT_BYTES: usize = 1024 * 1024;
 const MAX_FILE_BYTES: u64 = 20 * 1024 * 1024;
 const MAX_CELLS: usize = 10_000;
 
+fn render_svg_png(svg: &str) -> Result<Vec<u8>> {
+    #[cfg(feature = "svg-png")]
+    {
+        return crate::artifact_image::render_png(svg);
+    }
+    #[cfg(not(feature = "svg-png"))]
+    {
+        let _ = svg;
+        bail!("PNG rendering requires the svg-png feature");
+    }
+}
+
 pub(crate) struct OfficeFileTool {
     workspace: crate::plugin_workspace::WorkspaceBinding,
 }
@@ -288,7 +300,7 @@ async fn create(
                 .svg
                 .as_deref()
                 .ok_or_else(|| anyhow::anyhow!("png requires svg"))?;
-            let bytes = crate::artifact_image::render_png(svg)?;
+            let bytes = render_svg_png(svg)?;
             NativeOfficeImage::inspect_bytes(&bytes)?;
             (bytes, String::new())
         }
@@ -519,7 +531,7 @@ async fn build_office(input: &Input, ctx: &ToolContext) -> Result<(Vec<u8>, Stri
                         !chart.alt_text.trim().is_empty() && chart.alt_text.chars().count() <= 1000,
                         "chart alt_text must contain 1 to 1000 characters"
                     );
-                    let png = crate::artifact_image::render_png(&chart.svg)?;
+                    let png = render_svg_png(&chart.svg)?;
                     let size = NativeOfficeImage::inspect_bytes(&png)?;
                     let scale = (1000.0 / f64::from(size.width_px))
                         .min(460.0 / f64::from(size.height_px))

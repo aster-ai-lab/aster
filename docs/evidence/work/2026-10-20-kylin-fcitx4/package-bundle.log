@@ -1,0 +1,48 @@
+bundled agent=dist/kylin/a3s-code-acp office=dist/kylin/a3s-office
+kylin-package: this kernel rejects PR_SET_SECCOMP; checking org.gnome.Platform//50 through bwrap
+kylin-package: this kernel rejects PR_SET_SECCOMP; checking org.gnome.Platform//50 through bwrap
+kylin-package: this kernel rejects PR_SET_SECCOMP; checking org.gnome.Platform//50 through bwrap
+kylin-package: this kernel rejects PR_SET_SECCOMP; checking org.gnome.Platform//50 through bwrap
+kylin-package: this kernel rejects PR_SET_SECCOMP; checking org.gnome.Platform//50 through bwrap
+kylin-package: fcitx4 and fcitx5 modules link libgtk-3.so.0 and the runtime cache has ibus
+Exporting share/applications/dev.a3s.AsterDream.desktop
+Please review the exported files and the metadata
+WARNING: Icon referenced in desktop file but not exported: dev.a3s.AsterDream
+Commit: ba5d7c642eadeb5dbded34fb49eca6c777069b4445caebe7e3e992c1576e1bd4
+Metadata Total: 1225
+Metadata Written: 612
+Content Total: 2968
+Content Written: 2780
+Content Bytes Written: 399902519 (399.9?MB)
+kylin-bundle dist/kylin/ime-validation/dev.a3s.AsterDream.flatpak
+-rw-r--r-- 1 root root 135M Oct 20  2026 dist/kylin/ime-validation/dev.a3s.AsterDream.flatpak
+
+(flatpak build-import-bundle:1469): GLib-CRITICAL **: 06:51:53.154: g_str_has_prefix: assertion 'str != NULL' failed
+
+(flatpak build-import-bundle:1469): OSTree-CRITICAL **: 06:51:53.155: _ostree_repo_get_remote: assertion 'name != NULL' failed
+
+(flatpak build-import-bundle:1469): GLib-CRITICAL **: 06:51:53.155: g_propagate_error: assertion 'src != NULL' failed
+
+(flatpak build-import-bundle:1503): GLib-CRITICAL **: 06:52:30.967: g_str_has_prefix: assertion 'str != NULL' failed
+
+(flatpak build-import-bundle:1503): OSTree-CRITICAL **: 06:52:30.968: _ostree_repo_get_remote: assertion 'name != NULL' failed
+
+(flatpak build-import-bundle:1503): GLib-CRITICAL **: 06:52:30.968: g_propagate_error: assertion 'src != NULL' failed
+
+(flatpak build-import-bundle:1525): GLib-CRITICAL **: 06:52:45.228: g_str_has_prefix: assertion 'str != NULL' failed
+
+(flatpak build-import-bundle:1525): OSTree-CRITICAL **: 06:52:45.229: _ostree_repo_get_remote: assertion 'name != NULL' failed
+
+(flatpak build-import-bundle:1525): GLib-CRITICAL **: 06:52:45.229: g_propagate_error: assertion 'src != NULL' failed
+kylin-ship dist/kylin/ime-validation/ship
+total 506M
+-rw-rw-rw- 1 root root  21K Oct 20  2026 SHA256SUMS
+-rw-r--r-- 1 root root 135M Oct 20 06:51 dev.a3s.AsterDream.flatpak
+-rw-rw-rw- 1 root root   65 Oct 20 06:52 dev.a3s.AsterDream.flatpak.commit
+-rw-r--r-- 1 root root  93M Oct 20 06:51 gl-default-25.08.flatpak
+-rw-rw-rw- 1 root root   65 Oct 20 06:52 gl-default-25.08.flatpak.commit
+-rw-r--r-- 1 root root 279M Oct 20 06:51 gnome-platform-50.flatpak
+-rw-rw-rw- 1 root root   65 Oct 20 06:52 gnome-platform-50.flatpak.commit
+-rwxr-xr-x 1 root root 9.7K Oct 20 06:51 install-on-kylin.sh
+drwxr-xr-x 1 root root 5.1K Oct 19 21:56 offline-flatpak
+-rw-r--r-- 1 root root 2.7K Oct 20 06:51 安装说明.txt

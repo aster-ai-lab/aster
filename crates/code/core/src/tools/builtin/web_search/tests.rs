@@ -1,5 +1,5 @@
 use super::*;
-use crate::config::{SearchConfig, SearchEngineConfig};
+use crate::config::{BrowserBackend, CodeConfig, SearchConfig, SearchEngineConfig};
 use a3s_search::{EngineFailure, RetrievalHealth, RetrievalRequirements, Search};
 use async_trait::async_trait;
 use std::collections::HashMap;
@@ -27,6 +27,66 @@ fn request_proxy_is_applied_to_the_headless_tier() {
     assert_eq!(
         effective.proxy_url.as_deref(),
         Some("socks5://request.example:1080")
+    );
+}
+
+#[test]
+fn host_labeled_engines_rank_by_weight_and_use_moli() {
+    let config = CodeConfig::from_acl(
+        r#"
+search {
+  headless {
+    backend = "moli"
+  }
+  engine "doubao" {
+    enabled = true
+    weight = 2
+    api_key = "sk-db"
+  }
+  engine "deepseek" {
+    enabled = true
+    weight = 1
+    api_key = "sk-ds"
+  }
+}
+"#,
+    )
+    .expect("labeled search engines should parse");
+    let search = config.search.expect("search config");
+    assert_eq!(
+        search.headless.as_ref().map(|headless| headless.backend),
+        Some(BrowserBackend::Moli)
+    );
+    let doubao = search.engines.get("doubao").expect("doubao");
+    let deepseek = search.engines.get("deepseek").expect("deepseek");
+    assert!(doubao.weight > deepseek.weight);
+    assert!(doubao.api_key.as_deref().is_some_and(|key| !key.is_empty()));
+    assert!(deepseek
+        .api_key
+        .as_deref()
+        .is_some_and(|key| !key.is_empty()));
+    assert_eq!(
+        enabled_engine_names(&search.engines),
+        ["doubao".to_string(), "deepseek".to_string()]
+    );
+}
+
+#[test]
+fn host_labeled_engines_omit_weight_keeps_default() {
+    let config = CodeConfig::from_acl(
+        r#"
+search {
+  engine "doubao" {
+    enabled = true
+  }
+}
+"#,
+    )
+    .expect("one labeled engine should parse");
+    let search = config.search.expect("search config");
+    assert_eq!(
+        search.engines.get("doubao").map(|engine| engine.weight),
+        Some(1.0)
     );
 }
 
@@ -146,6 +206,42 @@ fn search_navigation_rows_are_not_admitted_to_the_structural_gate() {
         "Unsafe",
         "Unsafe"
     )));
+}
+
+#[test]
+fn enabled_engines_follow_weight_then_name() {
+    let mut engines = HashMap::new();
+    engines.insert("deepseek".to_string(), engine_named(1.0));
+    engines.insert("doubao".to_string(), engine_named(2.0));
+    engines.insert("bocha".to_string(), engine_named(1.0));
+    engines.insert(
+        "wiki".to_string(),
+        SearchEngineConfig {
+            enabled: false,
+            ..engine_named(9.0)
+        },
+    );
+    assert_eq!(
+        enabled_engine_names(&engines),
+        vec![
+            "doubao".to_string(),
+            "bocha".to_string(),
+            "deepseek".to_string()
+        ]
+    );
+}
+
+fn engine_named(weight: f64) -> SearchEngineConfig {
+    SearchEngineConfig {
+        enabled: true,
+        weight,
+        timeout: None,
+        api_key: None,
+        project: None,
+        endpoint: None,
+        authoritative_only: None,
+        query_rewrite: None,
+    }
 }
 
 fn search_config(engines: HashMap<String, SearchEngineConfig>) -> SearchConfig {

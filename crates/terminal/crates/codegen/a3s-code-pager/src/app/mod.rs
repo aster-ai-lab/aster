@@ -667,6 +667,28 @@ async fn bounded_connect(
         longest_step,
     })
 }
+/// A failed primary connect, including a leader connect, is reported as that failure.
+/// `start_sidecar` stays false: the interactive TUI does not start the ACP sidecar in its place.
+/// A cancelled attempt stays cancelled.
+#[derive(Debug, PartialEq, Eq)]
+pub(crate) struct ReportedConnectFailure<E> {
+    pub error: E,
+    pub cancelled: bool,
+    pub start_sidecar: bool,
+}
+
+pub(crate) fn report_failed_connect<E>(
+    _target: crate::acp::AgentKind,
+    cancelled: bool,
+    error: E,
+) -> ReportedConnectFailure<E> {
+    ReportedConnectFailure {
+        error,
+        cancelled,
+        start_sidecar: false,
+    }
+}
+
 /// Main entry point: connect to agent, init terminal, run event loop, restore.
 /// If a session ID is provided via `--resume` / `--load` / `--continue`, the pager skips the welcome screen and immediately loads that session.
 /// The load replays the session's history; sessions not found locally are restored from remote storage.
@@ -1034,7 +1056,6 @@ pub async fn run(
             })),
         );
     }
-    let fallback_flags = use_leader.then(|| connect_flags.clone());
     let primary_target = if use_leader {
         crate::acp::AgentKind::Leader
     } else {
@@ -1052,7 +1073,6 @@ pub async fn run(
     let tracing_handle = crate::tracing::init_tracing();
     let pending_startup = a3s_code_telemetry::startup::PendingStartup::new();
     let timer = a3s_code_telemetry::startup::begin(crate::acp::Owner::Client);
-    let primary_started = std::time::Instant::now();
     let connect_result = bounded_connect(
         &cancel,
         connect_ui_timeout,
@@ -1073,28 +1093,9 @@ pub async fn run(
     )
     .await;
     let (connect_result, embedded_fallback, timer, connect_target) = match connect_result {
-        Err(f) if primary_target == crate::acp::AgentKind::Leader && !cancel.is_cancelled() => {
-            tracing::warn!(error = %f.error, "leader connect failed; falling back to embedded agent");
-            timer.emit_telemetry(primary_target, f.outcome, f.timeout_secs, false);
-            let flags = fallback_flags.expect("set on the use_leader path");
-            let timer = a3s_code_telemetry::startup::begin(crate::acp::Owner::Client);
-            let target = crate::acp::AgentKind::Embedded;
-            let fallback = bounded_connect(
-                &cancel,
-                connect_ui_timeout,
-                connect_ui_timeout_env.as_deref(),
-                target,
-                startup_failure::ConnectAttempt::AfterFallback(startup_failure::EarlierAttempt {
-                    target: primary_target,
-                    wait: primary_started.elapsed(),
-                    outcome: f.outcome,
-                    longest_step: f.longest_step,
-                }),
-                &timer,
-                async { crate::acp::connect(&cancel, flags).await },
-            )
-            .await;
-            (fallback, true, timer, target)
+        Err(failure) => {
+            let reported = report_failed_connect(primary_target, cancel.is_cancelled(), failure);
+            (Err(reported.error), false, timer, primary_target)
         }
         other => (other, false, timer, primary_target),
     };
@@ -1701,6 +1702,19 @@ fn terminal_title_string(title: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn leader_connect_failure_reports_that_failure_without_a_sidecar() {
+        let failed = report_failed_connect(crate::acp::AgentKind::Leader, false, "leader-down");
+        assert_eq!(failed.error, "leader-down");
+        assert!(!failed.cancelled);
+        assert!(!failed.start_sidecar);
+        let cancelled = report_failed_connect(crate::acp::AgentKind::Leader, true, "leader-down");
+        assert_eq!(cancelled.error, "leader-down");
+        assert!(cancelled.cancelled);
+        assert!(!cancelled.start_sidecar);
+    }
+
     /// The loop-top gboom keyboard-layer sync runs on the event-loop thread: its push/pop escapes must ride the writer queue.
     /// push/pop escapes must ride the writer queue.
     #[cfg(not(windows))]

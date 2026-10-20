@@ -176,6 +176,20 @@ fn prompt_request_meta_omits_screen_mode_when_unset() {
     let meta = prompt_request_meta("p-2", None);
     assert_eq!(meta, serde_json::json!({ "promptId": "p-2" }));
 }
+/// An ordinary prompt advertises no `x.ai/` method. Session create uses a different meta builder.
+#[test]
+fn ordinary_prompt_meta_sends_no_xai_extension() {
+    for mode in [None, Some("minimal")] {
+        let meta = prompt_request_meta("p-ordinary", mode);
+        let xai: Vec<&String> = meta
+            .as_object()
+            .expect("prompt meta is an object")
+            .keys()
+            .filter(|key| key.starts_with("x.ai/"))
+            .collect();
+        assert!(xai.is_empty(), "mode={mode:?} sent {xai:?}");
+    }
+}
 /// Text-only interjections must omit the `content` key entirely; the legacy `x.ai/interject` wire shape stays byte-identical.
 #[test]
 fn interject_params_omit_content_when_no_blocks() {

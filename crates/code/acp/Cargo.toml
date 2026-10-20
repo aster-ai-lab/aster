@@ -4,18 +4,19 @@ version = "9.1.4"
 edition = "2021"
 authors = ["A3S Lab Team"]
 license = "MIT"
-description = "ACP stdio agent bridging a3s-code-core 9.1.4 to the forked grok-build pager"
+description = "ACP stdio agent over a3s-code-core 9.1.4 for Aster desktop hosts"
 publish = false
 
 [[bin]]
 name = "a3s-code-acp"
 path = "src/bin/a3s-code-acp.rs"
+required-features = ["svg-png", "account-import"]
 
 [dependencies]
 agent-client-protocol = {workspace = true}
 anyhow = "1"
 async-trait = {workspace = true}
-rusqlite = {workspace = true}
+rusqlite = {workspace = true, optional = true}
 serde_json = {workspace = true}
 serde = "1"
 sha2 = {workspace = true}
@@ -28,10 +29,10 @@ url = {workspace = true}
 a3s-okf = {path = "../../okf"}
 a3s-acl = {path = "../../acl"}
 a3s-office = {path = "../../office/crates/core"}
-a3s-code-mermaid = {path = "../../terminal/crates/codegen/a3s-code-mermaid"}
+a3s-code-mermaid = {path = "../../terminal/crates/codegen/a3s-code-mermaid", optional = true}
 cap-std = "=4.0.2"
 cap-fs-ext = "=4.0.2"
-quick-xml = "0.38"
+quick-xml = {version = "0.38", optional = true}
 tempfile = {workspace = true}
 a3s-use-reconcile = {path = "../../use/reconcile"}
 a3s-use-bge = {path = "../../bge", default-features = false, features = ["bge-m3"]}
@@ -44,3 +45,8 @@ agent-client-protocol = {workspace = true}
 portable-pty = {workspace = true}
 tokio = {version = "1", features = ["rt-multi-thread", "macros", "time"]}
 vt100 = "0.15"
+
+[features]
+default = ["svg-png", "account-import"]
+svg-png = ["dep:a3s-code-mermaid", "dep:quick-xml"]
+account-import = ["dep:rusqlite"]

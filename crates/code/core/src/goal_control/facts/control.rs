@@ -68,7 +68,7 @@ fn transition(
             return Err(refused(
                 GoalRefusal::Conflict,
                 "goal state does not admit this control",
-            ))
+            ));
         }
     };
     let mut view = current.clone();

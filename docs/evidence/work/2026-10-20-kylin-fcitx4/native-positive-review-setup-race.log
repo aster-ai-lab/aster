@@ -1,0 +1,10 @@
+Fixture case: positive-control
+App files: /aster/target/evaluations/kylin-ime-20261020/review-negative/positive-control/files
+Runtime files: /root/.local/share/flatpak/runtime/org.gnome.Platform/x86_64/50/7e410fa0d429fcc34f2ddd0d9b6224f1435d8640fb9759801db4f02700542353/files
+Traceback (most recent call last):
+  File "<stdin>", line 5, in <module>
+  File "/usr/lib/python3.12/configparser.py", line 941, in __getitem__
+    raise KeyError(key)
+KeyError: 'Session Bus Policy'
+
+Exit status: 1

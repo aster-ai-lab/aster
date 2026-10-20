@@ -898,7 +898,7 @@ fn an_installed_acp_cloud_agent_streams_two_turns_on_one_session() {
 
     let archive = include_bytes!(concat!(
         env!("CARGO_MANIFEST_DIR"),
-        "/../../../apps/web/public/cases/acp-cloud-agent.aix"
+        "/../../../apps/api/vendor/web/public/cases/acp-cloud-agent.aix"
     ));
     let files = aix_entries(archive);
     let spec = package_spec(&files, "use/a3s/acp-cloud").expect("AIX install admission");

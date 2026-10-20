@@ -1,0 +1,13 @@
+debconf: delaying package configuration, since apt-utils is not installed
+fcitx version: 4.2.9.9
+Usage: fcitx [OPTION]
+	-r, --replace		try replace existing fcitx, need module support.
+	-d			run as daemon(default)
+	-D			don't run as daemon
+	-s[sleep time]		override delay start time in config file, 0 for immediate start
+	-v, --version		display the version information and exit
+	-u, --ui		specify the user interface to use
+	--enable		specify a comma separated list for addon that will override the enable option
+	--disable		specify a comma separated list for addon that will explicitly disabled,
+					priority is lower than --enable, can use all for disable all module
+	-h, --help		display this help and exit

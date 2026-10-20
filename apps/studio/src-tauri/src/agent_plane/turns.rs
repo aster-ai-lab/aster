@@ -4224,11 +4224,9 @@ fn session_assets(config: &PlaneConfig, session_id: &str, body: &Value) -> Optio
 
 /// `_meta.a3sHost` for a new ACP process. Unknown fields are dropped.
 /// A non-empty local catalog is attached even when the turn has no host text.
+/// Every returned object opts the desktop session into disk-content attestation.
 fn acp_host(body: &Value, assets: Option<&Value>) -> Option<Value> {
     let host = body.get("hostContext").and_then(Value::as_object);
-    if host.is_none() && assets.is_none() {
-        return None;
-    }
     let guidelines = sanitize_host_text(
         host.and_then(|host| host.get("guidelines"))
             .and_then(Value::as_str)
@@ -4247,6 +4245,7 @@ fn acp_host(body: &Value, assets: Option<&Value>) -> Option<Value> {
     let mut value = json!({
         "guidelines": guidelines,
         "review": review,
+        "completionAttestation": "disk_content",
     });
     if let Some(language) = host
         .and_then(|host| host.get("outputLanguage"))
@@ -6297,11 +6296,15 @@ rl.on('line', (line) => {
         let host = acp_host(&body, None).expect("host");
         assert_eq!(host["guidelines"], "带上这段");
         assert_eq!(host["review"], "inline");
+        assert_eq!(host["completionAttestation"], "disk_content");
         assert!(host.get("outputLanguage").is_none());
         let turn = acp_turn(&body).expect("turn");
         assert_eq!(turn["research"], false);
         assert_eq!(turn["directives"].as_array().map(Vec::len), Some(1));
-        assert!(acp_host(&json!({}), None).is_none());
+        assert_eq!(
+            acp_host(&json!({}), None).unwrap()["completionAttestation"],
+            "disk_content"
+        );
         assert!(
             acp_turn(&json!({ "turnContext": { "directives": [], "research": false } })).is_none()
         );

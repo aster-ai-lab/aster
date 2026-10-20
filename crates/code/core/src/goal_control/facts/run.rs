@@ -67,7 +67,7 @@ pub(super) fn current_step(
         GoalState::Paused => return Err(refused(GoalRefusal::Paused, "goal is paused")),
         GoalState::Waiting => return Err(refused(GoalRefusal::Waiting, "goal is waiting")),
         GoalState::Cancelled | GoalState::Completed => {
-            return Err(refused(GoalRefusal::Conflict, "goal is terminal"))
+            return Err(refused(GoalRefusal::Conflict, "goal is terminal"));
         }
     }
     view.ready_steps()

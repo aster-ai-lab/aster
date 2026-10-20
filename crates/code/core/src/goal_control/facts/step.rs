@@ -100,7 +100,7 @@ pub(crate) fn prepare_step(
         return Ok(None);
     };
     let run = bound_run(facts, &view, run_id)?;
-    let Some((reports, evidence)) = crate::fact_control::evidence_for_goal_step(
+    let Some((reports, evidence, _)) = crate::fact_control::evidence_for_goal_step(
         facts,
         run.seq,
         session_id,
@@ -168,6 +168,7 @@ pub(super) fn fold_step(
         String,
         DurableGoalDefinitionV1,
         Vec<VerificationReport>,
+        bool,
     ),
     GoalControlError,
 > {
@@ -215,7 +216,7 @@ pub(super) fn fold_step(
         ));
     }
     bound_run(prefix, current, &stored.body.run_id)?;
-    let (reports, _) = crate::fact_control::evidence_for_goal_step(
+    let (reports, _, mutated) = crate::fact_control::evidence_for_goal_step(
         prefix,
         stored.body.run_sequence,
         session_id,
@@ -235,7 +236,13 @@ pub(super) fn fold_step(
         .ok_or_else(|| refused(GoalRefusal::EvidenceStale, "current plan is absent"))?;
     plan.mark_status(&stored.body.step_id, TaskStatus::Completed);
     view.goal_sequence = fact.seq;
-    Ok((stored.operation_id, stored.command_digest, view, reports))
+    Ok((
+        stored.operation_id,
+        stored.command_digest,
+        view,
+        reports,
+        mutated,
+    ))
 }
 
 pub(crate) fn validate_step_append(
@@ -258,7 +265,7 @@ pub(crate) fn validate_step_append(
         cause: None,
         payload: pending.payload.clone(),
     };
-    let (_, _, _, reports) = fold_step(
+    let (_, _, _, reports, _) = fold_step(
         &fact,
         current.as_ref(),
         facts,

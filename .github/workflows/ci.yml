@@ -33,6 +33,13 @@ jobs:
         run: cargo fmt --all -- --check
       - name: Internal dependency boundary
         run: python3 tests/workspace_dependencies.py
+      - name: Desktop updater release boundary
+        run: python3 tests/desktop_update.py
+      - name: Kylin input method launcher
+        run: |
+          python3 tests/kylin_input_method.py
+          python3 tests/kylin_onefile.py
+          bash apps/work/scripts/kylin-flatpak/install-on-kylin.sh --self-test
       - name: Shared-crate drift ratchet
         # Visibly skipped when the private submodules are not checked out;
         # enforces everywhere they are (self-hosted, credentialed runners).

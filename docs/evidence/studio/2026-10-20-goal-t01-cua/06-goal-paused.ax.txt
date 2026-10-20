@@ -1,0 +1,84 @@
+Window: "AsterDream", App: AsterDream.
+0 standard window AsterDream, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content Description: AsterDream, URL: 127.0.0.1:4319/windows/main/index.html
+			3 pop up button 周宇杨
+			4 button 工作
+			5 button 知识
+			6 button 设置
+			7 container
+				8 container 消息
+					9 container
+						10 text /goal Complete every requirement in instruction.md for this T01 project. Deliver standard-library-only pipeline.py and output/results.json. Track steps and verify deterministic reruns, paths with spaces and changed data. Keep input/ and instruction.md unchanged. Work until verified; report blockers and limits. 10/20 10:23
+						11 button 从这里编辑
+						12 button 复制
+						13 button 删除
+						14 text AsterDream 10/20 10:23
+						15 text Durable goal active: Complete every requirement in instruction.md for this T01 project. Deliver standard-library-only pipeline.py and output/results.json. Track steps and verify deterministic reruns, paths with spaces and changed data. Keep input/ and instruction.md unchanged. Work until verified; report blockers and limits. Plan r1 accepted: 0/1 steps done Next: advance
+						16 text I'll start by inspecting the project instructions and current workspace state.
+						17 summary 读取 instruction.md 1 # 全球订单审计、事件处理与预算优化（107-V1） 已完成, Value: off
+							18 text 读取 instruction.md
+							19 text 1 # 全球订单审计、事件处理与预算优化（107-V1）
+							20 text 已完成
+						21 summary 列出 . Directory: /Users/roylin/code/aster/tests/T01 已完成, Value: off
+							22 text 列出 .
+							23 text Directory: /Users/roylin/code/aster/tests/T01
+							24 text 已完成
+						25 button (collapsed) 思考过程, Secondary Actions: Expand
+						26 text Let me inspect input files.
+						27 summary 运行 ls -la input/ && echo "---" && for f in input/*… total 220 已完成, Value: off
+							28 text 运行 ls -la input/ && echo "---" && for f in input/*…
+							29 text total 220
+							30 text 已完成
+						31 summary 运行 cd input && cat policy.json && echo "=== codebo… 失败, Value: off
+							32 text 运行 cd input && cat policy.json && echo "=== codebo…
+							33 text 失败
+						34 text Goal slice acp-tick-62844fe9-76ce-4465-90a8-c42b78aa493b: Cancelled
+						35 text Durable goal active: Complete every requirement in instruction.md for this T01 project. Deliver standard-library-only pipeline.py and output/results.json. Track steps and verify deterministic reruns, paths with spaces and changed data. Keep input/ and instruction.md unchanged. Work until verified; report blockers and limits. Plan r1 accepted: 0/1 steps done Next: advance
+						36 button 复制
+						37 button 保存到笔记
+						38 button 删除
+						39 pop up button 更多操作
+						40 text /goal status 10/20 10:25
+						41 button 从这里编辑
+						42 button 复制
+						43 button 删除
+						44 text AsterDream 10/20 10:25
+						45 text Durable goal active: Complete every requirement in instruction.md for this T01 project. Deliver standard-library-only pipeline.py and output/results.json. Track steps and verify deterministic reruns, paths with spaces and changed data. Keep input/ and instruction.md unchanged. Work until verified; report blockers and limits. Plan r1 accepted: 0/1 steps done Next: advance
+						46 button 复制
+						47 button 保存到笔记
+						48 button 删除
+						49 pop up button 更多操作
+						50 text /goal pause 10/20 10:25
+						51 button 从这里编辑
+						52 button 复制
+						53 button 删除
+						54 text AsterDream 10/20 10:25
+				55 container 会话导航
+					56 button 跳转到第 1 轮对话
+					57 button 跳转到第 2 轮对话
+					58 button 跳转到第 3 轮对话
+				59 text entry area (settable) 描述会话，输入 / 使用指令或技能, Value: 
+
+					60 text 描述会话，输入 / 使用指令或技能
+				61 pop up button 更多选项
+				62 pop up button 授权模式: 逐次确认
+				63 switch (settable, boolean) 规划模式, Help: 对下一次发送生效：先生成计划，审阅确认后再执行。不改变工具授权方式，也不改变正在运行的回合。, Value: off
+				64 pop up button DeepSeek Flash
+				65 button (disabled) 发送
+				66 toolbar 会话范围
+					67 pop up button 工作区文件
+				68 container
+					69 button 打开会话工作区
+					70 container 工作区快捷栏
+						71 button 浏览器
+						72 button 终端
+						73 button 文件
+						74 button (collapsed) 展开工作区快捷菜单, Secondary Actions: Expand
+				75 toggle button 展开侧边栏, Value: off
+	76 close button
+	77 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	78 minimize button
+79 menu bar
+	80 AsterDream
+	81 编辑

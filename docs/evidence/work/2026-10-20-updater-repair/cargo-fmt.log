@@ -1,0 +1,861 @@
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/goal_facade/tests/execution/attestation.rs:27:
+         Some(
+             VerificationReport::new(
+                 "host:current-source",
+[31m-                vec![
+(B[m[31m-                    VerificationCheck::required(
+(B[m[31m-                        "inspect",
+(B[m[31m-                        "host_source_bytes",
+(B[m[31m-                        "Original source is checked against expected bytes and receipt digest",
+(B[m[31m-                    )
+(B[m[31m-                    .with_status(VerificationStatus::Passed),
+(B[m[31m-                ],
+(B[m[32m+                vec![VerificationCheck::required(
+(B[m[32m+                    "inspect",
+(B[m[32m+                    "host_source_bytes",
+(B[m[32m+                    "Original source is checked against expected bytes and receipt digest",
+(B[m[32m+                )
+(B[m[32m+                .with_status(VerificationStatus::Passed)],
+(B[m             )
+             .with_effect_digest(digest),
+         )
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/goal_facade/tests/execution/attestation.rs:178:
+                 client.calls.load(Ordering::SeqCst),
+                 if final_response { 3 } else { 2 }
+             );
+[31m-            assert!(
+(B[m[31m-                client
+(B[m[31m-                    .inputs
+(B[m[31m-                    .lock()
+(B[m[31m-                    .unwrap()
+(B[m[31m-                    .last()
+(B[m[31m-                    .unwrap()
+(B[m[31m-                    .contains("host:current-source")
+(B[m[31m-            );
+(B[m[32m+            assert!(client
+(B[m[32m+                .inputs
+(B[m[32m+                .lock()
+(B[m[32m+                .unwrap()
+(B[m[32m+                .last()
+(B[m[32m+                .unwrap()
+(B[m[32m+                .contains("host:current-source"));
+(B[m             let facts = crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap();
+             assert_eq!(
+                 facts
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/goal_facade/tests/execution/attestation.rs:357:
+         );
+         assert_eq!(attestor.calls.load(Ordering::SeqCst), 1);
+         let facts = crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap();
+[31m-        assert!(
+(B[m[31m-            !facts
+(B[m[31m-                .iter()
+(B[m[31m-                .any(|f| f.kind == "a3s.goal.step.accepted" || f.kind == "turn.complete")
+(B[m[31m-        );
+(B[m[32m+        assert!(!facts
+(B[m[32m+            .iter()
+(B[m[32m+            .any(|f| f.kind == "a3s.goal.step.accepted" || f.kind == "turn.complete"));
+(B[m         assert!(crate::fact_control::has_unsettled_effects(&facts));
+         session.close().await;
+         agent.close().await;
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/goal_facade/tests/execution/attestation.rs:401:
+     );
+     assert_eq!(attestor.0.calls.load(Ordering::SeqCst), 1);
+     let facts = crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap();
+[31m-    assert!(
+(B[m[31m-        !facts
+(B[m[31m-            .iter()
+(B[m[31m-            .any(|f| f.kind == "a3s.goal.step.accepted" || f.kind == "turn.complete")
+(B[m[31m-    );
+(B[m[32m+    assert!(!facts
+(B[m[32m+        .iter()
+(B[m[32m+        .any(|f| f.kind == "a3s.goal.step.accepted" || f.kind == "turn.complete"));
+(B[m     assert!(crate::fact_control::has_unsettled_effects(&facts));
+     session.close().await;
+     agent.close().await;
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/goal_facade/tests/execution/attestation.rs:479:
+             };
+             let proposed = session.apply_goal_plan(command.clone()).unwrap();
+             assert_eq!(proposed.plan_revision, Some(2));
+[31m-            assert!(
+(B[m[31m-                proposed
+(B[m[31m-                    .plan
+(B[m[31m-                    .as_ref()
+(B[m[31m-                    .unwrap()
+(B[m[31m-                    .steps
+(B[m[31m-                    .iter()
+(B[m[31m-                    .all(|step| step.status == crate::planning::TaskStatus::Pending)
+(B[m[31m-            );
+(B[m[32m+            assert!(proposed
+(B[m[32m+                .plan
+(B[m[32m+                .as_ref()
+(B[m[32m+                .unwrap()
+(B[m[32m+                .steps
+(B[m[32m+                .iter()
+(B[m[32m+                .all(|step| step.status == crate::planning::TaskStatus::Pending));
+(B[m             command.kind = GoalCommandKindV1::AcceptPlan;
+             command.operation_id = "accept-replan".into();
+             command.expected_plan_revision = proposed.plan_revision;
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/goal_facade/tests/execution/attestation.rs:539:
+                 }
+             );
+             if !changed_criterion {
+[31m-                assert!(
+(B[m[31m-                    client
+(B[m[31m-                        .inputs
+(B[m[31m-                        .lock()
+(B[m[31m-                        .unwrap()
+(B[m[31m-                        .last()
+(B[m[31m-                        .unwrap()
+(B[m[31m-                        .contains(&criterion)
+(B[m[31m-                );
+(B[m[32m+                assert!(client
+(B[m[32m+                    .inputs
+(B[m[32m+                    .lock()
+(B[m[32m+                    .unwrap()
+(B[m[32m+                    .last()
+(B[m[32m+                    .unwrap()
+(B[m[32m+                    .contains(&criterion));
+(B[m             }
+             let facts = crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap();
+             assert_eq!(&facts[..source.len()], source.as_slice());
+Diff in /Users/roylin/code/aster/crates/code/core/src/agent_api/goal_facade/tests/execution/continuation.rs:137:
+             let reopened =
+                 crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap();
+             assert_eq!(reopened, after);
+[31m-            assert!(
+(B[m[31m-                crate::goal_control::prepare_run(
+(B[m[31m-                    &reopened,
+(B[m[31m-                    "goal-run",
+(B[m[31m-                    &view.binding.workspace,
+(B[m[31m-                    view.binding.work_policy_digest.as_deref(),
+(B[m[31m-                    Some("next-auto"),
+(B[m[31m-                    Some(&exhausted),
+(B[m[31m-                )
+(B[m[31m-                .is_err()
+(B[m[31m-            );
+(B[m[32m+            assert!(crate::goal_control::prepare_run(
+(B[m[32m+                &reopened,
+(B[m[32m+                "goal-run",
+(B[m[32m+                &view.binding.workspace,
+(B[m[32m+                view.binding.work_policy_digest.as_deref(),
+(B[m[32m+                Some("next-auto"),
+(B[m[32m+                Some(&exhausted),
+(B[m[32m+            )
+(B[m[32m+            .is_err());
+(B[m             assert!(
+                 crate::goal_control::prepare_run(
+                     &reopened,
+Diff in /Users/roylin/code/aster/crates/code/core/src/fact_control/goal_evidence.rs:1:
+ //! Current Goal step evidence stays a projection of the original receipt fold.
+ 
+ use super::*;
+[31m-use crate::verification::{VERIFICATION_REPORT_SCHEMA, VerificationReport, VerificationSummary};
+(B[m[32m+use crate::verification::{VerificationReport, VerificationSummary, VERIFICATION_REPORT_SCHEMA};
+(B[m 
+ pub(crate) async fn assess_goal_step(
+     surface: &SessionSurface,
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/plan/tests.rs:79:
+     assert_eq!(proposed.plan_revision, Some(1));
+     assert!(!proposed.plan_accepted);
+     let projected = proposed.plan.as_ref().unwrap();
+[31m-    assert!(
+(B[m[31m-        projected
+(B[m[31m-            .steps
+(B[m[31m-            .iter()
+(B[m[31m-            .all(|step| step.status == TaskStatus::Pending)
+(B[m[31m-    );
+(B[m[32m+    assert!(projected
+(B[m[32m+        .steps
+(B[m[32m+        .iter()
+(B[m[32m+        .all(|step| step.status == TaskStatus::Pending));
+(B[m     assert_eq!(
+         projected
+             .get_ready_steps()
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/plan/tests.rs:106:
+     let accepted = apply(log, &acceptance);
+     assert!(accepted.plan_accepted);
+     assert_eq!(accepted.plan_revision, Some(1));
+[31m-    assert!(
+(B[m[31m-        accepted
+(B[m[31m-            .plan
+(B[m[31m-            .as_ref()
+(B[m[31m-            .unwrap()
+(B[m[31m-            .steps
+(B[m[31m-            .iter()
+(B[m[31m-            .all(|step| step.status == TaskStatus::Pending)
+(B[m[31m-    );
+(B[m[32m+    assert!(accepted
+(B[m[32m+        .plan
+(B[m[32m+        .as_ref()
+(B[m[32m+        .unwrap()
+(B[m[32m+        .steps
+(B[m[32m+        .iter()
+(B[m[32m+        .all(|step| step.status == TaskStatus::Pending));
+(B[m     let facts = log.read("session").unwrap();
+     assert!(facts.last().unwrap().payload["body"]["plan"].is_null());
+     assert_eq!(
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/plan/tests.rs:132:
+     assert!(!updated.plan_accepted);
+     let mut stale = acceptance.clone();
+     stale.operation_id = "stale-accept".into();
+[31m-    assert!(
+(B[m[31m-        prepare_plan(
+(B[m[31m-            &log.read("session").unwrap(),
+(B[m[31m-            "session",
+(B[m[31m-            &stale.workspace,
+(B[m[31m-            None,
+(B[m[31m-            &stale
+(B[m[31m-        )
+(B[m[31m-        .is_err()
+(B[m[31m-    );
+(B[m[32m+    assert!(prepare_plan(
+(B[m[32m+        &log.read("session").unwrap(),
+(B[m[32m+        "session",
+(B[m[32m+        &stale.workspace,
+(B[m[32m+        None,
+(B[m[32m+        &stale
+(B[m[32m+    )
+(B[m[32m+    .is_err());
+(B[m     let mut definition = super::super::tests::command();
+     definition.kind = GoalCommandKindV1::Revise;
+     definition.operation_id = "revise".into();
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/plan.rs:1:
+ //! Original plan definitions and their explicit acceptance in the same Goal fact stream.
+ 
+ use super::*;
+[31m-use crate::goal_control::{GoalPlanCommandV1, deserialize_plan, validate_goal_plan};
+(B[m[32m+use crate::goal_control::{deserialize_plan, validate_goal_plan, GoalPlanCommandV1};
+(B[m use crate::planning::{ExecutionPlan, TaskStatus};
+ 
+ #[derive(Serialize, Deserialize)]
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/run/tests/continuation.rs:99:
+     let (workspace, _) = seed(log);
+     append_run(log, &workspace, "ordinary", None);
+     let ordinary = log.read("session").unwrap();
+[31m-    assert!(
+(B[m[31m-        ordinary.last().unwrap().payload["body"]
+(B[m[31m-            .get("continuation")
+(B[m[31m-            .is_none()
+(B[m[31m-    );
+(B[m[32m+    assert!(ordinary.last().unwrap().payload["body"]
+(B[m[32m+        .get("continuation")
+(B[m[32m+        .is_none());
+(B[m     let ordinary = usage(log, &workspace);
+     assert_eq!(
+         (
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/run/tests/continuation.rs:117:
+     append_run(log, &workspace, "auto-1", Some(&first));
+     let before = log.read("session").unwrap();
+     for _ in 0..4 {
+[31m-        assert!(
+(B[m[31m-            prepare_run(
+(B[m[31m-                &before,
+(B[m[31m-                "session",
+(B[m[31m-                &workspace,
+(B[m[31m-                None,
+(B[m[31m-                Some("auto-1"),
+(B[m[31m-                Some(&first)
+(B[m[31m-            )
+(B[m[31m-            .unwrap()
+(B[m[31m-            .unwrap()
+(B[m[31m-            .pending
+(B[m[31m-            .is_none()
+(B[m[31m-        );
+(B[m[31m-    }
+(B[m[31m-    assert!(prepare_run(&before, "session", &workspace, None, Some("auto-1"), None).is_err());
+(B[m[31m-    assert!(
+(B[m[31m-        prepare_run(
+(B[m[32m+        assert!(prepare_run(
+(B[m             &before,
+             "session",
+             &workspace,
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/run/tests/continuation.rs:141:
+             None,
+             Some("auto-1"),
+[31m-            Some(&source(2, 2, 101))
+(B[m[32m+            Some(&first)
+(B[m         )
+[31m-        .is_err()
+(B[m[31m-    );
+(B[m[32m+        .unwrap()
+(B[m[32m+        .unwrap()
+(B[m[32m+        .pending
+(B[m[32m+        .is_none());
+(B[m[32m+    }
+(B[m[32m+    assert!(prepare_run(&before, "session", &workspace, None, Some("auto-1"), None).is_err());
+(B[m[32m+    assert!(prepare_run(
+(B[m[32m+        &before,
+(B[m[32m+        "session",
+(B[m[32m+        &workspace,
+(B[m[32m+        None,
+(B[m[32m+        Some("auto-1"),
+(B[m[32m+        Some(&source(2, 2, 101))
+(B[m[32m+    )
+(B[m[32m+    .is_err());
+(B[m     assert_eq!(log.read("session").unwrap(), before);
+     assert_eq!(usage(log, &workspace).admitted_slices, 1);
+     let view = definition_from_facts(&before, "session", &workspace, None)
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/run/tests/continuation.rs:169:
+         .is_none(),
+         "exact replay consumes no extra opportunity at the cap"
+     );
+[31m-    assert!(
+(B[m[31m-        prepare_run(
+(B[m[31m-            &before,
+(B[m[31m-            "session",
+(B[m[31m-            &workspace,
+(B[m[31m-            None,
+(B[m[31m-            Some("auto-3"),
+(B[m[31m-            Some(&source(2, 9, 300))
+(B[m[31m-        )
+(B[m[31m-        .is_err()
+(B[m[31m-    );
+(B[m[31m-    assert!(
+(B[m[31m-        prepare_run(
+(B[m[31m-            &before,
+(B[m[31m-            "session",
+(B[m[31m-            &workspace,
+(B[m[31m-            None,
+(B[m[31m-            Some("auto-3"),
+(B[m[31m-            Some(&source(9, 2, 300))
+(B[m[31m-        )
+(B[m[31m-        .is_err()
+(B[m[31m-    );
+(B[m[32m+    assert!(prepare_run(
+(B[m[32m+        &before,
+(B[m[32m+        "session",
+(B[m[32m+        &workspace,
+(B[m[32m+        None,
+(B[m[32m+        Some("auto-3"),
+(B[m[32m+        Some(&source(2, 9, 300))
+(B[m[32m+    )
+(B[m[32m+    .is_err());
+(B[m[32m+    assert!(prepare_run(
+(B[m[32m+        &before,
+(B[m[32m+        "session",
+(B[m[32m+        &workspace,
+(B[m[32m+        None,
+(B[m[32m+        Some("auto-3"),
+(B[m[32m+        Some(&source(9, 2, 300))
+(B[m[32m+    )
+(B[m[32m+    .is_err());
+(B[m     append_run(log, &workspace, "explicit-independent", None);
+     let before = log.read("session").unwrap();
+     let view = definition_from_facts(&before, "session", &workspace, None)
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/run/tests/continuation.rs:211:
+     assert_eq!(usage(log, &workspace).admitted_slices, 2);
+     assert_eq!(usage(log, &workspace).slices_since_progress, 2);
+     let before = log.read("session").unwrap();
+[31m-    assert!(
+(B[m[31m-        prepare_run(
+(B[m[31m-            &before,
+(B[m[31m-            "session",
+(B[m[31m-            &workspace,
+(B[m[31m-            None,
+(B[m[31m-            Some("auto-3"),
+(B[m[31m-            Some(&source(2, 9, 300))
+(B[m[31m-        )
+(B[m[31m-        .is_err()
+(B[m[31m-    );
+(B[m[32m+    assert!(prepare_run(
+(B[m[32m+        &before,
+(B[m[32m+        "session",
+(B[m[32m+        &workspace,
+(B[m[32m+        None,
+(B[m[32m+        Some("auto-3"),
+(B[m[32m+        Some(&source(2, 9, 300))
+(B[m[32m+    )
+(B[m[32m+    .is_err());
+(B[m     append_run(log, &workspace, "auto-3", Some(&source(3, 3, 300)));
+     assert_eq!(usage(log, &workspace).admitted_slices, 3);
+     assert_eq!(usage(log, &workspace).slices_since_progress, 3);
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/run/tests/continuation.rs:324:
+     let log = FileLog::open(directory.path()).unwrap();
+     assert_eq!(log.read("session").unwrap(), before);
+     assert_eq!(usage(&log, &workspace).admitted_slices, 3);
+[31m-    assert!(
+(B[m[31m-        prepare_run(
+(B[m[31m-            &before,
+(B[m[31m-            "session",
+(B[m[31m-            &workspace,
+(B[m[31m-            None,
+(B[m[31m-            Some("after-restart"),
+(B[m[31m-            Some(&source(3, 3, 400))
+(B[m[31m-        )
+(B[m[31m-        .is_err()
+(B[m[31m-    );
+(B[m[32m+    assert!(prepare_run(
+(B[m[32m+        &before,
+(B[m[32m+        "session",
+(B[m[32m+        &workspace,
+(B[m[32m+        None,
+(B[m[32m+        Some("after-restart"),
+(B[m[32m+        Some(&source(3, 3, 400))
+(B[m[32m+    )
+(B[m[32m+    .is_err());
+(B[m     assert_eq!(log.read("session").unwrap(), before);
+ }
+ 
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/run/tests/continuation.rs:348:
+             Box::new(MemoryLog::new())
+         };
+         let (workspace, facts) = seed(log.as_ref());
+[31m-        assert!(
+(B[m[31m-            prepare_run(
+(B[m[31m-                &[],
+(B[m[31m-                "session",
+(B[m[31m-                &workspace,
+(B[m[31m-                None,
+(B[m[31m-                Some("no-goal"),
+(B[m[31m-                Some(&source(2, 2, 100))
+(B[m[31m-            )
+(B[m[31m-            .is_err()
+(B[m[31m-        );
+(B[m[32m+        assert!(prepare_run(
+(B[m[32m+            &[],
+(B[m[32m+            "session",
+(B[m[32m+            &workspace,
+(B[m[32m+            None,
+(B[m[32m+            Some("no-goal"),
+(B[m[32m+            Some(&source(2, 2, 100))
+(B[m[32m+        )
+(B[m[32m+        .is_err());
+(B[m         let prepared = prepare_run(
+             &facts,
+             "session",
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/run/tests/continuation.rs:393:
+                 assert!(fold_definitions(&corrupt, "session", &workspace, None, None).is_err());
+             } else {
+                 let capped = source(1, 1, 200);
+[31m-                assert!(
+(B[m[31m-                    prepare_run(
+(B[m[31m-                        &corrupt,
+(B[m[31m-                        "session",
+(B[m[31m-                        &workspace,
+(B[m[31m-                        None,
+(B[m[31m-                        Some("next"),
+(B[m[31m-                        Some(&capped)
+(B[m[31m-                    )
+(B[m[31m-                    .is_err()
+(B[m[31m-                );
+(B[m[31m-            }
+(B[m[31m-        }
+(B[m[31m-        for clock in [0, 99, 10000] {
+(B[m[31m-            assert!(
+(B[m[31m-                prepare_run(
+(B[m[31m-                    &before,
+(B[m[32m+                assert!(prepare_run(
+(B[m[32m+                    &corrupt,
+(B[m                     "session",
+                     &workspace,
+                     None,
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/run/tests/continuation.rs:416:
+                     Some("next"),
+[31m-                    Some(&source(3, 3, clock))
+(B[m[32m+                    Some(&capped)
+(B[m                 )
+[31m-                .is_err()
+(B[m[31m-            );
+(B[m[32m+                .is_err());
+(B[m[32m+            }
+(B[m[32m+        }
+(B[m[32m+        for clock in [0, 99, 10000] {
+(B[m[32m+            assert!(prepare_run(
+(B[m[32m+                &before,
+(B[m[32m+                "session",
+(B[m[32m+                &workspace,
+(B[m[32m+                None,
+(B[m[32m+                Some("next"),
+(B[m[32m+                Some(&source(3, 3, clock))
+(B[m[32m+            )
+(B[m[32m+            .is_err());
+(B[m         }
+         for field in ["policy", "observed_unix_ms"] {
+             let mut corrupt = before.clone();
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/run/tests.rs:73:
+     assert_eq!(view.goal_sequence, 4);
+     assert!(view.plan_accepted);
+     assert_eq!(view.state, GoalState::Active);
+[32m+    assert!(view
+(B[m[32m+        .plan
+(B[m[32m+        .as_ref()
+(B[m[32m+        .unwrap()
+(B[m[32m+        .steps
+(B[m[32m+        .iter()
+(B[m[32m+        .all(|s| s.status == crate::planning::TaskStatus::Pending));
+(B[m     assert!(
+[31m-        view.plan
+(B[m[31m-            .as_ref()
+(B[m[31m-            .unwrap()
+(B[m[31m-            .steps
+(B[m[31m-            .iter()
+(B[m[31m-            .all(|s| s.status == crate::planning::TaskStatus::Pending)
+(B[m[31m-    );
+(B[m[31m-    assert!(
+(B[m         prepare_run(&bound, "session", &workspace, None, Some("run-1"), None)
+             .unwrap()
+             .unwrap()
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/run/tests.rs:139:
+ #[test]
+ fn goal_tick_preview_uses_both_original_logs_without_appending_or_recovering() {
+     fn prove(log: &dyn LogStore) {
+[31m-        use crate::goal_control::{GoalControlCommandV1, GoalTickDecisionV1, preview_tick};
+(B[m[32m+        use crate::goal_control::{preview_tick, GoalControlCommandV1, GoalTickDecisionV1};
+(B[m         let (workspace, facts) = seed(log);
+         let view = definition_from_facts(&facts, "session", &workspace, None)
+             .unwrap()
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/run/tests.rs:178:
+             .unwrap();
+         let admitted = log.read("session").unwrap();
+         assert_eq!(
+[31m-            preview_tick(
+(B[m[31m-                &admitted, "session", &workspace, None, &command, false, None
+(B[m[31m-            )
+(B[m[31m-            .unwrap(),
+(B[m[32m+            preview_tick(&admitted, "session", &workspace, None, &command, false, None).unwrap(),
+(B[m             GoalTickDecisionV1::Reconcile,
+             "an unmarked Run with no tool receipt still needs original reconciliation"
+         );
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/run/tests.rs:194:
+                 _ => changed.expected_goal_sequence += 1,
+             }
+             assert!(
+[31m-                preview_tick(
+(B[m[31m-                    &admitted, "session", &workspace, None, &changed, false, None
+(B[m[31m-                )
+(B[m[31m-                .is_err()
+(B[m[32m+                preview_tick(&admitted, "session", &workspace, None, &changed, false, None)
+(B[m[32m+                    .is_err()
+(B[m             );
+         }
+         let mut corrupt = admitted.clone();
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/tests/import.rs:1:
+ #![cfg(test)]
+ 
+ use super::*;
+[31m-use crate::goal_control::{GOAL_LEGACY_SOURCE_DOMAIN_V1, GoalImportSourceV1};
+(B[m[32m+use crate::goal_control::{GoalImportSourceV1, GOAL_LEGACY_SOURCE_DOMAIN_V1};
+(B[m 
+ fn prove_import(log: &dyn LogStore) {
+     let plain = command();
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/tests.rs:151:
+         assert!(refuse_unbound_goal_execution(&facts).is_err());
+     }
+     assert!(definition_from_facts(&original, "foreign", &command.workspace, None).is_err());
+[31m-    assert!(
+(B[m[31m-        definition_from_facts(
+(B[m[31m-            &original,
+(B[m[31m-            "session",
+(B[m[31m-            &WorkspaceRef::new("foreign", "/workspace"),
+(B[m[31m-            None
+(B[m[31m-        )
+(B[m[31m-        .is_err()
+(B[m[31m-    );
+(B[m[32m+    assert!(definition_from_facts(
+(B[m[32m+        &original,
+(B[m[32m+        "session",
+(B[m[32m+        &WorkspaceRef::new("foreign", "/workspace"),
+(B[m[32m+        None
+(B[m[32m+    )
+(B[m[32m+    .is_err());
+(B[m     assert!(refuse_unbound_goal_execution(&[]).is_ok());
+ }
+ 
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/wait/tests.rs:3:
+ use super::*;
+ use crate::external_observation::{ExternalObservationV1, RequiredAction};
+ use crate::goal_control::{
+[31m-    GoalControlCommandV1, GoalPlanCommandV1, GoalTickDecisionV1, preview_tick,
+(B[m[32m+    preview_tick, GoalControlCommandV1, GoalPlanCommandV1, GoalTickDecisionV1,
+(B[m };
+ use crate::planning::{Complexity, ExecutionPlan, Task};
+ use a3s_effect::{FileLog, LogStore, MemoryLog};
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/wait/tests.rs:153:
+         question: "Which port should the service use?".into(),
+     };
+     let view = current(log, &workspace);
+[31m-    assert!(
+(B[m[31m-        apply(
+(B[m[31m-            log,
+(B[m[31m-            &wait(&view, "w-a", "a", Some(question.clone()), None),
+(B[m[31m-            0
+(B[m[31m-        )
+(B[m[31m-        .unwrap()
+(B[m[31m-    );
+(B[m[32m+    assert!(apply(
+(B[m[32m+        log,
+(B[m[32m+        &wait(&view, "w-a", "a", Some(question.clone()), None),
+(B[m[32m+        0
+(B[m[32m+    )
+(B[m[32m+    .unwrap());
+(B[m 
+     // A waits; independent B is the only ready step and the original Run binds it.
+     let view = current(log, &workspace);
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/wait/tests.rs:253:
+             .collect::<Vec<_>>(),
+         ["b"]
+     );
+[31m-    assert!(
+(B[m[31m-        view.plan
+(B[m[31m-            .as_ref()
+(B[m[31m-            .unwrap()
+(B[m[31m-            .steps
+(B[m[31m-            .iter()
+(B[m[31m-            .all(|s| s.status == crate::planning::TaskStatus::Pending)
+(B[m[31m-    );
+(B[m[32m+    assert!(view
+(B[m[32m+        .plan
+(B[m[32m+        .as_ref()
+(B[m[32m+        .unwrap()
+(B[m[32m+        .steps
+(B[m[32m+        .iter()
+(B[m[32m+        .all(|s| s.status == crate::planning::TaskStatus::Pending));
+(B[m 
+     // Exact replay is idempotent; changed content under the same operation conflicts.
+     assert!(apply(log, &due_now, 1).unwrap());
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/wait/tests.rs:274:
+     };
+     assert!(apply(log, &wait(&view, "w-b2", "b", Some(due_again), None), 0).unwrap());
+     let view = current(log, &workspace);
+[31m-    assert!(
+(B[m[31m-        apply(
+(B[m[31m-            log,
+(B[m[31m-            &wait(
+(B[m[31m-                &view,
+(B[m[31m-                "o-b2",
+(B[m[31m-                "b",
+(B[m[31m-                None,
+(B[m[31m-                Some(GoalWaitEvidenceV1::UtcDue {})
+(B[m[31m-            ),
+(B[m[31m-            9_000
+(B[m[31m-        )
+(B[m[31m-        .is_err()
+(B[m[31m-    );
+(B[m[31m-    assert!(
+(B[m[31m-        apply(
+(B[m[31m-            log,
+(B[m[31m-            &wait(
+(B[m[31m-                &view,
+(B[m[31m-                "o-b2",
+(B[m[31m-                "b",
+(B[m[31m-                None,
+(B[m[31m-                Some(GoalWaitEvidenceV1::UtcDue {})
+(B[m[31m-            ),
+(B[m[31m-            10_500
+(B[m[31m-        )
+(B[m[31m-        .unwrap()
+(B[m[31m-    );
+(B[m[32m+    assert!(apply(
+(B[m[32m+        log,
+(B[m[32m+        &wait(
+(B[m[32m+            &view,
+(B[m[32m+            "o-b2",
+(B[m[32m+            "b",
+(B[m[32m+            None,
+(B[m[32m+            Some(GoalWaitEvidenceV1::UtcDue {})
+(B[m[32m+        ),
+(B[m[32m+        9_000
+(B[m[32m+    )
+(B[m[32m+    .is_err());
+(B[m[32m+    assert!(apply(
+(B[m[32m+        log,
+(B[m[32m+        &wait(
+(B[m[32m+            &view,
+(B[m[32m+            "o-b2",
+(B[m[32m+            "b",
+(B[m[32m+            None,
+(B[m[32m+            Some(GoalWaitEvidenceV1::UtcDue {})
+(B[m[32m+        ),
+(B[m[32m+        10_500
+(B[m[32m+    )
+(B[m[32m+    .unwrap());
+(B[m 
+     // Source revision: unchanged digest is quiet; foreign subject refuses; a new digest records.
+     let view = current(log, &workspace);
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/wait/tests.rs:312:
+     assert!(apply(log, &wait(&view, "w-src", "b", Some(source), None), 0).unwrap());
+     let view = current(log, &workspace);
+     let before = log.read("session").unwrap();
+[31m-    assert!(
+(B[m[31m-        !apply(
+(B[m[31m-            log,
+(B[m[31m-            &wait(
+(B[m[31m-                &view,
+(B[m[31m-                "o-src",
+(B[m[31m-                "b",
+(B[m[31m-                None,
+(B[m[31m-                Some(observation("build", "red-1"))
+(B[m[31m-            ),
+(B[m[31m-            0
+(B[m[31m-        )
+(B[m[31m-        .unwrap()
+(B[m[31m-    );
+(B[m[31m-    assert!(
+(B[m[31m-        apply(
+(B[m[31m-            log,
+(B[m[31m-            &wait(
+(B[m[31m-                &view,
+(B[m[31m-                "o-src",
+(B[m[31m-                "b",
+(B[m[31m-                None,
+(B[m[31m-                Some(observation("deploy", "green-2"))
+(B[m[31m-            ),
+(B[m[31m-            0
+(B[m[31m-        )
+(B[m[31m-        .is_err()
+(B[m[31m-    );
+(B[m[31m-    assert!(
+(B[m[31m-        apply(
+(B[m[31m-            log,
+(B[m[31m-            &wait(
+(B[m[31m-                &view,
+(B[m[31m-                "o-src",
+(B[m[31m-                "b",
+(B[m[31m-                None,
+(B[m[31m-                Some(GoalWaitEvidenceV1::ConfirmationAnswer { approved: true })
+(B[m[31m-            ),
+(B[m[31m-            0
+(B[m[31m-        )
+(B[m[31m-        .is_err()
+(B[m[31m-    );
+(B[m[32m+    assert!(!apply(
+(B[m[32m+        log,
+(B[m[32m+        &wait(
+(B[m[32m+            &view,
+(B[m[32m+            "o-src",
+(B[m[32m+            "b",
+(B[m[32m+            None,
+(B[m[32m+            Some(observation("build", "red-1"))
+(B[m[32m+        ),
+(B[m[32m+        0
+(B[m[32m+    )
+(B[m[32m+    .unwrap());
+(B[m[32m+    assert!(apply(
+(B[m[32m+        log,
+(B[m[32m+        &wait(
+(B[m[32m+            &view,
+(B[m[32m+            "o-src",
+(B[m[32m+            "b",
+(B[m[32m+            None,
+(B[m[32m+            Some(observation("deploy", "green-2"))
+(B[m[32m+        ),
+(B[m[32m+        0
+(B[m[32m+    )
+(B[m[32m+    .is_err());
+(B[m[32m+    assert!(apply(
+(B[m[32m+        log,
+(B[m[32m+        &wait(
+(B[m[32m+            &view,
+(B[m[32m+            "o-src",
+(B[m[32m+            "b",
+(B[m[32m+            None,
+(B[m[32m+            Some(GoalWaitEvidenceV1::ConfirmationAnswer { approved: true })
+(B[m[32m+        ),
+(B[m[32m+        0
+(B[m[32m+    )
+(B[m[32m+    .is_err());
+(B[m     assert_eq!(log.read("session").unwrap(), before);
+[31m-    assert!(
+(B[m[31m-        apply(
+(B[m[31m-            log,
+(B[m[31m-            &wait(
+(B[m[31m-                &view,
+(B[m[31m-                "o-src",
+(B[m[31m-                "b",
+(B[m[31m-                None,
+(B[m[31m-                Some(observation("build", "green-2"))
+(B[m[31m-            ),
+(B[m[31m-            0
+(B[m[31m-        )
+(B[m[31m-        .unwrap()
+(B[m[31m-    );
+(B[m[32m+    assert!(apply(
+(B[m[32m+        log,
+(B[m[32m+        &wait(
+(B[m[32m+            &view,
+(B[m[32m+            "o-src",
+(B[m[32m+            "b",
+(B[m[32m+            None,
+(B[m[32m+            Some(observation("build", "green-2"))
+(B[m[32m+        ),
+(B[m[32m+        0
+(B[m[32m+    )
+(B[m[32m+    .unwrap());
+(B[m 
+     // Answering A: kind mismatch and blank text refuse; the answer reaches A's Run context.
+     let view = current(log, &workspace);
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/wait/tests.rs:377:
+             answer: text.into(),
+         })
+     };
+[31m-    assert!(
+(B[m[31m-        apply(
+(B[m[31m-            log,
+(B[m[31m-            &wait(&view, "o-a", "a", None, Some(GoalWaitEvidenceV1::UtcDue {})),
+(B[m[31m-            20_000
+(B[m[31m-        )
+(B[m[31m-        .is_err()
+(B[m[31m-    );
+(B[m[32m+    assert!(apply(
+(B[m[32m+        log,
+(B[m[32m+        &wait(&view, "o-a", "a", None, Some(GoalWaitEvidenceV1::UtcDue {})),
+(B[m[32m+        20_000
+(B[m[32m+    )
+(B[m[32m+    .is_err());
+(B[m     assert!(apply(log, &wait(&view, "o-a", "a", None, answer("  ")), 0).is_err());
+     assert!(apply(log, &wait(&view, "o-a", "a", None, answer("port 8443")), 0).unwrap());
+     let view = current(log, &workspace);
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/wait/tests.rs:392:
+     let context = render_run_context(&view, "run-a").unwrap();
+     assert!(context.contains("port 8443") && context.contains("not approval"));
+     // An old answer for an already observed wait cannot be admitted again.
+[31m-    assert!(
+(B[m[31m-        apply(
+(B[m[31m-            log,
+(B[m[31m-            &wait(&view, "o-a-late", "a", None, answer("port 9000")),
+(B[m[31m-            0
+(B[m[31m-        )
+(B[m[31m-        .is_err()
+(B[m[31m-    );
+(B[m[32m+    assert!(apply(
+(B[m[32m+        log,
+(B[m[32m+        &wait(&view, "o-a-late", "a", None, answer("port 9000")),
+(B[m[32m+        0
+(B[m[32m+    )
+(B[m[32m+    .is_err());
+(B[m 
+     // Tampered history fails closed rather than projecting a different readiness.
+     let facts = log.read("session").unwrap();
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts/wait.rs:4:
+ use super::*;
+ use crate::external_observation::EXTERNAL_OBSERVATION_SCHEMA;
+ use crate::goal_control::{
+[31m-    GoalWaitCommandV1, GoalWaitConditionV1, GoalWaitEvidenceV1, GoalWaitObservationV1, GoalWaitV1,
+(B[m[31m-    validate_text,
+(B[m[32m+    validate_text, GoalWaitCommandV1, GoalWaitConditionV1, GoalWaitEvidenceV1,
+(B[m[32m+    GoalWaitObservationV1, GoalWaitV1,
+(B[m };
+ 
+ #[derive(Serialize, Deserialize)]
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts.rs:1:
+ //! Stable addresses in the original fact log; no writer or alternate journal.
+ 
+ use super::{
+[31m-    DurableGoalBindingV1, DurableGoalDefinitionV1, GoalCommandKindV1, GoalControlError,
+(B[m[31m-    GoalDefinitionCommandV1, GoalRefusal, GoalState, deserialize_goal_definition,
+(B[m[31m-    validate_goal_definition, validate_id,
+(B[m[32m+    deserialize_goal_definition, validate_goal_definition, validate_id, DurableGoalBindingV1,
+(B[m[32m+    DurableGoalDefinitionV1, GoalCommandKindV1, GoalControlError, GoalDefinitionCommandV1,
+(B[m[32m+    GoalRefusal, GoalState,
+(B[m };
+ use crate::execution_identity::ExecutionIdentityV1;
+ use crate::planning::AgentGoal;
+Diff in /Users/roylin/code/aster/crates/code/core/src/goal_control/facts.rs:41:
+ 
+ mod run;
+ pub(super) use run::matches_tick_run;
+[31m-pub(crate) use run::{ContinuationSource, prepare_run, render_run_context};
+(B[m[32m+pub(crate) use run::{prepare_run, render_run_context, ContinuationSource};
+(B[m mod settle;
+ pub(crate) use settle::{prepare_settlement, reconcile_slices};
+ mod complete;

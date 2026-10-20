@@ -1,0 +1,20 @@
+{
+  "version": "0.1.2",
+  "notary_submission": "dec8d88d-b2e2-48ed-8fbf-aea823e0ad97",
+  "public_key_unchanged": true,
+  "original_key_file_unchanged": true,
+  "files": {
+    "aster_0.1.2_aarch64.dmg": {
+      "bytes": 75408832,
+      "sha256": "5e80def2d39dbe6da656f893d75e76a980e129140b2677a889dadfb5dee6bc14"
+    },
+    "AsterDream.app.tar.gz": {
+      "bytes": 74840124,
+      "sha256": "2fc48d0a0fc901474ee7913a0265ea332689e85e97f7f94ce80132193d9ccacb"
+    },
+    "AsterDream.app.tar.gz.sig": {
+      "bytes": 428,
+      "sha256": "e3681de6b017593e2f3ad77d03687ee78d112afaad104d35e9535f997edd3877"
+    }
+  }
+}

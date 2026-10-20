@@ -92,8 +92,7 @@ impl UsageStore {
     }
 
     pub fn record(&mut self, input: UsageInput) -> UsageRecord {
-        let amount_usd =
-            ((input.units * input.unit_price_usd) * 1_000_000.0).round() / 1_000_000.0;
+        let amount_usd = ((input.units * input.unit_price_usd) * 1_000_000.0).round() / 1_000_000.0;
         let row = UsageRecord {
             id: format!(
                 "usage_{}_{}",

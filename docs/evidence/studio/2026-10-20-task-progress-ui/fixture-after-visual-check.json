@@ -1,0 +1,17 @@
+{
+  "note.txt": {
+    "bytes": 42,
+    "sha256": "261b66e58cf032ca46155ba465073fbdae0e501140ebf0b88a927938f134a5fd",
+    "mtime_ns": 1792458868593571393
+  },
+  "result.txt": {
+    "bytes": 17,
+    "sha256": "80b03f4a6af56e3e40e115f8c1a1bbb2781bc397980b87d5505b4a7eb3979c2c",
+    "mtime_ns": 1792458885519546753
+  },
+  "sentinel.txt": {
+    "bytes": 28,
+    "sha256": "996633670698d2ec6a0606cd78b56b07f06efc89cc8e77b9a8b87d3d2945f20e",
+    "mtime_ns": 1792456358674878314
+  }
+}

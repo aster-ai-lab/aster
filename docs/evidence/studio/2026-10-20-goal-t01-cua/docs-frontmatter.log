@@ -1,0 +1,3 @@
+Found 1 doc frontmatter violation(s):
+
+  docs/references/architecture/aix-ui-document-protocol.md: source path does not exist: src-tauri/src/capabilities_vsix.rs — the doc may describe deleted or moved code

@@ -1,0 +1,14 @@
+{
+  "version": "0.1.2",
+  "architecture": "arm64",
+  "companions": {
+    "a3s-code-acp": {
+      "release_uuid": "19C79D86-9785-3B94-BEC9-FC7F20C7755A",
+      "bundle_uuid": "19C79D86-9785-3B94-BEC9-FC7F20C7755A"
+    },
+    "a3s-office": {
+      "release_uuid": "DECEC515-C4B0-389A-ABA6-421924D5DD1E",
+      "bundle_uuid": "DECEC515-C4B0-389A-ABA6-421924D5DD1E"
+    }
+  }
+}

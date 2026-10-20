@@ -3,8 +3,7 @@
 use super::*;
 
 #[tokio::test]
-async fn continuation_history_resets_only_on_original_verified_progress_and_survives_session_reopen(
-) {
+async fn read_only_step_acceptance_does_not_reset_continuation_stall_across_reopen() {
     for file in [false, true] {
         for policy in [false, true] {
             let root = tempfile::tempdir().unwrap();
@@ -92,18 +91,18 @@ async fn continuation_history_resets_only_on_original_verified_progress_and_surv
                     .count(),
                 1
             );
-            assert!(crate::goal_control::prepare_run(
-                &after,
-                "goal-run",
-                &view.binding.workspace,
-                view.binding.work_policy_digest.as_deref(),
-                Some("next-auto"),
-                Some(&finite_source),
-            )
-            .unwrap()
-            .unwrap()
-            .pending
-            .is_some());
+            assert!(
+                crate::goal_control::prepare_run(
+                    &after,
+                    "goal-run",
+                    &view.binding.workspace,
+                    view.binding.work_policy_digest.as_deref(),
+                    Some("next-auto"),
+                    Some(&finite_source),
+                )
+                .is_err(),
+                "a read-only accepted step cannot reset the stall bound"
+            );
             let mut exhausted = finite_source.clone();
             exhausted.policy.max_slices = std::num::NonZeroU64::new(1).unwrap();
             assert!(
@@ -147,18 +146,18 @@ async fn continuation_history_resets_only_on_original_verified_progress_and_surv
                 Some(&exhausted),
             )
             .is_err());
-            assert!(crate::goal_control::prepare_run(
-                &reopened,
-                "goal-run",
-                &view.binding.workspace,
-                view.binding.work_policy_digest.as_deref(),
-                Some("next-auto"),
-                Some(&finite_source),
-            )
-            .unwrap()
-            .unwrap()
-            .pending
-            .is_some());
+            assert!(
+                crate::goal_control::prepare_run(
+                    &reopened,
+                    "goal-run",
+                    &view.binding.workspace,
+                    view.binding.work_policy_digest.as_deref(),
+                    Some("next-auto"),
+                    Some(&finite_source),
+                )
+                .is_err(),
+                "a read-only accepted step cannot reset the stall bound"
+            );
             assert_eq!(
                 crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap(),
                 after

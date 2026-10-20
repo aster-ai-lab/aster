@@ -39,7 +39,7 @@ fn receipt(id: &str, path: &str, after: ToolFileIdentityV1) -> ToolExecutionResu
 }
 
 #[test]
-fn a_path_budget_does_not_freeze_and_a_missed_read_still_does() {
+fn a_captured_attribution_gap_does_not_freeze_and_unknown_still_does() {
     let mut ledger = MutationLedger::default();
     let mut budget = receipt("wide", "changed.txt", file_identity(b"wide", 0o644));
     budget.effects = ToolEffectObservationV1::budget_exceeded();
@@ -52,7 +52,11 @@ fn a_path_budget_does_not_freeze_and_a_missed_read_still_does() {
         "tool_effect_observation_incomplete: observation exceeded its path or byte budget",
     );
     same_words.observe_tool_receipt("bash", &words);
-    assert!(same_words.has_uncertain_tool_invocations());
+    assert!(!same_words.has_uncertain_tool_invocations());
+    assert!(matches!(
+        decide_completion(&same_words, &[], &[], false),
+        CompletionGate::Allow(CompletionTerminal::Narrative)
+    ));
     let mut unknown_ledger = MutationLedger::default();
     let mut unknown = receipt("unknown", "changed.txt", file_identity(b"wide", 0o644));
     unknown.outcome = ToolExecutionOutcome::Unknown;

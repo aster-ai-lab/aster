@@ -1,0 +1,61 @@
+{
+  "acp_description": "ACP stdio agent over a3s-code-core 9.1.4 for Aster desktop hosts",
+  "acp_crate_doc": [
+    "//! ACP stdio agent over a3s-code-core 9.1.4.",
+    "//!",
+    "//! Desktop hosts start this process for a session. The Aster terminal",
+    "//! binary links `a3s-code-pager` and `a3s-code-shell` in-process."
+  ],
+  "acp_terminal_paths": [
+    "../../terminal/crates/codegen/a3s-code-mermaid"
+  ],
+  "aster_pager_deps": [
+    "a3s-code-pager",
+    "a3s-code-pager-minimal",
+    "a3s-code-shell"
+  ],
+  "config_filenames": [
+    "config.toml",
+    "managed_config.toml",
+    "requirements.toml",
+    "sandbox.toml",
+    "trusted-hook-projects",
+    "trusted-plugins",
+    "trusted_folders.toml"
+  ],
+  "main_allow": [],
+  "main_identity_ceilings": {
+    "GROK_NPM_REGISTRY": 1,
+    "cryptify::flow_stmt!": 0,
+    "grok-pager": 0,
+    "grok:": 0,
+    "obfstr::obfstr!": 0
+  },
+  "acp_default_features": ["account-import", "svg-png"],
+  "event_loop_inline_tests_max_lines": 2173,
+  "acp_account_mods": [
+    "cc_switch",
+    "cursor_account",
+    "grok_account"
+  ],
+  "pager_shell_spawn_files": [],
+  "pager_stdio_shell_needles": [
+    "fn run_stdio(",
+    "run_sidecar_on_stdio("
+  ],
+  "pager_stdio_forbidden": [
+    "run_stdio_agent("
+  ],
+  "pager_interactive_sidecar": [
+    "a3s_acp_enabled()",
+    "spawn_a3s_acp("
+  ],
+  "pager_sidecar_entries": {
+    "acp/mod.rs": "a3s_spawn::spawn_required_sidecar(",
+    "agent_runtime.rs": "run_sidecar_on_stdio(",
+    "headless.rs": "spawn_required_sidecar(",
+    "models.rs": "spawn_required_sidecar(",
+    "worktree_cmd/mod.rs": "spawn_required_sidecar("
+  },
+  "pager_acp_stale_version_max": 0
+}

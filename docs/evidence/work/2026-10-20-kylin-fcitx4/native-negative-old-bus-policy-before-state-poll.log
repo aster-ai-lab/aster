@@ -1,0 +1,45 @@
+Fixture case: old-bus-policy
+App files: /aster/target/evaluations/kylin-ime-20261020/review-negative/old-bus-policy/files
+Runtime files: /root/.local/share/flatpak/runtime/org.gnome.Platform/x86_64/50/7e410fa0d429fcc34f2ddd0d9b6224f1435d8640fb9759801db4f02700542353/files
+
+(gtk-ime-probe:3847): GLib-GIO-CRITICAL **: 07:47:41.808: g_dbus_proxy_new: assertion 'G_IS_DBUS_CONNECTION (connection)' failed
+IME test timed out at phase 0; committed text: ni 
+==> /tmp/tmp.ZAIIx1v3Lv/fcitx.log <==
+(INFO-3830 addon.c:151) Load Addon Config File:fcitx-remote-module.conf
+(INFO-3830 addon.c:151) Load Addon Config File:fcitx-spell.conf
+(INFO-3830 addon.c:151) Load Addon Config File:fcitx-unicode.conf
+(INFO-3830 addon.c:151) Load Addon Config File:fcitx-vk.conf
+(INFO-3830 addon.c:151) Load Addon Config File:fcitx-x11.conf
+(INFO-3830 addon.c:151) Load Addon Config File:fcitx-xim.conf
+(INFO-3830 addon.c:151) Load Addon Config File:fcitx-xkb.conf
+(INFO-3830 addon.c:151) Load Addon Config File:fcitx-xkbdbus.conf
+(INFO-3830 addon.c:151) Load Addon Config File:fcitx-pinyin-enhance.conf
+(INFO-3830 addon.c:151) Load Addon Config File:fcitx-pinyin.conf
+(INFO-3830 addon.c:151) Load Addon Config File:fcitx-classic-ui.conf
+(INFO-3830 addon.c:151) Load Addon Config File:fcitx-notificationitem.conf
+(INFO-3830 addon.c:151) Load Addon Config File:fcitx-dbus.conf
+(INFO-3830 addon.c:151) Load Addon Config File:fcitx-freedesktop-notify.conf
+(INFO-3830 addon.c:151) Load Addon Config File:fcitx-ipc.conf
+(ERROR-3830 ime.c:432) fcitx-keyboard-us already exists
+(WARN-3830 xim.c:161) Please set XMODIFIERS.
+=========================
+FCITX 4.2.9.9 -- Get Signal No.: 15
+Date: try "date -d @1792482476" if you are using GNU date ***
+ProcessID: 3830
+fcitx(+0x19ba)[0x5555555559ba]
+/lib/x86_64-linux-gnu/libc.so.6(+0x45330)[0x7fffff59d330]
+/lib/x86_64-linux-gnu/libc.so.6(__select+0x147)[0x7fffff67efa7]
+/lib/x86_64-linux-gnu/libfcitx-core.so.0(+0x1411c)[0x7fffff7af11c]
+/lib/x86_64-linux-gnu/libfcitx-core.so.0(FcitxInstanceRun+0x5f)[0x7fffff7af81f]
+fcitx(+0x14c7)[0x5555555554c7]
+/lib/x86_64-linux-gnu/libc.so.6(+0x2a1ca)[0x7fffff5821ca]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x8b)[0x7fffff58228b]
+fcitx(+0x1585)[0x555555555585]
+
+==> /tmp/tmp.ZAIIx1v3Lv/proxy.log <==
+
+(process:3831): GLib-GIO-WARNING **: 07:47:44.856: Socket check failed
+
+(process:3831): GLib-GIO-WARNING **: 07:47:51.382: Socket check failed
+
+Exit status: 1

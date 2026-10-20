@@ -32,9 +32,6 @@ serde_json = {workspace = true}
 dunce = {workspace = true}
 semver = {workspace = true}
 
-# Binary hardening: compile-time string + control-flow obfuscation.
-obfstr = {workspace = true}
-cryptify = {version = "3.2"}
 a3s-code-extra-ca = {path = "../../crates/terminal/crates/codegen/a3s-code-extra-ca"}
 a3s-code-sandbox = {default-features = false, path = "../../crates/terminal/crates/codegen/a3s-code-sandbox"}
 a3s-code-config = {path = "../../crates/terminal/crates/codegen/a3s-code-config"}

@@ -6,7 +6,7 @@
 
 use a3s_code_core::goal_control::{
     DurableGoalDefinitionV1, GoalCommandKindV1, GoalControlCommandV1, GoalControlError,
-    GoalRefusal, GoalState,
+    GoalRefusal, GoalState, GoalTickDecisionV1,
 };
 use a3s_code_core::PlanningMode;
 
@@ -22,6 +22,50 @@ mod import;
 pub(crate) use import::{commit_import, preview_import, GoalImportPreviewRequest};
 mod persistence;
 pub(crate) use persistence::{apply_session_goal, load_goal, retire_achieved_durable_goal};
+
+#[derive(Clone, Copy, Default)]
+pub(crate) enum GoalLanguage {
+    #[default]
+    English,
+    Chinese,
+}
+
+impl GoalLanguage {
+    pub(crate) fn from_host(language: Option<&str>) -> Self {
+        match language {
+            Some("zh-CN") => Self::Chinese,
+            _ => Self::English,
+        }
+    }
+
+    pub(crate) fn decision(self, decision: GoalTickDecisionV1) -> String {
+        if matches!(self, Self::English) {
+            return format!("Durable goal tick: {}", decision.as_str());
+        }
+        match decision {
+            GoalTickDecisionV1::Advance => "正在继续执行。",
+            GoalTickDecisionV1::Wait => "等待所需结果后继续。",
+            GoalTickDecisionV1::NeedsInput => "需要补充信息或调整计划后继续。",
+            GoalTickDecisionV1::Paused => "已暂停，可发送 /goal resume 继续。",
+            GoalTickDecisionV1::BudgetExhausted => "已达到目标执行上限，请检查结果并调整执行额度。",
+            GoalTickDecisionV1::Reconcile => "需要核对执行记录后继续。",
+            GoalTickDecisionV1::Complete => "目标已满足完成条件。",
+        }
+        .into()
+    }
+
+    pub(crate) fn legacy_reply(self, goal: Option<&DurableGoal>, fallback: &str) -> String {
+        match self {
+            Self::English => fallback.into(),
+            Self::Chinese => match goal {
+                Some(goal) if goal.paused => "目标已暂停，可发送 /goal resume 继续。",
+                Some(_) => "目标进行中。",
+                None => "当前未设置目标。发送 /goal <目标内容> 开始。",
+            }
+            .into(),
+        }
+    }
+}
 
 pub(crate) fn host_clock_ms() -> anyhow::Result<u64> {
     use anyhow::Context;
@@ -257,6 +301,7 @@ fn control_command(
 pub(crate) async fn apply_bound_goal(
     session: &a3s_code_core::AgentSession,
     op: &GoalOp,
+    language: GoalLanguage,
 ) -> anyhow::Result<Option<BoundGoalReply>> {
     let created = if let GoalOp::Set(task) = op {
         if session.goal_definition()?.is_none()
@@ -305,9 +350,12 @@ pub(crate) async fn apply_bound_goal(
             .into());
         }
     }
-    let mut reply = bound_status(session, &current).await?;
+    let mut reply = bound_status(session, &current, language).await?;
     if matches!(op, GoalOp::Clear) {
-        reply.push_str("\nUse /new to start a different goal or ordinary work.");
+        reply.push_str(match language {
+            GoalLanguage::Chinese => "\n可新建会话开始其他任务。",
+            GoalLanguage::English => "\nUse /new to start a different goal or ordinary work.",
+        });
     }
     Ok(Some(BoundGoalReply { reply, tick }))
 }
@@ -316,12 +364,23 @@ pub(crate) async fn apply_bound_goal(
 pub(crate) async fn bound_status(
     session: &a3s_code_core::AgentSession,
     current: &DurableGoalDefinitionV1,
+    language: GoalLanguage,
 ) -> anyhow::Result<String> {
-    let mut lines = vec![format!(
-        "Durable goal {}: {}",
-        current.state.as_str(),
-        current.goal.description
-    )];
+    let mut lines = vec![match language {
+        GoalLanguage::English => format!(
+            "Durable goal {}: {}",
+            current.state.as_str(),
+            current.goal.description
+        ),
+        GoalLanguage::Chinese => match current.state {
+            GoalState::Active => "目标进行中",
+            GoalState::Waiting => "目标等待中",
+            GoalState::Paused => "目标已暂停",
+            GoalState::Completed => "目标已完成",
+            GoalState::Cancelled => "目标已取消",
+        }
+        .into(),
+    }];
     match (&current.plan, current.plan_revision) {
         (Some(plan), Some(revision)) => {
             let done = plan
@@ -334,19 +393,34 @@ pub(crate) async fn bound_status(
             } else {
                 "proposed"
             };
-            lines.push(format!(
-                "Plan r{revision} {accepted}: {done}/{} steps done",
-                plan.steps.len()
-            ));
+            lines.push(match language {
+                GoalLanguage::English => format!(
+                    "Plan r{revision} {accepted}: {done}/{} steps done",
+                    plan.steps.len()
+                ),
+                GoalLanguage::Chinese => format!(
+                    "计划：已完成 {done}/{} 项{}",
+                    plan.steps.len(),
+                    if current.plan_accepted {
+                        ""
+                    } else {
+                        "，待确认"
+                    }
+                ),
+            });
         }
-        _ => lines.push("Plan: none".into()),
+        _ => lines.push(match language {
+            GoalLanguage::Chinese => "尚未制定计划。".into(),
+            GoalLanguage::English => "Plan: none".into(),
+        }),
     }
     if !matches!(current.state, GoalState::Completed | GoalState::Cancelled) {
         let preview = control_command(current, GoalCommandKindV1::Tick, "acp-status".into());
-        lines.push(format!(
-            "Next: {}",
-            session.preview_goal_tick(&preview).await?.as_str()
-        ));
+        let decision = session.preview_goal_tick(&preview).await?;
+        lines.push(match language {
+            GoalLanguage::Chinese => language.decision(decision),
+            GoalLanguage::English => format!("Next: {}", decision.as_str()),
+        });
     }
     Ok(lines.join("\n"))
 }
@@ -357,7 +431,7 @@ pub(crate) async fn bound_status(
 pub(crate) enum BoundGoalStep {
     Advance(GoalControlCommandV1),
     Finished,
-    Stopped(&'static str),
+    Stopped(GoalTickDecisionV1),
 }
 
 pub(crate) async fn bound_goal_step(
@@ -376,7 +450,7 @@ pub(crate) async fn bound_goal_step(
     Ok(match decision {
         a3s_code_core::goal_control::GoalTickDecisionV1::Advance => BoundGoalStep::Advance(command),
         a3s_code_core::goal_control::GoalTickDecisionV1::Complete => BoundGoalStep::Finished,
-        other => BoundGoalStep::Stopped(other.as_str()),
+        other => BoundGoalStep::Stopped(other),
     })
 }
 
@@ -447,6 +521,7 @@ pub(crate) fn bound_tick_command(
 pub(crate) async fn bound_slice_report(
     session: &a3s_code_core::AgentSession,
     run_id: Option<&str>,
+    language: GoalLanguage,
 ) -> anyhow::Result<String> {
     let mut lines = Vec::new();
     if let Some(run_id) = run_id {
@@ -454,10 +529,12 @@ pub(crate) async fn bound_slice_report(
             .run_snapshot(run_id)
             .await
             .ok_or_else(|| anyhow::anyhow!("goal slice {run_id} has no Run record"))?;
-        lines.push(format!("Goal slice {}: {:?}", snapshot.id, snapshot.status));
+        if matches!(language, GoalLanguage::English) {
+            lines.push(format!("Goal slice {}: {:?}", snapshot.id, snapshot.status));
+        }
     }
     if let Some(after) = session.goal_definition()? {
-        lines.push(bound_status(session, &after).await?);
+        lines.push(bound_status(session, &after, language).await?);
     }
     Ok(lines.join("\n\n"))
 }
@@ -477,6 +554,35 @@ an unrelated question needs only a normal reply — do not start executing the g
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn legacy_commands_follow_the_host_language_without_repeating_the_objective() {
+        use super::*;
+        let language = GoalLanguage::from_host(Some("zh-CN"));
+        let goal = DurableGoal {
+            objective: "The original English task".into(),
+            paused: false,
+        };
+        let active = apply_goal(Some(goal), GoalOp::Status);
+        assert_eq!(
+            language.legacy_reply(active.next.as_ref(), active.reply.as_deref().unwrap()),
+            "目标进行中。"
+        );
+        let paused = apply_goal(active.next, GoalOp::Pause);
+        assert_eq!(
+            language.legacy_reply(paused.next.as_ref(), paused.reply.as_deref().unwrap()),
+            "目标已暂停，可发送 /goal resume 继续。"
+        );
+        let cleared = apply_goal(paused.next, GoalOp::Clear);
+        assert_eq!(
+            language.legacy_reply(cleared.next.as_ref(), cleared.reply.as_deref().unwrap()),
+            "当前未设置目标。发送 /goal <目标内容> 开始。"
+        );
+        assert_eq!(
+            GoalLanguage::English.legacy_reply(None, "Cleared the durable goal."),
+            "Cleared the durable goal."
+        );
+    }
+
     #[test]
     fn product_default_bounds_are_finite_and_explicit() {
         let policy = super::default_continuation_policy(5_000).unwrap();

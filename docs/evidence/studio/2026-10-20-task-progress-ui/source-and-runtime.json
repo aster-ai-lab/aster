@@ -1,0 +1,22 @@
+{
+  "branch": "fix/planning-mode-ui-20261020",
+  "base_commit": "33edc9a74f4042efca73157d815dfca139a53140",
+  "source_sha256": {
+    "src/renderer/pages/agents/AgentChat.tsx": "a8afdf075ef1d56c01e5ff04ff59f3718ad6d9bdc0e396ec544a9fcaf73d2a20",
+    "src/renderer/pages/agents/AgentComposer.tsx": "34567f1d43a4f5376e34530461c7ab1a38beda37d0719ed0704a01c6f1496523",
+    "src/renderer/pages/agents/AgentComposerSlot.tsx": "5783e1bbd8b6f95be6dc6688a9f3688bdfd475b325c0d4500793d268880620dd",
+    "src/renderer/pages/agents/__tests__/AgentComposerSlot.test.tsx": "149cbf1e12a75be06b2f5ab99c6618d26c65810a6611f44a6e7550a1be0be18b",
+    "src/renderer/pages/agents/components/AgentRightPane/AgentRightPane.tsx": "77af543d6a411e76dfb84f649fb2f60f79225aa4b2b460ec27c0e606ef82b9bd",
+    "src/renderer/pages/agents/components/AgentRightPane/index.ts": "d1d539ed9a1a2709ab87c2cb023b19830dba1b57ad468ae6984c82691f64fe56",
+    "src/renderer/pages/agents/components/AgentRightPane/__tests__/AgentRightPane.test.tsx": "c0a0295f14caa9009955276ca619c87bbb2c8a6514b281a8c60a8e99c526aa4a",
+    "src/renderer/pages/agents/workbenchPermissionPostures.ts": "4d9c50b0f226e6d1d96d0da35294333cdbb7536f1cabf4281dad3493ac0b1173"
+  },
+  "renderer_scripts": [
+    "/static/js/lib-react.96542fe88c.js",
+    "/static/js/xe.585b3ef3dd.js",
+    "/static/js/af7.b9b1bb83df.js",
+    "/static/js/index.9de3265824.js"
+  ],
+  "native_app": "AsterDream-TaskOptimization-R5",
+  "cua_method": "mcp__cua_repl, native AX actions and screenshots; no injected browser JavaScript"
+}

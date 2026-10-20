@@ -3,6 +3,18 @@
 use super::*;
 
 impl A3sCodeAgent {
+    pub(super) async fn goal_language(
+        &self,
+        session_id: &acp::SessionId,
+    ) -> crate::goal::GoalLanguage {
+        self.sessions
+            .lock()
+            .await
+            .get(session_id.0.as_ref())
+            .map(|live| crate::goal::GoalLanguage::from_host(live.host.output_language.as_deref()))
+            .unwrap_or_default()
+    }
+
     /// Restore planning after a session rebuild while a goal is still active.
     pub(super) async fn reapply_active_goal(&self, session_key: &str) {
         let active = self
@@ -51,8 +63,9 @@ impl A3sCodeAgent {
         observation: Option<&crate::run_observation::Binding>,
     ) -> acp::Result<acp::PromptResponse> {
         let key = session_id.0.to_string();
+        let language = self.goal_language(session_id).await;
         let invalid = |error: anyhow::Error| acp::Error::invalid_params().data(error.to_string());
-        if let Some(bound) = crate::goal::apply_bound_goal(session, &op)
+        if let Some(bound) = crate::goal::apply_bound_goal(session, &op, language)
             .await
             .map_err(invalid)?
         {
@@ -71,14 +84,21 @@ impl A3sCodeAgent {
                     crate::goal::BoundGoalStep::Advance(command) => command,
                     crate::goal::BoundGoalStep::Finished => {
                         drop(turn_permit.take());
-                        self.emit_text(session_id, "\n\nDurable goal finished\n")
-                            .await;
+                        if matches!(language, crate::goal::GoalLanguage::English) {
+                            self.emit_text(session_id, "\n\nDurable goal finished\n")
+                                .await;
+                        }
                         return Ok(acp::PromptResponse::new(acp::StopReason::EndTurn));
                     }
                     crate::goal::BoundGoalStep::Stopped(decision) => {
                         drop(turn_permit.take());
-                        self.emit_text(session_id, &format!("\n\nDurable goal tick: {decision}\n"))
+                        if matches!(language, crate::goal::GoalLanguage::English) {
+                            self.emit_text(
+                                session_id,
+                                &format!("\n\n{}\n", language.decision(decision)),
+                            )
                             .await;
+                        }
                         return Ok(acp::PromptResponse::new(acp::StopReason::EndTurn));
                     }
                 };
@@ -99,16 +119,17 @@ impl A3sCodeAgent {
                         drop(permit);
                         self.emit_text(
                             session_id,
-                            &format!("\n\nDurable goal tick: {}\n", decision.as_str()),
+                            &format!("\n\n{}\n", language.decision(decision)),
                         )
                         .await;
                         return Ok(acp::PromptResponse::new(acp::StopReason::EndTurn));
                     }
                     a3s_code_core::GoalTickStream::Replayed(snapshot) => {
                         drop(permit);
-                        let report = crate::goal::bound_slice_report(session, Some(&snapshot.id))
-                            .await
-                            .map_err(invalid)?;
+                        let report =
+                            crate::goal::bound_slice_report(session, Some(&snapshot.id), language)
+                                .await
+                                .map_err(invalid)?;
                         self.emit_text(session_id, &format!("\n\n{report}")).await;
                         return Ok(acp::PromptResponse::new(acp::StopReason::EndTurn));
                     }
@@ -129,7 +150,7 @@ impl A3sCodeAgent {
                         (run_id, response)
                     }
                 };
-                let report = crate::goal::bound_slice_report(session, run_id.as_deref())
+                let report = crate::goal::bound_slice_report(session, run_id.as_deref(), language)
                     .await
                     .map_err(invalid)?;
                 self.emit_text(session_id, &format!("\n\n{report}")).await;
@@ -166,7 +187,11 @@ impl A3sCodeAgent {
             }
         }
         if let Some(reply) = applied.reply {
-            self.emit_text(session_id, &reply).await;
+            self.emit_text(
+                session_id,
+                &language.legacy_reply(applied.next.as_ref(), &reply),
+            )
+            .await;
         }
         if let Some(model_prompt) = applied.model_prompt {
             return self

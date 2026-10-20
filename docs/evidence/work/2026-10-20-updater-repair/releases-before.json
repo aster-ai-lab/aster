@@ -1,0 +1,127 @@
+[
+  {
+    "tag_name": "v0.1.1",
+    "draft": false,
+    "published_at": "2026-10-19T20:27:52Z",
+    "assets": [
+      {
+        "name": "aster_0.1.1_aarch64.dmg",
+        "size": 75345497,
+        "digest": "sha256:28ad33e57c424f824b206d65920a04ff6cb2d69c2fdd6c15baab10a353b5793e",
+        "browser_download_url": "https://github.com/aster-ai-lab/aster/releases/download/v0.1.1/aster_0.1.1_aarch64.dmg"
+      },
+      {
+        "name": "aster_0.1.1_aarch64.dmg.sha256",
+        "size": 90,
+        "digest": "sha256:240f70e72a78dab84db63a6b670aedb8d514bf7598f162318a031c3cadd67266",
+        "browser_download_url": "https://github.com/aster-ai-lab/aster/releases/download/v0.1.1/aster_0.1.1_aarch64.dmg.sha256"
+      },
+      {
+        "name": "aster_0.1.1_kylin-v10_x86_64.run",
+        "size": 570209638,
+        "digest": "sha256:e4add14e1136b1fa5dd0c5a0dd5054abc7b453d72175f105219d15b821f580eb",
+        "browser_download_url": "https://github.com/aster-ai-lab/aster/releases/download/v0.1.1/aster_0.1.1_kylin-v10_x86_64.run"
+      },
+      {
+        "name": "aster_0.1.1_kylin-v10_x86_64.run.sha256",
+        "size": 99,
+        "digest": "sha256:b600cca94678a5bd28e1542d4129bc25411d2616218348857a1589070a3bee55",
+        "browser_download_url": "https://github.com/aster-ai-lab/aster/releases/download/v0.1.1/aster_0.1.1_kylin-v10_x86_64.run.sha256"
+      }
+    ]
+  },
+  {
+    "tag_name": "v0.1.0",
+    "draft": false,
+    "published_at": "2026-10-19T03:12:31Z",
+    "assets": [
+      {
+        "name": "aster_0.1.0_aarch64.dmg",
+        "size": 68946966,
+        "digest": "sha256:a96e66763d37859b58917fb88c8a1653108bcded033cab14ea3fab4ad366aac3",
+        "browser_download_url": "https://github.com/aster-ai-lab/aster/releases/download/v0.1.0/aster_0.1.0_aarch64.dmg"
+      },
+      {
+        "name": "aster_0.1.0_aarch64.dmg.sha256",
+        "size": 90,
+        "digest": "sha256:36d0ca712d650a3f0285928bc501ac4bf2e6e3f11d6893235a03f2ab8a345140",
+        "browser_download_url": "https://github.com/aster-ai-lab/aster/releases/download/v0.1.0/aster_0.1.0_aarch64.dmg.sha256"
+      },
+      {
+        "name": "aster_0.1.0_x64-setup.exe",
+        "size": 60235463,
+        "digest": "sha256:e6091064ee1fb7ddf77356831da80c92bba4c8bdb3767db79ef7621806bb691f",
+        "browser_download_url": "https://github.com/aster-ai-lab/aster/releases/download/v0.1.0/aster_0.1.0_x64-setup.exe"
+      },
+      {
+        "name": "aster_0.1.0_x64-setup.exe.sha256",
+        "size": 93,
+        "digest": "sha256:4ba7e62e330a9838d35c802f063954ead2fdfb4dd38acd3cf875d2da45694e83",
+        "browser_download_url": "https://github.com/aster-ai-lab/aster/releases/download/v0.1.0/aster_0.1.0_x64-setup.exe.sha256"
+      }
+    ]
+  },
+  {
+    "tag_name": "latest",
+    "draft": false,
+    "published_at": "2026-10-19T20:59:19Z",
+    "assets": [
+      {
+        "name": "latest.json",
+        "size": 1653,
+        "digest": "sha256:5cf08208a935604b29bf7c969c844280196e2d404a6f0245b7fafcd39aaf3310",
+        "browser_download_url": "https://github.com/aster-ai-lab/aster/releases/download/latest/latest.json"
+      }
+    ]
+  },
+  {
+    "tag_name": "aster-cli-v0.1.1",
+    "draft": false,
+    "published_at": "2026-10-19T11:06:59Z",
+    "assets": [
+      {
+        "name": "aster-cli-v0.1.1-linux.tar.gz",
+        "size": 81782694,
+        "digest": "sha256:0f8f83c94c21874cad86b13a0264925e82d53bc35f3c34834903017d2a13f2f5",
+        "browser_download_url": "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.1/aster-cli-v0.1.1-linux.tar.gz"
+      },
+      {
+        "name": "aster-cli-v0.1.1-macos.tar.gz",
+        "size": 72598749,
+        "digest": "sha256:a1b87ac7e1e0ceb21b2db73346b7b665ed2c487f46342cf4fc16da7c772907ac",
+        "browser_download_url": "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.1/aster-cli-v0.1.1-macos.tar.gz"
+      },
+      {
+        "name": "aster-cli-v0.1.1-windows.zip",
+        "size": 73734104,
+        "digest": "sha256:7c8c13a87b05e14e87f4a10bf66db490461499817d6da74b7ebc147952804289",
+        "browser_download_url": "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.1/aster-cli-v0.1.1-windows.zip"
+      }
+    ]
+  },
+  {
+    "tag_name": "aster-cli-v0.1.0",
+    "draft": false,
+    "published_at": "2026-10-19T05:29:06Z",
+    "assets": [
+      {
+        "name": "aster-cli-v0.1.0-linux.tar.gz",
+        "size": 81775123,
+        "digest": "sha256:3c2ffe5885dad058a7afaa9af8ea350e1665bcd814a80ad9ba16530442b97b89",
+        "browser_download_url": "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.0/aster-cli-v0.1.0-linux.tar.gz"
+      },
+      {
+        "name": "aster-cli-v0.1.0-macos.tar.gz",
+        "size": 72597556,
+        "digest": "sha256:1af9c7ade847a38c07a28540df000b5c57926a323a9f79bb0de5cca4921db93e",
+        "browser_download_url": "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.0/aster-cli-v0.1.0-macos.tar.gz"
+      },
+      {
+        "name": "aster-cli-v0.1.0-windows.zip",
+        "size": 73730266,
+        "digest": "sha256:fc06efc2fc72eff71cabac0da1f951bbe38c65bd4f24b0f0942e8d1559cde052",
+        "browser_download_url": "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.0/aster-cli-v0.1.0-windows.zip"
+      }
+    ]
+  }
+]

@@ -1,9 +1,9 @@
 //! Headless single-turn mode (`a3s -p "prompt"`).
 //!
-//! Runs the agent in-process and drives the ACP lifecycle (init, auth, session, prompt).
-//! Streams to stdout and exits via `CancellationToken`.
+//! Starts the `a3s-code-acp` sidecar and drives the ACP lifecycle
+//! (init, auth, session, prompt). Streams to stdout and exits via `CancellationToken`.
 use crate::acp::model_state::{EffortTokenError, ModelState};
-use crate::acp::spawn::{AgentShutdownGuard, SpawnedAgent, spawn_grok_shell};
+use crate::acp::spawn::{AgentShutdownGuard, SpawnedAgent};
 use crate::app::prompt_ack::{PromptAckDeadlines, PromptAckWatch};
 use crate::app::subagent::{
     SubagentLifecycleEffect, SubagentLifecycleReduction, SubagentLifecycleState,
@@ -423,15 +423,26 @@ fn auth_required_message(interactive: bool) -> String {
             .to_string()
     }
 }
-/// The same backend switch the TUI applies; the shell unless another backend is enabled.
+/// The same sidecar presence check the interactive pager uses.
 async fn spawn_agent(
     agent_config: AgentConfig,
     cancel: &CancellationToken,
     memory_config: Option<a3s_code_shell::config::MemoryConfig>,
     options: &HeadlessOptions,
 ) -> Result<SpawnedAgent> {
-    let _ = options;
-    spawn_grok_shell(agent_config, cancel, memory_config).await
+    let _ = memory_config;
+    let model = options
+        .model
+        .clone()
+        .or_else(|| agent_config.default_model_override.clone())
+        .or_else(|| agent_config.models.default.clone());
+    crate::acp::a3s_spawn::spawn_required_sidecar(
+        &agent_config,
+        cancel,
+        options.cwd.as_deref(),
+        model.as_deref(),
+    )
+    .await
 }
 /// Authenticate via the agent's `defaultAuthMethodId`, failing closed when none is available.
 /// Returns whether the selected method is API-key auth.
@@ -1847,6 +1858,9 @@ fn handle_headless_acp_message(
 #[cfg(test)]
 #[path = "headless/background_lifecycle_tests.rs"]
 mod background_lifecycle_tests;
+#[cfg(test)]
+#[path = "headless/missing_sidecar_tests.rs"]
+mod missing_sidecar_tests;
 #[cfg(test)]
 #[path = "headless_tests.rs"]
 mod tests;

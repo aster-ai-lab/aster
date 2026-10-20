@@ -3,6 +3,7 @@
 mod engines;
 mod fallback;
 
+use crate::config::SearchEngineConfig;
 #[cfg(feature = "headless-search")]
 use crate::config::{BrowserBackend, HeadlessConfig};
 #[cfg(feature = "headless-search")]
@@ -18,6 +19,7 @@ use a3s_search::{
 use anyhow::Result;
 use async_trait::async_trait;
 use regex::Regex;
+use std::collections::HashMap;
 #[cfg(feature = "headless-search")]
 use std::path::PathBuf;
 use std::sync::Arc;
@@ -177,6 +179,22 @@ fn safe_search_result_url(result: &SearchResult) -> String {
     } else {
         url
     }
+}
+
+/// Enabled engines, higher weight first. Equal weights stay alphabetical.
+fn enabled_engine_names(engines: &HashMap<String, SearchEngineConfig>) -> Vec<String> {
+    let mut names = engines
+        .iter()
+        .filter(|(_, engine)| engine.enabled)
+        .map(|(name, _)| name.clone())
+        .collect::<Vec<_>>();
+    names.sort_by(|left, right| {
+        engines[right]
+            .weight
+            .total_cmp(&engines[left].weight)
+            .then_with(|| left.cmp(right))
+    });
+    names
 }
 
 fn sorted_search_engines(result: &SearchResult) -> Vec<&str> {
@@ -590,16 +608,7 @@ impl Tool for WebSearchTool {
         });
         let configured = config
             .filter(|config| !config.engines.is_empty())
-            .map(|config| {
-                let mut names = config
-                    .engines
-                    .iter()
-                    .filter(|(_, engine)| engine.enabled)
-                    .map(|(name, _)| name.clone())
-                    .collect::<Vec<_>>();
-                names.sort_unstable();
-                names
-            });
+            .map(|config| enabled_engine_names(&config.engines));
         let engine_selection_source = if requested.is_some() {
             "request"
         } else if configured.is_some() {

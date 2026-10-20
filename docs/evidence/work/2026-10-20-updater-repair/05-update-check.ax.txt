@@ -1,0 +1,126 @@
+Window: "AsterDream", App: AsterDream.
+0 standard window AsterDream, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content Description: AsterDream, URL: tauri://localhost/windows/main/index.html
+			3 pop up button Bugfix E2E
+			4 button 工作
+			5 button 知识
+			6 button 设置
+			7 container
+				8 container 消息
+					9 container
+						10 text /goal status 10/20 12:01
+						11 button 从这里编辑
+						12 button 复制
+						13 button 删除
+						14 text AsterDream 10/20 12:01
+						15 text 当前未设置目标。发送 /goal <目标内容> 开始。
+						16 button 复制
+						17 button 保存到笔记
+						18 button 删除
+						19 pop up button 更多操作
+						20 text /goal Verify that note.txt contains UI_GOAL_QA. Read only and report the exact text. Do not change any files. 10/20 12:01
+						21 button 从这里编辑
+						22 button 复制
+						23 button 删除
+						24 text AsterDream 10/20 12:01
+						25 text 目标进行中 计划：已完成 0/1 项 正在继续执行。
+						26 text 目标进行中 计划：已完成 0/1 项 正在继续执行。
+						27 text HTTP request transport failed: error sending request for url (http://127.0.0.1:4607/old/v1/chat/completions): client error (Connect): tcp connect error: Connection refused (os error 61)
+						28 button 复制
+						29 button 保存到笔记
+						30 button 删除
+						31 pop up button 更多操作
+						32 text /goal pause 10/20 12:02
+						33 button 从这里编辑
+						34 button 复制
+						35 button 删除
+						36 text AsterDream 10/20 12:02
+						37 text 当前未设置目标。发送 /goal <目标内容> 开始。
+						38 button 复制
+						39 button 保存到笔记
+						40 button 删除
+						41 pop up button 更多操作
+				42 container 会话导航
+					43 button 跳转到第 1 轮对话
+					44 button 跳转到第 2 轮对话
+					45 button 跳转到第 3 轮对话
+				46 text entry area (settable) 描述会话，输入 / 使用指令或技能
+					47 text 描述会话，输入 / 使用指令或技能
+				48 pop up button 更多选项
+				49 pop up button 授权模式: 逐次确认
+				50 switch (settable, boolean) 规划模式, Help: 对下一次发送生效：先生成计划，审阅确认后再执行。不改变工具授权方式，也不改变正在运行的回合。, Value: on
+				51 pop up button gpt-4.1-mini
+				52 button (disabled) 发送
+				53 toolbar 会话范围
+					54 pop up button 工作区文件
+					55 pop up button 目标 已暂停, Help: 持续目标。发送 /goal clear 后清除，/goal pause 后暂停。
+				56 container
+					57 button 打开会话工作区
+					58 container 工作区快捷栏
+						59 button 浏览器
+						60 button 终端
+						61 button 文件
+						62 button (collapsed) 展开工作区快捷菜单, Secondary Actions: Expand
+				63 button 新建任务
+				64 button (collapsed) 搜索会话, Secondary Actions: Expand
+				65 container 工作导航
+					66 button 连接器
+					67 button 技能
+					68 button 自动化
+				69 container 项目
+					70 container
+						71 heading 项目, Value: 3
+							72 text 项目
+						73 button 新建项目
+					74 button (expanded) goal-ui, Secondary Actions: Collapse
+					75 button 在项目中新建会话
+					76 button /goal status
+					77 text 4分钟前
+					78 button 重命名
+					79 toggle button 置顶, Value: off
+					80 button 结束
+					81 button 归档
+				82 container 会话
+					83 container
+						84 heading 会话, Value: 3
+							85 text 会话
+						86 button 查看全部最近会话
+					87 container 今天
+						88 heading 今天, Value: 3
+							89 text 今天
+						90 button BUGFIX_ATTESTATION: write the requested …
+						91 text 11小时前
+						92 button 重命名
+						93 toggle button 置顶, Value: off
+						94 button 结束
+						95 button 归档
+				96 toggle button 收起侧边栏, Value: on
+				97 button 返回应用
+				98 button 搜索设置...
+				99 text 偏好
+				100 button 通用
+				101 button 模型服务
+				102 button 联网搜索
+				103 button 文档处理
+				104 button 快捷键
+				105 text 系统
+				106 button 归档
+				107 button 关于
+				108 heading AsterDream, Value: 1
+				109 container
+					110 text 当前已是最新版本 v0.1.2
+					111 button 检查更新
+				112 container
+					113 button 用户协议
+					114 button 隐私政策
+					115 button 侵权投诉指引
+					116 button 客服中心
+	117 close button
+	118 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	119 minimize button
+120 menu bar
+	121 AsterDream
+	122 编辑
+
+The focused UI element is 2 HTML content Description: AsterDream, URL: tauri://localhost/windows/main/index.html

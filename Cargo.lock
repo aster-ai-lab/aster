@@ -4071,10 +4071,8 @@ dependencies = [
  "a3s-tty-utils",
  "anyhow",
  "clap",
- "cryptify",
  "dunce",
  "libc",
- "obfstr",
  "semver",
  "serde_json",
  "serial_test",
@@ -4089,7 +4087,7 @@ dependencies = [
 
 [[package]]
 name = "aster-dream"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "a3s-acl 0.3.0",
  "a3s-boot",
@@ -7120,15 +7118,6 @@ name = "crunchy"
 version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "460fbee9c2c2f33933d720630a6a0bac33ba7053db5344fac858d4b8952d77d5"
-
-[[package]]
-name = "cryptify"
-version = "3.2.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fa6bda41d3e8e4337cfa18a178e69f4404802a208fe59abc23075a81a7d373df"
-dependencies = [
- "labyrinth_macros",
-]
 
 [[package]]
 name = "crypto-bigint"
@@ -12682,18 +12671,6 @@ name = "lab"
 version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bf36173d4167ed999940f804952e6b08197cae5ad5d572eb4db150ce8ad5d58f"
-
-[[package]]
-name = "labyrinth_macros"
-version = "3.0.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "108484a425d5e622b63194be3fb8fbf88823271912d8b63cc12917be292329b2"
-dependencies = [
- "proc-macro2",
- "quote",
- "rand 0.8.8",
- "syn 2.0.117",
-]
 
 [[package]]
 name = "landlock"

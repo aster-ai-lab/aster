@@ -190,7 +190,29 @@ fn incomplete_paths_and_external_unknown_are_distinct_from_a_local_scan() {
     let debt = fold_debt(&[prepared_fact(&prepared), result_fact(&terminal)]);
     assert_eq!(debt.paths, ["changed.txt"]);
     assert!(debt.unresolved.contains("provider-operation-opaque-id"));
-    assert!(debt.unresolved.contains(&prepared.identity.key().unwrap()));
+    assert!(!debt.unresolved.contains(&prepared.identity.key().unwrap()));
+}
+
+#[test]
+fn a_captured_incomplete_receipt_is_not_replayed_as_an_invocation_obligation() {
+    let prepared = preparation("attributed");
+    let key = prepared.identity.key().unwrap();
+    let mut captured = result(&prepared, ToolExecutionOutcome::Succeeded);
+    captured.effects.completeness = ToolObservationCompleteness::Incomplete;
+    captured.effects.reason = Some(
+        "tool_effect_observation_incomplete: workspace read or observation budget failed".into(),
+    );
+    captured.effects.budget_exceeded = false;
+    let debt = fold_debt(&[prepared_fact(&prepared), result_fact(&captured)]);
+    assert!(!debt.unresolved.contains(&key));
+    let mut budget = result(&prepared, ToolExecutionOutcome::Succeeded);
+    budget.effects = ToolEffectObservationV1::budget_exceeded();
+    let debt = fold_debt(&[prepared_fact(&prepared), result_fact(&budget)]);
+    assert!(!debt.unresolved.contains(&key));
+    let mut unknown = result(&prepared, ToolExecutionOutcome::Unknown);
+    unknown.effects = ToolEffectObservationV1::budget_exceeded();
+    let debt = fold_debt(&[prepared_fact(&prepared), result_fact(&unknown)]);
+    assert!(debt.unresolved.contains(&key));
 }
 
 #[test]

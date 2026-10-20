@@ -1,0 +1,12 @@
+{
+  "original_010": {
+    "CFBundleIdentifier": "dev.a3s.studio",
+    "CFBundleExecutable": "aster-dream",
+    "CFBundleShortVersionString": "0.1.0"
+  },
+  "candidate_012": {
+    "CFBundleIdentifier": "dev.a3s.studio",
+    "CFBundleExecutable": "aster-dream",
+    "CFBundleShortVersionString": "0.1.2"
+  }
+}

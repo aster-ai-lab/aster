@@ -176,7 +176,7 @@ function homepageMode(mode: AixComposerMode): AixComposerMode & { task?: true; t
     // The outline stream in the right-hand editor is the only model author.
     task: true,
     taskPrompt:
-      '调用 mcp__presenton__generate_deck，把上面的正文作为 content。要读当前文稿调用 mcp__presenton__read_deck。要改一节大纲调用 mcp__presenton__edit_outline。要改一页正文和备注调用 mcp__presenton__edit_slide。不要写 pptx，不要调用别的文稿技能。'
+      '调用 mcp__presenton__generate_deck，把上面的正文作为 content，打开右侧预览。这不是 PPTX 文件。要读当前预览调用 mcp__presenton__read_deck；没有快照时停止轮询。要改一节大纲调用 mcp__presenton__edit_outline。要改一页正文和备注调用 mcp__presenton__edit_slide。成员要求交付 .pptx 时，使用 office_file 保存并读回校验文件。'
   }
 }
 

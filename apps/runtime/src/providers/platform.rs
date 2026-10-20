@@ -59,7 +59,10 @@ pub async fn deliver_platform_model(
     }
     let data = value.get("data").unwrap_or(&value);
     Ok(PlatformDelivery {
-        listed: data.get("listed").and_then(|item| item.as_bool()).unwrap_or(false),
+        listed: data
+            .get("listed")
+            .and_then(|item| item.as_bool())
+            .unwrap_or(false),
         available: data
             .get("available")
             .and_then(|item| item.as_bool())

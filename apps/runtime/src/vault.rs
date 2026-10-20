@@ -240,9 +240,10 @@ impl Vault {
         }
 
         let secret_ref = secret_ref.unwrap();
-        let material = self.sealed.iter().find(|r| {
-            r.secret_ref == secret_ref && r.version == version && r.provider == provider
-        });
+        let material = self
+            .sealed
+            .iter()
+            .find(|r| r.secret_ref == secret_ref && r.version == version && r.provider == provider);
         if material.is_none() {
             let receipt = VaultApplyReceipt {
                 receipt_id,
@@ -362,9 +363,12 @@ impl Vault {
                 self.apply_job(scope.clone(), provider, None, 0, None);
                 return Ok(());
             }
-            let entry = value
-                .as_object()
-                .ok_or_else(|| format!("{} must be {{ apiKey, baseUrl }} or null", provider.as_str()))?;
+            let entry = value.as_object().ok_or_else(|| {
+                format!(
+                    "{} must be {{ apiKey, baseUrl }} or null",
+                    provider.as_str()
+                )
+            })?;
             let api_key = entry
                 .get("apiKey")
                 .and_then(|v| v.as_str())
@@ -377,14 +381,7 @@ impl Vault {
             let secret_ref = format!("inline://{}/{now}", provider.as_str());
             let version = 1i64;
             let base = entry.get("baseUrl").and_then(|v| v.as_str());
-            self.materialize(
-                scope.clone(),
-                provider,
-                &secret_ref,
-                version,
-                api_key,
-                base,
-            )?;
+            self.materialize(scope.clone(), provider, &secret_ref, version, api_key, base)?;
             self.apply_job(scope.clone(), provider, Some(&secret_ref), version, base);
             Ok(())
         };

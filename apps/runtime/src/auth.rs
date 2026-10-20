@@ -4,10 +4,7 @@ use axum::http::HeaderMap;
 
 pub const DEV_CAPABILITY_KEY: &str = "a3s_sk_devlocalgateway00000000000001";
 
-const ALLOWED: &[&str] = &[
-    DEV_CAPABILITY_KEY,
-    "a3s_sk_devlocalgateway00000000000002",
-];
+const ALLOWED: &[&str] = &[DEV_CAPABILITY_KEY, "a3s_sk_devlocalgateway00000000000002"];
 
 #[derive(Debug, Clone)]
 pub struct AuthOk {

@@ -222,24 +222,17 @@ pub async fn connect(cancel: &CancellationToken, flags: ConnectFlags) -> Result<
         leader: LeaderMode::Standalone,
         interactivity: Interactivity::Interactive,
     });
-    let spawned = if a3s_spawn::a3s_acp_enabled() {
-        // Product path: forked pager UI + a3s-code-core 9.0.0 ACP agent subprocess.
-        let cwd = std::env::current_dir().ok();
-        let model = std::env::var("A3S_DEFAULT_MODEL")
-            .ok()
-            .filter(|value| !value.trim().is_empty())
-            .or_else(|| agent_config.default_model_override.clone())
-            .or_else(|| agent_config.models.default.clone());
-        a3s_spawn::spawn_a3s_acp(&agent_config, cancel, cwd.as_deref(), model.as_deref()).await?
-    } else {
-        // No ACP sidecar configured. The legacy shell has no reachable backend
-        // in this product, so fail fast with an actionable message instead of
-        // idling on the welcome screen's "Connecting..." past the bounded
-        // connect budget.
-        return Err(anyhow::anyhow!(
-            "no agent backend available: build aster and a3s-code-acp together with `cargo build --locked`, or set A3S_ACP_AGENT_BIN to the agent executable"
-        ));
-    };
+    // Product path: forked pager UI + a3s-code-core 9.1.4 ACP agent subprocess.
+    // No sidecar fails closed. The legacy shell is not a fallback.
+    let cwd = std::env::current_dir().ok();
+    let model = std::env::var("A3S_DEFAULT_MODEL")
+        .ok()
+        .filter(|value| !value.trim().is_empty())
+        .or_else(|| agent_config.default_model_override.clone())
+        .or_else(|| agent_config.models.default.clone());
+    let spawned =
+        a3s_spawn::spawn_required_sidecar(&agent_config, cancel, cwd.as_deref(), model.as_deref())
+            .await?;
     let auth_manager = spawned.auth_manager.clone();
     initialize_connection(AgentEndpoint::from(spawned), &flags, auth_manager).await
 }
@@ -250,6 +243,10 @@ pub(in crate::acp) async fn initialize_connection(
     flags: &ConnectFlags,
     auth_manager: std::sync::Arc<a3s_code_login::AuthManager>,
 ) -> Result<AcpConnection> {
+    let capability_target = match &endpoint.location {
+        AgentLocation::Leader(_) => CapabilityTarget::Leader,
+        AgentLocation::Thread(_) => CapabilityTarget::Sidecar,
+    };
     let AgentEndpoint {
         tx,
         rx,
@@ -261,7 +258,7 @@ pub(in crate::acp) async fn initialize_connection(
         AgentLocation::Leader(status_rx) => (None, Some(status_rx)),
     };
     startup::enter(StartupPhase::AcpInitialize);
-    let agent = initialize(&tx, flags).await?;
+    let agent = initialize(&tx, flags, capability_target).await?;
     let (needs_login, login_label, login_method_id, auth_start_mode) =
         startup_auth_metadata(&agent.auth_methods);
     startup::enter(StartupPhase::EagerAuth);
@@ -463,9 +460,20 @@ fn build_initialize_meta(flags: &ConnectFlags) -> serde_json::Value {
     }
     meta
 }
+/// Which agent receives this initialize. The leader still reads the shell extensions.
+/// The ACP sidecar does not implement them, so those keys stay off its initialize.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum CapabilityTarget {
+    Sidecar,
+    Leader,
+}
+
 /// Build `client_capabilities.meta`.
 /// The hunk-tracker mode is canonicalized at this connect read so the agent runs exactly what the settings modal displays.
-fn client_capabilities_meta(flags: &ConnectFlags) -> serde_json::Value {
+fn client_capabilities_meta(flags: &ConnectFlags, target: CapabilityTarget) -> serde_json::Value {
+    if target == CapabilityTarget::Sidecar {
+        return serde_json::json!({});
+    }
     let hunk_mode =
         crate::settings::canonical_hunk_tracker_mode(flags.hunk_tracker_mode.as_deref());
     let mut meta = serde_json::json!({
@@ -508,7 +516,11 @@ pub(crate) struct InitializedAgent {
     pub(crate) open_model_config: bool,
 }
 /// Send InitializeRequest and parse the response.
-async fn initialize(tx: &AcpAgentTx, flags: &ConnectFlags) -> Result<InitializedAgent> {
+async fn initialize(
+    tx: &AcpAgentTx,
+    flags: &ConnectFlags,
+    target: CapabilityTarget,
+) -> Result<InitializedAgent> {
     let mut meta = build_initialize_meta(flags).as_object().cloned();
     crate::app::session_startup::stamp_phase_traceparent(&mut meta);
     let req = acp::InitializeRequest::new(acp::ProtocolVersion::V1)
@@ -518,7 +530,7 @@ async fn initialize(tx: &AcpAgentTx, flags: &ConnectFlags) -> Result<Initialized
                     .read_text_file(flags.fs_read)
                     .write_text_file(flags.fs_write))
                 .terminal(flags.terminal)
-                .meta(client_capabilities_meta(flags).as_object().cloned()),
+                .meta(client_capabilities_meta(flags, target).as_object().cloned()),
         )
         .meta(meta);
     let resp: acp::InitializeResponse = {
@@ -1127,8 +1139,43 @@ mod tests {
         assert_eq!(meta.get("clientType").and_then(|v| v.as_str()), Some("zed"));
     }
     #[test]
+    fn initialize_xai_advertisements_are_the_closed_set() {
+        let meta = client_capabilities_meta(&ConnectFlags::default(), CapabilityTarget::Leader);
+        let mut keys: Vec<&str> = meta
+            .as_object()
+            .expect("capabilities meta is an object")
+            .keys()
+            .filter(|key| key.starts_with("x.ai/"))
+            .map(String::as_str)
+            .collect();
+        keys.sort_unstable();
+        assert_eq!(
+            keys,
+            [
+                "x.ai/bashOutputNoColor",
+                "x.ai/gitHeadChanged",
+                "x.ai/hunkTracker",
+                "x.ai/incrementalBashOutput",
+                "x.ai/statusLine",
+                "x.ai/userMessageEcho",
+            ]
+        );
+    }
+    #[test]
+    fn sidecar_initialize_omits_xai_keys() {
+        let meta = client_capabilities_meta(&ConnectFlags::default(), CapabilityTarget::Sidecar);
+        let keys: Vec<&str> = meta
+            .as_object()
+            .expect("capabilities meta is an object")
+            .keys()
+            .filter(|key| key.starts_with("x.ai/"))
+            .map(String::as_str)
+            .collect();
+        assert!(keys.is_empty(), "{keys:?}");
+    }
+    #[test]
     fn client_capabilities_meta_defaults_absent_or_blank_mode_to_off() {
-        let absent = client_capabilities_meta(&ConnectFlags::default());
+        let absent = client_capabilities_meta(&ConnectFlags::default(), CapabilityTarget::Leader);
         assert_eq!(
             absent
                 .get("x.ai/hunkTracker")
@@ -1136,10 +1183,13 @@ mod tests {
                 .and_then(|v| v.as_str()),
             Some("off")
         );
-        let blank = client_capabilities_meta(&ConnectFlags {
-            hunk_tracker_mode: Some("   ".into()),
-            ..Default::default()
-        });
+        let blank = client_capabilities_meta(
+            &ConnectFlags {
+                hunk_tracker_mode: Some("   ".into()),
+                ..Default::default()
+            },
+            CapabilityTarget::Leader,
+        );
         assert_eq!(
             blank
                 .get("x.ai/hunkTracker")
@@ -1150,7 +1200,7 @@ mod tests {
     }
     #[test]
     fn client_capabilities_meta_always_requests_user_message_echo() {
-        let meta = client_capabilities_meta(&ConnectFlags::default());
+        let meta = client_capabilities_meta(&ConnectFlags::default(), CapabilityTarget::Leader);
         assert_eq!(
             meta.get(a3s_code_shell::session::USER_MESSAGE_ECHO_CAPABILITY)
                 .and_then(|v| v.as_bool()),
@@ -1162,10 +1212,13 @@ mod tests {
     fn client_capabilities_meta_advertises_the_status_line_the_config_asked_for() {
         let key = a3s_code_status_line::STATUS_LINE_CAPABILITY;
         for wants_a_row in [true, false] {
-            let meta = client_capabilities_meta(&ConnectFlags {
-                status_line: wants_a_row,
-                ..Default::default()
-            });
+            let meta = client_capabilities_meta(
+                &ConnectFlags {
+                    status_line: wants_a_row,
+                    ..Default::default()
+                },
+                CapabilityTarget::Leader,
+            );
             assert_eq!(
                 meta.get(key).and_then(|v| v.as_bool()),
                 Some(wants_a_row),
@@ -1176,10 +1229,13 @@ mod tests {
     #[test]
     fn client_capabilities_meta_canonicalizes_off_and_mixed_case() {
         for raw in ["off", "OFF", "Disabled"] {
-            let meta = client_capabilities_meta(&ConnectFlags {
-                hunk_tracker_mode: Some(raw.into()),
-                ..Default::default()
-            });
+            let meta = client_capabilities_meta(
+                &ConnectFlags {
+                    hunk_tracker_mode: Some(raw.into()),
+                    ..Default::default()
+                },
+                CapabilityTarget::Leader,
+            );
             assert_eq!(
                 meta.get("x.ai/hunkTracker")
                     .and_then(|v| v.get("mode"))

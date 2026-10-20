@@ -1,0 +1,57 @@
+{
+  "Africa_orders.csv": {
+    "bytes": 8394,
+    "sha256": "7c0b74268c52b75a9dc0d892e343855775ff2d1bdfe6ea544d77e343699db5bc",
+    "mtime_ns": 1792440438567863256
+  },
+  "Asia_Pacific_orders.csv": {
+    "bytes": 53799,
+    "sha256": "8c9aaeae2e3f340247f5c0472a5912cbe6d0d74e5c88e0b1d5efab4b5bfb8d5b",
+    "mtime_ns": 1792440438569824807
+  },
+  "Europe_orders.csv": {
+    "bytes": 37415,
+    "sha256": "b132f6dc46fe5894818bf4a85243a122b508a64e0e76b06f8e0834556070fc02",
+    "mtime_ns": 1792440438570303643
+  },
+  "LATAM_orders.csv": {
+    "bytes": 20044,
+    "sha256": "546ca18eff9190355307c935f95016bb21f94a07f13ded07b8bf8f4115c62a36",
+    "mtime_ns": 1792440438570641811
+  },
+  "USCA_orders.csv": {
+    "bytes": 30180,
+    "sha256": "a0931573a257d766a122bdbb0ad9007fb49bdec18ca25931ec43a5852faa775c",
+    "mtime_ns": 1792440438571209522
+  },
+  "adjustments.jsonl": {
+    "bytes": 6808,
+    "sha256": "f6f9c1a604c8531efa63ebf90904a3a90b9f9cbefefdd17dd9254b67b6f654d8",
+    "mtime_ns": 1792440438571449565
+  },
+  "policy.json": {
+    "bytes": 486,
+    "sha256": "471f6e3a27d29b432454deae7223f1927740bdc67a6cb885a55bc90c42ef17c5",
+    "mtime_ns": 1792440438571681108
+  },
+  "priority_codebook.txt": {
+    "bytes": 736,
+    "sha256": "5033d8d25338cd67fd93c72e13b7b036cdaab9bc102325534d6de90e65548e2d",
+    "mtime_ns": 1792440438571934359
+  },
+  "product_info.csv": {
+    "bytes": 35979,
+    "sha256": "a508c5c50582a72e741bfed176be8a1dcdf3cbd8914391c57110585c1e5cf8a7",
+    "mtime_ns": 1792440438572377695
+  },
+  "segment_performance.csv": {
+    "bytes": 213,
+    "sha256": "f20fce60c51dc2bdfef77f7bf0b25dee4107c6f4e31cdd8f5e79fa3d01cf1dd2",
+    "mtime_ns": 1792440438572724196
+  },
+  "shipping_by_mode.csv": {
+    "bytes": 228,
+    "sha256": "1922a7d1f651bf42c1ab05275b364a6669d9dd08c6f6c2adf106982d031336eb",
+    "mtime_ns": 1792440438572994448
+  }
+}

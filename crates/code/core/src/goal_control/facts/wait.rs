@@ -181,7 +181,7 @@ fn transition(
             return Err(refused(
                 GoalRefusal::ConditionUnsupported,
                 "evidence kind differs from the open wait",
-            ))
+            ));
         }
     }
     view.waits[index].observed = Some(GoalWaitObservationV1 {

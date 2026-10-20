@@ -7,10 +7,7 @@ pub fn is_illegal_work_field_key(key: &str) -> bool {
 }
 
 pub fn find_illegal_work_field(input: &serde_json::Map<String, Value>) -> Option<String> {
-    input
-        .keys()
-        .find(|k| is_illegal_work_field_key(k))
-        .cloned()
+    input.keys().find(|k| is_illegal_work_field_key(k)).cloned()
 }
 
 pub fn str_field(input: &serde_json::Map<String, Value>, key: &str) -> Option<String> {
@@ -21,10 +18,7 @@ pub fn str_field(input: &serde_json::Map<String, Value>, key: &str) -> Option<St
     }
 }
 
-pub fn require_str(
-    input: &serde_json::Map<String, Value>,
-    key: &str,
-) -> Result<String, String> {
+pub fn require_str(input: &serde_json::Map<String, Value>, key: &str) -> Result<String, String> {
     str_field(input, key).ok_or_else(|| format!("{key} is required"))
 }
 

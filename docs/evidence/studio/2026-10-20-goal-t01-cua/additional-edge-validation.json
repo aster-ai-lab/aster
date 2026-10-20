@@ -1,0 +1,10 @@
+{
+  "case": "all-cancelled",
+  "passed": true,
+  "checks": [
+    "timestamp tie sorted by event_id",
+    "cancelled group retained with zero metrics and null ratios",
+    "repeat bytes identical"
+  ],
+  "submission_sha256": "ab17057be7a679c88be1d28d4d67456dd03dd7b3af10dbe557aee4cc95d2d2eb"
+}

@@ -1,0 +1,41 @@
+COMMAND: xcrun stapler staple /Users/roylin/code/aster/target/packages/asterdream-0.1.2-20261020/AsterDream.app
+Processing: /Users/roylin/code/aster/target/packages/asterdream-0.1.2-20261020/AsterDream.app
+Processing: /Users/roylin/code/aster/target/packages/asterdream-0.1.2-20261020/AsterDream.app
+The staple and validate action worked!
+COMMAND: xcrun stapler validate /Users/roylin/code/aster/target/packages/asterdream-0.1.2-20261020/AsterDream.app
+Processing: /Users/roylin/code/aster/target/packages/asterdream-0.1.2-20261020/AsterDream.app
+The validate action worked!
+COMMAND: xcrun stapler staple /Users/roylin/code/aster/target/packages/asterdream-0.1.2-20261020/aster_0.1.2_aarch64.dmg
+Processing: /Users/roylin/code/aster/target/packages/asterdream-0.1.2-20261020/aster_0.1.2_aarch64.dmg
+Processing: /Users/roylin/code/aster/target/packages/asterdream-0.1.2-20261020/aster_0.1.2_aarch64.dmg
+The staple and validate action worked!
+COMMAND: xcrun stapler validate /Users/roylin/code/aster/target/packages/asterdream-0.1.2-20261020/aster_0.1.2_aarch64.dmg
+Processing: /Users/roylin/code/aster/target/packages/asterdream-0.1.2-20261020/aster_0.1.2_aarch64.dmg
+The validate action worked!
+COMMAND: codesign --verify --deep --strict /Users/roylin/code/aster/target/packages/asterdream-0.1.2-20261020/AsterDream.app
+COMMAND: codesign --verify --strict /Users/roylin/code/aster/target/packages/asterdream-0.1.2-20261020/aster_0.1.2_aarch64.dmg
+COMMAND: spctl --assess --type execute --verbose=4 /Users/roylin/code/aster/target/packages/asterdream-0.1.2-20261020/AsterDream.app
+/Users/roylin/code/aster/target/packages/asterdream-0.1.2-20261020/AsterDream.app: accepted
+source=Notarized Developer ID
+COMMAND: spctl --assess --type open --context context:primary-signature --verbose=4 /Users/roylin/code/aster/target/packages/asterdream-0.1.2-20261020/aster_0.1.2_aarch64.dmg
+/Users/roylin/code/aster/target/packages/asterdream-0.1.2-20261020/aster_0.1.2_aarch64.dmg: accepted
+source=Notarized Developer ID
+COMMAND: hdiutil verify /Users/roylin/code/aster/target/packages/asterdream-0.1.2-20261020/aster_0.1.2_aarch64.dmg
+正在检查“Protective Master Boot Record（MBR：0）”的校验和…
+Protective Master Boot Record（MBR：0）：已验证CRC32 $3AA4685B
+正在检查“GPT Header（Primary GPT Header：1）”的校验和…
+    GPT Header（Primary GPT Header：1）：已验证CRC32 $4F83783D
+正在检查“GPT Partition Data（Primary GPT Table：2）”的校验和…
+GPT Partition Data（Primary GPT Table：已验证CRC32 $D2168C03
+正在检查“（Apple_Free：3）”的校验和…
+                      （Apple_Free：3）：已验证CRC32 $00000000
+正在检查“disk image（Apple_HFS：4）”的校验和…
+             disk image（Apple_HFS：4）：已验证CRC32 $E57224B7
+正在检查“（Apple_Free：5）”的校验和…
+                      （Apple_Free：5）：已验证CRC32 $00000000
+正在检查“GPT Partition Data（Backup GPT Table：6）”的校验和…
+GPT Partition Data（Backup GPT Table：：已验证CRC32 $D2168C03
+正在检查“GPT Header（Backup GPT Header：7）”的校验和…
+     GPT Header（Backup GPT Header：7）：已验证CRC32 $1293EA78
+已验证CRC32 $443FE0EC
+hdiutil: verify: checksum of "/Users/roylin/code/aster/target/packages/asterdream-0.1.2-20261020/aster_0.1.2_aarch64.dmg" is VALID

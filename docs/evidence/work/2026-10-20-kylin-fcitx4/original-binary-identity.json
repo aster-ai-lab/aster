@@ -1,0 +1,23 @@
+{
+  "baseline_version": "0.1.1",
+  "binary_checks": [
+    {
+      "name": "aster-dream",
+      "sha256": "e4790c6210c28c47776c84f0e1994bb0b8ec4fc37d715e5dfc655ee820690416",
+      "original_bundle_sha256": "e4790c6210c28c47776c84f0e1994bb0b8ec4fc37d715e5dfc655ee820690416",
+      "matches": true
+    },
+    {
+      "name": "a3s-code-acp",
+      "sha256": "acd0598b0dbfaa663e1f9aed8549e20ef58a93b265358fb025980619f16876d0",
+      "original_bundle_sha256": "acd0598b0dbfaa663e1f9aed8549e20ef58a93b265358fb025980619f16876d0",
+      "matches": true
+    },
+    {
+      "name": "a3s-office",
+      "sha256": "c5772e1ce0b985191a507fc4abe7d6edf1e4390fde1fe153ba9e8d8dccfcd09e",
+      "original_bundle_sha256": "c5772e1ce0b985191a507fc4abe7d6edf1e4390fde1fe153ba9e8d8dccfcd09e",
+      "matches": true
+    }
+  ]
+}

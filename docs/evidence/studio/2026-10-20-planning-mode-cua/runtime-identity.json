@@ -1,0 +1,10 @@
+{
+  "pid": 68438,
+  "parent_pid": 88658,
+  "executable": "/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/AsterDream-TaskOptimization-R5.app/Contents/MacOS/a3s-code-acp",
+  "cwd": "/Users/roylin/code/aster/target/evaluations/planning-mode-cua-20261020/fixture",
+  "model": "deepseek/deepseek-flash",
+  "sha256": "87e1ce16cc44e4efa8ea6b0fdeb2572079c6fc48a89f4e1e4ce077a1474b1780",
+  "app_bundle_id": "dev.a3s.studio.aster.task-optimization-r5",
+  "checked_at_utc": "2026-10-20T00:35:39.335202+00:00"
+}

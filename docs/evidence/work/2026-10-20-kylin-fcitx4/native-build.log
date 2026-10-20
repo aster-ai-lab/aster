@@ -1,0 +1,228 @@
+debconf: delaying package configuration, since apt-utils is not installed
+/src/dist/kylin/dependencies/fcitx-4.2.9.9.tar.xz: OK
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found PkgConfig: /usr/bin/pkg-config (found version "1.8.1") 
+-- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
+-- Looking for include file unistd.h
+-- Looking for include file unistd.h - found
+-- Looking for include file malloc.h
+-- Looking for include file malloc.h - found
+-- Looking for include file stdbool.h
+-- Looking for include file stdbool.h - found
+-- Looking for asprintf
+-- Looking for asprintf - found
+-- Looking for dgettext
+-- Looking for dgettext - found
+-- Found Libintl: /usr/include  
+-- Looking for iconv_open
+-- Looking for iconv_open - found
+-- Performing Test ICONV_HAVE_WERROR
+-- Performing Test ICONV_HAVE_WERROR - Success
+-- Performing Test LIBICONV_SECOND_ARGUMENT_IS_CONST
+-- Performing Test LIBICONV_SECOND_ARGUMENT_IS_CONST - Failed
+-- Found Libiconv: /usr/include  
+-- Looking for pthread_create
+-- Looking for pthread_create - found
+-- Found Pthread: /usr/include  
+-- Looking for backtrace
+-- Looking for backtrace - found
+-- Found LibExecinfo: /usr/include  
+CMake Warning (dev) at /usr/share/cmake-3.28/Modules/FindPackageHandleStandardArgs.cmake:438 (message):
+  The package name passed to `find_package_handle_standard_args`
+  (LibExecinfo) does not match the name of the calling package (Libexecinfo).
+  This can lead to problems in calling code that expects `find_package`
+  result variables (e.g., `_FOUND`) to follow a certain pattern.
+Call Stack (most recent call first):
+  cmake/FindLibexecinfo.cmake:44 (find_package_handle_standard_args)
+  CMakeLists.txt:74 (find_package)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Could NOT find GettextPo (missing: GETTEXTPO_LIBRARIES GETTEXTPO_INCLUDE_DIR) 
+CMake Warning (dev) at /usr/share/ECM/modules/ECMFindModuleHelpers.cmake:111 (message):
+  Your project should require at least CMake 3.16.0 to use
+  FindXKBCommon.cmake
+Call Stack (most recent call first):
+  cmake/FindXKBCommon.cmake:4 (ecm_find_package_version_check)
+  CMakeLists.txt:76 (find_package)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Found XKBCommon_XKBCommon: /usr/lib/x86_64-linux-gnu/libxkbcommon.so (found version "1.6.0") 
+-- Found XKBCommon: /usr/lib/x86_64-linux-gnu/libxkbcommon.so (found suitable version "1.6.0", minimum required is "0.5.0") found components: XKBCommon 
+-- Checking for module 'dbus-1>=1.1.0'
+--   Found dbus-1, version 1.14.10
+-- Checking for module 'gio-2.0>=2.26'
+--   Found gio-2.0, version 2.80.0
+-- Adding Fcitx Addon x11
+-- Adding Fcitx Addon xkb
+-- Adding Fcitx Addon xkbdbus
+-- Adding Fcitx Addon chttrans
+-- Adding Fcitx Addon punc
+-- Adding Fcitx Addon spell
+-- Adding Fcitx Addon pinyin-enhance
+-- Adding Fcitx Addon quickphrase
+-- Adding Fcitx Addon autoeng
+-- Adding Fcitx Addon fullwidth-char
+-- Adding Fcitx Addon remote-module
+-- Adding Fcitx Addon imselector
+-- Adding Fcitx Addon clipboard
+-- Adding Fcitx Addon vk
+-- Adding Fcitx Addon dbus
+-- Adding Fcitx Addon lua
+-- Adding Fcitx Addon unicode
+-- Adding Fcitx Addon freedesktop-notify
+-- Adding Fcitx Addon notificationitem
+-- Adding Fcitx Addon pinyin
+-- Adding Fcitx Addon keyboard
+-- Adding Fcitx Addon table
+-- Adding Fcitx Addon qw
+-- Adding Fcitx Addon xim
+-- Adding Fcitx Addon ipc
+-- Checking for module 'uuid'
+--   Found uuid, version 2.39.3
+-- Adding Fcitx Addon ipcportal
+-- Checking for module 'glib-2.0'
+--   Found glib-2.0, version 2.80.0
+-- Checking for module 'gio-2.0>=2.26'
+--   Found gio-2.0, version 2.80.0
+-- Checking for module 'gtk+-3.0'
+--   Found gtk+-3.0, version 3.24.41
+-- Adding Fcitx Addon classic-ui
+-- Adding Fcitx Addon kimpanel-ui
+-- Configuring done (23.1s)
+-- Generating done (0.1s)
+-- Build files have been written to: /tmp/tmp.frrG5nhPtm/build
+[ 11%] Building C object src/lib/fcitx-utils/CMakeFiles/fcitx-utils.dir/utf8.c.o
+[ 11%] Building C object src/lib/fcitx-utils/CMakeFiles/fcitx-utils.dir/utils.c.o
+[ 11%] Building C object src/lib/fcitx-utils/CMakeFiles/fcitx-utils.dir/msort_r.c.o
+[ 22%] Building C object src/lib/fcitx-utils/CMakeFiles/fcitx-utils.dir/qsort_r.c.o
+[ 22%] Building C object src/lib/fcitx-utils/CMakeFiles/fcitx-utils.dir/log.c.o
+[ 33%] Building C object src/lib/fcitx-utils/CMakeFiles/fcitx-utils.dir/handler-table.c.o
+[ 33%] Building C object src/lib/fcitx-utils/CMakeFiles/fcitx-utils.dir/memory.c.o
+[ 33%] Building C object src/lib/fcitx-utils/CMakeFiles/fcitx-utils.dir/objpool.c.o
+[ 33%] Building C object src/lib/fcitx-utils/CMakeFiles/fcitx-utils.dir/stringmap.c.o
+[ 44%] Building C object src/lib/fcitx-utils/CMakeFiles/fcitx-utils.dir/desktop-parse.c.o
+/tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/lib/fcitx-utils/log.c: In function 'FcitxLogFuncV':
+/tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/lib/fcitx-utils/log.c:104:5: warning: ignoring return value of 'vasprintf' declared with attribute 'warn_unused_result' [-Wunused-result]
+  104 |     vasprintf(&buffer, fmt, ap);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/lib/fcitx-utils/utils.c: In function 'fcitx_utils_init_as_daemon':
+/tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/lib/fcitx-utils/utils.c:172:5: warning: ignoring return value of 'chdir' declared with attribute 'warn_unused_result' [-Wunused-result]
+  172 |     chdir("/");
+      |     ^~~~~~~~~~
+/tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/lib/fcitx-utils/utils.c: In function 'fcitx_utils_string_list_printf_append':
+/tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/lib/fcitx-utils/utils.c:222:5: warning: ignoring return value of 'vasprintf' declared with attribute 'warn_unused_result' [-Wunused-result]
+  222 |     vasprintf(&buffer, fmt, ap);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+[ 44%] Linking C shared library libfcitx-utils.so
+[ 44%] Built target fcitx-utils
+[ 44%] Generating marshall.h
+[ 44%] Generating marshall.c
+INFO: Reading /tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/frontend/gtk-common/marshall.list...
+INFO: Reading /tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/frontend/gtk-common/marshall.list...
+[ 55%] Building C object src/lib/fcitx-gclient/CMakeFiles/fcitx-gclient.dir/fcitxclient.c.o
+[ 66%] Building C object src/lib/fcitx-gclient/CMakeFiles/fcitx-gclient.dir/fcitxkbd.c.o
+[ 66%] Building C object src/lib/fcitx-gclient/CMakeFiles/fcitx-gclient.dir/fcitxinputmethod.c.o
+[ 66%] Building C object src/lib/fcitx-gclient/CMakeFiles/fcitx-gclient.dir/fcitxconnection.c.o
+[ 66%] Building C object src/lib/fcitx-gclient/CMakeFiles/fcitx-gclient.dir/marshall.c.o
+/tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/lib/fcitx-gclient/fcitxconnection.c: In function 'fcitx_connection_init':
+/tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/lib/fcitx-gclient/fcitxclient.c: In function 'fcitx_client_init':
+/tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/lib/fcitx-gclient/fcitxconnection.c:177:13: warning: Deprecated pre-processor symbol: replace with "G_ADD_PRIVATE"
+  177 |     self->priv = FCITX_CONNECTION_GET_PRIVATE(self);
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                         
+/tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/lib/fcitx-gclient/fcitxclient.c:616:13: warning: Deprecated pre-processor symbol: replace with "G_ADD_PRIVATE"
+  616 |     self->priv = FCITX_CLIENT_GET_PRIVATE(self);
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                             
+/tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/lib/fcitx-gclient/fcitxconnection.c: In function 'fcitx_connection_class_init':
+/tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/lib/fcitx-gclient/fcitxconnection.c:354:5: warning: 'g_type_class_add_private' is deprecated [-Wdeprecated-declarations]
+  354 |     g_type_class_add_private(klass, sizeof(FcitxConnectionPrivate));
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /usr/include/glib-2.0/gobject/gobject.h:26,
+                 from /usr/include/glib-2.0/gobject/gbinding.h:31,
+                 from /usr/include/glib-2.0/glib-object.h:24,
+                 from /usr/include/glib-2.0/gio/gioenums.h:30,
+                 from /usr/include/glib-2.0/gio/giotypes.h:30,
+                 from /usr/include/glib-2.0/gio/gio.h:28,
+                 from /tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/lib/fcitx-gclient/fcitxconnection.h:23,
+                 from /tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/lib/fcitx-gclient/fcitxconnection.c:20:
+/usr/include/glib-2.0/gobject/gtype.h:1497:10: note: declared here
+ 1497 | void     g_type_class_add_private       (gpointer                    g_class,
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~
+/tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/lib/fcitx-gclient/fcitxclient.c: In function 'fcitx_client_class_init':
+/tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/lib/fcitx-gclient/fcitxclient.c:1012:5: warning: 'g_type_class_add_private' is deprecated [-Wdeprecated-declarations]
+ 1012 |     g_type_class_add_private(klass, sizeof(FcitxClientPrivate));
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /usr/include/glib-2.0/gobject/gobject.h:26,
+                 from /usr/include/glib-2.0/gobject/gbinding.h:31,
+                 from /usr/include/glib-2.0/glib-object.h:24,
+                 from /usr/include/glib-2.0/gio/gioenums.h:30,
+                 from /usr/include/glib-2.0/gio/giotypes.h:30,
+                 from /usr/include/glib-2.0/gio/gio.h:28,
+                 from /tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/lib/fcitx-gclient/fcitxconnection.h:23,
+                 from /tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/lib/fcitx-gclient/fcitxclient.h:23,
+                 from /tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/lib/fcitx-gclient/fcitxclient.c:20:
+/usr/include/glib-2.0/gobject/gtype.h:1497:10: note: declared here
+ 1497 | void     g_type_class_add_private       (gpointer                    g_class,
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~
+[ 77%] Linking C shared library libfcitx-gclient.so
+[ 77%] Built target fcitx-gclient
+[ 88%] Building C object src/frontend/gtk3/CMakeFiles/im-fcitx-gtk3.dir/fcitximcontext.c.o
+[ 88%] Building C object src/frontend/gtk3/CMakeFiles/im-fcitx-gtk3.dir/fcitxim.c.o
+/tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/frontend/gtk3/fcitximcontext.c: In function 'fcitx_im_context_register_type':
+/tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/frontend/gtk3/fcitximcontext.c:299:9: warning: cast between incompatible function types from 'void (*)(FcitxIMContextClass *)' {aka 'void (*)(struct _FcitxIMContextClass *)'} to 'void (*)(void *, void *)' [-Wcast-function-type]
+  299 |         (GClassInitFunc)fcitx_im_context_class_init,
+      |         ^
+/tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/frontend/gtk3/fcitximcontext.c:300:9: warning: cast between incompatible function types from 'void (*)(FcitxIMContextClass *)' {aka 'void (*)(struct _FcitxIMContextClass *)'} to 'void (*)(void *, void *)' [-Wcast-function-type]
+  300 |         (GClassFinalizeFunc)fcitx_im_context_class_fini,
+      |         ^
+/tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/frontend/gtk3/fcitximcontext.c:304:9: warning: cast between incompatible function types from 'void (*)(FcitxIMContext *)' {aka 'void (*)(struct _FcitxIMContext *)'} to 'void (*)(GTypeInstance *, void *)' {aka 'void (*)(struct _GTypeInstance *, void *)'} [-Wcast-function-type]
+  304 |         (GInstanceInitFunc)fcitx_im_context_init,
+      |         ^
+/tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/frontend/gtk3/fcitximcontext.c: In function 'fcitx_im_context_class_init':
+/tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/frontend/gtk3/fcitximcontext.c:407:9: warning: 'gtk_key_snooper_install' is deprecated [-Wdeprecated-declarations]
+  407 |         _key_snooper_id = gtk_key_snooper_install(_key_snooper_cb, NULL);
+      |         ^~~~~~~~~~~~~~~
+In file included from /usr/include/gtk-3.0/gtk/gtk.h:143,
+                 from /tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/frontend/gtk3/fcitximcontext.c:31:
+/usr/include/gtk-3.0/gtk/gtkmain.h:185:12: note: declared here
+  185 | guint      gtk_key_snooper_install (GtkKeySnoopFunc snooper,
+      |            ^~~~~~~~~~~~~~~~~~~~~~~
+/tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/frontend/gtk3/fcitximcontext.c: In function 'fcitx_im_context_class_fini':
+/tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/frontend/gtk3/fcitximcontext.c:413:9: warning: 'gtk_key_snooper_remove' is deprecated [-Wdeprecated-declarations]
+  413 |         gtk_key_snooper_remove(_key_snooper_id);
+      |         ^~~~~~~~~~~~~~~~~~~~~~
+/usr/include/gtk-3.0/gtk/gtkmain.h:188:12: note: declared here
+  188 | void       gtk_key_snooper_remove  (guint           snooper_handler_id);
+      |            ^~~~~~~~~~~~~~~~~~~~~~
+/tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/frontend/gtk3/fcitximcontext.c: In function '_create_gdk_event':
+/tmp/tmp.frrG5nhPtm/fcitx-4.2.9.9/src/frontend/gtk3/fcitximcontext.c:1427:17: warning: 'g_memdup' is deprecated: Use 'g_memdup2' instead [-Wdeprecated-declarations]
+ 1427 |                 event->string = g_memdup("\0\0", 2);
+      |                 ^~~~~
+In file included from /usr/include/glib-2.0/glib/gstring.h:37,
+                 from /usr/include/glib-2.0/glib/giochannel.h:36,
+                 from /usr/include/glib-2.0/glib.h:56,
+                 from /usr/include/gtk-3.0/gdk/gdkconfig.h:8,
+                 from /usr/include/gtk-3.0/gdk/gdk.h:30,
+                 from /usr/include/gtk-3.0/gtk/gtk.h:30:
+/usr/include/glib-2.0/glib/gstrfuncs.h:350:23: note: declared here
+  350 | gpointer              g_memdup         (gconstpointer mem,
+      |                       ^~~~~~~~
+[100%] Linking C shared module im-fcitx.so
+[100%] Built target im-fcitx-gtk3
+kylin-fcitx4-immodule /src/dist/kylin/immodules/fcitx4/im-fcitx.so
+Installing runtime/org.gnome.Platform/x86_64/50
+........
+----------------------------------------------------------------------
+Ran 8 tests in 0.974s
+
+OK

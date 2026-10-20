@@ -1,0 +1,7 @@
+container 任务计划
+					282 button (expanded) 显示计划步骤, Secondary Actions: Collapse
+					283 container
+						284 button (expanded) Secondary Actions: Collapse, 只读核验 note.txt：回读全文 + 统计行数/字节 + 查看末尾字节，验收条件为 2 行、第 1 行为 after-plan-mode、第 2 行为 KEEP_SECOND_LINE_20261020、末尾为单个 \n、42 字节 已完成
+						285 button (collapsed) 只读核验 result.txt：回读全文 + 统计行数/字节 + 查看末尾字节，验收条件为 1 行、内容为 plan-mode-e2e-ok、末尾为单个 \n、17 字节 已完成, Secondary Actions: Expand
+						286 button (collapsed) Secondary Actions: Expand, 只读核验 sentinel.txt（不修改）：回读全文 + 统计行数/字节 + 末尾字节与 sha256，验收条件为 1 行、内容为 UNCHANGED_SENTINEL_20261020、末尾为单个 \n、28 字节、sha256 为 99663367…f20e 已完成
+				287 

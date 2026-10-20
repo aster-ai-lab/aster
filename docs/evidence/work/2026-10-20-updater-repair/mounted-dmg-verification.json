@@ -1,0 +1,22 @@
+{
+  "version": "0.1.2",
+  "bundle_id": "dev.a3s.studio",
+  "gatekeeper": "/Users/roylin/code/aster/target/evaluations/asterdream-updater-20261020/release-mount/AsterDream.app: accepted\nsource=Notarized Developer ID",
+  "binaries": {
+    "MacOS/aster-dream": {
+      "uuid": "B212F674-AA03-3FAD-8E0B-3EBD575CDC2F",
+      "matches_frozen_app": true,
+      "arch": "arm64"
+    },
+    "Resources/agent/a3s-code-acp": {
+      "uuid": "19C79D86-9785-3B94-BEC9-FC7F20C7755A",
+      "matches_frozen_app": true,
+      "arch": "arm64"
+    },
+    "Resources/agent/a3s-office": {
+      "uuid": "DECEC515-C4B0-389A-ABA6-421924D5DD1E",
+      "matches_frozen_app": true,
+      "arch": "arm64"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+# GTK+ Input Method Modules file
+# Automatically generated file, do not edit
+# Created by /usr/bin/gtk-query-immodules-3.0 from gtk+-3.24.52
+#
+"/app/lib/im/fcitx4/im-fcitx.so" 
+"fcitx" "Fcitx (Flexible Input Method Framework)" "fcitx" "/usr/local/share/locale" "ja:ko:zh:*" 
+
+"/app/lib/im/fcitx5/im-fcitx5.so" 
+"fcitx" "Fcitx5 (Flexible Input Method Framework5)" "fcitx5" "/usr/locale" "ja:ko:zh:*" 
+"fcitx5" "Fcitx5 (Flexible Input Method Framework5)" "fcitx5" "/usr/locale" "ja:ko:zh:*" 
+
+

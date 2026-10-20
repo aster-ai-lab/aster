@@ -1,0 +1,190 @@
+{
+  "sessionId": "01a156d4-2965-745f-9ba9-ec49df5369b8",
+  "recordedAt": "2026-10-20T01:25:56.533132+00:00",
+  "messages": [
+    {
+      "id": "01a156d4-2a6a-7682-8269-6164e0c097f8",
+      "role": "user",
+      "status": "success",
+      "createdAt": "2026-10-20T01:01:47.498Z",
+      "updatedAt": "2026-10-20T01:01:47.498Z",
+      "planningMarker": true,
+      "plans": []
+    },
+    {
+      "id": "01a156d4-2a6a-7682-8269-6165adcdde87",
+      "role": "assistant",
+      "status": "success",
+      "createdAt": "2026-10-20T01:01:47.498Z",
+      "updatedAt": "2026-10-20T01:01:54.562Z",
+      "planningMarker": false,
+      "plans": []
+    },
+    {
+      "id": "01a156de-bfe0-7002-9fa4-2d808573e038",
+      "role": "user",
+      "status": "success",
+      "createdAt": "2026-10-20T01:13:21.120Z",
+      "updatedAt": "2026-10-20T01:13:21.120Z",
+      "planningMarker": true,
+      "plans": []
+    },
+    {
+      "id": "01a156de-bfe1-7361-a7d5-b3fda98ad272",
+      "role": "assistant",
+      "status": "success",
+      "createdAt": "2026-10-20T01:13:21.120Z",
+      "updatedAt": "2026-10-20T01:13:28.178Z",
+      "planningMarker": false,
+      "plans": [
+        {
+          "toolCallId": "call_00_U67wd6vbVNgA7RnBC5Qk3746",
+          "state": "output-available",
+          "statuses": [
+            "completed",
+            "pending",
+            "pending"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "01a156df-82c7-77c3-8866-c89cba79c456",
+      "role": "user",
+      "status": "success",
+      "createdAt": "2026-10-20T01:14:11.015Z",
+      "updatedAt": "2026-10-20T01:14:11.015Z",
+      "planningMarker": false,
+      "plans": []
+    },
+    {
+      "id": "01a156df-82c7-77c3-8866-c89d6357f5d4",
+      "role": "assistant",
+      "status": "success",
+      "createdAt": "2026-10-20T01:14:11.015Z",
+      "updatedAt": "2026-10-20T01:16:22.908Z",
+      "planningMarker": false,
+      "plans": [
+        {
+          "toolCallId": "call_00_vnGz4esSdk1QD13sSeEv8925",
+          "state": "output-available",
+          "statuses": [
+            "completed",
+            "in_progress",
+            "pending"
+          ]
+        },
+        {
+          "toolCallId": "call_00_CCa0AcvTxFLsjPCpPVxQ3075",
+          "state": "output-available",
+          "statuses": [
+            "completed",
+            "completed",
+            "completed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "01a156e4-0c04-77ca-a716-fb86cd374080",
+      "role": "user",
+      "status": "success",
+      "createdAt": "2026-10-20T01:19:08.292Z",
+      "updatedAt": "2026-10-20T01:19:08.292Z",
+      "planningMarker": true,
+      "plans": []
+    },
+    {
+      "id": "01a156e4-0c05-7173-a6e6-d1cecf89748d",
+      "role": "assistant",
+      "status": "paused",
+      "createdAt": "2026-10-20T01:19:08.292Z",
+      "updatedAt": "2026-10-20T01:19:11.234Z",
+      "planningMarker": false,
+      "plans": []
+    },
+    {
+      "id": "01a156e4-4821-744b-9367-7d168c79869d",
+      "role": "user",
+      "status": "success",
+      "createdAt": "2026-10-20T01:19:23.681Z",
+      "updatedAt": "2026-10-20T01:19:23.681Z",
+      "planningMarker": true,
+      "plans": []
+    },
+    {
+      "id": "01a156e4-4821-744b-9367-7d17466d6466",
+      "role": "assistant",
+      "status": "success",
+      "createdAt": "2026-10-20T01:19:23.681Z",
+      "updatedAt": "2026-10-20T01:19:31.210Z",
+      "planningMarker": false,
+      "plans": [
+        {
+          "toolCallId": "call_00_ET_2LyKjtF0yUtgwQfp7tNx5305",
+          "state": "output-available",
+          "statuses": [
+            "pending",
+            "pending",
+            "pending"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "01a156e4-f5e0-7637-9806-6787a1f17060",
+      "role": "user",
+      "status": "success",
+      "createdAt": "2026-10-20T01:20:08.160Z",
+      "updatedAt": "2026-10-20T01:20:08.160Z",
+      "planningMarker": false,
+      "plans": []
+    },
+    {
+      "id": "01a156e4-f5e0-7637-9806-6788fa0c58be",
+      "role": "assistant",
+      "status": "success",
+      "createdAt": "2026-10-20T01:20:08.160Z",
+      "updatedAt": "2026-10-20T01:21:35.202Z",
+      "planningMarker": false,
+      "plans": [
+        {
+          "toolCallId": "call_00_LF95Wt5R7i6fxeXObDSh9930",
+          "state": "output-available",
+          "statuses": [
+            "in_progress",
+            "pending",
+            "pending"
+          ]
+        },
+        {
+          "toolCallId": "call_00_G98rlrPF0B3XBJBI5HeF0916",
+          "state": "output-available",
+          "statuses": [
+            "completed",
+            "in_progress",
+            "pending"
+          ]
+        },
+        {
+          "toolCallId": "call_00_ET_cJrr81GvuUL6oAvdtdTA5297",
+          "state": "output-available",
+          "statuses": [
+            "completed",
+            "completed",
+            "in_progress"
+          ]
+        },
+        {
+          "toolCallId": "call_00_rBpmghnJngCTBqxoXfUV3440",
+          "state": "output-available",
+          "statuses": [
+            "completed",
+            "completed",
+            "completed"
+          ]
+        }
+      ]
+    }
+  ]
+}

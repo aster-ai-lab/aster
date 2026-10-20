@@ -1,0 +1,10 @@
+
+/Users/roylin/code/aster/apps/work/src/renderer/pages/agents/AgentComposer.tsx
+  214:43  warning  Unexpected path "@renderer/pages/settings/GeneralSettings" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7  import-x/no-restricted-paths
+
+/Users/roylin/code/aster/apps/work/src/renderer/pages/agents/components/AgentRightPane/AgentRightPane.tsx
+   467:5  warning  React Hook useCallback has a missing dependency: 'panelState'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  1223:5  warning  React Hook useCallback has a missing dependency: 'actions'. Either include it or remove the dependency array     react-hooks/exhaustive-deps
+
+✖ 3 problems (0 errors, 3 warnings)
+

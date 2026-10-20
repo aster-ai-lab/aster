@@ -1,0 +1,8 @@
+Positive repetition: 5
+Fcitx state ready for phase 0
+Chinese text committed through GTK: 你好
+Fcitx state ready for phase 2
+Fcitx state ready for phase 3
+PASS: Chinese commit, mixed English, Escape cancellation
+
+Exit status: 0

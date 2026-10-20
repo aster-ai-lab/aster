@@ -1,0 +1,7 @@
+The following is a diff from the previous accessibility tree for Window: "AsterDream" with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 291
+~					287 text 有未发送的修改。请先发送修改，或清空草稿后开始执行。
+~					289 button (disabled) 开始执行
+~				290 text entry area (settable) 描述会话，输入 / 使用指令或技能, Value: 再增加一项保护：执行前确认 result.txt 不存在，若已存在就先报告，不覆盖。请只更新计划，保持三步。
++					313 text (settable) 再增加一项保护：执行前确认 result.txt 不存在，若已存在就先报告，不覆盖。请只更新计划，保持三步。
+~				296 button 发送

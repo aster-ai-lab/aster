@@ -369,11 +369,7 @@ mod tests {
                 let source = production_source(&source);
                 for token in tokens {
                     if source.contains(token) {
-                        hits.push(format!(
-                            "{} references {}",
-                            relative.display(),
-                            token
-                        ));
+                        hits.push(format!("{} references {}", relative.display(), token));
                     }
                 }
             }

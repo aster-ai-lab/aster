@@ -1,0 +1,17 @@
+The following is a diff from the previous accessibility tree for Window: "AsterDream" with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 10-13, 205, 222
++						222 text 请读取项目文件夹中的 note.txt，把第一行改为 after-plan-mode，保留第二行不变；再创建 result.txt，内容为 plan-mode-e2e-ok（末尾保留换行）。完成后读回这两个文件并简短报告。不要改动 sentinel.txt。 10/20 08:50
++						223 button 复制
++						224 button 删除
++						225 heading 已处理, Value: 3
++							226 button (collapsed) 已处理, Secondary Actions: Expand
++						227 text 请将这个计划精简为三步，保留原任务的全部要求和 sentinel.txt 的只读校验步骤。 10/20 08:52
++						228 button 复制
++						229 button 删除
++						230 text AsterDream 10/20 08:52
++						231 container 正在生成计划
++					232 button 跳转到第 2 轮对话
+~				199 text entry area (settable) 回车 排入下一条，⌘回车 改这一轮, Value: 
+
++					233 text 回车 排入下一条，⌘回车 改这一轮
++				234 button 暂停

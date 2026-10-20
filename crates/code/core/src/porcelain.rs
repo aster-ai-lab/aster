@@ -246,7 +246,7 @@ pub(crate) struct PathDelta {
     pub paths: Vec<String>,
     pub incomplete: bool,
     /// A known cap was hit. Distinct from [`Self::incomplete`], which is a
-    /// failed read and still settles as an uncertain invocation.
+    /// failed read. The run scan owns that gap. It is not an invocation debt.
     pub budget_exceeded: bool,
     /// The fresh or baseline git status hit its record or byte cap.
     /// A revision-name list does not set this, and must not close the run.

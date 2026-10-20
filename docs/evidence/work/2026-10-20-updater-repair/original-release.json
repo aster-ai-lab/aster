@@ -1,0 +1,7 @@
+{
+  "published_tag": "v0.1.0",
+  "source_dmg": "target/packages/asterdream-20261019-102647/aster_0.1.0_aarch64.dmg",
+  "sha256": "a96e66763d37859b58917fb88c8a1653108bcded033cab14ea3fab4ad366aac3",
+  "old_binary_contains_current_updater_public_key": true,
+  "original_app_version": "0.1.0"
+}

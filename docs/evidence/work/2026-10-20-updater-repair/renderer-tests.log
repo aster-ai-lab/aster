@@ -1,0 +1,407 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:28035) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/local-product-scope.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-local-product-scope.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/work
+
+ ❯ |renderer| src/renderer/pages/settings/AboutSettings/__tests__/AboutSettings.test.tsx (16 tests | 1 failed) 252ms
+   ❯ AboutSettings (13)
+     × draws the crab mark when the tenant product is ToWork 25ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/pages/settings/AboutSettings/__tests__/AboutSettings.test.tsx > AboutSettings > draws the crab mark when the tenant product is ToWork
+TestingLibraryElementError: Unable to find an accessible element with the role "heading" and name "大闸蟹"
+
+Here are the accessible roles:
+
+  heading:
+
+  Name "AsterDream":
+  [36m<h1[39m
+    [33maria-label[39m=[32m"AsterDream"[39m
+    [33mclass[39m=[32m"m-0 mb-6 flex items-center"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  presentation:
+
+  Name "":
+  [36m<img[39m
+    [33malt[39m=[32m""[39m
+    [33mclass[39m=[32m"block w-auto h-32"[39m
+    [33mdata-ui[39m=[32m"workbench.wordmark.mark"[39m
+    [33msrc[39m=[32m"/logo.png"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"text-[14px] leading-5 font-medium text-[#1a1a1a]"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"mt-1 text-[12px] leading-5 text-[#8a8a8a]"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  button:
+
+  Name "settings.about.checkUpdate.label":
+  [36m<button[39m
+    [33mclass[39m=[32m"inline-flex h-[30px] shrink-0 items-center justify-center rounded-[8px] border border-[#e5e5e5] bg-white px-3 text-[13px] leading-none text-[#171717] outline-none hover:bg-[#fafafa] focus-visible:ring-2 focus-visible:ring-black/10 disabled:opacity-40"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "settings.about.page.terms":
+  [36m<button[39m
+    [33mclass[39m=[32m"flex h-9 w-full items-center justify-between px-4 text-left text-[13px] text-[#3f3f3f] outline-none hover:bg-[#f7f7f7] hover:text-[#171717] focus-visible:ring-2 focus-visible:ring-black/10 focus-visible:ring-inset"[39m
+    [33mdata-ui[39m=[32m"settings.about-settings.action.open"[39m
+    [33mid[39m=[32m"setting-about-terms"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "settings.about.page.privacy":
+  [36m<button[39m
+    [33mclass[39m=[32m"flex h-9 w-full items-center justify-between px-4 text-left text-[13px] text-[#3f3f3f] outline-none hover:bg-[#f7f7f7] hover:text-[#171717] focus-visible:ring-2 focus-visible:ring-black/10 focus-visible:ring-inset"[39m
+    [33mdata-ui[39m=[32m"settings.about-settings.action.open"[39m
+    [33mid[39m=[32m"setting-about-privacy"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "settings.about.page.copyright":
+  [36m<button[39m
+    [33mclass[39m=[32m"flex h-9 w-full items-center justify-between px-4 text-left text-[13px] text-[#3f3f3f] outline-none hover:bg-[#f7f7f7] hover:text-[#171717] focus-visible:ring-2 focus-visible:ring-black/10 focus-visible:ring-inset"[39m
+    [33mdata-ui[39m=[32m"settings.about-settings.action.open"[39m
+    [33mid[39m=[32m"setting-about-copyright"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "settings.about.page.support":
+  [36m<button[39m
+    [33mclass[39m=[32m"flex h-9 w-full items-center justify-between px-4 text-left text-[13px] text-[#3f3f3f] outline-none hover:bg-[#f7f7f7] hover:text-[#171717] focus-visible:ring-2 focus-visible:ring-black/10 focus-visible:ring-inset"[39m
+    [33mdata-ui[39m=[32m"settings.about-settings.action.open"[39m
+    [33mid[39m=[32m"setting-about-support"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  list:
+
+  Name "":
+  [36m<ul[39m
+    [33mclass[39m=[32m"border-t border-[#efefef]"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  listitem:
+
+  Name "":
+  [36m<li[39m
+    [33mclass[39m=[32m"border-b border-[#efefef] last:border-b-0"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<li[39m
+    [33mclass[39m=[32m"border-b border-[#efefef] last:border-b-0"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<li[39m
+    [33mclass[39m=[32m"border-b border-[#efefef] last:border-b-0"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<li[39m
+    [33mclass[39m=[32m"border-b border-[#efefef] last:border-b-0"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"flex min-h-0 flex-1 flex-col overflow-y-auto p-6 pt-16"[39m
+      [33mdata-theme-mode[39m=[32m"light"[39m
+      [33mdata-ui[39m=[32m"ui.settings-content-column"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"mx-auto w-full max-w-3xl"[39m
+      [36m>[39m
+        [36m<h1[39m
+          [33maria-label[39m=[32m"AsterDream"[39m
+          [33mclass[39m=[32m"m-0 mb-6 flex items-center"[39m
+        [36m>[39m
+          [36m<img[39m
+            [33malt[39m=[32m""[39m
+            [33mclass[39m=[32m"block w-auto h-32"[39m
+            [33mdata-ui[39m=[32m"workbench.wordmark.mark"[39m
+            [33msrc[39m=[32m"/logo.png"[39m
+          [36m/>[39m
+        [36m</h1>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"rounded-[14px] border border-[#ececec] bg-white shadow-[0_8px_22px_rgba(20,40,80,0.04)] first:mt-0 mt-0 overflow-hidden p-0"[39m
+          [33mdata-theme-mode[39m=[32m"light"[39m
+          [33mdata-ui[39m=[32m"settings.about"[39m
+          [33mstyle[39m=[32m"background-color: var(--settings-group-background, var(--card));"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33maria-busy[39m=[32m"false"[39m
+            [33mclass[39m=[32m"scroll-mt-6 px-4 pt-4 pb-4"[39m
+            [33mdata-ui[39m=[32m"settings.about-settings.setting-about-update"[39m
+            [33mid[39m=[32m"setting-about-update"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex items-center justify-between gap-4"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"flex min-w-0 items-start gap-2.5"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33maria-hidden[39m=[32m"true"[39m
+                  [33mclass[39m=[32m"lucide lucide-info mt-0.5 size-4 shrink-0 text-[#1a1a1a]"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mheight[39m=[32m"24"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-linecap[39m=[32m"round"[39m
+                  [33mstroke-linejoin[39m=[32m"round"[39m
+                  [33mstroke-width[39m=[32m"1.7"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [33mwidth[39m=[32m"24"[39m
+                  [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                [36m>[39m
+                  [36m<circle[39m
+                    [33mcx[39m=[32m"12"[39m
+                    [33mcy[39m=[32m"12"[39m
+                    [33mr[39m=[32m"10"[39m
+                  [36m/>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M12 16v-4"[39m
+                  [36m/>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M12 8h.01"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"min-w-0"[39m
+                [36m>[39m
+                  [36m<p[39m
+                    [33mclass[39m=[32m"text-[14px] leading-5 font-medium text-[#1a1a1a]"[39m
+                  [36m>[39m
+                    [0msettings.about.page.up_to_date[0m
+                  [36m</p>[39m
+                  [36m<p[39m
+                    [33mclass[39m=[32m"mt-1 text-[12px] leading-5 text-[#8a8a8a]"[39m
+                  [36m>[39m
+                    [0msettings.about.page.version[0m
+                  [36m</p>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"inline-flex h-[30px] shrink-0 items-center justify-center rounded-[8px] border border-[#e5e5e5] bg-white px-3 text-[13px] leading-none text-[#171717] outline-none hover:bg-[#fafafa] focus-visible:ring-2 focus-visible:ring-black/10 disabled:opacity-40"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [0msettings.about.checkUpdate.label[0m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<ul[39m
+            [33mclass[39m=[32m"border-t border-[#efefef]"[39m
+          [36m>[39m
+            [36m<li[39m
+              [33mclass[39m=[32m"border-b border-[#efefef] last:border-b-0"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"flex h-9 w-full items-center justify-between px-4 text-left text-[13px] text-[#3f3f3f] outline-none hover:bg-[#f7f7f7] hover:text-[#171717] focus-visible:ring-2 focus-visible:ring-black/10 focus-visible:ring-inset"[39m
+                [33mdata-ui[39m=[32m"settings.about-settings.action.open"[39m
+                [33mid[39m=[32m"setting-about-terms"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [36m<span>[39m
+                  [0msettings.about.page.terms[0m
+                [36m</span>[39m
+                [36m<svg[39m
+                  [33maria-hidden[39m=[32m"true"[39m
+                  [33mclass[39m=[32m"lucide lucide-chevron-right size-3.5 text-[#8a8a8a]"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mheight[39m=[32m"24"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-linecap[39m=[32m"round"[39m
+                  [33mstroke-linejoin[39m=[32m"round"[39m
+                  [33mstroke-width[39m=[32m"1.7"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [33mwidth[39m=[32m"24"[39m
+                  [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"m9 18 6-6-6-6"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+              [36m</button>[39m
+            [36m</li>[39m
+            [36m<li[39m
+              [33mclass[39m=[32m"border-b border-[#efefef] last:border-b-0"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"flex h-9 w-full items-center justify-between px-4 text-left text-[13px] text-[#3f3f3f] outline-none hover:bg-[#f7f7f7] hover:text-[#171717] focus-visible:ring-2 focus-visible:ring-black/10 focus-visible:ring-inset"[39m
+                [33mdata-ui[39m=[32m"settings.about-settings.action.open"[39m
+                [33mid[39m=[32m"setting-about-privacy"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [36m<span>[39m
+                  [0msettings.about.page.privacy[0m
+                [36m</span>[39m
+                [36m<svg[39m
+                  [33maria-hidden[39m=[32m"true"[39m
+                  [33mclass[39m=[32m"lucide lucide-chevron-right size-3.5 text-[#8a8a8a]"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mheight[39m=[32m"24"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-linecap[39m=[32m"round"[39m
+                  [33mstroke-linejoin[39m=[32m"round"[39m
+                  [33mstroke-width[39m=[32m"1.7"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [33mwidth[39m=[32m"24"[39m
+                  [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"m9 18 6-6-6-6"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+              [36m</button>[39m
+            [36m</li>[39m
+            [36m<li[39m
+              [33mclass[39m=[32m"border-b border-[#efefef] last:border-b-0"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"flex h-9 w-full items-center justify-between px-4 text-left text-[13px] text-[#3f3f3f] outline-none hover:bg-[#f7f7f7] hover:text-[#171717] focus-visible:ring-2 focus-visible:ring-black/10 focus-visible:ring-inset"[39m
+                [33mdata-ui[39m=[32m"settings.about-settings.action.open"[39m
+                [33mid[39m=[32m"setting-about-copyright"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [36m<span>[39m
+                  [0msettings.about.page.copyright[0m
+                [36m</span>[39m
+                [36m<svg[39m
+                  [33maria-hidden[39m=[32m"true"[39m
+                  [33mclass[39m=[32m"lucide lucide-chevron-right size-3.5 text-[#8a8a8a]"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mheight[39m=[32m"24"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-linecap[39m=[32m"round"[39m
+                  [33mstroke-linejoin[39m=[32m"round"[39m
+                  [33mstroke-width[39m=[32m"1.7"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [33mwidth[39m=[32m"24"[39m
+                  [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"m9 18 6-6-6-6"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+              [36m</button>[39m
+            [36m</li>[39m
+            [36m<li[39m
+              [33mclass[39m=[32m"border-b border-[#efefef] last:border-b-0"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"flex h-9 w-full items-center justify-between px-4 text-left text-[13px] text-[#3f3f3f] outline-none hover:bg-[#f7f7f7] hover:text-[#171717] focus-visible:ring-2 focus-visible:ring-black/10 focus-visible:ring-inset"[39m
+                [33mdata-ui[39m=[32m"settings.about-settings.action.open"[39m
+                [33mid[39m=[32m"setting-about-support"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [36m<span>[39m
+                  [0msettings.about.page.support[0m
+                [36m</span>[39m
+                [36m<svg[39m
+                  [33maria-hidden[39m=[32m"true"[39m
+                  [33mclass[39m=[32m"lucide lucide-chevron-right size-3.5 text-[#8a8a8a]"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mheight[39m=[32m"24"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-linecap[39m=[32m"round"[39m
+                  [33mstroke-linejoin[39m=[32m"round"[39m
+                  [33mstroke-width[39m=[32m"1.7"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [33mwidth[39m=[32m"24"[39m
+                  [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"m9 18 6-6-6-6"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+              [36m</button>[39m
+            [36m</li>[39m
+          [36m</ul>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/renderer/pages/settings/AboutSettings/__tests__/AboutSettings.test.tsx:182:28
+    180|     document.documentElement.dataset.a3sProduct = 'ToWork'
+    181|     await renderAboutSettings()
+    182|     const heading = screen.getByRole('heading', { name: '大闸蟹' })
+       |                            ^
+    183|     expect(heading.querySelector('img')).toHaveAttribute('src', expect…
+    184|     expect(screen.queryByText('ToWork')).not.toBeInTheDocument()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 43 passed (44)
+   Start at  03:17:23
+   Duration  3.72s (import 55%, transform 22%, environment 11%, tests 9%, setup 3%)
+

@@ -215,14 +215,14 @@ async fn a_shell_that_never_starts_on_a_missed_status_does_not_block_a_later_too
         b"exact bytes"
     );
     assert!(
-        tools
+        !tools
             .ledger
             .as_ref()
             .unwrap()
             .lock()
             .unwrap()
             .has_uncertain_tool_invocations(),
-        "a write whose status could not be read stays unresolved"
+        "a captured write stays settled when only the status read was missed"
     );
 }
 

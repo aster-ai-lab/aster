@@ -1,0 +1,21 @@
+{
+  "bundle_id": "dev.a3s.studio.aster.release-qa-r6",
+  "version": "0.1.2",
+  "signing": "ad-hoc test clone; not the final distribution artifact",
+  "model_endpoint_available": false,
+  "source_note_unchanged": true,
+  "binaries": {
+    "MacOS/aster-dream": {
+      "sha256": "17aa4372c9bc7f50168e6aa355d492ae4675f43f82d02cf93f89cec36493c13f",
+      "uuid": "00698D9C-9071-3F4C-8DF4-B514F8ED1C11"
+    },
+    "Resources/agent/a3s-code-acp": {
+      "sha256": "73da21f4ae6ce17f35c39a6f6bb6f397004135526b79281c2cde850a25ac99a4",
+      "uuid": "19C79D86-9785-3B94-BEC9-FC7F20C7755A"
+    },
+    "Resources/agent/a3s-office": {
+      "sha256": "c550a1a89a37c24342ace73479a97fb5ffb1d454d8871675894e5d33d510c899",
+      "uuid": "DECEC515-C4B0-389A-ABA6-421924D5DD1E"
+    }
+  }
+}

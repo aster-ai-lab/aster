@@ -278,12 +278,10 @@ mod tests {
 
     #[test]
     fn completion_attestation_requires_a_known_explicit_host_mode() {
-        assert!(
-            studio_host_from_meta(None)
-                .unwrap()
-                .completion_attestation
-                .is_none()
-        );
+        assert!(studio_host_from_meta(None)
+            .unwrap()
+            .completion_attestation
+            .is_none());
         let parsed = meta(serde_json::json!({"a3sHost":{"completionAttestation":"disk_content"}}));
         assert_eq!(
             studio_host_from_meta(Some(&parsed))

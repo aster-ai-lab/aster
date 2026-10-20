@@ -115,20 +115,11 @@ pub fn router(state: AppState) -> Router {
             "/v1/api/services/{kind}/invoke/{*sku}",
             post(service_invoke),
         )
-        .route(
-            "/v1/api/__local/vault/materialize",
-            post(vault_materialize),
-        )
+        .route("/v1/api/__local/vault/materialize", post(vault_materialize))
         .route("/v1/api/__local/vault/status", get(vault_status))
         .route("/v1/api/__local/vault/receipts", get(vault_receipts))
-        .route(
-            "/v1/api/__local/queue/vault-apply",
-            post(vault_apply),
-        )
-        .route(
-            "/v1/api/__local/upstream-secrets",
-            put(upstream_secrets),
-        )
+        .route("/v1/api/__local/queue/vault-apply", post(vault_apply))
+        .route("/v1/api/__local/upstream-secrets", put(upstream_secrets))
         // aliases without /v1 prefix (Console loopback)
         .route("/__local/vault/materialize", post(vault_materialize))
         .route("/__local/vault/status", get(vault_status))
@@ -140,7 +131,11 @@ pub fn router(state: AppState) -> Router {
         .with_state(state)
 }
 
-fn json_ok<T: serde::Serialize>(status: StatusCode, body: ApiEnvelope<T>, request_id: &str) -> Response {
+fn json_ok<T: serde::Serialize>(
+    status: StatusCode,
+    body: ApiEnvelope<T>,
+    request_id: &str,
+) -> Response {
     let mut res = (status, Json(body)).into_response();
     if let Ok(v) = HeaderValue::from_str(request_id) {
         res.headers_mut().insert("x-request-id", v);
@@ -155,14 +150,7 @@ fn json_err(built: crate::envelope::ErrBuilt) -> Response {
 }
 
 fn require_auth(headers: &HeaderMap, request_id: &str) -> Result<crate::auth::AuthOk, Response> {
-    authenticate(headers).map_err(|e| {
-        json_err(err_envelope(
-            request_id,
-            401,
-            e.message,
-            e.code,
-        ))
-    })
+    authenticate(headers).map_err(|e| json_err(err_envelope(request_id, 401, e.message, e.code)))
 }
 
 fn is_loopback(headers: &HeaderMap) -> bool {
@@ -501,8 +489,7 @@ async fn handle_model_invoke(
             .filter(|value| !value.is_empty())
             .map(str::to_string)
             .unwrap_or_else(|| request_id.clone());
-        match deliver_platform_model(&state.http, &auth.key, &model, &transaction_id, &body).await
-        {
+        match deliver_platform_model(&state.http, &auth.key, &model, &transaction_id, &body).await {
             Ok(delivery) if delivery.listed && delivery.available => {
                 record_ok_once(
                     &state,
@@ -517,7 +504,10 @@ async fn handle_model_invoke(
                 .await;
                 return json_ok(
                     StatusCode::OK,
-                    ok_envelope(json!({ "body": delivery.body, "available": true }), &request_id),
+                    ok_envelope(
+                        json!({ "body": delivery.body, "available": true }),
+                        &request_id,
+                    ),
                     &request_id,
                 );
             }
@@ -539,10 +529,8 @@ async fn handle_model_invoke(
                             "reason": reason,
                         })),
                         request_id: request_id.clone(),
-                        timestamp: chrono::Utc::now().to_rfc3339_opts(
-                            chrono::SecondsFormat::Millis,
-                            true,
-                        ),
+                        timestamp: chrono::Utc::now()
+                            .to_rfc3339_opts(chrono::SecondsFormat::Millis, true),
                         errors: None,
                         error_code: Some("inference.unavailable".into()),
                     },
@@ -640,10 +628,7 @@ async fn vault_materialize(
             .unwrap_or("env_local")
             .to_string(),
     };
-    let secret_ref = row
-        .get("secret_ref")
-        .and_then(|v| v.as_str())
-        .unwrap_or("");
+    let secret_ref = row.get("secret_ref").and_then(|v| v.as_str()).unwrap_or("");
     let version = row.get("version").and_then(|v| v.as_i64()).unwrap_or(0);
     let api_key = row.get("apiKey").and_then(|v| v.as_str()).unwrap_or("");
     let base_url = row.get("baseUrl").and_then(|v| v.as_str());
@@ -997,7 +982,10 @@ mod tests {
 
     async fn fake_deliver(Json(body): Json<Value>) -> Json<Value> {
         let sku = body.get("sku").and_then(|item| item.as_str()).unwrap_or("");
-        let echoed = body.get("body").and_then(|item| item.as_str()).unwrap_or("");
+        let echoed = body
+            .get("body")
+            .and_then(|item| item.as_str())
+            .unwrap_or("");
         let (listed, available, reason, response_body) = if sku.contains("idle") {
             (true, false, "no worker", "")
         } else if sku.contains("ready") {
@@ -1050,13 +1038,19 @@ mod tests {
     }
 
     fn accepted_units(usage: &Value) -> (usize, f64) {
-        let items = usage["data"]["items"].as_array().cloned().unwrap_or_default();
+        let items = usage["data"]["items"]
+            .as_array()
+            .cloned()
+            .unwrap_or_default();
         let ok: Vec<_> = items
             .iter()
             .filter(|item| item["status"] == "ok")
             .cloned()
             .collect();
-        let units = ok.iter().map(|item| item["units"].as_f64().unwrap_or(0.0)).sum();
+        let units = ok
+            .iter()
+            .map(|item| item["units"].as_f64().unwrap_or(0.0))
+            .sum();
         (ok.len(), units)
     }
 
@@ -1221,12 +1215,10 @@ mod tests {
         .await;
         assert_eq!(status, StatusCode::NOT_FOUND);
         assert_eq!(agent["error_code"], "route.not_ready");
-        assert!(
-            agent["message"]
-                .as_str()
-                .unwrap_or("")
-                .contains("support-triage")
-        );
+        assert!(agent["message"]
+            .as_str()
+            .unwrap_or("")
+            .contains("support-triage"));
 
         server.abort();
         let _ = std::fs::remove_dir_all(dir);

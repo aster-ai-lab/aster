@@ -444,8 +444,7 @@ async fn spawns_the_pinned_shim_via_canonical_path_on_macos() {
     // A shell script avoids the macOS code-signing restriction on copied
     // system binaries: scripts are interpreted by the shebang target, so
     // their signature is not path-bound.
-    std::fs::write(&shim, "#!/bin/sh\nprintf retained\n")
-        .expect("write a portable script fixture");
+    std::fs::write(&shim, "#!/bin/sh\nprintf retained\n").expect("write a portable script fixture");
     std::fs::set_permissions(&shim, std::fs::Permissions::from_mode(0o755))
         .expect("make executable fixture runnable");
 

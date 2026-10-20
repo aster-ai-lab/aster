@@ -510,6 +510,12 @@ pub(super) async fn prepare_tools(
                 effects
                     .unresolved_external_operations
                     .push(prepared.identity.key().map_err(Exit::Fail)?);
+            } else if source_incomplete && !never_started && !read_only {
+                // The exit may say success while the execution evidence is
+                // missing. That identity is the obligation, not the file list.
+                effects
+                    .unresolved_external_operations
+                    .push(prepared.identity.key().map_err(Exit::Fail)?);
             }
             // A live workspace child is tracked separately until its durable
             // background terminal fact commits. Its id is exact bookkeeping.
@@ -959,10 +965,7 @@ fn fold_receipts(facts: &[a3s_effect::Fact], include_covered: bool) -> ReceiptDe
                             debt.terminal_fact_indices
                                 .entry(key.clone())
                                 .or_insert(index);
-                            if result.outcome == ToolExecutionOutcome::Unknown
-                                || result.effects.completeness
-                                    == ToolObservationCompleteness::Incomplete
-                            {
+                            if result.outcome == ToolExecutionOutcome::Unknown {
                                 debt.add_validated_uncertainty(index, key.clone());
                             }
                             for operation in &result.effects.unresolved_external_operations {

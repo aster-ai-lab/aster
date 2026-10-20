@@ -524,7 +524,11 @@ impl A3sCodeAgent {
                 {
                     Ok(true) => {
                         self.goals.lock().await.remove(session_id.0.as_ref());
-                        self.emit_text(session_id, &format!("\ngoal achieved and cleared ({total_steps} steps, {duration_ms} ms): {goal}\n")).await;
+                        let reply = match self.goal_language(session_id).await {
+                            crate::goal::GoalLanguage::Chinese => "\n目标已完成并清除。\n".into(),
+                            crate::goal::GoalLanguage::English => format!("\ngoal achieved and cleared ({total_steps} steps, {duration_ms} ms): {goal}\n"),
+                        };
+                        self.emit_text(session_id, &reply).await;
                     }
                     Ok(false) => {}
                     Err(error) => state.turn_failure = Some(error.to_string()),

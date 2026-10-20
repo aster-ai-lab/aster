@@ -1,0 +1,1 @@
+/goal Complete every requirement in instruction.md for this T01 project. Deliver standard-library-only pipeline.py and output/results.json. Track steps and verify deterministic reruns, paths with spaces and changed data. Keep input/ and instruction.md unchanged. Work until verified; report blockers and limits.

@@ -1,0 +1,37 @@
+[
+  {
+    "case": "public",
+    "oracle_self_check": "passed",
+    "rows": 1000
+  },
+  {
+    "case": "zero-budget",
+    "oracle_self_check": "passed",
+    "rows": 1000
+  },
+  {
+    "case": "changed-policy",
+    "oracle_self_check": "passed",
+    "rows": 1000
+  },
+  {
+    "case": "precision-events",
+    "oracle_self_check": "passed",
+    "rows": 5
+  },
+  {
+    "case": "ties",
+    "oracle_self_check": "passed",
+    "rows": 3
+  },
+  {
+    "case": "minimum-cost-tie",
+    "oracle_self_check": "passed",
+    "rows": 1
+  },
+  {
+    "case": "empty",
+    "oracle_self_check": "passed",
+    "rows": 0
+  }
+]

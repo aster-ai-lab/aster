@@ -29,11 +29,7 @@ pub fn ok_envelope<T: Serialize>(data: T, request_id: &str) -> ApiEnvelope<T> {
     ok_envelope_msg(data, request_id, "OK")
 }
 
-pub fn ok_envelope_msg<T: Serialize>(
-    data: T,
-    request_id: &str,
-    message: &str,
-) -> ApiEnvelope<T> {
+pub fn ok_envelope_msg<T: Serialize>(data: T, request_id: &str, message: &str) -> ApiEnvelope<T> {
     ApiEnvelope {
         success: true,
         code: 0,

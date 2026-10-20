@@ -1,18 +1,22 @@
-//! ACP agent over a3s-code-core 9.0.0.
+//! ACP stdio agent over a3s-code-core 9.1.4.
 //!
-//! Speaks Agent Client Protocol on stdio so the forked a3s-build pager can
-//! drive real A3S sessions instead of the in-process A3S Code `MvpAgent`.
+//! Desktop hosts start this process for a session. The Aster terminal
+//! binary links `a3s-code-pager` and `a3s-code-shell` in-process.
 
 mod agent;
 pub mod approval_learning;
+#[cfg(feature = "svg-png")]
 mod artifact_image;
+#[cfg(feature = "account-import")]
 mod cc_switch;
 mod config;
+#[cfg(feature = "account-import")]
 mod cursor_account;
 mod document_read;
 mod engineering;
 pub mod form_request;
 mod goal;
+#[cfg(feature = "account-import")]
 mod grok_account;
 mod harness_assemble;
 mod host_context;

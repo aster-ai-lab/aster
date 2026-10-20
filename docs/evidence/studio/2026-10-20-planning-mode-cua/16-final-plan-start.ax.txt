@@ -1,0 +1,47 @@
+Window: "AsterDream", App: AsterDream.
+0 standard window AsterDream, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content Description: AsterDream, URL: 127.0.0.1:4319/windows/main/index.html
+			3 pop up button 周宇杨
+			4 button 工作
+			5 button 知识
+			6 button 设置
+			7 container
+				8 container 消息
+					9 container
+						10 heading 已处理, Value: 3
+							11 button (collapsed) 已处理, Secondary Actions: Expand
+						12 text 请读取项目文件夹中的 note.txt，把第一行改为 after-plan-mode，保留第二行不变；再创建 result.txt，内容为 plan-mode-e2e-ok（末尾保留换行）。完成后读回这两个文件并简短报告。不要改动 sentinel.txt。 10/20 09:01
+						13 button 复制
+						14 button 删除
+						15 text AsterDream 10/20 09:01
+						16 container 正在生成计划
+				17 container 会话导航
+					18 button 跳转到第 1 轮对话
+				19 text 下一条将先生成计划，等待审阅确认。正在运行的回合保留原模式。
+				20 text entry area (settable) 回车 排入下一条，⌘回车 改这一轮, Value: 
+
+					21 text 回车 排入下一条，⌘回车 改这一轮
+				22 pop up button 更多选项
+				23 pop up button 授权模式: 逐次确认
+				24 switch (settable, boolean) 规划模式, Help: 对下一次发送生效：先生成计划，审阅确认后再执行。不改变工具授权方式，也不改变正在运行的回合。, Value: on
+				25 pop up button DeepSeek Flash
+				26 button 停止
+				27 toolbar 会话范围
+					28 pop up button 工作区文件
+				29 container
+					30 button 打开会话工作区
+					31 container 工作区快捷栏
+						32 button 浏览器
+						33 button 终端
+						34 button 文件
+						35 button (collapsed) 展开工作区快捷菜单, Secondary Actions: Expand
+				36 toggle button 展开侧边栏, Value: off
+	37 close button
+	38 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	39 minimize button
+40 menu bar
+	41 AsterDream
+	42 编辑
+
+The focused UI element is 20 text entry area (settable) 回车 排入下一条，⌘回车 改这一轮, Value: 

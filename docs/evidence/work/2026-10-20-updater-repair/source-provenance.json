@@ -1,0 +1,13 @@
+{
+  "workspace": {
+    "head": "75ab3a598e2a52ef2240a2537f42506153e4cd4c",
+    "branch": "main",
+    "uncommitted_working_tree": true
+  },
+  "work": {
+    "head": "33edc9a74f4042efca73157d815dfca139a53140",
+    "branch": "fix/planning-mode-ui-20261020",
+    "uncommitted_working_tree": true
+  },
+  "note": "Candidate includes working-tree changes; no tag or publication was made."
+}

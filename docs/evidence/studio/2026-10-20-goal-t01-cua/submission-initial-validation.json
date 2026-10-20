@@ -1,0 +1,136 @@
+{
+  "submission_sha256": "ab17057be7a679c88be1d28d4d67456dd03dd7b3af10dbe557aee4cc95d2d2eb",
+  "third_party_imports": [],
+  "isolated_single_file": true,
+  "cases": [
+    {
+      "case": "public",
+      "passed": true,
+      "rows": 1000,
+      "events": 48,
+      "candidates": 252,
+      "optimization": {
+        "budget_units": 64,
+        "spent_units": 64,
+        "gain_milli": 3165191,
+        "selected_action_ids": [
+          "Africa_orders.csv:000006|shipping_switch",
+          "Africa_orders.csv:000007|shipping_switch",
+          "Asia_Pacific_orders.csv:000002|shipping_switch",
+          "Asia_Pacific_orders.csv:000029|discount_review",
+          "Asia_Pacific_orders.csv:000066|discount_review",
+          "Asia_Pacific_orders.csv:000070|discount_review",
+          "Asia_Pacific_orders.csv:000133|discount_review",
+          "Europe_orders.csv:000001|shipping_switch",
+          "Europe_orders.csv:000028|discount_review",
+          "Europe_orders.csv:000123|discount_review",
+          "LATAM_orders.csv:000007|shipping_switch",
+          "LATAM_orders.csv:000011|shipping_switch",
+          "LATAM_orders.csv:000017|shipping_switch",
+          "LATAM_orders.csv:000018|discount_review",
+          "LATAM_orders.csv:000096|discount_review",
+          "LATAM_orders.csv:000111|discount_review"
+        ],
+        "projected_contribution_milli": 21017339
+      }
+    },
+    {
+      "case": "zero-budget",
+      "passed": true,
+      "rows": 1000,
+      "events": 48,
+      "candidates": 252,
+      "optimization": {
+        "budget_units": 0,
+        "spent_units": 0,
+        "gain_milli": 0,
+        "selected_action_ids": [],
+        "projected_contribution_milli": 17852148
+      }
+    },
+    {
+      "case": "changed-policy",
+      "passed": true,
+      "rows": 1000,
+      "events": 48,
+      "candidates": 422,
+      "optimization": {
+        "budget_units": 17,
+        "spent_units": 17,
+        "gain_milli": 2079626,
+        "selected_action_ids": [
+          "Europe_orders.csv:000018|discount_review",
+          "LATAM_orders.csv:000013|discount_review",
+          "LATAM_orders.csv:000041|discount_review",
+          "LATAM_orders.csv:000068|discount_review",
+          "LATAM_orders.csv:000071|discount_review"
+        ],
+        "projected_contribution_milli": 19931774
+      }
+    },
+    {
+      "case": "precision-events",
+      "passed": true,
+      "rows": 5,
+      "events": 14,
+      "candidates": 2,
+      "optimization": {
+        "budget_units": 64,
+        "spent_units": 4,
+        "gain_milli": 701,
+        "selected_action_ids": [
+          "Africa_orders.csv:000001|discount_review"
+        ],
+        "projected_contribution_milli": -204
+      }
+    },
+    {
+      "case": "ties",
+      "passed": true,
+      "rows": 3,
+      "events": 0,
+      "candidates": 6,
+      "optimization": {
+        "budget_units": 2,
+        "spent_units": 2,
+        "gain_milli": 2000,
+        "selected_action_ids": [
+          "Africa_orders.csv:000001|discount_review",
+          "Africa_orders.csv:000002|discount_review"
+        ],
+        "projected_contribution_milli": -1000
+      }
+    },
+    {
+      "case": "minimum-cost-tie",
+      "passed": true,
+      "rows": 1,
+      "events": 0,
+      "candidates": 2,
+      "optimization": {
+        "budget_units": 2,
+        "spent_units": 1,
+        "gain_milli": 1000,
+        "selected_action_ids": [
+          "Africa_orders.csv:000001|discount_review"
+        ],
+        "projected_contribution_milli": 0
+      }
+    },
+    {
+      "case": "empty",
+      "passed": true,
+      "rows": 0,
+      "events": 0,
+      "candidates": 0,
+      "optimization": {
+        "budget_units": 64,
+        "spent_units": 0,
+        "gain_milli": 0,
+        "selected_action_ids": [],
+        "projected_contribution_milli": 0
+      }
+    }
+  ],
+  "passed": true
+}

@@ -73,7 +73,14 @@ pub async fn run(args: WorktreeArgs, agent_config: &AgentConfig) -> Result<()> {
     let command = args.command;
     let cancel = CancellationToken::new();
     a3s_code_telemetry::startup::mark_utility_process();
-    let spawned = crate::acp::spawn::spawn_grok_shell(agent_config.clone(), &cancel, None).await?;
+    let model = agent_config.models.default.clone();
+    let spawned = crate::acp::a3s_spawn::spawn_required_sidecar(
+        agent_config,
+        &cancel,
+        None,
+        model.as_deref(),
+    )
+    .await?;
     let _agent_guard =
         crate::acp::spawn::AgentShutdownGuard::new(cancel.clone(), Some(spawned.thread_handle));
     let _init: acp::InitializeResponse = acp_send(

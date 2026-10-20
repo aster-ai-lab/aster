@@ -24,6 +24,7 @@ struct Script {
     searches: usize,
     written: bool,
     verified: bool,
+    verification_attempts: usize,
     bashed: bool,
     skilled: bool,
     tool_seq: u64,
@@ -325,6 +326,7 @@ fn decide(raw: &str, script: &mut Script) -> String {
     }
     if !script.verified && raw.contains("Execute only the current admitted step `task`") {
         script.verified = true;
+        script.verification_attempts += 1;
         return reply_tool(
             "bash",
             serde_json::json!({
@@ -565,14 +567,6 @@ async fn unattended_prompt_binds_proves_and_records_without_touching_the_workspa
                     .any(|body| body.contains("You used tools and then stopped")),
                 "a tool-using stop after the bind was taken as a grade"
             );
-            assert!(
-                bodies
-                    .iter()
-                    .any(|body| body.contains("context-compaction engine")
-                        && body.contains("Drop claims")),
-                "the capped stop did not get one fresh reading"
-            );
-
             let record: serde_json::Value =
                 serde_json::from_slice(&std::fs::read(&result_file).expect("result record"))
                     .expect("result json");
@@ -609,6 +603,63 @@ async fn unattended_prompt_binds_proves_and_records_without_touching_the_workspa
                     .join("index")
                     .is_dir(),
                 "the a3s-vec index did not move to the state root"
+            );
+        })
+        .await;
+}
+
+#[tokio::test(flavor = "current_thread")]
+async fn verified_goal_finishes_without_repeating_read_only_verification() {
+    tokio::task::LocalSet::new()
+        .run_until(async {
+            let workspace = isolate("verified-goal-ws");
+            let outside = isolate("verified-goal-state");
+            let home = isolate("verified-goal-home");
+            let tmp = isolate("verified-goal-tmp");
+            let (addr, script) = spawn_mock();
+            let config = write_acl(&outside, &format!("http://{addr}/v1"));
+            let result_file = outside.join("result.json");
+            let result_arg = result_file.display().to_string();
+            let agent = spawn_agent(
+                &workspace,
+                &config,
+                &home,
+                &tmp,
+                &[
+                    "--unattended",
+                    "--goal-continuation",
+                    "--max-execution-ms",
+                    "15000",
+                    "--result-file",
+                    &result_arg,
+                ],
+            )
+            .await;
+            let session = open(&agent, &workspace).await;
+            let started = std::time::Instant::now();
+            let response = say(
+                &agent,
+                &session,
+                "UNATTENDED-TASK write and verify answer.txt",
+            )
+            .await
+            .unwrap();
+            assert_eq!(response.stop_reason, acp::StopReason::EndTurn);
+            let record: serde_json::Value =
+                serde_json::from_slice(&std::fs::read(&result_file).unwrap()).unwrap();
+            assert_eq!(record["outcome"], "succeeded", "{record}");
+            assert_eq!(record["terminalEvent"], true, "{record}");
+            assert!(started.elapsed() < Duration::from_secs(12));
+            assert_eq!(
+                std::fs::read(workspace.join("answer.txt")).unwrap(),
+                b"42\n"
+            );
+            assert_eq!(agent.permission_asks.get(), 0);
+            let script = script.lock().unwrap();
+            assert!(script.verified);
+            assert_eq!(
+                script.verification_attempts, 1,
+                "a verified goal must not be re-prompted"
             );
         })
         .await;

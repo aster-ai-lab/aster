@@ -1,0 +1,116 @@
+{
+  "kind": "packaging-fixture-not-a-product-release",
+  "root_revision": "75ab3a598e2a52ef2240a2537f42506153e4cd4c",
+  "work_revision": "33edc9a74f4042efca73157d815dfca139a53140",
+  "local_changes": true,
+  "app_commit": "ba5d7c642eadeb5dbded34fb49eca6c777069b4445caebe7e3e992c1576e1bd4",
+  "runtime": "org.gnome.Platform/x86_64/50",
+  "bundle": {
+    "path": "apps/work/dist/kylin/ime-validation/dev.a3s.AsterDream.flatpak",
+    "size": 140922288,
+    "sha256": "5269e93fcbfe37f5cf9ac4b0dcd5bfcb5753d983c4f8b59336be12f1a93140ff"
+  },
+  "installed_file_checks": [
+    {
+      "path": "bin/kylin-launch",
+      "size": 4434,
+      "sha256": "45930f4ea9b756d89bba05a62ab9b72f8896033d28aa6a3cbec3f1fa5a7127d1"
+    },
+    {
+      "path": "lib/im/fcitx4/im-fcitx.so",
+      "size": 40168,
+      "sha256": "5fe65fde7ccb324d6d9885e89b46bc71d1ed79439892d6760a41494bfe03877b"
+    },
+    {
+      "path": "lib/im/fcitx4/libfcitx-gclient.so.1",
+      "size": 60376,
+      "sha256": "986d45a8579bad6337c2528aa02a62154b0c1eaf7c11942683ffe839112dd1c6"
+    },
+    {
+      "path": "lib/im/fcitx4/libfcitx-utils.so.0",
+      "size": 89048,
+      "sha256": "376a4b8e04bf25b8716ca75252c4920ccc78dc9483a40f02f8f7be30ca7d2a43"
+    },
+    {
+      "path": "lib/im/fcitx4/immodules.cache",
+      "size": 308,
+      "sha256": "e21f6d8892167b282467597d219abfbf1087adefe3d52b33f5e5f77cc67b2502"
+    },
+    {
+      "path": "lib/im/fcitx4/module-id",
+      "size": 6,
+      "sha256": "4eaa29bac0eb7a8c2f3566c7a9310399c1759381fe1c8f4e077c431f57092627"
+    },
+    {
+      "path": "lib/im/fcitx5/im-fcitx5.so",
+      "size": 144184,
+      "sha256": "1d73f6d8d82abd06d2e8974842b5cf67baf7e1967f833e59391b99b5ef5a8346"
+    },
+    {
+      "path": "lib/im/fcitx5/immodules.cache",
+      "size": 390,
+      "sha256": "cecde40247b0ce9bdc223ca5f3ca8342b537b839197a6941fbeb8b636728f22c"
+    },
+    {
+      "path": "lib/im/fcitx5/module-id",
+      "size": 6,
+      "sha256": "4eaa29bac0eb7a8c2f3566c7a9310399c1759381fe1c8f4e077c431f57092627"
+    },
+    {
+      "path": "share/licenses/fcitx4/COPYING",
+      "size": 17989,
+      "sha256": "2c8fb343a0416cac19195886aec4075c54da075a6281437552895bb0abf511de"
+    },
+    {
+      "path": "share/licenses/fcitx4/fcitx-4.2.9.9.tar.xz",
+      "size": 1708908,
+      "sha256": "307bddeabbec383eb27c4ea222d9f71d8d9011d7942f4010368e5bc3ca7440a1"
+    },
+    {
+      "path": "share/licenses/fcitx4/build-fcitx4-immodule.sh",
+      "size": 2145,
+      "sha256": "16694c3bdaa50d152946e7acea05326977f12278a03958baa3071f904b60c9e1"
+    }
+  ],
+  "prebuilt_fixture_binaries": [
+    {
+      "name": "aster-dream",
+      "sha256": "e4790c6210c28c47776c84f0e1994bb0b8ec4fc37d715e5dfc655ee820690416"
+    },
+    {
+      "name": "a3s-code-acp",
+      "sha256": "acd0598b0dbfaa663e1f9aed8549e20ef58a93b265358fb025980619f16876d0"
+    },
+    {
+      "name": "a3s-office",
+      "sha256": "c5772e1ce0b985191a507fc4abe7d6edf1e4390fde1fe153ba9e8d8dccfcd09e"
+    }
+  ],
+  "source_files": [
+    {
+      "path": "apps/work/scripts/kylin-flatpak/kylin-launch.sh",
+      "sha256": "45930f4ea9b756d89bba05a62ab9b72f8896033d28aa6a3cbec3f1fa5a7127d1"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/build-immodule.sh",
+      "sha256": "89c4c0c8fc7c0c937f45bd02c248fb784209bf525148c0f0c2ae559a20345f46"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/build-fcitx4-immodule.sh",
+      "sha256": "16694c3bdaa50d152946e7acea05326977f12278a03958baa3071f904b60c9e1"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/package-bundle.sh",
+      "sha256": "c210464100298a1e897058ca9348796e504d7ad71cf9991bfabdf9e28062b216"
+    },
+    {
+      "path": "apps/work/scripts/kylin-flatpak/wait-and-package.sh",
+      "sha256": "fc702ce7cfed8581224b714ca4763b2019af1d81cc72a9be068553d6d8106bd5"
+    },
+    {
+      "path": "tests/kylin_input_method.py",
+      "sha256": "3ddc2cd7ce6e29f4ce577cdda2fbef568ca2b2f2ff5926002b880d6e82f38d62"
+    }
+  ],
+  "gui_ime_acceptance": false
+}

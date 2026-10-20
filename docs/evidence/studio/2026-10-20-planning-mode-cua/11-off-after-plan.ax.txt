@@ -1,0 +1,2 @@
+The following is a diff from the previous accessibility tree for Window: "AsterDream" with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+~				294 switch (settable, boolean) 规划模式, Help: 不改变批准方式。这一轮只写步骤，不改文件、不跑命令。要执行时关掉。, Value: off

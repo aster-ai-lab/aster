@@ -51,6 +51,10 @@ studio $slug='':
 build-studio-release:
     cd apps/studio && pnpm package:host
 
+[macos]
+build-work-release:
+    cd apps/work && pnpm package:host
+
 # Start AsterDream with renderer hot reload on 127.0.0.1:4320.
 dev:
     cd apps/work && just dev

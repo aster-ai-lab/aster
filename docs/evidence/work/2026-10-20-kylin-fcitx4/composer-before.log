@@ -1,0 +1,164 @@
+$ vitest run --project renderer src/renderer/components/composer/__tests__/ComposerSurface.lazy.test.tsx src/renderer/components/composer/__tests__/ComposerSurface.test.tsx --testNamePattern 'candidate navigation|composing .*QuickPanel|keyCode 229'
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:50457) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/local-product-scope.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-local-product-scope.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/work
+
+ ❯ |renderer| src/renderer/components/composer/__tests__/ComposerSurface.test.tsx (169 tests | 3 failed | 166 skipped) 100ms
+   ❯ ComposerSurface (169)
+     × does not swallow composing Enter while the QuickPanel is visible 21ms
+     × does not swallow composing NumpadEnter while the QuickPanel is visible 4ms
+     × leaves WebKit IME confirmation to the input method when only keyCode 229 is set 5ms
+stderr | src/renderer/components/composer/__tests__/ComposerSurface.lazy.test.tsx > deferred ComposerSurface > keeps confirmation and candidate navigation with the IME during keyCode 229
+An update to DeferredComposerSurface inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to DeferredComposerSurface inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to DeferredComposerSurface inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to DeferredComposerSurface inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+ ❯ |renderer| src/renderer/components/composer/__tests__/ComposerSurface.lazy.test.tsx (42 tests | 2 failed | 40 skipped) 48ms
+   ❯ deferred ComposerSurface (42)
+     × keeps confirmation and candidate navigation with the IME during composition session 42ms
+     × keeps confirmation and candidate navigation with the IME during keyCode 229 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.lazy.test.tsx > deferred ComposerSurface > keeps confirmation and candidate navigation with the IME during composition session
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.lazy.test.tsx > deferred ComposerSurface > keeps confirmation and candidate navigation with the IME during keyCode 229
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/renderer/components/composer/__tests__/ComposerSurface.lazy.test.tsx:306:40
+    304|         })
+    305|         fireEvent(input, event)
+    306|         expect(event.defaultPrevented).toBe(false)
+       |                                        ^
+    307|       }
+    308|       expect(mocks.onSendDraft).not.toHaveBeenCalled()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.test.tsx > ComposerSurface > does not swallow composing Enter while the QuickPanel is visible
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.test.tsx > ComposerSurface > does not swallow composing NumpadEnter while the QuickPanel is visible
+TypeError: Cannot read properties of null (reading 'dom')
+ ❯ Object.handleKeyDown src/renderer/components/composer/ComposerSurfaceRuntime.tsx:1650:18
+    1648|             editorForKeys,
+    1649|             event,
+    1650|             view.dom.clientHeight,
+       |                  ^
+    1651|             Number.parseFloat(getComputedStyle(view.dom).lineHeight)
+    1652|           )
+ ❯ src/renderer/components/composer/__tests__/ComposerSurface.test.tsx:5081:44
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  |renderer| src/renderer/components/composer/__tests__/ComposerSurface.test.tsx > ComposerSurface > leaves WebKit IME confirmation to the input method when only keyCode 229 is set
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/renderer/components/composer/__tests__/ComposerSurface.test.tsx:5095:72
+    5093|
+    5094|     const event = new KeyboardEvent('keydown', { key: 'Enter', keyCode…
+    5095|     expect(mocks.editorOptions.editorProps.handleKeyDown(null, event))…
+       |                                                                        ^
+    5096|     expect(event.defaultPrevented).toBe(false)
+    5097|     expect(onSendDraft).not.toHaveBeenCalled()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  5 failed | 206 skipped (211)
+   Start at  07:04:45
+   Duration  4.42s (import 45%, environment 26%, transform 20%, setup 7%, tests 2%)
+
+[ELIFECYCLE] Command failed with exit code 1.

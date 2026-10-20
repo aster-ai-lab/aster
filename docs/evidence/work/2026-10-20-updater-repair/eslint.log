@@ -1,0 +1,6 @@
+
+/Users/roylin/code/aster/apps/work/src/renderer/pages/settings/AboutSettings/AboutSettings.tsx
+  16:69  warning  Unexpected path "@renderer/windows/main/hooks/useAppUpdateHandler" imported in restricted zone. A page must not import a window (reverse edge). architecture/renderer.md §2/§7  import-x/no-restricted-paths
+
+✖ 1 problem (0 errors, 1 warning)
+

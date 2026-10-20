@@ -1,0 +1,838 @@
+Scope: all 10 workspace projects
+✓ Lockfile passes supply-chain policies (verified 10h ago)
+Lockfile is up to date, resolution step is skipped
+Already up to date
+.../node_modules/protobufjs postinstall$ node scripts/postinstall
+.../core-js@3.50.0/node_modules/core-js postinstall$ node -e "try{require('./postinstall')}catch(e){}"
+.../node_modules/msw postinstall$ node -e "import('./config/scripts/postinstall.js').catch(() => void 0)"
+.../node_modules/protobufjs postinstall: Done
+.../core-js@3.50.0/node_modules/core-js postinstall: Thank you for using core-js ( https://github.com/zloirock/core-js ) for polyfilling JavaScript standard library!
+.../core-js@3.50.0/node_modules/core-js postinstall: 
+.../core-js@3.50.0/node_modules/core-js postinstall: The project needs your help! Please consider supporting core-js:
+.../core-js@3.50.0/node_modules/core-js postinstall: > https://opencollective.com/core-js 
+.../core-js@3.50.0/node_modules/core-js postinstall: > https://patreon.com/zloirock 
+.../core-js@3.50.0/node_modules/core-js postinstall: > https://boosty.to/zloirock 
+.../core-js@3.50.0/node_modules/core-js postinstall: > bitcoin: bc1qlea7544qtsmj2rayg0lthvza9fau63ux0fstcz 
+.../core-js@3.50.0/node_modules/core-js postinstall: 
+.../core-js@3.50.0/node_modules/core-js postinstall: I highly recommend reading this: https://github.com/zloirock/core-js/blob/master/docs/2023-02-14-so-whats-next.md 
+.../core-js@3.50.0/node_modules/core-js postinstall: 
+.../core-js@3.50.0/node_modules/core-js postinstall: Done
+.../node_modules/msw postinstall: Done
+.../node_modules/unrs-resolver postinstall$ node postinstall.js
+.../node_modules/unrs-resolver postinstall: Done
+.../node_modules/@swc/core postinstall$ node postinstall.js
+.../node_modules/@swc/core postinstall: Done
+.../node_modules/selection-hook install$ node-gyp-build
+.../node_modules/msw postinstall$ node -e "import('./config/scripts/postinstall.js').catch(() => void 0)"
+.../node_modules/msw postinstall$ node -e "import('./config/scripts/postinstall.js').catch(() => void 0)"
+.../node_modules/selection-hook install: Done
+.../node_modules/msw postinstall: Done
+.../node_modules/msw postinstall: Done
+. postinstall$ pnpm build:office && pnpm --filter @cherrystudio/remote-protocol build && pnpm --filter @cherrystudio/remote-transport build
+. postinstall: $ pnpm --filter @a3s-lab/office build
+. postinstall: $ bash scripts/build-office-kernel.sh && rslib
+. postinstall: warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+. postinstall: package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+. postinstall: workspace: /Users/roylin/code/aster/Cargo.toml
+. postinstall: warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+. postinstall: package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+. postinstall: workspace: /Users/roylin/code/aster/Cargo.toml
+. postinstall: warning: patch for the non root package will be ignored, specify patch at the workspace root:
+. postinstall: package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+. postinstall: workspace: /Users/roylin/code/aster/Cargo.toml
+. postinstall:     Finished `release` profile [optimized] target(s) in 0.44s
+. postinstall: Built /Users/roylin/code/aster/apps/work/vendor/packages/office/generated/office-kernel.wasm
+. postinstall: Copied office kernel to /Users/roylin/code/aster/apps/work/vendor/packages/office/dist/office-kernel.wasm
+. postinstall: Built /Users/roylin/code/aster/packages/office/generated/office-kernel.wasm
+. postinstall: Copied office kernel to /Users/roylin/code/aster/packages/office/dist/office-kernel.wasm
+. postinstall: Rslib v0.23.2
+. postinstall: 
+. postinstall: info    build started...
+. postinstall: start   generating declaration files... (library)
+. postinstall: ready   built in 0.30s (office-kernel-worker)
+. postinstall: ready   built in 0.46s (library)
+. postinstall: ready   declaration files generated in 15.7 s (library)
+. postinstall: 
+. postinstall: File (library)                                 Size         Gzip   
+. postinstall: dist/styles.js                                 0.00 kB      0.02 kB
+. postinstall: dist/file-import.js                            0.04 kB      0.06 kB
+. postinstall: dist/5654.js                                   0.21 kB      0.17 kB
+. postinstall: dist/8530.js                                   0.27 kB      0.22 kB
+. postinstall: dist/0~work-document-page-color.js             0.33 kB      0.25 kB
+. postinstall: dist/5173.js                                   0.34 kB      0.27 kB
+. postinstall: dist/0~work-spreadsheet-formula-support.js     0.39 kB      0.27 kB
+. postinstall: dist/0~rslib-runtime.js                        0.40 kB      0.26 kB
+. postinstall: dist/0~work-document-links.js                  0.40 kB      0.33 kB
+. postinstall: dist/0~work-markdown-file-io.js                0.52 kB      0.36 kB
+. postinstall: dist/0~work-presentation-visual-scale.js       0.59 kB      0.33 kB
+. postinstall: dist/9424.js                                   0.59 kB      0.36 kB
+. postinstall: dist/react.js                                  0.92 kB      0.41 kB
+. postinstall: dist/spreadsheet.js                            0.96 kB      0.57 kB
+. postinstall: dist/0~345.js                                  1.0 kB       0.51 kB
+. postinstall: dist/4909.js                                   1.6 kB       0.85 kB
+. postinstall: dist/4650.js                                   1.7 kB       0.77 kB
+. postinstall: dist/9356.js                                   2.1 kB       0.92 kB
+. postinstall: dist/6908.js                                   2.4 kB       1.0 kB
+. postinstall: dist/7060.js                                   2.6 kB       1.2 kB
+. postinstall: dist/0~3557.js                                 3.1 kB       1.3 kB
+. postinstall: dist/0~4980.js                                 3.4 kB       1.5 kB
+. postinstall: dist/6489.js                                   3.4 kB       1.9 kB
+. postinstall: dist/8281.js                                   3.9 kB       1.7 kB
+. postinstall: dist/0~work-document-import-worker-client.js   4.0 kB       1.6 kB
+. postinstall: dist/2591.js                                   4.0 kB       1.5 kB
+. postinstall: dist/0~1403.js                                 4.1 kB       1.6 kB
+. postinstall: dist/8465.js                                   4.1 kB       1.6 kB
+. postinstall: dist/index.js                                  4.2 kB       1.3 kB
+. postinstall: dist/0~pdf-page-organization-engine.js         4.7 kB       2.0 kB
+. postinstall: dist/0~work-spreadsheet-file-export.js         4.7 kB       2.3 kB
+. postinstall: dist/0~9445.js                                 4.7 kB       1.9 kB
+. postinstall: dist/vue.js                                    4.8 kB       1.2 kB
+. postinstall: dist/4281.js                                   5.0 kB       1.7 kB
+. postinstall: dist/6065.js                                   5.0 kB       2.3 kB
+. postinstall: dist/0~office-color-picker.js                  5.4 kB       2.2 kB
+. postinstall: dist/0~controlled-editor-composition.js        6.1 kB       1.6 kB
+. postinstall: dist/0~3789.js                                 6.4 kB       2.4 kB
+. postinstall: dist/1478.js                                   6.5 kB       1.7 kB
+. postinstall: dist/0~work-document-file-io.js                7.0 kB       2.8 kB
+. postinstall: dist/9787.js                                   7.1 kB       2.2 kB
+. postinstall: dist/web-component.js                          8.5 kB       2.0 kB
+. postinstall: dist/0~work-docx-large-document-import.js      9.9 kB       3.9 kB
+. postinstall: dist/0~5870.js                                 11.0 kB      3.5 kB
+. postinstall: dist/432.js                                    16.5 kB      5.7 kB
+. postinstall: dist/6723.js                                   17.6 kB      6.1 kB
+. postinstall: dist/5861.js                                   18.6 kB      5.4 kB
+. postinstall: dist/7176.js                                   19.6 kB      7.2 kB
+. postinstall: dist/4560.js                                   20.2 kB      6.3 kB
+. postinstall: dist/1060.js                                   21.9 kB      7.5 kB
+. postinstall: dist/0~work-pptx-export.js                     22.0 kB      7.5 kB
+. postinstall: dist/0~4541.js                                 22.9 kB      6.2 kB
+. postinstall: dist/0~9073.js                                 23.3 kB      7.4 kB
+. postinstall: dist/3818.js                                   23.5 kB      7.1 kB
+. postinstall: dist/3890.js                                   25.5 kB      6.5 kB
+. postinstall: dist/noto-sans-hebrew-regular.ttf              25.7 kB   
+. postinstall: dist/0~work-pptx-import.js                     26.8 kB      9.8 kB
+. postinstall: dist/8604.js                                   28.5 kB      10.6 kB
+. postinstall: dist/1578.js                                   29.7 kB      10.5 kB
+. postinstall: dist/0~6496.js                                 31.4 kB      10.4 kB
+. postinstall: dist/5334.js                                   32.5 kB      10.4 kB
+. postinstall: dist/0~work-spreadsheet-compatibility.js       35.5 kB      11.5 kB
+. postinstall: dist/0~6628.js                                 35.6 kB      11.1 kB
+. postinstall: dist/6282.js                                   39.3 kB      11.5 kB
+. postinstall: dist/7376.js                                   41.3 kB      13.0 kB
+. postinstall: dist/3296.js                                   42.0 kB      13.4 kB
+. postinstall: dist/9881.js                                   43.2 kB      13.5 kB
+. postinstall: dist/0~9457.js                                 45.3 kB      14.0 kB
+. postinstall: dist/0~markdown-editor.js                      52.9 kB      17.4 kB
+. postinstall: dist/0~7048.js                                 61.3 kB      18.0 kB
+. postinstall: dist/72.js                                     74.1 kB      20.4 kB
+. postinstall: dist/0~pdf-viewer.js                           76.5 kB      22.7 kB
+. postinstall: dist/6719.js                                   77.8 kB      24.6 kB
+. postinstall: dist/0~work-office-diagnostics.js              78.3 kB      22.2 kB
+. postinstall: dist/core.js                                   93.8 kB      23.9 kB
+. postinstall: dist/0~work-docx-import.js                     112.6 kB     32.2 kB
+. postinstall: dist/6401.js                                   114.7 kB     35.0 kB
+. postinstall: dist/noto-naskh-arabic-regular.ttf             134.0 kB  
+. postinstall: dist/1887.js                                   175.3 kB     50.2 kB
+. postinstall: dist/0~9303.js                                 177.9 kB     47.2 kB
+. postinstall: dist/0~presentation-editor.js                  185.2 kB     51.9 kB
+. postinstall: dist/0~work-docx-export.js                     281.5 kB     70.6 kB
+. postinstall: dist/4704.js                                   300.9 kB     79.0 kB
+. postinstall: dist/0~document-editor.js                      454.9 kB     118.0 kB
+. postinstall: dist/pptxgen.bundle.js                         460.9 kB     156.9 kB
+. postinstall: dist/2343.js                                   491.2 kB     107.6 kB
+. postinstall: dist/styles.css                                529.5 kB     75.9 kB
+. postinstall: dist/0~spreadsheet-editor.js                   595.8 kB     159.6 kB
+. postinstall: dist/noto-sans-regular.ttf                     629.0 kB  
+. postinstall: dist/office-kernel.wasm                        1481.4 kB    519.1 kB
+. postinstall: dist/pdfium.wasm                               4633.0 kB    2137.7 kB
+. postinstall: dist/noto-sans-hans-regular.otf                8364.6 kB 
+. postinstall: 
+. postinstall:                                       Total:   20474.1 kB   13213.4 kB
+. postinstall: 
+. postinstall: File (office-kernel-worker)                    Size        Gzip   
+. postinstall: dist/work-document-import.worker.js            23.9 kB     5.3 kB
+. postinstall: dist/work-spreadsheet-package-scan.worker.js   267.8 kB    43.2 kB
+. postinstall: dist/office-kernel.worker.js                   740.6 kB    101.1 kB
+. postinstall: dist/work-spreadsheet-import.worker.js         923.4 kB    164.1 kB
+. postinstall: dist/pdf-page-organization.worker.js           1038.6 kB   222.4 kB
+. postinstall: 
+. postinstall:                                       Total:   2994.3 kB   536.1 kB
+. postinstall: 
+. postinstall: $ tsdown
+. postinstall: ℹ tsdown v0.22.14 powered by rolldown v1.2.6
+. postinstall: ℹ config file: /Users/roylin/code/aster/apps/work/packages/remote-protocol/tsdown.config.ts 
+. postinstall: ℹ entry: src/index.ts, src/agent.ts, src/configuration.ts, src/failure.ts
+. postinstall: ℹ tsconfig: tsconfig.json
+. postinstall: ℹ Build start
+. postinstall: ℹ Cleaning 10 files
+. postinstall: ℹ dist/agent.js               29.35 kB │ gzip:  6.46 kB
+. postinstall: ℹ dist/index.js                7.12 kB │ gzip:  2.41 kB
+. postinstall: ℹ dist/failure.js              1.35 kB │ gzip:  0.61 kB
+. postinstall: ℹ dist/configuration.js        0.94 kB │ gzip:  0.43 kB
+. postinstall: ℹ dist/errors-DraEu1WZ.js      1.31 kB │ gzip:  0.70 kB
+. postinstall: ℹ dist/agent.d.ts            177.93 kB │ gzip: 10.91 kB
+. postinstall: ℹ dist/index.d.ts             17.06 kB │ gzip:  2.43 kB
+. postinstall: ℹ dist/failure.d.ts            3.82 kB │ gzip:  0.83 kB
+. postinstall: ℹ dist/configuration.d.ts      2.86 kB │ gzip:  0.70 kB
+. postinstall: ℹ dist/values-PwquYDbQ.d.ts    0.16 kB │ gzip:  0.14 kB
+. postinstall: ℹ 10 files, total: 241.89 kB
+. postinstall: ✔ Build complete in 1254ms
+. postinstall: $ tsdown
+. postinstall: ℹ tsdown v0.22.14 powered by rolldown v1.2.6
+. postinstall: ℹ config file: /Users/roylin/code/aster/apps/work/packages/remote-transport/tsdown.config.ts 
+. postinstall: ℹ entry: src/index.ts
+. postinstall: ℹ tsconfig: tsconfig.json
+. postinstall: ℹ Build start
+. postinstall: ℹ Cleaning 2 files
+. postinstall: ℹ dist/index.js    9.16 kB │ gzip: 2.81 kB
+. postinstall: ℹ dist/index.d.ts  3.27 kB │ gzip: 1.10 kB
+. postinstall: ℹ 2 files, total: 12.43 kB
+. postinstall: ✔ Build complete in 730ms
+. postinstall: Done
+Done in 22.6s using pnpm v12.6.0
+$ bash scripts/package-host.sh
+package-host: frontendDist=../../../target/packages/asterdream-0.1.2-20261020/renderer
+package-host: tauri-config={"build":{"frontendDist":"../../../target/packages/asterdream-0.1.2-20261020/renderer","beforeBundleCommand":"bash scripts/package-host.sh --sign-resources"},"bundle":{"macOS":{"signingIdentity":"Developer ID Application: Lijin Zhu (5L9P7TS6DM)"}}}
+$ pnpm --filter @a3s-lab/office build
+$ bash scripts/build-office-kernel.sh && rslib
+Office kernel is current
+Rslib v0.23.2
+
+info    build started...
+start   generating declaration files... (library)
+ready   built in 0.27s (office-kernel-worker)
+ready   built in 0.50s (library)
+ready   declaration files generated in 19.1 s (library)
+
+File (library)                                 Size         Gzip   
+dist/styles.js                                 0.00 kB      0.02 kB
+dist/file-import.js                            0.04 kB      0.06 kB
+dist/5654.js                                   0.21 kB      0.17 kB
+dist/8530.js                                   0.27 kB      0.22 kB
+dist/0~work-document-page-color.js             0.33 kB      0.25 kB
+dist/5173.js                                   0.34 kB      0.27 kB
+dist/0~work-spreadsheet-formula-support.js     0.39 kB      0.27 kB
+dist/0~rslib-runtime.js                        0.40 kB      0.26 kB
+dist/0~work-document-links.js                  0.40 kB      0.33 kB
+dist/0~work-markdown-file-io.js                0.52 kB      0.36 kB
+dist/0~work-presentation-visual-scale.js       0.59 kB      0.33 kB
+dist/9424.js                                   0.59 kB      0.36 kB
+dist/react.js                                  0.92 kB      0.41 kB
+dist/spreadsheet.js                            0.96 kB      0.57 kB
+dist/0~345.js                                  1.0 kB       0.51 kB
+dist/4909.js                                   1.6 kB       0.85 kB
+dist/4650.js                                   1.7 kB       0.77 kB
+dist/9356.js                                   2.1 kB       0.92 kB
+dist/6908.js                                   2.4 kB       1.0 kB
+dist/7060.js                                   2.6 kB       1.2 kB
+dist/0~3557.js                                 3.1 kB       1.3 kB
+dist/0~4980.js                                 3.4 kB       1.5 kB
+dist/6489.js                                   3.4 kB       1.9 kB
+dist/8281.js                                   3.9 kB       1.7 kB
+dist/0~work-document-import-worker-client.js   4.0 kB       1.6 kB
+dist/2591.js                                   4.0 kB       1.5 kB
+dist/0~1403.js                                 4.1 kB       1.6 kB
+dist/8465.js                                   4.1 kB       1.6 kB
+dist/index.js                                  4.2 kB       1.3 kB
+dist/0~pdf-page-organization-engine.js         4.7 kB       2.0 kB
+dist/0~work-spreadsheet-file-export.js         4.7 kB       2.3 kB
+dist/0~9445.js                                 4.7 kB       1.9 kB
+dist/vue.js                                    4.8 kB       1.2 kB
+dist/4281.js                                   5.0 kB       1.7 kB
+dist/6065.js                                   5.0 kB       2.3 kB
+dist/0~office-color-picker.js                  5.4 kB       2.2 kB
+dist/0~controlled-editor-composition.js        6.1 kB       1.6 kB
+dist/0~3789.js                                 6.4 kB       2.4 kB
+dist/1478.js                                   6.5 kB       1.7 kB
+dist/0~work-document-file-io.js                7.0 kB       2.8 kB
+dist/9787.js                                   7.1 kB       2.2 kB
+dist/web-component.js                          8.5 kB       2.0 kB
+dist/0~work-docx-large-document-import.js      9.9 kB       3.9 kB
+dist/0~5870.js                                 11.0 kB      3.5 kB
+dist/432.js                                    16.5 kB      5.7 kB
+dist/6723.js                                   17.6 kB      6.1 kB
+dist/5861.js                                   18.6 kB      5.4 kB
+dist/7176.js                                   19.6 kB      7.2 kB
+dist/4560.js                                   20.2 kB      6.3 kB
+dist/1060.js                                   21.9 kB      7.5 kB
+dist/0~work-pptx-export.js                     22.0 kB      7.5 kB
+dist/0~4541.js                                 22.9 kB      6.2 kB
+dist/0~9073.js                                 23.3 kB      7.4 kB
+dist/3818.js                                   23.5 kB      7.1 kB
+dist/3890.js                                   25.5 kB      6.5 kB
+dist/noto-sans-hebrew-regular.ttf              25.7 kB   
+dist/0~work-pptx-import.js                     26.8 kB      9.8 kB
+dist/8604.js                                   28.5 kB      10.6 kB
+dist/1578.js                                   29.7 kB      10.5 kB
+dist/0~6496.js                                 31.4 kB      10.4 kB
+dist/5334.js                                   32.5 kB      10.4 kB
+dist/0~work-spreadsheet-compatibility.js       35.5 kB      11.5 kB
+dist/0~6628.js                                 35.6 kB      11.1 kB
+dist/6282.js                                   39.3 kB      11.5 kB
+dist/7376.js                                   41.3 kB      13.0 kB
+dist/3296.js                                   42.0 kB      13.4 kB
+dist/9881.js                                   43.2 kB      13.5 kB
+dist/0~9457.js                                 45.3 kB      14.0 kB
+dist/0~markdown-editor.js                      52.9 kB      17.4 kB
+dist/0~7048.js                                 61.3 kB      18.0 kB
+dist/72.js                                     74.1 kB      20.4 kB
+dist/0~pdf-viewer.js                           76.5 kB      22.7 kB
+dist/6719.js                                   77.8 kB      24.6 kB
+dist/0~work-office-diagnostics.js              78.3 kB      22.2 kB
+dist/core.js                                   93.8 kB      23.9 kB
+dist/0~work-docx-import.js                     112.6 kB     32.2 kB
+dist/6401.js                                   114.7 kB     35.0 kB
+dist/noto-naskh-arabic-regular.ttf             134.0 kB  
+dist/1887.js                                   175.3 kB     50.2 kB
+dist/0~9303.js                                 177.9 kB     47.2 kB
+dist/0~presentation-editor.js                  185.2 kB     51.9 kB
+dist/0~work-docx-export.js                     281.5 kB     70.6 kB
+dist/4704.js                                   300.9 kB     79.0 kB
+dist/0~document-editor.js                      454.9 kB     118.0 kB
+dist/pptxgen.bundle.js                         460.9 kB     156.9 kB
+dist/2343.js                                   491.2 kB     107.6 kB
+dist/styles.css                                529.5 kB     75.9 kB
+dist/0~spreadsheet-editor.js                   595.8 kB     159.6 kB
+dist/noto-sans-regular.ttf                     629.0 kB  
+dist/office-kernel.wasm                        1481.4 kB    519.1 kB
+dist/pdfium.wasm                               4633.0 kB    2137.7 kB
+dist/noto-sans-hans-regular.otf                8364.6 kB 
+
+                                      Total:   20474.1 kB   13213.4 kB
+
+File (office-kernel-worker)                    Size        Gzip   
+dist/work-document-import.worker.js            23.9 kB     5.3 kB
+dist/work-spreadsheet-package-scan.worker.js   267.8 kB    43.2 kB
+dist/office-kernel.worker.js                   740.6 kB    101.1 kB
+dist/work-spreadsheet-import.worker.js         923.4 kB    164.1 kB
+dist/pdf-page-organization.worker.js           1038.6 kB   222.4 kB
+
+                                      Total:   2994.3 kB   536.1 kB
+
+Rsbuild v2.2.7
+
+(node:35165) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/roylin/code/aster/apps/work/rsbuild.config.ts?fresh-import-k5npybn8wa=0,file:///Users/roylin/code/aster/apps/work/rsbuild.config.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/roylin/code/aster/apps/work/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/local-product-scope.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-local-product-scope.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/work/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+info    build started...
+warn    Build warnings: 
+File: ./src/renderer/pages/agents/pdfToolsPdf.ts:1:1
+  ⚠ Module parse warning:
+  ╰─▶   ⚠ Critical dependency: Accessing import.meta directly is unsupported (only property access or destructuring is supported)
+           ╭─[99:36]
+        97 │         const { fileURLToPath } = await import(/* @vite-ignore */ 'node:url');
+        98 │         const { dirname, join } = await import(/* @vite-ignore */ 'node:path');
+        99 │         const entry = fileURLToPath(import.meta.resolve('@embedpdf/fonts-sc'));
+           ·                                     ───────────
+       100 │         const fontPath = join(dirname(dirname(entry)), 'fonts', 'NotoSansHans-Regular.otf');
+       101 │         return new Uint8Array(await readFile(fontPath));
+           ╰────
+
+File: ./src/renderer/pages/agents/pdfToolsPdfium.ts:1:1
+  ⚠ Module parse warning:
+  ╰─▶   ⚠ Critical dependency: Accessing import.meta directly is unsupported (only property access or destructuring is supported)
+           ╭─[186:25]
+       184 │ async function packageSpecifierPath(specifier) {
+       185 │     const { fileURLToPath } = await import(/* @vite-ignore */ 'node:url');
+       186 │     return fileURLToPath(import.meta.resolve(specifier));
+           ·                          ───────────
+       187 │ }
+       188 │ export async function pngOf(raster) {
+           ╰────
+
+File: ./src/renderer/pages/agents/pdfToolsPdfium.ts:1:1
+  ⚠ Critical dependency: the request of a dependency is an expression
+     ╭─[164:53]
+ 162 │     const index = await packageSpecifierPath(PDFIUM_INDEX);
+ 163 │     const { pathToFileURL } = await import(/* @vite-ignore */ 'node:url');
+ 164 │     const imported = await import(/* @vite-ignore */ pathToFileURL(index).href);
+     ·                                                      ─────────────────────────
+ 165 │     return imported.init({
+ 166 │         wasmBinary: wasm
+     ╰────
+
+File: ./src/renderer/workers/pyodide.worker.ts:1:1
+  ⚠ Critical dependency: the request of a dependency is an expression
+    ╭─[57:62]
+ 55 │     try {
+ 56 │         // 动态加载 Pyodide 脚本
+ 57 │         const pyodideModule = await import(/* @vite-ignore */ PYODIDE_MODULE_URL);
+    ·                                                               ──────────────────
+ 58 │         // 加载 Pyodide 并捕获标准输出/错误
+ 59 │         return await pyodideModule.loadPyodide({
+    ╰────
+
+ready   built in 11.3s
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling a3s-office v0.45.0 (/Users/roylin/code/aster/crates/office/crates/core)
+   Compiling a3s-oci-sdk v0.3.2 (/Users/roylin/code/aster/crates/oci-runtime/crates/sdk)
+   Compiling a3s-form-core v0.1.0 (/Users/roylin/code/aster/crates/form-core)
+   Compiling a3s-effect v0.2.1 (/Users/roylin/code/aster/crates/effect)
+   Compiling a3s-use-bge v0.1.0 (/Users/roylin/code/aster/crates/bge)
+warning: function `sigmoid` is never used
+  --> crates/bge/src/math.rs:18:15
+   |
+18 | pub(crate) fn sigmoid(logit: f32) -> f32 {
+   |               ^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `encode_pairs` is never used
+  --> crates/bge/src/tokenizer.rs:91:19
+   |
+28 | impl PairTokenizer {
+   | ------------------ method in this implementation
+...
+91 |     pub(crate) fn encode_pairs(
+   |                   ^^^^^^^^^^^^
+
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+warning: unused imports: `guest_agent_hello` and `host_runtime_version`
+  --> crates/code/core/src/sandbox/oci.rs:25:26
+   |
+25 | pub(crate) use version::{guest_agent_hello, host_runtime_version};
+   |                          ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-use-bge` (lib) generated 2 warnings
+   Compiling a3s-office-cli v0.45.0 (/Users/roylin/code/aster/crates/office/crates/cli)
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:413:21
+    |
+413 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `HOST_MISMATCH` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:10:7
+   |
+10 | const HOST_MISMATCH: &[u8] = b"guest agent version does not match the host runtime version";
+   |       ^^^^^^^^^^^^^
+
+warning: function `host_runtime_version` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:13:15
+   |
+13 | pub(crate) fn host_runtime_version(host: &[u8]) -> Option<&str> {
+   |               ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `guest_agent_hello` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:18:15
+   |
+18 | pub(crate) fn guest_agent_hello<'a>(agent: &'a [u8], architecture: &str) -> Option<&'a str> {
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: function `version_immediately_before` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:26:4
+   |
+26 | fn version_immediately_before<'a>(bytes: &'a [u8], marker: &[u8]) -> Option<&'a str> {
+   |    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `semver_ending_at` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:44:4
+   |
+44 | fn semver_ending_at(bytes: &[u8], end: usize) -> Option<&str> {
+   |    ^^^^^^^^^^^^^^^^
+
+   Compiling a3s-code-acp v9.1.4 (/Users/roylin/code/aster/crates/code/acp)
+warning: method `as_str` is never used
+  --> crates/code/acp/src/host_context.rs:49:12
+   |
+42 | impl CompletionAttestation {
+   | -------------------------- method in this implementation
+...
+49 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-acp` (lib) generated 1 warning
+warning: `a3s-code-core` (lib) generated 7 warnings (run `cargo fix --lib -p a3s-code-core` to apply 1 suggestion)
+    Finished `release` profile [optimized] target(s) in 5m 40s
+NotoSansHans-Regular.otf 2082148
+        Info Looking up installed tauri packages to check mismatched versions...
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling aster-dream v0.1.2 (/Users/roylin/code/aster/apps/work/src-tauri)
+   Compiling a3s-form-core v0.1.0 (/Users/roylin/code/aster/crates/form-core)
+warning: function `upsert_instance_map` is never used
+   --> crates/boot/src/service_discovery/mod.rs:203:15
+    |
+203 | pub(crate) fn upsert_instance_map(
+    |               ^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `remove_instance_map` is never used
+   --> crates/boot/src/service_discovery/mod.rs:215:15
+    |
+215 | pub(crate) fn remove_instance_map(
+    |               ^^^^^^^^^^^^^^^^^^^
+
+   Compiling a3s-flow v2.0.0 (/Users/roylin/code/aster/crates/flow)
+warning: `a3s-boot` (lib) generated 2 warnings
+warning: aster-dream@0.1.2: no DOUBAO_/DOCHUB_* in /Users/roylin/code/aster/apps/work/src-tauri/../.env; packaged host will not embed search/document-parse defaults
+warning: aster-dream@0.1.2: STATIC_VCRUNTIME is deprecated; use build.windows.staticVCRuntime in tauri.conf.json or tauri_build::WindowsAttributes::static_vc_runtime instead.
+warning: unnecessary `unsafe` block
+    --> apps/work/src-tauri/src/workspace_browser.rs:1080:32
+     |
+1080 |                 let absolute = unsafe { request.URL() }.and_then(|url| {
+     |                                ^^^^^^ unnecessary `unsafe` block
+     |
+     = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default
+
+warning: unnecessary `unsafe` block
+    --> apps/work/src-tauri/src/workspace_browser.rs:1114:32
+     |
+1114 |                 let absolute = unsafe { request.URL() }.and_then(|url| {
+     |                                ^^^^^^ unnecessary `unsafe` block
+
+warning: method `ensure_builtin_tobot` is never used
+   --> apps/work/src-tauri/src/agent_plane/catalog.rs:329:12
+    |
+223 | impl SessionCatalog {
+    | ------------------- method in this implementation
+...
+329 |     pub fn ensure_builtin_tobot(&self) -> Result<Session, PlaneError> {
+    |            ^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: struct `PeerState` is never constructed
+  --> apps/work/src-tauri/src/agent_plane/edge_runtime.rs:31:8
+   |
+31 | struct PeerState {
+   |        ^^^^^^^^^
+
+warning: struct `BuiltinPeer` is never constructed
+  --> apps/work/src-tauri/src/agent_plane/edge_runtime.rs:35:12
+   |
+35 | pub struct BuiltinPeer {
+   |            ^^^^^^^^^^^
+
+warning: associated items `start`, `endpoint`, and `stop` are never used
+  --> apps/work/src-tauri/src/agent_plane/edge_runtime.rs:42:18
+   |
+41 | impl BuiltinPeer {
+   | ---------------- associated items in this implementation
+42 |     pub async fn start() -> Result<Self, String> {
+   |                  ^^^^^
+...
+69 |     pub fn endpoint(&self) -> String {
+   |            ^^^^^^^^
+...
+73 |     pub async fn stop(mut self) {
+   |                  ^^^^
+
+warning: function `admit_command` is never used
+  --> apps/work/src-tauri/src/agent_plane/edge_runtime.rs:81:10
+   |
+81 | async fn admit_command(
+   |          ^^^^^^^^^^^^^
+
+warning: function `page_events` is never used
+  --> apps/work/src-tauri/src/agent_plane/edge_runtime.rs:94:10
+   |
+94 | async fn page_events(
+   |          ^^^^^^^^^^^
+
+warning: function `admitted_prompt` is never used
+   --> apps/work/src-tauri/src/agent_plane/edge_runtime.rs:107:4
+    |
+107 | fn admitted_prompt(body: &Value) -> Result<String, ()> {
+    |    ^^^^^^^^^^^^^^^
+
+warning: method `stop` is never used
+   --> apps/work/src-tauri/src/agent_plane/edge_runtime.rs:252:18
+    |
+185 | impl PackageRun {
+    | --------------- method in this implementation
+...
+252 |     pub async fn stop(self) -> Result<(), String> {
+    |                  ^^^^
+
+warning: associated function `parse` is never used
+   --> apps/work/src-tauri/src/agent_plane/forms.rs:133:19
+    |
+132 | impl FormCloseReason {
+    | -------------------- associated function in this implementation
+133 |     pub(super) fn parse(value: &str) -> std::result::Result<Self, String> {
+    |                   ^^^^^
+
+warning: method `ticker_started` is never used
+  --> apps/work/src-tauri/src/agent_plane/tasks.rs:75:19
+   |
+33 | impl TaskService {
+   | ---------------- method in this implementation
+...
+75 |     pub(super) fn ticker_started(&self) -> bool {
+   |                   ^^^^^^^^^^^^^^
+
+warning: method `respond_approval` is never used
+    --> apps/work/src-tauri/src/agent_plane/turns.rs:1427:12
+     |
+ 359 | impl TurnService {
+     | ---------------- method in this implementation
+...
+1427 |     pub fn respond_approval(&self, approval_id: &str, approved: bool) -> bool {
+     |            ^^^^^^^^^^^^^^^^
+
+warning: constant `INTERRUPTED_RUN` is never used
+    --> apps/work/src-tauri/src/agent_plane/turns.rs:3743:18
+     |
+3743 | pub(super) const INTERRUPTED_RUN: &str = INTERRUPTED_EXHAUSTED;
+     |                  ^^^^^^^^^^^^^^^
+
+warning: field `name` is never read
+   --> apps/work/src-tauri/src/authority.rs:151:5
+    |
+147 | pub struct StudioAuthority {
+    |            --------------- field in this struct
+...
+151 |     name: String,
+    |     ^^^^
+
+warning: method `name` is never used
+   --> apps/work/src-tauri/src/authority.rs:323:12
+    |
+160 | impl StudioAuthority {
+    | -------------------- method in this implementation
+...
+323 |     pub fn name(&self) -> &str {
+    |            ^^^^
+
+warning: field `http` is never read
+  --> apps/work/src-tauri/src/binary_tools.rs:49:5
+   |
+46 | struct BinaryState {
+   |        ----------- field in this struct
+...
+49 |     http: HttpSource,
+   |     ^^^^
+   |
+   = note: `BinaryState` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: function `installed_agent_entry` is never used
+    --> apps/work/src-tauri/src/capabilities.rs:1580:15
+     |
+1580 | pub(crate) fn installed_agent_entry(caps: &Path, slug: &str) -> io::Result<PathBuf> {
+     |               ^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `acp_session_servers` is never used
+    --> apps/work/src-tauri/src/capabilities.rs:2747:15
+     |
+2747 | pub(crate) fn acp_session_servers(root: &Path) -> Vec<Value> {
+     |               ^^^^^^^^^^^^^^^^^^^
+
+warning: function `installed_flow_specs` is never used
+    --> apps/work/src-tauri/src/capabilities.rs:2804:15
+     |
+2804 | pub(crate) fn installed_flow_specs(root: &Path) -> Vec<Value> {
+     |               ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `source_hash_ok` is never used
+    --> apps/work/src-tauri/src/capabilities.rs:2824:4
+     |
+2824 | fn source_hash_ok(value: &str) -> bool {
+     |    ^^^^^^^^^^^^^^
+
+warning: field `username` is never read
+  --> apps/work/src-tauri/src/crab_user.rs:66:9
+   |
+62 | pub struct IssuedSession {
+   |            ------------- field in this struct
+...
+66 |     pub username: String,
+   |         ^^^^^^^^
+   |
+   = note: `IssuedSession` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+
+warning: function `curl` is never used
+   --> apps/work/src-tauri/src/crab_user.rs:938:4
+    |
+938 | fn curl(
+    |    ^^^^
+
+warning: function `retrieve_passages` is never used
+  --> apps/work/src-tauri/src/local_documents.rs:92:8
+   |
+92 | pub fn retrieve_passages(raw_root: &str, query: &str) -> Vec<String> {
+   |        ^^^^^^^^^^^^^^^^^
+
+warning: function `query_tokens` is never used
+   --> apps/work/src-tauri/src/local_documents.rs:123:4
+    |
+123 | fn query_tokens(query: &str) -> Vec<String> {
+    |    ^^^^^^^^^^^^
+
+warning: function `collect_note_passages` is never used
+   --> apps/work/src-tauri/src/local_documents.rs:135:4
+    |
+135 | fn collect_note_passages(
+    |    ^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated function `open_at` is never used
+  --> apps/work/src-tauri/src/member_session.rs:76:12
+   |
+53 | impl MemberSessionStore {
+   | ----------------------- associated function in this implementation
+...
+76 |     pub fn open_at(path: Option<PathBuf>) -> Self {
+   |            ^^^^^^^
+
+warning: constant `CREATE_NO_WINDOW` is never used
+  --> apps/work/src-tauri/src/no_window.rs:29:7
+   |
+29 | const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+   |       ^^^^^^^^^^^^^^^^
+
+warning: function `search_paths` is never used
+   --> apps/work/src-tauri/src/plugin_okf.rs:436:4
+    |
+436 | fn search_paths(dir: &Path, query: &str) -> io::Result<Vec<String>> {
+    |    ^^^^^^^^^^^^
+
+warning: function `gateway_credentials` is never used
+   --> apps/work/src-tauri/src/providers.rs:703:8
+    |
+703 | pub fn gateway_credentials(token: &str) -> ProviderCredentials {
+    |        ^^^^^^^^^^^^^^^^^^^
+
+warning: function `signed_in_gateway_credentials` is never used
+   --> apps/work/src-tauri/src/providers.rs:712:8
+    |
+712 | pub fn signed_in_gateway_credentials(
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `first_chat_model_for_key` is never used
+   --> apps/work/src-tauri/src/providers.rs:795:15
+    |
+795 | pub(crate) fn first_chat_model_for_key(key: &str) -> Option<String> {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: fields `skill`, `ui`, `title`, and `steps` are never read
+  --> apps/work/src-tauri/src/review_plugin.rs:82:9
+   |
+81 | pub struct ReconcileReport {
+   |            --------------- fields in this struct
+82 |     pub skill: bool,
+   |         ^^^^^
+83 |     pub ui: bool,
+   |         ^^
+84 |     pub title: String,
+   |         ^^^^^
+85 |     pub steps: Vec<&'static str>,
+   |         ^^^^^
+
+warning: function `review_facade_script` is never used
+  --> apps/work/src-tauri/src/review_plugin.rs:97:8
+   |
+97 | pub fn review_facade_script() -> String {
+   |        ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `cached_picker_http` is never used
+   --> apps/work/src-tauri/src/review_plugin.rs:438:4
+    |
+438 | fn cached_picker_http() -> (u16, &'static str, &'static str, Vec<u8>) {
+    |    ^^^^^^^^^^^^^^^^^^
+
+warning: function `verified_picker` is never used
+   --> apps/work/src-tauri/src/review_plugin.rs:462:8
+    |
+462 | pub fn verified_picker() -> Option<(PathBuf, String)> {
+    |        ^^^^^^^^^^^^^^^
+
+warning: function `hit_window_drag` is never used
+  --> apps/work/src-tauri/src/window_drag.rs:14:15
+   |
+14 | pub(crate) fn hit_window_drag(x: f64, y: f64, drag: &[CssRect], block: &[CssRect]) -> bool {
+   |               ^^^^^^^^^^^^^^^
+
+warning: function `hit_window_chrome` is never used
+  --> apps/work/src-tauri/src/window_drag.rs:24:15
+   |
+24 | pub(crate) fn hit_window_chrome(
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: `aster-dream` (lib) generated 38 warnings
+    Finished `release` profile [optimized] target(s) in 4m 23s
+       Built application at: /Users/roylin/code/aster/target/release/aster-dream
+     Running beforeBundleCommand `bash scripts/package-host.sh --sign-resources`
+src-tauri/resources/agent/a3s-code-acp: replacing existing signature
+src-tauri/resources/agent/a3s-office: replacing existing signature
+    Bundling AsterDream.app (/Users/roylin/code/aster/target/release/bundle/macos/AsterDream.app)
+     Signing with identity "Developer ID Application: Lijin Zhu (5L9P7TS6DM)"
+Signing with identity "Developer ID Application: Lijin Zhu (5L9P7TS6DM)"
+Signing /Users/roylin/code/aster/target/release/bundle/macos/AsterDream.app/Contents/MacOS/aster-dream
+/Users/roylin/code/aster/target/release/bundle/macos/AsterDream.app/Contents/MacOS/aster-dream: replacing existing signature
+Signing with identity "Developer ID Application: Lijin Zhu (5L9P7TS6DM)"
+Signing /Users/roylin/code/aster/target/release/bundle/macos/AsterDream.app
+/Users/roylin/code/aster/target/release/bundle/macos/AsterDream.app: replacing existing signature
+        Warn skipping app notarization, no APPLE_ID & APPLE_PASSWORD & APPLE_TEAM_ID or APPLE_API_KEY & APPLE_API_ISSUER & APPLE_API_KEY_PATH environment variables found
+    Bundling AsterDream_0.1.2_aarch64.dmg (/Users/roylin/code/aster/target/release/bundle/dmg/AsterDream_0.1.2_aarch64.dmg)
+     Running bundle_dmg.sh
+     Signing with identity "Developer ID Application: Lijin Zhu (5L9P7TS6DM)"
+Signing with identity "Developer ID Application: Lijin Zhu (5L9P7TS6DM)"
+Signing /Users/roylin/code/aster/target/release/bundle/dmg/AsterDream_0.1.2_aarch64.dmg
+    Bundling /Users/roylin/code/aster/target/release/bundle/macos/AsterDream.app.tar.gz (/Users/roylin/code/aster/target/release/bundle/macos/AsterDream.app.tar.gz)
+    Finished 2 bundles at:
+        /Users/roylin/code/aster/target/release/bundle/macos/AsterDream.app
+        /Users/roylin/code/aster/target/release/bundle/dmg/AsterDream_0.1.2_aarch64.dmg
+        /Users/roylin/code/aster/target/release/bundle/macos/AsterDream.app.tar.gz (updater)
+
+failed to decode secret key: failed to decode base64 secret key: failed to decode base64 key: Invalid symbol 32, offset 9.
+       Error failed to decode secret key: failed to decode base64 secret key: failed to decode base64 key: Invalid symbol 32, offset 9.
+[ELIFECYCLE] Command failed with exit code 1.

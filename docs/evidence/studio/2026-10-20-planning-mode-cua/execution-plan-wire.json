@@ -1,0 +1,148 @@
+{
+  "sessionId": "01a156d4-2965-745f-9ba9-ec49df5369b8",
+  "messages": [
+    {
+      "id": "01a156d4-2a6a-7682-8269-6164e0c097f8",
+      "role": "user",
+      "status": "success",
+      "partCount": 2,
+      "planCalls": []
+    },
+    {
+      "id": "01a156d4-2a6a-7682-8269-6165adcdde87",
+      "role": "assistant",
+      "status": "success",
+      "partCount": 4,
+      "planCalls": []
+    },
+    {
+      "id": "01a156de-bfe0-7002-9fa4-2d808573e038",
+      "role": "user",
+      "status": "success",
+      "partCount": 2,
+      "planCalls": []
+    },
+    {
+      "id": "01a156de-bfe1-7361-a7d5-b3fda98ad272",
+      "role": "assistant",
+      "status": "success",
+      "partCount": 8,
+      "planCalls": [
+        {
+          "type": "dynamic-tool",
+          "toolName": "Updating plan",
+          "toolCallId": "call_00_U67wd6vbVNgA7RnBC5Qk3746",
+          "state": "output-available",
+          "input": {
+            "plan": [
+              {
+                "id": "1",
+                "step": "检查 note.txt 内容与行尾格式，并确认 fixture 目录下是否已存在 result.txt（只读，已完成）",
+                "status": "completed"
+              },
+              {
+                "id": "2",
+                "step": "将 note.txt 第一行改为 after-plan-mode（仅替换第一行，第二行保持不变），并新建 result.txt，内容为 plan-mode-e2e-ok 且末尾保留换行（若 result.txt 已存在则停止并询问，不覆盖）",
+                "status": "pending"
+              },
+              {
+                "id": "3",
+                "step": "读回 note.txt 与 result.txt 验证改动与换行，确认 sentinel.txt 未被改动，并简短报告",
+                "status": "pending"
+              }
+            ],
+            "variant": "TodoWrite"
+          },
+          "callProviderMetadata": {
+            "cherry": {
+              "transport": "a3s-code-acp",
+              "toolName": "Updating plan",
+              "toolKind": "other"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "01a156df-82c7-77c3-8866-c89cba79c456",
+      "role": "user",
+      "status": "success",
+      "partCount": 1,
+      "planCalls": []
+    },
+    {
+      "id": "01a156df-82c7-77c3-8866-c89d6357f5d4",
+      "role": "assistant",
+      "status": "success",
+      "partCount": 20,
+      "planCalls": [
+        {
+          "type": "dynamic-tool",
+          "toolName": "Updating plan",
+          "toolCallId": "call_00_vnGz4esSdk1QD13sSeEv8925",
+          "state": "output-available",
+          "input": {
+            "plan": [
+              {
+                "id": "1",
+                "step": "检查 note.txt 内容与行尾格式，并确认 fixture 目录下是否已存在 result.txt（只读，已完成）",
+                "status": "completed"
+              },
+              {
+                "id": "2",
+                "step": "将 note.txt 第一行改为 after-plan-mode（仅替换第一行，第二行保持不变），并新建 result.txt，内容为 plan-mode-e2e-ok 且末尾保留换行（若 result.txt 已存在则停止并询问，不覆盖）",
+                "status": "in_progress"
+              },
+              {
+                "id": "3",
+                "step": "读回 note.txt 与 result.txt 验证改动与换行，确认 sentinel.txt 未被改动，并简短报告",
+                "status": "pending"
+              }
+            ],
+            "variant": "TodoWrite"
+          },
+          "callProviderMetadata": {
+            "cherry": {
+              "transport": "a3s-code-acp",
+              "toolName": "Updating plan",
+              "toolKind": "other"
+            }
+          }
+        },
+        {
+          "type": "dynamic-tool",
+          "toolName": "Updating plan",
+          "toolCallId": "call_00_CCa0AcvTxFLsjPCpPVxQ3075",
+          "state": "output-available",
+          "input": {
+            "plan": [
+              {
+                "id": "1",
+                "status": "completed",
+                "step": "检查 note.txt 内容与行尾格式，并确认 fixture 目录下是否已存在 result.txt（只读，已完成）"
+              },
+              {
+                "id": "2",
+                "status": "completed",
+                "step": "将 note.txt 第一行改为 after-plan-mode（仅替换第一行，第二行保持不变），并新建 result.txt，内容为 plan-mode-e2e-ok 且末尾保留换行（若 result.txt 已存在则停止并询问，不覆盖）"
+              },
+              {
+                "id": "3",
+                "status": "completed",
+                "step": "读回 note.txt 与 result.txt 验证改动与换行，确认 sentinel.txt 未被改动，并简短报告"
+              }
+            ],
+            "variant": "TodoWrite"
+          },
+          "callProviderMetadata": {
+            "cherry": {
+              "transport": "a3s-code-acp",
+              "toolName": "Updating plan",
+              "toolKind": "other"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

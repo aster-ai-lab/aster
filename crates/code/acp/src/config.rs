@@ -22,8 +22,11 @@ use a3s_code_core::config::{AccountImport, WorkspaceLayerAdmission, WorkspaceMcp
 use a3s_code_core::CodeConfig;
 use anyhow::{anyhow, Context, Result};
 
+#[cfg(feature = "account-import")]
 use crate::cc_switch;
+#[cfg(feature = "account-import")]
 use crate::cursor_account;
+#[cfg(feature = "account-import")]
 use crate::grok_account;
 
 /// Merged launch identity for the ACP agent process.
@@ -214,24 +217,39 @@ pub fn trust_workspace_mcp(
 /// Run only the selected account imports. Returns whether one merged a
 /// provider. A failed import is logged and does not stop the launch.
 fn merge_account_imports(config: &mut CodeConfig, selected: &[AccountImport]) -> bool {
-    let mut imported = false;
-    for import in AccountImport::ALL {
-        if !selected.contains(&import) {
-            continue;
-        }
-        let merged = match import {
-            AccountImport::CcSwitch => cc_switch::merge_into_config(config),
-            AccountImport::Grok => grok_account::merge_into_config(config),
-            AccountImport::Cursor => cursor_account::merge_into_config(config),
-        };
-        match merged {
-            Ok(merged) => imported |= merged,
-            Err(error) => {
-                tracing::warn!(source = import.as_str(), %error, "account import skipped");
+    if selected.is_empty() {
+        return false;
+    }
+    #[cfg(not(feature = "account-import"))]
+    {
+        let _ = config;
+        tracing::warn!(
+            requested = selected.len(),
+            "account import was requested but this build omits the account-import feature"
+        );
+        return false;
+    }
+    #[cfg(feature = "account-import")]
+    {
+        let mut imported = false;
+        for import in AccountImport::ALL {
+            if !selected.contains(&import) {
+                continue;
+            }
+            let merged = match import {
+                AccountImport::CcSwitch => cc_switch::merge_into_config(config),
+                AccountImport::Grok => grok_account::merge_into_config(config),
+                AccountImport::Cursor => cursor_account::merge_into_config(config),
+            };
+            match merged {
+                Ok(merged) => imported |= merged,
+                Err(error) => {
+                    tracing::warn!(source = import.as_str(), %error, "account import skipped");
+                }
             }
         }
+        imported
     }
-    imported
 }
 
 fn trust_store_path(workspace: &Path) -> Result<PathBuf> {
@@ -644,6 +662,7 @@ mod tests {
         // HOME/A3S_DEFAULT_MODEL are process-global; serialize layering
         // tests and restore on exit.
         static LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
+        #[cfg(feature = "account-import")]
         let _cursor_tests = crate::cursor_account::test_env_lock();
         let _guard = LOCK.lock().unwrap_or_else(|poison| poison.into_inner());
         let home = std::env::var_os("HOME");

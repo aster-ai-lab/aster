@@ -45,7 +45,7 @@ fn validate_request(command: &GoalPlanCommandV1) -> Result<(), GoalControlError>
             return Err(refused(
                 GoalRefusal::ConditionUnsupported,
                 "not a plan command",
-            ))
+            ));
         }
     }
     Ok(())

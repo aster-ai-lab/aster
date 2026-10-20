@@ -4987,3 +4987,7 @@ mod tests {
         }
     }
 }
+
+#[cfg(test)]
+#[path = "native_refusal_tests.rs"]
+mod native_refusal_tests;

@@ -1,10 +1,3 @@
-#![allow(
-    unused_imports,
-    unused_variables,
-    unused_mut,
-    unreachable_code,
-    dead_code
-)]
 #![deny(clippy::indexing_slicing)]
 #[cfg(all(feature = "jemalloc", unix))]
 #[global_allocator]
@@ -36,7 +29,7 @@ use a3s_code_shell::agent::app::{run_headless, run_leader};
 use a3s_code_shell::agent::config::Config as AgentConfig;
 use a3s_code_shell::leader::{
     ClientCapabilities, ClientMode, ControlCommand, LeaderCapabilities, LeaderDescriptor,
-    LeaderRegistration, LeaderTarget, leader_is_older_than,
+    LeaderRegistration, LeaderTarget,
 };
 use a3s_code_shell::leader::{
     ControlPayload, LeaderClient, LeaderEnvUrls, connect_or_spawn, socket_path_for_ws_url,
@@ -439,7 +432,7 @@ async fn connect_to_leader(
         .ok_or_else(|| anyhow::anyhow!("resolved leader target did not include a socket path"))?;
     let client = a3s_code_shell::leader::LeaderClient::connect(
         socket_path.to_path_buf(),
-        "grok-pager-leader-cli",
+        "aster-leader-cli",
         ClientMode::Stdio,
         ClientCapabilities::default(),
     )
@@ -1187,7 +1180,7 @@ fn shutdown_and_flush_telemetry(exit_code: i32) -> ! {
 }
 fn finalize_span_profile() {
     if let Some(path) = a3s_code_telemetry::span_profile::finalize() {
-        eprintln!("grok: span profile written to {}", path.display());
+        eprintln!("Aster: span profile written to {}", path.display());
     }
 }
 #[tracing::instrument(level = "debug", skip_all)]
@@ -1222,7 +1215,7 @@ async fn forward_stdio_line_to_leader(
     }
 }
 /// Emitted by both leader guards (server mode and leader-connect) so the two sites can't drift.
-const PLUGIN_DIR_LEADER_WARNING: &str = "grok: --plugin-dir is ignored in leader mode; run with --no-leader to \
+const PLUGIN_DIR_LEADER_WARNING: &str = "Aster: --plugin-dir is ignored in leader mode; run with --no-leader to \
      load per-process plugins";
 /// Run the `agent` subcommand, dispatching to the appropriate mode.
 #[tracing::instrument(level = "debug", skip_all)]
@@ -1321,7 +1314,7 @@ async fn run_agent_command(
         None,
     );
     if let Some(warning) = launch_yolo.blocked_warning {
-        eprintln!("grok: {warning}");
+        eprintln!("Aster: {warning}");
     }
     agent_config.default_yolo_mode = launch_yolo.yolo;
     agent_config.default_auto_mode = a3s_code_shell::util::config::effective_auto_for_launch(
@@ -1815,10 +1808,10 @@ impl WorkerCount {
                 used,
                 cores,
             } => Some(format!(
-                "grok: clamped {GROK_WORKER_THREADS_ENV}={requested} to {used} (valid range is 1..={cores})"
+                "Aster: clamped {GROK_WORKER_THREADS_ENV}={requested} to {used} (valid range is 1..={cores})"
             )),
             Self::Ignored { value, .. } => Some(format!(
-                "grok: ignoring {GROK_WORKER_THREADS_ENV}={value:?} (not a valid integer)"
+                "Aster: ignoring {GROK_WORKER_THREADS_ENV}={value:?} (not a valid integer)"
             )),
         }
     }
@@ -2080,7 +2073,7 @@ fn main() {
         a3s_code_shell::agent::external_otel_pin::strip_conflicting_process_env();
     }
     let args = configure_process_env(args).unwrap_or_else(|err| {
-        eprintln!("grok: {err:#}");
+        eprintln!("Aster: {err:#}");
         std::process::exit(1);
     });
     // Core already refuses macOS native commands. The pager bash tool reads this
@@ -2101,7 +2094,7 @@ fn main() {
         std::process::exit(2);
     }
     let _sentry_guard = a3s_code_telemetry::sentry::init(a3s_code_telemetry::sentry::Config {
-        client: "grok-pager",
+        client: "aster",
         client_version: PAGER_CLIENT_VERSION,
         release: env!("VERSION_WITH_COMMIT"),
         disabled: a3s_code_shell::agent::config::is_error_reporting_disabled_sync(),
@@ -2132,7 +2125,7 @@ fn main() {
     builder.worker_threads(workers.get()).enable_all();
     let runtime =
         a3s_tty_utils::runtime::build_with_blocking_pool(&mut builder).unwrap_or_else(|e| {
-            eprintln!("grok: failed to start tokio runtime: {e}");
+            eprintln!("Aster: failed to start tokio runtime: {e}");
             shutdown_and_flush_telemetry(1);
         });
     let result = run_and_shutdown(runtime, async_main(args), RUNTIME_SHUTDOWN_GRACE);
@@ -2255,7 +2248,7 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
                     };
                     anyhow::bail!(
                         "top-level {flag} applies to the pager TUI, not the agent subcommand. \
-                         Use `grok-pager agent {flag}` instead."
+                         Use `aster agent {flag}` instead."
                     );
                 }
                 enforce_version_policy_or_exit();
@@ -2467,7 +2460,7 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
             None,
         );
         if let Some(warning) = launch_yolo.blocked_warning {
-            eprintln!("grok: {warning}");
+            eprintln!("Aster: {warning}");
         }
         let json_schema = args
             .json_schema
@@ -2564,8 +2557,8 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
 /// needed because the target was already on disk.).
 #[tracing::instrument(level = "debug", skip_all)]
 async fn finish_update_on_exit(
-    adopted: Option<tokio::task::JoinHandle<std::io::Result<std::process::ExitStatus>>>,
-    update_config: &UpdateConfig,
+    _adopted: Option<tokio::task::JoinHandle<std::io::Result<std::process::ExitStatus>>>,
+    _update_config: &UpdateConfig,
 ) -> bool {
     eprintln!("Aster is built from source; rebuild this workspace to update it");
     false
@@ -2574,13 +2567,9 @@ async fn finish_update_on_exit(
 fn build_update_config() -> UpdateConfig {
     let environment = a3s_code_shell::env::GrokBuildEnvironment::from_flags(false, false);
     let mut config = UpdateConfig::from_environment(&environment);
-    cryptify::flow_stmt!({
-        {
-            config.deployment_key =
-                a3s_code_shell::agent::config::EndpointsConfig::default().deployment_key;
-        }
-    });
-    config.npm_registry = std::env::var(obfstr::obfstr!("GROK_NPM_REGISTRY"))
+    config.deployment_key =
+        a3s_code_shell::agent::config::EndpointsConfig::default().deployment_key;
+    config.npm_registry = std::env::var("GROK_NPM_REGISTRY")
         .ok()
         .or_else(a3s_code_shell::util::config::load_npm_registry_sync);
     if let Ok(root) = a3s_code_shell::config::load_effective_config_disk_only()
@@ -2591,7 +2580,7 @@ fn build_update_config() -> UpdateConfig {
     config
 }
 /// Central gate for auto-update checks; add new suppression rules here, not at call sites.
-fn should_check_for_updates(no_auto_update_flag: bool) -> bool {
+fn should_check_for_updates(_no_auto_update_flag: bool) -> bool {
     false
 }
 /// Gate for the stdio agent's background auto-update: only the direct stdio agent, from the managed install.
@@ -2683,68 +2672,6 @@ async fn run_update_command(
         error: Some("Aster is built from source; rebuild this workspace to update it".to_string()),
     };
     a3s_code_update::auto_update::print_update_status(&status, json)
-}
-/// After a successful `a3s update`, ask any running leader on this machine that is older than `installed_version`
-/// to relaunch onto the new binary. Best-effort and non-fatal: discovery/connect/control failures are logged and
-/// skipped.
-#[tracing::instrument(level = "debug", skip_all)]
-async fn signal_leaders_to_relaunch(installed_version: &str) {
-    for d in a3s_code_shell::leader::discover_leaders().await {
-        if d.classification != a3s_code_shell::leader::LeaderDiscoveryState::Reachable {
-            continue;
-        }
-        let Some(socket_path) = d.socket_path.clone() else {
-            continue;
-        };
-        if let Some(ref live) = d.live_info
-            && !leader_is_older_than(&live.leader_binary_version, installed_version)
-        {
-            continue;
-        }
-        let client = match a3s_code_shell::leader::LeaderClient::connect(
-            socket_path,
-            "grok-pager-update",
-            ClientMode::Stdio,
-            ClientCapabilities::default(),
-        )
-        .await
-        {
-            Ok(c) => c,
-            Err(e) => {
-                tracing::debug!(error = %e, "Could not connect to leader to signal relaunch");
-                continue;
-            }
-        };
-        if !client.registration().supports_relaunch() {
-            client.cancel();
-            continue;
-        }
-        match client
-            .send_control(ControlCommand::RelaunchForUpdate {
-                to_version: installed_version.to_string(),
-            })
-            .await
-        {
-            Ok(Ok(a3s_code_shell::leader::ControlPayload::Relaunching {
-                from_version,
-                to_version,
-                ..
-            })) => {
-                eprintln!("  ↻ Relaunching shared session (leader {from_version} → {to_version})…");
-            }
-            Ok(Ok(a3s_code_shell::leader::ControlPayload::RelaunchDeclined { reason })) => {
-                tracing::debug!(%reason, "Leader declined relaunch");
-            }
-            Ok(Ok(_)) => {}
-            Ok(Err(e)) => {
-                tracing::debug!(error = %e.message, "Leader relaunch control error");
-            }
-            Err(e) => {
-                tracing::debug!(error = %e, "Leader relaunch ack not received (leader may be exiting)");
-            }
-        }
-        client.cancel();
-    }
 }
 #[cfg(test)]
 mod tests {
@@ -2844,7 +2771,7 @@ mod tests {
         );
         assert_eq!(
             resolve_worker_override("100000", cores).notice().unwrap(),
-            "grok: clamped GROK_WORKER_THREADS=100000 to 360 (valid range is 1..=360)"
+            "Aster: clamped GROK_WORKER_THREADS=100000 to 360 (valid range is 1..=360)"
         );
     }
     #[test]
@@ -2857,7 +2784,7 @@ mod tests {
         }
         assert_eq!(
             resolve_worker_override("abc", cores).notice().unwrap(),
-            "grok: ignoring GROK_WORKER_THREADS=\"abc\" (not a valid integer)"
+            "Aster: ignoring GROK_WORKER_THREADS=\"abc\" (not a valid integer)"
         );
     }
     #[test]
@@ -3040,7 +2967,7 @@ mod tests {
     #[test]
     fn is_managed_install_matches_only_the_bin_grok_target() {
         let home =
-            std::env::temp_dir().join(format!("grok-pager-managed-install-{}", std::process::id()));
+            std::env::temp_dir().join(format!("aster-managed-install-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&home);
         std::fs::create_dir_all(home.join("bin")).unwrap();
         std::fs::create_dir_all(home.join("downloads")).unwrap();

@@ -18,10 +18,11 @@ const BUNDLED_DIR: &str = "agent";
 /// Tauri puts Linux bundle resources in `/usr/lib/<productName>`.
 const BUNDLED_PRODUCT: &str = "ToWork";
 
-/// `$A3S_ACP_AGENT_BIN`, then the workspace debug build,
-/// then the copy bundled next to the app, then `~/.a3s/bin`, then PATH.
+/// A set `A3S_ACP_AGENT_BIN` is the only candidate. An unusable value stops the search.
+/// When the variable is unset: workspace debug build, bundled copy, `~/.a3s/bin`, then PATH.
 ///
-/// A local debug build is newer source than a bundled or published file.
+/// A local debug build is newer source than a bundled or published file, and only
+/// when this process is running from a Cargo `target/` directory.
 /// An installed app has no checkout, so it uses the bundled release binary.
 /// Finder-launched apps do not inherit the shell PATH, so macOS also looks
 /// in Homebrew's default directories.
@@ -45,22 +46,64 @@ fn home_dir() -> Option<PathBuf> {
 }
 
 fn workspace_debug_binary() -> PathBuf {
-    if let Ok(executable) = std::env::current_exe() {
-        if let Some(directory) = executable.parent() {
-            let directory = if directory.file_name().is_some_and(|name| name == "deps") {
-                directory.parent().unwrap_or(directory)
-            } else {
-                directory
-            };
-            let sibling = directory.join(BINARY_NAME);
+    debug_agent_candidate(
+        std::env::current_exe().ok().as_deref(),
+        &compile_time_debug_agent(),
+    )
+}
+
+fn compile_time_debug_agent() -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../../target/debug")
+        .join(BINARY_NAME)
+}
+
+/// Sibling of `current_exe` when that file exists.
+/// The compile-time debug path is used only when this process is running from a Cargo `target/` directory.
+fn debug_agent_candidate(current_exe: Option<&Path>, compile_time_debug: &Path) -> PathBuf {
+    if let Some(executable) = current_exe {
+        if let Some(sibling) = sibling_agent(executable) {
             if sibling.is_file() {
                 return sibling;
             }
         }
+        if running_under_cargo_target(executable) {
+            return compile_time_debug.to_path_buf();
+        }
+        if let Some(directory) = executable.parent() {
+            return directory.join(BINARY_NAME);
+        }
     }
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../../target/debug")
-        .join(BINARY_NAME)
+    compile_time_debug.to_path_buf()
+}
+
+fn sibling_agent(executable: &Path) -> Option<PathBuf> {
+    let directory = executable.parent()?;
+    let directory = if directory.file_name().is_some_and(|name| name == "deps") {
+        directory.parent().unwrap_or(directory)
+    } else {
+        directory
+    };
+    Some(directory.join(BINARY_NAME))
+}
+
+fn running_under_cargo_target(executable: &Path) -> bool {
+    let mut dirs = executable.ancestors().skip(1);
+    let Some(parent) = dirs.next() else {
+        return false;
+    };
+    let profile = if parent.file_name().is_some_and(|name| name == "deps") {
+        let Some(profile) = dirs.next() else {
+            return false;
+        };
+        profile
+    } else {
+        parent
+    };
+    profile
+        .parent()
+        .and_then(|dir| dir.file_name())
+        .is_some_and(|name| name == "target")
 }
 
 fn bundled_agent_from(exe: &Path, appdir: Option<&Path>) -> Option<PathBuf> {
@@ -138,8 +181,8 @@ fn select_agent_binary(
     published: Option<PathBuf>,
     path_hit: Option<PathBuf>,
 ) -> Option<PathBuf> {
-    if let Some(path) = requested.filter(|path| path.is_file()) {
-        return Some(path);
+    if let Some(path) = requested {
+        return override_is_executable(&path).then_some(path);
     }
     if workspace.is_file() {
         return Some(workspace.to_path_buf());
@@ -148,6 +191,24 @@ fn select_agent_binary(
         return Some(path);
     }
     published.or(path_hit)
+}
+
+fn override_is_executable(path: &Path) -> bool {
+    let Ok(metadata) = fs::metadata(path) else {
+        return false;
+    };
+    if !metadata.is_file() {
+        return false;
+    }
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        metadata.permissions().mode() & 0o111 != 0
+    }
+    #[cfg(not(unix))]
+    {
+        true
+    }
 }
 
 fn newest_versioned(dir: &Path) -> Option<PathBuf> {
@@ -250,6 +311,17 @@ fn quote(value: &str) -> String {
 mod tests {
     use super::*;
 
+    static ENV_LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
+
+    fn mark_executable(path: &Path) {
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            fs::set_permissions(path, fs::Permissions::from_mode(0o755)).unwrap();
+        }
+        let _ = path;
+    }
+
     #[test]
     fn renders_one_provider_with_the_selected_model() {
         let text = render_config(
@@ -299,6 +371,10 @@ mod tests {
         fs::create_dir_all(&dir).unwrap();
         let path = dir.join("a3s-code-acp-9.1.2");
         fs::write(&path, b"").unwrap();
+        mark_executable(&path);
+        let _guard = ENV_LOCK
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner());
         let previous = std::env::var_os(BINARY_ENV);
         // The selector reads the process environment. This test is the only writer.
         // SAFETY: env mutation races with other readers. This test owns the variable
@@ -362,6 +438,7 @@ mod tests {
         let requested = dir.join("requested");
         let workspace = dir.join("workspace");
         fs::write(&requested, b"").unwrap();
+        mark_executable(&requested);
         fs::write(&workspace, b"").unwrap();
         assert_eq!(
             select_agent_binary(Some(requested.clone()), &workspace, None, None, None),
@@ -370,7 +447,158 @@ mod tests {
         let missing = dir.join("missing");
         assert_eq!(
             select_agent_binary(Some(missing), &workspace, None, None, None),
+            None
+        );
+        let _ = fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn unusable_override_does_not_select_a_later_candidate() {
+        let dir = std::env::temp_dir().join(format!(
+            "a3s-launcher-stop-{}-{}",
+            std::process::id(),
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .expect("clock")
+                .as_nanos()
+        ));
+        let _ = fs::remove_dir_all(&dir);
+        fs::create_dir_all(&dir).unwrap();
+        let workspace = dir.join("workspace");
+        let bundled = dir.join("bundled");
+        let published = dir.join("published");
+        let on_path = dir.join("on-path");
+        for path in [&workspace, &bundled, &published, &on_path] {
+            fs::write(path, b"").unwrap();
+        }
+        let plain = dir.join("plain");
+        fs::write(&plain, b"").unwrap();
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            fs::set_permissions(&plain, fs::Permissions::from_mode(0o644)).unwrap();
+        }
+        assert_eq!(
+            select_agent_binary(
+                Some(dir.join("missing")),
+                &workspace,
+                Some(bundled.clone()),
+                Some(published.clone()),
+                Some(on_path.clone())
+            ),
+            None
+        );
+        assert_eq!(
+            select_agent_binary(
+                Some(PathBuf::new()),
+                &workspace,
+                Some(bundled.clone()),
+                Some(published.clone()),
+                Some(on_path.clone())
+            ),
+            None
+        );
+        assert_eq!(
+            select_agent_binary(
+                Some(plain),
+                &workspace,
+                Some(bundled.clone()),
+                Some(published),
+                Some(on_path)
+            ),
+            None
+        );
+        assert_eq!(
+            select_agent_binary(None, &workspace, Some(bundled), None, None),
             Some(workspace)
+        );
+        let _ = fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn find_binary_rejects_a_set_but_unusable_override() {
+        let _guard = ENV_LOCK
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner());
+        let dir = std::env::temp_dir().join(format!(
+            "a3s-launcher-find-{}-{}",
+            std::process::id(),
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .expect("clock")
+                .as_nanos()
+        ));
+        let _ = fs::remove_dir_all(&dir);
+        fs::create_dir_all(&dir).unwrap();
+        let plain = dir.join("plain");
+        fs::write(&plain, b"").unwrap();
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            fs::set_permissions(&plain, fs::Permissions::from_mode(0o644)).unwrap();
+        }
+        let previous = std::env::var_os(BINARY_ENV);
+        for value in [
+            dir.join("missing").into_os_string(),
+            std::ffi::OsString::new(),
+            plain.into_os_string(),
+        ] {
+            unsafe { std::env::set_var(BINARY_ENV, &value) };
+            assert_eq!(
+                find_binary(),
+                None,
+                "override {value:?} must stop the search"
+            );
+        }
+        let executable = dir.join("chosen");
+        fs::write(&executable, b"").unwrap();
+        mark_executable(&executable);
+        unsafe { std::env::set_var(BINARY_ENV, &executable) };
+        assert_eq!(find_binary(), Some(executable));
+        unsafe {
+            match previous {
+                Some(value) => std::env::set_var(BINARY_ENV, value),
+                None => std::env::remove_var(BINARY_ENV),
+            }
+        }
+        let _ = fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn packaged_host_does_not_prefer_the_compile_time_debug_binary() {
+        let dir = std::env::temp_dir().join(format!(
+            "a3s-launcher-pkg-{}-{}",
+            std::process::id(),
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .expect("clock")
+                .as_nanos()
+        ));
+        let _ = fs::remove_dir_all(&dir);
+        let packaged = dir.join("ToWork.app/Contents/MacOS/towork");
+        fs::create_dir_all(packaged.parent().unwrap()).unwrap();
+        fs::write(&packaged, b"").unwrap();
+        let debug = dir.join("target/debug").join(BINARY_NAME);
+        fs::create_dir_all(debug.parent().unwrap()).unwrap();
+        fs::write(&debug, b"").unwrap();
+        let bundled = dir
+            .join("ToWork.app/Contents/Resources/agent")
+            .join(BINARY_NAME);
+        fs::create_dir_all(bundled.parent().unwrap()).unwrap();
+        fs::write(&bundled, b"").unwrap();
+        let candidate = debug_agent_candidate(Some(&packaged), &debug);
+        assert_ne!(candidate, debug);
+        assert_eq!(
+            select_agent_binary(None, &candidate, Some(bundled.clone()), None, None),
+            Some(bundled.clone())
+        );
+        let dev_host = dir.join("target/debug/towork");
+        fs::write(&dev_host, b"").unwrap();
+        let candidate = debug_agent_candidate(Some(&dev_host), &debug);
+        assert_eq!(candidate, debug);
+        assert_eq!(
+            select_agent_binary(None, &candidate, Some(bundled), None, None),
+            Some(debug)
         );
         let _ = fs::remove_dir_all(&dir);
     }

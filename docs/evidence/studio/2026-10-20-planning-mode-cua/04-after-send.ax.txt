@@ -1,0 +1,28 @@
+The following is a diff from the previous accessibility tree for Window: "AsterDream" with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 8, 10-21
++				28 container 消息
++					29 container
++						30 text 请读取项目文件夹中的 note.txt，把第一行改为 after-plan-mode，保留第二行不变；再创建 result.txt，内容为 plan-mode-e2e-ok（末尾保留换行）。完成后读回这两个文件并简短报告。不要改动 sentinel.txt。 10/20 08:34
++						31 button 从这里编辑
++						32 button 复制
++						33 button 删除
++						34 text AsterDream 10/20 08:34
++						35 container 正在处理
++				36 container 会话导航
++					37 button 跳转到第 1 轮对话
++				38 text entry area (settable) 描述会话，输入 / 使用指令或技能
++					39 text 描述会话，输入 / 使用指令或技能
++				40 pop up button 更多选项
++				41 pop up button 授权模式: 逐次确认
++				42 switch (settable, boolean) 规划模式, Help: 不改变批准方式。这一轮只写步骤，不改文件、不跑命令。要执行时关掉。, Value: on
++				43 pop up button DeepSeek Flash
++				44 button (disabled) 发送
++				45 toolbar 会话范围
++					46 pop up button 工作区文件
++				47 container
++					48 button 打开会话工作区
++					49 container 工作区快捷栏
++						50 button 浏览器
++						51 button 终端
++						52 button 文件
++						53 button (collapsed) 展开工作区快捷菜单, Secondary Actions: Expand

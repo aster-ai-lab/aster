@@ -1,4 +1,4 @@
-//! Stdio ACP agent binary for the forked a3s-build pager.
+//! Stdio ACP agent binary for Aster desktop hosts.
 
 use std::path::PathBuf;
 use std::rc::Rc;

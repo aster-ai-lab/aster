@@ -73,6 +73,53 @@ pub(super) fn script(client: &GoalClient, final_response: bool) {
 }
 
 #[tokio::test]
+async fn automatic_slice_resets_stall_only_after_an_accepted_workspace_mutation() {
+    use crate::agent_api::{AgentRunSpawn, GoalTickAdmission};
+    use crate::goal_control::GoalTickDecisionV1;
+
+    let root = tempfile::tempdir().unwrap();
+    std::fs::write(root.path().join("source.txt"), "old source").unwrap();
+    let opts = options("goal-run")
+        .with_assistant_final_response(true)
+        .with_completion_attestor(Arc::new(ByteAttestor {
+            root: root.path().into(),
+            calls: AtomicUsize::new(0),
+        }))
+        .with_permission_policy(crate::permissions::PermissionPolicy::new().allow("write(*)"));
+    let (agent, session, client) = fixture_with(
+        root.path(),
+        true,
+        opts,
+        Some(automatic::policy(true, 8, 1, automatic::now_ms() + 600_000)),
+    )
+    .await;
+    script(&client, true);
+    let tick = automatic::request(&session, "write-slice");
+    let GoalTickAdmission::Admitted(AgentRunSpawn::Started { worker, .. }) =
+        session.tick_goal(&tick).await.unwrap()
+    else {
+        panic!("the first slice must start");
+    };
+    tokio::time::timeout(std::time::Duration::from_secs(10), worker)
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(
+        std::fs::read(root.path().join("source.txt")).unwrap(),
+        b"independent expected source"
+    );
+    assert_eq!(
+        session
+            .preview_goal_tick(&automatic::request(&session, "next"))
+            .await
+            .unwrap(),
+        GoalTickDecisionV1::Advance
+    );
+    session.close().await;
+    agent.close().await;
+}
+
+#[tokio::test]
 async fn goal_step_fresh_host_attestation_accepts_write_and_preserves_original_probe() {
     for file in [false, true] {
         for final_response in [false, true] {

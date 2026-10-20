@@ -1,0 +1,18 @@
+heading AsterDream, Value: 1
+				57 text 早上好，周宇杨
+				58 text entry area (settable) 描述会话，输入 / 使用指令或技能
+					59 text 描述会话，输入 / 使用指令或技能
+				60 pop up button 更多选项
+				61 pop up button 授权模式: 逐次确认
+				62 switch (settable, boolean) 规划模式, Help: 对下一次发送生效：先生成计划，审阅确认后再执行。不改变工具授权方式，也不改变正在运行的回合。, Value: on
+				63 pop up button DeepSeek Flash
+				64 button (disabled) 发送
+				65 toolbar 会话范围
+					66 pop up button 项目文件夹
+					67 pop up button 工作区文件
+	68 close button
+	69 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	70 minimize button
+71 menu bar
+	72 AsterDream
+	73 编辑

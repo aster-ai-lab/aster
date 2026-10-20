@@ -1,0 +1,17 @@
+{
+  "binaries": {
+    "target/development-stage/task-optimization-r2-20261020/AsterDream-TaskOptimization-R5.app/Contents/MacOS/a3s-code-acp": {
+      "sha256": "87e1ce16cc44e4efa8ea6b0fdeb2572079c6fc48a89f4e1e4ce077a1474b1780",
+      "resolved": "/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/AsterDream-TaskOptimization-R5.app/Contents/MacOS/a3s-code-acp",
+      "bytes": 323647008
+    },
+    "target/development-stage/task-optimization-r2-20261020/AsterDream-TaskOptimization-R5.app/Contents/MacOS/AsterDream": {
+      "sha256": "bbacd753c0c4c8e3276ddc5929a8f41183cd6b812437062efc1b5ec1171340a8",
+      "resolved": "/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/AsterDream-TaskOptimization-R5.app/Contents/MacOS/AsterDream",
+      "bytes": 186744688
+    }
+  },
+  "work_commit": "33edc9a74f4042efca73157d815dfca139a53140",
+  "acp_source_commit": "75ab3a598e2a52ef2240a2537f42506153e4cd4c",
+  "source_worktree_dirty": true
+}

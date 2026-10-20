@@ -113,7 +113,7 @@ fn tools() -> Value {
     json!([
         {
             "name": "generate_deck",
-            "description": "生成当前任务右侧的演示文稿。成员要求幻灯片或 PPT 时调用，content 写入文稿依据的正文。调用后大纲和每一页会在右侧生成。不要让成员填写上传页、选择模板或点击生成。不要另写 pptx，也不要调用别的文稿技能。",
+            "description": "校验演示文稿预览参数。主机会用这份 content 打开右侧预览；这个调用不生成、也不保存 PPTX 文件。不要让成员填写上传页、选择模板或点击生成。成员要求交付 .pptx 时，使用 office_file 保存并读回校验文件。",
             "inputSchema": {
                 "type": "object",
                 "properties": {
@@ -130,7 +130,7 @@ fn tools() -> Value {
         },
         {
             "name": "read_deck",
-            "description": "读取当前任务右侧演示文稿的大纲、每一页的可见文字和备注。不要另写文件。",
+            "description": "读取已有右侧预览快照中的大纲、每一页的可见文字和备注。没有正文快照时停止重复轮询；这不是生成进度。成员要求交付 .pptx 时，使用 office_file 保存并读回校验文件。",
             "inputSchema": { "type": "object", "properties": {} }
         },
         {
@@ -169,12 +169,12 @@ fn call_tool(params: &Value) -> Value {
         .unwrap_or_else(|| json!({}));
     let outcome = match name {
         "generate_deck" => accept_deck(&arguments).map(|_| {
-            "已交给当前任务的演示文稿。大纲和每一页会在右侧生成。不要再写文件，不要调用别的文稿技能。".to_owned()
+            "预览参数已收下。主机会用这份入参打开右侧预览。这不是 PPTX 文件。成员要求 .pptx 时，请使用 office_file 保存并读回校验文件。".to_owned()
         }),
         "read_deck" => {
             let text = current_snapshot();
             if text.is_empty() {
-                Err("当前任务还没有演示文稿正文。".to_owned())
+                Err("当前任务还没有演示文稿预览快照。请停止重复调用 read_deck；这不是生成进度。成员要求 .pptx 时，请使用 office_file 保存并读回校验文件。".to_owned())
             } else {
                 Ok(text)
             }
@@ -431,7 +431,9 @@ mod tests {
             "params": { "name": "generate_deck", "arguments": { "content": "项目总结" } }
         }));
         let text = response["result"]["content"][0]["text"].as_str().unwrap();
-        assert!(text.contains("不要再写文件"));
+        assert!(text.contains("这不是 PPTX 文件"));
+        assert!(text.contains("office_file"));
+        assert!(!text.contains("已交给"));
         assert_eq!(response["result"]["isError"], false);
     }
 
@@ -446,12 +448,9 @@ mod tests {
             "params": { "name": "read_deck", "arguments": {} }
         }));
         assert_eq!(empty["result"]["isError"], true);
-        assert!(
-            empty["result"]["content"][0]["text"]
-                .as_str()
-                .unwrap()
-                .contains("还没有")
-        );
+        let empty_text = empty["result"]["content"][0]["text"].as_str().unwrap();
+        assert!(empty_text.contains("停止重复调用"));
+        assert!(empty_text.contains("office_file"));
 
         let listed = rpc(json!({
             "jsonrpc": "2.0",

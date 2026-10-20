@@ -1,0 +1,21 @@
+bundled agent=dist/kylin/a3s-code-acp office=dist/kylin/a3s-office
+kylin-package: this kernel rejects PR_SET_SECCOMP; checking org.gnome.Platform//50 through bwrap
+kylin-package: this kernel rejects PR_SET_SECCOMP; checking org.gnome.Platform//50 through bwrap
+kylin-package: this kernel rejects PR_SET_SECCOMP; checking org.gnome.Platform//50 through bwrap
+kylin-package: this kernel rejects PR_SET_SECCOMP; checking org.gnome.Platform//50 through bwrap
+kylin-package: this kernel rejects PR_SET_SECCOMP; checking org.gnome.Platform//50 through bwrap
+kylin-package: fcitx4 and fcitx5 modules link libgtk-3.so.0 and the runtime cache has ibus
+Exporting share/applications/dev.a3s.AsterDream.desktop
+Please review the exported files and the metadata
+Fcitx state ready for phase 0
+Chinese text committed through GTK: 你好
+Fcitx state ready for phase 2
+Fcitx state ready for phase 3
+PASS: Chinese commit, mixed English, Escape cancellation
+WARNING: Icon referenced in desktop file but not exported: dev.a3s.AsterDream
+Commit: 13573ab54e364f3935a8f9686e8a0b53052c78af227104b6b58f638614c639f0
+Metadata Total: 1225
+Metadata Written: 4
+Content Total: 2968
+Content Written: 1
+Content Bytes Written: 79672672 (79.7?MB)

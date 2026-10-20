@@ -199,8 +199,8 @@ pub struct MutationLedger {
     /// a partial list is not an identity a waiver can close.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     observation_incomplete: bool,
-    /// Durable invocation uncertainty is not cleared by a successful local
-    /// scan. Only identity-bound receipt/reconciliation facts can discharge it.
+    /// A call whose process result is missing. A captured exit with only a
+    /// workspace-attribution gap is not stored here; the run scan owns that.
     #[serde(default, skip_serializing_if = "std::collections::BTreeSet::is_empty")]
     unresolved_tool_effects: std::collections::BTreeSet<String>,
     #[serde(default, skip_serializing_if = "std::collections::BTreeSet::is_empty")]
@@ -430,7 +430,7 @@ impl MutationLedger {
     /// validation and prefix selection; cached keys or current filesystem
     /// scans cannot stand in for that projection.
     pub(crate) fn checkpoint_cache_covered_by(&self, original: &Self) -> bool {
-        // A receipt's honest Unknown/Incomplete and exact external-operation
+        // A receipt's honest Unknown outcome and exact external-operation
         // ids already exist in the original projection. Extra cached debt
         // still needs provenance. Local observation failures and child
         // snapshot fields have no exact typed receipt projection here.
@@ -643,10 +643,10 @@ impl MutationLedger {
         if failed_changed {
             self.rehash();
         }
-        if result.outcome == a3s_effect::ToolExecutionOutcome::Unknown
-            || (result.effects.completeness == a3s_effect::ToolObservationCompleteness::Incomplete
-                && !result.effects.budget_exceeded)
-        {
+        // A captured exit settles the invocation. An incomplete file list is
+        // the run scan's problem, and a later complete scan replaces it.
+        // Unknown has no exit to settle, so the identity stays.
+        if result.outcome == a3s_effect::ToolExecutionOutcome::Unknown {
             self.unresolved_tool_effects.insert(key);
         }
         self.unresolved_tool_effects.extend(

@@ -1,0 +1,43 @@
+Fixture case: missing-fcitx4
+App files: /aster/target/evaluations/kylin-ime-20261020/review-negative/missing-fcitx4/files
+Runtime files: /root/.local/share/flatpak/runtime/org.gnome.Platform/x86_64/50/7e410fa0d429fcc34f2ddd0d9b6224f1435d8640fb9759801db4f02700542353/files
+kylin-im: missing-fcitx4-module
+/probe/fcitx-remote: error while loading shared libraries: libfcitx-utils.so.0: cannot open shared object file: No such file or directory
+Fcitx control failed: -s
+/probe/fcitx-remote: error while loading shared libraries: libfcitx-utils.so.0: cannot open shared object file: No such file or directory
+Fcitx control failed: -o
+==> /tmp/tmp.yzYy00NAJs/fcitx.log <==
+(INFO-3975 addon.c:151) Load Addon Config File:fcitx-remote-module.conf
+(INFO-3975 addon.c:151) Load Addon Config File:fcitx-spell.conf
+(INFO-3975 addon.c:151) Load Addon Config File:fcitx-unicode.conf
+(INFO-3975 addon.c:151) Load Addon Config File:fcitx-vk.conf
+(INFO-3975 addon.c:151) Load Addon Config File:fcitx-x11.conf
+(INFO-3975 addon.c:151) Load Addon Config File:fcitx-xim.conf
+(INFO-3975 addon.c:151) Load Addon Config File:fcitx-xkb.conf
+(INFO-3975 addon.c:151) Load Addon Config File:fcitx-xkbdbus.conf
+(INFO-3975 addon.c:151) Load Addon Config File:fcitx-pinyin-enhance.conf
+(INFO-3975 addon.c:151) Load Addon Config File:fcitx-pinyin.conf
+(INFO-3975 addon.c:151) Load Addon Config File:fcitx-classic-ui.conf
+(INFO-3975 addon.c:151) Load Addon Config File:fcitx-notificationitem.conf
+(INFO-3975 addon.c:151) Load Addon Config File:fcitx-dbus.conf
+(INFO-3975 addon.c:151) Load Addon Config File:fcitx-freedesktop-notify.conf
+(INFO-3975 addon.c:151) Load Addon Config File:fcitx-ipc.conf
+(ERROR-3975 ime.c:432) fcitx-keyboard-us already exists
+(WARN-3975 xim.c:161) Please set XMODIFIERS.
+=========================
+FCITX 4.2.9.9 -- Get Signal No.: 15
+Date: try "date -d @1792482479" if you are using GNU date ***
+ProcessID: 3975
+fcitx(+0x19ba)[0x5555555559ba]
+/lib/x86_64-linux-gnu/libc.so.6(+0x45330)[0x7fffff59d330]
+/lib/x86_64-linux-gnu/libc.so.6(__select+0x147)[0x7fffff67efa7]
+/lib/x86_64-linux-gnu/libfcitx-core.so.0(+0x1411c)[0x7fffff7af11c]
+/lib/x86_64-linux-gnu/libfcitx-core.so.0(FcitxInstanceRun+0x5f)[0x7fffff7af81f]
+fcitx(+0x14c7)[0x5555555554c7]
+/lib/x86_64-linux-gnu/libc.so.6(+0x2a1ca)[0x7fffff5821ca]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x8b)[0x7fffff58228b]
+fcitx(+0x1585)[0x555555555585]
+
+==> /tmp/tmp.yzYy00NAJs/proxy.log <==
+
+Exit status: 1

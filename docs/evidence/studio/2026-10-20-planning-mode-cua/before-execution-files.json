@@ -1,0 +1,19 @@
+{
+  "note.txt": {
+    "exists": true,
+    "bytes": 43,
+    "sha256": "188ba7cdc7fda1de07d8ae8b8c7fc64f1fdb7dc8220d80fa3875d719f73ca846",
+    "mtime_ns": 1792456358674705895,
+    "content": "before-plan-mode\nKEEP_SECOND_LINE_20261020\n"
+  },
+  "result.txt": {
+    "exists": false
+  },
+  "sentinel.txt": {
+    "exists": true,
+    "bytes": 28,
+    "sha256": "996633670698d2ec6a0606cd78b56b07f06efc89cc8e77b9a8b87d3d2945f20e",
+    "mtime_ns": 1792456358674878314,
+    "content": "UNCHANGED_SENTINEL_20261020\n"
+  }
+}

@@ -18,16 +18,8 @@ impl AgentRuntime {
         self.leader_mode
     }
     pub async fn run_stdio(&self, config: &Config) -> Result<()> {
-        match self.backend {
-            Backend::Shell => {
-                a3s_code_shell::agent::app::run_stdio_agent(
-                    config,
-                    None,
-                    config.memory_config.clone(),
-                )
-                .await
-            }
-        }
+        let _ = (self, config);
+        crate::acp::a3s_spawn::run_sidecar_on_stdio().await
     }
 }
 impl Backend {

@@ -1,0 +1,33 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/crates/code/core)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 27.72s
+     Running unittests src/lib.rs (target/debug/deps/a3s_code_core-3b568ae695dcf868)
+
+running 1 test
+
+thread 'agent_api::goal_facade::tests::execution::continuation::read_only_step_acceptance_does_not_reset_continuation_stall_across_reopen' (51070300) panicked at crates/code/core/src/agent_api/goal_facade/tests/execution/continuation.rs:94:13:
+a read-only accepted step cannot reset the stall bound
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agent_api::goal_facade::tests::execution::continuation::read_only_step_acceptance_does_not_reset_continuation_stall_across_reopen ... FAILED
+
+failures:
+
+failures:
+    agent_api::goal_facade::tests::execution::continuation::read_only_step_acceptance_does_not_reset_continuation_stall_across_reopen
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5238 filtered out; finished in 0.18s
+
+error: test failed, to rerun pass `-p a3s-code-core --lib`

@@ -1,0 +1,103 @@
+{
+  "recordedAt": "2026-10-20T01:27:13.766245+00:00",
+  "workBranch": "fix/planning-mode-ui-20261020",
+  "frontendEntry": "index.bdca2b09a4.js",
+  "sourceSha256": {
+    "src/renderer/components/chat/messages/blocks/MessagePartsRenderer.tsx": "09c64bdd15356858acfaae9d120a1b02b3549ee690aa27d65ded34af80f563fd",
+    "src/renderer/components/chat/messages/frame/workbenchMessageContext.ts": "7a4e616680f8e32fc16b57f7dcc03b82d66c728efd8d40ed4ec40508d7166431",
+    "src/renderer/components/chat/messages/tools/toolResponse.ts": "f54eb5af3ce9812b1414b997bbb3eb216164c60fd73cd4290f10fefcb544fd0a",
+    "src/renderer/components/chat/messages/tools/__tests__/toolResponse.test.ts": "32e423b193f670fa2cebb505eebf243d6649832a90fd25f6ddc784fb2a6370bf",
+    "src/renderer/components/composer/ComposerSurface.tsx": "710c19461abebb6f5c364507f233bee97aaf8dc78643330e426ddfe7fb51769e",
+    "src/renderer/components/composer/ComposerSurfaceRuntime.tsx": "fc1e76e652b3a8d7a8fe45d98ba2c515644dbad766d597f60aab9d75ddfb0748",
+    "src/renderer/components/composer/__tests__/ComposerSurface.lazy.test.tsx": "89ab110c2dec183d02a9584fd8c74965b3fca03165c90c2a16d1052e495d6a34",
+    "src/renderer/components/composer/__tests__/ComposerSurface.test.tsx": "084d05142f07d1eb5bbe94cd30ebd57c92e2b7d449ffc45d627ba5db166a6bae",
+    "src/renderer/components/composer/variants/__tests__/AgentComposer.test.tsx": "d2f1757407920468461d458e85721d54bd631a2c6d09d5e5ecda91b3ad2c9c6e",
+    "src/renderer/data/studioAgentPlane.ts": "97aeb3b91b04c085394e1c3978b51f8b74674e9fb74e43997d4cf6618169b106",
+    "src/renderer/data/__tests__/studioAgentPlane.test.ts": "c601db78ab0f21bb11f9dcf732fc53dfb00b290f53ef39dc0390d54158dec029",
+    "src/renderer/hooks/useTopicStreamStatus.ts": "4a6ff5022cae5b8f7c600c163143e6012b8d8c6319e2b6278c606666a39ab35a",
+    "src/renderer/hooks/__tests__/useTopicOverlayHandoffOnTerminal.test.ts": "cf9c8f3c05ed342793eeb41ea8fdf01d354b44850399061d97043e9598a5e503",
+    "src/renderer/pages/agents/AgentChat.tsx": "4d20ecccf223220acd492c018e955cdcea2d755d12986e3cbc8b812af8e21082",
+    "src/renderer/pages/agents/AgentComposer.tsx": "8dd9888e054b911e08598c1bf61e0f338be6af7fa493e4125ee2f3806b012867",
+    "src/renderer/pages/agents/AgentComposerSlot.tsx": "aeb352dc46c7d368464b9e0ba13b3df5a487d9e02cfa4e873b54c6ee6cf19a8b",
+    "src/renderer/pages/agents/__tests__/useAgentChatRuntimeState.test.tsx": "c9aeb5f2b4f30402510efdaf1d660d00e4b5743cc3f54958e2e9e928de7e1839",
+    "src/renderer/pages/agents/components/AgentRightPane/AgentRightPane.tsx": "c058fec8f20b066cf7ebfba3af1d4e18758c0fb89143b0fb2c5ad8743b275c90",
+    "src/renderer/pages/agents/components/AgentRightPane/agentRightPaneProjection.ts": "0162a8573755c2335c0568a374cfdb58c92add218f360dec4813c9f724e6c2af",
+    "src/renderer/pages/agents/components/AgentRightPane/__tests__/AgentRightPane.test.tsx": "0e1255235d8174386dfbead352ab3932857b2b3dc5c2d6262e9b1ca9179c0700",
+    "src/renderer/pages/agents/components/AgentRightPane/__tests__/agentRightPaneProjection.test.ts": "5509b2f475b7b49bf9784b43cdbe06953642a65c3956265e5f66712656e7fcec",
+    "src/renderer/pages/agents/taskConversation/TaskConversationMessage.tsx": "2ffd8b3ec216020fe098060f053685559237a80fb9f5e3961fa0d8d510005bfe",
+    "src/renderer/pages/agents/taskConversation/TaskRunSurfaces.tsx": "629137dff4657e62cc8d70f0453986a0a10eb1fe0f0b3fa963fd96659726416d",
+    "src/renderer/pages/agents/taskConversation/WorkingStatus.tsx": "af1bf25e310823b0166b65954abfe68c8570ee9f60af25b6e6fe46c7c37bfb49",
+    "src/renderer/pages/agents/taskConversation/TaskPlanReview.tsx": "e8a58ea825b84ab3f29a3676e722fe4bb244a0fe3361535d3cc4bc7560188f86",
+    "src/renderer/pages/agents/taskConversation/taskPlanMode.ts": "4ad592700f9cb8e5af8381c4ef2e80f79d58f21d1d616b1f18d2aa3da1140129",
+    "src/renderer/pages/agents/taskConversation/workbenchRun.ts": "55d5ae4279a04a973518262b7e205dedef415b769639ae0f84516890c1bec258",
+    "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx": "e31c0cc2bc752c494f98c36b889d4c885aebbe2e19a919f8db4f1a4749783c29",
+    "src/renderer/pages/agents/taskConversation/__tests__/TaskPlanReview.test.tsx": "a4fef2dc8693dcde24487461a781315e97d2c791a2a399d5792d5f1990c6a26a",
+    "src/renderer/pages/agents/taskConversation/__tests__/taskPlanMode.test.ts": "0948cb92737c6500f317ac3512fa5dcb1ec14be9f4abf7dd7e556618f4cb93a5",
+    "src/renderer/pages/agents/taskConversation/__tests__/TaskRunSurfaces.test.tsx": "455e86d80b1ff29876b4f19fd2923221710ca947bd6a8a0be6d824f714bec34c",
+    "src/renderer/pages/agents/taskConversation/__tests__/workbenchRun.test.ts": "770e162ab90cf786146f678dcd0cebdf083539bd01beba373172d8e20757d61a",
+    "src/renderer/pages/agents/useAgentChatRuntimeState.ts": "045d59d36b5d60db0ef8a4a4bcbf079541f0b477100c25993b636d15285cf3af",
+    "src/renderer/pages/agents/workbenchPermissionPostures.ts": "c909ea8e7b1e8a461f63955e603baf6fca313a96df582273cc7b5255f9f3cc8d",
+    "src/shared/data/api/schemas/agentSessions.ts": "0a2a63461a731a49a700561600161fa049bd595abdcc434fdf47c67c91cd9fe3",
+    "src/shared/data/types/uiParts.ts": "be11817060277ab84a4cf54e83abf0e74653119579135213300ded30ad71a0ad",
+    "src/shared/types/studioExecution.ts": "1c6f49279fd468c87c52e34fd9afb6c3b245ec5c1c512aa0fe10225959b1fb3e",
+    "src/renderer/i18n/locales/en-us.json": "973fba77fce4b0b6ac77b26d95615a3aa49c08eaf24db2eb1ac6ec96b16d0d41",
+    "src/renderer/i18n/locales/zh-cn.json": "815233bceedd155e076b8762bad4cba76999f93811a77aa2037d026603cf01b2"
+  },
+  "focusedTests": {
+    "files": 16,
+    "passed": 543,
+    "skipped": 1
+  },
+  "runtimeComposerRegressions": {
+    "passed": 2,
+    "filteredOut": 166
+  },
+  "frontendBuild": "passed",
+  "formatCheck": "passed",
+  "diffCheck": "passed",
+  "eslint": {
+    "errors": 0,
+    "warnings": 9
+  },
+  "webTypecheck": {
+    "exitCode": 2,
+    "totalErrors": 277,
+    "errorsInTouchedFiles": [
+      "src/renderer/components/composer/ComposerSurfaceRuntime.tsx(2473,32): error TS2322: Type 'boolean | undefined' is not assignable to type 'boolean'.",
+      "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx(190,25): error TS2352: Conversion of type '[]' to type '[string, RequestInit]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+      "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx(353,9): error TS2352: Conversion of type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; state: \"output-available\"; input: {}; output: string; files: string[]; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+      "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx(1120,61): error TS2493: Tuple type '[]' of length '0' has no element at index '1'.",
+      "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx(1131,61): error TS2493: Tuple type '[]' of length '0' has no element at index '1'.",
+      "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx(1168,65): error TS2493: Tuple type '[]' of length '0' has no element at index '1'.",
+      "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx(1443,9): error TS2352: Conversion of type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; state: \"output-available\"; input: { file_path: string; }; files: string[]; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+      "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx(1458,111): error TS2352: Conversion of type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; state: \"output-available\"; input: {}; files: readonly [\"report.md\", \"report.md.\", \"report.md:1\", \"a\\\\b.md\", \"a/b.md\", \"../report.md\"] | readonly [...] | readonly [...]; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+      "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx(1587,11): error TS2352: Conversion of type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; state: \"output-available\"; input: {}; files: string[]; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+      "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx(1665,31): error TS2352: Conversion of type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; state: \"output-error\"; input: { file_path: string; }; output: { filePath: string; }; errorText: string; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+      "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx(1745,11): error TS2352: Conversion of type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; state: \"output-available\"; input: {}; output: string; files: string[]; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+      "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx(1781,9): error TS2352: Conversion of type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; state: \"output-error\"; input: {}; errorText: string; files: string[]; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+      "src/renderer/pages/agents/taskConversation/__tests__/workbenchRun.test.ts(192,33): error TS2493: Tuple type '[]' of length '0' has no element at index '0'.",
+      "src/renderer/pages/agents/taskConversation/__tests__/workbenchRun.test.ts(192,43): error TS18048: 'call' is possibly 'undefined'.",
+      "src/renderer/pages/agents/taskConversation/__tests__/workbenchRun.test.ts(215,12): error TS2532: Object is possibly 'undefined'.",
+      "src/renderer/pages/agents/taskConversation/__tests__/workbenchRun.test.ts(215,35): error TS2493: Tuple type '[]' of length '0' has no element at index '0'.",
+      "src/renderer/pages/agents/taskConversation/TaskConversationMessage.tsx(160,3): error TS1360: Type '{ a: ({ children, href }: { children?: ReactNode; href?: string; }) => JSX.Element; code: ({ children, className }: { children?: ReactNode; className?: string; }) => JSX.Element; inlineCode: ({ children, className }: { children?: ReactNode; className?: string; }) => JSX.Element; p: ({ children }: { children?: ReactN...' does not satisfy the expected type 'Partial<Components>'."
+    ]
+  },
+  "fullLint": "failed: existing repository diagnostics",
+  "rustFmt": "failed: existing workspace formatting differences",
+  "directCUA": true,
+  "aclSuiteRun": false,
+  "nativeRebuild": false,
+  "committed": false,
+  "pushed": false,
+  "oxlint": {
+    "exitCode": 1,
+    "remainingDiagnostics": [
+      "src/renderer/data/studioAgentPlane.ts:636:28: error eslint(no-unused-vars): Variable '_' is declared but never used. help: Consider removing this declaration.",
+      "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx:80:46: error typescript(consistent-type-imports): `import()` type annotations are forbidden. help: Replace `import()` type annotations with a regular type import. For example, change `type T = import('module').Type` to `import type { Type } from 'module'; type T = Type`.",
+      "src/renderer/pages/agents/taskConversation/__tests__/TaskRunSurfaces.test.tsx:27:41: error typescript(no-unnecessary-type-assertion): This assertion is unnecessary since the receiver accepts the original type of the expression.",
+      "src/renderer/pages/agents/taskConversation/__tests__/workbenchRun.test.ts:343:10: error typescript(no-unnecessary-type-assertion): This assertion is unnecessary since the receiver accepts the original type of the expression.",
+      "src/renderer/pages/agents/taskConversation/__tests__/workbenchRun.test.ts:348:38: error typescript(no-unnecessary-type-assertion): This assertion is unnecessary since the receiver accepts the original type of the expression."
+    ],
+    "classification": "Existing HEAD patterns in already touched files; no automatic fixes applied."
+  }
+}

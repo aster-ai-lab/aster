@@ -133,9 +133,17 @@ fn exact_original_unknown_and_incomplete_receipts_prove_cached_uncertainty() {
         let serialized = serde_json::to_value(&receipt).unwrap();
         let debt = fold_cache_evidence(&[prepared_fact(&prepared), result_fact(&receipt)]);
         assert!(!debt.integrity_invalid);
-        assert!(debt
-            .validated_uncertainty
-            .contains(&prepared.identity.key().unwrap()));
+        let identity_is_debt = receipt.outcome == ToolExecutionOutcome::Unknown;
+        assert_eq!(
+            debt.validated_uncertainty
+                .contains(&prepared.identity.key().unwrap()),
+            identity_is_debt
+        );
+        if !identity_is_debt {
+            assert!(debt
+                .validated_uncertainty
+                .contains("opaque exact operation"));
+        }
         assert_eq!(
             serde_json::to_value(&debt.results[0].1).unwrap(),
             serialized

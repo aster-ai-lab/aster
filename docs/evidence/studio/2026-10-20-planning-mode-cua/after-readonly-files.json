@@ -1,0 +1,14 @@
+{
+  "note.txt": {
+    "contentShaUnchanged": true,
+    "mtimeUnchanged": true
+  },
+  "result.txt": {
+    "contentShaUnchanged": true,
+    "mtimeUnchanged": true
+  },
+  "sentinel.txt": {
+    "contentShaUnchanged": true,
+    "mtimeUnchanged": true
+  }
+}

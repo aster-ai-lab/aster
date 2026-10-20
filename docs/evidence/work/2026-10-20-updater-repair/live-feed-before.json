@@ -1,0 +1,11 @@
+{
+  "version": "0.1.1",
+  "notes": "相对 0.1.0：\n\n- 修复首次创建知识笔记或文件夹失败。\n- 修复模型设置重启后丢失，以及删除模型后重新出现。正在作为默认值的模型需要先切换默认值，再删除。\n- 历史版本保存的 enabled:false 模型会继续以禁用状态显示。若不再需要，请再次删除；本版不会自动清除这些历史记录。\n- 桌面会话使用文件内容摘要进行自动完成校验，保留原有完成门禁和工作区路径边界。\n- 移除独立证据份数上限。终端未配置档位时默认 medium，即 48 个工具轮次；命令行和已配置的档位仍可覆盖。\n- 预算停止原因写入会话记录；桌面保留已有回复，并按结构化原因区分检索收尾和真正未完成。\n- 非法表单立即返回错误并恢复输入；已正确显示的表单允许持续等待填写。\n- 修复打包版 JSON 编辑器的行重叠和滚动时固定标题区域透明叠字。",
+  "pub_date": "2026-10-19T20:19:47Z",
+  "platforms": {
+    "darwin-aarch64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUWGQzVzdaOWVvcU03TllucFRNL3JRVjh1a2hWbU1BWlk5WUU3SHFObE15QTd4ZmJTMVc0ei9sM20vRlZwMVVqaGE4MXVTaytsS05NL2JSYlB0cnVQMllZSWdXRm5kYlFRPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkyNDQzNDQ1CWZpbGU6QXN0ZXJEcmVhbS5hcHAudGFyLmd6CXZlcnNpb246MC4xLjEKMmp2ZmFpemx0S09JNFNiWUhqOVV6RGVOaTlBTWJEYnVwUE9BTmdyQXBFSmRVdUZuajB4K2V6b0trYldXYytETi9uL2s0WDljalM2Mktaa0tMSjdTREE9PQo=",
+      "url": "https://github.com/aster-ai-lab/aster/releases/download/aster-v0.1.1/AsterDream.app.tar.gz"
+    }
+  }
+}

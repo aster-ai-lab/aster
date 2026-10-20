@@ -352,8 +352,10 @@ fn fold_definitions(
                 workspace,
                 policy_digest,
             )
-            .map(|(operation, digest, view, _)| {
-                folded.continuation.slices_since_progress = 0;
+            .map(|(operation, digest, view, _, mutated)| {
+                if mutated {
+                    folded.continuation.slices_since_progress = 0;
+                }
                 (operation, digest, view)
             })?,
             GoalFactKindV1::Paused | GoalFactKindV1::Resumed | GoalFactKindV1::Cancelled => {

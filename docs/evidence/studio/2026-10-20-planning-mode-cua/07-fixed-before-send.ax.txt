@@ -1,0 +1,31 @@
+Window: "AsterDream", App: AsterDream.
+0 standard window AsterDream, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content Description: AsterDream, URL: 127.0.0.1:4319/windows/main/index.html
+			3 pop up button 周宇杨
+			4 button 工作
+			5 button 知识
+			6 button 设置
+			7 container
+				8 toggle button 显示侧边栏, Value: off
+				9 toggle button 展开侧边栏, Value: off
+				10 heading AsterDream, Value: 1
+				11 text 早上好，周宇杨
+				12 text entry area (settable) 描述会话，输入 / 使用指令或技能, Value: 请读取项目文件夹中的 note.txt，把第一行改为 after-plan-mode，保留第二行不变；再创建 result.txt，内容为 plan-mode-e2e-ok（末尾保留换行）。完成后读回这两个文件并简短报告。不要改动 sentinel.txt。
+					13 text (settable) 请读取项目文件夹中的 note.txt，把第一行改为 after-plan-mode，保留第二行不变；再创建 result.txt，内容为 plan-mode-e2e-ok（末尾保留换行）。完成后读回这两个文件并简短报告。不要改动 sentinel.txt。
+				14 pop up button 更多选项
+				15 pop up button 授权模式: 逐次确认
+				16 switch (settable, boolean) 规划模式, Help: 不改变批准方式。这一轮只写步骤，不改文件、不跑命令。要执行时关掉。, Value: on
+				17 pop up button DeepSeek Flash
+				18 button 发送
+				19 toolbar 会话范围
+					20 pop up button 项目文件夹 fixture, Help: /Users/roylin/code/aster/target/evaluations/planning-mode-cua-20261020/fixture
+					21 pop up button 工作区文件
+	22 close button
+	23 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	24 minimize button
+25 menu bar
+	26 AsterDream
+	27 编辑
+
+The focused UI element is 12 text entry area (settable) 描述会话，输入 / 使用指令或技能, Value: 请读取项目文件夹中的 note.txt，把第一行改为 after-plan-mode，保留第二行不变；再创建 result.txt，内容为 plan-mode-e2e-ok（末尾保留换行）。完成后读回这两个文件并简短报告。不要改动 sentinel.txt。

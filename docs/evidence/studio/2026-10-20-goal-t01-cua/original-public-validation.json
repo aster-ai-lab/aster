@@ -1,0 +1,54 @@
+{
+  "original_public_output": "passed",
+  "first_mismatch": null,
+  "summary": {
+    "row_count": 987,
+    "quantity": 5489,
+    "sales_milli": 1688849344,
+    "profit_milli": 285536004,
+    "shipping_milli": 267683856,
+    "contribution_milli": 17852148,
+    "profit_margin_bp": 1691,
+    "contribution_margin_bp": 106,
+    "high_discount_count": 101,
+    "negative_contribution_count": 469,
+    "input_row_count": 1000,
+    "unique_order_id_count": 867,
+    "duplicate_order_id_extra_rows": 133,
+    "cancelled_row_count": 13,
+    "event_status_counts": {
+      "applied": 37,
+      "order_cancelled": 1,
+      "unknown_type": 1,
+      "duplicate_event": 6,
+      "invalid_amount": 2,
+      "unknown_row": 1
+    }
+  },
+  "optimization": {
+    "budget_units": 64,
+    "spent_units": 64,
+    "gain_milli": 3165191,
+    "selected_action_ids": [
+      "Africa_orders.csv:000006|shipping_switch",
+      "Africa_orders.csv:000007|shipping_switch",
+      "Asia_Pacific_orders.csv:000002|shipping_switch",
+      "Asia_Pacific_orders.csv:000029|discount_review",
+      "Asia_Pacific_orders.csv:000066|discount_review",
+      "Asia_Pacific_orders.csv:000070|discount_review",
+      "Asia_Pacific_orders.csv:000133|discount_review",
+      "Europe_orders.csv:000001|shipping_switch",
+      "Europe_orders.csv:000028|discount_review",
+      "Europe_orders.csv:000123|discount_review",
+      "LATAM_orders.csv:000007|shipping_switch",
+      "LATAM_orders.csv:000011|shipping_switch",
+      "LATAM_orders.csv:000017|shipping_switch",
+      "LATAM_orders.csv:000018|discount_review",
+      "LATAM_orders.csv:000096|discount_review",
+      "LATAM_orders.csv:000111|discount_review"
+    ],
+    "projected_contribution_milli": 21017339
+  },
+  "output_sha256": "1410d96bf12818691780e94e03e6c58001060c9af862d092736f255b58c097e8",
+  "pipeline_sha256": "ab17057be7a679c88be1d28d4d67456dd03dd7b3af10dbe557aee4cc95d2d2eb"
+}

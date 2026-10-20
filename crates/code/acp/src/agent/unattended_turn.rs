@@ -202,7 +202,10 @@ impl A3sCodeAgent {
                     }
                     crate::goal::BoundGoalStep::Finished => return Ok(None),
                     crate::goal::BoundGoalStep::Stopped(reason) => {
-                        bail!("the bound task goal stopped before it was finished: {reason}")
+                        bail!(
+                            "the bound task goal stopped before it was finished: {}",
+                            reason.as_str()
+                        )
                     }
                 }
             }

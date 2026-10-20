@@ -1,0 +1,141 @@
+Window: "AsterDream", App: AsterDream.
+0 standard window AsterDream, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content Description: AsterDream, URL: 127.0.0.1:4319/windows/main/index.html
+			3 pop up button 周宇杨
+			4 button 工作
+			5 button 知识
+			6 button 设置
+			7 container
+				8 container 消息
+					9 container
+						10 heading 已处理, Value: 3
+							11 button (collapsed) 已处理, Secondary Actions: Expand
+						12 text 请读取项目文件夹中的 note.txt，把第一行改为 after-plan-mode，保留第二行不变；再创建 result.txt，内容为 plan-mode-e2e-ok（末尾保留换行）。完成后读回这两个文件并简短报告。不要改动 sentinel.txt。 10/20 09:01
+						13 button 复制
+						14 button 删除
+						15 text AsterDream 10/20 09:01
+						16 button (collapsed) 思考过程, Secondary Actions: Expand
+						17 text Also mention verification: 用 read 回读确认两行，result.txt 内容末尾换行。And mention that if note.txt only has one line, the trailing newline handling may matter — note as 待核实 assumption. Good to flag.
+
+Also mention I won't touch sentinel.txt and won't run bash; use native tools.
+
+End with confirmation request.
+						18 heading 执行计划（尚未执行）, Value: 2
+							19 text 执行计划（尚未执行）
+						20 container
+							21 text 1. 只读查看  note.txt
+						22 content list
+							23 container 用 read 读取 note.txt，确认它一共有几行、第一行的原文是什么（包括行尾有无空行）。
+								24 list marker •
+								25 text 用 
+								26 text read
+								27 text  读取 
+								28 text note.txt
+								29 text ，确认它一共有几行、第一行的原文是什么（包括行尾有无空行）。
+							30 container 理由：因为只有先看清第二行的内容和文件结尾的换行状态，才能保证实现“保留第二行不变”时，不会多加或漏掉行尾空行。
+								31 list marker •
+								32 text 理由：因为只有先看清第二行的内容和文件结尾的换行状态，才能保证实现“保留第二行不变”时，不会多加或漏掉行尾空行。
+						33 container
+							34 text 2. 只替换  note.txt  的第一行
+						35 content list
+							36 container 用 edit，把“原第一行 + 换行”作为唯一匹配串，替换成 after-plan-mode + 换行，并设置expected_replacements: 1、max_replacements: 1。
+								37 list marker •
+								38 text 用 
+								39 text edit
+								40 text ，把“原第一行 + 换行”作为唯一匹配串，替换成 
+								41 text after-plan-mode
+								42 text  + 换行，并设置
+								43 text expected_replacements: 1
+								44 text 、
+								45 text max_replacements: 1
+								46 text 。
+							47 container 理由：匹配串带上换行符，并且只允许替换 1 次，就能把改动限制在第一行，从机制上保证第二行不会被碰到；文件原本的行尾风格（LF 或 CRLF）也会保留。
+								48 list marker •
+								49 text 理由：匹配串带上换行符，并且只允许替换 1 次，就能把改动限制在第一行，从机制上保证第二行不会被碰到；文件原本的行尾风格（LF 或 CRLF）也会保留。
+						50 container
+							51 text 3. 创建  result.txt
+						52 content list
+							53 container 用 write 写入内容 plan-mode-e2e-ok 加一个换行符。
+								54 list marker •
+								55 text 用 
+								56 text write
+								57 text  写入内容 
+								58 text plan-mode-e2e-ok
+								59 text  加一个换行符。
+							60 container 理由：你明确要求末尾保留换行；新建文件不会覆盖已有文件，所以如果 result.txt 已经存在，我会先报告，再等你的指示，不会盲目覆盖。
+								61 list marker •
+								62 text 理由：你明确要求末尾保留换行；新建文件不会覆盖已有文件，所以如果 
+								63 text result.txt
+								64 text  已经存在，我会先报告，再等你的指示，不会盲目覆盖。
+						65 text 4. 读回并校验
+						66 content list
+							67 container 用 read 回读 note.txt，确认第一行是 after-plan-mode、第二行与原来完全一致、总行数没有变化。
+								68 list marker •
+								69 text 用 
+								70 text read
+								71 text  回读 
+								72 text note.txt
+								73 text ，确认第一行是 
+								74 text after-plan-mode
+								75 text 、第二行与原来完全一致、总行数没有变化。
+							76 container 用 read 回读 result.txt，确认内容是 plan-mode-e2e-ok，且末尾有换行。
+								77 list marker •
+								78 text 用 
+								79 text read
+								80 text  回读 
+								81 text result.txt
+								82 text ，确认内容是 
+								83 text plan-mode-e2e-ok
+								84 text ，且末尾有换行。
+						85 text 5. 边界约束
+						86 content list
+							87 container 全程不碰 sentinel.txt，不删除、不改名、不改动其他文件；整个过程中不执行 shell 命令，只用文件读写工具，因为这次任务不需要构建或运行任何东西。
+								88 list marker •
+								89 text 全程不碰 
+								90 text sentinel.txt
+								91 text ，不删除、不改名、不改动其他文件；整个过程中不执行 shell 命令，只用文件读写工具，因为这次任务不需要构建或运行任何东西。
+						92 container
+							93 text 待核实项：  如果  note.txt  实际上只有一行，或者第一行末尾缺少换行，那么第 2 步的匹配串我会按实际读到的字节形态来构造，并如实说明，不会擅自补写第二行。
+						94 text 确认后我就按以上 5 步执行，并给出回读结果。
+						95 button 复制
+						96 button 保存到笔记
+						97 button 删除
+						98 pop up button 更多操作
+						99 heading 已处理, Value: 3
+							100 button (collapsed) 已处理, Secondary Actions: Expand
+						101 text 把刚才的计划精简为三步：检查原文件及 result.txt 是否存在；按要求修改和新建文件；读回验证并报告。保留第二行和 sentinel.txt，不覆盖已有 result.txt。请先规划，等待我确认后再执行。 10/20 09:13
+						102 button 复制
+						103 button 删除
+						104 text AsterDream 10/20 09:13
+						105 container 正在生成计划
+				106 container 会话导航
+					107 button 跳转到第 1 轮对话
+					108 button 跳转到第 2 轮对话
+				109 text 下一条将先生成计划，等待审阅确认。正在运行的回合保留原模式。
+				110 text entry area (settable) 回车 排入下一条，⌘回车 改这一轮, Value: 
+
+					111 text 回车 排入下一条，⌘回车 改这一轮
+				112 pop up button 更多选项
+				113 pop up button 授权模式: 逐次确认
+				114 switch (settable, boolean) 规划模式, Help: 对下一次发送生效：先生成计划，审阅确认后再执行。不改变工具授权方式，也不改变正在运行的回合。, Value: on
+				115 pop up button DeepSeek Flash
+				116 button 停止
+				117 toolbar 会话范围
+					118 pop up button 工作区文件
+				119 container
+					120 button 打开会话工作区
+					121 container 工作区快捷栏
+						122 button 浏览器
+						123 button 终端
+						124 button 文件
+						125 button (collapsed) 展开工作区快捷菜单, Secondary Actions: Expand
+				126 toggle button 展开侧边栏, Value: off
+	127 close button
+	128 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	129 minimize button
+130 menu bar
+	131 AsterDream
+	132 编辑
+
+The focused UI element is 2 HTML content Description: AsterDream, URL: 127.0.0.1:4319/windows/main/index.html

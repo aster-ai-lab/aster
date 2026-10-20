@@ -1,0 +1,13 @@
+{
+  "files": {
+    "note.txt": {
+      "sha256": "188ba7cdc7fda1de07d8ae8b8c7fc64f1fdb7dc8220d80fa3875d719f73ca846",
+      "mtimeNs": 1792456358674705895
+    },
+    "sentinel.txt": {
+      "sha256": "996633670698d2ec6a0606cd78b56b07f06efc89cc8e77b9a8b87d3d2945f20e",
+      "mtimeNs": 1792456358674878314
+    }
+  },
+  "resultExists": false
+}
