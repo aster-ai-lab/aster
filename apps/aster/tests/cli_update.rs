@@ -23,11 +23,11 @@ fn repo_root() -> PathBuf {
 
 fn asset_name() -> &'static str {
     if cfg!(target_os = "macos") {
-        "aster-cli-v0.1.1-macos.tar.gz"
+        "aster-cli-v0.1.2-macos.tar.gz"
     } else if cfg!(target_os = "linux") {
-        "aster-cli-v0.1.1-linux.tar.gz"
+        "aster-cli-v0.1.2-linux.tar.gz"
     } else {
-        "aster-cli-v0.1.1-windows.zip"
+        "aster-cli-v0.1.2-windows.zip"
     }
 }
 
@@ -347,7 +347,7 @@ fn assert_progress(text: &str) {
     );
     assert!(!plain.to_ascii_lowercase().contains("press any key"));
     assert!(plain.contains(NEW_ID), "{plain}");
-    assert!(plain.contains("installed Aster v0.1.1"), "{plain}");
+    assert!(plain.contains("installed Aster v0.1.2"), "{plain}");
 }
 
 fn assert_no_frames(text: &str) {
@@ -639,7 +639,7 @@ fn shipped_update_failure_leaves_the_previous_pair() {
     );
 }
 
-/// The pinned aster-cli v0.1.1 archive contains only the two binaries.
+/// Model the older two-file archive, which v0.1.2 must refuse.
 /// Published aster rejects `--build-id` as an unexpected clap argument.
 /// Published `a3s-code-acp` prints `unknown argument` and exits 1.
 fn published_style_binary(which: &str) -> String {
@@ -687,7 +687,7 @@ fn package_two_binaries(bin_dir: &Path, archive: &Path) {
 }
 
 #[test]
-fn shipped_update_installs_two_file_release_without_build_id() {
+fn shipped_update_refuses_two_file_release_without_build_identity() {
     let root = temp_root("two-file");
     let home = prepare_home(&root);
     let before_home = snapshot(&home);
@@ -708,62 +708,14 @@ fn shipped_update_installs_two_file_release_without_build_id() {
     let old_aster = fs::read(install.join("aster")).expect("old aster");
     let old_acp = fs::read(install.join("a3s-code-acp")).expect("old acp");
     let (code, stdout, stderr) = capture_pipe(&install.join("aster"), &["update"], &home, &assets);
-    println!("CAPTURE two-file\n{stdout}\n{stderr}");
-    assert_eq!(code, 0, "{stdout}\n{stderr}");
-    assert!(stdout.contains("installed Aster v0.1.1"), "{stdout}");
-    assert!(!stdout.contains("identity="), "{stdout}");
-    assert!(!stderr.contains("identity mismatch"), "{stderr}");
+    assert_ne!(code, 0, "{stdout}\n{stderr}");
+    assert!(
+        stderr.contains("missing paired build identity or checksums"),
+        "{stderr}"
+    );
     assert_no_frames(&stdout);
     assert_no_frames(&stderr);
-    assert_eq!(
-        fs::read(install.join("aster")).expect("new aster"),
-        aster_body.as_bytes()
-    );
-    assert_eq!(
-        fs::read(install.join("a3s-code-acp")).expect("new acp"),
-        acp_body.as_bytes()
-    );
-    assert_ne!(
-        fs::read(install.join("aster")).expect("replaced"),
-        old_aster
-    );
-    assert_ne!(
-        fs::read(install.join("a3s-code-acp")).expect("replaced"),
-        old_acp
-    );
-
-    let replaced_aster = Command::new(install.join("aster"))
-        .stdin(Stdio::null())
-        .status()
-        .expect("run replaced aster");
-    assert!(replaced_aster.success(), "replaced aster is not runnable");
-    let replaced_acp = Command::new(install.join("a3s-code-acp"))
-        .stdin(Stdio::null())
-        .status()
-        .expect("run replaced acp");
-    assert!(replaced_acp.success(), "replaced acp is not runnable");
-
-    let aster_id = Command::new(install.join("aster"))
-        .arg("--build-id")
-        .stdin(Stdio::null())
-        .output()
-        .expect("aster --build-id");
-    assert_eq!(aster_id.status.code(), Some(2));
-    let aster_err = String::from_utf8_lossy(&aster_id.stderr);
-    assert!(
-        aster_err.contains("unexpected argument '--build-id'"),
-        "{aster_err}"
-    );
-    let acp_id = Command::new(install.join("a3s-code-acp"))
-        .arg("--build-id")
-        .stdin(Stdio::null())
-        .output()
-        .expect("acp --build-id");
-    assert_eq!(acp_id.status.code(), Some(1));
-    let acp_err = String::from_utf8_lossy(&acp_id.stderr);
-    assert!(
-        acp_err.contains("unknown argument: --build-id"),
-        "{acp_err}"
-    );
+    assert_eq!(fs::read(install.join("aster")).unwrap(), old_aster);
+    assert_eq!(fs::read(install.join("a3s-code-acp")).unwrap(), old_acp);
     assert_eq!(snapshot(&home), before_home);
 }

@@ -235,6 +235,8 @@ use the same session RPC bound as the TUI: at least 180 seconds, extended
 above the configured environment-loader budget. A timeout names the request;
 loading a timed-out session is not reported as a missing session. These bounds
 do not impose a total deadline on a productive streamed turn.
+Interactive eager authentication retains its shorter first-draw bound. Failed
+or dropped connection setup cancels the owned ACP worker.
 
 Core HTTP cancellation covers non-streaming response-body reads and streaming
 error bodies, including raw/duplex transports. Error bodies have the configured

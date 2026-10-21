@@ -23,6 +23,7 @@ async fn stalled_response(
 }
 
 async fn cancellation_after_headers(streaming: bool, raw: bool) {
+    let _guard = super::tests::proxy_env_lock().lock().unwrap();
     let (url, received, server) = stalled_response(if streaming { 401 } else { 200 }).await;
     let client = ReqwestHttpClient {
         client: reqwest::Client::builder().no_proxy().build().unwrap(),
@@ -86,6 +87,7 @@ async fn cancellation_interrupts_raw_streaming_error_body() {
 
 #[tokio::test]
 async fn stalled_error_body_preserves_non_retryable_http_status() {
+    let _guard = super::tests::proxy_env_lock().lock().unwrap();
     for raw in [false, true] {
         let (url, _received, server) = stalled_response(401).await;
         let client = ReqwestHttpClient {
