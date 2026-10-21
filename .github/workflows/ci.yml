@@ -66,6 +66,8 @@ jobs:
           cargo build --locked -p a3s-studio
       - name: Product and runtime tests
         run: cargo test --locked -p aster -p a3s-acl -p a3s-effect
+      - name: Real CLI and ACP lifecycle
+        run: python3 tests/cli_acp_lifecycle.py --phase after --binaries target/debug --evidence "$RUNNER_TEMP/headless-lifecycle"
       - name: Studio native contracts
         run: cargo test --locked -p a3s-studio-data-sqlite -p a3s-studio-desktop-contract
       - name: ACP integration

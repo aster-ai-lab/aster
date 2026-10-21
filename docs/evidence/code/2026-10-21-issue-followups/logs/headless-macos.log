@@ -1,0 +1,370 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml
+   Compiling a3s-code-tools-api v0.1.220-alpha.4 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-tools-api)
+   Compiling pdf_oxide v0.3.74
+   Compiling a3s-code-sampler v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-sampler)
+   Compiling rusqlite v0.37.0
+   Compiling gix-pack v0.70.0
+   Compiling a3s-tool-runtime v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/common/a3s-tool-runtime)
+   Compiling darling_macro v0.24.1
+   Compiling a3s-computer-hub-core v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/common/a3s-computer-hub-core)
+   Compiling gix-diff v0.63.0
+   Compiling a3s-computer-hub-sdk v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/common/a3s-computer-hub-sdk)
+   Compiling gix-refspec v0.41.0
+   Compiling a3s-code-telemetry v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-telemetry)
+   Compiling gix-dir v0.25.0
+   Compiling gix-transport v0.57.2
+   Compiling objc2-core-foundation v0.3.2
+   Compiling gix-config v0.56.0
+   Compiling gix-shallow v0.12.1
+   Compiling maybe-async v0.2.10
+   Compiling gix-protocol v0.61.0
+   Compiling gix-submodule v0.30.0
+   Compiling objc2-foundation v0.3.2
+   Compiling gix-status v0.30.0
+   Compiling darling v0.24.1
+   Compiling gix-odb v0.80.0
+   Compiling a3s-sqlite-journal v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-sqlite-journal)
+   Compiling libmimalloc-sys v0.1.44
+   Compiling num_cpus v1.17.0
+   Compiling fsevent-sys v4.1.0
+   Compiling camino v1.2.1
+   Compiling rmcp v3.4.0
+   Compiling notify v8.2.0
+   Compiling a3s-code-tools v0.1.220-alpha.4 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-tools)
+   Compiling rmcp-macros v3.4.0
+   Compiling gix v0.83.0
+   Compiling objc2-app-kit v0.3.2
+   Compiling oauth2 v5.0.0
+   Compiling tree-sitter v0.26.13
+   Compiling sse-stream v0.2.5
+   Compiling crossbeam-queue v0.3.12
+   Compiling onig_sys v69.9.3
+   Compiling tree-sitter-python v0.25.0
+   Compiling tree-sitter-rust v0.24.2
+   Compiling tree-sitter-javascript v0.25.0
+   Compiling tree-sitter-go v0.25.0
+   Compiling tree-sitter-typescript v0.23.2
+   Compiling pastey v0.2.3
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:145:26
+    |
+145 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:146:20
+    |
+146 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+   Compiling a3s-gix-status v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-gix-status)
+   Compiling crossbeam v0.8.4
+   Compiling webbrowser v1.2.4
+   Compiling nucleo-matcher v0.3.1 (https://github.com/helix-editor/nucleo.git?rev=5b74652#5b74652e)
+   Compiling tree-sitter-bash v0.25.0
+   Compiling fixedbitset v0.4.2
+   Compiling streaming-iterator v0.1.9
+   Compiling file-id v0.2.3
+   Compiling signal-hook v0.3.18
+   Compiling notify-debouncer-full v0.5.0
+   Compiling petgraph v0.6.5
+   Compiling nucleo v0.5.0 (https://github.com/helix-editor/nucleo.git?rev=5b74652#5b74652e)
+   Compiling a3s-code-paths v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-paths)
+   Compiling mimalloc v0.1.48
+   Compiling a3s-acp-lib v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-acp-lib)
+   Compiling a3s-code-hooks v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-hooks)
+   Compiling a3s-code-mcp v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-mcp)
+   Compiling a3s-code-agent v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-agent)
+   Compiling a3s-code-announcements v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-announcements)
+   Compiling clang-sys v1.8.1
+   Compiling rapidhash v4.2.0
+   Compiling castaway v0.2.4
+   Compiling wait-timeout v0.2.1
+   Compiling nohash-hasher v0.2.0
+   Compiling rustix v0.38.44
+   Compiling humantime v2.4.0
+   Compiling humantime-serde v1.1.1
+   Compiling a3s-code-config-types v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-config-types)
+   Compiling a3s-codebase-graph v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-codebase-graph)
+   Compiling a3s-fast-worktree v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-fast-worktree)
+   Compiling a3s-fuzzy-file-search v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-fuzzy-file-search)
+   Compiling a3s-fsnotify v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-fsnotify)
+   Compiling a3s-hunk-tracker v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-hunk-tracker)
+   Compiling a3s-code-workspace-daemon v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-workspace-daemon)
+   Compiling a3s-computer-hub-mcp-adapter v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/common/a3s-computer-hub-mcp-adapter)
+   Compiling a3s-code-workspace-client v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-workspace-client)
+   Compiling a3s-code-diag-server v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-diag-server)
+   Compiling linked-hash-map v0.5.6
+   Compiling indoc v2.0.7
+   Compiling yaml-rust v0.4.5
+   Compiling signal-hook-mio v0.2.5
+   Compiling a3s-code-workspace v0.1.220-alpha.4 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-workspace)
+   Compiling nom v7.1.3
+   Compiling itertools v0.13.0
+warning: `a3s-code-tools` (lib) generated 2 warnings (run `cargo fix --lib -p a3s-code-tools` to apply 2 suggestions)
+   Compiling libloading v0.8.9
+   Compiling instability v0.3.9
+   Compiling cpp_demangle v0.4.5
+   Compiling cfg_aliases v0.1.1
+   Compiling bindgen v0.72.1
+   Compiling nix v0.28.0
+   Compiling time v0.3.47
+   Compiling cexpr v0.6.0
+   Compiling crossterm v0.28.1
+   Compiling equator-macro v0.4.2
+   Compiling quick-xml v0.41.0
+   Compiling symbolic-demangle v12.16.3
+   Compiling unicode-width v0.1.14
+   Compiling unicode-truncate v1.1.0
+   Compiling plist v1.10.0
+   Compiling equator v0.4.2
+   Compiling compact_str v0.8.1
+   Compiling onig v6.5.2
+   Compiling symbolic-common v12.16.3
+   Compiling rusticata-macros v4.1.0
+   Compiling bincode v1.3.3
+   Compiling a3s-code-status-line v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-status-line)
+   Compiling a3s-code-models v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-models)
+   Compiling asn1-rs-derive v0.5.1
+   Compiling smartstring v1.0.1
+   Compiling sqlite-vec v0.1.7-alpha.10
+   Compiling asn1-rs-impl v0.2.0
+   Compiling cassowary v0.3.0
+   Compiling pprof v0.15.0
+   Compiling objc-sys v0.3.5
+   Compiling coreaudio-sys v0.2.18
+   Compiling asn1-rs v0.6.2
+   Compiling ratatui v0.29.0
+   Compiling a3s-code-shared v0.0.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-shared)
+   Compiling syntect v5.3.0
+   Compiling aligned-vec v0.6.4
+   Compiling nix v0.26.4
+   Compiling num-rational v0.4.2
+   Compiling polycool v0.4.0
+   Compiling stop-words v0.9.0
+   Compiling filedescriptor v0.8.3
+   Compiling phf_shared v0.12.1
+   Compiling itertools v0.14.0
+   Compiling num-complex v0.4.6
+   Compiling serial2 v0.2.34
+   Compiling oid-registry v0.7.1
+   Compiling downcast-rs v1.2.1
+   Compiling borrow-or-share v0.2.4
+   Compiling bit-set v0.8.0
+   Compiling fluent-uri v0.3.2
+   Compiling unicode-truncate v2.0.1
+   Compiling portable-pty v0.9.0
+   Compiling num v0.4.3
+   Compiling phf_generator v0.12.1
+   Compiling kurbo v0.13.1
+   Compiling two-face v0.4.5
+   Compiling compact_str v0.9.0
+   Compiling cached_proc_macro v0.25.0
+   Compiling kasuari v0.4.11
+   Compiling lru v0.16.3
+   Compiling fs-err v3.1.3
+   Compiling serde_spanned v0.6.9
+   Compiling thin-vec v0.2.18
+   Compiling toml_datetime v0.6.11
+   Compiling rhai_codegen v3.2.0
+   Compiling moka v0.12.11
+   Compiling smawk v0.3.2
+   Compiling cached_proc_macro_types v0.1.1
+   Compiling ordered_hashmap v0.0.3 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/third_party/ordered_hashmap)
+   Compiling graphlib_rust v0.0.2 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/third_party/graphlib_rust)
+   Compiling cached v0.56.0
+   Compiling rhai v1.25.1
+   Compiling textwrap v0.16.2
+   Compiling toml_edit v0.22.27
+   Compiling ratatui-core v0.1.0
+   Compiling objc2 v0.5.2
+   Compiling svgtypes v0.16.1
+   Compiling a3s-code-markdown v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-markdown)
+   Compiling a3s-code-shell-base v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-shell-base)
+   Compiling phf_macros v0.12.1
+   Compiling fraction v0.15.3
+   Compiling referencing v0.30.0
+   Compiling fancy-regex v0.14.0
+   Compiling der-parser v9.0.0
+   Compiling a3s-compaction-transcript v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-compaction-transcript)
+   Compiling async-lock v3.4.1
+   Compiling a3s-code-shell v1.0.41 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-shell)
+   Compiling process-wrap v9.0.0
+   Compiling uuid-simd v0.8.0
+   Compiling convert_case v0.8.0
+   Compiling backon v1.6.0
+   Compiling simplecss v0.2.2
+   Compiling email_address v0.2.9
+   Compiling a3s-hooks-plugins-types v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-hooks-plugins-types)
+   Compiling rust-stemmers v1.2.0
+   Compiling optfield v0.4.0
+   Compiling roxmltree v0.21.1
+   Compiling plotters-backend v0.3.7
+   Compiling tagptr v0.2.0
+   Compiling imagesize v0.14.0
+   Compiling ciborium-io v0.2.2
+   Compiling deunicode v1.6.2
+   Compiling data-url v0.3.2
+   Compiling dark-light v2.0.0
+   Compiling xmlwriter v0.1.0
+   Compiling cpal v0.15.3
+   Compiling unicode-vo v0.1.0
+   Compiling pico-args v0.5.0
+   Compiling a3s-system-power v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-system-power)
+   Compiling is_ci v1.2.0
+   Compiling obfstr v0.4.4
+   Compiling supports-color v3.0.2
+   Compiling usvg v0.47.0
+   Compiling bm25 v2.3.2
+   Compiling ciborium-ll v0.2.2
+   Compiling jsonschema v0.30.0
+   Compiling plotters-svg v0.3.7
+   Compiling documented-macros v0.9.2
+   Compiling a3s-code-plugin-marketplace v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-plugin-marketplace)
+   Compiling a3s-chat-state v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-chat-state)
+   Compiling a3s-workflow v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-workflow)
+   Compiling x509-parser v0.16.0
+   Compiling phf v0.12.1
+   Compiling tui-scrollbar v0.2.2
+   Compiling objc2-foundation v0.2.2
+   Compiling anstyle-syntect v1.0.4
+   Compiling coreaudio-rs v0.11.3
+   Compiling dagre_rust v0.0.5 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/third_party/dagre_rust)
+   Compiling a3s-code-subagent-resolution v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-subagent-resolution)
+   Compiling notify-debouncer-mini v0.6.0
+   Compiling a3s-code-foreign-sessions v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-foreign-sessions)
+   Compiling a3s-code-session-search v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-session-search)
+   Compiling infer v0.15.0
+   Compiling a3s-code-bundle v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-bundle)
+   Compiling a3s-code-markdown-core v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-markdown-core)
+   Compiling anstyle-lossy v1.1.4
+   Compiling console v0.16.1
+   Compiling tokio-retry v0.3.0
+   Compiling rgb v0.8.52
+   Compiling gethostname v1.1.0
+   Compiling a3s-agent-lifecycle v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-agent-lifecycle)
+   Compiling itertools v0.10.5
+   Compiling yasna v0.5.2
+   Compiling a3s-prompt-queue v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-prompt-queue)
+   Compiling a3s-code-file-lock v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-file-lock)
+   Compiling kanal v0.1.1
+   Compiling serde_ignored v0.1.14
+   Compiling mach2 v0.4.3
+   Compiling linkify v0.10.0
+   Compiling dasp_sample v0.11.0
+   Compiling tdigests v1.0.1
+   Compiling unit-prefix v0.5.1
+   Compiling cast v0.3.0
+   Compiling sdd v3.0.10
+   Compiling a3s-tracing-macros v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-tracing-macros)
+   Compiling criterion-plot v0.5.0
+   Compiling deadpool v0.12.3
+   Compiling scc v2.4.0
+   Compiling indicatif v0.18.3
+   Compiling rcgen v0.13.2
+   Compiling resvg v0.47.0
+   Compiling mermaid-to-svg v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/third_party/mermaid-to-svg)
+   Compiling axum-server v0.8.0
+   Compiling a3s-ratatui-textarea v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-ratatui-textarea)
+   Compiling documented v0.9.2
+   Compiling plotters v0.3.7
+   Compiling ciborium v0.2.1
+   Compiling a3s-ratatui-inline v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-ratatui-inline)
+   Compiling a3s-code-gboom v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-gboom)
+   Compiling vte v0.15.0
+   Compiling tinytemplate v1.2.1
+   Compiling assert-json-diff v2.0.2
+   Compiling console v0.15.11
+   Compiling serial_test_derive v3.2.0
+   Compiling oorandom v11.1.5
+   Compiling anes v0.1.6
+   Compiling yansi v1.0.1
+   Compiling simdutf8 v0.1.5
+   Compiling diff v0.1.13
+   Compiling ansi-to-tui v7.0.0
+   Compiling pretty_assertions v1.4.1
+   Compiling criterion v0.6.0
+   Compiling serial_test v3.2.0
+   Compiling insta v1.43.2
+   Compiling wiremock v0.6.5
+   Compiling a3s-code-mermaid v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-mermaid)
+   Compiling a3s-code-test-support v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-test-support)
+   Compiling a3s-code-voice v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-voice)
+   Compiling a3s-code-pager-diff v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-pager-diff)
+   Compiling a3s-code-dashboard-store v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-dashboard-store)
+   Compiling clap_complete v4.6.5
+   Compiling a3s-code-active-sessions v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-active-sessions)
+   Compiling a3s-acl v0.3.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/acl)
+   Compiling a3s-crash-handler v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-crash-handler)
+   Compiling a3s-code-http v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-http)
+   Compiling a3s-code-shell-terminal v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-shell-terminal)
+   Compiling a3s-code-pager-render v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-pager-render)
+   Compiling a3s-code-memory v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-memory)
+   Compiling a3s-code-shell-session-support v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-shell-session-support)
+   Compiling a3s-code-login v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-login)
+   Compiling a3s-code-update v0.1.220-alpha.4 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-update)
+   Compiling a3s-code-pager v9.1.4 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/terminal/crates/codegen/a3s-code-pager)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-pager` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 11m 01s
+     Running unittests src/lib.rs (/Users/roylin/code/aster/.tmp/issue-followups-20261021-n0f0znj0/target/debug/deps/a3s_code_pager-c22a2e6ae728d7a8)
+
+running 36 tests
+test headless::tests::headless_materialize_ctx_stays_non_chat ... ok
+test headless::tests::empty_inputs_produce_empty_rules ... ok
+test headless::tests::headless_remote_miss_defers_to_worktree_when_requested ... ok
+test headless::tests::headless_remote_miss_restores_conversation_instead_of_deferring_worktree ... ok
+test headless::tests::domain_mode_web_fetch ... ok
+test headless::tests::bash_colon_wildcard_deny_translates_to_prefix ... ok
+test headless::tests::first_hard_write_error_wins_the_latch ... ok
+test headless::tests::lenient_skips_invalid_keeps_valid ... ok
+test headless::tests::local_config_agent_with_no_auth_methods_skips_acp_login ... ok
+test headless::tests::hard_write_error_is_latched_and_surfaced_once ... ok
+test headless::tests::broken_pipe_write_is_a_clean_latched_stop ... ok
+test headless::tests::signalled_exit_stops_waiting_on_a_log_flush_that_never_answers ... ok
+test headless::tests::strict_valid_rules_parse_deny_before_allow ... ok
+test headless::tests::parse_json_schema_rejects_non_objects_and_invalid_json ... ok
+test headless::tests::successful_write_leaves_no_latched_error ... ok
+test headless::tests::grok_agent_with_no_auth_methods_still_requires_login ... ok
+test headless::tests::strict_reports_all_invalid_rules ... ok
+test headless::tests::strict_invalid_rule_errors ... ok
+test headless::tests::reap_request_for_task_kills_with_session_scope ... ok
+{"type":"text","data":"{\"name\":"}
+{"type":"text","data":"\"bob\"}"}
+test headless::tests::reap_request_for_subagent_cancels_with_typed_id ... ok
+test headless::tests::structured_output_without_meta_errors_never_parses_text ... ok
+test headless::tests::worktree_with_fork_is_rejected_at_intent ... ok
+test headless::tests::numeric_task_id_is_decoded_tracked_and_reaped ... ok
+test headless::tests::drain_records_task_backgrounded_delivered_at_exit ... ok
+test headless::tests::structured_output_from_meta_wins_over_text_buffer ... ok
+test headless::tests::streaming_json_structured_output_emits_from_meta ... ok
+test headless::tests::handler_answers_ext_method_instead_of_dropping ... ok
+test headless::tests::headless_auth_does_not_wait_forever_for_a_live_silent_sidecar ... ok
+test headless::tests::post_open_error_carries_real_session_context ... ok
+test headless::tests::headless_auth_keeps_advertised_noninteractive_methods_and_refuses_browser_login ... ok
+test headless::tests::worktree_create_failure_is_reported_before_any_session_opens ... ok
+test headless::tests::worktree_resume_failure_carries_local_miss_hint_like_the_tui ... ok
+test headless::tests::worktree_resume_loads_reported_session_without_re_restoring_code ... ok
+test headless::tests::worktree_create_then_session_failure_names_the_orphaned_worktree ... ok
+test headless::tests::worktree_create_with_session_id_names_worktree_and_session ... ok
+test headless::tests::worktree_create_opens_session_at_worktree_subdirectory ... ok
+
+test result: ok. 36 passed; 0 failed; 0 ignored; 0 measured; 10168 filtered out; finished in 0.35s

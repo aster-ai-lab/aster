@@ -4,7 +4,7 @@ on:
   workflow_dispatch: {}
 
 permissions:
-  contents: write
+  contents: read
   actions: read
 
 concurrency:
@@ -85,6 +85,9 @@ jobs:
   publish:
     name: publish
     needs: build
+    permissions:
+      contents: write
+      actions: read
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -116,8 +119,11 @@ jobs:
           Full system prompt replacement is explicitly refused; use --rules for additional instructions.
           EOF
           printf 'Built from %s.\n' "$BUILD_SHA" >> notes.md
+          gh api --method POST "repos/${GH_REPO}/git/refs" \
+            -f ref=refs/tags/aster-cli-v0.1.2 -f sha="$BUILD_SHA"
           gh release create aster-cli-v0.1.2 \
-            --target "$BUILD_SHA" \
+            --verify-tag \
+            --latest=false \
             --title "aster-cli v0.1.2" \
             --notes-file notes.md \
             "${files[@]}"

@@ -1,0 +1,489 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml
+   Compiling unicode-ident v1.0.24
+   Compiling proc-macro2 v1.0.106
+   Compiling quote v1.0.45
+   Compiling libc v0.2.186
+   Compiling cfg-if v1.0.4
+   Compiling serde_core v1.0.229
+   Compiling smallvec v1.15.1
+   Compiling serde v1.0.229
+   Compiling memchr v2.8.2
+   Compiling parking_lot_core v0.9.12
+   Compiling scopeguard v1.2.0
+   Compiling lock_api v0.4.14
+   Compiling syn v2.0.117
+   Compiling syn v3.0.4
+   Compiling itoa v1.0.17
+   Compiling parking_lot v0.12.5
+   Compiling siphasher v1.0.3
+   Compiling version_check v0.9.5
+   Compiling getrandom v0.2.16
+   Compiling pin-project-lite v0.2.16
+   Compiling rand_core v0.6.4
+   Compiling errno v0.3.14
+   Compiling once_cell v1.21.4
+   Compiling typenum v1.19.0
+   Compiling generic-array v0.14.7
+   Compiling foldhash v0.2.0
+   Compiling stable_deref_trait v1.2.1
+   Compiling bytes v1.12.1
+   Compiling allocator-api2 v0.2.21
+   Compiling equivalent v1.0.2
+   Compiling log v0.4.32
+   Compiling synstructure v0.13.2
+   Compiling autocfg v1.5.0
+   Compiling num-traits v0.2.19
+   Compiling phf_shared v0.13.1
+   Compiling zmij v1.0.19
+   Compiling signal-hook-registry v1.4.8
+   Compiling serde_derive v1.0.229
+   Compiling mio v1.2.1
+   Compiling tokio-macros v2.7.0
+   Compiling zerofrom-derive v0.1.6
+   Compiling socket2 v0.6.4
+   Compiling serde_json v1.0.154
+   Compiling fastrand v2.3.0
+   Compiling futures-core v0.3.34
+   Compiling phf_generator v0.13.1
+   Compiling zerofrom v0.1.6
+   Compiling tokio v1.53.3
+   Compiling yoke-derive v0.8.2
+   Compiling crypto-common v0.1.6
+   Compiling new_debug_unreachable v1.0.6
+   Compiling yoke v0.8.3
+   Compiling zerovec-derive v0.11.1
+   Compiling hashbrown v0.17.0
+   Compiling displaydoc v0.2.5
+   Compiling zerovec v0.11.4
+   Compiling bitflags v2.13.0
+   Compiling crossbeam-utils v0.8.21
+   Compiling precomputed-hash v0.1.1
+   Compiling futures-sink v0.3.34
+   Compiling phf_shared v0.11.3
+   Compiling percent-encoding v2.3.2
+   Compiling rand v0.8.8
+   Compiling futures-channel v0.3.34
+   Compiling phf_codegen v0.13.1
+   Compiling futures-macro v0.3.34
+   Compiling slab v0.4.11
+   Compiling futures-io v0.3.34
+   Compiling find-msvc-tools v0.1.13
+   Compiling shlex v1.3.0
+   Compiling futures-task v0.3.34
+   Compiling cc v1.2.48
+   Compiling phf_generator v0.11.3
+   Compiling futures-util v0.3.34
+   Compiling tinystr v0.8.1
+   Compiling litemap v0.8.0
+   Compiling utf-8 v0.7.6
+   Compiling writeable v0.6.1
+   Compiling regex-syntax v0.8.11
+   Compiling icu_locale_core v2.0.0
+   Compiling potential_utf v0.1.3
+   Compiling zerotrie v0.2.2
+   Compiling phf_macros v0.13.1
+   Compiling icu_normalizer_data v2.0.0
+   Compiling icu_properties_data v2.0.1
+   Compiling fnv v1.0.7
+   Compiling phf v0.13.1
+   Compiling icu_provider v2.0.0
+   Compiling icu_collections v2.0.0
+   Compiling indexmap v2.14.0
+   Compiling string_cache_codegen v0.6.1
+   Compiling aho-corasick v1.1.3
+   Compiling cpufeatures v0.2.17
+   Compiling zerocopy v0.8.48
+   Compiling web_atoms v0.2.3
+   Compiling tracing-core v0.1.36
+   Compiling regex-automata v0.4.18
+   Compiling icu_properties v2.0.1
+   Compiling icu_normalizer v2.0.0
+   Compiling string_cache v0.9.0
+   Compiling block-buffer v0.10.4
+   Compiling digest v0.10.7
+   Compiling idna_adapter v1.2.1
+   Compiling tokio-util v0.7.19
+   Compiling tendril v0.5.0
+   Compiling tracing-attributes v0.1.31
+   Compiling utf8_iter v1.0.4
+   Compiling thiserror v2.0.20
+   Compiling getrandom v0.3.4
+   Compiling strsim v0.11.1
+   Compiling tracing v0.1.44
+   Compiling idna v1.1.0
+   Compiling ring v0.17.14
+   Compiling thiserror-impl v2.0.20
+   Compiling http v1.4.0
+   Compiling ipnet v2.11.0
+   Compiling rustix v1.1.5
+   Compiling lazy_static v1.5.0
+   Compiling sha2 v0.10.9
+   Compiling phf_macros v0.11.3
+   Compiling phf_codegen v0.11.3
+   Compiling num-integer v0.1.46
+   Compiling time-core v0.1.8
+   Compiling num-conv v0.2.0
+   Compiling dtoa v1.0.10
+   Compiling powerfmt v0.2.0
+   Compiling zeroize v1.8.2
+   Compiling heck v0.5.0
+   Compiling subtle v2.6.1
+   Compiling deranged v0.5.5
+   Compiling rustls-pki-types v1.14.0
+   Compiling dtoa-short v0.3.5
+   Compiling time-macros v0.2.27
+   Compiling phf v0.11.3
+   Compiling http-body v1.0.1
+   Compiling async-trait v0.1.92
+   Compiling block-padding v0.3.3
+   Compiling ahash v0.8.12
+   Compiling byteorder v1.5.0
+   Compiling crc32fast v1.5.0
+   Compiling io-lifetimes v3.0.1
+   Compiling bit-vec v0.8.0
+   Compiling base64 v0.22.1
+   Compiling io-lifetimes v2.0.4
+   Compiling untrusted v0.9.0
+   Compiling crossbeam-epoch v0.9.20
+   Compiling ref-cast v1.0.25
+   Compiling rand_core v0.10.0
+   Compiling getrandom v0.4.1
+   Compiling httparse v1.10.1
+   Compiling ident_case v1.0.1
+   Compiling thiserror v1.0.69
+   Compiling darling_core v0.20.11
+   Compiling bit-set v0.8.0
+   Compiling inout v0.1.4
+   Compiling time v0.3.47
+   Compiling num-bigint v0.4.6
+   Compiling form_urlencoded v1.2.2
+   Compiling ref-cast-impl v1.0.25
+   Compiling thiserror-impl v1.0.69
+   Compiling core-foundation-sys v0.8.7
+   Compiling atomic-waker v1.1.2
+   Compiling tower-service v0.3.3
+   Compiling io-extras v0.19.0
+   Compiling try-lock v0.2.5
+   Compiling want v0.3.1
+   Compiling iana-time-zone v0.1.64
+   Compiling h2 v0.4.19
+   Compiling num-rational v0.4.2
+   Compiling darling_macro v0.20.11
+   Compiling cipher v0.4.4
+   Compiling num-iter v0.1.45
+   Compiling regex v1.12.4
+   Compiling string_cache_codegen v0.5.4
+   Compiling num-complex v0.4.6
+   Compiling servo_arc v0.4.3
+   Compiling httpdate v1.0.3
+   Compiling unicode-general-category v1.1.0
+   Compiling alloc-no-stdlib v2.0.4
+   Compiling rustls v0.23.46
+   Compiling cap-primitives v4.0.3
+   Compiling simd-adler32 v0.3.7
+   Compiling mac v0.1.1
+   Compiling borrow-or-share v0.2.4
+   Compiling option-ext v0.2.0
+   Compiling adler2 v2.0.1
+   Compiling pin-utils v0.1.0
+   Compiling fluent-uri v0.4.1
+   Compiling hyper v1.8.1
+   Compiling miniz_oxide v0.8.9
+   Compiling futf v0.1.5
+   Compiling alloc-stdlib v0.2.2
+   Compiling num v0.4.3
+   Compiling markup5ever v0.14.1
+   Compiling crossbeam-deque v0.8.6
+   Compiling fs-set-times v0.20.3
+   Compiling darling v0.20.11
+   Compiling chrono v0.4.45
+   Compiling url v2.5.8
+   Compiling rustls-webpki v0.103.15
+   Compiling markup5ever v0.38.0
+   Compiling futures-executor v0.3.34
+   Compiling selectors v0.38.0
+   Compiling concurrent-queue v2.5.0
+   Compiling derive_more-impl v2.1.1
+   Compiling cssparser-macros v0.7.1
+   Compiling cookie v0.18.2
+   Compiling anyhow v1.0.104
+   Compiling rayon-core v1.13.0
+   Compiling utf8parse v0.2.2
+   Compiling maybe-owned v0.3.4
+   Compiling micromap v0.3.0
+   Compiling paste v1.0.15
+   Compiling tinyvec_macros v0.1.1
+   Compiling ambient-authority v0.0.2
+   Compiling cap-std v4.0.2
+   Compiling derive_more v2.1.1
+   Compiling tinyvec v1.10.0
+   Compiling anstyle-parse v1.0.0
+   Compiling cssparser v0.37.0
+   Compiling event-listener v5.4.1
+   Compiling derive_builder_core v0.20.2
+   Compiling hyper-util v0.1.20
+   Compiling fraction v0.15.3
+   Compiling brotli-decompressor v4.0.3
+   Compiling tendril v0.4.3
+   Compiling flate2 v1.1.5
+   Compiling selectors v0.26.0
+   Compiling ppv-lite86 v0.2.21
+   Compiling markup5ever v0.39.0
+   Compiling rquickjs-sys v0.11.0
+   Compiling string_cache v0.8.9
+   Compiling sync_wrapper v1.0.2
+   Compiling cssparser-macros v0.6.1
+   Compiling hashbrown v0.16.1
+   Compiling nom v8.0.0
+   Compiling fs2 v0.4.3
+   Compiling konst_macro_rules v0.2.19
+   Compiling cap-fs-ext v4.0.2
+   Compiling urlencoding v2.1.3
+   Compiling unicode-width v0.2.0
+   Compiling rustc-hash v2.1.1
+   Compiling litrs v1.0.0
+   Compiling anstyle v1.0.14
+   Compiling unicode-xid v0.2.6
+   Compiling winnow v0.7.14
+   Compiling anstyle-query v1.1.4
+   Compiling num-cmp v0.1.0
+   Compiling ryu v1.0.20
+   Compiling bytecount v0.6.9
+   Compiling vsimd v0.8.0
+   Compiling outref v0.5.2
+   Compiling is_terminal_polyfill v1.70.2
+   Compiling tower-layer v0.3.3
+   Compiling colorchoice v1.0.4
+   Compiling psl-types v2.0.11
+   Compiling anstream v1.0.0
+   Compiling publicsuffix v2.3.0
+   Compiling tower v0.5.2
+   Compiling uuid-simd v0.8.0
+   Compiling document-features v0.2.12
+   Compiling const_format_proc_macros v0.2.34
+   Compiling konst v0.2.20
+   Compiling cssparser v0.34.0
+   Compiling html5ever v0.39.0
+   Compiling rand_chacha v0.3.1
+   Compiling brotli v7.0.0
+   Compiling tokio-rustls v0.26.6
+   Compiling derive_builder_macro v0.20.2
+   Compiling event-listener-strategy v0.5.4
+   Compiling unicode-normalization v0.1.24
+   Compiling html5ever v0.38.0
+   Compiling uuid v1.26.1
+   Compiling fancy-regex v0.18.0
+   Compiling fxhash v0.2.1
+   Compiling http-body-util v0.1.3
+   Compiling webpki-roots v1.0.9
+   Compiling universal-hash v0.5.1
+   Compiling strum_macros v0.28.0
+   Compiling email_address v0.2.9
+   Compiling derive_more v0.99.20
+   Compiling match_token v0.1.0
+   Compiling num_cpus v1.17.0
+   Compiling clap_lex v1.0.0
+   Compiling same-file v1.0.6
+   Compiling opaque-debug v0.3.1
+   Compiling bitmaps v3.1.0
+   Compiling ryu-js v1.0.3
+   Compiling data-encoding v2.9.0
+   Compiling either v1.15.0
+   Compiling utf8-width v0.1.7
+   Compiling iri-string v0.7.9
+   Compiling html-escape v0.2.13
+   Compiling strum v0.28.0
+   Compiling rayon v1.12.0
+   Compiling tower-http v0.6.8
+   Compiling imbl-sized-chunks v0.1.3
+   Compiling a3s-acl v0.3.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/acl)
+   Compiling polyval v0.6.2
+   Compiling walkdir v2.5.0
+   Compiling clap_builder v4.6.7
+   Compiling html5ever v0.29.1
+   Compiling hyper-rustls v0.27.7
+   Compiling async-compression v0.4.19
+   Compiling rmp v0.8.14
+   Compiling cookie_store v0.21.1
+   Compiling async-lock v3.4.1
+   Compiling derive_builder v0.20.2
+   Compiling dom_query v0.28.0
+   Compiling const_format v0.2.36
+   Compiling jsonschema-value v0.48.5
+   Compiling serde_urlencoded v0.7.1
+   Compiling getopts v0.2.24
+   Compiling opentelemetry v0.21.0
+   Compiling referencing v0.48.5
+   Compiling futures v0.3.34
+   Compiling xml5ever v0.38.0
+   Compiling dirs-sys v0.4.1
+   Compiling dirs-sys v0.5.0
+   Compiling aes v0.8.4
+   Compiling chacha20 v0.10.2
+   Compiling strum_macros v0.27.2
+   Compiling clap_derive v4.6.7
+   Compiling sharded-slab v0.1.7
+   Compiling tokio-stream v0.1.17
+   Compiling matchers v0.2.0
+   Compiling tracing-serde v0.2.0
+   Compiling tracing-log v0.2.0
+   Compiling jsonschema-regex v0.48.5
+   Compiling crossbeam-channel v0.5.15
+   Compiling toml_datetime v0.6.11
+   Compiling serde_spanned v0.6.9
+   Compiling ordered-float v4.6.0
+   Compiling getset v0.1.7
+   Compiling rand_xoshiro v0.6.0
+   Compiling bstr v1.12.1
+   Compiling thread_local v1.1.9
+   Compiling gjson v0.8.1
+   Compiling ego-tree v0.10.0
+   Compiling unicode-bidi v0.3.18
+   Compiling flagset v0.4.7
+   Compiling deadpool-runtime v0.1.4
+   Compiling nu-ansi-term v0.50.3
+   Compiling bitflags v1.3.2
+   Compiling unicode-segmentation v1.12.0
+   Compiling glob v0.3.3
+   Compiling unicode-properties v0.1.4
+   Compiling bytemuck v1.25.2
+   Compiling hashbrown v0.14.5
+   Compiling strum v0.27.2
+   Compiling toml_write v0.1.2
+   Compiling roaring v0.11.1
+   Compiling oci-spec v0.10.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/oci-runtime/vendor/oci-spec-0.10.0)
+   Compiling toml_edit v0.22.27
+   Compiling dashmap v6.2.1
+   Compiling stringprep v0.1.5
+   Compiling dom_smoothie v0.18.2
+   Compiling opentelemetry_sdk v0.21.2
+   Compiling tracing-subscriber v0.3.23
+   Compiling fluent-uri v0.1.4
+   Compiling deadpool v0.12.3
+   Compiling globset v0.4.18
+   Compiling scraper v0.22.0
+   Compiling imbl v3.0.0
+   Compiling clap v4.6.7
+   Compiling jsonschema v0.48.5
+   Compiling rand v0.10.3
+   Compiling markup5ever_rcdom v0.38.0+unofficial
+   Compiling dirs v6.0.0
+   Compiling dirs v5.0.1
+   Compiling reqwest v0.12.24
+   Compiling rmp-serde v1.3.0
+   Compiling rquickjs-core v0.11.0
+   Compiling ghash v0.5.1
+   Compiling tempfile v3.27.0
+   Compiling cron v0.17.0
+   Compiling regress v0.10.5
+   Compiling referencing v0.47.0
+   Compiling cbc v0.1.2
+   Compiling ecb v0.1.2
+   Compiling ctr v0.9.2
+   Compiling yasna v0.5.2
+   Compiling pem v3.0.6
+   Compiling a3s-oci-core v0.3.2 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/oci-runtime/crates/core)
+   Compiling md-5 v0.10.6
+   Compiling jsonschema-regex v0.47.0
+   Compiling rust-stemmers v1.2.0
+   Compiling bincode v1.3.3
+   Compiling quick-xml v0.38.4
+   Compiling assert-json-diff v2.0.2
+   Compiling aead v0.5.2
+   Compiling serde_repr v0.1.20
+   Compiling async-stream-impl v0.3.6
+   Compiling serde_ignored v0.1.14
+   Compiling memmap2 v0.9.11
+   Compiling fsevent-sys v4.1.0
+   Compiling encoding_rs v0.8.35
+   Compiling notify-types v2.0.0
+   Compiling unsafe-libyaml v0.2.11
+   Compiling semver v1.0.28
+   Compiling jiff v0.2.28
+   Compiling rangemap v1.8.0
+   Compiling hex v0.4.3
+   Compiling weezl v0.1.10
+   Compiling ttf-parser v0.25.1
+   Compiling sha256 v1.6.0
+   Compiling serde_yaml v0.9.34+deprecated
+   Compiling a3s-oci-sdk v0.3.2 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/oci-runtime/crates/sdk)
+   Compiling notify v8.2.0
+   Compiling lopdf v0.42.0
+   Compiling a3s-search v3.4.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/search)
+   Compiling a3s-vec v0.1.8 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/vec)
+   Compiling async-stream v0.3.6
+   Compiling lsp-types v0.97.0
+   Compiling aes-gcm v0.10.3
+   Compiling wiremock v0.6.5
+   Compiling jsonschema v0.47.0
+   Compiling rcgen v0.13.2
+   Compiling a3s-form-core v0.1.0 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/form-core)
+   Compiling rquickjs v0.11.0
+   Compiling a3s-lane v0.5.1 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/lane)
+   Compiling a3s-sandbox v0.2.3 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/sandbox)
+   Compiling htmd v0.5.4
+   Compiling ignore v0.4.24
+   Compiling toml v0.8.23
+   Compiling a3s-effect v0.2.1 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/effect)
+   Compiling html2text v0.16.7
+   Compiling a3s-common v0.1.1 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/common)
+   Compiling a3s-memory v0.1.5 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/memory)
+   Compiling base64 v0.21.7
+   Compiling similar v2.7.0
+   Compiling shell-words v1.1.0
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/code/core)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3m 51s
+     Running unittests src/lib.rs (/Users/roylin/code/aster/.tmp/issue-followups-20261021-n0f0znj0/target/debug/deps/a3s_code_core-ce2a2ff12f0735aa)
+
+running 4 tests
+test llm::http::response_lifecycle_tests::cancellation_interrupts_raw_streaming_error_body ... FAILED
+test llm::http::response_lifecycle_tests::cancellation_interrupts_non_streaming_body ... FAILED
+test llm::http::response_lifecycle_tests::cancellation_interrupts_streaming_error_body ... FAILED
+test llm::http::response_lifecycle_tests::stalled_error_body_preserves_non_retryable_http_status ... FAILED
+
+failures:
+
+---- llm::http::response_lifecycle_tests::cancellation_interrupts_raw_streaming_error_body stdout ----
+
+thread 'llm::http::response_lifecycle_tests::cancellation_interrupts_raw_streaming_error_body' (53030479) panicked at crates/code/core/src/llm/http/response_lifecycle_tests.rs:44:24:
+cancellation must interrupt an unfinished response body: Elapsed(())
+
+---- llm::http::response_lifecycle_tests::cancellation_interrupts_non_streaming_body stdout ----
+
+thread 'llm::http::response_lifecycle_tests::cancellation_interrupts_non_streaming_body' (53030478) panicked at crates/code/core/src/llm/http/response_lifecycle_tests.rs:44:24:
+cancellation must interrupt an unfinished response body: Elapsed(())
+
+---- llm::http::response_lifecycle_tests::cancellation_interrupts_streaming_error_body stdout ----
+
+thread 'llm::http::response_lifecycle_tests::cancellation_interrupts_streaming_error_body' (53030480) panicked at crates/code/core/src/llm/http/response_lifecycle_tests.rs:44:24:
+cancellation must interrupt an unfinished response body: Elapsed(())
+
+---- llm::http::response_lifecycle_tests::stalled_error_body_preserves_non_retryable_http_status stdout ----
+
+thread 'llm::http::response_lifecycle_tests::stalled_error_body_preserves_non_retryable_http_status' (53030481) panicked at crates/code/core/src/llm/http/response_lifecycle_tests.rs:80:31:
+error body must have a deadline: Elapsed(())
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    llm::http::response_lifecycle_tests::cancellation_interrupts_non_streaming_body
+    llm::http::response_lifecycle_tests::cancellation_interrupts_raw_streaming_error_body
+    llm::http::response_lifecycle_tests::cancellation_interrupts_streaming_error_body
+    llm::http::response_lifecycle_tests::stalled_error_body_preserves_non_retryable_http_status
+
+test result: FAILED. 0 passed; 4 failed; 0 ignored; 0 measured; 5273 filtered out; finished in 1.04s
+
+error: test failed, to rerun pass `-p a3s-code-core --lib`

@@ -153,7 +153,7 @@ a3s-code-acp --version
 `export` 只作用于当前终端。要长期生效，把同一行写入 shell 的启动文件。
 `product` 是 `Aster`。`aster version --json` 确认 `currentVersion` 以 `0.1.2` 开头。`a3s-code-acp --version` 打印 ACP 的包版本。
 
-更新再执行一次 macOS 安装命令。它下载 v0.1.1 的 macOS 发布包，只覆盖 `$HOME/.local/bin` 里的 `aster` 和 `a3s-code-acp`。`~/.a3s` 保持不变。
+更新再执行一次 macOS 安装命令。它下载 v0.1.2 的 macOS 发布包，只覆盖 `$HOME/.local/bin` 里的 `aster` 和 `a3s-code-acp`。`~/.a3s` 保持不变。
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.sh | bash -s -- --prefix "$HOME/.local/bin"
@@ -183,7 +183,7 @@ a3s-code-acp --version
 `export` 只作用于当前终端。要长期生效，把同一行写入 shell 的启动文件。
 `aster version --json` 确认 `currentVersion` 以 `0.1.2` 开头。
 
-更新再执行一次 Linux 安装命令。它下载 v0.1.1 的 Linux 发布包，只覆盖 `$HOME/.local/bin` 里的 `aster` 和 `a3s-code-acp`。`~/.a3s` 保持不变。
+更新再执行一次 Linux 安装命令。它下载 v0.1.2 的 Linux 发布包，只覆盖 `$HOME/.local/bin` 里的 `aster` 和 `a3s-code-acp`。`~/.a3s` 保持不变。
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.sh | bash -s -- --prefix "$HOME/.local/bin"
@@ -214,7 +214,7 @@ a3s-code-acp --version
 `Path` 赋值只作用于当前窗口。Git Bash 使用 macOS 的同一条命令；脚本在 Windows 上下载 Windows 发布包。
 `aster version --json` 确认 `currentVersion` 以 `0.1.2` 开头。
 
-更新再执行一次 Windows 安装命令。它下载 v0.1.1 的 Windows 发布包，只覆盖 `%LOCALAPPDATA%\Aster\bin` 里的 `aster.exe` 和 `a3s-code-acp.exe`。`~/.a3s` 保持不变。
+更新再执行一次 Windows 安装命令。它下载 v0.1.2 的 Windows 发布包，只覆盖 `%LOCALAPPDATA%\Aster\bin` 里的 `aster.exe` 和 `a3s-code-acp.exe`。`~/.a3s` 保持不变。
 
 ```powershell
 irm "https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.ps1" -OutFile "$env:TEMP\install.ps1"

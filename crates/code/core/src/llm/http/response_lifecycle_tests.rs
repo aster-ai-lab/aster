@@ -24,7 +24,7 @@ async fn stalled_response(
 
 async fn cancellation_after_headers(streaming: bool, raw: bool) {
     let _guard = super::tests::proxy_env_lock().lock().unwrap();
-    let (url, received, server) = stalled_response(if streaming { 401 } else { 200 }).await;
+    let (url, received, server) = stalled_response(if streaming { 503 } else { 200 }).await;
     let client = ReqwestHttpClient {
         client: reqwest::Client::builder().no_proxy().build().unwrap(),
         request_timeout: None,
@@ -86,10 +86,10 @@ async fn cancellation_interrupts_raw_streaming_error_body() {
 }
 
 #[tokio::test]
-async fn stalled_error_body_preserves_non_retryable_http_status() {
+async fn stalled_retryable_error_body_has_a_deadline() {
     let _guard = super::tests::proxy_env_lock().lock().unwrap();
     for raw in [false, true] {
-        let (url, _received, server) = stalled_response(401).await;
+        let (url, _received, server) = stalled_response(503).await;
         let client = ReqwestHttpClient {
             client: reqwest::Client::builder().no_proxy().build().unwrap(),
             request_timeout: Some(Duration::from_millis(50)),
@@ -113,11 +113,92 @@ async fn stalled_error_body_preserves_non_retryable_http_status() {
         .await;
         server.abort();
         let response = result.expect("error body must have a deadline").unwrap();
-        assert_eq!(response.status, 401);
+        assert_eq!(response.status, 503);
         assert!(
             response.error_body.contains("timed out"),
             "{}",
             response.error_body
         );
     }
+}
+
+#[tokio::test]
+async fn authorization_headers_return_before_an_outer_model_deadline() {
+    let _guard = super::tests::proxy_env_lock().lock().unwrap();
+    for status in [401, 403] {
+        for mode in 0..3 {
+            let (url, _received, server) = stalled_response(status).await;
+            let client = ReqwestHttpClient {
+                client: reqwest::Client::builder().no_proxy().build().unwrap(),
+                request_timeout: None,
+            };
+            let result = tokio::time::timeout(Duration::from_millis(200), async {
+                match mode {
+                    0 => client
+                        .post(
+                            &url,
+                            vec![],
+                            &serde_json::json!({}),
+                            CancellationToken::new(),
+                        )
+                        .await
+                        .map(|response| (response.status, response.body)),
+                    1 => client
+                        .post_streaming(
+                            &url,
+                            vec![],
+                            &serde_json::json!({}),
+                            CancellationToken::new(),
+                        )
+                        .await
+                        .map(|response| (response.status, response.error_body)),
+                    _ => client
+                        .post_bytes_streaming(&url, vec![], b"{}", CancellationToken::new())
+                        .await
+                        .map(|response| (response.status, response.error_body)),
+                }
+            })
+            .await;
+            server.abort();
+            let (returned_status, body) = result
+                .expect("known authorization failures must not become model timeouts")
+                .unwrap();
+            assert_eq!(returned_status, status);
+            assert!(body.contains("authorization"), "{body}");
+        }
+    }
+}
+
+#[tokio::test]
+async fn complete_authorization_body_keeps_the_provider_diagnostic() {
+    let _guard = super::tests::proxy_env_lock().lock().unwrap();
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let address = listener.local_addr().unwrap();
+    let server = tokio::spawn(async move {
+        let (mut socket, _) = listener.accept().await.unwrap();
+        let mut request = [0; 8192];
+        assert!(socket.read(&mut request).await.unwrap() > 0);
+        let body = r#"{"error":{"message":"fixture authorization detail"}}"#;
+        socket.write_all(format!("HTTP/1.1 401 Unauthorized\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}", body.len()).as_bytes()).await.unwrap();
+    });
+    let client = ReqwestHttpClient {
+        client: reqwest::Client::builder().no_proxy().build().unwrap(),
+        request_timeout: None,
+    };
+    let response = client
+        .post_streaming(
+            &format!("http://{address}"),
+            vec![],
+            &serde_json::json!({}),
+            CancellationToken::new(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(response.status, 401);
+    assert!(
+        response.error_body.contains("fixture authorization detail"),
+        "{}",
+        response.error_body
+    );
+    server.await.unwrap();
 }

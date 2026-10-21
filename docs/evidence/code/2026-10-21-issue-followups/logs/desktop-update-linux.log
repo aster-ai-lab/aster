@@ -1,0 +1,12 @@
+test_mismatched_uploaded_bytes_and_old_client_key_are_rejected (__main__.DesktopUpdateTest.test_mismatched_uploaded_bytes_and_old_client_key_are_rejected) ... ok
+test_missing_compatibility_tag_or_archive_is_not_advertised (__main__.DesktopUpdateTest.test_missing_compatibility_tag_or_archive_is_not_advertised) ... ok
+test_public_download_requires_exact_bytes_and_size (__main__.DesktopUpdateTest.test_public_download_requires_exact_bytes_and_size) ... ok
+test_release_gate_requires_macos_before_accessing_the_release (__main__.DesktopUpdateTest.test_release_gate_requires_macos_before_accessing_the_release) ... ok
+test_verified_upload_produces_old_client_compatible_url_and_signature (__main__.DesktopUpdateTest.test_verified_upload_produces_old_client_compatible_url_and_signature) ... ok
+test_zero_exit_or_wrong_version_cannot_replace_native_upgrade_verification (__main__.DesktopUpdateTest.test_zero_exit_or_wrong_version_cannot_replace_native_upgrade_verification) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.013s
+
+OK
+Prepared /tmp/tmpwmpa0gh_/latest.json; publish this feed after the versioned assets remain available.

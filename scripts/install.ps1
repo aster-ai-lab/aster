@@ -143,7 +143,7 @@ try {
     }
     $destAster = Join-Path $Prefix "aster.exe"
     $destAcp = Join-Path $Prefix "a3s-code-acp.exe"
-    Write-Output "installed Aster v0.1.1 into $Prefix"
+    Write-Output "installed Aster v0.1.2 into $Prefix"
     Write-Output "aster=$destAster"
     Write-Output "a3s-code-acp=$destAcp"
 } finally {

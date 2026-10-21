@@ -1,0 +1,128 @@
+work-frontend (studio)	Run ./.github/actions/checkout-source	﻿2026-10-21T00:04:03.5563615Z Prepare all required actions
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.5564172Z Getting action download info
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.6799868Z Download action repository 'actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510' (SHA:64ab729a6294000f5aa4a4bc0b73d1f32bc45510)
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.8889804Z ##[group]Run ./.github/actions/checkout-source
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.8890117Z with:
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.8890310Z   path: apps/work
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.8890514Z   owner: aster-ai-lab
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.8890725Z   repository: work
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.8890916Z env:
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.8891099Z   OFFICE_KERNEL_REQUIRED: 1
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.8891535Z ##[endgroup]
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.8960819Z ##[start-action display=Resolve recorded source commit;id=__self.source]
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.9001488Z ##[group]Run set -euo pipefail
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.9001863Z ^[[36;1mset -euo pipefail^[[0m
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.9002169Z ^[[36;1mif [[ "$SOURCE_KEY_SET" != true ]]; then^[[0m
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.9002626Z ^[[36;1m  echo "::error::CI source GitHub App credentials are missing for $SOURCE_PATH"^[[0m
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.9003105Z ^[[36;1m  exit 1^[[0m
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.9003303Z ^[[36;1mfi^[[0m
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.9003644Z ^[[36;1mpython3 .github/scripts/gitlink-ref.py "$SOURCE_PATH" >> "$GITHUB_OUTPUT"^[[0m
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:04.0074301Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:04.0074761Z env:
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:04.0075013Z   OFFICE_KERNEL_REQUIRED: 1
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:04.0075316Z   SOURCE_PATH: apps/work
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:04.0075614Z   SOURCE_KEY_SET: false
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:04.0075887Z ##[endgroup]
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:04.0199894Z ##[error]CI source GitHub App credentials are missing for apps/work
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:04.0204438Z ##[error]Process completed with exit code 1.
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:04.0219859Z ##[end-action id=__self.source;outcome=failure;conclusion=failure;duration_ms=125]
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:04.0224410Z ##[start-action display=Run actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510;id=__self.access]
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:04.0227986Z ##[end-action id=__self.access;outcome=skipped;conclusion=skipped;duration_ms=0]
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:04.0230195Z ##[start-action display=Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683;id=__self.__actions_checkout]
+work-frontend (studio)	Run ./.github/actions/checkout-source	2026-10-21T00:04:04.0233148Z ##[end-action id=__self.__actions_checkout;outcome=skipped;conclusion=skipped;duration_ms=0]
+check (macos-latest)	Run ./.github/actions/checkout-source	﻿2026-10-21T00:04:06.4513670Z Prepare all required actions
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.4514190Z Getting action download info
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.5524050Z Download action repository 'actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510' (SHA:64ab729a6294000f5aa4a4bc0b73d1f32bc45510)
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0125430Z ##[group]Run ./.github/actions/checkout-source
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0125660Z with:
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0125780Z   path: apps/work
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0125920Z   owner: aster-ai-lab
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0126050Z   repository: work
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0126180Z env:
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0126290Z   CARGO_INCREMENTAL: 0
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0126420Z ##[endgroup]
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0178750Z ##[start-action display=Resolve recorded source commit;id=__self.source]
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0218690Z ##[group]Run set -euo pipefail
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0218950Z ^[[36;1mset -euo pipefail^[[0m
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0219150Z ^[[36;1mif [[ "$SOURCE_KEY_SET" != true ]]; then^[[0m
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0219490Z ^[[36;1m  echo "::error::CI source GitHub App credentials are missing for $SOURCE_PATH"^[[0m
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0220010Z ^[[36;1m  exit 1^[[0m
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0220180Z ^[[36;1mfi^[[0m
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0220910Z ^[[36;1mpython3 .github/scripts/gitlink-ref.py "$SOURCE_PATH" >> "$GITHUB_OUTPUT"^[[0m
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0265400Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0265690Z env:
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0265860Z   CARGO_INCREMENTAL: 0
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0266040Z   SOURCE_PATH: apps/work
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0266210Z   SOURCE_KEY_SET: false
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0266360Z ##[endgroup]
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0718920Z ##[error]CI source GitHub App credentials are missing for apps/work
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0721590Z ##[error]Process completed with exit code 1.
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0732070Z ##[end-action id=__self.source;outcome=failure;conclusion=failure;duration_ms=55]
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0735210Z ##[start-action display=Run actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510;id=__self.access]
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0737860Z ##[end-action id=__self.access;outcome=skipped;conclusion=skipped;duration_ms=0]
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0739410Z ##[start-action display=Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683;id=__self.__actions_checkout]
+check (macos-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.0740970Z ##[end-action id=__self.__actions_checkout;outcome=skipped;conclusion=skipped;duration_ms=0]
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	﻿2026-10-21T00:04:07.9136020Z Prepare all required actions
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:07.9136535Z Getting action download info
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.0345551Z Download action repository 'actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510' (SHA:64ab729a6294000f5aa4a4bc0b73d1f32bc45510)
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4176979Z ##[group]Run ./.github/actions/checkout-source
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4177297Z with:
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4177514Z   path: apps/work
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4177715Z   owner: aster-ai-lab
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4177924Z   repository: work
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4178108Z env:
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4178289Z   CARGO_INCREMENTAL: 0
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4178488Z ##[endgroup]
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4252800Z ##[start-action display=Resolve recorded source commit;id=__self.source]
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4294045Z ##[group]Run set -euo pipefail
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4294480Z ^[[36;1mset -euo pipefail^[[0m
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4294797Z ^[[36;1mif [[ "$SOURCE_KEY_SET" != true ]]; then^[[0m
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4295318Z ^[[36;1m  echo "::error::CI source GitHub App credentials are missing for $SOURCE_PATH"^[[0m
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4295854Z ^[[36;1m  exit 1^[[0m
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4296066Z ^[[36;1mfi^[[0m
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4296469Z ^[[36;1mpython3 .github/scripts/gitlink-ref.py "$SOURCE_PATH" >> "$GITHUB_OUTPUT"^[[0m
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4479077Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4479702Z env:
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4479923Z   CARGO_INCREMENTAL: 0
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4480159Z   SOURCE_PATH: apps/work
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4480402Z   SOURCE_KEY_SET: false
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4480622Z ##[endgroup]
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4583520Z ##[error]CI source GitHub App credentials are missing for apps/work
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4587584Z ##[error]Process completed with exit code 1.
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4603226Z ##[end-action id=__self.source;outcome=failure;conclusion=failure;duration_ms=34]
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4607413Z ##[start-action display=Run actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510;id=__self.access]
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4611769Z ##[end-action id=__self.access;outcome=skipped;conclusion=skipped;duration_ms=0]
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4614139Z ##[start-action display=Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683;id=__self.__actions_checkout]
+check (ubuntu-latest)	Run ./.github/actions/checkout-source	2026-10-21T00:04:08.4616594Z ##[end-action id=__self.__actions_checkout;outcome=skipped;conclusion=skipped;duration_ms=0]
+work-frontend (work)	Run ./.github/actions/checkout-source	﻿2026-10-21T00:04:02.4639743Z Prepare all required actions
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.4640345Z Getting action download info
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.5685669Z Download action repository 'actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510' (SHA:64ab729a6294000f5aa4a4bc0b73d1f32bc45510)
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9746782Z ##[group]Run ./.github/actions/checkout-source
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9747111Z with:
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9747310Z   path: apps/work
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9747525Z   owner: aster-ai-lab
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9747743Z   repository: work
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9747941Z env:
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9748129Z   OFFICE_KERNEL_REQUIRED: 1
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9748359Z ##[endgroup]
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9816781Z ##[start-action display=Resolve recorded source commit;id=__self.source]
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9855890Z ##[group]Run set -euo pipefail
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9856231Z ^[[36;1mset -euo pipefail^[[0m
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9856515Z ^[[36;1mif [[ "$SOURCE_KEY_SET" != true ]]; then^[[0m
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9856973Z ^[[36;1m  echo "::error::CI source GitHub App credentials are missing for $SOURCE_PATH"^[[0m
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9857447Z ^[[36;1m  exit 1^[[0m
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9857646Z ^[[36;1mfi^[[0m
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9857992Z ^[[36;1mpython3 .github/scripts/gitlink-ref.py "$SOURCE_PATH" >> "$GITHUB_OUTPUT"^[[0m
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.0041197Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.0041644Z env:
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.0041879Z   OFFICE_KERNEL_REQUIRED: 1
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.0042172Z   SOURCE_PATH: apps/work
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.0042452Z   SOURCE_KEY_SET: false
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.0042715Z ##[endgroup]
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.0147557Z ##[error]CI source GitHub App credentials are missing for apps/work
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.0152477Z ##[error]Process completed with exit code 1.
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.0167134Z ##[end-action id=__self.source;outcome=failure;conclusion=failure;duration_ms=34]
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.0171129Z ##[start-action display=Run actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510;id=__self.access]
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.0174445Z ##[end-action id=__self.access;outcome=skipped;conclusion=skipped;duration_ms=0]
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.0176842Z ##[start-action display=Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683;id=__self.__actions_checkout]
+work-frontend (work)	Run ./.github/actions/checkout-source	2026-10-21T00:04:03.0179072Z ##[end-action id=__self.__actions_checkout;outcome=skipped;conclusion=skipped;duration_ms=0]

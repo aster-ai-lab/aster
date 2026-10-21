@@ -1,0 +1,9 @@
+{
+  "reason": "new local native/script processes remain stopped at dyld entry, Linux verification continues",
+  "verified_owned_root_pids": [
+    9089
+  ],
+  "owned_processes_stopped": 7,
+  "other_sessions_touched": false,
+  "sigcont_attempts_did_not_resolve_launch_stall": true
+}

@@ -75,6 +75,7 @@ class PairDelivery(unittest.TestCase):
             self.assertEqual(set(package.getnames()), {*NAMES, "BUILD_ID", "SHA256SUMS"})
         result = self.install()
         self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("installed Aster v0.1.2", result.stdout)
         for name in NAMES:
             self.assertEqual((self.prefix / name).read_bytes(), (self.bins / name).read_bytes())
 

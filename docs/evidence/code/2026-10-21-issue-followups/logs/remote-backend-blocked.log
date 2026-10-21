@@ -1,0 +1,92 @@
+fmt	Run ./.github/actions/checkout-source	﻿2026-10-21T00:04:02.6340090Z Prepare all required actions
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.6340660Z Getting action download info
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.7151106Z Download action repository 'actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510' (SHA:64ab729a6294000f5aa4a4bc0b73d1f32bc45510)
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.8645103Z ##[group]Run ./.github/actions/checkout-source
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.8645445Z with:
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.8645648Z   path: apps/work
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.8645863Z   owner: aster-ai-lab
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.8646086Z   repository: work
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.8646284Z env:
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.8646607Z   CARGO_TERM_COLOR: always
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.8646995Z   RUSTUP_TOOLCHAIN: 1.97.1
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.8647618Z   A3S_CLOUD_TEST_POSTGRES_URL: ***127.0.0.1:5432/postgres
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.8647987Z   A3S_CLOUD_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.8648322Z   A3S_CLOUD_TEST_S3_REGION: us-east-1
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.8648591Z   A3S_CLOUD_TEST_S3_BUCKET: a3s-test
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.8648862Z   A3S_CLOUD_TEST_S3_ACCESS_KEY_ID: a3s-test
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.8649218Z   A3S_CLOUD_TEST_S3_SECRET_ACCESS_KEY: a3s-test-secret
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.8649511Z ##[endgroup]
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.8725963Z ##[start-action display=Resolve recorded source commit;id=__self.source]
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.8771533Z ##[group]Run set -euo pipefail
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.8771937Z ^[[36;1mset -euo pipefail^[[0m
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.8772236Z ^[[36;1mif [[ "$SOURCE_KEY_SET" != true ]]; then^[[0m
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.8772694Z ^[[36;1m  echo "::error::CI source GitHub App credentials are missing for $SOURCE_PATH"^[[0m
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.8773111Z ^[[36;1m  exit 1^[[0m
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.8773308Z ^[[36;1mfi^[[0m
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.8773650Z ^[[36;1mpython3 .github/scripts/gitlink-ref.py "$SOURCE_PATH" >> "$GITHUB_OUTPUT"^[[0m
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9045016Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9045757Z env:
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9046056Z   CARGO_TERM_COLOR: always
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9046396Z   RUSTUP_TOOLCHAIN: 1.97.1
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9047216Z   A3S_CLOUD_TEST_POSTGRES_URL: ***127.0.0.1:5432/postgres
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9047737Z   A3S_CLOUD_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9048182Z   A3S_CLOUD_TEST_S3_REGION: us-east-1
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9048571Z   A3S_CLOUD_TEST_S3_BUCKET: a3s-test
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9048957Z   A3S_CLOUD_TEST_S3_ACCESS_KEY_ID: a3s-test
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9049405Z   A3S_CLOUD_TEST_S3_SECRET_ACCESS_KEY: a3s-test-secret
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9049838Z   SOURCE_PATH: apps/work
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9050156Z   SOURCE_KEY_SET: false
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9050396Z ##[endgroup]
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9178368Z ##[error]CI source GitHub App credentials are missing for apps/work
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9182670Z ##[error]Process completed with exit code 1.
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9199003Z ##[end-action id=__self.source;outcome=failure;conclusion=failure;duration_ms=47]
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9203327Z ##[start-action display=Run actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510;id=__self.access]
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9207392Z ##[end-action id=__self.access;outcome=skipped;conclusion=skipped;duration_ms=0]
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9209710Z ##[start-action display=Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683;id=__self.__actions_checkout]
+fmt	Run ./.github/actions/checkout-source	2026-10-21T00:04:02.9211964Z ##[end-action id=__self.__actions_checkout;outcome=skipped;conclusion=skipped;duration_ms=0]
+check	Run ./.github/actions/checkout-source	﻿2026-10-21T00:04:05.8321936Z Prepare all required actions
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:05.8322521Z Getting action download info
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:05.9346652Z Download action repository 'actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510' (SHA:64ab729a6294000f5aa4a4bc0b73d1f32bc45510)
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.3487580Z ##[group]Run ./.github/actions/checkout-source
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.3487932Z with:
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.3488151Z   path: apps/work
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.3488386Z   owner: aster-ai-lab
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.3488636Z   repository: work
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.3488855Z env:
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.3489064Z   CARGO_TERM_COLOR: always
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.3489322Z   RUSTUP_TOOLCHAIN: 1.97.1
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.3489994Z   A3S_CLOUD_TEST_POSTGRES_URL: ***127.0.0.1:5432/postgres
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.3490403Z   A3S_CLOUD_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.3490741Z   A3S_CLOUD_TEST_S3_REGION: us-east-1
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.3491039Z   A3S_CLOUD_TEST_S3_BUCKET: a3s-test
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.3491336Z   A3S_CLOUD_TEST_S3_ACCESS_KEY_ID: a3s-test
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.3491719Z   A3S_CLOUD_TEST_S3_SECRET_ACCESS_KEY: a3s-test-secret
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.3492045Z ##[endgroup]
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.3563952Z ##[start-action display=Resolve recorded source commit;id=__self.source]
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.3609406Z ##[group]Run set -euo pipefail
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.3609799Z ^[[36;1mset -euo pipefail^[[0m
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.3610126Z ^[[36;1mif [[ "$SOURCE_KEY_SET" != true ]]; then^[[0m
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.3610615Z ^[[36;1m  echo "::error::CI source GitHub App credentials are missing for $SOURCE_PATH"^[[0m
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.3611053Z ^[[36;1m  exit 1^[[0m
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.3611272Z ^[[36;1mfi^[[0m
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.3611867Z ^[[36;1mpython3 .github/scripts/gitlink-ref.py "$SOURCE_PATH" >> "$GITHUB_OUTPUT"^[[0m
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.4915781Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.4916525Z env:
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.4916829Z   CARGO_TERM_COLOR: always
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.4917196Z   RUSTUP_TOOLCHAIN: 1.97.1
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.4918078Z   A3S_CLOUD_TEST_POSTGRES_URL: ***127.0.0.1:5432/postgres
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.4918631Z   A3S_CLOUD_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.4919105Z   A3S_CLOUD_TEST_S3_REGION: us-east-1
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.4919515Z   A3S_CLOUD_TEST_S3_BUCKET: a3s-test
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.4919936Z   A3S_CLOUD_TEST_S3_ACCESS_KEY_ID: a3s-test
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.4920373Z   A3S_CLOUD_TEST_S3_SECRET_ACCESS_KEY: a3s-test-secret
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.4920793Z   SOURCE_PATH: apps/work
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.4921104Z   SOURCE_KEY_SET: false
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.4921396Z ##[endgroup]
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.5053638Z ##[error]CI source GitHub App credentials are missing for apps/work
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.5058403Z ##[error]Process completed with exit code 1.
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.5074142Z ##[end-action id=__self.source;outcome=failure;conclusion=failure;duration_ms=150]
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.5078739Z ##[start-action display=Run actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510;id=__self.access]
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.5082408Z ##[end-action id=__self.access;outcome=skipped;conclusion=skipped;duration_ms=0]
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.5084745Z ##[start-action display=Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683;id=__self.__actions_checkout]
+check	Run ./.github/actions/checkout-source	2026-10-21T00:04:06.5087475Z ##[end-action id=__self.__actions_checkout;outcome=skipped;conclusion=skipped;duration_ms=0]

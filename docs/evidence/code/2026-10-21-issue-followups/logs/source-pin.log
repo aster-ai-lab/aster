@@ -1,0 +1,7 @@
+test_reads_only_the_recorded_revision_even_with_path_spaces (__main__.SourceCheckout.test_reads_only_the_recorded_revision_even_with_path_spaces) ... ok
+test_refuses_missing_non_commit_and_ambiguous_records (__main__.SourceCheckout.test_refuses_missing_non_commit_and_ambiguous_records) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
+
+OK
