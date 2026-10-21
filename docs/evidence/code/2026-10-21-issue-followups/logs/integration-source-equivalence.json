@@ -1,0 +1,16 @@
+{
+  "integrated_base": "16469319771867f9dfd46d41534ef00fe2a2addc",
+  "change_from_previous_base": "documentation and desktop alias only; no affected Rust sources, manifests, lockfile, installers or tests changed",
+  "validated_source_sha256": {
+    "Cargo.lock": "78cfeeac4ed618df9a1566906f213b33e88a47ce59a6f8d171e82f16e3d9b400",
+    "apps/aster/Cargo.toml": "652a24d0e70153659783e0bcf6203f045a26b554478f6485ffff92af2fc92d7d",
+    "apps/aster/src/cli_pair_update.rs": "97e9867403b40b0ae583f8a95aa3d8c2a39ccec42ded82d0806e8e5e50e2138e",
+    "crates/code/core/src/llm/http.rs": "6100dc8d902e2fd2fca03e212c7e880979a0ba74117f6886561846c3f04d4470",
+    "crates/terminal/crates/codegen/a3s-code-pager/src/acp/mod.rs": "0daf018e8c83af3d52c3019524a870028a7c8c8fe639f3e476f61b9a8898f43b",
+    "crates/terminal/crates/codegen/a3s-code-pager/src/headless.rs": "32cdfb60945341e4a49a73228acde075c64db4d88b7832dab179cc5f1e6bef6a",
+    "scripts/install.sh": "a8f5c2820bc72f40d961b908f805cb1022aec889f60fff183514f97f249287f1",
+    "scripts/install.ps1": "7bb225cf55ac09da26ddcf1ab6da99d0a94a6685bc89a0c7a5ce4807579fab4c",
+    "tests/cli_acp_lifecycle.py": "c6d3ec3cb5a1341ec09f8e9f72dcfa64cc34c80f7fe6ff0d76832dcfa1f463fa"
+  },
+  "all_validated_sources_unchanged": true
+}
