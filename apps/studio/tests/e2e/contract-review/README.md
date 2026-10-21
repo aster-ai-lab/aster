@@ -3,10 +3,10 @@
 The package extends the installed `@` agent list. It has no standalone UI or
 mini-app window. The former package-picker fixture is retired.
 
-From `apps/studio`, with the AsterDream renderer running on port 4537:
+From `apps/desktop`, with the AsterDream renderer running on port 4537:
 
 ```sh
-STUDIO_E2E_BASE_URL=http://127.0.0.1:4537 ./node_modules/.bin/playwright test \
+DESKTOP_E2E_BASE_URL=http://127.0.0.1:4537 ./node_modules/.bin/playwright test \
   --config playwright.workbench-office.config.ts contract-review-composer.spec.ts
 a3s-test check tests/e2e/contract-review/no-window.acl --json
 a3s-test run tests/e2e/contract-review/no-window.acl \

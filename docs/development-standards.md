@@ -27,7 +27,7 @@ The spec-kit phase mapping lives in
 
 ### Product regime
 
-Paths: `apps/aster`, `apps/work`, `apps/studio`, `crates/code`,
+Paths: `apps/aster`, `apps/work`, `apps/desktop`, `crates/code`,
 `crates/terminal`.
 
 New behavior has a small hermetic test. AsterDream desktop tenants use
@@ -55,10 +55,9 @@ their own workspaces and lockfiles, and they are not root members.
   its `a3s-code-acp` companion. Build and distribute both together.
 - `crates/code/core` is the embeddable Rust SDK and harness. Do not
   add Node, Python, or Go bindings, SDKs, or package publishing jobs.
-- `apps/studio` is the shared desktop host. Build it with
-  `just build-studio`. Its default `aster` tenant is AsterDream;
-  explicit `toyou` retains the original toyou product. Keep their
-  product identities and data isolated. See `specs/004-studio-default-aster`.
+- `apps/desktop` is the shared desktop host. Build it with
+  `just build-desktop`. Its default `aster` tenant is AsterDream.
+  Keep tenant identities and data isolated. See `specs/004-desktop-default-aster`.
 - `apps/work` retains legacy AsterDream source and the Office vendor
   dependency. `just build-work` remains a legacy build. Do not copy
   old user state or add another Cargo workspace or lockfile.
@@ -308,7 +307,7 @@ React is not available. The contract is `DESIGN.md` §6 "Picker
 (dropdown)". The Radix `Select` list only shrinks.
 
 **Enforcement.** Constitution principle XVI.
-`apps/studio/src/renderer/__tests__/noNativeSelect.test.ts` fails on
+`apps/desktop/src/renderer/__tests__/noNativeSelect.test.ts` fails on
 a native dropdown in AsterDream's renderer and holds the Radix `Select`
 list shrink-only. Component tests open the trigger and choose a
 `role="option"` row.

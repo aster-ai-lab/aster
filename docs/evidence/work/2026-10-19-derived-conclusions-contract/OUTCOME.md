@@ -27,8 +27,8 @@ all 8000 caller characters and the two-character delimiter, it occupies
 
 Work `turns.rs::host_for_session` calls `delivery_host`, which appends the
 compile-time `delivery_contract.md`. `session_new_params` sends it through
-`_meta.a3sHost.guidelines`. ACP `studio_host_from_meta` sanitizes and admits
-that text, and `merge_studio_host` preserves it in `SystemPromptSlots.extra`;
+`_meta.a3sHost.guidelines`. ACP `desktop_host_from_meta` sanitizes and admits
+that text, and `merge_desktop_host` preserves it in `SystemPromptSlots.extra`;
 `SystemPromptSlots::build` assembles the model system prompt.
 
 The existing Work structural test now checks all new clauses in that exact
@@ -37,7 +37,7 @@ Work Markdown, uses the full 8000-character caller allowance, parses the actual
 metadata shape, merges prompt slots, and checks the built prompt retains the
 complete contract once, beside caller text, review instructions and the budget.
 ACP changes are entirely inside its existing test module. No ACP production
-parser, tool behavior, Core or Studio production source was changed.
+parser, tool behavior, Core or Desktop production source was changed.
 
 The `output_check` implementation was reviewed, including its schema, caller
 registration and tests. Its existing bounded actions compute percentage changes
@@ -94,7 +94,7 @@ Cargo produced these freshly compiled test executables:
 
 ```text
 target/debug/deps/a3s_code_acp-fe795c66e1b39f0b
-target/debug/deps/a3s_studio_lib-980ddfdb3c93364c
+target/debug/deps/a3s_desktop_lib-980ddfdb3c93364c
 ```
 
 Both invocations waited for the shared target owner when necessary. No duplicate

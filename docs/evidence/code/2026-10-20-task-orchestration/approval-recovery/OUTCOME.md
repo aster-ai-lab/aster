@@ -77,7 +77,7 @@ claim that this observed session was in captured repair mode.
 
 Status recovery also exists independently: `events.rs:56–66` includes live
 statuses in the atomic SSE snapshot, consumed by
-`renderer/data/studioAgentPlane.ts:570–583`. Therefore this audit does **not**
+`renderer/data/desktopAgentPlane.ts:570–583`. Therefore this audit does **not**
 claim that all status recovery is absent merely because attach is incomplete.
 
 An abort request only sets the live turn's abort watch

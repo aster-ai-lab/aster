@@ -33,7 +33,7 @@ fixtures. Shared Runtime has 101 passing unit/integration cases, and Box has
 2112 passing cases plus the separately executed real MicroVM/Gateway OCR proof.
 Attachment-only and explicitly attested consumer profiles are distinct; file
 state reads validate the complete record. See [ADR 0009](docs/adr/0009-preserve-v4-encoding-and-distinguish-identity-proof.md)
-and [retained evidence](../../docs/evidence/studio/20261017-runtime-contract-compatibility/OUTCOME.md).
+and [retained evidence](../../docs/evidence/desktop/20261017-runtime-contract-compatibility/OUTCOME.md).
 
 This does not certify a rolling upgrade over noncanonical null-digest state,
 OS credential injection, AsterDream automatic composition or host cleanup. The Node
@@ -46,7 +46,7 @@ clean-host EXIT remain open.
 Use's optional consumer has moved from Runtime 0.3 to 0.8 and verifies its
 release compatibility through the linked library version. Its explicit
 transport/lifecycle policy and CLI regression are recorded in the
-[consumer evidence](../../docs/evidence/studio/20261017-paperloom-use-runtime/OUTCOME.md).
+[consumer evidence](../../docs/evidence/desktop/20261017-paperloom-use-runtime/OUTCOME.md).
 
 **A3S Runtime is the provider-neutral, durable lifecycle boundary for one Task
 or Service unit.**

@@ -6,7 +6,7 @@ The root workspace resolves one `a3s_flow` target. The package is
 Every file in the committed `crates/flow-v2` tree is present under
 `crates/flow`. The gitignored `packages/ui/node_modules` tree was
 removed. The select-timer and scope-cancel checksum constants are gated with
-the store feature that reads them. `aster-dream` and `a3s-studio`
+the store feature that reads them. `aster-dream` and `a3s-desktop`
 depend on this package with default features off and only `native-ts`.
 `a3s-code-core` keeps the dependency optional, at `crates/flow`, and
 links it through `dynamic-workflow`.
@@ -22,7 +22,7 @@ Commands ran from the repository root. The Python interpreter was
 - `cargo metadata --locked --offline --no-deps --format-version 1`:
   one package with target `a3s_flow`, name `a3s-flow`, version
   `2.0.0`, manifest `crates/flow/Cargo.toml`. `aster-dream` and
-  `a3s-studio` use path `crates/flow`, default features off, feature
+  `a3s-desktop` use path `crates/flow`, default features off, feature
   `native-ts`. `a3s-code-core` uses the same path, optional, default
   features off, no direct features.
 - `python3.13 -m unittest tests.workspace_dependencies.WorkspaceDependenciesTest.test_products_share_one_flow_engine`:
@@ -33,9 +33,9 @@ Commands ran from the repository root. The Python interpreter was
   `native_ts_compiler_executes_real_bun_workflow` (`requires
   A3S_FLOW_NATIVE_TS_COMPILER and Bun`). Exit 0. Log:
   `/tmp/a3s-flow-sqlite.log`.
-- `cargo check -p a3s-code-core -p aster-dream -p a3s-studio --offline --locked`:
+- `cargo check -p a3s-code-core -p aster-dream -p a3s-desktop --offline --locked`:
   exit 0, dev profile finished in 3m 00s. The log records
-  `Compiling aster-dream` and `Compiling a3s-studio`.
+  `Compiling aster-dream` and `Compiling a3s-desktop`.
 - `cargo test -p a3s-code-core --offline --locked --features dynamic-workflow --lib flow -- --test-threads=8`:
   120 passed, 2 failed, 5179 filtered out. Exit 101.
   `test_dynamic_workflow_parallel_deep_research_inherits_parent_permissions`

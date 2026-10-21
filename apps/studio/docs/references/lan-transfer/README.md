@@ -6,7 +6,7 @@ sources:
   - src/shared/types/lanTransfer.ts
 ---
 
-<a id="cherry-studio-lan-transfer-protocol-specification"></a>
+<a id="cherry-desktop-lan-transfer-protocol-specification"></a>
 
 # AsterDream LAN Transfer Protocol Specification
 
@@ -72,9 +72,9 @@ This document defines the LAN file transfer protocol between the AsterDream desk
 
 | Property | Value |
 |----------|-------|
-| Service Type | `cherrystudio` |
+| Service Type | `cherrydesktop` |
 | Protocol | `tcp` |
-| Full Service ID | `_cherrystudio._tcp` |
+| Full Service ID | `_cherrydesktop._tcp` |
 
 ### 2.2 Service Publishing (Mobile)
 
@@ -82,8 +82,8 @@ Mobile must publish the service via mDNS/Bonjour:
 
 ```typescript
 {
- name: "Cherry Studio Mobile",
- type: "cherrystudio",
+ name: "Cherry Desktop Mobile",
+ type: "cherrydesktop",
  protocol: "tcp",
  port: 53317,
  txt: {
@@ -357,7 +357,7 @@ export const LAN_TRANSFER_GLOBAL_TIMEOUT_MS = 10 * 60 * 1000 // 10 minutes
 export const LAN_TRANSFER_COMPLETE_TIMEOUT_MS = 60_000
 ```
 
-The desktop service keeps discovery type `cherrystudio`, the 10-second default
+The desktop service keeps discovery type `cherrydesktop`, the 10-second default
 handshake timeout, and the 30-second `file_start_ack` timeout as local constants.
 `validateFile` currently accepts only `.zip`, emits MIME `application/zip`, and
 rejects files over the shared 500 MB limit.
@@ -407,7 +407,7 @@ rejects files over the shared 500 MB limit.
 
 ### 10.1 Required Features
 
-1. **mDNS Service Publishing**: Publish `_cherrystudio._tcp` service on TCP port `53317`
+1. **mDNS Service Publishing**: Publish `_cherrydesktop._tcp` service on TCP port `53317`
 2. **TCP Server**: Listen on the specified port
 3. **Message Parsing**: Control messages via UTF-8 + `\n` JSON; data messages via binary frames (Magic+TotalLen framing)
 4. **Handshake Handling**: Validate `handshake`, send `handshake_ack`, respond to `ping`

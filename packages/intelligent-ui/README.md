@@ -36,7 +36,7 @@ Build emits ESM renderer/parser modules in `dist/`. It does not create an AIX
 archive. AsterDream imports the library directly; rendering an OpenUI message
 does not require installing a plugin. The optional adapter has a separate build.
 
-<a id="studio-integration"></a>
+<a id="desktop-integration"></a>
 
 ## AsterDream integration
 
@@ -84,7 +84,7 @@ source. `npm run typecheck` checks the renderer types. AsterDream's message/form
 check user interactions and same-turn submission. Native package admission and
 archive/browser checks belong to the [AIX adapter](../intelligent-ui-aix/README.md).
 
-For the independent renderer browser fixture, from `apps/studio` in separate
+For the independent renderer browser fixture, from `apps/desktop` in separate
 terminals run `node tests/e2e/intelligent-ui/serve.mjs` and
 `node tests/e2e/intelligent-ui/verify-review.mjs`. It loads no AIX package and
 uses controlled submission channels. It requires a local socket and A3S Test;

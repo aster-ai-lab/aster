@@ -6,7 +6,7 @@ next reviewed product build; this slice did not build or install a live binary.
 ## Confirmed defect and bounded repair
 
 The renderer already sends `AiStreamOpenRequest.reasoningEffort` through both
-`IpcChatTransport` and `useAgentChatRuntimeState`. Work and Studio local native
+`IpcChatTransport` and `useAgentChatRuntimeState`. Work and Desktop local native
 turns discarded it: `TurnWire` retained no selection and runtime setup applied
 only the execution mode. ACP consequently kept its existing initial `high`.
 
@@ -70,7 +70,7 @@ exit 0: 3 passed, 0 failed, 0 ignored
 cargo test -p aster-dream --lib reasoning_transport_tests -- --nocapture
 exit 0: 6 passed, 0 failed, 0 ignored
 
-cargo test -p a3s-studio --lib reasoning_transport_tests -- --nocapture
+cargo test -p a3s-desktop --lib reasoning_transport_tests -- --nocapture
 exit 0: 6 passed, 0 failed, 0 ignored
 ```
 
@@ -124,7 +124,7 @@ relative paths, a NUL, complete file bytes, and a NUL is:
 1179a35f3eb5228a1db851c97b5d3730972003a2a98a26b9bda868c575c9a8d0
 ```
 
-Production owners: Work and Studio `agent_plane/turns.rs`,
+Production owners: Work and Desktop `agent_plane/turns.rs`,
 `workbench_turns.rs`, and new private `reasoning_effort.rs`; ACP `agent.rs`
 and `agent/models.rs`. Each host has a new sibling
 `reasoning_transport_tests.rs`, as does ACP's `agent` module.

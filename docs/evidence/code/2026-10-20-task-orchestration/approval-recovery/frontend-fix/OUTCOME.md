@@ -49,7 +49,7 @@ Commands run from `apps/work`. `pnpm` was absent in this shell (exit 127,
   src/renderer/components/composer/__tests__/ComposerCore.test.tsx \
   src/renderer/hooks/__tests__/useTopicAwaitingApproval.test.ts \
   src/renderer/pages/agents/__tests__/useAgentChatRuntimeState.test.tsx \
-  src/renderer/data/__tests__/studioAgentPlane.test.ts
+  src/renderer/data/__tests__/desktopAgentPlane.test.ts
 ```
 
 `green-final.log`: **5 files passed; 76 passed, 1 skipped; exit 0; 4.47 s**.

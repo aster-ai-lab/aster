@@ -107,7 +107,7 @@ The current shared helper and its existing tests also passed independently:
 Owned-source `rustfmt --edition 2021 --config skip_children=true --check`
 and `git diff --check --` passed. `cargo fmt --all -- --check` exited one on
 concurrent changes outside this slice: six Cloud plugin files,
-`crates/code/acp/src/document_read.rs`, and the Work and Studio
+`crates/code/acp/src/document_read.rs`, and the Work and Desktop
 `agent_plane/execution_status_tests.rs` files. Those files were not edited
 to make this slice's format check pass.
 

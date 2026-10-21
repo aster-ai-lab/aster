@@ -1,4 +1,4 @@
-<a id="explicit-studio-contract-proof"></a>
+<a id="explicit-desktop-contract-proof"></a>
 
 # Explicit AsterDream contract proof
 

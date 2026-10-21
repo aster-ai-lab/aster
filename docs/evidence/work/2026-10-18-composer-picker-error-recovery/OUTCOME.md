@@ -25,7 +25,7 @@ Only these two production files changed for this repair. The separate legacy
 ## Tests and red-to-green evidence
 
 `WorkbenchComposerAttachmentPipeline.test.tsx` runs the actual
-`studioMainBridge.js`, actual attachment runtime/registry, actual composer
+`desktopMainBridge.js`, actual attachment runtime/registry, actual composer
 surface and actual Tiptap/ProseMirror document with the production token mapper,
 draft filter and attachment reconcile hook. Native picker events and host fetch
 responses are controlled; file-preview/QuickPanel presentation are stubbed.

@@ -21,7 +21,7 @@ assets or install scripts, and is not a VSIX extension.
 
 ## Verification
 
-After building the adapter, from `apps/studio/src-tauri`:
+After building the adapter, from `apps/desktop/src-tauri`:
 
 ```sh
 A3S_CLOUD_INTELLIGENT_UI_CERT_DOCUMENT=/private/tmp/a3s-intelligent-ui-publication.json \

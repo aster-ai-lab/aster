@@ -57,7 +57,7 @@ sources:
 | Mobile `DesktopSession.connect` | 逐个拨号，完成 Noise 和 hello | 寻址、候选选择和单连接职责混合 |
 | Shared `connectSecureChannel` | 在 `MessageStream` 上建立 Noise 会话 | 已有可复用的传输分离点 |
 
-移动端源码在配套 cherry-studio-app 仓库，以上路径相对于其 `src/backend/services/desktopConnections/`。
+移动端源码在配套 cherry-desktop-app 仓库，以上路径相对于其 `src/backend/services/desktopConnections/`。
 桌面已有 `bonjour-service` 依赖，当前被文件传输模块使用；远程访问不应依赖文件传输服务的生命周期。
 
 ## 2. 范围与不变量

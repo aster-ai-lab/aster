@@ -1,0 +1,885 @@
+{
+  "scope": "Current product and internal design prose. Code spans/fences, link targets, tenant identity data, third-party tool names, legal originals, source provenance and historical evidence retained.",
+  "files": [
+    {
+      "path": "apps/studio/src/shared/data/README.md",
+      "before": "929fcf1c496d6cb0731c162331d0b11ea4b0cea932b61e128922831ad97a33ba",
+      "after": "545c01fcf02461a35334ae9f0b8e5c17e10f23e89064422fb9e60d6d92fbc6ab"
+    },
+    {
+      "path": "apps/api/docs/GIT.md",
+      "before": "054d9b0a8509c3d67158418ca1019e06f3fe4fe574c213ef8100c1c4e595b9e3",
+      "after": "c8cea7842174556f1f90347420f85e6c01b082ad2aadf050cfad7b57f3b2e398"
+    },
+    {
+      "path": "apps/web/public/tenant/aster/BRAND.md",
+      "before": "a85bc8858e2a08e5a89c3be067035f2af48572d68d4676168e0fa2209c2e087b",
+      "after": "7158277254052dd2b6c4a52937bb7e1372797c80f719c6c439281354475b6928"
+    },
+    {
+      "path": "apps/cloud/ROADMAP.md",
+      "before": "85f00f5d0e18b1aa474214d2b38c0f9ab66be224d453f7196379fdbe60cddbc5",
+      "after": "c1c3a6d271608dca1adbec72c2c2a40f548c3c0cf951f86adb2092ac78c76e22"
+    },
+    {
+      "path": "apps/cloud/docs/ai-application-platform-plan.md",
+      "before": "de1530cd1737cd39aa067a55b0bd4fda1ef195dcad4f9cc0e18859efdb06ff03",
+      "after": "b20ca21ee1f738f327fa2ddedf7c1fd54f8dbba781d53208605fa617f43e99d0"
+    },
+    {
+      "path": "apps/api/docs/BOUNDARIES.md",
+      "before": "b60c9a2334792fb11f0eef9a83f07df3002e0c63d59c9c2ae17eb0e83cbed33b",
+      "after": "973bb333707580b685f92b9af508c20be708a3bec92428b5da63c758565b1475"
+    },
+    {
+      "path": "apps/api/docs/README.md",
+      "before": "9316b5f586b60013e0dd65659eabcc881582a49c9dd9d125d9fe2995d4a4131c",
+      "after": "7c84b150bc7a45312fe219a0057f2bc03f790c40c8b67638e7ac78b5ee008576"
+    },
+    {
+      "path": "apps/web/public/tenant/toyou/BRAND.md",
+      "before": "7f67e55a460565de03f3c4c46b1704727349c8ab07f44e401ada7f18820051ac",
+      "after": "e900f3ee21df64176a12753f34b0a401b4912ea0a099f8e8655b17527ca966cf"
+    },
+    {
+      "path": "apps/work/src/shared/data/README.md",
+      "before": "929fcf1c496d6cb0731c162331d0b11ea4b0cea932b61e128922831ad97a33ba",
+      "after": "545c01fcf02461a35334ae9f0b8e5c17e10f23e89064422fb9e60d6d92fbc6ab"
+    },
+    {
+      "path": "apps/api/docs/IM.md",
+      "before": "ace5fc0bdb978e0f4c33b6aadb0be0b914c802ee3a1314d587453bf665ac5f3a",
+      "after": "10783f5da33664cd9903db58f82450b675057e2a0de0150d2b4c387ae2a7c8a2"
+    },
+    {
+      "path": "apps/api/docs/AIX-PACKAGES.md",
+      "before": "63a3c84015cb8b558b630172e33f81f6f41bf8c80516966ddb4385b53af1a148",
+      "after": "1d76e7384b37eeedb37c6355f41fb8d10614e74c22510cb292d2cc4f1f621e25"
+    },
+    {
+      "path": "packages/intelligent-ui-aix/README.md",
+      "before": "adbb660c73926c30bde1ba01adf3d6c8c50aea8953612f6abdd9db5386fd4320",
+      "after": "636a4b0c041857c5b3e85456c69fa8ac925806ccd19b54e89703d12ac11c801c"
+    },
+    {
+      "path": "docs/development-standards.md",
+      "before": "28f29f6a66fd0e65e8db0146f828a8417bae23b8a70bcd318a2bdca087f0569f",
+      "after": "ed49efa0c9786fb55ab14e1637609ba904022e97e1024daa39d5ab25850f70e4"
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/delivery_contract.md",
+      "before": "8b658cedd917d7a7c675a51efd27ff544d906c851f12873d0f931881486d28d0",
+      "after": "be82e55787ce72b88cf945c4eb31db4e08db423acb7309dbcd209320e2c160f5"
+    },
+    {
+      "path": "apps/studio/resources/skills/cherry-tool-guide/SKILL.md",
+      "before": "8ae18136ceccfd5631180f33260a99067b2ea8dd36a5d4695897ca2e44eb82cc",
+      "after": "45c17791faa40834392a0e4229dc8418a755fba51d4e09c7fec84ee84db583fe"
+    },
+    {
+      "path": "packages/intelligent-ui/skills/intelligent-ui/SKILL.md",
+      "before": "2b8bf9108fb29bc133da95038f112bb7ab1d961b597ab2bfd81a3b2fb6f5c3e4",
+      "after": "1ca9fb9cc82071a8d8a2192ecc3e93faf6fa40e19105c4f358ce3d2c8904b6c7"
+    },
+    {
+      "path": "apps/use-registry/packages/digital-twin/README.md",
+      "before": "0ce52723d52d47a6d72e368f1f61ebd2f7badd096e3ca3c3d25ff5ed7c254275",
+      "after": "e7037971dd48c121292388c172b8f55d2cfe789a0c3f79408c85d8f98db29392"
+    },
+    {
+      "path": "packages/intelligent-ui/README.md",
+      "before": "388842b466255505681837239f6b67f8105dfe2f05a0c240f92e414344327996",
+      "after": "04d38c39a66edaa7491390feeae1134513d2a6524ac8e85e3ef9d66be0f3c77a"
+    },
+    {
+      "path": "apps/api/src/contexts/workspace_documents/README.md",
+      "before": "f83ad42f1b1d1cb00ab36051fb512bae82c53a96c3cb0767a04d3201f21519f8",
+      "after": "ff0c2c2ec58d6e3706f04065a4fd5a4bb4715c6567e8215c9b3bf37c1fbd6140"
+    },
+    {
+      "path": "apps/use-registry/packages/data/README.md",
+      "before": "664cd6fce19646ac9cf03a8487d28747e99125653901b9bd32c3323ab52a4473",
+      "after": "87fd2050d8f214364931aab85b65927b68f3cd87bbbf8a6503799f29a54aeafe"
+    },
+    {
+      "path": "apps/studio/resources/skills/cherry-browser/SKILL.md",
+      "before": "6f298b48a03b93b8afe4f54dd8aad91bf0ca615619d1c2c1071d73db8d24f751",
+      "after": "6c52d46b44982c7d6b12172883bea9cd6b48ed594cedb0f5bee7f50e85c56428"
+    },
+    {
+      "path": "specs/003-desktop-work-alignment/spec.md",
+      "before": "37c3cea452b56e7dc6fc737e65aaf31689b2910c5b52e78a8ad97fabe00b91d5",
+      "after": "dca55c89f7640052d8f8ee580a17e9b578507ae4db113473536f920f238c7c76"
+    },
+    {
+      "path": "apps/studio/resources/skills/skill-creator/SKILL.md",
+      "before": "c683c0bf119368cb4200b86a3e35839c129ce5b0a42260a4364539af384a2cb3",
+      "after": "a9149b2f7a1c2d5be86972b3dbea8e8dfd97e1d5a532c4789a87451718c7e820"
+    },
+    {
+      "path": "specs/003-desktop-work-alignment/plan.md",
+      "before": "8a5deca26d30828fe0d7a0fb019282b8c750165993e18acd4ba21acf6f1e6c20",
+      "after": "1ce9c6808b413ebc216bf63c663422b682a330f92b5465562b7a78d12200da1e"
+    },
+    {
+      "path": "specs/003-desktop-work-alignment/tasks.md",
+      "before": "0367a55e0f425105ff7849d22272273601353098fa1854b6e1d65e07eb08667c",
+      "after": "7d07ab91905d2a5acd5f039e3e4f0e4d156eeee93a54c7e1db598068de4e7232"
+    },
+    {
+      "path": "specs/002-shared-acp-agent/spec.md",
+      "before": "e05e52fada7cf8f958c09829d6a935a70f17b8c85b4941e6d1c9f708b5139f6e",
+      "after": "c277083a181bbcf05155fad631db665cbeec1943a5376bc1518104c319acc4f9"
+    },
+    {
+      "path": "apps/use-registry/packages/presenton/README.md",
+      "before": "c070a664a02a8adff7273cd09ffdd8444542a6ac21ab82bb1d33597fe20612ee",
+      "after": "3a473cbe87a5558350d6a7602db1b48c9649a9c017732d58f434c530404953d3"
+    },
+    {
+      "path": "apps/use-registry/packages/paperloom/skills/paperloom/SKILL.md",
+      "before": "7f93727c8e87e26d8d798880ba4b41675e39ec4c848ec9cc72703d4817b75794",
+      "after": "801ec6b9fa1b376ab383f4cdf6b49f6b9f810980c50f98d2a968308cf782038f"
+    },
+    {
+      "path": "specs/004-desktop-default-aster/spec.md",
+      "before": "e4a5dee47e30b459db21670080c4c797a1cde1b23f7d7faffd28016138f79bc1",
+      "after": "4f2e76118a743d6749a210879797aed0f9e30f048910a5d755746d90ed8609ff"
+    },
+    {
+      "path": "specs/004-desktop-default-aster/plan.md",
+      "before": "9eafa960e426d14714ba50e82088fe0112a20f9e827b9871667fe5e764716489",
+      "after": "b7cf2559bb6a0fc28527732e1c1a662fda027368885574318c6bee4b015379e6"
+    },
+    {
+      "path": "apps/use-registry/packages/paperloom/README.md",
+      "before": "70cfd504fab24d01d2a1f349c625082483cdec07cb1ca6d1624171acd79b7494",
+      "after": "f11199beff32162ddcc8eb4e383282f41ee0a59ad8984163678d34b8d90e2009"
+    },
+    {
+      "path": "packages/office/README.md",
+      "before": "377dd7e2dc84d12384e5e98b3fd6c7b1fce2a48235ac938dcc19c6e278159744",
+      "after": "9add98e842bc1b55aeeccb8042b35888846a8eeb22895698787076df5279bf19"
+    },
+    {
+      "path": "apps/use-registry/packages/paperloom/agents/paperloom/INSTRUCTIONS.md",
+      "before": "1087a17b3bbb3312cd9561c4b2127ea802bc5e21f8f0a3eaf72aecb38a278abb",
+      "after": "69eb01ad5728689d7eb446477e04d5cb8a4db592dd130ce346fb92c4d8556f18"
+    },
+    {
+      "path": "apps/studio/packages/aiCore/README.md",
+      "before": "68308ec063b9e53b1ef148833c6149508c3e4a0519554e89b0da1c398a1646ab",
+      "after": "e5f191f680c2b3e59bace0aec50ada9775380e44fc827234afd09ff1707b1053"
+    },
+    {
+      "path": "apps/use-registry/packages/review/README.md",
+      "before": "e9a4aebd50dbdb87a536417891e03fa359b1a3cc5f032e8c677f30b009e32ab8",
+      "after": "afc5fe5aefabb26933deae426adaf28b54bf13366fb0ce51da511e5b472123bb"
+    },
+    {
+      "path": "apps/use-registry/packages/langchain-rate/README.md",
+      "before": "d976449d1eaae700ceae7f02cbce355088c0fd941c8828da70336e78420cb901",
+      "after": "1747a9750c35f9952fbabfcb386118933bf52b22029eab93fd4ecc9dafa782ad"
+    },
+    {
+      "path": "apps/use-registry/packages/cobot-arm/skills/cobot-arm/SKILL.md",
+      "before": "0918d8b638a4298678763ebcb40ad83924c597edd445d08b5938a71e09276764",
+      "after": "537016d219caa206d381a72699bdea1b6b47b970e2c6fe1d536a0aead2b1b02a"
+    },
+    {
+      "path": "apps/use-registry/packages/cobot-arm/README.md",
+      "before": "fe7007ad62b1cba0595c321571ca5cae4e2dd6227e30cf2c892d7e9d3e586ce5",
+      "after": "9539563a7d3d2a7fa3efcf1f6030b7cf890e8b5435a9999eeddca166132cda6d"
+    },
+    {
+      "path": "apps/use-registry/packages/iris/skills/iris/SKILL.md",
+      "before": "3af52b4d53d431d2e2a6be508a0fe05f73352330613042a2578a5461f4a5f5d6",
+      "after": "61c1db0037d12adc06a879651ae2e50176c9b07b08cba964c7fe6382bcbea9d7"
+    },
+    {
+      "path": "apps/use-registry/packages/iris/README.md",
+      "before": "9fe28b241978b2fc0ead7dbb3f35050b68590ce055483181f60f1665781e97c0",
+      "after": "306079ffec4f3f77ca036131b89f2d37c9272cb12cc9a2dcce3a8ca9f6598c9c"
+    },
+    {
+      "path": "apps/work/docs/README.md",
+      "before": "f8f57627fe8c5c68a31651fee75816fbc579c24a533355ba5882993dfa4c0211",
+      "after": "0781dac0d7c17d1037a3894fd5407753c2d698eeb2e57cb49046e67311396ba6"
+    },
+    {
+      "path": "apps/use-registry/packages/cobot-arm/tests/PLAN.md",
+      "before": "5fbbce72e96fab68efc3c01cbeda5e5fb0ca067ebf38385dfa57921d0ccf9123",
+      "after": "499911804ffb1ad460d7b412b238597608ae64826372a79d0dba9bc3baefcfe4"
+    },
+    {
+      "path": "apps/work/docs/contrib/test-plan.md",
+      "before": "6292a163274cbbc4cdcba20f40771eb5d850c321c0e44a30a0e20195f410c06a",
+      "after": "9824539a63f119cd0164d40da40a846bc8237de06783d1f90b312f1979f6afd2"
+    },
+    {
+      "path": "apps/studio/packages/provider-registry/README.md",
+      "before": "1a2204d76490105e43015fb144a9a42c0a73b654538007c61936b88f1883eaa8",
+      "after": "50345abc818dfcdb84175ad0d058ea00be7319fae7a771c97c24a220a807236d"
+    },
+    {
+      "path": "apps/work/docs/contrib/release-workflow.md",
+      "before": "12624c0670223bccdd6893566c321766a3b9a357b9f36d46e8f05f0578664dcf",
+      "after": "a4a334acff8e756337d37d0786eaaed43ceac9acbb8169278c1562fbbe466121"
+    },
+    {
+      "path": "apps/use-registry/packages/g1-arm/skills/g1-arm/SKILL.md",
+      "before": "9102bce62610de04b171dce477ef4fefabadf9ba205282db4cb73e239759965f",
+      "after": "f346f28e39c23aaf1d0e7e7bf45cfd7d9a5201b777ab6f5261631e7151d1b32e"
+    },
+    {
+      "path": "apps/work/docs/contrib/linux-packaging.md",
+      "before": "0086c7b2c01c9aa1198f3ae2faeecaf145641a4c7d4153967d5da3aa5b185e8d",
+      "after": "24a5888e39438e31dac6c93f1e89e49edb5bb6f45d99244c8fd359e0f456fabc"
+    },
+    {
+      "path": "apps/use-registry/packages/g1-arm/README.md",
+      "before": "5eaddbaa7d78e1cb429ec938be9f67ff1bc158c009712cf178052b88934770e8",
+      "after": "9859038987b4eca96816ed72041c496da8b2b1af51886c0851443404f657772b"
+    },
+    {
+      "path": "apps/work/docs/contrib/app-upgrade.md",
+      "before": "929511dd9e625b7e4eedcfa9df7a9090dd48702f2d78c985144430090ec885e0",
+      "after": "60b9f86676b0f30ab13c200e0673f550415fa3ab49b23ad2b990a0a8803ef480"
+    },
+    {
+      "path": "apps/work/docs/contrib/branching-strategy.md",
+      "before": "d774b7cfebdca7741565025243006fc8187d6e93d8b668f5c56e37e97d813c47",
+      "after": "3c667aa8fc1a8ce26b018437f2e3e48a13fa09c355317fb607e16f61fa9f18bc"
+    },
+    {
+      "path": "apps/use-registry/packages/g1-arm/tests/PLAN.md",
+      "before": "3d12bafe8115fb407146d5eabdec577bc809587899df3271e5a9c09dc27d8a30",
+      "after": "17134a7fc17612919b1dc1ddc8b708aeb42ca54bf5d1efe9790ac40c4490dc7f"
+    },
+    {
+      "path": "apps/studio/resources/builtin-agents/cherry-support/USER.md",
+      "before": "7af9d63e9f2453c1acf812862a547e31baad504cff55832760075dc094a29979",
+      "after": "c67a8ff40a881f1a99fb568a0c852d33d176cea93782afb74d1a053793499b9c"
+    },
+    {
+      "path": "apps/studio/resources/builtin-agents/cherry-support/memory/FACT.md",
+      "before": "a43d24b1d1ac83d0d5820f8661be59d6e4a202b9ebff8fbf7d8d2d87646cdc23",
+      "after": "3531e65199d1914c70058f17861b58883d262b38c8f74f189d89dcc107d074eb"
+    },
+    {
+      "path": "apps/studio/resources/builtin-agents/cherry-assistant/USER.md",
+      "before": "7af9d63e9f2453c1acf812862a547e31baad504cff55832760075dc094a29979",
+      "after": "c67a8ff40a881f1a99fb568a0c852d33d176cea93782afb74d1a053793499b9c"
+    },
+    {
+      "path": "apps/work/tests/e2e/maas-builtin/TEST-CASES.md",
+      "before": "4150ddffd75d3789e3d533ecbcf4279e5e9265987973ae18d93aaad4e050e5a3",
+      "after": "3dc805dca608afd2301dbf38fa190df09ed06767df444e281c3b35c5088c0db4"
+    },
+    {
+      "path": "apps/work/packages/intelligent-ui/skills/intelligent-ui/SKILL.md",
+      "before": "2b8bf9108fb29bc133da95038f112bb7ab1d961b597ab2bfd81a3b2fb6f5c3e4",
+      "after": "1ca9fb9cc82071a8d8a2192ecc3e93faf6fa40e19105c4f358ce3d2c8904b6c7"
+    },
+    {
+      "path": "apps/studio/resources/builtin-agents/cherry-assistant/memory/FACT.md",
+      "before": "a43d24b1d1ac83d0d5820f8661be59d6e4a202b9ebff8fbf7d8d2d87646cdc23",
+      "after": "3531e65199d1914c70058f17861b58883d262b38c8f74f189d89dcc107d074eb"
+    },
+    {
+      "path": "apps/work/packages/intelligent-ui/README.md",
+      "before": "388842b466255505681837239f6b67f8105dfe2f05a0c240f92e414344327996",
+      "after": "04d38c39a66edaa7491390feeae1134513d2a6524ac8e85e3ef9d66be0f3c77a"
+    },
+    {
+      "path": "apps/work/docs/references/data/preference-overview.md",
+      "before": "38d7e9c704f48128488ab417c08874908814eb7ccce7d2060d14894d64560345",
+      "after": "981052317e34035d400f3f87ba0984ef7e37a7900a036e2b0d04f931dbe095d7"
+    },
+    {
+      "path": "apps/studio/src/renderer/windows/migrationV2/README.md",
+      "before": "ec00ff0b04c525a7f9a92dca34a27c9c1b6339817d52df8e2f9269d1377ad070",
+      "after": "3a134d229a39331797f77a784633047b9ab44dcc68ac99a8d791e1a847851125"
+    },
+    {
+      "path": "apps/work/docs/references/data/api-design-guidelines.md",
+      "before": "53c9563dbe068a488c6a11c9341d1a5dd5a356db393fca9f90cb6d90d2f0804a",
+      "after": "71ec936bcf4ac2e58529357119639d93301b4f769f0ab76a8c8a75fb2690d7ed"
+    },
+    {
+      "path": "apps/work/docs/references/data/README.md",
+      "before": "6d40bd602aa910f9fab56d54638267fd5ee6e10d4c9b35aefa30b34ccb8539ae",
+      "after": "9a5292f69e2b9937496608e4cde9b102454f7147a8b2b51ca098c617f7aa01bd"
+    },
+    {
+      "path": "apps/studio/scripts/uiContract/README.md",
+      "before": "06bdb8da583e8d0a41ab195abea4c377165b8033839242662b3592c6875aef89",
+      "after": "2658f53f86cf906011f52c147383de018eddd8afe3e26bdc42bc71d5be0aee2f"
+    },
+    {
+      "path": "apps/work/docs/references/data/api-types.md",
+      "before": "ee182ac68cf35fb0d1dc878ae9fe0a945c9efd02093eddca190f72979bd4037f",
+      "after": "7c0f748637b049e703859adffda52fa48c9634839119d707ec078cb493f1ddc0"
+    },
+    {
+      "path": "AGENTS.md",
+      "before": "1f730153b88986e98512b9ae462c1361560efb198227e5d82d09a4f394b70caf",
+      "after": "332788b0b8812bfaadf4b0f7f109ebf7a0bed25bd258437dbeba42d89b9cd8ed"
+    },
+    {
+      "path": "apps/work/tests/fixtures/aix/composer-normalize/README.md",
+      "before": "16326deb2fad22f915a4890131bc696be67ac70fb408cb39cf174cf784604a75",
+      "after": "d109f87f69f401a3d62b8db97252f4cc22014f54091ea42d63eaa1b93306a2fa"
+    },
+    {
+      "path": "DESIGN.md",
+      "before": "031afe8341a0e8ed11911647e47fb967de58ce24596bc22c824a913f0a429bd3",
+      "after": "4d3e8445eb4a5890f451325e43590f8daefbc02bf47bbbdf2192046995c7a253"
+    },
+    {
+      "path": "apps/work/packages/aiCore/README.md",
+      "before": "68308ec063b9e53b1ef148833c6149508c3e4a0519554e89b0da1c398a1646ab",
+      "after": "e5f191f680c2b3e59bace0aec50ada9775380e44fc827234afd09ff1707b1053"
+    },
+    {
+      "path": "apps/studio/CONTRIBUTING.md",
+      "before": "85f0cf77188a6644a8fc1ca2ae8b8cdb76ed717996277144fe59c3a5e3d3f1eb",
+      "after": "0cf1614672f973318d913ec1104652d27d513948ac408e079d90bf6c064ebdca"
+    },
+    {
+      "path": "apps/work/tests/e2e/README.md",
+      "before": "30e6faa44048d9bf5325bd8346d3f1adc8229ee913ed3e6ee2043d39239a9416",
+      "after": "082e9dd4ca5b89a444621fcb972964a6ecd0a690bf85d0040da5de2aea390b4d"
+    },
+    {
+      "path": "apps/studio/ROADMAP.md",
+      "before": "595c6651b2bc045fd2a697282bcc4e52e8cd8293cc91f19b57264366773187de",
+      "after": "00b836a4758e7c8d53215b8759a43b5d993c2fc9d28b8517f6a48f33c06a2844"
+    },
+    {
+      "path": "apps/work/tests/fixtures/aix/workbench-package/SKILL.md",
+      "before": "45c91ec56fedb0963edee710bc0baf09561b5fb167843357853dbcdc71e26dd2",
+      "after": "2108a0489d90ec66e89b82b8564d2c54c453afdecac96bf6762730eb1c9c740a"
+    },
+    {
+      "path": "apps/work/tests/e2e/task-turn-state/TEST-CASES.md",
+      "before": "657ff4a49dd3184697c069fe5462d1fb18a9c9142741276e06b9578184396e5a",
+      "after": "b27b8e8eb461c7bb33b2f563d3c4da5f26211113b5cff4d17d66464868edd990"
+    },
+    {
+      "path": "apps/work/docs/references/ipc/README.md",
+      "before": "995b224c6ee7ed0b535120be8a38f1914bc866703160c94474191d4b196f810d",
+      "after": "1ee2fff8f00c270b8c345f76f9c855d2c8240d7c8f2ba76d1c462d40d8c6407a"
+    },
+    {
+      "path": "apps/work/docs/references/provider-model/provider-registry.md",
+      "before": "83778d3ea90bb0b7e60a666402fabf9fb97fcbaafaae44dd90615677b6699cac",
+      "after": "8027c33c5599fddcde634c90bdb7e3962b3e3aff0635f62fc5a3eae4ebdf31b3"
+    },
+    {
+      "path": "apps/work/tests/e2e/plugins/README.md",
+      "before": "9d2c712412ce9ee1496a092955de3df966411f5426edb8bc0f4e43e54ffba31e",
+      "after": "2199b74468ceac623accd05a29666e29ffb78fce5601a69d1b4bb54e884ba166"
+    },
+    {
+      "path": "apps/work/tests/fixtures/aix/view-contract/README.md",
+      "before": "07a611648e1264c92b92dbfaeed66fe03d4a865bd73699d74c6598629219cebd",
+      "after": "90d86257de3c2b514c279b796f33f7f43e83df0136286e18e59773026a0e87ae"
+    },
+    {
+      "path": "apps/work/docs/references/provider-model/README.md",
+      "before": "0758806bd5c294d11dd2370a3802d45c21e4077cbd097e6c6a3d2632154792e6",
+      "after": "7b74f0dcb1c499f7450e79abdc743c7014c7e543112084d90d76cc2351936494"
+    },
+    {
+      "path": "apps/work/docs/references/ai/agent-forms.md",
+      "before": "afa83c8543e8ff3187e979a2ac0d764f5c183a3ac233fe498a86ecd6b8e6d27b",
+      "after": "409a4e9390cdd03a6852df6c3df6fa6b3ada77dea83288724dcf0dee042fbf56"
+    },
+    {
+      "path": "apps/work/packages/provider-registry/README.md",
+      "before": "1a2204d76490105e43015fb144a9a42c0a73b654538007c61936b88f1883eaa8",
+      "after": "50345abc818dfcdb84175ad0d058ea00be7319fae7a771c97c24a220a807236d"
+    },
+    {
+      "path": "apps/studio/CLAUDE.md",
+      "before": "33d355057dd03d8db548915463fc347a1ddf7fe1004c574f929b3502babeecc8",
+      "after": "f8c4eaa93c57132b36776c239d83374588411706c5413940b6a9c48ef279dc0d"
+    },
+    {
+      "path": "apps/work/docs/references/architecture/shared-layer.md",
+      "before": "733e2eb442502ecfbeeb08167bd1e9174fcd6956a56f67c37d9b8036d7daaf2e",
+      "after": "b216305839dc3b80ea43cc9a4743c158e9530a11e5707f6fa770e3d7135038ab"
+    },
+    {
+      "path": "apps/work/docs/references/ai/README.md",
+      "before": "8429f74b40df47da9e9a2a243a7b260f9cc9fc1d229af500f3ff54eb6e723235",
+      "after": "c5e0de6d2cacc7d14e9b132815528d1c8e4cbd6764181e12b4f1e26428866c81"
+    },
+    {
+      "path": "apps/work/docs/references/architecture/intelligent-ui.md",
+      "before": "42709cf3fb63f0cdb6062e6a27273c3ebcec6aa1a5a2b34e219cbc1d10ba2b1a",
+      "after": "e5de3cfce86e8067487d359dc258b67895e78c83e34c5b4b308ca586753546e7"
+    },
+    {
+      "path": "apps/work/docs/references/architecture/README.md",
+      "before": "8a617422c4402b67eebd347f299d09e383d3ae6d5df2c00f3201bcbd66369025",
+      "after": "930580e0cd47d5dfaadab6874f7db49f8381d955298cecd7e91b63aa2e5d2a03"
+    },
+    {
+      "path": "apps/work/docs/references/architecture/naming-conventions.md",
+      "before": "f53c157ac31c2420842f9331fb063c2241928ff11690adde9e3da96db64b2c10",
+      "after": "7c5fe99a0248f781bd8d4462658645791c16469aad47c88f8b171831eb6e4af0"
+    },
+    {
+      "path": "apps/studio/src/renderer/components/FilePreview/README.md",
+      "before": "f6acf33f7f83476d32692d0d617775ce989237f19515b5dd70e1eda257e5769f",
+      "after": "0f6778ff48a3f80ba4cc5d8bba10fc8a6923a529939d64163df0376f3ada99b4"
+    },
+    {
+      "path": "apps/work/docs/references/ai/agent-session-runtime.md",
+      "before": "8706e6955ca248a9e4d0da55acb3a865fe587cfdfec7f5d8cc4112dfdcc7fa9a",
+      "after": "d837c51104b95505e0c32f878677b7eb53deac1a0965225cbc66819cbf7b8317"
+    },
+    {
+      "path": "apps/work/docs/references/architecture/aster-dream.md",
+      "before": "97c1b1064d701d90e3769e49aebfeafd05b86724e7fa7d163a26b8daae9df53c",
+      "after": "7900716fa0c636ae598347c74c1e30542b777f936367304702637d3a5a6accae"
+    },
+    {
+      "path": "apps/work/docs/references/ai/local-models.md",
+      "before": "b9335110f1444c943085460ed44c3a93211904cdbf86a8d93fe82820c011abef",
+      "after": "00998a1e902baad23991adefe8c74b5b0727709f5715f6446121a5a76e121960"
+    },
+    {
+      "path": "apps/work/docs/references/architecture/aix-ui-document-protocol.md",
+      "before": "83517cb5e1b2853604d5d176c9a8bd5f6ddfcf89a330066f491d87239a66694c",
+      "after": "e26d52395fc035563bb491b327343ad1023e03a7c3cedb26e0223349138b0e03"
+    },
+    {
+      "path": "apps/studio/docs/README.md",
+      "before": "e449c39508d5e886f30da0961292f6723fcb16041f580762a353e5bb4e5124e7",
+      "after": "adeadc4c0b4e1bd9a515d45beb42867eb94d0b2a63dd767dc33840b625c8f95b"
+    },
+    {
+      "path": "apps/studio/docs/contrib/test-plan.md",
+      "before": "6292a163274cbbc4cdcba20f40771eb5d850c321c0e44a30a0e20195f410c06a",
+      "after": "9824539a63f119cd0164d40da40a846bc8237de06783d1f90b312f1979f6afd2"
+    },
+    {
+      "path": "apps/work/docs/references/components/ui-semantic-contract.md",
+      "before": "f67a520182096bfb3ebb796f8f27d6288c13b7e598b9865b88cba0237a132c2d",
+      "after": "f2b9b3a81586c186cb3ba3f7717a941622ce98ba8fcfb6f3568195a1dc1737eb"
+    },
+    {
+      "path": "apps/work/resources/skills/cherry-tool-guide/SKILL.md",
+      "before": "8ae18136ceccfd5631180f33260a99067b2ea8dd36a5d4695897ca2e44eb82cc",
+      "after": "45c17791faa40834392a0e4229dc8418a755fba51d4e09c7fec84ee84db583fe"
+    },
+    {
+      "path": "apps/work/packages/ui/README.md",
+      "before": "9bbbd4e096d7310d72192836a541d474446929c11b14c5c748738097a496e01e",
+      "after": "58b3efd2be0934d8a8515c011866dbb96a69e366fbca96ad62251de448205175"
+    },
+    {
+      "path": "apps/work/packages/ui/docs/variable-catalog.md",
+      "before": "b1d1e2f5fa8146197ff6fa8238e5e2bb70c53de4eb0f3631f7f738f97d2d0817",
+      "after": "b80120099d884561a48470734ee1112150200ed740a3bf1d9c40255dc3bfae7a"
+    },
+    {
+      "path": "apps/studio/docs/contrib/release-workflow.md",
+      "before": "12624c0670223bccdd6893566c321766a3b9a357b9f36d46e8f05f0578664dcf",
+      "after": "a4a334acff8e756337d37d0786eaaed43ceac9acbb8169278c1562fbbe466121"
+    },
+    {
+      "path": "apps/work/docs/references/testing/README.md",
+      "before": "17f58aecb5ff49fb57ca92b49b485d9a91c84abc966f72a0f79fea07a256f2cc",
+      "after": "ccf67b22a219f7ec12e782e1cf2747d1454e2154d28d67b4272452b907e796ee"
+    },
+    {
+      "path": "apps/studio/docs/contrib/linux-packaging.md",
+      "before": "0086c7b2c01c9aa1198f3ae2faeecaf145641a4c7d4153967d5da3aa5b185e8d",
+      "after": "24a5888e39438e31dac6c93f1e89e49edb5bb6f45d99244c8fd359e0f456fabc"
+    },
+    {
+      "path": "apps/work/packages/ui/docs/styles-reference.md",
+      "before": "3000ca893a6d88a46de2c0927ad122cbffc379600c0227fd7b85e776ea4af4a7",
+      "after": "bc5bf1224e9556030335713e9ea2e49bc1b4d07032aecd615746025d00437784"
+    },
+    {
+      "path": "apps/studio/docs/contrib/app-upgrade.md",
+      "before": "929511dd9e625b7e4eedcfa9df7a9090dd48702f2d78c985144430090ec885e0",
+      "after": "60b9f86676b0f30ab13c200e0673f550415fa3ab49b23ad2b990a0a8803ef480"
+    },
+    {
+      "path": "apps/work/docs/references/testing/nano-crab-test-cases.md",
+      "before": "721512e799475dcfda321f299c9133abf13f61c2f040890472354106c2f72ef5",
+      "after": "1a0df5697df6667ae8834f25f231bf3d2557b2e03dfe7f7136acc2c13537d017"
+    },
+    {
+      "path": "apps/studio/docs/contrib/branching-strategy.md",
+      "before": "d774b7cfebdca7741565025243006fc8187d6e93d8b668f5c56e37e97d813c47",
+      "after": "3c667aa8fc1a8ce26b018437f2e3e48a13fa09c355317fb607e16f61fa9f18bc"
+    },
+    {
+      "path": "apps/work/packages/ui/docs/design-token-system.md",
+      "before": "c56a36d8781db7f44303752ba0211794f23850e553ac51bf83a10069feb05580",
+      "after": "fd2c25f6031f5c120ca6abda61df70a7311e16504cf3d9b772de3ccc7944c693"
+    },
+    {
+      "path": "apps/work/packages/ui/docs/migration-plan.md",
+      "before": "a5d2db85a78774d2ed3a8e694fa58967d1bf8dcd10d6f4a2199681094040dc86",
+      "after": "b01b113d2761c5bc2360c74ee3437fe8680236816a4377ba6cbef73ad2e613c8"
+    },
+    {
+      "path": "apps/work/docs/references/lan-transfer/README.md",
+      "before": "8c47dee3d59c4a7c8825d7479bd06358a943989fa31225c5e04171591a38cf29",
+      "after": "534ae91155b9b77756faee603c69d9d1fbeb9b0923eb451ed825c3fe97511827"
+    },
+    {
+      "path": "apps/work/docs/references/api-gateway/README.md",
+      "before": "3ad978f1a1df634ee4eccb0c01b831480dbabfbbf1311522c14da56750a1505d",
+      "after": "62c31f20795cfdeb8e9208be0251861ddfd0b5c667e5eb69c645b49df8296725"
+    },
+    {
+      "path": "apps/work/resources/skills/cherry-browser/SKILL.md",
+      "before": "6f298b48a03b93b8afe4f54dd8aad91bf0ca615619d1c2c1071d73db8d24f751",
+      "after": "6c52d46b44982c7d6b12172883bea9cd6b48ed594cedb0f5bee7f50e85c56428"
+    },
+    {
+      "path": "apps/work/resources/skills/skill-creator/SKILL.md",
+      "before": "c683c0bf119368cb4200b86a3e35839c129ce5b0a42260a4364539af384a2cb3",
+      "after": "a9149b2f7a1c2d5be86972b3dbea8e8dfd97e1d5a532c4789a87451718c7e820"
+    },
+    {
+      "path": "apps/studio/docs/references/data/data-pagination-guide.md",
+      "before": "3fbbaa474f3855154bad090bc30ee483fc7eb74ddd249ebf2db7233373bcc1d5",
+      "after": "e2e350c234c35ad7d1f91e3ca35f3683dd0f74bb407c04046483be6717858d23"
+    },
+    {
+      "path": "apps/work/docs/references/file/fuzzy-search.md",
+      "before": "f6b1f15e4f9085675409dbe720abb337ba6e0ad241d8257a959062fc379156c0",
+      "after": "f973a1781b1ccaec573bc31e330d141a8624a2c4c80f809e447dd95a4bee61b0"
+    },
+    {
+      "path": "apps/studio/docs/references/data/collection-ux-guide.md",
+      "before": "ff713d67560cef584d2ce41f5ccd44304dd9098b0c9831f5389d256d8a6c9f8f",
+      "after": "ab6d4e041c9da1c9f33f5042b607643d2abc0b6be1b8b82f5a0da56c1827ca65"
+    },
+    {
+      "path": "apps/work/docs/references/chat/composer-rich-clipboard.md",
+      "before": "db0be4c27e8d7dcfc2ee77624c7b1136faa35e945a142d2e84d235a0f2a19930",
+      "after": "acbfd24ecfa1d891ca832dfc799951f826af684e13ff75aca2641114c3782d25"
+    },
+    {
+      "path": "apps/studio/docs/references/data/preference-overview.md",
+      "before": "d1345f723944efcd9689174915977349fc75d70eee82f97154775309c07bbe7a",
+      "after": "8a341542b1e41382aa208e224d0966842cbe2b340e8899218e5ed8eac1c5a352"
+    },
+    {
+      "path": "apps/studio/docs/references/data/api-design-guidelines.md",
+      "before": "5b326f33ef86dd816f7f1753c33d840dcec9e72e1a56b62892d742e04511ae00",
+      "after": "dc5948a9338a656a02efa3953787a7b523116c6236d6830e1b718e8638684bcc"
+    },
+    {
+      "path": "apps/studio/docs/references/data/README.md",
+      "before": "75531bb7596c5a392771112ff980f90365c0572fabb4d8d97e363fd2eab67878",
+      "after": "380fb99a2e7e1a588b6cf1130896d00a73d16ba006845398b7a46d4e3c08d92d"
+    },
+    {
+      "path": "apps/work/docs/references/mini-app/README.md",
+      "before": "8c1864f94c22ec351c51c327d0a9d7c828c2b0a7c15a08100e674d8e92b6ac15",
+      "after": "2fe3aba959f51356eb12ef7b443eb65e425736ffa5433536c6c0b4f6575c6b07"
+    },
+    {
+      "path": "apps/work/docs/references/mini-app/capabilities.md",
+      "before": "ac76759d66ec715d55082dbef4b3a2406dde3faa4d69575b42a12126b8d787fa",
+      "after": "0c1ebfbee6ed815f732555a48ea48be998418e08dc2cf02d03fc92e8125b3b97"
+    },
+    {
+      "path": "apps/studio/docs/references/data/api-types.md",
+      "before": "ee182ac68cf35fb0d1dc878ae9fe0a945c9efd02093eddca190f72979bd4037f",
+      "after": "7c0f748637b049e703859adffda52fa48c9634839119d707ec078cb493f1ddc0"
+    },
+    {
+      "path": "apps/work/resources/builtin-agents/cherry-support/USER.md",
+      "before": "7af9d63e9f2453c1acf812862a547e31baad504cff55832760075dc094a29979",
+      "after": "c67a8ff40a881f1a99fb568a0c852d33d176cea93782afb74d1a053793499b9c"
+    },
+    {
+      "path": "apps/work/scripts/uiContract/README.md",
+      "before": "06bdb8da583e8d0a41ab195abea4c377165b8033839242662b3592c6875aef89",
+      "after": "2658f53f86cf906011f52c147383de018eddd8afe3e26bdc42bc71d5be0aee2f"
+    },
+    {
+      "path": "apps/work/resources/builtin-agents/cherry-support/memory/FACT.md",
+      "before": "a43d24b1d1ac83d0d5820f8661be59d6e4a202b9ebff8fbf7d8d2d87646cdc23",
+      "after": "3531e65199d1914c70058f17861b58883d262b38c8f74f189d89dcc107d074eb"
+    },
+    {
+      "path": "apps/work/CONTRIBUTING.md",
+      "before": "85f0cf77188a6644a8fc1ca2ae8b8cdb76ed717996277144fe59c3a5e3d3f1eb",
+      "after": "0cf1614672f973318d913ec1104652d27d513948ac408e079d90bf6c064ebdca"
+    },
+    {
+      "path": "apps/work/resources/builtin-agents/cherry-assistant/USER.md",
+      "before": "7af9d63e9f2453c1acf812862a547e31baad504cff55832760075dc094a29979",
+      "after": "c67a8ff40a881f1a99fb568a0c852d33d176cea93782afb74d1a053793499b9c"
+    },
+    {
+      "path": "apps/work/ROADMAP.md",
+      "before": "bd9a349b6b2ce72e21d29289778f53b324186eb3ac2c19b51005252e75f2c1ff",
+      "after": "2ab3e299c42277ff60d0b63c98a1212017d95a8fa46d453d344aefaa50c7bc15"
+    },
+    {
+      "path": "apps/work/resources/builtin-agents/cherry-assistant/memory/FACT.md",
+      "before": "a43d24b1d1ac83d0d5820f8661be59d6e4a202b9ebff8fbf7d8d2d87646cdc23",
+      "after": "3531e65199d1914c70058f17861b58883d262b38c8f74f189d89dcc107d074eb"
+    },
+    {
+      "path": "apps/work/README.md",
+      "before": "a7be8538410e69947115d6c048091d508dbdb7ebf6f31bf621bdf7c5a8ce6986",
+      "after": "45c2f01a493184c3bb240324a66b8cea09378cc439a22ab031c3b9f8eff8a513"
+    },
+    {
+      "path": "apps/studio/docs/references/ipc/README.md",
+      "before": "995b224c6ee7ed0b535120be8a38f1914bc866703160c94474191d4b196f810d",
+      "after": "1ee2fff8f00c270b8c345f76f9c855d2c8240d7c8f2ba76d1c462d40d8c6407a"
+    },
+    {
+      "path": "apps/studio/docs/references/provider-model/provider-registry.md",
+      "before": "83778d3ea90bb0b7e60a666402fabf9fb97fcbaafaae44dd90615677b6699cac",
+      "after": "8027c33c5599fddcde634c90bdb7e3962b3e3aff0635f62fc5a3eae4ebdf31b3"
+    },
+    {
+      "path": "apps/studio/docs/references/provider-model/README.md",
+      "before": "0758806bd5c294d11dd2370a3802d45c21e4077cbd097e6c6a3d2632154792e6",
+      "after": "7b74f0dcb1c499f7450e79abdc743c7014c7e543112084d90d76cc2351936494"
+    },
+    {
+      "path": "apps/studio/docs/references/ai/README.md",
+      "before": "1c860c7dfb1927349bb2917a8e5c74ed6f4f7252182b19ea86ccd5d21768289d",
+      "after": "a5cc62ae14829424ea8c66d03d0b5aff1aa1a5400a8b18ed420d918324e73174"
+    },
+    {
+      "path": "apps/studio/docs/references/ai/agent-session-runtime.md",
+      "before": "3a7c026955ad78208de5c2716ac381e810816470f3773247860293066d7c6321",
+      "after": "ee551e0a5bc3ba6012bb3ea3d538ebad7905d181b5e031c1aa23970b5f4d974f"
+    },
+    {
+      "path": "apps/studio/docs/references/ai/local-models.md",
+      "before": "b9335110f1444c943085460ed44c3a93211904cdbf86a8d93fe82820c011abef",
+      "after": "00998a1e902baad23991adefe8c74b5b0727709f5715f6446121a5a76e121960"
+    },
+    {
+      "path": "apps/work/src/renderer/windows/migrationV2/README.md",
+      "before": "ec00ff0b04c525a7f9a92dca34a27c9c1b6339817d52df8e2f9269d1377ad070",
+      "after": "3a134d229a39331797f77a784633047b9ab44dcc68ac99a8d791e1a847851125"
+    },
+    {
+      "path": "apps/studio/docs/references/ai/agent-forms.md",
+      "before": "afa83c8543e8ff3187e979a2ac0d764f5c183a3ac233fe498a86ecd6b8e6d27b",
+      "after": "409a4e9390cdd03a6852df6c3df6fa6b3ada77dea83288724dcf0dee042fbf56"
+    },
+    {
+      "path": "apps/studio/docs/references/architecture/shared-layer.md",
+      "before": "733e2eb442502ecfbeeb08167bd1e9174fcd6956a56f67c37d9b8036d7daaf2e",
+      "after": "b216305839dc3b80ea43cc9a4743c158e9530a11e5707f6fa770e3d7135038ab"
+    },
+    {
+      "path": "apps/studio/docs/references/architecture/intelligent-ui.md",
+      "before": "42709cf3fb63f0cdb6062e6a27273c3ebcec6aa1a5a2b34e219cbc1d10ba2b1a",
+      "after": "e5de3cfce86e8067487d359dc258b67895e78c83e34c5b4b308ca586753546e7"
+    },
+    {
+      "path": "apps/studio/docs/references/architecture/README.md",
+      "before": "5c449366880f9e8e078ceee326acd451116ce3e4136cfac4b65e0077b5f4b14d",
+      "after": "7bc259581a9d2855ab3748aec201b3d19332bdd84fa546789b306febb502061e"
+    },
+    {
+      "path": "apps/studio/docs/references/architecture/naming-conventions.md",
+      "before": "f53c157ac31c2420842f9331fb063c2241928ff11690adde9e3da96db64b2c10",
+      "after": "7c5fe99a0248f781bd8d4462658645791c16469aad47c88f8b171831eb6e4af0"
+    },
+    {
+      "path": "apps/studio/docs/references/architecture/aix-ui-document-protocol.md",
+      "before": "6fcdd5fdee7d3ec7b4871b3ff6038fdfc4788e42f5289c5cf2fb1339494d9225",
+      "after": "c1fd89fecdcbda614f91e99e217582ce4993d6151a0d99494d8de4286fc75c61"
+    },
+    {
+      "path": "apps/studio/docs/references/components/ui-semantic-contract.md",
+      "before": "f67a520182096bfb3ebb796f8f27d6288c13b7e598b9865b88cba0237a132c2d",
+      "after": "f2b9b3a81586c186cb3ba3f7717a941622ce98ba8fcfb6f3568195a1dc1737eb"
+    },
+    {
+      "path": "apps/studio/docs/references/testing/README.md",
+      "before": "17f58aecb5ff49fb57ca92b49b485d9a91c84abc966f72a0f79fea07a256f2cc",
+      "after": "ccf67b22a219f7ec12e782e1cf2747d1454e2154d28d67b4272452b907e796ee"
+    },
+    {
+      "path": "apps/work/src/renderer/components/FilePreview/README.md",
+      "before": "3d40533d8c8ad095e79ed04fc1acedacd67f7fd71e6c7adc84bd203251889c37",
+      "after": "d58f37faffb31bed37b23ff6c48f0017ea8f85ac6ca3622fc2ee6c7ed6d94a69"
+    },
+    {
+      "path": "apps/studio/docs/references/lan-transfer/README.md",
+      "before": "8c47dee3d59c4a7c8825d7479bd06358a943989fa31225c5e04171591a38cf29",
+      "after": "534ae91155b9b77756faee603c69d9d1fbeb9b0923eb451ed825c3fe97511827"
+    },
+    {
+      "path": "apps/cloud/docs/workflow-evolution-plan.md",
+      "before": "b9e41d61e3692fdfdd9ecac5bfeecb19da1bb725b459526c571f749a253216a2",
+      "after": "99f90f330ddfc005ef780548a392261d5101a7ce64322545893a56028c969464"
+    },
+    {
+      "path": "apps/studio/docs/references/api-gateway/README.md",
+      "before": "3ad978f1a1df634ee4eccb0c01b831480dbabfbbf1311522c14da56750a1505d",
+      "after": "62c31f20795cfdeb8e9208be0251861ddfd0b5c667e5eb69c645b49df8296725"
+    },
+    {
+      "path": "apps/studio/docs/references/file/fuzzy-search.md",
+      "before": "f6b1f15e4f9085675409dbe720abb337ba6e0ad241d8257a959062fc379156c0",
+      "after": "f973a1781b1ccaec573bc31e330d141a8624a2c4c80f809e447dd95a4bee61b0"
+    },
+    {
+      "path": "apps/cloud/docs/architecture.md",
+      "before": "37124e96e71479e08428bc57158f35ecb14fc436b1500592c3b3e92f34b9472c",
+      "after": "cbd8df1610b1b732537756038ca2ea162a1c6a665c6198a343049dd4f07bf2e3"
+    },
+    {
+      "path": "apps/studio/docs/references/chat/composer-rich-clipboard.md",
+      "before": "db0be4c27e8d7dcfc2ee77624c7b1136faa35e945a142d2e84d235a0f2a19930",
+      "after": "acbfd24ecfa1d891ca832dfc799951f826af684e13ff75aca2641114c3782d25"
+    },
+    {
+      "path": "apps/studio/docs/references/mini-app/README.md",
+      "before": "8c1864f94c22ec351c51c327d0a9d7c828c2b0a7c15a08100e674d8e92b6ac15",
+      "after": "2fe3aba959f51356eb12ef7b443eb65e425736ffa5433536c6c0b4f6575c6b07"
+    },
+    {
+      "path": "apps/studio/docs/references/mini-app/capabilities.md",
+      "before": "ac76759d66ec715d55082dbef4b3a2406dde3faa4d69575b42a12126b8d787fa",
+      "after": "0c1ebfbee6ed815f732555a48ea48be998418e08dc2cf02d03fc92e8125b3b97"
+    },
+    {
+      "path": "apps/studio/tests/e2e/task-catalog/README.md",
+      "before": "70cbc6d001ff1af8caa5d617c1e39d64813172b95c6a39ed079b81bc8e49acca",
+      "after": "ba55946b89684b0af734cf07d156dd016dae82f4cc2e36795ec6c867c036f987"
+    },
+    {
+      "path": "apps/cloud/contracts/w0.1/README.md",
+      "before": "a169b68da91543c0999534f73bd6f71b92a64f7adb6c3e40daccb3a97ee08365",
+      "after": "4de178aec2ce33fd287555f32557e7c5579fa7d36e61f9928d1d5437804ffd15"
+    },
+    {
+      "path": "apps/studio/tests/e2e/README.md",
+      "before": "62ba5775f289b0978fdf0635b731ac272916532190a37f698df5561ea4a1cd0a",
+      "after": "7f1537f43679dcfe2552d1577a093bc2e2cbbe5180b28a955a75608c2b6f731d"
+    },
+    {
+      "path": "apps/studio/tests/e2e/composer-audit/README.md",
+      "before": "1da826886e53a477c63d3ca1882616b1d2d1698b5b7019b56d343120e5dc5b8e",
+      "after": "1ab8c5750afbb953196757848176612d1601c18b3cb5a0e36ba7c1b47952c90e"
+    },
+    {
+      "path": "apps/studio/tests/e2e/task-turn-state/TEST-CASES.md",
+      "before": "552b3c028bf97041cc330376c36fe2545c5f6b908f84de506a023cd64d88f1f4",
+      "after": "e9ee0b089deb8242d12d0df773a7fd317363fc594a5d6852bbf376b1599ed094"
+    },
+    {
+      "path": "apps/studio/tests/e2e/task-turn-state/PLAN.md",
+      "before": "74165be10657a9c9d72742373deaf5f7493532b5a09ddef4e281cf8d4e0f47b0",
+      "after": "ed2df6c184aa37a4caceb8e446800b7b06c8a05d91e9e80daee1d73b91167e4e"
+    },
+    {
+      "path": "apps/studio/tests/e2e/plugins/README.md",
+      "before": "9d2c712412ce9ee1496a092955de3df966411f5426edb8bc0f4e43e54ffba31e",
+      "after": "2199b74468ceac623accd05a29666e29ffb78fce5601a69d1b4bb54e884ba166"
+    },
+    {
+      "path": "apps/studio/tests/e2e/reference-alignment/README.md",
+      "before": "8e2c6e215f6058cab94f452c45fba79c1b2274bd98d0c618e3960f23b92861fd",
+      "after": "995ec28d1d885b8bc8a9d3e9d731a061ca2b16538c9f8ef8f69592a7999196a9"
+    },
+    {
+      "path": "crates/runtime/ROADMAP.md",
+      "before": "dfac02947cc3b5cd50f12474daeb648013fd5a7a30d6eb556890a84bd6d17864",
+      "after": "fa026797665a6919ccd42c5a13aa1241200289b8831dfd470a67545ee9506c23"
+    },
+    {
+      "path": "apps/cloud/docs/sms.md",
+      "before": "df9969139d59f45a8fd449350a9e92315a060f631c610868bb20591a7374ad8a",
+      "after": "edc5872eec7f3f3c140d175c2bf6dbce828a144e49414c3561e2c1d1ffe57be6"
+    },
+    {
+      "path": "apps/studio/tests/e2e/reference-alignment/cases/README.md",
+      "before": "cc6f27b834565a8369e90059254da58c103f0e11882ac1beb2ff94a86e629928",
+      "after": "f1978a6661e25add277ee8be5d4698e52195406304a5832c82575d543c92664d"
+    },
+    {
+      "path": "apps/studio/tests/e2e/contract-review/README.md",
+      "before": "250a45be432b1e8ffc0a0a1dc6a7ba11d9c6f48e8ec7aca33fd420e8f26e322b",
+      "after": "5f9eaa1a76617404a1290574af0b7a309131a98050afeb8a177eebd1e00f97eb"
+    },
+    {
+      "path": "packages/ui/README.md",
+      "before": "9bbbd4e096d7310d72192836a541d474446929c11b14c5c748738097a496e01e",
+      "after": "58b3efd2be0934d8a8515c011866dbb96a69e366fbca96ad62251de448205175"
+    },
+    {
+      "path": "apps/studio/tests/fixtures/aix/composer-normalize/README.md",
+      "before": "16326deb2fad22f915a4890131bc696be67ac70fb408cb39cf174cf784604a75",
+      "after": "d109f87f69f401a3d62b8db97252f4cc22014f54091ea42d63eaa1b93306a2fa"
+    },
+    {
+      "path": "packages/ui/docs/variable-catalog.md",
+      "before": "b1d1e2f5fa8146197ff6fa8238e5e2bb70c53de4eb0f3631f7f738f97d2d0817",
+      "after": "b80120099d884561a48470734ee1112150200ed740a3bf1d9c40255dc3bfae7a"
+    },
+    {
+      "path": "packages/ui/docs/styles-reference.md",
+      "before": "3000ca893a6d88a46de2c0927ad122cbffc379600c0227fd7b85e776ea4af4a7",
+      "after": "bc5bf1224e9556030335713e9ea2e49bc1b4d07032aecd615746025d00437784"
+    },
+    {
+      "path": "packages/ui/docs/design-token-system.md",
+      "before": "c56a36d8781db7f44303752ba0211794f23850e553ac51bf83a10069feb05580",
+      "after": "fd2c25f6031f5c120ca6abda61df70a7311e16504cf3d9b772de3ccc7944c693"
+    },
+    {
+      "path": "packages/ui/docs/migration-plan.md",
+      "before": "a5d2db85a78774d2ed3a8e694fa58967d1bf8dcd10d6f4a2199681094040dc86",
+      "after": "b01b113d2761c5bc2360c74ee3437fe8680236816a4377ba6cbef73ad2e613c8"
+    },
+    {
+      "path": "apps/studio/tests/fixtures/aix/workbench-package/SKILL.md",
+      "before": "45c91ec56fedb0963edee710bc0baf09561b5fb167843357853dbcdc71e26dd2",
+      "after": "2108a0489d90ec66e89b82b8564d2c54c453afdecac96bf6762730eb1c9c740a"
+    },
+    {
+      "path": "README.md",
+      "before": "ce30f2e7209e93b2abc691a395134feeb243fce9993925a319fb13d87ad90205",
+      "after": "811f62573741a0a024ceffeef4e0b8e8e64de954e249dd1b51adc4835585f9c8"
+    },
+    {
+      "path": "apps/studio/tests/fixtures/aix/view-contract/README.md",
+      "before": "07a611648e1264c92b92dbfaeed66fe03d4a865bd73699d74c6598629219cebd",
+      "after": "90d86257de3c2b514c279b796f33f7f43e83df0136286e18e59773026a0e87ae"
+    },
+    {
+      "path": "apps/cloud/crates/runtime/ROADMAP.md",
+      "before": "dfac02947cc3b5cd50f12474daeb648013fd5a7a30d6eb556890a84bd6d17864",
+      "after": "fa026797665a6919ccd42c5a13aa1241200289b8831dfd470a67545ee9506c23"
+    },
+    {
+      "path": "crates/code/manual/tui-e2e/20261012/tool-coverage.md",
+      "before": "041b9ae5de0bdf2932418ce5c98c884ec19fd96149bd27a6d16c4ff3ac0f1c7e",
+      "after": "7f16e64bfb5196bbd5e361518af83f78107a9db0c47e89dad01d96b19e6a8e63"
+    },
+    {
+      "path": "crates/code/manual/META_HARNESS.md",
+      "before": "da5a8d9e6c2462ed86d7f38827cfe4edca8821c965f71b32448a9f54324b7db2",
+      "after": "a32057ca26b839aea4e06e0446e6ab498016cadb7ffa2ec6b3ec6cac8caba399"
+    }
+  ]
+}

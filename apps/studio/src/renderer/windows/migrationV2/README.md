@@ -24,7 +24,7 @@ src/renderer/windows/migrationV2/
  - The completion `Migration time` is measured in this window from the first visible `migration` stage update to the received `completed` update.
  - `useMigrationActions` wraps IPC invokes for start, retry, cancel, restart, and skip.
 4. Exporters:
- - `ReduxExporter` scans the Redux Persist payload in `localStorage` (`persist:cherry-studio`) and writes only migration-owned slices to separate files in bounded chunks.
+ - `ReduxExporter` scans the Redux Persist payload in `localStorage` (`persist:cherry-desktop`) and writes only migration-owned slices to separate files in bounded chunks.
  - `DexieExporter` reads Dexie tables in primary-key pages and sends bounded JSON-array chunks via IPC (`migration:write-export-file`), so main can assemble the files on disk without direct browser access or whole-table renderer strings.
 5. Components render the per-migrator list (`MigratorProgressList`), skip/close dialogs, window controls, and completion confetti used by the wizard.
 

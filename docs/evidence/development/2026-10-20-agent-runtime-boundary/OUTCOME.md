@@ -128,7 +128,7 @@ Commands:
 - The TOML loader was not migrated. No new ACL setting was added.
 - Pager directory layout and license notices were not rewritten.
 - OCI remains the product default sandbox backend.
-- Studio delivery-alignment files already in the working tree were
+- Desktop delivery-alignment files already in the working tree were
   not edited, staged, or reverted.
 - Pre-existing warnings in `a3s-use-bge`, `a3s-code-core`, and
   `host_context.rs` `as_str` were not fixed.

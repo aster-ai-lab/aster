@@ -211,7 +211,7 @@ configuration were read for this final verification.
   foreground/Raise/global mouse/shell-kill fallback or product repair is claimed.
 - The authorized [post-batch identity check](/tmp/aster-task-corpus-cua-20261018-2245/evidence/original22-qwen-v8-post-batch-build-identity.json)
   matches all **4 binaries** and **34 Work-related source files**. Of the full
-  frozen 38-source scope, Studio turns.rs and workbench_turns.rs differ. The raw
+  frozen 38-source scope, Desktop turns.rs and workbench_turns.rs differ. The raw
   snapshot remains DRIFT_DETECTED; those changes are unreviewed, outside Work's
   compile paths, and were not reverted. This checks measured before/after file
   identities, not mapped process memory or outstanding UI outcomes. Post-replay
@@ -853,7 +853,7 @@ to prepare this status update.
 - An earlier resumed background launch was PID 82375, with
   `self_activation_suppressed: true`. Native AX confirms its actual main
   document on 4319. The development bundle's temporary `LSEnvironment` now sets
-  only `A3S_STUDIO_RENDERER_PORT=4319`; restore the original Info.plist after
+  only `A3S_DESKTOP_RENDERER_PORT=4319`; restore the original Info.plist after
   the test application is normally exited at final cleanup.
 - At that earlier check, frozen `renderer-v2` matched all 2,638 recorded file hashes and all
   five relevant source hashes. Its independent 4319 preview serves matching

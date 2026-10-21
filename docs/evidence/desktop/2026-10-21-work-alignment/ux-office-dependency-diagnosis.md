@@ -1,0 +1,15 @@
+# Office prerequisite build: patched dependency resolution
+
+Read-only diagnosis; no vendor, package source, lockfile, installed dependency or UX source was changed by this agent.
+
+The TS2353 at `packages/office/src/internal/features/work/editors/spreadsheet-editor.tsx:897` is in `setCellValue`, not `setRangeValue`. After a data-validation warning is explicitly accepted, the editor passes `skipDataValidation: true` to avoid recursively warning/rejecting the same confirmed value. This is an existing repository patch API: `patches/@fortune-sheet%2Fcore@1.0.4.patch` adds the field to `CommonOptions`, implements it in both runtime distributions, and forwards options from `setCellValue` into `updateCell`. Removing the property or casting it would either lose the confirmed-invalid-value semantics or conceal an unpatched runtime.
+
+The source file is unchanged at root HEAD, introduced by `e07fd7c69`, and byte-identical to Work's vendor copy: SHA256 `70948c7f75efb6e5386db468177021230f0dec5659febb86284003a97728252b`. Root Work gitlink remains `9aad91f1e934c731e540cf99be25733e25c3a411`. The source cannot explain the failure as an alignment regression.
+
+Current root Office `node_modules/@fortune-sheet/{core,react}` links resolve into root Bun's unpatched 1.0.4 graph. Its core declaration and both JS distributions have zero occurrences of `skipDataValidation`. Desktop's existing pnpm patched graph has one declaration and one implementation in each ESM/CJS file. Those three patched files are byte-identical to Work's existing patched graph. Root Office package.json itself declares these patches; Desktop's workspace config and lock pin them as well.
+
+The minimal repair is two environment-only symlink replacements, using existing Desktop pnpm instances. [ux-office-dependency-relink-plan.json](ux-office-dependency-relink-plan.json) records exact original and intended targets. Assert each original target before replacing; create a temporary sibling symlink and use `os.replace` to avoid a gap. Reversal uses the recorded original targets. A whole install is unnecessary and would risk replacing shared workspace links again. Do not edit the pnpm lock, Bun graph, patch contents or source API.
+
+Core patch identity is `2fab56c09e15cb015281af06d8b0954a0f0cbfcb4cf1451d1c69a859911e35a3`; react patch identity is `2fc40248cb8d708a3bc668c5e9ef14bce270c8e33d59888b73445c52ed3bee33`. The root core patch has original CRLF context lines, so its raw hash is `ac3238fbd2dd1fc5f4b37de5fdeaae402381aad3e84268cf7aff64c84198c013`; LF normalization exactly recovers the existing pnpm patch identity. This is not grounds to regenerate the patch or lock.
+
+After relinking, verify realpaths against the plan, the field in CommonOptions, both runtime implementations and unchanged source/lock hashes; then rerun the actual Office prerequisite and Desktop renderer build. These builds, rather than a type cast or only a small fixture, are the final proof that the repaired declared graph links correctly. Parent owns execution of this environment repair and the builds.

@@ -16,4 +16,4 @@ Per-file counts from that log: `taskConversationWorkspace.test.tsx` 7 passed; `W
 
 ## Explicitly not claimed
 
-No claim that every message-stream click was exercised in a running desktop window. Studio's separate editor window was not changed. No installer was published.
+No claim that every message-stream click was exercised in a running desktop window. Desktop's separate editor window was not changed. No installer was published.

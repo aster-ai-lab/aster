@@ -1,0 +1,1514 @@
+{
+  "scope": "bounded static Markdown relative-target scan, excluding fenced code; no external or anchor validation",
+  "files": 179,
+  "missing_local_links": [
+    {
+      "file": "apps/api/docs/AIX-PACKAGES.md",
+      "target": "../../../docs/evidence/desktop-plugins/20261008-aix-page-instances/OUTCOME.md"
+    },
+    {
+      "file": "apps/api/docs/AIX-PACKAGES.md",
+      "target": "../../../docs/evidence/desktop-plugins/20261008-aix-publication-isolation/OUTCOME.md"
+    },
+    {
+      "file": "apps/api/docs/AIX-PACKAGES.md",
+      "target": "../../../docs/evidence/desktop-plugins/20261008-aix-workbench-storage/OUTCOME.md"
+    },
+    {
+      "file": "apps/api/docs/AIX-PACKAGES.md",
+      "target": "../../../docs/evidence/console-plugins/20261008-aix-data-migration/OUTCOME.md"
+    },
+    {
+      "file": "apps/api/docs/BOUNDARIES.md",
+      "target": "../../web/docs/console/CONTROL-PLANE-BOUNDARY.md"
+    },
+    {
+      "file": "apps/api/docs/BOUNDARIES.md",
+      "target": "../../web/docs/console/INTERFACE-FULL-LINK.md"
+    },
+    {
+      "file": "apps/api/docs/BOUNDARIES.md",
+      "target": "../../../docs/ax-inspired-agent-platform-plan.md"
+    },
+    {
+      "file": "apps/api/docs/BOUNDARIES.md",
+      "target": "../../web/docs/console/ROADMAP.md"
+    },
+    {
+      "file": "apps/api/docs/README.md",
+      "target": "../../web/docs/console/API-ENVELOPE.md"
+    },
+    {
+      "file": "apps/api/docs/README.md",
+      "target": "../../web/docs/console/CONTROL-PLANE-BOUNDARY.md"
+    },
+    {
+      "file": "apps/api/docs/README.md",
+      "target": "../../web/docs/console/IDENTITY.md"
+    },
+    {
+      "file": "apps/cloud/ROADMAP.md",
+      "target": "../../docs/evidence/os/20261008-startup-recovery/OUTCOME.md"
+    },
+    {
+      "file": "apps/cloud/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261017-runtime-contract-compatibility/OUTCOME.md"
+    },
+    {
+      "file": "apps/cloud/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261016-paperloom-runtime-host-services/OUTCOME.md"
+    },
+    {
+      "file": "apps/cloud/ROADMAP.md",
+      "target": "../../docs/evidence/knowledge/2026-10-10-tobot-memory-close/OUTCOME.md"
+    },
+    {
+      "file": "apps/cloud/ROADMAP.md",
+      "target": "../../specs/004-provider-neutral-sms/plan.md"
+    },
+    {
+      "file": "apps/cloud/ROADMAP.md",
+      "target": "../../docs/evidence/sms/20261008-provider-neutral-design/OUTCOME.md"
+    },
+    {
+      "file": "apps/cloud/ROADMAP.md",
+      "target": "../../docs/evidence/sms/20261008-smsbao-provider/OUTCOME.md"
+    },
+    {
+      "file": "apps/cloud/ROADMAP.md",
+      "target": "../../docs/evidence/sms/20261008-sms-console/OUTCOME.md"
+    },
+    {
+      "file": "apps/cloud/ROADMAP.md",
+      "target": "../../docs/evidence/sms/20261008-real-send-switch/OUTCOME.md"
+    },
+    {
+      "file": "apps/cloud/ROADMAP.md",
+      "target": "../../docs/evidence/sms/20261008-system-sms/OUTCOME.md"
+    },
+    {
+      "file": "apps/cloud/ROADMAP.md",
+      "target": "../../docs/evidence/sms/20261008-content-management/OUTCOME.md"
+    },
+    {
+      "file": "apps/cloud/ROADMAP.md",
+      "target": "../../docs/evidence/sms/20261008-content-management/OUTCOME.md"
+    },
+    {
+      "file": "apps/cloud/ROADMAP.md",
+      "target": "../../specs/005-agent-metered-services/plan.md"
+    },
+    {
+      "file": "apps/cloud/ROADMAP.md",
+      "target": "../../docs/evidence/agent-services/20261008-metered-design/OUTCOME.md"
+    },
+    {
+      "file": "apps/cloud/ROADMAP.md",
+      "target": "../../docs/cloud-substrate-dependency-roadmap.md"
+    },
+    {
+      "file": "apps/cloud/ROADMAP.md",
+      "target": "../../docs/ax-inspired-agent-platform-plan.md"
+    },
+    {
+      "file": "apps/cloud/ROADMAP.md",
+      "target": "../../docs/ax-inspired-agent-platform-plan.md"
+    },
+    {
+      "file": "apps/cloud/crates/runtime/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261017-runtime-contract-compatibility/OUTCOME.md"
+    },
+    {
+      "file": "apps/cloud/crates/runtime/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261017-paperloom-use-runtime/OUTCOME.md"
+    },
+    {
+      "file": "apps/cloud/docs/architecture.md",
+      "target": "../../../docs/ax-inspired-agent-platform-plan.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/studio-plugin-implementation-roadmap.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/code-harness/20261018-native-terminology/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261017-paperloom-markdown-recovery/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261017-paperloom-secret-readonly-admission/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261017-paperloom-service-startup/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261017-paperloom-use-runtime/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261017-runtime-contract-compatibility/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261016-paperloom-runtime-host-services/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261016-paperloom-guest-vsock/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261016-paperloom-gateway-private-ipc/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261016-paperloom-private-runtime/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261016-paperloom-runtime-lifecycle/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261016-paperloom-runtime-prerequisites/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261016-paperloom-background-pdf/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261016-paperloom-background-input/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261016-paperloom-service-manifest/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261016-paperloom-background-popovers/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/plans/studio-paperloom-e2e-2026-10-16.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261016-presentation-composer-repair/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261016-contract-review-composer/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261016-contract-review-plugin/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261015-reference-alignment/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261015-functional-optimization/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261015-composer-review-trace/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261015-composer-review-trace/UIUX-ALIGNMENT.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/knowledge/2026-10-13-team-encyclopedia-retrieval/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261016-review-overlay-message-actions/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261015-work-review-trace-alignment/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261015-work-review-trace-alignment/COVERAGE.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261013-digital-twin/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261013-digital-twin/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261013-digital-twin-market/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261013-digital-twin/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261013-digital-twin/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261013-digital-twin/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261013-plugin-launch-preferences/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/os/20261012-auth-api-recovery/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261012-studio-login-recovery/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261011-cobot-arm-aix-package/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261011-g1-arm-aix-package/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261011-g1-arm-vision-eval/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261012-cobot-arm-libero/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261012-aix-applet-window/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261013-iris-load-repair/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261012-iris-aix-package/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261013-presenton-upstream-frontend/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261013-presenton-aix-package/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261011-aix-view-agent-turns/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261010-aix-agent-parameters/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/studio-plugin-implementation-roadmap.md#meta-studio-\u4f18\u5316\u6267\u884c\u8ba1\u52122026-10-09"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-closeout/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-workspace-host-types/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../specs/005-meta-studio-composition/README.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-execution-plan/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-plan-review/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-native-preferences/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-implementation-followup/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-session-invalidation/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-aix-only-cleanup/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-studio-tiptap-3313/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-typecheck-recheck/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-plugin-catalog-typecheck/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-contract-matrix/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-identities/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-dependencies/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-renderer-verification/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-rerun/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-path-traversal-rerun/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-final/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-seven-cases/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-admission-final/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-missing-service/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-manifest-version/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-missing-service/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-manifest-version/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-port-version/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-eleven-cases/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-native-preferences/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-foundation/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-closeout/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-closeout/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-foundation/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-intelligent-ui-boundaries/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-architecture-reassessment/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-aix-view-commands/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-aix-dynamic-command-runtime/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-aix-context-visibility/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-aix-execution-contributions/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-aix-factory-reclamation/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-aix-session-contributions/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-aix-composer-actions/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-role-audit/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-role-lifecycle-audit/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-delete-revision/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-role-history/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-atomic-role-assignment/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-assignment-audit/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-assignment-history-ui/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-assignment-delete-race/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-policy-write-authority/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-membership-write-authority/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-join-decision-authority/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-invitation-redemption-authority/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-invite-configuration/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-invitation-writes/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-owner-binding/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-member-placement/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-invitation-refusal/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-workbench/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261009-team-navigation/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aixui/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-intelligent-ui/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-aix-catalogue-isolation/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-aix-availability/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-aix-package-boundaries/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-aix-host-admission-retirement/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aix-host-document-boundary/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aix-factory-admission/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aix-page-instances/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aix-publication-isolation/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aix-workbench-storage/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aix-miniapp-appearance/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aix-tree-provider/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aix-view-state/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aix-request-fencing/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aix-session-settlement/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aix-contribution-protocol/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aix-workbench-runtime/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aix-admission/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-task-acp/20261008-scheduled-recovery/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261007-ui-scope-foundation/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-activity-pages/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-workspace-ownership/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-native-publication-query/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-native-generation-retention/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-acp-plugin-processes/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-native-selection-snapshot/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-native-harness-tool-binding/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-native-skill-mcp-binding/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-native-workspace-binding/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-capability-access/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-delegated-plugin-tools/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-composer-revisions/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-workspace-snapshots/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-shared-documents/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-document-tools/20261008-development/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-pending-document-input/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-document-capabilities/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-workspace-operation-access/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-harness-document-read/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-run-resource-completion/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-run-document-pins/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-document-diagnostics/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-vsx-mvp/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-vsx-diagnostic-ui/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-vsx-resumed-blocked/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-vsx-install/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-vsix-plugin-type/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-durable-plugin-storage/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-device-install-retry/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-live-storage-coverage/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-storage-runtime-blocked/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/2026-10-12-platform-collections/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/2026-10-12-platform-model-writes/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/2026-10-12-platform-catalog-pages/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/2026-10-12-platform-supplier-authority/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/2026-10-12-platform-supplier-intents/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/2026-10-12-platform-supplier-crud/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/2026-10-12-platform-supplier-editor/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/2026-10-12-platform-supplier-recovery/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/2026-10-12-platform-supplier-relations/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/2026-10-12-platform-model-authority/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/2026-10-12-collection-standard/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/2026-10-12-collection-standard-contract-review/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/2026-10-12-collection-standard-finalization/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/2026-10-12-collection-standard-operations-review/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/2026-10-12-collection-table-controls/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-runtime/20261008-review-skill-conflict/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/2026-10-13-team-admin-p0/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/2026-10-13-team-admin-p1/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/2026-10-13-team-admin-p2-audit/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/2026-10-13-team-admin-p2-runs/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/docs/references/data/collection-ux-guide.md",
+      "target": "../../../../../docs/evidence/desktop/2026-10-12-platform-supplier-intents/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/docs/references/data/collection-ux-guide.md",
+      "target": "../../../../../docs/evidence/desktop/2026-10-12-platform-supplier-crud/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/docs/references/data/collection-ux-guide.md",
+      "target": "../../../../../docs/evidence/desktop/2026-10-12-platform-supplier-editor/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/docs/references/data/collection-ux-guide.md",
+      "target": "../../../../../docs/evidence/desktop/2026-10-12-platform-supplier-recovery/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/docs/references/data/collection-ux-guide.md",
+      "target": "../../../../../docs/evidence/desktop/2026-10-12-platform-supplier-relations/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/docs/references/data/collection-ux-guide.md",
+      "target": "../../../../../docs/evidence/desktop/2026-10-12-platform-collections/coverage.md"
+    },
+    {
+      "file": "apps/studio/tests/e2e/README.md",
+      "target": "../../.github/workflows/e2e-regression-test.yml"
+    },
+    {
+      "file": "apps/studio/tests/e2e/composer-audit/README.md",
+      "target": "../../../../../docs/plans/studio-composer-review-trace-e2e-2026-10-15.md"
+    },
+    {
+      "file": "apps/studio/tests/e2e/composer-audit/README.md",
+      "target": "../../../../../docs/evidence/desktop/20261015-composer-review-trace/OUTCOME.md"
+    },
+    {
+      "file": "apps/studio/tests/e2e/composer-audit/README.md",
+      "target": "../../../../../docs/evidence/desktop/20261015-composer-review-trace/UIUX-ALIGNMENT.md"
+    },
+    {
+      "file": "apps/studio/tests/e2e/composer-audit/README.md",
+      "target": "../../../../../docs/evidence/desktop/20261015-work-review-trace-alignment/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/studio-plugin-implementation-roadmap.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/work/2026-10-20-signed-package-refresh/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/work/2026-10-20-native-bugfix-roundtrip/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261010-aix-agent-parameters/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/studio-plugin-implementation-roadmap.md#meta-studio-\u4f18\u5316\u6267\u884c\u8ba1\u52122026-10-09"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-closeout/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-workspace-host-types/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../specs/005-meta-studio-composition/README.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-execution-plan/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-plan-review/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-native-preferences/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-implementation-followup/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-session-invalidation/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-aix-only-cleanup/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-studio-tiptap-3313/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-typecheck-recheck/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-plugin-catalog-typecheck/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-contract-matrix/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-identities/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-dependencies/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-renderer-verification/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-rerun/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-path-traversal-rerun/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-final/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-seven-cases/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-admission-final/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-missing-service/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-manifest-version/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-missing-service/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-manifest-version/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-port-version/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-eleven-cases/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-native-preferences/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-foundation/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-closeout/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-closeout/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-meta-studio-foundation/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-intelligent-ui-boundaries/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-architecture-reassessment/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-aix-view-commands/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-aix-dynamic-command-runtime/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-aix-context-visibility/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-aix-execution-contributions/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-aix-factory-reclamation/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-aix-session-contributions/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-aix-composer-actions/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-role-audit/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-role-lifecycle-audit/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-delete-revision/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-role-history/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-atomic-role-assignment/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-assignment-audit/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-assignment-history-ui/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-assignment-delete-race/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-policy-write-authority/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-membership-write-authority/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-join-decision-authority/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-invitation-redemption-authority/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-invite-configuration/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-invitation-writes/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-owner-binding/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-member-placement/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-authorization/certification-invitation-refusal/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261008-team-workbench/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-team/20261009-team-navigation/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aixui/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-intelligent-ui/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-aix-catalogue-isolation/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-aix-availability/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-aix-package-boundaries/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261009-aix-host-admission-retirement/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aix-host-document-boundary/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aix-factory-admission/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aix-page-instances/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aix-publication-isolation/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aix-workbench-storage/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aix-miniapp-appearance/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aix-tree-provider/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aix-view-state/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aix-request-fencing/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aix-session-settlement/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aix-contribution-protocol/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aix-workbench-runtime/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-aix-admission/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-task-acp/20261008-scheduled-recovery/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261007-ui-scope-foundation/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-activity-pages/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-workspace-ownership/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-native-publication-query/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-native-generation-retention/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-acp-plugin-processes/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-native-selection-snapshot/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-native-harness-tool-binding/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-native-skill-mcp-binding/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-native-workspace-binding/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-capability-access/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-delegated-plugin-tools/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-composer-revisions/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-workspace-snapshots/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-shared-documents/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-document-tools/20261008-development/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-pending-document-input/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-document-capabilities/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-workspace-operation-access/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-harness-document-read/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-run-resource-completion/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-run-document-pins/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-document-diagnostics/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-vsx-mvp/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-vsx-diagnostic-ui/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-vsx-resumed-blocked/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-vsx-install/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-vsix-plugin-type/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-durable-plugin-storage/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-device-install-retry/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-live-storage-coverage/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-plugins/20261008-storage-runtime-blocked/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/ROADMAP.md",
+      "target": "../../docs/evidence/desktop-runtime/20261008-review-skill-conflict/OUTCOME.md"
+    },
+    {
+      "file": "apps/work/packages/intelligent-ui/README.md",
+      "target": "../intelligent-ui-aix/README.md"
+    },
+    {
+      "file": "apps/work/packages/intelligent-ui/README.md",
+      "target": "../intelligent-ui-aix/README.md"
+    },
+    {
+      "file": "crates/code/manual/META_HARNESS.md",
+      "target": "../../use/docs/adr-003-native-code-harness-boundary.md"
+    },
+    {
+      "file": "crates/code/manual/tui-e2e/20261012/tool-coverage.md",
+      "target": "../../../../../apps/code/core/src/tools/builtin/read.rs"
+    },
+    {
+      "file": "crates/code/manual/tui-e2e/20261012/tool-coverage.md",
+      "target": "../../../../../apps/code/core/src/tools/builtin/ls.rs"
+    },
+    {
+      "file": "crates/code/manual/tui-e2e/20261012/tool-coverage.md",
+      "target": "../../../../../apps/code/core/src/tools/builtin/write.rs"
+    },
+    {
+      "file": "crates/code/manual/tui-e2e/20261012/tool-coverage.md",
+      "target": "../../../../../apps/code/core/src/tools/builtin/download/mod.rs"
+    },
+    {
+      "file": "crates/code/manual/tui-e2e/20261012/tool-coverage.md",
+      "target": "../../../../../apps/code/core/src/tools/builtin/edit.rs"
+    },
+    {
+      "file": "crates/code/manual/tui-e2e/20261012/tool-coverage.md",
+      "target": "../../../../../apps/code/core/src/tools/builtin/patch.rs"
+    },
+    {
+      "file": "crates/code/manual/tui-e2e/20261012/tool-coverage.md",
+      "target": "../../../../../apps/code/core/src/tools/builtin/bash.rs"
+    },
+    {
+      "file": "crates/code/manual/tui-e2e/20261012/tool-coverage.md",
+      "target": "../../../../../apps/code/core/src/tools/builtin/background.rs"
+    },
+    {
+      "file": "crates/code/manual/tui-e2e/20261012/tool-coverage.md",
+      "target": "../../../../../apps/code/core/src/tools/builtin/search.rs"
+    },
+    {
+      "file": "crates/code/manual/tui-e2e/20261012/tool-coverage.md",
+      "target": "../../../../../apps/code/core/src/tools/builtin/git.rs"
+    },
+    {
+      "file": "crates/code/manual/tui-e2e/20261012/tool-coverage.md",
+      "target": "../../../../../apps/code/core/src/tools/builtin/web_fetch.rs"
+    },
+    {
+      "file": "crates/code/manual/tui-e2e/20261012/tool-coverage.md",
+      "target": "../../../../../apps/code/core/src/tools/builtin/web_search.rs"
+    },
+    {
+      "file": "crates/code/manual/tui-e2e/20261012/tool-coverage.md",
+      "target": "../../../../../apps/code/core/src/tools/builtin/update_plan.rs"
+    },
+    {
+      "file": "crates/code/manual/tui-e2e/20261012/tool-coverage.md",
+      "target": "../../../../../apps/code/core/src/tools/builtin/ask_user.rs"
+    },
+    {
+      "file": "crates/code/manual/tui-e2e/20261012/tool-coverage.md",
+      "target": "../../../../../apps/code/core/src/tools/builtin/ask_user_form.rs"
+    },
+    {
+      "file": "crates/code/manual/tui-e2e/20261012/tool-coverage.md",
+      "target": "../../../../../apps/code/core/src/tools/builtin/batch.rs"
+    },
+    {
+      "file": "crates/code/manual/tui-e2e/20261012/tool-coverage.md",
+      "target": "../../../../../apps/code/core/src/tools/builtin/generate_object.rs"
+    },
+    {
+      "file": "crates/code/manual/tui-e2e/20261012/tool-coverage.md",
+      "target": "../../../../../apps/code/core/src/tools/skill.rs"
+    },
+    {
+      "file": "crates/code/manual/tui-e2e/20261012/tool-coverage.md",
+      "target": "../../../../../apps/code/core/src/tools/skill.rs"
+    },
+    {
+      "file": "crates/code/manual/tui-e2e/20261012/tool-coverage.md",
+      "target": "../../../../../apps/code/core/src/tools/task.rs"
+    },
+    {
+      "file": "crates/code/manual/tui-e2e/20261012/tool-coverage.md",
+      "target": "../../../../../apps/code/core/src/tools/builtin/code_intelligence/symbols.rs"
+    },
+    {
+      "file": "crates/code/manual/tui-e2e/20261012/tool-coverage.md",
+      "target": "../../../../../apps/code/core/src/tools/builtin/code_intelligence/navigation.rs"
+    },
+    {
+      "file": "crates/code/manual/tui-e2e/20261012/tool-coverage.md",
+      "target": "../../../../../apps/code/core/src/tools/builtin/code_intelligence/diagnostics.rs"
+    },
+    {
+      "file": "crates/runtime/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261017-runtime-contract-compatibility/OUTCOME.md"
+    },
+    {
+      "file": "crates/runtime/ROADMAP.md",
+      "target": "../../docs/evidence/desktop/20261017-paperloom-use-runtime/OUTCOME.md"
+    },
+    {
+      "file": "packages/ui/README.md",
+      "target": "../../docs/references/components/ui-semantic-contract.md"
+    },
+    {
+      "file": "packages/ui/README.md",
+      "target": "../../docs/references/architecture/naming-conventions.md"
+    }
+  ],
+  "new_missing_with_readable_HEAD_baseline": [],
+  "baseline_unavailable_missing_count": 153,
+  "manual_current_runbook_missing": [],
+  "boundary": "Root gitlinks/untracked imported docs have no root HEAD bytes, so their missing links cannot be attributed to this rename."
+}

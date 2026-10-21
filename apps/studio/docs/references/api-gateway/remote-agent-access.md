@@ -45,7 +45,7 @@ the cloud forwards encrypted bytes and never becomes an Agent execution fallback
  Checkpoints are for initial synchronization and recovery, not periodic refresh.
 - **One protocol across reachability modes.** Direct LAN, a user's VPN/proxy,
  hosted relay, and self-hosted relay use the same encrypted WebSocket surface.
-- **One public package: `@cherrystudio/remote-protocol`.** Its root is domain-neutral;
+- **One public package: `@cherrydesktop/remote-protocol`.** Its root is domain-neutral;
  Agent schemas and reducers live in its `/agent` export. Future domains do not
  require renaming the package or depending on Agent types.
 - **Standard JSON-RPC 2.0 messages.** Requests/responses use `id`; server events
@@ -278,14 +278,14 @@ library/profile has already been selected.
 ## Public protocol package
 
 Proposed location: `packages/remote-protocol`, published as
-`@cherrystudio/remote-protocol`. Publication is a later delivery step, not part of
+`@cherrydesktop/remote-protocol`. Publication is a later delivery step, not part of
 this documentation change. Both repositories install a tested package version;
 a separate repository is not required.
 
 | Export | Owns | Must not depend on |
 |---|---|---|
-| `@cherrystudio/remote-protocol` | JSON-RPC validation, connection/version negotiation, common errors, transport profile descriptors | Agent DTOs, other domain schemas, platform APIs |
-| `@cherrystudio/remote-protocol/agent` | Agent method schemas, device authorization, events, checkpoints, pure reducer, canonical command encoding | Desktop services, mobile UI, other domains |
+| `@cherrydesktop/remote-protocol` | JSON-RPC validation, connection/version negotiation, common errors, transport profile descriptors | Agent DTOs, other domain schemas, platform APIs |
+| `@cherrydesktop/remote-protocol/agent` | Agent method schemas, device authorization, events, checkpoints, pure reducer, canonical command encoding | Desktop services, mobile UI, other domains |
 
 The dependency direction is domain → common, never common → Agent. Envelope
 validation parses the common structure first; consumers compose only the domain

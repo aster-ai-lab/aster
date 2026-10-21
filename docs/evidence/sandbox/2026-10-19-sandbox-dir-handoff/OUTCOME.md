@@ -8,7 +8,7 @@ or a companion directory inside the workspace, stays a typed
 `native_process_lifetime_unqualified` refusal. `mediated` still does
 not consult OCI.
 
-AsterDream and ToWork pass a qualified sibling `sandbox/` into the ACP
+AsterDream and Former pass a qualified sibling `sandbox/` into the ACP
 child only when the parent has not set `ASTER_SANDBOX_DIR`. An existing
 value is inherited. A missing sibling does not invent
 `~/Library/Caches/aster/sandbox`.
@@ -48,7 +48,7 @@ cargo test -p aster-dream --locked --lib sandbox_dir -- --test-threads=1
 4 passed, 0 failed, 781 filtered, 1.64s.
 
 ```
-cargo test -p a3s-studio --locked --lib sandbox_dir -- --test-threads=1
+cargo test -p a3s-desktop --locked --lib sandbox_dir -- --test-threads=1
 ```
 
 4 passed, 0 failed, 811 filtered, 1.52s.
@@ -59,7 +59,7 @@ on both `acp.rs` files exited 0.
 ## Explicitly not claimed
 
 No real HVF command. No OCI image was copied into either app bundle.
-No AsterDream or ToWork process was restarted, so a session already
+No AsterDream or Former process was restarted, so a session already
 running keeps the previous refusal. Native macOS shell stays refused.
 `mediated` has no mediator VM. The cache image under
 `~/Library/Caches/aster/sandbox` was not used.

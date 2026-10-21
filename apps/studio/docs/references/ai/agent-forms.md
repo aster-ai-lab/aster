@@ -82,7 +82,7 @@ remain owned by AIX UI. See [Intelligent UI](../architecture/intelligent-ui.md).
 
 ## Verification
 
-From `apps/studio`, supply a new retained evidence directory:
+From `apps/desktop`, supply a new retained evidence directory:
 
 ```sh
 bash scripts/test-owned-agent-forms.sh /private/tmp/a3s-owned-agent-form-proof

@@ -146,7 +146,7 @@ Utility functions in `src/shared/data/preference/preferenceUtils.ts`:
 ## File Storage
 
 - **Path:** `{cherryHome}/boot-config.json` (intentionally outside `userData`)
-- **Cherry home:** `~/.cherrystudio` by default; `{profileRoot}/.cherrystudio` for unpackaged runs with `CS_DEV_PROFILE_ROOT`
+- **Cherry home:** `~/.cherrydesktop` by default; `{profileRoot}/.cherrydesktop` for unpackaged runs with `CS_DEV_PROFILE_ROOT`
 - **Format:** Flat JSON object, pretty-printed (2-space indent)
 
 > **Why outside `userData`?** Boot config must be readable *before* the app data directory is determined. Storing it under `userData` would create a chicken-and-egg problem: the file that decides where data lives cannot itself live inside that data. Placing it under `{cherryHome}` keeps it stable across changes to `appDataPath` and ensures it is always available at process start, before `initAppDataDir` runs.
@@ -155,7 +155,7 @@ Utility functions in `src/shared/data/preference/preferenceUtils.ts`:
 {
  "app.disable_hardware_acceleration": false,
  "app.user_data_path": {
- "/Applications/Cherry Studio.app/Contents/MacOS/Cherry Studio": "/Volumes/External/CherryData"
+ "/Applications/Cherry Desktop.app/Contents/MacOS/Cherry Desktop": "/Volumes/External/CherryData"
  }
 }
 ```

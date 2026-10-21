@@ -1,6 +1,6 @@
 # AIX Composer normalization fixture
 
-This package contributes `studio.composer.actions` through the canonical v3
+This package contributes `desktop.composer.actions` through the canonical v3
 ACL manifest. Normalize uses the default window/workspace placement. Session
 Normalize declares `scope = "session"` and appears only within a conversation
 UI owner. Each action uses the same isolated provider to trim received text and

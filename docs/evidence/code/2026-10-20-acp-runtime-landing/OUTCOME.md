@@ -47,7 +47,7 @@ build lock. It was interrupted before test assertions. The later seam, paired
 binary build and Work fixture were not repeated. No cancelled or unstarted
 check is counted as passing. The retained [R5 qualification](../2026-10-20-task-orchestration/no-count-limit/OUTCOME.md)
 records the earlier ACP, paired build and real 64-read Work checks. The separate
-[CUA assessment](../../studio/2026-10-20-t01-deepseek-flash-cua/OUTCOME.md)
+[CUA assessment](../../desktop/2026-10-20-t01-deepseek-flash-cua/OUTCOME.md)
 records the actual R5 task and its 8/9 independent score.
 
 The workspace-wide checks remain red: formatting in unchanged files, and two
@@ -58,7 +58,7 @@ pnpm is unavailable. No frontend code is part of this landing. See
 
 ## Preservation and signatures
 
-Files were staged individually. Studio delivery alignment, ACP package identity
+Files were staged individually. Desktop delivery alignment, ACP package identity
 and runtime-boundary work, terminal startup/refusal changes and later Core
 receipt edits are excluded. Their shared-tree working contents are preserved.
 The exact scope and the five overlapping Core paths are recorded in

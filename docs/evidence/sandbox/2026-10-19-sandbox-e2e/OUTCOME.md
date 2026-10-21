@@ -20,9 +20,9 @@ result contains `Linux`, and the host-service count rises from 0 to 1
 and returns to 0 after the agent exits. Any `exit_code` scalar in that
 model body is `0`.
 
-ToWork's spawn writes gateway env. The same no-companion bash refuses
+Former's spawn writes gateway env. The same no-companion bash refuses
 there too: token present, file absent, host-service count stayed 0.
-ToWork does not boot HVF in this set.
+Former does not boot HVF in this set.
 
 ## Commands
 
@@ -38,7 +38,7 @@ Each success oracle printed `hvf_baseline=0 hvf_max=1 hvf_after=0`.
 The refusal oracle printed `hvf_baseline=0 hvf_max=0`.
 
 ```
-cargo test -p a3s-studio --locked --lib sandbox_session -- --ignored --test-threads=1 --nocapture
+cargo test -p a3s-desktop --locked --lib sandbox_session -- --ignored --test-threads=1 --nocapture
 ```
 
 Two verification runs: 1 passed, 0 failed, 815 filtered, 1.61s and 1.54s.

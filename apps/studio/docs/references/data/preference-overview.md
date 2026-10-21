@@ -7,7 +7,7 @@ sources:
   - src/renderer/data/hooks/usePreference.ts
   - src/shared/data/preference
   - src-tauri/src/preferences.rs
-  - src/renderer/shell/studioMainBridge.js
+  - src/renderer/shell/desktopMainBridge.js
   - scripts/test-native-preferences.sh
 ---
 

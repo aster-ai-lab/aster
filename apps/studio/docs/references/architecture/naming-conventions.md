@@ -168,7 +168,7 @@ packages/somePkg/ ❌ (camelCase not allowed)
 packages/SomePkg/ ❌ (PascalCase not allowed)
 ```
 
-**Known legacy exception:** `packages/aiCore/` publishes `@cherrystudio/ai-core`. It predates this rule and has not yet been renamed; do not copy its casing into new packages. This package-directory rule is review-enforced outside `packages/ui/`.
+**Known legacy exception:** `packages/aiCore/` publishes `@cherrydesktop/ai-core`. It predates this rule and has not yet been renamed; do not copy its casing into new packages. This package-directory rule is review-enforced outside `packages/ui/`.
 
 ### 4.2 Business React Component Directories — `PascalCase`
 

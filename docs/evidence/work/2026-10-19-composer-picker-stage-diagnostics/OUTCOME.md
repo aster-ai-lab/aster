@@ -1,6 +1,6 @@
 # Temporary picker stage diagnostics
 
-Result: the actual `studioMainBridge.file.select` now emits bounded, content-free
+Result: the actual `desktopMainBridge.file.select` now emits bounded, content-free
 stage records through the existing native `log_to_host` command. The focused
 regression run passed three files / 41 tests, with no unhandled errors.
 
@@ -11,7 +11,7 @@ or corresponding staged file, after separately observing the intended file
 selected. This change adds diagnostics for the next fixed-renderer reproduction;
 it does not establish the cause of that desktop observation.
 
-Only `studioMainBridge.js` production code changed. Its picker reports `created`,
+Only `desktopMainBridge.js` production code changed. Its picker reports `created`,
 `change` with the selected-file count, `cancel`, `ingest` with the successful
 metadata count, and `error` with the fixed code `file_select_failed`. The log
 message and source are fixed strings. No filename, path, content, options, raw
@@ -25,9 +25,9 @@ attachment reconciliation and return values retain their existing behavior.
 From `apps/work`:
 
 ```sh
-./node_modules/.bin/vitest run --project renderer src/renderer/shell/studioMainBridgeFileSelect.test.ts src/renderer/pages/agents/__tests__/WorkbenchComposerAttachmentPipeline.test.tsx src/renderer/shell/studioMainBridge.test.ts
-./node_modules/.bin/oxlint src/renderer/shell/studioMainBridge.js src/renderer/shell/studioMainBridgeFileSelect.test.ts
-./node_modules/.bin/oxfmt --check src/renderer/shell/studioMainBridge.js src/renderer/shell/studioMainBridgeFileSelect.test.ts
+./node_modules/.bin/vitest run --project renderer src/renderer/shell/desktopMainBridgeFileSelect.test.ts src/renderer/pages/agents/__tests__/WorkbenchComposerAttachmentPipeline.test.tsx src/renderer/shell/desktopMainBridge.test.ts
+./node_modules/.bin/oxlint src/renderer/shell/desktopMainBridge.js src/renderer/shell/desktopMainBridgeFileSelect.test.ts
+./node_modules/.bin/oxfmt --check src/renderer/shell/desktopMainBridge.js src/renderer/shell/desktopMainBridgeFileSelect.test.ts
 ```
 
 - Final test run: **41 passed, zero failed**, three files, 1.54 seconds. The
@@ -39,7 +39,7 @@ From `apps/work`:
   and checked for absence of the private fixture's names, paths, body, token and
   errors. Upload counts and original promise results are also asserted.
 - Existing real Bridge / AttachmentRuntime / ComposerSurface pipeline: four
-  passed. Existing `studioMainBridge.test.ts`: 22 passed.
+  passed. Existing `desktopMainBridge.test.ts`: 22 passed.
 - Scoped Oxlint and Oxfmt passed. TypeScript's web-config program reported zero
   syntactic or semantic diagnostics for the new test source; see
   [scoped-typecheck.log](scoped-typecheck.log). This is not a whole-renderer

@@ -33,7 +33,7 @@ fact_control::tests::fact_log_default_resume_retains_admitted_unbounded_and_expl
 ```
 
 The audit covered all `max_tool_rounds`/`max_rounds` Rust references in Core,
-ACP, Work, Aster/terminal and Studio, plus Core/Effect count admission and
+ACP, Work, Aster/terminal and Desktop, plus Core/Effect count admission and
 execution APIs. It found no remaining unguarded zero round comparison after the
 child-continuation correction. It confirmed that normal fact user/confirm/answer
 paths retain optional ceilings, stock/mixed compose restores absence after its

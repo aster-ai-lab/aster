@@ -38,7 +38,7 @@ Issue #1 描述的“所有 StepAccepted 无条件重置”在本次基线已经
 
 ## Explicitly not claimed
 
-- **完整 Python 守卫不是全绿：5/6。** 唯一失败为既有 `apps/web/public/tenant/toyou/INFO.md` 缺失。历史提交 e07fd7c 明确移出 Web 树，但 Studio/tenant 契约仍有旧引用；没有造占位资产、删除断言或把该迁移扩展为本次工作。[原样结果](issue-6-python-after.log)
+- **完整 Python 守卫不是全绿：5/6。** 唯一失败为既有 `apps/web/public/tenant/legacy/INFO.md` 缺失。历史提交 e07fd7c 明确移出 Web 树，但 Desktop/tenant 契约仍有旧引用；没有造占位资产、删除断言或把该迁移扩展为本次工作。[原样结果](issue-6-python-after.log)
 - 没有运行整仓库全部测试、外部真实模型/账号、完整模板 HITL 或物理麒麟设备验收。模板新增 scoped-deny fixture 不冒称完整 HITL；共享真实 session script 治理回归另有覆盖。
 - #2 附带的 180 秒挂起没有复现，不声称已定位其独立根因。本次明确验证修复后的有界本地 ACL / API key 场景正常退出。
 - 没有实现完整系统提示替换；现在明确拒绝，避免静默忽略。

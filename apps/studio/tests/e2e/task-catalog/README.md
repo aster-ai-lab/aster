@@ -24,6 +24,6 @@ python3 run.py --case A23
 
 `run.py --live` 会直接退出，不调用模型。
 
-`window.py --launch --case A23` 用后台 CUA 打开 `just fork toyou`。`A3S_GUI_ALLOW_MOUSE` 必须保持未设置。点击、输入和热键只走 `cua_guard.GuardState`，投递模式是 `background`。这个命令不复制 `toyou/member-session.json`，也不结束已经在运行的 toyou。不带 `--launch` 时只核对内容门回执，不打开窗口。
+`window.py --launch --case A23` 用后台 CUA 打开 `just fork legacy`。`A3S_GUI_ALLOW_MOUSE` 必须保持未设置。点击、输入和热键只走 `cua_guard.GuardState`，投递模式是 `background`。这个命令不复制 `legacy/member-session.json`，也不结束已经在运行的 legacy。不带 `--launch` 时只核对内容门回执，不打开窗口。
 
 A06 和 A12 仍然阻塞。空产物不会被算作通过。

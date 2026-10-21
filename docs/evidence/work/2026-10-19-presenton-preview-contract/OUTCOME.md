@@ -13,7 +13,7 @@ polling and use native Office for file delivery.
 
 Nonempty snapshot reads, tool names, input bounds, closed language values,
 and validation remain available. No AIX protocol admission was relaxed.
-No native Office API, Core behavior, Studio source, deployment, GUI action,
+No native Office API, Core behavior, Desktop source, deployment, GUI action,
 formal task prompt, source document, or generated task artifact was changed.
 
 ## Scope and source review
@@ -23,7 +23,7 @@ and handlers and the homepage task prompt. `homeComposerMode.tsx` appends the
 homepage task prompt to the emitted live task text; its existing send test now
 checks that the native-file-first guidance actually reaches that text.
 
-Studio has `PresentationGenerateBridge`, which observes successful tool parts
+Desktop has `PresentationGenerateBridge`, which observes successful tool parts
 and stages a preview seed. Work has no corresponding observer. Its current
 `AixViewBridge` accepts only typed `aix.view.store`; it does not run the legacy
 Presenton `aix.agent.invoke` generation protocol. The ACK therefore cannot
@@ -56,7 +56,7 @@ cargo test --locked --offline -p aster-dream --lib presenton_mcp
 A single Cargo invocation waited for the shared target lock, freshly compiled
 `aster-dream`, and passed **5 tests, 0 failed, 772 filtered out**. Cargo reported
 2m 14s to finish the test profile. Test executable:
-`target/debug/deps/a3s_studio_lib-d46b292e4f47e130`.
+`target/debug/deps/a3s_desktop_lib-d46b292e4f47e130`.
 
 Coverage includes the validation-only ACK, native-file-first tool descriptions,
 empty snapshot refusal, nonempty snapshot readback, unchanged four tool names,

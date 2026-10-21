@@ -46,7 +46,7 @@ macOS arm64 候选包已完成 Developer ID 签名、Apple 公证及原生升级
 | Apple 公证 | Accepted；服务日志无 issues | [服务日志](notary-service-log.json) |
 | 发行文件 | App 与 DMG 的 stapler、代码签名、Gatekeeper 和 DMG 完整性检查通过 | [notary-verification.log](notary-verification.log) |
 | DMG 实际内容 | 只读挂载，版本、三枚 arm64 二进制、UUID 与冻结 App 一致；内部 App 被 Gatekeeper 接受 | [mounted-dmg-verification.json](mounted-dmg-verification.json) |
-| 应用身份 | v0.1.0 与 v0.1.2 均为 `dev.a3s.studio`、`aster-dream`，只变更版本 | [bundle-identities.json](bundle-identities.json) |
+| 应用身份 | v0.1.0 与 v0.1.2 均为 `dev.a3s.desktop`、`aster-dream`，只变更版本 | [bundle-identities.json](bundle-identities.json) |
 | 格式及静态检查 | 最终 `cargo fmt --all -- --check`、修改文件 oxfmt 和 oxlint 通过；ESLint 无错误、有一条现有依赖边界警告；i18n 校验通过 | 对应 fmt、oxlint、eslint、i18n 日志 |
 
 原生集成测试实际使用 tauri-plugin-updater 及 loopback HTTP，MockRuntime 只提供无窗口宿主。失败场景确认 404、被改动归档及签名版本不符均不会改写旧 App。正常场景确认宿主、ACP、Office 整包更新，App 外的合成会话 sentinel 不变。生产公钥场景在包含空格的隔离路径复制原 v0.1.0 App，再安装最终 v0.1.2 归档，实际通过 `codesign --verify --deep --strict`、`stapler validate` 和 `spctl`。没有关闭发行配置中的 HTTPS 或签名保护。
@@ -68,4 +68,4 @@ macOS arm64 候选包已完成 Developer ID 签名、Apple 公证及原生升级
 - 未验证 Intel Mac、Windows、Linux 或另一台 Mac。CUA 使用 ad-hoc 测试副本；正式发行 App 的签名和 Gatekeeper 验证独立完成。
 - 全量 Web 类型检查仍失败：当前工作区 278 条诊断、94 个文件，见 [typecheck-web.log](typecheck-web.log)。工作区依赖检查 4 项通过、2 项失败：已有 `apps/work/.git` 和 `a3s-gateway` 的 publish 元数据，见 [workspace-dependencies.log](workspace-dependencies.log)。未宣称完整 CI 通过，未运行会批量改写无关文件的全仓 `pnpm lint`。
 - CUA 的旧模型测试地址不可用，没有把该次界面检查算成真实模型任务成功。目标按钮的状态来源及即时刷新仍有既有问题，快速命令回执也可能空白，详见 [CUA.md](CUA.md)。本轮不宣称修复了所有目标状态同步缺陷。
-- T01 的交付通过独立验收，但原生目标终态停在 `needs_input`，未误报完成；完整记录见 [T01 报告](../../studio/2026-10-20-goal-t01-cua/OUTCOME.md)。没有重写该交付程序或改变原输入。
+- T01 的交付通过独立验收，但原生目标终态停在 `needs_input`，未误报完成；完整记录见 [T01 报告](../../desktop/2026-10-20-goal-t01-cua/OUTCOME.md)。没有重写该交付程序或改变原输入。

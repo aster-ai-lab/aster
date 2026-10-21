@@ -91,7 +91,7 @@ over `CS_DEV_USER_DATA_SUFFIX`.
 
 | Data | Isolated location |
 |------|-------------------|
-| Cherry home and BootConfig | `{profileRoot}/.cherrystudio` |
+| Cherry home and BootConfig | `{profileRoot}/.cherrydesktop` |
 | Electron `userData` | `{profileRoot}/userData` |
 | Application logs | `{profileRoot}/logs` |
 

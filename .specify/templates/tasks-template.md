@@ -22,7 +22,7 @@ test in the same task. A task without that test is not done.
 
 - Aster CLI and harness: `apps/aster/`, `crates/code/`
 - AsterDream: `apps/work/`
-- Studio: `apps/studio/`
+- AsterDream: `apps/desktop/`
 - Libraries: `crates/<name>/`
 - Evidence: `docs/evidence/<domain>/<date-slug>/OUTCOME.md`
 

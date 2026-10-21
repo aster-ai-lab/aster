@@ -85,7 +85,7 @@ picks between them:
  (DeepSeek's `response.reasoning_text.delta`) or a required field Ark wants and
  OpenAI tolerates (`status` on assistant items).
 - **Subset endpoints — `open-responses`.** Minimal servers that implement the
- core only and may reject the extras: the HuggingFace router today, LM Studio /
+ core only and may reject the extras: the HuggingFace router today, LM Desktop /
  vLLM / self-hosted next. They have no citations to lose, and the neutral
  adapter sends the minimal body.
 

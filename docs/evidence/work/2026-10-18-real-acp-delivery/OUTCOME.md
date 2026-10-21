@@ -77,7 +77,7 @@ Final verification:
 
 ```sh
 cargo test --locked -p aster-dream --lib agent_plane::turns::local_acp_tests::delivery:: -- --ignored --nocapture --test-threads=1
-target/debug/deps/a3s_studio_lib-104c4ea3ed9a9da3 prompt_stop_reason_tests delivery_contract_tests --nocapture --test-threads=1
+target/debug/deps/a3s_desktop_lib-104c4ea3ed9a9da3 prompt_stop_reason_tests delivery_contract_tests --nocapture --test-threads=1
 rustfmt --edition 2024 --check apps/work/src-tauri/src/agent_plane/local_acp_delivery_tests.rs apps/work/src-tauri/src/agent_plane/local_acp_tests.rs
 git diff --check -- .github/workflows/ci.yml apps/work/src-tauri/src/agent_plane/local_acp_tests.rs
 shasum -a 256 target/debug/a3s-code-acp

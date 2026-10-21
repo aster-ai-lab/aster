@@ -1,4 +1,4 @@
-<a id="cherry-studio-shadcn-variable-system"></a>
+<a id="cherry-desktop-shadcn-variable-system"></a>
 
 # AsterDream Shadcn Variable System
 
@@ -154,7 +154,7 @@ Rules:
 - official variables must not reference Tailwind `--color-*` output;
 - runtime customization enters through an approved input and resolves into canonical output.
 
-<a id="34-cherry-studio-product-semantic-layer"></a>
+<a id="34-cherry-desktop-product-semantic-layer"></a>
 
 ### 3.4 AsterDream product semantic layer
 
@@ -327,7 +327,7 @@ The contract preserves current design decisions by using the existing semantic l
 Charts are additive because the shared layer currently has no complete chart contract. They use an explicit,
 mode-aware five-color sequence and do not change existing component rendering until consumed.
 
-<a id="43-cherry-studio-product-color-extensions"></a>
+<a id="43-cherry-desktop-product-color-extensions"></a>
 
 ### 4.3 AsterDream product color extensions
 

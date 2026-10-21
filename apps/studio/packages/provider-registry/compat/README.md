@@ -8,7 +8,7 @@ The validator files are immutable. If a catalog no longer validates, either keep
 compatible or increment `REGISTRY_SCHEMA_VERSION` by one and create the next baseline:
 
 ```bash
-pnpm --filter @cherrystudio/provider-registry compat:baseline
+pnpm --filter @cherrydesktop/provider-registry compat:baseline
 ```
 
 Never edit, regenerate, or delete an existing validator. A schema refactor that leaves the emitted

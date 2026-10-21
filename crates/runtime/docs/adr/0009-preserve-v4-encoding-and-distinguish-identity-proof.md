@@ -62,4 +62,4 @@ as part of the retained isolated tests.
 Frozen protocol and MCP fixtures remain byte-identical. Tests cover exact
 digests, explicit allowlists, both consumer profiles, Confidential artifact
 removal and rejection of noncanonical stored state without byte mutation.
-See [retained delivery evidence](../../../../docs/evidence/studio/20261017-runtime-contract-compatibility/OUTCOME.md).
+See [retained delivery evidence](../../../../docs/evidence/desktop/20261017-runtime-contract-compatibility/OUTCOME.md).

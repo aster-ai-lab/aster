@@ -52,8 +52,8 @@ exit 0: Work library and non-test development startup compile; existing warnings
 
 cd apps/work
 ./node_modules/.bin/vitest run --project renderer \
-  src/renderer/shell/studioClient.test.ts \
-  src/renderer/data/__tests__/studioProviderPlane.test.ts \
+  src/renderer/shell/desktopClient.test.ts \
+  src/renderer/data/__tests__/desktopProviderPlane.test.ts \
   src/renderer/hooks/__tests__/useModel.test.ts \
   src/renderer/pages/agents/__tests__/WorkbenchModelPicker.test.ts \
   src/renderer/pages/agents/__tests__/useWorkbenchDefaultAgent.test.ts

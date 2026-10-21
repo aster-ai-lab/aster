@@ -1,6 +1,6 @@
 # One Flow engine
 
-Core, Work, and Studio resolve the same `a3s-flow` 2.0.0 package under
+Core, Work, and Desktop resolve the same `a3s-flow` 2.0.0 package under
 `crates/flow`. The separate `flow-v2` workspace member and legacy engine are
 removed. The old engine is retained outside the workspace for comparison.
 The source provenance manifests and authoring UI aliases use the canonical
@@ -15,7 +15,7 @@ passes the compiler's actual `--a3s-flow-runtime` argument.
 ## Validation
 
 - `python3.13 tests/workspace_dependencies.py`: 6 passed, including one engine
-  and identical Core/Work/Studio dependency paths.
+  and identical Core/Work/Desktop dependency paths.
 - Both authoring alias tests and frontend builds passed.
 - `cargo test -p a3s-flow --all-targets --features sqlite`: 556 passed,
   1 explicitly ignored real-Bun test.
@@ -28,11 +28,11 @@ passes the compiler's actual `--a3s-flow-runtime` argument.
   `tool_effect_unresolved`; its non-local fixture lacks effect attestation.
   The receipt gate was not weakened to hide the failure.
 - Core cross-process workflow control/recovery: 2 passed.
-- `cargo check -p aster -p a3s-code-acp -p aster-dream -p a3s-studio
+- `cargo check -p aster -p a3s-code-acp -p aster-dream -p a3s-desktop
   --all-targets`: passed, with existing warnings.
 
 ## Explicitly not claimed
 
 No live PostgreSQL qualification, release, push, complete workspace test pass,
 or resolution of the baseline remote effect-attestation failure. No unrelated
-Studio import or concurrent working-tree changes are included by this record.
+Desktop import or concurrent working-tree changes are included by this record.

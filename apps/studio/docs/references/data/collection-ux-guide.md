@@ -93,15 +93,15 @@ New member supplier command contracts separately qualify explicit resource grant
 reviewed CAS and commit-time authority/dependency fencing. Durable create-intent
 receipts now qualify exact replay, changed-input refusal, concurrent create,
 atomic rollback and no resurrection on memory/live PostgreSQL
-([receipt proof](../../../../../docs/evidence/studio/2026-10-12-platform-supplier-intents/OUTCOME.md)).
+([receipt proof](../../../../../docs/evidence/desktop/2026-10-12-platform-supplier-intents/OUTCOME.md)).
 Strict member HTTP CRUD now passes the same actual-session memory/live PostgreSQL
 loopback campaign; native resource-path admission passes separately
-([HTTP proof](../../../../../docs/evidence/studio/2026-10-12-platform-supplier-crud/OUTCOME.md)).
+([HTTP proof](../../../../../docs/evidence/desktop/2026-10-12-platform-supplier-crud/OUTCOME.md)).
 The typed renderer client and supplier editor expose independently granted writes,
 full-field forms, explicit conflict review and bounded pending state. Component
 checks use the actual shared controls and client over a network fixture; they do
 not qualify the live native/GUI chain
-([editor proof](../../../../../docs/evidence/studio/2026-10-12-platform-supplier-editor/OUTCOME.md)).
+([editor proof](../../../../../docs/evidence/desktop/2026-10-12-platform-supplier-editor/OUTCOME.md)).
 Do not expose additional controls based only on a service method's existence.
 
 Supplier create consumers must retain one non-nil intent UUID and the exact
@@ -126,7 +126,7 @@ Resolution failure, revoked authority or a replaced account must not clear it.
 A failed refresh after confirmed recovery offers only a read retry. Memory/live
 PostgreSQL, actual-session HTTP, native path admission and renderer component
 proofs are retained in the
-[recovery outcome](../../../../../docs/evidence/studio/2026-10-12-platform-supplier-recovery/OUTCOME.md).
+[recovery outcome](../../../../../docs/evidence/desktop/2026-10-12-platform-supplier-recovery/OUTCOME.md).
 Supplier relations now use a narrow member-authorized owner query, described below.
 Probing and the complete native/GUI persistence workflow remain unqualified.
 
@@ -162,10 +162,10 @@ review generation and revision. Removal requires a successful dependency read,
 the reviewed supplier revision and zero global dependencies; a failed/stale check
 or remaining dependencies disables confirmation with a reason. The owner's
 transaction still checks current authority, revision and dependencies atomically.
-See the [related-page outcome](../../../../../docs/evidence/studio/2026-10-12-platform-supplier-relations/OUTCOME.md).
+See the [related-page outcome](../../../../../docs/evidence/desktop/2026-10-12-platform-supplier-relations/OUTCOME.md).
 
 Track the full migration in
-[the coverage matrix](../../../../../docs/evidence/studio/2026-10-12-platform-collections/coverage.md).
+[the coverage matrix](../../../../../docs/evidence/desktop/2026-10-12-platform-collections/coverage.md).
 Feature/PR notes should use the review template in DESIGN.md §14.13 and name
 remaining gaps explicitly. Historical cursor fallbacks and transport aliases are
 compatibility behavior to migrate, not patterns for new owner contracts.

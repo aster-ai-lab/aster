@@ -14,7 +14,7 @@ Start an isolated production renderer in one terminal:
 ./node_modules/.bin/rsbuild dev --host 127.0.0.1 --port 4325
 ```
 
-Run from `apps/studio`:
+Run from `apps/desktop`:
 
 ```sh
 bash tests/e2e/document-tools/verify-review.sh

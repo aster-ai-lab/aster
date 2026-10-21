@@ -1,4 +1,4 @@
-<a id="cherry-studio-variable-catalog"></a>
+<a id="cherry-desktop-variable-catalog"></a>
 
 # AsterDream Variable Catalog
 
@@ -110,7 +110,7 @@ The standard Tailwind adapter derives `radius-sm` through `radius-4xl` from `--r
 multipliers. Cherry's smaller `4xs` through `xs` aliases and `round` alias are compatibility extensions, not
 inputs to the semantic contract.
 
-<a id="5-stable-cherry-studio-product-variables"></a>
+<a id="5-stable-cherry-desktop-product-variables"></a>
 
 ## 5. Stable AsterDream product variables
 

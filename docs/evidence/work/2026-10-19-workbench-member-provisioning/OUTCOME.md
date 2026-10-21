@@ -24,7 +24,7 @@ runtime default; no global permission promotion was added.
 
 The initial focused run found 10 failures among the original 20 tests. All
 10 had the same test-fixture cause: the tenant-brand mock did not expose
-`studioUsesWorkbenchShell`, although the production module already called
+`desktopUsesWorkbenchShell`, although the production module already called
 it. The fixture was updated in the same existing test file. This was not
 treated as a newly introduced product defect.
 

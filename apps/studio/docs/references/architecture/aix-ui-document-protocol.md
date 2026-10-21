@@ -14,10 +14,10 @@ sources:
   - src/renderer/services/plugins/aixWorkbench.ts
   - src/renderer/components/plugins/AixWorkbenchRuntime.tsx
   - src/renderer/components/plugins/PluginScopeProvider.tsx
-  - src/shared/types/studioContribution.ts
-  - src/shared/types/studioExtensionPoints.generated.ts
-  - scripts/generateStudioExtensionPoints.mjs
-  - src/renderer/services/studioTurn.ts
+  - src/shared/types/desktopContribution.ts
+  - src/shared/types/desktopExtensionPoints.generated.ts
+  - scripts/generateDesktopExtensionPoints.mjs
+  - src/renderer/services/desktopTurn.ts
   - src/renderer/services/harnessAssemble.ts
   - src/renderer/components/plugins/PluginContributionContext.tsx
   - src/renderer/components/plugins/PluginSessionRuntime.tsx
@@ -67,7 +67,7 @@ Transient document state belongs to its owner. Layout and recipe choices use
 Preference, and business data belongs to its authority context.
 
 Harness recipe selection uses `app.harness.assemble` through Preference. The
-AsterDream bridge migrates `a3s.studio.harness-assemble.v1` once, gives an existing
+AsterDream bridge migrates `a3s.desktop.harness-assemble.v1` once, gives an existing
 unified value precedence, persists before notification, and relays other windows’
 storage changes. This is a device-profile setting shared across sign-ins, without
 account credentials or execution grants. Team selection remains member-bound.
@@ -275,7 +275,7 @@ or expand authority by changing its readiness message.
 | --- | --- | --- |
 | Webview/editor/workspace/mini-app UI | `aix.view.connect`, version 1 | Bounded state restoration, ordered `aix.view.store`/`aix.view.stored`, readonly `aix.view.environment` |
 | Tree presentation | `aix.tree.connect`, version 1 | Provider readiness, serialized refresh/expand/collapse/select/invoke requests, bounded forests and ordered revisions |
-| `studio.composer.actions` UI | `aix.composer.connect`, version 1 | Provider readiness and one explicit draft-processing request/result per document |
+| `desktop.composer.actions` UI | `aix.composer.connect`, version 1 | Provider readiness and one explicit draft-processing request/result per document |
 
 UI state is a serialized JSON value with a 64 KiB UTF-8 limit, depth limit 16
 and value-count limit 4,096. The port permits 4,096 valid ordered requests.
@@ -312,7 +312,7 @@ These drafts are temporary in-memory state, not PG/RustFS or restart persistence
 
 ## Composer actions
 
-An AIX UI may declare `point = "studio.composer.actions"` with an HTML entry and
+An AIX UI may declare `point = "desktop.composer.actions"` with an HTML entry and
 declared scripts. It cannot also select a container or tree presentation. The
 contribution is an action in an existing Composer, rather than an editor page,
 ActivityBar entry or mini app. It may select `scope = "window"`, `"workspace"`

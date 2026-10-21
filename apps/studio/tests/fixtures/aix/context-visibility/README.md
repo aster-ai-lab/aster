@@ -1,7 +1,7 @@
 # AIX conditional contribution qualification package
 
 Build with `node scripts/build-aix-proof.mjs /tmp/context-visibility.aix context-visibility`
-from `apps/studio`. The package reuses the executable tree and mini-app fixtures.
+from `apps/desktop`. The package reuses the executable tree and mini-app fixtures.
 It declares dark ActivityBar resources, a locale-specific tree, a light panel
 and mini app, and an unconditional editor. Conditions observe host context;
 they never authorize native resource access.

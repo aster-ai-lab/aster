@@ -1,10 +1,10 @@
 ---
 version: 1
-slug: towork-cua
+slug: former-cua
 name:
   zh: "通友科技"
-  en: "Toyou AI Labs"
-product: "ToWork"
+  en: "Legacy AI Labs"
+product: "Former"
 logos:
   light_surface: logo-light.png
   dark_surface: logo-dark.png
@@ -14,8 +14,8 @@ theme_color:
   light: "#f6f6f6"
   dark: "#111112"
 description:
-  zh: "ToWork CUA 车道"
-  en: "ToWork CUA lane"
+  zh: "Former CUA 车道"
+  en: "Former CUA lane"
 ---
 
-ToWork 的 CUA 车道。bundle id 是 `dev.a3s.studio.towork-cua`，数据目录与 `toyou` 分开。这里没有模型市场文件。
+Former 的 CUA 车道。bundle id 是 `dev.a3s.desktop.former-cua`，数据目录与 `legacy` 分开。这里没有模型市场文件。

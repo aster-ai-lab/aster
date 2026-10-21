@@ -16,8 +16,8 @@ missing-information and file-format rules were not duplicated.
 - Work's `agent_plane/turns.rs::host_for_session` appends the compile-time
   `delivery_contract.md` through `delivery_host`. `session_new_params` carries it
   in `_meta.a3sHost.guidelines`.
-- ACP's `host_context::studio_host_from_meta` admits that bounded text;
-  `merge_studio_host` puts it in `SystemPromptSlots.extra` as host instructions.
+- ACP's `host_context::desktop_host_from_meta` admits that bounded text;
+  `merge_desktop_host` puts it in `SystemPromptSlots.extra` as host instructions.
   Core's `SystemPromptSlots::build_with_style` includes the extra in the model's
   system prompt. Tool permissions and safety checks are unchanged.
 - The Work test checks the admitted `session/new` payload retains both caller
@@ -26,9 +26,9 @@ missing-information and file-format rules were not duplicated.
   The existing ACP test now loads this same contract and checks it survives
   metadata parsing, prompt-slot merging and system-prompt assembly beside the
   session budget, caller text and review instructions.
-- Work and Studio have separate `turns.rs` implementations. Studio does not
+- Work and Desktop have separate `turns.rs` implementations. Desktop does not
   currently inject Work's delivery contract. This change is limited to the
-  requested AsterDream Work product; it adds no Core-wide or Studio rule.
+  requested AsterDream Work product; it adds no Core-wide or Desktop rule.
 - Skills load on demand: Core's catalog exposes `search_skills`/`Skill`, and ACP
   local assets expose `open_local_asset`. A skill body is not an unconditional
   delivery-contract entry point.

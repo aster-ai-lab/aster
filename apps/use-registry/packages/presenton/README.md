@@ -62,7 +62,7 @@ Adaptations to the box:
 - **AI chat, web search, document input, Smart mode, custom templates.**
 - **Upstream's other 12 templates.** Each is 0.7–2.3 MB of layout data and 3–13 MB of images; the four kept templates fit the package.
 
-<a id="studio-view-policy"></a>
+<a id="desktop-view-policy"></a>
 
 ## AsterDream view policy
 

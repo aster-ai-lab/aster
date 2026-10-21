@@ -50,4 +50,4 @@
 
 服务名和进程名不在本目录里，也不随本租户改变。它们使用 `a3s-` 前缀，例如 `a3s-api`、`a3s-gateway`、`a3s-runtime`。控制台若回显这些服务名，显示的是 `a3s-` 名字。
 
-默认租户在 `apps/web/public/tenant/a3s/`。`just up` 读取那个目录。通友科技在 `apps/web/public/tenant/toyou/`，用 `just up toyou` 启动。桌面图标和窗口字标由 `scripts/render-tenant-desktop-icons.py` 从上面的两张字标生成。
+默认租户在 `apps/web/public/tenant/a3s/`。`just up` 读取那个目录。通友科技在 `apps/web/public/tenant/legacy/`，用 `just up legacy` 启动。桌面图标和窗口字标由 `scripts/render-tenant-desktop-icons.py` 从上面的两张字标生成。

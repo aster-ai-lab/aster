@@ -52,4 +52,4 @@
 
 服务名和进程名不在本目录里，也不随本租户改变。它们使用 `a3s-` 前缀，例如 `a3s-api`、`a3s-gateway`、`a3s-runtime`。控制台若回显这些服务名，显示的是 `a3s-` 名字。
 
-氪锶科技在 `apps/web/public/tenant/kense/`，用 `just up kense` 或 `just up:kense` 启动。通友科技在 `apps/web/public/tenant/toyou/`，用 `just up toyou` 或 `just up:toyou` 启动。
+氪锶科技在 `apps/web/public/tenant/kense/`，用 `just up kense` 或 `just up:kense` 启动。通友科技在 `apps/web/public/tenant/legacy/`，用 `just up legacy` 或 `just up:legacy` 启动。

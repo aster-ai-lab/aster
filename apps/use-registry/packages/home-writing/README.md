@@ -1,3 +1,3 @@
 # 写作
 
-首页货架 `studio.home`。
+首页货架 `desktop.home`。

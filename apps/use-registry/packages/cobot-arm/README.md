@@ -6,7 +6,7 @@ Package `a3s/cobot-arm@1.0.0`. One self-contained `.aix` package, three surfaces
 | --- | --- | --- |
 | Skill | `cobot-arm` | Reads one observation and returns exactly one offered `choice`. |
 | Agent | `cobot-arm` | Edge package harness, entry `agent/run.mjs`, 500 cpu millis, 256 MiB. AsterDream keeps one warm `a3s-box` per open view. |
-| UI | `workbench` | Mini app (`studio.applets`): no Activity Bar entry; after install, 打开 opens it in its own system window. Root `ui/workbench`. |
+| UI | `workbench` | Mini app (`desktop.applets`): no Activity Bar entry; after install, 打开 opens it in its own system window. Root `ui/workbench`. |
 
 Nothing runs on the host outside AsterDream. There is no lab server, no port, and no Python.
 
@@ -49,7 +49,7 @@ Two planners:
 
 批量评测 runs the chosen planners on the chosen tasks, 1 to 10 runs each. Run i starts from init state i, as LIBERO's own evaluation does. Per planner and task it reports the success rate, steps, plans, model calls, model latency, and wall time. It stores the report in the view state, and 导出报告 shows it as JSON to copy.
 
-<a id="studio-view-policy"></a>
+<a id="desktop-view-policy"></a>
 
 ## AsterDream view policy
 
@@ -74,13 +74,13 @@ node tests/load.proof.mjs
 
 The unit tests cover the agent protocol, the world, planner, and session, the LIBERO replay, calibration, grounding, and budgets, and the package shape.
 
-The LIBERO proof runs the real agent in Chromium with a stand-in gateway. It compares each scene's first camera images with robosuite's (`tests/fixtures/libero/`). It then closes the drawer through the vision path, checks that a 401 stops with no motion, runs the reference batch on both tasks from init states 0 and 1, and loads the microwave's init state 9. The browser proof loads the view in Chromium under AsterDream's exact view policy and sandbox, and drives the real `agent/run.mjs` through the host turn loop. It runs four episodes: System One replies at 0.8, a 401 gateway (the agent uses its rule), a refused agent turn (the page uses its rule and labels it), and System One replies at 0.4, which must stop in 等待人工处理. It needs the Playwright install in `apps/studio`.
+The LIBERO proof runs the real agent in Chromium with a stand-in gateway. It compares each scene's first camera images with robosuite's (`tests/fixtures/libero/`). It then closes the drawer through the vision path, checks that a 401 stops with no motion, runs the reference batch on both tasks from init states 0 and 1, and loads the microwave's init state 9. The browser proof loads the view in Chromium under AsterDream's exact view policy and sandbox, and drives the real `agent/run.mjs` through the host turn loop. It runs four episodes: System One replies at 0.8, a 401 gateway (the agent uses its rule), a refused agent turn (the page uses its rule and labels it), and System One replies at 0.4, which must stop in 等待人工处理. It needs the Playwright install in `apps/desktop`.
 
 The load proof measures navigation to the first robot frame, phase by phase, in Chromium, in WebKit when Playwright has it, and on macOS with `swift` in WKWebView on the GPU (`tests/webview-load.swift`), the engine of AsterDream's window. It fails when a median exceeds 1000 ms (`LOAD_BUDGET_MS`). `LOAD_VIEW_ROOT` measures another copy of the package, for a before/after comparison.
 
-`tests/studio-open.swift` measures the same load in a running AsterDream window, by hand: it opens the installed workbench from the activity bar and times the press to the first robot frame on screen.
+`tests/desktop-open.swift` measures the same load in a running AsterDream window, by hand: it opens the installed workbench from the activity bar and times the press to the first robot frame on screen.
 
-The end-to-end test runs AsterDream's real authority: catalog install, view session, asset route, view-agent turn route, a warm `a3s-box`, and the member gateway. `tests/studio.e2e.mjs` plays the renderer in Chromium. It is the ignored Rust test `cobot_arm_runs_end_to_end_through_studio` in `apps/studio/src-tauri`. Without environment it serves a fake gateway; with `A3S_STUDIO_E2E_GATEWAY` and `A3S_STUDIO_E2E_MEMBER_SESSION` it runs against a real one, and the member token stays in Rust.
+The end-to-end test runs AsterDream's real authority: catalog install, view session, asset route, view-agent turn route, a warm `a3s-box`, and the member gateway. `tests/desktop.e2e.mjs` plays the renderer in Chromium. It is the ignored Rust test `cobot_arm_runs_end_to_end_through_desktop` in `apps/desktop/src-tauri`. Without environment it serves a fake gateway; with `A3S_DESKTOP_E2E_GATEWAY` and `A3S_DESKTOP_E2E_MEMBER_SESSION` it runs against a real one, and the member token stays in Rust.
 
 `tests/PLAN.md` is the functional test plan. It maps each case to the test that proves it.
 

@@ -1,4 +1,4 @@
-<a id="studio-digital-twin"></a>
+<a id="desktop-digital-twin"></a>
 
 # AsterDream Digital Twin
 
@@ -20,7 +20,7 @@ bun apps/use-registry/packages/digital-twin/tools/build.mjs
 Verify the editor slice with:
 
 ```sh
-bash tools/dev/verify_studio_digital_twin_editor.sh
+bash tools/dev/verify_desktop_digital_twin_editor.sh
 ```
 
 The current editor supports primitive objects, exact-ID selection, transforms,

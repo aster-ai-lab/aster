@@ -53,5 +53,5 @@ Exited 0.
 No commit, tag, or published installer. No Linux or Windows run. No
 `cargo build --release`. No live provider. The macOS native shell stays
 refused. The six ACP boundary cases in `crates/code/acp/tests/boundary_e2e.rs`
-were not re-run in this pass. Studio and AsterDream packaging were not part
+were not re-run in this pass. Desktop and AsterDream packaging were not part
 of this check.

@@ -2,9 +2,9 @@
 
 - 作者：RoyLin
 - 日期：2026-09-29
-- slug：`toyou`
-- 目录：`apps/web/public/tenant/toyou/`
-- 启动：`just up toyou` 与 `just up:toyou` 读取本目录。`just up` 读取 `tenant/a3s`
+- slug：`legacy`
+- 目录：`apps/web/public/tenant/legacy/`
+- 启动：`just up legacy` 与 `just up:legacy` 读取本目录。`just up` 读取 `tenant/a3s`
 
 本目录是通友科技这个租户的全部平台身份。旁边的 `INFO.md` 是加载器读取的记录。本文件给人读，加载器不解析它，也不把它算进重启用的哈希。
 
@@ -14,8 +14,8 @@
 | --- | --- |
 | `BRAND.md` | 本租户的名称、字标和品牌色。产品控件用仓库根 `DESIGN.md` |
 | `INFO.md` | 平台名称、logo 引用、主题色。加载器只读这一份 |
-| `logo-light.png` | 亮色表面用的字标。红底白字 `toyou`，1417×1417 |
-| `logo-dark.png` | 暗色表面用的字标。白底红字 `toyou`，1417×1417 |
+| `logo-light.png` | 亮色表面用的字标。红底白字 `legacy`，1417×1417 |
+| `logo-dark.png` | 暗色表面用的字标。白底红字 `legacy`，1417×1417 |
 | `icon.png` | 桌面应用图标。1024×1024，红底白字，四边不透明并带 alpha。字宽约为画布的 68%，留给系统圆角 |
 | `icon.ico` | 同一枚图标的 Windows 文件。加载器不读 |
 | `icon.icns` | 同一枚图标的 macOS 文件。加载器不读 |
@@ -29,9 +29,9 @@
 
 ## 平台名
 
-中文名是通友科技，英文名是 Toyou AI Labs。桌面产品名是 toyou，写在 `INFO.md` 的 `product`。文档标题因此是 `通友科技 - 管理后台` 或 `通友科技 - 用户中心`，英文界面是 `Toyou AI Labs - Admin Console` 或 `Toyou AI Labs - User Center`。未登录的 `/` 只显示当前语言的平台名。
+中文名是通友科技，英文名是 Legacy AI Labs。桌面产品名是 legacy，写在 `INFO.md` 的 `product`。文档标题因此是 `通友科技 - 管理后台` 或 `通友科技 - 用户中心`，英文界面是 `Legacy AI Labs - Admin Console` 或 `Legacy AI Labs - User Center`。未登录的 `/` 只显示当前语言的平台名。
 
-工作区 API 标题沿用现有表达式。这两个名字都不以 ` OS` 结尾，所以显示为 `通友科技 Work API` 和 `Toyou AI Labs Work API`。
+工作区 API 标题沿用现有表达式。这两个名字都不以 ` OS` 结尾，所以显示为 `通友科技 Work API` 和 `Legacy AI Labs Work API`。
 
 ## 颜色
 
@@ -46,8 +46,8 @@
 
 ## 控制台
 
-`just up:toyou` 拉起的控制台用本目录的名称和字标：文档标题、favicon、登录字标、活动栏、侧栏品牌、门户和登录链接上的名称。设置里保存的名称或 logo 只盖住这一次启动的 `toyou`，颜色仍来自旁边的 `INFO.md`。PageLoading 从左到右描边再填色。亮色加载用品牌色 `#171717`，暗色加载用浅色字。
+`just up:legacy` 拉起的控制台用本目录的名称和字标：文档标题、favicon、登录字标、活动栏、侧栏品牌、门户和登录链接上的名称。设置里保存的名称或 logo 只盖住这一次启动的 `legacy`，颜色仍来自旁边的 `INFO.md`。PageLoading 从左到右描边再填色。亮色加载用品牌色 `#171717`，暗色加载用浅色字。
 
 服务名和进程名不在本目录里，也不随本租户改变。它们使用 `a3s-` 前缀，例如 `a3s-api`、`a3s-gateway`、`a3s-runtime`。控制台若回显这些服务名，显示的是 `a3s-` 名字。
 
-`just up` 读取 `apps/web/public/tenant/a3s`。本目录用 `just up toyou` 启动。氪锶科技在 `apps/web/public/tenant/kense/`，用 `just up kense` 启动。
+`just up` 读取 `apps/web/public/tenant/a3s`。本目录用 `just up legacy` 启动。氪锶科技在 `apps/web/public/tenant/kense/`，用 `just up kense` 启动。

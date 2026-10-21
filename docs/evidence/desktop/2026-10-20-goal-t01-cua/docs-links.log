@@ -1,0 +1,740 @@
+Checking 237 markdown files for broken links...
+
+Found 184 broken link(s):
+
+  docs/evidence/desktop/20261016-json-render-ui/OUTCOME.md:16
+    Link: logs/renderer-tests.log
+    Resolved to: docs/evidence/desktop/20261016-json-render-ui/logs/renderer-tests.log
+
+  docs/evidence/desktop/20261016-json-render-ui/OUTCOME.md:17
+    Link: logs/picker-tests.log
+    Resolved to: docs/evidence/desktop/20261016-json-render-ui/logs/picker-tests.log
+
+  docs/evidence/desktop/20261016-json-render-ui/OUTCOME.md:18
+    Link: logs/renderer-build.log
+    Resolved to: docs/evidence/desktop/20261016-json-render-ui/logs/renderer-build.log
+
+  docs/evidence/desktop/20261016-json-render-ui/OUTCOME.md:19
+    Link: logs/eslint.log
+    Resolved to: docs/evidence/desktop/20261016-json-render-ui/logs/eslint.log
+
+  docs/evidence/desktop/20261016-json-render-ui/OUTCOME.md:19
+    Link: logs/format.log
+    Resolved to: docs/evidence/desktop/20261016-json-render-ui/logs/format.log
+
+  docs/evidence/desktop/20261016-json-render-ui/OUTCOME.md:19
+    Link: logs/i18n.log
+    Resolved to: docs/evidence/desktop/20261016-json-render-ui/logs/i18n.log
+
+  docs/evidence/desktop/20261016-json-render-ui/OUTCOME.md:24
+    Link: logs/web-types.log
+    Resolved to: docs/evidence/desktop/20261016-json-render-ui/logs/web-types.log
+
+  docs/evidence/desktop/20261016-json-render-ui/OUTCOME.md:25
+    Link: logs/oxlint.log
+    Resolved to: docs/evidence/desktop/20261016-json-render-ui/logs/oxlint.log
+
+  docs/evidence/desktop/20261016-json-render-ui/OUTCOME.md:26
+    Link: logs/docs-check.log
+    Resolved to: docs/evidence/desktop/20261016-json-render-ui/logs/docs-check.log
+
+  docs/evidence/desktop/20261016-json-render-ui/OUTCOME.md:26
+    Link: logs/docs-structure.log
+    Resolved to: docs/evidence/desktop/20261016-json-render-ui/logs/docs-structure.log
+
+  docs/evidence/desktop/20261016-json-render-ui/OUTCOME.md:26
+    Link: logs/docs-index.log
+    Resolved to: docs/evidence/desktop/20261016-json-render-ui/logs/docs-index.log
+
+  docs/evidence/desktop/20261016-json-render-ui/OUTCOME.md:26
+    Link: logs/docs-frontmatter.log
+    Resolved to: docs/evidence/desktop/20261016-json-render-ui/logs/docs-frontmatter.log
+
+  docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/OUTCOME.md:17
+    Link: logs/renderer-tests.log
+    Resolved to: docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/logs/renderer-tests.log
+
+  docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/OUTCOME.md:18
+    Link: logs/shared-contract-tests.log
+    Resolved to: docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/logs/shared-contract-tests.log
+
+  docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/OUTCOME.md:19
+    Link: logs/ui-tests.log
+    Resolved to: docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/logs/ui-tests.log
+
+  docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/OUTCOME.md:20
+    Link: logs/shell-config-tests.log
+    Resolved to: docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/logs/shell-config-tests.log
+
+  docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/OUTCOME.md:21
+    Link: logs/okf-tests.log
+    Resolved to: docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/logs/okf-tests.log
+
+  docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/OUTCOME.md:21
+    Link: logs/native-accept-tests.log
+    Resolved to: docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/logs/native-accept-tests.log
+
+  docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/OUTCOME.md:21
+    Link: logs/agent-plane-tests.log
+    Resolved to: docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/logs/agent-plane-tests.log
+
+  docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/OUTCOME.md:22
+    Link: logs/renderer-build.log
+    Resolved to: docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/logs/renderer-build.log
+
+  docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/OUTCOME.md:22
+    Link: logs/native-build.log
+    Resolved to: docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/logs/native-build.log
+
+  docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/OUTCOME.md:23
+    Link: logs/i18n.log
+    Resolved to: docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/logs/i18n.log
+
+  docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/OUTCOME.md:23
+    Link: logs/format.log
+    Resolved to: docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/logs/format.log
+
+  docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/OUTCOME.md:27
+    Link: logs/agent-page-tests.log
+    Resolved to: docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/logs/agent-page-tests.log
+
+  docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/OUTCOME.md:27
+    Link: logs/agent-page-baseline-tests.log
+    Resolved to: docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/logs/agent-page-baseline-tests.log
+
+  docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/OUTCOME.md:28
+    Link: logs/web-types.log
+    Resolved to: docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/logs/web-types.log
+
+  docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/OUTCOME.md:29
+    Link: logs/eslint.log
+    Resolved to: docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/logs/eslint.log
+
+  docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/OUTCOME.md:29
+    Link: logs/oxlint.log
+    Resolved to: docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/logs/oxlint.log
+
+  docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/OUTCOME.md:29
+    Link: logs/docs-links.log
+    Resolved to: docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/logs/docs-links.log
+
+  docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/OUTCOME.md:34
+    Link: logs/runtime.log
+    Resolved to: docs/evidence/desktop/20261016-local-knowledge-composer-dialogs/logs/runtime.log
+
+  docs/evidence/desktop/20261016-local-product-scope/OUTCOME.md:17
+    Link: logs/renderer-tests.log
+    Resolved to: docs/evidence/desktop/20261016-local-product-scope/logs/renderer-tests.log
+
+  docs/evidence/desktop/20261016-local-product-scope/OUTCOME.md:18
+    Link: logs/renderer-build.log
+    Resolved to: docs/evidence/desktop/20261016-local-product-scope/logs/renderer-build.log
+
+  docs/evidence/desktop/20261016-local-product-scope/OUTCOME.md:19
+    Link: logs/eslint.log
+    Resolved to: docs/evidence/desktop/20261016-local-product-scope/logs/eslint.log
+
+  docs/evidence/desktop/20261016-local-product-scope/OUTCOME.md:19
+    Link: logs/oxlint.log
+    Resolved to: docs/evidence/desktop/20261016-local-product-scope/logs/oxlint.log
+
+  docs/evidence/desktop/20261016-local-product-scope/OUTCOME.md:20
+    Link: logs/format.log
+    Resolved to: docs/evidence/desktop/20261016-local-product-scope/logs/format.log
+
+  docs/evidence/desktop/20261016-local-product-scope/OUTCOME.md:21
+    Link: logs/web-types.log
+    Resolved to: docs/evidence/desktop/20261016-local-product-scope/logs/web-types.log
+
+  docs/evidence/desktop/20261016-local-product-scope/OUTCOME.md:22
+    Link: logs/docs.log
+    Resolved to: docs/evidence/desktop/20261016-local-product-scope/logs/docs.log
+
+  docs/evidence/desktop/20261016-local-product-scope/OUTCOME.md:24
+    Link: logs/renderer-tests-first.log
+    Resolved to: docs/evidence/desktop/20261016-local-product-scope/logs/renderer-tests-first.log
+
+  docs/evidence/desktop/20261016-studio-optimization-sync/OUTCOME.md:33
+    Link: logs/native-agent-plane.log
+    Resolved to: docs/evidence/desktop/20261016-studio-optimization-sync/logs/native-agent-plane.log
+
+  docs/evidence/desktop/20261016-studio-optimization-sync/OUTCOME.md:34
+    Link: logs/native-preferences.log
+    Resolved to: docs/evidence/desktop/20261016-studio-optimization-sync/logs/native-preferences.log
+
+  docs/evidence/desktop/20261016-studio-optimization-sync/OUTCOME.md:35
+    Link: logs/native-files.log
+    Resolved to: docs/evidence/desktop/20261016-studio-optimization-sync/logs/native-files.log
+
+  docs/evidence/desktop/20261016-studio-optimization-sync/OUTCOME.md:35
+    Link: logs/native-documents.log
+    Resolved to: docs/evidence/desktop/20261016-studio-optimization-sync/logs/native-documents.log
+
+  docs/evidence/desktop/20261016-studio-optimization-sync/OUTCOME.md:35
+    Link: logs/native-handoff.log
+    Resolved to: docs/evidence/desktop/20261016-studio-optimization-sync/logs/native-handoff.log
+
+  docs/evidence/desktop/20261016-studio-optimization-sync/OUTCOME.md:35
+    Link: logs/native-watch.log
+    Resolved to: docs/evidence/desktop/20261016-studio-optimization-sync/logs/native-watch.log
+
+  docs/evidence/desktop/20261016-studio-optimization-sync/OUTCOME.md:36
+    Link: logs/owned-tests.log
+    Resolved to: docs/evidence/desktop/20261016-studio-optimization-sync/logs/owned-tests.log
+
+  docs/evidence/desktop/20261016-studio-optimization-sync/OUTCOME.md:37
+    Link: logs/final-followup.log
+    Resolved to: docs/evidence/desktop/20261016-studio-optimization-sync/logs/final-followup.log
+
+  docs/evidence/desktop/20261016-studio-optimization-sync/OUTCOME.md:38
+    Link: logs/renderer-regression.log
+    Resolved to: docs/evidence/desktop/20261016-studio-optimization-sync/logs/renderer-regression.log
+
+  docs/evidence/desktop/20261016-studio-optimization-sync/OUTCOME.md:39
+    Link: logs/editor-consumers.log
+    Resolved to: docs/evidence/desktop/20261016-studio-optimization-sync/logs/editor-consumers.log
+
+  docs/evidence/desktop/20261016-studio-optimization-sync/OUTCOME.md:40
+    Link: logs/native-check.log
+    Resolved to: docs/evidence/desktop/20261016-studio-optimization-sync/logs/native-check.log
+
+  docs/evidence/desktop/20261016-studio-optimization-sync/OUTCOME.md:41
+    Link: logs/renderer-build.log
+    Resolved to: docs/evidence/desktop/20261016-studio-optimization-sync/logs/renderer-build.log
+
+  docs/evidence/desktop/20261016-studio-optimization-sync/OUTCOME.md:42
+    Link: logs/frozen-install.log
+    Resolved to: docs/evidence/desktop/20261016-studio-optimization-sync/logs/frozen-install.log
+
+  docs/evidence/desktop/20261016-studio-optimization-sync/OUTCOME.md:43
+    Link: logs/format.log
+    Resolved to: docs/evidence/desktop/20261016-studio-optimization-sync/logs/format.log
+
+  docs/evidence/desktop/20261016-studio-optimization-sync/OUTCOME.md:43
+    Link: logs/i18n.log
+    Resolved to: docs/evidence/desktop/20261016-studio-optimization-sync/logs/i18n.log
+
+  docs/evidence/desktop/20261016-studio-optimization-sync/OUTCOME.md:45
+    Link: logs/native-agent-plane-first.log
+    Resolved to: docs/evidence/desktop/20261016-studio-optimization-sync/logs/native-agent-plane-first.log
+
+  docs/evidence/desktop/20261016-studio-optimization-sync/OUTCOME.md:45
+    Link: logs/native-solo/
+    Resolved to: docs/evidence/desktop/20261016-studio-optimization-sync/logs/native-solo
+
+  docs/evidence/desktop/20261016-studio-optimization-sync/OUTCOME.md:45
+    Link: logs/editor-consumers-before-patches.log
+    Resolved to: docs/evidence/desktop/20261016-studio-optimization-sync/logs/editor-consumers-before-patches.log
+
+  docs/evidence/desktop/20261016-studio-optimization-sync/OUTCOME.md:49
+    Link: logs/web-types.log
+    Resolved to: docs/evidence/desktop/20261016-studio-optimization-sync/logs/web-types.log
+
+  docs/evidence/desktop/20261016-studio-optimization-sync/OUTCOME.md:49
+    Link: logs/web-types-baseline.log
+    Resolved to: docs/evidence/desktop/20261016-studio-optimization-sync/logs/web-types-baseline.log
+
+  docs/evidence/desktop/20261016-studio-optimization-sync/OUTCOME.md:50
+    Link: logs/eslint.log
+    Resolved to: docs/evidence/desktop/20261016-studio-optimization-sync/logs/eslint.log
+
+  docs/evidence/desktop/20261016-studio-optimization-sync/OUTCOME.md:50
+    Link: logs/oxlint.log
+    Resolved to: docs/evidence/desktop/20261016-studio-optimization-sync/logs/oxlint.log
+
+  docs/evidence/desktop/20261016-studio-optimization-sync/OUTCOME.md:50
+    Link: logs/oxlint-first.log
+    Resolved to: docs/evidence/desktop/20261016-studio-optimization-sync/logs/oxlint-first.log
+
+  docs/evidence/desktop/20261016-studio-optimization-sync/OUTCOME.md:51
+    Link: logs/docs-check.log
+    Resolved to: docs/evidence/desktop/20261016-studio-optimization-sync/logs/docs-check.log
+
+  packages/intelligent-ui/README.md:13
+    Link: ../intelligent-ui-aix/README.md
+    Resolved to: packages/intelligent-ui-aix/README.md
+
+  packages/intelligent-ui/README.md:83
+    Link: ../intelligent-ui-aix/README.md
+    Resolved to: packages/intelligent-ui-aix/README.md
+
+  ROADMAP.md:4
+    Link: ../../docs/studio-plugin-implementation-roadmap.md
+    Resolved to: ../../docs/studio-plugin-implementation-roadmap.md
+
+  ROADMAP.md:10
+    Link: ../../docs/evidence/work/2026-10-20-signed-package-refresh/OUTCOME.md
+    Resolved to: ../../docs/evidence/work/2026-10-20-signed-package-refresh/OUTCOME.md
+
+  ROADMAP.md:11
+    Link: ../../docs/evidence/work/2026-10-20-native-bugfix-roundtrip/OUTCOME.md
+    Resolved to: ../../docs/evidence/work/2026-10-20-native-bugfix-roundtrip/OUTCOME.md
+
+  ROADMAP.md:17
+    Link: ../../docs/evidence/desktop-plugins/20261010-aix-agent-parameters/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261010-aix-agent-parameters/OUTCOME.md
+
+  ROADMAP.md:18
+    Link: ../../docs/studio-plugin-implementation-roadmap.md#meta-studio-优化执行计划2026-10-09
+    Resolved to: ../../docs/studio-plugin-implementation-roadmap.md
+
+  ROADMAP.md:18
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-closeout/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-closeout/OUTCOME.md
+
+  ROADMAP.md:19
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-workspace-host-types/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-workspace-host-types/OUTCOME.md
+
+  ROADMAP.md:19
+    Link: ../../specs/005-meta-studio-composition/README.md
+    Resolved to: ../../specs/005-meta-studio-composition/README.md
+
+  ROADMAP.md:19
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-execution-plan/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-execution-plan/OUTCOME.md
+
+  ROADMAP.md:19
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-plan-review/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-plan-review/OUTCOME.md
+
+  ROADMAP.md:19
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-native-preferences/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-native-preferences/OUTCOME.md
+
+  ROADMAP.md:19
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-implementation-followup/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-implementation-followup/OUTCOME.md
+
+  ROADMAP.md:19
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-session-invalidation/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-session-invalidation/OUTCOME.md
+
+  ROADMAP.md:19
+    Link: ../../docs/evidence/desktop-plugins/20261009-aix-only-cleanup/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-aix-only-cleanup/OUTCOME.md
+
+  ROADMAP.md:19
+    Link: ../../docs/evidence/desktop-plugins/20261009-studio-tiptap-3313/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-studio-tiptap-3313/OUTCOME.md
+
+  ROADMAP.md:19
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-typecheck-recheck/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-typecheck-recheck/OUTCOME.md
+
+  ROADMAP.md:19
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-plugin-catalog-typecheck/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-plugin-catalog-typecheck/OUTCOME.md
+
+  ROADMAP.md:19
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-contract-matrix/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-contract-matrix/OUTCOME.md
+
+  ROADMAP.md:19
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-identities/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-identities/OUTCOME.md
+
+  ROADMAP.md:19
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-dependencies/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-dependencies/OUTCOME.md
+
+  ROADMAP.md:19
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-renderer-verification/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-renderer-verification/OUTCOME.md
+
+  ROADMAP.md:19
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix/OUTCOME.md
+
+  ROADMAP.md:19
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-rerun/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-rerun/OUTCOME.md
+
+  ROADMAP.md:19
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-path-traversal-rerun/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-path-traversal-rerun/OUTCOME.md
+
+  ROADMAP.md:19
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-final/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-final/OUTCOME.md
+
+  ROADMAP.md:19
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-seven-cases/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-seven-cases/OUTCOME.md
+
+  ROADMAP.md:19
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-admission-final/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-admission-final/OUTCOME.md
+
+  ROADMAP.md:19
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-missing-service/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-missing-service/OUTCOME.md
+
+  ROADMAP.md:19
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-manifest-version/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-manifest-version/OUTCOME.md
+
+  ROADMAP.md:20
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-missing-service/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-missing-service/OUTCOME.md
+
+  ROADMAP.md:21
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-manifest-version/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-manifest-version/OUTCOME.md
+
+  ROADMAP.md:21
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-port-version/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-port-version/OUTCOME.md
+
+  ROADMAP.md:21
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-eleven-cases/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-negative-matrix-eleven-cases/OUTCOME.md
+
+  ROADMAP.md:22
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-native-preferences/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-native-preferences/OUTCOME.md
+
+  ROADMAP.md:23
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-foundation/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-foundation/OUTCOME.md
+
+  ROADMAP.md:23
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-closeout/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-closeout/OUTCOME.md
+
+  ROADMAP.md:24
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-closeout/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-closeout/OUTCOME.md
+
+  ROADMAP.md:25
+    Link: ../../docs/evidence/desktop-plugins/20261009-meta-studio-foundation/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-meta-studio-foundation/OUTCOME.md
+
+  ROADMAP.md:26
+    Link: ../../docs/evidence/desktop-plugins/20261009-intelligent-ui-boundaries/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-intelligent-ui-boundaries/OUTCOME.md
+
+  ROADMAP.md:27
+    Link: ../../docs/evidence/desktop-plugins/20261009-architecture-reassessment/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-architecture-reassessment/OUTCOME.md
+
+  ROADMAP.md:28
+    Link: ../../docs/evidence/desktop-plugins/20261009-aix-view-commands/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-aix-view-commands/OUTCOME.md
+
+  ROADMAP.md:29
+    Link: ../../docs/evidence/desktop-plugins/20261009-aix-dynamic-command-runtime/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-aix-dynamic-command-runtime/OUTCOME.md
+
+  ROADMAP.md:30
+    Link: ../../docs/evidence/desktop-plugins/20261009-aix-context-visibility/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-aix-context-visibility/OUTCOME.md
+
+  ROADMAP.md:31
+    Link: ../../docs/evidence/desktop-plugins/20261009-aix-execution-contributions/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-aix-execution-contributions/OUTCOME.md
+
+  ROADMAP.md:32
+    Link: ../../docs/evidence/desktop-plugins/20261009-aix-factory-reclamation/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-aix-factory-reclamation/OUTCOME.md
+
+  ROADMAP.md:33
+    Link: ../../docs/evidence/desktop-plugins/20261009-aix-session-contributions/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-aix-session-contributions/OUTCOME.md
+
+  ROADMAP.md:34
+    Link: ../../docs/evidence/desktop-plugins/20261009-aix-composer-actions/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-aix-composer-actions/OUTCOME.md
+
+  ROADMAP.md:35
+    Link: ../../docs/evidence/desktop-team/20261008-team-authorization/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-team/20261008-team-authorization/OUTCOME.md
+
+  ROADMAP.md:35
+    Link: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-role-audit/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-role-audit/OUTCOME.md
+
+  ROADMAP.md:35
+    Link: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-role-lifecycle-audit/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-role-lifecycle-audit/OUTCOME.md
+
+  ROADMAP.md:35
+    Link: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-delete-revision/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-delete-revision/OUTCOME.md
+
+  ROADMAP.md:35
+    Link: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-role-history/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-role-history/OUTCOME.md
+
+  ROADMAP.md:35
+    Link: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-atomic-role-assignment/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-atomic-role-assignment/OUTCOME.md
+
+  ROADMAP.md:35
+    Link: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-assignment-audit/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-assignment-audit/OUTCOME.md
+
+  ROADMAP.md:35
+    Link: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-assignment-history-ui/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-assignment-history-ui/OUTCOME.md
+
+  ROADMAP.md:35
+    Link: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-assignment-delete-race/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-assignment-delete-race/OUTCOME.md
+
+  ROADMAP.md:35
+    Link: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-policy-write-authority/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-policy-write-authority/OUTCOME.md
+
+  ROADMAP.md:35
+    Link: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-membership-write-authority/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-membership-write-authority/OUTCOME.md
+
+  ROADMAP.md:35
+    Link: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-join-decision-authority/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-join-decision-authority/OUTCOME.md
+
+  ROADMAP.md:35
+    Link: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-invitation-redemption-authority/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-invitation-redemption-authority/OUTCOME.md
+
+  ROADMAP.md:35
+    Link: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-invite-configuration/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-invite-configuration/OUTCOME.md
+
+  ROADMAP.md:35
+    Link: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-invitation-writes/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-invitation-writes/OUTCOME.md
+
+  ROADMAP.md:35
+    Link: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-owner-binding/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-owner-binding/OUTCOME.md
+
+  ROADMAP.md:35
+    Link: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-member-placement/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-member-placement/OUTCOME.md
+
+  ROADMAP.md:35
+    Link: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-invitation-refusal/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-team/20261008-team-authorization/certification-invitation-refusal/OUTCOME.md
+
+  ROADMAP.md:36
+    Link: ../../docs/evidence/desktop-team/20261008-team-workbench/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-team/20261008-team-workbench/OUTCOME.md
+
+  ROADMAP.md:36
+    Link: ../../docs/evidence/desktop-team/20261009-team-navigation/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-team/20261009-team-navigation/OUTCOME.md
+
+  ROADMAP.md:37
+    Link: ../../docs/evidence/desktop-plugins/20261008-aixui/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-aixui/OUTCOME.md
+
+  ROADMAP.md:38
+    Link: ../../docs/evidence/desktop-plugins/20261009-intelligent-ui/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-intelligent-ui/OUTCOME.md
+
+  ROADMAP.md:39
+    Link: ../../docs/evidence/desktop-plugins/20261009-aix-catalogue-isolation/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-aix-catalogue-isolation/OUTCOME.md
+
+  ROADMAP.md:40
+    Link: ../../docs/evidence/desktop-plugins/20261009-aix-availability/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-aix-availability/OUTCOME.md
+
+  ROADMAP.md:41
+    Link: ../../docs/evidence/desktop-plugins/20261009-aix-package-boundaries/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-aix-package-boundaries/OUTCOME.md
+
+  ROADMAP.md:42
+    Link: ../../docs/evidence/desktop-plugins/20261009-aix-host-admission-retirement/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261009-aix-host-admission-retirement/OUTCOME.md
+
+  ROADMAP.md:43
+    Link: ../../docs/evidence/desktop-plugins/20261008-aix-host-document-boundary/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-aix-host-document-boundary/OUTCOME.md
+
+  ROADMAP.md:44
+    Link: ../../docs/evidence/desktop-plugins/20261008-aix-factory-admission/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-aix-factory-admission/OUTCOME.md
+
+  ROADMAP.md:45
+    Link: ../../docs/evidence/desktop-plugins/20261008-aix-page-instances/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-aix-page-instances/OUTCOME.md
+
+  ROADMAP.md:46
+    Link: ../../docs/evidence/desktop-plugins/20261008-aix-publication-isolation/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-aix-publication-isolation/OUTCOME.md
+
+  ROADMAP.md:47
+    Link: ../../docs/evidence/desktop-plugins/20261008-aix-workbench-storage/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-aix-workbench-storage/OUTCOME.md
+
+  ROADMAP.md:48
+    Link: ../../docs/evidence/desktop-plugins/20261008-aix-miniapp-appearance/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-aix-miniapp-appearance/OUTCOME.md
+
+  ROADMAP.md:49
+    Link: ../../docs/evidence/desktop-plugins/20261008-aix-tree-provider/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-aix-tree-provider/OUTCOME.md
+
+  ROADMAP.md:50
+    Link: ../../docs/evidence/desktop-plugins/20261008-aix-view-state/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-aix-view-state/OUTCOME.md
+
+  ROADMAP.md:51
+    Link: ../../docs/evidence/desktop-plugins/20261008-aix-request-fencing/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-aix-request-fencing/OUTCOME.md
+
+  ROADMAP.md:52
+    Link: ../../docs/evidence/desktop-plugins/20261008-aix-session-settlement/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-aix-session-settlement/OUTCOME.md
+
+  ROADMAP.md:53
+    Link: ../../docs/evidence/desktop-plugins/20261008-aix-contribution-protocol/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-aix-contribution-protocol/OUTCOME.md
+
+  ROADMAP.md:54
+    Link: ../../docs/evidence/desktop-plugins/20261008-aix-workbench-runtime/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-aix-workbench-runtime/OUTCOME.md
+
+  ROADMAP.md:55
+    Link: ../../docs/evidence/desktop-plugins/20261008-aix-admission/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-aix-admission/OUTCOME.md
+
+  ROADMAP.md:56
+    Link: ../../docs/evidence/desktop-task-acp/20261008-scheduled-recovery/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-task-acp/20261008-scheduled-recovery/OUTCOME.md
+
+  ROADMAP.md:57
+    Link: ../../docs/evidence/desktop-plugins/20261007-ui-scope-foundation/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261007-ui-scope-foundation/OUTCOME.md
+
+  ROADMAP.md:58
+    Link: ../../docs/evidence/desktop-plugins/20261008-activity-pages/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-activity-pages/OUTCOME.md
+
+  ROADMAP.md:59
+    Link: ../../docs/evidence/desktop-plugins/20261008-workspace-ownership/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-workspace-ownership/OUTCOME.md
+
+  ROADMAP.md:60
+    Link: ../../docs/evidence/desktop-plugins/20261008-native-publication-query/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-native-publication-query/OUTCOME.md
+
+  ROADMAP.md:61
+    Link: ../../docs/evidence/desktop-plugins/20261008-native-generation-retention/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-native-generation-retention/OUTCOME.md
+
+  ROADMAP.md:62
+    Link: ../../docs/evidence/desktop-plugins/20261008-acp-plugin-processes/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-acp-plugin-processes/OUTCOME.md
+
+  ROADMAP.md:63
+    Link: ../../docs/evidence/desktop-plugins/20261008-native-selection-snapshot/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-native-selection-snapshot/OUTCOME.md
+
+  ROADMAP.md:64
+    Link: ../../docs/evidence/desktop-plugins/20261008-native-harness-tool-binding/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-native-harness-tool-binding/OUTCOME.md
+
+  ROADMAP.md:65
+    Link: ../../docs/evidence/desktop-plugins/20261008-native-skill-mcp-binding/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-native-skill-mcp-binding/OUTCOME.md
+
+  ROADMAP.md:66
+    Link: ../../docs/evidence/desktop-plugins/20261008-native-workspace-binding/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-native-workspace-binding/OUTCOME.md
+
+  ROADMAP.md:67
+    Link: ../../docs/evidence/desktop-plugins/20261008-capability-access/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-capability-access/OUTCOME.md
+
+  ROADMAP.md:68
+    Link: ../../docs/evidence/desktop-plugins/20261008-delegated-plugin-tools/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-delegated-plugin-tools/OUTCOME.md
+
+  ROADMAP.md:69
+    Link: ../../docs/evidence/desktop-plugins/20261008-composer-revisions/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-composer-revisions/OUTCOME.md
+
+  ROADMAP.md:70
+    Link: ../../docs/evidence/desktop-plugins/20261008-workspace-snapshots/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-workspace-snapshots/OUTCOME.md
+
+  ROADMAP.md:71
+    Link: ../../docs/evidence/desktop-plugins/20261008-shared-documents/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-shared-documents/OUTCOME.md
+
+  ROADMAP.md:72
+    Link: ../../docs/evidence/desktop-document-tools/20261008-development/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-document-tools/20261008-development/OUTCOME.md
+
+  ROADMAP.md:73
+    Link: ../../docs/evidence/desktop-plugins/20261008-pending-document-input/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-pending-document-input/OUTCOME.md
+
+  ROADMAP.md:74
+    Link: ../../docs/evidence/desktop-plugins/20261008-document-capabilities/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-document-capabilities/OUTCOME.md
+
+  ROADMAP.md:75
+    Link: ../../docs/evidence/desktop-plugins/20261008-workspace-operation-access/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-workspace-operation-access/OUTCOME.md
+
+  ROADMAP.md:76
+    Link: ../../docs/evidence/desktop-plugins/20261008-harness-document-read/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-harness-document-read/OUTCOME.md
+
+  ROADMAP.md:77
+    Link: ../../docs/evidence/desktop-plugins/20261008-run-resource-completion/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-run-resource-completion/OUTCOME.md
+
+  ROADMAP.md:78
+    Link: ../../docs/evidence/desktop-plugins/20261008-run-document-pins/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-run-document-pins/OUTCOME.md
+
+  ROADMAP.md:79
+    Link: ../../docs/evidence/desktop-plugins/20261008-document-diagnostics/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-document-diagnostics/OUTCOME.md
+
+  ROADMAP.md:80
+    Link: ../../docs/evidence/desktop-plugins/20261008-vsx-mvp/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-vsx-mvp/OUTCOME.md
+
+  ROADMAP.md:81
+    Link: ../../docs/evidence/desktop-plugins/20261008-vsx-diagnostic-ui/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-vsx-diagnostic-ui/OUTCOME.md
+
+  ROADMAP.md:82
+    Link: ../../docs/evidence/desktop-plugins/20261008-vsx-resumed-blocked/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-vsx-resumed-blocked/OUTCOME.md
+
+  ROADMAP.md:83
+    Link: ../../docs/evidence/desktop-plugins/20261008-vsx-install/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-vsx-install/OUTCOME.md
+
+  ROADMAP.md:84
+    Link: ../../docs/evidence/desktop-plugins/20261008-vsix-plugin-type/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-vsix-plugin-type/OUTCOME.md
+
+  ROADMAP.md:85
+    Link: ../../docs/evidence/desktop-plugins/20261008-durable-plugin-storage/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-durable-plugin-storage/OUTCOME.md
+
+  ROADMAP.md:86
+    Link: ../../docs/evidence/desktop-plugins/20261008-device-install-retry/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-device-install-retry/OUTCOME.md
+
+  ROADMAP.md:87
+    Link: ../../docs/evidence/desktop-plugins/20261008-live-storage-coverage/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-live-storage-coverage/OUTCOME.md
+
+  ROADMAP.md:88
+    Link: ../../docs/evidence/desktop-plugins/20261008-storage-runtime-blocked/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-plugins/20261008-storage-runtime-blocked/OUTCOME.md
+
+  ROADMAP.md:94
+    Link: ../../docs/evidence/desktop-runtime/20261008-review-skill-conflict/OUTCOME.md
+    Resolved to: ../../docs/evidence/desktop-runtime/20261008-review-skill-conflict/OUTCOME.md
+

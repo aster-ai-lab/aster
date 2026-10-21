@@ -12,7 +12,7 @@ driver accepts the exact executable paths, and records their hashes. Credentials
 come from `BOYUE_API_KEY` or the existing gitignored `scripts/harbor/.env`; the
 model and base URL come from `scripts/harbor/native-tb.acl`, parsed by `a3s-acl`.
 
-The prepared local image `a3s-studio-reference:ssh-ubuntu24.04` is Ubuntu 24.04 with
+The prepared local image `a3s-desktop-reference:ssh-ubuntu24.04` is Ubuntu 24.04 with
 Bash, Git, Python, bubblewrap, curl, OpenSSH server and CA certificates. Prepare it through the
 installed complete Box bundle, using an owned temporary box, then commit its
 filesystem as the local image. No Docker execution is used. The original verifier
@@ -25,10 +25,10 @@ keys are removed at cleanup.
 From the repository root:
 
 ```sh
-python3 apps/studio/tests/e2e/reference-alignment/run.py \
+python3 apps/desktop/tests/e2e/reference-alignment/run.py \
   --task regex-log \
   --box-cli <complete-installed-bundle>/a3s-box \
-  --native-test-bin <compiled-studio-lib-test> \
+  --native-test-bin <compiled-desktop-lib-test> \
   --linux-acp <compiled-aarch64-linux-acp>
 ```
 
@@ -83,7 +83,7 @@ and requires none. Source identity reaches the renderer as a native
 `data-review-source` document part. Native-window recovery and source-version
 conflict handling remain separate acceptance.
 
-`studio-question-choice` and `studio-question-text` use the native owned form
+`desktop-question-choice` and `desktop-question-text` use the native owned form
 binding to answer a real ACP `ask_user` call. The choice case explicitly selects
 the second option, and the text case has no synthetic choice. Their private reply
 fixtures never enter the model workspace. They prove answer transport and a final

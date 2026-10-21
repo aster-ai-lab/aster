@@ -4,7 +4,7 @@
 
 Both desktop shells refuse a second lock, a quiet claim, and a lock that
 cannot be opened. The production lock parent is the tenant data directory.
-`a3s-search update` stops before any HTTP request. Studio and AsterDream
+`a3s-search update` stops before any HTTP request. Desktop and AsterDream
 treat a missing published update as unpublished. A real update failure still
 surfaces the update error.
 
@@ -21,7 +21,7 @@ cargo test -p aster-dream --lib single_instance --offline
 Rerun after the last `apps/work/src-tauri/src/lib.rs` edit: 4 passed, 0 failed, exit 0.
 
 ```
-cargo test -p a3s-studio --lib single_instance --offline
+cargo test -p a3s-desktop --lib single_instance --offline
 ```
 
 4 passed, 0 failed. Same four cases, including the second claim busy, the
@@ -52,18 +52,18 @@ A search of source, manifests, and the lockfile for `a3s_updater`,
 `a3s-updater`, and `crates/updater` found no call and no provenance path.
 
 ```
-cargo test -p a3s-studio --lib --offline app_updater
-cargo test -p a3s-studio --lib --offline host_family
+cargo test -p a3s-desktop --lib --offline app_updater
+cargo test -p a3s-desktop --lib --offline host_family
 ```
 
 7 passed and 4 passed, 0 failed. The connect-failure check is a pure
 function over an `std::io::Error`. Linux and Windows updates stay unsupported.
 
 ```
-apps/studio/node_modules/.bin/vitest run --project renderer src/renderer/windows/main/hooks/__tests__/useAppUpdateHandler.test.ts
+apps/desktop/node_modules/.bin/vitest run --project renderer src/renderer/windows/main/hooks/__tests__/useAppUpdateHandler.test.ts
 ```
 
-6 passed, 0 failed. `apps/studio/node_modules` was already present, so
+6 passed, 0 failed. `apps/desktop/node_modules` was already present, so
 nothing was installed. The unpublished manual check does not open the
 update-error popup. A real update error still does.
 
@@ -85,7 +85,7 @@ cargo test -p aster-dream --lib --offline app_updater
 `bundle_version_matches_the_package_the_page_shows`.
 
 ```
-cargo fmt -p aster-dream -p a3s-studio -p a3s-search -- --check
+cargo fmt -p aster-dream -p a3s-desktop -p a3s-search -- --check
 ```
 
 Exited 0. Rerun after the download-404 classification fix: exited 0.
@@ -107,12 +107,12 @@ cargo test -p a3s-code-core --lib --offline prompts::tests::
 ## Explicitly not claimed
 
 The CLI self-update gate and the installer behind it were not changed.
-Studio stays at 2.1.3, is not wired to the GitHub feed, and gained no Linux
+Desktop stays at 2.1.3, is not wired to the GitHub feed, and gained no Linux
 installer. Native selects, the two Office editor trees, and the DESIGN.md
 sentence were left as they were. The updater plugin was not forked, and
 `loongarch64` is not a supported install. No release was published, no
 commit was created, and no i18n, config, or shared lock crate was added.
-AsterDream and Studio were not launched, About was not opened, and `aster-dream` and rsbuild were not killed.
+AsterDream and Desktop were not launched, About was not opened, and `aster-dream` and rsbuild were not killed.
 The running debug app is unchanged until the next build.
 
 Two older compiler lines in `docs/evidence/terminal/2026-10-18-native-forms/` still name `a3s-updater`.

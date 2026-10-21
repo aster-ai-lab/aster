@@ -12,7 +12,7 @@
   "timing": "Outer process wall retained separately from backend preflight, Core task_ms and external oracle wall.",
   "source_files": 2819,
   "oracle": {
-    "path": "/Users/roylin/code/aster/docs/evidence/studio/2026-10-19-t01-deepseek-flash/oracle/evaluate.py",
+    "path": "/Users/roylin/code/aster/docs/evidence/desktop/2026-10-19-t01-deepseek-flash/oracle/evaluate.py",
     "sha256": "36c4db2fb452ef738a228428598e38d567b4b77bf803b925b621078a416496ac",
     "cases": 9
   },

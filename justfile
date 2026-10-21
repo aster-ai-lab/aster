@@ -62,6 +62,14 @@ build-studio-release $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster'):
 build-work-release:
     cd apps/work && pnpm package:host
 
+# Documented desktop host build. Same result as the shared host recipe.
+build-desktop $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster'):
+    just build-studio {{slug}}
+
+[macos]
+build-desktop-release $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster'):
+    just build-studio-release {{slug}}
+
 # Start the current AsterDream Studio host with renderer hot reload.
 dev: studio
 

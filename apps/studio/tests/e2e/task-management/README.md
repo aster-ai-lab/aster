@@ -5,17 +5,17 @@ agent plane and disk store. The server injects a private loopback runtime and
 proxies requests; task list and mutation replies are never mocked. It seeds one
 active task and one archived task. Use a fresh server for each run.
 
-From `apps/studio`, build the renderer and the native test executable:
+From `apps/desktop`, build the renderer and the native test executable:
 
 ```sh
-STUDIO_RENDERER_DIST=/tmp/a3s-studio-functional-renderer pnpm exec rsbuild build
+DESKTOP_RENDERER_DIST=/tmp/a3s-desktop-functional-renderer pnpm exec rsbuild build
 rustup run 1.97.1 cargo test --offline --manifest-path src-tauri/Cargo.toml --lib --no-run
 ```
 
 Pass the executable printed by Cargo to the server in a separate terminal:
 
 ```sh
-node tests/e2e/task-management/native-server.mjs <native-test-executable> /tmp/a3s-studio-functional-renderer 4596
+node tests/e2e/task-management/native-server.mjs <native-test-executable> /tmp/a3s-desktop-functional-renderer 4596
 ```
 
 Then run the admitted suite with the installed compatible standalone

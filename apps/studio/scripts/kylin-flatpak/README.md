@@ -1,29 +1,29 @@
 # AsterDream and 通友租户 Kylin / Linux package
 
-The shared `Studio` host targets x86-64 Kylin V10 with `org.gnome.Platform//50`
+The shared `Desktop` host targets x86-64 Kylin V10 with `org.gnome.Platform//50`
 (GTK3/WebKitGTK 4.1). The default `aster` tenant is **AsterDream**, app ID
-`dev.a3s.studio.aster`. Explicit `toyou` retains **ToWork**, app ID `dev.a3s.studio`.
+`dev.a3s.desktop.aster`. Explicit `legacy` retains **Former**, app ID `dev.a3s.desktop`.
 These are separate Flatpak installations. No legacy AsterDream data is imported,
 no server update feed is changed, and no user installer runs during packaging.
 
 ## Build one generation
 
-From `apps/studio`, with the root pinned Rust toolchain, installed frontend dependencies,
+From `apps/desktop`, with the root pinned Rust toolchain, installed frontend dependencies,
 Docker and the prepared `aster-kylin-build:24.04` image:
 
 ```sh
 bash scripts/kylin-flatpak/build-host.sh # default: aster / AsterDream
 # Explicit alternative:
-# A3S_TENANT_SLUG=toyou bash scripts/kylin-flatpak/build-host.sh
+# A3S_TENANT_SLUG=legacy bash scripts/kylin-flatpak/build-host.sh
 bash scripts/kylin-flatpak/build-immodule.sh
 ```
 
-The first script builds the selected renderer and Office kernel, then builds `Studio`, workspace ACP
-and Office together under `target/studio-kylin-x86_64`. Each host build disables Cargo's default
-features and selects exactly `tenant-aster` or `tenant-toyou`, together with `custom-protocol`.
+The first script builds the selected renderer and Office kernel, then builds `Desktop`, workspace ACP
+and Office together under `target/desktop-kylin-x86_64`. Each host build disables Cargo's default
+features and selects exactly `tenant-aster` or `tenant-legacy`, together with `custom-protocol`.
 The native product identity must match the selected package; it cannot switch products at runtime. Linux outputs go to
-`apps/studio/dist/kylin`; the checkout `.env` is replaced by an empty read-only file in
-the build container. No credentials are copied. `studio-build.json` seals the three binary
+`apps/desktop/dist/kylin`; the checkout `.env` is replaced by an empty read-only file in
+the build container. No credentials are copied. `desktop-build.json` seals the three binary
 hashes, exact renderer generation, selected brand files and desktop icon. Changed brand,
 renderer or binary inputs refuse staging. Failed builds cannot create a new receipt.
 
@@ -54,8 +54,8 @@ Run in an x86-64 Linux container with GNOME Platform 50 installed for its isolat
 
 ```sh
 bash scripts/kylin-flatpak/package-bundle.sh
-# Output: dist/kylin/dev.a3s.studio.aster.flatpak
-# A toyou build instead produces dist/kylin/dev.a3s.studio.flatpak.
+# Output: dist/kylin/dev.a3s.desktop.aster.flatpak
+# A legacy build instead produces dist/kylin/dev.a3s.desktop.flatpak.
 ```
 
 The packaging environment needs `flatpak`, `python3`, `binutils`, `bubblewrap`,
@@ -68,16 +68,16 @@ The package uses this exact layout:
 
 | Resource | Path inside Flatpak |
 | --- | --- |
-| Shared host | `/app/bin/Studio` |
+| Shared host | `/app/bin/Desktop` |
 | ACP | `/app/bin/agent/a3s-code-acp` |
 | Office | `/app/bin/a3s-office` |
-| Renderer | `/app/Resources/studio-frontend` |
-| Brand data / default tenant | `/app/Resources/tenant/<slug>` / `/app/Resources/studio-tenant` |
+| Renderer | `/app/Resources/desktop-frontend` |
+| Brand data / default tenant | `/app/Resources/tenant/<slug>` / `/app/Resources/desktop-tenant` |
 | Independent fcitx caches | `/app/lib/im/fcitx4`, `/app/lib/im/fcitx5` |
 
 Those companion paths already match the shared host's Linux lookup; no fallback to another product
-is added. Every launch verifies all listed files against `studio-generation.json` and the
-complete `SHA256SUMS` before executing `Studio`. Missing, modified, mixed-generation,
+is added. Every launch verifies all listed files against `desktop-generation.json` and the
+complete `SHA256SUMS` before executing `Desktop`. Missing, modified, mixed-generation,
 unexpected or symlinked files refuse startup. The built receipt chooses the exact app ID, desktop name and icon; a conflicting explicit
 `A3S_TENANT_SLUG` refuses packaging. Other development tenants have no release identity.
 
@@ -106,10 +106,10 @@ bash scripts/kylin-flatpak/test-input-method.sh APP_FILES RUNTIME_FILES
 ```
 
 The hermetic tests use synthetic ELF/archive inputs at a controlled build-data boundary;
-they prove generation refusal, Studio layout, cache rewriting and environment decisions.
+they prove generation refusal, Desktop layout, cache rewriting and environment decisions.
 They do not qualify upstream binaries. The native GTK gate uses real pinned modules,
 Chinese commit, mixed input, Escape cancellation and exactly-once ASCII delivery on both
 the host display and Flatpak 1.6-style `:99` mapping. Its additional eight protocol cases
 cover modern and legacy fcitx portal paths and refusal boundaries. Neither fixture is a
-physical Kylin Studio GUI test. Current evidence belongs in
-`docs/evidence/studio/2026-10-21-work-alignment` at the repository root.
+physical Kylin Desktop GUI test. Current evidence belongs in
+`docs/evidence/desktop/2026-10-21-work-alignment` at the repository root.

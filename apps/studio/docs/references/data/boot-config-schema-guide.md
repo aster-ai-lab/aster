@@ -193,10 +193,10 @@ cd scripts/data-classify && npm run generate
 
 #### AppImage / Windows Portable Executable Path
 
-The v1 `{cherryHome}/config/config.json` stores `appDataPath` as an array of `{ executablePath, dataPath }` entries keyed by executable path. `{cherryHome}` defaults to `~/.cherrystudio`; unpackaged runs with `CS_DEV_PROFILE_ROOT` use `{profileRoot}/.cherrystudio`. AppImage Linux builds and Windows portable builds use a normalized executable key that differs from `app.getPath('exe')`:
+The v1 `{cherryHome}/config/config.json` stores `appDataPath` as an array of `{ executablePath, dataPath }` entries keyed by executable path. `{cherryHome}` defaults to `~/.cherrydesktop`; unpackaged runs with `CS_DEV_PROFILE_ROOT` use `{profileRoot}/.cherrydesktop`. AppImage Linux builds and Windows portable builds use a normalized executable key that differs from `app.getPath('exe')`:
 
-- AppImage: `path.dirname(process.env.APPIMAGE) + '/cherry-studio.appimage'`
-- Windows portable: `process.env.PORTABLE_EXECUTABLE_DIR + '/cherry-studio-portable.exe'`
+- AppImage: `path.dirname(process.env.APPIMAGE) + '/cherry-desktop.appimage'`
+- Windows portable: `process.env.PORTABLE_EXECUTABLE_DIR + '/cherry-desktop-portable.exe'`
 
 `resolveMigrationPaths` and the runtime user-data-location resolver both use
 `getNormalizedExecutablePath` from, keeping migration and lookup on the

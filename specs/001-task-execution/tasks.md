@@ -66,7 +66,7 @@ test; hardware/live evaluation supplements those tests.
 - [x] T011 [US3] Record the historical T01 timing split and metadata-only OCI
   phases in `crates/code/core/src/sandbox/oci.rs` / `oci/tests.rs`, with raw
   samples under `docs/evidence/sandbox/2026-10-19-command-latency/` and sanitized
-  T01 timings under `docs/evidence/studio/2026-10-19-t01-deepseek-flash/runtime/`.
+  T01 timings under `docs/evidence/desktop/2026-10-19-t01-deepseek-flash/runtime/`.
 - [x] T012 [US2–US3] Build the candidate runtime from the root workspace;
   retain SHA identity checks and test EOF, owner death, console/report identity,
   refusal, cancellation and deadline settlement. Exact changed paths and

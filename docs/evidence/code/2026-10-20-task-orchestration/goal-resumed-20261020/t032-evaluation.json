@@ -8,7 +8,7 @@
   "new_authorized_attempts": 1,
   "source_instruction_and_input_files": 12,
   "input_sha_manifest": "t032-workspace.json",
-  "independent_oracle": "docs/evidence/studio/2026-10-19-t01-deepseek-flash/oracle/evaluate.py",
+  "independent_oracle": "docs/evidence/desktop/2026-10-19-t01-deepseek-flash/oracle/evaluate.py",
   "oracle_sha256": "36c4db2fb452ef738a228428598e38d567b4b77bf803b925b621078a416496ac",
   "original_submission_to_be_frozen_before_oracle": true,
   "shell_mode": "governed existing approvals",

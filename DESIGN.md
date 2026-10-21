@@ -25,12 +25,12 @@ This file is the only `DESIGN.md` in the tree.
 
 | Surface | Source |
 | --- | --- |
-| Work home | [WorkbenchHome.tsx](./apps/studio/src/renderer/pages/agents/WorkbenchHome.tsx), [WorkbenchFeatureStrip.tsx](./apps/studio/src/renderer/pages/agents/WorkbenchFeatureStrip.tsx) |
-| Plugin store | [PluginStorePage.tsx](./apps/studio/src/renderer/pages/plugins/PluginStorePage.tsx) |
-| Settings | [SettingsPage.tsx](./apps/studio/src/renderer/pages/settings/SettingsPage.tsx), [settingsStyles.ts](./apps/studio/src/renderer/pages/settings/settingsStyles.ts), [settingsMenu.ts](./apps/studio/src/renderer/components/settingsMenu.ts) |
+| Work home | [WorkbenchHome.tsx](./apps/desktop/src/renderer/pages/agents/WorkbenchHome.tsx), [WorkbenchFeatureStrip.tsx](./apps/desktop/src/renderer/pages/agents/WorkbenchFeatureStrip.tsx) |
+| Plugin store | [PluginStorePage.tsx](./apps/desktop/src/renderer/pages/plugins/PluginStorePage.tsx) |
+| Settings | [SettingsPage.tsx](./apps/desktop/src/renderer/pages/settings/SettingsPage.tsx), [settingsStyles.ts](./apps/desktop/src/renderer/pages/settings/settingsStyles.ts), [settingsMenu.ts](./apps/desktop/src/renderer/components/settingsMenu.ts) |
 | Segmented control | [segmented-control.tsx](./packages/ui/src/components/primitives/segmented-control.tsx) |
-| Window frame | [AppShell.tsx](./apps/studio/src/renderer/components/layout/AppShell.tsx), [settingsOverlay.css](./apps/studio/src/renderer/components/layout/settingsOverlay.css), [Sidebar.css](./apps/studio/src/renderer/components/Sidebar/Sidebar.css) |
-| Page entry | [PageEntry.tsx](./apps/studio/src/renderer/components/layout/PageEntry.tsx), [tailwind.css](./apps/studio/src/renderer/assets/styles/tailwind.css) |
+| Window frame | [AppShell.tsx](./apps/desktop/src/renderer/components/layout/AppShell.tsx), [settingsOverlay.css](./apps/desktop/src/renderer/components/layout/settingsOverlay.css), [Sidebar.css](./apps/desktop/src/renderer/components/Sidebar/Sidebar.css) |
+| Page entry | [PageEntry.tsx](./apps/desktop/src/renderer/components/layout/PageEntry.tsx), [tailwind.css](./apps/desktop/src/renderer/assets/styles/tailwind.css) |
 
 User-visible strings stay in `zh-cn.json` and `en-us.json`.
 
@@ -258,7 +258,7 @@ scale, dark mode and the motion rules, and it differs per platform.
 - **Labels.** Values are i18n labels, never raw enum ids, except identifiers the user typed or that are their
   own name (model ids, file formats such as PNG / JPEG).
 
-Enforcement: `apps/studio/src/renderer/__tests__/noNativeSelect.test.ts` fails on any native dropdown in AsterDream,
+Enforcement: `apps/desktop/src/renderer/__tests__/noNativeSelect.test.ts` fails on any native dropdown in AsterDream,
 `@a3s-lab/ui` and `@a3s-lab/intelligent-ui`, and holds the Radix `Select` list shrink-only;
 `crates/flow/packages/ui/tests/form-select-control.test.tsx` does the same for `@a3s-lab/form`.
 
@@ -597,7 +597,7 @@ These pages sit in the icon-rail frame.
 
 ## 12. Page entry
 
-A view that is not ready shows one toyou wordmark. The mark is a left-to-right stroke of the letters, in ink
+A view that is not ready shows one legacy wordmark. The mark is a left-to-right stroke of the letters, in ink
 `#303030` on white. Dark uses `#f2f2f3`. This is the AsterDream page entry. The shared `PageLoading` in
 `packages/ui` stays a tenant-neutral mark and does not draw a tenant wordmark.
 
@@ -868,7 +868,7 @@ Choose one pagination mode per endpoint; the UI and response type MUST match it.
 
 Named navigation and placement follow [GOV.UK pagination](https://design-system.service.gov.uk/components/pagination/).
 Cursor continuation, opacity and per-request authority follow [AIP-158](https://google.aip.dev/158). Aster wire/hook
-details are in the [pagination implementation guide](./apps/studio/docs/references/data/data-pagination-guide.md).
+details are in the [pagination implementation guide](./apps/desktop/docs/references/data/data-pagination-guide.md).
 
 ### 14.8 Row actions, selection and batch operations
 
@@ -1064,14 +1064,14 @@ Reuse these implementations; extend the shared layer when a second surface needs
 | Concern | Existing implementation |
 | --- | --- |
 | Shared numbered/cursor pager | [Pagination.tsx](./packages/ui/src/components/console/Pagination.tsx) |
-| AsterDream localization/page-size adapter | [CollectionPagination.tsx](./apps/studio/src/renderer/components/collection/CollectionPagination.tsx) |
-| AsterDream table controls and page-scoped selection | [CollectionToolbar.tsx](./apps/studio/src/renderer/components/collection/CollectionToolbar.tsx), [useCollectionSelection.ts](./apps/studio/src/renderer/components/collection/useCollectionSelection.ts), [CollectionSelectionBar.tsx](./apps/studio/src/renderer/components/collection/CollectionSelectionBar.tsx) |
-| Local bounded-list page recovery | [useCollectionPage.ts](./apps/studio/src/renderer/components/collection/useCollectionPage.ts); remote queries page at their owner |
-| Optimistic rows and row motion | [optimisticRows.ts](./apps/studio/src/renderer/components/collection/optimisticRows.ts), [rowMotion.ts](./packages/ui/src/lib/rowMotion.ts) |
+| AsterDream localization/page-size adapter | [CollectionPagination.tsx](./apps/desktop/src/renderer/components/collection/CollectionPagination.tsx) |
+| AsterDream table controls and page-scoped selection | [CollectionToolbar.tsx](./apps/desktop/src/renderer/components/collection/CollectionToolbar.tsx), [useCollectionSelection.ts](./apps/desktop/src/renderer/components/collection/useCollectionSelection.ts), [CollectionSelectionBar.tsx](./apps/desktop/src/renderer/components/collection/CollectionSelectionBar.tsx) |
+| Local bounded-list page recovery | [useCollectionPage.ts](./apps/desktop/src/renderer/components/collection/useCollectionPage.ts); remote queries page at their owner |
+| Optimistic rows and row motion | [optimisticRows.ts](./apps/desktop/src/renderer/components/collection/optimisticRows.ts), [rowMotion.ts](./packages/ui/src/lib/rowMotion.ts) |
 | Pending/replaced confirmation protection | [use-confirmation-action.ts](./packages/ui/src/lib/use-confirmation-action.ts) |
 | Confirmation presentation | [ConfirmDialog.tsx](./packages/ui/src/components/console/ConfirmDialog.tsx), [PopConfirm.tsx](./packages/ui/src/components/console/PopConfirm.tsx) |
-| AsterDream implementation mapping | [Collection UX guide](./apps/studio/docs/references/data/collection-ux-guide.md) |
-| Wire types, hooks and codecs | [Pagination guide](./apps/studio/docs/references/data/data-pagination-guide.md), [API guidelines](./apps/studio/docs/references/data/api-design-guidelines.md) |
+| AsterDream implementation mapping | [Collection UX guide](./apps/desktop/docs/references/data/collection-ux-guide.md) |
+| Wire types, hooks and codecs | [Pagination guide](./apps/desktop/docs/references/data/data-pagination-guide.md), [API guidelines](./apps/desktop/docs/references/data/api-design-guidelines.md) |
 
 ### 14.12 Accessibility, responsive layout and localization
 

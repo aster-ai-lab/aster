@@ -18,4 +18,4 @@ description:
   en: "AsterDream desktop workspace"
 ---
 
-AsterDream 的租户品牌定义。应用功能由共享 Studio 宿主提供；本目录不定义模型、认证、权限或运行时策略。
+AsterDream 的租户品牌定义。应用功能由共享 Desktop 宿主提供；本目录不定义模型、认证、权限或运行时策略。

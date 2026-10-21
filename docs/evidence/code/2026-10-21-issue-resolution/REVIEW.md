@@ -38,7 +38,7 @@ tracked source, not a copied Git directory, credentials or a user session.
 The locked offline metadata proof finds 161 members of this root workspace.
 The patch passes a reverse applicability check, and isolated workspace format
 checking passes. The full Python guard reproduces the existing missing
-`apps/web/public/tenant/toyou/INFO.md` assertion (5/6); it is not weakened.
+`apps/web/public/tenant/legacy/INFO.md` assertion (5/6); it is not weakened.
 
 ## Closure condition
 

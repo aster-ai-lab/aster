@@ -14,7 +14,7 @@ of the path it edits. Crate identifiers that start with `a3s-` remain.
 
 ### Product regime
 
-Paths: `apps/aster`, `apps/work`, `apps/studio`, `crates/code`,
+Paths: `apps/aster`, `apps/work`, `apps/desktop`, `crates/code`,
 `crates/terminal`.
 
 Obligations: a small hermetic test for new behavior; Tauri commands

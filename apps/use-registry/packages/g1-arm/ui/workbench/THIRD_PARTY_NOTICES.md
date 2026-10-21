@@ -75,7 +75,7 @@ SOFTWARE.
 - License: Apache-2.0. The full text is `vendor/mujoco/LICENSE`.
 - Included: the single-threaded build.
   - `mujoco.wasm` is unmodified. It is carried gzip-compressed and base64-encoded in `vendor/mujoco/wasm.js`; `engine.js` restores the original bytes.
-  - `vendor/mujoco/mujoco.js` is **modified**. The upstream file generates embind invokers with `new Function`, which the Studio view policy refuses. Two generators (`craftInvokerFunction` and `__emval_get_method_caller`) are replaced with closures that make the same calls in the same order, as Emscripten's `DYNAMIC_EXECUTION=0` build does. Each change is marked `// a3s patch:`. `tools/vendor-mujoco.mjs` in the package source applies the patch to the upstream file.
+  - `vendor/mujoco/mujoco.js` is **modified**. The upstream file generates embind invokers with `new Function`, which the Desktop view policy refuses. Two generators (`craftInvokerFunction` and `__emval_get_method_caller`) are replaced with closures that make the same calls in the same order, as Emscripten's `DYNAMIC_EXECUTION=0` build does. Each change is marked `// a3s patch:`. `tools/vendor-mujoco.mjs` in the package source applies the patch to the upstream file.
 
 | File | SHA-256 |
 | --- | --- |

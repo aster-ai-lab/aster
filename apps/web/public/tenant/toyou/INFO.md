@@ -1,10 +1,10 @@
 ---
 version: 1
-slug: toyou
+slug: legacy
 name:
   zh: "通友科技"
-  en: "Toyou AI Labs"
-product: "ToWork"
+  en: "Legacy AI Labs"
+product: "Former"
 model_service: "ToGateway"
 logos:
   light_surface: logo-light.png
@@ -16,7 +16,7 @@ theme_color:
   dark: "#111112"
 description:
   zh: "通友科技平台控制台"
-  en: "Toyou AI Labs platform console"
+  en: "Legacy AI Labs platform console"
 ---
 
-通友科技（Toyou AI Labs）。控制台字标为 toyou。
+通友科技（Legacy AI Labs）。控制台字标为 legacy。

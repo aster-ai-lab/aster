@@ -6,7 +6,7 @@ Package `a3s/iris@1.0.0`. One self-contained `.aix` package, three surfaces:
 | --- | --- | --- |
 | Skill | `iris` | Reads one observation and returns exactly one offered `choice`. |
 | Agent | `iris` | Edge package harness, entry `agent/run.mjs`, 500 cpu millis, 256 MiB. AsterDream keeps one warm `a3s-box` per open view. |
-| UI | `workbench` | Mini app (`studio.applets`): no Activity Bar entry; after install, 打开 opens it in its own system window. Root `ui/workbench`. |
+| UI | `workbench` | Mini app (`desktop.applets`): no Activity Bar entry; after install, 打开 opens it in its own system window. Root `ui/workbench`. |
 
 Nothing runs on the host outside AsterDream. There is no lab server, no port, and no Python.
 
@@ -36,7 +36,7 @@ Each cycle has two decisions: a phase, then an action. When only one key is offe
 
 When the agent cannot run (for example, `a3s-box` is not installed), the page chooses with the same rule and labels the step `规则控制器（agent 不可用）` with the reason.
 
-<a id="studio-view-policy"></a>
+<a id="desktop-view-policy"></a>
 
 ## AsterDream view policy
 
@@ -60,7 +60,7 @@ The tests cover the flight world (mass, rest pose, crash, hook, the three missio
 
 The browser proof uses G1's view host with AsterDream's exact sandbox and CSP. Chromium and WebKit check controls during slow startup, actual scene pixels, reset and all three missions on the rule controller, one-time confirmation of low-probability actions, cancellation of an unanswered decision, and disabled controls when a mesh pack fails to load. It requires AsterDream's Playwright install and its Chromium and WebKit browsers. Set `PROOF_SCREENSHOTS` to retain the completed mission screenshots.
 
-`IRIS_NATIVE_RUNTIME=<Studio runtime receipt> IRIS_NATIVE_EVIDENCE=<output directory> node tests/native.proof.mjs` additionally verifies installed browser assets against this source and drives all three missions through a running AsterDream's view-bound edge agent and gateway. Iris must already be installed. The proof closes only its own view, uses G1's browser host, and records whether actions came from a planning model or the explicitly labelled refusal of a lexical engine; it does not claim a native-window GUI test or a neural-planning result for rule actions.
+`IRIS_NATIVE_RUNTIME=<Desktop runtime receipt> IRIS_NATIVE_EVIDENCE=<output directory> node tests/native.proof.mjs` additionally verifies installed browser assets against this source and drives all three missions through a running AsterDream's view-bound edge agent and gateway. Iris must already be installed. The proof closes only its own view, uses G1's browser host, and records whether actions came from a planning model or the explicitly labelled refusal of a lexical engine; it does not claim a native-window GUI test or a neural-planning result for rule actions.
 
 ## Supply
 

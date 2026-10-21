@@ -1,7 +1,7 @@
 # Harness migration
 
 The 2026-10-18 import copies the required Rust source snapshots from
-`../a3s` into a standalone Aster workspace. The OS/backend checkout remains separate; the later Studio cleanup is
+`../a3s` into a standalone Aster workspace. The OS/backend checkout remains separate; the later Desktop cleanup is
 recorded below. Package-level provenance is recorded in
 [`source-manifest.json`](source-manifest.json). Local snapshots include
 working-tree changes; repository revisions do not imply release certification.
@@ -100,7 +100,7 @@ not launch. It replaces an older running primary AsterDream, including one
 under `apps/work/src-tauri/target` or the primary Application Support app,
 so the new build is not asked to show the old window. `just dev` starts the
 same desktop through `apps/work`'s launcher with Rsbuild dev on
-127.0.0.1:4320, so renderer edits hot-reload. Studio keeps 4318. Work is included in
+127.0.0.1:4320, so renderer edits hot-reload. Desktop keeps 4318. Work is included in
 the same Rust workspace. Its former Git metadata is preserved locally under
 `.git/imported-work.git`; its source files are part of this repository.
 
@@ -126,7 +126,7 @@ Office's four native/kernel crates are included. The pinned OpenAI client
 fork and Work's modified PTY adapter are local as well. OCR's image dependency
 uses the workspace-compatible 0.25.10 release.
 
-Code, Work, and Studio share the Flow 2 engine at `crates/flow`, with
+Code, Work, and Desktop share the Flow 2 engine at `crates/flow`, with
 package name `a3s-flow` and library identity `a3s_flow`. The initial import
 retained Flow 1 separately for Code at commit
 `2948ad51a1395177764766c3ddf7e44338f9e374`. The root workspace now resolves
@@ -146,20 +146,20 @@ Linux container build use the root Cargo workspace and target directory.
 Work remains AGPL-3.0 under `apps/work/LICENSE`; the Rust libraries and third-
 party forks retain their respective original licenses.
 
-## Studio import
+## Desktop import
 
-Studio is imported from `../a3s/apps/studio`, including its local source
+Desktop is imported from `../a3s/apps/desktop`, including its local source
 changes. Provenance is recorded in `source-manifest.json`. It stays at
-`apps/studio` alongside Aster Work. The host (`a3s-studio`), native database
+`apps/desktop` alongside Aster Work. The host (`a3s-desktop`), native database
 runner, and lightweight desktop contract tests join the root Cargo workspace.
 There is one Cargo lockfile and target directory; the default members stay
 Aster and ACP. All three imported packages have `publish = false`.
 
-Studio shares local ACL 0.3, Boot, Flow 2, OKF, OCR, Vec, and Use libraries.
+Desktop shares local ACL 0.3, Boot, Flow 2, OKF, OCR, Vec, and Use libraries.
 The duplicate ACL authoring dependency is consolidated into the local parser.
 ORM gains the upstream engine catalog and statement-grid APIs. Use Extension
 gains the Paperloom host mode and composer-mode contract. These additions
-preserve existing public APIs. Stale Studio memory diagnostics and tests use
+preserve existing public APIs. Stale Desktop memory diagnostics and tests use
 the current personal/private scope contract; room-memory isolation remains.
 
 Frontend libraries live under `packages`: UI, Intelligent UI, Form, CE, and
@@ -169,33 +169,33 @@ shared Flow designer, supporting components, tenant assets, and an AIX fixture.
 Registry source packages under `apps/use-registry/packages` supply renderer
 imports and native fixtures; no web or cloud service is imported.
 
-Install the frontend in `apps/studio` with `pnpm install --frozen-lockfile`.
-Run `just build-studio` at the root to build ACP and Office, then Studio.
-`just studio` starts the development window. On macOS,
-`just build-studio-release` packages the frontend, host, and companions.
+Install the frontend in `apps/desktop` with `pnpm install --frozen-lockfile`.
+Run `just build-desktop` at the root to build ACP and Office, then Desktop.
+`just dev` starts the development window. On macOS,
+`just build-desktop-release` packages the frontend, host, and companions.
 Launch and packaging scripts resolve custom target directories through Cargo.
-Studio keeps its upstream package, binary, tenant, and application identifiers.
+Desktop keeps its upstream package, binary, tenant, and application identifiers.
 Existing user data is not copied or migrated.
 
-Studio retains AGPL-3.0 under `apps/studio/LICENSE`; libraries retain their
+Desktop retains AGPL-3.0 under `apps/desktop/LICENSE`; libraries retain their
 original licenses and notices. Standalone publication scripts and release
 workflows are excluded. No credentials, local environment secrets, sessions,
 Git metadata, build caches, or compiled companion binaries are imported.
 
-The Studio renderer builds successfully. Its full TypeScript check still
+The Desktop renderer builds successfully. Its full TypeScript check still
 reports upstream errors (324 diagnostics locally, compared with 349 in the
 source checkout); every distinct local error also appears upstream. CI gates
-the Studio renderer build and launcher tests while retaining Work's existing
+the Desktop renderer build and launcher tests while retaining Work's existing
 type-check gate. Fixing unrelated frontend typing is outside this import.
 
-After validation, `../a3s/apps/studio`, `../a3s/packages/intelligent-ui`, and
+After validation, `../a3s/apps/desktop`, `../a3s/packages/intelligent-ui`, and
 `../a3s/packages/intelligent-ui-aix` are removed from the source tree and moved
 to the local Trash for recovery. OS, API, Gateway, and shared UI/Office/Form/CE/
-Flow sources remain there. Studio's old submodule entry and launch commands
+Flow sources remain there. Desktop's old submodule entry and launch commands
 are removed from the OS checkout. Four backend live tests now read the identical
-PDF fixture at `../a3s/fixtures/paperloom/two-pages.pdf`, so removing Studio does
+PDF fixture at `../a3s/fixtures/paperloom/two-pages.pdf`, so removing Desktop does
 not remove their input. Offline frontend installation and Rust checks pass
-again with the source Studio directory absent.
+again with the source Desktop directory absent.
 
 ## macOS command lifetime follow-up
 
@@ -264,16 +264,16 @@ and `crates/oci-runtime` (from the pinned A3S-Lab/OCI-Runtime source), the
 - Validation: `cargo check` on contracts, node-agent, runtime, sms,
   form-core, and box-runtime, plus workspace-wide `cargo fmt --check`.
 
-## Studio delivery resource repair
+## Desktop delivery resource repair
 
-The web application remains removed. Studio still consumes its public tenant
-brand records and the launch check's pure tenant parser. The 2026-10-21 Studio
+The web application remains removed. Desktop still consumes its public tenant
+brand records and the launch check's pure tenant parser. The 2026-10-21 Desktop
 alignment restores only those source assets from the parent of `e07fd7c`;
 the exact file hashes are in
-`docs/evidence/studio/2026-10-21-work-alignment/tenant-restored-source.json`.
-The removed JSON model-market configuration is not restored. Studio retains
+`docs/evidence/desktop/2026-10-21-work-alignment/tenant-restored-source.json`.
+The removed JSON model-market configuration is not restored. Desktop retains
 its existing native provider and organization eligibility boundaries.
-Packaged Studio carries the selected tenant with its renderer and companions,
+Packaged Desktop carries the selected tenant with its renderer and companions,
 so an installed application no longer needs this checkout for branding.
 
 ## Gateway, runner, and the full-module state
@@ -288,3 +288,23 @@ runtime and stays a standalone tree pending its rename decision. The
 registry-builder tool ships unregistered against the pinned extension
 0.1.3 for the same reason. Validation: vec 459, runner 33, gateway
 compile-plus-tests, and the terminal product still compile.
+
+
+## Default AsterDream desktop tenant
+
+The current desktop product uses the shared host under `apps/desktop`.
+The default `aster` build retains AsterDream's canonical star/orbit assets and
+blue/silver theme. Build selection also selects local/BYOK versus managed
+organization code. Installed and launch identities must match the selected build.
+
+This consolidation imports functionality and branding only. The new `aster`
+profile never opens the legacy Work profile. No sessions, projects, preferences
+or credentials are migrated. `apps/work` remains legacy source and supplies the
+Office vendor dependency. Root workspace package identifiers remain unchanged.
+
+Current requirements and verification are tracked in
+[`specs/004-desktop-default-aster`](../specs/004-desktop-default-aster/spec.md).
+Canonical asset hashes and original source paths are retained in
+`docs/evidence/desktop/2026-10-21-default-aster/brand-canonical-sources.json`.
+The imported upstream README is kept under `docs/provenance`.
+Licenses stay with each component.

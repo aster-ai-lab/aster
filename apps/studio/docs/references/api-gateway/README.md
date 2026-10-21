@@ -336,7 +336,7 @@ The owning data service validates device metadata before persisting a claim.
 The QR code contains JSON, not a URL:
 
 ```json
-{"v":2,"t":"cherry-studio-pair","name":"Desktop","port":34444,"ips":["192.168.1.8"],"invitationId":"…","invitationSecret":"…","desktopIdentity":"12D3Koo…","protocolVersions":[1]}
+{"v":2,"t":"cherry-desktop-pair","name":"Desktop","port":34444,"ips":["192.168.1.8"],"invitationId":"…","invitationSecret":"…","desktopIdentity":"12D3Koo…","protocolVersions":[1]}
 ```
 
 `v` is the QR format version; `t` identifies a AsterDream pairing payload.

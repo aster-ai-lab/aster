@@ -9,7 +9,7 @@ sources:
 
 # Architecture Overview
 
-AsterDream uses one Tauri/Rust host and a React WebView. The default `aster` build enables local models and optional organization access. The explicit `toyou` build retains managed organization access. Product capabilities are selected by the build and checked against the installed tenant identity.
+AsterDream uses one Tauri/Rust host and a React WebView. The default `aster` build enables local models and optional organization access. The explicit `legacy` build retains managed organization access. Product capabilities are selected by the build and checked against the installed tenant identity.
 
 ## Process Model
 
@@ -24,7 +24,7 @@ A task submission crosses the typed native agent-plane boundary, enters ACP and 
 
 ## Four Data Systems
 
-The host owns task/message storage, native preferences, provider records and the member session. Each uses the selected product profile. The new `aster` profile is separate from legacy data. `toyou` retains its existing profile compatibility. WebView storage, instance locks and runtime discovery follow the same tenant/instance identity.
+The host owns task/message storage, native preferences, provider records and the member session. Each uses the selected product profile. The new `aster` profile is separate from legacy data. `legacy` retains its existing profile compatibility. WebView storage, instance locks and runtime discovery follow the same tenant/instance identity.
 
 ## Service Lifecycle
 

@@ -27,7 +27,7 @@ same rejection. Those boyue prompts were not repeated. Scripted
 conformance is not the live run.
 
 A later search found no second boyue credential. The CC Switch
-database has no boyue provider. Studio `providers.json`, `boyue.env`,
+database has no boyue provider. Desktop `providers.json`, `boyue.env`,
 the repo ACL, and the user ACL share one boyue key. The console
 supplier record decrypts to that same key. Browser stores and the
 login keychain have no other key for that host. One other local
@@ -35,7 +35,7 @@ supplier key, issued for a different host, is also rejected by this
 gateway as `Invalid token`. Running `a3s-code-acp` processes point
 `A3S_CONFIG` at an ACL with no provider key. Git history has no copy
 of the repo ACL. Editor local history of those ACL files keeps the
-same boyue key. A fresh Studio `aster/providers.json` still stores
+same boyue key. A fresh Desktop `aster/providers.json` still stores
 that same boyue key. Two other keys in that file, issued for other
 hosts, also return `Invalid token` from this gateway. The two live
 prompts were not repeated.
@@ -104,6 +104,6 @@ prompts were not repeated.
 - Crate names, version, edition, and license were not unified.
 - No Node, Python, or Go bindings. No GUI. `cargo test -p aster` was
   not run. Nothing was committed.
-- Studio delivery-alignment files were not edited.
+- Desktop delivery-alignment files were not edited.
 - Core `both_native_apis_refuse_uniformly_without_effects_or_output`
   was not re-run.

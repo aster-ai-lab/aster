@@ -1,4 +1,4 @@
-# @cherrystudio/ai-sdk-provider
+# @cherrydesktop/ai-sdk-provider
 
 A3S provider bundle for the [Vercel AI SDK](https://ai-sdk.dev/).
 It exposes the A3S OpenAI-compatible entrypoints and dynamically routes Anthropic and Gemini model ids to their A3S upstream equivalents.
@@ -6,9 +6,9 @@ It exposes the A3S OpenAI-compatible entrypoints and dynamically routes Anthropi
 ## Installation
 
 ```bash
-npm install ai @cherrystudio/ai-sdk-provider @ai-sdk/anthropic @ai-sdk/google @ai-sdk/openai
+npm install ai @cherrydesktop/ai-sdk-provider @ai-sdk/anthropic @ai-sdk/google @ai-sdk/openai
 # or
-pnpm add ai @cherrystudio/ai-sdk-provider @ai-sdk/anthropic @ai-sdk/google @ai-sdk/openai
+pnpm add ai @cherrydesktop/ai-sdk-provider @ai-sdk/anthropic @ai-sdk/google @ai-sdk/openai
 ```
 
 > **Note**: This package requires peer dependencies `ai`, `@ai-sdk/anthropic`, `@ai-sdk/google`, and `@ai-sdk/openai` to be installed.
@@ -16,7 +16,7 @@ pnpm add ai @cherrystudio/ai-sdk-provider @ai-sdk/anthropic @ai-sdk/google @ai-s
 ## Usage
 
 ```ts
-import { createA3s, a3s } from '@cherrystudio/ai-sdk-provider'
+import { createA3s, a3s } from '@cherrydesktop/ai-sdk-provider'
 
 const a3sProvider = createA3s({
  apiKey: process.env.A3S_API_KEY,

@@ -5,21 +5,21 @@ requested Work review/provenance behavior. Open acceptance findings stay red;
 they are not marked as expected failures. The dedicated Playwright config keeps
 this audit separate from the existing Office regression suite.
 
-See the [96-template acceptance matrix](../../../../../docs/plans/studio-composer-review-trace-e2e-2026-10-15.md)
-and [retained outcome](../../../../../docs/evidence/studio/20261015-composer-review-trace/OUTCOME.md).
+See the [96-template acceptance matrix](../../../../../docs/plans/desktop-composer-review-trace-e2e-2026-10-15.md)
+and [retained outcome](../../../../../docs/evidence/desktop/20261015-composer-review-trace/OUTCOME.md).
 
-Run from `apps/studio` with installed dependencies. Start the current renderer
+Run from `apps/desktop` with installed dependencies. Start the current renderer
 in a separate terminal; the audit does not attach to or terminate user apps:
 
 ```sh
-STUDIO_RUNTIME_FILE=/tmp/a3s-studio-composer-audit-absent node node_modules/@rsbuild/core/bin/rsbuild.js dev --host 127.0.0.1 --port 4537
+DESKTOP_RUNTIME_FILE=/tmp/a3s-desktop-composer-audit-absent node node_modules/@rsbuild/core/bin/rsbuild.js dev --host 127.0.0.1 --port 4537
 ```
 
 Run the 19 production-function checks and 31 browser cases:
 
 ```sh
 node node_modules/tsx/dist/cli.mjs tests/e2e/composer-audit/logic-audit.ts .a3s-test/composer-audit/logic
-STUDIO_E2E_BASE_URL=http://127.0.0.1:4537 node node_modules/@playwright/test/cli.js test -c playwright.composer-audit.config.ts
+DESKTOP_E2E_BASE_URL=http://127.0.0.1:4537 node node_modules/@playwright/test/cli.js test -c playwright.composer-audit.config.ts
 ```
 
 The browser service fixture publishes a configured explicit model for send
@@ -34,7 +34,7 @@ visits every tab. The controlled fixture supplies a native runtime descriptor;
 a rendered tab shell alone cannot pass. No fixture token is an actual credential.
 UI-25 rejects a clean-success card without an independent result. These follow-up
 UI/UX checks are separate from the retained initial 30-case campaign; see the
-[alignment audit](../../../../../docs/evidence/studio/20261015-composer-review-trace/UIUX-ALIGNMENT.md).
+[alignment audit](../../../../../docs/evidence/desktop/20261015-composer-review-trace/UIUX-ALIGNMENT.md).
 
 Promoted A3S Test keyboard/option regression:
 
@@ -65,7 +65,7 @@ been certified here: the native host stopped before the campaign created any
 session. Invalid/external and disconnected descriptors have local checks.
 
 The implemented host review/provenance lane has its own retained
-[outcome and remaining gates](../../../../../docs/evidence/studio/20261015-work-review-trace-alignment/OUTCOME.md).
+[outcome and remaining gates](../../../../../docs/evidence/desktop/20261015-work-review-trace-alignment/OUTCOME.md).
 Run its deterministic native contracts separately:
 
 ```sh

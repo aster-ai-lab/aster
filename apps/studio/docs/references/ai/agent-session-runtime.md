@@ -66,7 +66,7 @@ classification.
 
 This is a bounded classification within the existing session model. Separating
 execution sessions from user-managed conversation membership is tracked in
-[issue #20635](https://github.com/CherryHQ/cherry-studio/issues/20635); background-session retention and a dedicated activity UI
+[issue #20635](https://github.com/CherryHQ/cherry-desktop/issues/20635); background-session retention and a dedicated activity UI
 also require their own lifecycle and product decisions.
 
 ## System prompt ownership

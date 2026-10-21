@@ -1,4 +1,4 @@
-<a id="cherry-studio-documentation"></a>
+<a id="cherry-desktop-documentation"></a>
 
 # AsterDream Documentation
 

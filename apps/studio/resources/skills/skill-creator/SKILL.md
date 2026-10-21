@@ -4,7 +4,7 @@ description: Create new skills, modify and improve existing skills, and measure 
 version: 1.0.0
 ---
 
-<a id="cherry-studio-workflow-read-first--overrides-packaging--install-steps-below"></a>
+<a id="cherry-desktop-workflow-read-first--overrides-packaging--install-steps-below"></a>
 
 ## AsterDream workflow (READ FIRST — overrides packaging / install steps below)
 
@@ -15,9 +15,9 @@ steps mentioned later in this file (they apply to Claude Code / Claude.ai, not h
 
 **To create a new skill, write it straight into Cherry's managed skills directory:**
 
-1. Resolve the directory once by running `echo "$CHERRY_STUDIO_SKILLS_DIR"` in Bash.
+1. Resolve the directory once by running `echo "$CHERRY_DESKTOP_SKILLS_DIR"` in Bash.
    That folder is Cherry's managed skill library.
-2. Create `$CHERRY_STUDIO_SKILLS_DIR/<skill-folder-name>/` and write `SKILL.md` plus any
+2. Create `$CHERRY_DESKTOP_SKILLS_DIR/<skill-folder-name>/` and write `SKILL.md` plus any
    supporting files (`scripts/`, `references/`, `assets/`) into it with your normal file
    tools.
 3. That's it. Cherry's skill sync detects the new directory, registers it in the catalog,

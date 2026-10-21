@@ -8,7 +8,7 @@ Exact build command, with working directory `/Users/roylin/code/aster/apps/work`
 
 ```sh
 env -u RENDERER_VITE_PPIO_APP_SECRET -u RENDERER_VITE_AIHUBMIX_SECRET \
-  STUDIO_RENDERER_DIST=/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/renderer-final \
+  DESKTOP_RENDERER_DIST=/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/renderer-final \
   node ./node_modules/@rsbuild/core/bin/rsbuild.js build --no-env
 ```
 
@@ -35,7 +35,7 @@ Working directory: `/Users/roylin/code/aster/apps/work`.
 
 ```sh
 env -u RENDERER_VITE_PPIO_APP_SECRET -u RENDERER_VITE_AIHUBMIX_SECRET \
-  STUDIO_RENDERER_DIST=/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/renderer-final \
+  DESKTOP_RENDERER_DIST=/Users/roylin/code/aster/target/development-stage/task-optimization-r2-20261020/renderer-final \
   node ./node_modules/@rsbuild/core/bin/rsbuild.js preview --no-env --host 127.0.0.1 --port 4318 --strict-port
 ```
 

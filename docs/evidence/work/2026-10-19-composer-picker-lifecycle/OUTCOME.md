@@ -21,7 +21,7 @@ resolves the native observation. The operator owns the fixed-renderer retry.
 
 ## Minimal production change
 
-Only the existing `studioMainBridge.file.select` function changed. It marks
+Only the existing `desktopMainBridge.file.select` function changed. It marks
 the file input hidden and appends it to the current document body before the
 existing programmatic click. A local `settle` removes the input before invoking
 the original resolver or rejector. Cancellation, empty change, successful
@@ -38,10 +38,10 @@ The parallel `app.get_info` hunk in the same production file was retained.
 Commands from `apps/work`:
 
 ```sh
-./node_modules/.bin/vitest run --project renderer src/renderer/shell/studioMainBridgeFileSelect.test.ts -t 'keeps the hidden pending picker'
-./node_modules/.bin/vitest run --project renderer src/renderer/shell/studioMainBridgeFileSelect.test.ts src/renderer/pages/agents/__tests__/WorkbenchComposerAttachmentPipeline.test.tsx src/renderer/shell/studioMainBridge.test.ts
-./node_modules/.bin/oxlint src/renderer/shell/studioMainBridge.js src/renderer/shell/studioMainBridgeFileSelect.test.ts src/renderer/pages/agents/__tests__/WorkbenchComposerAttachmentPipeline.test.tsx
-./node_modules/.bin/oxfmt --check src/renderer/shell/studioMainBridge.js src/renderer/shell/studioMainBridgeFileSelect.test.ts src/renderer/pages/agents/__tests__/WorkbenchComposerAttachmentPipeline.test.tsx
+./node_modules/.bin/vitest run --project renderer src/renderer/shell/desktopMainBridgeFileSelect.test.ts -t 'keeps the hidden pending picker'
+./node_modules/.bin/vitest run --project renderer src/renderer/shell/desktopMainBridgeFileSelect.test.ts src/renderer/pages/agents/__tests__/WorkbenchComposerAttachmentPipeline.test.tsx src/renderer/shell/desktopMainBridge.test.ts
+./node_modules/.bin/oxlint src/renderer/shell/desktopMainBridge.js src/renderer/shell/desktopMainBridgeFileSelect.test.ts src/renderer/pages/agents/__tests__/WorkbenchComposerAttachmentPipeline.test.tsx
+./node_modules/.bin/oxfmt --check src/renderer/shell/desktopMainBridge.js src/renderer/shell/desktopMainBridgeFileSelect.test.ts src/renderer/pages/agents/__tests__/WorkbenchComposerAttachmentPipeline.test.tsx
 ```
 
 - Before changing production: **one failed, 15 skipped**, exit 1. After a later
@@ -93,8 +93,8 @@ it before repeating native upload checks.
 
 Cleanup source SHA-256:
 
-- `studioMainBridge.js`: `b181b7cc47b2b421ba644c9e05e56b55c0ea619706f6a4837fc3b235fe85a97b`.
-- `studioMainBridgeFileSelect.test.ts`: `258aa70e59980b881feedabe10f41ae79eb379c261140c8ae089bc56ffeae367`.
+- `desktopMainBridge.js`: `b181b7cc47b2b421ba644c9e05e56b55c0ea619706f6a4837fc3b235fe85a97b`.
+- `desktopMainBridgeFileSelect.test.ts`: `258aa70e59980b881feedabe10f41ae79eb379c261140c8ae089bc56ffeae367`.
 
 ## Explicitly not claimed
 

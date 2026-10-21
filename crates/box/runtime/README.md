@@ -103,7 +103,7 @@ exports, which the current backend does not provide. Managed MicroVM creation
 now refuses those mounts during preflight, before execution reservation or
 container Secret resolution. A RAM-root capability probe is not proof that a
 Secret-bearing workload can run. See the
-[actual processing admission evidence](../../../../docs/evidence/studio/20261017-paperloom-secret-readonly-admission/OUTCOME.md).
+[actual processing admission evidence](../../../../docs/evidence/desktop/20261017-paperloom-secret-readonly-admission/OUTCOME.md).
 
 `BoxTransientSecretStore` exposes that same validated tmpfs owner to Box's
 local Compose adapter. Compose creates a private scope only after the parent

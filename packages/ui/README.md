@@ -55,7 +55,7 @@ Use the full AsterDream design system so Tailwind theme tokens resolve to AsterD
 ```tsx
 <Button className="bg-primary text-red-500 p-4 rounded-lg">
   {/* bg-primary -> the current primary action semantic */}
-  {/* text-red-500 -> Cherry Studio red-500 */}
+  {/* text-red-500 -> Cherry Desktop red-500 */}
   {/* p-4 -> Tailwind numeric spacing */}
   {/* rounded-lg -> semantic radius token */}
 </Button>
@@ -78,7 +78,7 @@ Import only primitives and existing foundation providers, then decide which valu
 
 /* Re-export only the parts you need */
 @theme inline {
-  --color-primary: var(--cs-brand-500); /* Adopt a Cherry Studio foundation value */
+  --color-primary: var(--cs-brand-500); /* Adopt a Cherry Desktop foundation value */
   --color-red-500: oklch(...); /* Keep your own red scale */
   --radius-lg: 1rem; /* Keep your own radius */
 }

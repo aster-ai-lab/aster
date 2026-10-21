@@ -9,9 +9,9 @@ WebSocket, identity persistence and central logger. Never log key or record data
 The implementation uses the public libp2p Noise and stream APIs; it does not
 implement cryptographic primitives or a custom key exchange.
 
-Published as `@cherrystudio/remote-transport` through the repository's Changesets release
-workflow. It depends on the matching published `@cherrystudio/remote-protocol` version;
+Published as `@cherrydesktop/remote-transport` through the repository's Changesets release
+workflow. It depends on the matching published `@cherrydesktop/remote-protocol` version;
 `workspace:*` is converted to a concrete version when the package is packed.
 
-Run `pnpm --filter @cherrystudio/remote-protocol build` before this package's
+Run `pnpm --filter @cherrydesktop/remote-protocol build` before this package's
 `test`, `typecheck` or `build` script.

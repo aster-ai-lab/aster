@@ -37,7 +37,7 @@ a desktop E2E result or a task-quality pass.
 cargo test --locked -p aster-dream --lib task_corpus_collect_tests -- --nocapture --test-threads=1
 rustfmt --edition 2024 --check apps/work/src-tauri/src/agent_plane/task_corpus_collect_tests.rs
 git diff --check -- apps/work/src-tauri/src/agent_plane/mod.rs apps/work/tests/e2e/task-corpus/PLAN.md
-target/debug/deps/a3s_studio_lib-104c4ea3ed9a9da3 prompt_stop_reason_tests delivery_contract_tests task_corpus_collect_tests --test-threads=1
+target/debug/deps/a3s_desktop_lib-104c4ea3ed9a9da3 prompt_stop_reason_tests delivery_contract_tests task_corpus_collect_tests --test-threads=1
 ```
 
 Initial fresh Work test build: 3.55s. Self-checks: two passed, zero failed, one
@@ -50,7 +50,7 @@ zero failed, one ignored collector, 757 filtered out; 0.14s. The additional four
 are existing stop-reason and delivery-contract tests, not corpus cases.
 
 The observed reusable test binary is
-`target/debug/deps/a3s_studio_lib-104c4ea3ed9a9da3`. Its ignored entry point can run
+`target/debug/deps/a3s_desktop_lib-104c4ea3ed9a9da3`. Its ignored entry point can run
 after the human UI turn without another build; the portable Cargo invocation and
 the required parameters are in `PLAN.md`.
 

@@ -22,7 +22,7 @@ Provider installation, configured endpoint/key/model refresh, catalog ordering,
 default validation, persistence error handling, startup ordering, and release
 build behavior retain their existing code paths. `ProviderStore::open` still
 runs before preference publication, preserving development credential refresh.
-Studio has no corresponding development-seed/publication branch and was not
+Desktop has no corresponding development-seed/publication branch and was not
 changed. No real ACL, key, account/session state, preference, or provider store
 was read or edited.
 
@@ -46,7 +46,7 @@ repair had not yet been applied.
 cargo test -p aster-dream --lib providers::seed_tests -- --nocapture
 exit 0: 4 passed, 0 failed, 0 ignored
 
-target/debug/deps/a3s_studio_lib-d46b292e4f47e130 providers:: --quiet --test-threads=1
+target/debug/deps/a3s_desktop_lib-d46b292e4f47e130 providers:: --quiet --test-threads=1
 exit 0: 18 passed, 0 failed, 0 ignored
 ```
 

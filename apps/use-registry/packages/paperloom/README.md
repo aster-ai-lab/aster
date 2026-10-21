@@ -22,4 +22,4 @@ The edge agent is only the `@论文精读` entry. It is not the processor.
 Automatic OS deployment and Secret injection remain separate, unpassed gates.
 Installing this archive does not claim those gates have passed.
 
-The release contract is `docs/plans/studio-paperloom-release-2026-10-17.md` in A3S.
+The release contract is `docs/plans/desktop-paperloom-release-2026-10-17.md` in A3S.

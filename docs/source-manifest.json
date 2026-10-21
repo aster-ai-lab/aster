@@ -1051,38 +1051,38 @@
       "source_manifest_sha256": "28111e8b7e94a865adfef866630e48e4d2661455355c298453ce6971203e3775"
     },
     {
-      "path": "apps/studio/src-tauri",
-      "source": "../a3s/apps/studio/src-tauri",
+      "path": "apps/desktop/src-tauri",
+      "source": "../a3s/apps/desktop/src-tauri",
       "revision": "f31479b0eb5f687d715b7c468764ff19707bc8e7",
       "source_manifest_sha256": "a08d2f5f14f0391f398c17d0ed3c1a947c26eaaf874cd9df21d9cc7d85ad3ed9",
-      "package": "a3s-studio",
+      "package": "a3s-desktop",
       "version": "2.1.3"
     },
     {
-      "path": "apps/studio/native/data-sqlite",
-      "source": "../a3s/apps/studio/native/data-sqlite",
+      "path": "apps/desktop/native/data-sqlite",
+      "source": "../a3s/apps/desktop/native/data-sqlite",
       "revision": "f31479b0eb5f687d715b7c468764ff19707bc8e7",
       "source_manifest_sha256": "6662058564c55d1d5f6bfed17804f094217df76739bac3d8f1f89f543581db98",
-      "package": "a3s-studio-data-sqlite",
+      "package": "a3s-desktop-data-sqlite",
       "version": "0.1.0"
     },
     {
-      "path": "apps/studio/src-tauri/contract",
-      "source": "../a3s/apps/studio/src-tauri/contract",
+      "path": "apps/desktop/src-tauri/contract",
+      "source": "../a3s/apps/desktop/src-tauri/contract",
       "revision": "f31479b0eb5f687d715b7c468764ff19707bc8e7",
       "source_manifest_sha256": "8728acce86fe8f320b79a0e99b6c34de2e1f5ccae2e4fd7d8c84807c5abd103c",
-      "package": "a3s-studio-desktop-contract",
+      "package": "a3s-desktop-desktop-contract",
       "version": "0.0.0"
     }
   ],
-  "studio_import": {
+  "desktop_import": {
     "date": "2026-10-18",
-    "source": "../a3s/apps/studio",
+    "source": "../a3s/apps/desktop",
     "note": "Includes local source changes. Shared Rust APIs are merged additively. Credentials, sessions, nested Git metadata, Cargo lockfiles, and build caches are excluded.",
     "sources": [
       {
-        "path": "apps/studio",
-        "source": "../a3s/apps/studio",
+        "path": "apps/desktop",
+        "source": "../a3s/apps/desktop",
         "revision": "f31479b0eb5f687d715b7c468764ff19707bc8e7",
         "source_manifest_sha256": "5892ea2800c705ba982507df13acd7a5b8839eb8b13519261d598fd67c7df1b5"
       },
@@ -1152,7 +1152,7 @@
     ],
     "cleanup": {
       "removed_from_source": [
-        "apps/studio",
+        "apps/desktop",
         "packages/intelligent-ui",
         "packages/intelligent-ui-aix"
       ],
@@ -1164,7 +1164,7 @@
         "crates/flow/packages/ui"
       ],
       "backend_fixture": "../a3s/fixtures/paperloom/two-pages.pdf",
-      "recovery_location": "/Users/roylin/.Trash/aster-studio-migration-20261018-154138"
+      "recovery_location": "/Users/roylin/.Trash/aster-desktop-migration-20261018-154138"
     }
   },
   "backend_import": {
@@ -1203,9 +1203,19 @@
     ],
     "verification": "cargo check --tests on the five members; workspace cargo fmt --check; clean-room boot of a3s-config :7654, a3s-auth :7642, a3s-billing :7655, a3s-api :3000 against the live middleware with fresh databases: /health all up, admin login through the auth directory, notes round-trip."
   },
-  "studio_brand_resource_repair_20261021": {
+  "desktop_brand_resource_repair_20261021": {
     "source_commit": "e07fd7c69307e33239053c7bb3c5cdb64d78b80d^",
     "scope": "Only tenant brand assets and pure tenantInfo parser; no web application or JSON model-market configuration",
-    "file_receipt": "docs/evidence/studio/2026-10-21-work-alignment/tenant-restored-source.json"
+    "file_receipt": "docs/evidence/desktop/2026-10-21-work-alignment/tenant-restored-source.json"
+  },
+  "default_aster_host_unification_20261021": {
+    "host": "apps/desktop",
+    "default_tenant": "aster",
+    "organization_tenant": "legacy",
+    "asset_source": "apps/work/logo.svg and apps/work/build/app-icon.svg",
+    "asset_receipt": "docs/evidence/desktop/2026-10-21-default-aster/brand-canonical-sources.json",
+    "legacy_user_data_imported": false,
+    "upstream_readme_archive": "docs/provenance/desktop-upstream-readme.md",
+    "spec": "specs/004-desktop-default-aster/spec.md"
   }
 }

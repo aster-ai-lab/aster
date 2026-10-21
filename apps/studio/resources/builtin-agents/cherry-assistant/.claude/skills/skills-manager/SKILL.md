@@ -9,7 +9,7 @@ description: 搜索、安装和协调创建 Claude Code Agent Skills。当用户
 
 **优先复用**: `find-skills` 可用时先调用它完成搜索、质量检查和安装确认；只有不可用时才执行下面的 CLI 降级流程。
 
-**运行时检测**: 优先 `npx skills`，备选 `$CHERRY_STUDIO_BUN_PATH x skills`，都没有则提示安装 Node.js
+**运行时检测**: 优先 `npx skills`，备选 `$CHERRY_DESKTOP_BUN_PATH x skills`，都没有则提示安装 Node.js
 
 **搜索**: 理解需求→提取关键词→`npx skills find [query]`→展示名称/功能/来源
 

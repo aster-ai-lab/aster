@@ -753,8 +753,8 @@ Proposed named exports; these are implementation targets, not existing imports:
 
 | Export path | Public API |
 |---|---|
-| `@cherrystudio/remote-protocol` | `jsonRpcRequestSchema`, `jsonRpcResponseSchema`, `jsonRpcNotificationSchema`, `jsonRpcErrorSchema`, `remoteFailureSchema`, `connectionMethods`, `pairingMethods`, `connectionNotificationSchema`, `JsonRpcRequest`, `JsonRpcResponse`, `JsonRpcNotification`, `JsonRpcError`, `RemoteFailure`, `IntegrityPrimitives`, `negotiateProtocol` |
-| `@cherrystudio/remote-protocol/agent` | `agentMethods`, `agentNotificationSchema`, `agentEventSchema`, `agentAuthorizationSchema`, `agentCheckpointPageSchema`, `AgentAuthorization`, `AgentMethod`, `AgentMutation`, `AgentParams`, `AgentResult`, `AgentEvent`, `AgentEventBatch`, `AgentCursor`, `AgentProjection`, `AgentCheckpointDescriptor`, `AgentCheckpointPage`, `MaterializedContent`, `ApplyAgentEventsResult`, `InstallAgentCheckpointResult`, `applyAgentEvents`, `installAgentCheckpoint`, `encodeAgentCommand`, `encodeAgentCheckpointPage` |
+| `@cherrydesktop/remote-protocol` | `jsonRpcRequestSchema`, `jsonRpcResponseSchema`, `jsonRpcNotificationSchema`, `jsonRpcErrorSchema`, `remoteFailureSchema`, `connectionMethods`, `pairingMethods`, `connectionNotificationSchema`, `JsonRpcRequest`, `JsonRpcResponse`, `JsonRpcNotification`, `JsonRpcError`, `RemoteFailure`, `IntegrityPrimitives`, `negotiateProtocol` |
+| `@cherrydesktop/remote-protocol/agent` | `agentMethods`, `agentNotificationSchema`, `agentEventSchema`, `agentAuthorizationSchema`, `agentCheckpointPageSchema`, `AgentAuthorization`, `AgentMethod`, `AgentMutation`, `AgentParams`, `AgentResult`, `AgentEvent`, `AgentEventBatch`, `AgentCursor`, `AgentProjection`, `AgentCheckpointDescriptor`, `AgentCheckpointPage`, `MaterializedContent`, `ApplyAgentEventsResult`, `InstallAgentCheckpointResult`, `applyAgentEvents`, `installAgentCheckpoint`, `encodeAgentCommand`, `encodeAgentCheckpointPage` |
 
 `connectionMethods` and `pairingMethods` are schema factories accepting a domain
 authorization validator: authentication/refresh and approved pairing results compose

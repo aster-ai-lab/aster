@@ -9,7 +9,7 @@ The normal execution writer deliberately refuses changes to an unknown or
 already terminal summary. A recovered error could therefore retain a persisted
 `awaiting-approval` execution indefinitely.
 
-Work and Studio now call a dedicated store recovery operation while holding the
+Work and Desktop now call a dedicated store recovery operation while holding the
 existing guard that proves no live turn owns the session. It changes an existing
 live or unknown summary to `Error`, preserving its execution ID and assistant
 anchor. It creates no summary, preserves existing terminal outcomes, and does not
@@ -36,13 +36,13 @@ Actual green runs after production edits:
 cargo test -p aster-dream --lib execution_status_tests -- --nocapture
 test result: ok. 4 passed; 0 failed
 
-cargo test -p a3s-studio --lib execution_status_tests -- --nocapture
+cargo test -p a3s-desktop --lib execution_status_tests -- --nocapture
 test result: ok. 4 passed; 0 failed
 
-target/debug/deps/a3s_studio_lib-104c4ea3ed9a9da3 scheduled_recovery_ --nocapture
+target/debug/deps/a3s_desktop_lib-104c4ea3ed9a9da3 scheduled_recovery_ --nocapture
 test result: ok. 8 passed; 0 failed; 1 ignored
 
-target/debug/deps/a3s_studio_lib-21728e7535d45581 scheduled_recovery_ --nocapture
+target/debug/deps/a3s_desktop_lib-21728e7535d45581 scheduled_recovery_ --nocapture
 test result: ok. 8 passed; 0 failed; 1 ignored
 ```
 

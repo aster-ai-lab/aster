@@ -27,7 +27,7 @@ Commands run from `apps/work` unless stated otherwise:
 | --- | --- |
 | `node_modules/.bin/vitest run --project renderer src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx -t 'counts workspace-relative'` before the fix | Failed as expected: 5 rows instead of 3. |
 | `node_modules/.bin/vitest run --project renderer src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx src/renderer/pages/agents/__tests__/taskConversationWorkspace.test.tsx src/renderer/pages/agents/messages/__tests__/agentMessageListAdapter.test.tsx` | 3 suites, 103 tests passed after the final change. |
-| `node_modules/.bin/vitest run --project renderer src/renderer/shell/studioMainBridge.test.ts src/renderer/pages/agents/__tests__/WorkbenchSessionFiles.openFolder.test.tsx` | 2 suites, 36 tests passed. Includes macOS/Windows/Linux path strings, authenticated transport, failures, cloud/missing roots, and stale errors. |
+| `node_modules/.bin/vitest run --project renderer src/renderer/shell/desktopMainBridge.test.ts src/renderer/pages/agents/__tests__/WorkbenchSessionFiles.openFolder.test.tsx` | 2 suites, 36 tests passed. Includes macOS/Windows/Linux path strings, authenticated transport, failures, cloud/missing roots, and stale errors. |
 | Session-files main/export/open-folder suites | Initial 34 tests passed; subsequent cloud-root addition passed in the 6-test open-folder suite. |
 | Root: `cargo test -p aster-dream --lib workspace_file` | 13 tests passed. Includes directory canonicalization, spaces/Unicode, non-directory, bundle, traversal, missing path, and escaping symlink cases. |
 | Root: `cargo test -p aster-dream --lib authority::tests::workspace_directory_open_authenticates_and_preserves_native_refusals` | 1 real HTTP test passed: missing bearer 401, hostile origin 403, unsafe bundle 403, unknown field 400, and non-directory 400. |
@@ -56,7 +56,7 @@ actions. After replacing and signing the development host and restarting the
 - The current session root was `/Users/roylin/code/tasks/T01-workspace`.
 
 The updated development bundle is
-`/Users/roylin/Library/Application Support/dev.a3s.studio/aster/AsterDream.app`.
+`/Users/roylin/Library/Application Support/dev.a3s.desktop/aster/AsterDream.app`.
 The installed `/Applications/AsterDream.app` was not replaced. No additional
 model call was needed and the T01 input or generated submission was not edited.
 

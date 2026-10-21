@@ -87,7 +87,7 @@ above only observed the provider store, and the broader AgentComposer tests
 mocked the editor, so neither established the complete ingestion-to-token path.
 
 Added `WorkbenchComposerAttachmentPipeline.test.tsx` to exercise the actual
-`studioMainBridge.js` file-selection implementation, actual attachment runtime
+`desktopMainBridge.js` file-selection implementation, actual attachment runtime
 and launcher registry, actual `ComposerSurfaceRuntime`, actual Tiptap/ProseMirror
 document and node views, and the actual attachment-token reconcile hook. Its
 small wrapper uses the production file-to-token mapping and draft-token filter;

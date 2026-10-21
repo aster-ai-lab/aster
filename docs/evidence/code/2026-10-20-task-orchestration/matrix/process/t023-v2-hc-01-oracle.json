@@ -228,7 +228,7 @@
     "schema": "aster.t023-independent-oracle-execution.v1",
     "command": [
       "python3",
-      "/Users/roylin/code/aster/docs/evidence/studio/2026-10-19-t01-deepseek-flash/oracle/evaluate.py",
+      "/Users/roylin/code/aster/docs/evidence/desktop/2026-10-19-t01-deepseek-flash/oracle/evaluate.py",
       "--pipeline",
       "/Users/roylin/code/aster/docs/evidence/code/2026-10-20-task-orchestration/matrix/runs/t023-v2-hc-01/submission/pipeline.py",
       "--input",

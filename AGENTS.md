@@ -7,12 +7,12 @@ Aster is one Rust workspace for the terminal coding tool, harness, and Work and 
   `a3s-code-acp` companion. Build and distribute both together.
 - `crates/code/core` is the embeddable Rust SDK and harness. Do not add
   Node, Python, or Go bindings, SDKs, or package publishing jobs.
-- `apps/studio` is the shared desktop host; `just build-studio` builds it with
-  ACP and Office. Its default `aster` tenant is AsterDream; explicit `toyou`
-  retains toyou. Keep their product identities and data isolated.
+- `apps/desktop` is the shared desktop host; `just build-desktop` builds it with
+  ACP and Office. Its default `aster` tenant is AsterDream. Keep tenant
+  identities and data isolated.
 - `apps/work` retains legacy source and the Office vendor dependency.
   `just build-work` remains a legacy build. Do not import old user state or
-  add a second Cargo workspace or lockfile. See `specs/004-studio-default-aster`.
+  add a second Cargo workspace or lockfile. See `specs/004-desktop-default-aster`.
 - All members have `publish = false`; A3S dependencies, including optional
   ones, must resolve locally. `tests/workspace_dependencies.py` guards this.
 - Keep internal A3S dependencies local. Preserve the upstream package names
@@ -31,7 +31,7 @@ Aster is one Rust workspace for the terminal coding tool, harness, and Work and 
   epics use `docs/spec-driven-development.md`. A NON-NEGOTIABLE principle
   cannot be waived by a spec, a plan, or a deadline.
 - The constitution's Regimes table picks the rules for a path. Product
-  paths (`apps/aster`, `apps/work`, `apps/studio`, `crates/code`,
+  paths (`apps/aster`, `apps/work`, `apps/desktop`, `crates/code`,
   `crates/terminal`) use hermetic tests and the root workspace.
   Control-plane paths (`apps/cloud`, `apps/api`, `apps/auth`,
   `apps/billing`, `apps/config`) use bounded contexts, contiguous cloud

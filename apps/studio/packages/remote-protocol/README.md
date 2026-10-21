@@ -6,11 +6,11 @@ have separate exports; neither owns sockets, keys, persistence or reconnection.
 The root also owns the shared discovery service type, TXT format and fixed WebSocket
 path. These are Cherry peer interoperability contracts, not listener or routing policy.
 
-Published as `@cherrystudio/remote-protocol` through the repository's Changesets release
+Published as `@cherrydesktop/remote-protocol` through the repository's Changesets release
 workflow. Package versions follow semver independently of the negotiated wire protocol
 version. Building or passing package tests alone does not qualify Desktop, Expo or relay interoperability.
 
-Run `pnpm --filter @cherrystudio/remote-protocol test`, `typecheck` and `build`.
+Run `pnpm --filter @cherrydesktop/remote-protocol test`, `typecheck` and `build`.
 External consumers enter through the package exports, never `src/` deep imports.
 
 The event reducer caches streaming text byte lengths by part snapshot without adding wire

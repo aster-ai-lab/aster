@@ -1,6 +1,6 @@
 # AIX workbench qualification package
 
-Build from `apps/studio`:
+Build from `apps/desktop`:
 
 ```sh
 node scripts/build-aix-proof.mjs /tmp/a3s-workbench-proof.aix

@@ -50,7 +50,7 @@ Resolution for the user's locale: exact locale (`zh-TW`) → language subtag (`z
 | Lowercase letters, digits, `.` and `-` only; no underscore, no leading or trailing `-` | The id is a URL host. Chromium lowercases hosts, so two ids differing in case would share one origin — and one storage |
 | ≤ 120 characters | Also used as an install directory name and a journal file name |
 | First label must not be a Windows device name (`con`, `prn`, `aux`, `nul`, `com0`–`com9`, `lpt0`–`lpt9`) | `con.example.app` cannot be created as a directory on Windows, even with an extension. `com.example.con` is fine — only the first label matters |
-| `com.cherrystudio.*` is reserved | Official apps only; a package from any other source using it is refused |
+| `com.cherrydesktop.*` is reserved | Official apps only; a package from any other source using it is refused |
 
 ## Permissions
 

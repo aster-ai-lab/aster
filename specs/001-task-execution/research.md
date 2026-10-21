@@ -37,7 +37,7 @@ by these references.
 
 | 观察 | 直接依据 | 开发决策 |
 | --- | --- | --- |
-| 约 38 分 32 秒包含环境修复和验收；有效任务为 482.856 秒、26 次模型调用、26 次工具调用。工具区间并集 270.022 秒，其余 212.834 秒包含模型、网络和调度，无法标为纯推理时间。 | [T01 时间记录](../../docs/evidence/studio/2026-10-19-t01-deepseek-flash/runtime/timing-analysis.json)、[原始验收](../../docs/evidence/studio/2026-10-19-t01-deepseek-flash/OUTCOME.md) | 分开记录准备、任务、独立验收；使用单调计时和调用身份关联，重叠区间不能重复相加。 |
+| 约 38 分 32 秒包含环境修复和验收；有效任务为 482.856 秒、26 次模型调用、26 次工具调用。工具区间并集 270.022 秒，其余 212.834 秒包含模型、网络和调度，无法标为纯推理时间。 | [T01 时间记录](../../docs/evidence/desktop/2026-10-19-t01-deepseek-flash/runtime/timing-analysis.json)、[原始验收](../../docs/evidence/desktop/2026-10-19-t01-deepseek-flash/OUTCOME.md) | 分开记录准备、任务、独立验收；使用单调计时和调用身份关联，重叠区间不能重复相加。 |
 | 19 次 Bash 共 270.012 秒；简单命令三次均值由旧缓存的 13.978 秒降至候选的 3.894 秒。旧样本主要耗在连接和 VM 创建。 | [命令延迟证据](../../docs/evidence/sandbox/2026-10-19-command-latency/OUTCOME.md) | 先扩展独立 VM 基准，再评估整任务；候选还包含源码契约修复，不能将全部改善归因于 SHA。 |
 | `program` 已默认注册，已有 QuickJS、调用/输出/时间上限；Core `code()` presentation 已提供紧凑入口，但 ACP/Work 尚无 profile 选择接线。原 T01 未调用 `program` 或 `batch`。 | `crates/code/core/src/tools/{mod.rs,program_tool.rs,presentation.rs}`；Core `tests/test_extensibility_real_llm.rs`；ACP session setup | 复用现有引擎和 typed profile，补最小受信 ACL→ACP 入口。先审查实际 prompt/工具投影，再做自然选择与 code profile 对照，不新建编排框架。 |
 | `ctx.bash` 只返回文本；内部 Bash 仍各自启动 OCI 生命周期。默认脚本上限 20 次调用、30 秒；允许 `task` 时默认 600 秒。 | `crates/code/core/src/tools/program_tool.rs` | 必要校验使用结构化 `ctx.tool("bash", args)` 并检查失败；显式设置有界实验预算。PTC 降低模型往返不等于减少 VM。 |

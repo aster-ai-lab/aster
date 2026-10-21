@@ -1,4 +1,4 @@
-# @cherrystudio/provider-registry
+# @cherrydesktop/provider-registry
 
 Bundled AI provider and model catalog for AsterDream: static JSON data files plus TypeScript schemas for reading them.
 
@@ -22,7 +22,7 @@ import {
  readModelRegistry,
  readProviderRegistry,
  readProviderModelRegistry
-} from '@cherrystudio/provider-registry/node'
+} from '@cherrydesktop/provider-registry/node'
 
 const models = readModelRegistry('/path/to/models.json')
 const providers = readProviderRegistry('/path/to/providers.json')
@@ -39,7 +39,7 @@ import type {
  EndpointType,
  ModelCapability,
  Modality
-} from '@cherrystudio/provider-registry'
+} from '@cherrydesktop/provider-registry'
 ```
 
 ## Build
@@ -55,10 +55,10 @@ the frozen `compat/vN-validator.mjs`. When an emitted catalog becomes incompatib
 `REGISTRY_SCHEMA_VERSION` by one and create the new immutable baseline with:
 
 ```bash
-pnpm --filter @cherrystudio/provider-registry compat:baseline
+pnpm --filter @cherrydesktop/provider-registry compat:baseline
 ```
 
-Run `pnpm --filter @cherrystudio/provider-registry compat:check` to verify the current catalog.
+Run `pnpm --filter @cherrydesktop/provider-registry compat:check` to verify the current catalog.
 Runtime-semantic additions that older applications cannot execute must also raise
 `REGISTRY_MIN_APP_VERSION`; Zod compatibility only protects the JSON shape. Put such additions in a
 new schema-version stream instead of raising the floor of an existing stream. The publisher keeps

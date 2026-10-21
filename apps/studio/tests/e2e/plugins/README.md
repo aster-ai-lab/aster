@@ -1,4 +1,4 @@
-<a id="studio-plugin-composition-campaign"></a>
+<a id="desktop-plugin-composition-campaign"></a>
 
 # AsterDream plugin composition campaign
 
@@ -15,7 +15,7 @@ shell, install native packages, execute ACP/Harness runs, or run VSX extensions.
 `ComposerSurface.lazy.test.tsx` additionally exercises the production shared
 Composer's plugin action placement and stale/rich-draft guards.
 
-From `apps/studio`, start the loopback fixture:
+From `apps/desktop`, start the loopback fixture:
 
 ```sh
 ./node_modules/.bin/vite --config tests/e2e/plugins/vite.config.ts
@@ -41,7 +41,7 @@ element as a command failure for a visibility query. Cleanup evidence uses exact
 
 The interactive exploration was promoted to `composition.acl` after observing
 the successful workflow. Reports and source fingerprints are retained in the
-OS repository's `docs/evidence/studio-plugins/20261008-activity-pages/`. The earlier
+OS repository's `docs/evidence/desktop-plugins/20261008-activity-pages/`. The earlier
 foundation certificate remains under `20261007-ui-scope-foundation/`. The latest
 browser result precedes the final immediate-close refinement; that refinement
 has contract-test evidence and awaits a browser rerun because the current

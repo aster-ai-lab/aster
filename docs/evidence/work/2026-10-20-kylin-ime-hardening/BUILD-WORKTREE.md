@@ -24,7 +24,7 @@
 ```bash
 cd /Users/roylin/code/aster/target/worktrees/kylin-ime-hardening-20261020/apps/work
 CARGO_TARGET_DIR=/Users/roylin/code/aster/target/worktrees/kylin-ime-hardening-20261020/target \
-STUDIO_RENDERER_DIST=.studio-package \
+DESKTOP_RENDERER_DIST=.desktop-package \
 KYLIN_BUILD_IMAGE=aster-kylin-build:24.04 \
 bash scripts/kylin-flatpak/build-host.sh
 ```

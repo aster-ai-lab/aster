@@ -1,6 +1,6 @@
 # Composer mode contract probe
 
-This package exercises the `studio.composer.modes` declaration and installed
+This package exercises the `desktop.composer.modes` declaration and installed
 catalogue projection. `build` binds a required local builder agent and editor
 with workspace/document context; `inspect` is conversation scoped without an
 editor. Neither declaration changes the host permission posture.

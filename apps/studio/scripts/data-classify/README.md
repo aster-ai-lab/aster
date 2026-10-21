@@ -32,4 +32,4 @@ node scripts/data-classify/scripts/generate-preferences.js --check-native
 
 After generation, inspect the diff. A relocation must preserve keys, types, defaults, and migration mappings. Run `pnpm lint` and the tests covering any intended schema or migration behavior change.
 
-The retired inventory extraction and validation scripts are no longer part of this tool. Separating permanent product definitions from migration inputs remains tracked in [#19192](https://github.com/CherryHQ/cherry-studio/issues/19192).
+The retired inventory extraction and validation scripts are no longer part of this tool. Separating permanent product definitions from migration inputs remains tracked in [#19192](https://github.com/CherryHQ/cherry-desktop/issues/19192).

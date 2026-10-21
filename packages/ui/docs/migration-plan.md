@@ -1,4 +1,4 @@
-<a id="cherry-studio-ui-migration-plan"></a>
+<a id="cherry-desktop-ui-migration-plan"></a>
 
 # AsterDream UI Migration Plan
 

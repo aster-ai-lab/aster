@@ -17,7 +17,7 @@ $ARGUMENTS
 3. Fill the Constitution Check honestly. A NON-NEGOTIABLE violation
    stops the plan.
 4. Fill the source table with paths in this workspace: `apps/aster`,
-   `apps/work`, `apps/studio`, `crates/`, or `packages/`. Do not plan
+   `apps/work`, `apps/desktop`, `crates/`, or `packages/`. Do not plan
    an `apps/cloud` module.
 5. Name the in-repo file that already does each chosen pattern.
 6. Do not commit unless the user asked.

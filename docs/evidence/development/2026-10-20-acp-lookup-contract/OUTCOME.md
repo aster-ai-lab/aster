@@ -3,7 +3,7 @@
 ## Result
 
 A set but unusable `A3S_ACP_AGENT_BIN` stops selection on AsterDream,
-Studio, and the Aster TUI. An empty value, a missing path, and a Unix
+Desktop, and the Aster TUI. An empty value, a missing path, and a Unix
 file without an execute bit do not fall through to a sibling, a
 bundle, `~/.a3s/bin`, or `PATH`. An executable override is the file
 that is selected. When the variable is unset, the TUI accepts only an
@@ -46,11 +46,11 @@ with `spawn_grok_shell`. The product shell-spawn set stays empty.
   tests assert the sentence above.
 - `cargo test --locked --offline -p aster-dream --lib -- unusable_override_does_not_select_a_later_candidate find_binary_rejects_a_set_but_unusable_override requested_agent_bin_is_the_one_that_launches explicit_agent_bin_wins_over_the_workspace_build published_release_is_used_when_the_workspace_build_is_absent standard_install_is_found_without_a_shell_path legacy_install_is_found_without_a_shell_path path_lookup_uses_the_platform_executable_and_path_order workspace_debug_build_wins_over_a_newer_published_release`
   — 9 passed, 854 filtered, 0.01s. Exit 0.
-- `cargo test --locked --offline -p a3s-studio --lib -- unusable_override_does_not_select_a_later_candidate find_binary_rejects_a_set_but_unusable_override requested_agent_bin_is_the_one_that_launches explicit_agent_bin_wins_over_the_workspace_build published_release_is_used_when_the_workspace_build_is_absent bundled_release_wins_when_the_checkout_is_absent standard_install_is_found_without_a_version_suffix path_lookup_uses_an_extra_directory_when_path_is_empty workspace_debug_build_wins_over_a_newer_published_release`
+- `cargo test --locked --offline -p a3s-desktop --lib -- unusable_override_does_not_select_a_later_candidate find_binary_rejects_a_set_but_unusable_override requested_agent_bin_is_the_one_that_launches explicit_agent_bin_wins_over_the_workspace_build published_release_is_used_when_the_workspace_build_is_absent bundled_release_wins_when_the_checkout_is_absent standard_install_is_found_without_a_version_suffix path_lookup_uses_an_extra_directory_when_path_is_empty workspace_debug_build_wins_over_a_newer_published_release`
   — 9 passed, 811 filtered, 0.01s. Exit 0.
 - `cargo test --locked --offline -p aster-dream --lib -- packaged_host_does_not_prefer_the_compile_time_debug_binary`
   — 1 passed, 862 filtered. Exit 0.
-- `cargo test --locked --offline -p a3s-studio --lib -- packaged_host_does_not_prefer_the_compile_time_debug_binary`
+- `cargo test --locked --offline -p a3s-desktop --lib -- packaged_host_does_not_prefer_the_compile_time_debug_binary`
   — 1 passed, 819 filtered. Exit 0.
 - `cargo test --locked --offline -p a3s-code-pager --lib -- leader_connect_failure_reports_that_failure_without_a_sidecar`
   — 1 passed, 10185 filtered. Exit 0.
