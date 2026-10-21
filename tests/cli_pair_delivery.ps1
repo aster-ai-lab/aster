@@ -9,7 +9,7 @@ $oldBase = $env:ASTER_RELEASE_BASE
 $oldOS = $env:OS
 try {
     New-Item -ItemType Directory -Path $prefix, $assets -Force | Out-Null
-    Copy-Item -LiteralPath $Archive -Destination (Join-Path $assets "aster-cli-v0.1.1-windows.zip")
+    Copy-Item -LiteralPath $Archive -Destination (Join-Path $assets "aster-cli-v0.1.2-windows.zip")
     $env:ASTER_RELEASE_BASE = $assets
     $env:OS = "Windows_NT"
     foreach ($name in @("aster.exe", "a3s-code-acp.exe")) {

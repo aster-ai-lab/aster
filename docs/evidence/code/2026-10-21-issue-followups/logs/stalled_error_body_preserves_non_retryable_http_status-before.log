@@ -1,0 +1,15 @@
+
+running 1 test
+test llm::http::response_lifecycle_tests::stalled_error_body_preserves_non_retryable_http_status ... FAILED
+
+failures:
+
+failures:
+    llm::http::response_lifecycle_tests::stalled_error_body_preserves_non_retryable_http_status
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5276 filtered out; finished in 1.03s
+
+
+thread 'llm::http::response_lifecycle_tests::stalled_error_body_preserves_non_retryable_http_status' (53031638) panicked at crates/code/core/src/llm/http/response_lifecycle_tests.rs:80:31:
+error body must have a deadline: Elapsed(())
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

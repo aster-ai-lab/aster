@@ -1,0 +1,9 @@
+platform=linux
+release=aster-cli-v0.1.2
+asset=/delivery/assets/aster-cli-v0.1.2-linux.tar.gz
+installed Aster v0.1.1 into /delivery/prefix
+aster=/delivery/prefix/aster
+a3s-code-acp=/delivery/prefix/a3s-code-acp
+aster-cli-pair-v1:8374cd6c9e0abba6eef7bc2efd6dca6a379343d6:aarch64-unknown-linux-gnu
+aster-cli-pair-v1:8374cd6c9e0abba6eef7bc2efd6dca6a379343d6:aarch64-unknown-linux-gnu
+{"product":"Aster","currentVersion":"0.1.2 (73624d14b3b6)","channel":"unknown"}

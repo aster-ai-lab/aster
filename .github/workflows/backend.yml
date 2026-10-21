@@ -11,6 +11,9 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
 concurrency:
   group: backend-${{ github.ref }}
   cancel-in-progress: true
@@ -29,15 +32,31 @@ jobs:
   fmt:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - run: rustup toolchain install 1.97.1 --profile minimal && rustup default 1.97.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: ./.github/actions/checkout-source
+        with:
+          path: apps/work
+          owner: aster-ai-lab
+          repository: work
+          app-id: ${{ secrets.CI_SOURCE_APP_ID }}
+          private-key: ${{ secrets.CI_SOURCE_APP_PRIVATE_KEY }}
+      - run: rustup toolchain install 1.97.1 --profile minimal --component rustfmt && rustup default 1.97.1
       - run: cargo fmt --all -- --check
 
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - run: rustup toolchain install 1.97.1 --profile minimal && rustup default 1.97.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: ./.github/actions/checkout-source
+        with:
+          path: apps/work
+          owner: aster-ai-lab
+          repository: work
+          app-id: ${{ secrets.CI_SOURCE_APP_ID }}
+          private-key: ${{ secrets.CI_SOURCE_APP_PRIVATE_KEY }}
+      - run: rustup toolchain install 1.97.1 --profile minimal --component rustfmt && rustup default 1.97.1
+      - name: Install Linux build tools
+        run: sudo apt-get update && sudo apt-get install -y protobuf-compiler cmake pkg-config libssl-dev libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev
       - uses: Swatinem/rust-cache@v2
       - run: cargo check --locked --workspace --all-targets
 
@@ -49,24 +68,64 @@ jobs:
       matrix:
         include:
           - package: a3s-api
-          - package: a3s-auth
-          - package: a3s-billing
-          - package: a3s-config
+            manifest: apps/api/Cargo.toml
+            source: api
+            repository: api
           - package: a3s-cloud-contracts
+            manifest: apps/cloud/Cargo.toml
+            source: cloud
+            repository: cloud
           - package: a3s-cloud-node-agent
+            manifest: apps/cloud/Cargo.toml
+            source: cloud
+            repository: cloud
           - package: a3s-cloud-sdk
+            manifest: apps/cloud/Cargo.toml
+            source: cloud
+            repository: cloud
+          - package: a3s-auth
+            manifest: Cargo.toml
+          - package: a3s-billing
+            manifest: Cargo.toml
+          - package: a3s-config
+            manifest: Cargo.toml
           - package: a3s-gateway
+            manifest: Cargo.toml
           - package: a3s-gateway-runtime
+            manifest: Cargo.toml
           - package: a3s-runner
+            manifest: Cargo.toml
           - package: a3s-sms
+            manifest: Cargo.toml
           - package: a3s-form-core
+            manifest: Cargo.toml
           - package: a3s-box-runtime
+            manifest: Cargo.toml
           - package: a3s-use-core
+            manifest: Cargo.toml
     steps:
-      - uses: actions/checkout@v4
-      - run: rustup toolchain install 1.97.1 --profile minimal && rustup default 1.97.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: ./.github/actions/checkout-source
+        if: matrix.source == ''
+        with:
+          path: apps/work
+          owner: aster-ai-lab
+          repository: work
+          app-id: ${{ secrets.CI_SOURCE_APP_ID }}
+          private-key: ${{ secrets.CI_SOURCE_APP_PRIVATE_KEY }}
+      - uses: ./.github/actions/checkout-source
+        if: matrix.source != ''
+        with:
+          path: apps/${{ matrix.source }}
+          owner: kense-labs
+          repository: ${{ matrix.repository }}
+          app-id: ${{ secrets.CI_SOURCE_APP_ID }}
+          private-key: ${{ secrets.CI_SOURCE_APP_PRIVATE_KEY }}
+      - run: rustup toolchain install 1.97.1 --profile minimal --component rustfmt && rustup default 1.97.1
+      - name: Install Linux build tools
+        run: sudo apt-get update && sudo apt-get install -y protobuf-compiler cmake pkg-config libssl-dev
       - uses: Swatinem/rust-cache@v2
-      - run: cargo test --locked -p ${{ matrix.package }}
+      - run: cargo test --locked --manifest-path ${{ matrix.manifest }} -p ${{ matrix.package }}
 
   campaigns:
     runs-on: ubuntu-latest
@@ -83,24 +142,42 @@ jobs:
           --health-cmd "pg_isready -U a3s_test"
           --health-interval 5s --health-timeout 5s --health-retries 10
       s3:
-        image: bitnami/minio:latest
+        # Archived fixture, pinned for disposable CI; never a production deployment.
+        image: bitnamilegacy/minio@sha256:6dabb4a2088c9a79908de3bc05f4586c23ad2182c8908e7e3acbf61c1467fb20
         env:
           MINIO_ROOT_USER: a3s-test
           MINIO_ROOT_PASSWORD: a3s-test-secret
         ports: ["9000:9000"]
         options: >-
-          --health-cmd "mc ready local || exit 1"
+          --health-cmd "curl -fsS http://127.0.0.1:9000/minio/health/ready"
           --health-interval 5s --health-timeout 5s --health-retries 10
     steps:
-      - uses: actions/checkout@v4
-      - run: rustup toolchain install 1.97.1 --profile minimal && rustup default 1.97.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: ./.github/actions/checkout-source
+        with:
+          path: apps/api
+          owner: kense-labs
+          repository: api
+          app-id: ${{ secrets.CI_SOURCE_APP_ID }}
+          private-key: ${{ secrets.CI_SOURCE_APP_PRIVATE_KEY }}
+      - uses: ./.github/actions/checkout-source
+        with:
+          path: apps/cloud
+          owner: kense-labs
+          repository: cloud
+          app-id: ${{ secrets.CI_SOURCE_APP_ID }}
+          private-key: ${{ secrets.CI_SOURCE_APP_PRIVATE_KEY }}
+      - run: rustup toolchain install 1.97.1 --profile minimal --component rustfmt && rustup default 1.97.1
+      - name: Install Linux build tools
+        run: sudo apt-get update && sudo apt-get install -y protobuf-compiler cmake pkg-config libssl-dev
       - uses: Swatinem/rust-cache@v2
       - name: Create the campaign bucket
         run: |
-          docker run --rm --network host minio/mc:latest \
-            sh -c "mc alias set gate $A3S_CLOUD_TEST_S3_ENDPOINT a3s-test a3s-test-secret && mc mb gate/$A3S_CLOUD_TEST_S3_BUCKET"
+          docker run --rm --network host --entrypoint /bin/bash \
+            bitnamilegacy/minio-client@sha256:73bd39f7899a0cef12b8dd5df13aa93a3ed1aaa44236542442e9ac76819ac158 \
+            -ec "mc alias set gate $A3S_CLOUD_TEST_S3_ENDPOINT a3s-test a3s-test-secret; mc mb --ignore-existing gate/$A3S_CLOUD_TEST_S3_BUCKET"
       - name: Serial Postgres/S3 campaigns (api, node-agent, control-plane)
         run: |
-          cargo test --locked -p a3s-cloud-control-plane -- --test-threads=1
-          cargo test --locked -p a3s-cloud-node-agent -- --test-threads=1
-          cargo test --locked -p a3s-api -- --test-threads=1
+          cargo test --locked --manifest-path apps/cloud/Cargo.toml -p a3s-cloud-control-plane -- --test-threads=1
+          cargo test --locked --manifest-path apps/cloud/Cargo.toml -p a3s-cloud-node-agent -- --test-threads=1
+          cargo test --locked --manifest-path apps/api/Cargo.toml -p a3s-api -- --test-threads=1

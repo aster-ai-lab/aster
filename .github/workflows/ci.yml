@@ -18,6 +18,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: ./.github/actions/checkout-source
+        with:
+          path: apps/work
+          owner: aster-ai-lab
+          repository: work
+          app-id: ${{ secrets.CI_SOURCE_APP_ID }}
+          private-key: ${{ secrets.CI_SOURCE_APP_PRIVATE_KEY }}
       - name: Install Linux build tools
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y protobuf-compiler cmake pkg-config libssl-dev libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev
@@ -28,9 +35,11 @@ jobs:
         if: runner.os == 'macOS'
         run: python3 tests/just_work.py
       - name: Install pinned toolchain
-        run: rustup show active-toolchain
+        run: rustup component add rustfmt
       - name: Format
         run: cargo fmt --all -- --check
+      - name: Private source pin contract
+        run: python3 tests/ci_source_checkout.py
       - name: Internal dependency boundary
         run: python3 tests/workspace_dependencies.py
       - name: CLI pair delivery
@@ -57,12 +66,19 @@ jobs:
           cargo build --locked -p a3s-studio
       - name: Product and runtime tests
         run: cargo test --locked -p aster -p a3s-acl -p a3s-effect
+      - name: Real CLI and ACP lifecycle
+        run: python3 tests/cli_acp_lifecycle.py --phase after --binaries target/debug --evidence "$RUNNER_TEMP/headless-lifecycle"
       - name: Studio native contracts
         run: cargo test --locked -p a3s-studio-data-sqlite -p a3s-studio-desktop-contract
       - name: ACP integration
         run: cargo test --locked -p a3s-code-acp --test v912_seam
-      - name: Work native artifact delivery through ACP
+      - name: HTTP and startup lifecycle regressions
         run: |
+          cargo test --locked -p a3s-code-core --lib llm::http::
+          cargo test --locked -p a3s-code-pager --lib headless::tests::
+          cargo test --locked -p a3s-code-pager --lib acp::startup_deadline_tests::
+      - name: Work native artifact delivery through ACP
+        run: cargo test --locked -p aster-dream --lib real_acp_program_code_profile_delivers_nested_native_artifact_and_saved_bytes -- --ignored --test-threads=1
       - name: Logo cache and rendering
         run: cargo test --locked -p a3s-code-pager --lib views::welcome
       - name: Current memory-retention contracts
@@ -77,15 +93,26 @@ jobs:
       matrix:
         app: [work, studio]
     runs-on: ubuntu-latest
+    env:
+      OFFICE_KERNEL_REQUIRED: "1"
     defaults:
       run:
         working-directory: apps/${{ matrix.app }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: ./.github/actions/checkout-source
+        with:
+          path: apps/work
+          owner: aster-ai-lab
+          repository: work
+          app-id: ${{ secrets.CI_SOURCE_APP_ID }}
+          private-key: ${{ secrets.CI_SOURCE_APP_PRIVATE_KEY }}
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
           node-version: "24.12.0"
       - run: npm install --global pnpm@12.6.0
+      - name: Install Office kernel target
+        run: rustup target add wasm32-unknown-unknown
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck:web
         if: matrix.app == 'work'

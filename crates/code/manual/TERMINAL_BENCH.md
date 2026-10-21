@@ -226,3 +226,26 @@ head/tail limit before it is returned to the Tool loop. High-volume commands
 therefore cannot make the benchmark runner buffer an unbounded stdout/stderr
 payload; truncation and byte counts remain visible through the normal Tool
 metadata observer.
+
+## Startup and provider failure bounds
+
+The TUI and headless lifecycle share the existing bounded ACP request helper
+for initialize and eager authenticate. Headless new/load/fork and model setup
+use the same session RPC bound as the TUI: at least 180 seconds, extended
+above the configured environment-loader budget. A timeout names the request;
+loading a timed-out session is not reported as a missing session. These bounds
+do not impose a total deadline on a productive streamed turn.
+Interactive eager authentication retains its shorter first-draw bound. Failed
+or dropped connection setup cancels the owned ACP worker.
+
+Core HTTP cancellation covers non-streaming response-body reads and streaming
+error bodies, including raw/duplex transports. Error bodies have the configured
+non-streaming request bound, or the existing stream-header bound by default.
+An unfinished error body retains its known HTTP status, so a 401 remains a
+credential error rather than becoming a retryable transport error. An ordinary
+non-streaming generation still has no default total deadline; trusted ACL can
+set `llm_api_timeout_ms`. Existing provider retry policy still applies.
+
+Use `--rules` (alias `--append-system-prompt`) to append instructions. The local
+ACP explicitly refuses `--system-prompt-override` (alias `--system-prompt`)
+before provider calls; it does not remove the harness and permission contracts.

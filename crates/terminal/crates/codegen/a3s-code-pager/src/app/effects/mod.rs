@@ -14,7 +14,7 @@ pub(super) use helpers::{
     parse_session_load_running_prompt_id, parse_session_memory_mode,
 };
 pub(crate) use helpers::{
-    EffectMeta, RestoreProgressMsg, SessionFlags, acp_send_bounded, compact_error,
+    EffectMeta, RestoreProgressMsg, SessionFlags, SessionRpcError, acp_send_bounded, compact_error,
     is_disk_full_error, parse_worktree_restore_payload, parse_worktree_strategy_summary,
     persist_permission_mode_and_notify, persist_setting, sanitize_user_error,
 };

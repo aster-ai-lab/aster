@@ -8,6 +8,8 @@ pub mod leader_bridge;
 pub mod meta;
 pub mod model_state;
 pub mod spawn;
+#[cfg(test)]
+mod startup_deadline_tests;
 pub(crate) mod subagent_label_registry;
 mod subagent_message;
 pub mod tracker;
@@ -19,8 +21,9 @@ pub(crate) use version_mismatch::{is_version_mismatch_banner, version_mismatch_b
 pub(crate) fn is_session_update_ext_method(method: &str) -> bool {
     matches!(method, "x.ai/session_notification" | "x.ai/session/update")
 }
+use crate::app::effects::{SessionRpcError, acp_send_bounded};
 use crate::client_identity::{PAGER_CLIENT_TYPE, PAGER_CLIENT_VERSION};
-use a3s_acp_lib::{AcpAgentTx, AcpClientRx, acp_send};
+use a3s_acp_lib::{AcpAgentTx, AcpClientRx};
 use a3s_code_shell::agent::auth_method::AuthMethodKind;
 use a3s_code_shell::agent::config::Config as AgentConfig;
 use a3s_code_shell::sampling::types::ReasoningEffort;
@@ -250,6 +253,7 @@ pub(in crate::acp) async fn initialize_connection(
         cancel,
         location,
     } = endpoint;
+    let startup_cancel = cancel.clone().drop_guard();
     let (agent_thread, leader_status_rx) = match location {
         AgentLocation::Thread(thread) => (Some(thread), None),
         AgentLocation::Leader(status_rx) => (None, Some(status_rx)),
@@ -271,6 +275,7 @@ pub(in crate::acp) async fn initialize_connection(
             auth_start_mode,
         )
         .await;
+    startup_cancel.disarm();
     Ok(AcpConnection {
         tx,
         rx,
@@ -464,8 +469,9 @@ async fn initialize(
         .meta(meta);
     let resp: acp::InitializeResponse = {
         let _timer = a3s_code_telemetry::instrumentation::timer("acp_init.initialize_roundtrip");
-        acp_send(req, tx).await.map_err(|error| {
-            let closed = a3s_acp_lib::acp_channel_failure(&error).is_some();
+        acp_send_bounded(req, tx, "ACP initialize").await.map_err(|error| {
+            let closed = matches!(&error, SessionRpcError::Rpc(error)
+                if a3s_acp_lib::acp_channel_failure(error).is_some());
             let error = anyhow::Error::from(error);
             if closed {
                 error.context("The agent connection closed before initialization. Check the agent's startup logs and executable. To select a trusted ACL configuration, use `A3S_CONFIG=/path/to/config.acl just code`.")
@@ -771,8 +777,12 @@ async fn authenticate(
             "first_method": auth_methods.first().map(|m| m.id().0.as_ref()),
         })),
     );
-    let resp: acp::AuthenticateResponse =
-        acp_send(acp::AuthenticateRequest::new(method_id), tx).await?;
+    let resp: acp::AuthenticateResponse = acp_send_bounded(
+        acp::AuthenticateRequest::new(method_id),
+        tx,
+        "ACP authenticate",
+    )
+    .await?;
     Ok(resp.meta.map(serde_json::Value::Object))
 }
 /// Pick the method id for eager authenticate.

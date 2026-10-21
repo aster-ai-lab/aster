@@ -1,0 +1,326 @@
+info: syncing channel updates for 1.97.1-aarch64-unknown-linux-gnu
+info: latest update on 2026-07-16 for version 1.97.1 (8bab26f4f 2026-07-14)
+info: downloading component clippy
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /repo/apps/gateway/Cargo.toml
+workspace: /repo/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /repo/crates/sentry/Cargo.toml
+workspace: /repo/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /repo/crates/use/Cargo.toml
+workspace: /repo/Cargo.toml
+warning: use of deprecated associated function `tokio::io::unix::AsyncFd::<T>::with_interest`: unsound due to lack of I/O safety; use `AsyncFd::register_with_interest` instead (see https://github.com/tokio-rs/tokio/pull/8587)
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/computer/local/cgroup.rs:123:31
+    |
+123 |             let fd = AsyncFd::with_interest(owned, Interest::READABLE)?;
+    |                               ^^^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:145:26
+    |
+145 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/a3s-code-tools/src/implementations/web_search/client.rs:146:20
+    |
+146 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: `a3s-code-tools` (lib) generated 3 warnings (run `cargo fix --lib -p a3s-code-tools` to apply 2 suggestions)
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:429:21
+    |
+429 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-core` (lib) generated 1 warning
+warning: function `sigmoid` is never used
+  --> crates/bge/src/math.rs:18:15
+   |
+18 | pub(crate) fn sigmoid(logit: f32) -> f32 {
+   |               ^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `encode_pairs` is never used
+  --> crates/bge/src/tokenizer.rs:91:19
+   |
+28 | impl PairTokenizer {
+   | ------------------ method in this implementation
+...
+91 |     pub(crate) fn encode_pairs(
+   |                   ^^^^^^^^^^^^
+
+warning: `a3s-use-bge` (lib) generated 2 warnings
+warning: method `as_str` is never used
+  --> crates/code/acp/src/host_context.rs:49:12
+   |
+42 | impl CompletionAttestation {
+   | -------------------------- method in this implementation
+...
+49 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `a3s-code-acp` (lib) generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.58s
+{"case": "acl_only", "returncode": 0, "timed_out": false, "elapsed_seconds": 0.444, "provider_requests": [{"path": "/v1/chat/completions", "stream": false, "system_rule_marker_seen": false}, {"path": "/v1/chat/completions", "stream": true, "system_rule_marker_seen": false}], "stdout_contains_marker": true, "explicit_override_rejection": false, "stdout_bytes": 137, "stderr_bytes": 1243}
+{"case": "acl_and_api_key", "returncode": 0, "timed_out": false, "elapsed_seconds": 0.249, "provider_requests": [{"path": "/v1/chat/completions", "stream": false, "system_rule_marker_seen": false}, {"path": "/v1/chat/completions", "stream": true, "system_rule_marker_seen": false}], "stdout_contains_marker": true, "explicit_override_rejection": false, "stdout_bytes": 137, "stderr_bytes": 1243}
+{"case": "rules_cli", "returncode": 0, "timed_out": false, "elapsed_seconds": 0.253, "provider_requests": [{"path": "/v1/chat/completions", "stream": false, "system_rule_marker_seen": false}, {"path": "/v1/chat/completions", "stream": true, "system_rule_marker_seen": true}], "stdout_contains_marker": true, "explicit_override_rejection": false, "stdout_bytes": 137, "stderr_bytes": 1243}
+{"case": "unsupported_override", "returncode": 1, "timed_out": false, "elapsed_seconds": 0.137, "provider_requests": [], "stdout_contains_marker": false, "explicit_override_rejection": true, "stdout_bytes": 225, "stderr_bytes": 201}
+{"case": "api_key_without_acl", "returncode": 1, "timed_out": false, "elapsed_seconds": 0.337, "provider_requests": [], "stdout_contains_marker": false, "explicit_override_rejection": false, "stdout_bytes": 162, "stderr_bytes": 1254}
+{"case": "stalled_stream_401", "returncode": 1, "timed_out": false, "elapsed_seconds": 0.289, "provider_requests": [{"path": "/v1/chat/completions", "stream": false, "system_rule_marker_seen": false}, {"path": "/v1/chat/completions", "stream": true, "system_rule_marker_seen": false}], "stdout_contains_marker": false, "explicit_override_rejection": false, "stdout_bytes": 166, "stderr_bytes": 1258}
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /repo/apps/gateway/Cargo.toml
+workspace: /repo/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /repo/crates/sentry/Cargo.toml
+workspace: /repo/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /repo/crates/use/Cargo.toml
+workspace: /repo/Cargo.toml
+   Compiling serde_core v1.0.229
+   Compiling log v0.4.32
+   Compiling parking_lot_core v0.9.12
+   Compiling lock_api v0.4.14
+   Compiling getrandom v0.2.16
+   Compiling parking_lot v0.12.5
+   Compiling mio v1.2.1
+   Compiling rand_core v0.6.4
+   Compiling errno v0.3.14
+   Compiling fastrand v2.3.0
+   Compiling signal-hook-registry v1.4.8
+   Compiling num-traits v0.2.19
+   Compiling phf_generator v0.13.1
+   Compiling tokio v1.53.3
+   Compiling crypto-common v0.1.6
+   Compiling serde_json v1.0.154
+   Compiling phf_codegen v0.13.1
+   Compiling futures-util v0.3.34
+   Compiling cc v1.2.48
+   Compiling serde v1.0.229
+   Compiling phf_macros v0.13.1
+   Compiling indexmap v2.14.0
+   Compiling string_cache_codegen v0.6.1
+   Compiling phf v0.13.1
+   Compiling tracing-core v0.1.36
+   Compiling web_atoms v0.2.3
+   Compiling string_cache v0.9.0
+   Compiling tracing v0.1.44
+   Compiling digest v0.10.7
+   Compiling icu_normalizer v2.0.0
+   Compiling ring v0.17.14
+   Compiling tokio-util v0.7.19
+   Compiling zerocopy v0.8.48
+   Compiling rustix v1.1.5
+   Compiling idna_adapter v1.2.1
+   Compiling linux-raw-sys v0.12.1
+   Compiling time-macros v0.2.27
+   Compiling idna v1.1.0
+   Compiling sha2 v0.10.9
+   Compiling block-padding v0.3.3
+   Compiling crossbeam-epoch v0.9.20
+   Compiling inout v0.1.4
+   Compiling time v0.3.47
+   Compiling lazy_static v1.5.0
+   Compiling h2 v0.4.19
+   Compiling cipher v0.4.4
+   Compiling getrandom v0.4.1
+   Compiling num-integer v0.1.46
+   Compiling chrono v0.4.45
+   Compiling rustls v0.23.46
+   Compiling crossbeam-deque v0.8.6
+   Compiling url v2.5.8
+   Compiling rustls-webpki v0.103.15
+   Compiling markup5ever v0.38.0
+   Compiling futures-executor v0.3.34
+   Compiling selectors v0.38.0
+   Compiling concurrent-queue v2.5.0
+   Compiling derive_more-impl v2.1.1
+   Compiling anyhow v1.0.104
+   Compiling event-listener v5.4.1
+   Compiling hyper v1.8.1
+   Compiling cssparser v0.37.0
+   Compiling derive_more v2.1.1
+   Compiling fs-set-times v0.20.3
+   Compiling ppv-lite86 v0.2.21
+   Compiling flate2 v1.1.5
+   Compiling num-bigint v0.4.6
+   Compiling hyper-util v0.1.20
+   Compiling rustix-linux-procfs v0.1.1
+   Compiling markup5ever v0.39.0
+   Compiling rquickjs-sys v0.11.0
+   Compiling string_cache v0.8.9
+   Compiling ahash v0.8.12
+   Compiling fs2 v0.4.3
+   Compiling proc-macro2 v1.0.106
+   Compiling publicsuffix v2.3.0
+   Compiling cap-primitives v4.0.3
+   Compiling tower v0.5.2
+   Compiling cssparser v0.34.0
+   Compiling tokio-rustls v0.26.6
+   Compiling markup5ever v0.14.1
+   Compiling html5ever v0.39.0
+   Compiling num-rational v0.4.2
+   Compiling rand_chacha v0.3.1
+   Compiling cookie v0.18.2
+   Compiling rayon-core v1.13.0
+   Compiling event-listener-strategy v0.5.4
+   Compiling html5ever v0.38.0
+   Compiling num-iter v0.1.45
+   Compiling uuid v1.26.1
+   Compiling universal-hash v0.5.1
+   Compiling num-complex v0.4.6
+   Compiling num_cpus v1.17.0
+   Compiling quote v1.0.45
+   Compiling either v1.15.0
+   Compiling borrow-or-share v0.2.4
+   Compiling clap_builder v4.6.7
+   Compiling fluent-uri v0.4.1
+   Compiling rayon v1.12.0
+   Compiling a3s-acl v0.3.0 (/repo/crates/acl)
+   Compiling tower-http v0.6.8
+   Compiling polyval v0.6.2
+   Compiling num v0.4.3
+   Compiling selectors v0.26.0
+   Compiling html5ever v0.29.1
+   Compiling hyper-rustls v0.27.7
+   Compiling async-lock v3.4.1
+   Compiling rmp v0.8.14
+   Compiling cookie_store v0.21.1
+   Compiling rand v0.8.8
+   Compiling async-compression v0.4.19
+   Compiling dom_query v0.28.0
+   Compiling cap-std v4.0.2
+   Compiling serde_urlencoded v0.7.1
+   Compiling opentelemetry v0.21.0
+   Compiling futures v0.3.34
+   Compiling xml5ever v0.38.0
+   Compiling dirs-sys v0.5.0
+   Compiling dirs-sys v0.4.1
+   Compiling aes v0.8.4
+   Compiling sharded-slab v0.1.7
+   Compiling tokio-stream v0.1.17
+   Compiling tracing-log v0.2.0
+   Compiling tracing-serde v0.2.0
+   Compiling serde_spanned v0.6.9
+   Compiling toml_datetime v0.6.11
+   Compiling ordered-float v4.6.0
+   Compiling rand_xoshiro v0.6.0
+   Compiling bstr v1.12.1
+   Compiling inotify-sys v0.1.5
+   Compiling bytemuck v1.25.2
+   Compiling uuid-simd v0.8.0
+   Compiling opentelemetry_sdk v0.21.2
+   Compiling roaring v0.11.1
+   Compiling globset v0.4.18
+   Compiling toml_edit v0.22.27
+   Compiling dashmap v6.2.1
+   Compiling imbl v3.0.0
+   Compiling referencing v0.47.0
+   Compiling tracing-subscriber v0.3.23
+   Compiling dom_smoothie v0.18.2
+   Compiling deadpool v0.12.3
+   Compiling scraper v0.22.0
+   Compiling inotify v0.11.0
+   Compiling rquickjs-core v0.11.0
+   Compiling rand v0.10.3
+   Compiling dirs v5.0.1
+   Compiling dirs v6.0.0
+   Compiling markup5ever_rcdom v0.38.0+unofficial
+   Compiling reqwest v0.12.24
+   Compiling cap-fs-ext v4.0.2
+   Compiling rmp-serde v1.3.0
+   Compiling fraction v0.15.3
+   Compiling clap v4.6.7
+   Compiling ghash v0.5.1
+   Compiling tempfile v3.27.0
+   Compiling cron v0.17.0
+   Compiling ctr v0.9.2
+   Compiling ecb v0.1.2
+   Compiling cbc v0.1.2
+   Compiling yasna v0.5.2
+   Compiling md-5 v0.10.6
+   Compiling assert-json-diff v2.0.2
+   Compiling quick-xml v0.38.4
+   Compiling rust-stemmers v1.2.0
+   Compiling bincode v1.3.3
+   Compiling email_address v0.2.9
+   Compiling aead v0.5.2
+   Compiling memmap2 v0.9.11
+   Compiling ttf-parser v0.25.1
+   Compiling jsonschema v0.47.0
+   Compiling serde_yaml v0.9.34+deprecated
+   Compiling sha256 v1.6.0
+   Compiling notify v8.2.0
+   Compiling a3s-vec v0.1.8 (/repo/crates/vec)
+   Compiling lsp-types v0.97.0
+   Compiling lopdf v0.42.0
+   Compiling aes-gcm v0.10.3
+   Compiling a3s-search v3.4.0 (/repo/crates/search)
+   Compiling rcgen v0.13.2
+   Compiling wiremock v0.6.5
+   Compiling a3s-lane v0.5.1 (/repo/crates/lane)
+   Compiling a3s-sandbox v0.2.3 (/repo/crates/sandbox)
+   Compiling a3s-form-core v0.1.0 (/repo/crates/form-core)
+   Compiling rquickjs v0.11.0
+   Compiling a3s-effect v0.2.1 (/repo/crates/effect)
+   Compiling syn v2.0.117
+   Compiling htmd v0.5.4
+   Compiling toml v0.8.23
+   Compiling ignore v0.4.24
+   Compiling html2text v0.16.7
+   Compiling a3s-memory v0.1.5 (/repo/crates/memory)
+   Compiling a3s-common v0.1.1 (/repo/crates/common)
+   Compiling a3s-code-core v9.1.4 (/repo/crates/code/core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3m 00s
+     Running unittests src/lib.rs (/target/debug/deps/a3s_code_core-3b9a1f1170118ec8)
+
+running 31 tests
+test llm::http::tests::join_chat_completions_url_full_endpoint_as_base ... ok
+test llm::http::tests::join_chat_completions_url_zhipu_default ... ok
+test llm::http::tests::join_chat_completions_url_openai_default ... ok
+test llm::http::tests::join_chat_completions_url_coding_plan_openai_compatible ... ok
+test llm::http::tests::join_chat_completions_url_coding_plan_builtin_zhipu ... ok
+test llm::http::tests::retryable_http_failure_requires_a_typed_transport_error ... ok
+test llm::http::tests::hard_connect_failures_are_not_retryable ... ok
+test llm::http::tests::test_normalize_base_url ... ok
+test llm::http::tests::test_normalize_base_url_already_normalized ... ok
+test llm::http::tests::test_normalize_base_url_edge_cases ... ok
+test llm::http::tests::test_normalize_base_url_empty_string ... ok
+test llm::http::tests::test_normalize_base_url_with_port ... ok
+test llm::http::tests::test_normalize_base_url_multiple_trailing_slashes ... ok
+test llm::http::tests::test_default_http_client_creation ... ok
+test llm::http::response_lifecycle_tests::cancellation_interrupts_streaming_error_body ... ok
+test llm::http::response_lifecycle_tests::complete_authorization_body_keeps_the_provider_diagnostic ... ok
+test llm::http::response_lifecycle_tests::cancellation_interrupts_raw_streaming_error_body ... ok
+test llm::http::duplex_tests::canceling_a_duplex_request_drops_the_open_upload ... ok
+test llm::http::response_lifecycle_tests::authorization_headers_return_before_an_outer_model_deadline ... ok
+test llm::http::response_lifecycle_tests::cancellation_interrupts_non_streaming_body ... ok
+test llm::http::response_lifecycle_tests::stalled_retryable_error_body_has_a_deadline ... ok
+test llm::http::tests::streaming_body_survives_a_short_non_streaming_request_timeout ... ok
+test llm::http::tests::connection_refused_is_not_retryable ... ok
+test llm::http::tests::test_build_reqwest_client_accepts_no_proxy_with_proxies ... ok
+test llm::http::tests::test_build_reqwest_client_accepts_proxy_env_urls ... ok
+test llm::http::tests::test_explicit_proxy_config_from_env_falls_back_to_http_for_https ... ok
+test llm::http::tests::test_explicit_proxy_config_from_env_prefers_lowercase_vars ... ok
+test llm::http::tests::test_no_proxy_from_env_prefers_lowercase_var ... ok
+test llm::http::tests::test_post_streaming_surfaces_stalled_stream_as_timeout_error ... ok
+test llm::http::tests::test_post_streaming_surfaces_silent_headers_as_timeout_error ... ok
+test llm::http::tests::test_reqwest_http_client_timeout_applies_to_api_call ... ok
+
+test result: ok. 31 passed; 0 failed; 0 ignored; 0 measured; 5215 filtered out; finished in 1.02s

@@ -1,0 +1,22 @@
+[
+  {
+    "test": "cancellation_interrupts_non_streaming_body",
+    "returncode": 101,
+    "failed_as_expected": true
+  },
+  {
+    "test": "cancellation_interrupts_streaming_error_body",
+    "returncode": 101,
+    "failed_as_expected": true
+  },
+  {
+    "test": "cancellation_interrupts_raw_streaming_error_body",
+    "returncode": 101,
+    "failed_as_expected": true
+  },
+  {
+    "test": "stalled_error_body_preserves_non_retryable_http_status",
+    "returncode": 101,
+    "failed_as_expected": true
+  }
+]

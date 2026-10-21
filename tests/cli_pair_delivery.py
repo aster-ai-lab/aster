@@ -27,7 +27,7 @@ class PairDelivery(unittest.TestCase):
         self.commands = self.root / "commands"
         for path in (self.bins, self.assets, self.prefix, self.commands):
             path.mkdir()
-        self.archive = self.assets / f"aster-cli-v0.1.1-{PLATFORM}.tar.gz"
+        self.archive = self.assets / f"aster-cli-v0.1.2-{PLATFORM}.tar.gz"
         for name in NAMES:
             self.binary(name, IDENTITY)
             (self.prefix / name).write_text("old-" + name)
@@ -75,6 +75,7 @@ class PairDelivery(unittest.TestCase):
             self.assertEqual(set(package.getnames()), {*NAMES, "BUILD_ID", "SHA256SUMS"})
         result = self.install()
         self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("installed Aster v0.1.2", result.stdout)
         for name in NAMES:
             self.assertEqual((self.prefix / name).read_bytes(), (self.bins / name).read_bytes())
 

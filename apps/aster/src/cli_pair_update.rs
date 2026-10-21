@@ -9,10 +9,8 @@
 //! bytes received. The meter stops when the update stops. `--check` and
 //! `--json` do not draw it and do not replace either binary.
 //!
-//! The pinned `aster-cli-v0.1.1` archive contains only the two binaries.
-//! Those binaries reject `--build-id`. `BUILD_ID` and `SHA256SUMS` are
-//! optional; when both are present the pair identity must match or the
-//! previous files stay.
+//! The v0.1.2 archive requires BUILD_ID and SHA256SUMS. Both binaries must
+//! report that same identity before either installed file is replaced.
 
 use anyhow::{Context, Result, bail};
 use sha2::Digest;
@@ -22,9 +20,9 @@ use std::path::{Component, Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::time::{Duration, Instant};
 
-const RELEASE: &str = "aster-cli-v0.1.1";
+const RELEASE: &str = "aster-cli-v0.1.2";
 const OFFICIAL_BASE: &str =
-    "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.1";
+    "https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.2";
 const PAIR_PREFIX: &str = "aster-cli-pair-v1:";
 const MAX_ARCHIVE: u64 = 512 * 1024 * 1024;
 const READ_CHUNK: usize = 4096;
@@ -67,7 +65,7 @@ pub fn run(request: Request) -> Result<()> {
     match install_release(&asset)? {
         InstallOutcome::Installed { identity, dir } => {
             let (aster_name, acp_name) = binary_names();
-            println!("installed Aster v0.1.1 into {}", dir.display());
+            println!("installed Aster v0.1.2 into {}", dir.display());
             if let Some(identity) = identity {
                 println!("identity={identity}");
             }
@@ -86,7 +84,7 @@ pub fn run(request: Request) -> Result<()> {
 }
 
 fn is_pinned_version(version: &str) -> bool {
-    matches!(version, "0.1.1" | "v0.1.1" | "aster-cli-v0.1.1")
+    matches!(version, "0.1.2" | "v0.1.2" | "aster-cli-v0.1.2")
 }
 
 fn refuse_foreign_installer_env() -> Result<()> {
@@ -119,19 +117,19 @@ fn resolve_asset() -> Result<Asset> {
 fn asset_name() -> &'static str {
     #[cfg(target_os = "macos")]
     {
-        "aster-cli-v0.1.1-macos.tar.gz"
+        "aster-cli-v0.1.2-macos.tar.gz"
     }
     #[cfg(target_os = "linux")]
     {
-        "aster-cli-v0.1.1-linux.tar.gz"
+        "aster-cli-v0.1.2-linux.tar.gz"
     }
     #[cfg(windows)]
     {
-        "aster-cli-v0.1.1-windows.zip"
+        "aster-cli-v0.1.2-windows.zip"
     }
     #[cfg(not(any(target_os = "macos", target_os = "linux", windows)))]
     {
-        "aster-cli-v0.1.1-unsupported.tar.gz"
+        "aster-cli-v0.1.2-unsupported.tar.gz"
     }
 }
 
@@ -195,7 +193,7 @@ fn print_status(asset: &Asset, json: bool) -> Result<()> {
     let status = a3s_code_update::UpdateStatus {
         current_version: env!("VERSION_WITH_COMMIT").to_string(),
         latest_version: (available || matches!(asset, Asset::Local(_)))
-            .then(|| "0.1.1".to_string()),
+            .then(|| "0.1.2".to_string()),
         update_available: available,
         installer: Some("aster-cli".to_string()),
         channel: a3s_code_update::channel_name()
@@ -333,15 +331,6 @@ fn verify_pair(unpacked: &Path) -> Result<VerifiedPair> {
     let build_id = unpacked.join("BUILD_ID");
     let sums_present = sums.is_file();
     let id_present = build_id.is_file();
-    // The pinned release is the two binaries. Identity checks apply only when
-    // the archive carries both metadata files.
-    if !sums_present && !id_present {
-        return Ok(VerifiedPair {
-            aster,
-            acp,
-            identity: None,
-        });
-    }
     if !sums_present || !id_present {
         bail!("release is missing paired build identity or checksums");
     }
@@ -618,7 +607,7 @@ fn download_official(name: &str, dest: &Path, meter: &mut Progress) -> Result<()
             attempt.follow()
         }))
         .timeout(Duration::from_secs(300))
-        .user_agent(concat!("aster-cli/", "0.1.1"))
+        .user_agent(concat!("aster-cli/", env!("CARGO_PKG_VERSION")))
         .build()
         .context("cannot prepare the release download")?;
     let mut response = client
