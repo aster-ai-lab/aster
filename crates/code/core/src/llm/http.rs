@@ -933,7 +933,7 @@ mod tests {
         assert!(is_retryable_http_failure(&timeout));
     }
 
-    fn proxy_env_lock() -> &'static Mutex<()> {
+    pub(super) fn proxy_env_lock() -> &'static Mutex<()> {
         static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
         LOCK.get_or_init(|| Mutex::new(()))
     }

@@ -379,9 +379,13 @@ struct ParsedInfo {
 }
 
 pub(crate) fn delivery_logo_name(text: &str, identity: HostIdentity) -> io::Result<String> {
-    let parsed = parse_info(text).map_err(|error| io::Error::new(io::ErrorKind::InvalidData, error))?;
+    let parsed =
+        parse_info(text).map_err(|error| io::Error::new(io::ErrorKind::InvalidData, error))?;
     if parsed.product != identity.product() {
-        return Err(io::Error::new(io::ErrorKind::InvalidData, "tenant product identity mismatch"));
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidData,
+            "tenant product identity mismatch",
+        ));
     }
     Ok(parsed.light_logo)
 }

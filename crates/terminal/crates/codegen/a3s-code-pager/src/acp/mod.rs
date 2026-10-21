@@ -253,6 +253,7 @@ pub(in crate::acp) async fn initialize_connection(
         cancel,
         location,
     } = endpoint;
+    let startup_cancel = cancel.clone().drop_guard();
     let (agent_thread, leader_status_rx) = match location {
         AgentLocation::Thread(thread) => (Some(thread), None),
         AgentLocation::Leader(status_rx) => (None, Some(status_rx)),
@@ -274,6 +275,7 @@ pub(in crate::acp) async fn initialize_connection(
             auth_start_mode,
         )
         .await;
+    startup_cancel.disarm();
     Ok(AcpConnection {
         tx,
         rx,

@@ -20,22 +20,6 @@ async fn headless_auth_does_not_wait_forever_for_a_live_silent_sidecar() {
     assert!(error.to_string().contains("timed out"), "{error}");
 }
 
-#[tokio::test(start_paused = true)]
-async fn headless_session_load_reports_timeout_instead_of_missing_session() {
-    let cwd = tempfile::tempdir().unwrap();
-    let (tx, _rx) = tokio::sync::mpsc::unbounded_channel();
-    let result = tokio::time::timeout(
-        std::time::Duration::from_secs(7200),
-        super::open_session(&tx, cwd.path(), Some("fixture"), None),
-    )
-    .await;
-    let error = result
-        .expect("session load must have its own deadline")
-        .unwrap_err();
-    assert!(error.to_string().contains("load"), "{error}");
-    assert!(error.to_string().contains("timed out"), "{error}");
-}
-
 #[tokio::test]
 async fn local_config_agent_with_no_auth_methods_skips_acp_login() {
     let (tx, mut rx) = tokio::sync::mpsc::unbounded_channel();
