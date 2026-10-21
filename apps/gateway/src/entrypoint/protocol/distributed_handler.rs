@@ -171,6 +171,45 @@ pub(crate) async fn handle_distributed_dispatch(
                     }
                     return super::response_middleware_failure(&error);
                 }
+                // Middleware and cold authentication consume the same total
+                // budget as decode. Reject an expired response before Hyper
+                // polls its body: an immediately failing body can prevent even
+                // the HTTP headers from reaching the client.
+                if tokio::time::Instant::now()
+                    .duration_since(tokio::time::Instant::from_std(request_start))
+                    >= timeouts.stream_total_timeout()
+                {
+                    // Drop owned upstream I/O before releasing local capacity.
+                    // Its existing bounded cleanup aborts both worker phases.
+                    drop(body);
+                    drop(backend_guards);
+                    drop(inference_admission);
+                    if let Some(lifecycle) = usage_lifecycle.as_mut() {
+                        if let Err(error) = lifecycle
+                            .finish_attempt(UsageTerminalOutcome::Failed, Some(504))
+                            .await
+                        {
+                            tracing::error!(%error, "Expired distributed response terminal append failed");
+                        }
+                    }
+                    return finish_error_status(
+                        ResponseTracking {
+                            state,
+                            route,
+                            request_start,
+                            access_log,
+                            inference_admission: None,
+                            inference_attempt: Some(inference_attempt),
+                            usage_lifecycle,
+                            service_request,
+                            backend_guards: None,
+                        },
+                        &pipeline,
+                        &req_parts.headers,
+                        StatusCode::GATEWAY_TIMEOUT,
+                    )
+                    .await;
+                }
                 return ResponseTracking {
                     state,
                     route,
@@ -347,12 +386,21 @@ fn admit_worker_pair(
 }
 
 async fn finish_error(
-    mut tracking: ResponseTracking,
+    tracking: ResponseTracking,
     pipeline: &crate::middleware::Pipeline,
     request_headers: &http::HeaderMap,
     error: DistributedServingError,
 ) -> Response<ResponseBody> {
     let status = StatusCode::from_u16(error.status_code()).unwrap_or(StatusCode::BAD_GATEWAY);
+    finish_error_status(tracking, pipeline, request_headers, status).await
+}
+
+async fn finish_error_status(
+    mut tracking: ResponseTracking,
+    pipeline: &crate::middleware::Pipeline,
+    request_headers: &http::HeaderMap,
+    status: StatusCode,
+) -> Response<ResponseBody> {
     let body = match status {
         StatusCode::SERVICE_UNAVAILABLE => Bytes::from_static(
             br#"{"error":{"message":"Distributed inference is temporarily unavailable.","type":"server_error","param":null,"code":"distributed_inference_unavailable"}}"#,

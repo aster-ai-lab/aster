@@ -2093,6 +2093,19 @@ async fn managed_distributed_sse_total_timeout_aborts_both_workers_releases_admi
     let (address, shutdown_tx, gateway_task) = start_test_entrypoint(state).await;
     let client = reqwest::Client::new();
 
+    // This case measures the total deadline on an active stream. Verify the
+    // credential first so debug Argon2 work cannot consume its 400ms budget.
+    // A separate cold-auth/middleware regression covers expired-before-header
+    // responses and must return an explicit 504.
+    let authenticated = client
+        .get(format!("http://{address}/v1/models"))
+        .bearer_auth(&key)
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(authenticated.status(), StatusCode::OK);
+    let _ = authenticated.bytes().await.unwrap();
+
     let response = client
         .post(format!("http://{address}/v1/chat/completions"))
         .bearer_auth(&key)
@@ -2203,3 +2216,6 @@ async fn managed_distributed_sse_total_timeout_aborts_both_workers_releases_admi
     stop_test_entrypoint(shutdown_tx, gateway_task).await;
     spool.shutdown().await;
 }
+
+#[path = "inference_distributed_deadline_tests.rs"]
+mod inference_distributed_deadline_tests;

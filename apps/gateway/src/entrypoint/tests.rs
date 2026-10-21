@@ -1331,7 +1331,6 @@ async fn reserved_catalog_paths_do_not_fall_through_to_an_ordinary_route() {
         ("POST", "/v1/responses"),
         ("POST", "/v1/messages"),
         ("POST", "/v1/messages/count_tokens"),
-        ("POST", "/v1/rerank"),
         ("POST", "/v1/mcp"),
         ("POST", "/v1/service"),
         ("POST", "/v1/images/generations"),
@@ -1352,6 +1351,18 @@ async fn reserved_catalog_paths_do_not_fall_through_to_an_ordinary_route() {
         let body: serde_json::Value = response.json().await.unwrap();
         assert_eq!(body["error"], "standard_not_admitted", "{method} {path}");
     }
+
+    // Rerank is admitted by the existing runtime policy. An invalid payload
+    // still fails before ordinary forwarding; the captured request below must
+    // remain the subsequent ordinary GET.
+    let rerank = client
+        .post(format!("http://{address}/v1/rerank"))
+        .header("content-type", "application/json")
+        .body("{}")
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(rerank.status(), 400);
 
     let ordinary = client
         .get(format!("http://{address}/ordinary"))
@@ -4321,3 +4332,6 @@ async fn an_idempotency_key_replays_the_saved_search_and_rejects_a_different_bod
     assert_eq!(hits.load(std::sync::atomic::Ordering::SeqCst), 1);
     stop_test_entrypoint(shutdown_tx, handle).await;
 }
+
+#[path = "listener_cancellation_tests.rs"]
+mod listener_cancellation_tests;

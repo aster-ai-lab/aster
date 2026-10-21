@@ -419,7 +419,11 @@ fn spawn_http_listener<L: HttpListener>(
                             }
                         } else {
                             let io = TokioIo::new(stream);
-                            let builder = auto::Builder::new(TokioExecutor::new());
+                            // HTTP/1 read EOF cancels queued and streaming work. A complete
+                            // Content-Length request with Connection: close remains supported;
+                            // write-half-close while awaiting a response is cancellation.
+                            let mut builder = auto::Builder::new(TokioExecutor::new());
+                            builder.http1().half_close(false);
                             let connection_context = Arc::new(HttpConnectionContext::from_peer(
                                 remote_addr,
                                 ep_name,
@@ -434,18 +438,17 @@ fn spawn_http_listener<L: HttpListener>(
                                     let runtime = runtime.clone();
                                     let connection_context = connection_context.clone();
                                     async move {
-                                    if !runtime.allows_traffic() {
-                                        return Ok(super::error_response(
-                                            503,
-                                            "Managed snapshot expired",
-                                        ));
-                                    }
-                                    handle_http_request(
-                                        request,
-                                        runtime,
-                                        connection_context.clone(),
-                                    )
-                                    .await
+                                    let response = if !runtime.allows_traffic() {
+                                        super::error_response(503, "Managed snapshot expired")
+                                    } else {
+                                        handle_http_request(
+                                            request,
+                                            runtime,
+                                            connection_context.clone(),
+                                        )
+                                        .await?
+                                    };
+                                    Ok::<_, hyper::Error>(response)
                                     }
                                 }),
                             );
