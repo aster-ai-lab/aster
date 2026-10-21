@@ -55,3 +55,7 @@ Work explicitly prohibits deployment keys (HTTP 422), and the current connection
 - Green remote CI, full workspace/live PostgreSQL/S3 campaigns, Windows native installation or a formal v0.1.2 release. These await configured private-source access and actual remote validation. New installer URLs stay in the draft branch.
 - A production release-profile build from the local debug archives, signing/notarization, or interactive desktop/TUI and native sandbox/tool execution. The loopback cases exercise real CLI/ACP model transport without native tools.
 - Exact reconstruction of the original real-provider 180-second incident: its configuration/log is unavailable. The controlled failures establish only the mechanisms recorded here. A bare legacy key is not enough to select a provider, and ACL plus that environment key was verified healthy.
+
+## Final integration receipt
+
+Rebased the completed follow-up onto 16469319771867f9dfd46d41534ef00fe2a2addc, preserving its documentation/desktop alias changes. None of the affected Rust sources, root manifests/lock, installers or tests changed in that base update; every retained validated-source hash still matches (logs/integration-source-equivalence.json). No functional test repetition is claimed or needed for that documentation-only integration. Evidence log trailing blank lines were normalized; command output and assertions are otherwise retained.
