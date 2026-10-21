@@ -1,0 +1,52 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/apps/gateway/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/sentry/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml
+warning: patch for the non root package will be ignored, specify patch at the workspace root:
+package:   /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/use/Cargo.toml
+workspace: /Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/Cargo.toml
+   Compiling a3s-code-core v9.1.4 (/Users/roylin/code/aster/.tmp/issues-20261021-z098r454/source/crates/code/core)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `a3s-code-core` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 50.72s
+     Running unittests src/lib.rs (/Users/roylin/code/aster/.tmp/issue-followups-20261021-n0f0znj0/target/debug/deps/a3s_code_core-ce2a2ff12f0735aa)
+
+running 31 tests
+test llm::http::tests::join_chat_completions_url_full_endpoint_as_base ... ok
+test llm::http::tests::join_chat_completions_url_zhipu_default ... ok
+test llm::http::tests::join_chat_completions_url_openai_default ... ok
+test llm::http::tests::join_chat_completions_url_coding_plan_builtin_zhipu ... ok
+test llm::http::tests::join_chat_completions_url_coding_plan_openai_compatible ... ok
+test llm::http::tests::hard_connect_failures_are_not_retryable ... ok
+test llm::http::tests::retryable_http_failure_requires_a_typed_transport_error ... ok
+test llm::http::tests::test_normalize_base_url_already_normalized ... ok
+test llm::http::tests::test_normalize_base_url ... ok
+test llm::http::tests::test_normalize_base_url_edge_cases ... ok
+test llm::http::tests::test_normalize_base_url_empty_string ... ok
+test llm::http::tests::test_normalize_base_url_multiple_trailing_slashes ... ok
+test llm::http::tests::test_normalize_base_url_with_port ... ok
+test llm::http::tests::test_build_reqwest_client_accepts_no_proxy_with_proxies ... ok
+test llm::http::tests::test_default_http_client_creation ... ok
+test llm::http::tests::test_build_reqwest_client_accepts_proxy_env_urls ... ok
+test llm::http::tests::test_explicit_proxy_config_from_env_prefers_lowercase_vars ... ok
+test llm::http::tests::test_explicit_proxy_config_from_env_falls_back_to_http_for_https ... ok
+test llm::http::tests::test_no_proxy_from_env_prefers_lowercase_var ... ok
+test llm::http::response_lifecycle_tests::stalled_retryable_error_body_has_a_deadline ... ok
+test llm::http::response_lifecycle_tests::cancellation_interrupts_non_streaming_body ... ok
+test llm::http::duplex_tests::canceling_a_duplex_request_drops_the_open_upload ... ok
+test llm::http::response_lifecycle_tests::complete_authorization_body_keeps_the_provider_diagnostic ... ok
+test llm::http::response_lifecycle_tests::cancellation_interrupts_raw_streaming_error_body ... ok
+test llm::http::response_lifecycle_tests::cancellation_interrupts_streaming_error_body ... ok
+test llm::http::tests::streaming_body_survives_a_short_non_streaming_request_timeout ... ok
+test llm::http::response_lifecycle_tests::authorization_headers_return_before_an_outer_model_deadline ... ok
+test llm::http::tests::connection_refused_is_not_retryable ... ok
+test llm::http::tests::test_post_streaming_surfaces_silent_headers_as_timeout_error ... ok
+test llm::http::tests::test_post_streaming_surfaces_stalled_stream_as_timeout_error ... ok
+test llm::http::tests::test_reqwest_http_client_timeout_applies_to_api_call ... ok
+
+test result: ok. 31 passed; 0 failed; 0 ignored; 0 measured; 5249 filtered out; finished in 0.99s

@@ -1,0 +1,15 @@
+
+running 1 test
+test llm::http::response_lifecycle_tests::cancellation_interrupts_non_streaming_body ... FAILED
+
+failures:
+
+failures:
+    llm::http::response_lifecycle_tests::cancellation_interrupts_non_streaming_body
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5276 filtered out; finished in 1.09s
+
+
+thread 'llm::http::response_lifecycle_tests::cancellation_interrupts_non_streaming_body' (53031344) panicked at crates/code/core/src/llm/http/response_lifecycle_tests.rs:44:24:
+cancellation must interrupt an unfinished response body: Elapsed(())
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

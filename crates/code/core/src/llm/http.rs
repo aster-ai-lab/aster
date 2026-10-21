@@ -2,7 +2,7 @@
 
 use anyhow::{Context, Result};
 use async_trait::async_trait;
-use futures::StreamExt;
+use futures::{FutureExt, StreamExt};
 use std::env;
 use std::pin::Pin;
 use std::sync::Arc;
@@ -393,6 +393,7 @@ impl HttpClient for ReqwestHttpClient {
         request = request.json(body);
 
         let request_timeout = self.request_timeout;
+        let response_cancel = cancel_token.clone();
         let send_and_read = async move {
             let response = request.send().await.map_err(|error| {
                 anyhow::Error::new(HttpClientError::from_reqwest("HTTP request", error))
@@ -404,9 +405,13 @@ impl HttpClient for ReqwestHttpClient {
                 .get("retry-after")
                 .and_then(|value| value.to_str().ok())
                 .map(String::from);
-            let response_body = response.text().await.map_err(|error| {
-                anyhow::Error::new(HttpClientError::from_reqwest("HTTP response body", error))
-            })?;
+            let response_body = if (200..300).contains(&status) {
+                response.text().await.map_err(|error| {
+                    anyhow::Error::new(HttpClientError::from_reqwest("HTTP response body", error))
+                })?
+            } else {
+                self.read_error_body(response, &response_cancel).await?
+            };
             let response_bytes = response_body.len() as u64;
             let duration_ms = start.elapsed().as_secs_f64() * 1000.0;
 
@@ -602,6 +607,19 @@ impl ReqwestHttpClient {
         response: reqwest::Response,
         cancel_token: &CancellationToken,
     ) -> Result<String> {
+        if cancel_token.is_cancelled() {
+            return Err(anyhow::Error::new(HttpClientError::cancelled(
+                "HTTP error response body",
+            )));
+        }
+        if matches!(response.status().as_u16(), 401 | 403) {
+            // A known authorization failure must not become an outer model-call timeout.
+            return Ok(response
+                .text()
+                .now_or_never()
+                .and_then(|body| body.ok())
+                .unwrap_or_else(|| "HTTP authorization error body unavailable".into()));
+        }
         let timeout = self.request_timeout.unwrap_or_else(stream_headers_timeout);
         tokio::select! {
             biased;

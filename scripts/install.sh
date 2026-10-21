@@ -224,6 +224,6 @@ if [[ "$platform" == "macos" ]] && command -v xattr >/dev/null 2>&1; then
   xattr -d com.apple.quarantine "$dest_acp" 2>/dev/null || true
 fi
 
-echo "installed Aster v0.1.1 into ${prefix}"
+echo "installed Aster v0.1.2 into ${prefix}"
 echo "aster=${dest_aster}"
 echo "a3s-code-acp=${dest_acp}"

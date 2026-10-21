@@ -1,43 +1,57 @@
-# Issue follow-up validation (integration in progress)
+# Shared request lifecycle and CI delivery follow-up
 
-This branch continues the seven issue fixes in PR #8. The source is aligned to main 64cfd79cac690e78c288c374ddba0c7650e5bfcc; source landing, remote CI and release publication are separate claims.
+The follow-up is in draft PR [#9](https://github.com/aster-ai-lab/aster/pull/9). The seven original issue fixes remain on main through PR #8. Local validation below is complete; remote CI and formal release delivery are still blocked by private-source authorization.
 
-## Confirmed behavior
+## Confirmed mechanisms and changes
 
-Core now cancels non-streaming body reads and streaming error-body reads, including raw/duplex requests. Error-body reads have a deadline and retain their HTTP status. A silent 401 body cannot be reclassified into a retryable 503. Four loopback regression tests failed on the old transport, and each failed independently; the repaired full HTTP group passed 29/29 on macOS and 29/29 on Linux x86-64 after integration. Productive stream lifetimes remain covered by the existing positive regression.
+- Core cancellation now covers complete non-streaming response reads and streaming error bodies, including raw/duplex transport. Other error bodies use a bounded read.
+- A known 401/403 returns immediately with any already available diagnostic. An unfinished authorization body cannot consume the outer model-call deadline and turn into a retryable timeout. Complete authorization diagnostics remain covered by a positive regression. Successful non-streaming generations retain their existing default lifetime; trusted ACL can set llm_api_timeout_ms. Productive streams retain header/idle bounds rather than a total generation deadline.
+- TUI initialize and headless initialize/authenticate/new/load/fork/model setup reuse the existing bounded session RPC helper. A load timeout preserves its reason. Failed/dropped TUI connection setup cancels the owned worker; interactive eager auth retains its shorter existing first-draw bound.
+- --rules appends instructions. Full prompt replacement is explicitly refused before provider calls; help now states the supported contract.
+- CI resolves exact Work/API/Cloud gitlinks, checks out with per-repository Contents:read App tokens, and persists no checkout credentials. Backend packages stay in their owning workspaces. Missing toolchain/front-end prerequisites and the previously empty real ACP artifact step are repaired. The real CLI/ACP loopback suite is now maintained at tests/cli_acp_lifecycle.py and run in CI.
+- The S3 campaign fixture uses verified immutable image digests because the old latest images disappeared and MinIO binary archives returned HTTP 410. A disposable real server passed create/write/read and was removed. This changes no production storage.
+- CLI v0.1.2 delivery builds all three platform pairs in one run, creates a new tag atomically at the build SHA, verifies that tag, and creates a release without clobbering assets or changing the desktop latest-release channel. The updater and both installers use v0.1.2 and require matching build identities/checksums.
 
-TUI initialize/authenticate and headless initialize/authenticate/new/load/fork/model startup reuse the existing bounded session RPC helper. A timed-out load preserves the reason instead of reporting a missing session. Sibling virtual-clock tests cover silent live sidecars. Full prompt replacement remains explicitly unsupported; --rules appends instructions and CLI help states the boundary.
+## Reproductions retained
 
-CI checks out private Work/API/Cloud at exact gitlink revisions using a repository-scoped Contents:read GitHub App token. It installs missing tools/Office target, retains the backend package matrix with the correct workspace manifests, and runs the real native ACP artifact case. Source-pin parser: 2/2. Official actionlint 1.7.12 passed the three edited workflows.
+Four response-body tests failed on the old transport and each failed independently. Their original logs are retained. The first parallel Linux HTTP run additionally exposed a test-environment race: one existing test shortened the process-global header deadline while the duplex test did not take its lock. That duplex test passed alone; reusing the existing lock fixed the complete group without relaxing assertions/timeouts.
 
-The disposable S3 fixture uses pinned Bitnami legacy image digests after the old latest images disappeared and MinIO archive URLs returned HTTP 410. Both images were pulled and a real create/write/read cycle passed; the owned test container was removed. No production storage is changed.
+A real CLI/ACP/loopback test exposed the cross-layer deadline race after the initial transport repair: with a 300ms model bound, a partial 401 body caused two main streaming requests and ended as a generic model timeout. After returning known authorization failures promptly, the same test makes one main streaming request and returns a credential error in 0.628s on macOS and 0.289s on Linux ARM64. Before/after JSON and logs are retained.
 
-Python installer fault injection passed 9/9 on Linux. Workspace boundary guard passed 6/6 on both macOS and a Linux Rust 1.97.1 container. Desktop release boundary passed 6/6. Fresh baseline real CLI/ACP/loopback cases passed 4/4 before the new lifecycle guards. New source-matched binaries and final startup/update tests are still being built.
+## Validation commands and counts
 
-The initial historical tenant restoration was validated locally, then superseded by the concurrent main brand repair: 36 of its files are identical, the newer toyou BRAND.md is retained, and the unused JSON model-market configuration is excluded. Existing restoration receipts remain as historical evidence.
+All Rust commands use the root workspace and pinned Rust 1.97.1, with private target directories. Work was materialized from tracked source at d02674726be5267e38d579d775444cab21483078; no credential or user session state was exported.
 
-## Commands and evidence
+| Command / check | Result | Evidence |
+| --- | --- | --- |
+| cargo test --locked --offline -p a3s-code-core --lib llm::http:: | 31/31 on macOS ARM64 and Linux ARM64 | logs/http-final-macos.log; logs/http-and-real-cli-final-linux-arm64.log |
+| cargo test --locked --offline -p a3s-code-pager --lib headless::tests:: | 36/36 on both hosts | logs/headless-macos.log; logs/startup-updater-pair-linux-arm64.log |
+| cargo test --locked --offline -p a3s-code-pager --lib acp::startup_deadline_tests:: | 2/2 on both hosts | logs/startup-macos.log; logs/startup-updater-pair-linux-arm64.log |
+| cargo test --locked --offline -p aster --test cli_update | 4/4 on Linux ARM64 | logs/startup-updater-pair-linux-arm64.log |
+| cargo build --locked --offline -p aster -p a3s-code-acp | both succeed, same pair identity per platform | logs/pair-build-macos.log; logs/startup-updater-pair-linux-arm64.log; pair identity and E2E JSON |
+| python3 tests/cli_acp_lifecycle.py --phase after --binaries <debug-bin-dir> --evidence <temp-dir> | 6/6 on both hosts | logs/real-cli-final-macos.json; logs/real-cli-final-linux-arm64.json |
+| python3 tests/ci_source_checkout.py -v | 2/2 | logs/source-pin.log |
+| python3 tests/workspace_dependencies.py -v | 6/6 on integrated Linux source | logs/workspace-linux.log |
+| python3 tests/cli_pair_delivery.py -v | 9/9, including rollback, checksum/identity refusal and displayed version | logs/installer-faults-linux.log |
+| python3 tests/desktop_update.py -v | 6/6 | logs/desktop-update-linux.log |
+| cargo fmt --all -- --check; official actionlint 1.7.12 on the three edited workflows | exit 0 | logs/format.log; logs/actionlint.log |
 
-- cargo test --locked --offline -p a3s-code-core --lib llm::http:: — 29 passed, 0 failed (macOS; process launch was delayed before main).
-- The four response_lifecycle_tests ran separately against the old transport — 4 independently confirmed failures, each at the test's 1-second assertion.
-- python3 tests/ci_source_checkout.py -v — 2 passed.
-- python3 tests/workspace_dependencies.py -v — 6 passed on each host.
-- python3 tests/cli_pair_delivery.py -v — 9 passed on Linux.
-- python3 tests/desktop_update.py -v — 6 passed.
-- cargo fmt --all -- --check; actionlint ci.yml backend.yml release-aster-cli.yml — passed before integration.
+The six real-process cases cover ACL credentials; ACL plus the legacy API-key environment variable; transmitted rules; explicit unsupported prompt replacement; a bare legacy key without provider ACL; and a stalled 401 response body. Homes, configuration, workspaces, credentials and provider are isolated/synthetic; no real account or provider was used.
 
-Native macOS spawned executables/scripts intermittently remained at dyld entry. Process samples and failed launch runs are retained; SIGCONT attempts did not resolve that stall. Independent Linux runs preserve the original assertions/timeouts. No other session's processes or files were modified.
+A real Linux ARM64 debug pair was packaged and installed into an isolated prefix. Both installed files compare byte-for-byte with the built files, report the same pair identity, and report Aster 0.1.2. Its 289MiB debug archive is local only and is not a release asset. The check also caught and corrected the old version text in both installer completion messages.
+
+The concurrent main brand repair superseded the initial historical tenant restoration: 36 files were identical, the newer toyou BRAND.md was retained, and unused JSON model-market configuration was excluded. Historical receipts remain. The main tenant.rs format correction has no behavior change.
+
+Native macOS processes/scripts intermittently stalled before main at dyld entry. Failed launch samples/runs were retained; SIGCONT attempts did not resolve the delay. The final native Rust and real CLI checks completed, and independent Linux runs preserve the same assertions/timeouts. Other sessions' processes and working files were not modified.
+
+## Remote authorization boundary
+
+Actual Rust and backend runs at 73624d14b3b6183fecad4067cf0a436afbdebd43 stopped at `CI source GitHub App credentials are missing for apps/work` (SOURCE_KEY_SET=false), before compilation. See [Rust run](https://github.com/aster-ai-lab/aster/actions/runs/39518970410) and [backend run](https://github.com/aster-ai-lab/aster/actions/runs/39518970477), plus retained logs. This confirms the configured credential names are unavailable to those jobs; it does not claim that no other organization secrets exist.
+
+Work explicitly prohibits deployment keys (HTTP 422), and the current connection cannot inventory organization secrets (HTTP 403). No key or secret was created/copied. The owner must configure or identify a dedicated App using CI_SOURCE_APP_ID / CI_SOURCE_APP_PRIVATE_KEY, installed for aster-ai-lab/work and kense-labs/api, kense-labs/cloud with Contents:read. Setup and the verified legacy A3S comparison are in CI_ACCESS.md.
 
 ## Explicitly not claimed
 
-- Remote CI success: Work deploy keys are forbidden (HTTP 422); current org-secret inventory is denied (HTTP 403). No credentials were copied or created. CI_SOURCE_APP_ID / CI_SOURCE_APP_PRIVATE_KEY still require owner configuration or confirmation of an existing dedicated App.
-- A published v0.1.2 CLI release, refreshed installer delivery, final integration startup/update counts, or a full workspace/live backend campaign. These are pending validation, not completed by closing issues.
-- An exact reconstruction of the original real-provider 180-second incident: that configuration/log is unavailable. The healthy and controlled-fault cases establish the mechanisms stated here.
-
-## Integration checkpoint
-
-Rebased onto 64cfd79cac690e78c288c374ddba0c7650e5bfcc, preserving the newer CLI updater, MIT package metadata, ACP routing and brand repair. Work source was materialized from the exact new gitlink d02674726be5267e38d579d775444cab21483078 using tracked git archive only. No credential or user data was exported.
-
-The first parallel Linux HTTP group exposed an environment-isolation race: the existing header-timeout test changes a process-global deadline while the separate duplex test was not taking its lock. The duplex test passed alone. Reusing that same test-only lock for the sibling HTTP tests made the complete final group pass 29/29; original assertions and timeouts are unchanged. Source-pin 2/2, workspace 6/6, Unix installer 9/9 and desktop updater 6/6 were rerun against the integrated tree. Official actionlint and workspace format checks passed.
-
-The v0.1.2 updater uses its new pinned release and requires both BUILD_ID and SHA256SUMS before promotion. Its regression now requires an older two-file archive to be refused with both installed files unchanged. The concurrent main's tenant.rs formatting was corrected for the mandatory workspace format gate; its behavior is unchanged. Interactive eager auth retains its existing shorter soft bound, and a dropped/failed TUI connection setup cancels its owned worker through the platform cancellation guard.
+- Green remote CI, full workspace/live PostgreSQL/S3 campaigns, Windows native installation or a formal v0.1.2 release. These await configured private-source access and actual remote validation. New installer URLs stay in the draft branch.
+- A production release-profile build from the local debug archives, signing/notarization, or interactive desktop/TUI and native sandbox/tool execution. The loopback cases exercise real CLI/ACP model transport without native tools.
+- Exact reconstruction of the original real-provider 180-second incident: its configuration/log is unavailable. The controlled failures establish only the mechanisms recorded here. A bare legacy key is not enough to select a provider, and ACL plus that environment key was verified healthy.

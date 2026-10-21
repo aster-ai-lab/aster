@@ -1,0 +1,9 @@
+{
+  "server_image": "bitnamilegacy/minio@sha256:6dabb4a2088c9a79908de3bc05f4586c23ad2182c8908e7e3acbf61c1467fb20",
+  "client_image": "bitnamilegacy/minio-client@sha256:73bd39f7899a0cef12b8dd5df13aa93a3ed1aaa44236542442e9ac76819ac158",
+  "scope": "disposable local container, test credentials only",
+  "container": "4a5acdbd6790d38df253c610fc010511070b84a8e01c7b92a92e824ef86dd8f7",
+  "bucket_create": "Added `gate` successfully.\nBucket created successfully `gate/a3s-test`.\n\n 0 B / ? 7 bytes -> `gate/a3s-test/probe`\nfixture",
+  "passed": true,
+  "removed": true
+}
