@@ -267,6 +267,17 @@ fn validate_route<'a>(
     }
 
     if let Some(catalog) = &route.console_catalog {
+        if !(1..=1024).contains(&catalog.prefix_parallelism) {
+            return Err(config_error("prefix_parallelism must be in 1..=1024"));
+        }
+        if catalog.excluded_supplier_ids.len() > 256
+            || catalog
+                .excluded_supplier_ids
+                .iter()
+                .any(|id| id.is_empty() || id.len() > 256 || id.trim() != id)
+        {
+            return Err(config_error("console_catalog excluded_supplier_ids requires at most 256 exact nonempty IDs of at most 256 bytes"));
+        }
         if !route.models.is_empty() {
             return Err(config_error(format!(
                 "inference route {} declares both models and console_catalog — one source per router",
@@ -287,6 +298,9 @@ fn validate_route<'a>(
         }
     }
     for (alias, model) in &route.models {
+        if !(1..=1024).contains(&model.prefix_parallelism) {
+            return Err(config_error("prefix_parallelism must be in 1..=1024"));
+        }
         if crate::inference::RESERVED_PLATFORM_ALIASES.contains(&alias.as_str()) {
             return Err(config_error(format!(
                 "inference route {} model alias '{alias}' is reserved by a platform model",

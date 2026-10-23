@@ -23,6 +23,8 @@ use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::{TcpListener, TcpStream};
 use uuid::Uuid;
 
+mod prefix_affinity_tests;
+
 const KEY_PREFIX: &str = "a3s_inf_abc12345";
 
 pub(super) fn inference_key(character: char) -> String {
@@ -128,6 +130,8 @@ pub(super) fn inference_config(
                     failover: Default::default(),
                     pricing: None,
                     latency_bias: false,
+                    prefix_affinity: false,
+                    prefix_parallelism: 1,
                     model_id: Uuid::new_v4(),
                     targets: vec![InferenceTargetConfig {
                         target_id: Uuid::new_v4(),
@@ -3750,6 +3754,8 @@ async fn hr_content_reaches_a_real_decision_service_over_http() {
             failover: Default::default(),
             pricing: None,
             latency_bias: false,
+            prefix_affinity: false,
+            prefix_parallelism: 1,
             model_id: Uuid::new_v4(),
             targets: vec![InferenceTargetConfig {
                 target_id: Uuid::new_v4(),
@@ -4353,6 +4359,8 @@ async fn decider_backed_config(
             failover: Default::default(),
             pricing: None,
             latency_bias: false,
+            prefix_affinity: false,
+            prefix_parallelism: 1,
             model_id: Uuid::new_v4(),
             targets: vec![InferenceTargetConfig {
                 target_id: Uuid::new_v4(),

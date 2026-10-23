@@ -237,6 +237,14 @@ pub async fn handle_http_dispatch(ctx: ProtocolContext) -> Response<ResponseBody
                     return super::usage_not_recorded(&error);
                 }
                 let upstream_body = ResponseBody::proxy(upstream_body);
+                let upstream_body = crate::inference::track_prefix_body(
+                    upstream_body,
+                    inference_dispatch
+                        .as_mut()
+                        .and_then(|dispatch| dispatch.take_prefix_lease()),
+                    resp_parts.status.is_success(),
+                    content_type_is_event_stream(&resp_parts.headers),
+                );
                 let response_body = if pipeline.is_empty() {
                     upstream_body
                 } else {
@@ -948,7 +956,7 @@ pub(in crate::entrypoint) fn record_upstream_dial_failure(
     passive_health.record_error(backend, proxy_error_status(error));
 }
 
-fn content_type_is_event_stream(headers: &http::HeaderMap) -> bool {
+pub(super) fn content_type_is_event_stream(headers: &http::HeaderMap) -> bool {
     headers
         .get(CONTENT_TYPE)
         .and_then(|value| value.to_str().ok())

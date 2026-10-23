@@ -69,11 +69,11 @@ impl OpenAiRequestProfile {
             ModelStandard::OpenaiChat => Self::ChatCompletions,
             ModelStandard::OpenaiCompletions => Self::Completions,
             ModelStandard::OpenaiEmbeddings => Self::Embeddings,
+            ModelStandard::Rerank => Self::Rerank,
             ModelStandard::Ocr => Self::Ocr,
             ModelStandard::DecisionSystemOne => Self::SystemOne,
             ModelStandard::OpenaiResponses
             | ModelStandard::AnthropicMessages
-            | ModelStandard::Rerank
             | ModelStandard::GeminiGenerate
             | ModelStandard::GeminiEmbed
             | ModelStandard::OpenaiImages

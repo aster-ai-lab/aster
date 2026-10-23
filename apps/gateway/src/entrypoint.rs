@@ -762,6 +762,12 @@ where
             if error.downcast_ref::<LengthLimitError>().is_some() {
                 RequestBodyCollectionError::TooLarge
             } else {
+                let mut rendered = error.to_string();
+                rendered.truncate(180);
+                if rendered.contains("a3s_") || rendered.contains("Bearer") {
+                    rendered = "redacted".to_string();
+                }
+                tracing::warn!(error = %rendered, "request body could not be read");
                 RequestBodyCollectionError::ReadFailed
             }
         })
@@ -2224,6 +2230,31 @@ async fn handle_http_request_inner(
                 .await);
             }
             Err(RequestBodyCollectionError::ReadFailed) => {
+                tracing::warn!(
+                    peer = ?remote_addr,
+                    version = ?req_parts.version,
+                    content_length = req_parts
+                        .headers
+                        .get(http::header::CONTENT_LENGTH)
+                        .and_then(|value| value.to_str().ok())
+                        .unwrap_or("-"),
+                    transfer_encoding = req_parts
+                        .headers
+                        .get(http::header::TRANSFER_ENCODING)
+                        .and_then(|value| value.to_str().ok())
+                        .unwrap_or("-"),
+                    expect = req_parts
+                        .headers
+                        .get(http::header::EXPECT)
+                        .and_then(|value| value.to_str().ok())
+                        .unwrap_or("-"),
+                    connection = req_parts
+                        .headers
+                        .get(http::header::CONNECTION)
+                        .and_then(|value| value.to_str().ok())
+                        .unwrap_or("-"),
+                    "request body read failed"
+                );
                 return Ok(finish_native_response(
                     BufferedResponsePipeline::new(&pipeline, &req_parts.headers),
                     &state,

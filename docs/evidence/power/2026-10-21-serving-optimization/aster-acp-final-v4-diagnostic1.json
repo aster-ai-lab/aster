@@ -1,0 +1,2026 @@
+{
+  "scope": "actual existing Windows ACP/core SDK; one fresh source-review session, no tools",
+  "binary_sha256": "e0f810af8796ca1a0934c503ddbb56034ee10ee2c3b0011e8e5f27fbbb03ae59",
+  "binary": "D:\\code\\aster\\target\\debug\\a3s-code-acp.exe",
+  "turn_deadline_seconds": 45,
+  "global_deadline_seconds": 120,
+  "status": "passed",
+  "turns": [
+    {
+      "turn": 1,
+      "prompt_sha256": "b4d3b5f2c32abc5cd2e657df94fb82fb0a5b5d4ac289817663dc016c82f0877b",
+      "output_sha256": "c2e3ac47f4a325469c1a2d5f117e463ec943c721986d5d9f09ac4540b7d80526",
+      "output_chars": 5,
+      "expected_output": true,
+      "stop_reason": "end_turn",
+      "elapsed_ms": 12281.999999890104,
+      "first_meaningful_ms": 12234.999999869615,
+      "usage": null,
+      "same_session": true
+    },
+    {
+      "turn": 2,
+      "prompt_sha256": "c00377f7abdc5b143154e87d9d71e1b9d31775446dd0789276d68bdc6e655204",
+      "output_sha256": "8d35b5945b2d3bf3c530e5d0398e59e58a8d14d264a021bb0cafc85be5f18d7d",
+      "output_chars": 21,
+      "expected_output": true,
+      "stop_reason": "end_turn",
+      "elapsed_ms": 13843.000000109896,
+      "first_meaningful_ms": 13640.000000130385,
+      "usage": null,
+      "same_session": true
+    }
+  ],
+  "credential_handling": "protected SSH pipe to process memory/child environment; ACL retains env expression",
+  "underlying_model_http_request_count": null,
+  "internal_call_note": "ACP may make internal model calls; two ACP turns do not mean exactly two HTTP requests.",
+  "not_claimed": [
+    "Aster GUI or a real user history",
+    "ordinary tools-schema ACP mode",
+    "observed underlying TCP reuse"
+  ],
+  "child_pid": 171712,
+  "session_id_sha256": "b6bf04d7ee9617a6fd59ebf6f9336eece28d02a3c2fa17eea87d44b004e71610",
+  "elapsed_seconds": 26.359000000171363,
+  "own_child_reaped": true,
+  "stdout_bytes": 7312,
+  "stderr_bytes": 0,
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "state_privacy": {
+    "resolved_credential_found": false,
+    "inspected_files": [
+      {
+        "path": "config.acl",
+        "bytes": 589,
+        "sha256": "f9b5e6fdd2a67e03ce32a9977a73a31ebf0fda5a6b3ad9277cae92dbeca4a1f5"
+      },
+      {
+        "path": "memory\\durable_memory\\.a3s-vec.lock",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "memory\\durable_memory\\.a3s-vec.lock.owner",
+        "bytes": 47,
+        "sha256": "0eaa185f9ed5aa2724a22361bbeee83b3106002d677a898bdc433b842be05d20"
+      },
+      {
+        "path": "memory\\durable_memory\\manifest.json",
+        "bytes": 308,
+        "sha256": "988e3e26e59ff2f2d6438b4bdfbde8a410faf440fa853136d3e3309c62821038"
+      },
+      {
+        "path": "memory\\durable_memory\\segments\\snapshot-00000000000000000001.bin",
+        "bytes": 210,
+        "sha256": "fc4cdef87bc0e49330086135bc70f4501f490e0316c0d7022445e1935bbce0a0"
+      },
+      {
+        "path": "sessions\\v1\\wal\\session-store.lock",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "workspace\\.a3s\\sessions\\2026-10-21\\8ac11202-c423-4fd4-9455-1e275b67a224\\8ac11202-c423-4fd4-9455-1e275b67a224.jsonl",
+        "bytes": 2213,
+        "sha256": "fee78e5b2efa9a8b9cc373993eff331c0f4807cdcc6451208a2f93235011743a"
+      },
+      {
+        "path": "workspace\\.a3s\\sessions\\2026-10-21\\8ac11202-c423-4fd4-9455-1e275b67a224\\run-owner-8ac11202-c423-4fd4-9455-1e275b67a224.lock",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "workspace\\.a3s\\sessions\\2026-10-21\\8ac11202-c423-4fd4-9455-1e275b67a224\\session.json",
+        "bytes": 310,
+        "sha256": "652acded53e41407a567c6d20e6edaa782e304b5b9b1f34ff8531f4c20edd44e"
+      },
+      {
+        "path": "workspace\\.a3s\\sessions\\2026-10-21\\8ac11202-c423-4fd4-9455-1e275b67a224\\writer.lock",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "total_bytes": 3677
+  },
+  "diagnostic": {
+    "events": [
+      {
+        "at_ms": 171.00000008940697,
+        "kind": "owned-child",
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "observed_utc": "2026-10-21T04:51:04.479603+00:00"
+      },
+      {
+        "at_ms": 171.00000008940697,
+        "kind": "client-send",
+        "method": "initialize",
+        "id": 1
+      },
+      {
+        "at_ms": 250.0,
+        "kind": "response",
+        "id": 1,
+        "has_error": false,
+        "prompt_elapsed_ms": null,
+        "completed_within30seconds": null
+      },
+      {
+        "at_ms": 250.0,
+        "kind": "client-send",
+        "method": "session/new",
+        "id": 2
+      },
+      {
+        "at_ms": 296.00000008940697,
+        "kind": "response",
+        "id": 2,
+        "has_error": false,
+        "prompt_elapsed_ms": null,
+        "completed_within30seconds": null
+      },
+      {
+        "at_ms": 296.00000008940697,
+        "kind": "client-send",
+        "method": "session/prompt",
+        "id": 3
+      },
+      {
+        "at_ms": 296.00000008940697,
+        "kind": "notification",
+        "notification": "available_commands_update",
+        "turn": 1
+      },
+      {
+        "at_ms": 4171.000000089407,
+        "kind": "notification",
+        "notification": "usage_update",
+        "turn": 1
+      },
+      {
+        "at_ms": 7202.999999979511,
+        "kind": "notification",
+        "notification": "usage_update",
+        "turn": 1
+      },
+      {
+        "at_ms": 10202.99999997951,
+        "kind": "notification",
+        "notification": "usage_update",
+        "turn": 1
+      },
+      {
+        "at_ms": 12530.999999959022,
+        "kind": "notification",
+        "notification": "agent_message_chunk",
+        "turn": 1
+      },
+      {
+        "at_ms": 12561.999999918044,
+        "kind": "notification",
+        "notification": "usage_update",
+        "turn": 1
+      },
+      {
+        "at_ms": 12577.99999997951,
+        "kind": "other-protocol",
+        "has_method": true,
+        "has_id": false
+      },
+      {
+        "at_ms": 12577.99999997951,
+        "kind": "response",
+        "id": 3,
+        "has_error": false,
+        "prompt_elapsed_ms": 12281.999999890104,
+        "completed_within30seconds": true
+      },
+      {
+        "at_ms": 12577.99999997951,
+        "kind": "client-send",
+        "method": "session/prompt",
+        "id": 4
+      },
+      {
+        "at_ms": 17608.999999938533,
+        "kind": "notification",
+        "notification": "usage_update",
+        "turn": 2
+      },
+      {
+        "at_ms": 20593.000000109896,
+        "kind": "notification",
+        "notification": "usage_update",
+        "turn": 2
+      },
+      {
+        "at_ms": 23500.0,
+        "kind": "notification",
+        "notification": "usage_update",
+        "turn": 2
+      },
+      {
+        "at_ms": 26218.000000109896,
+        "kind": "notification",
+        "notification": "agent_message_chunk",
+        "turn": 2
+      },
+      {
+        "at_ms": 26233.999999938533,
+        "kind": "notification",
+        "notification": "agent_message_chunk",
+        "turn": 2
+      },
+      {
+        "at_ms": 26264.999999897555,
+        "kind": "notification",
+        "notification": "agent_message_chunk",
+        "turn": 2
+      },
+      {
+        "at_ms": 26280.99999995902,
+        "kind": "notification",
+        "notification": "agent_message_chunk",
+        "turn": 2
+      },
+      {
+        "at_ms": 26280.99999995902,
+        "kind": "notification",
+        "notification": "agent_message_chunk",
+        "turn": 2
+      },
+      {
+        "at_ms": 26296.000000089407,
+        "kind": "notification",
+        "notification": "agent_message_chunk",
+        "turn": 2
+      },
+      {
+        "at_ms": 26311.999999918044,
+        "kind": "notification",
+        "notification": "agent_message_chunk",
+        "turn": 2
+      },
+      {
+        "at_ms": 26311.999999918044,
+        "kind": "notification",
+        "notification": "agent_message_chunk",
+        "turn": 2
+      },
+      {
+        "at_ms": 26327.99999997951,
+        "kind": "notification",
+        "notification": "agent_message_chunk",
+        "turn": 2
+      },
+      {
+        "at_ms": 26343.000000109896,
+        "kind": "notification",
+        "notification": "agent_message_chunk",
+        "turn": 2
+      },
+      {
+        "at_ms": 26405.99999995902,
+        "kind": "notification",
+        "notification": "usage_update",
+        "turn": 2
+      },
+      {
+        "at_ms": 26421.000000089407,
+        "kind": "other-protocol",
+        "has_method": true,
+        "has_id": false
+      },
+      {
+        "at_ms": 26421.000000089407,
+        "kind": "response",
+        "id": 4,
+        "has_error": false,
+        "prompt_elapsed_ms": 13843.000000109896,
+        "completed_within30seconds": true
+      }
+    ],
+    "tcp_samples": [
+      {
+        "at_ms": 171.00000008940697,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": []
+      },
+      {
+        "at_ms": 375.0,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": []
+      },
+      {
+        "at_ms": 577.9999999795109,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 780.9999999590218,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 968.0000001098961,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 1171.000000089407,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 1375.0,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 1577.999999979511,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 1780.9999999590218,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 1983.9999999385327,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 2186.9999999180436,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 2389.9999998975545,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 2593.000000109896,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 2796.000000089407,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 3000.0,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 3202.999999979511,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 3405.999999959022,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 3593.000000109896,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 3796.000000089407,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 4000.0,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 4202.999999979511,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 4405.999999959022,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 4608.999999938533,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 4811.999999918044,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 5014.9999998975545,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 5218.000000109896,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 5421.000000089407,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 5625.0,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 5827.999999979511,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 6030.999999959022,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 6233.999999938533,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 6421.000000089407,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 6625.0,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 6827.999999979511,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 7030.999999959022,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 7233.999999938533,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 7436.999999918044,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 7639.9999998975545,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 7843.000000109896,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 8046.000000089407,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 8250.0,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 8436.999999918044,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 8639.999999897555,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 8843.000000109896,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 9046.000000089407,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 9250.0,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 9452.99999997951,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 9655.999999959022,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 9858.999999938533,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 10061.999999918044,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 10264.999999897555,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 10468.000000109896,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 10671.000000089407,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 10858.999999938533,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 11061.999999918044,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 11264.999999897555,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 11468.000000109896,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 11671.000000089407,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 11875.0,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 12077.99999997951,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 12280.999999959022,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 12483.999999938533,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 12686.999999918044,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 12889.999999897555,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 13077.99999997951,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 13280.999999959022,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 13483.999999938533,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 13686.999999918044,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 13889.999999897555,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 14093.000000109896,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 14296.000000089407,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 14500.0,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 14702.99999997951,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 14905.999999959022,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 15108.999999938533,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 15311.999999918044,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 15500.0,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 15702.99999997951,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 15905.999999959022,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 16108.999999938533,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 16311.999999918044,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 16514.999999897555,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 16718.000000109896,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 16921.000000089407,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 17125.0,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 17327.99999997951,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 17530.99999995902,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 17718.000000109896,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 17921.000000089407,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 18125.0,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 18327.99999997951,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 18530.99999995902,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 18733.999999938533,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 18936.999999918044,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 19139.999999897555,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 19343.000000109896,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 19546.000000089407,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 19750.0,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 19936.999999918044,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 20139.999999897555,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 20343.000000109896,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 20546.000000089407,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 20750.0,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 20952.99999997951,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 21155.99999995902,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 21358.999999938533,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 21561.999999918044,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 21764.999999897555,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 21968.000000109896,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 22171.000000089407,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 22358.999999938533,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 22561.999999918044,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 22764.999999897555,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 22968.000000109896,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 23171.000000089407,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 23375.0,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 23577.99999997951,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 23780.99999995902,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 23983.999999938533,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 24186.999999918044,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 24389.999999897555,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 24577.99999997951,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 24780.99999995902,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 24983.999999938533,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 25186.999999918044,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 25389.999999897555,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 25593.000000109896,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 25796.000000089407,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 26000.0,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 26202.99999997951,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      },
+      {
+        "at_ms": 26405.99999995902,
+        "pid": 171712,
+        "creation_filetime": 134370318644259433,
+        "connections": [
+          {
+            "state": "Established",
+            "local_port": 58254,
+            "remote_class": "public-gateway",
+            "remote_port": 8080
+          }
+        ]
+      }
+    ],
+    "observer_errors": [],
+    "reader_semantics": "observed at owned stdin/stdout I/O; not inferred from completed turns",
+    "text_by_turn": {
+      "0": {
+        "deltas": 0,
+        "chars": 0,
+        "meaningful_deltas": 0,
+        "first_at_ms": null,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "1": {
+        "deltas": 1,
+        "chars": 5,
+        "meaningful_deltas": 1,
+        "first_at_ms": 12530.999999959022,
+        "output_sha256": "c2e3ac47f4a325469c1a2d5f117e463ec943c721986d5d9f09ac4540b7d80526"
+      },
+      "2": {
+        "deltas": 10,
+        "chars": 21,
+        "meaningful_deltas": 10,
+        "first_at_ms": 26218.000000109896,
+        "output_sha256": "8d35b5945b2d3bf3c530e5d0398e59e58a8d14d264a021bb0cafc85be5f18d7d"
+      }
+    }
+  },
+  "original_driver_sha256": "0226f997432f2aa9575ae0b79630df9a20e55bb788cb8ef279f672e7e9e7ddba",
+  "diagnostic_threads_terminated": true,
+  "diagnostic_status": "observed",
+  "diagnostic_sha256": "d0a9d59a78069dcd42528a5c67d212b78f7c551ff689fb2ed28e7bfbef9941df",
+  "credential_reader_sha256": "d8920142263505cbc90015dc6fd13d6819085bd88e414c30ec76b9513636d79b",
+  "url": "http://117.162.0.179:8080/v1"
+}

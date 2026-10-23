@@ -553,6 +553,8 @@ mod tests {
             failover: Default::default(),
             pricing: None,
             latency_bias: false,
+            prefix_affinity: false,
+            prefix_parallelism: 1,
             scheduling: None,
             routing,
         }

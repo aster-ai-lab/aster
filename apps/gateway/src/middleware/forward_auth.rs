@@ -171,6 +171,13 @@ impl Middleware for ForwardAuthMiddleware {
         req: &mut http::request::Parts,
         _ctx: &RequestContext,
     ) -> Result<Option<Response<Vec<u8>>>> {
+        // The deployment-wide shared token admits the call without a
+        // `verify_url` round trip, exactly like managed inference. This keeps
+        // audio and text on the same single key.
+        if crate::inference::shared_token_admits(&req.headers) {
+            return Ok(None);
+        }
+
         // Build the auth request with forwarded headers
         let mut auth_req = self.client.get(&self.auth_url);
 

@@ -6,7 +6,7 @@ use crate::inference::{
     AuthenticatedInference, InferenceAccessError, InferenceAttemptIdentity, InferenceAuthorizer,
     InferenceDispatchTarget, InferenceRequestIdentity, InferenceWorkerCandidate,
     InferenceWorkerPairSelection, InferenceWorkerPairSelectionRequest, InferenceWorkerSelection,
-    InferenceWorkerSelectionRequest, OpenAiJsonRequest,
+    InferenceWorkerSelectionRequest, OpenAiJsonRequest, PrefixHint, PrefixLease, PrefixTarget,
 };
 use crate::observability::access_log::RequestAccessLog;
 use crate::service::{Backend, ServiceTimeouts};
@@ -39,6 +39,9 @@ pub(crate) struct InferenceDispatchState {
     native_wire: bool,
     /// Back-translation for the currently dispatched cross-protocol attempt.
     translate_response: Option<ResponseTranslation>,
+    prefix_hint: Option<PrefixHint>,
+    prefix_signature: Option<[u8; 32]>,
+    prefix_lease: Option<PrefixLease>,
     /// Placeholder restores from the request-leg guardrail mask; the
     /// response leg unmasks with these before its own inspection.
     #[cfg(feature = "wire")]
@@ -85,6 +88,9 @@ impl InferenceDispatchState {
             attempted_worker_units: HashSet::new(),
             native_wire: false,
             translate_response: None,
+            prefix_hint: None,
+            prefix_signature: None,
+            prefix_lease: None,
             #[cfg(feature = "wire")]
             guardrail_restores: None,
         }
@@ -132,6 +138,10 @@ impl InferenceDispatchState {
     pub(crate) fn observe_first_response(&self, target_id: uuid::Uuid, latency_ms: u64) {
         self.authorizer
             .observe_target_latency(target_id, latency_ms);
+    }
+
+    pub(crate) fn take_prefix_lease(&mut self) -> Option<PrefixLease> {
+        self.prefix_lease.take()
     }
 
     /// The grant's guardrails gate for the response leg, together with the
@@ -316,6 +326,27 @@ impl InferenceDispatchState {
         access_log: Option<&mut RequestAccessLog>,
     ) -> Result<PreparedInferenceAttempt, InferenceAccessError> {
         let now = chrono::Utc::now();
+        let model =
+            self.authorizer
+                .granted_model_config(self.authenticated, &self.model_alias, now)?;
+        if model.prefix_affinity
+            && self.prefix_hint.is_none()
+            && self.request_identity.endpoint() == crate::config::InferenceEndpoint::ChatCompletions
+        {
+            self.prefix_hint = self.authorizer.prefix_hint(
+                self.authenticated,
+                model.model_id,
+                self.request_identity.endpoint(),
+                &self.request,
+            );
+            if let Some(hint) = self.prefix_hint.as_mut() {
+                hint.parallelism = model.prefix_parallelism;
+            }
+        }
+        self.prefix_signature = None;
+        self.prefix_lease = None;
+        let mut prefix_matched_bytes = 0;
+        let mut prefix_estimated_ms = None;
         let scheduled = self.authorizer.model_uses_worker_scheduling(
             self.authenticated,
             &self.model_alias,
@@ -355,50 +386,52 @@ impl InferenceDispatchState {
             let minimum_priority = self
                 .next_priority
                 .ok_or(InferenceAccessError::Unavailable)?;
-            let target = if let Some(effective) = self.effective_targets.as_deref() {
-                self.authorizer.select_from_effective_targets(
-                    self.authenticated,
-                    &self.model_alias,
-                    self.request_identity.endpoint(),
-                    effective,
-                    minimum_priority,
-                    now,
-                    |service, target_id| {
-                        if scheduled {
-                            self.scheduled_service_is_available(
-                                state,
-                                service,
-                                target_id,
-                                distributed.is_some(),
-                                now,
-                            )
-                        } else {
-                            inference_service_is_available(state, service)
-                        }
-                    },
-                )?
-            } else {
-                self.authorizer.select_protocol_target_from_priority(
-                    self.authenticated,
-                    &self.model_alias,
-                    self.request_identity.endpoint(),
-                    minimum_priority,
-                    now,
-                    |service, target_id| {
-                        if scheduled {
-                            self.scheduled_service_is_available(
-                                state,
-                                service,
-                                target_id,
-                                distributed.is_some(),
-                                now,
-                            )
-                        } else {
-                            inference_service_is_available(state, service)
-                        }
-                    },
-                )?
-            };
+            let target = self.authorizer.select_target_with_preference(
+                self.authenticated,
+                &self.model_alias,
+                self.request_identity.endpoint(),
+                self.effective_targets.as_deref(),
+                minimum_priority,
+                now,
+                |service, target_id| {
+                    if scheduled {
+                        self.scheduled_service_is_available(
+                            state,
+                            service,
+                            target_id,
+                            distributed.is_some(),
+                            now,
+                        )
+                    } else {
+                        inference_service_is_available(state, service)
+                    }
+                },
+                |available| {
+                    let Some(hint) = self.prefix_hint.as_ref() else {
+                        return;
+                    };
+                    let candidates = available
+                        .iter()
+                        .filter_map(|target| prefix_target(state, target))
+                        .collect::<Vec<_>>();
+                    // Unmeasured failover/revision pools retain their existing
+                    // selector. A missing observation cannot authorize a pool.
+                    if candidates.len() != available.len() {
+                        return;
+                    }
+                    let selection = self.authorizer.prefix_affinity.select(
+                        hint,
+                        &candidates,
+                        std::time::Instant::now(),
+                    );
+                    prefix_matched_bytes = selection.matched_bytes;
+                    prefix_estimated_ms = selection.estimated_ms;
+                    available.retain(|target| match selection.preferred {
+                        Some(preferred) => target.target_id == preferred,
+                        None => selection.least_loaded.contains(&target.target_id),
+                    });
+                },
+            )?;
             (target, false)
         };
         if !reused_target {
@@ -435,6 +468,39 @@ impl InferenceDispatchState {
             select_backend(state, &target.service, headers)
                 .ok_or(InferenceAccessError::Unavailable)?
         };
+        if self.prefix_hint.is_some() {
+            let descriptor = self
+                .effective_targets
+                .as_deref()
+                .unwrap_or(&model.targets)
+                .iter()
+                .find(|descriptor| descriptor.target_id == target.target_id);
+            if let Some(descriptor) = descriptor {
+                // A service-level failover is not evidence about the primary
+                // pool. Record only an actual member of this descriptor's pool.
+                let belongs = state
+                    .service_registry
+                    .get(&target.service)
+                    .is_some_and(|service| {
+                        service
+                            .backends()
+                            .iter()
+                            .any(|backend| backend.metric_id() == selected.backend.metric_id())
+                    });
+                if belongs {
+                    self.prefix_signature =
+                        prefix_target(state, descriptor).map(|target| target.signature);
+                }
+            }
+        }
+        if let (Some(hint), Some(signature)) = (&self.prefix_hint, self.prefix_signature) {
+            self.prefix_lease = self.authorizer.prefix_affinity.reserve(
+                hint,
+                signature,
+                prefix_matched_bytes,
+                std::time::Instant::now(),
+            );
+        }
         if scheduled {
             if let Some(worker) = selected.backend.managed_target() {
                 self.attempted_worker_units.insert(worker.unit_id.clone());
@@ -487,6 +553,8 @@ impl InferenceDispatchState {
             service = %target.service,
             backend = %selected.backend.url,
             is_fallback = self.attempt_count > 1,
+            prefix_matched_bytes,
+            prefix_estimated_ms,
             "Prepared managed inference upstream attempt"
         );
         if let Some(scheduling) = selected.scheduling {
@@ -750,6 +818,50 @@ impl InferenceDispatchState {
             }),
         })
     }
+}
+
+fn prefix_target(
+    state: &GatewayState,
+    target: &crate::config::InferenceTargetConfig,
+) -> Option<PrefixTarget> {
+    let service = state.service_registry.get(&target.service)?;
+    // A revision router, dynamic scaler, sticky manager, or service failover
+    // owns its own selection semantics. Do not pretend its root pool is a
+    // complete observation of the eventual execution target.
+    if state.failovers.contains_key(&target.service)
+        || state.sticky_managers.contains_key(&target.service)
+        || state
+            .scaling
+            .as_ref()
+            .is_some_and(|scaling| scaling.revision_routers.contains_key(&target.service))
+    {
+        return None;
+    }
+    let backends = service.backends();
+    let healthy = backends
+        .iter()
+        .filter(|backend| backend.is_healthy())
+        .collect::<Vec<_>>();
+    if healthy.is_empty() {
+        return None;
+    }
+    let outstanding = healthy.iter().fold(0u64, |total, backend| {
+        total.saturating_add(backend.concurrency_connections() as u64)
+    });
+    let load = outstanding
+        .saturating_mul(1000)
+        .div_ceil(healthy.len() as u64);
+    Some(PrefixTarget {
+        target_id: target.target_id,
+        signature: crate::inference::target_signature(
+            target,
+            backends
+                .iter()
+                .map(|backend| format!("{}:{:?}", backend.metric_id(), backend.managed_target()))
+                .collect(),
+        )?,
+        load,
+    })
 }
 
 struct SelectedBackend {

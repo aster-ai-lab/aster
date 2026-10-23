@@ -323,6 +323,8 @@ fn pool_policy() -> (InferenceConfig, InferencePoolIdentity) {
                             failover: Default::default(),
                             pricing: None,
                             latency_bias: false,
+                            prefix_affinity: false,
+                            prefix_parallelism: 1,
                             model_id,
                             targets: vec![InferenceTargetConfig {
                                 target_id: Uuid::new_v4(),

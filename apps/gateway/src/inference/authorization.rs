@@ -86,6 +86,7 @@ pub(crate) struct InferenceAuthorizer {
     verification_completion_gate: Option<VerificationCompletionGate>,
     target_counters: Mutex<HashMap<TargetCounterKey, u64>>,
     latency_observations: Mutex<HashMap<Uuid, TargetLatencyEwma>>,
+    pub(crate) prefix_affinity: super::prefix_affinity::PrefixAffinity,
     /// Guardrails gates compiled from the policy's named sentry ACLs at
     /// authorizer construction (wire feature only; the config parser
     /// rejects guardrails blocks without the feature).
@@ -346,6 +347,11 @@ impl InferenceAuthorizer {
             verification_completion_gate: None,
             target_counters: Mutex::new(HashMap::new()),
             latency_observations: Mutex::new(HashMap::new()),
+            // Hints survive a policy refresh, but lookup still requires fresh
+            // authorization and exact credential/model/target identities.
+            prefix_affinity: previous
+                .map(|previous| previous.prefix_affinity.clone())
+                .unwrap_or_default(),
             #[cfg(feature = "wire")]
             wire_gates: policy
                 .guardrails
@@ -833,7 +839,13 @@ impl InferenceAuthorizer {
         F: FnMut(&str, Uuid) -> bool,
     {
         let (_, model) = self.granted_model(authenticated, alias, now)?;
-        self.walk_targets(model, endpoint, minimum_priority, service_is_available)
+        self.walk_targets(
+            model,
+            endpoint,
+            minimum_priority,
+            service_is_available,
+            |_| {},
+        )
     }
 
     /// HR3b: selection over an EFFECTIVE target list (the routing
@@ -860,18 +872,87 @@ impl InferenceAuthorizer {
             targets: effective.to_vec(),
             ..model.clone()
         };
-        self.walk_targets(&shim, endpoint, minimum_priority, service_is_available)
+        self.walk_targets(
+            &shim,
+            endpoint,
+            minimum_priority,
+            service_is_available,
+            |_| {},
+        )
     }
 
-    fn walk_targets<F>(
+    /// Locality may narrow only the already granted, available protocol and
+    /// priority group. Effective task-routing candidates retain their authority.
+    pub(crate) fn select_target_with_preference<F, P>(
+        &self,
+        authenticated: AuthenticatedInference,
+        alias: &str,
+        endpoint: InferenceEndpoint,
+        effective: Option<&[crate::config::InferenceTargetConfig]>,
+        minimum_priority: u32,
+        now: DateTime<Utc>,
+        service_is_available: F,
+        prefer: P,
+    ) -> Result<InferenceDispatchTarget, InferenceAccessError>
+    where
+        F: FnMut(&str, Uuid) -> bool,
+        P: FnMut(&mut Vec<&crate::config::InferenceTargetConfig>),
+    {
+        let (_, model) = self.granted_model(authenticated, alias, now)?;
+        if let Some(effective) = effective {
+            let shim = InferenceModelConfig {
+                targets: effective.to_vec(),
+                ..model.clone()
+            };
+            self.walk_targets(
+                &shim,
+                endpoint,
+                minimum_priority,
+                service_is_available,
+                prefer,
+            )
+        } else {
+            self.walk_targets(
+                model,
+                endpoint,
+                minimum_priority,
+                service_is_available,
+                prefer,
+            )
+        }
+    }
+
+    pub(crate) fn prefix_hint(
+        &self,
+        authenticated: AuthenticatedInference,
+        model_id: Uuid,
+        endpoint: InferenceEndpoint,
+        request: &super::OpenAiJsonRequest,
+    ) -> Option<super::prefix_affinity::PrefixHint> {
+        self.prefix_affinity.hint(
+            (
+                authenticated.route_id,
+                authenticated.environment_id,
+                authenticated.credential_id,
+                authenticated.credential_generation,
+                model_id,
+                endpoint.as_str(),
+            ),
+            &request.document,
+        )
+    }
+
+    fn walk_targets<F, P>(
         &self,
         model: &InferenceModelConfig,
         endpoint: crate::config::InferenceEndpoint,
         minimum_priority: u32,
         mut service_is_available: F,
+        mut prefer: P,
     ) -> Result<InferenceDispatchTarget, InferenceAccessError>
     where
         F: FnMut(&str, Uuid) -> bool,
+        P: FnMut(&mut Vec<&crate::config::InferenceTargetConfig>),
     {
         let protocol = endpoint.protocol();
         let mut offset = 0;
@@ -885,7 +966,7 @@ impl InferenceAuthorizer {
                 offset = end;
                 continue;
             }
-            let available = model.targets[offset..end]
+            let mut available = model.targets[offset..end]
                 .iter()
                 // Cross-protocol selection is explicit: only targets that
                 // opted in via `translate` may serve a different dialect.
@@ -896,6 +977,7 @@ impl InferenceAuthorizer {
                 })
                 .filter(|target| service_is_available(&target.service, target.target_id))
                 .collect::<Vec<_>>();
+            prefer(&mut available);
             if !available.is_empty() {
                 // Opt-in latency bias: warm EWMA observations adjust —
                 // never replace — the configured weights, clamped so a

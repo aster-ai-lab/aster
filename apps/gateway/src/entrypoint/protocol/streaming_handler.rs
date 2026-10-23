@@ -387,6 +387,14 @@ pub async fn handle_sse_dispatch(ctx: ProtocolContext) -> Response<ResponseBody>
                 };
                 #[cfg(not(feature = "wire"))]
                 let upstream_body = ResponseBody::proxy(upstream_body);
+                let upstream_body = crate::inference::track_prefix_body(
+                    upstream_body,
+                    inference_dispatch
+                        .as_mut()
+                        .and_then(|dispatch| dispatch.take_prefix_lease()),
+                    resp_parts.status.is_success(),
+                    super::http_handler::content_type_is_event_stream(&resp_parts.headers),
+                );
                 let upstream_body = match inference_dispatch
                     .as_ref()
                     .and_then(|dispatch| dispatch.translate_response())

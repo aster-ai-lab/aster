@@ -3029,6 +3029,8 @@ fn hr1_absent_routing_keeps_the_wire_stable() {
         failover: Default::default(),
         pricing: None,
         latency_bias: false,
+        prefix_affinity: false,
+        prefix_parallelism: 1,
         scheduling: None,
         routing: None,
     };

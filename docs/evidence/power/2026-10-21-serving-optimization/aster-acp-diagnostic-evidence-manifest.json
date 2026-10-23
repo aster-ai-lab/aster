@@ -1,0 +1,67 @@
+{
+  "scope": "actual existing Windows ACP/core SDK no-tools two-turn acceptance; earlier30s failure retained and independent45s-budget diagnostic passed",
+  "not_claimed": [
+    "Work UI",
+    "Darwin client reproduction",
+    "ordinary ACP tool mode",
+    "attributed internal live HTTP request count or causal latency breakdown"
+  ],
+  "raw_credential_or_user_history_exported": false,
+  "entries": [
+    {
+      "member": "aster-acp-two-turn.py",
+      "bytes": 14408,
+      "sha256": "0226f997432f2aa9575ae0b79630df9a20e55bb788cb8ef279f672e7e9e7ddba"
+    },
+    {
+      "member": "aster-acp-final-v4.json",
+      "bytes": 2913,
+      "sha256": "77427fac6820fa0e5db9e5ce25781e3fcc8a5ad358d6ae0d881158b442e6acc6"
+    },
+    {
+      "member": "aster-acp-final-v4-proxy-observation.json",
+      "bytes": 735,
+      "sha256": "75a9f5c1f2296a9206fbf332501bb0b921e70fd30559a6cb1902c1a17e07c3d1"
+    },
+    {
+      "member": "aster-acp-diagnostic.py",
+      "bytes": 16085,
+      "sha256": "d0a9d59a78069dcd42528a5c67d212b78f7c551ff689fb2ed28e7bfbef9941df"
+    },
+    {
+      "member": "aster-acp-diagnostic-fixtures.json",
+      "bytes": 11607,
+      "sha256": "509af6ca1b760814a0778a24cec23cdc1ea6f6c132974de6dcf350eb44d22e08"
+    },
+    {
+      "member": "aster-acp-diagnostic-independent-review.json",
+      "bytes": 1050,
+      "sha256": "7650a624f4fa6e95a169292f35998b4444d1425625223e8d9407051301b6632b"
+    },
+    {
+      "member": "aster-acp-final-v4-diagnostic1.json",
+      "bytes": 53156,
+      "sha256": "3e5fac5397ab6334ec26904d6e71218db03f9c1e99890fa80bcee82091677cd6"
+    },
+    {
+      "member": "acp-journal-metadata.py",
+      "bytes": 5067,
+      "sha256": "d6e52be4e2e2b480f2151c9be1a74a2f7a8f8228846d065ec7931667165a6e95"
+    },
+    {
+      "member": "aster-acp-diagnostic1-gateway-window.json",
+      "bytes": 3985,
+      "sha256": "8ab0e2f454c8e70783d835395842e6f7afccb4383d1dec03f844e37e8755a2e3"
+    },
+    {
+      "member": "tests/power_serving_aster_acp.py",
+      "bytes": 5501,
+      "sha256": "60bb74782736c2d02813cdfd34ff2e2712ee46227203b75604717c9fea24f38e"
+    },
+    {
+      "member": "tests/power_serving_aster_acp_diagnostic.py",
+      "bytes": 10305,
+      "sha256": "a75bb6de36f8a4f24e7e0b6a555b3990bfbf4dd1167a50aee70189ab88a40bcf"
+    }
+  ]
+}

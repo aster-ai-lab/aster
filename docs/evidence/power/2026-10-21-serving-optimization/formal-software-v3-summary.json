@@ -1,0 +1,2063 @@
+{
+  "scope": "rig7 artifact comparison on one shared NP1 native, three matched repeats per concurrency",
+  "tool_identity": {
+    "runner_sha256": "576b2d13811482024522e790f901647ac79dc6cc4368a2622a71adef856fe546",
+    "matrix_sha256": "b1e24fd648da9b7ae31cb3d3ace44c4b9b91dc6c793a0d9de7ac114ba1b821e4"
+  },
+  "formal_runs": 24,
+  "passed_runs": 24,
+  "by_concurrency": {
+    "1": {
+      "baseline": {
+        "native_output_tokens_per_second": {
+          "median": 83.96943548853402,
+          "min": 83.67812325145997,
+          "max": 84.38106621781898,
+          "repeats": [
+            84.38106621781898,
+            83.67812325145997,
+            83.96943548853402
+          ]
+        },
+        "native_predicted_token_delta_total": 15207.0,
+        "client_pooled": {
+          "requests": 150,
+          "outcomes": {
+            "success": 150,
+            "refused": 0,
+            "http_error": 0,
+            "error": 0,
+            "timeout": 0,
+            "cancelled": 0,
+            "invalid_stream": 0,
+            "invalid_output": 0
+          },
+          "wall_seconds_including_drain": 181.01728398900013,
+          "successful_requests_per_second": 0.8286501525960087,
+          "authoritative_success_count": 36,
+          "authoritative_output_tokens": 6588,
+          "successful_output_tokens_per_second": null,
+          "ttft_ms": {
+            "samples": 114,
+            "p50": 366.79414151149103,
+            "p95": 494.82720149462693,
+            "p99": 529.9407585136942
+          },
+          "elapsed_ms": {
+            "samples": 150,
+            "p50": 1201.149828499183,
+            "p95": 2113.5619777443935,
+            "p99": 2117.5410887334147
+          },
+          "first_tool_ms": {
+            "samples": 36,
+            "p50": 487.84970399719896,
+            "p95": 529.0597552448162,
+            "p99": 540.4539447081333
+          },
+          "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+          "wire_usage_mismatches": 36,
+          "quality_verified_successes": 150
+        },
+        "client_p95_ms_by_repeat": {
+          "ttft_ms": {
+            "median": 490.1060612493893,
+            "min": 488.6092455017206,
+            "max": 528.9176579433843,
+            "repeats": [
+              488.6092455017206,
+              528.9176579433843,
+              490.1060612493893
+            ]
+          },
+          "elapsed_ms": {
+            "median": 2111.2809480007854,
+            "min": 2106.9930691512127,
+            "max": 2115.1547451525403,
+            "repeats": [
+              2106.9930691512127,
+              2115.1547451525403,
+              2111.2809480007854
+            ]
+          },
+          "first_tool_ms": {
+            "median": 502.61931890272535,
+            "min": 490.9220712906972,
+            "max": 537.2759571073402,
+            "repeats": [
+              502.61931890272535,
+              537.2759571073402,
+              490.9220712906972
+            ]
+          }
+        },
+        "cases": {
+          "decode-buffered": {
+            "requests": 36,
+            "outcomes": {
+              "success": 36,
+              "refused": 0,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 181.01728398900013,
+            "successful_requests_per_second": 0.1988760366230421,
+            "authoritative_success_count": 36,
+            "authoritative_output_tokens": 6588,
+            "successful_output_tokens_per_second": 36.3943147020167,
+            "ttft_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "elapsed_ms": {
+              "samples": 36,
+              "p50": 1860.0563155050622,
+              "p95": 1865.3320634912234,
+              "p99": 1887.7584421483334
+            },
+            "first_tool_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 36,
+            "quality_verified_successes": 36
+          },
+          "decode-stream": {
+            "requests": 39,
+            "outcomes": {
+              "success": 39,
+              "refused": 0,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 181.01728398900013,
+            "successful_requests_per_second": 0.21544903967496226,
+            "authoritative_success_count": 0,
+            "authoritative_output_tokens": 0,
+            "successful_output_tokens_per_second": null,
+            "ttft_ms": {
+              "samples": 39,
+              "p50": 366.74319401208777,
+              "p95": 370.56105839728843,
+              "p99": 374.8454763056361
+            },
+            "elapsed_ms": {
+              "samples": 39,
+              "p50": 2110.538845998235,
+              "p95": 2115.9156753041316,
+              "p99": 2121.7510542820673
+            },
+            "first_tool_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 39
+          },
+          "short-stream": {
+            "requests": 39,
+            "outcomes": {
+              "success": 39,
+              "refused": 0,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 181.01728398900013,
+            "successful_requests_per_second": 0.21544903967496226,
+            "authoritative_success_count": 0,
+            "authoritative_output_tokens": 0,
+            "successful_output_tokens_per_second": null,
+            "ttft_ms": {
+              "samples": 39,
+              "p50": 338.8487949996488,
+              "p95": 365.0133109083981,
+              "p99": 396.35152928356536
+            },
+            "elapsed_ms": {
+              "samples": 39,
+              "p50": 356.05280300660525,
+              "p95": 382.62030600453727,
+              "p99": 414.1327812979579
+            },
+            "first_tool_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 39
+          },
+          "tool-stream": {
+            "requests": 36,
+            "outcomes": {
+              "success": 36,
+              "refused": 0,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 181.01728398900013,
+            "successful_requests_per_second": 0.1988760366230421,
+            "authoritative_success_count": 0,
+            "authoritative_output_tokens": 0,
+            "successful_output_tokens_per_second": null,
+            "ttft_ms": {
+              "samples": 36,
+              "p50": 487.84970399719896,
+              "p95": 529.0597552448162,
+              "p99": 540.4539447081333
+            },
+            "elapsed_ms": {
+              "samples": 36,
+              "p50": 488.23065149917966,
+              "p95": 529.5033577458526,
+              "p99": 540.88216765158
+            },
+            "first_tool_ms": {
+              "samples": 36,
+              "p50": 487.84970399719896,
+              "p95": 529.0597552448162,
+              "p99": 540.4539447081333
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 36
+          }
+        }
+      },
+      "candidate": {
+        "native_output_tokens_per_second": {
+          "median": 84.08942981862353,
+          "min": 83.75757508571931,
+          "max": 84.27679446685254,
+          "repeats": [
+            84.27679446685254,
+            84.08942981862353,
+            83.75757508571931
+          ]
+        },
+        "native_predicted_token_delta_total": 15207.0,
+        "client_pooled": {
+          "requests": 150,
+          "outcomes": {
+            "success": 150,
+            "refused": 0,
+            "http_error": 0,
+            "error": 0,
+            "timeout": 0,
+            "cancelled": 0,
+            "invalid_stream": 0,
+            "invalid_output": 0
+          },
+          "wall_seconds_including_drain": 180.9480028370017,
+          "successful_requests_per_second": 0.8289674251620245,
+          "authoritative_success_count": 150,
+          "authoritative_output_tokens": 15207,
+          "successful_output_tokens_per_second": 84.04071756292605,
+          "ttft_ms": {
+            "samples": 114,
+            "p50": 338.2362939955783,
+            "p95": 370.3689480033063,
+            "p99": 371.93051398237003
+          },
+          "elapsed_ms": {
+            "samples": 150,
+            "p50": 1195.5167815031018,
+            "p95": 2113.99554149466,
+            "p99": 2121.980916466855
+          },
+          "first_tool_ms": {
+            "samples": 36,
+            "p50": 200.56161300453823,
+            "p95": 220.37998374798917,
+            "p99": 247.33986265200656
+          },
+          "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+          "wire_usage_mismatches": 0,
+          "quality_verified_successes": 150
+        },
+        "client_p95_ms_by_repeat": {
+          "ttft_ms": {
+            "median": 370.1543188064534,
+            "min": 367.3424720975163,
+            "max": 371.24178469821345,
+            "repeats": [
+              367.3424720975163,
+              370.1543188064534,
+              371.24178469821345
+            ]
+          },
+          "elapsed_ms": {
+            "median": 2113.99554149466,
+            "min": 2111.507620949851,
+            "max": 2115.0380886996572,
+            "repeats": [
+              2111.507620949851,
+              2113.99554149466,
+              2115.0380886996572
+            ]
+          },
+          "first_tool_ms": {
+            "median": 205.25339719679323,
+            "min": 202.91132334896247,
+            "max": 247.05160645244177,
+            "repeats": [
+              202.91132334896247,
+              205.25339719679323,
+              247.05160645244177
+            ]
+          }
+        },
+        "cases": {
+          "decode-buffered": {
+            "requests": 36,
+            "outcomes": {
+              "success": 36,
+              "refused": 0,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 180.9480028370017,
+            "successful_requests_per_second": 0.19895218203888587,
+            "authoritative_success_count": 36,
+            "authoritative_output_tokens": 6588,
+            "successful_output_tokens_per_second": 36.408249313116116,
+            "ttft_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "elapsed_ms": {
+              "samples": 36,
+              "p50": 1860.7609160026186,
+              "p95": 1863.893708505202,
+              "p99": 1864.8645703062357
+            },
+            "first_tool_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 36
+          },
+          "decode-stream": {
+            "requests": 39,
+            "outcomes": {
+              "success": 39,
+              "refused": 0,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 180.9480028370017,
+            "successful_requests_per_second": 0.21553153054212637,
+            "authoritative_success_count": 39,
+            "authoritative_output_tokens": 7137,
+            "successful_output_tokens_per_second": 39.442270089209124,
+            "ttft_ms": {
+              "samples": 39,
+              "p50": 368.04668299737386,
+              "p95": 371.78869770432357,
+              "p99": 427.4718703035612
+            },
+            "elapsed_ms": {
+              "samples": 39,
+              "p50": 2111.7803280067164,
+              "p95": 2119.6056646993384,
+              "p99": 2184.5856163799176
+            },
+            "first_tool_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 39
+          },
+          "short-stream": {
+            "requests": 39,
+            "outcomes": {
+              "success": 39,
+              "refused": 0,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 180.9480028370017,
+            "successful_requests_per_second": 0.21553153054212637,
+            "authoritative_success_count": 39,
+            "authoritative_output_tokens": 78,
+            "successful_output_tokens_per_second": 0.43106306108425274,
+            "ttft_ms": {
+              "samples": 39,
+              "p50": 337.9450759966858,
+              "p95": 344.80074429302476,
+              "p99": 357.88042879692506
+            },
+            "elapsed_ms": {
+              "samples": 39,
+              "p50": 355.45211999851745,
+              "p95": 362.1315380994929,
+              "p99": 375.3628937428584
+            },
+            "first_tool_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 39
+          },
+          "tool-stream": {
+            "requests": 36,
+            "outcomes": {
+              "success": 36,
+              "refused": 0,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 180.9480028370017,
+            "successful_requests_per_second": 0.19895218203888587,
+            "authoritative_success_count": 36,
+            "authoritative_output_tokens": 1404,
+            "successful_output_tokens_per_second": 7.759135099516549,
+            "ttft_ms": {
+              "samples": 36,
+              "p50": 200.56161300453823,
+              "p95": 220.37998374798917,
+              "p99": 247.33986265200656
+            },
+            "elapsed_ms": {
+              "samples": 36,
+              "p50": 485.7716270053061,
+              "p95": 505.77821525075706,
+              "p99": 532.289932959975
+            },
+            "first_tool_ms": {
+              "samples": 36,
+              "p50": 200.56161300453823,
+              "p95": 220.37998374798917,
+              "p99": 247.33986265200656
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 36
+          }
+        }
+      }
+    },
+    "8": {
+      "baseline": {
+        "native_output_tokens_per_second": {
+          "median": 84.02026876485661,
+          "min": 83.97993251424003,
+          "max": 84.40091313927806,
+          "repeats": [
+            84.40091313927806,
+            83.97993251424003,
+            84.02026876485661
+          ]
+        },
+        "native_predicted_token_delta_total": 17100.0,
+        "client_pooled": {
+          "requests": 171,
+          "outcomes": {
+            "success": 171,
+            "refused": 0,
+            "http_error": 0,
+            "error": 0,
+            "timeout": 0,
+            "cancelled": 0,
+            "invalid_stream": 0,
+            "invalid_output": 0
+          },
+          "wall_seconds_including_drain": 203.24894529198355,
+          "successful_requests_per_second": 0.8413327791410906,
+          "authoritative_success_count": 42,
+          "authoritative_output_tokens": 7686,
+          "successful_output_tokens_per_second": null,
+          "ttft_ms": {
+            "samples": 129,
+            "p50": 9581.523105007363,
+            "p95": 9691.29257860186,
+            "p99": 9709.609873123118
+          },
+          "elapsed_ms": {
+            "samples": 171,
+            "p50": 9609.818699987954,
+            "p95": 9715.87951550464,
+            "p99": 10819.423159696455
+          },
+          "first_tool_ms": {
+            "samples": 42,
+            "p50": 9613.760665997688,
+            "p95": 9703.960354294395,
+            "p99": 9723.347554426437
+          },
+          "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+          "wire_usage_mismatches": 42,
+          "quality_verified_successes": 171
+        },
+        "client_p95_ms_by_repeat": {
+          "ttft_ms": {
+            "median": 9695.845811796607,
+            "min": 9602.583413700631,
+            "max": 9698.756578711618,
+            "repeats": [
+              9602.583413700631,
+              9698.756578711618,
+              9695.845811796607
+            ]
+          },
+          "elapsed_ms": {
+            "median": 9718.049230606994,
+            "min": 9612.695290203555,
+            "max": 9726.536203204887,
+            "repeats": [
+              9612.695290203555,
+              9718.049230606994,
+              9726.536203204887
+            ]
+          },
+          "first_tool_ms": {
+            "median": 9706.511868146481,
+            "min": 9636.602998642775,
+            "max": 9709.099928994692,
+            "repeats": [
+              9636.602998642775,
+              9706.511868146481,
+              9709.099928994692
+            ]
+          }
+        },
+        "cases": {
+          "decode-buffered": {
+            "requests": 42,
+            "outcomes": {
+              "success": 42,
+              "refused": 0,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 203.24894529198355,
+            "successful_requests_per_second": 0.20664313873640822,
+            "authoritative_success_count": 42,
+            "authoritative_output_tokens": 7686,
+            "successful_output_tokens_per_second": 37.8156943887627,
+            "ttft_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "elapsed_ms": {
+              "samples": 42,
+              "p50": 9611.066489997029,
+              "p95": 9720.835935304785,
+              "p99": 10886.252508107427
+            },
+            "first_tool_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 42,
+            "quality_verified_successes": 42
+          },
+          "decode-stream": {
+            "requests": 42,
+            "outcomes": {
+              "success": 42,
+              "refused": 0,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 203.24894529198355,
+            "successful_requests_per_second": 0.20664313873640822,
+            "authoritative_success_count": 0,
+            "authoritative_output_tokens": 0,
+            "successful_output_tokens_per_second": null,
+            "ttft_ms": {
+              "samples": 42,
+              "p50": 7865.955590998055,
+              "p95": 7977.125974697265,
+              "p99": 8796.285258098065
+            },
+            "elapsed_ms": {
+              "samples": 42,
+              "p50": 9609.744896995835,
+              "p95": 9721.415110401722,
+              "p99": 10539.86325657766
+            },
+            "first_tool_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 42
+          },
+          "short-stream": {
+            "requests": 45,
+            "outcomes": {
+              "success": 45,
+              "refused": 0,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 203.24894529198355,
+            "successful_requests_per_second": 0.22140336293186594,
+            "authoritative_success_count": 0,
+            "authoritative_output_tokens": 0,
+            "successful_output_tokens_per_second": null,
+            "ttft_ms": {
+              "samples": 45,
+              "p50": 9591.817034000997,
+              "p95": 9690.57608920266,
+              "p99": 9703.859716571169
+            },
+            "elapsed_ms": {
+              "samples": 45,
+              "p50": 9606.931489004637,
+              "p95": 9708.043567405548,
+              "p99": 9721.560174846672
+            },
+            "first_tool_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 45
+          },
+          "tool-stream": {
+            "requests": 42,
+            "outcomes": {
+              "success": 42,
+              "refused": 0,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 203.24894529198355,
+            "successful_requests_per_second": 0.20664313873640822,
+            "authoritative_success_count": 0,
+            "authoritative_output_tokens": 0,
+            "successful_output_tokens_per_second": null,
+            "ttft_ms": {
+              "samples": 42,
+              "p50": 9613.760665997688,
+              "p95": 9703.960354294395,
+              "p99": 9723.347554426437
+            },
+            "elapsed_ms": {
+              "samples": 42,
+              "p50": 9614.245805496466,
+              "p95": 9704.41158229587,
+              "p99": 9723.793703112315
+            },
+            "first_tool_ms": {
+              "samples": 42,
+              "p50": 9613.760665997688,
+              "p95": 9703.960354294395,
+              "p99": 9723.347554426437
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 42
+          }
+        }
+      },
+      "candidate": {
+        "native_output_tokens_per_second": {
+          "median": 84.11349955240796,
+          "min": 83.34847603572035,
+          "max": 85.93732928932127,
+          "repeats": [
+            84.11349955240796,
+            83.34847603572035,
+            85.93732928932127
+          ]
+        },
+        "native_predicted_token_delta_total": 15661.0,
+        "client_pooled": {
+          "requests": 1106,
+          "outcomes": {
+            "success": 155,
+            "refused": 951,
+            "http_error": 0,
+            "error": 0,
+            "timeout": 0,
+            "cancelled": 0,
+            "invalid_stream": 0,
+            "invalid_output": 0
+          },
+          "wall_seconds_including_drain": 185.38165811798535,
+          "successful_requests_per_second": 0.8361129227863034,
+          "authoritative_success_count": 155,
+          "authoritative_output_tokens": 15661,
+          "successful_output_tokens_per_second": 84.47977086294387,
+          "ttft_ms": {
+            "samples": 126,
+            "p50": 1100.2713565030717,
+            "p95": 1285.1116072524746,
+            "p99": 1347.3060260075727
+          },
+          "elapsed_ms": {
+            "samples": 155,
+            "p50": 1440.2442230057204,
+            "p95": 3014.6492119994946,
+            "p99": 3093.436169285269
+          },
+          "first_tool_ms": {
+            "samples": 48,
+            "p50": 1100.403026503045,
+            "p95": 1147.186885701376,
+            "p99": 1162.4172361020464
+          },
+          "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+          "wire_usage_mismatches": 0,
+          "quality_verified_successes": 155
+        },
+        "client_p95_ms_by_repeat": {
+          "ttft_ms": {
+            "median": 1279.7278739526519,
+            "min": 1270.5087720998563,
+            "max": 1281.8457906018011,
+            "repeats": [
+              1279.7278739526519,
+              1281.8457906018011,
+              1270.5087720998563
+            ]
+          },
+          "elapsed_ms": {
+            "median": 3005.8426094066817,
+            "min": 2999.2074879963184,
+            "max": 3054.5420352049405,
+            "repeats": [
+              2999.2074879963184,
+              3005.8426094066817,
+              3054.5420352049405
+            ]
+          },
+          "first_tool_ms": {
+            "median": 1137.0320140049444,
+            "min": 1111.7373947527085,
+            "max": 1156.1705732019618,
+            "repeats": [
+              1137.0320140049444,
+              1156.1705732019618,
+              1111.7373947527085
+            ]
+          }
+        },
+        "cases": {
+          "decode-buffered": {
+            "requests": 276,
+            "outcomes": {
+              "success": 29,
+              "refused": 247,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 185.38165811798535,
+            "successful_requests_per_second": 0.1564340307148568,
+            "authoritative_success_count": 29,
+            "authoritative_output_tokens": 5307,
+            "successful_output_tokens_per_second": 28.627427620818793,
+            "ttft_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "elapsed_ms": {
+              "samples": 29,
+              "p50": 2786.5015709976433,
+              "p95": 3051.6358421969926,
+              "p99": 3104.1138034843607
+            },
+            "first_tool_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 29
+          },
+          "decode-stream": {
+            "requests": 277,
+            "outcomes": {
+              "success": 46,
+              "refused": 231,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 185.38165811798535,
+            "successful_requests_per_second": 0.24813673837529007,
+            "authoritative_success_count": 46,
+            "authoritative_output_tokens": 8418,
+            "successful_output_tokens_per_second": 45.409023122678086,
+            "ttft_ms": {
+              "samples": 46,
+              "p50": 1124.8558115039486,
+              "p95": 1336.9567660047323,
+              "p99": 1349.5416104495234
+            },
+            "elapsed_ms": {
+              "samples": 46,
+              "p50": 2865.9036730023217,
+              "p95": 3081.453932751174,
+              "p99": 3093.5423529044783
+            },
+            "first_tool_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 46
+          },
+          "short-stream": {
+            "requests": 278,
+            "outcomes": {
+              "success": 32,
+              "refused": 246,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 185.38165811798535,
+            "successful_requests_per_second": 0.17261686147846267,
+            "authoritative_success_count": 32,
+            "authoritative_output_tokens": 64,
+            "successful_output_tokens_per_second": 0.34523372295692534,
+            "ttft_ms": {
+              "samples": 32,
+              "p50": 1021.0098780007684,
+              "p95": 1296.6313707496738,
+              "p99": 1323.0694987307652
+            },
+            "elapsed_ms": {
+              "samples": 32,
+              "p50": 1038.709710497642,
+              "p95": 1314.2150357532955,
+              "p99": 1340.6553643291409
+            },
+            "first_tool_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 32
+          },
+          "tool-stream": {
+            "requests": 275,
+            "outcomes": {
+              "success": 48,
+              "refused": 227,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 185.38165811798535,
+            "successful_requests_per_second": 0.258925292217694,
+            "authoritative_success_count": 48,
+            "authoritative_output_tokens": 1872,
+            "successful_output_tokens_per_second": 10.098086396490066,
+            "ttft_ms": {
+              "samples": 48,
+              "p50": 1100.403026503045,
+              "p95": 1147.186885701376,
+              "p99": 1162.4172361020464
+            },
+            "elapsed_ms": {
+              "samples": 48,
+              "p50": 1386.0486225021305,
+              "p95": 1433.108095049829,
+              "p99": 1447.9166158540465
+            },
+            "first_tool_ms": {
+              "samples": 48,
+              "p50": 1100.403026503045,
+              "p95": 1147.186885701376,
+              "p99": 1162.4172361020464
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 48
+          }
+        }
+      }
+    },
+    "16": {
+      "baseline": {
+        "native_output_tokens_per_second": {
+          "median": 84.18734186924858,
+          "min": 83.73503990576569,
+          "max": 84.19885923594744,
+          "repeats": [
+            84.19885923594744,
+            84.18734186924858,
+            83.73503990576569
+          ]
+        },
+        "native_predicted_token_delta_total": 19542.0,
+        "client_pooled": {
+          "requests": 195,
+          "outcomes": {
+            "success": 195,
+            "refused": 0,
+            "http_error": 0,
+            "error": 0,
+            "timeout": 0,
+            "cancelled": 0,
+            "invalid_stream": 0,
+            "invalid_output": 0
+          },
+          "wall_seconds_including_drain": 232.53252160300326,
+          "successful_requests_per_second": 0.8385923769102648,
+          "authoritative_success_count": 48,
+          "authoritative_output_tokens": 8784,
+          "successful_output_tokens_per_second": null,
+          "ttft_ms": {
+            "samples": 147,
+            "p50": 19193.987364997156,
+            "p95": 19383.495501101424,
+            "p99": 19459.695299244486
+          },
+          "elapsed_ms": {
+            "samples": 195,
+            "p50": 19242.936573005863,
+            "p95": 19462.190062795707,
+            "p99": 20833.811595056613
+          },
+          "first_tool_ms": {
+            "samples": 48,
+            "p50": 19236.180968502595,
+            "p95": 19386.52881254675,
+            "p99": 19502.306556448457
+          },
+          "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+          "wire_usage_mismatches": 48,
+          "quality_verified_successes": 195
+        },
+        "client_p95_ms_by_repeat": {
+          "ttft_ms": {
+            "median": 19323.042208398692,
+            "min": 19270.003036607523,
+            "max": 19452.5258285983,
+            "repeats": [
+              19323.042208398692,
+              19270.003036607523,
+              19452.5258285983
+            ]
+          },
+          "elapsed_ms": {
+            "median": 19331.29626160371,
+            "min": 19276.734149997355,
+            "max": 20731.017138596508,
+            "repeats": [
+              19331.29626160371,
+              19276.734149997355,
+              20731.017138596508
+            ]
+          },
+          "first_tool_ms": {
+            "median": 19335.834144996625,
+            "min": 19274.263873252494,
+            "max": 19467.13803424791,
+            "repeats": [
+              19335.834144996625,
+              19274.263873252494,
+              19467.13803424791
+            ]
+          }
+        },
+        "cases": {
+          "decode-buffered": {
+            "requests": 48,
+            "outcomes": {
+              "success": 48,
+              "refused": 0,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 232.53252160300326,
+            "successful_requests_per_second": 0.2064227389317575,
+            "authoritative_success_count": 48,
+            "authoritative_output_tokens": 8784,
+            "successful_output_tokens_per_second": 37.77536122451162,
+            "ttft_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "elapsed_ms": {
+              "samples": 48,
+              "p50": 19243.984238004487,
+              "p95": 20705.001801295293,
+              "p99": 21023.48402521471
+            },
+            "first_tool_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 48,
+            "quality_verified_successes": 48
+          },
+          "decode-stream": {
+            "requests": 48,
+            "outcomes": {
+              "success": 48,
+              "refused": 0,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 232.53252160300326,
+            "successful_requests_per_second": 0.2064227389317575,
+            "authoritative_success_count": 0,
+            "authoritative_output_tokens": 0,
+            "successful_output_tokens_per_second": null,
+            "ttft_ms": {
+              "samples": 48,
+              "p50": 17500.955737494223,
+              "p95": 17710.1818418967,
+              "p99": 18459.453226572514
+            },
+            "elapsed_ms": {
+              "samples": 48,
+              "p50": 19246.25966000167,
+              "p95": 19454.404902544775,
+              "p99": 20203.273604815622
+            },
+            "first_tool_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 48
+          },
+          "short-stream": {
+            "requests": 51,
+            "outcomes": {
+              "success": 51,
+              "refused": 0,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 232.53252160300326,
+            "successful_requests_per_second": 0.21932416011499234,
+            "authoritative_success_count": 0,
+            "authoritative_output_tokens": 0,
+            "successful_output_tokens_per_second": null,
+            "ttft_ms": {
+              "samples": 51,
+              "p50": 19228.792226989754,
+              "p95": 19434.691116992326,
+              "p99": 19459.48182500433
+            },
+            "elapsed_ms": {
+              "samples": 51,
+              "p50": 19246.310973001528,
+              "p95": 19452.297665993683,
+              "p99": 19476.965663503506
+            },
+            "first_tool_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 51
+          },
+          "tool-stream": {
+            "requests": 48,
+            "outcomes": {
+              "success": 48,
+              "refused": 0,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 232.53252160300326,
+            "successful_requests_per_second": 0.2064227389317575,
+            "authoritative_success_count": 0,
+            "authoritative_output_tokens": 0,
+            "successful_output_tokens_per_second": null,
+            "ttft_ms": {
+              "samples": 48,
+              "p50": 19236.180968502595,
+              "p95": 19386.52881254675,
+              "p99": 19502.306556448457
+            },
+            "elapsed_ms": {
+              "samples": 48,
+              "p50": 19236.556880503485,
+              "p95": 19386.827681306022,
+              "p99": 19502.53658763395
+            },
+            "first_tool_ms": {
+              "samples": 48,
+              "p50": 19236.180968502595,
+              "p95": 19386.52881254675,
+              "p99": 19502.306556448457
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 48
+          }
+        }
+      },
+      "candidate": {
+        "native_output_tokens_per_second": {
+          "median": 90.67662169826556,
+          "min": 89.64360284520336,
+          "max": 92.26825990479966,
+          "repeats": [
+            90.67662169826556,
+            92.26825990479966,
+            89.64360284520336
+          ]
+        },
+        "native_predicted_token_delta_total": 16814.0,
+        "client_pooled": {
+          "requests": 6689,
+          "outcomes": {
+            "success": 141,
+            "refused": 6548,
+            "http_error": 0,
+            "error": 0,
+            "timeout": 0,
+            "cancelled": 0,
+            "invalid_stream": 0,
+            "invalid_output": 0
+          },
+          "wall_seconds_including_drain": 185.03535237199685,
+          "successful_requests_per_second": 0.7620165454465817,
+          "authoritative_success_count": 141,
+          "authoritative_output_tokens": 16814,
+          "successful_output_tokens_per_second": 90.86912195133918,
+          "ttft_ms": {
+            "samples": 97,
+            "p50": 1002.718375006225,
+            "p95": 1318.2795616070503,
+            "p99": 1384.2115272337103
+          },
+          "elapsed_ms": {
+            "samples": 141,
+            "p50": 2553.1700499996077,
+            "p95": 3052.130534008029,
+            "p99": 3122.2317214065697
+          },
+          "first_tool_ms": {
+            "samples": 31,
+            "p50": 1076.595140999416,
+            "p95": 1266.5885114984121,
+            "p99": 1380.8248090033885
+          },
+          "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+          "wire_usage_mismatches": 0,
+          "quality_verified_successes": 141
+        },
+        "client_p95_ms_by_repeat": {
+          "ttft_ms": {
+            "median": 1299.6682179960771,
+            "min": 1290.6997289974238,
+            "max": 1318.2795616070505,
+            "repeats": [
+              1299.6682179960771,
+              1318.2795616070505,
+              1290.6997289974238
+            ]
+          },
+          "elapsed_ms": {
+            "median": 3041.426901556406,
+            "min": 3021.2774340063334,
+            "max": 3061.832896006672,
+            "repeats": [
+              3021.2774340063334,
+              3041.426901556406,
+              3061.832896006672
+            ]
+          },
+          "first_tool_ms": {
+            "median": 1248.4020066018275,
+            "min": 1223.075729048287,
+            "max": 1250.3849583968981,
+            "repeats": [
+              1248.4020066018275,
+              1223.075729048287,
+              1250.3849583968981
+            ]
+          }
+        },
+        "cases": {
+          "decode-buffered": {
+            "requests": 1672,
+            "outcomes": {
+              "success": 44,
+              "refused": 1628,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 185.03535237199685,
+            "successful_requests_per_second": 0.23779239716063544,
+            "authoritative_success_count": 44,
+            "authoritative_output_tokens": 8052,
+            "successful_output_tokens_per_second": 43.51600868039628,
+            "ttft_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "elapsed_ms": {
+              "samples": 44,
+              "p50": 2740.497137499915,
+              "p95": 3043.150147546112,
+              "p99": 3099.871804598224
+            },
+            "first_tool_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 44
+          },
+          "decode-stream": {
+            "requests": 1673,
+            "outcomes": {
+              "success": 41,
+              "refused": 1632,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 185.03535237199685,
+            "successful_requests_per_second": 0.2215792791724103,
+            "authoritative_success_count": 41,
+            "authoritative_output_tokens": 7503,
+            "successful_output_tokens_per_second": 40.54900808855108,
+            "ttft_ms": {
+              "samples": 41,
+              "p50": 977.7382300089812,
+              "p95": 1364.3795519892592,
+              "p99": 1380.6932411971502
+            },
+            "elapsed_ms": {
+              "samples": 41,
+              "p50": 2718.576732004294,
+              "p95": 3109.0372749895323,
+              "p99": 3125.4025083995657
+            },
+            "first_tool_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 41
+          },
+          "short-stream": {
+            "requests": 1673,
+            "outcomes": {
+              "success": 25,
+              "refused": 1648,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 185.03535237199685,
+            "successful_requests_per_second": 0.13510931656854286,
+            "authoritative_success_count": 25,
+            "authoritative_output_tokens": 50,
+            "successful_output_tokens_per_second": 0.2702186331370857,
+            "ttft_ms": {
+              "samples": 25,
+              "p50": 932.9819609993137,
+              "p95": 1089.0764045907417,
+              "p99": 1201.9432095624504
+            },
+            "elapsed_ms": {
+              "samples": 25,
+              "p50": 950.6085119937779,
+              "p95": 1106.4397923939396,
+              "p99": 1219.4713491183936
+            },
+            "first_tool_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 25
+          },
+          "tool-stream": {
+            "requests": 1671,
+            "outcomes": {
+              "success": 31,
+              "refused": 1640,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 185.03535237199685,
+            "successful_requests_per_second": 0.16753555254499314,
+            "authoritative_success_count": 31,
+            "authoritative_output_tokens": 1209,
+            "successful_output_tokens_per_second": 6.533886549254732,
+            "ttft_ms": {
+              "samples": 31,
+              "p50": 1076.595140999416,
+              "p95": 1266.5885114984121,
+              "p99": 1380.8248090033885
+            },
+            "elapsed_ms": {
+              "samples": 31,
+              "p50": 1361.6190050088335,
+              "p95": 1552.1075914948597,
+              "p99": 1666.1957736010663
+            },
+            "first_tool_ms": {
+              "samples": 31,
+              "p50": 1076.595140999416,
+              "p95": 1266.5885114984121,
+              "p99": 1380.8248090033885
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 31
+          }
+        }
+      }
+    },
+    "32": {
+      "baseline": {
+        "native_output_tokens_per_second": {
+          "median": 84.1235578592754,
+          "min": 84.04085950157989,
+          "max": 84.694995687387,
+          "repeats": [
+            84.694995687387,
+            84.1235578592754,
+            84.04085950157989
+          ]
+        },
+        "native_predicted_token_delta_total": 24609.0,
+        "client_pooled": {
+          "requests": 244,
+          "outcomes": {
+            "success": 244,
+            "refused": 0,
+            "http_error": 0,
+            "error": 0,
+            "timeout": 0,
+            "cancelled": 0,
+            "invalid_stream": 0,
+            "invalid_output": 0
+          },
+          "wall_seconds_including_drain": 291.9615351329994,
+          "successful_requests_per_second": 0.835726527773081,
+          "authoritative_success_count": 60,
+          "authoritative_output_tokens": 10980,
+          "successful_output_tokens_per_second": null,
+          "ttft_ms": {
+            "samples": 184,
+            "p50": 36840.87408800406,
+            "p95": 38706.01305189921,
+            "p99": 39153.24364243482
+          },
+          "elapsed_ms": {
+            "samples": 244,
+            "p50": 38380.27564799995,
+            "p95": 38980.55577535488,
+            "p99": 40067.73703651299
+          },
+          "first_tool_ms": {
+            "samples": 60,
+            "p50": 38426.240226493974,
+            "p95": 38762.3287812974,
+            "p99": 39840.49502878144
+          },
+          "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+          "wire_usage_mismatches": 60,
+          "quality_verified_successes": 244
+        },
+        "client_p95_ms_by_repeat": {
+          "ttft_ms": {
+            "median": 38653.27599100419,
+            "min": 38639.78689719079,
+            "max": 38709.85784100776,
+            "repeats": [
+              38639.78689719079,
+              38709.85784100776,
+              38653.27599100419
+            ]
+          },
+          "elapsed_ms": {
+            "median": 38884.012502996484,
+            "min": 38791.22497099161,
+            "max": 39796.37375944221,
+            "repeats": [
+              39796.37375944221,
+              38791.22497099161,
+              38884.012502996484
+            ]
+          },
+          "first_tool_ms": {
+            "median": 38718.20688244916,
+            "min": 38712.122674961574,
+            "max": 39803.01119589931,
+            "repeats": [
+              39803.01119589931,
+              38718.20688244916,
+              38712.122674961574
+            ]
+          }
+        },
+        "cases": {
+          "decode-buffered": {
+            "requests": 60,
+            "outcomes": {
+              "success": 60,
+              "refused": 0,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 291.9615351329994,
+            "successful_requests_per_second": 0.20550652322288876,
+            "authoritative_success_count": 60,
+            "authoritative_output_tokens": 10980,
+            "successful_output_tokens_per_second": 37.607693749788645,
+            "ttft_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "elapsed_ms": {
+              "samples": 60,
+              "p50": 38512.866776007286,
+              "p95": 39962.13749170347,
+              "p99": 40097.32748984505
+            },
+            "first_tool_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 60,
+            "quality_verified_successes": 60
+          },
+          "decode-stream": {
+            "requests": 61,
+            "outcomes": {
+              "success": 61,
+              "refused": 0,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 291.9615351329994,
+            "successful_requests_per_second": 0.20893163194327025,
+            "authoritative_success_count": 0,
+            "authoritative_output_tokens": 0,
+            "successful_output_tokens_per_second": null,
+            "ttft_ms": {
+              "samples": 61,
+              "p50": 36641.61070299451,
+              "p95": 37176.204502990004,
+              "p99": 37686.14514860092
+            },
+            "elapsed_ms": {
+              "samples": 61,
+              "p50": 38386.0335520003,
+              "p95": 38920.56216899073,
+              "p99": 39432.03968440066
+            },
+            "first_tool_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 61
+          },
+          "short-stream": {
+            "requests": 63,
+            "outcomes": {
+              "success": 63,
+              "refused": 0,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 291.9615351329994,
+            "successful_requests_per_second": 0.21578184938403322,
+            "authoritative_success_count": 0,
+            "authoritative_output_tokens": 0,
+            "successful_output_tokens_per_second": null,
+            "ttft_ms": {
+              "samples": 63,
+              "p50": 37891.4099560061,
+              "p95": 38699.37981830299,
+              "p99": 38706.515072899056
+            },
+            "elapsed_ms": {
+              "samples": 63,
+              "p50": 37909.01773200312,
+              "p95": 38713.692502905906,
+              "p99": 38722.763402975106
+            },
+            "first_tool_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 63
+          },
+          "tool-stream": {
+            "requests": 60,
+            "outcomes": {
+              "success": 60,
+              "refused": 0,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 291.9615351329994,
+            "successful_requests_per_second": 0.20550652322288876,
+            "authoritative_success_count": 0,
+            "authoritative_output_tokens": 0,
+            "successful_output_tokens_per_second": null,
+            "ttft_ms": {
+              "samples": 60,
+              "p50": 38426.240226493974,
+              "p95": 38762.3287812974,
+              "p99": 39840.49502878144
+            },
+            "elapsed_ms": {
+              "samples": 60,
+              "p50": 38426.7344829932,
+              "p95": 38762.75987370027,
+              "p99": 39841.00245437585
+            },
+            "first_tool_ms": {
+              "samples": 60,
+              "p50": 38426.240226493974,
+              "p95": 38762.3287812974,
+              "p99": 39840.49502878144
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 60
+          }
+        }
+      },
+      "candidate": {
+        "native_output_tokens_per_second": {
+          "median": 87.23238983224047,
+          "min": 86.14295853862737,
+          "max": 87.79512254882971,
+          "repeats": [
+            87.23238983224047,
+            87.79512254882971,
+            86.14295853862737
+          ]
+        },
+        "native_predicted_token_delta_total": 16136.0,
+        "client_pooled": {
+          "requests": 20760,
+          "outcomes": {
+            "success": 160,
+            "refused": 20600,
+            "http_error": 0,
+            "error": 0,
+            "timeout": 0,
+            "cancelled": 0,
+            "invalid_stream": 0,
+            "invalid_output": 0
+          },
+          "wall_seconds_including_drain": 185.36587606002286,
+          "successful_requests_per_second": 0.8631577904241167,
+          "authoritative_success_count": 160,
+          "authoritative_output_tokens": 16136,
+          "successful_output_tokens_per_second": 87.04946316427217,
+          "ttft_ms": {
+            "samples": 123,
+            "p50": 1082.4527280055918,
+            "p95": 1340.2214220899623,
+            "p99": 1394.6493732949602
+          },
+          "elapsed_ms": {
+            "samples": 160,
+            "p50": 1686.8384839981445,
+            "p95": 3070.429920244351,
+            "p99": 3089.3025985869463
+          },
+          "first_tool_ms": {
+            "samples": 41,
+            "p50": 1127.8981249924982,
+            "p95": 1391.4503709966084,
+            "p99": 1402.4133130005794
+          },
+          "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+          "wire_usage_mismatches": 0,
+          "quality_verified_successes": 160
+        },
+        "client_p95_ms_by_repeat": {
+          "ttft_ms": {
+            "median": 1335.913701701793,
+            "min": 1326.1942969911615,
+            "max": 1348.4131599398097,
+            "repeats": [
+              1348.4131599398097,
+              1335.913701701793,
+              1326.1942969911615
+            ]
+          },
+          "elapsed_ms": {
+            "median": 3066.910722805187,
+            "min": 3026.7853253462818,
+            "max": 3084.9480657983804,
+            "repeats": [
+              3066.910722805187,
+              3084.9480657983804,
+              3026.7853253462818
+            ]
+          },
+          "first_tool_ms": {
+            "median": 1359.0426779992413,
+            "min": 1334.6678064917796,
+            "max": 1400.7727990014246,
+            "repeats": [
+              1400.7727990014246,
+              1334.6678064917796,
+              1359.0426779992413
+            ]
+          }
+        },
+        "cases": {
+          "decode-buffered": {
+            "requests": 5190,
+            "outcomes": {
+              "success": 37,
+              "refused": 5153,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 185.36587606002286,
+            "successful_requests_per_second": 0.19960523903557698,
+            "authoritative_success_count": 37,
+            "authoritative_output_tokens": 6771,
+            "successful_output_tokens_per_second": 36.52775874351059,
+            "ttft_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "elapsed_ms": {
+              "samples": 37,
+              "p50": 2733.814328996232,
+              "p95": 3077.440126007423,
+              "p99": 3108.381331281271
+            },
+            "first_tool_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 37
+          },
+          "decode-stream": {
+            "requests": 5191,
+            "outcomes": {
+              "success": 42,
+              "refused": 5149,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 185.36587606002286,
+            "successful_requests_per_second": 0.22657891998633065,
+            "authoritative_success_count": 42,
+            "authoritative_output_tokens": 7686,
+            "successful_output_tokens_per_second": 41.4639423574985,
+            "ttft_ms": {
+              "samples": 42,
+              "p50": 1066.3606224989053,
+              "p95": 1334.6701680515253,
+              "p99": 1343.5781821145792
+            },
+            "elapsed_ms": {
+              "samples": 42,
+              "p50": 2809.0136980026728,
+              "p95": 3083.2495709502837,
+              "p99": 3088.486065413308
+            },
+            "first_tool_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 42
+          },
+          "short-stream": {
+            "requests": 5191,
+            "outcomes": {
+              "success": 40,
+              "refused": 5151,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 185.36587606002286,
+            "successful_requests_per_second": 0.21578944760602917,
+            "authoritative_success_count": 40,
+            "authoritative_output_tokens": 80,
+            "successful_output_tokens_per_second": 0.43157889521205833,
+            "ttft_ms": {
+              "samples": 40,
+              "p50": 1026.719328998297,
+              "p95": 1267.4260739520832,
+              "p99": 1313.7251120604924
+            },
+            "elapsed_ms": {
+              "samples": 40,
+              "p50": 1044.4664229944465,
+              "p95": 1285.0771113524388,
+              "p99": 1331.350265036599
+            },
+            "first_tool_ms": {
+              "samples": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 40
+          },
+          "tool-stream": {
+            "requests": 5188,
+            "outcomes": {
+              "success": 41,
+              "refused": 5147,
+              "http_error": 0,
+              "error": 0,
+              "timeout": 0,
+              "cancelled": 0,
+              "invalid_stream": 0,
+              "invalid_output": 0
+            },
+            "wall_seconds_including_drain": 185.36587606002286,
+            "successful_requests_per_second": 0.2211841837961799,
+            "authoritative_success_count": 41,
+            "authoritative_output_tokens": 1599,
+            "successful_output_tokens_per_second": 8.626183168051016,
+            "ttft_ms": {
+              "samples": 41,
+              "p50": 1127.8981249924982,
+              "p95": 1391.4503709966084,
+              "p99": 1402.4133130005794
+            },
+            "elapsed_ms": {
+              "samples": 41,
+              "p50": 1413.605812995229,
+              "p95": 1676.601346989628,
+              "p99": 1688.0007773987018
+            },
+            "first_tool_ms": {
+              "samples": 41,
+              "p50": 1127.8981249924982,
+              "p95": 1391.4503709966084,
+              "p99": 1402.4133130005794
+            },
+            "percentile_note": "descriptive samples; use repeated load campaigns for tail claims",
+            "wire_usage_mismatches": 0,
+            "quality_verified_successes": 41
+          }
+        }
+      }
+    }
+  },
+  "limitations": [
+    "Deployed baseline source/features are unverified; this is an operational artifact comparison.",
+    "Baseline streaming per-request usage is not authoritative; native aggregate counter deltas supply throughput.",
+    "Buffered JSON TTFT is null. First meaningful output and tool first-output use only successful SSE observations.",
+    "Overload refusals are separate from successful throughput; endpoint fairness and admitted case mix can change under refusal.",
+    "Companion v1 began about 189s after formal start and could not parse candidate histogram max bucket; raw observation failures retained.",
+    "Companion v2 candidate series begin about 326.6s after formal start; no fabricated samples fill either gap.",
+    "Greedy temperature zero is matched; requested seed42 was not forwarded, upstream seed is auto4294967295."
+  ],
+  "c1_latency_gate": {
+    "ttft_ms": {
+      "median_p95_change_percent": -24.474649861940556,
+      "paired_repeat_change_percent": [
+        -24.81876356631022,
+        -30.01664564466574,
+        -24.252766074380794
+      ],
+      "each_repeat_within_ten_percent": true
+    },
+    "elapsed_ms": {
+      "median_p95_change_percent": 0.12857566381418994,
+      "paired_repeat_change_percent": [
+        0.21426514708267064,
+        -0.054804673773256596,
+        0.1779555062261906
+      ],
+      "each_repeat_within_ten_percent": true
+    },
+    "unexpected_errors_zero": true
+  },
+  "companion_coverage": {
+    "formal-software-v3-companion.jsonl": {
+      "header": {
+        "kind": "header",
+        "watch_pid": 3154087,
+        "watch_start_ticks": 9260027,
+        "started_monotonic": 92789.150421265,
+        "period_seconds": 1,
+        "tool_identity": {
+          "runner_sha256": "576b2d13811482024522e790f901647ac79dc6cc4368a2622a71adef856fe546",
+          "matrix_sha256": "b1e24fd648da9b7ae31cb3d3ace44c4b9b91dc6c793a0d9de7ac114ba1b821e4",
+          "sampler_sha256": "79a70d7acb69f217832dd41f6be3a12665c7cf571ba0f7b93589dca039fe4e5b"
+        }
+      },
+      "arms": {
+        "baseline": {
+          "valid_samples": 138,
+          "observation_errors": 0,
+          "first_valid_monotonic": 92789.150652092,
+          "last_valid_monotonic": 92926.193941991,
+          "peak_gauges": {
+            "power_active_requests": 16.0,
+            "power_requests_waiting": 15.0,
+            "power_requests_running": 1.0
+          },
+          "admission_series_observed": false
+        },
+        "candidate": {
+          "valid_samples": 0,
+          "observation_errors": 138,
+          "first_valid_monotonic": null,
+          "last_valid_monotonic": null,
+          "peak_gauges": null,
+          "admission_series_observed": false
+        }
+      }
+    },
+    "formal-software-v3-companion-v2.jsonl": {
+      "header": {
+        "kind": "header",
+        "watch_pid": 3154087,
+        "watch_start_ticks": 9260027,
+        "started_monotonic": 92926.866608633,
+        "period_seconds": 1,
+        "tool_identity": {
+          "runner_sha256": "576b2d13811482024522e790f901647ac79dc6cc4368a2622a71adef856fe546",
+          "matrix_sha256": "b1e24fd648da9b7ae31cb3d3ace44c4b9b91dc6c793a0d9de7ac114ba1b821e4",
+          "sampler_sha256": "a45ace6db8e002b894a9143a9696a2625f7827c34cb1125fe80ff74ccb0c372b"
+        }
+      },
+      "arms": {
+        "baseline": {
+          "valid_samples": 1441,
+          "observation_errors": 0,
+          "first_valid_monotonic": 92926.866931865,
+          "last_valid_monotonic": 94367.39538734,
+          "peak_gauges": {
+            "power_active_requests": 32.0,
+            "power_requests_waiting": 31.0,
+            "power_requests_running": 1.0
+          },
+          "admission_series_observed": false
+        },
+        "candidate": {
+          "valid_samples": 1441,
+          "observation_errors": 0,
+          "first_valid_monotonic": 92926.866931865,
+          "last_valid_monotonic": 94367.39538734,
+          "peak_gauges": {
+            "power_active_requests": 10.0,
+            "power_requests_waiting": 8.0,
+            "power_requests_running": 1.0
+          },
+          "admission_series_observed": true
+        }
+      }
+    }
+  }
+}

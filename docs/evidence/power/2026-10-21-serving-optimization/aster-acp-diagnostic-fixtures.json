@@ -1,0 +1,378 @@
+{
+  "status": "passed",
+  "tests": 8,
+  "elapsed_test_log": "test_30second_checkpoint_keeps_partial_meaningful_count (acp_diagnostic_fixture_proof.DiagnosticQualification.test_30second_checkpoint_keeps_partial_meaningful_count) ... ok\ntest_actual_unchanged_acp_loopback_records_safe_request_options_and_tcp (acp_diagnostic_fixture_proof.DiagnosticQualification.test_actual_unchanged_acp_loopback_records_safe_request_options_and_tcp) ... ok\ntest_created_child_is_returned_to_cleanup_owner_when_observer_setup_fails (acp_diagnostic_fixture_proof.DiagnosticQualification.test_created_child_is_returned_to_cleanup_owner_when_observer_setup_fails) ... ok\ntest_exited_owned_process_identity_race_is_normal (acp_diagnostic_fixture_proof.DiagnosticQualification.test_exited_owned_process_identity_race_is_normal) ... ok\ntest_metadata_uses_known_scalars_and_hashes_text_and_rejects_secret (acp_diagnostic_fixture_proof.DiagnosticQualification.test_metadata_uses_known_scalars_and_hashes_text_and_rejects_secret) ... ok\ntest_observer_failure_preserves_original_io_and_never_exports_error_text (acp_diagnostic_fixture_proof.DiagnosticQualification.test_observer_failure_preserves_original_io_and_never_exports_error_text) ... ok\ntest_partial_output_is_counted_without_a_completed_prompt_response (acp_diagnostic_fixture_proof.DiagnosticQualification.test_partial_output_is_counted_without_a_completed_prompt_response) ... ok\ntest_tcp_rows_filter_exact_owner_and_hash_other_endpoints (acp_diagnostic_fixture_proof.DiagnosticQualification.test_tcp_rows_filter_exact_owner_and_hash_other_endpoints) ... ok\n\n----------------------------------------------------------------------\nRan 8 tests in 1.135s\n\nOK\n",
+  "helper_sha256": "d0a9d59a78069dcd42528a5c67d212b78f7c551ff689fb2ed28e7bfbef9941df",
+  "tests_sha256": "a75bb6de36f8a4f24e7e0b6a555b3990bfbf4dd1167a50aee70189ab88a40bcf",
+  "frozen_0226_sha256": "0226f997432f2aa9575ae0b79630df9a20e55bb788cb8ef279f672e7e9e7ddba",
+  "binary_sha256": "e0f810af8796ca1a0934c503ddbb56034ee10ee2c3b0011e8e5f27fbbb03ae59",
+  "scope": "pure hermetic; actual unchanged Windows ACP with loopback fixture only; no public key or model requests",
+  "mock_actual_acp_request_metadata": [
+    {
+      "body_sha256": "3e9d3e04ddd9a21b839ba942410ce2bb2ed97c0edbac3e96bc045efbbf84d696",
+      "body_bytes": 5763,
+      "message_count": 2,
+      "role_counts": {
+        "system": 1,
+        "user": 1
+      },
+      "messages": [
+        {
+          "role": "system",
+          "content_type": "string",
+          "content_chars": 3124,
+          "content_items": null,
+          "tool_calls_count": 0
+        },
+        {
+          "role": "user",
+          "content_type": "string",
+          "content_chars": 2096,
+          "content_items": null,
+          "tool_calls_count": 0
+        }
+      ],
+      "tools_count": 0,
+      "known_options": {
+        "max_tokens": 128
+      }
+    },
+    {
+      "body_sha256": "f77870192951218754762d16911ba75d39c126fa88181b49faa516e6a75c983c",
+      "body_bytes": 6010,
+      "message_count": 4,
+      "role_counts": {
+        "system": 1,
+        "user": 2,
+        "assistant": 1
+      },
+      "messages": [
+        {
+          "role": "system",
+          "content_type": "string",
+          "content_chars": 3124,
+          "content_items": null,
+          "tool_calls_count": 0
+        },
+        {
+          "role": "user",
+          "content_type": "string",
+          "content_chars": 2096,
+          "content_items": null,
+          "tool_calls_count": 0
+        },
+        {
+          "role": "assistant",
+          "content_type": "string",
+          "content_chars": 5,
+          "content_items": null,
+          "tool_calls_count": 0
+        },
+        {
+          "role": "user",
+          "content_type": "string",
+          "content_chars": 150,
+          "content_items": null,
+          "tool_calls_count": 0
+        }
+      ],
+      "tools_count": 0,
+      "known_options": {
+        "max_tokens": 128
+      }
+    },
+    {
+      "body_sha256": "7d8dc1828e68e5730a781bb11d809e3a8590c97e10446a9c2a16ea54d1eddf2d",
+      "body_bytes": 6257,
+      "message_count": 6,
+      "role_counts": {
+        "system": 1,
+        "user": 3,
+        "assistant": 2
+      },
+      "messages": [
+        {
+          "role": "system",
+          "content_type": "string",
+          "content_chars": 3124,
+          "content_items": null,
+          "tool_calls_count": 0
+        },
+        {
+          "role": "user",
+          "content_type": "string",
+          "content_chars": 2096,
+          "content_items": null,
+          "tool_calls_count": 0
+        },
+        {
+          "role": "assistant",
+          "content_type": "string",
+          "content_chars": 5,
+          "content_items": null,
+          "tool_calls_count": 0
+        },
+        {
+          "role": "user",
+          "content_type": "string",
+          "content_chars": 150,
+          "content_items": null,
+          "tool_calls_count": 0
+        },
+        {
+          "role": "assistant",
+          "content_type": "string",
+          "content_chars": 5,
+          "content_items": null,
+          "tool_calls_count": 0
+        },
+        {
+          "role": "user",
+          "content_type": "string",
+          "content_chars": 150,
+          "content_items": null,
+          "tool_calls_count": 0
+        }
+      ],
+      "tools_count": 0,
+      "known_options": {
+        "max_tokens": 128
+      }
+    },
+    {
+      "body_sha256": "57e5d80d9c9e82f819b31096354a8d5449aeff79488b57b6a67988ee9cee8573",
+      "body_bytes": 15295,
+      "message_count": 2,
+      "role_counts": {
+        "system": 1,
+        "user": 1
+      },
+      "messages": [
+        {
+          "role": "system",
+          "content_type": "string",
+          "content_chars": 14716,
+          "content_items": null,
+          "tool_calls_count": 0
+        },
+        {
+          "role": "user",
+          "content_type": "string",
+          "content_chars": 96,
+          "content_items": null,
+          "tool_calls_count": 0
+        }
+      ],
+      "tools_count": 0,
+      "known_options": {
+        "max_tokens": 128,
+        "stream": true
+      }
+    },
+    {
+      "body_sha256": "6c460c16f2832e3c3d75a159a74b84378f7f0689e71c7351c69d844b27e3ceb5",
+      "body_bytes": 4626,
+      "message_count": 2,
+      "role_counts": {
+        "system": 1,
+        "user": 1
+      },
+      "messages": [
+        {
+          "role": "system",
+          "content_type": "string",
+          "content_chars": 629,
+          "content_items": null,
+          "tool_calls_count": 0
+        },
+        {
+          "role": "user",
+          "content_type": "string",
+          "content_chars": 3742,
+          "content_items": null,
+          "tool_calls_count": 0
+        }
+      ],
+      "tools_count": 0,
+      "known_options": {
+        "max_tokens": 128
+      }
+    },
+    {
+      "body_sha256": "a5d2d8ecfab1b4b46328babd520ec819ec285cfa36242221084eae04c5bf6a47",
+      "body_bytes": 5747,
+      "message_count": 2,
+      "role_counts": {
+        "system": 1,
+        "user": 1
+      },
+      "messages": [
+        {
+          "role": "system",
+          "content_type": "string",
+          "content_chars": 3124,
+          "content_items": null,
+          "tool_calls_count": 0
+        },
+        {
+          "role": "user",
+          "content_type": "string",
+          "content_chars": 2080,
+          "content_items": null,
+          "tool_calls_count": 0
+        }
+      ],
+      "tools_count": 0,
+      "known_options": {
+        "max_tokens": 128
+      }
+    },
+    {
+      "body_sha256": "08d08a8c6350953618cce45f8f95a0d59c144c2b38f58a3829e3278b84fbfcbd",
+      "body_bytes": 5994,
+      "message_count": 4,
+      "role_counts": {
+        "system": 1,
+        "user": 2,
+        "assistant": 1
+      },
+      "messages": [
+        {
+          "role": "system",
+          "content_type": "string",
+          "content_chars": 3124,
+          "content_items": null,
+          "tool_calls_count": 0
+        },
+        {
+          "role": "user",
+          "content_type": "string",
+          "content_chars": 2080,
+          "content_items": null,
+          "tool_calls_count": 0
+        },
+        {
+          "role": "assistant",
+          "content_type": "string",
+          "content_chars": 5,
+          "content_items": null,
+          "tool_calls_count": 0
+        },
+        {
+          "role": "user",
+          "content_type": "string",
+          "content_chars": 150,
+          "content_items": null,
+          "tool_calls_count": 0
+        }
+      ],
+      "tools_count": 0,
+      "known_options": {
+        "max_tokens": 128
+      }
+    },
+    {
+      "body_sha256": "86fd0695c1d07896c6c4b604d03c92378874fa465fe2c8acf4e458598cac5fdb",
+      "body_bytes": 6241,
+      "message_count": 6,
+      "role_counts": {
+        "system": 1,
+        "user": 3,
+        "assistant": 2
+      },
+      "messages": [
+        {
+          "role": "system",
+          "content_type": "string",
+          "content_chars": 3124,
+          "content_items": null,
+          "tool_calls_count": 0
+        },
+        {
+          "role": "user",
+          "content_type": "string",
+          "content_chars": 2080,
+          "content_items": null,
+          "tool_calls_count": 0
+        },
+        {
+          "role": "assistant",
+          "content_type": "string",
+          "content_chars": 5,
+          "content_items": null,
+          "tool_calls_count": 0
+        },
+        {
+          "role": "user",
+          "content_type": "string",
+          "content_chars": 150,
+          "content_items": null,
+          "tool_calls_count": 0
+        },
+        {
+          "role": "assistant",
+          "content_type": "string",
+          "content_chars": 5,
+          "content_items": null,
+          "tool_calls_count": 0
+        },
+        {
+          "role": "user",
+          "content_type": "string",
+          "content_chars": 150,
+          "content_items": null,
+          "tool_calls_count": 0
+        }
+      ],
+      "tools_count": 0,
+      "known_options": {
+        "max_tokens": 128
+      }
+    },
+    {
+      "body_sha256": "f59672a05f1637989c22009ba2fc030c56c479348d35544d1b83df2afc97338d",
+      "body_bytes": 15466,
+      "message_count": 4,
+      "role_counts": {
+        "system": 1,
+        "user": 2,
+        "assistant": 1
+      },
+      "messages": [
+        {
+          "role": "system",
+          "content_type": "string",
+          "content_chars": 14716,
+          "content_items": null,
+          "tool_calls_count": 0
+        },
+        {
+          "role": "user",
+          "content_type": "string",
+          "content_chars": 96,
+          "content_items": null,
+          "tool_calls_count": 0
+        },
+        {
+          "role": "assistant",
+          "content_type": "string",
+          "content_chars": 5,
+          "content_items": null,
+          "tool_calls_count": 0
+        },
+        {
+          "role": "user",
+          "content_type": "string",
+          "content_chars": 80,
+          "content_items": null,
+          "tool_calls_count": 0
+        }
+      ],
+      "tools_count": 0,
+      "known_options": {
+        "max_tokens": 128,
+        "stream": true
+      }
+    }
+  ]
+}

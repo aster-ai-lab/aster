@@ -144,6 +144,8 @@ fn principal_config(
                             failover: Default::default(),
                             pricing: None,
                             latency_bias: false,
+                            prefix_affinity: false,
+                            prefix_parallelism: 1,
                             model_id: Uuid::new_v4(),
                             targets: vec![target(
                                 "openai-service",
@@ -162,6 +164,8 @@ fn principal_config(
                             failover: Default::default(),
                             pricing: None,
                             latency_bias: false,
+                            prefix_affinity: false,
+                            prefix_parallelism: 1,
                             model_id: Uuid::new_v4(),
                             targets: vec![target(
                                 "anthropic-service",

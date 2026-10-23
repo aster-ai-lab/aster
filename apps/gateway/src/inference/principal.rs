@@ -69,13 +69,27 @@ impl PrincipalVerifier {
             .cloned()
     }
 
+    fn remember_subject(&self, subject: &PrincipalSubject) {
+        let mut subjects = self.subjects.lock().unwrap_or_else(PoisonError::into_inner);
+        if subjects.len() >= MAX_CACHED_PRINCIPALS && !subjects.contains_key(&subject.credential_id)
+        {
+            subjects.clear();
+        }
+        subjects.insert(subject.credential_id, subject.clone());
+    }
+
     pub(super) async fn verify(
         &self,
         route_id: Uuid,
         principal: &InferencePrincipalConfig,
         headers: &HeaderMap,
     ) -> Result<PrincipalSubject, InferenceAccessError> {
+        // A3S_GATEWAY_SHARED_TOKEN skips verify_url. Any other presented credential is checked. No credential is unauthorized.
         let token = principal_token(headers)?;
+        if let Some(subject) = shared_subject(route_id, token) {
+            self.remember_subject(&subject);
+            return Ok(subject);
+        }
         let digest: [u8; 32] = Sha256::digest(token.as_bytes()).into();
         let now = Instant::now();
         {
@@ -155,6 +169,54 @@ fn principal_token(headers: &HeaderMap) -> Result<&str, InferenceAccessError> {
         return Err(InferenceAccessError::Unauthorized);
     }
     Ok(token)
+}
+
+/// Whether the caller presented the deployment-wide shared token.
+///
+/// Managed inference admits that credential without a `verify_url` round
+/// trip. Forward-auth routes reuse the same rule so one deployment keeps one
+/// key for every entry point.
+pub(crate) fn shared_token_admits(headers: &HeaderMap) -> bool {
+    let Ok(token) = principal_token(headers) else {
+        return false;
+    };
+    let Ok(expected) = std::env::var("A3S_GATEWAY_SHARED_TOKEN") else {
+        return false;
+    };
+    let expected = expected.trim();
+    !expected.is_empty() && tokens_match(token, expected)
+}
+
+fn shared_subject(route_id: Uuid, token: &str) -> Option<PrincipalSubject> {
+    let Ok(expected) = std::env::var("A3S_GATEWAY_SHARED_TOKEN") else {
+        return None;
+    };
+    let expected = expected.trim();
+    if expected.is_empty() || !tokens_match(token, expected) {
+        return None;
+    }
+    let subject = "shared";
+    Some(PrincipalSubject {
+        credential_id: Uuid::new_v5(
+            &PRINCIPAL_NAMESPACE,
+            format!("{route_id}/{subject}").as_bytes(),
+        ),
+        subject: Arc::from(subject),
+        org: None,
+    })
+}
+
+fn tokens_match(presented: &str, expected: &str) -> bool {
+    let presented = presented.as_bytes();
+    let expected = expected.as_bytes();
+    if presented.len() != expected.len() {
+        return false;
+    }
+    let mut diff = 0u8;
+    for (left, right) in presented.iter().zip(expected.iter()) {
+        diff |= left ^ right;
+    }
+    diff == 0
 }
 
 fn single_header<'a>(
@@ -277,5 +339,69 @@ mod tests {
                 Err(InferenceAccessError::Unauthorized)
             ));
         }
+    }
+
+    #[test]
+    fn missing_credential_is_unauthorized_without_calling_verify() {
+        let verifier = PrincipalVerifier::new(None);
+        let route_id = Uuid::nil();
+        let principal = crate::config::InferencePrincipalConfig {
+            verify_url: "http://127.0.0.1:9/auth/verify".into(),
+            subject_header: "x-a3s-subject".into(),
+            org_header: None,
+            cache_ttl_secs: 60,
+            models: vec!["*".into()],
+            endpoints: Vec::new(),
+            limits: crate::config::InferenceLimitsConfig {
+                max_spend_micros: None,
+                spend_window: None,
+                spend_baseline_micros: None,
+                baseline_epoch: None,
+                max_concurrent_requests: 4,
+                requests_per_minute: 60,
+                request_burst: 10,
+                tokens_per_minute: 100_000,
+            },
+        };
+        let result = tokio::runtime::Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .unwrap()
+            .block_on(verifier.verify(route_id, &principal, &HeaderMap::new()));
+        assert!(matches!(result, Err(InferenceAccessError::Unauthorized)));
+    }
+
+    #[test]
+    fn shared_token_skips_verify() {
+        let token = "a3s_gw_testtoken";
+        std::env::set_var("A3S_GATEWAY_SHARED_TOKEN", token);
+        let verifier = PrincipalVerifier::new(None);
+        let principal = crate::config::InferencePrincipalConfig {
+            verify_url: "http://127.0.0.1:9/auth/verify".into(),
+            subject_header: "x-a3s-subject".into(),
+            org_header: None,
+            cache_ttl_secs: 60,
+            models: vec!["*".into()],
+            endpoints: Vec::new(),
+            limits: crate::config::InferenceLimitsConfig {
+                max_spend_micros: None,
+                spend_window: None,
+                spend_baseline_micros: None,
+                baseline_epoch: None,
+                max_concurrent_requests: 4,
+                requests_per_minute: 60,
+                request_burst: 10,
+                tokens_per_minute: 100_000,
+            },
+        };
+        let headers = headers(&[("authorization", "Bearer a3s_gw_testtoken")]);
+        let subject = tokio::runtime::Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .unwrap()
+            .block_on(verifier.verify(Uuid::nil(), &principal, &headers))
+            .unwrap();
+        std::env::remove_var("A3S_GATEWAY_SHARED_TOKEN");
+        assert_eq!(&*subject.subject, "shared");
     }
 }

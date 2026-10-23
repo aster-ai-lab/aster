@@ -679,6 +679,8 @@ mod tests {
                             failover: Default::default(),
                             pricing: None,
                             latency_bias: false,
+                            prefix_affinity: false,
+                            prefix_parallelism: 1,
                             model_id: Uuid::new_v4(),
                             targets: vec![InferenceTargetConfig {
                                 target_id: Uuid::new_v4(),

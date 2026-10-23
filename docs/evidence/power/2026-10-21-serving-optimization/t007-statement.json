@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "scope": "single finite real Gateway -> Power -> private llama-server E2E; no pressure/rollout claim",
+  "command": [
+    "python3",
+    "-B",
+    "/code/aster/docs/evidence/power/2026-10-21-serving-optimization/e2e-scenarios.py",
+    "--tag",
+    "t007-e2e-v3-3"
+  ],
+  "raw_sha256": {
+    "t007-e2e-v3-1.json": "b1f80bf9b857c01b707d464ef352df7f55ec57370b416647f52d0de04135a3b8",
+    "t007-e2e-v3-2.json": "67ce07e06fb6d6a18478420e940ee467ebbb0496cb36355a1f0598e9cc0d3586",
+    "t007-e2e-v3-3.json": "198db78329713ff68a6e0e421ce108a4971b72f72db810352a992c5a65fbade3"
+  },
+  "raw_status": "completed-with-failures",
+  "elapsed_ms": 26791.28259200661,
+  "tool_identity": {
+    "runner_sha256": "576b2d13811482024522e790f901647ac79dc6cc4368a2622a71adef856fe546",
+    "matrix_sha256": "76cd001a86a00711a7a770a4a3ae19cb45ab19cce35cbfcfca4af45fffe2b91a",
+    "e2e_sha256": "597f163f45ab0f902383df5e28d064f35c936f2667de9a83f0958ae80d787a24"
+  },
+  "frozen_matrix_source": "matrix-e2e-v3-3.py",
+  "source_file_sha256": {
+    "src/api/openai/chat.rs": "7907f9b0accfeda2b3fdd23d4af9cdf883d2320500f6a18b7032c4e2137c5134",
+    "src/api/openai/chat_runtime.rs": "28e2e5ea0de5241b1a80c2f9833e3ff223796266221479fb3786c8b04ea8040a",
+    "src/api/openai/mod.rs": "ff1fa989fadf915d7e192c34744efb92d3cc6dd859e3b1937f5d6b6c10b7ff58",
+    "src/server/limiter.rs": "04a91712e3b6a4818626a5eab92304a10a94ae5365310d0e2fa358732199c8a0",
+    "src/server/auth.rs": "3c14cbfe9c66e81aa07a67d41770f749524ad44ef82bdef9ee44a2fe1d3d7b5e"
+  },
+  "arms": {
+    "baseline": {
+      "passed": false,
+      "cases": 11,
+      "passed_cases": 8,
+      "failed_cases": [
+        "queued-cancel",
+        "pre-first-meaningful-cancel",
+        "mid-generation-cancel"
+      ],
+      "process_identity": {
+        "power": {
+          "pid": 3087026,
+          "start_ticks": 9094173,
+          "cmdline_sha256": "f2f6f470d30de0c8b85006b10f312705200838163bafe024d50f4c93f82a1ad0",
+          "exe_sha256": "29d239e2495400036af24c7b1bca248e397bbb15b5c13646533d519fb2f345af",
+          "listener_inodes": [
+            "17097597"
+          ],
+          "port": 19200
+        },
+        "gateway": {
+          "pid": 2967433,
+          "start_ticks": 8824516,
+          "cmdline_sha256": "54bf2aaaf180ab2821c6177ddfe4cca9deee7476c1b8889fb30fa9a6169647ac",
+          "exe_sha256": "e5437e7bda876d4a28f1b8b34287f427762c6414d78ff28fb87e42601d721542",
+          "listener_inodes": [
+            "16540587"
+          ],
+          "port": 19880
+        },
+        "engine": {
+          "pid": 2971478,
+          "start_ticks": 8834768,
+          "cmdline_sha256": "ac3f64824254086bd74befdc2c9dc73358edc9b0385d95f3c5f0fa3c5cb633b7",
+          "exe_sha256": "661b413b780759bfa2c9b8fd87608c15fcc3651142d771b1c94d11d01195d298",
+          "listener_inodes": [
+            "16588655"
+          ],
+          "port": 19100
+        }
+      }
+    },
+    "candidate": {
+      "passed": true,
+      "cases": 11,
+      "passed_cases": 11,
+      "failed_cases": [],
+      "process_identity": {
+        "power": {
+          "pid": 3087129,
+          "start_ticks": 9094293,
+          "cmdline_sha256": "5ab778d24babaa6e628e4efa269095153477acb79e06576652bc3010f07df44d",
+          "exe_sha256": "038e96fb23cab83fdbb7122df52ffda22e95daef59d316b64f3ad74967ba1093",
+          "listener_inodes": [
+            "17161341"
+          ],
+          "port": 19210
+        },
+        "gateway": {
+          "pid": 3075982,
+          "start_ticks": 9063942,
+          "cmdline_sha256": "980a0a3f7482e25399025738b0cf3295d28dbfed57fadd35a7ae27cee363686e",
+          "exe_sha256": "eaf9f4ca8baf38074d1548badebbd3b42bd08ab5174e2f9136101ccbcfb6c1fd",
+          "listener_inodes": [
+            "17092855"
+          ],
+          "port": 19881
+        },
+        "engine": {
+          "pid": 2971478,
+          "start_ticks": 8834768,
+          "cmdline_sha256": "ac3f64824254086bd74befdc2c9dc73358edc9b0385d95f3c5f0fa3c5cb633b7",
+          "exe_sha256": "661b413b780759bfa2c9b8fd87608c15fcc3651142d771b1c94d11d01195d298",
+          "listener_inodes": [
+            "16588655"
+          ],
+          "port": 19100
+        }
+      }
+    }
+  },
+  "failed_attempts": {
+    "t007-e2e-v3-1.json": "Preserved client HTTPResponse cross-thread chunk parser close race; fixed with socket-only watchdog and regression before rerun. Auth-shape expectation also corrected from Gateway source.",
+    "t007-e2e-v3-2.json": "Preserved legacy baseline public active-gauge leak blocked overly strict helper precondition. Helper now separates physical native/permit quiescence from the mandatory all-gauges-zero acceptance check."
+  },
+  "limitations": [
+    "Baseline final run began with leaked public active gauge 2 from prior attempts; native/permit running/waiting were idle. Additional cancellations raised it to 4/5/6. Native/permit quiescence permits an independent next case; leaked gauge never passes acceptance.",
+    "One sample per cancellation scenario; recovery observations are descriptive and not a tail-latency or kernel-stop guarantee.",
+    "Missing-auth rejection is generated at Gateway with JSON error:string; typed n=2 rejection is Power OpenAI error unsupported_choice_count at HTTP400.",
+    "Candidate tests requested seed42 with greedy temperature0; provider does not forward seed. No stochastic-seed guarantee is claimed.",
+    "Native slot/task/counters and permit recovery were observed; HTTP socket cancellation does not acknowledge a GPU kernel stopping.",
+    "No process/configuration/source changes or production inference were performed by the scenario driver."
+  ]
+}

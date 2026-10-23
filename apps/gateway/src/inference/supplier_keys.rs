@@ -238,6 +238,8 @@ mod tests {
                             failover: Default::default(),
                             pricing: None,
                             latency_bias: false,
+                            prefix_affinity: false,
+                            prefix_parallelism: 1,
                             model_id: Uuid::from_u128(4),
                             scheduling: None,
                             targets: vec![

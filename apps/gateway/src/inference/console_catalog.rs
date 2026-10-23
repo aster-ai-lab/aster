@@ -74,7 +74,12 @@ pub(crate) fn maybe_spawn_catalog_poller(gateway: Arc<crate::gateway::Gateway>) 
                 .routes
                 .values()
                 .filter(|route| route.console_catalog.is_some())
-                .map(|route| route.route_id)
+                .filter_map(|route| {
+                    route
+                        .console_catalog
+                        .clone()
+                        .map(|catalog| (route.route_id, catalog))
+                })
                 .collect::<Vec<_>>()
         })
         .unwrap_or_default();
@@ -111,15 +116,15 @@ async fn poll_loop(
     gateway: Arc<crate::gateway::Gateway>,
     api_service: String,
     interval: Duration,
-    managed_routes: Vec<uuid::Uuid>,
+    mut managed_routes: Vec<(uuid::Uuid, ConsoleCatalogConfig)>,
 ) {
     let mut last_digest = String::new();
     loop {
         let config = gateway.current_effective_config();
-        let _ = &config;
+        refresh_catalog_policies(&config, &mut managed_routes);
         match fetch_catalog(&config, &api_service).await {
             Ok(body) => {
-                let digest = digest_of(&body);
+                let digest = policy_digest(&body, &managed_routes);
                 if digest == last_digest {
                     tracing::debug!("console catalog unchanged; keeping snapshot");
                 } else {
@@ -134,14 +139,18 @@ async fn poll_loop(
                             continue;
                         }
                     };
-                    let managed = managed_routes.clone();
+                    let mut managed = managed_routes.clone();
                     let applied = gateway
-                        .reload_console_catalog(|current| merge_catalog(current, &routes, &managed))
+                        .reload_console_catalog(|current| {
+                            refresh_catalog_policies(current, &mut managed);
+                            merge_catalog_with_policy(current, &routes, &managed)
+                        })
                         .await;
                     match applied {
                         Ok(()) => {
                             tracing::info!(routes = routes.len(), "console catalog applied");
-                            last_digest = digest;
+                            managed_routes = managed;
+                            last_digest = policy_digest(&body, &managed_routes);
                         }
                         Err(error) => {
                             tracing::warn!(
@@ -162,6 +171,43 @@ async fn poll_loop(
         }
         tokio::time::sleep(interval).await;
     }
+}
+
+fn refresh_catalog_policies(
+    config: &GatewayConfig,
+    policies: &mut [(uuid::Uuid, ConsoleCatalogConfig)],
+) {
+    let Some(inference) = &config.inference else {
+        return;
+    };
+    for (id, policy) in policies {
+        if let Some(source) = inference
+            .routes
+            .get(id)
+            .and_then(|route| route.console_catalog.as_ref())
+        {
+            *policy = source.clone();
+        }
+    }
+}
+
+fn policy_digest(body: &str, policies: &[(uuid::Uuid, ConsoleCatalogConfig)]) -> String {
+    // String-only policy serialization cannot fail. Hash each part separately
+    // so arbitrary catalog bytes cannot collide with a policy boundary.
+    let mut material = digest_of(body);
+    for (id, policy) in policies {
+        material.push_str(&id.to_string());
+        material.push_str(&digest_of(&policy.api_service));
+        material.push_str(&format!(
+            ":{}:{}:{}:",
+            policy.poll_interval_secs, policy.prefix_affinity, policy.prefix_parallelism
+        ));
+        for supplier in &policy.excluded_supplier_ids {
+            material.push_str(&digest_of(supplier));
+        }
+        material.push(';');
+    }
+    digest_of(&material)
 }
 
 fn parse_catalog(body: &str) -> Result<Vec<CatalogRoute>, String> {
@@ -188,10 +234,46 @@ fn parse_catalog(body: &str) -> Result<Vec<CatalogRoute>, String> {
 /// check — a probe failure must not take model routing offline) and the
 /// model targets reference it by supplier name, matching how upstream keys
 /// are keyed.
+#[cfg(test)]
 fn merge_catalog(
     current: &GatewayConfig,
     routes: &[CatalogRoute],
     managed_routes: &[uuid::Uuid],
+) -> GatewayConfig {
+    let policies = managed_routes
+        .iter()
+        .filter_map(|id| {
+            let route = current
+                .inference
+                .as_ref()?
+                .routes
+                .values()
+                .find(|route| route.route_id == *id)?;
+            let catalog = route
+                .console_catalog
+                .clone()
+                .unwrap_or(ConsoleCatalogConfig {
+                    prefix_parallelism: route
+                        .models
+                        .values()
+                        .next()
+                        .map_or(1, |model| model.prefix_parallelism),
+                    api_service: String::new(),
+                    poll_interval_secs: 30,
+                    prefix_affinity: !route.models.is_empty()
+                        && route.models.values().all(|model| model.prefix_affinity),
+                    excluded_supplier_ids: Vec::new(),
+                });
+            Some((*id, catalog))
+        })
+        .collect::<Vec<_>>();
+    merge_catalog_with_policy(current, routes, &policies)
+}
+
+fn merge_catalog_with_policy(
+    current: &GatewayConfig,
+    routes: &[CatalogRoute],
+    policies: &[(uuid::Uuid, ConsoleCatalogConfig)],
 ) -> GatewayConfig {
     let mut merged = current.clone();
     let Some(inference) = merged.inference.as_mut() else {
@@ -200,17 +282,29 @@ fn merge_catalog(
     for route_config in inference.routes.values_mut() {
         // The applied snapshot drops the catalog marker; ownership is by
         // the route IDs captured at spawn.
-        if !managed_routes.contains(&route_config.route_id) {
+        let Some((_, policy)) = policies.iter().find(|(id, _)| *id == route_config.route_id) else {
             continue;
-        }
+        };
+        // The source marker owns the opt-in. Applied snapshots drop that
+        // marker, so subsequent polls inherit only a uniform concrete policy.
+        let prefix_affinity = policy.prefix_affinity;
         let mut models = HashMap::new();
         for catalog_route in routes {
             let failover =
                 FailoverPolicy::parse(&catalog_route.failover).unwrap_or(FailoverPolicy::None);
             let mut targets = Vec::with_capacity(catalog_route.targets.len());
             for target in &catalog_route.targets {
+                if policy.excluded_supplier_ids.contains(&target.supplier_id) {
+                    continue;
+                }
                 targets.push(InferenceTargetConfig {
-                    target_id: uuid::Uuid::new_v4(),
+                    // Exact catalog descriptors, not poll timing, identify the
+                    // target. Route namespace isolates independently granted pools.
+                    target_id: catalog_target_id(
+                        route_config.route_id,
+                        &catalog_route.alias,
+                        target,
+                    ),
                     service: target.name.clone(),
                     upstream_model: target.upstream_model.clone(),
                     priority: target.priority,
@@ -232,10 +326,15 @@ fn merge_catalog(
             models.insert(
                 catalog_route.alias.clone(),
                 InferenceModelConfig {
-                    model_id: uuid::Uuid::new_v4(),
+                    prefix_parallelism: policy.prefix_parallelism,
+                    model_id: uuid::Uuid::new_v5(
+                        &route_config.route_id,
+                        catalog_route.alias.as_bytes(),
+                    ),
                     failover,
                     pricing: None,
                     latency_bias: false,
+                    prefix_affinity,
                     targets,
                     scheduling: None,
                     routing: None,
@@ -266,6 +365,25 @@ fn merge_catalog(
         }
     }
     merged
+}
+
+fn catalog_target_id(route_id: uuid::Uuid, alias: &str, target: &CatalogTarget) -> uuid::Uuid {
+    // Length framing preserves exact descriptor boundaries without guessing
+    // aliases, supplier names, or URL meanings. Priority/weight are routing
+    // policy, not execution identity, so changing them preserves the target ID.
+    let mut identity = Vec::new();
+    for part in [
+        alias,
+        &target.supplier_id,
+        &target.name,
+        &target.protocol,
+        &target.base_url,
+        &target.upstream_model,
+    ] {
+        identity.extend_from_slice(&(part.len() as u64).to_le_bytes());
+        identity.extend_from_slice(part.as_bytes());
+    }
+    uuid::Uuid::new_v5(&route_id, &identity)
 }
 
 /// Reduces a console baseUrl to its origin: the native inference path
@@ -370,6 +488,137 @@ mod tests {
 
     fn catalog_json(routes: &str) -> String {
         format!("{{\"success\":true,\"data\":{{\"routes\":{routes}}}}}")
+    }
+
+    #[test]
+    fn prefix_affinity_catalog_descriptors_keep_target_identity() {
+        let route_id = uuid::Uuid::new_v4();
+        let mut target = CatalogTarget {
+            supplier_id: "supplier-1".into(),
+            name: "pool-1".into(),
+            protocol: "openai".into(),
+            base_url: "http://127.0.0.1:18200/v1".into(),
+            upstream_model: "prism-27b".into(),
+            priority: 0,
+            weight: 1,
+        };
+        let first = catalog_target_id(route_id, "external-model", &target);
+        assert_eq!(
+            first,
+            catalog_target_id(route_id, "external-model", &target)
+        );
+        target.weight = 3;
+        target.priority = 2;
+        assert_eq!(
+            first,
+            catalog_target_id(route_id, "external-model", &target)
+        );
+        assert_ne!(
+            first,
+            catalog_target_id(uuid::Uuid::new_v4(), "external-model", &target)
+        );
+        assert_ne!(first, catalog_target_id(route_id, "another-model", &target));
+        target.upstream_model = "different-deployment".into();
+        assert_ne!(
+            first,
+            catalog_target_id(route_id, "external-model", &target)
+        );
+    }
+
+    #[test]
+    fn prefix_affinity_catalog_reload_keeps_identity_and_honors_disabling() {
+        let route_id = uuid::Uuid::new_v4();
+        let mut current = GatewayConfig::default();
+        current.inference = Some(serde_json::from_value(serde_json::json!({
+            "expires_at":"2099-01-01T00:00:00Z", "tokenizer_revision":crate::config::INFERENCE_TOKENIZER_REVISION,
+            "routes":{route_id.to_string():{
+                "route_id":route_id,"environment_id":uuid::Uuid::new_v4(),"router":"models","policy_revision":1,
+                "models":{},"grants":{},"console_catalog":{"api_service":"console","prefix_affinity":true}
+            }}
+        })).unwrap());
+        let routes = parse_catalog(&catalog_json(r#"[{"alias":"m","failover":"none","targets":[
+            {"supplierId":"supplier-1","name":"pool-1","protocol":"openai","baseUrl":"http://127.0.0.1:18200",
+             "upstreamModel":"prism-27b","priority":0,"weight":1}]}]"#)).unwrap();
+        let first = merge_catalog(&current, &routes, &[route_id]);
+        let second = merge_catalog(&first, &routes, &[route_id]);
+        let model = |config: &GatewayConfig| {
+            config.inference.as_ref().unwrap().routes[&route_id].models["m"].clone()
+        };
+        assert_eq!(model(&first), model(&second));
+        assert!(model(&second).prefix_affinity);
+        let mut draining_routes = routes.clone();
+        let mut sibling = draining_routes[0].targets[0].clone();
+        sibling.supplier_id = "supplier-2".into();
+        sibling.name = "pool-2".into();
+        draining_routes[0].targets.push(sibling);
+        let mut policy = current.inference.as_ref().unwrap().routes[&route_id]
+            .console_catalog
+            .clone()
+            .unwrap();
+        policy.excluded_supplier_ids.push("supplier-1".into());
+        let policies = [(route_id, policy)];
+        let drained = merge_catalog_with_policy(&current, &draining_routes, &policies);
+        let repolled = merge_catalog_with_policy(&drained, &draining_routes, &policies);
+        assert_eq!(model(&repolled).targets.len(), 1);
+        assert_eq!(model(&repolled).targets[0].service, "pool-2");
+        let restored = merge_catalog_with_policy(
+            &repolled,
+            &draining_routes,
+            &[(
+                route_id,
+                current.inference.as_ref().unwrap().routes[&route_id]
+                    .console_catalog
+                    .clone()
+                    .unwrap(),
+            )],
+        );
+        assert_eq!(model(&restored).targets.len(), 2);
+        let mut remembered = policies.to_vec();
+        let before_policy_change = policy_digest("unchanged-catalog", &remembered);
+        refresh_catalog_policies(&current, &mut remembered);
+        assert_ne!(
+            before_policy_change,
+            policy_digest("unchanged-catalog", &remembered)
+        );
+        assert!(remembered[0].1.excluded_supplier_ids.is_empty());
+        let mut changed_source = current.clone();
+        changed_source
+            .inference
+            .as_mut()
+            .unwrap()
+            .routes
+            .get_mut(&route_id)
+            .unwrap()
+            .console_catalog
+            .as_mut()
+            .unwrap()
+            .prefix_affinity = false;
+        let old_policy = policy_digest("unchanged-catalog", &remembered);
+        refresh_catalog_policies(&changed_source, &mut remembered);
+        assert_ne!(old_policy, policy_digest("unchanged-catalog", &remembered));
+        let projected = merge_catalog_with_policy(&changed_source, &routes, &remembered);
+        refresh_catalog_policies(&projected, &mut remembered);
+        assert!(!remembered[0].1.prefix_affinity);
+        assert!(
+            !model(&merge_catalog_with_policy(&projected, &routes, &remembered)).prefix_affinity
+        );
+        // A source reload explicitly disabling locality must take precedence
+        // over previously applied, concrete models on every later poll.
+        let mut disabled = current;
+        disabled
+            .inference
+            .as_mut()
+            .unwrap()
+            .routes
+            .get_mut(&route_id)
+            .unwrap()
+            .console_catalog
+            .as_mut()
+            .unwrap()
+            .prefix_affinity = false;
+        let disabled = merge_catalog(&disabled, &routes, &[route_id]);
+        let again = merge_catalog(&disabled, &routes, &[route_id]);
+        assert!(!model(&again).prefix_affinity);
     }
 
     #[test]

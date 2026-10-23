@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "status": "prepared-and-hermetically-validated; production execution awaits root GO",
+  "scope": "candidate-only single production GPU7 canary then all-eight absolute capacity; no eight-card baseline ratio",
+  "tool_identity": {
+    "helper_sha256": "9385bf26ec9dd6ea971612356214ff2691e319318a87bbddaa3eaded5996675e",
+    "fixture_sha256": "05064a2bbbca4f43a2f2b89e6a0376acc0e97b0c321285e3ae52e7a7993d26e8",
+    "corpus_sha256": "1791c2cc7f6496454c69c903f2c3a82b61240b0e46d6b9b690747a6e7b113256",
+    "frozen_runner_sha256": "576b2d13811482024522e790f901647ac79dc6cc4368a2622a71adef856fe546",
+    "frozen_matrix_sha256": "b1e24fd648da9b7ae31cb3d3ace44c4b9b91dc6c793a0d9de7ac114ba1b821e4"
+  },
+  "fixture_results": [
+    {
+      "command": "C:/Users/admin/AppData/Roaming/uv/python/cpython-3.12.14-windows-x86_64-none/python.exe -B tests/power_serving_eight_card.py",
+      "exit_code": 0,
+      "tests": 12,
+      "elapsed_seconds": 0.555
+    },
+    {
+      "command": "cd /code/aster && python3 -B tests/power_serving_eight_card.py",
+      "exit_code": 0,
+      "tests": 12,
+      "elapsed_seconds": 0.521
+    }
+  ],
+  "production_native_requests": 0,
+  "production_mutations": 0,
+  "model_hashes_performed": 0,
+  "native_signal_capability": "absent; only helper-owned Gateway socket shutdown",
+  "required_actual_observations": [
+    "native listener-PID generation and full command identity",
+    "production alias prism-27b and exact GGUF path",
+    "each sequence context32768 and speculativefalse",
+    "complete finite native metrics and idle pre/post gauges",
+    "each selected physical GPU with <=90 percent whole-card VRAM",
+    "candidate Power effective parallel/admission/specoff/registration",
+    "strict per-GPU native completion delta equals authoritative successful output, mismatchzero",
+    "every selected endpoint receives every fixed corpus case"
+  ],
+  "known_limits": [
+    "Shared production native must be quiesced for attribution; unexpected external token work fails the run.",
+    "Missing native metrics/slots fails closed; current production profiles need root-directed canary/rollout readiness first.",
+    "Windows Winsock can retain an already blocked recv until its original finite request deadline; deployment Linux detached-body guard fixture interrupts within0.3s."
+  ]
+}

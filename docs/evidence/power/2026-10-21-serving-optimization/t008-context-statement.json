@@ -1,0 +1,289 @@
+{
+  "schema_version": 1,
+  "scope": "finite rig7 prefix/context correctness, no capacity or cross-tenant guarantee",
+  "command": [
+    "python3",
+    "-B",
+    "/code/aster/docs/evidence/power/2026-10-21-serving-optimization/context-scenarios.py",
+    "--tag",
+    "t008-context-v3-1"
+  ],
+  "raw_file": "t008-context-v3-1.json",
+  "raw_sha256": "1545deb1a4b88c08dbddfde36283cfe28e1c1f4075f3542cc01b9114ea60ea3f",
+  "tool_identity": {
+    "runner_sha256": "576b2d13811482024522e790f901647ac79dc6cc4368a2622a71adef856fe546",
+    "matrix_sha256": "b1e24fd648da9b7ae31cb3d3ace44c4b9b91dc6c793a0d9de7ac114ba1b821e4",
+    "e2e_sha256": "597f163f45ab0f902383df5e28d064f35c936f2667de9a83f0958ae80d787a24",
+    "context_sha256": "87de1bd7be1c4887c41c4d0b2dd1f8bd9c02e7b14be794674ab544e90a71d7eb"
+  },
+  "status": "passed",
+  "elapsed_ms": 22204.36555398919,
+  "passed_cases": 15,
+  "near_context": [
+    {
+      "arm": "baseline",
+      "native_and_reported_prompt_tokens": 31780,
+      "output_reserve": 16,
+      "reported_plus_reserve": 31796,
+      "checks": {
+        "expected_output": true,
+        "buffered_ttft_unknown": true,
+        "reported_prompt_matches_native_processed_plus_cached": true,
+        "verified_prompt_at_least_31000": true,
+        "verified_prompt_plus_reserve_fits": true,
+        "permit_recovered": true,
+        "all_power_gauges_zero": true
+      }
+    },
+    {
+      "arm": "candidate",
+      "native_and_reported_prompt_tokens": 31780,
+      "output_reserve": 16,
+      "reported_plus_reserve": 31796,
+      "checks": {
+        "expected_output": true,
+        "buffered_ttft_unknown": true,
+        "reported_prompt_matches_native_processed_plus_cached": true,
+        "verified_prompt_at_least_31000": true,
+        "verified_prompt_plus_reserve_fits": true,
+        "authoritative_usage": true,
+        "wire_usage_present": true,
+        "public_usage_matches_upstream": true,
+        "permit_recovered": true,
+        "all_power_gauges_zero": true
+      }
+    }
+  ],
+  "overflow": [
+    {
+      "arm": "native",
+      "http_status": 400,
+      "native_error_context": {
+        "n_prompt_tokens": 33108,
+        "n_ctx": 32768
+      },
+      "checks": {
+        "explicit_http_rejection": true,
+        "typed_error_without_success_choices": true,
+        "no_native_output_or_silent_shift": true,
+        "permit_recovered": true
+      }
+    },
+    {
+      "arm": "baseline",
+      "http_status": 500,
+      "native_error_context": {},
+      "checks": {
+        "explicit_http_rejection": true,
+        "typed_error_without_success_choices": true,
+        "no_native_output_or_silent_shift": true,
+        "permit_recovered": true
+      }
+    },
+    {
+      "arm": "candidate",
+      "http_status": 500,
+      "native_error_context": {},
+      "checks": {
+        "explicit_http_rejection": true,
+        "typed_error_without_success_choices": true,
+        "no_native_output_or_silent_shift": true,
+        "permit_recovered": true
+      }
+    }
+  ],
+  "prefix": [
+    {
+      "arm": "baseline",
+      "case": "prefix-first",
+      "prompt_tokens": 2102,
+      "native_cached_prompt_tokens": 0.0,
+      "cached_fraction": 0.0,
+      "observation": "no-native-cached-tokens-observed",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "case": "prefix-repeat",
+      "prompt_tokens": 2102,
+      "native_cached_prompt_tokens": 2098.0,
+      "cached_fraction": 0.9980970504281637,
+      "observation": "native-prefix-reuse-observed",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "case": "divergent-suffix",
+      "prompt_tokens": 2103,
+      "native_cached_prompt_tokens": 31.0,
+      "cached_fraction": 0.014740846409890632,
+      "observation": "native-prefix-reuse-observed",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "case": "interleaved-alpha",
+      "prompt_tokens": 2102,
+      "native_cached_prompt_tokens": 1587.0,
+      "cached_fraction": 0.7549952426260704,
+      "observation": "native-prefix-reuse-observed",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "case": "interleaved-beta",
+      "prompt_tokens": 2103,
+      "native_cached_prompt_tokens": 1587.0,
+      "cached_fraction": 0.7546362339514978,
+      "observation": "native-prefix-reuse-observed",
+      "passed": true
+    },
+    {
+      "arm": "candidate",
+      "case": "prefix-first",
+      "prompt_tokens": 2102,
+      "native_cached_prompt_tokens": 1587.0,
+      "cached_fraction": 0.7549952426260704,
+      "observation": "native-prefix-reuse-observed",
+      "passed": true
+    },
+    {
+      "arm": "candidate",
+      "case": "prefix-repeat",
+      "prompt_tokens": 2102,
+      "native_cached_prompt_tokens": 2098.0,
+      "cached_fraction": 0.9980970504281637,
+      "observation": "native-prefix-reuse-observed",
+      "passed": true
+    },
+    {
+      "arm": "candidate",
+      "case": "divergent-suffix",
+      "prompt_tokens": 2103,
+      "native_cached_prompt_tokens": 31.0,
+      "cached_fraction": 0.014740846409890632,
+      "observation": "native-prefix-reuse-observed",
+      "passed": true
+    },
+    {
+      "arm": "candidate",
+      "case": "interleaved-alpha",
+      "prompt_tokens": 2102,
+      "native_cached_prompt_tokens": 1587.0,
+      "cached_fraction": 0.7549952426260704,
+      "observation": "native-prefix-reuse-observed",
+      "passed": true
+    },
+    {
+      "arm": "candidate",
+      "case": "interleaved-beta",
+      "prompt_tokens": 2103,
+      "native_cached_prompt_tokens": 1587.0,
+      "cached_fraction": 0.7546362339514978,
+      "observation": "native-prefix-reuse-observed",
+      "passed": true
+    }
+  ],
+  "baseline_restart": {
+    "old_identity": {
+      "pid": 3087026,
+      "start_ticks": 9094173,
+      "cmdline_sha256": "f2f6f470d30de0c8b85006b10f312705200838163bafe024d50f4c93f82a1ad0",
+      "exe_sha256": "29d239e2495400036af24c7b1bca248e397bbb15b5c13646533d519fb2f345af",
+      "listener_inodes": [
+        "17097597"
+      ],
+      "port": 19200
+    },
+    "new_identity": {
+      "pid": 3122985,
+      "start_ticks": 9193483,
+      "cmdline_sha256": "f2f6f470d30de0c8b85006b10f312705200838163bafe024d50f4c93f82a1ad0",
+      "exe_sha256": "29d239e2495400036af24c7b1bca248e397bbb15b5c13646533d519fb2f345af",
+      "listener_inodes": [
+        "17132491"
+      ],
+      "port": 19200
+    },
+    "home": "/code/Power/.git/optimization-20261021/baseline-home",
+    "command": [
+      "/code/Power/.git/optimization-20261021/baseline-power",
+      "serve",
+      "--config",
+      "/code/Power/.git/optimization-20261021/baseline.acl"
+    ],
+    "registry_preserved": true,
+    "health_status": "ok",
+    "loaded_models": 0
+  },
+  "final_recovery": {
+    "baseline": {
+      "native_and_permit_idle": true,
+      "all_power_gauges_zero": true,
+      "sample": {
+        "at_ms": 22022.57608999207,
+        "slot": {
+          "id": 0,
+          "n_ctx": 32768,
+          "id_task": 6469,
+          "is_processing": false
+        },
+        "power": {
+          "power_active_requests": 0.0,
+          "power_requests_waiting": 0.0,
+          "power_requests_running": 0.0
+        },
+        "native": {
+          "llamacpp:prompt_tokens_total": 52670.0,
+          "llamacpp:prompt_tokens_cached_total": 48663.0,
+          "llamacpp:prompt_seconds_total": 23.2809,
+          "llamacpp:tokens_predicted_total": 5503.0,
+          "llamacpp:tokens_predicted_seconds_total": 52.9708,
+          "llamacpp:spec_decode_num_draft_tokens_total": 0.0,
+          "llamacpp:spec_decode_num_accepted_tokens_total": 0.0,
+          "llamacpp:requests_processing": 0.0,
+          "llamacpp:requests_deferred": 0.0
+        }
+      }
+    },
+    "candidate": {
+      "native_and_permit_idle": true,
+      "all_power_gauges_zero": true,
+      "sample": {
+        "at_ms": 22024.908920997404,
+        "slot": {
+          "id": 0,
+          "n_ctx": 32768,
+          "id_task": 6469,
+          "is_processing": false
+        },
+        "power": {
+          "power_active_requests": 0.0,
+          "power_requests_waiting": 0.0,
+          "power_requests_running": 0.0
+        },
+        "native": {
+          "llamacpp:prompt_tokens_total": 52670.0,
+          "llamacpp:prompt_tokens_cached_total": 48663.0,
+          "llamacpp:prompt_seconds_total": 23.2809,
+          "llamacpp:tokens_predicted_total": 5503.0,
+          "llamacpp:tokens_predicted_seconds_total": 52.9708,
+          "llamacpp:spec_decode_num_draft_tokens_total": 0.0,
+          "llamacpp:spec_decode_num_accepted_tokens_total": 0.0,
+          "llamacpp:requests_processing": 0.0,
+          "llamacpp:requests_deferred": 0.0
+        }
+      }
+    }
+  },
+  "limitations": [
+    "One authentication domain, one private slot; no cross-tenant/cache-transfer capability claim.",
+    "Simple READY boundary constraint, not long-memory retrieval quality.",
+    "Both arms use identical synthetic inputs. Candidate first-prefix and near-context calls reused existing native RAM state despite erase attempts; these latency observations are not matched cold performance comparisons.",
+    "Cold/reuse labels use actual native cached-token counter differences. Slot erase success alone is not cold proof.",
+    "Buffered JSON exposes completion time; external TTFT remains null.",
+    "Greedy temperature0; seed42 requested, upstream provider does not forward it.",
+    "Only the verified private baseline Power was restarted with the same command/config/home. Production and candidate processes were unchanged.",
+    "Native slot/permit recovery is observed; no GPU kernel-stop acknowledgement is claimed."
+  ]
+}

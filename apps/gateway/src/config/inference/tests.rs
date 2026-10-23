@@ -1,6 +1,81 @@
 use super::*;
 use crate::config::{GatewayConfig, InferenceModelPricing, InferenceSpendWindow};
 
+#[test]
+fn prefix_affinity_is_opt_in_and_acl_types_remain_closed() {
+    let source = valid_acl();
+    let disabled = GatewayConfig::from_acl(&source).unwrap();
+    let route = disabled
+        .inference
+        .as_ref()
+        .unwrap()
+        .routes
+        .values()
+        .next()
+        .unwrap();
+    assert!(!route.models.values().next().unwrap().prefix_affinity);
+    let enabled = source.replace(
+        &format!("model_id = \"{MODEL_ID}\""),
+        &format!("model_id = \"{MODEL_ID}\"\n prefix_affinity = true"),
+    );
+    assert_ne!(source, enabled);
+    let parsed = GatewayConfig::from_acl(&enabled).unwrap();
+    assert!(
+        parsed
+            .inference
+            .as_ref()
+            .unwrap()
+            .routes
+            .values()
+            .next()
+            .unwrap()
+            .models
+            .values()
+            .next()
+            .unwrap()
+            .prefix_affinity
+    );
+    assert!(GatewayConfig::from_acl(
+        &enabled.replace("prefix_affinity = true", "prefix_affinity = \"yes\"")
+    )
+    .is_err());
+    assert!(GatewayConfig::from_acl(
+        &enabled.replace("prefix_affinity = true", "prefix_affinity_unknown = true")
+    )
+    .is_err());
+    let encoded = serde_json::to_value(route.models.values().next().unwrap()).unwrap();
+    assert!(encoded.get("prefix_affinity").is_none());
+}
+
+#[test]
+fn prefix_catalog_maintenance_ids_are_exact_bounded_and_typed() {
+    let source = valid_acl();
+    let start = source.find("    models \"chat-model\"").unwrap();
+    let end = source
+        .find(&format!("    grants \"{CREDENTIAL_ID}\""))
+        .unwrap();
+    let catalog = "    console_catalog \"published\" {\n api_service = \"model-service\"\n prefix_affinity = true\n excluded_supplier_ids = [\"opaque-supplier-7\"]\n }\n";
+    let source = format!("{}{}{}", &source[..start], catalog, &source[end..]);
+    let parsed = GatewayConfig::from_acl(&source).unwrap();
+    let policy = parsed
+        .inference
+        .as_ref()
+        .unwrap()
+        .routes
+        .values()
+        .next()
+        .unwrap()
+        .console_catalog
+        .as_ref()
+        .unwrap();
+    assert_eq!(policy.excluded_supplier_ids, ["opaque-supplier-7"]);
+    for invalid in ["[\"\"]", "[\" supplier-7\"]", "true", "[7]"] {
+        assert!(
+            GatewayConfig::from_acl(&source.replace("[\"opaque-supplier-7\"]", invalid)).is_err()
+        );
+    }
+}
+
 const GATEWAY_ID: &str = "11111111-1111-4111-8111-111111111111";
 const ENVIRONMENT_ID: &str = "22222222-2222-4222-8222-222222222222";
 const CREDENTIAL_ID: &str = "33333333-3333-4333-8333-333333333333";

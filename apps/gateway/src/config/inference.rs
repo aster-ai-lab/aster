@@ -310,6 +310,14 @@ pub struct InferenceModelConfig {
     /// sense of invariant 11.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub latency_bias: bool,
+    /// Opt-in private prefix locality across authorized targets, bounded by
+    /// local outstanding-request pressure. This is a routing hint, not a KV
+    /// residency claim or permission to share prompts between credentials.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub prefix_affinity: bool,
+    /// Operator-declared slots per replica; estimates never grant admission.
+    #[serde(default = "default_prefix_parallelism")]
+    pub prefix_parallelism: u32,
     /// Optional closed pool-defense and endpoint-scheduling policy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheduling: Option<InferenceSchedulingConfig>,
@@ -908,10 +916,23 @@ pub struct ConsoleCatalogConfig {
     /// Poll interval in seconds; the default matches the spec's 30 s.
     #[serde(default = "default_catalog_poll_interval")]
     pub poll_interval_secs: u64,
+    /// Apply target prefix locality to models projected from this catalog.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub prefix_affinity: bool,
+    #[serde(default = "default_prefix_parallelism")]
+    pub prefix_parallelism: u32,
+    /// Exact opaque supplier IDs withheld locally during maintenance. This
+    /// only narrows a catalog; it never grants a model or edits Cloud state.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub excluded_supplier_ids: Vec<String>,
 }
 
 pub const fn default_catalog_poll_interval() -> u64 {
     30
+}
+
+pub const fn default_prefix_parallelism() -> u32 {
+    1
 }
 
 /// Explicit per-Gateway limits attached to one credential grant.

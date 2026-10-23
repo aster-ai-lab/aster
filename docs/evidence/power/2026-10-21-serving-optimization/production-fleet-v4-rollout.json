@@ -1,0 +1,781 @@
+{
+  "schema": "a3s.production.fleet-rollout-safe-proof.v1",
+  "observed_at": "2026-10-21T04:27:25.828671+00:00",
+  "gpus": [
+    {
+      "gpu": 0,
+      "candidate_readiness": {
+        "observed_at": "2026-10-21T04:24:51.123511+00:00",
+        "readiness": {
+          "native": {
+            "pid": 3614017,
+            "start_ticks": 10128178
+          },
+          "power": {
+            "pid": 3614196,
+            "start_ticks": 10128446
+          },
+          "health_200": true,
+          "candidate_observability_geometry_checked": true,
+          "slots": 2,
+          "cuda_visible_devices": "0",
+          "cuda_device_order": "PCI_BUS_ID",
+          "whole_gpu_memory_mib": {
+            "used": 10376.0,
+            "total": 24564.0
+          },
+          "managed_auth_frontdoor_tested": false
+        },
+        "other_instances_unchanged": true,
+        "acl_sha256": "006d961327725b26ebc928d1777d4351151e19818effb9e37d4930fdc5e69a04",
+        "credential_exported": false
+      },
+      "current_authenticated_probe": {
+        "actual_production_worker_loaded": true,
+        "artifact": "candidate",
+        "completion_http_status": 200,
+        "completion_requested": true,
+        "completion_wall_seconds": 0.128274919,
+        "credentials_output": false,
+        "exact_alias_present": true,
+        "expected_output": true,
+        "gpu": 0,
+        "health_http_status": 200,
+        "models_http_status": 200,
+        "native": {
+          "exe_sha256": "661b413b780759bfa2c9b8fd87608c15fcc3651142d771b1c94d11d01195d298",
+          "pid": 3614017,
+          "start_ticks": 10128178
+        },
+        "power": {
+          "exe_sha256": "75afe5de8d423547fdb9b9bb302b17ca9e168d6f6fe13a18d29fbce9492bf1c1",
+          "pid": 3614196,
+          "start_ticks": 10128446
+        },
+        "status": "worker-recovery-passed",
+        "wall_seconds": 0.463200824
+      }
+    },
+    {
+      "gpu": 1,
+      "candidate_readiness": {
+        "observed_at": "2026-10-21T04:25:48.210143+00:00",
+        "readiness": {
+          "native": {
+            "pid": 3616395,
+            "start_ticks": 10133897
+          },
+          "power": {
+            "pid": 3616686,
+            "start_ticks": 10134153
+          },
+          "health_200": true,
+          "candidate_observability_geometry_checked": true,
+          "slots": 2,
+          "cuda_visible_devices": "1",
+          "cuda_device_order": "PCI_BUS_ID",
+          "whole_gpu_memory_mib": {
+            "used": 10376.0,
+            "total": 24564.0
+          },
+          "managed_auth_frontdoor_tested": false
+        },
+        "other_instances_unchanged": true,
+        "acl_sha256": "fa18291b8368469a983ff96ac6ee45646d739145c2b120a4e4d590067e253f91",
+        "credential_exported": false
+      },
+      "current_authenticated_probe": {
+        "actual_production_worker_loaded": true,
+        "artifact": "candidate",
+        "completion_http_status": 200,
+        "completion_requested": true,
+        "completion_wall_seconds": 0.469170807,
+        "credentials_output": false,
+        "exact_alias_present": true,
+        "expected_output": true,
+        "gpu": 1,
+        "health_http_status": 200,
+        "models_http_status": 200,
+        "native": {
+          "exe_sha256": "661b413b780759bfa2c9b8fd87608c15fcc3651142d771b1c94d11d01195d298",
+          "pid": 3616395,
+          "start_ticks": 10133897
+        },
+        "power": {
+          "exe_sha256": "75afe5de8d423547fdb9b9bb302b17ca9e168d6f6fe13a18d29fbce9492bf1c1",
+          "pid": 3616686,
+          "start_ticks": 10134153
+        },
+        "status": "worker-recovery-passed",
+        "wall_seconds": 0.867018464
+      },
+      "operator_results": [
+        {
+          "gpu": 1,
+          "returncode": 0,
+          "observed_at": "2026-10-21T04:25:43.135198+00:00",
+          "result": {
+            "status": "prepared-not-applied",
+            "gpu_index": 1,
+            "transaction": "/var/lib/a3s-serving-optimization/transactions/rollout-v4/gpu1",
+            "credential_exported": false
+          },
+          "stderr_bytes": 0
+        },
+        {
+          "gpu": 1,
+          "returncode": 0,
+          "observed_at": "2026-10-21T04:25:48.235298+00:00",
+          "result": {
+            "status": "candidate-ready",
+            "gpu_index": 1,
+            "transaction": "/var/lib/a3s-serving-optimization/transactions/rollout-v4/gpu1",
+            "credential_exported": false
+          },
+          "stderr_bytes": 0
+        },
+        {
+          "gpu": 1,
+          "returncode": 0,
+          "observed_at": "2026-10-21T04:25:48.995247+00:00",
+          "result": {
+            "actual_production_worker_loaded": true,
+            "artifact": "candidate",
+            "completion_http_status": 200,
+            "completion_requested": true,
+            "completion_wall_seconds": 0.397379751,
+            "credentials_output": false,
+            "exact_alias_present": true,
+            "expected_output": true,
+            "gpu": 1,
+            "health_http_status": 200,
+            "models_http_status": 200,
+            "native": {
+              "exe_sha256": "661b413b780759bfa2c9b8fd87608c15fcc3651142d771b1c94d11d01195d298",
+              "pid": 3616395,
+              "start_ticks": 10133897
+            },
+            "power": {
+              "exe_sha256": "75afe5de8d423547fdb9b9bb302b17ca9e168d6f6fe13a18d29fbce9492bf1c1",
+              "pid": 3616686,
+              "start_ticks": 10134153
+            },
+            "status": "worker-recovery-passed",
+            "wall_seconds": 0.757512306
+          },
+          "stderr_bytes": 0
+        }
+      ]
+    },
+    {
+      "gpu": 2,
+      "candidate_readiness": {
+        "observed_at": "2026-10-21T04:25:54.455043+00:00",
+        "readiness": {
+          "native": {
+            "pid": 3617154,
+            "start_ticks": 10134518
+          },
+          "power": {
+            "pid": 3617419,
+            "start_ticks": 10134775
+          },
+          "health_200": true,
+          "candidate_observability_geometry_checked": true,
+          "slots": 2,
+          "cuda_visible_devices": "2",
+          "cuda_device_order": "PCI_BUS_ID",
+          "whole_gpu_memory_mib": {
+            "used": 10376.0,
+            "total": 24564.0
+          },
+          "managed_auth_frontdoor_tested": false
+        },
+        "other_instances_unchanged": true,
+        "acl_sha256": "6a174fd87b87b520e2128d22091eb33d709d8e76288b9629cf6fa43a7e7ea5f5",
+        "credential_exported": false
+      },
+      "current_authenticated_probe": {
+        "actual_production_worker_loaded": true,
+        "artifact": "candidate",
+        "completion_http_status": 200,
+        "completion_requested": true,
+        "completion_wall_seconds": 0.43329415,
+        "credentials_output": false,
+        "exact_alias_present": true,
+        "expected_output": true,
+        "gpu": 2,
+        "health_http_status": 200,
+        "models_http_status": 200,
+        "native": {
+          "exe_sha256": "661b413b780759bfa2c9b8fd87608c15fcc3651142d771b1c94d11d01195d298",
+          "pid": 3617154,
+          "start_ticks": 10134518
+        },
+        "power": {
+          "exe_sha256": "75afe5de8d423547fdb9b9bb302b17ca9e168d6f6fe13a18d29fbce9492bf1c1",
+          "pid": 3617419,
+          "start_ticks": 10134775
+        },
+        "status": "worker-recovery-passed",
+        "wall_seconds": 0.844245184
+      },
+      "operator_results": [
+        {
+          "gpu": 2,
+          "returncode": 0,
+          "observed_at": "2026-10-21T04:25:49.396689+00:00",
+          "result": {
+            "status": "prepared-not-applied",
+            "gpu_index": 2,
+            "transaction": "/var/lib/a3s-serving-optimization/transactions/rollout-v4/gpu2",
+            "credential_exported": false
+          },
+          "stderr_bytes": 0
+        },
+        {
+          "gpu": 2,
+          "returncode": 0,
+          "observed_at": "2026-10-21T04:25:54.480308+00:00",
+          "result": {
+            "status": "candidate-ready",
+            "gpu_index": 2,
+            "transaction": "/var/lib/a3s-serving-optimization/transactions/rollout-v4/gpu2",
+            "credential_exported": false
+          },
+          "stderr_bytes": 0
+        },
+        {
+          "gpu": 2,
+          "returncode": 0,
+          "observed_at": "2026-10-21T04:25:55.285703+00:00",
+          "result": {
+            "actual_production_worker_loaded": true,
+            "artifact": "candidate",
+            "completion_http_status": 200,
+            "completion_requested": true,
+            "completion_wall_seconds": 0.398487242,
+            "credentials_output": false,
+            "exact_alias_present": true,
+            "expected_output": true,
+            "gpu": 2,
+            "health_http_status": 200,
+            "models_http_status": 200,
+            "native": {
+              "exe_sha256": "661b413b780759bfa2c9b8fd87608c15fcc3651142d771b1c94d11d01195d298",
+              "pid": 3617154,
+              "start_ticks": 10134518
+            },
+            "power": {
+              "exe_sha256": "75afe5de8d423547fdb9b9bb302b17ca9e168d6f6fe13a18d29fbce9492bf1c1",
+              "pid": 3617419,
+              "start_ticks": 10134775
+            },
+            "status": "worker-recovery-passed",
+            "wall_seconds": 0.801848547
+          },
+          "stderr_bytes": 0
+        }
+      ]
+    },
+    {
+      "gpu": 3,
+      "candidate_readiness": {
+        "observed_at": "2026-10-21T04:26:00.693667+00:00",
+        "readiness": {
+          "native": {
+            "pid": 3618009,
+            "start_ticks": 10135142
+          },
+          "power": {
+            "pid": 3618169,
+            "start_ticks": 10135400
+          },
+          "health_200": true,
+          "candidate_observability_geometry_checked": true,
+          "slots": 2,
+          "cuda_visible_devices": "3",
+          "cuda_device_order": "PCI_BUS_ID",
+          "whole_gpu_memory_mib": {
+            "used": 10376.0,
+            "total": 24564.0
+          },
+          "managed_auth_frontdoor_tested": false
+        },
+        "other_instances_unchanged": true,
+        "acl_sha256": "406b4f771468c889ec8a36c8b3e49df84d96bf0effedd04733af0509cb02ccb2",
+        "credential_exported": false
+      },
+      "current_authenticated_probe": {
+        "actual_production_worker_loaded": true,
+        "artifact": "candidate",
+        "completion_http_status": 200,
+        "completion_requested": true,
+        "completion_wall_seconds": 0.539286523,
+        "credentials_output": false,
+        "exact_alias_present": true,
+        "expected_output": true,
+        "gpu": 3,
+        "health_http_status": 200,
+        "models_http_status": 200,
+        "native": {
+          "exe_sha256": "661b413b780759bfa2c9b8fd87608c15fcc3651142d771b1c94d11d01195d298",
+          "pid": 3618009,
+          "start_ticks": 10135142
+        },
+        "power": {
+          "exe_sha256": "75afe5de8d423547fdb9b9bb302b17ca9e168d6f6fe13a18d29fbce9492bf1c1",
+          "pid": 3618169,
+          "start_ticks": 10135400
+        },
+        "status": "worker-recovery-passed",
+        "wall_seconds": 0.955711037
+      },
+      "operator_results": [
+        {
+          "gpu": 3,
+          "returncode": 0,
+          "observed_at": "2026-10-21T04:25:55.629204+00:00",
+          "result": {
+            "status": "prepared-not-applied",
+            "gpu_index": 3,
+            "transaction": "/var/lib/a3s-serving-optimization/transactions/rollout-v4/gpu3",
+            "credential_exported": false
+          },
+          "stderr_bytes": 0
+        },
+        {
+          "gpu": 3,
+          "returncode": 0,
+          "observed_at": "2026-10-21T04:26:00.707035+00:00",
+          "result": {
+            "status": "candidate-ready",
+            "gpu_index": 3,
+            "transaction": "/var/lib/a3s-serving-optimization/transactions/rollout-v4/gpu3",
+            "credential_exported": false
+          },
+          "stderr_bytes": 0
+        },
+        {
+          "gpu": 3,
+          "returncode": 0,
+          "observed_at": "2026-10-21T04:26:01.439195+00:00",
+          "result": {
+            "actual_production_worker_loaded": true,
+            "artifact": "candidate",
+            "completion_http_status": 200,
+            "completion_requested": true,
+            "completion_wall_seconds": 0.360844991,
+            "credentials_output": false,
+            "exact_alias_present": true,
+            "expected_output": true,
+            "gpu": 3,
+            "health_http_status": 200,
+            "models_http_status": 200,
+            "native": {
+              "exe_sha256": "661b413b780759bfa2c9b8fd87608c15fcc3651142d771b1c94d11d01195d298",
+              "pid": 3618009,
+              "start_ticks": 10135142
+            },
+            "power": {
+              "exe_sha256": "75afe5de8d423547fdb9b9bb302b17ca9e168d6f6fe13a18d29fbce9492bf1c1",
+              "pid": 3618169,
+              "start_ticks": 10135400
+            },
+            "status": "worker-recovery-passed",
+            "wall_seconds": 0.729496059
+          },
+          "stderr_bytes": 0
+        }
+      ]
+    },
+    {
+      "gpu": 4,
+      "candidate_readiness": {
+        "observed_at": "2026-10-21T04:26:06.824098+00:00",
+        "readiness": {
+          "native": {
+            "pid": 3618750,
+            "start_ticks": 10135749
+          },
+          "power": {
+            "pid": 3618930,
+            "start_ticks": 10136015
+          },
+          "health_200": true,
+          "candidate_observability_geometry_checked": true,
+          "slots": 2,
+          "cuda_visible_devices": "4",
+          "cuda_device_order": "PCI_BUS_ID",
+          "whole_gpu_memory_mib": {
+            "used": 10376.0,
+            "total": 24564.0
+          },
+          "managed_auth_frontdoor_tested": false
+        },
+        "other_instances_unchanged": true,
+        "acl_sha256": "b37162a3dac27eabc14deab1ecd0d26957fb36d0d7227c79a3e678d557bc7af4",
+        "credential_exported": false
+      },
+      "current_authenticated_probe": {
+        "actual_production_worker_loaded": true,
+        "artifact": "candidate",
+        "completion_http_status": 200,
+        "completion_requested": true,
+        "completion_wall_seconds": 0.209825456,
+        "credentials_output": false,
+        "exact_alias_present": true,
+        "expected_output": true,
+        "gpu": 4,
+        "health_http_status": 200,
+        "models_http_status": 200,
+        "native": {
+          "exe_sha256": "661b413b780759bfa2c9b8fd87608c15fcc3651142d771b1c94d11d01195d298",
+          "pid": 3618750,
+          "start_ticks": 10135749
+        },
+        "power": {
+          "exe_sha256": "75afe5de8d423547fdb9b9bb302b17ca9e168d6f6fe13a18d29fbce9492bf1c1",
+          "pid": 3618930,
+          "start_ticks": 10136015
+        },
+        "status": "worker-recovery-passed",
+        "wall_seconds": 0.55248224
+      },
+      "operator_results": [
+        {
+          "gpu": 4,
+          "returncode": 0,
+          "observed_at": "2026-10-21T04:26:01.809106+00:00",
+          "result": {
+            "status": "prepared-not-applied",
+            "gpu_index": 4,
+            "transaction": "/var/lib/a3s-serving-optimization/transactions/rollout-v4/gpu4",
+            "credential_exported": false
+          },
+          "stderr_bytes": 0
+        },
+        {
+          "gpu": 4,
+          "returncode": 0,
+          "observed_at": "2026-10-21T04:26:06.835426+00:00",
+          "result": {
+            "status": "candidate-ready",
+            "gpu_index": 4,
+            "transaction": "/var/lib/a3s-serving-optimization/transactions/rollout-v4/gpu4",
+            "credential_exported": false
+          },
+          "stderr_bytes": 0
+        },
+        {
+          "gpu": 4,
+          "returncode": 0,
+          "observed_at": "2026-10-21T04:26:07.621032+00:00",
+          "result": {
+            "actual_production_worker_loaded": true,
+            "artifact": "candidate",
+            "completion_http_status": 200,
+            "completion_requested": true,
+            "completion_wall_seconds": 0.393092737,
+            "credentials_output": false,
+            "exact_alias_present": true,
+            "expected_output": true,
+            "gpu": 4,
+            "health_http_status": 200,
+            "models_http_status": 200,
+            "native": {
+              "exe_sha256": "661b413b780759bfa2c9b8fd87608c15fcc3651142d771b1c94d11d01195d298",
+              "pid": 3618750,
+              "start_ticks": 10135749
+            },
+            "power": {
+              "exe_sha256": "75afe5de8d423547fdb9b9bb302b17ca9e168d6f6fe13a18d29fbce9492bf1c1",
+              "pid": 3618930,
+              "start_ticks": 10136015
+            },
+            "status": "worker-recovery-passed",
+            "wall_seconds": 0.783247738
+          },
+          "stderr_bytes": 0
+        }
+      ]
+    },
+    {
+      "gpu": 5,
+      "candidate_readiness": {
+        "observed_at": "2026-10-21T04:26:12.935267+00:00",
+        "readiness": {
+          "native": {
+            "pid": 3619503,
+            "start_ticks": 10136365
+          },
+          "power": {
+            "pid": 3619755,
+            "start_ticks": 10136624
+          },
+          "health_200": true,
+          "candidate_observability_geometry_checked": true,
+          "slots": 2,
+          "cuda_visible_devices": "5",
+          "cuda_device_order": "PCI_BUS_ID",
+          "whole_gpu_memory_mib": {
+            "used": 10376.0,
+            "total": 24564.0
+          },
+          "managed_auth_frontdoor_tested": false
+        },
+        "other_instances_unchanged": true,
+        "acl_sha256": "4f9e07c433adef9bedbf5531599a37680cb9dd8710a586adefa854773aa5cddf",
+        "credential_exported": false
+      },
+      "current_authenticated_probe": {
+        "actual_production_worker_loaded": true,
+        "artifact": "candidate",
+        "completion_http_status": 200,
+        "completion_requested": true,
+        "completion_wall_seconds": 0.20542792,
+        "credentials_output": false,
+        "exact_alias_present": true,
+        "expected_output": true,
+        "gpu": 5,
+        "health_http_status": 200,
+        "models_http_status": 200,
+        "native": {
+          "exe_sha256": "661b413b780759bfa2c9b8fd87608c15fcc3651142d771b1c94d11d01195d298",
+          "pid": 3619503,
+          "start_ticks": 10136365
+        },
+        "power": {
+          "exe_sha256": "75afe5de8d423547fdb9b9bb302b17ca9e168d6f6fe13a18d29fbce9492bf1c1",
+          "pid": 3619755,
+          "start_ticks": 10136624
+        },
+        "status": "worker-recovery-passed",
+        "wall_seconds": 0.60715188
+      },
+      "operator_results": [
+        {
+          "gpu": 5,
+          "returncode": 0,
+          "observed_at": "2026-10-21T04:26:07.987736+00:00",
+          "result": {
+            "status": "prepared-not-applied",
+            "gpu_index": 5,
+            "transaction": "/var/lib/a3s-serving-optimization/transactions/rollout-v4/gpu5",
+            "credential_exported": false
+          },
+          "stderr_bytes": 0
+        },
+        {
+          "gpu": 5,
+          "returncode": 0,
+          "observed_at": "2026-10-21T04:26:12.960903+00:00",
+          "result": {
+            "status": "candidate-ready",
+            "gpu_index": 5,
+            "transaction": "/var/lib/a3s-serving-optimization/transactions/rollout-v4/gpu5",
+            "credential_exported": false
+          },
+          "stderr_bytes": 0
+        },
+        {
+          "gpu": 5,
+          "returncode": 0,
+          "observed_at": "2026-10-21T04:26:13.788729+00:00",
+          "result": {
+            "actual_production_worker_loaded": true,
+            "artifact": "candidate",
+            "completion_http_status": 200,
+            "completion_requested": true,
+            "completion_wall_seconds": 0.394002379,
+            "credentials_output": false,
+            "exact_alias_present": true,
+            "expected_output": true,
+            "gpu": 5,
+            "health_http_status": 200,
+            "models_http_status": 200,
+            "native": {
+              "exe_sha256": "661b413b780759bfa2c9b8fd87608c15fcc3651142d771b1c94d11d01195d298",
+              "pid": 3619503,
+              "start_ticks": 10136365
+            },
+            "power": {
+              "exe_sha256": "75afe5de8d423547fdb9b9bb302b17ca9e168d6f6fe13a18d29fbce9492bf1c1",
+              "pid": 3619755,
+              "start_ticks": 10136624
+            },
+            "status": "worker-recovery-passed",
+            "wall_seconds": 0.824607509
+          },
+          "stderr_bytes": 0
+        }
+      ]
+    },
+    {
+      "gpu": 6,
+      "candidate_readiness": {
+        "observed_at": "2026-10-21T04:26:19.036607+00:00",
+        "readiness": {
+          "native": {
+            "pid": 3620255,
+            "start_ticks": 10136978
+          },
+          "power": {
+            "pid": 3620516,
+            "start_ticks": 10137234
+          },
+          "health_200": true,
+          "candidate_observability_geometry_checked": true,
+          "slots": 2,
+          "cuda_visible_devices": "6",
+          "cuda_device_order": "PCI_BUS_ID",
+          "whole_gpu_memory_mib": {
+            "used": 10376.0,
+            "total": 24564.0
+          },
+          "managed_auth_frontdoor_tested": false
+        },
+        "other_instances_unchanged": true,
+        "acl_sha256": "c312a795105a6bfab3df6354be8b355afaf9602d1b571b9adc80b13d3e326e8c",
+        "credential_exported": false
+      },
+      "current_authenticated_probe": {
+        "actual_production_worker_loaded": true,
+        "artifact": "candidate",
+        "completion_http_status": 200,
+        "completion_requested": true,
+        "completion_wall_seconds": 0.207920437,
+        "credentials_output": false,
+        "exact_alias_present": true,
+        "expected_output": true,
+        "gpu": 6,
+        "health_http_status": 200,
+        "models_http_status": 200,
+        "native": {
+          "exe_sha256": "661b413b780759bfa2c9b8fd87608c15fcc3651142d771b1c94d11d01195d298",
+          "pid": 3620255,
+          "start_ticks": 10136978
+        },
+        "power": {
+          "exe_sha256": "75afe5de8d423547fdb9b9bb302b17ca9e168d6f6fe13a18d29fbce9492bf1c1",
+          "pid": 3620516,
+          "start_ticks": 10137234
+        },
+        "status": "worker-recovery-passed",
+        "wall_seconds": 0.584140858
+      },
+      "operator_results": [
+        {
+          "gpu": 6,
+          "returncode": 0,
+          "observed_at": "2026-10-21T04:26:14.125443+00:00",
+          "result": {
+            "status": "prepared-not-applied",
+            "gpu_index": 6,
+            "transaction": "/var/lib/a3s-serving-optimization/transactions/rollout-v4/gpu6",
+            "credential_exported": false
+          },
+          "stderr_bytes": 0
+        },
+        {
+          "gpu": 6,
+          "returncode": 0,
+          "observed_at": "2026-10-21T04:26:19.049186+00:00",
+          "result": {
+            "status": "candidate-ready",
+            "gpu_index": 6,
+            "transaction": "/var/lib/a3s-serving-optimization/transactions/rollout-v4/gpu6",
+            "credential_exported": false
+          },
+          "stderr_bytes": 0
+        },
+        {
+          "gpu": 6,
+          "returncode": 0,
+          "observed_at": "2026-10-21T04:26:19.854868+00:00",
+          "result": {
+            "actual_production_worker_loaded": true,
+            "artifact": "candidate",
+            "completion_http_status": 200,
+            "completion_requested": true,
+            "completion_wall_seconds": 0.395465675,
+            "credentials_output": false,
+            "exact_alias_present": true,
+            "expected_output": true,
+            "gpu": 6,
+            "health_http_status": 200,
+            "models_http_status": 200,
+            "native": {
+              "exe_sha256": "661b413b780759bfa2c9b8fd87608c15fcc3651142d771b1c94d11d01195d298",
+              "pid": 3620255,
+              "start_ticks": 10136978
+            },
+            "power": {
+              "exe_sha256": "75afe5de8d423547fdb9b9bb302b17ca9e168d6f6fe13a18d29fbce9492bf1c1",
+              "pid": 3620516,
+              "start_ticks": 10137234
+            },
+            "status": "worker-recovery-passed",
+            "wall_seconds": 0.803348446
+          },
+          "stderr_bytes": 0
+        }
+      ]
+    },
+    {
+      "gpu": 7,
+      "candidate_readiness": {
+        "observed_at": "2026-10-21T03:47:43.482400+00:00",
+        "readiness": {
+          "native": {
+            "pid": 3507977,
+            "start_ticks": 9905413
+          },
+          "power": {
+            "pid": 3508150,
+            "start_ticks": 9905680
+          },
+          "health_200": true,
+          "candidate_observability_geometry_checked": true,
+          "slots": 2,
+          "cuda_visible_devices": "7",
+          "cuda_device_order": "PCI_BUS_ID",
+          "whole_gpu_memory_mib": {
+            "used": 10376.0,
+            "total": 24564.0
+          },
+          "managed_auth_frontdoor_tested": false
+        },
+        "other_instances_unchanged": true,
+        "acl_sha256": "929321161ae9e153ba9de9d64eb8c408fdaf91f23715c9a74c898941761cfa2c",
+        "credential_exported": false
+      },
+      "current_authenticated_probe": {
+        "actual_production_worker_loaded": true,
+        "artifact": "candidate",
+        "completion_http_status": 200,
+        "completion_requested": true,
+        "completion_wall_seconds": 0.25554435,
+        "credentials_output": false,
+        "exact_alias_present": true,
+        "expected_output": true,
+        "gpu": 7,
+        "health_http_status": 200,
+        "models_http_status": 200,
+        "native": {
+          "exe_sha256": "661b413b780759bfa2c9b8fd87608c15fcc3651142d771b1c94d11d01195d298",
+          "pid": 3507977,
+          "start_ticks": 9905413
+        },
+        "power": {
+          "exe_sha256": "75afe5de8d423547fdb9b9bb302b17ca9e168d6f6fe13a18d29fbce9492bf1c1",
+          "pid": 3598611,
+          "start_ticks": 10082142
+        },
+        "status": "worker-recovery-passed",
+        "wall_seconds": 0.559776167
+      }
+    }
+  ],
+  "credentials_exported": false
+}

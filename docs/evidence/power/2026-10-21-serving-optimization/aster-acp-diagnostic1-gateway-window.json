@@ -1,0 +1,121 @@
+{
+  "command": [
+    "journalctl",
+    "-u",
+    "a3s-gateway.service",
+    "--since",
+    "2026-10-21 04:50:59 UTC",
+    "--until",
+    "2026-10-21 04:51:35 UTC",
+    "-n",
+    "500",
+    "--no-pager",
+    "-o",
+    "json"
+  ],
+  "exit_code": 0,
+  "journal_records": 25,
+  "bounded_window_saturated": false,
+  "malformed_records": 0,
+  "access_events": [
+    {
+      "completion_utc": "2026-10-21T04:51:14.677410+00:00",
+      "estimated_start_utc": "2026-10-21T04:51:11.945410+00:00",
+      "method": "POST",
+      "path": "/v1/chat/completions",
+      "http_status": 200,
+      "duration_ms": 2732,
+      "response_bytes": 2244,
+      "request_id": "7f7ce9a9-b95d-411f-b2dd-edeaa36f0864",
+      "power_index": 1
+    },
+    {
+      "completion_utc": "2026-10-21T04:51:17.706756+00:00",
+      "estimated_start_utc": "2026-10-21T04:51:15.055756+00:00",
+      "method": "POST",
+      "path": "/v1/chat/completions",
+      "http_status": 200,
+      "duration_ms": 2651,
+      "response_bytes": 2245,
+      "request_id": "7e81da9a-bcad-49d9-bb45-7410087f1dc2",
+      "power_index": 2
+    },
+    {
+      "completion_utc": "2026-10-21T04:51:20.700561+00:00",
+      "estimated_start_utc": "2026-10-21T04:51:18.068561+00:00",
+      "method": "POST",
+      "path": "/v1/chat/completions",
+      "http_status": 200,
+      "duration_ms": 2632,
+      "response_bytes": 2245,
+      "request_id": "df4ea2b0-c048-43fe-a2e0-cd04d3d96123",
+      "power_index": 3
+    },
+    {
+      "completion_utc": "2026-10-21T04:51:23.057219+00:00",
+      "estimated_start_utc": "2026-10-21T04:51:21.095219+00:00",
+      "method": "POST",
+      "path": "/v1/chat/completions",
+      "http_status": 200,
+      "duration_ms": 1962,
+      "response_bytes": 2347,
+      "request_id": "b0e80c07-ba1a-4e6a-8b1f-98faaf0e8827",
+      "power_index": 4
+    },
+    {
+      "completion_utc": "2026-10-21T04:51:25.505630+00:00",
+      "estimated_start_utc": "2026-10-21T04:51:23.465630+00:00",
+      "method": "POST",
+      "path": "/v1/chat/completions",
+      "http_status": 200,
+      "duration_ms": 2040,
+      "response_bytes": 2206,
+      "request_id": "f3be139d-f3dd-477c-b370-e575f2f073a6",
+      "power_index": 5
+    },
+    {
+      "completion_utc": "2026-10-21T04:51:28.116546+00:00",
+      "estimated_start_utc": "2026-10-21T04:51:25.862546+00:00",
+      "method": "POST",
+      "path": "/v1/chat/completions",
+      "http_status": 200,
+      "duration_ms": 2254,
+      "response_bytes": 2252,
+      "request_id": "aef01b2d-cb6b-4e9f-9bf0-48550e3be54e",
+      "power_index": 6
+    },
+    {
+      "completion_utc": "2026-10-21T04:51:31.094865+00:00",
+      "estimated_start_utc": "2026-10-21T04:51:28.476865+00:00",
+      "method": "POST",
+      "path": "/v1/chat/completions",
+      "http_status": 200,
+      "duration_ms": 2618,
+      "response_bytes": 2253,
+      "request_id": "8855c0bd-3ac5-4611-bb35-73e5cacc8aeb",
+      "power_index": 7
+    },
+    {
+      "completion_utc": "2026-10-21T04:51:33.996457+00:00",
+      "estimated_start_utc": "2026-10-21T04:51:31.457457+00:00",
+      "method": "POST",
+      "path": "/v1/chat/completions",
+      "http_status": 200,
+      "duration_ms": 2539,
+      "response_bytes": 2252,
+      "request_id": "00a11bcc-1d9e-4cdc-ae6a-f0d16c240b83",
+      "power_index": 0
+    }
+  ],
+  "caller_attribution": "UNKNOWN; no own HTTP request IDs observed",
+  "timestamp_semantics": "entry timestamp at terminal access-log construction; estimated start subtracts duration, asynchronous emission can lag",
+  "raw_message_exported": false,
+  "credential_or_prompt_exported": false,
+  "helper_sha256": "d6e52be4e2e2b480f2151c9be1a74a2f7a8f8228846d065ec7931667165a6e95",
+  "acp_observed_window": {
+    "since": "2026-10-21T04:51:04.308603+00:00",
+    "until": "2026-10-21T04:51:30.729603+00:00"
+  },
+  "ssh_exit_code": 0,
+  "helper_source": "acp-journal-metadata.py"
+}

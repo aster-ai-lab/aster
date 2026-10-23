@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "status": "prepared; not executed against production; awaits root GO",
+  "qualification_scope": "already-ready worker7 v4 functional canary, optional smoke, then12 full candidate-only cells; no native/service lifecycle",
+  "sha256": {
+    "driver": "9719ba9f3513a77912015cf7817ff7d387666b9f932cef72e52df7310186c10e",
+    "tests": "4ecb2d4fee210e401e0c2ebe0a7c08bd1bc86a62eda5d013848fc77a68787ccf",
+    "canary": "1960de0dd2c8dbec7338f808ddbd207972fb63844fa022607bb676f1069c459e",
+    "eight_card": "9385bf26ec9dd6ea971612356214ff2691e319318a87bbddaa3eaded5996675e",
+    "runner": "576b2d13811482024522e790f901647ac79dc6cc4368a2622a71adef856fe546",
+    "matrix": "b1e24fd648da9b7ae31cb3d3ace44c4b9b91dc6c793a0d9de7ac114ba1b821e4"
+  },
+  "tests": [
+    {
+      "command": "python3 -B tests/power_serving_canary_driver.py",
+      "host": "existing remote serving host; hermetic only",
+      "exit_code": 0,
+      "passed": 6,
+      "elapsed_seconds": 0.027
+    },
+    {
+      "command": "python3 -B tests/power_serving_canary.py",
+      "host": "existing remote serving host; hermetic only",
+      "exit_code": 0,
+      "passed": 8,
+      "elapsed_seconds": 11.935
+    }
+  ],
+  "revisions": [
+    "Independent Gateway reviewer identified post-Popen initialization escaping cleanup; fixed and covered by a failure-injection fixture before freeze."
+  ],
+  "runtime_identity": "candidate-v4-power SHA75afe5de8d423547fdb9b9bb302b17ca9e168d6f6fe13a18d29fbce9492bf1c1 plus actual worker7 identity/provenance/readiness required",
+  "commands": {
+    "smoke": "python3 -u -B /code/aster/docs/evidence/power/2026-10-21-serving-optimization/canary-qualification-driver.py --slots 2 --phase smoke",
+    "full": "python3 -u -B /code/aster/docs/evidence/power/2026-10-21-serving-optimization/canary-qualification-driver.py --slots 2 --phase full"
+  },
+  "request_dispatch_performed": false,
+  "benchmark_key_read": false,
+  "native_stop_capability": "absent; only direct owned Python qualification child can be terminated on its deadline"
+}

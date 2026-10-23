@@ -428,10 +428,29 @@ fn parse_console_catalog(block: &Block) -> Result<crate::config::ConsoleCatalogC
         block,
         "console_catalog",
         1,
-        &["api_service", "poll_interval"],
+        &[
+            "api_service",
+            "poll_interval",
+            "prefix_affinity",
+            "excluded_supplier_ids",
+            "prefix_parallelism",
+        ],
         &[],
     )?;
     Ok(crate::config::ConsoleCatalogConfig {
+        prefix_parallelism: optional_prefix_parallelism(block)?,
+        excluded_supplier_ids: {
+            let ids = optional_literal_string_list_attr(block, "excluded_supplier_ids")?;
+            if ids.len() > 256
+                || ids
+                    .iter()
+                    .any(|id| id.is_empty() || id.len() > 256 || id.trim() != id)
+            {
+                return Err(config_error("console_catalog excluded_supplier_ids requires at most 256 exact nonempty IDs of at most 256 bytes"));
+            }
+            ids
+        },
+        prefix_affinity: bool_attr(block, &["prefix_affinity"])?.unwrap_or(false),
         api_service: required_literal_string_attr(block, "api_service")?,
         poll_interval_secs: optional_poll_interval(block)?
             .unwrap_or(crate::config::default_catalog_poll_interval()),
@@ -608,7 +627,13 @@ fn parse_model(block: &Block) -> Result<(String, InferenceModelConfig)> {
         block,
         "model",
         1,
-        &["model_id", "latency_bias", "engine_profile"],
+        &[
+            "model_id",
+            "latency_bias",
+            "prefix_parallelism",
+            "prefix_affinity",
+            "engine_profile",
+        ],
         &["targets", "scheduling", "pricing", "routing"],
     )?;
     let alias = block.labels[0].clone();
@@ -650,12 +675,14 @@ fn parse_model(block: &Block) -> Result<(String, InferenceModelConfig)> {
     Ok((
         alias,
         InferenceModelConfig {
+            prefix_parallelism: optional_prefix_parallelism(block)?,
             routing,
             engine_profile: optional_literal_string_attr(block, "engine_profile")?,
             model_id: required_uuid_attr(block, "model_id")?,
             failover: Default::default(),
             pricing,
             latency_bias: bool_attr(block, &["latency_bias"])?.unwrap_or(false),
+            prefix_affinity: bool_attr(block, &["prefix_affinity"])?.unwrap_or(false),
             targets,
             scheduling,
         },
@@ -1030,4 +1057,12 @@ fn required_phase_list_attr(block: &Block, key: &str) -> Result<Vec<InferencePha
 fn required_u64_attr(block: &Block, key: &str) -> Result<u64> {
     u64_attr(block, &[key])?
         .ok_or_else(|| config_error(format!("{} block requires {key}", block.name)))
+}
+
+fn optional_prefix_parallelism(block: &Block) -> Result<u32> {
+    let slots = u32_attr(block, &["prefix_parallelism"])?.unwrap_or(1);
+    if !(1..=1024).contains(&slots) {
+        return Err(config_error("prefix_parallelism must be in 1..=1024"));
+    }
+    Ok(slots)
 }
