@@ -6,6 +6,12 @@ PAGE_FILES = (
     "download/app.js",
     "download/canvas.js",
 )
+HOME_FILES = (
+    "index.html",
+    "home.css",
+    "home.js",
+    "cosmic.js",
+)
 SCREENSHOT_FILES = (
     "download/screenshots/workspace.png",
     "download/screenshots/office.png",

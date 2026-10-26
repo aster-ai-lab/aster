@@ -1,4 +1,4 @@
-name: Aster download website
+name: Aster website
 
 on:
   push:
@@ -7,6 +7,10 @@ on:
       - apps/web/public/download/**
       - apps/web/public/tenant/aster/logo.svg
       - apps/web/public/tenant/aster/mark-light.png
+      - apps/web/public/index.html
+      - apps/web/public/home.css
+      - apps/web/public/home.js
+      - apps/web/public/cosmic.js
       - apps/web/scripts/**
       - apps/web/tests/**
       - apps/web/README.md
@@ -16,6 +20,10 @@ on:
       - apps/web/public/download/**
       - apps/web/public/tenant/aster/logo.svg
       - apps/web/public/tenant/aster/mark-light.png
+      - apps/web/public/index.html
+      - apps/web/public/home.css
+      - apps/web/public/home.js
+      - apps/web/public/cosmic.js
       - apps/web/scripts/**
       - apps/web/tests/**
       - .github/workflows/aster-pages.yml
@@ -42,10 +50,12 @@ jobs:
           python3 apps/web/scripts/check_site.py
           node --check apps/web/public/download/app.js
           node --check apps/web/public/download/canvas.js
+          node --check apps/web/public/home.js
+          node --check apps/web/public/cosmic.js
       - name: Install isolated public DOM test dependency
         run: npm install --prefix "$RUNNER_TEMP/download-test-deps" --ignore-scripts --no-save --package-lock=false jsdom@26.1.0
-      - name: Test public download interactions
-        run: JS_DOM_MODULE="$RUNNER_TEMP/download-test-deps/node_modules/jsdom" node --test apps/web/tests/download.test.cjs apps/web/tests/canvas.test.cjs
+      - name: Test public site interactions
+        run: JS_DOM_MODULE="$RUNNER_TEMP/download-test-deps/node_modules/jsdom" node --test apps/web/tests/download.test.cjs apps/web/tests/canvas.test.cjs apps/web/tests/cosmic.test.cjs apps/web/tests/home.test.cjs
       - name: Stage only the public deployment files
         run: |
           python3 apps/web/scripts/stage_site.py _aster_site

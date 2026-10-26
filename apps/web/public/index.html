@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f6f6f6" />
+    <meta
+      name="description"
+      content="Aster 连接你配置的模型、本地文件与工具，在真实项目中规划、执行、审查，从模型提案走向可验证的任务交付。"
+    />
+    <meta property="og:title" content="Aster — 让想法落地" />
+    <meta
+      property="og:description"
+      content="受控执行、事实日志、验证闭环。用 Aster 完成研究、文档、数据与开发任务。"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://aster-ai-lab.github.io/aster/" />
+    <title>Aster — 让想法落地</title>
+    <link rel="icon" href="./tenant/aster/mark-light.png" type="image/png" />
+    <link rel="canonical" href="https://aster-ai-lab.github.io/aster/" />
+    <link rel="stylesheet" href="./home.css" />
+    <script src="./home.js" defer></script>
+    <script src="./cosmic.js" defer></script>
+  </head>
+  <body id="top">
+    <svg class="icon-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <symbol id="i-arrow" viewBox="0 0 24 24">
+          <path d="M5 12h14m-6-6 6 6-6 6" />
+        </symbol>
+        <symbol id="i-arrow-up" viewBox="0 0 24 24">
+          <path d="M12 20V5m-6 6 6-6 6 6" />
+        </symbol>
+        <symbol id="i-download" viewBox="0 0 24 24">
+          <path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4" />
+        </symbol>
+        <symbol id="i-chevron" viewBox="0 0 24 24">
+          <path d="m7 10 5 5 5-5" />
+        </symbol>
+        <symbol id="i-apple" viewBox="0 0 24 24">
+          <path fill="currentColor" stroke="none" d="M16.8 12.6c0-2.2 1.8-3.3 1.9-3.4-1-1.5-2.6-1.7-3.2-1.7-1.4-.1-2.7.8-3.4.8-.7 0-1.8-.8-3-.8-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.3 2.9 2.2 1.2 0 1.6-.7 3.1-.7s1.9.7 3.1.7c1.3 0 2.1-1.1 2.8-2.2.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.9-1.1-2.9-3.8ZM14.3 6.1c.6-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.5-.6.7-1.1 1.8-1 2.9 1.1.1 2.2-.5 2.8-1.4Z" />
+        </symbol>
+        <symbol id="i-windows" viewBox="0 0 24 24">
+          <path fill="currentColor" stroke="none" d="M3 5.5 10.5 4.4v7.1H3V5.5Zm9-1.3L21 3v8.5h-9V4.2ZM3 12.5h7.5v7.1L3 18.5v-6Zm9 0h9V21l-9-1.2v-7.3Z" />
+        </symbol>
+        <symbol id="i-linux" viewBox="0 0 24 24">
+          <path d="M12 2c-3 0-4 2.7-4 5 0 2.5-2 4.5-2 7.5C6 18 8 21 12 21s6-3 6-6.5C18 11.5 16 9.5 16 7c0-2.3-1-5-4-5Z" />
+          <path d="M9 8h.01M15 8h.01M9 13c1 1 2 1 3 0 1 1 2 1 3 0M8 20l-3 1m11-1 3 1" />
+        </symbol>
+        <symbol id="i-check" viewBox="0 0 24 24">
+          <path d="m5 12 4.5 4.5L19 7" />
+        </symbol>
+        <symbol id="i-menu" viewBox="0 0 24 24">
+          <path d="M4 6h16M4 12h16M4 18h16" />
+        </symbol>
+        <symbol id="i-close" viewBox="0 0 24 24">
+          <path d="m6 6 12 12M6 18 18 6" />
+        </symbol>
+        <symbol id="i-folder" viewBox="0 0 24 24">
+          <path d="M3 7V5h6l3 3h9v12H3V7Zm0 3h18" />
+        </symbol>
+        <symbol id="i-file" viewBox="0 0 24 24">
+          <path d="M14 2H5v20h14V7l-5-5Zm0 0v6h5M8 13h8m-8 4h6" />
+        </symbol>
+        <symbol id="i-code" viewBox="0 0 24 24">
+          <path d="m7 6-5 6 5 6m10-12 5 6-5 6M14 3l-4 18" />
+        </symbol>
+        <symbol id="i-terminal" viewBox="0 0 24 24">
+          <rect x="2" y="4" width="20" height="16" rx="3" />
+          <path d="m6 9 3 3-3 3m6 0h5" />
+        </symbol>
+        <symbol id="i-chart" viewBox="0 0 24 24">
+          <path d="M4 20V4M4 20h16M8 16v-4m4 4V8m4 8v-6" />
+        </symbol>
+        <symbol id="i-shield" viewBox="0 0 24 24">
+          <path d="m12 2 8 4v6c0 5-8 10-8 10S4 17 4 12V6l8-4Z" />
+          <path d="m8 11 3 3 5-5" />
+        </symbol>
+        <symbol id="i-ledger" viewBox="0 0 24 24">
+          <path d="M6 3h12v18H6zM9 8h6m-6 4h6m-6 4h4" />
+          <path d="M3 6v12m18-12v12" />
+        </symbol>
+        <symbol id="i-layers" viewBox="0 0 24 24">
+          <path d="m12 3 9 5-9 5-9-5 9-5Z" />
+          <path d="m3 13 9 5 9-5M3 17l9 5 9-5" />
+        </symbol>
+        <symbol id="i-model" viewBox="0 0 24 24">
+          <path d="m12 2 2.2 6.2L21 10l-6.8 2.2L12 19l-2.2-6.8L3 10l6.8-1.8L12 2Z" />
+          <path d="m19 16 .8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8L19 16Z" />
+        </symbol>
+        <symbol id="i-git" viewBox="0 0 24 24">
+          <circle cx="6" cy="5" r="2" />
+          <circle cx="18" cy="6" r="2" />
+          <circle cx="6" cy="19" r="2" />
+          <path d="M6 7v10m2-7c3 0 2-4 8-4" />
+        </symbol>
+        <symbol id="i-rust" viewBox="0 0 24 24">
+          <path d="m12 2 2 2 3-.5 1 2.7 2.7 1L20 11l2 2-2 2 .7 3-2.7 1-1 2.7-3-.5-2 2-2-2-3 .5-1-2.7-2.7-1L4 15l-2-2 2-2-.7-3 2.7-1 1-2.7 3 .5 2-2Z" />
+          <path d="M8 15V9h4a2 2 0 0 1 0 4H8m4 0 3 2" />
+        </symbol>
+        <symbol id="i-copy" viewBox="0 0 24 24">
+          <rect x="9" y="9" width="11" height="11" rx="2.5" />
+          <path d="M15 9V6.5A2.5 2.5 0 0 0 12.5 4h-6A2.5 2.5 0 0 0 4 6.5v6A2.5 2.5 0 0 0 6.5 15H9" />
+        </symbol>
+        <symbol id="i-github" viewBox="0 0 24 24">
+          <path d="M15 22v-3.9c.04-1-.35-1.96-1.1-2.6 3.6-.4 7.1-1.8 7.1-7.5A5.8 5.8 0 0 0 19.5 4 5.4 5.4 0 0 0 19.3 0S17.9-.35 15 1.55a13.4 13.4 0 0 0-7 0C5.1-.35 3.7 0 3.7 0A5.4 5.4 0 0 0 3.5 4 5.8 5.8 0 0 0 2 8c0 5.7 3.5 7.1 7.1 7.5A3.7 3.7 0 0 0 8 18.1V22" transform="translate(1 1) scale(.88)" />
+          <path d="M8 19c-3 .9-3-1.5-4.2-2" />
+        </symbol>
+      </defs>
+    </svg>
+
+    <a class="skip-link" href="#main">跳到主要内容</a>
+    <div class="scroll-progress" aria-hidden="true"><span></span></div>
+
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="#top" aria-label="Aster 首页">
+          <img src="./tenant/aster/logo.svg" alt="" width="38" height="38" />
+          <span>Aster</span>
+          <small>AGENT WORKSPACE</small>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="#top" data-nav="top">首页</a>
+          <a href="#scenarios" data-nav="scenarios">场景</a>
+          <a href="#connections" data-nav="connections">能力</a>
+          <a href="#security" data-nav="security">安全</a>
+          <a href="https://github.com/aster-ai-lab/aster#快速开始" target="_blank" rel="noopener noreferrer">文档</a>
+        </nav>
+        <div class="header-actions">
+          <a class="github-link" href="https://github.com/aster-ai-lab/aster" target="_blank" rel="noopener noreferrer" aria-label="打开 Aster GitHub 仓库">
+            <svg class="icon"><use href="#i-github" /></svg>
+          </a>
+          <div class="download-dropdown download-dropdown-header">
+            <a class="button button-small download-trigger" href="#download" data-download-trigger aria-expanded="false" aria-controls="download-menu-header">
+              下载 Aster
+              <svg class="icon icon-small"><use href="#i-download" /></svg>
+              <svg class="icon icon-small download-chevron"><use href="#i-chevron" /></svg>
+            </a>
+            <div class="download-popover" id="download-menu-header" data-download-popover hidden>
+              <p class="download-popover-title">桌面端</p>
+              <a class="download-option" data-download-platform="macos" href="https://github.com/aster-ai-lab/aster/releases/download/v0.1.1/aster_0.1.1_aarch64.dmg">
+                <span class="download-option-icon"><svg class="icon"><use href="#i-apple" /></svg></span>
+                <span class="download-option-text"><strong>Mac</strong><small>Apple 芯片 · DMG</small></span>
+                <svg class="icon icon-small option-arrow"><use href="#i-arrow" /></svg>
+              </a>
+              <a class="download-option" data-download-platform="windows" href="https://github.com/aster-ai-lab/aster/releases/download/v0.1.1/aster_0.1.1_x64-setup.exe">
+                <span class="download-option-icon"><svg class="icon"><use href="#i-windows" /></svg></span>
+                <span class="download-option-text"><strong>Windows x64</strong><small>安装包 · EXE</small></span>
+                <svg class="icon icon-small option-arrow"><use href="#i-arrow" /></svg>
+              </a>
+              <a class="download-option" data-download-platform="linux" href="https://github.com/aster-ai-lab/aster/releases/download/v0.1.2/aster_0.1.2_kylin-v10_x86_64.run">
+                <span class="download-option-icon"><svg class="icon"><use href="#i-linux" /></svg></span>
+                <span class="download-option-text"><strong>麒麟 Linux</strong><small>x86_64 · RUN</small></span>
+                <svg class="icon icon-small option-arrow"><use href="#i-arrow" /></svg>
+              </a>
+              <a class="download-all" href="#download" data-download-close>全部版本与 CLI<svg class="icon icon-small"><use href="#i-arrow" /></svg></a>
+            </div>
+          </div>
+          <button class="menu-toggle" type="button" aria-label="打开导航" aria-expanded="false" aria-controls="mobile-nav">
+            <svg class="icon menu-icon"><use href="#i-menu" /></svg>
+            <svg class="icon close-icon"><use href="#i-close" /></svg>
+          </button>
+        </div>
+      </div>
+      <nav class="mobile-nav" id="mobile-nav" aria-label="移动端导航">
+        <a href="#top">首页</a>
+        <a href="#scenarios">场景</a>
+        <a href="#connections">能力</a>
+        <a href="#security">安全</a>
+        <a href="https://github.com/aster-ai-lab/aster#快速开始" target="_blank" rel="noopener noreferrer">文档</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-glow" aria-hidden="true"></div>
+        <div class="container hero-container">
+          <div class="hero-copy">
+            <p class="hero-eyebrow"><span></span> ASTER AGENT WORKSPACE</p>
+            <h1 id="hero-title" aria-label="Aster，让想法落地" data-typing-title>Aster<span class="hero-title-tail"><span class="hero-comma">，</span>让想法落地</span></h1>
+            <p class="hero-description">
+              从模型提案，到可验证的任务交付。<br />
+              连接你的本地文件、模型和工具，在一个工作区里规划、执行、审查。
+            </p>
+            <div class="hero-actions">
+              <div class="download-dropdown download-dropdown-hero">
+                <a class="button button-primary download-trigger" href="#download" data-download-trigger aria-expanded="false" aria-controls="download-menu-hero">
+                  立即下载 Aster
+                  <svg class="icon"><use href="#i-download" /></svg>
+                  <svg class="icon icon-small download-chevron"><use href="#i-chevron" /></svg>
+                </a>
+                <div class="download-popover" id="download-menu-hero" data-download-popover hidden>
+                  <p class="download-popover-title">桌面端</p>
+                  <a class="download-option" data-download-platform="macos" href="https://github.com/aster-ai-lab/aster/releases/download/v0.1.1/aster_0.1.1_aarch64.dmg">
+                    <span class="download-option-icon"><svg class="icon"><use href="#i-apple" /></svg></span>
+                    <span class="download-option-text"><strong>Mac</strong><small>Apple 芯片 · DMG</small></span>
+                    <svg class="icon icon-small option-arrow"><use href="#i-arrow" /></svg>
+                  </a>
+                  <a class="download-option" data-download-platform="windows" href="https://github.com/aster-ai-lab/aster/releases/download/v0.1.1/aster_0.1.1_x64-setup.exe">
+                    <span class="download-option-icon"><svg class="icon"><use href="#i-windows" /></svg></span>
+                    <span class="download-option-text"><strong>Windows x64</strong><small>安装包 · EXE</small></span>
+                    <svg class="icon icon-small option-arrow"><use href="#i-arrow" /></svg>
+                  </a>
+                  <a class="download-option" data-download-platform="linux" href="https://github.com/aster-ai-lab/aster/releases/download/v0.1.2/aster_0.1.2_kylin-v10_x86_64.run">
+                    <span class="download-option-icon"><svg class="icon"><use href="#i-linux" /></svg></span>
+                    <span class="download-option-text"><strong>麒麟 Linux</strong><small>x86_64 · RUN</small></span>
+                    <svg class="icon icon-small option-arrow"><use href="#i-arrow" /></svg>
+                  </a>
+                  <a class="download-all" href="#download" data-download-close>全部版本与 CLI<svg class="icon icon-small"><use href="#i-arrow" /></svg></a>
+                </div>
+              </div>
+            </div>
+            <ul class="hero-notes" aria-label="产品特点">
+              <li>本地项目</li>
+              <li>自主配置模型</li>
+              <li>权限可控</li>
+            </ul>
+          </div>
+
+          <div class="hero-visual">
+            <div class="orbit-badge" aria-hidden="true">
+              <img src="./tenant/aster/logo.svg" alt="" width="76" height="76" />
+            </div>
+            <div class="signal-card signal-card-left" aria-hidden="true">
+              <span class="signal-icon"><svg class="icon"><use href="#i-shield" /></svg></span>
+              <span><strong>受控执行</strong><small>权限先于工具调用</small></span>
+            </div>
+            <div class="signal-card signal-card-right" aria-hidden="true">
+              <span class="signal-pulse"></span>
+              <span><strong>验证闭环</strong><small>结果有据可查</small></span>
+            </div>
+            <figure class="product-window">
+              <div class="window-bar" aria-hidden="true">
+                <div class="window-dots"><span></span><span></span><span></span></div>
+                <div class="window-address"><img src="./tenant/aster/mark-light.png" alt="" width="16" height="16" /> Aster Workspace</div>
+                <div class="window-status"><span></span> LOCAL</div>
+              </div>
+              <a href="./download/screenshots/workspace.png" target="_blank" rel="noopener" aria-label="查看 Aster 工作区大图（新窗口）">
+                <img
+                  class="product-screenshot"
+                  src="./download/screenshots/workspace.png"
+                  alt="Aster 真实工作台：任务对话与文档工作区"
+                  width="1080"
+                  height="675"
+                  fetchpriority="high"
+                />
+              </a>
+              <figcaption>真实 Aster 界面 · 演示数据</figcaption>
+            </figure>
+          </div>
+
+          <ul class="capability-strip" aria-label="Aster 核心能力">
+            <li><span>01</span>受控执行</li>
+            <li><span>02</span>事实日志</li>
+            <li><span>03</span>验证闭环</li>
+            <li><span>04</span>Rust 嵌入</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section scenarios" id="scenarios" aria-labelledby="scenarios-title">
+        <div class="container">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker"><span>AI 场景</span> AI SCENARIOS</p>
+              <h2 id="scenarios-title">你的工作好帮手</h2>
+            </div>
+            <p>把任务交给 Aster，它会围绕目标规划步骤、调用工具、生成产物，并把过程与结果留给你审核。</p>
+          </div>
+
+          <div class="scenario-tabs" role="tablist" aria-label="Aster 任务场景">
+            <button id="tab-research" type="button" role="tab" aria-selected="true" aria-controls="panel-research">研究</button>
+            <button id="tab-document" type="button" role="tab" aria-selected="false" aria-controls="panel-document" tabindex="-1">文档</button>
+            <button id="tab-data" type="button" role="tab" aria-selected="false" aria-controls="panel-data" tabindex="-1">数据</button>
+            <button id="tab-development" type="button" role="tab" aria-selected="false" aria-controls="panel-development" tabindex="-1">开发</button>
+          </div>
+
+          <div class="scenario-panels">
+            <article class="scenario-panel is-active" id="panel-research" role="tabpanel" aria-labelledby="tab-research" tabindex="0">
+              <div class="scenario-copy">
+                <p class="panel-label">深度调研</p>
+                <h3>从查资料到给结论，<br />交付可核验的报告</h3>
+                <p>连接你配置的检索工具，拆解研究路径、核对信息，再把报告与执行过程一起留在项目里。</p>
+                <ul class="panel-points">
+                  <li><svg class="icon"><use href="#i-check" /></svg>任务路径清晰可审阅</li>
+                  <li><svg class="icon"><use href="#i-check" /></svg>资料与产物保持关联</li>
+                  <li><svg class="icon"><use href="#i-check" /></svg>结果交给你最终验收</li>
+                </ul>
+              </div>
+              <div class="scenario-visual">
+                <span class="panel-number" aria-hidden="true">01 / 04</span>
+                <figure>
+                  <a href="./download/screenshots/workspace.png" target="_blank" rel="noopener" aria-label="查看研究工作区大图（新窗口）">
+                    <img src="./download/screenshots/workspace.png" alt="Aster 中的研究任务与分析报告" width="1080" height="675" loading="lazy" />
+                  </a>
+                  <figcaption>研究工作区 · 真实界面，演示数据</figcaption>
+                </figure>
+              </div>
+            </article>
+
+            <article class="scenario-panel" id="panel-document" role="tabpanel" aria-labelledby="tab-document" tabindex="0">
+              <div class="scenario-copy">
+                <p class="panel-label">文档与演示</p>
+                <h3>从资料到成稿，<br />在同一工作区完成</h3>
+                <p>打开项目里的 DOCX、XLSX、PPTX 就地编辑，也可以阅读 Markdown 与 PDF，成果始终留在工作流程中。</p>
+                <ul class="panel-points">
+                  <li><svg class="icon"><use href="#i-check" /></svg>Office 文件对应编辑界面</li>
+                  <li><svg class="icon"><use href="#i-check" /></svg>对话与文件并排查看</li>
+                  <li><svg class="icon"><use href="#i-check" /></svg>修改后继续审阅与打磨</li>
+                </ul>
+              </div>
+              <div class="scenario-visual">
+                <span class="panel-number" aria-hidden="true">02 / 04</span>
+                <figure>
+                  <a href="./download/screenshots/office.png" target="_blank" rel="noopener" aria-label="查看 Aster Office 大图（新窗口）">
+                    <img src="./download/screenshots/office.png" alt="Aster 中打开的表格编辑界面" width="1080" height="675" loading="lazy" />
+                  </a>
+                  <figcaption>Office 协作 · 真实界面，演示文档</figcaption>
+                </figure>
+              </div>
+            </article>
+
+            <article class="scenario-panel" id="panel-data" role="tabpanel" aria-labelledby="tab-data" tabindex="0">
+              <div class="scenario-copy">
+                <p class="panel-label">数据与脚本</p>
+                <h3>从数据到结论，<br />每一步都有来路</h3>
+                <p>用受控的命令和工具处理数据、生成脚本，并通过产物快照与执行记录核对来源、内容和版本。</p>
+                <ul class="panel-points">
+                  <li><svg class="icon"><use href="#i-check" /></svg>执行事件写入统一日志</li>
+                  <li><svg class="icon"><use href="#i-check" /></svg>产物版本与摘要可核对</li>
+                  <li><svg class="icon"><use href="#i-check" /></svg>从结果回看任务证据</li>
+                </ul>
+              </div>
+              <div class="scenario-visual">
+                <span class="panel-number" aria-hidden="true">03 / 04</span>
+                <figure>
+                  <a href="./download/screenshots/lineage.png" target="_blank" rel="noopener" aria-label="查看 Aster 产物追溯大图（新窗口）">
+                    <img src="./download/screenshots/lineage.png" alt="Aster 产物追溯界面中的版本和证据" width="1080" height="675" loading="lazy" />
+                  </a>
+                  <figcaption>产物追溯 · 真实界面，演示快照</figcaption>
+                </figure>
+              </div>
+            </article>
+
+            <article class="scenario-panel" id="panel-development" role="tabpanel" aria-labelledby="tab-development" tabindex="0">
+              <div class="scenario-copy">
+                <p class="panel-label">编程开发</p>
+                <h3>从需求到代码，<br />验证之后再交付</h3>
+                <p>在真实项目里读取和修改文件，工具调用先经过权限判定；修改完成后，用对应验证证据约束交付。</p>
+                <ul class="panel-points">
+                  <li><svg class="icon"><use href="#i-check" /></svg>计划与权限先审阅</li>
+                  <li><svg class="icon"><use href="#i-check" /></svg>代码、终端与变更同场</li>
+                  <li><svg class="icon"><use href="#i-check" /></svg>自动审查发现可继续处理</li>
+                </ul>
+              </div>
+              <div class="scenario-visual">
+                <span class="panel-number" aria-hidden="true">04 / 04</span>
+                <figure>
+                  <a href="./download/screenshots/review.png" target="_blank" rel="noopener" aria-label="查看 Aster 自动审查大图（新窗口）">
+                    <img src="./download/screenshots/review.png" alt="Aster 自动审查界面中的发现和处理状态" width="1080" height="675" loading="lazy" />
+                  </a>
+                  <figcaption>自动审查 · 真实界面，演示记录</figcaption>
+                </figure>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="connections" id="connections" aria-labelledby="connections-title">
+        <div class="container connections-inner">
+          <p class="section-kicker centered"><span>开放连接</span> YOUR WORKFLOW</p>
+          <h2 id="connections-title">Aster 连接你的工作现场</h2>
+          <p class="connections-description">你的模型，你的工具，你的项目。无需把工作流程拆散到不同产品里。</p>
+          <div class="connector-grid">
+            <article class="connector-card">
+              <span class="connector-icon"><svg class="icon"><use href="#i-folder" /></svg></span>
+              <h3>本地文件</h3>
+              <p>项目上下文</p>
+            </article>
+            <article class="connector-card">
+              <span class="connector-icon"><svg class="icon"><use href="#i-model" /></svg></span>
+              <h3>模型服务</h3>
+              <p>由你配置</p>
+            </article>
+            <article class="connector-card">
+              <span class="connector-icon"><svg class="icon"><use href="#i-git" /></svg></span>
+              <h3>Git 项目</h3>
+              <p>真实代码库</p>
+            </article>
+            <article class="connector-card">
+              <span class="connector-icon"><svg class="icon"><use href="#i-file" /></svg></span>
+              <h3>Office 文档</h3>
+              <p>编辑与阅读</p>
+            </article>
+            <article class="connector-card">
+              <span class="connector-icon"><svg class="icon"><use href="#i-terminal" /></svg></span>
+              <h3>终端工具</h3>
+              <p>受控执行</p>
+            </article>
+            <article class="connector-card">
+              <span class="connector-icon"><svg class="icon"><use href="#i-rust" /></svg></span>
+              <h3>Rust SDK</h3>
+              <p>嵌入你的应用</p>
+            </article>
+          </div>
+          <p class="connection-note"><span></span> 一套权限与记录，贯穿不同任务</p>
+        </div>
+      </section>
+
+      <section class="section security" id="security" aria-labelledby="security-title">
+        <div class="container">
+          <div class="security-shell">
+            <div class="section-heading">
+              <div>
+                <p class="section-kicker"><span>安全与可控</span> PRIVACY &amp; CONTROL</p>
+                <h2 id="security-title">可控，才可托付</h2>
+              </div>
+              <p>从权限判定到验证完成，Aster 把执行边界与过程证据放在同一条任务链路里。</p>
+            </div>
+            <div class="security-grid">
+              <article class="security-card">
+                <div class="security-card-top">
+                  <span class="security-icon"><svg class="icon"><use href="#i-shield" /></svg></span>
+                  <span class="security-index">01</span>
+                </div>
+                <h3>权限先于执行</h3>
+                <p>工具调用先经过权限判定，需要确认时等待你的回答。项目目录也不替代宿主策略与沙箱边界。</p>
+              </article>
+              <article class="security-card">
+                <div class="security-card-top">
+                  <span class="security-icon"><svg class="icon"><use href="#i-ledger" /></svg></span>
+                  <span class="security-index">02</span>
+                </div>
+                <h3>统一事实日志</h3>
+                <p>模型、工具和控制事件写入同一份日志。组件据此计算状态，让执行过程可检查、可恢复。</p>
+              </article>
+              <article class="security-card">
+                <div class="security-card-top">
+                  <span class="security-icon"><svg class="icon"><use href="#i-layers" /></svg></span>
+                  <span class="security-index">03</span>
+                </div>
+                <h3>验证才算完成</h3>
+                <p>发生修改后，需要与本次修改对应的验证报告，或由宿主显式豁免，再判定任务能否完成。</p>
+              </article>
+            </div>
+            <p class="security-footnote"><svg class="icon"><use href="#i-check" /></svg> 模型服务与凭据由你配置，Aster 不内置模型服务。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="download" id="download" aria-labelledby="download-title">
+        <canvas class="download-cosmos" id="download-cosmos" aria-hidden="true"></canvas>
+        <div class="container download-inner">
+          <p class="download-kicker">开源开始 · 无限可能 <span>GET STARTED</span></p>
+          <h2 id="download-title">立即下载，高效工作</h2>
+          <p class="download-description">选择你的工作方式。桌面工作区、Aster CLI，或嵌入自己的 Rust 应用。</p>
+
+          <div class="download-group">
+            <div class="download-group-heading">
+              <h3>桌面端与 CLI</h3>
+              <span>DESKTOP WORKSPACE</span>
+            </div>
+            <div class="download-grid">
+              <a class="download-card" data-platform="macos" href="https://github.com/aster-ai-lab/aster/releases/download/v0.1.1/aster_0.1.1_aarch64.dmg">
+                <span class="platform-icon"><svg class="icon"><use href="#i-apple" /></svg></span>
+                <span class="platform-name">macOS</span>
+                <span class="platform-meta">Apple 芯片 · v0.1.1</span>
+                <span class="download-action">下载 DMG <svg class="icon"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="download-card" data-platform="windows" href="https://github.com/aster-ai-lab/aster/releases/download/v0.1.1/aster_0.1.1_x64-setup.exe">
+                <span class="platform-icon"><svg class="icon"><use href="#i-windows" /></svg></span>
+                <span class="platform-name">Windows</span>
+                <span class="platform-meta">x64 · v0.1.1</span>
+                <span class="download-action">下载安装包 <svg class="icon"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="download-card" data-platform="linux" href="https://github.com/aster-ai-lab/aster/releases/download/v0.1.2/aster_0.1.2_kylin-v10_x86_64.run">
+                <span class="platform-icon"><svg class="icon"><use href="#i-linux" /></svg></span>
+                <span class="platform-name">麒麟 Linux</span>
+                <span class="platform-meta">x86_64 · v0.1.2</span>
+                <span class="download-action">下载 RUN <svg class="icon"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="download-card download-card-cli" href="#cli-downloads">
+                <span class="platform-icon"><svg class="icon"><use href="#i-terminal" /></svg></span>
+                <span class="platform-name">Aster CLI</span>
+                <span class="platform-meta">macOS · Linux · Windows</span>
+                <span class="download-action">选择系统版本 <svg class="icon"><use href="#i-arrow" /></svg></span>
+              </a>
+            </div>
+          </div>
+
+          <div class="download-group cli-group" id="cli-downloads">
+            <div class="download-group-heading">
+              <h3>命令行</h3>
+              <span>ASTER CLI + ACP</span>
+            </div>
+            <div class="cli-downloads">
+              <a href="https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.1/aster-cli-v0.1.1-macos.tar.gz">
+                <svg class="icon"><use href="#i-terminal" /></svg>
+                <span><strong>macOS CLI</strong><small>TAR.GZ · v0.1.1</small></span>
+                <svg class="icon icon-small"><use href="#i-download" /></svg>
+              </a>
+              <a href="https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.1/aster-cli-v0.1.1-linux.tar.gz">
+                <svg class="icon"><use href="#i-terminal" /></svg>
+                <span><strong>Linux CLI</strong><small>TAR.GZ · v0.1.1</small></span>
+                <svg class="icon icon-small"><use href="#i-download" /></svg>
+              </a>
+              <a href="https://github.com/aster-ai-lab/aster/releases/download/aster-cli-v0.1.1/aster-cli-v0.1.1-windows.zip">
+                <svg class="icon"><use href="#i-terminal" /></svg>
+                <span><strong>Windows CLI</strong><small>ZIP · v0.1.1</small></span>
+                <svg class="icon icon-small"><use href="#i-download" /></svg>
+              </a>
+            </div>
+            <div class="quickstart">
+              <div>
+                <span>在项目目录启动</span>
+                <code id="quickstart-command">./aster --cwd /path/to/project</code>
+              </div>
+              <button type="button" data-copy-command aria-label="复制 Aster 启动命令">
+                <svg class="icon"><use href="#i-copy" /></svg>
+                <span>复制命令</span>
+              </button>
+            </div>
+            <p class="cli-note">CLI 发布包包含 <code>aster</code> 与 <code>a3s-code-acp</code>，请放在同一目录并成对更新。</p>
+          </div>
+
+          <div class="download-footer-cta">
+            <p>需要其他版本或更新说明？</p>
+            <a class="text-link text-link-light" href="https://github.com/aster-ai-lab/aster/releases" target="_blank" rel="noopener noreferrer">
+              查看全部发布
+              <svg class="icon icon-small"><use href="#i-arrow" /></svg>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-main">
+        <a class="brand footer-brand" href="#top" aria-label="返回 Aster 首页顶部">
+          <img src="./tenant/aster/logo.svg" alt="" width="38" height="38" />
+          <span>Aster</span>
+        </a>
+        <nav class="footer-nav" aria-label="页脚导航">
+          <a href="#scenarios">场景</a>
+          <a href="#connections">能力</a>
+          <a href="#security">安全</a>
+          <a href="https://github.com/aster-ai-lab/aster#快速开始" target="_blank" rel="noopener noreferrer">文档</a>
+          <a href="https://github.com/aster-ai-lab/aster" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </nav>
+      </div>
+      <div class="container footer-bottom">
+        <p>© <span id="current-year">2026</span> Aster. 从模型提案，到可验证的任务交付。</p>
+        <div>
+          <a href="https://github.com/aster-ai-lab/aster/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a>
+          <a href="./download/fonts/Ubuntu-LICENSE.txt">Ubuntu 字体许可</a>
+        </div>
+      </div>
+    </footer>
+
+    <button class="back-to-top" type="button" aria-label="返回页面顶部">
+      <svg class="icon"><use href="#i-arrow-up" /></svg>
+    </button>
+  </body>
+</html>

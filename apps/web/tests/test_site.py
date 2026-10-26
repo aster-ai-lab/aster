@@ -17,7 +17,7 @@ from urllib.request import urlopen
 WEB_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(WEB_ROOT / "scripts"))
 from check_site import check_site
-from site_contract import BRAND_FILES, DOWNLOAD_MANIFEST, SITE_FILES
+from site_contract import BRAND_FILES, DOWNLOAD_MANIFEST, HOME_FILES, SITE_FILES
 from stage_site import stage_site
 
 SCREENSHOTS = tuple(f"download/screenshots/{name}.png" for name in ("workspace", "office", "review", "lineage"))
@@ -41,7 +41,7 @@ class SiteTest(unittest.TestCase):
         self.public = self.root / "public"
         self.page = self.public / "download/index.html"
         self.page.parent.mkdir(parents=True)
-        for name in BRAND_FILES:
+        for name in BRAND_FILES + HOME_FILES:
             destination = self.public / name
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(WEB_ROOT / "public" / name, destination)
@@ -82,10 +82,10 @@ class SiteTest(unittest.TestCase):
             for weight in (400, 500, 700)), encoding="utf-8")
 
     def test_four_png_screenshots_and_three_local_fonts_with_license_are_public(self):
-        self.assertEqual(check_site(self.public)["files"], 14)
+        self.assertEqual(check_site(self.public)["files"], 18)
         destination = self.root / 'with-real-ui'
         receipt = stage_site(self.public, destination)
-        self.assertEqual(len(receipt['files']), 15)
+        self.assertEqual(len(receipt['files']), 18)
         for name in (*SCREENSHOTS, *FONTS, FONT_LICENSE):
             self.assertEqual((destination / name).read_bytes(), (self.public / name).read_bytes())
 
@@ -219,14 +219,14 @@ class SiteTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "unexpected"):
             check_site(self.public)
 
-    def test_stage_contains_only_public_allowlist_and_project_relative_redirect(self):
+    def test_stage_contains_only_public_allowlist_and_project_relative_homepage(self):
         other = self.public / 'tenant/toyou/private.txt'
         other.parent.mkdir(parents=True)
         other.write_text('not this public product')
         destination = self.root / 'staged'
         receipt = stage_site(self.public, destination)
-        self.assertEqual(set(receipt['files']), set(SITE_FILES) | {'index.html'})
-        self.assertIn('url=./download/', (destination / 'index.html').read_text())
+        self.assertEqual(set(receipt['files']), set(SITE_FILES + HOME_FILES))
+        self.assertIn('id="scenarios"', (destination / 'index.html').read_text())
         for name in SITE_FILES:
             self.assertEqual((destination / name).read_bytes(), (self.public / name).read_bytes())
         self.assertFalse((destination / 'tenant/toyou').exists())
@@ -258,12 +258,14 @@ class SiteTest(unittest.TestCase):
         worker.start()
         try:
             origin = f'http://127.0.0.1:{server.server_port}/aster/'
-            for relative in SITE_FILES:
+            for relative in SITE_FILES + HOME_FILES:
                 with self.subTest(relative=relative), urlopen(urljoin(origin, relative), timeout=2) as response:
                     self.assertEqual(response.status, 200)
                     self.assertEqual(response.read(), (self.public / relative).read_bytes())
             with urlopen(origin, timeout=2) as response:
-                self.assertIn(b'url=./download/', response.read())
+                homepage = response.read()
+                self.assertIn(b'home.css', homepage)
+                self.assertIn('让想法落地'.encode(), homepage)
             for relative in ('tenant/toyou/INFO.md', 'src/private.js'):
                 with self.subTest(relative=relative), self.assertRaises(HTTPError) as refused:
                     urlopen(origin + relative, timeout=2)

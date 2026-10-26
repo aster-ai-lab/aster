@@ -13,7 +13,7 @@ import sys
 from urllib.parse import unquote, urlsplit
 import zlib
 
-from site_contract import DOWNLOAD_MANIFEST, FONT_FILES, PAGE_FILES, PAGES_URL, REPOSITORY_URL, SCREENSHOT_FILES, SITE_FILES
+from site_contract import DOWNLOAD_MANIFEST, FONT_FILES, HOME_FILES, PAGE_FILES, PAGES_URL, REPOSITORY_URL, SCREENSHOT_FILES, SITE_FILES
 
 PUBLIC_ROOT = Path(__file__).resolve().parents[1] / "public"
 DOWNLOAD_URLS = frozenset(item[4] for item in DOWNLOAD_MANIFEST)
@@ -211,8 +211,123 @@ def check_site(public_root=PUBLIC_ROOT):
             raise ValueError("script builds a native choice control")
         for url in re.findall(r"https?://[^\s'\"<>`]+", javascript):
             external_link(url)
-    return {"status": "passed", "files": len(SITE_FILES), "download_links": len(seen_downloads),
-            "named_buttons": sum(node.tag == "button" for node in nodes), "private_sources_required": False}
+    home = check_home_page(root)
+    return {"status": "passed", "files": len(SITE_FILES + HOME_FILES), "download_links": len(seen_downloads),
+            "named_buttons": sum(node.tag == "button" for node in nodes), "home_tabs": home["tabs"],
+            "private_sources_required": False}
+
+
+def check_home_page(root):
+    """Validate the Aster homepage with the same closed public-resource boundary."""
+    root = Path(root).absolute()
+    allowed = set(SITE_FILES + HOME_FILES)
+    for name in HOME_FILES:
+        regular(root, name)
+    source = {name: (root / name).read_text(encoding="utf-8") for name in HOME_FILES}
+    if any(brand in text.casefold() for text in source.values() for brand in ("minimax", "asterdream", "workbuddy")):
+        raise ValueError("foreign product branding in homepage")
+    page = Page(source["index.html"])
+    nodes = list(page.root.walk())
+    ids = {}
+    for node in nodes:
+        identifier = node.attrs.get("id")
+        if identifier:
+            if identifier in ids:
+                raise ValueError(f"duplicate homepage HTML id: {identifier}")
+            ids[identifier] = node
+    if not any(node.tag == "h1" and "Aster" in node.text() for node in nodes):
+        raise ValueError("missing Aster homepage heading")
+    seen_assets, seen_downloads, seen_images = set(), set(), set()
+
+    def local_url(value):
+        parsed = urlsplit(value)
+        if parsed.scheme or parsed.netloc or parsed.query or "\\" in value:
+            raise ValueError(f"nonlocal homepage asset: {value}")
+        decoded = unquote(parsed.path)
+        if decoded.startswith("/"):
+            raise ValueError(f"absolute homepage asset path breaks project Pages: {value}")
+        if not decoded and not parsed.fragment:
+            raise ValueError("empty homepage asset reference")
+        target = ((root / decoded) if decoded else (root / "index.html")).resolve()
+        if not target.is_relative_to(root.resolve()):
+            raise ValueError(f"homepage asset escapes site: {value}")
+        name = target.relative_to(root.resolve()).as_posix()
+        if name not in allowed:
+            raise ValueError(f"unapproved homepage asset: {value}")
+        regular(root, name)
+        if parsed.fragment and (name != "index.html" or unquote(parsed.fragment) not in ids):
+            raise ValueError(f"missing homepage fragment: {value}")
+        seen_assets.add(name)
+        return name
+
+    for node in nodes:
+        if node.tag in {"select", "datalist", "base", "style", "iframe", "object", "embed"}:
+            raise ValueError(f"unsupported homepage element: {node.tag}")
+        if any(key.startswith("on") or key in {"style", "srcset"} for key in node.attrs):
+            raise ValueError(f"inline homepage behavior/style or unsupported srcset: {node.tag}")
+        if node.tag == "button":
+            labelled_by = node.attrs.get("aria-labelledby", "").split()
+            if any(identifier not in ids for identifier in labelled_by):
+                raise ValueError("homepage button has a missing accessible label reference")
+            name = node.attrs.get("aria-label") or " ".join(ids[key].text() for key in labelled_by) or node.text()
+            if not name.strip():
+                raise ValueError("homepage button has no accessible name")
+        if node.tag == "a":
+            href = node.attrs.get("href", "")
+            if not href:
+                raise ValueError("homepage anchor has no destination")
+            if href.startswith("#"):
+                if unquote(href[1:]) not in ids:
+                    raise ValueError(f"missing homepage fragment: {href}")
+            elif urlsplit(href).scheme or urlsplit(href).netloc:
+                if external_link(href):
+                    seen_downloads.add(href)
+            else:
+                local_url(href)
+        if node.tag == "script":
+            if not node.attrs.get("src") or any(isinstance(child, str) and child.strip() for child in node.children):
+                raise ValueError("inline script in homepage")
+        for attr in ("src", "poster"):
+            if attr in node.attrs:
+                name = local_url(node.attrs[attr])
+                if node.tag == "img" and attr == "src":
+                    seen_images.add(name)
+        for attr in ("href", "xlink:href"):
+            if attr in node.attrs and node.tag not in {"a", "link"}:
+                local_url(node.attrs[attr])
+        if node.tag == "link" and "href" in node.attrs:
+            if node.attrs.get("rel") == "canonical":
+                if node.attrs["href"] != PAGES_URL:
+                    raise ValueError("unexpected homepage canonical URL")
+            else:
+                local_url(node.attrs["href"])
+    if seen_downloads != DOWNLOAD_URLS:
+        raise ValueError("homepage does not expose all six verified desktop/CLI download links")
+    if not set(SCREENSHOT_FILES).issubset(seen_images):
+        raise ValueError("homepage does not reference all four PNG screenshots")
+    css = re.sub(r"/\*.*?\*/", "", source["home.css"], flags=re.S)
+    if re.search(r"@import\b", css, flags=re.I):
+        raise ValueError("CSS imports are not part of the standalone homepage")
+    for match in re.finditer(r"url\(\s*(['\"]?)(.*?)\1\s*\)", css, flags=re.I):
+        local_url(match.group(2))
+    required_assets = (set(HOME_FILES + SCREENSHOT_FILES + FONT_FILES) |
+                       {"tenant/aster/logo.svg", "tenant/aster/mark-light.png"}) - {"index.html"}
+    if not required_assets.issubset(seen_assets):
+        missing = sorted(required_assets - seen_assets)
+        raise ValueError(f"homepage does not reference required public assets: {missing}")
+    for filename in ("home.js", "cosmic.js"):
+        javascript = source[filename]
+        if re.search(r"\b(?:import|require)\b", javascript):
+            raise ValueError("script imports are not part of the standalone homepage")
+        if re.search(r"createElement\s*\(\s*['\"](?:select|datalist)['\"]", javascript, flags=re.I):
+            raise ValueError("homepage script builds a native choice control")
+        for url in re.findall(r"https?://[^\s'\"<>`]+", javascript):
+            external_link(url)
+    tabs = [node for node in nodes if node.attrs.get("role") == "tab"]
+    panels = [node for node in nodes if node.attrs.get("role") == "tabpanel"]
+    if len(tabs) != 4 or len(panels) != 4:
+        raise ValueError("homepage must expose four task scenario tabs and panels")
+    return {"status": "passed", "tabs": len(tabs), "download_links": len(seen_downloads)}
 
 
 if __name__ == "__main__":
