@@ -1,29 +1,29 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img">
   <title>Aster</title>
-  <desc>A silver four-point star with a blue diamond core on a tilted orbit, on a blue squircle plate.</desc>
+  <desc>A polished silver four-point star with a graphite diamond core on a tilted metallic orbit, on a graphite squircle plate.</desc>
   <defs>
     <path id="plate" d="M924.0 512.0L923.8 629.7L923.4 667.2L922.6 694.5L921.5 716.5L920.1 735.4L918.3 751.9L916.3 766.8L913.9 780.2L911.2 792.6L908.1 803.9L904.7 814.5L901.0 824.2L896.9 833.4L892.4 841.9L887.6 849.8L882.3 857.2L876.7 864.2L870.7 870.7L864.2 876.7L857.2 882.3L849.8 887.6L841.9 892.4L833.4 896.9L824.2 901.0L814.5 904.7L803.9 908.1L792.6 911.2L780.2 913.9L766.8 916.3L751.9 918.3L735.4 920.1L716.5 921.5L694.5 922.6L667.2 923.4L629.7 923.8L512.0 924.0L394.3 923.8L356.8 923.4L329.5 922.6L307.5 921.5L288.6 920.1L272.1 918.3L257.2 916.3L243.8 913.9L231.4 911.2L220.1 908.1L209.5 904.7L199.8 901.0L190.6 896.9L182.1 892.4L174.2 887.6L166.8 882.3L159.8 876.7L153.3 870.7L147.3 864.2L141.7 857.2L136.4 849.8L131.6 841.9L127.1 833.4L123.0 824.2L119.3 814.5L115.9 803.9L112.8 792.6L110.1 780.2L107.7 766.8L105.7 751.9L103.9 735.4L102.5 716.5L101.4 694.5L100.6 667.2L100.2 629.7L100.0 512.0L100.2 394.3L100.6 356.8L101.4 329.5L102.5 307.5L103.9 288.6L105.7 272.1L107.7 257.2L110.1 243.8L112.8 231.4L115.9 220.1L119.3 209.5L123.0 199.8L127.1 190.6L131.6 182.1L136.4 174.2L141.7 166.8L147.3 159.8L153.3 153.3L159.8 147.3L166.8 141.7L174.2 136.4L182.1 131.6L190.6 127.1L199.8 123.0L209.5 119.3L220.1 115.9L231.4 112.8L243.8 110.1L257.2 107.7L272.1 105.7L288.6 103.9L307.5 102.5L329.5 101.4L356.8 100.6L394.3 100.2L512.0 100.0L629.7 100.2L667.2 100.6L694.5 101.4L716.5 102.5L735.4 103.9L751.9 105.7L766.8 107.7L780.2 110.1L792.6 112.8L803.9 115.9L814.5 119.3L824.2 123.0L833.4 127.1L841.9 131.6L849.8 136.4L857.2 141.7L864.2 147.3L870.7 153.3L876.7 159.8L882.3 166.8L887.6 174.2L892.4 182.1L896.9 190.6L901.0 199.8L904.7 209.5L908.1 220.1L911.2 231.4L913.9 243.8L916.3 257.2L918.3 272.1L920.1 288.6L921.5 307.5L922.6 329.5L923.4 356.8L923.8 394.3Z"/>
     <linearGradient id="plate" x1="340" y1="90" x2="700" y2="960" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#2489E3"/><stop offset=".5" stop-color="#005ABB"/><stop offset="1" stop-color="#0A3F7C"/>
+      <stop stop-color="#3A3A3A"/><stop offset=".5" stop-color="#171717"/><stop offset="1" stop-color="#050505"/>
     </linearGradient>
     <linearGradient id="star" x1="440" y1="170" x2="600" y2="840" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#FFFFFF"/><stop offset=".48" stop-color="#F7FAFE"/><stop offset="1" stop-color="#DCE7F5"/>
+      <stop stop-color="#FFFFFF"/><stop offset=".48" stop-color="#F5F5F5"/><stop offset="1" stop-color="#D4D4D4"/>
     </linearGradient>
-    <radialGradient id="halo"><stop stop-color="#66B0FF" stop-opacity=".35"/><stop offset="1" stop-color="#66B0FF" stop-opacity="0"/></radialGradient>
+    <radialGradient id="halo"><stop stop-color="#FFFFFF" stop-opacity=".18"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient>
   </defs>
   <use href="#plate" fill="url(#plate)"/>
-  <use href="#plate" fill="none" stroke="#DCEAFF" stroke-opacity=".22" stroke-width="6"/>
+  <use href="#plate" fill="none" stroke="#FFFFFF" stroke-opacity=".22" stroke-width="6"/>
   
   <g transform="rotate(-26 512 522)">
     <ellipse cx="512" cy="522" rx="366" ry="138" fill="none"
-      stroke="#E4EEFB" stroke-opacity=".42" stroke-width="36"/>
+      stroke="#E5E5E5" stroke-opacity=".42" stroke-width="36"/>
   </g>
   
   
   <g transform="translate(512.0 513.0) scale(1.16) translate(-512.0 -513.0)">
     <path d="M512 177C557 379 589 430 756 507C589 552 554 616 512 850C470 616 435 552 268 507C435 430 467 379 512 177Z" fill="url(#star)"/>
     <g transform="translate(512 513.0) scale(1.22) translate(-512 -513.0)">
-      <path d="m512 440 48 74-48 93-48-93 48-74Z" fill="#005ABB"/>
+      <path d="m512 440 48 74-48 93-48-93 48-74Z" fill="#171717"/>
     </g>
   </g>
 </svg>

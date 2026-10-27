@@ -8,10 +8,10 @@ product: "Aster"
 logos:
   light_surface: logo-light.png
   dark_surface: logo-dark.png
-brand: "#005ABB"
+brand: "#171717"
 on_brand: "#FFFFFF"
 theme_color:
-  light: "#F7F9FC"
+  light: "#F6F6F6"
   dark: "#111112"
 description:
   zh: "Aster 桌面工作台"

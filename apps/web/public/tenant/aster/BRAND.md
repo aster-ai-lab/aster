@@ -14,13 +14,14 @@
 | `app-icon-small.svg` | 48–80 px：加粗环轨、放大星体，去掉伴星 |
 | `app-icon-micro.svg` | 16–40 px：只保留板面与星体，去掉环轨渐变与投影 |
 | `icons/16x16.png` … `icons/1024x1024.png` | 尺寸阶梯，同时是 Linux hicolor 图标集 |
-| `icon.png`、`icon.icns`、`icon.ico` | 蓝底桌面图标容器（png 1024 / icns / 多分辨率 ico） |
-| `logo-light.png`、`logo-dark.png` | 1024×1024 透明星标 |
+| `icon.png`、`icon.icns`、`icon.ico` | 石墨底桌面图标容器（png 1024 / icns / 多分辨率 ico） |
+| `logo-light.png`、`logo-dark.png` | 1024×1024 透明石墨/银白星标 |
 | `mark-light.png`、`mark-dark.png` | 256×256 窗口、首页、加载页和对话标志 |
-| `tray.png` | 66×66 透明托盘标志（macOS 模板图来源；Linux/Windows 托盘用 `icons/32x32.png`，透明深蓝在深色面板上会消失） |
+| `tray.png` | 66×66 透明单色托盘标志（macOS 模板图来源；Linux/Windows 托盘用 `icons/32x32.png`） |
 
-三个 SVG 由 `scripts/app-icon.py` 生成，位图由 `scripts/app-icon-assets.py` 光栅化
-（`just app-icons` 一次跑完）。板面是超椭圆而非圆角矩形：1024 画布内留 100 px
+三个应用图标 SVG 由 `scripts/app-icon.py` 生成，`logo.svg` 是透明星标源；全部位图由
+`scripts/app-icon-assets.py` 光栅化（`just app-icons` 一次跑完）。深色标志是浅色单色位图
+保留 alpha 的精确反色，运行时暗色滤镜使用同一规则。板面是超椭圆而非圆角矩形：1024 画布内留 100 px
 光学边距、板面 824 px，与 macOS 图标网格一致；低于 48 px 时圆角矩形会比平台遮罩
 更方，超椭圆才不会。
 
@@ -36,9 +37,11 @@
 | 桌面文件名 | `dev.a3s.studio.aster.desktop` |
 | `Icon=` 与 hicolor 图标名 | `dev.a3s.studio.aster` |
 
-主操作蓝为 `#005ABB`，悬停蓝为 `#004E9F`；画布、导航与边框分别使用
-`#F7F9FC`、`#E9EDF3`、`#DFE5ED`。深色主操作使用 `#4C9BE6`。
-官网与应用使用相同的星标和蓝银主题，不另造图形。
+主操作色为石墨黑 `#171717`，浅色悬停为 `#2A2A2A`；画布、导航与边框分别使用
+`#F6F6F6`、`#E6E6E6`、`#E3E3E3`。深色主操作使用 `#F5F5F5`，文字与图标保持高对比。
+应用图标通过石墨渐变、金属银星芒、环轨、高光和细描边形成材质层次；导航选中态沿用
+ToWork 的中性灰底板，不用品牌色铺满。官网与应用使用相同的单色星标，不另造图形。
+用户显式选择的主题色和链接、成功、警告、错误等功能色不受默认黑白品牌约束。
 
 本地构建不显示登录、用户资料或组织入口，不查询账号或组织接口。
 另一个租户的账号、模型与组织行为继续独立，旧用户数据不迁移。

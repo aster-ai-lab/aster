@@ -178,10 +178,11 @@ backends, and release certification are separate from the local migration.
 `just build-studio-release` 打包所选产品。构建失败不会启动旧二进制。
 这两个产品分别保留自己的构建身份、配置和数据目录。
 
-The welcome screen uses the supplied Aster logo, retained at
-`assets/aster-logo.png`, with full and compact ASCII artwork. Forty-eight
-frames are cached lazily and replayed at 12 FPS. Glyph and color sweeps
-share the existing welcome-screen redraw clock. Compact artwork reserves
+The welcome screen uses the full and compact ASCII artwork retained at
+`crates/terminal/crates/codegen/a3s-code-pager/assets/logo/aster.txt` and
+`crates/terminal/crates/codegen/a3s-code-pager/assets/logo/aster-small.txt`.
+Forty-eight frames are cached lazily and replayed at 12 FPS. Glyph and color
+sweeps share the existing welcome-screen redraw clock. Compact artwork reserves
 five rows so a standard 80-by-24 terminal can still show it. Color output
 uses the terminal's existing quantization and NO_COLOR handling.
 

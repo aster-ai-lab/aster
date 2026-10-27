@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
   <defs>
-    <linearGradient id="blue" x1="85" y1="30" x2="170" y2="218" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#2789ED"/><stop offset=".5" stop-color="#005ABB"/><stop offset="1" stop-color="#003A7B"/>
+    <linearGradient id="graphite" x1="85" y1="30" x2="170" y2="218" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4A4A4A"/><stop offset=".5" stop-color="#171717"/><stop offset="1" stop-color="#000000"/>
     </linearGradient>
     <linearGradient id="silver" x1="30" y1="183" x2="223" y2="75" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#7F96B2"/><stop offset=".45" stop-color="#E6EDF6"/><stop offset="1" stop-color="#9CACC1"/>
+      <stop stop-color="#6E6E6E"/><stop offset=".45" stop-color="#E5E5E5"/><stop offset="1" stop-color="#8A8A8A"/>
     </linearGradient>
   </defs>
   <ellipse cx="128" cy="132" rx="113" ry="43" transform="rotate(-28 128 132)" stroke="url(#silver)" stroke-width="9"/>
-  <path d="M128 23C142 86 152 102 204 126C152 140 141 160 128 233C115 160 104 140 52 126C104 102 114 86 128 23Z" fill="url(#blue)"/>
-  <path d="m128 105 15 23-15 29-15-29 15-23Z" fill="#F4F7FC"/>
+  <path d="M128 23C142 86 152 102 204 126C152 140 141 160 128 233C115 160 104 140 52 126C104 102 114 86 128 23Z" fill="url(#graphite)" stroke="#FFFFFF" stroke-opacity=".28" stroke-width="1.5"/>
+  <path d="m128 105 15 23-15 29-15-29 15-23Z" fill="#F5F5F5"/>
   <path d="M15 132A113 43 0 0 0 241 132" transform="rotate(-28 128 132)" stroke="url(#silver)" stroke-width="9" stroke-linecap="round"/>
-  <path d="m204 35 4 10 10 4-10 4-4 10-4-10-10-4 10-4 4-10Z" fill="#005ABB"/>
+  <path d="m204 35 4 10 10 4-10 4-4 10-4-10-10-4 10-4 4-10Z" fill="#171717"/>
 </svg>
