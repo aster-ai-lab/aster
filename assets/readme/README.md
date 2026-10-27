@@ -18,7 +18,7 @@
 根目录 README 的“运行机制”使用四张拆分静态图，均无脚本或外部资源：
 
 - `task-control-loop.svg`：模型提案、权限判定、工具执行、事实日志与完成门禁。
-- `meta-harness-assembly.svg`：宿主配方、五个默认组件、Moore 组件与动作 key。
+- `meta-harness-assembly.svg`：组件插槽、爆炸分层、Moore 组件、组合配方与动作 key。
 - `extension-surfaces.svg`：提示、上下文、Skills、工具、Hooks 和宿主组件的接入位置。
 - `verification-recovery.svg`：修改摘要、验证证据、资源寿命、恢复与未决外部操作。
 

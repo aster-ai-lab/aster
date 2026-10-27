@@ -72,6 +72,25 @@ class Sheet:
         if subtitle:
             self.text(x+w/2, y+h/2+17, subtitle, 10.5, fill="#444", anchor="middle")
 
+    def table(self, x, y, w, title, rows, col=[48, 92], rowH=37):
+        height = 28 + len(rows) * rowH
+        self.rect(x, y, w, height, "obj", 2)
+        self.text(x + 10, y + 18, title, 10, spacing=1.1)
+        self.line(x, y + 28, x + w, y + 28)
+        for index, row in enumerate(rows):
+            ry = y + 28 + index * rowH
+            if index:
+                self.line(x, ry, x + w, ry)
+            cut1 = x + col[0]
+            cut2 = cut1 + col[1]
+            self.line(cut1, ry, cut1, ry + rowH)
+            self.line(cut2, ry, cut2, ry + rowH)
+            self.text(x + 8, ry + rowH / 2 + 4, row[0], 10, family=MONO)
+            self.text(cut1 + 7, ry + rowH / 2 + 4, row[1], 10, family=MONO)
+            lines = row[2].split("|")
+            self.multi(cut2 + 7, ry + (13 if len(lines) > 1 else rowH / 2 + 4), lines, 10, 13)
+        return y + height
+
     def save(self, filename, title, desc):
         body = "\n  ".join(self.parts)
         source = f'''<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="{self.height}" viewBox="0 0 1200 {self.height}" role="img" aria-labelledby="title desc">
@@ -122,36 +141,118 @@ def control_loop():
 
 
 def assembly():
-    s = Sheet("02 · META HARNESS", "组件装配与单一事实日志", "宿主组合 Moore 组件树；运行时复用 AgentSession / FactRun，而不是另起一套消息循环。", 790)
-    s.section(42, 158, "ASSEMBLY / 宿主输入到已准入组件图", "COMPONENT ORDER = ASSEMBLY ORDER")
-    s.box(48, 184, 284, 58, "HarnessComposeOptions", "components · limits · system")
-    s.box(374, 184, 284, 58, "HostHarnessRegistry", "registered host:<id>", "ghost")
-    s.box(700, 184, 404, 58, "HostHarnessAssembler", "full tree · takes priority", "ghost")
-    s.line(190, 242, 190, 268, "dashflow")
-    s.line(516, 242, 516, 268, "dashflow")
-    s.line(902, 242, 902, 268, "dashflow")
-    s.rect(152, 270, 896, 40, "band")
-    s.text(600, 296, "ADMIT · RESOLVE · HarnessGraph + KernelPolicy", 14, weight=600, anchor="middle", family=MONO)
-    components = [("C1 · system", "prompt slots"), ("C2 · tools", "catalog view"), ("C3 · budget", "budget view"), ("C4 · compact", "threshold view"), ("C5 · infer", "scheduler")]
-    for i, (title, subtitle) in enumerate(components):
-        s.box(48+i*222, 348, 202, 68, title, subtitle, "band" if i == 4 else "box")
-    s.text(1152, 436, "host:<id> · REGISTERED ONLY", 10, family=MONO, anchor="end", fill="#555")
-    s.line(600, 416, 600, 444, "flow")
-    s.rect(202, 446, 796, 42, "band")
-    s.text(600, 473, "FOLD log → VIEW + UNIQUE KEYED TRANSITIONS", 13, weight=600, anchor="middle", family=MONO)
-    s.line(600, 488, 600, 512, "flow")
-    s.box(302, 514, 596, 48, "F1 · IMMUTABLE FACT LOG", "ingest · resume · one control source", "obj")
-    s.section(42, 614, "DETAIL B / Moore 组件", "PURE STATE REBUILD")
-    s.rect(42, 638, 344, 92, "obj")
-    s.text(60, 664, "initial → step(fact) → output(state)", 12, weight=600, family=MONO)
-    s.multi(60, 688, ["output = (view, keyed transitions)", "外部副作用只放在动作中"], 11, 17)
-    s.section(426, 614, "DETAIL C / 动作选择", "KEYED + REPLAYABLE")
-    s.rect(426, 638, 344, 92, "obj")
-    s.multi(444, 664, ["key 必须唯一；排除已完成动作", "按 key 排序选择下一步", "infer/ 为子树分配命名空间"], 11, 20)
-    s.section(810, 614, "KERNEL / 不可绕过的边界", "FAIL CLOSED")
-    s.rect(810, 638, 348, 92, "hatch")
-    s.multi(828, 664, ["K1：每次工具调用前判定权限", "K2：修改完成后检查证据与收尾", "未知组件或缺失注册表 → 拒绝"], 11, 20)
-    s.save("meta-harness-assembly.svg", "Aster Meta Harness 组件装配", "宿主配方、注册表和装配器生成组件图，五个默认组件共享一份不可变事实日志，权限和完成门禁由 Core 保留。")
+    s = Sheet("02 · META HARNESS", "可组合 Meta Harness 拆解图", "组件插槽可替换、宿主组件可挂载；Core 始终保留权限与完成治理。", 980)
+
+    # Notes: the invariants that explain composability rather than a fixed pipeline.
+    s.section(42, 150, "NOTES / 组合不变量", "READ WITH ALL VIEWS · LOGICAL REFERENCE")
+    s.rect(42, 176, 270, 340, "obj")
+    notes = [
+        ("1", ["组件顺序是装配顺序；", "动作由日志状态与 key 选择。"]),
+        ("2", ["components 优先于 parts；", "空配方使用五个默认组件。"]),
+        ("3", ["host:<id> 只解析已注册", "Rust 工厂；未知 ID 拒绝。"]),
+        ("4", ["K1 / K2 不可被组件、", "配方或 Assembler 关闭。"]),
+        ("5", ["step / output 无副作用；", "外部操作仅放入动作。"]),
+        ("6", ["删除 budget / compact", "不等于移除调度器限制。"]),
+    ]
+    for i, (code, lines) in enumerate(notes):
+        y = 202 + i * 50
+        s.rect(54, y - 13, 21, 19, "obj", 0)
+        s.text(64.5, y + 1, code, 10, anchor="middle", family=MONO)
+        s.multi(84, y, lines, 10.5, 15)
+
+    # Plan view: the five replaceable slots plus one registered host slot.
+    s.section(342, 150, "PLAN VIEW / 组件插槽", "ORDERED ASSEMBLY · NOT A FIXED CALL SEQUENCE")
+    s.box(342, 176, 154, 32, "parts", "typed stock list", "ghost", 11)
+    s.box(512, 176, 176, 32, "components", "ordered recipe", "band", 11)
+    s.box(704, 176, 158, 32, "host:<id>", "registered mount", "ghost", 11)
+    s.rect(342, 222, 520, 322, "obj")
+    s.text(360, 244, "AgentSession / FactRun · EXISTING EXECUTION PATH", 10, family=MONO)
+    components = [
+        ("C1 · system", "SYSTEM PROMPT SLOT", "prompt slots"),
+        ("C2 · tools", "TOOL CATALOG SLOT", "catalog view"),
+        ("C3 · budget", "BUDGET POLICY SLOT", "budget view"),
+        ("C4 · compact", "COMPACTION SLOT", "threshold view"),
+        ("C5 · infer", "SCHEDULER SUBTREE", "model · tools · confirm · compact"),
+    ]
+    for i, (code, slot, subtitle) in enumerate(components):
+        y = 260 + i * 46
+        s.box(366, y, 472, 38, code, slot, "band" if i == 4 else "ghost", 11)
+        s.text(826, y + 23, subtitle, 9, anchor="end", fill="#666")
+    s.box(366, 490, 472, 30, "host:<id>", "REGISTERED HOST COMPONENT SLOT", "ghost", 10)
+    s.line(602, 544, 602, 562, "flow")
+    s.box(412, 566, 380, 42, "F1 · IMMUTABLE FACT LOG", "ingest · resume · one control source", "band", 11)
+    s.text(352, 627, "{ view, transitions } = f(log)", 12, family=MONO)
+
+    # Exploded view: replaceable layers above a stable kernel and log.
+    s.section(42, 568, "EXPLODED VIEW / 可组合分层", "HOST → SLOTS → KERNEL → SESSION → LOG")
+    def slab(x, y, code, title, subtitle, cls="box"):
+        w, d = 138, 30
+        fill, stroke, dash = {
+            "box": ("#f7f7f7", "#111", "none"),
+            "ghost": ("#fff", "#555", "6 4"),
+            "hatch": ("url(#hatch)", "#111", "none"),
+            "band": ("#e9e9e9", "#111", "none"),
+        }[cls]
+        for points in [
+            f"{x},{y} {x+w},{y} {x+w+d},{y-18} {x+d},{y-18}",
+            f"{x},{y} {x+w},{y} {x+w},{y+10} {x},{y+10}",
+            f"{x+w},{y} {x+w+d},{y-18} {x+w+d},{y-8} {x+w},{y+10}",
+        ]:
+            s.add(f'<polygon points="{points}" fill="{fill}" stroke="{stroke}" stroke-width="1.1" stroke-dasharray="{dash}"/>')
+        s.text(x + 10, y - 3, code, 8.5, family=MONO)
+        s.line(x + w + d + 8, y - 5, 218, y - 5, "fine")
+        s.text(226, y - 8, title, 10, weight=600, family=MONO)
+        s.text(226, y + 7, subtitle, 9, fill="#555")
+    slab(62, 632, "H1 / H2", "HOST EXTENSIONS", "Registry / Assembler", "ghost")
+    slab(62, 692, "C1…C5", "COMPONENT SLOTS", "replace / reorder / mount")
+    slab(62, 752, "K1 + K2", "KERNEL POLICY", "permission + completion", "hatch")
+    slab(62, 812, "SESSION", "AgentSession / FactRun", "existing turn runner")
+    slab(62, 872, "F1", "IMMUTABLE FACT LOG", "ingest / resume", "band")
+
+    # Component tables: semantics, not invented numerical dimensions.
+    s.table(892, 176, 266, "COMPONENT SLOTS", [
+        ["C1", "system", "系统指令视图"],
+        ["C2", "tools", "工具目录视图"],
+        ["C3", "budget", "工具预算视图"],
+        ["C4", "compact", "压缩阈值视图"],
+        ["C5", "infer", "调度器子树"],
+    ], [40, 68], 43)
+    s.table(892, 438, 266, "HOST INTERFACES", [
+        ["H1", "registry", "注册 host 工厂"],
+        ["H2", "assembler", "提供完整组件树"],
+        ["H3", "compose", "声明有序配方"],
+    ], [40, 78], 39)
+    s.table(892, 602, 266, "KERNEL POLICY", [
+        ["K1", "permission", "每次工具调用前"],
+        ["K2", "completion", "验证 + 资源收尾"],
+    ], [40, 78], 39)
+
+    # Detail A: what one Moore component contributes to the shared tree.
+    s.section(342, 650, "DETAIL A — MOORE COMPONENT", "PURE STATE REBUILD · EFFECTS IN ACTIONS")
+    s.box(342, 680, 142, 58, "initial", "create state", "obj", 11)
+    s.box(508, 680, 142, 58, "step", "fact → state", "obj", 11)
+    s.box(674, 680, 188, 58, "output", "view + A# transitions", "band", 11)
+    s.line(484, 709, 508, 709, "flow")
+    s.line(650, 709, 674, 709, "flow")
+    s.box(412, 780, 380, 46, "F1 · FOLD IMMUTABLE LOG", "view + unique keyed transitions", "obj", 11)
+    s.line(768, 738, 768, 758, "fine")
+    s.path("M768 758 V768 H602 V780", "flow")
+    s.multi(352, 852, ["A#：key 必须唯一；已完成动作不重跑。", "infer/ 为子树命名空间；重复 key 拒绝。"], 10.5, 18)
+
+    # Detail B: actual composition recipes and precedence.
+    s.section(892, 736, "DETAIL B — COMPOSITION RULES", "ACP EXACT RECIPES · RUST FULL TREES")
+    s.rect(892, 762, 266, 150, "obj")
+    s.multi(906, 786, [
+        "DEFAULT · system tools budget compact infer",
+        "LEAN · system tools budget infer",
+        "HOST · + host:intent_stamp",
+        "components > parts > default",
+        "HostHarnessAssembler > component list",
+        "unknown mount / duplicate key → REFUSE",
+    ], 9.5, 21)
+
+    s.text(42, 944, "ONE LOG + MANY COMPONENTS · NO SECOND IMPERATIVE MESSAGE LOOP · GOVERNANCE STAYS CORE-OWNED", 10, family=MONO, fill="#555")
+    s.save("meta-harness-assembly.svg", "Aster Meta Harness 可组合拆解图", "五个组件插槽、宿主扩展、Moore 组件详图、内核门禁和单一事实日志的可组合架构。")
 
 
 def extensions():

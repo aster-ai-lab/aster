@@ -1,74 +1,218 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="790" viewBox="0 0 1200 790" role="img" aria-labelledby="title desc">
-  <title id="title">Aster Meta Harness 组件装配</title>
-  <desc id="desc">宿主配方、注册表和装配器生成组件图，五个默认组件共享一份不可变事实日志，权限和完成门禁由 Core 保留。</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="980" viewBox="0 0 1200 980" role="img" aria-labelledby="title desc">
+  <title id="title">Aster Meta Harness 可组合拆解图</title>
+  <desc id="desc">五个组件插槽、宿主扩展、Moore 组件详图、内核门禁和单一事实日志的可组合架构。</desc>
   <defs>
     <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,4 L0,8 Z" fill="#111"/></marker>
     <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" stroke="#b8b8b8" stroke-width="2"/></pattern>
   </defs>
-  <rect width="1200" height="790" fill="#fff"/>
-  <rect x="14" y="14" width="1172" height="762" rx="10" fill="#fff" stroke="#111" stroke-width="1.4"/>
+  <rect width="1200" height="980" fill="#fff"/>
+  <rect x="14" y="14" width="1172" height="952" rx="10" fill="#fff" stroke="#111" stroke-width="1.4"/>
   <text x="38" y="45" fill="#555" font-size="11" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="1.8">02 · META HARNESS</text>
-  <text x="38" y="79" fill="#111" font-size="27" font-weight="600" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0.6">组件装配与单一事实日志</text>
-  <text x="38" y="106" fill="#555" font-size="13" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">宿主组合 Moore 组件树；运行时复用 AgentSession / FactRun，而不是另起一套消息循环。</text>
+  <text x="38" y="79" fill="#111" font-size="27" font-weight="600" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0.6">可组合 Meta Harness 拆解图</text>
+  <text x="38" y="106" fill="#555" font-size="13" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">组件插槽可替换、宿主组件可挂载；Core 始终保留权限与完成治理。</text>
   <line x1="14" y1="128" x2="1186" y2="128" stroke="#666" stroke-width=".75"/>
-  <line x1="14" y1="742" x2="1186" y2="742" stroke="#666" stroke-width=".75"/>
-  <text x="38" y="767" fill="#555" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0.7">ASTER · SOURCE-LOCKED ARCHITECTURE · NTS</text>
-  <text x="1162" y="767" fill="#555" font-size="10" font-weight="400" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">02</text>
-  <text x="42" y="158" fill="#111" font-size="13" font-weight="600" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="1.2">ASSEMBLY / 宿主输入到已准入组件图</text>
-  <text x="42" y="177" fill="#555" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0.7">COMPONENT ORDER = ASSEMBLY ORDER</text>
-  <rect x="48" y="184" width="284" height="58" rx="4" fill="#f7f7f7" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
-  <text x="190.0" y="211.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">HarnessComposeOptions</text>
-  <text x="190.0" y="230.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">components · limits · system</text>
-  <rect x="374" y="184" width="284" height="58" rx="4" fill="#fff" stroke="#555" stroke-width="1" stroke-dasharray="6 4"/>
-  <text x="516.0" y="211.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">HostHarnessRegistry</text>
-  <text x="516.0" y="230.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">registered host:&lt;id&gt;</text>
-  <rect x="700" y="184" width="404" height="58" rx="4" fill="#fff" stroke="#555" stroke-width="1" stroke-dasharray="6 4"/>
-  <text x="902.0" y="211.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">HostHarnessAssembler</text>
-  <text x="902.0" y="230.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">full tree · takes priority</text>
-  <line x1="190" y1="242" x2="190" y2="268" stroke="#555" stroke-width="1.1" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
-  <line x1="516" y1="242" x2="516" y2="268" stroke="#555" stroke-width="1.1" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
-  <line x1="902" y1="242" x2="902" y2="268" stroke="#555" stroke-width="1.1" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
-  <rect x="152" y="270" width="896" height="40" rx="4" fill="#e9e9e9" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
-  <text x="600" y="296" fill="#111" font-size="14" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">ADMIT · RESOLVE · HarnessGraph + KernelPolicy</text>
-  <rect x="48" y="348" width="202" height="68" rx="4" fill="#f7f7f7" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
-  <text x="149.0" y="380.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">C1 · system</text>
-  <text x="149.0" y="399.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">prompt slots</text>
-  <rect x="270" y="348" width="202" height="68" rx="4" fill="#f7f7f7" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
-  <text x="371.0" y="380.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">C2 · tools</text>
-  <text x="371.0" y="399.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">catalog view</text>
-  <rect x="492" y="348" width="202" height="68" rx="4" fill="#f7f7f7" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
-  <text x="593.0" y="380.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">C3 · budget</text>
-  <text x="593.0" y="399.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">budget view</text>
-  <rect x="714" y="348" width="202" height="68" rx="4" fill="#f7f7f7" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
-  <text x="815.0" y="380.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">C4 · compact</text>
-  <text x="815.0" y="399.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">threshold view</text>
-  <rect x="936" y="348" width="202" height="68" rx="4" fill="#e9e9e9" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
-  <text x="1037.0" y="380.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">C5 · infer</text>
-  <text x="1037.0" y="399.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">scheduler</text>
-  <text x="1152" y="436" fill="#555" font-size="10" font-weight="400" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">host:&lt;id&gt; · REGISTERED ONLY</text>
-  <line x1="600" y1="416" x2="600" y2="444" stroke="#111" stroke-width="1.3" marker-end="url(#arrow)"/>
-  <rect x="202" y="446" width="796" height="42" rx="4" fill="#e9e9e9" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
-  <text x="600" y="473" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">FOLD log → VIEW + UNIQUE KEYED TRANSITIONS</text>
-  <line x1="600" y1="488" x2="600" y2="512" stroke="#111" stroke-width="1.3" marker-end="url(#arrow)"/>
-  <rect x="302" y="514" width="596" height="48" rx="4" fill="#fff" stroke="#111" stroke-width="1.4" stroke-dasharray="none"/>
-  <text x="600.0" y="536.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">F1 · IMMUTABLE FACT LOG</text>
-  <text x="600.0" y="555.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">ingest · resume · one control source</text>
-  <text x="42" y="614" fill="#111" font-size="13" font-weight="600" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="1.2">DETAIL B / Moore 组件</text>
-  <text x="42" y="633" fill="#555" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0.7">PURE STATE REBUILD</text>
-  <rect x="42" y="638" width="344" height="92" rx="4" fill="#fff" stroke="#111" stroke-width="1.4" stroke-dasharray="none"/>
-  <text x="60" y="664" fill="#111" font-size="12" font-weight="600" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">initial → step(fact) → output(state)</text>
-  <text x="60" y="688" fill="#111" font-size="11" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">output = (view, keyed transitions)</text>
-  <text x="60" y="705" fill="#111" font-size="11" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">外部副作用只放在动作中</text>
-  <text x="426" y="614" fill="#111" font-size="13" font-weight="600" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="1.2">DETAIL C / 动作选择</text>
-  <text x="426" y="633" fill="#555" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0.7">KEYED + REPLAYABLE</text>
-  <rect x="426" y="638" width="344" height="92" rx="4" fill="#fff" stroke="#111" stroke-width="1.4" stroke-dasharray="none"/>
-  <text x="444" y="664" fill="#111" font-size="11" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">key 必须唯一；排除已完成动作</text>
-  <text x="444" y="684" fill="#111" font-size="11" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">按 key 排序选择下一步</text>
-  <text x="444" y="704" fill="#111" font-size="11" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">infer/ 为子树分配命名空间</text>
-  <text x="810" y="614" fill="#111" font-size="13" font-weight="600" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="1.2">KERNEL / 不可绕过的边界</text>
-  <text x="810" y="633" fill="#555" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0.7">FAIL CLOSED</text>
-  <rect x="810" y="638" width="348" height="92" rx="4" fill="url(#hatch)" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
-  <text x="828" y="664" fill="#111" font-size="11" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">K1：每次工具调用前判定权限</text>
-  <text x="828" y="684" fill="#111" font-size="11" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">K2：修改完成后检查证据与收尾</text>
-  <text x="828" y="704" fill="#111" font-size="11" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">未知组件或缺失注册表 → 拒绝</text>
+  <line x1="14" y1="932" x2="1186" y2="932" stroke="#666" stroke-width=".75"/>
+  <text x="38" y="957" fill="#555" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0.7">ASTER · SOURCE-LOCKED ARCHITECTURE · NTS</text>
+  <text x="1162" y="957" fill="#555" font-size="10" font-weight="400" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">02</text>
+  <text x="42" y="150" fill="#111" font-size="13" font-weight="600" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="1.2">NOTES / 组合不变量</text>
+  <text x="42" y="169" fill="#555" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0.7">READ WITH ALL VIEWS · LOGICAL REFERENCE</text>
+  <rect x="42" y="176" width="270" height="340" rx="4" fill="#fff" stroke="#111" stroke-width="1.4" stroke-dasharray="none"/>
+  <rect x="54" y="189" width="21" height="19" rx="0" fill="#fff" stroke="#111" stroke-width="1.4" stroke-dasharray="none"/>
+  <text x="64.5" y="203" fill="#111" font-size="10" font-weight="400" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">1</text>
+  <text x="84" y="202" fill="#111" font-size="10.5" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">组件顺序是装配顺序；</text>
+  <text x="84" y="217" fill="#111" font-size="10.5" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">动作由日志状态与 key 选择。</text>
+  <rect x="54" y="239" width="21" height="19" rx="0" fill="#fff" stroke="#111" stroke-width="1.4" stroke-dasharray="none"/>
+  <text x="64.5" y="253" fill="#111" font-size="10" font-weight="400" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">2</text>
+  <text x="84" y="252" fill="#111" font-size="10.5" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">components 优先于 parts；</text>
+  <text x="84" y="267" fill="#111" font-size="10.5" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">空配方使用五个默认组件。</text>
+  <rect x="54" y="289" width="21" height="19" rx="0" fill="#fff" stroke="#111" stroke-width="1.4" stroke-dasharray="none"/>
+  <text x="64.5" y="303" fill="#111" font-size="10" font-weight="400" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">3</text>
+  <text x="84" y="302" fill="#111" font-size="10.5" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">host:&lt;id&gt; 只解析已注册</text>
+  <text x="84" y="317" fill="#111" font-size="10.5" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">Rust 工厂；未知 ID 拒绝。</text>
+  <rect x="54" y="339" width="21" height="19" rx="0" fill="#fff" stroke="#111" stroke-width="1.4" stroke-dasharray="none"/>
+  <text x="64.5" y="353" fill="#111" font-size="10" font-weight="400" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">4</text>
+  <text x="84" y="352" fill="#111" font-size="10.5" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">K1 / K2 不可被组件、</text>
+  <text x="84" y="367" fill="#111" font-size="10.5" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">配方或 Assembler 关闭。</text>
+  <rect x="54" y="389" width="21" height="19" rx="0" fill="#fff" stroke="#111" stroke-width="1.4" stroke-dasharray="none"/>
+  <text x="64.5" y="403" fill="#111" font-size="10" font-weight="400" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">5</text>
+  <text x="84" y="402" fill="#111" font-size="10.5" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">step / output 无副作用；</text>
+  <text x="84" y="417" fill="#111" font-size="10.5" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">外部操作仅放入动作。</text>
+  <rect x="54" y="439" width="21" height="19" rx="0" fill="#fff" stroke="#111" stroke-width="1.4" stroke-dasharray="none"/>
+  <text x="64.5" y="453" fill="#111" font-size="10" font-weight="400" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">6</text>
+  <text x="84" y="452" fill="#111" font-size="10.5" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">删除 budget / compact</text>
+  <text x="84" y="467" fill="#111" font-size="10.5" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">不等于移除调度器限制。</text>
+  <text x="342" y="150" fill="#111" font-size="13" font-weight="600" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="1.2">PLAN VIEW / 组件插槽</text>
+  <text x="342" y="169" fill="#555" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0.7">ORDERED ASSEMBLY · NOT A FIXED CALL SEQUENCE</text>
+  <rect x="342" y="176" width="154" height="32" rx="4" fill="#fff" stroke="#555" stroke-width="1" stroke-dasharray="6 4"/>
+  <text x="419.0" y="190.0" fill="#111" font-size="11" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">parts</text>
+  <text x="419.0" y="209.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">typed stock list</text>
+  <rect x="512" y="176" width="176" height="32" rx="4" fill="#e9e9e9" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="600.0" y="190.0" fill="#111" font-size="11" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">components</text>
+  <text x="600.0" y="209.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">ordered recipe</text>
+  <rect x="704" y="176" width="158" height="32" rx="4" fill="#fff" stroke="#555" stroke-width="1" stroke-dasharray="6 4"/>
+  <text x="783.0" y="190.0" fill="#111" font-size="11" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">host:&lt;id&gt;</text>
+  <text x="783.0" y="209.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">registered mount</text>
+  <rect x="342" y="222" width="520" height="322" rx="4" fill="#fff" stroke="#111" stroke-width="1.4" stroke-dasharray="none"/>
+  <text x="360" y="244" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">AgentSession / FactRun · EXISTING EXECUTION PATH</text>
+  <rect x="366" y="260" width="472" height="38" rx="4" fill="#fff" stroke="#555" stroke-width="1" stroke-dasharray="6 4"/>
+  <text x="602.0" y="277.0" fill="#111" font-size="11" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">C1 · system</text>
+  <text x="602.0" y="296.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">SYSTEM PROMPT SLOT</text>
+  <text x="826" y="283" fill="#666" font-size="9" font-weight="400" text-anchor="end" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">prompt slots</text>
+  <rect x="366" y="306" width="472" height="38" rx="4" fill="#fff" stroke="#555" stroke-width="1" stroke-dasharray="6 4"/>
+  <text x="602.0" y="323.0" fill="#111" font-size="11" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">C2 · tools</text>
+  <text x="602.0" y="342.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">TOOL CATALOG SLOT</text>
+  <text x="826" y="329" fill="#666" font-size="9" font-weight="400" text-anchor="end" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">catalog view</text>
+  <rect x="366" y="352" width="472" height="38" rx="4" fill="#fff" stroke="#555" stroke-width="1" stroke-dasharray="6 4"/>
+  <text x="602.0" y="369.0" fill="#111" font-size="11" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">C3 · budget</text>
+  <text x="602.0" y="388.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">BUDGET POLICY SLOT</text>
+  <text x="826" y="375" fill="#666" font-size="9" font-weight="400" text-anchor="end" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">budget view</text>
+  <rect x="366" y="398" width="472" height="38" rx="4" fill="#fff" stroke="#555" stroke-width="1" stroke-dasharray="6 4"/>
+  <text x="602.0" y="415.0" fill="#111" font-size="11" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">C4 · compact</text>
+  <text x="602.0" y="434.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">COMPACTION SLOT</text>
+  <text x="826" y="421" fill="#666" font-size="9" font-weight="400" text-anchor="end" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">threshold view</text>
+  <rect x="366" y="444" width="472" height="38" rx="4" fill="#e9e9e9" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="602.0" y="461.0" fill="#111" font-size="11" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">C5 · infer</text>
+  <text x="602.0" y="480.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">SCHEDULER SUBTREE</text>
+  <text x="826" y="467" fill="#666" font-size="9" font-weight="400" text-anchor="end" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">model · tools · confirm · compact</text>
+  <rect x="366" y="490" width="472" height="30" rx="4" fill="#fff" stroke="#555" stroke-width="1" stroke-dasharray="6 4"/>
+  <text x="602.0" y="503.0" fill="#111" font-size="10" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">host:&lt;id&gt;</text>
+  <text x="602.0" y="522.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">REGISTERED HOST COMPONENT SLOT</text>
+  <line x1="602" y1="544" x2="602" y2="562" stroke="#111" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <rect x="412" y="566" width="380" height="42" rx="4" fill="#e9e9e9" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="602.0" y="585.0" fill="#111" font-size="11" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">F1 · IMMUTABLE FACT LOG</text>
+  <text x="602.0" y="604.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">ingest · resume · one control source</text>
+  <text x="352" y="627" fill="#111" font-size="12" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">{ view, transitions } = f(log)</text>
+  <text x="42" y="568" fill="#111" font-size="13" font-weight="600" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="1.2">EXPLODED VIEW / 可组合分层</text>
+  <text x="42" y="587" fill="#555" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0.7">HOST → SLOTS → KERNEL → SESSION → LOG</text>
+  <polygon points="62,632 200,632 230,614 92,614" fill="#fff" stroke="#555" stroke-width="1.1" stroke-dasharray="6 4"/>
+  <polygon points="62,632 200,632 200,642 62,642" fill="#fff" stroke="#555" stroke-width="1.1" stroke-dasharray="6 4"/>
+  <polygon points="200,632 230,614 230,624 200,642" fill="#fff" stroke="#555" stroke-width="1.1" stroke-dasharray="6 4"/>
+  <text x="72" y="629" fill="#111" font-size="8.5" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">H1 / H2</text>
+  <line x1="238" y1="627" x2="218" y2="627" stroke="#666" stroke-width=".75"/>
+  <text x="226" y="624" fill="#111" font-size="10" font-weight="600" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">HOST EXTENSIONS</text>
+  <text x="226" y="639" fill="#555" font-size="9" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">Registry / Assembler</text>
+  <polygon points="62,692 200,692 230,674 92,674" fill="#f7f7f7" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <polygon points="62,692 200,692 200,702 62,702" fill="#f7f7f7" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <polygon points="200,692 230,674 230,684 200,702" fill="#f7f7f7" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="72" y="689" fill="#111" font-size="8.5" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">C1…C5</text>
+  <line x1="238" y1="687" x2="218" y2="687" stroke="#666" stroke-width=".75"/>
+  <text x="226" y="684" fill="#111" font-size="10" font-weight="600" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">COMPONENT SLOTS</text>
+  <text x="226" y="699" fill="#555" font-size="9" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">replace / reorder / mount</text>
+  <polygon points="62,752 200,752 230,734 92,734" fill="url(#hatch)" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <polygon points="62,752 200,752 200,762 62,762" fill="url(#hatch)" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <polygon points="200,752 230,734 230,744 200,762" fill="url(#hatch)" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="72" y="749" fill="#111" font-size="8.5" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">K1 + K2</text>
+  <line x1="238" y1="747" x2="218" y2="747" stroke="#666" stroke-width=".75"/>
+  <text x="226" y="744" fill="#111" font-size="10" font-weight="600" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">KERNEL POLICY</text>
+  <text x="226" y="759" fill="#555" font-size="9" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">permission + completion</text>
+  <polygon points="62,812 200,812 230,794 92,794" fill="#f7f7f7" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <polygon points="62,812 200,812 200,822 62,822" fill="#f7f7f7" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <polygon points="200,812 230,794 230,804 200,822" fill="#f7f7f7" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="72" y="809" fill="#111" font-size="8.5" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">SESSION</text>
+  <line x1="238" y1="807" x2="218" y2="807" stroke="#666" stroke-width=".75"/>
+  <text x="226" y="804" fill="#111" font-size="10" font-weight="600" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">AgentSession / FactRun</text>
+  <text x="226" y="819" fill="#555" font-size="9" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">existing turn runner</text>
+  <polygon points="62,872 200,872 230,854 92,854" fill="#e9e9e9" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <polygon points="62,872 200,872 200,882 62,882" fill="#e9e9e9" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <polygon points="200,872 230,854 230,864 200,882" fill="#e9e9e9" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="72" y="869" fill="#111" font-size="8.5" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">F1</text>
+  <line x1="238" y1="867" x2="218" y2="867" stroke="#666" stroke-width=".75"/>
+  <text x="226" y="864" fill="#111" font-size="10" font-weight="600" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">IMMUTABLE FACT LOG</text>
+  <text x="226" y="879" fill="#555" font-size="9" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">ingest / resume</text>
+  <rect x="892" y="176" width="266" height="243" rx="2" fill="#fff" stroke="#111" stroke-width="1.4" stroke-dasharray="none"/>
+  <text x="902" y="194" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="1.1">COMPONENT SLOTS</text>
+  <line x1="892" y1="204" x2="1158" y2="204" stroke="#666" stroke-width=".75"/>
+  <line x1="932" y1="204" x2="932" y2="247" stroke="#666" stroke-width=".75"/>
+  <line x1="1000" y1="204" x2="1000" y2="247" stroke="#666" stroke-width=".75"/>
+  <text x="900" y="229.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">C1</text>
+  <text x="939" y="229.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">system</text>
+  <text x="1007" y="229.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">系统指令视图</text>
+  <line x1="892" y1="247" x2="1158" y2="247" stroke="#666" stroke-width=".75"/>
+  <line x1="932" y1="247" x2="932" y2="290" stroke="#666" stroke-width=".75"/>
+  <line x1="1000" y1="247" x2="1000" y2="290" stroke="#666" stroke-width=".75"/>
+  <text x="900" y="272.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">C2</text>
+  <text x="939" y="272.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">tools</text>
+  <text x="1007" y="272.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">工具目录视图</text>
+  <line x1="892" y1="290" x2="1158" y2="290" stroke="#666" stroke-width=".75"/>
+  <line x1="932" y1="290" x2="932" y2="333" stroke="#666" stroke-width=".75"/>
+  <line x1="1000" y1="290" x2="1000" y2="333" stroke="#666" stroke-width=".75"/>
+  <text x="900" y="315.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">C3</text>
+  <text x="939" y="315.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">budget</text>
+  <text x="1007" y="315.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">工具预算视图</text>
+  <line x1="892" y1="333" x2="1158" y2="333" stroke="#666" stroke-width=".75"/>
+  <line x1="932" y1="333" x2="932" y2="376" stroke="#666" stroke-width=".75"/>
+  <line x1="1000" y1="333" x2="1000" y2="376" stroke="#666" stroke-width=".75"/>
+  <text x="900" y="358.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">C4</text>
+  <text x="939" y="358.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">compact</text>
+  <text x="1007" y="358.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">压缩阈值视图</text>
+  <line x1="892" y1="376" x2="1158" y2="376" stroke="#666" stroke-width=".75"/>
+  <line x1="932" y1="376" x2="932" y2="419" stroke="#666" stroke-width=".75"/>
+  <line x1="1000" y1="376" x2="1000" y2="419" stroke="#666" stroke-width=".75"/>
+  <text x="900" y="401.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">C5</text>
+  <text x="939" y="401.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">infer</text>
+  <text x="1007" y="401.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">调度器子树</text>
+  <rect x="892" y="438" width="266" height="145" rx="2" fill="#fff" stroke="#111" stroke-width="1.4" stroke-dasharray="none"/>
+  <text x="902" y="456" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="1.1">HOST INTERFACES</text>
+  <line x1="892" y1="466" x2="1158" y2="466" stroke="#666" stroke-width=".75"/>
+  <line x1="932" y1="466" x2="932" y2="505" stroke="#666" stroke-width=".75"/>
+  <line x1="1010" y1="466" x2="1010" y2="505" stroke="#666" stroke-width=".75"/>
+  <text x="900" y="489.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">H1</text>
+  <text x="939" y="489.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">registry</text>
+  <text x="1017" y="489.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">注册 host 工厂</text>
+  <line x1="892" y1="505" x2="1158" y2="505" stroke="#666" stroke-width=".75"/>
+  <line x1="932" y1="505" x2="932" y2="544" stroke="#666" stroke-width=".75"/>
+  <line x1="1010" y1="505" x2="1010" y2="544" stroke="#666" stroke-width=".75"/>
+  <text x="900" y="528.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">H2</text>
+  <text x="939" y="528.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">assembler</text>
+  <text x="1017" y="528.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">提供完整组件树</text>
+  <line x1="892" y1="544" x2="1158" y2="544" stroke="#666" stroke-width=".75"/>
+  <line x1="932" y1="544" x2="932" y2="583" stroke="#666" stroke-width=".75"/>
+  <line x1="1010" y1="544" x2="1010" y2="583" stroke="#666" stroke-width=".75"/>
+  <text x="900" y="567.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">H3</text>
+  <text x="939" y="567.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">compose</text>
+  <text x="1017" y="567.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">声明有序配方</text>
+  <rect x="892" y="602" width="266" height="106" rx="2" fill="#fff" stroke="#111" stroke-width="1.4" stroke-dasharray="none"/>
+  <text x="902" y="620" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="1.1">KERNEL POLICY</text>
+  <line x1="892" y1="630" x2="1158" y2="630" stroke="#666" stroke-width=".75"/>
+  <line x1="932" y1="630" x2="932" y2="669" stroke="#666" stroke-width=".75"/>
+  <line x1="1010" y1="630" x2="1010" y2="669" stroke="#666" stroke-width=".75"/>
+  <text x="900" y="653.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">K1</text>
+  <text x="939" y="653.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">permission</text>
+  <text x="1017" y="653.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">每次工具调用前</text>
+  <line x1="892" y1="669" x2="1158" y2="669" stroke="#666" stroke-width=".75"/>
+  <line x1="932" y1="669" x2="932" y2="708" stroke="#666" stroke-width=".75"/>
+  <line x1="1010" y1="669" x2="1010" y2="708" stroke="#666" stroke-width=".75"/>
+  <text x="900" y="692.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">K2</text>
+  <text x="939" y="692.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">completion</text>
+  <text x="1017" y="692.5" fill="#111" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">验证 + 资源收尾</text>
+  <text x="342" y="650" fill="#111" font-size="13" font-weight="600" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="1.2">DETAIL A — MOORE COMPONENT</text>
+  <text x="342" y="669" fill="#555" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0.7">PURE STATE REBUILD · EFFECTS IN ACTIONS</text>
+  <rect x="342" y="680" width="142" height="58" rx="4" fill="#fff" stroke="#111" stroke-width="1.4" stroke-dasharray="none"/>
+  <text x="413.0" y="707.0" fill="#111" font-size="11" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">initial</text>
+  <text x="413.0" y="726.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">create state</text>
+  <rect x="508" y="680" width="142" height="58" rx="4" fill="#fff" stroke="#111" stroke-width="1.4" stroke-dasharray="none"/>
+  <text x="579.0" y="707.0" fill="#111" font-size="11" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">step</text>
+  <text x="579.0" y="726.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">fact → state</text>
+  <rect x="674" y="680" width="188" height="58" rx="4" fill="#e9e9e9" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="768.0" y="707.0" fill="#111" font-size="11" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">output</text>
+  <text x="768.0" y="726.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">view + A# transitions</text>
+  <line x1="484" y1="709" x2="508" y2="709" stroke="#111" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <line x1="650" y1="709" x2="674" y2="709" stroke="#111" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <rect x="412" y="780" width="380" height="46" rx="4" fill="#fff" stroke="#111" stroke-width="1.4" stroke-dasharray="none"/>
+  <text x="602.0" y="801.0" fill="#111" font-size="11" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">F1 · FOLD IMMUTABLE LOG</text>
+  <text x="602.0" y="820.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">view + unique keyed transitions</text>
+  <line x1="768" y1="738" x2="768" y2="758" stroke="#666" stroke-width=".75"/>
+  <path d="M768 758 V768 H602 V780" fill="none" stroke="#111" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <text x="352" y="852" fill="#111" font-size="10.5" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">A#：key 必须唯一；已完成动作不重跑。</text>
+  <text x="352" y="870" fill="#111" font-size="10.5" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">infer/ 为子树命名空间；重复 key 拒绝。</text>
+  <text x="892" y="736" fill="#111" font-size="13" font-weight="600" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="1.2">DETAIL B — COMPOSITION RULES</text>
+  <text x="892" y="755" fill="#555" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0.7">ACP EXACT RECIPES · RUST FULL TREES</text>
+  <rect x="892" y="762" width="266" height="150" rx="4" fill="#fff" stroke="#111" stroke-width="1.4" stroke-dasharray="none"/>
+  <text x="906" y="786" fill="#111" font-size="9.5" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">DEFAULT · system tools budget compact infer</text>
+  <text x="906" y="807" fill="#111" font-size="9.5" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">LEAN · system tools budget infer</text>
+  <text x="906" y="828" fill="#111" font-size="9.5" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">HOST · + host:intent_stamp</text>
+  <text x="906" y="849" fill="#111" font-size="9.5" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">components &gt; parts &gt; default</text>
+  <text x="906" y="870" fill="#111" font-size="9.5" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">HostHarnessAssembler &gt; component list</text>
+  <text x="906" y="891" fill="#111" font-size="9.5" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">unknown mount / duplicate key → REFUSE</text>
+  <text x="42" y="944" fill="#555" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">ONE LOG + MANY COMPONENTS · NO SECOND IMPERATIVE MESSAGE LOOP · GOVERNANCE STAYS CORE-OWNED</text>
 </svg>

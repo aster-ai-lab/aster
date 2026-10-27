@@ -137,13 +137,13 @@ Aster 的 **Meta Harness** 允许 Rust 宿主组合系统指令、工具、预�
 
 ![Aster 受控执行循环：模型提案、权限判定、工具执行、事实日志和完成门禁](assets/readme/task-control-loop.svg)
 
-### Meta Harness 组件装配
+### Meta Harness 可组合性
 
 默认装配列表为 `system + tools + budget + compact + infer`。
 列表顺序是装配顺序，不是固定调用顺序；运行时根据日志状态和动作 key 选择下一步。
 宿主可以注册 Rust 组件或提供完整组件树，但不能关闭 Core 的权限与完成门禁。
 
-![Aster Meta Harness 组件装配：宿主配方、五个默认组件、Moore 组件和单一事实日志](assets/readme/meta-harness-assembly.svg)
+![Aster Meta Harness 可组合拆解图：组件插槽、爆炸分层、Moore 组件、组合配方和单一事实日志](assets/readme/meta-harness-assembly.svg)
 
 ### 扩展入口
 
