@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">Aster 受控执行循环</title>
+  <desc id="desc">用户输入进入模型推理，权限判定后执行工具，结果写入事实日志；修改完成后还需验证和资源收尾。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,4 L0,8 Z" fill="#111"/></marker>
+    <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" stroke="#b8b8b8" stroke-width="2"/></pattern>
+  </defs>
+  <rect width="1200" height="700" fill="#fff"/>
+  <rect x="14" y="14" width="1172" height="672" rx="10" fill="#fff" stroke="#111" stroke-width="1.4"/>
+  <text x="38" y="45" fill="#555" font-size="11" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="1.8">01 · CONTROL LOOP</text>
+  <text x="38" y="79" fill="#111" font-size="27" font-weight="600" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0.6">受控执行循环</text>
+  <text x="38" y="106" fill="#555" font-size="13" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">模型提出下一步；Core 判定权限；工具产生结果；事实日志驱动后续状态。</text>
+  <line x1="14" y1="128" x2="1186" y2="128" stroke="#666" stroke-width=".75"/>
+  <line x1="14" y1="652" x2="1186" y2="652" stroke="#666" stroke-width=".75"/>
+  <text x="38" y="677" fill="#555" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0.7">ASTER · SOURCE-LOCKED ARCHITECTURE · NTS</text>
+  <text x="1162" y="677" fill="#555" font-size="10" font-weight="400" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">01</text>
+  <text x="42" y="158" fill="#111" font-size="13" font-weight="600" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="1.2">PLAN VIEW / 一次任务的反馈回路</text>
+  <text x="42" y="177" fill="#555" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0.7">SOLID = CONTROL PATH · DASHED = WAIT FOR ANSWER</text>
+  <rect x="48" y="198" width="190" height="66" rx="4" fill="#f7f7f7" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="143.0" y="229.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">USER / HOST</text>
+  <text x="143.0" y="248.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">task · confirm · answer</text>
+  <rect x="292" y="198" width="200" height="66" rx="4" fill="#e9e9e9" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="392.0" y="229.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">INFER</text>
+  <text x="392.0" y="248.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">model proposal</text>
+  <rect x="546" y="198" width="210" height="66" rx="4" fill="url(#hatch)" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="651.0" y="229.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">K1 · PERMISSION</text>
+  <text x="651.0" y="248.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">allow / confirm / deny</text>
+  <rect x="824" y="198" width="250" height="66" rx="4" fill="#f7f7f7" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="949.0" y="229.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">TOOL EXECUTION</text>
+  <text x="949.0" y="248.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">workspace · MCP · program</text>
+  <line x1="238" y1="231" x2="292" y2="231" stroke="#111" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <line x1="492" y1="231" x2="546" y2="231" stroke="#111" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <line x1="756" y1="231" x2="824" y2="231" stroke="#111" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <rect x="824" y="346" width="250" height="66" rx="4" fill="#f7f7f7" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="949.0" y="377.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">F1 · FACT LOG</text>
+  <text x="949.0" y="396.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">record result + effect</text>
+  <rect x="292" y="346" width="200" height="66" rx="4" fill="#f7f7f7" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="392.0" y="377.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">VIEW + ACTIONS</text>
+  <text x="392.0" y="396.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">fold current state</text>
+  <rect x="48" y="346" width="190" height="66" rx="4" fill="#f7f7f7" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="143.0" y="377.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">NEXT INFERENCE</text>
+  <text x="143.0" y="396.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">updated context</text>
+  <line x1="949" y1="264" x2="949" y2="346" stroke="#111" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <line x1="824" y1="379" x2="492" y2="379" stroke="#111" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <line x1="292" y1="379" x2="238" y2="379" stroke="#111" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <path d="M143 346 V304 H392 V264" fill="none" stroke="#111" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <rect x="546" y="346" width="210" height="66" rx="4" fill="#fff" stroke="#555" stroke-width="1" stroke-dasharray="6 4"/>
+  <text x="651.0" y="377.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">PARK / WAIT</text>
+  <text x="651.0" y="396.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">answer fact · no timer</text>
+  <path d="M651 264 V318 H641 V346" fill="none" stroke="#555" stroke-width="1.1" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+  <path d="M756 379 H774 V412 H874" fill="none" stroke="#555" stroke-width="1.1" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+  <text x="962" y="313" fill="#555" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">ALLOW</text>
+  <text x="42" y="470" fill="#111" font-size="13" font-weight="600" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="1.2">DETAIL A / 修改后的完成门禁</text>
+  <text x="42" y="489" fill="#555" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0.7">NO SUCCESS BEFORE EVIDENCE AND RESOURCE SETTLEMENT</text>
+  <rect x="42" y="494" width="1116" height="124" rx="4" fill="#fff" stroke="#111" stroke-width="1.4" stroke-dasharray="none"/>
+  <rect x="62" y="522" width="184" height="60" rx="4" fill="#f7f7f7" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="154.0" y="550.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">MUTATION</text>
+  <text x="154.0" y="569.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">changed paths</text>
+  <rect x="282" y="522" width="204" height="60" rx="4" fill="#f7f7f7" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="384.0" y="550.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">EFFECT DIGEST</text>
+  <text x="384.0" y="569.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">bind this exact change</text>
+  <rect x="522" y="522" width="250" height="60" rx="4" fill="#f7f7f7" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="647.0" y="550.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">VERIFY / WAIVER</text>
+  <text x="647.0" y="569.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">contract · attestor · explicit</text>
+  <rect x="808" y="522" width="308" height="60" rx="4" fill="url(#hatch)" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="962.0" y="550.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">K2 · SETTLE + COMPLETE</text>
+  <text x="962.0" y="569.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">cleanup · unresolved effects · reports</text>
+  <line x1="246" y1="552" x2="282" y2="552" stroke="#111" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <line x1="486" y1="552" x2="522" y2="552" stroke="#111" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <line x1="772" y1="552" x2="808" y2="552" stroke="#111" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <text x="62" y="603" fill="#111" font-size="12" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">清理失败、结果不明的外部操作或与本次修改不匹配的报告，都不能发布成功。</text>
+</svg>

@@ -13,6 +13,22 @@
 滑块只控制工位抬升幅度，播放尊重系统的减少动态效果设置。
 图形不连接 Aster，也不代表运行状态或验证证据。
 
+## 架构解剖图
+
+根目录 README 的“运行机制”使用四张拆分静态图，均无脚本或外部资源：
+
+- `task-control-loop.svg`：模型提案、权限判定、工具执行、事实日志与完成门禁。
+- `meta-harness-assembly.svg`：宿主配方、五个默认组件、Moore 组件与动作 key。
+- `extension-surfaces.svg`：提示、上下文、Skills、工具、Hooks 和宿主组件的接入位置。
+- `verification-recovery.svg`：修改摘要、验证证据、资源寿命、恢复与未决外部操作。
+
+可编辑源文件为 `source/render_anatomy.py`，只使用 Python 标准库。
+在仓库根目录运行以下命令重建四张 SVG：
+
+```sh
+python assets/readme/source/render_anatomy.py
+```
+
 ## 重建
 
 需要 Node、安装好的 `hairline-create` 技能，以及 Chrome 或该技能检查器使用的 Chromium。

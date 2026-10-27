@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="790" viewBox="0 0 1200 790" role="img" aria-labelledby="title desc">
+  <title id="title">Aster 验证、资源收尾与恢复</title>
+  <desc id="desc">修改摘要绑定验证报告，完成前等待资源清理；会话恢复、运行恢复和结果不明的外部操作分别处理。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,4 L0,8 Z" fill="#111"/></marker>
+    <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" stroke="#b8b8b8" stroke-width="2"/></pattern>
+  </defs>
+  <rect width="1200" height="790" fill="#fff"/>
+  <rect x="14" y="14" width="1172" height="762" rx="10" fill="#fff" stroke="#111" stroke-width="1.4"/>
+  <text x="38" y="45" fill="#555" font-size="11" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="1.8">04 · VERIFICATION + RECOVERY</text>
+  <text x="38" y="79" fill="#111" font-size="27" font-weight="600" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0.6">验证、资源收尾与恢复</text>
+  <text x="38" y="106" fill="#555" font-size="13" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">完成判定绑定本次修改；恢复重放控制状态，但不能凭空证明外部副作用的结果。</text>
+  <line x1="14" y1="128" x2="1186" y2="128" stroke="#666" stroke-width=".75"/>
+  <line x1="14" y1="742" x2="1186" y2="742" stroke="#666" stroke-width=".75"/>
+  <text x="38" y="767" fill="#555" font-size="10" font-weight="400" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0.7">ASTER · SOURCE-LOCKED ARCHITECTURE · NTS</text>
+  <text x="1162" y="767" fill="#555" font-size="10" font-weight="400" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">04</text>
+  <text x="42" y="158" fill="#111" font-size="13" font-weight="600" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="1.2">COMPLETION / 证据与清理完成后才可成功</text>
+  <text x="42" y="177" fill="#555" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0.7">DIGEST-BOUND VERIFICATION</text>
+  <rect x="42" y="190" width="174" height="68" rx="4" fill="#f7f7f7" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="129.0" y="222.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">MUTATION</text>
+  <text x="129.0" y="241.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">changed paths</text>
+  <rect x="250" y="190" width="186" height="68" rx="4" fill="#f7f7f7" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="343.0" y="222.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">EFFECT DIGEST</text>
+  <text x="343.0" y="241.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">exact change identity</text>
+  <rect x="470" y="190" width="256" height="68" rx="4" fill="#f7f7f7" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="598.0" y="222.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">VERIFICATION INPUT</text>
+  <text x="598.0" y="241.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">contract · attestor · waiver</text>
+  <rect x="760" y="190" width="180" height="68" rx="4" fill="url(#hatch)" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="850.0" y="222.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">K2 · GATE</text>
+  <text x="850.0" y="241.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">reports + effects</text>
+  <rect x="974" y="190" width="184" height="68" rx="4" fill="#e9e9e9" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="1066.0" y="222.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">RUN SETTLEMENT</text>
+  <text x="1066.0" y="241.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">then complete</text>
+  <line x1="216" y1="224" x2="250" y2="224" stroke="#111" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <line x1="436" y1="224" x2="470" y2="224" stroke="#111" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <line x1="726" y1="224" x2="760" y2="224" stroke="#111" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <line x1="940" y1="224" x2="974" y2="224" stroke="#111" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <rect x="42" y="292" width="1116" height="54" rx="4" fill="#fff" stroke="#111" stroke-width="1.4" stroke-dasharray="none"/>
+  <text x="60" y="316" fill="#111" font-size="12" font-weight="600" text-anchor="start" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">send / stream / detached / resume</text>
+  <text x="400" y="316" fill="#111" font-size="12" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">都等待所属 Run 的资源收尾；清理失败或超时阻止成功返回。</text>
+  <text x="60" y="335" fill="#555" font-size="10.5" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">DiskContentAttestor 只证明磁盘状态一致，不等于业务测试通过。</text>
+  <text x="42" y="394" fill="#111" font-size="13" font-weight="600" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="1.2">RESOURCE LIFETIME / 两种资源寿命</text>
+  <text x="42" y="413" fill="#555" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0.7">REGISTER CLEANUP BEFORE ACQUISITION</text>
+  <rect x="42" y="420" width="540" height="76" rx="4" fill="#f7f7f7" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="312.0" y="456.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">TURN · register_capability_effect</text>
+  <text x="312.0" y="475.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">当前模型轮次产生的工具调用结束后清理</text>
+  <rect x="618" y="420" width="540" height="76" rx="4" fill="#f7f7f7" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="888.0" y="456.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">RUN · register_run_capability_effect</text>
+  <text x="888.0" y="475.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">允许跨轮次使用；Run 收尾时清理</text>
+  <text x="42" y="548" fill="#111" font-size="13" font-weight="600" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="1.2">RECOVERY / 先区分要恢复什么</text>
+  <text x="42" y="567" fill="#555" font-size="10" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0.7">REPLAY DOES NOT AUTHORIZE BLIND RETRY</text>
+  <rect x="42" y="574" width="344" height="112" rx="4" fill="#fff" stroke="#111" stroke-width="1.4" stroke-dasharray="none"/>
+  <text x="214.0" y="628.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">SESSION REOPEN</text>
+  <text x="214.0" y="647.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">resume_session_async</text>
+  <text x="60" y="662" fill="#111" font-size="11" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">恢复会话和原工作区</text>
+  <text x="60" y="679" fill="#111" font-size="11" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">宿主回调与外部连接需重新安装</text>
+  <rect x="428" y="574" width="344" height="112" rx="4" fill="#fff" stroke="#111" stroke-width="1.4" stroke-dasharray="none"/>
+  <text x="600.0" y="628.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">RUN CHECKPOINT</text>
+  <text x="600.0" y="647.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">resume_run / exact run id</text>
+  <text x="446" y="662" fill="#111" font-size="11" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">继续检查点后的工作</text>
+  <text x="446" y="679" fill="#111" font-size="11" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">动作 key 决定哪些操作已完成</text>
+  <rect x="814" y="574" width="344" height="112" rx="4" fill="url(#hatch)" stroke="#111" stroke-width="1.1" stroke-dasharray="none"/>
+  <text x="986.0" y="628.0" fill="#111" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Consolas,monospace" letter-spacing="0">UNRESOLVED EFFECT</text>
+  <text x="986.0" y="647.0" fill="#444" font-size="10.5" font-weight="400" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">query original call / receipt</text>
+  <text x="832" y="662" fill="#111" font-size="11" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">外部写入结果不明时先核实</text>
+  <text x="832" y="679" fill="#111" font-size="11" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">直接重复可能造成重复提交</text>
+  <text x="42" y="720" fill="#111" font-size="12" font-weight="400" text-anchor="start" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" letter-spacing="0">确认与提问等待回答事实；计时器不能代替用户授权。取消请求也不等于资源已经清理。</text>
+</svg>
