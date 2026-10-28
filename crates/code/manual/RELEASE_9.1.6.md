@@ -40,4 +40,4 @@ The frozen release branch starts from `807095e08` and adds commit `f63d9428e3aef
 
 ## Qualification limits
 
-Scripted ACP and controlled-model checks do not establish real-model Terminal Bench latency or token improvements. A local macOS build does not certify Windows or Linux artifacts. The release evidence must state any remaining failures and untested recovery, multi-platform, and soak scenarios.
+Scripted ACP and controlled-model checks do not establish real-model Terminal Bench latency or token improvements. A local macOS build does not certify Windows or Linux artifacts. The release evidence must state any remaining failures and untested recovery, multi-platform, and soak scenarios. The hosted Windows lane runs portable Core/ACP tests and the locked ACP release build; it does not claim the full ACP unit suite, whose Unix-specific fixtures require Unix runners.

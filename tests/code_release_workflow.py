@@ -19,12 +19,14 @@ class CodeReleaseWorkflowTest(unittest.TestCase):
 
     def test_publish_waits_for_all_code_lanes_and_a_version_tag(self):
         text = WORKFLOW.read_text()
-        self.assertIn("needs: [test, build]", text)
+        self.assertIn("needs: [test, test-windows, build]", text)
         self.assertIn("if: github.ref_type == 'tag'", text)
-        self.assertIn("os: [ubuntu-latest, macos-latest, windows-latest]", text)
+        self.assertIn("os: [ubuntu-latest, macos-latest]", text)
+        self.assertIn("Core/ACP portable tests (windows-latest)", text)
+        self.assertIn("agent::tests::unsupported_prompt_content_fails_closed_before_a_turn", text)
         self.assertIn("expected 3 ACP release archives", text)
         self.assertIn("--verify-tag", text)
-        self.assertEqual(text.count("CARGO_HOME=D:\\c"), 2)
+        self.assertEqual(text.count("CARGO_HOME=D:\\c"), 3)
         self.assertIn("protobuf-compiler cmake pkg-config libssl-dev bubblewrap", text)
 
 
