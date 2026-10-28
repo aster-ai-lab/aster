@@ -1285,7 +1285,7 @@ async fn session_new_plugin_tool_runs_the_unpacked_executable() {
         .expect("the session tool runner starts tools/echo");
     drop(agent);
     let _ = std::fs::remove_dir_all(&root);
-    assert_eq!(ran.exit_code, 0);
+    assert_eq!(ran.exit_code, 0, "{}", ran.output);
     assert!(
         ran.output.contains("cognitive package ready"),
         "echo output: {}",
