@@ -10,6 +10,13 @@ use tokio::sync::Semaphore;
 use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
 use tokio_util::sync::CancellationToken;
 
+fn successful_tool_json(text: &str) -> Value {
+    let payload = text
+        .strip_prefix("Tool exit code: 0\n")
+        .expect("successful tool result must expose its zero exit status");
+    serde_json::from_str(payload).expect("tool payload must remain JSON")
+}
+
 struct State {
     calls: Mutex<Vec<(String, Value)>>,
     context: Mutex<Option<ToolContext>>,
@@ -375,9 +382,13 @@ async fn native_release_acknowledgement_gates_completion_and_keeps_one_actual_ru
                 "done"
             );
             assert!(f.bridge.runs.lock().unwrap().is_empty());
-            assert!(f.model.results.lock().unwrap().iter().all(
-                |text| serde_json::from_str::<Value>(text).unwrap()["retainedForRun"] == true
-            ));
+            assert!(f
+                .model
+                .results
+                .lock()
+                .unwrap()
+                .iter()
+                .all(|text| successful_tool_json(text)["retainedForRun"] == true));
             f.stop().await;
         })
         .await;

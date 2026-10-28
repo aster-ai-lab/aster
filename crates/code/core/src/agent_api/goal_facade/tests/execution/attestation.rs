@@ -194,6 +194,7 @@ async fn legacy_accepted_noop_history_reopens_but_new_opportunities_use_actual_p
                 "legacy-noop",
                 usage,
                 Some(Default::default()),
+                None,
             )
             .unwrap()
             .unwrap();

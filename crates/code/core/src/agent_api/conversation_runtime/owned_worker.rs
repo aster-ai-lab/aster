@@ -479,6 +479,7 @@ pub(super) async fn settle_owned_fact(
     }
     let mut accepted_step = None;
     let mut goal_attestation = None;
+    let mut goal_feedback = None;
     if let (Some(surface), Some(goal), Ok(result)) =
         (&pinned.parts.surface, &current_goal, &mut mapped)
     {
@@ -490,8 +491,9 @@ pub(super) async fn settle_owned_fact(
         let mut fresh = Vec::new();
         surface.agent.merge_completion_attestor(&ledger, &mut fresh);
         match crate::fact_control::assess_goal_step(surface, goal, result, fresh.first()).await {
-            Ok((prepared, usage)) => {
+            Ok((prepared, usage, feedback)) => {
                 accepted_step = prepared;
+                goal_feedback = feedback;
                 result.usage.accumulate(&usage);
             }
             Err(error) => mapped = Err(error),
@@ -540,6 +542,7 @@ pub(super) async fn settle_owned_fact(
             surface,
             goal,
             usage,
+            goal_feedback,
             &original.model_call_port(),
         ) {
             mapped = combine_retention_failure(mapped, "goal slice settlement", error);

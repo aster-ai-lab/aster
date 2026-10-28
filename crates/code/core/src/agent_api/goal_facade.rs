@@ -575,6 +575,22 @@ impl AgentSession {
             .map_err(goal_error)
     }
 
+    pub(super) fn goal_tick_feedback(
+        &self,
+        command: &crate::goal_control::GoalControlCommandV1,
+        step_id: &str,
+    ) -> Result<Option<crate::goal_control::GoalStepFeedback>> {
+        let facts = self.goal_facts()?;
+        crate::goal_control::definition_from_facts(
+            &facts,
+            &self.session_id,
+            self.tool_context.workspace_services.workspace_ref(),
+            self.configured_policy_digest(&facts)?.as_deref(),
+        )
+        .map_err(goal_error)?;
+        crate::goal_control::tick_feedback(&facts, command, step_id).map_err(goal_error)
+    }
+
     fn goal_facts(&self) -> Result<Vec<a3s_effect::Fact>> {
         let thread = crate::fact_control::thread_for_session(&self.session_id);
         // Cache the handle the Run lease reuses: a second handle would take the

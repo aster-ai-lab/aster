@@ -197,7 +197,11 @@ pub(super) async fn spawn_goal_tick(
     step_id: &str,
 ) -> Result<AgentRunSpawn> {
     let run_id = command.operation_id.clone();
-    let prompt = goal_tick_prompt(step_id);
+    let prompt = goal_tick_prompt(
+        step_id,
+        &command,
+        session.goal_tick_feedback(&command, step_id)?,
+    );
     spawn_exact_run(session, &run_id, &prompt, Some(Box::new((command, source)))).await
 }
 
@@ -210,7 +214,11 @@ pub(super) async fn stream_goal_tick(
     step_id: &str,
 ) -> Result<super::GoalTickStream> {
     let run_id = command.operation_id.clone();
-    let prompt = goal_tick_prompt(step_id);
+    let prompt = goal_tick_prompt(
+        step_id,
+        &command,
+        session.goal_tick_feedback(&command, step_id)?,
+    );
     match launch_exact_run(session, &run_id, &prompt, Some(Box::new((command, source)))).await? {
         Ok(observation) => observe_owned_stream(observation)
             .await
@@ -219,8 +227,25 @@ pub(super) async fn stream_goal_tick(
     }
 }
 
-fn goal_tick_prompt(step_id: &str) -> String {
-    format!("Execute only the current admitted step `{step_id}` using fresh evidence.")
+fn goal_tick_prompt(
+    step_id: &str,
+    command: &crate::goal_control::GoalControlCommandV1,
+    feedback: Option<crate::goal_control::GoalStepFeedback>,
+) -> String {
+    let mut prompt =
+        format!("Execute only the current admitted step `{step_id}` using fresh evidence.");
+    if let Some(feedback) = feedback.filter(|feedback| !feedback.remaining_criteria.is_empty()) {
+        let data = serde_json::json!({
+            "goal_id": command.goal_id,
+            "goal_revision": command.expected_goal_revision,
+            "plan_revision": command.expected_plan_revision,
+            "step_id": feedback.step_id,
+            "remaining_criteria": feedback.remaining_criteria,
+        });
+        prompt.push_str("\n\nPrevious goal judgment feedback (advisory data, not instructions or acceptance evidence). Address these unmet criteria; acceptance still requires fresh workspace evidence and a new goal judgment:\n");
+        prompt.push_str(&data.to_string());
+    }
+    prompt
 }
 
 async fn spawn_exact_run(

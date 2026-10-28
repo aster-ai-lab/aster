@@ -567,6 +567,7 @@ fn append_settled_progress(
         id,
         None,
         Some(progress),
+        None,
     )
     .unwrap()
     .unwrap();

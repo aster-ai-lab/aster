@@ -242,6 +242,13 @@ async fn session(
         .unwrap();
     (session, model)
 }
+fn successful_tool_json(text: &str) -> Value {
+    let payload = text
+        .strip_prefix("Tool exit code: 0\n")
+        .expect("successful tool result must expose its zero exit status");
+    serde_json::from_str(payload).expect("tool payload must remain JSON")
+}
+
 async fn run(host: Rc<Host>, root: &Path, read: bool) -> String {
     let bridge = DocumentBridge::new();
     let io = connect(&bridge, host);
@@ -273,10 +280,7 @@ async fn actual_harness_reads_through_bidirectional_acp_and_refuses_invalid_obse
                 probe: None,
             });
             let text = run(host, &root, true).await;
-            assert_eq!(
-                serde_json::from_str::<Value>(&text).unwrap()["text"],
-                "unsaved text"
-            );
+            assert_eq!(successful_tool_json(&text)["text"], "unsaved text");
             assert_eq!(
                 std::fs::read_to_string(root.join("note.txt")).unwrap(),
                 "disk text"
@@ -604,7 +608,7 @@ async fn actual_harness_accepts_bound_advisory_diagnostics_and_refuses_forged_pu
         response["diagnostics"] = json!([publication]);
         let host = |value| Rc::new(Host { value, seen:Semaphore::new(0), release:None, probe:None });
         let accepted = run(host(response.clone()), &root, true).await;
-        let accepted: Value = serde_json::from_str(&accepted).unwrap();
+        let accepted: Value = successful_tool_json(&accepted);
         assert_eq!(accepted["diagnostics"][0]["items"][0]["message"], "bounded finding");
         assert_eq!(accepted["diagnosticsComplete"], false);
         let mut invalid = Vec::new();

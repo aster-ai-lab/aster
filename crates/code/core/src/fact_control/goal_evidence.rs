@@ -11,12 +11,13 @@ pub(crate) async fn assess_goal_step(
 ) -> Result<(
     Option<crate::goal_control::PreparedDefinition>,
     crate::llm::TokenUsage,
+    Option<crate::goal_control::GoalStepFeedback>,
 )> {
     if surface.cancel.is_cancelled() || result.forced_stop.is_some() {
-        return Ok((None, Default::default()));
+        return Ok((None, Default::default(), None));
     }
     let Some(run_id) = surface.run_id.as_deref() else {
-        return Ok((None, Default::default()));
+        return Ok((None, Default::default(), None));
     };
     let log = surface_fact_log(surface).map_err(|error| anyhow::anyhow!(error))?;
     let prepared = {
@@ -32,7 +33,7 @@ pub(crate) async fn assess_goal_step(
         )?
     };
     let Some((prepared, reports, evidence)) = prepared else {
-        return Ok((None, Default::default()));
+        return Ok((None, Default::default(), None));
     };
     let workspace = surface.agent.tool_context_handle().workspace.clone();
     if !crate::verification::should_emit_goal_achieved_for_workspace(
@@ -40,7 +41,7 @@ pub(crate) async fn assess_goal_step(
         &reports,
         Some(&workspace),
     ) {
-        return Ok((None, Default::default()));
+        return Ok((None, Default::default(), None));
     }
     let step = prepared
         .definition
@@ -102,7 +103,11 @@ pub(crate) async fn assess_goal_step(
             "goal step not accepted by its judgment"
         );
     }
-    Ok((accepted.then_some(prepared), usage))
+    let feedback = crate::goal_control::GoalStepFeedback {
+        step_id: step.id.clone(),
+        remaining_criteria: judgment.remaining_criteria,
+    };
+    Ok((accepted.then_some(prepared), usage, Some(feedback)))
 }
 
 pub(crate) fn commit_goal_step(
@@ -153,6 +158,7 @@ pub(crate) fn settle_goal_slice(
     surface: &SessionSurface,
     goal: &crate::goal_control::DurableGoalDefinitionV1,
     usage: Option<crate::llm::TokenUsage>,
+    feedback: Option<crate::goal_control::GoalStepFeedback>,
     original: &crate::agent_api::OriginalModelCallPort,
 ) -> Result<()> {
     let Some(run_id) = surface.run_id.as_deref() else {
@@ -196,6 +202,7 @@ pub(crate) fn settle_goal_slice(
         run_id,
         usage.filter(|_| !surface.cancel.is_cancelled()),
         progress,
+        feedback.filter(|_| !surface.cancel.is_cancelled()),
     ) {
         Ok(Some(pending)) => {
             log.append(&thread, &[pending], None)?;

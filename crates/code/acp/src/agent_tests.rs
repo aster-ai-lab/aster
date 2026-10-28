@@ -1696,7 +1696,7 @@ fn tui_mappings_cover_cards_catalog_and_questions() {
 
     let text =
         A3sCodeAgent::prompt_text(&[acp::ContentBlock::Text(acp::TextContent::new(" hello "))]);
-    assert_eq!(text, " hello ");
+    assert_eq!(text.unwrap(), " hello ");
 
     let session_id = acp::SessionId::new("s");
     let request = tool_permission_request(

@@ -14,6 +14,7 @@ mod control;
 mod cumulative;
 mod deadline;
 mod evidence;
+mod feedback;
 mod novelty;
 mod recovery_limits;
 mod refusal;
