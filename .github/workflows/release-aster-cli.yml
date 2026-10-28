@@ -4,10 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       artifact_run_id:
-        description: Publish archives already uploaded by this run. Leave empty to build them.
-        required: false
+        description: Republish archives from a previously qualified run without rebuilding them.
+        required: true
         type: string
-        default: ""
+  push:
+    tags:
+      - "aster-cli-v[0-9]+.[0-9]+.[0-9]+"
 
 permissions:
   contents: read
@@ -18,29 +20,29 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  preflight:
-    if: ${{ inputs.artifact_run_id == '' }}
+  qualified:
+    name: Verify pre-merge qualification
+    if: ${{ github.ref_type == 'tag' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-      - name: Check out pinned desktop sources
-        uses: ./.github/actions/checkout-studio
-        with:
-          token: ${{ secrets.STUDIO_READ_TOKEN }}
-      - name: Install pinned toolchain
-        run: rustup show active-toolchain
-      - name: Check product formatting and delivery contracts
+      - name: Require successful branch qualification for the tagged commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_SHA: ${{ github.sha }}
+          RELEASE_TAG: ${{ github.ref_name }}
         run: |
-          cargo fmt -p aster -p a3s-code-core -p a3s-code-acp -- --check
-          python3 tests/workspace_dependencies.py
-          python3 tests/studio_checkout.py
-          python3 tests/cli_pair_delivery.py
-          python3 tests/aster_cli_linux.py
-          python3 tests/cli_release_workflow.py
+          set -euo pipefail
+          successful_runs="$(gh api "repos/${GH_REPO}/actions/workflows/qualify-aster-cli.yml/runs?head_sha=${RELEASE_SHA}&event=push&status=completed&per_page=100" --jq "[.workflow_runs[] | select(.conclusion == \"success\" and .head_branch != \"${RELEASE_TAG}\")] | length")"
+          if [[ "$successful_runs" -eq 0 ]]; then
+            echo "refusing release: tagged commit $RELEASE_SHA has no successful pre-merge Aster CLI qualification run" >&2
+            exit 1
+          fi
 
   build:
-    needs: preflight
-    if: ${{ inputs.artifact_run_id == '' }}
+    needs: qualified
+    if: ${{ github.ref_type == 'tag' }}
     name: ${{ matrix.platform }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 180
@@ -83,6 +85,11 @@ jobs:
         if: runner.os == 'Windows'
         shell: bash
         run: echo 'CARGO_HOME=D:\c' >> "$GITHUB_ENV"
+      - name: Cache CLI release dependencies
+        uses: Swatinem/rust-cache@e9d7b9f1e587218970671bac74e5511ed9506e6a
+        with:
+          shared-key: aster-cli-release-${{ matrix.platform }}
+          save-if: "true"
       - name: Build locked release
         shell: bash
         run: env -u GROK_VERSION cargo build --locked --release -p aster -p a3s-code-acp
@@ -107,8 +114,8 @@ jobs:
 
   # One Linux archive covers the supported glibc 2.31 baseline and newer loaders.
   build-linux:
-    needs: preflight
-    if: ${{ inputs.artifact_run_id == '' }}
+    needs: qualified
+    if: ${{ github.ref_type == 'tag' }}
     name: linux
     runs-on: ubuntu-latest
     timeout-minutes: 240
@@ -158,6 +165,11 @@ jobs:
           curl -fsSL https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain none
           . "$HOME/.cargo/env"
           rustup show active-toolchain
+      - name: Cache CLI release dependencies
+        uses: Swatinem/rust-cache@e9d7b9f1e587218970671bac74e5511ed9506e6a
+        with:
+          shared-key: aster-cli-release-linux
+          save-if: "true"
       - name: Build locked release
         shell: bash
         run: |
@@ -182,8 +194,8 @@ jobs:
     permissions:
       contents: write
       actions: read
-    needs: [preflight, build, build-linux]
-    if: ${{ !cancelled() && (needs.preflight.result == 'success' || inputs.artifact_run_id != '') && (needs.build.result == 'success' || needs.build.result == 'skipped') && (needs.build-linux.result == 'success' || needs.build-linux.result == 'skipped') }}
+    needs: [qualified, build, build-linux]
+    if: ${{ !cancelled() && (inputs.artifact_run_id != '' || (github.ref_type == 'tag' && needs.qualified.result == 'success' && needs.build.result == 'success' && needs.build-linux.result == 'success')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:

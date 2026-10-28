@@ -1,0 +1,101 @@
+name: Qualify a3s-code
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: qualify-a3s-code-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Core/ACP tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    env:
+      CARGO_INCREMENTAL: "0"
+      CARGO_BUILD_JOBS: "2"
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Check out pinned workspace sources
+        uses: ./.github/actions/checkout-studio
+        with:
+          token: ${{ secrets.STUDIO_READ_TOKEN }}
+      - name: Install macOS build tools
+        if: runner.os == 'macOS'
+        run: brew install protobuf
+      - name: Install Linux build tools
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y protobuf-compiler cmake pkg-config libssl-dev bubblewrap
+      - name: Install pinned toolchain
+        shell: bash
+        run: rustup show active-toolchain
+      - name: Cache Core/ACP qualification dependencies
+        uses: Swatinem/rust-cache@e9d7b9f1e587218970671bac74e5511ed9506e6a
+        with:
+          shared-key: code-qualify-${{ matrix.os }}
+          save-if: "true"
+      - name: Check Core/ACP formatting and dependency boundary
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          cargo fmt -p a3s-code-core -p a3s-code-acp -- --check
+          python3 tests/workspace_dependencies.py
+          python3 tests/code_release_workflow.py
+      - name: Test Core goal feedback
+        shell: bash
+        run: cargo test --locked -p a3s-code-core --lib agent_api::goal_facade::tests::execution::feedback -- --test-threads=1
+      - name: Test ACP unit and wire contracts
+        shell: bash
+        run: |
+          cargo test --locked -p a3s-code-acp --lib -- --test-threads=1
+          cargo test --locked -p a3s-code-acp --test acp_conformance_stdio -- --test-threads=1
+
+  test-windows:
+    name: Core/ACP portable tests (windows-latest)
+    runs-on: windows-latest
+    timeout-minutes: 180
+    env:
+      CARGO_INCREMENTAL: "0"
+      CARGO_BUILD_JOBS: "2"
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Check out pinned workspace sources
+        uses: ./.github/actions/checkout-studio
+        with:
+          token: ${{ secrets.STUDIO_READ_TOKEN }}
+      - name: Install Windows protoc
+        shell: pwsh
+        run: |
+          $version = "29.3"
+          $zip = Join-Path $env:RUNNER_TEMP "protoc.zip"
+          $dest = Join-Path $env:RUNNER_TEMP "protoc"
+          Invoke-WebRequest -Uri "https://github.com/protocolbuffers/protobuf/releases/download/v$version/protoc-$version-win64.zip" -OutFile $zip
+          Expand-Archive -Path $zip -DestinationPath $dest
+          Add-Content -Path $env:GITHUB_PATH -Value (Join-Path $dest "bin")
+      - name: Install pinned toolchain
+        shell: bash
+        run: rustup show active-toolchain
+      - name: Shorten Windows Cargo home
+        shell: bash
+        run: echo 'CARGO_HOME=D:\c' >> "$GITHUB_ENV"
+      - name: Cache Core/ACP qualification dependencies
+        uses: Swatinem/rust-cache@e9d7b9f1e587218970671bac74e5511ed9506e6a
+        with:
+          shared-key: code-qualify-windows
+          save-if: "true"
+      - name: Test Core goal feedback
+        shell: bash
+        run: cargo test --locked -p a3s-code-core --lib agent_api::goal_facade::tests::execution::feedback -- --test-threads=1
+      - name: Test unsupported prompt refusal
+        shell: bash
+        run: cargo test --locked -p a3s-code-acp --lib agent::tests::unsupported_prompt_content_fails_closed_before_a_turn -- --test-threads=1
