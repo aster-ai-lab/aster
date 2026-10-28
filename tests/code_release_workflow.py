@@ -24,6 +24,7 @@ class CodeReleaseWorkflowTest(unittest.TestCase):
         self.assertIn("os: [ubuntu-latest, macos-latest, windows-latest]", text)
         self.assertIn("expected 3 ACP release archives", text)
         self.assertIn("--verify-tag", text)
+        self.assertEqual(text.count("CARGO_HOME=D:\\c"), 2)
 
 
 if __name__ == "__main__":
