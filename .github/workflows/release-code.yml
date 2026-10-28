@@ -140,6 +140,6 @@ jobs:
           gh release create "${GITHUB_REF_NAME}" \
             --verify-tag \
             --title "A3S Code / ACP ${GITHUB_REF_NAME}" \
-            --notes-file crates/code/manual/RELEASE_9.1.6.md \
+            --notes "A3S Code Core and ACP ${GITHUB_REF_NAME}. See the attached SHA256SUMS for asset verification." \
             "${files[@]}" dist/SHA256SUMS
           gh release view "${GITHUB_REF_NAME}"

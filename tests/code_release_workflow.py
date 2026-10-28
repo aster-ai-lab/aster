@@ -34,6 +34,8 @@ class CodeReleaseWorkflowTest(unittest.TestCase):
         self.assertEqual(text.count("uses: Swatinem/rust-cache@"), 1)
         self.assertIn("expected 3 ACP release archives", text)
         self.assertIn("--verify-tag", text)
+        self.assertIn('--notes "A3S Code Core and ACP ${GITHUB_REF_NAME}', text)
+        self.assertNotIn("RELEASE_9.1.6.md", text)
         self.assertEqual(text.count("CARGO_HOME=D:\\c"), 1)
 
     def test_premerge_qualification_retains_coverage_and_ignores_release_tags(self):
