@@ -47,7 +47,7 @@ jobs:
           Add-Content -Path $env:GITHUB_PATH -Value (Join-Path $dest "bin")
       - name: Install Linux build tools
         if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y protobuf-compiler cmake pkg-config libssl-dev
+        run: sudo apt-get update && sudo apt-get install -y protobuf-compiler cmake pkg-config libssl-dev bubblewrap
       - name: Install pinned toolchain
         shell: bash
         run: rustup show active-toolchain

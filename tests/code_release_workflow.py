@@ -25,6 +25,7 @@ class CodeReleaseWorkflowTest(unittest.TestCase):
         self.assertIn("expected 3 ACP release archives", text)
         self.assertIn("--verify-tag", text)
         self.assertEqual(text.count("CARGO_HOME=D:\\c"), 2)
+        self.assertIn("protobuf-compiler cmake pkg-config libssl-dev bubblewrap", text)
 
 
 if __name__ == "__main__":
