@@ -1,0 +1,194 @@
+export const meta = {
+  title: '11 · 把长任务拆成可推进的目标',
+  description: '绑定工作策略，创建目标与计划，再由宿主逐轮推进并处理等待和版本冲突。',
+  label: '11 长期目标',
+  updated: '2026-10-26',
+};
+
+## 先有目标，再决定是否续跑
+
+“解释测试入口”适合一次 Run。“检查调用方、修复问题、运行验收、整理结果”可以形成多个步骤。长期目标记录步骤、接受结果和等待条件；它不会因为普通消息比较长，就自动被创建。
+
+本章新建一个有工作策略的练习会话。不要给已保存且没有策略的旧会话补绑新策略。SDK 未设置宿主续跑策略时，不会自动启动下一轮。
+
+## 在创建会话前绑定工作要求与工作区
+
+```rust
+use a3s_code_core::{SessionOptions, WorkPolicyV1};
+use a3s_code_core::workspace::WorkspaceServices;
+
+fn goal_options(workspace: &std::path::Path, options: SessionOptions)
+    -> anyhow::Result<(SessionOptions, a3s_code_core::workspace::WorkspaceRef)>
+{
+    let services = WorkspaceServices::local_with_manifest(workspace);
+    let workspace_ref = services.workspace_ref().clone();
+    let policy = WorkPolicyV1::new(
+        "tutorial-engineering", 1,
+        "先检查调用方；每次修改后运行对应检查；保留失败原因。",
+    )?;
+    Ok((options.with_workspace_backend(services).with_work_policy(policy)
+        .with_planning(true).with_goal_tracking(true), workspace_ref))
+}
+```
+
+把返回的 options 用于创建会话，并在 `Runtime` 保留同一份 `WorkspaceRef`。不要根据路径重新拼一个近似 ID；目标命令必须引用实际后端的工作区身份。使用隔离工作树或远程后端时，从实际选定的后端保留这个引用。
+
+## 创建一个明确目标
+
+```rust
+use a3s_code_core::AgentSession;
+use a3s_code_core::goal_control::{GoalCommandKindV1, GoalDefinitionCommandV1};
+use a3s_code_core::planning::AgentGoal;
+use a3s_code_core::workspace::WorkspaceRef;
+
+fn create_goal(session: &AgentSession, workspace: WorkspaceRef)
+    -> anyhow::Result<()>
+{
+    session.apply_goal_definition(GoalDefinitionCommandV1 {
+        kind: GoalCommandKindV1::Create,
+        operation_id: "create-demo-goal".into(),
+        goal_id: "repair-demo".into(),
+        session_id: session.session_id().into(),
+        workspace,
+        goal: AgentGoal::new("修复练习项目的失败测试")
+            .with_criteria(vec!["原有检查通过，并保留对应修改与验证记录".into()]),
+        non_goals: vec!["不增加新功能，不发布软件".into()],
+        scope_fact_sequences: vec![],
+        work_policy_digest: session.work_policy_digest()?,
+        expected_goal_revision: None,
+        expected_plan_revision: None,
+        expected_goal_sequence: None,
+        import_source: None,
+    })?;
+    Ok(())
+}
+```
+
+`operation_id` 是宿主的幂等操作标识。本例只创建一次；不同操作应使用不同标识，重试同一操作则保留原 ID。不要每次重试都换 ID，否则无法利用同一次操作的重放语义。
+
+## 提出计划，再接受准确的计划版本
+
+创建 `src/goals.rs`，把本章的目标与计划函数放在这里，在主模块声明 `mod goals;`。读取 `session.goal_definition()`，用其中的 binding、修订和序列构建 `GoalPlanCommandV1`。计划至少包含 `inspect` 和依赖它的 `verify`：
+
+```rust
+use a3s_code_core::planning::{ExecutionPlan, Complexity, Task};
+
+fn repair_plan() -> ExecutionPlan {
+    let mut plan = ExecutionPlan::new("修复练习项目", Complexity::Medium);
+    plan.upsert_step(Task::new("inspect", "检查失败测试与调用方")
+        .with_success_criteria("已确认失败原因和受影响调用方"));
+    plan.upsert_step(Task::new("verify", "修改并执行对应检查")
+        .with_dependencies(vec!["inspect".into()])
+        .with_success_criteria("当前修改有对应的通过报告"));
+    plan
+}
+```
+
+先提出计划，并把返回的准确版本交给界面：
+
+```rust
+use a3s_code_core::goal_control::{DurableGoalDefinitionV1, GoalPlanCommandV1};
+
+fn propose_plan(session: &AgentSession, operation_id: &str)
+    -> anyhow::Result<DurableGoalDefinitionV1>
+{
+    let current = session.goal_definition()?
+        .ok_or_else(|| anyhow::anyhow!("尚未创建目标"))?;
+    let binding = &current.binding;
+    Ok(session.apply_goal_plan(GoalPlanCommandV1 {
+        kind: GoalCommandKindV1::ProposePlan,
+        operation_id: operation_id.into(),
+        goal_id: binding.goal_id.clone(),
+        session_id: binding.session_id.clone(),
+        workspace: binding.workspace.clone(),
+        work_policy_digest: binding.work_policy_digest.clone(),
+        expected_goal_revision: binding.goal_revision,
+        expected_plan_revision: current.plan_revision,
+        expected_goal_sequence: current.goal_sequence,
+        plan: Some(repair_plan()),
+        proposal_sequence: None,
+    })?)
+}
+
+fn accept_plan(session: &AgentSession, shown: &DurableGoalDefinitionV1,
+    operation_id: &str) -> anyhow::Result<()>
+{
+    let binding = &shown.binding;
+    session.apply_goal_plan(GoalPlanCommandV1 {
+        kind: GoalCommandKindV1::AcceptPlan,
+        operation_id: operation_id.into(),
+        goal_id: binding.goal_id.clone(),
+        session_id: binding.session_id.clone(),
+        workspace: binding.workspace.clone(),
+        work_policy_digest: binding.work_policy_digest.clone(),
+        expected_goal_revision: binding.goal_revision,
+        expected_plan_revision: shown.plan_revision,
+        expected_goal_sequence: shown.goal_sequence,
+        plan: None,
+        proposal_sequence: shown.plan_fact_sequence,
+    })?;
+    Ok(())
+}
+```
+
+用户确认界面显示的计划后，才调用 `accept_plan`，把当时保存的 `shown` 传进去。这样接受命令指向同一份提案，不能在用户点击时读取另一份新计划并替他接受。
+
+不能用旧的修订号“强行覆盖”，也不能只发一句“采用新计划”代替类型化接受。版本冲突时重新读取当前定义，向用户说明变了什么，再决定是否重试。
+
+## 每次只推进一轮
+
+用当前定义构造 `kind: Tick` 的 `GoalControlCommandV1`。先通过 `preview_goal_tick` 给界面展示能否推进；用户继续或宿主策略触发时，再调用 `stream_goal_tick`，由它重新检查并最多接纳一个 Run。
+
+开始这一步前，按下文在可信宿主配置中设置有限的 `goal_control`。未提供这些上限时，即使步骤就绪也可能返回 `BudgetExhausted`；这不表示流式接口失效。
+
+```rust
+use a3s_code_core::{GoalTickStream, goal_control::GoalControlCommandV1};
+
+async fn advance_once(session: &AgentSession, operation_id: &str)
+    -> anyhow::Result<GoalTickStream>
+{
+    let current = session.goal_definition()?
+        .ok_or_else(|| anyhow::anyhow!("尚未创建目标"))?;
+    let binding = current.binding;
+    let command = GoalControlCommandV1 {
+        kind: GoalCommandKindV1::Tick,
+        operation_id: operation_id.into(),
+        goal_id: binding.goal_id,
+        session_id: binding.session_id,
+        workspace: binding.workspace,
+        work_policy_digest: binding.work_policy_digest,
+        expected_goal_revision: binding.goal_revision,
+        expected_plan_revision: current.plan_revision,
+        expected_goal_sequence: current.goal_sequence,
+    };
+    Ok(session.stream_goal_tick(&command).await?)
+}
+```
+
+`GoalTickStream::Started(stream)` 接回第三章的 `active`；`Decided(reason)` 只更新界面状态；`Replayed(snapshot)` 显示已有运行结果，不再启动另一个工作线程。`operation_id` 由宿主为这次推进分配并保存，重试时沿用。
+
+<DocTable caption="推进结果与终端行为" headers={['结果', '终端应做什么']} rows={[
+  ['Advance', '执行这次被接纳的 slice，继续展示原有流式事件'],
+  ['Wait / NeedsInput', '显示准确的等待条件或问题，不自动批准'],
+  ['Paused / BudgetExhausted', '停止续跑，保留原因、历史和剩余工作'],
+  ['Reconcile', '核对失去执行者的原 slice，不盲目重放外部操作'],
+  ['Complete', '确认步骤已接受、等待已关闭且 slice 已处理完'],
+]} />
+
+确认回答与 UTC 到期等待是不同类型。计时器只能满足时间条件，不能批准工具或替用户回答问题。暂停和取消使用 `control_goal`，它会处理活动运行；恢复目标本身不立即执行模型。
+
+## 宿主必须给续跑设上限
+
+可信 `goal_control` 声明同时提供启用开关、最多 slice 数、连续无进展上限和有限的绝对 UTC 毫秒期限。整数使用十进制字符串。期限应按启动时的当前时钟产生，并在允许范围内；不要复制手册示例的固定日期。
+
+工作区配置不能提高这些权限。也不要在界面里写一个没有边界的 `while` 循环反复 `send("继续")`。目标的每一轮都需要保留自己的运行身份、检查结果和资源收尾。
+
+## 本章验收
+
+未接受计划时不开始运行；过期版本命令被拒绝；暂停后不再接纳下一轮；只读工具或重复写入相同内容不重置“没有实际修改”的计数。恢复时还应保留这些累计限制。
+
+## 继续查阅
+
+- [工作策略与长期目标](../../meta-harness/durable-work/)
+- [Goal 命令与版本字段](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/goal_control.rs)
+- [目标的会话接口](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent_api/goal_facade.rs)

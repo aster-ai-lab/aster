@@ -4,6 +4,7 @@ from pathlib import Path
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 import shutil
+import json
 import struct
 import sys
 import tempfile
@@ -17,7 +18,7 @@ from urllib.request import urlopen
 WEB_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(WEB_ROOT / "scripts"))
 from check_site import check_site
-from site_contract import BRAND_FILES, DOWNLOAD_MANIFEST, HOME_FILES, SITE_FILES
+from site_contract import BRAND_FILES, DOCS_FILES, DOCS_PAGES, DOWNLOAD_MANIFEST, HOME_FILES, SITE_FILES, documentation_pages
 from stage_site import stage_site
 
 SCREENSHOTS = tuple(f"download/screenshots/{name}.png" for name in ("workspace", "office", "review", "lineage"))
@@ -41,14 +42,14 @@ class SiteTest(unittest.TestCase):
         self.public = self.root / "public"
         self.page = self.public / "download/index.html"
         self.page.parent.mkdir(parents=True)
-        for name in BRAND_FILES + HOME_FILES:
+        for name in BRAND_FILES + HOME_FILES + DOCS_FILES:
             destination = self.public / name
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(WEB_ROOT / "public" / name, destination)
         downloads = "".join(f'<a href="{item[4]}">{item[0]} {item[1]} {item[2]} {item[3]}</a>' for item in DOWNLOAD_MANIFEST)
         self.html = ('<!doctype html><html lang="zh-CN"><head><title>Aster</title>'
                      '<link rel="stylesheet" href="styles.css">'
-                     '<link rel="icon" href="../tenant/aster/mark-light.png">'
+                     '<link rel="icon" href="../tenant/aster/favicon.png">'
                      '<script src="app.js" defer></script></head><body>'
                      '<script src="canvas.js" defer></script>'
                      '<h1 id="top">Aster</h1><img src="../tenant/aster/logo.svg" alt="Aster">'
@@ -82,12 +83,82 @@ class SiteTest(unittest.TestCase):
             for weight in (400, 500, 700)), encoding="utf-8")
 
     def test_four_png_screenshots_and_three_local_fonts_with_license_are_public(self):
-        self.assertEqual(check_site(self.public)["files"], 18)
+        self.assertEqual(check_site(self.public)["files"], 19 + len(DOCS_FILES))
         destination = self.root / 'with-real-ui'
         receipt = stage_site(self.public, destination)
-        self.assertEqual(len(receipt['files']), 18)
+        self.assertEqual(len(receipt['files']), 19 + len(DOCS_FILES))
         for name in (*SCREENSHOTS, *FONTS, FONT_LICENSE):
             self.assertEqual((destination / name).read_bytes(), (self.public / name).read_bytes())
+
+    def test_documentation_catalog_supports_products_versions_and_closed_routes(self):
+        catalog = json.loads((WEB_ROOT / 'content/docs/catalog.json').read_text())
+        original = documentation_pages(catalog)
+        with self.assertRaisesRegex(ValueError, 'only a projects array'):
+            documentation_pages({**catalog, 'unexpected': True})
+        invalid = json.loads(json.dumps(catalog))
+        invalid['projects'][0]['versions'][0]['pages'][0]['section'] = ''
+        with self.assertRaisesRegex(ValueError, 'invalid documentation section'):
+            documentation_pages(invalid)
+        duplicate = json.loads(json.dumps(catalog))
+        version = duplicate['projects'][0]['versions'][0]
+        version['pages'].append({**version['pages'][0], 'slug': 'another/'})
+        with self.assertRaisesRegex(ValueError, 'duplicate documentation file'):
+            documentation_pages(duplicate)
+        extra = json.loads(json.dumps(catalog['projects'][0]))
+        extra['id'] = 'another-product'
+        extra['versions'] = [dict(extra['versions'][0], pages=[extra['versions'][0]['pages'][0]])]
+        catalog['projects'].append(extra)
+        expanded = documentation_pages(catalog)
+        self.assertEqual(expanded[:len(original)], original)
+        self.assertIn(f"docs/another-product/{extra['defaultVersion']}/index.html", expanded)
+        self.assertIn('docs/another-product/index.html', expanded)
+        project = catalog['projects'][-1]
+        project['versions'].append(dict(project['versions'][0], id='10.0'))
+        self.assertIn('docs/another-product/10.0/index.html', documentation_pages(catalog))
+        for value in ('../', '/absolute/', 'guide/../', 'index.html'):
+            project['versions'][-1]['pages'] = [{**project['versions'][0]['pages'][0]}, {**project['versions'][0]['pages'][0], 'slug': value, 'file': 'guide'}]
+            with self.subTest(slug=value), self.assertRaisesRegex(ValueError, 'invalid'):
+                documentation_pages(catalog)
+        project['versions'][-1]['pages'] = [project['versions'][0]['pages'][0]]
+        project['defaultVersion'] = 'missing'
+        with self.assertRaisesRegex(ValueError, 'default documentation version'):
+            documentation_pages(catalog)
+
+    def test_documentation_refuses_injected_behavior_external_assets_and_broken_navigation(self):
+        page = self.public / 'docs/index.html'
+        original = page.read_text()
+        for old, new, reason in (
+            ('</body>', '<script src="https://example.com/tracker.js"></script></body>', 'unsupported documentation'),
+            ('href="./styles.css"', 'href="https://example.com/style.css"', 'nonlocal documentation'),
+            ('src="./navigation.js"', 'src="./styles.css"', 'unsupported documentation script'),
+            ('<script src="./navigation.js" defer=""></script>', '<script src="./navigation.js" defer="">alert(1)</script>', 'unsupported documentation script'),
+            ('href="#content"', 'href="#missing-section"', 'missing documentation fragment'),
+            ('id="content"', 'id="content" onclick="alert(1)"', 'inline documentation'),
+            ('href="./../"', 'href="../../private/"', 'escapes site'),
+        ):
+            with self.subTest(reason=reason):
+                self.assertIn(old, original)
+                page.write_text(original.replace(old, new, 1))
+                with self.assertRaisesRegex(ValueError, reason):
+                    check_site(self.public)
+        page.write_text(original)
+        stylesheet = self.public / 'docs/generated.css'
+        original_css = stylesheet.read_text()
+        for payload, reason in (
+            ('@import url("https://example.com/styles.css");', 'CSS imports'),
+            ('.injected { background: url("https://example.com/tracker.png"); }', 'nonlocal documentation'),
+        ):
+            with self.subTest(reason=reason):
+                stylesheet.write_text(original_css + payload)
+                with self.assertRaisesRegex(ValueError, reason):
+                    check_site(self.public)
+        stylesheet.write_text(original_css)
+        extra = self.public / 'docs/private.mdx'
+        extra.write_text('not a public document')
+        with self.assertRaisesRegex(ValueError, 'unexpected or missing documentation'):
+            check_site(self.public)
+        extra.unlink()
+        self.assertEqual(check_site(self.public)['docs_pages'], len(DOCS_PAGES))
 
     def test_missing_invalid_or_oversize_png_screenshot_refuses(self):
         image = self.public / SCREENSHOTS[0]
@@ -225,7 +296,7 @@ class SiteTest(unittest.TestCase):
         other.write_text('not this public product')
         destination = self.root / 'staged'
         receipt = stage_site(self.public, destination)
-        self.assertEqual(set(receipt['files']), set(SITE_FILES + HOME_FILES))
+        self.assertEqual(set(receipt['files']), set(SITE_FILES + HOME_FILES + DOCS_FILES))
         self.assertIn('id="scenarios"', (destination / 'index.html').read_text())
         for name in SITE_FILES:
             self.assertEqual((destination / name).read_bytes(), (self.public / name).read_bytes())
@@ -258,7 +329,7 @@ class SiteTest(unittest.TestCase):
         worker.start()
         try:
             origin = f'http://127.0.0.1:{server.server_port}/aster/'
-            for relative in SITE_FILES + HOME_FILES:
+            for relative in SITE_FILES + HOME_FILES + DOCS_FILES:
                 with self.subTest(relative=relative), urlopen(urljoin(origin, relative), timeout=2) as response:
                     self.assertEqual(response.status, 200)
                     self.assertEqual(response.read(), (self.public / relative).read_bytes())
@@ -266,7 +337,7 @@ class SiteTest(unittest.TestCase):
                 homepage = response.read()
                 self.assertIn(b'home.css', homepage)
                 self.assertIn('让想法落地'.encode(), homepage)
-            for relative in ('tenant/toyou/INFO.md', 'src/private.js'):
+            for relative in ('tenant/toyou/INFO.md', 'src/private.js', 'content/docs/catalog.json', 'content/docs/code/index.mdx', 'content/docs/code/9.1.5/index.mdx', 'content/docs/code/9.1.5/_components.mjs', 'content/docs/code/9.1.5/_diagrams/architecture.mmd'):
                 with self.subTest(relative=relative), self.assertRaises(HTTPError) as refused:
                     urlopen(origin + relative, timeout=2)
                 self.assertEqual(refused.exception.code, 404)

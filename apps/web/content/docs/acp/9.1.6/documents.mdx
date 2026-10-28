@@ -1,0 +1,82 @@
+export const meta = {
+  "title": "读取真正的来源，再生成和核对产物",
+  "description": "编辑器文本、Office 读写、SVG/PNG 和数值检查的区别。",
+  "label": "文档、Office 与内容核对",
+  "updated": "2026-10-26"
+};
+
+## 按来源选择工具
+
+| 来源或目标 | 入口 | 边界 |
+| --- | --- | --- |
+| 编辑器 UTF-8 文本，含未保存内容 | `studio_document_read` | 客户端 DocumentBridge，附文档 version 和 advisory diagnostics |
+| 磁盘 DOCX、XLSX、PPTX 来源 | `office_read` | 本地工作区、原生 Office 语义模型、有界快照 |
+| 创建 DOCX、XLSX、PPTX、PNG | `office_file` | 不覆盖已有文件，保存后重新打开并验证 |
+| 字数、百分比、日期、相邻变化 | `output_check` | 进程内的有界计算，不证明业务语义 |
+
+PDF、页面图像和 OCR 不能从上述工具名推断为全部支持。Office PDF/OCR 当前缺少的操作会拒绝；web_fetch 的 PDF 文本提取是另一条能力路线。
+
+## 显式启用 Office
+
+在 session/new 的 `_meta` 中声明：
+
+```json
+{"a3sHost":{"officeTools":true}}
+```
+
+缺省或 false 不注册原生 Office 工具，类型错误拒绝。源快照审阅仍不暴露工具，Office 声明也不会授予工作区读写权。普通会话可保留 output_check 的有界文本与数值检查。
+
+## 读取与创建示例
+
+以下是工具参数，实际调用仍经受控工具链：
+
+```json
+{"file_path":"sources/report.docx","limit":100}
+```
+
+office_read 的 limit 为 1–1000，默认 200，可用 node_path 缩小范围；单文件上限 20 MiB，输出上限 64 KiB。结果超限时降低 limit 或选窄节点，不要求工具无界返回整个文件。
+
+```json
+{"file_path":"deliverables/summary.docx","kind":"docx","blocks":[{"type":"paragraph","text":"本季度收入为 120。"},{"type":"table","rows":[["期间","收入"],["本季度","120"]]}]}
+```
+
+office_file 创建后返回保存内容的读回结果。XLSX 普通字符串即使以等号开头仍是文本；公式使用显式 formula cell，数字格式另传 number_format。公式重算错误会拒绝发布。PPTX 支持短文本块或带 alt_text 的 SVG 图表，PNG 与嵌图只接受受限自包含 SVG。
+
+## 核对数字和表述
+
+```json
+{"action":"percentage_change","pairs":[{"current":120,"previous":100},{"current":null,"previous":50}]}
+```
+
+百分比采用 `(current-previous)/abs(previous)*100`，缺失值和零基期不伪装成零变化。日期跨度要明确端点规则：
+
+```json
+{"action":"date_span","start":"2026-10-01","end":"2026-10-03","endpoint_counting":"inclusive"}
+```
+
+text_length 分别返回 Unicode 字符、非空白字符和空白分词数，不把中文词数与英文空白词数混用。sequence_changes 检查每一对相邻值，整体增加不能证明单调增加。输入缺失时保留 unknown 结论。
+
+## 编辑器诊断与 Run 引用
+
+studio_document_read 可用 retain_for_run 保留模型身份到 Run 结束。诊断绑定 publisher、sequence、version 和位置范围；空诊断集合不意味着文档已验证。旧文档 version 的诊断不能应用到新内容。
+
+DocumentBridge 的保留引用注册为 Run effect，取消或结束要调用原 release，失败要报告。读取未保存文字与检查磁盘交付物应分开说明。
+
+## 客户端实现 DocumentBridge
+
+代理使用标准 `fs/read_text_file` 读取客户端文本，要求客户端 initialize 时明确声明 readTextFile。请求绑定 sessionId 与文件路径，需要 Run 保留时附 `_meta.a3sDocument.runId`。普通读取仍可作为 Core 的文本 overlay 使用，不能从磁盘读成功推断客户端未保存文本已同步。
+
+客户端的响应 content 必须是有界 UTF-8 文本；富文档观测放在 `_meta.a3sDocument`，包含匹配的 path、released、runId 和 snapshot。snapshot 绑定 documentId、version、磁盘冲突状态及诊断来源。代理拒绝不同路径、不同 Run、已冲突或无效的观测，文本上限 64 KiB，调用默认五秒期限。
+
+Run 清理时代理发送 `a3s/document/release_run`，参数为 sessionId 与 runId。客户端释放原引用后响应；不要仅返回成功而继续保留旧文档模型。诊断按 publisherId、sequence 和 snapshot version 绑定，不能把其他编辑器实例的诊断拼进当前快照。
+
+## 验收
+
+读一个小 DOCX，创建另一个新文件并读回，核对来源、内容、格式与数字。再测已存在目标、路径越界、公式错误、输入超限、缺少 Office opt-in、无 DocumentBridge 和取消。结构验证成功后，仍需检查用户要求是否满足。
+
+## 实现依据
+
+- [Office 来源读取](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/office_read.rs)
+- [Office 创建与验证](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/office_file.rs)
+- [内容与数值检查](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/output_check.rs)
+- [编辑器读取与诊断](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/document_read.rs)

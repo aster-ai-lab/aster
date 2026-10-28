@@ -1,0 +1,55 @@
+export const meta = {
+  "title": "让并行任务遵守同一套预算",
+  "description": "子智能体、Worker、优先队列、程序目录和可恢复工作流。",
+  "label": "任务、队列与程序",
+  "updated": "2026-10-26"
+};
+
+## 先选一种执行方式
+
+| 需求 | 入口 | 谁负责推进 |
+| --- | --- | --- |
+| 单个或多个委派任务 | `task`、`tasks`、Worker 注册 | Core 的任务调度与父 Run |
+| 给确定步骤写受控程序 | `program`、ProgramCatalog | 程序执行器及底层受控工具 |
+| 排队、分 lane、交给外部 Worker | SessionQueueConfig 与队列接口 | 宿主提供 lane handler 或外部回执 |
+| 类型化并行步骤及恢复 | `parallel`、`parallel_resumable`、`workflow_step` | 启用后的编排宿主 |
+| 根据状态动态选择下一步 | state graph、dynamic workflow、Flow 投影 | 持有图与能力的宿主 |
+
+简单任务先使用 `task`。模型侧没有另一个独立的 `parallel_task` 工具；多项 fan-out 由 task 承载。并行是调度选择，不能绕过父任务权限或把预算变成每个子任务各用一份无限额度。
+
+## Worker 与子智能体
+
+Rust 宿主通过 `register_worker_agent` 等公开入口注册 Worker。选择明确名称、用途、可见工具和边界，先做一次只读委派，再接入写入任务。已准入的 Run 使用冻结的 registry，新注册能力影响后续 Run。
+
+`subagent_tasks()` 跟踪子任务，`active_tools()` 查看执行中的工具。父任务取消时还要检查子任务与外部操作是否结算。子任务回答“测试通过”应带回可核对的检查证据，不能自动成为父任务的完成证明。
+
+自动委派、手动委派和自动并行各有 SessionOptions 开关；`with_max_parallel_tasks` 限制并行数。为同一组任务检查 `task_scheduler_stats`、`task_scheduler_health`、`model_generation_pool_health` 和 `model_middleware_health`，分别识别队列、模型并发池与中间件问题。
+
+## 可选队列
+
+配置 `with_queue_config` 后，用 `has_queue()` 判断是否接入。`queue_stats()` 查看各 lane 的排队、活动与外部任务，`queue_metrics()` 可能因未启用指标而返回 None。没有指标不是“零延迟”。
+
+`set_lane_handler` 为指定 lane 安装处理器；外部任务使用 `pending_external_tasks` 与 `complete_external_task` 对应原 task_id。重复、迟到或未知任务回执不能套给新任务。开启死信后用 `dead_letters()` 排查失败，不能无条件循环重放带副作用的任务。
+
+## program 怎样使用工具
+
+ProgramCatalog 定义可准入程序，program 工具负责有界执行与工具调用。脚本自身的 CPU、内存、源码大小和期限需要受限；底层 IO 仍走工具治理。宿主不能把 program 当成不受控的第二条 Shell 通道。
+
+先用固定程序和明确输入验证成功、工具拒绝与超时，再允许模型选择程序。程序层成功应检查内部调用回执，外层异常后先核对原副作用状态。
+
+## 高级工作流与恢复
+
+`dynamic-workflow` 编入可编程工作流与 Flow 投影，并依赖 state-graph。`workflow()` 等便利入口不代表所有高级图操作都在默认构建中。根据选用 API 核对 feature 和 provider。
+
+恢复时保留步骤身份、版本、检查点及外部效果记录。已经完成的纯计算可以重用；外部效果是否可重试要看幂等契约和结算证据。新的图 patch 必须经过准入与 diff，不能在运行中悄悄替换旧计划。
+
+## 验收
+
+两个只读子任务应受并行上限限制；第三个任务可观察到排队。模拟一个 Worker 失败、一个模型池超时和一次父任务取消，确认错误归属、预算消耗和子资源收尾。可恢复工作流另测检查点前后崩溃，避免重复外部写入。
+
+## 实现依据
+
+- [任务与队列接口](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent_api/capability_facade.rs)
+- [编排接口](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent_api/workflow_facade.rs)
+- [受控程序](https://github.com/aster-ai-lab/aster/tree/main/crates/code/core/src/program)
+- [工作流与图模块导出](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/lib.rs)

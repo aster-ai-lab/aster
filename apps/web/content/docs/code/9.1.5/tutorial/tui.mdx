@@ -1,0 +1,196 @@
+export const meta = {
+  title: '03 · 做出可以交互的终端界面',
+  description: '用 Ratatui 和 Crossterm 接上输入与事件流，并在错误路径恢复终端。',
+  label: '03 终端界面',
+  updated: '2026-10-26',
+};
+
+## 先分开界面和执行
+
+现在把诊断日志换成三个区域：回复和工具记录、输入框、状态栏。终端层负责收集键盘输入和绘制；Core 继续负责执行。输入一条任务后先禁止第二次提交，等原运行结束再允许发送，避免两次请求争用同一个会话。
+
+在练习包的依赖中增加工作区已有的 `ratatui`、`crossterm` 和 `futures-util`：
+
+```toml
+ratatui = { workspace = true }
+crossterm = { workspace = true }
+futures-util = { workspace = true }
+```
+
+工作区的 Crossterm 已启用 `event-stream`。不要在异步事件循环里调用阻塞式 `read()` 等键盘输入；使用 `EventStream`，同时等待键盘和模型事件。
+
+## 写界面状态和绘制函数
+
+创建 `src/ui.rs`，先放下面这些定义。显示缓冲区设置 128 KiB 上限，工具记录只保留最近 64 条；这些是界面显示限制，不会修改 Core 的事实日志。
+
+```rust
+use a3s_code_core::AgentEvent;
+use ratatui::{layout::{Constraint, Layout}, widgets::{Block, Paragraph, Wrap}};
+use std::collections::VecDeque;
+
+#[derive(Default)]
+pub struct App {
+    pub input: String,
+    pub reply: String,
+    pub status: String,
+    pub scroll: u16,
+    turn: Option<usize>,
+    log: VecDeque<String>,
+}
+
+fn append_bounded(target: &mut String, text: &str) {
+    let mut end = text.len().min(131_072usize.saturating_sub(target.len()));
+    while !text.is_char_boundary(end) { end -= 1; }
+    target.push_str(&text[..end]);
+}
+
+impl App {
+    fn record(&mut self, text: String) {
+        if self.log.len() == 64 { self.log.pop_front(); }
+        self.log.push_back(text);
+    }
+
+    pub fn apply(&mut self, event: AgentEvent) {
+        match event {
+            AgentEvent::TurnStart { turn } => {
+                if self.turn != Some(turn) && !self.reply.is_empty() {
+                    let previous = std::mem::take(&mut self.reply);
+                    self.record(previous);
+                }
+                self.reply.clear();
+                self.turn = Some(turn);
+            }
+            AgentEvent::TextDelta { text } => append_bounded(&mut self.reply, &text),
+            AgentEvent::ToolStart { name, .. } => self.status = format!("准备 {name}"),
+            AgentEvent::ToolExecutionStart { name, .. } => self.status = format!("执行 {name}"),
+            AgentEvent::ToolEnd { name, exit_code, .. } => {
+                self.record(format!("{name}：退出码 {exit_code}"));
+            }
+            AgentEvent::End { completion_terminal, .. } => {
+                self.status = format!("结束信息 {completion_terminal:?}，等待运行退出");
+            }
+            AgentEvent::Error { message } => self.record(format!("错误：{message}")),
+            _ => {}
+        }
+    }
+
+    pub fn draw(&self, frame: &mut ratatui::Frame) {
+        let [body, input, status] = Layout::vertical([
+            Constraint::Min(4), Constraint::Length(3), Constraint::Length(1),
+        ]).areas(frame.area());
+        let text = self.log.iter().map(String::as_str).chain([self.reply.as_str()])
+            .collect::<Vec<_>>().join("\n\n");
+        frame.render_widget(Paragraph::new(text).wrap(Wrap { trim: false })
+            .scroll((self.scroll, 0)).block(Block::bordered().title("对话与工具")), body);
+        frame.render_widget(Paragraph::new(self.input.as_str())
+            .block(Block::bordered().title("输入任务 · Enter 发送")), input);
+        frame.render_widget(Paragraph::new(self.status.as_str()), status);
+    }
+}
+```
+
+`TurnStart` 的相同轮次会清空暂存回复，所以重试能替换原来的半段文本。新一轮开始前，上一轮回复才进入显示记录。达到显示上限后，应在正式界面增加截断提示和完整记录入口；不要把显示缓冲区当成唯一存档。
+
+## 同时等待键盘和运行事件
+
+继续在 `ui.rs` 添加运行函数。它接收上一章已经创建好的会话。
+
+```rust
+use a3s_code_core::{AgentSession, AgentRunStream};
+use crossterm::event::{Event, EventStream, KeyCode, KeyEventKind, KeyModifiers};
+use futures_util::StreamExt;
+
+async fn next_event(active: &mut Option<AgentRunStream>) -> Option<AgentEvent> {
+    match active {
+        Some(stream) => stream.events.recv().await,
+        None => std::future::pending().await,
+    }
+}
+
+pub async fn run(session: &AgentSession, terminal: &mut ratatui::DefaultTerminal)
+    -> anyhow::Result<()>
+{
+    let mut app = App::default();
+    let mut keys = EventStream::new();
+    let mut active: Option<AgentRunStream> = None;
+    loop {
+        terminal.draw(|frame| app.draw(frame))?;
+        tokio::select! {
+            event = keys.next() => {
+                let Some(event) = event else { break; };
+                let Event::Key(key) = event? else { continue; };
+                if key.kind != KeyEventKind::Press { continue; }
+                match key.code {
+                    KeyCode::Char('c') if key.modifiers.contains(KeyModifiers::CONTROL) => break,
+                    KeyCode::PageUp => app.scroll = app.scroll.saturating_sub(8),
+                    KeyCode::PageDown => app.scroll = app.scroll.saturating_add(8),
+                    KeyCode::Backspace => { app.input.pop(); }
+                    KeyCode::Char(c) if app.input.len() + c.len_utf8() <= 8192 => app.input.push(c),
+                    KeyCode::Enter if active.is_none() && !app.input.trim().is_empty() => {
+                        let prompt = std::mem::take(&mut app.input);
+                        if !app.reply.is_empty() {
+                            let previous = std::mem::take(&mut app.reply);
+                            app.record(previous);
+                        }
+                        app.record(format!("你：{prompt}"));
+                        app.scroll = 0;
+                        app.turn = None;
+                        app.reply.clear();
+                        app.status = "正在提交".into();
+                        match session.stream_with_run(&prompt, None).await {
+                            Ok(stream) => active = Some(stream),
+                            Err(error) => app.status = format!("提交失败：{error}"),
+                        }
+                    }
+                    _ => {}
+                }
+            }
+            event = next_event(&mut active), if active.is_some() => {
+                if let Some(event) = event {
+                    app.apply(event);
+                } else if let Some(stream) = active.take() {
+                    stream.worker.await?;
+                    app.status = match stream.run {
+                        Some(run) => format!("运行 {}：{:?}", run.id(), run.status().await),
+                        None => "命令处理结束".into(),
+                    };
+                }
+            }
+        }
+    }
+    Ok(())
+}
+```
+
+`active` 在流式入口返回后立刻保存。工具名、运行 ID 和状态都来自事件或句柄；不要从回复文本中提取它们。`PageUp`、`PageDown` 用于阅读；`Backspace` 按 Rust 字符边界删除，避免切坏 UTF-8。
+
+## 替换 main.rs，并保证退出时恢复终端
+
+```rust
+mod runtime;
+mod ui;
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let (config, workspace) = runtime::arguments()?;
+    let (_agent, session) = runtime::open(&config, &workspace).await?;
+    let mut terminal = ratatui::init();
+    let result = ui::run(&session, &mut terminal).await;
+    ratatui::restore();
+    session.close().await;
+    result
+}
+```
+
+`ratatui::init` 建立 raw mode 和备用屏幕，并安装 panic 时的恢复处理。普通错误则通过保存 `result`、调用 `restore` 后再返回处理。进入备用屏幕后不要再向 stdout 打印调试日志；把日志写入文件或显示区域。
+
+## 本章验收
+
+发送只读任务，确认输入和回复同时可用，执行中第二次 Enter 不会再创建运行。让模型返回中文和多行代码，检查删除、换行和滚动。运行中按 Ctrl+C，终端应恢复普通输入；主函数仍会关闭会话，取消所属工作。
+
+这一版界面刻意只接只读任务。下一章才加入待确认队列和批准按键。运行中等待工作线程退出的路径仍可进一步拆成独立状态，交付章节会说明如何给关闭和清理设置期限。
+
+## 实现依据
+
+- [流式入口与取消收尾](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent_api/session_facade.rs)
+- [本仓库的终端依赖版本](https://github.com/aster-ai-lab/aster/blob/main/Cargo.toml)

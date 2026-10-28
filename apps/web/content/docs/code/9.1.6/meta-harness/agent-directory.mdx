@@ -1,0 +1,148 @@
+export const meta = {
+  title: '从目录加载 Agent',
+  description: '使用 DirectoryProjection 读取指令、ACL、Skills、MCP、脚本和定时提示。',
+  label: 'Agent 目录与定时提示',
+  updated: '2026-10-26',
+};
+
+## 一个目录里放什么
+
+`DirectoryProjection` 把目录中的内容转换为已有的会话设置和 Meta Harness 配方。它负责加载和转换，执行仍使用原有会话。
+
+```text
+project-agent/
+  instructions.md
+  agent.acl
+  skills/
+  scripts/
+    check-project.js
+  prompts/
+    daily-review.md
+```
+
+<DocTable caption="目录内容与接入位置" headers={['内容', '作用', '加载后的去向']} rows={[
+  ['instructions.md', 'Agent 的工作说明，必须存在且非空', '配方的 system 槽'],
+  ['agent.acl 的 agent 块', '选择模型和工具预算', 'SessionOptions 与 budget 设置'],
+  ['skills/', '任务操作说明', 'skill_dirs'],
+  ['agent.acl 的 mcp_servers 块', '外部 MCP 服务声明', '供宿主调用 add_mcp_server'],
+  ['agent.acl 的 scripts 块', '脚本路径和允许调用的工具', '现有 program 工具的参数'],
+  ['agent.acl 的 schedules 块', 'UTC 定时表达式和提示文件', '宿主查询 due 后提交的任务'],
+]} />
+
+新目录中的模型、工具和定时配置统一在 `agent.acl` 中声明。JavaScript 文件保存脚本内容，Markdown 文件保存工作说明或任务提示。
+
+## ACL 示例
+
+```acl
+agent {
+  tool_budget = 12
+}
+
+scripts "check-project" {
+  path = "scripts/check-project.js"
+  description = "读取项目资料并整理检查结果"
+  allowed_tools = ["read", "grep"]
+}
+
+schedules "daily-review" {
+  cron = "0 9 * * *"
+  prompt = "prompts/daily-review.md"
+}
+```
+
+这里没有设置 `model`，会沿用宿主模型配置。需要指定时，在 `agent` 块中填写宿主已经配置的模型引用。
+
+脚本声明必须提供非空的 `allowed_tools`。脚本路径须位于 Agent 目录内，指向现有的 `.js` 或 `.mjs` 文件。加载目录不会自动执行这些脚本。
+
+## 创建会话并连接 MCP
+
+```rust
+use a3s_code_core::{Agent, AgentSession};
+use a3s_code_core::directory_projection::DirectoryProjection;
+
+async fn open_directory(agent: &Agent) -> anyhow::Result<AgentSession> {
+    let directory = DirectoryProjection::load("./project-agent")?;
+    let session = agent
+        .session_async("./project-agent", Some(directory.session_options()?))
+        .await?;
+
+    for server in directory.mcp_servers() {
+        session.add_mcp_server(server.clone()).await?;
+    }
+    Ok(session)
+}
+```
+
+`session_options()` 会设置配方、可选模型和 Skill 目录。MCP 连接由宿主随后添加，不能只调用 `load()` 就认为外部服务已经可用。
+
+这个示例把 `project-agent` 同时作为配置目录和工作区。脚本路径相对会话工作区解析，所以 `scripts/check-project.js` 必须在该工作区中。如果要检查已有项目，应把这些文件放进那个项目，再把同一个项目路径传给 `load` 和 `session_async`。只加载一个独立配置目录，不会把它自动映射进另一个工作区。
+
+## 调用目录中的脚本
+
+`scripts()` 返回每个脚本的名称、描述、路径和工具限制。`DirectoryScript::program_arguments()` 将其转成 `program` 工具参数，并始终携带 `allowed_tools`。
+
+例如，`scripts/check-project.js` 可以先读取工作区中的 README：
+
+```javascript
+async function run(ctx) {
+  const result = await ctx.tool("read", { file_path: "README.md" });
+  if (result.exitCode !== 0) {
+    throw new Error(result.output);
+  }
+  return result.output;
+}
+```
+
+脚本必须定义 `run` 函数，不能只在文件顶层写 `return`。脚本内的工具结果使用 `exitCode`；Rust 返回的 `ToolCallResult` 使用 `exit_code`。
+
+宿主按 ACL 中声明的准确名称选取脚本，再调用 `governed_tool`。当前 `program` 接口要求 `type: "script"`，而 `program_arguments()` 尚未提供这个字段，调用前需要补齐：
+
+```rust
+use a3s_code_core::{AgentSession, directory_projection::DirectoryProjection};
+
+async fn check_project(
+    session: &AgentSession,
+    directory: &DirectoryProjection,
+) -> anyhow::Result<()> {
+    let script = directory.scripts().iter()
+        .find(|script| script.name == "check-project")
+        .ok_or_else(|| anyhow::anyhow!("missing script: check-project"))?;
+    let mut arguments = script.program_arguments();
+    arguments["type"] = "script".into();
+    let result = session
+        .governed_tool("program", arguments)
+        .await?;
+    anyhow::ensure!(result.exit_code == 0, "program failed: {}", result.output);
+    println!("{}", result.output);
+    Ok(())
+}
+```
+
+`governed_tool` 保留会话的权限和确认检查。`tool()` 则把宿主视为已经批准这次调用，适用于宿主确实完成了授权的场景。`allowed_tools` 只限定脚本可调用的工具列表，不会授予这些工具权限。
+
+返回 `Ok(ToolCallResult)` 只说明取得了工具结果；仍要检查 `exit_code`，不能把工具返回的失败当成执行成功。
+
+## 定时提示由谁触发
+
+宿主传入 UTC 时间调用 `directory.due(now)`，得到当前匹配的 `DueSchedule`。每项包含：
+
+- `name`：声明的任务名称。
+- `session_key`：稳定的会话标识，例如 `schedule:daily-review`。
+- `prompt`：加载目录时读入的提示文件内容。
+
+宿主需要按会话标识打开或恢复会话，再提交提示。`due` 只是查询，不记录“本分钟已经执行”。同一个时间槽反复查询会得到相同任务，宿主必须自行去重。
+
+例如，`0 9 * * *` 匹配每天 UTC 09:00。宿主的时钟、轮询、去重和服务重启都需要自己安排；这个声明不会启动后台定时器。
+
+## 加载和刷新时的限制
+
+`instructions.md` 最多 32 KiB，定时提示文件最多 16 KiB。必需文件缺失、说明为空、脚本路径不合法或 cron 无法解析时会拒绝加载。
+
+目录在 `load` 时形成一份内存中的结果。修改文件后，需要由宿主重新加载并决定怎样更新会话。已有工作策略、目标和能力绑定有自己的恢复检查，不能把修改目录当作覆盖这些记录的方式。
+
+## 实现依据
+
+- [DirectoryProjection 的加载和转换](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/directory_projection.rs)
+- [Meta Harness 手册中的目录约定](https://github.com/aster-ai-lab/aster/blob/main/crates/code/manual/META_HARNESS.md)
+- [会话 MCP 连接接口](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent_api/capability_facade.rs)
+- [宿主工具调用与权限检查](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent_api/direct_tool_facade.rs)

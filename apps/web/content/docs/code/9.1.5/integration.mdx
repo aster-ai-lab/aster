@@ -1,0 +1,74 @@
+export const meta = {
+  title: '把 Harness 接入宿主',
+  description: '创建 Rust 会话，配置验证命令，并按需接入记忆和长期任务。',
+  updated: '2026-10-26',
+  label: '宿主接入',
+};
+
+## 从一个 Rust 会话开始
+
+使用 Core 的 Rust 应用称为“宿主”。它通过 `Agent` 加载 ACL 配置，再创建一个绑定工作区的 `AgentSession`。
+
+下面的示例向模型发送一个问题。运行前需要配置好模型，并准备 Tokio 异步运行环境；依赖使用本仓库中的 `a3s-code-core`。
+
+```rust
+use a3s_code_core::Agent;
+
+async fn run() -> anyhow::Result<()> {
+    let agent = Agent::new("agent.acl").await?;
+    let session = agent.session_async("/my-project", None).await?;
+    let result = session.send("解释这个项目的认证流程", None).await?;
+    println!("{}", result.text);
+    Ok(())
+}
+```
+
+如果要在界面中逐步显示输出，改用 `stream` 接收 `AgentEvent`。Aster 的终端和桌面则通过 ACP 进程接入 Core。
+
+## 明确宿主与 Core 的分工
+
+<OwnershipTable />
+
+接入时先确定需要哪些工具、模型和存储，再配置它们的权限。不需要的可选模块可以不编译。编译了某个模块，不会自动获得执行权限。
+
+## 配置验证命令
+
+Core 需要知道哪个命令用于验证修改，以及它覆盖哪些文件。这项声明称为“验证契约”，放在宿主明确指定的可信 ACL 或用户 ACL 中。自动发现的仓库 ACL 不能添加这类声明。
+
+```acl
+verification_contract "project-tests" {
+  workspace = "/absolute/path/to/project"
+  command = "cargo test --locked"
+  covers = ["src/**", "tests/**"]
+}
+```
+
+请按实际项目替换工作区、命令和覆盖路径。`covers` 应填写这条命令确实能检查的文件范围。
+
+执行时，命令需要与声明精确匹配。例如，上面的契约不能用于 `cargo test --locked || true`。只有命令成功、执行结果完整且覆盖当前修改时，才能用它完成验证。命令本身仍需通过工具权限检查。
+
+## 按需启用扩展能力
+
+<ProfileTable />
+
+Core 默认使用 `local-code`。ACP 的浏览器搜索还需要启用 `headless-search`。同一次 Cargo 构建中的 features 会合并，因此最终包含哪些依赖，要以实际构建结果为准。
+
+接入持久记忆时，宿主要指定租户（`tenant`）、访问主体（`principal`）和数据范围（`scope`），再提供相应的存储。新提取的候选记忆经过激活后，才能被后续会话检索使用。语义召回还需要配置嵌入模型、向量索引和刷新策略。
+
+长期目标需要宿主明确提供目标或唤醒请求。每轮续跑前，还会检查截止时间、目标归属、权限和进展。Core／SDK 会话没有配置续跑策略时，不会自动启动下一轮。
+
+## 检查接入结果
+
+可以用一项会修改文件的任务检查接入是否正常：查看工具执行结果、修改摘要、验证报告和最终状态能否对应起来。沙箱限制、中断恢复和资源清理，也需要在实际运行环境中分别检查。
+
+没有显式验证契约时，内置的文件存在、内容摘要等检查只能证明文件的某些状态。要检查代码行为是否正确，应接入项目中实际覆盖这些修改的测试。
+
+需要进一步组合执行过程时，可以继续阅读 [Meta Harness 使用指南](../meta-harness/)，其中包括自定义组件、目录加载、检查点恢复和宿主验证回调。
+
+## 实现依据
+
+- [Rust API 与调用示例](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/lib.rs)
+- [发布 profiles 与依赖边界](https://github.com/aster-ai-lab/aster/blob/main/crates/code/manual/RELEASE_PROFILES.md)
+- [宿主验证契约及验证义务](https://github.com/aster-ai-lab/aster/blob/main/crates/code/manual/HOST_VERIFICATION_CONTRACT.md)
+- [持久记忆的激活与隔离](https://github.com/aster-ai-lab/aster/blob/main/crates/code/manual/DURABLE_MEMORY.md)
+- [长期目标的宿主边界](https://github.com/aster-ai-lab/aster/blob/main/crates/code/manual/HOST_GOAL_CONTROL.md)

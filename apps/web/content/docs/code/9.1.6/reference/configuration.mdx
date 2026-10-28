@@ -1,0 +1,63 @@
+export const meta = {
+  "title": "选择构建能力，再给会话接入模型",
+  "description": "构建 profile、ACL 信任层、模型适配器与超时边界。",
+  "label": "构建与模型配置",
+  "updated": "2026-10-26"
+};
+
+## 先决定交付什么
+
+Core 是本地 Rust SDK，ACP 是供终端和桌面宿主启动的伴随进程。仓库不提供额外语言 SDK；终端 `aster` 与 `a3s-code-acp` 一起构建、分发。已有异步 Rust 应用优先嵌入 Core；需要进程隔离或跨语言宿主时走 ACP。
+
+| Core profile | 增加的能力 | 适用情况 |
+| --- | --- | --- |
+| `minimal` | 受控执行循环、工作区工具、身份与事件 | 宿主只需要基本编码能力 |
+| `local-code`，默认 | 持久词法索引、grep 候选裁剪、web_fetch 的 PDF 文本提取 | 本地编码助手 |
+| `scientific` | SQLite 记忆、浏览器搜索、advanced-harness | 实验与高级编排宿主 |
+| `server` | S3 工作区、OTLP 导出 | 有对象存储和观测基础设施的宿主 |
+| `full` | scientific 与 server 的并集 | 需要上述两组能力的构建 |
+
+`apofasi` 单独启用，**不包含在 full 中**。`apofasi-infer` 需要权重，Metal 路线只适用于相应平台。跨平台 CI 使用 `ci-all`，不能用 `--all-features` 代替平台选择。`dm-prod1-host` 是专用 Redis 验证程序的开关，不属于产品默认交付。
+
+Cargo feature 只决定代码是否编入。比如编入 S3 并不会替宿主提供凭据，编入语义检索也不会授权源码外发。多个 workspace 包同时构建时 feature 会合并，验收应查看实际交付图。
+
+## ACL 从可信宿主进入
+
+先按[第一章](../../tutorial/setup/)准备一份可用的可信 ACL，再接入业务界面。下面仅展示模型配置形状；端点和模型名需要替换为宿主已验证的服务。
+
+```acl
+default_model = "openai/my-model"
+providers "openai" {
+  api_key = env("OPENAI_API_KEY")
+  base_url = "https://api.example/v1"
+  models "my-model" {
+    tool_call = true
+    limit = { context = 32768, output = 4096 }
+  }
+}
+```
+
+配置由 `a3s-acl` 解析。JSON 工具参数、JSON Schema 和协议消息是数据，不是第二种产品配置文件。密钥从环境变量读，不能写入练习仓库。工作区自动发现的 ACL 只能收紧宿主权限；模型、认证、联网和宿主能力不能由项目文件自行扩大。
+
+## 模型、结构化输出与附件
+
+`Agent::new` 读取可信配置，`SessionOptions` 选择会话参数。供应商适配由 `LlmClient` 抽象；Rust 宿主也可以注入实现。适配器存在不保证供应商支持图片、工具调用、原生 reasoning effort 或严格结构化输出，应该以模型声明和实际响应判断。
+
+结构化输出从 `send`、`run`、`task` 的相应选项进入，`generate_object` 可供任务使用。先定义所需 schema，检查解析结果及错误；不能把模型生成的 JSON 字符串当成通过 schema 校验。附件使用 `send_with_attachments` 等类型化入口，界面要展示无法传递的内容，而不是悄悄丢掉附件。
+
+## 分开设置四类上限
+
+会话可设置 `with_llm_api_timeout`、`with_tool_timeout`、`with_max_tool_rounds` 和 `with_max_continuation_turns`。模型请求超时、单工具超时、工具轮次和宿主续跑次数各管一层。另有解析重试、重复工具检测、熔断、上下文 token 和 artifact 保留上限。
+
+排查时先确认失败在哪一层，再调整对应参数。提高模型超时不会增加工具权限；增加续跑轮数也不会让缺少验证的任务变成完成。
+
+## 验收
+
+先做一次只读请求，核对实际模型名、工具投影、工作区路径和 `init_warning()`。再测试无效模型、缺少环境凭据和拒绝路径，确认失败能明确返回。随后才启用写入、远程服务和自动续跑。
+
+## 实现依据
+
+- [Core feature 定义](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/Cargo.toml)
+- [配置模型](https://github.com/aster-ai-lab/aster/tree/main/crates/code/core/src/config)
+- [SessionOptions](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent_api/session_options.rs)
+- [构建 profile 说明](https://github.com/aster-ai-lab/aster/blob/main/crates/code/manual/RELEASE_PROFILES.md)

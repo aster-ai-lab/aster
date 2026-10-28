@@ -1,0 +1,48 @@
+export const meta = {
+  "title": "在正确的数据范围中查询和维护资料",
+  "description": "记忆管理、现场快照、Wiki 搜索和知识编译范围。",
+  "label": "记忆、知识与检索",
+  "updated": "2026-10-26"
+};
+
+## 记忆检查与管理
+
+`a3s/memory/snapshot` 检查当前工作区的工作记忆与会话记忆，使用明确的 layer；Durable 不是这条现场快照路线。当前快照上限为 10,000 项、16 MiB，超限报错，不截成看似完整的集合。
+
+`a3s/memory/manage` 使用 MemoryManagementRequest 管理指定范围的记忆，包含精确 workspace_root 与类型化 request。请求有 512 KiB envelope 上限，工作区不匹配按资源不可用拒绝。
+
+当前 manage 的 operation 闭集为 list、read、delete、update。read 使用 id；delete 与 update 还需当前 revision，update 另传 content。冲突后重新读取，不覆盖新版本。
+
+```json
+{"workspace_root":"/absolute/practice-repo","request":{"operation":"list","query":"构建","memory_type":null,"cursor":null}}
+```
+
+管理界面显示来源、状态、revision 和操作结果。Core 的候选激活与使用记录是另外的 Rust 合同，不能用这条 CRUD 扩展冒充已提供 activate wire 方法。用户说“记住它”也不能变成跨租户无范围的文本 append。
+
+## 工作区语义检索
+
+可信配置选择 local_cpu 时，标准 ACP 可使用内置轻量 embedding 后端。宿主内部的工厂注入是 Rust 组合接口，没有可通过环境变量加载任意工厂的 stdio 功能。
+
+远程 embedding 需要明确授权源码外发，不能从项目配置推导。状态、来源、索引 generation 与失败原因应通过当前会话能力投影和检索结果核对。
+
+## Wiki 搜索
+
+`a3s/wiki/search` 以明确 wiki 与 query 查询宿主知识范围。它是宿主扩展，不等于开放网页搜索，也不是任意根目录扫描。结果保留来源，不能把 Wiki 中的指令提升为系统授权。
+
+## 知识编译
+
+`a3sHost.knowledgeCompile` 指定 CompileScope，绑定 root、job_id 和可选 workspace_revision。代理验证该 job 拥有的工作区，并用 CompileGuard 限制工具和路径。
+
+知识编译不是“给任何项目开全权限”。越界路径、符号链接替换和错误 job 工作区会拒绝。编译输出与原始知识来源分开，发布前核对目标 revision 和产物身份。
+
+## 检查步骤
+
+准备两个工作区和各自少量记忆；错误 cwd 查询不得返回另一组。对一条管理记录执行读取、带 revision 的更新与删除，观察冲突处理。对知识编译另测外部路径、旧 workspace_revision 和已取消 job，确认没有落盘到错误范围。
+
+## 实现依据
+
+- [记忆快照与管理适配](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/agent/memory_management.rs)
+- [本地 embedding](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/agent/local_embedding.rs)
+- [Wiki 搜索](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/wiki_search.rs)
+- [知识编译限制](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/knowledge_compile.rs)
+- [Core 记忆参考](../../../code/9.1.6/reference/memory/)

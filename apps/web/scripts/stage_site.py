@@ -10,7 +10,7 @@ import sys
 import tempfile
 
 from check_site import PUBLIC_ROOT, check_site
-from site_contract import HOME_FILES, SITE_FILES
+from site_contract import DOCS_FILES, HOME_FILES, SITE_FILES
 
 
 def stage_site(public_root, destination):
@@ -24,7 +24,7 @@ def stage_site(public_root, destination):
     with tempfile.TemporaryDirectory(prefix="aster-site-", dir=destination.parent) as temporary:
         out = Path(temporary) / "site"
         out.mkdir()
-        for name in SITE_FILES + HOME_FILES:
+        for name in SITE_FILES + HOME_FILES + DOCS_FILES:
             target = out / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(source / name, target)

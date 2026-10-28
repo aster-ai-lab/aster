@@ -1,0 +1,100 @@
+export const meta = {
+  title: '接入上下文和工具',
+  description: '选择提示槽、上下文来源、Skills、MCP、动态工具和生命周期钩子。',
+  label: '上下文、工具与 Hooks',
+  updated: '2026-10-26',
+};
+
+## 先选对扩展入口
+
+不是所有扩展都需要写一个 `host:` 组件。给模型补充资料，用上下文接口；增加实际操作，用工具接口；在执行前后记录或拦截，用 Hook。它们通过会话进入原有运行过程。
+
+<DocTable caption="扩展需求与会话入口" headers={['需求', '入口', '影响']} rows={[
+  ['修改角色、工作要求或回复格式', 'with_prompt_slots / with_output_language', '调整系统提示的相应部分'],
+  ['提供项目、业务或检索资料', 'with_context_provider', '把 ContextItem 交给上下文组装器'],
+  ['载入操作说明', 'with_skill_dirs / with_host_skill', '接入 Skill 注册表'],
+  ['连接外部工具服务', 'with_mcp / add_mcp_server', '注册 MCP 工具'],
+  ['注册 Rust 工具实现', 'register_dynamic_tool', '在下一次运行的工具快照中使用'],
+  ['批量处理工具结果或运行脚本', 'program 工具', '在受控调用入口中执行程序'],
+  ['检查、改写或记录生命周期事件', 'with_hook_executor', '替换内置 Hook 执行器'],
+]} />
+
+## 修改提示槽
+
+只需要调整角色和工作要求时，使用 `SystemPromptSlots`，不用重写完整系统提示。
+
+```rust
+use a3s_code_core::{SessionOptions, SystemPromptSlots};
+
+let options = SessionOptions::new().with_prompt_slots(
+    SystemPromptSlots::default()
+        .with_role("你负责解释和修改这个 Rust 项目。")
+        .with_guidelines("优先使用项目已有的实现和测试。")
+        .with_response_style("说明修改内容、检查结果和剩余问题。")
+        .with_output_language("zh-CN"),
+);
+```
+
+这些槽可以改变模型收到的说明，不能放宽工具权限。Meta Harness 配方中的 `system` 也不会取消 Core 加入的权限要求。
+
+## 提供应用自己的资料
+
+固定资料可以通过 `StaticContextProvider` 接入，再走同一套排序、去重与预算处理。
+
+```rust
+use std::sync::Arc;
+use a3s_code_core::context::{ContextItem, ContextType, StaticContextProvider};
+use a3s_code_core::SessionOptions;
+
+let provider = StaticContextProvider::new("project-notes").with_item(
+    ContextItem::new(
+        "project-note",
+        ContextType::Resource,
+        "项目说明见 README.md。",
+    )
+    .with_relevance(0.9),
+);
+let options = SessionOptions::new().with_context_provider(Arc::new(provider));
+```
+
+动态来源实现 `ContextProvider` 的 `name` 和 `query`。`failure_mode` 默认允许尽力获取；必须成功的来源可以声明失败时终止本轮。来源还可以通过 `on_turn_complete` 处理已完成的一轮，但持久记忆的访问范围、激活和审计需要使用专门接口。
+
+`with_isolated_context` 保留宿主提供的上下文，同时省略自动发现的指令和 Skills，并使用会话本地的空记忆。它不是操作系统沙箱。
+
+## Skills、MCP 和动态工具
+
+Skills 提供操作说明，MCP 和动态工具提供实际调用能力。把说明写进 Skill，不会自动注册一个工具实现。
+
+`with_skill_dirs` 的目录会与全局 Skill 目录合并。宿主也可以用 `with_host_skill` 提供精确的 Skill。MCP 可通过 `with_mcp` 安装管理器，或在已有会话上调用 `add_mcp_server`；工具名称采用 `mcp__<server>__<tool>`。
+
+`register_dynamic_tool` 接受宿主提供的 `Tool` 实现。一次运行使用已选定的工具与能力快照；不要假设更新注册表就会改写正在执行的那次运行。
+
+## 什么时候使用 program
+
+需要批量调用工具、筛选结果，或运行已有 JavaScript 脚本时，可以使用模型可见的 `program` 工具。脚本能调用什么工具，需要通过 `allowed_tools` 明确限制。
+
+低层 `ProgramExecutor` 直接调用工具注册表，本身不安装会话权限、确认、预算或取消策略。Agent 和会话中的脚本应经过受控的 `program` 工具入口。宿主还需要保留权限与确认检查时，使用 `session.governed_tool`；`session.tool` 代表宿主已经批准调用。完整示例见[调用目录中的脚本](../agent-directory/#调用目录中的脚本)。
+
+## Hook 可以做什么
+
+常用事件包括 `PrePrompt`、`PreToolUse`、`PostToolUse`、`GenerateStart`、`GenerateEnd`、`PreCompact` 和 `PostCompact`。此外还有会话、记忆、规划与运行控制等事件，完整枚举见源码。
+
+前置 Hook 可以返回继续、改写、阻止等结果；执行后的观察事件主要用于记录。不能把一个后置事件的返回值当作对已发生操作的撤销，也不能认为每种事件都能改变运行行为。
+
+`with_hook_executor` 会替换内置执行器，而非自动与它叠加。需要组合原有规则和自定义处理时，应由宿主明确实现。Hook 放行之后，Core 的权限检查仍会执行。
+
+## 持久记忆和工作区检索
+
+工作区检索、持久记忆和知识资料都可以影响模型上下文，但有各自的接入和验证规则。长期记忆需要指定租户、访问主体和数据范围；候选记忆激活后才参与召回。知识资料还要使用精确的会话绑定，不能只给一个普通 Provider 换名字。
+
+这些能力的完整存储和检索说明见下方手册。本篇列出它们在 Meta Harness 中的接入位置，不把召回算法混进组件装配过程。
+
+## 实现依据
+
+- [会话上下文、工具和 Hook 配置](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent_api/session_options.rs)
+- [ContextProvider 与失败处理](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/context/mod.rs)
+- [MCP 与动态工具入口](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent_api/capability_facade.rs)
+- [Hook 事件与执行契约](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/hooks/mod.rs)
+- [program 与低层执行器](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/program.rs)
+- [持久记忆手册](https://github.com/aster-ai-lab/aster/blob/main/crates/code/manual/DURABLE_MEMORY.md)
+- [工作区检索手册](https://github.com/aster-ai-lab/aster/blob/main/crates/code/manual/WORKSPACE_RETRIEVAL_BACKENDS.md)

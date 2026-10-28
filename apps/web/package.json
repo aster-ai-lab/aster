@@ -1,0 +1,22 @@
+{
+  "name": "aster-website",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev_server.mjs",
+    "build": "node scripts/build_docs.mjs",
+    "check": "node scripts/build_docs.mjs --check",
+    "test": "node --test tests/docs.test.mjs"
+  },
+  "devDependencies": {
+    "@mdx-js/mdx": "3.1.1",
+    "@shikijs/rehype": "4.5.0",
+    "@shikijs/transformers": "4.5.0",
+    "hast-util-from-html": "2.0.3",
+    "hast-util-to-html": "9.0.5",
+    "pele": "1.10.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "remark-gfm": "4.0.1"
+  }
+}

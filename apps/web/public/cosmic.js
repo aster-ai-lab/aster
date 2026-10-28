@@ -44,9 +44,9 @@
       void main() {
         vec2 point = gl_PointCoord - 0.5;
         float distanceToCenter = length(point);
-        float glow = smoothstep(0.5, 0.04, distanceToCenter);
-        float core = smoothstep(0.17, 0.0, distanceToCenter);
-        gl_FragColor = vec4(vColor.rgb, vColor.a * (glow * 0.72 + core * 0.5));
+        float core = 1.0 - smoothstep(0.08, 0.28, distanceToCenter);
+        float halo = 1.0 - smoothstep(0.22, 0.5, distanceToCenter);
+        gl_FragColor = vec4(vColor.rgb, vColor.a * (core * 0.86 + halo * 0.14));
       }
     `;
     const quadVertex = `
@@ -189,7 +189,7 @@
         let z = star.z + time * 1.35;
         while (z > -2) z -= 112;
         const shimmer = 0.32 + (Math.sin(time * 0.85 + star.phase) * 0.5 + 0.5) * 0.68;
-        const size = Math.min(18, Math.max(1, (star.radius * focal * ratio) / Math.max(1.4, -z)));
+        const size = Math.min(8, Math.max(0.65, (star.radius * 0.55 * focal * ratio) / Math.max(1.4, -z)));
         vertex(vertices, project(star.x, star.y, z, time), size, colorFor(star.tone), shimmer);
       });
       galaxy.forEach((star) => {
@@ -198,7 +198,7 @@
         const z = Math.sin(angle) * star.radius - 62 + star.z;
         const y = star.y + Math.sin(angle * 1.7) * 0.7 - 4;
         const shimmer = 0.34 + (Math.sin(time * 0.72 + star.phase) * 0.5 + 0.5) * 0.66;
-        const size = Math.min(14, Math.max(1, (0.9 * focal * ratio) / Math.max(8, -z)));
+        const size = Math.min(7, Math.max(0.7, (0.5 * focal * ratio) / Math.max(8, -z)));
         vertex(vertices, project(x, y, z, time), size, colorFor(star.tone), Math.min(1, shimmer * 1.25));
       });
 
@@ -224,7 +224,7 @@
             const x = meteor.x + meteor.vx * t;
             const y = meteor.y + meteor.vy * t;
             const depth = Math.max(1.4, -meteor.z);
-            const size = Math.min(12, Math.max(1, ((1.4 - index * 0.025) * focal * ratio) / depth));
+            const size = Math.min(6, Math.max(0.65, ((1.0 - index * 0.018) * focal * ratio) / depth));
             vertex(vertices, project(x, y, meteor.z, time), size, [0.72, 0.86, 1], (1 - index / 34) * Math.sin(progress * Math.PI));
           }
         }

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check the standalone public download page without desktop sources or network."""
+"""Check the public homepage, downloads and MDX output without desktop sources or network."""
 
 import argparse
 from dataclasses import dataclass, field
@@ -13,7 +13,7 @@ import sys
 from urllib.parse import unquote, urlsplit
 import zlib
 
-from site_contract import DOWNLOAD_MANIFEST, FONT_FILES, HOME_FILES, PAGE_FILES, PAGES_URL, REPOSITORY_URL, SCREENSHOT_FILES, SITE_FILES
+from site_contract import DOCS_FILES, DOCS_PAGES, DOCS_ROUTES, DOCS_REFERENCE_URLS, DOWNLOAD_MANIFEST, DOWNLOAD_BRAND_FILES, FONT_FILES, HOME_FILES, PAGE_FILES, PAGES_URL, REPOSITORY_URL, SCREENSHOT_FILES, SITE_FILES
 
 PUBLIC_ROOT = Path(__file__).resolve().parents[1] / "public"
 DOWNLOAD_URLS = frozenset(item[4] for item in DOWNLOAD_MANIFEST)
@@ -201,7 +201,8 @@ def check_site(public_root=PUBLIC_ROOT):
         raise ValueError("CSS imports are not part of the standalone site")
     for match in re.finditer(r"url\(\s*(['\"]?)(.*?)\1\s*\)", css, flags=re.I):
         local_url(match.group(2), "download/styles.css")
-    if not (set(SITE_FILES) - {"download/index.html"}).issubset(seen_assets):
+    required_download_assets = set(PAGE_FILES + SCREENSHOT_FILES + FONT_FILES + DOWNLOAD_BRAND_FILES) - {"download/index.html"}
+    if not required_download_assets.issubset(seen_assets):
         raise ValueError("page/CSS does not reference all approved public assets")
     for filename in ("download/app.js", "download/canvas.js"):
         javascript = source[filename]
@@ -212,8 +213,10 @@ def check_site(public_root=PUBLIC_ROOT):
         for url in re.findall(r"https?://[^\s'\"<>`]+", javascript):
             external_link(url)
     home = check_home_page(root)
-    return {"status": "passed", "files": len(SITE_FILES + HOME_FILES), "download_links": len(seen_downloads),
+    docs = check_docs(root)
+    return {"status": "passed", "files": len(SITE_FILES + HOME_FILES + DOCS_FILES), "download_links": len(seen_downloads),
             "named_buttons": sum(node.tag == "button" for node in nodes), "home_tabs": home["tabs"],
+            "docs_pages": docs["pages"],
             "private_sources_required": False}
 
 
@@ -282,6 +285,8 @@ def check_home_page(root):
             elif urlsplit(href).scheme or urlsplit(href).netloc:
                 if external_link(href):
                     seen_downloads.add(href)
+            elif href == "./docs/":
+                regular(root, "docs/index.html")
             else:
                 local_url(href)
         if node.tag == "script":
@@ -311,7 +316,7 @@ def check_home_page(root):
     for match in re.finditer(r"url\(\s*(['\"]?)(.*?)\1\s*\)", css, flags=re.I):
         local_url(match.group(2))
     required_assets = (set(HOME_FILES + SCREENSHOT_FILES + FONT_FILES) |
-                       {"tenant/aster/logo.svg", "tenant/aster/mark-light.png"}) - {"index.html"}
+                       {"tenant/aster/logo.svg", "tenant/aster/mark-light.png", "tenant/aster/favicon.png"}) - {"index.html"}
     if not required_assets.issubset(seen_assets):
         missing = sorted(required_assets - seen_assets)
         raise ValueError(f"homepage does not reference required public assets: {missing}")
@@ -328,6 +333,91 @@ def check_home_page(root):
     if len(tabs) != 4 or len(panels) != 4:
         raise ValueError("homepage must expose four task scenario tabs and panels")
     return {"status": "passed", "tabs": len(tabs), "download_links": len(seen_downloads)}
+
+
+def check_docs(root):
+    """Check generated MDX pages without widening the download asset boundary."""
+    root = Path(root).absolute()
+    for name in DOCS_FILES:
+        regular(root, name)
+    actual = {path.relative_to(root).as_posix() for path in (root / "docs").rglob("*")
+              if path.is_file() or path.is_symlink()}
+    if actual != set(DOCS_FILES):
+        raise ValueError("unexpected or missing documentation file")
+    pages, identifiers = {}, {}
+    for name in DOCS_PAGES:
+        nodes = list(Page((root / name).read_text(encoding="utf-8")).root.walk())
+        pages[name] = nodes
+        ids = [node.attrs["id"] for node in nodes if node.attrs.get("id")]
+        if len(ids) != len(set(ids)):
+            raise ValueError(f"duplicate documentation HTML id: {name}")
+        identifiers[name] = set(ids)
+        if sum(node.tag == "h1" and bool(node.text()) for node in nodes) != 1:
+            raise ValueError(f"documentation needs one page heading: {name}")
+        if not any(node.tag == "main" and node.attrs.get("id") == "content" for node in nodes):
+            raise ValueError(f"documentation needs a main landmark: {name}")
+
+    def local_url(value, origin):
+        parsed = urlsplit(value)
+        if parsed.scheme or parsed.netloc or parsed.query or "\\" in value:
+            raise ValueError(f"nonlocal documentation asset: {value}")
+        decoded = unquote(parsed.path)
+        if decoded.startswith("/") or (not decoded and not parsed.fragment):
+            raise ValueError(f"invalid documentation path: {value}")
+        target = ((root / origin).parent / decoded if decoded else root / origin).resolve()
+        if not target.is_relative_to(root.resolve()):
+            raise ValueError(f"documentation asset escapes site: {value}")
+        if target.is_dir():
+            target = target / "index.html"
+        name = target.relative_to(root.resolve()).as_posix()
+        if name not in DOCS_FILES + SITE_FILES + HOME_FILES:
+            raise ValueError(f"unapproved documentation asset: {value}")
+        regular(root, name)
+        if parsed.fragment and unquote(parsed.fragment) not in identifiers.get(name, set()):
+            raise ValueError(f"missing documentation fragment: {value}")
+        return name
+
+    for name, nodes in pages.items():
+        if sum(node.tag == "script" for node in nodes) != 1:
+            raise ValueError("unsupported documentation script count")
+        for node in nodes:
+            if node.tag == "script":
+                src = node.attrs.get("src", "")
+                if node.children or set(node.attrs) != {"src", "defer"}:
+                    raise ValueError("unsupported documentation script")
+                if local_url(src, name) != "docs/navigation.js":
+                    raise ValueError("unsupported documentation script")
+            if node.tag in {"select", "datalist", "style", "iframe", "base", "object", "embed"}:
+                raise ValueError(f"unsupported documentation element: {node.tag}")
+            if any(key.startswith("on") or key in {"style", "srcset"} for key in node.attrs):
+                raise ValueError(f"inline documentation behavior/style: {node.tag}")
+            if node.tag == "link" and node.attrs.get("rel") == "canonical":
+                if node.attrs.get("href") != PAGES_URL + DOCS_ROUTES[name]:
+                    raise ValueError(f"unexpected documentation canonical: {name}")
+                continue
+            if node.tag == "img" and "alt" not in node.attrs:
+                raise ValueError(f"documentation image needs alt text: {name}")
+            if node.tag == "svg":
+                labels = node.attrs.get("aria-labelledby", "").split()
+                if not labels or any(label not in identifiers[name] for label in labels):
+                    raise ValueError(f"documentation diagram needs an accessible label: {name}")
+            for attr in ("src", "href", "xlink:href"):
+                if attr not in node.attrs:
+                    continue
+                value = node.attrs[attr]
+                parsed = urlsplit(value)
+                if node.tag == "a" and (parsed.scheme or parsed.netloc):
+                    if value not in DOCS_REFERENCE_URLS:
+                        external_link(value)
+                else:
+                    local_url(value, name)
+    for name in (name for name in DOCS_FILES if name.endswith(".css")):
+        css = re.sub(r"/\*.*?\*/", "", (root / name).read_text(encoding="utf-8"), flags=re.S)
+        if re.search(r"@import\b", css, flags=re.I):
+            raise ValueError("CSS imports are not part of documentation")
+        for match in re.finditer(r"url\(\s*(['\"]?)(.*?)\1\s*\)", css, flags=re.I):
+            local_url(match.group(2), name)
+    return {"pages": len(pages)}
 
 
 if __name__ == "__main__":

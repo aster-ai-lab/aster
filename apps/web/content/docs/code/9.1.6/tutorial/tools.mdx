@@ -1,0 +1,111 @@
+export const meta = {
+  title: '09 · 注册自己的工具和目录脚本',
+  description: '先接入一个没有副作用的 Rust 工具，再用 Agent 目录组织受控 JavaScript 脚本。',
+  label: '09 工具与脚本',
+  updated: '2026-10-26',
+};
+
+## 先做一个容易验收的 Rust 工具
+
+我们先增加 `project_label`，只返回宿主给定的练习项目标识，不读取文件或调用网络。这样可以单独验证注册、参数校验、权限和结果显示。
+
+在练习包依赖中增加工作区的 `async-trait` 和 `serde_json`。创建 `src/project_label.rs`：
+
+```rust
+use a3s_code_core::tools::{Tool, ToolContext, ToolOutput};
+use serde_json::{Value, json};
+
+pub struct ProjectLabel;
+
+#[async_trait::async_trait]
+impl Tool for ProjectLabel {
+    fn name(&self) -> &str { "project_label" }
+    fn description(&self) -> &str { "返回宿主设置的练习项目标识。" }
+    fn parameters(&self) -> Value {
+        json!({ "type": "object", "properties": {}, "additionalProperties": false })
+    }
+    async fn execute(&self, args: &Value, _ctx: &ToolContext)
+        -> anyhow::Result<ToolOutput>
+    {
+        if !args.as_object().is_some_and(|map| map.is_empty()) {
+            return Ok(ToolOutput::error("project_label 不接受参数"));
+        }
+        Ok(ToolOutput::success("tutorial-demo"))
+    }
+}
+```
+
+名称是宿主声明的准确工具 ID，不能从自然语言描述中猜。JSON Schema 限制参数形状，执行函数也保留检查。以后增加文件或外部操作时，再按工具的实际权限与能力接口实现，不要沿用这个“无副作用”例子的假设。
+
+## 注册到已有会话
+
+在 `main.rs` 声明 `mod project_label;`，创建会话后、开始第一次运行前调用：
+
+```rust
+use std::sync::Arc;
+use a3s_code_core::AgentSession;
+
+fn install_label(session: &AgentSession) -> anyhow::Result<()> {
+    session.register_dynamic_tool(Arc::new(crate::project_label::ProjectLabel))?;
+    Ok(())
+}
+```
+
+同时在创建会话前的权限策略中增加 `.allow("project_label")`。注册工具和放行工具是两件事，缺少任何一步都不能得到期望结果。运行使用冻结后的工具快照，注册表变化应在下一次运行里验证。
+
+先调用 `session.governed_tool("project_label", serde_json::json!({}))` 检查接入，再让模型使用它。记得检查返回的 `exit_code`；得到 `Ok(ToolCallResult)` 不代表工具本身成功。
+
+## 把脚本放进 Agent 目录
+
+需要一组项目指令、Skills、脚本和定时提示时，使用 `DirectoryProjection`。让练习项目同时充当目录与工作区：
+
+```text
+demo-project/
+  instructions.md
+  agent.acl
+  README.md
+  scripts/
+    check-project.js
+```
+
+`instructions.md` 必须非空。在 `agent.acl` 声明：
+
+```acl
+agent {
+  tool_budget = 12
+}
+scripts "check-project" {
+  path = "scripts/check-project.js"
+  description = "读取项目 README"
+  allowed_tools = ["read"]
+}
+```
+
+`scripts/check-project.js` 使用实际程序入口：
+
+```javascript
+async function run(ctx) {
+  const result = await ctx.tool("read", { file_path: "README.md" });
+  if (result.exitCode !== 0) throw new Error(result.output);
+  return result.output;
+}
+```
+
+加载目录得到 `session_options()` 后，再把教程已有的权限、确认、存储和工作策略叠到同一份 options 上。不要用一份新 options 覆盖掉前面已经接好的设置。
+
+## 从宿主调用脚本
+
+选中准确的脚本名后取 `program_arguments()`，补齐当前工具要求的 `type: "script"`，再经 `governed_tool("program", arguments)` 执行。[完整调用示例](../../meta-harness/agent-directory/#调用目录中的脚本) 给出了错误处理。
+
+目录中的 `allowed_tools` 只限制脚本可调用哪些工具，不授予权限。脚本路径相对实际工作区；单独加载一个配置目录，不会把它自动映射到另一个项目。
+
+有定时声明时，宿主查询 UTC 的 `due(now)`，按时间槽去重，再通过原会话提交提示。目录不会启动后台计时器，重复查询也不会自动消耗本分钟的任务。
+
+## 本章验收
+
+对自定义工具传一个多余参数，应被拒绝。移除它的权限规则，确认注册仍在但调用不能通过。目录脚本读取失败时，外层也应失败；不能只返回包含 `exitCode: 1` 的对象，却让 `program` 看起来执行成功。
+
+## 继续查阅
+
+- [Agent 目录与定时提示](../../meta-harness/agent-directory/)
+- [工具接口与返回值](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/tools/types.rs)

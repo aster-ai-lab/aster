@@ -1,0 +1,55 @@
+export const meta = {
+  "title": "把文本、工具与执行状态显示完整",
+  "description": "文本片段、推理、工具输出、图片和可选 Run 观测。",
+  "label": "流式展示与执行观测",
+  "updated": "2026-10-26"
+};
+
+## 分开渲染不同更新
+
+代理把 Core 事件适配为 ACP session/update。客户端至少按 sessionId 与工具调用 ID 建立状态，不要把所有更新追加成一段聊天文本。
+
+| 更新 | 界面处理 |
+| --- | --- |
+| 用户与模型文本 chunk | 按消息与轮次追加；重试替换时保留身份 |
+| 推理相关内容 | 按实际收到的字段展示；不能由空内容推断模型未推理 |
+| tool call 与 tool call update | 按 toolCallId 合并标题、参数、状态、内容和位置 |
+| 计划更新 | 更新检查清单；计划完成不代替工具证据 |
+| 可用命令更新 | 在 new/load 返回会话后安装该会话的命令目录 |
+| 模式和模型变化 | 更新当前会话控件，保留未应用或失败的状态 |
+| 错误、最终停止 | 记录停止原因，区分成功、取消、预算与故障 |
+
+工具开始时没有输出很正常；工具结束时可能有工具级错误。内容预览被裁剪时展示截断信息，保留 artifact URI。未知内容类型给出受控的降级提示，不应悄悄丢掉附件。
+
+## 图片与文档产物
+
+图片与产物消息依赖实际适配器和构建能力。`artifact_image` 处理受限 SVG/PNG 相关产物，`svg-png` 开关控制渲染支持。展示时核对媒体类型、大小和来源，不能执行工具输出携带的 HTML 或脚本。
+
+源文件读取、模型图片输入和交付图片是不同路线。当前 ACP prompt 只接受 text；image、audio、resource、resource_link 都明确拒绝，不会静默丢弃。Core 的附件 API 不能直接视为 ACP 已支持的输入协议。初始化的 promptCapabilities 应与实际能力一致，产出 PNG 不等于模型能接受图片输入。
+
+## 请求可选的 Run 观测
+
+希望区分“客户端正在等待”和“Core Run 已准入”时，在 prompt 的 `_meta` 中传：
+
+```json
+{"a3sExecutionObservation":1,"promptId":"prompt-20261026-001"}
+```
+
+代理通过 `_a3s/execution/observe` 发扩展通知，含 protocolVersion、sessionId、promptId、coreSessionId、runId、sequence、kind、turn、status。kind 是 run-opened、model-turn-opened、model-turn-closed、run-closed。
+
+promptId 需为 1–128 字节的受支持标识，允许 ASCII 字母、数字和 `._-`。元数据不符合要求时不启用这条观测路线。sequence 用于本次 Observer 内排序；它不是所有会话共用的全局序号。
+
+观测只读，不改变执行权限。run-closed 表示 Run 状态，不直接证明所有业务需求通过独立验收。
+
+## 重放和断线
+
+加载会话时有 ACP 标准通知，也有 `a3s/session/transcript/update/v1` 类型化补充。保存重放标记和转录条目身份，避免把历史工具渲染成仍在运行。
+
+流关闭却没有终态时显示连接或执行异常，不能显示“完成”。重新连接前核对原 Run 与保存状态，不能自动重新发出可能带写入的完整任务。
+
+## 实现依据
+
+- [事件转发](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/agent/turn.rs)
+- [工具展示映射](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/agent/tool_render.rs)
+- [Run 观测](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/run_observation.rs)
+- [转录重放](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/agent/extensions.rs)

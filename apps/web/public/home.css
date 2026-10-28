@@ -2925,3 +2925,208 @@ ul {
 .text-link-light:hover {
   color: #ffffff;
 }
+
+/* Quiet, directional refinements: preserve context instead of adding spectacle. */
+.hero-workflow-link {
+  min-height: 44px;
+}
+
+.scenario-tabs {
+  position: relative;
+}
+
+.scenario-tab-indicator {
+  position: absolute;
+  z-index: 0;
+  top: 5px;
+  left: 0;
+  width: 0;
+  height: 42px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 3px 12px rgba(20, 20, 25, 0.07);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 180ms cubic-bezier(0.16, 1, 0.3, 1),
+    width 180ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 100ms ease;
+}
+
+.scenario-tabs.is-enhanced .scenario-tab-indicator {
+  opacity: 1;
+}
+
+.scenario-tabs button {
+  position: relative;
+  z-index: 1;
+}
+
+.scenario-tabs.is-enhanced button[aria-selected="true"] {
+  background: transparent;
+  box-shadow: none;
+}
+
+.scenario-panel {
+  animation: panel-enter 200ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.connector-card:hover,
+.security-card:hover {
+  transform: translateY(-2px);
+}
+
+@keyframes panel-enter {
+  from {
+    opacity: 0;
+    transform: translateX(calc(var(--panel-direction, 1) * 8px));
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (min-width: 981px) {
+  .hero {
+    padding-top: 146px;
+  }
+
+  .hero-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .hero-visual {
+    margin-top: 58px;
+  }
+
+  .hero-glow {
+    opacity: 0.82;
+  }
+
+  .capability-strip {
+    margin-top: 48px;
+    padding-bottom: 44px;
+  }
+}
+
+@media (max-width: 520px) {
+  .scenario-tab-indicator {
+    top: 4px;
+    height: 38px;
+  }
+}
+
+/* User-initiated scenario replay, progressively enhanced over real screenshots. */
+.scenario-replay {
+  margin-top: 18px;
+  padding: 13px 14px 12px;
+  border: 1px solid #e5e5e8;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 8px 22px rgba(30, 30, 36, 0.035);
+}
+
+.replay-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 28px;
+}
+
+.replay-label {
+  margin-right: auto;
+  color: #85858d;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.replay-toggle {
+  min-width: 52px;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid #dedee3;
+  border-radius: 8px;
+  background: #fff;
+  color: #343439;
+  font-size: 11px;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.replay-toggle:hover {
+  border-color: #cfcfd5;
+  background: #f5f5f6;
+}
+
+.replay-count {
+  min-width: 34px;
+  color: #929299;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-align: right;
+}
+
+.replay-track {
+  height: 2px;
+  margin-top: 10px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: #e8e8ec;
+}
+
+.replay-progress {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #55555c;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.replay-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  margin-top: 8px;
+  padding: 0;
+  list-style: none;
+}
+
+.replay-step {
+  min-height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #9a9aa1;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  cursor: pointer;
+  transition: color 140ms ease, background 140ms ease;
+}
+
+.replay-step:hover {
+  background: #f5f5f6;
+  color: #343439;
+}
+
+.replay-step.is-complete {
+  color: #66666e;
+}
+
+.replay-step.is-current {
+  background: #f0f0f2;
+  color: #202024;
+  font-weight: 500;
+}
+
+.replay-event {
+  margin-top: 7px;
+  color: #5d5d64;
+  font-size: 11px;
+  line-height: 1.6;
+}

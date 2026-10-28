@@ -1,0 +1,169 @@
+export const meta = {
+  title: '04 · 让修改操作先经过确认',
+  description: '区分权限决策与确认交互，给终端增加准确绑定到工具调用的批准和拒绝操作。',
+  label: '04 权限与确认',
+  updated: '2026-10-26',
+};
+
+## 本章才开始允许修改
+
+前三章只允许 `read` 和 `ls`。现在允许读取自动执行，修改和命令执行则需要确认。把权限决策交给 `PermissionPolicy`，把“用户怎样回答”交给 `ConfirmationManager`。
+
+<TutorialPermissionDiagram />
+
+权限检查的顺序是 Deny、Allow、Ask、默认决策。因此同一个工具不能同时在 Allow 和 Ask 里期待后者生效。界面也不能因为用户按过一次“允许”，就替下一次不同参数的调用自动批准。
+
+## 在运行层保留确认管理器
+
+在 `runtime.rs` 添加 `Runtime`，并用下面的 `open` 替换第一章的版本。`arguments()` 保留。
+
+```rust
+use std::sync::Arc;
+use a3s_code_core::AgentEvent;
+use a3s_code_core::hitl::{ConfirmationManager, ConfirmationPolicy, TimeoutAction};
+use tokio::sync::broadcast;
+
+pub struct Runtime {
+    pub agent: Agent,
+    pub session: AgentSession,
+    pub confirmations: Arc<ConfirmationManager>,
+    pub confirmation_events: broadcast::Receiver<AgentEvent>,
+}
+
+pub async fn open(config: &std::path::Path, workspace: &std::path::Path)
+    -> anyhow::Result<Runtime>
+{
+    let config = config.to_str().context("ACL 路径必须是 UTF-8")?;
+    let workspace = workspace.to_str().context("项目路径必须是 UTF-8")?;
+    let agent = Agent::new(config).await?;
+    let (tx, rx) = broadcast::channel(64);
+    let confirmations = Arc::new(ConfirmationManager::new(
+        ConfirmationPolicy::enabled().with_timeout(60_000, TimeoutAction::Reject), tx,
+    ));
+    let mut policy = PermissionPolicy::new()
+        .allow_all(&["read", "ls"])
+        .ask("write").ask("edit").ask("patch").ask("bash");
+    policy.default_decision = PermissionDecision::Deny;
+    let options = SessionOptions::new()
+        .with_planning(false)
+        .with_permission_policy(policy)
+        .with_confirmation_manager(confirmations.clone());
+    let session = agent.session_async(workspace, Some(options)).await?;
+    Ok(Runtime { agent, session, confirmations, confirmation_events: rx })
+}
+```
+
+这里的确认事件发到我们自己建立的 broadcast 通道。不要假设安装一个外部管理器后，这些事件会自动出现在 `stream_with_run` 的通道里；界面要同时消费两个来源。`agent` 字段用于保留宿主对象的寿命。
+
+`main.rs` 相应改为保留 `Runtime`。同时给 `ui::run` 增加 `confirmations: &ConfirmationManager` 和 `confirmation_events: &mut broadcast::Receiver<AgentEvent>` 两个参数，放在 `session` 与 `terminal` 之间：
+
+```rust
+mod runtime;
+mod ui;
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let (config, workspace) = runtime::arguments()?;
+    let mut runtime = runtime::open(&config, &workspace).await?;
+    let mut terminal = ratatui::init();
+    let result = ui::run(&runtime.session, &runtime.confirmations,
+        &mut runtime.confirmation_events, &mut terminal).await;
+    ratatui::restore();
+    runtime.session.close().await;
+    result
+}
+```
+
+## 确认面板保存准确的调用
+
+给 `App` 加入 `pending: Vec<PendingConfirmationInfo>`，类型来自 `a3s_code_core::hitl`。面板至少显示工具名称、准确的 `tool_id`、当前参数和剩余时间。参数可能含凭证或私人内容，正式应用应按工具的结构化规则脱敏，不能只把全部 JSON 写进日志。
+
+在 `ui.rs` 添加这个等待函数，再在原 `tokio::select!` 中增加 `pending = confirmation_update(confirmations, confirmation_events)` 分支，把 `app.pending` 更新为 `pending?`：
+
+```rust
+use a3s_code_core::hitl::{ConfirmationManager, PendingConfirmationInfo};
+use tokio::sync::broadcast;
+
+async fn confirmation_update(manager: &ConfirmationManager,
+    events: &mut broadcast::Receiver<AgentEvent>)
+    -> anyhow::Result<Vec<PendingConfirmationInfo>>
+{
+    match events.recv().await {
+        Ok(_) | Err(broadcast::error::RecvError::Lagged(_)) => {}
+        Err(broadcast::error::RecvError::Closed) => {
+            manager.cancel_all().await;
+            anyhow::bail!("确认事件通道已关闭");
+        }
+    }
+    let mut pending = manager.pending_confirmation_details().await;
+    pending.sort_by(|a, b| a.tool_id.cmp(&b.tool_id));
+    Ok(pending)
+}
+```
+
+排序只用于展示，批准依据始终是当前显示记录的 ID。先展示列表中的第一项，后续可以增加选择控件；界面显示哪一项，按键就只能回答那一项。
+
+如果广播报告 `Lagged`，重新查询待确认列表，不要用漏掉的事件猜当前状态。通道关闭时暂停批准操作并显示错误。确认面板不能在按键处理里阻塞等待；模型工作线程正在等它回答。
+
+## 批准与拒绝都要检查回执
+
+给 F6 和 F7 分别绑定批准和拒绝，按键处理调用下面的函数。`tool_id` 必须来自当前选中的 `PendingConfirmationInfo`，而不是工具名称或模型回复。
+
+```rust
+async fn respond(
+    manager: &a3s_code_core::hitl::ConfirmationManager,
+    tool_id: &str,
+    approved: bool,
+) -> anyhow::Result<()> {
+    let accepted = manager.confirm(tool_id, approved, None).await
+        .map_err(anyhow::Error::msg)?;
+    anyhow::ensure!(accepted, "确认已过期或已处理，请刷新待确认列表");
+    Ok(())
+}
+```
+
+按键时先复制选中 ID，再等待回执。管理器返回 `false` 表示没有可处理的那次确认；界面不能继续显示“已批准”。超时使用拒绝策略，关闭会话时也要取消待确认记录。
+
+在键盘分支确认是 Press 后、处理普通字符前，调用下面的函数。返回 `true` 时本次按键已处理，不再进入原来的输入分支；调用后也重新查询待确认列表。
+
+```rust
+async fn confirmation_key(manager: &ConfirmationManager,
+    pending: &[PendingConfirmationInfo], key: crossterm::event::KeyCode)
+    -> anyhow::Result<bool>
+{
+    let approved = match key {
+        crossterm::event::KeyCode::F(6) => true,
+        crossterm::event::KeyCode::F(7) => false,
+        _ => return Ok(false),
+    };
+    if let Some(selected) = pending.first() {
+        let tool_id = selected.tool_id.clone();
+        respond(manager, &tool_id, approved).await?;
+    }
+    Ok(true)
+}
+```
+
+给原来的 Layout 增加一块确认区域，显示当前工具、ID、参数、剩余时间和 F6／F7 提示。参数展示与正式日志分开处理；如果请求到达后看不到这块区域，先检查独立广播是否已接入，而不是放宽权限。
+
+过期确认属于可恢复的界面错误。键盘分支应把 `confirmation_key` 的错误写入状态栏并刷新列表，不要用 `?` 直接退出整个终端。
+
+## 完整面板的按键与限制
+
+参考工程的 [ui.rs](https://github.com/aster-ai-lab/aster/blob/main/apps/tutorial-agent/src/ui.rs) 已把列表、选择、刷新和绘制接在同一个事件循环里。F5 在待确认项之间切换，选择依据是 tool_id；F3／F4 滚动参数，F6／F7 批准或拒绝显示的那一项。列表更新后优先保留相同 ID，原项消失才切换到另一项。
+
+显示参数超过 32 KiB 时，面板明确提示并禁止批准；拒绝仍可用。截断不能隐藏实际执行内容后继续让用户确认。这个限制仅属于练习界面，不修改 Core 的工具参数。
+
+业务问题单独处理：F8 选择选项，F9 提交输入框文字或当前选项。终端不便发送功能键时，Alt+j 切换确认，Alt+y／Alt+n 批准／拒绝，Alt+o／Alt+a 选择／提交业务回答。回答只送给原 question_id，不调用 confirm。结构化表单由 [ACP 客户端教程](../../../../acp/9.1.6/client/)处理，这个小型 TUI 会明确提示不支持。
+
+## 验收
+
+让 Agent 在练习项目中新建一个文件：批准前文件不存在；F7 拒绝后仍不存在；再次请求并 F6 批准后才出现。再让确认超时，检查没有执行开始事件，也没有磁盘修改。最后同时触发两次确认，确认批准一个 ID 不会放行另一个。
+
+需要宿主直接调用工具时，使用 `governed_tool` 保留这些检查。`tool()` 表示宿主已经完成授权，不能拿它绕过刚做好的确认面板。
+
+## 继续查阅
+
+- [上下文、工具与 Hooks](../../meta-harness/context-tools/)
+- [确认管理器与回执接口](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/hitl.rs)
+- [宿主工具入口](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent_api/direct_tool_facade.rs)

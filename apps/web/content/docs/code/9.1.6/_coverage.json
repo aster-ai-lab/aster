@@ -1,0 +1,413 @@
+[
+  {
+    "id": "agent_runtime",
+    "operations": [
+      "agent.create",
+      "agent.session",
+      "agent.resume_session",
+      "agent.close"
+    ],
+    "page": "./run-control/",
+    "title": "Session 与 Run",
+    "tier": "baseline",
+    "hostOwned": false,
+    "activation": "按当前会话准入、配置与工具投影"
+  },
+  {
+    "id": "conversation",
+    "operations": [
+      "session.send",
+      "session.run",
+      "session.stream",
+      "session.send_with_attachments",
+      "session.history",
+      "session.cancel"
+    ],
+    "page": "./run-control/",
+    "title": "对话、附件与取消",
+    "tier": "baseline",
+    "hostOwned": false,
+    "activation": "按当前会话准入、配置与工具投影"
+  },
+  {
+    "id": "run_control",
+    "operations": [
+      "session.steer",
+      "session.interrupt",
+      "session.run_control_snapshot"
+    ],
+    "page": "./run-control/",
+    "title": "追加与中断",
+    "tier": "baseline",
+    "hostOwned": true,
+    "activation": "按当前会话准入、配置与工具投影"
+  },
+  {
+    "id": "governed_tools",
+    "operations": [
+      "session.tool",
+      "session.governed_tool",
+      "session.tool_definitions"
+    ],
+    "page": "./workspace-tools/",
+    "title": "受控调用",
+    "tier": "baseline",
+    "hostOwned": true,
+    "activation": "按当前会话准入、配置与工具投影"
+  },
+  {
+    "id": "workspace_tools",
+    "operations": [
+      "session.read_file",
+      "session.write_file",
+      "session.ls",
+      "session.edit_file",
+      "session.patch_file",
+      "session.bash",
+      "session.glob",
+      "session.grep",
+      "session.git",
+      "session.tool:download",
+      "session.tool:batch"
+    ],
+    "page": "./workspace-tools/",
+    "title": "工作区工具",
+    "tier": "baseline",
+    "hostOwned": true,
+    "activation": "按当前会话准入、配置与工具投影"
+  },
+  {
+    "id": "workspace_retrieval",
+    "operations": [
+      "session.workspace_retrieval_status",
+      "session.semantic_search",
+      "session.hybrid_search"
+    ],
+    "page": "./retrieval/",
+    "title": "源码检索",
+    "tier": "baseline",
+    "hostOwned": true,
+    "activation": "语义/混合路线需显式 embedding；词法按后端能力"
+  },
+  {
+    "id": "model_adapters",
+    "operations": [
+      "agent.create",
+      "session.send",
+      "session.stream"
+    ],
+    "page": "./configuration/",
+    "title": "模型适配",
+    "tier": "baseline",
+    "hostOwned": true,
+    "activation": "按当前会话准入、配置与工具投影"
+  },
+  {
+    "id": "structured_output",
+    "operations": [
+      "session.send",
+      "session.run",
+      "session.task"
+    ],
+    "page": "./configuration/",
+    "title": "Schema 输出",
+    "tier": "baseline",
+    "hostOwned": true,
+    "activation": "按当前会话准入、配置与工具投影"
+  },
+  {
+    "id": "mcp_and_skills",
+    "operations": [
+      "session.add_mcp",
+      "session.remove_mcp",
+      "session.mcps",
+      "session.add_skill",
+      "session.skill_names"
+    ],
+    "page": "./../meta-harness/context-tools/",
+    "title": "上下文、MCP 与 Skills",
+    "tier": "baseline",
+    "hostOwned": true,
+    "activation": "按当前会话准入、配置与工具投影"
+  },
+  {
+    "id": "planning_delegation",
+    "operations": [
+      "session.task",
+      "session.tasks",
+      "session.register_worker_agent"
+    ],
+    "page": "./orchestration/",
+    "title": "规划与委派",
+    "tier": "baseline",
+    "hostOwned": true,
+    "activation": "按当前会话准入、配置与工具投影"
+  },
+  {
+    "id": "priority_scheduling",
+    "operations": [
+      "session.task_scheduler_stats",
+      "session.task_scheduler_health",
+      "session.model_generation_pool_health",
+      "session.model_middleware_health",
+      "session.queue_stats",
+      "session.set_lane_handler"
+    ],
+    "page": "./orchestration/",
+    "title": "优先调度",
+    "tier": "baseline",
+    "hostOwned": false,
+    "activation": "按当前会话准入、配置与工具投影"
+  },
+  {
+    "id": "persistence",
+    "operations": [
+      "session.save",
+      "agent.resume_session",
+      "session.get_artifact"
+    ],
+    "page": "./memory/",
+    "title": "保存与恢复",
+    "tier": "baseline",
+    "hostOwned": true,
+    "activation": "按当前会话准入、配置与工具投影"
+  },
+  {
+    "id": "governance",
+    "operations": [
+      "session.pending_confirmations",
+      "session.confirm_tool_use",
+      "session.register_hook",
+      "session.set_budget_guard",
+      "session.verify_commands"
+    ],
+    "page": "./governance/",
+    "title": "治理与验证",
+    "tier": "baseline",
+    "hostOwned": true,
+    "activation": "按当前会话准入、配置与工具投影"
+  },
+  {
+    "id": "run_observability",
+    "operations": [
+      "session.runs",
+      "session.run_snapshot",
+      "session.run_events",
+      "session.run_event_page",
+      "session.active_tools",
+      "session.subagent_tasks"
+    ],
+    "page": "./operations/",
+    "title": "运行记录",
+    "tier": "baseline",
+    "hostOwned": false,
+    "activation": "按当前会话准入、配置与工具投影"
+  },
+  {
+    "id": "context_memory",
+    "operations": [
+      "session.memory",
+      "session.remember",
+      "session.recall",
+      "session.memory_stats"
+    ],
+    "page": "./memory/",
+    "title": "记忆",
+    "tier": "baseline",
+    "hostOwned": true,
+    "activation": "按当前会话准入、配置与工具投影"
+  },
+  {
+    "id": "web_search",
+    "operations": [
+      "session.web_search",
+      "session.tool:web_search"
+    ],
+    "page": "./retrieval/",
+    "title": "联网搜索",
+    "tier": "baseline",
+    "hostOwned": true,
+    "activation": "按当前会话准入、配置与工具投影"
+  },
+  {
+    "id": "web_fetch",
+    "operations": [
+      "session.tool:web_fetch"
+    ],
+    "page": "./retrieval/",
+    "title": "页面读取",
+    "tier": "baseline",
+    "hostOwned": true,
+    "activation": "按当前会话准入、配置与工具投影"
+  },
+  {
+    "id": "code_intelligence",
+    "operations": [
+      "session.tool:code_symbols",
+      "session.tool:code_navigation",
+      "session.tool:code_diagnostics"
+    ],
+    "page": "./retrieval/",
+    "title": "语言服务",
+    "tier": "advanced",
+    "hostOwned": true,
+    "activation": "宿主语言服务与工作区操作能力"
+  },
+  {
+    "id": "cognitive_packages",
+    "operations": [
+      "session.cognitive_package_binding",
+      "session.current_cognitive_package_binding"
+    ],
+    "page": "./retrieval/",
+    "title": "认知包",
+    "tier": "advanced",
+    "hostOwned": true,
+    "activation": "宿主认知包 provider"
+  },
+  {
+    "id": "use_runtime_tasks",
+    "operations": [
+      "session.tool:use_runtime_task"
+    ],
+    "page": "./retrieval/",
+    "title": "Use 任务",
+    "tier": "advanced",
+    "hostOwned": true,
+    "activation": "宿主 Use task provider"
+  },
+  {
+    "id": "program",
+    "operations": [
+      "session.program",
+      "session.tool:program"
+    ],
+    "page": "./orchestration/",
+    "title": "程序",
+    "tier": "baseline",
+    "hostOwned": false,
+    "activation": "按当前会话准入、配置与工具投影"
+  },
+  {
+    "id": "programmable_workflows",
+    "operations": [
+      "session.parallel",
+      "session.parallel_resumable",
+      "session.workflow_step"
+    ],
+    "page": "./orchestration/",
+    "title": "工作流",
+    "tier": "advanced",
+    "hostOwned": true,
+    "activation": "所选工作流 API 的 feature 与宿主依赖"
+  },
+  {
+    "id": "state_graph",
+    "operations": [
+      "state_graph.create",
+      "state_graph.restore",
+      "state_graph.propose_patch",
+      "state_graph.diff"
+    ],
+    "page": "./advanced/",
+    "title": "状态图",
+    "tier": "advanced",
+    "hostOwned": true,
+    "activation": "state-graph"
+  },
+  {
+    "id": "agent_release_contract",
+    "operations": [
+      "release.admit",
+      "release.bind_publication",
+      "release.verify"
+    ],
+    "page": "./advanced/",
+    "title": "发布合同",
+    "tier": "advanced",
+    "hostOwned": true,
+    "activation": "按当前会话准入、配置与工具投影"
+  },
+  {
+    "id": "agent_protocol",
+    "operations": [
+      "agent_protocol.start",
+      "agent_protocol.cancel",
+      "agent_protocol.recover",
+      "agent_protocol.events"
+    ],
+    "page": "./advanced/",
+    "title": "Agent Protocol",
+    "tier": "advanced",
+    "hostOwned": true,
+    "activation": "按当前会话准入、配置与工具投影"
+  },
+  {
+    "id": "evaluation_substrate",
+    "operations": [
+      "evaluation.evidence",
+      "evaluation.auxiliary",
+      "evaluation.dispatch_ledger",
+      "evaluation.result",
+      "evaluation.result_store",
+      "evaluation.wire_v1"
+    ],
+    "page": "./advanced/",
+    "title": "评估底座",
+    "tier": "advanced",
+    "hostOwned": true,
+    "activation": "evaluation"
+  },
+  {
+    "id": "typed_decisions",
+    "operations": [
+      "typed_decision.decide",
+      "typed_decision.decide_and_gate",
+      "typed_decision.receipt_v1",
+      "typed_decision.route"
+    ],
+    "page": "./advanced/",
+    "title": "类型化决策",
+    "tier": "advanced",
+    "hostOwned": true,
+    "activation": "apofasi，神经路线另需权重"
+  },
+  {
+    "id": "moli_runtime",
+    "operations": [
+      "moli.default",
+      "moli.ensure",
+      "moli.packaged"
+    ],
+    "page": "./retrieval/",
+    "title": "浏览器运行时",
+    "tier": "advanced",
+    "hostOwned": true,
+    "activation": "headless-search；首次实际使用才准备"
+  },
+  {
+    "id": "s3_workspace",
+    "operations": [
+      "session.workspace_backend:s3",
+      "session.read_file",
+      "session.write_file"
+    ],
+    "page": "./advanced/",
+    "title": "对象存储",
+    "tier": "advanced",
+    "hostOwned": true,
+    "activation": "s3 + 宿主凭据/范围"
+  },
+  {
+    "id": "opentelemetry",
+    "operations": [
+      "telemetry.init",
+      "session.trace_events"
+    ],
+    "page": "./advanced/",
+    "title": "遥测",
+    "tier": "advanced",
+    "hostOwned": true,
+    "activation": "telemetry + 宿主初始化"
+  }
+]

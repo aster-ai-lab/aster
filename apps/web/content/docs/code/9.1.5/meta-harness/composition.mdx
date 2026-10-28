@@ -1,0 +1,101 @@
+export const meta = {
+  title: '组合默认执行组件',
+  description: '使用 HarnessComposeOptions 设置组件、系统指令、调用预算、压缩阈值和模型尝试次数。',
+  label: '组件、预算与压缩',
+  updated: '2026-10-26',
+};
+
+## 五个默认组件
+
+没有传入组合配方时，会话使用 `system + tools + budget + compact + infer`。
+
+<ComponentStrip />
+
+<DocTable caption="默认组件的职责" headers={['名称', '负责什么', '需要注意']} rows={[
+  ['system', '向组件视图提供系统指令列表', '权限提示仍由 Core 加入'],
+  ['tools', '在组件视图中提供工具目录', '不负责注册执行器，也不授予工具权限'],
+  ['budget', '显示工具调用预算', '具体次数限制由调度器的 HarnessConfig 执行'],
+  ['compact', '显示历史长度的压缩阈值', '压缩动作由调度器触发'],
+  ['infer', '根据日志安排模型调用、工具执行、确认和压缩', '默认调度器保留原有动作 key，便于恢复旧日志'],
+]} />
+
+列表顺序是装配顺序，不表示“先执行 system，再执行 tools”。组件先根据日志计算状态，运行时再从当前可执行的动作中选择下一步。
+
+## 配置一个会话
+
+下面的例子保留五个默认组件，设置 12 次工具调用预算、历史长度阈值和模型尝试次数。它只配置执行方式；模型连接和工作区权限仍由你的 Agent 配置提供。
+
+```rust
+use a3s_code_core::{Agent, HarnessComposeOptions, SessionOptions};
+
+async fn run(agent: &Agent) -> anyhow::Result<()> {
+    let mut harness = HarnessComposeOptions::compose(
+        ["system", "tools", "budget", "compact", "infer"]
+            .map(str::to_owned)
+            .to_vec(),
+        Some(12),
+        Some(120_000),
+        vec!["修改代码后，运行项目已有的测试并解释结果。".into()],
+    )?;
+    harness.step_limit = Some(96);
+    harness.model_attempts = Some(2);
+
+    let options = SessionOptions::new().with_harness(harness);
+    let session = agent.session_async("/my-project", Some(options)).await?;
+    session.send("修复失败的测试", None).await?;
+    Ok(())
+}
+```
+
+## 每个参数限制什么
+
+<DocTable caption="HarnessComposeOptions 参数" headers={['字段', '含义', '省略时']} rows={[
+  ['components', '按顺序列出的默认组件或 host:<id>', '为空时读取 parts；parts 也为空则使用默认组合'],
+  ['parts', '只包含默认组件的类型化列表', 'components 非空时不使用它'],
+  ['system', 'system 槽中的指令列表', '空列表保留基础设置；非空列表替换这个槽的列表'],
+  ['tool_budget', '工具调用次数上限', '继承会话基础配置；Some(0) 表示不给工具调用次数'],
+  ['compact_after_chars', '消息历史的长度阈值，区别于 token 阈值', '继承基础配置'],
+  ['step_limit', '运行时最多执行多少次状态转换；显式设为 0 会拒绝', '有工具轮次上限时，默认至少 32，通常为轮次上限的 4 倍'],
+  ['model_attempts', '一次模型调用最多尝试多少次，含第一次', '默认 2；不能设为 0'],
+]} />
+
+工具调用次数、工具轮次和状态转换次数是不同的计数。压缩、请求模型和处理确认都可能消耗状态转换次数，因此 `step_limit` 不能简单当作工具次数使用。
+
+`model_attempts` 限制的是 Harness 层对一次模型推理的尝试次数。供应商客户端内部的网络重试另有策略，不能把这个数字直接当作 HTTP 请求总数。
+
+`tool_budget: None` 表示继承，不表示主动取消原有上限。费用和总执行时间也不由这个字段控制；宿主配额通过 `with_budget_guard` 等会话接口接入。
+
+在当前事实执行路径中，基础会话的 `with_max_tool_rounds(0)` 不派生轮次和状态转换次数上限；配方里显式给出的上限仍然有效。低层组装器也可以调用 `HarnessConfig::without_count_limits()`，一起清除工具次数、工具轮次和状态转换次数上限。它不会取消权限检查或其他执行策略。
+
+## 长度压缩与 token 压缩
+
+`compact_after_chars` 虽然名字含有 `chars`，当前调度器按 Rust 字符串长度累计，也就是 UTF-8 字节数。中文内容不能按“一个字等于一个单位”估算这个阈值。
+
+会话还提供 `with_auto_compact`、`with_auto_compact_threshold` 和 `with_max_context_tokens`。低层 `HarnessConfig::with_token_compact` 则使用模型报告的输入 token 数，并保留一段最近历史。
+
+采用 token 压缩时，字符阈值不会同时触发。同一个组合覆盖基础配置时，如果显式改变 `compact_after_chars`，就会改用相应的长度阈值；未改变它时，原来的 token 压缩设置会保留。
+
+token 压缩依赖模型适配器报告输入 token 数。接入自定义模型时，需要确认它确实提供这个数据，不能只设置阈值就认为压缩一定会触发。
+
+<Callout title="删除一个组件，不等于取消对应限制">
+默认调度器从 HarnessConfig 读取工具预算和压缩设置。只从列表中删掉 budget 或 compact，并不能据此认定调用次数已不限或压缩已关闭。需要检查配方参数和会话配置。
+</Callout>
+
+## ACP 可以选择哪些组合
+
+当前 ACP 的 `_meta.a3sHarness.components` 只接受以下精确列表：
+
+```text
+system, tools, budget, compact, infer
+system, tools, budget, infer
+system, tools, host:intent_stamp, budget, compact, infer
+```
+
+未提供这个字段时使用第一套。换顺序、添加未知组件或提交其他列表都会被拒绝。`intent_stamp` 是用于验证宿主组件接入的内置标记，不是通用业务插件。
+
+## 实现依据
+
+- [配方解析、覆盖和默认值](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/meta_harness.rs)
+- [调度器的预算与压缩设置](https://github.com/aster-ai-lab/aster/blob/main/crates/effect/src/coding.rs)
+- [会话默认的状态转换上限](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/fact_control.rs)
+- [ACP 接受的三套组合](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/harness_assemble.rs)

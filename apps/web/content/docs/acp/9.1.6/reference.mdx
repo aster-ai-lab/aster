@@ -1,0 +1,66 @@
+export const meta = {
+  "title": "ACP 扩展与宿主元数据参考",
+  "description": "标准协议之外，代理接受哪些请求、发出哪些通知，以及谁提供元数据。",
+  "label": "协议参考与能力索引",
+  "updated": "2026-10-26"
+};
+
+## 标准 ACP 与宿主扩展
+
+标准入口见[协议生命周期](../protocol/)。下表对应当前 HostMethod 解析集合：17 个处理分支，共 23 个明确 method 或前缀族。compact_conversation 与 interject 保留源码定义的 x.ai 前缀兼容族；不能据此前缀为其他任意名称宣称支持。
+
+未知 method 返回 method_not_found。扩展参数以公开的 typed schema 为准，不能以模型能理解某段 JSON 为兼容标准。operationId 用于标识这次宿主操作；遇到冲突先读取当前状态，不隐式放宽条件。
+
+## 客户端请求代理
+
+<ExtensionIndex />
+
+## 代理请求或通知客户端
+
+| 方向 | method / 标准消息 | 用途 |
+| --- | --- | --- |
+| 请求 | session/request_permission | 工具确认，或带 question 标记的业务提问 |
+| 请求 | a3s/form/request | 结构化表单，正常结果为 values 对象 |
+| 通知 | session/update | 文本、工具、计划、命令、模式等标准更新 |
+| 通知 | _a3s/execution/observe | 可选的 Run 与模型轮次观测 |
+| 通知 | a3s/session/tooling/update | 当前能力目录与不可用原因 |
+| 通知 | a3s/session/transcript/update/v1 | 标准 ACP 未覆盖的类型化转录重放 |
+| 请求 | fs/read_text_file | 已声明客户端文本读取能力，富观测使用 a3sDocument 元数据 |
+| 请求 | a3s/document/release_run | 释放该 sessionId / runId 的原文档引用 |
+
+这些方向不能互换：客户端不能把 run observe 通知当成可调用的状态修改接口。更多文档桥接方法见文档章节引用的 DocumentBridge 实现。
+
+## 会话级元数据
+
+下面都是协议 `_meta` 的字段，不是 ACL 配置。用户提示文本不能授予同等权限。
+
+| 字段或分组 | 作用与限制 |
+| --- | --- |
+| a3sHost.role / guidelines | 宿主角色与常设说明，文本受长度限制 |
+| a3sHost.outputLanguage | 支持的输出语言选择 |
+| a3sHost.review | subagent 审阅约定，不自动授予工具 |
+| a3sHost.sourceReview | 固定源审阅，禁止暴露工具 |
+| a3sHost.officeTools | 显式请求原生 Office；布尔类型，权限另查 |
+| a3sHost.completionAttestation | 当前 disk_content 完成证明 |
+| a3sHost.knowledgeCompile | 受范围约束的知识编译任务 |
+| a3sHost.assets | 宿主声明的绝对资产根，由代理重扫 |
+| a3sEngineering.policy | 已编入的 engineering-v1 或 none |
+| permissionPosture / autoMode / yoloMode | 兼容姿态声明，显式 posture 优先 |
+| a3sStudioDocuments | 会话级编辑器文档支持声明 |
+| a3sHarness.components | 从已编入的有限 Harness 组合中选择 |
+
+## 单轮元数据
+
+`a3sTurn.directives` 为有界的本轮约束，`research` 选择本轮研究约束，`planFirst` 仅本轮先计划。它们不改变存储的权限姿态，也不能替代 provider。常设 guidelines 上限 12,000 字符、role 500 字符；directives 最多八项、每项 500 字符，按当前实现裁剪和清理。
+
+`a3sExecutionObservation=1` 与有效 promptId 打开只读执行观测，见[流式展示](../events/)。reasoningEffort 必须使用模型元数据允许的值。
+
+## 构建与能力面
+
+ACP 默认 svg-png、account-import；浏览器搜索另启 headless-search。原生插件、MCP sampling、Office、编辑器文本与知识编译各自需要宿主准入。Core 的全部公开合同见[Core 能力索引](../../../code/9.1.6/reference/)，其中 Rust provider 注入不是通用 ACP wire 方法。
+
+## 实现依据
+
+- [扩展闭集与严格参数](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/agent/host_methods.rs)
+- [宿主与单轮元数据](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/host_context.rs)
+- [组件白名单](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/harness_assemble.rs)

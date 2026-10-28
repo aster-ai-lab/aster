@@ -1,0 +1,56 @@
+export const meta = {
+  "title": "让用户知道自己批准了什么",
+  "description": "权限姿态、逐项确认、可学习规则、业务提问与 MCP sampling。",
+  "label": "权限、提问与表单",
+  "updated": "2026-10-26"
+};
+
+## 四种权限姿态
+
+| modeId | 用户可理解的含义 | 仍然成立的限制 |
+| --- | --- | --- |
+| default | 普通交互，修改前询问 | 显式 deny、工作区范围和沙箱 |
+| plan | 读取并制定计划，不写工作区 | 不能因计划要求而执行修改 |
+| auto | 已知读取可直接进行，修改仍按风险询问 | 风险判断与 deny 不消失 |
+| yolo | 自动批准相应执行请求 | 显式 deny 和底层授权仍保留 |
+
+客户端通过 session/set_mode 或 `x.ai/permission_posture` 修改。后者还能传显式 deny。严格使用闭集值；不能根据按钮文案或模型文字猜 modeId。`a3sTurn.planFirst` 只限制本轮计划行为，不改掉存储的权限模式。
+
+## 工具确认怎样展示
+
+代理通过 ACP request_permission 请求用户选择。每项保留 sessionId、toolCallId、工具名、参数和风险原因。返回代理提供的 optionId，不要合成另一个“等价”选项。
+
+通常包含 allow-once 与 reject-once；只有可学习的 Bash 规则才提供 allow-always。界面应明确后者是在当前工作区保存具体规则，不是对所有未来命令无限授权。复杂命令不应通过截取首词来扩大许可。
+
+示例响应形状如下，id 必须取原请求的 id：
+
+```json
+{"jsonrpc":"2.0","id":41,"result":{"outcome":{"outcome":"selected","optionId":"allow-once"}}}
+```
+
+用户关闭面板、超时或断线不是批准。多项确认各自按 ID 处理；旧面板的点击不能发送给新请求。
+
+## 业务提问和表单
+
+业务问题也可能借用 permission 通道，但 `_meta.question` 标记了 allowFreeText、hasChoices；这类请求收集答案，不是授予工具执行权。用户输入应绑定原 question_id。
+
+`a3s/form/request` 是代理发给客户端的扩展请求，用于结构化表单。正常响应包含 values 对象；outcome 为 cancel 或 decline 时视为用户取消。未知字段、空值和校验失败按表单合同处理，不用默认答案替用户提交。
+
+客户端应区分三种控件：批准工具、回答业务问题、运行中追加指令。不要因为它们都可能弹出面板，就让“同意”走同一段执行逻辑。
+
+## MCP sampling 同意
+
+MCP 服务可能请求借用宿主模型生成内容。代理以每服务上限包住 ApprovalGated sampling，先核对服务、会话和请求，再通过同意桥处理。工具调用批准不自动批准后续 sampling。
+
+同意通道或可用模型缺失时 sampling 保持拒绝；不能悄悄使用默认凭据。客户端要展示这是服务申请模型调用，避免误导成普通工具读操作。
+
+## 验收
+
+逐项测试四种姿态、显式 deny、一次性批准、可学习规则、取消问题、自由文本和多项并行确认。确认拒绝时工具确实未执行，回答表单不会改变权限，旧请求不能批准新调用。
+
+## 实现依据
+
+- [姿态与权限策略](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/agent/permission_state.rs)
+- [确认请求与风险说明](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/agent/permission_ask.rs)
+- [表单请求与响应](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/form_request.rs)
+- [Sampling 同意](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/agent/sampling.rs)

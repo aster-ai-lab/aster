@@ -1,0 +1,82 @@
+export const meta = {
+  title: '02 · 接收回复、工具进度和运行终态',
+  description: '使用 stream_with_run 保留运行身份，正确区分准备调用、实际执行、结束事件和终态。',
+  label: '02 流式事件',
+  updated: '2026-10-26',
+};
+
+## 为什么要保留 Run
+
+一次会话可以执行多次任务。界面上的取消按钮、工具记录和最终状态都应该指向某一次准确的运行，不能在请求结束后才去猜“当前任务”是谁。
+
+本章把上一章的 `send` 换成 `stream_with_run`。返回值中，`events` 用于实时显示，`worker` 用于等待后台工作线程，`run` 用于观察和控制准确的运行。未创建模型运行的斜杠命令可能没有 `run`；本章发送普通任务。
+
+## 加入一个事件消费者
+
+在 `runtime.rs` 添加下面的函数。它先用诊断日志展示事件，下一章再把这些事件交给终端界面。
+
+```rust
+use a3s_code_core::AgentEvent;
+
+pub async fn inspect_stream(session: &a3s_code_core::AgentSession)
+    -> anyhow::Result<()>
+{
+    let mut stream = session.stream_with_run("说明 README 和测试入口。", None).await?;
+    let run = stream.run.clone();
+    while let Some(event) = stream.events.recv().await {
+        match event {
+            AgentEvent::TurnStart { turn } => println!("开始模型轮次 {turn}"),
+            AgentEvent::TextDelta { text } => println!("文本增量：{text}"),
+            AgentEvent::ToolStart { name, .. } => println!("准备调用：{name}"),
+            AgentEvent::ToolExecutionStart { name, .. } => println!("开始执行：{name}"),
+            AgentEvent::ToolEnd { name, exit_code, .. } => {
+                println!("工具结束：{name}，退出码 {exit_code}");
+            }
+            AgentEvent::End { completion_terminal, forced_stop, .. } => {
+                println!("结束信息：{completion_terminal:?}，停止原因 {forced_stop:?}");
+            }
+            AgentEvent::Error { message } => eprintln!("运行错误：{message}"),
+            _ => {}
+        }
+    }
+    stream.worker.await?;
+    if let Some(run) = run {
+        let snapshot = run.snapshot().await
+            .ok_or_else(|| anyhow::anyhow!("运行快照缺失：{}", run.id()))?;
+        println!("运行 {} 的状态：{:?}", run.id(), snapshot.status);
+    }
+    Ok(())
+}
+```
+
+把 `main.rs` 中的请求替换成 `let result = runtime::inspect_stream(&session).await;`，关闭会话后再执行 `result?;`。保留第一次练习的模型配置和只读策略。
+
+## 哪些事件可以驱动界面
+
+<DocTable caption="事件到界面状态的对应" headers={['事件', '显示什么', '不能据此判断什么']} rows={[
+  ['TextDelta', '模型正在生成的文本', '不是文件修改或验证的证据'],
+  ['ToolStart / ToolInputDelta', '工具调用正在准备', '尚不能显示为已经执行'],
+  ['ToolExecutionStart', '通过前置检查后开始执行', '不代表操作已经成功'],
+  ['ToolEnd', '结果、退出码和类型化错误', '退出码为 0 不等于整个任务完成'],
+  ['End', '本轮结束信息与完成检查结论', '不要再次把其中 text 追加到已拼接的回复后面'],
+  ['通道关闭', '实时事件发送结束', '不能单独证明成功或资源清理完成'],
+]} />
+
+真正的最终界面状态要结合准确的 Run 快照。尤其是在取消、接收端不及时消费、工具报错或收尾超时的情况下，最后一个可见文本片段可能并不是最终结论。
+
+## 重试时不要重复拼接
+
+`TurnStart` 的同一个轮次号可能再次出现，表示中断的流正在重试。界面应替换这个轮次尚未提交的文本，而不是把两次生成拼到一起。工具执行事实也应按工具 ID 区分，不能仅按名称合并。
+
+本章的输出刻意逐条打印“文本增量”，便于观察事件边界；不要把这份诊断日志直接当作最终回复。下一章会保存当前轮次和可替换的回复缓冲区。
+
+## 验收与故障检查
+
+运行同一条只读任务，确认准备调用和执行开始是两种记录，结束后能打印准确的 Run ID。再让模型请求一项不允许的写操作，界面应出现拒绝结果，不能出现对应的执行开始。
+
+消费通道应持续进行。不要在事件循环中运行同步网络请求、等待用户输入或执行测试命令；这些操作会阻塞后续事件。需要用户操作时，记录待处理状态，让输入循环继续工作。
+
+## 实现依据
+
+- [AgentEvent 字段与重试语义](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent.rs)
+- [流式句柄与运行身份](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent_api.rs)

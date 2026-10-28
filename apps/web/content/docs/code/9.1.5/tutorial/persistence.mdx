@@ -1,0 +1,82 @@
+export const meta = {
+  title: '06 · 保存、取消和恢复同一个会话',
+  description: '给终端加入持久会话和准确运行控制，区分重开对话与恢复一次中断执行。',
+  label: '06 保存与恢复',
+  updated: '2026-10-26',
+};
+
+## 保存什么，才能继续什么
+
+终端的显示缓冲区只负责阅读；Core 的历史、事实日志和检查点才负责恢复。把终端文本保存到文件，再作为新提示发给模型，不能代替恢复原会话。
+
+本章把会话 ID 和存储目录交给运行层。给练习项目选一个稳定 ID，例如 `tutorial-demo`。多项目应用应由宿主存储精确映射，不能仅按目录名生成身份，避免两个同名项目共用数据。
+
+## 配置存储并显式保存
+
+在第四章 `runtime::open` 的 `SessionOptions` 链上继续增加以下设置：
+
+```rust
+use a3s_code_core::SessionOptions;
+
+let options = SessionOptions::new()
+    .with_session_id("tutorial-demo")
+    .with_file_session_store("/absolute/path/tutorial-state")
+    .with_auto_save(true);
+```
+
+实际工程要把这些调用接到已有 options 上，保留权限策略和确认管理器。存储目录放在宿主管理的私有位置，不放进待分析的陌生仓库。它可能包含对话和工具信息，也能指定恢复工作区。
+
+给界面加入保存操作，调用 `session.save().await`，只有 `Ok` 才显示已保存。没有配置 SessionStore 时，`save` 是无操作；因此创建会话时就必须明确装好存储，不能用一次空保存来证明数据持久化成功。
+
+## 重新打开保存的会话
+
+```rust
+use a3s_code_core::{Agent, AgentSession, SessionOptions};
+
+async fn reopen(agent: &Agent, options: SessionOptions)
+    -> anyhow::Result<AgentSession>
+{
+    let options = options.with_file_session_store("/absolute/path/tutorial-state");
+    Ok(agent.resume_session_async("tutorial-demo", options).await?)
+}
+```
+
+`options` 应由同一个运行层准备，重新注入权限、确认管理器及其他宿主对象。快照决定原工作区；恢复接口不接收一个新项目路径供你悄悄替换。
+
+先关闭并释放旧会话，再恢复同一个 ID。同一 Agent 中旧会话仍在活动或构建中时，恢复会被拒绝。工作策略、记忆和能力绑定也需要匹配；回调代码、MCP 连接和 Rust 对象不会随快照序列化。
+
+## 取消按钮绑定准确运行
+
+第三章的 `active` 已经保存了 `AgentRunStream`。从中保留的 `RunHandle` 调用 `cancel().await`，可把取消指向那次原始运行。返回 `true` 表示取消请求被接受，还应继续消费状态并等待工作线程收尾。
+
+需要关闭前等待退出时使用：
+
+```rust
+use std::time::Duration;
+use a3s_code_core::AgentSession;
+
+async fn stop_before_replacing(session: &AgentSession) -> anyhow::Result<()> {
+    let retired = session.cancel_and_settle(
+        Duration::from_secs(5), Duration::from_secs(1),
+    ).await;
+    anyhow::ensure!(retired, "原运行尚未退出，暂时不能替换会话");
+    Ok(())
+}
+```
+
+在界面里先显示“正在停止”，再等结果。返回 `false` 时保留原运行信息，不能直接清掉 `active` 并启动新任务。流式工作线程与阻塞式 `send` 的中止方式有区别，详见恢复参考。
+
+## 从检查点继续一次运行
+
+重新打开会话只恢复对话环境。若要继续某次中断运行，使用 `resume_run(checkpoint_run_id)`，它会分配新的运行 ID，并要求存在匹配的检查点。需要宿主控制准确 ID 时，再使用 `spawn_recovery_with_run_id`。
+
+已完成并记录的动作可在重建状态时排除。外部写入已经发生、回执却没留下的情况仍需核实；不能因为本地快照没有结果，就直接重复提交。
+
+## 验收
+
+发送任务并保存，退出程序后重开同一会话，检查项目和历史一致。执行中取消，检查没有后续新工具启动；清理超时则显示未退出。最后模拟存储不可写，确认界面报保存失败，而不是继续显示“下次可以恢复”。
+
+## 继续查阅
+
+- [保存、中断与恢复](../../meta-harness/recovery/)
+- [准确运行句柄](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/run.rs)

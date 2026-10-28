@@ -1,0 +1,73 @@
+export const meta = {
+  "title": "处理追加指令、提问和取消",
+  "description": "Run 回执、并发控制、确认队列和用户回答的区别。",
+  "label": "会话、运行与交互",
+  "updated": "2026-10-26"
+};
+
+## 会话和 Run 分别保存什么
+
+Agent 持有模型与共享服务；Session 绑定工作区和会话状态；一次 `send` 或 `stream` 准入一个 Run，Run 内可以有多个模型与工具轮次。聊天消息、工具事件和长期目标不是同一种记录。
+
+同一个 Session 的会话写入采用单次执行边界，重叠请求会返回忙状态。界面应串行提交普通对话；如果是用户对当前任务的补充，使用 `steer`，不要另开一个相互竞争的 `send`。
+
+## 给当前任务追加约束
+
+先读取当前 Run 状态，把输入绑定到用户看到的 Run 和 Turn 版本。下面接收一个正在运行的会话；它不是创建第二个任务的入口。
+
+```rust
+use a3s_code_core::{AgentSession, SteerRequest};
+
+async fn append_instruction(session: &AgentSession) -> anyhow::Result<()> {
+    let current = session.run_control_snapshot().await
+        .ok_or_else(|| anyhow::anyhow!("当前没有运行中的任务"))?;
+    let mut request = SteerRequest::new("请先完成只读检查，再考虑修改文件")
+        .with_run_id(current.run_id);
+    if let Some(turn_id) = current.turn_id {
+        request = request.with_expected_turn(turn_id, current.turn_revision);
+    }
+    let receipt = session.steer(request).await?;
+    println!("{} {:?}", receipt.request_id, receipt.state);
+    Ok(())
+}
+```
+
+控件重试时复用 `request_id`；新意图使用新 ID。预期 Turn 已变化时，刷新状态并让用户决定是否重新提交。不能去掉版本条件后偷偷重试。
+
+| 回执状态 | 界面可以怎么说 |
+| --- | --- |
+| Accepted | 已排队，等待安全点 |
+| Applied | 当前执行已消费这条控制请求 |
+| Rejected | 没有进入收件箱，显示 error 中的原因 |
+| Settled | Run 已结束，这条请求未按原计划应用 |
+
+Accepted 不代表模型已看到输入。Applied 也不代表工具效果已结算。空闲时追加输入会拒绝，不会替用户隐式启动任务。
+
+## 中断与取消
+
+`interrupt(InterruptRequest::new())` 提交可追踪的中断请求；`cancel_run(run_id)` 定位一个 Run，`cancel()` 面向当前会话执行。它们先请求停止，后续还要等待终态与清理。`true` 只说明请求被接收，不能据此立即更换工作区或启动同一外部写操作。
+
+关闭应用时先停止接收新输入，取消当前执行，消费终态，再关闭 Session 和 Agent。需要替换会话时按 `cancel_and_settle` 的结果判断是否可替换。返回 false 说明仍未确认原执行结算，不应发布新会话来覆盖它。
+
+## 确认队列不是一个布尔开关
+
+`pending_confirmations()` 返回每项请求的 tool_id、工具名、参数和剩余时间。界面以 tool_id 保存选择状态；批准使用 `confirm_tool_use`，过期或已处理的请求不能套用到下一项。
+
+同时有多项确认时，每项独立显示参数和原因。事件广播丢包后重新读取 pending 列表；控件只从当前列表选择。取消会话或界面关闭时调用 `cancel_confirmations()`，不能让无人可见的确认继续等待。完整接线见[权限章节](../../tutorial/permissions/)。
+
+## 用户回答不能变成权限批准
+
+`ask_user` 提出业务问题，`ask_user_form` 收集结构化回答。Core 的 `ask_user::answer(question_id, text)` 记录回答，随后由执行日志结算；它的返回值不是“问题已完成”的证明。不要将这个返回值用作界面成功状态。
+
+问题按 question_id 匹配；当前实现每 Run 最多三个问题、每题最多八个选项。取消不应捏造用户回答。业务回答、工具批准和运行追加指令分别处理：选择“导出 CSV”不意味着允许任意文件写入。
+
+## 建议的检查场景
+
+让任务停在一个确认点，同时提交一次 steer、一次过期 Turn 的 steer，再请求取消。确认旧输入未应用到新 Run、每个请求都有明确结果、待确认列表清空、资源清理完成后才能再次提交。
+
+## 实现依据
+
+- [Run 控制请求与回执](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/run_control.rs)
+- [Run 公开入口](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent_api/run_facade.rs)
+- [确认与治理接口](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent_api/governance_facade.rs)
+- [问题与回答](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/ask_user.rs)

@@ -1,0 +1,54 @@
+export const meta = {
+  title: '与其他 Harness 的区别',
+  description: '比较 A3S Code、Codex、Claude Agent SDK、Deep Agents 和 LangGraph 的用途与接入方式。',
+  updated: '2026-10-26',
+  label: '框架对比',
+};
+
+## Harness 与编排框架各做什么
+
+A3S Code、Codex、Claude Agent SDK 和 Deep Agents 都提供模型调用、工具执行和上下文管理等能力，负责组织模型使用工具完成多步任务。
+
+LangGraph 主要负责流程编排：保存状态、安排步骤、暂停和恢复任务。具体使用什么工具、如何组织 agent、怎样验收结果，需要由上层应用决定。Deep Agents 就是在 LangGraph 上构建的一套 harness。
+
+<StackDiagram />
+
+## 五种实现的侧重点
+
+这些框架的功能有不少重叠。例如，权限检查、会话恢复和工具扩展并非 A3S Code 独有。实际选型时，更需要看接入方式，以及哪些工作由框架完成、哪些需要应用自己实现。
+
+<FrameworkTable />
+
+## A3S Code 的三个取舍
+
+### 用日志恢复执行状态
+
+执行组件根据同一份事实日志决定下一步，恢复时也读取这份日志。这样可以沿着记录追查某一步为什么发生。不过，外部操作的结果如果没有及时写入日志，仍需另外核实，不能直接重试。
+
+### 由 Rust 宿主组合执行组件
+
+宿主可以替换或组合提示、工具、预算和调度组件。权限与完成检查始终由 Core 执行。这种方式适合需要控制执行过程的 Rust 应用；接入者也需要理解组件如何读取日志，以及它们何时开始、何时结束。
+
+### 检查报告对应哪次修改
+
+发生修改后，需要有一份对应当前修改的检查通过报告。如果没有，宿主必须明确批准任务按未验证状态结束。报告能证明多少，取决于实际运行了什么检查。文件存在检查只能证明文件还在，覆盖业务行为的测试才能进一步检查代码是否正确。
+
+## 如何按需求选择
+
+已有 Rust 应用、希望直接嵌入执行循环时，可以从 A3S Code 的会话接口入手。围绕 Codex 或 Claude Code 开发应用时，先看对应的 SDK；它们已经处理了会话、工具和上下文，能省去这部分开发工作。
+
+如果要自己规定固定步骤、模型步骤和人工审批之间的流程，LangGraph 提供了较底层的控制能力。希望直接使用文件系统、子代理和记忆等常用组件时，可以看 Deep Agents。
+
+<Callout title="本页没有比较运行性能">
+以上比较依据源码和官方文档。我们没有使用相同模型、任务和预算做对照测试，因此不比较成功率、速度或成本。
+</Callout>
+
+## 官方资料
+
+资料核对日期：2026-10-26。
+
+- [OpenAI Docs：Codex as a platform](https://developers.openai.com/blog/codex-as-a-platform)
+- [Claude Agent SDK 概览](https://code.claude.com/docs/en/agent-sdk/overview)
+- [Deep Agents 概览](https://docs.langchain.com/oss/python/deepagents/overview)
+- [LangGraph 概览](https://docs.langchain.com/oss/python/langgraph/overview)
+- [A3S Code 的核心职责](https://github.com/aster-ai-lab/aster/blob/main/crates/code/docs/architecture/core-authorities.md)

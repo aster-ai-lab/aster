@@ -1,0 +1,61 @@
+export const meta = {
+  "title": "推进目标，并核对每次完成的依据",
+  "description": "默认工程策略、目标命令、计划与等待、审阅和完成证明。",
+  "label": "工程任务与长期目标",
+  "updated": "2026-10-26"
+};
+
+## 默认工程策略
+
+新会话默认选择 engineering-v1。宿主可通过 `_meta.a3sEngineering.policy` 明确选择 engineering-v1 或 none。这个值选择已编入的 WorkPolicy，不允许客户端提交任意系统执行策略代码。
+
+工程策略提醒执行者读取原始来源、完成需求并核对结果，Core 负责准入、渲染和实际执行约束。提示中的“请验证”不能代替独立的验证记录。
+
+## 从 /goal 开始
+
+客户端在会话返回后接收 available_commands_update，使用代理宣布的命令。`/goal` 是 ACP 自己处理的命令，覆盖同名 Core 命令：
+
+```text
+/goal 修复导出中的日期偏差，并检查跨月边界
+/goal status
+/goal pause
+/goal resume
+/goal clear
+```
+
+只有用户明确要求暂停才发送 pause。普通临时失败、等待输入和权限拒绝不是用户暂停。clear 的语义是清除目标，不等同于一次停止生成。
+
+## 类型化目标扩展
+
+宿主可用 `a3s/goal/definition`、`plan`、`control`、`wait`、`state`，参数使用 Core 的目标合同。目标定义、计划提议与接受、执行控制、等待观测分别处理，携带正确 schema、操作身份和 revision。
+
+`a3s/goal/import/preview` 在导入前显示候选及来源，`a3s/goal/import` 在明确准入后提交。预览不是接受；来源改变时重新预览。接受计划后，执行切片绑定 work policy、计划 revision 和当前源身份。
+
+等待条件必须由类型化证据解除。完成切片后检查原 Run 与修改验证，再接受结果；最后一步聊天结束不能独自把长期目标标成完成。
+
+## 宿主续跑
+
+活动目标可以使用有界 continuation 继续下一切片。宿主根据目标状态、预算、期限、等待和用户控制决定是否推进；不能用一条无上限的 while 循环忽略暂停或等待。
+
+模型切换时保留并重施活动目标。恢复应以 Core 当前定义为准，旧兼容目标投影不应覆盖已经存在的类型化定义。
+
+## 审阅目标与发现
+
+`a3s/review/target` 确定审阅对象，`a3s/review/admit` 准入发现，`a3s/review/settle` 结算。工程场景区分 engineering.change 与 engineering.workspace，发现应绑定精确目标摘要和范围。
+
+注册审阅能力不会自动开始审查。固定源快照审阅不能暴露工具，模型写出的建议也不会自动修改工作区。源码变化后旧发现仍可保留为历史，但不能无条件当作当前结论。
+
+## 完成证明
+
+`a3sHost.completionAttestation` 当前接受 disk_content。宿主明确 opt-in 后才安装对应完成检查；模型不能通过 prompt 自己安装 attestor。验证报告需要与当前磁盘内容和修改摘要对应。
+
+## 验收
+
+创建目标、提出并接受计划、完成一个切片、进入等待、提交匹配证据后继续，最后接受结果。另测旧 revision、导入来源变化、暂停后到来的迟到事件、切换模型和重启恢复。每次拒绝都应保留具体原因。
+
+## 实现依据
+
+- [目标协议适配](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/agent/goal_ext.rs)
+- [目标导入](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/goal/import.rs)
+- [工程策略与审阅](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/engineering.rs)
+- [宿主元数据](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/host_context.rs)

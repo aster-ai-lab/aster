@@ -1,0 +1,648 @@
+{
+  "projects": [
+    {
+      "id": "code",
+      "title": "Aster Code",
+      "label": "智能体运行时",
+      "description": "了解 Aster 如何调用模型、执行工具和检查任务结果，以及如何在 Rust 应用中使用这些能力。",
+      "defaultVersion": "9.1.6",
+      "versions": [
+        {
+          "id": "9.1.6",
+          "label": "9.1.6 · 当前源码",
+          "sourceRef": "main",
+          "pages": [
+            {
+              "slug": "",
+              "file": "index",
+              "label": "架构概览",
+              "title": "理解 Harness",
+              "description": "模型、工具和日志如何协作"
+            },
+            {
+              "slug": "workflow/",
+              "file": "workflow",
+              "label": "执行流程",
+              "title": "一个任务如何运行",
+              "description": "从用户输入到验证与收尾"
+            },
+            {
+              "slug": "comparison/",
+              "file": "comparison",
+              "label": "框架对比",
+              "title": "比较不同框架",
+              "description": "各自负责什么，如何接入应用"
+            },
+            {
+              "slug": "integration/",
+              "file": "integration",
+              "label": "宿主接入",
+              "title": "接入你的应用",
+              "description": "创建会话、配置验证命令和记忆"
+            },
+            {
+              "slug": "design/philosophy/",
+              "file": "design/philosophy",
+              "section": "设计原理",
+              "label": "设计哲学",
+              "title": "让执行方式可变，让结果可以核对",
+              "description": "意图、事实、权限、恢复与完成规则的分工"
+            },
+            {
+              "slug": "design/rsi/",
+              "file": "design/rsi",
+              "section": "设计原理",
+              "label": "RSI 与 Meta Harness",
+              "title": "为什么 RSI 需要 Meta Harness",
+              "description": "候选策略、实验评估、版本比较与宿主采纳"
+            },
+            {
+              "slug": "tutorial/",
+              "file": "tutorial/index",
+              "section": "构建终端智能体",
+              "label": "教程路线",
+              "title": "动手做一个终端编码智能体",
+              "description": "同一个 Rust 工程，从会话做到可靠交付"
+            },
+            {
+              "slug": "tutorial/setup/",
+              "file": "tutorial/setup",
+              "section": "构建终端智能体",
+              "label": "01 会话与工作区",
+              "title": "跑通第一个工作区会话",
+              "description": "建立练习包、可信 ACL 与只读会话"
+            },
+            {
+              "slug": "tutorial/streaming/",
+              "file": "tutorial/streaming",
+              "section": "构建终端智能体",
+              "label": "02 流式事件",
+              "title": "接收回复、工具进度和运行终态",
+              "description": "保留准确 Run，并区分事件与最终状态"
+            },
+            {
+              "slug": "tutorial/tui/",
+              "file": "tutorial/tui",
+              "section": "构建终端智能体",
+              "label": "03 终端界面",
+              "title": "做出可以交互的终端界面",
+              "description": "同时等待键盘与模型事件，退出时恢复终端"
+            },
+            {
+              "slug": "tutorial/permissions/",
+              "file": "tutorial/permissions",
+              "section": "构建终端智能体",
+              "label": "04 权限与确认",
+              "title": "让修改操作先经过确认",
+              "description": "接入确认管理器、事件通道与准确调用回执"
+            },
+            {
+              "slug": "tutorial/verification/",
+              "file": "tutorial/verification",
+              "section": "构建终端智能体",
+              "label": "05 修改与验证",
+              "title": "让修好了对应一次有效验证",
+              "description": "声明测试契约并显示对应修改的完成结果"
+            },
+            {
+              "slug": "tutorial/persistence/",
+              "file": "tutorial/persistence",
+              "section": "构建终端智能体",
+              "label": "06 保存与恢复",
+              "title": "保存、取消和恢复同一个会话",
+              "description": "保存身份，取消原运行，再准确恢复"
+            },
+            {
+              "slug": "tutorial/harness/",
+              "file": "tutorial/harness",
+              "section": "构建终端智能体",
+              "label": "07 Harness 组合",
+              "title": "给编码助手配置自己的 Harness",
+              "description": "预算、模型尝试、压缩和自定义组件的选择"
+            },
+            {
+              "slug": "tutorial/context/",
+              "file": "tutorial/context",
+              "section": "构建终端智能体",
+              "label": "08 上下文与 MCP",
+              "title": "接入项目资料、Skills 和 MCP",
+              "description": "把资料、操作说明和外部工具接进已有会话"
+            },
+            {
+              "slug": "tutorial/tools/",
+              "file": "tutorial/tools",
+              "section": "构建终端智能体",
+              "label": "09 工具与脚本",
+              "title": "注册自己的工具和目录脚本",
+              "description": "从无副作用 Rust 工具到受控项目脚本"
+            },
+            {
+              "slug": "tutorial/memory/",
+              "file": "tutorial/memory",
+              "section": "构建终端智能体",
+              "label": "10 记忆与数据范围",
+              "title": "让记忆跟随正确的项目和用户",
+              "description": "命名空间、候选激活、召回与恢复绑定"
+            },
+            {
+              "slug": "tutorial/goals/",
+              "file": "tutorial/goals",
+              "section": "构建终端智能体",
+              "label": "11 长期目标",
+              "title": "把长任务拆成可推进的目标",
+              "description": "工作策略、计划接受、等待与宿主续跑"
+            },
+            {
+              "slug": "tutorial/delivery/",
+              "file": "tutorial/delivery",
+              "section": "构建终端智能体",
+              "label": "12 收尾与交付",
+              "title": "收尾资源，并把教程工程验收到位",
+              "description": "资源寿命、故障测试与终端交付检查"
+            },
+            {
+              "slug": "meta-harness/",
+              "file": "meta-harness/index",
+              "section": "Meta Harness",
+              "label": "能力目录",
+              "title": "Meta Harness 使用指南",
+              "description": "从具体需求找到对应接口和示例"
+            },
+            {
+              "slug": "meta-harness/composition/",
+              "file": "meta-harness/composition",
+              "section": "Meta Harness",
+              "label": "组件、预算与压缩",
+              "title": "组合默认执行组件",
+              "description": "设置提示、工具目录、调用预算和压缩阈值"
+            },
+            {
+              "slug": "meta-harness/extensions/",
+              "file": "meta-harness/extensions",
+              "section": "Meta Harness",
+              "label": "自定义组件与调度",
+              "title": "扩展组件和调度方式",
+              "description": "注册 host 组件、构建组件树、管理动作 key"
+            },
+            {
+              "slug": "meta-harness/context-tools/",
+              "file": "meta-harness/context-tools",
+              "section": "Meta Harness",
+              "label": "上下文、工具与 Hooks",
+              "title": "接入上下文和工具",
+              "description": "使用提示槽、ContextProvider、Skills、MCP 和 Hooks"
+            },
+            {
+              "slug": "meta-harness/agent-directory/",
+              "file": "meta-harness/agent-directory",
+              "section": "Meta Harness",
+              "label": "Agent 目录与定时提示",
+              "title": "从目录加载 Agent",
+              "description": "组织指令、ACL、脚本、Skills 和定时提示"
+            },
+            {
+              "slug": "meta-harness/recovery/",
+              "file": "meta-harness/recovery",
+              "section": "Meta Harness",
+              "label": "保存、中断与恢复",
+              "title": "保存会话并恢复执行",
+              "description": "区分会话恢复、检查点恢复和原操作结果核对"
+            },
+            {
+              "slug": "meta-harness/verification-resources/",
+              "file": "meta-harness/verification-resources",
+              "section": "Meta Harness",
+              "label": "验证报告与资源清理",
+              "title": "提交验证结果并清理资源",
+              "description": "接入 CompletionAttestor，选择 Turn 或 Run 资源寿命"
+            },
+            {
+              "slug": "meta-harness/durable-work/",
+              "file": "meta-harness/durable-work",
+              "section": "Meta Harness",
+              "label": "工作策略与长期目标",
+              "title": "让任务分轮执行",
+              "description": "绑定工作策略、目标计划、等待条件和续跑限制"
+            },
+            {
+              "slug": "reference/",
+              "file": "reference/index",
+              "section": "功能参考",
+              "label": "能力索引",
+              "title": "从需求找到完整的能力入口",
+              "description": "对照 Core 的公开合同，查找用法、启用条件和宿主责任。"
+            },
+            {
+              "slug": "reference/configuration/",
+              "file": "reference/configuration",
+              "section": "功能参考",
+              "label": "构建与模型配置",
+              "title": "选择构建能力，再给会话接入模型",
+              "description": "构建 profile、ACL 信任层、模型适配器与超时边界。"
+            },
+            {
+              "slug": "reference/run-control/",
+              "file": "reference/run-control",
+              "section": "功能参考",
+              "label": "会话、运行与交互",
+              "title": "处理追加指令、提问和取消",
+              "description": "Run 回执、并发控制、确认队列和用户回答的区别。"
+            },
+            {
+              "slug": "reference/workspace-tools/",
+              "file": "reference/workspace-tools",
+              "section": "功能参考",
+              "label": "工作区与工具目录",
+              "title": "选择工具，并保留调用结果的边界",
+              "description": "内置工具、后台任务、批量操作、大输出与宿主工具。"
+            },
+            {
+              "slug": "reference/governance/",
+              "file": "reference/governance",
+              "section": "功能参考",
+              "label": "权限、Hooks 与验证",
+              "title": "把检查放在真正执行的位置",
+              "description": "权限层、沙箱、确认、Hook、预算和完成证据的接线顺序。"
+            },
+            {
+              "slug": "reference/retrieval/",
+              "file": "reference/retrieval",
+              "section": "功能参考",
+              "label": "检索、联网与代码智能",
+              "title": "找到资料，并确认资料仍然有效",
+              "description": "词法与语义索引、网络搜索、语言服务和宿主知识包。"
+            },
+            {
+              "slug": "reference/memory/",
+              "file": "reference/memory",
+              "section": "功能参考",
+              "label": "记忆、保存与分支",
+              "title": "保存会话，也管理记忆的来源和版本",
+              "description": "候选激活、语义刷新、命名空间、转录分页和前缀分支。"
+            },
+            {
+              "slug": "reference/orchestration/",
+              "file": "reference/orchestration",
+              "section": "功能参考",
+              "label": "任务、队列与程序",
+              "title": "让并行任务遵守同一套预算",
+              "description": "子智能体、Worker、优先队列、程序目录和可恢复工作流。"
+            },
+            {
+              "slug": "reference/advanced/",
+              "file": "reference/advanced",
+              "section": "功能参考",
+              "label": "高级宿主与研究接口",
+              "title": "接入高级能力时，保留证据和授权",
+              "description": "状态图、发布合同、Agent Protocol、评估、类型化决策、S3 与遥测。"
+            },
+            {
+              "slug": "reference/operations/",
+              "file": "reference/operations",
+              "section": "功能参考",
+              "label": "故障排查与运行记录",
+              "title": "从原始记录判断任务停在哪里",
+              "description": "事件分页、资源状态、错误分类与恢复检查。"
+            }
+          ],
+          "components": "_components"
+        },
+        {
+          "id": "9.1.5",
+          "label": "9.1.5",
+          "sourceRef": "main",
+          "pages": [
+            {
+              "slug": "",
+              "file": "index",
+              "label": "架构概览",
+              "title": "理解 Harness",
+              "description": "模型、工具和日志如何协作"
+            },
+            {
+              "slug": "workflow/",
+              "file": "workflow",
+              "label": "执行流程",
+              "title": "一个任务如何运行",
+              "description": "从用户输入到验证与收尾"
+            },
+            {
+              "slug": "comparison/",
+              "file": "comparison",
+              "label": "框架对比",
+              "title": "比较不同框架",
+              "description": "各自负责什么，如何接入应用"
+            },
+            {
+              "slug": "integration/",
+              "file": "integration",
+              "label": "宿主接入",
+              "title": "接入你的应用",
+              "description": "创建会话、配置验证命令和记忆"
+            },
+            {
+              "slug": "design/philosophy/",
+              "file": "design/philosophy",
+              "section": "设计原理",
+              "label": "设计哲学",
+              "title": "让执行方式可变，让结果可以核对",
+              "description": "意图、事实、权限、恢复与完成规则的分工"
+            },
+            {
+              "slug": "design/rsi/",
+              "file": "design/rsi",
+              "section": "设计原理",
+              "label": "RSI 与 Meta Harness",
+              "title": "为什么 RSI 需要 Meta Harness",
+              "description": "候选策略、实验评估、版本比较与宿主采纳"
+            },
+            {
+              "slug": "tutorial/",
+              "file": "tutorial/index",
+              "section": "构建终端智能体",
+              "label": "教程路线",
+              "title": "动手做一个终端编码智能体",
+              "description": "同一个 Rust 工程，从会话做到可靠交付"
+            },
+            {
+              "slug": "tutorial/setup/",
+              "file": "tutorial/setup",
+              "section": "构建终端智能体",
+              "label": "01 会话与工作区",
+              "title": "跑通第一个工作区会话",
+              "description": "建立练习包、可信 ACL 与只读会话"
+            },
+            {
+              "slug": "tutorial/streaming/",
+              "file": "tutorial/streaming",
+              "section": "构建终端智能体",
+              "label": "02 流式事件",
+              "title": "接收回复、工具进度和运行终态",
+              "description": "保留准确 Run，并区分事件与最终状态"
+            },
+            {
+              "slug": "tutorial/tui/",
+              "file": "tutorial/tui",
+              "section": "构建终端智能体",
+              "label": "03 终端界面",
+              "title": "做出可以交互的终端界面",
+              "description": "同时等待键盘与模型事件，退出时恢复终端"
+            },
+            {
+              "slug": "tutorial/permissions/",
+              "file": "tutorial/permissions",
+              "section": "构建终端智能体",
+              "label": "04 权限与确认",
+              "title": "让修改操作先经过确认",
+              "description": "接入确认管理器、事件通道与准确调用回执"
+            },
+            {
+              "slug": "tutorial/verification/",
+              "file": "tutorial/verification",
+              "section": "构建终端智能体",
+              "label": "05 修改与验证",
+              "title": "让修好了对应一次有效验证",
+              "description": "声明测试契约并显示对应修改的完成结果"
+            },
+            {
+              "slug": "tutorial/persistence/",
+              "file": "tutorial/persistence",
+              "section": "构建终端智能体",
+              "label": "06 保存与恢复",
+              "title": "保存、取消和恢复同一个会话",
+              "description": "保存身份，取消原运行，再准确恢复"
+            },
+            {
+              "slug": "tutorial/harness/",
+              "file": "tutorial/harness",
+              "section": "构建终端智能体",
+              "label": "07 Harness 组合",
+              "title": "给编码助手配置自己的 Harness",
+              "description": "预算、模型尝试、压缩和自定义组件的选择"
+            },
+            {
+              "slug": "tutorial/context/",
+              "file": "tutorial/context",
+              "section": "构建终端智能体",
+              "label": "08 上下文与 MCP",
+              "title": "接入项目资料、Skills 和 MCP",
+              "description": "把资料、操作说明和外部工具接进已有会话"
+            },
+            {
+              "slug": "tutorial/tools/",
+              "file": "tutorial/tools",
+              "section": "构建终端智能体",
+              "label": "09 工具与脚本",
+              "title": "注册自己的工具和目录脚本",
+              "description": "从无副作用 Rust 工具到受控项目脚本"
+            },
+            {
+              "slug": "tutorial/memory/",
+              "file": "tutorial/memory",
+              "section": "构建终端智能体",
+              "label": "10 记忆与数据范围",
+              "title": "让记忆跟随正确的项目和用户",
+              "description": "命名空间、候选激活、召回与恢复绑定"
+            },
+            {
+              "slug": "tutorial/goals/",
+              "file": "tutorial/goals",
+              "section": "构建终端智能体",
+              "label": "11 长期目标",
+              "title": "把长任务拆成可推进的目标",
+              "description": "工作策略、计划接受、等待与宿主续跑"
+            },
+            {
+              "slug": "tutorial/delivery/",
+              "file": "tutorial/delivery",
+              "section": "构建终端智能体",
+              "label": "12 收尾与交付",
+              "title": "收尾资源，并把教程工程验收到位",
+              "description": "资源寿命、故障测试与终端交付检查"
+            },
+            {
+              "slug": "meta-harness/",
+              "file": "meta-harness/index",
+              "section": "Meta Harness",
+              "label": "能力目录",
+              "title": "Meta Harness 使用指南",
+              "description": "从具体需求找到对应接口和示例"
+            },
+            {
+              "slug": "meta-harness/composition/",
+              "file": "meta-harness/composition",
+              "section": "Meta Harness",
+              "label": "组件、预算与压缩",
+              "title": "组合默认执行组件",
+              "description": "设置提示、工具目录、调用预算和压缩阈值"
+            },
+            {
+              "slug": "meta-harness/extensions/",
+              "file": "meta-harness/extensions",
+              "section": "Meta Harness",
+              "label": "自定义组件与调度",
+              "title": "扩展组件和调度方式",
+              "description": "注册 host 组件、构建组件树、管理动作 key"
+            },
+            {
+              "slug": "meta-harness/context-tools/",
+              "file": "meta-harness/context-tools",
+              "section": "Meta Harness",
+              "label": "上下文、工具与 Hooks",
+              "title": "接入上下文和工具",
+              "description": "使用提示槽、ContextProvider、Skills、MCP 和 Hooks"
+            },
+            {
+              "slug": "meta-harness/agent-directory/",
+              "file": "meta-harness/agent-directory",
+              "section": "Meta Harness",
+              "label": "Agent 目录与定时提示",
+              "title": "从目录加载 Agent",
+              "description": "组织指令、ACL、脚本、Skills 和定时提示"
+            },
+            {
+              "slug": "meta-harness/recovery/",
+              "file": "meta-harness/recovery",
+              "section": "Meta Harness",
+              "label": "保存、中断与恢复",
+              "title": "保存会话并恢复执行",
+              "description": "区分会话恢复、检查点恢复和原操作结果核对"
+            },
+            {
+              "slug": "meta-harness/verification-resources/",
+              "file": "meta-harness/verification-resources",
+              "section": "Meta Harness",
+              "label": "验证报告与资源清理",
+              "title": "提交验证结果并清理资源",
+              "description": "接入 CompletionAttestor，选择 Turn 或 Run 资源寿命"
+            },
+            {
+              "slug": "meta-harness/durable-work/",
+              "file": "meta-harness/durable-work",
+              "section": "Meta Harness",
+              "label": "工作策略与长期目标",
+              "title": "让任务分轮执行",
+              "description": "绑定工作策略、目标计划、等待条件和续跑限制"
+            }
+          ],
+          "components": "_components"
+        }
+      ]
+    },
+    {
+      "id": "acp",
+      "title": "Aster ACP",
+      "label": "客户端接入",
+      "description": "通过 stdio 接入 Core，处理会话、权限、模型、插件、Office 与长期目标。",
+      "defaultVersion": "9.1.6",
+      "versions": [
+        {
+          "id": "9.1.6",
+          "label": "9.1.6 · 当前源码",
+          "sourceRef": "main",
+          "pages": [
+            {
+              "slug": "",
+              "file": "index",
+              "label": "ACP 概览",
+              "title": "把 Aster 接进自己的客户端",
+              "description": "先理解进程与协议边界，再接入模型、会话和宿主扩展。"
+            },
+            {
+              "slug": "launch/",
+              "file": "launch",
+              "label": "启动与配置",
+              "title": "启动 ACP，并核对它获得的授权",
+              "description": "构建、参数、ACL 层、账号导入和工作区 MCP 信任。"
+            },
+            {
+              "slug": "protocol/",
+              "file": "protocol",
+              "label": "协议与会话生命周期",
+              "title": "跑通请求、更新、取消和恢复",
+              "description": "标准处理入口、请求关联、模式切换和会话恢复。"
+            },
+            {
+              "slug": "client/",
+              "file": "client",
+              "label": "动手接入客户端",
+              "title": "运行一个能处理确认、问题和表单的 ACP 客户端",
+              "description": "可编译的 stdio 客户端、交互回复和取消收尾"
+            },
+            {
+              "slug": "events/",
+              "file": "events",
+              "label": "流式展示与执行观测",
+              "title": "把文本、工具与执行状态显示完整",
+              "description": "文本片段、推理、工具输出、图片和可选 Run 观测。"
+            },
+            {
+              "slug": "permissions/",
+              "file": "permissions",
+              "label": "权限、提问与表单",
+              "title": "让用户知道自己批准了什么",
+              "description": "权限姿态、逐项确认、可学习规则、业务提问与 MCP sampling。"
+            },
+            {
+              "slug": "models/",
+              "file": "models",
+              "label": "模型与推理强度",
+              "title": "切换模型，同时保留会话约束",
+              "description": "目录 ID、配置选项、推理档位和会话替换。"
+            },
+            {
+              "slug": "sessions/",
+              "file": "sessions",
+              "label": "目录、历史与工具清单",
+              "title": "查询会话，不必先启动一次任务",
+              "description": "会话目录、分页、前缀分支、工具投影与原始身份。"
+            },
+            {
+              "slug": "plugins/",
+              "file": "plugins",
+              "label": "插件、MCP 与本地资料",
+              "title": "把获准的插件能力交给会话",
+              "description": "受管理发布、选择 generation、工具进程、Skills 和资产根。"
+            },
+            {
+              "slug": "documents/",
+              "file": "documents",
+              "label": "文档、Office 与内容核对",
+              "title": "读取真正的来源，再生成和核对产物",
+              "description": "编辑器文本、Office 读写、SVG/PNG 和数值检查的区别。"
+            },
+            {
+              "slug": "goals/",
+              "file": "goals",
+              "label": "工程任务与长期目标",
+              "title": "推进目标，并核对每次完成的依据",
+              "description": "默认工程策略、目标命令、计划与等待、审阅和完成证明。"
+            },
+            {
+              "slug": "memory/",
+              "file": "memory",
+              "label": "记忆、知识与检索",
+              "title": "在正确的数据范围中查询和维护资料",
+              "description": "记忆管理、现场快照、Wiki 搜索和知识编译范围。"
+            },
+            {
+              "slug": "unattended/",
+              "file": "unattended",
+              "label": "无人值守与结果记录",
+              "title": "运行没有用户在端的任务",
+              "description": "执行预算、自动交互策略、目标续跑和结果原因。"
+            },
+            {
+              "slug": "reference/",
+              "file": "reference",
+              "label": "协议参考与能力索引",
+              "title": "ACP 扩展与宿主元数据参考",
+              "description": "标准协议之外，代理接受哪些请求、发出哪些通知，以及谁提供元数据。"
+            }
+          ],
+          "components": "_components"
+        }
+      ]
+    }
+  ]
+}

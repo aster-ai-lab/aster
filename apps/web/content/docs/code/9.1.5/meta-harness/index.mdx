@@ -1,0 +1,57 @@
+export const meta = {
+  title: 'Meta Harness 使用指南',
+  description: '查找组件组合、宿主扩展、上下文、目录加载、恢复和验证所用的接口。',
+  label: '能力目录',
+  updated: '2026-10-26',
+};
+
+Meta Harness 是 A3S Code 提供给宿主的执行组合接口。你可以选择默认组件、注册自己的组件，或提供整棵组件树。它们最终进入同一个会话执行过程，使用事实日志记录结果。
+
+<MetaHarnessDiagram />
+
+## 按需求找接口
+
+<DocTable caption="具体需求与使用入口" headers={['我想做什么', '使用入口', '继续阅读']} rows={[
+  ['调整提示、调用次数和压缩阈值', 'HarnessComposeOptions + with_harness', <a href="./composition/">组件、预算与压缩</a>],
+  ['挂载自己的执行组件', 'HostHarnessRegistry + host:<id>', <a href="./extensions/">自定义组件与调度</a>],
+  ['替换整棵组件树', 'HostHarnessAssembler + admit_component_tree', <a href="./extensions/">自定义组件与调度</a>],
+  ['接入项目资料、Skills、MCP 或生命周期钩子', 'SessionOptions 的上下文、工具和 Hook 接口', <a href="./context-tools/">上下文、工具与 Hooks</a>],
+  ['从一个目录加载指令、脚本和定时提示', 'DirectoryProjection', <a href="./agent-directory/">Agent 目录与定时提示</a>],
+  ['保存会话，或从检查点继续执行', 'save / resume_session_async / resume_run', <a href="./recovery/">保存、中断与恢复</a>],
+  ['把宿主检查结果交给完成检查', 'CompletionAttestor', <a href="./verification-resources/">验证报告与资源清理</a>],
+  ['让监听器或租约跨工具轮次使用', 'register_run_capability_effect', <a href="./verification-resources/">验证报告与资源清理</a>],
+  ['给长期任务绑定工作要求、计划和等待条件', 'WorkPolicyV1 + goal 接口', <a href="./durable-work/">工作策略与长期目标</a>],
+]} />
+
+## 从哪种接入方式开始
+
+先准备一个能正常发送请求的 Rust `Agent`，模型配置与异步运行环境见[宿主接入](../integration/)。下文示例接收这个已有对象，不会另建一套模型连接。组件示例还使用工作区内的 `a3s-effect`；不需要为这些接口启用 `advanced-harness`。
+
+通常先用 `SessionOptions::with_harness`。它能选择默认组件并调整参数，适合大多数嵌入场景。需要给现有执行过程补充一个组件时，增加 `HostHarnessRegistry`；只有需要自己搭建组件树时，才使用 `HostHarnessAssembler`。
+
+自定义组件和完整组件树是 Rust 宿主接口。ACP 客户端不能提交任意 Rust 组件；当前入口只接受三套预先列出的组合，具体列表见“组件、预算与压缩”。
+
+## 这些能力怎样配合
+
+例如，一个每日检查项目的 Agent 可以从目录读取指令和 Skills，由宿主定时提交任务，使用 MCP 获取外部信息，并在执行结束前提交测试报告。中断后，再从保存的会话或检查点恢复。
+
+其中，目录负责组织文件，宿主负责时钟与外部服务，Meta Harness 负责装配执行组件。它不会因为目录里有一条定时声明，就自行启动后台服务。
+
+上下文、工具、持久记忆和目标控制通过会话接入。它们不是五个默认组件之外随意添加的组件名称，也不都需要 `advanced-harness`。构建开关与会话配置请分别核对。
+
+## 组件不能改掉的规则
+
+每次工具调用仍要检查权限；修改后的完成状态仍要对应验证结果或明确豁免。组件名称、系统提示和 Hook 的返回值都不能代替这两项检查。
+
+事实日志可以帮助恢复执行状态，但结果不明的外部操作仍需核实。一次运行的完成也不等于长期目标完成；目标需要另外检查所有步骤和等待条件。
+
+## 专题文档
+
+<ChapterCards section="Meta Harness" />
+
+## 实现依据
+
+- [Meta Harness 接口与准入规则](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/meta_harness.rs)
+- [会话配置入口](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent_api/session_options.rs)
+- [组件组合实现](https://github.com/aster-ai-lab/aster/blob/main/crates/effect/src/compose.rs)
+- [仓库中的 Meta Harness 手册](https://github.com/aster-ai-lab/aster/blob/main/crates/code/manual/META_HARNESS.md)

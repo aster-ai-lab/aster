@@ -1,0 +1,90 @@
+export const meta = {
+  title: '保存会话并恢复执行',
+  description: '区分会话保存、运行检查点、精确恢复和结果不明的外部操作。',
+  label: '保存、中断与恢复',
+  updated: '2026-10-26',
+};
+
+## 先区分要恢复什么
+
+<DocTable caption="几种恢复入口" headers={['需求', '入口', '结果']} rows={[
+  ['重新打开保存过的会话', 'Agent::resume_session_async', '从 SessionStore 恢复会话和原工作区'],
+  ['从某次运行的检查点继续', 'AgentSession::resume_run', '分配新的运行 ID，继续检查点后的工作'],
+  ['宿主指定恢复运行的准确 ID', 'spawn_recovery_with_run_id', '相同恢复 ID 重放时取得已有运行'],
+  ['为后台任务指定准确 ID', 'spawn_run_with_id', '相同 ID、会话和提示取得已有运行；输入冲突则拒绝'],
+]} />
+
+重新打开会话与继续一条中断的运行是不同操作。恢复后发送一条新提示，也不能代替检查旧操作是否已经完成。
+
+## 保存与重新打开会话
+
+先为会话配置持久存储。下面的两个函数分别展示保存和重新打开；恢复时，原会话不能仍在同一个 Agent 上活动。
+
+```rust
+use a3s_code_core::{Agent, AgentSession, SessionOptions};
+
+async fn save_progress(agent: &Agent) -> anyhow::Result<()> {
+    let options = SessionOptions::new()
+        .with_session_id("project-review")
+        .with_file_session_store("./session-data");
+    let session = agent.session_async("/my-project", Some(options)).await?;
+    session.send("检查项目测试入口", None).await?;
+    session.save().await?;
+    session.close().await;
+    Ok(())
+}
+
+async fn reopen(agent: &Agent) -> anyhow::Result<AgentSession> {
+    let options = SessionOptions::new().with_file_session_store("./session-data");
+    Ok(agent.resume_session_async("project-review", options).await?)
+}
+```
+
+恢复使用快照中保存的工作区，不是另从 options 猜一个路径。因此 SessionStore 本身需要可信，不能让任意上传的会话文件指定宿主读写位置。
+
+记忆、知识资料和内容服务等会话绑定也会重新核对。一个原来没有绑定的旧会话，不能在恢复时悄悄获得新的数据访问身份。需要新的绑定时，应按对应接口的规则创建会话。
+
+自定义注册表、Assembler 和 Attestor 是宿主提供的 Rust 对象。宿主进程重启后，需要重新安装相应实现；保存日志不会替你保存回调代码或重新建立外部服务连接。
+
+## 检查点记录了什么
+
+运行检查点用于继续执行，里面的会话和原运行身份需要匹配。配置了存储才可以使用 `resume_run`；找不到对应检查点时会返回错误。
+
+宿主还可以通过 `with_session_checkpoint_export_sink` 接收工具轮次完成后的便携检查点导出。导出在相应事件进入会话快照后进行，携带原运行的绑定信息。
+
+导出回调失败会记录警告，不会把原本正常的现场运行改判为失败。宿主需要单独确认是否实际收到并保存了检查点，不能仅凭运行成功就推断备份成功。
+
+## 确认和提问如何等待
+
+在事实执行器中，用户输入、确认回答和问题回答都是日志中的输入。等待确认时，没有回答就不会因计时器到期而获得执行许可。
+
+低层对应 `user_text`、`steer`、`confirm`、`answer` 和 `resume` 等方法。普通应用应使用已有会话和确认管理器，把回答送回原任务；另开一套 FactRun 无法代替原运行的身份与权限。
+
+## 取消与资源清理
+
+取消请求不等于资源已经清理。会话提供几种不同用途的入口：
+
+<DocTable caption="取消与执行状态的查询" headers={['入口', '适合什么时候用', '返回后仍需注意']} rows={[
+  ['cancel()', '请求取消会话当前运行', 'true 表示发出了取消，不证明资源已收尾'],
+  ['cancel_run(run_id)', '按准确的运行 ID 取消', '避免把请求误送给后续运行'],
+  ['cancel_and_settle(grace, abort_grace)', '取消进入方法时观察到的运行，并等待其释放执行权', 'false 表示尚不能证明它已退出，不要据此启动替代任务'],
+  ['stream_with_run / run_snapshot / run_events', '跟踪准确的一次运行和保留的终态', '流结束本身不能证明执行成功或清理完成'],
+]} />
+
+`cancel_and_settle` 的两个参数都是等待时长。流式工作线程先尝试协作取消，超过 `grace` 后才中止线程，并再等待 `abort_grace`；阻塞式 `send` 仍依靠协作退出。返回 `true` 说明原运行已释放执行权，或已确认当前没有运行执行，不代表任务完成。
+
+即使模型已经准备结束，运行也要等待资源收尾。资源清理规则见“验证报告与资源清理”。会话恢复、检查点恢复和取消都要保留原有执行错误，不能用“已经停止”代替成功结果。
+
+## 结果不明的操作要先核实
+
+日志会排除已经留下完成记录的动作。若一次外部写入完成后、结果写入日志前发生崩溃，运行仍可能只知道“操作已经发出”。
+
+这时应针对原始调用查询或补充回执。扫描本地目录、生成一份新报告或普通豁免，都不能自动证明那次外部操作的结果。恢复时直接重复写入，可能造成重复提交。
+
+## 实现依据
+
+- [会话恢复入口与工作区选择](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent_api/agent_facade.rs)
+- [运行、精确恢复和取消接口](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent_api/session_facade.rs)
+- [会话存储与检查点导出配置](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent_api/session_options.rs)
+- [事实日志的输入与恢复](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/fact_control.rs)
+- [未解决操作如何阻止完成](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/harness_loop.rs)

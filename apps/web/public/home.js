@@ -216,8 +216,149 @@
   }
 
   const tabs = Array.from(document.querySelectorAll('[role="tab"][aria-controls]'));
+  const tabList = document.querySelector(".scenario-tabs");
+  const tabIndicator = document.querySelector(".scenario-tab-indicator");
+  const replaySteps = {
+    research: ["拆解研究问题", "检索并核对资料", "整理结论与引用", "生成可核验报告"],
+    document: ["读取项目资料", "编辑文档内容", "对照源文件检查", "保存并继续审阅"],
+    data: ["读取数据与字段", "运行受控脚本", "核对产物快照", "交付分析结果"],
+    development: ["理解需求与项目", "修改代码文件", "运行测试与审查", "提交验证结果"]
+  };
+  const replayControllers = new Map();
+
+  function createScenarioReplay(panel, steps) {
+    const root = document.createElement("div");
+    root.className = "scenario-replay";
+    const header = document.createElement("div");
+    header.className = "replay-header";
+    const label = document.createElement("span");
+    label.className = "replay-label";
+    label.textContent = "演示轨迹";
+    const toggle = document.createElement("button");
+    toggle.className = "replay-toggle";
+    toggle.type = "button";
+    const count = document.createElement("span");
+    count.className = "replay-count";
+    const track = document.createElement("div");
+    track.className = "replay-track";
+    const progress = document.createElement("span");
+    progress.className = "replay-progress";
+    track.appendChild(progress);
+    const list = document.createElement("ol");
+    list.className = "replay-steps";
+    const event = document.createElement("p");
+    event.className = "replay-event";
+    header.append(label, toggle, count);
+    root.append(header, track, list, event);
+
+    let activeIndex = 0;
+    let playing = false;
+    let timer = 0;
+    const buttons = steps.map((step, index) => {
+      const item = document.createElement("li");
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "replay-step";
+      button.textContent = String(index + 1).padStart(2, "0");
+      button.setAttribute("aria-label", `查看步骤 ${index + 1}：${step}`);
+      button.addEventListener("click", () => {
+        setPlaying(false);
+        setActive(index);
+      });
+      item.appendChild(button);
+      list.appendChild(item);
+      return button;
+    });
+
+    function render() {
+      buttons.forEach((button, index) => {
+        const current = index === activeIndex;
+        button.classList.toggle("is-current", current);
+        button.classList.toggle("is-complete", index < activeIndex);
+        if (current) button.setAttribute("aria-current", "step");
+        else button.removeAttribute("aria-current");
+      });
+      count.textContent = `${activeIndex + 1} / ${steps.length}`;
+      event.textContent = steps[activeIndex];
+      progress.style.transform = `scaleX(${activeIndex / (steps.length - 1)})`;
+      toggle.textContent = playing ? "暂停" : reduceMotion.matches ? "下一步" : activeIndex === steps.length - 1 ? "重播" : "播放";
+      toggle.setAttribute("aria-pressed", String(playing));
+      toggle.setAttribute(
+        "aria-label",
+        playing ? "暂停演示轨迹" : reduceMotion.matches ? "查看下一步" : activeIndex === steps.length - 1 ? "重新播放演示轨迹" : "播放演示轨迹"
+      );
+    }
+
+    function setActive(index) {
+      activeIndex = Math.max(0, Math.min(steps.length - 1, index));
+      render();
+    }
+
+    function schedule() {
+      if (!playing) return;
+      timer = window.setTimeout(() => {
+        if (!playing) return;
+        if (activeIndex < steps.length - 1) {
+          setActive(activeIndex + 1);
+          schedule();
+        } else {
+          setPlaying(false);
+        }
+      }, 1400);
+    }
+
+    function setPlaying(value) {
+      if (reduceMotion.matches && value) return;
+      window.clearTimeout(timer);
+      playing = value;
+      render();
+      if (playing) schedule();
+    }
+
+    toggle.addEventListener("click", () => {
+      if (reduceMotion.matches) {
+        setActive((activeIndex + 1) % steps.length);
+        return;
+      }
+      if (!playing && activeIndex === steps.length - 1) setActive(0);
+      setPlaying(!playing);
+    });
+
+    panel.querySelector(".scenario-visual figure").appendChild(root);
+    render();
+    return { pause: () => setPlaying(false) };
+  }
+
+  document.querySelectorAll(".scenario-panel").forEach((panel) => {
+    const steps = replaySteps[panel.id.replace("panel-", "")];
+    if (steps) replayControllers.set(panel.id, createScenarioReplay(panel, steps));
+  });
+
+  function pauseScenarioReplays() {
+    replayControllers.forEach((controller) => controller.pause());
+  }
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) pauseScenarioReplays();
+  });
+  reduceMotion.addEventListener("change", (event) => {
+    if (event.matches) pauseScenarioReplays();
+  });
+
+  function syncTabIndicator(tab) {
+    if (!tabList || !tabIndicator) return;
+    const listRect = tabList.getBoundingClientRect();
+    const tabRect = tab.getBoundingClientRect();
+    tabIndicator.style.width = `${tabRect.width}px`;
+    tabIndicator.style.transform = `translateX(${tabRect.left - listRect.left}px)`;
+    tabIndicator.dataset.activeTab = tab.id;
+  }
 
   function activateTab(tab, moveFocus = false) {
+    pauseScenarioReplays();
+    const previousIndex = tabs.findIndex((item) => item.getAttribute("aria-selected") === "true");
+    const nextIndex = tabs.indexOf(tab);
+    const direction = previousIndex >= 0 && nextIndex < previousIndex ? "-1" : "1";
     tabs.forEach((item) => {
       const selected = item === tab;
       item.setAttribute("aria-selected", String(selected));
@@ -226,8 +367,10 @@
       if (panel) {
         panel.hidden = !selected;
         panel.classList.toggle("is-active", selected);
+        if (selected) panel.style.setProperty("--panel-direction", direction);
       }
     });
+    syncTabIndicator(tab);
     if (moveFocus) tab.focus();
   }
 
@@ -248,6 +391,11 @@
 
   const selectedTab = tabs.find((tab) => tab.getAttribute("aria-selected") === "true");
   if (selectedTab) activateTab(selectedTab);
+  if (tabList) tabList.classList.add("is-enhanced");
+  window.addEventListener("resize", () => {
+    const selected = tabs.find((tab) => tab.getAttribute("aria-selected") === "true");
+    if (selected) syncTabIndicator(selected);
+  });
 
   const navLinks = Array.from(document.querySelectorAll("[data-nav]"));
   const navSections = navLinks

@@ -1,0 +1,82 @@
+export const meta = {
+  title: '运行一个能处理确认、问题和表单的 ACP 客户端',
+  description: '从可编译的 Rust 例子接入 stdio，保持接收更新，并显式处理交互、取消和会话恢复。',
+  label: '动手接入客户端',
+  updated: '2026-10-26',
+};
+
+## 这次从完整程序开始
+
+前一章展示协议消息；这一章使用仓库中的 [interactive_client.rs](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/examples/interactive_client.rs)。它启动真实 ACP 伴随进程，持续消费通知，用命令行回答交互，并在退出时清理自己启动的进程。
+
+这个例子采用 JSON 显示协议内容，便于看清 sessionId、toolCallId、选项和状态。实际产品可以把同一组事件接到 TUI、桌面或网页界面。它不提供 Node、Python 等额外 SDK。
+
+## 构建并连接
+
+先按仓库要求初始化 Studio 子模块，从根目录构建配套程序。准备一份已经验证可用的可信 ACL，以及不含私人资料的练习工作区：
+
+```bash
+cargo build --locked -p aster -p a3s-code-acp
+cargo run --locked -p a3s-code-acp --example interactive_client -- ./target/debug/a3s-code-acp /absolute/host.acl /absolute/practice-repo
+```
+
+三个位置参数分别是代理二进制、可信 ACL、工作区。例子将它们变成准确路径，再通过 `--cwd` 和 `--config` 传给子进程。协议只占子进程的 stdin/stdout，日志保留在 stderr。
+
+initialize 返回当前能力和模型信息后，程序创建会话并打印 sessionId。此时可输入一条只读任务，例如“读取 README，说明测试入口”。
+
+## 一个输入循环，三种交互
+
+| 输入 | 适用情况 | 程序怎样处理 |
+| --- | --- | --- |
+| 普通文本 | 当前没有未结束 prompt | 提交 session/prompt，保存这一轮 future |
+| `/choose 1` | 显示了一组确认或问题选项 | 返回代理原有的第一个 optionId |
+| `/answer 输出 Markdown` | 带 question 标记且允许自由文本 | 写入 followup_message，不授予工具权限 |
+| `/form {"format":"csv"}` | 当前显示结构化表单 | 提交 values 对象，由表单合同继续验证 |
+| `/cancel` | 当前任务需要停止 | 取消待处理交互，发送 session/cancel，等待原 prompt 收尾 |
+| `/model provider/model` | 当前空闲 | 通过 session/set_model 切换已知模型 |
+| `/quit` 或输入结束 | 关闭客户端 | 请求取消、等待终态，清理自有代理进程 |
+
+多个交互按接收顺序排队。先回答显示的第一项，不能只按工具名称寻找“某个相同请求”。选项从 1 开始编号，客户端最终返回的仍是原 optionId；`allow-always` 只有在用户明确选中该项时才返回。
+
+## 为什么不在回调中直接读键盘
+
+`Client::request_permission` 与 `Client::ext_method` 把请求交给有界通道，等待自己的 oneshot 回答。主输入循环同时等待输入、交互请求和 prompt 的最终结果，所以用户未回答时，文本与工具更新仍能到达。
+
+标准输入由独立线程读取，每行最多 8192 字节，避免阻塞协议执行器。模型与工具通知按 sessionId、toolCallId 保留身份；示例直接输出完整的结构化通知，产品界面应按这些身份合并状态。
+
+## 业务回答不批准工具
+
+请求中的 `_meta.question.allowFreeText` 为 true 时，`/answer` 才生效。自由回答通过响应元数据 followup_message 返回；其 permission outcome 使用 Cancelled，不把回答伪装成 allow-once。
+
+普通工具确认不能走这条路线。若用户输入“是”作为文本，客户端不会自行猜成许可；必须选择代理给出的具体选项。结构化表单也使用独立的 a3s/form/request，不把 JSON 对象发回普通确认通道。
+
+## 取消后继续读取
+
+`/cancel` 先标记取消状态，关闭已排队交互，再通知代理停止。此后新到的交互直接返回取消。原 prompt future 保留到结束，期间继续接收晚到的工具状态；不会因为取消通知发送成功就显示“已完成”。
+
+退出时最多等待十秒。期限内没有原 prompt 终态，会明确返回错误并清理本客户端启动的子进程；这不能证明远程副作用被撤销。重新尝试任务前仍需核对原操作，不能无条件重发写入。
+
+## 重新打开会话
+
+记录程序打印的 sessionId，在第四个位置参数传回它：
+
+```bash
+cargo run --locked -p a3s-code-acp --example interactive_client -- ./target/debug/a3s-code-acp /absolute/host.acl /absolute/practice-repo SESSION_ID
+```
+
+程序改用 session/load，重放通知仍由同一个 Client 接收。工作区和存储绑定由代理核对；加载错误不会自动新建另一个同名会话。较长历史的分页与前缀分支见[会话目录](../sessions/)。
+
+## 检查程序的交互逻辑
+
+```bash
+cargo test --locked -p a3s-code-acp --example interactive_client
+```
+
+测试核对原选项身份、无效编号、自由回答不能用于批准、表单必须为对象，以及取消时所有待处理者都收到取消。真实模型、恢复存储和客户端操作流程还应在目标环境验收，不能用这两项单元测试代替。
+
+## 实现依据
+
+- [完整客户端](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/examples/interactive_client.rs)
+- [问题响应的实际读取规则](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/agent/permission_ask.rs)
+- [表单请求和返回值](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/form_request.rs)
+- [实际 stdio 协议的固定模型测试](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/tests/acp_conformance_stdio.rs)

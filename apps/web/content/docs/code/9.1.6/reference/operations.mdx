@@ -1,0 +1,68 @@
+export const meta = {
+  "title": "从原始记录判断任务停在哪里",
+  "description": "事件分页、资源状态、错误分类与恢复检查。",
+  "label": "故障排查与运行记录",
+  "updated": "2026-10-26"
+};
+
+## 先保留能定位这次执行的信息
+
+至少保留产品与构建版本、session_id、run_id、operation_id、工作区身份、源 revision 和时间范围。凭据不进入日志。UI 的“第七条消息”或某个页面标题不能代替运行身份。
+
+`runs()` 列出当前保留的 Run，`run_snapshot()` 读取一项状态，`run_events()` 读取保留事件，`run_event_page()` 用 sequence 游标分页。检查 `retention_gap`；出现缺口时标成不完整历史，不能显示“此前没有工具调用”。
+
+`trace_events()` 适合诊断路径和关联耗时；事实日志负责可重放事实；验证报告负责检查结论；artifact 保存受限的大输出。它们相互关联，不能随意互换用途。
+
+## 按失败位置排查
+
+| 现象 | 先查 | 下一步 |
+| --- | --- | --- |
+| 会话创建失败 | ACL 解析、工作区、宿主服务准入 | 修正具体配置，不扩大默认权限 |
+| 提交后立即忙 | 当前 Run 和 stream 消费者 | 消费或取消原流；追加输入用 steer |
+| 模型没有工具 | 当前工具投影、后端能力、provider 状态 | 显示不可用原因，不伪造 schema |
+| 一直等确认 | pending 列表与剩余时间 | 按 tool_id 处理；丢包后重新拉取 |
+| 工具 Rust 调用返回 Ok 但任务失败 | ToolCallResult 的工具级错误 | 区分传输成功与操作成功 |
+| 搜索旧内容 | 源摘要、索引 generation、命中复核 | 更新相关索引，勿删除共享状态碰运气 |
+| 任务说完成但仍停住 | verification、effect_digest、等待条件 | 重新检查当前修改或明确豁免 |
+| 取消后仍有资源 | 原 Run 的结算与 effect close | 定位原资源，保留失败，不泛杀进程 |
+| 恢复被拒绝 | checkpoint、namespace、policy、provider 绑定 | 按原范围重新注入；不改宽边界 |
+
+## 资源寿命和退出顺序
+
+停止新请求，发出取消，等待 Run 与子任务结算，关闭 Session，再关闭 Agent。外部服务由实际 owner 释放。MCP、浏览器、索引、租约和文档引用不能只从 UI 列表删除而不等待关闭。
+
+`Agent::close_session` 与 Session 的 close 是生命周期入口；关闭期间不再接受新的变更注册。需要保留产物时在保留窗口内另存，不把内存 artifact store 当成永久文件库。
+
+## 长期目标冲突和等待
+
+目标有自己的 definition、plan、control、wait 与 revision，不以最后一轮聊天结束为完成。宿主先提交定义和计划提议，再显式接受计划；执行切片必须绑定被接受的计划、源身份和 work policy。
+
+等待应记录类型化条件与观测证据。时间到达、用户决策和外部结果各有来源，不能用相同的字符串“ready”代替。旧 revision 的计划、接受或等待解除命令被拒绝后，读取新状态并重新决定，不能删除 revision 条件自动重试。
+
+执行切片返回不等于目标接受结果。先检查该步骤的 Run、源身份、验证和结算，再按目标合同接受结果；取消、暂停或等待时停止调度。`preview_goal_tick` 供宿主检查是否可推进，`tick_goal`、`stream_goal_tick` 才执行，`reconcile_goal_slices` 核对已记录切片。详细类型见 goal_control，起步代码见[长期目标教程](../../tutorial/goals/)。
+
+## 等待和冲突的具体处理
+
+| 等待 kind | 声明内容 | 满足条件的依据 |
+| --- | --- | --- |
+| question_answer | 需要用户回答的问题 | 宿主提交明确 answer |
+| confirmation_answer | 需要确认的 request | 与该请求对应的 approved 结果 |
+| source_revision | subject 与 after_digest | ExternalObservationV1 证明同一对象的摘要已变化 |
+| utc_due | 非零 due_unix_ms | Core 读取自己的时钟；调用方不传“现在几点” |
+
+GoalWaitCommandV1 携带 operation_id、goal_id、session_id、workspace、work_policy_digest、expected_goal_revision、expected_plan_revision、expected_goal_sequence 和 step_id。declare_wait 提交 condition，observe_wait 提交与已声明 kind 相符的 evidence。需要显式空值的 Option 字段也不能擅自省略，按 serde 类型定义构造。
+
+`goal.conflict` 表示版本或顺序前提已变，刷新定义、计划与 sequence 再决定；`goal.receipt_unsettled` 需要核对原执行，`goal.evidence_stale` 需要新的证据；`goal.waiting`、`goal.paused`、`goal.budget_exhausted` 与 `goal.deadline_expired` 各有独立停止原因。不能把它们全部当作网络故障重试。
+
+## 上线前的最小检查
+
+用无外网、固定返回值的测试替身覆盖成功、明确拒绝、超时、取消、事件丢包、旧 revision、清理失败和进程重启恢复。真实模型、MCP、浏览器、对象存储与索引各自另外验收，记录实际构建和命令。
+
+文档站的构建、链接和浏览器检查不能证明 Rust 教程整包已经跑通，也不能沿用历史 benchmark 作为当前工作树的性能结论。
+
+## 实现依据
+
+- [Run 观测接口](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent_api/run_facade.rs)
+- [目标合同](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/goal_control.rs)
+- [目标公开入口](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent_api/goal_facade.rs)
+- [关闭与结算](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent_api/session_close.rs)

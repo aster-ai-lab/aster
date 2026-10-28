@@ -1,0 +1,36 @@
+export const meta = {
+  "title": "从需求找到完整的能力入口",
+  "description": "对照 Core 的公开合同，查找用法、启用条件和宿主责任。",
+  "label": "能力索引",
+  "updated": "2026-10-26"
+};
+
+## 这份索引覆盖什么
+
+本页逐项列出当前 `sdk_capabilities()` 中的 30 项公开合同，并保留规范操作名。点击用法进入对应章节；展开“规范操作”可对照 Rust 合同定位。
+
+baseline 是基础能力合同，advanced 是可选或宿主专用能力，并不表示当前 Session 一定能执行。运行时可用性应以工具投影、provider 状态和类型化拒绝判断。
+
+## 公开合同
+
+<CapabilityIndex />
+
+## 合同之外的配套说明
+
+权限确认、业务表单、Hooks、Run 资源、目录 Agent、工作策略、长期目标、会话审阅、轨迹采集、结果账本和内容转换也属于接入工作。它们分别见治理、任务调度、高级宿主、故障排查与 Meta Harness 章节。
+
+## 按任务阅读
+
+<ChapterCards section="功能参考" />
+
+## 阅读与验证范围
+
+这些章节依据当前 9.1.6 工作树，源码链接指向 main。能力索引与源码集合通过自动检查保持一致，链接和文档构建单独验收。这不等同于所有 provider、feature 与外部服务都经过实机验证。
+
+十二章终端教程配有[完整参考工程](https://github.com/aster-ai-lab/aster/tree/main/apps/tutorial-agent)，已通过编译、固定模型的集成测试和离线终端操作回归。它覆盖读取、指定请求的批准与拒绝、业务提问、取消、会话恢复和过期计划拒绝；具体命令见[收尾与交付](../../tutorial/delivery/)。真实模型、外部租约恢复和实际服务凭据仍需按目标环境另外验收。
+
+## 实现依据
+
+- [公开能力目录](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/sdk_capabilities.rs)
+- [Rust 公共导出](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/lib.rs)
+- [ACP 能力与协议参考](../../../acp/9.1.6/reference/)

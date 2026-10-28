@@ -1,0 +1,74 @@
+export const meta = {
+  "title": "跑通请求、更新、取消和恢复",
+  "description": "标准处理入口、请求关联、模式切换和会话恢复。",
+  "label": "协议与会话生命周期",
+  "updated": "2026-10-26"
+};
+
+## 最小会话流程
+
+客户端启动代理后先协商协议，再创建会话，最后向拿到的 sessionId 提交 prompt。示例中的路径为占位路径，需替换为代理准入的绝对工作区。
+
+```json
+{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":1,"clientCapabilities":{"fs":{"readTextFile":false,"writeTextFile":false},"terminal":false}}}
+```
+
+```json
+{"jsonrpc":"2.0","id":2,"method":"session/new","params":{"cwd":"/absolute/practice-repo","mcpServers":[]}}
+```
+
+```json
+{"jsonrpc":"2.0","id":3,"method":"session/prompt","params":{"sessionId":"SESSION_FROM_RESPONSE","prompt":[{"type":"text","text":"README 在哪里？先不要修改文件。"}]}}
+```
+
+读取 id=3 的最终响应期间继续处理 `session/update`、权限请求和扩展请求。客户端若只等最终回答、暂停读取 stdout，会卡住需要用户交互的任务。
+
+## 代理实际实现的标准入口
+
+| 请求或通知 | 行为 |
+| --- | --- |
+| initialize | 返回协议 V1、loadSession、模型状态与代理元数据 |
+| authenticate | 当前返回空响应；initialize 不列出认证方法 |
+| session/new | 准入工作区、宿主元数据、MCP 与 Core 会话 |
+| session/load | 按当前工作区恢复保存状态并重放转录 |
+| session/set_mode | 设置 default、plan、auto、yolo 权限姿态 |
+| session/set_model | 切换已知模型与所选 effort |
+| session/set_config_option | 当前只接受 model 配置项，转到同一个模型切换实现 |
+| session/prompt | 串行准入本会话轮次，处理命令和流式执行 |
+| session/cancel | 通知当前 generation 停止；随后仍等待最终状态 |
+
+这些入口与下面的 Aster 宿主扩展分开。未知扩展返回 method_not_found，不代表标准 ACP 版本自动支持同名操作。
+
+## 并发和身份
+
+保留 JSON-RPC request id、ACP sessionId、Core session_id、Run ID 以及 prompt generation 的对应关系。不同会话的更新不能写入同一个活动窗口。
+
+代理对会话轮次和模型替换使用有界操作队列，队列满会拒绝。客户端仍应避免重复提交；用户想补充当前任务时用 interject，不要制造一个重复 prompt。晚到的旧 generation 更新不能覆盖新轮次状态。
+
+## 取消与关闭
+
+```json
+{"jsonrpc":"2.0","method":"session/cancel","params":{"sessionId":"SESSION_FROM_RESPONSE"}}
+```
+
+这是通知，没有 id 和直接成功响应。客户端标记“正在停止”，继续处理输出，直到原 prompt 的终态与资源结算。关闭管道是进程故障，不应当作正常任务完成。
+
+## 保存、加载与重放
+
+session/load 使用真实保存的会话 ID 和准入 cwd。重放可能包含用户、模型、工具、计划与类型化扩展通知，宿主按稳定条目身份去重。不要把重放更新当成新的模型推理或再次执行工具。
+
+模型上下文压缩不应删掉 UI 的完整转录。较长历史使用[会话目录与分页](../sessions/)，不要只靠加载时的可见消息拼出“完整历史”。
+
+## 验收
+
+接入一个不需外网的测试 provider：创建、只读 prompt、取消、保存、重启、加载。另测未知会话、错误 cwd、重复 prompt、队列满和模型切换期间到来的新请求。确认每个请求只结束一次，旧会话数据不进入新工作区。
+
+## 实现依据
+
+- [标准处理函数](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/agent.rs)
+- [会话准入](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/agent/session_open.rs)
+- [恢复与替换](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/agent/resume.rs)
+
+## 从请求样例到客户端
+
+[动手接入客户端](../client/)提供完整 Rust 程序，把协议连接、事件接收、权限、问题、表单和取消串起来。

@@ -1,0 +1,109 @@
+export const meta = {
+  title: '01 · 跑通第一个工作区会话',
+  description: '建立练习包，接入可信 ACL，并用最小只读权限完成一次请求。',
+  label: '01 会话与工作区',
+  updated: '2026-10-26',
+};
+
+## 本章要得到什么
+
+先做一个普通终端程序：接收 ACL 文件路径和项目路径，询问模型“README 和测试入口在哪里”，打印结果后退出。本章先确认 SDK、模型与工作区能够配合，再加入界面。
+
+准备一个没有私人资料的练习项目。ACL 使用你已经验证可用的宿主模型配置，工作区使用练习项目的绝对路径。配置文件中的密钥从环境变量读取；不要把真实密钥写进教程工程。
+
+## 建立工作区成员
+
+在仓库根目录创建 `apps/tutorial-agent`，确认根 `Cargo.toml` 的 `members` 包含它。练习包的 `Cargo.toml` 如下，沿用根锁文件：
+
+```toml
+[package]
+name = "tutorial-agent"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+a3s-code-core = { path = "../../crates/code/core" }
+anyhow = { workspace = true }
+tokio = { workspace = true }
+```
+
+这里的路径以 `apps/tutorial-agent` 为起点。不要在练习包里添加新的 `[workspace]`，也不要单独生成第二份锁文件。初始化桌面子模块的仓库要求同样适用于后面的 Cargo 命令。
+
+## 把打开会话放进运行层
+
+创建 `src/runtime.rs`。把参数解析与会话设置放在这里，后面切换终端界面时继续使用它。
+
+```rust
+use std::path::PathBuf;
+use anyhow::{Context, Result};
+use a3s_code_core::{Agent, AgentSession, SessionOptions};
+use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
+
+pub fn arguments() -> Result<(PathBuf, PathBuf)> {
+    let mut args = std::env::args_os().skip(1);
+    let config = PathBuf::from(args.next().context("缺少可信 ACL 路径")?);
+    let workspace = PathBuf::from(args.next().context("缺少项目路径")?)
+        .canonicalize()?;
+    anyhow::ensure!(workspace.is_dir(), "项目路径必须是目录");
+    anyhow::ensure!(args.next().is_none(), "只接受 ACL 和项目两个参数");
+    Ok((config, workspace))
+}
+
+pub async fn open(config: &std::path::Path, workspace: &std::path::Path)
+    -> Result<(Agent, AgentSession)>
+{
+    let config = config.to_str().context("ACL 路径必须是 UTF-8")?;
+    let workspace = workspace.to_str().context("项目路径必须是 UTF-8")?;
+    let agent = Agent::new(config).await?;
+    let mut policy = PermissionPolicy::new().allow_all(&["read", "ls"]);
+    policy.default_decision = PermissionDecision::Deny;
+    let options = SessionOptions::new().with_permission_policy(policy);
+    let session = agent.session_async(workspace, Some(options)).await?;
+    Ok((agent, session))
+}
+```
+
+保留返回的 `Agent` 和 `AgentSession`，应用关闭前都不要丢弃。这里仅允许准确列出的读取工具；未列出的调用会被拒绝。提示里写“不要修改文件”有助于表达任务，但真正约束操作的是权限策略。
+
+## 发送第一次请求
+
+创建 `src/main.rs`：
+
+```rust
+mod runtime;
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let (config, workspace) = runtime::arguments()?;
+    let (_agent, session) = runtime::open(&config, &workspace).await?;
+    let result = session.send("读取 README，并说明项目的测试入口。", None).await;
+    session.close().await;
+    println!("{}", result?.text);
+    Ok(())
+}
+```
+
+先保存 `send` 的结果，再关闭会话，最后处理错误。这样请求失败也会经过关闭路径。`history: None` 使用并更新会话自己的历史；每次请求都重新创建会话，则无法自然接续上一轮对话。
+
+## 运行与验收
+
+把路径替换成你实际准备的文件和目录：
+
+```bash
+cargo check -p tutorial-agent
+cargo run -p tutorial-agent -- /absolute/path/agent.acl /absolute/path/demo-project
+```
+
+检查三件事：模型能返回文本；说明确实来自练习项目；要求它写入一个文件时调用被拒绝，磁盘也没有变化。不要只检查它是否在回复里说“我没有写入”。
+
+如果模型连接失败，先检查 ACL 的默认模型引用、环境变量和服务地址。如果是工具拒绝，保留拒绝信息；不要把默认决策改成 Allow 来掩盖配置问题。如果是沙箱初始化错误，按目标平台准备沙箱，或选择宿主已经验证的后端。
+
+## 下一章
+
+`send` 要等待整次运行结束。下一章换成流式入口，观察回复、工具和终态如何分别到达。会话配置继续使用本章的 `runtime::open`。
+
+## 实现依据
+
+- [Agent 的加载与会话创建](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent_api/agent_facade.rs)
+- [权限策略的检查顺序](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/permissions/policy.rs)

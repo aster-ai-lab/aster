@@ -1,0 +1,88 @@
+export const meta = {
+  title: '08 · 接入项目资料、Skills 和 MCP',
+  description: '给同一个终端助手补充上下文与外部能力，并区分操作说明、工具注册和访问权限。',
+  label: '08 上下文与 MCP',
+  updated: '2026-10-26',
+};
+
+## 先分清要补充的是资料还是动作
+
+假设练习项目有三类额外信息：一段项目约定、一套发布检查说明、一个能查询工单的 MCP 服务。它们分别使用 ContextProvider、Skills 和 MCP 接入，不需要为每项都写一个 Harness 组件。
+
+资料说明“这个项目是什么、任务怎样做”，工具提供“实际能调用什么”。两者都不会自动授予文件、网络或外部账户权限。
+
+## 提供固定项目资料
+
+在 `runtime.rs` 加一个准备 options 的函数，再把它接进已有设置链：
+
+```rust
+use std::sync::Arc;
+use a3s_code_core::SessionOptions;
+use a3s_code_core::context::{ContextItem, ContextType, StaticContextProvider};
+
+fn add_project_notes(options: SessionOptions) -> SessionOptions {
+    let provider = StaticContextProvider::new("tutorial-project").with_item(
+        ContextItem::new(
+            "project-test-entry",
+            ContextType::Resource,
+            "本项目的验收命令是仓库已有测试；修改前先检查对应调用方。",
+        ).with_relevance(0.9),
+    );
+    options.with_context_provider(Arc::new(provider))
+}
+```
+
+这些内容仍经过上下文组装的排序、去重和预算处理，不能保证每个 Item 永远进入模型输入。把稳定标识用于同一份资料，资料变化时再明确更新，不要每次查询都随机生成一个 ID 来避开去重。
+
+动态检索来源实现 `ContextProvider::query`。能缺省的资料采用 BestEffort；任务必须读取的业务规则则用 Required 失败策略。来源失败时界面要说明缺少资料，不应该悄悄用模型记忆补出一份。
+
+## 加入项目 Skills
+
+把已按 Skill 格式维护的操作说明放进练习项目的 `skills/`，在已有 options 上调用 `with_skill_dirs([workspace.join("skills")])`。宿主自己持有准确 Skill 对象时，可用 `with_host_skill` 注入。
+
+Skill 目录会与全局来源合并。若要做完全由宿主控制的上下文，先阅读 `with_isolated_context` 的范围：它会省略自动发现的指令和 Skills，并使用会话本地空记忆；它不提供操作系统隔离。
+
+验证一个“检查测试再修改”的 Skill 时，观察工具调用是否真的发生，而不是只看模型引用了说明标题。Skill 中列出工具名称，不会把工具实现注册到会话。
+
+## 连接一个已配置的 MCP 服务
+
+MCP 声明可以由可信配置或 Agent 目录加载。运行层拿到准确的 `McpServerConfig` 后再连接：
+
+```rust
+use a3s_code_core::{AgentSession, mcp::McpServerConfig};
+
+async fn connect_server(session: &AgentSession, server: McpServerConfig)
+    -> anyhow::Result<usize>
+{
+    let count = session.add_mcp_server(server).await?;
+    Ok(count)
+}
+```
+
+服务进程、地址、认证和环境变量由宿主管理。安装后检查 `tool_names()` 与 `tool_definitions()`；模型面前实际可见的工具还受权限和呈现策略限制，可用 `presented_tool_definitions(prompt)` 预览。工具名称采用 `mcp__<server>__<tool>`。
+
+先在下一次新运行里测试一个只读查询，再考虑写入工具。连接成功只说明服务握手完成，不代表每个工具已经有权访问某个工单或账户。
+
+## 界面怎样显示失败
+
+<DocTable caption="接入失败的处理" headers={['失败位置', '界面提示', '应保留的行为']} rows={[
+  ['可选资料查询失败', '该来源本轮不可用', '继续运行时不伪造资料'],
+  ['Required 来源失败', '任务缺少必需上下文', '本轮停止并保留错误'],
+  ['MCP 连接失败', '服务未连接，工具尚未可用', '不把同名文字当成已注册工具'],
+  ['工具权限拒绝', '显示准确工具与拒绝结果', '不改走宿主已批准的直调入口'],
+]} />
+
+应用关闭时释放会话拥有的连接。继承自宿主、由多个会话共享的 MCP 管理器有自己的寿命，不能随意被一个终端标签页断开。
+
+## 本章验收
+
+添加一条只有 Provider 才能提供的项目约定，检查上下文报告和实际回答。再移除该来源，验证 Required 与 BestEffort 的区别。最后断开 MCP 服务，确认界面显示连接失败，而不是继续宣称外部查询成功。
+
+## 继续查阅
+
+- [上下文、工具与 Hooks](../../meta-harness/context-tools/)
+- [会话扩展接口](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent_api/capability_facade.rs)
+
+## 可编译的接入函数
+
+本章的 Rust 函数也收录在参考工程的 [chapters.rs](https://github.com/aster-ai-lab/aster/blob/main/apps/tutorial-agent/src/chapters.rs)。它们随 `cargo check --locked -p tutorial-agent --all-targets` 检查；调用时仍需本章说明的配置与宿主对象。编译这些函数不表示所有外部后端都已验证。

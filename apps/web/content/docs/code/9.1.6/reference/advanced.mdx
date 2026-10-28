@@ -1,0 +1,56 @@
+export const meta = {
+  "title": "接入高级能力时，保留证据和授权",
+  "description": "状态图、发布合同、Agent Protocol、评估、类型化决策、S3 与遥测。",
+  "label": "高级宿主与研究接口",
+  "updated": "2026-10-26"
+};
+
+## 这些不是默认全部启用的工具
+
+能力目录中的 advanced 描述可接入的合同。实现是否编入、宿主 provider 是否存在、运行时是否获准，需要分别检查。`sdk_capabilities()` 列出名字不证明当前 Session 能执行。
+
+## 状态图与发布
+
+`state-graph` 提供创建、恢复、patch 提议与 diff。宿主维护图 revision、节点与边身份，先检查差异再准入修改。图结构合法不代表外部工具有权限，更不代表历史副作用已经完成。
+
+Agent Release Contract 将制品准入、publication 绑定与验证分开。宿主应持有原始制品、来源 revision、能力及发布身份；不得把可变目录名称或文件路径当成完整发布身份。发布验证的对象是这份合同及其证据，不是模型对自身能力的描述。
+
+## Agent Protocol
+
+`agent_protocol`、`agent_protocol_harness`、`agent_protocol_host` 为宿主提供 start、cancel、recover、events 等执行合同。这不是 ACP 的另一个名称，也不是新的公开 HTTP 服务。调用方需要提供持久事件、准入和恢复依赖，保持 Run 与操作身份一致。
+
+取消应有终态；恢复应核对当前源与原证据。来源改变、检查点缺失或外部操作未知时明确拒绝或等待核实，不能通过创建新 ID 冒充原执行已恢复。
+
+## 评估与研究
+
+`evaluation` 编入证据读取、auxiliary、dispatch ledger、result、result store 和 wire_v1。评估输入保留数据集与候选版本、运行预算、原始回执、结算和评分依据。digest-only 事件日志可以定位记录，不能证明外部副作用或任务验收。
+
+`research` 依赖 evaluation，提供原生研究合同。使用与发布证据应按研究手册区分假设、观测和结论；评估子集上的进步不能直接宣称递归自我改进已成立。设计与试验流程见[RSI 专题](../../design/rsi/)。
+
+RL trajectory 通过 `with_rl_trajectory` 选择采集，logprobs 与 top_logprobs 也需要模型支持。记录轨迹不等于训练模型；宿主仍负责数据授权、保留和敏感内容处理。outcome ledger 记录结果和提升摘要，同样不替代独立验收。
+
+## 类型化决策
+
+`apofasi` 提供 typed decision；调用方选择策略、阈值和可路由动作，`decide_and_gate` 将决定与门控结合。`receipt_v1` 保留回执身份。只有准入过的动作才能被执行，置信分数不能授予权限。
+
+神经推断另需 `apofasi-infer`、实际权重与相应平台支持。full 不包含这一组开关；未配置 provider 或权重时应报告不可用，不能退回未经说明的猜测。
+
+## S3 工作区
+
+`s3` 编入 `S3WorkspaceBackend` 和 `S3BackendConfig`。宿主选择 bucket、endpoint、凭据与范围，再注入 WorkspaceServices。对象存储不等同本地 POSIX 文件系统：先读后端能力，只有支持的工具才应投影。
+
+先在隔离前缀测试读取、写入、缺失对象和取消，再接生产数据。命令执行、Git 和要求本地路径的工具不能因为后端实现了读写就自动可用。
+
+## 遥测与外部观测
+
+`trace_events()` 提供运行观测，`telemetry` 增加 Code 的 OTLP 导出。宿主初始化导出端点并确定采样、保留与脱敏；trace ID 用于关联，不能替代授权凭据或完成证据。
+
+外部观测、事实日志和不可变内容转换都有自己的来源与绑定。采集失败应可见，应用不能因“没有失败事件”就宣称任务成功。生产验收要覆盖 exporter 不可达与关闭冲刷。
+
+## 实现依据
+
+- [公开导出与 feature 边界](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/lib.rs)
+- [发布合同](https://github.com/aster-ai-lab/aster/blob/main/crates/code/manual/AGENT_RELEASE_CONTRACT.md)
+- [评估底座](https://github.com/aster-ai-lab/aster/blob/main/crates/code/manual/EVALUATION_SUBSTRATE.md)
+- [研究合同](https://github.com/aster-ai-lab/aster/blob/main/crates/code/manual/RESEARCH_CONTRACTS.md)
+- [类型化决策验证](https://github.com/aster-ai-lab/aster/blob/main/crates/code/manual/TYPED_DECISION_E2E_PLAN.md)

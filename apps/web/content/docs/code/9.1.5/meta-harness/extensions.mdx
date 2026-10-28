@@ -1,0 +1,129 @@
+export const meta = {
+  title: '扩展组件和调度方式',
+  description: '注册一个 host 组件，或用 HostHarnessAssembler 提供完整组件树。',
+  label: '自定义组件与调度',
+  updated: '2026-10-26',
+};
+
+## 注册自己的组件
+
+配方中的 `host:<id>` 由宿主事先安装的 `HostHarnessRegistry` 解析。模型写出一个组件名称，并不能让运行时加载同名代码。
+
+下面的组件给系统指令增加一行应用说明，不执行外部操作。示例使用本仓库的 `a3s-code-core` 和 `a3s-effect`。
+
+```rust
+use a3s_code_core::{HarnessConfig, HostHarnessRegistry};
+use a3s_effect::{component, CodingServices, CodingView, ErasedComponent, HarnessView};
+
+struct AppComponents;
+
+impl HostHarnessRegistry for AppComponents {
+    fn mount(
+        &self,
+        id: &str,
+        _config: &HarnessConfig,
+    ) -> anyhow::Result<ErasedComponent<CodingServices, HarnessView>> {
+        match id {
+            "app_note" => Ok(component(
+                || (),
+                |state, _fact| state,
+                |_state| {
+                    let mut view = CodingView::empty();
+                    view.system.push("操作前先核对应用提供的任务信息。".into());
+                    (view, Vec::new())
+                },
+            )),
+            _ => anyhow::bail!("unknown app component: {id}"),
+        }
+    }
+}
+```
+
+再把它注册到会话，并在配方中使用 `host:app_note`：
+
+```rust
+use std::sync::Arc;
+use a3s_code_core::{HarnessComposeOptions, SessionOptions};
+
+fn options() -> anyhow::Result<SessionOptions> {
+    let recipe = HarnessComposeOptions::compose(
+        ["system", "tools", "host:app_note", "budget", "compact", "infer"]
+            .map(str::to_owned)
+            .to_vec(),
+        None,
+        None,
+        Vec::new(),
+    )?;
+    Ok(SessionOptions::new()
+        .with_harness(recipe)
+        .with_host_harness_registry(Arc::new(AppComponents)))
+}
+```
+
+没有安装注册表，或注册表不认识某个 ID，都会拒绝构建。ID 只接受 ASCII 字母、数字、下划线和连字符，解析后统一转为小写。需要生成名称时可使用 `host_component_id("app_note")`。
+
+## 一个组件由哪三部分组成
+
+`component(initial, step, output)` 接收三个函数：
+
+<DocTable caption="组件的三个函数" headers={['函数', '输入与输出', '适合做什么']} rows={[
+  ['initial', '创建初始状态', '准备计数器或应用状态的起始值'],
+  ['step', '读取一条事实，返回新的状态', '根据已记录的事件更新状态'],
+  ['output', '读取当前状态，返回视图和可执行动作', '提供系统指令，或声明下一步可以执行什么'],
+]} />
+
+重新读取日志时，这三个函数可能再次运行。文件写入、网络请求等操作应放在动作中，不要放进 `step` 或 `output`，否则一次状态重建就可能重复操作。
+
+## 需要整棵组件树时
+
+实现 `HostHarnessAssembler::assemble(config)`，再通过 `with_host_harness_assembler` 交给会话。安装后，由它提供组件树，不再按 `with_harness` 的组件列表装配。
+
+这个优先级只针对组件树，不表示整份配方都被忽略。当前会话会先把配方中的 `step_limit` 和 `model_attempts` 写入 `HarnessConfig`，再交给 `assemble`。自定义调度器应读取传入配置，不能假设这些限制已被清除。
+
+`admit_component_tree(name, components)` 把已有组件组成 `HarnessGraph`，并保留 Core 的权限与完成检查。`system`、`tools`、`optional_budget`、`compact` 和 `coding_scheduler` 都可以作为构建材料。
+
+下面保留基础配置，用这些构建材料明确组装一棵树：
+
+```rust
+use a3s_code_core::{admit_component_tree, HarnessConfig, HostHarnessAssembler};
+use a3s_effect::{coding_scheduler, compact, optional_budget, system, tools, HarnessGraph};
+
+struct AppHarness;
+
+impl HostHarnessAssembler for AppHarness {
+    fn assemble(&self, config: HarnessConfig) -> anyhow::Result<HarnessGraph> {
+        let components = vec![
+            system(config.system().to_vec()),
+            tools(config.tools().to_vec()),
+            optional_budget(config.tool_budget_limit()),
+            compact(config.compact_after_chars()),
+            coding_scheduler(config),
+        ];
+        let (graph, _policy) = admit_component_tree("app-harness", components);
+        Ok(graph)
+    }
+}
+```
+
+宿主使用 `with_host_harness_assembler(Arc::new(AppHarness))` 安装它。要增加新的子树，可以在这份组件列表中明确添加，不需要在会话旁边再启动一套消息循环。
+
+这是 Rust 的低层扩展接口。组件树改变了哪些动作会出现，接入者需要同时检查恢复、取消和资源清理；不能只验证模型最终回复是否正确。
+
+## 动作 key 与嵌套调度
+
+每个可执行动作都有一个 key。运行时检查当前树中是否有重复 key，再排除已经留下完成记录的动作，并按 key 排序选择下一步。
+
+`infer(children)` 给子树动作增加 `infer/` 前缀。需要多个子树时，还可以使用 `mount` 或 `with_key_namespace`，为它们分配不同的前缀，例如 `review/` 和 `implement/`。
+
+两个子树都使用相同前缀，仍可能发生冲突，运行时会返回 `DuplicateTransition`。默认 `infer` 组件保留历史 key，没有额外前缀；替换它时应为新的运行安排清楚的恢复策略。
+
+<Callout title="给组件换 key，会影响恢复">
+日志通过 key 判断某个动作是否完成。把旧动作改名后，它可能被视为新动作。调整组件树时，请用新会话验证，或明确处理已有日志，避免重复外部操作。
+</Callout>
+
+## 实现依据
+
+- [注册表、完整组件树与 Core 检查](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/meta_harness.rs)
+- [组件与动作选择规则](https://github.com/aster-ai-lab/aster/blob/main/crates/effect/src/actor.rs)
+- [infer、mount 和动作命名空间](https://github.com/aster-ai-lab/aster/blob/main/crates/effect/src/compose.rs)
+- [组件组合的执行测试](https://github.com/aster-ai-lab/aster/blob/main/crates/effect/src/compose_execution_tests.rs)

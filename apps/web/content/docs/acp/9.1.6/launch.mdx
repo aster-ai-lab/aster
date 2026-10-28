@@ -1,0 +1,66 @@
+export const meta = {
+  "title": "启动 ACP，并核对它获得的授权",
+  "description": "构建、参数、ACL 层、账号导入和工作区 MCP 信任。",
+  "label": "启动与配置",
+  "updated": "2026-10-26"
+};
+
+## 在仓库中构建
+
+从仓库根目录使用锁定工具链。先确认私有 Studio 子模块已初始化，保留其中已有改动，再执行配套构建。
+
+```sh
+cargo build --locked -p aster -p a3s-code-acp
+./target/debug/a3s-code-acp --cwd /absolute/practice-repo --config /absolute/host.acl
+```
+
+这会进入 stdio 协议服务，不是读取一行自然语言再打印回答的命令。宿主应保留 stdout 给协议，日志走 stderr 或独立日志文件；不要把启动横幅混进协议流。
+
+独立 ACP 默认编入 `svg-png` 与 `account-import`，不默认编入浏览器搜索。需要浏览器路线时配套构建：
+
+```sh
+cargo build --locked -p aster -p a3s-code-acp --features a3s-code-acp/headless-search
+```
+
+## 常用参数
+
+| 参数 | 用途和限制 |
+| --- | --- |
+| `--cwd DIR` | 启动工作区，后续会话仍检查范围 |
+| `--config FILE` | 明确选择可信宿主 ACL；未给出时可读 A3S_CONFIG |
+| `--model` / `-m` | 选择已配置的 provider/model；未知值应拒绝 |
+| `--reasoning-effort LEVEL` | 选择支持的推理强度，不能发明新枚举值 |
+| `--plugin-store DIR` | 原生启动器拥有的插件存储位置 |
+| `--import-accounts LIST` | 显式选择 cc-switch、grok、cursor、codex 账号导入适配器 |
+| `--list-workspace-mcp` | 列出项目声明及信任状态，不启动未信任命令 |
+| `--trust-workspace-mcp ID` | 对核对过的声明明确授权；all 只在确实全部可信时使用 |
+| `--unattended` | 启用无人在端的运行策略，见无人值守章节 |
+| `--max-execution-ms`、`--result-file` | 无人值守执行期限与结果记录 |
+| `--engineering-policy` | engineering-v1 或 none |
+| `--goal-continuation`、`--no-goal-continuation` | 显式选择目标续跑策略 |
+| `--studio-documents` | 旧启动器兼容参数，新宿主用会话元数据声明 |
+| `--version` / `-V`、`--help` / `-h` | 查看包版本和用法 |
+
+参数缺值、未知参数和无效枚举会报错。不要用忽略参数的包装脚本掩盖客户端与代理版本不匹配。
+
+## 配置分层和凭据
+
+启动器显式配置、用户配置与工作区发现配置具有不同信任。`--config` / `A3S_CONFIG` 是宿主选择，用户默认 ACL 位于 `~/.a3s/config.acl`；工作区文件不能授权额外凭据、主机执行、外发源码或可选服务。
+
+首次启动可创建最小用户 ACL，initialize 元数据的 `openModelConfig` 提示宿主打开配置界面。实际模型、密钥与端点由可信配置提供；Aster 没有独立账户体系。账号适配器是对用户明确选择的本机现有来源进行读取，不应复制凭据到仓库、日志或示例。
+
+`A3S_DEFAULT_MODEL` 需要明确的 provider/model。宿主传递 `--model` 前先使用实际模型目录，不能根据显示名称猜 ID。
+
+## 项目 MCP 的信任
+
+先执行 list，核对命令、参数、工作目录与来源，再对具体声明授权。声明变化后重新核对，不能把上次对某个名称的授权无限延用到新命令。插件存储路径由原生启动器决定，协议元数据不能替客户端选择任意文件系统根。
+
+## 启动失败时
+
+区分 ACL 无效、未知模型、工作区不可用和 provider 不可用。宿主保留有界的错误信息，停止该进程并允许用户修正配置；不能退回一个权限更宽的默认配置。日志避免输出完整配置和环境变量。
+
+## 实现依据
+
+- [参数解析和 stdio 启动](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/bin/a3s-code-acp.rs)
+- [配置与信任层](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/config.rs)
+- [账号导入类型](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/lib.rs)

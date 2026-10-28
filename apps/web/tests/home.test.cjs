@@ -96,6 +96,7 @@ function selectedScenario(ui, id) {
     assert.equal(panel.getAttribute('aria-labelledby'), tab.id);
     assert.ok(panel.querySelector('img').alt.trim());
   }
+  assert.equal(ui.document.querySelector('.scenario-tab-indicator').dataset.activeTab, `tab-${id}`);
 }
 
 test('homepage assets resolve under project Pages and no-JS content stays available', (t) => {
@@ -121,8 +122,16 @@ test('homepage assets resolve under project Pages and no-JS content stays availa
     [...document.querySelectorAll('.mobile-nav a')].map((link) => link.textContent.trim()),
     ['首页', '场景', '能力', '安全', '文档']
   );
-  assert.equal(document.querySelector('.hero-actions .text-link'), null);
+  assert.equal(document.querySelector('.hero-actions .hero-workflow-link').getAttribute('href'), '#scenarios');
+  assert.match(document.querySelector('.hero-actions .hero-workflow-link').textContent, /查看真实工作流/);
+  assert.equal(document.querySelector('.brand small'), null);
+  assert.equal(document.querySelector('.hero-notes'), null);
   assert.equal(document.querySelectorAll('.download-grid .download-card').length, 4);
+  assert.deepEqual(
+    [...document.querySelectorAll('.download-grid .platform-name')].map((element) => element.textContent.trim()),
+    ['macOS', 'Windows', 'Linux', 'Aster CLI']
+  );
+  assert.equal(document.body.textContent.includes('麒麟'), false);
   assert.equal(document.querySelector('.download-card-cli').getAttribute('href'), '#cli-downloads');
   assert.equal(document.querySelectorAll('.scenario-panel').length, 4);
   for (const panel of document.querySelectorAll('.scenario-panel')) assert.equal(panel.hidden, false);
@@ -147,6 +156,76 @@ test('scenario tabs switch panels and support arrow, Home and End keys', (t) => 
     assert.equal(ui.document.activeElement.id, `tab-${expected}`);
   }
   assert.equal(ui.key(ui.document.activeElement, 'ArrowDown').defaultPrevented, false);
+});
+
+test('scenario selection carries a sliding indicator and directional panel motion', (t) => {
+  const ui = page(t);
+  const indicator = ui.document.querySelector('.scenario-tab-indicator');
+  assert.equal(ui.document.querySelector('.scenario-tabs').classList.contains('is-enhanced'), true);
+
+  ui.document.querySelector('#tab-data').click();
+  assert.equal(indicator.dataset.activeTab, 'tab-data');
+  assert.equal(ui.document.querySelector('#panel-data').style.getPropertyValue('--panel-direction'), '1');
+
+  ui.document.querySelector('#tab-research').click();
+  assert.equal(indicator.dataset.activeTab, 'tab-research');
+  assert.equal(ui.document.querySelector('#panel-research').style.getPropertyValue('--panel-direction'), '-1');
+});
+
+test('scenario replay starts only on request and settles at a replay action', (t) => {
+  const ui = page(t, { fakeTimers: true });
+  const root = ui.document.querySelector('#panel-research .scenario-replay');
+  const toggle = root.querySelector('.replay-toggle');
+  assert.equal(root.querySelectorAll('.replay-step').length, 4);
+  assert.equal(root.querySelector('.replay-count').textContent, '1 / 4');
+  assert.equal(toggle.textContent, '播放');
+  assert.equal(toggle.getAttribute('aria-pressed'), 'false');
+
+  toggle.click();
+  assert.equal(toggle.textContent, '暂停');
+  assert.equal(toggle.getAttribute('aria-pressed'), 'true');
+  ui.flushTimers();
+
+  assert.equal(root.querySelector('.replay-count').textContent, '4 / 4');
+  assert.equal(root.querySelector('.replay-event').textContent, '生成可核验报告');
+  assert.equal(root.querySelector('.replay-step[aria-current="step"]').textContent, '04');
+  assert.equal(toggle.textContent, '重播');
+  assert.equal(toggle.getAttribute('aria-pressed'), 'false');
+  toggle.click();
+  assert.equal(root.querySelector('.replay-count').textContent, '1 / 4');
+});
+
+test('scenario steps stop playback and changing panels or hiding the page pauses it', (t) => {
+  const ui = page(t, { fakeTimers: true });
+  const root = ui.document.querySelector('#panel-research .scenario-replay');
+  const toggle = root.querySelector('.replay-toggle');
+  const steps = root.querySelectorAll('.replay-step');
+
+  toggle.click();
+  steps[2].click();
+  assert.equal(root.querySelector('.replay-count').textContent, '3 / 4');
+  assert.equal(toggle.getAttribute('aria-pressed'), 'false');
+  toggle.click();
+  ui.document.querySelector('#tab-document').click();
+  assert.equal(toggle.getAttribute('aria-pressed'), 'false');
+  assert.equal(toggle.textContent, '播放');
+
+  toggle.click();
+  Object.defineProperty(ui.document, 'hidden', { configurable: true, value: true });
+  ui.document.dispatchEvent(new ui.window.Event('visibilitychange'));
+  assert.equal(toggle.getAttribute('aria-pressed'), 'false');
+});
+
+test('reduced motion changes replay to immediate next-step navigation', (t) => {
+  const ui = page(t, { fakeTimers: true, reducedMotion: true });
+  const root = ui.document.querySelector('#panel-research .scenario-replay');
+  const toggle = root.querySelector('.replay-toggle');
+  assert.equal(toggle.textContent, '下一步');
+  toggle.click();
+  assert.equal(root.querySelector('.replay-count').textContent, '2 / 4');
+  assert.equal(toggle.getAttribute('aria-pressed'), 'false');
+  ui.flushTimers();
+  assert.equal(root.querySelector('.replay-count').textContent, '2 / 4');
 });
 
 test('mobile navigation closes on selection, Escape and desktop resize', (t) => {

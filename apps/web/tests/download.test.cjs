@@ -135,6 +135,7 @@ test('no-JS release links and labelled screenshots remain; retired simulated Off
     if (fragment) assert.ok(document.getElementById(fragment), `Missing #${fragment}`);
   }
   assert.equal(document.querySelectorAll('a[href*="/releases/download/"]').length, 6);
+  assert.equal(document.body.textContent.includes('麒麟'), false);
   assert.equal(document.querySelector('noscript a').href, releaseUrl);
   const downloaders = [...document.querySelectorAll('[data-download]')];
   assert.ok(downloaders.length > 0);

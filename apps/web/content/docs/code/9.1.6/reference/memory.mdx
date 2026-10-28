@@ -1,0 +1,50 @@
+export const meta = {
+  "title": "保存会话，也管理记忆的来源和版本",
+  "description": "候选激活、语义刷新、命名空间、转录分页和前缀分支。",
+  "label": "记忆、保存与分支",
+  "updated": "2026-10-26"
+};
+
+## 三种数据不要混在一起
+
+会话转录记录用户、模型与工具的交互；记忆保存可复用事实；工作区索引反映当前源码。保存一个会话不代表持久记忆已激活，也不代表源码索引已更新。
+
+普通会话记忆通过 `memory`、`remember`、`recall`、`memory_stats` 查看和使用。持久记忆使用宿主注入的 `DurableMemorySession`，教程从[第十章](../../tutorial/memory/)开始。
+
+## 从候选到可召回事实
+
+提取产生有证据的候选，不直接获得 Active 召回资格。宿主用 `DurableMemoryActivation::try_new` 构造激活请求，再调用 `activate_candidate`；请求绑定候选 ID、精确 revision、独立决策证据和幂等 key。
+
+建议流程是：读取候选及其来源，核对是否适合长期保留，提交明确激活，再查询当前状态。候选 revision 已变化时重新审查，不要把旧决定套到新内容。
+
+Active 召回只使用已激活节点。`record_use(DurableMemoryUse)` 记录一次实际使用及结果依据；不能只因为文本被检索到就认定它帮助任务成功。错误、过时或需撤销的记忆通过管理接口处理，保留变更依据。
+
+## 语义记忆如何刷新
+
+`with_semantic_recall` 给 Active 绑定增加宿主拥有的语义 generation。`refresh_semantic_recall` 从当前完整 Active 快照重建并验证分区，默认要求 `PartitionAtomic`；需要其他一致性时使用 `refresh_semantic_recall_requiring`。
+
+后端不支持要求的一致性时，在读快照和 embedding 前拒绝。刷新应携带取消 token；取消或构建失败不能发布一个只包含部分记忆的新分区。SQLite 向量路线需要 `durable-memory-sqlite`，远程索引的连接、租约和清理由宿主负责。
+
+## 数据范围和恢复绑定
+
+tenant、principal、workspace 和 namespace 都由可信宿主确定，不能从问题文本推断。`binding()` 返回不含密钥的身份信息；恢复时要求范围、模式、策略及语义绑定一致。换用户或换索引不能静默复用旧绑定。
+
+会话保存使用 `save()` 与注入的 SessionStore，恢复通过 `resume_session_async`。持久化的是状态和身份，不是活着的模型连接、浏览器、MCP 或凭据；这些都需要重新注入。恢复失败时显示缺少哪项绑定，不能退回到更宽的默认范围。
+
+## 完整历史、分页与前缀分支
+
+模型上下文可能已经压缩；UI 的完整转录不应从压缩后的消息列表拼凑。使用 store 的类型化 transcript 与 cursor 分页，保留条目身份、调用结果配对及分页边界。事件保留缺口需要明确展示。
+
+`fork_session_async` 和 `fork_session_prefix_async` 提供分支入口。前缀分支保留选定的合法转录边界；它不代表外部文件与远程服务一起倒退。分支后应重新确认工作区当前状态，不能因为历史里有“写入成功”就重放写操作。
+
+## 验收
+
+准备两个 namespace，确认召回互不泄漏；未激活候选不得进入 Active 召回；旧 revision 激活应拒绝。随后保存、重启并恢复，分别测试正确与错误的语义绑定。最后在工具调用前后尝试前缀分支，核对边界校验和外部状态说明。
+
+## 实现依据
+
+- [持久记忆公开入口](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/durable_memory.rs)
+- [持久记忆详细合同](https://github.com/aster-ai-lab/aster/blob/main/crates/code/manual/DURABLE_MEMORY.md)
+- [语义刷新合同](https://github.com/aster-ai-lab/aster/blob/main/crates/code/manual/DURABLE_MEMORY_SEMANTIC_REFRESH.md)
+- [会话与分支入口](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent_api/agent_facade.rs)
+- [存储类型](https://github.com/aster-ai-lab/aster/tree/main/crates/code/core/src/store)

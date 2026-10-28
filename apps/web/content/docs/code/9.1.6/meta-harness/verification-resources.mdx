@@ -1,0 +1,85 @@
+export const meta = {
+  title: '提交验证结果并清理资源',
+  description: '用 CompletionAttestor 接入宿主检查，并为工具创建的资源选择正确寿命。',
+  label: '验证报告与资源清理',
+  updated: '2026-10-26',
+};
+
+## 两种验证入口
+
+项目已有固定测试命令时，可使用宿主 ACL 的 `verification_contract`。宿主自己管理检查过程时，可实现 `CompletionAttestor`，在当前修改摘要已经形成后返回报告。
+
+<DocTable caption="验证入口的选择" headers={['入口', '适合的场景', '提供的内容']} rows={[
+  ['verification_contract', '已有可声明的精确检查命令', '工作区、命令和覆盖路径'],
+  ['CompletionAttestor', '宿主掌握外部检查或专用验证过程', '与当前 effect_digest 对应的 VerificationReport'],
+  ['CompletionWaiverV1', '宿主或用户明确接受当前未验证的修改', '当前修改摘要与接受原因；状态仍为 Waived'],
+]} />
+
+这些入口都向同一个完成检查提供信息。它还会检查操作结果是否完整、子任务是否处理完，以及是否有未解决的外部操作。
+
+## Attestor 在什么时候调用
+
+宿主通过 `SessionOptions::with_completion_attestor` 安装一个 `Arc<dyn CompletionAttestor>`。回调收到当前修改摘要，以及每个修改路径对应的内容摘要：
+
+```rust
+fn attest(
+    &self,
+    effect_digest: &str,
+    paths: &[MutatedPathRecord],
+) -> Option<VerificationReport>;
+```
+
+这是 trait 的方法签名。实现时应先核对自己的检查结果，再返回报告；无法确认时返回 `None`，现有报告列表保持不变。
+
+报告需要把 `effect_digest` 设为收到的摘要，并让必需检查处于 `Passed`。更细致的验证器可以覆盖 `attest_ledger`，读取带类型的文件和目录状态。
+
+回调不是模型工具，模型不能自己安装它。运行已经记录失败操作时，也不会靠调用这个回调补出成功。
+
+## 内置的磁盘内容检查
+
+`DiskContentAttestor` 比较日志里的修改记录与磁盘状态：
+
+```rust
+use std::sync::Arc;
+use a3s_code_core::completion_attestor::DiskContentAttestor;
+use a3s_code_core::SessionOptions;
+
+let options = SessionOptions::new().with_completion_attestor(Arc::new(
+    DiskContentAttestor::new("/my-project"),
+));
+```
+
+它会检查文件内容摘要；遇到目录记录时还会核对相应的目录和工作区状态。路径不合法、文件状态变化或摘要不符时，不会返回通过报告。
+
+传入路径必须是这次运行实际使用的工作区。启用隔离工作树时，应指向那个工作树，不能仍用原仓库路径来检查另一份文件。
+
+它能说明磁盘状态与记录一致，不能证明业务逻辑或测试通过。需要代码验收时，应接入真正运行了项目检查的报告，不能直接照搬一个“始终返回 Passed”的示例。
+
+## 工具资源应该活多久
+
+例如，某个工具启动了一个监听器，后续工具还要访问它。如果把监听器只放在本轮工具的临时作用域里，它可能在下一次调用前就被关闭。
+
+<DocTable caption="工具资源的两种寿命" headers={['接口', '资源由谁负责', '何时清理']} rows={[
+  ['register_capability_effect', '当前 Agent Turn', '该轮模型回复产生的工具调用全部结束后'],
+  ['register_run_capability_effect', '整个 Run', '允许跨工具轮次使用，在该次运行收尾时清理'],
+]} />
+
+需要跨轮次使用的资源，应先注册 Run 级清理，再获取资源。调用方必须仍在有效的 Agent Turn 中；普通宿主直接调用的工具上下文和已结束的 Turn 都不能补注册这种资源。
+
+注册清理责任不会授予访问权限。后续每次操作仍需检查当前能力是否有效，不能保留旧上下文来访问文档或工作区。
+
+## 清理结束后才能发布成功
+
+`send`、流式执行、后台执行和恢复执行，都需要等待所属 Run 的资源收尾结果。清理失败或超时，会阻止成功返回、成功 `End` 事件和 Completed 快照；清理期间取消也不能沿用先前算出的成功。
+
+如果执行本身已经失败，清理时又出错，原来的执行错误仍需保留。关闭监听器或释放租约，也不会撤销已经提交到外部服务的写入。
+
+这些规则处理正常运行中的资源收尾。宿主进程崩溃后的外部资源清理、不可协作扩展的隔离，仍需要在目标环境中另行验证。
+
+## 实现依据
+
+- [CompletionAttestor 与磁盘内容检查](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/completion_attestor.rs)
+- [完成状态与报告匹配](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/harness_loop.rs)
+- [Turn 与 Run 资源注册](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/tools/types.rs)
+- [Run 资源收尾测试](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent_api/capability_runtime_tests/run_resource_settlement.rs)
+- [宿主验证命令](https://github.com/aster-ai-lab/aster/blob/main/crates/code/manual/HOST_VERIFICATION_CONTRACT.md)

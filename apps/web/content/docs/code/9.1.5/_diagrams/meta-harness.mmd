@@ -1,0 +1,10 @@
+flowchart TB
+  accTitle: Meta Harness 的装配与执行
+  accDescr: 配方与宿主注册表用于装配组件。完整 Assembler 提供组件树时优先；选中的树由原有会话执行，共用日志、权限和完成检查。
+  recipe[HarnessComposeOptions] --> compose[按配方装配组件]
+  registry[HostHarnessRegistry] -. 解析 host 组件 .-> compose
+  compose --> tree[HarnessGraph]
+  assembler[HostHarnessAssembler] -- 提供完整组件树时优先 --> tree
+  tree --> run[AgentSession / FactRun]
+  run --> facts[事实日志与修改记录]
+  run --> checks[权限检查 / 完成检查 / 资源收尾]
