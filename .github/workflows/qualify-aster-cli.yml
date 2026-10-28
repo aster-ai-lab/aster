@@ -54,6 +54,9 @@ jobs:
           python3 tests/cli_pair_delivery.py
           python3 tests/aster_cli_linux.py
           python3 tests/cli_release_workflow.py
+      - name: Build the CLI and ACP companion pair
+        shell: bash
+        run: cargo build --locked -p aster -p a3s-code-acp
       - name: Test Aster CLI
         shell: bash
-        run: cargo test --locked -p aster -- --test-threads=4
+        run: cargo test --locked -p aster --bin aster -- --test-threads=4

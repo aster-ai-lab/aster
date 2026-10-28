@@ -135,7 +135,8 @@ class ReleaseWorkflowContract(unittest.TestCase):
     def test_premerge_cli_workflow_runs_tests_and_delivery_contracts(self):
         text = (ROOT / ".github/workflows/qualify-aster-cli.yml").read_text()
         self.assertIn('push:\n    branches: ["**"]\n  pull_request:', text)
-        self.assertIn("cargo test --locked -p aster -- --test-threads=4", text)
+        self.assertIn("cargo build --locked -p aster -p a3s-code-acp", text)
+        self.assertIn("cargo test --locked -p aster --bin aster -- --test-threads=4", text)
         self.assertIn("python3 tests/cli_pair_delivery.py", text)
         self.assertIn("python3 tests/aster_cli_linux.py", text)
         self.assertIn("python3 tests/cli_release_workflow.py", text)
