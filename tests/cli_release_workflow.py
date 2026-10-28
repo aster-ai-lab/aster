@@ -109,5 +109,38 @@ print(hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest() + " *" + name)
                 self.assertIsNone(args)
 
 
+class ReleaseWorkflowContract(unittest.TestCase):
+    def test_tag_builds_require_premerge_qualification_without_repeating_it(self):
+        text = (ROOT / ".github/workflows/release-aster-cli.yml").read_text()
+        self.assertIn('tags:\n      - "aster-cli-v[0-9]+.[0-9]+.[0-9]+"', text)
+        self.assertIn("name: Verify pre-merge qualification", text)
+        self.assertIn("actions/workflows/qualify-aster-cli.yml/runs?head_sha=${RELEASE_SHA}&event=push&status=completed", text)
+        self.assertIn(".head_branch !=", text)
+        self.assertEqual(text.count("needs: qualified"), 2)
+        self.assertNotIn("preflight", text)
+        self.assertNotIn("cargo fmt", text)
+        self.assertNotIn("cargo test", text)
+        self.assertNotIn("python3 tests/", text)
+
+    def test_all_three_cli_platforms_have_product_specific_caches(self):
+        text = (ROOT / ".github/workflows/release-aster-cli.yml").read_text()
+        self.assertEqual(text.count("uses: Swatinem/rust-cache@"), 2)
+        self.assertIn("shared-key: aster-cli-release-${{ matrix.platform }}", text)
+        self.assertIn("shared-key: aster-cli-release-linux", text)
+        self.assertIn("asset: aster-cli-v0.1.4-macos.tar.gz", text)
+        self.assertIn("asset: aster-cli-v0.1.4-windows.zip", text)
+        self.assertIn('package-aster-cli.sh linux "$bin_dir" "aster-cli-v0.1.4-linux.tar.gz"', text)
+        self.assertIn('run-id: ${{ inputs.artifact_run_id != \'\' && inputs.artifact_run_id || github.run_id }}', text)
+
+    def test_premerge_cli_workflow_runs_tests_and_delivery_contracts(self):
+        text = (ROOT / ".github/workflows/qualify-aster-cli.yml").read_text()
+        self.assertIn('push:\n    branches: ["**"]\n  pull_request:', text)
+        self.assertIn("cargo test --locked -p aster -- --test-threads=4", text)
+        self.assertIn("python3 tests/cli_pair_delivery.py", text)
+        self.assertIn("python3 tests/aster_cli_linux.py", text)
+        self.assertIn("python3 tests/cli_release_workflow.py", text)
+        self.assertIn("shared-key: aster-cli-qualify-${{ matrix.os }}", text)
+
+
 if __name__ == "__main__":
     unittest.main()

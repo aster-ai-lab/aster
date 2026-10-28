@@ -1,0 +1,59 @@
+name: Qualify aster-cli
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: qualify-aster-cli-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Aster CLI tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    env:
+      CARGO_INCREMENTAL: "0"
+      CARGO_BUILD_JOBS: "2"
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Check out pinned desktop sources
+        uses: ./.github/actions/checkout-studio
+        with:
+          token: ${{ secrets.STUDIO_READ_TOKEN }}
+      - name: Install macOS build tools
+        if: runner.os == 'macOS'
+        run: brew install protobuf just
+      - name: Install Linux build tools
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y protobuf-compiler cmake pkg-config libssl-dev bubblewrap
+      - name: Install pinned toolchain
+        shell: bash
+        run: rustup show active-toolchain
+      - name: Cache CLI qualification dependencies
+        uses: Swatinem/rust-cache@e9d7b9f1e587218970671bac74e5511ed9506e6a
+        with:
+          shared-key: aster-cli-qualify-${{ matrix.os }}
+          save-if: "true"
+      - name: Check CLI formatting and delivery contracts
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          cargo fmt -p aster -p a3s-code-core -p a3s-code-acp -- --check
+          python3 tests/workspace_dependencies.py
+          python3 tests/studio_checkout.py
+          python3 tests/cli_pair_delivery.py
+          python3 tests/aster_cli_linux.py
+          python3 tests/cli_release_workflow.py
+      - name: Test Aster CLI
+        shell: bash
+        run: cargo test --locked -p aster -- --test-threads=4

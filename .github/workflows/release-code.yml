@@ -1,117 +1,43 @@
 name: Release a3s-code
 
-# Core/ACP release only. Aster CLI and Desktop have separate product pipelines.
+# Core/ACP release only. Product release pipelines stay independent.
 on:
-  workflow_dispatch:
   push:
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+"
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: a3s-code-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
-  test:
-    name: Core/ACP tests (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 180
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    env:
-      CARGO_INCREMENTAL: "0"
-      CARGO_BUILD_JOBS: "2"
+  qualified:
+    name: Verify pre-merge qualification
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-      - name: Check out pinned workspace sources
-        uses: ./.github/actions/checkout-studio
-        with:
-          token: ${{ secrets.STUDIO_READ_TOKEN }}
-      - name: Install macOS build tools
-        if: runner.os == 'macOS'
-        run: brew install protobuf
-      - name: Install Windows protoc
-        if: runner.os == 'Windows'
-        shell: pwsh
+      - name: Require successful branch qualification for the tagged commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_SHA: ${{ github.sha }}
+          RELEASE_TAG: ${{ github.ref_name }}
         run: |
-          $version = "29.3"
-          $zip = Join-Path $env:RUNNER_TEMP "protoc.zip"
-          $dest = Join-Path $env:RUNNER_TEMP "protoc"
-          Invoke-WebRequest -Uri "https://github.com/protocolbuffers/protobuf/releases/download/v$version/protoc-$version-win64.zip" -OutFile $zip
-          Expand-Archive -Path $zip -DestinationPath $dest
-          Add-Content -Path $env:GITHUB_PATH -Value (Join-Path $dest "bin")
-      - name: Install Linux build tools
-        if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y protobuf-compiler cmake pkg-config libssl-dev bubblewrap
-      - name: Install pinned toolchain
-        shell: bash
-        run: rustup show active-toolchain
-      - name: Shorten Windows Cargo home
-        if: runner.os == 'Windows'
-        shell: bash
-        run: echo 'CARGO_HOME=D:\c' >> "$GITHUB_ENV"
-      - name: Check Core/ACP formatting and dependency boundary
-        shell: bash
-        run: |
-          cargo fmt -p a3s-code-core -p a3s-code-acp -- --check
-          python3 tests/workspace_dependencies.py
-      - name: Test Core goal feedback
-        shell: bash
-        run: cargo test --locked -p a3s-code-core --lib agent_api::goal_facade::tests::execution::feedback -- --test-threads=1
-      - name: Test ACP unit and wire contracts
-        shell: bash
-        run: |
-          cargo test --locked -p a3s-code-acp --lib -- --test-threads=1
-          cargo test --locked -p a3s-code-acp --test acp_conformance_stdio -- --test-threads=1
-
-  test-windows:
-    name: Core/ACP portable tests (windows-latest)
-    runs-on: windows-latest
-    timeout-minutes: 180
-    env:
-      CARGO_INCREMENTAL: "0"
-      CARGO_BUILD_JOBS: "2"
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-      - name: Check out pinned workspace sources
-        uses: ./.github/actions/checkout-studio
-        with:
-          token: ${{ secrets.STUDIO_READ_TOKEN }}
-      - name: Install Windows protoc
-        shell: pwsh
-        run: |
-          $version = "29.3"
-          $zip = Join-Path $env:RUNNER_TEMP "protoc.zip"
-          $dest = Join-Path $env:RUNNER_TEMP "protoc"
-          Invoke-WebRequest -Uri "https://github.com/protocolbuffers/protobuf/releases/download/v$version/protoc-$version-win64.zip" -OutFile $zip
-          Expand-Archive -Path $zip -DestinationPath $dest
-          Add-Content -Path $env:GITHUB_PATH -Value (Join-Path $dest "bin")
-      - name: Install pinned toolchain
-        shell: bash
-        run: rustup show active-toolchain
-      - name: Shorten Windows Cargo home
-        shell: bash
-        run: echo 'CARGO_HOME=D:\c' >> "$GITHUB_ENV"
-      - name: Check Core/ACP formatting and dependency boundary
-        shell: bash
-        run: |
-          cargo fmt -p a3s-code-core -p a3s-code-acp -- --check
-          python3 tests/workspace_dependencies.py
-      - name: Test Core goal feedback
-        shell: bash
-        run: cargo test --locked -p a3s-code-core --lib agent_api::goal_facade::tests::execution::feedback -- --test-threads=1
-      - name: Test unsupported prompt refusal
-        shell: bash
-        run: cargo test --locked -p a3s-code-acp --lib agent::tests::unsupported_prompt_content_fails_closed_before_a_turn -- --test-threads=1
+          set -euo pipefail
+          successful_runs="$(gh api "repos/${GH_REPO}/actions/workflows/qualify-code.yml/runs?head_sha=${RELEASE_SHA}&event=push&status=completed&per_page=100" --jq "[.workflow_runs[] | select(.conclusion == \"success\" and .head_branch != \"${RELEASE_TAG}\")] | length")"
+          if [[ "$successful_runs" -eq 0 ]]; then
+            echo "refusing release: tagged commit $RELEASE_SHA has no successful pre-merge A3S Code qualification run" >&2
+            exit 1
+          fi
 
   build:
     name: ACP release (${{ matrix.platform }})
-    needs: [test, test-windows]
+    needs: qualified
     runs-on: ${{ matrix.os }}
     timeout-minutes: 180
     strategy:
@@ -156,6 +82,11 @@ jobs:
         if: runner.os == 'Windows'
         shell: bash
         run: echo 'CARGO_HOME=D:\c' >> "$GITHUB_ENV"
+      - name: Cache Core/ACP release dependencies
+        uses: Swatinem/rust-cache@e9d7b9f1e587218970671bac74e5511ed9506e6a
+        with:
+          shared-key: code-release-${{ matrix.platform }}
+          save-if: "true"
       - name: Build locked ACP release
         shell: bash
         run: cargo build --locked --release -p a3s-code-acp --bin a3s-code-acp
@@ -181,7 +112,7 @@ jobs:
 
   publish:
     name: Publish Core/ACP source release
-    needs: [test, test-windows, build]
+    needs: build
     if: github.ref_type == 'tag'
     runs-on: ubuntu-latest
     timeout-minutes: 20
