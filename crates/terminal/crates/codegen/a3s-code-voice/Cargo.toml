@@ -45,7 +45,7 @@ audio = ["dep:cpal"]
 # keeps `alsa-sys` (a NEEDED `libasound.so.2`) out of the static musl build; on
 # Linux the `audio` feature compiles the subprocess recorder backend instead.
 [target.'cfg(not(target_os = "linux"))'.dependencies]
-cpal = {version = "0.15", optional = true}
+cpal = {version = "0.18.2", optional = true}
 [[bin]]
 name = "voice-probe"
 path = "src/bin/voice_probe.rs"

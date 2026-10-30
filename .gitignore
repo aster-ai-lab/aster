@@ -33,3 +33,6 @@ __pycache__/
 /tests/T01/output/
 /crates/code/core/.a3s-vec.lock
 /crates/code/core/.a3s-vec.lock.owner
+
+# Swift Package Manager products for the internal Capture engine.
+/crates/capture/.build/

@@ -4020,5 +4020,33 @@
       "apps/web/scripts/docs_diagrams.mjs"
     ],
     "evidence": "docs/evidence/web/2026-10-29-spotlight-reading-experience/OUTCOME.md"
+  },
+  "scrawl_evidence_20261030": {
+    "repository": "https://github.com/kitlangton/scrawl",
+    "commit": "7b184c67767a1aee6c1d44640d94d8446cd5fed1",
+    "upstream_version": "0.3.13",
+    "license": "MIT",
+    "path": "crates/capture",
+    "source_paths": [
+      "src",
+      "helper",
+      "Sources/CaptureKit",
+      "Tests/CaptureKitTests",
+      "skills",
+      "docs",
+      "assets",
+      "scripts",
+      "video",
+      "perf",
+      "site"
+    ],
+    "archive_sha256": "99f3f9e962eebeef1711047a590c512e18d3dbfc25f3fe00dfab213c8f73daa2",
+    "notice": "crates/capture/LICENSE",
+    "modifications": [
+      "Join the existing root Cargo workspace with publish = false and one root lockfile.",
+      "Add swift-testing at 48d727cc1cf4eda667c858c501495f1018f69d21 to run unchanged ScrawlKit tests under Command Line Tools.",
+      "Align a3s-code-voice with cpal 0.18.2 and its device-description, sample-rate and stream-config APIs.",
+      "Rename first-party Scrawl and ScrawlKit identifiers to Capture and CaptureKit while preserving legacy bundles and upstream provenance."
+    ]
   }
 }
