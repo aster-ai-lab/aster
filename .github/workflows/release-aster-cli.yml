@@ -4,10 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       artifact_run_id:
-        description: Publish archives already uploaded by this run. Leave empty to build them.
-        required: false
+        description: Republish archives from a previously qualified run without rebuilding them.
+        required: true
         type: string
-        default: ""
+  push:
+    tags:
+      - "aster-cli-v[0-9]+.[0-9]+.[0-9]+"
 
 permissions:
   contents: read
@@ -19,32 +21,37 @@ concurrency:
 
 jobs:
   preflight:
-    if: ${{ inputs.artifact_run_id == '' }}
+    name: Check release governance
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-      - name: Check out pinned desktop sources
-        uses: ./.github/actions/checkout-studio
-        with:
-          token: ${{ secrets.STUDIO_READ_TOKEN }}
-      - name: Install pinned toolchain
-        run: rustup show active-toolchain
-      - name: Check product formatting and delivery contracts
+      - run: python3 tests/release_governance.py
+
+  qualified:
+    name: Verify pre-merge qualification
+    needs: preflight
+    if: ${{ github.ref_type == 'tag' && inputs.artifact_run_id == '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require successful branch qualification for the tagged commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_SHA: ${{ github.sha }}
+          RELEASE_TAG: ${{ github.ref_name }}
         run: |
-          cargo fmt -p aster -p a3s-code-core -p a3s-code-acp -- --check
-          python3 tests/workspace_dependencies.py
-          python3 tests/studio_checkout.py
-          python3 tests/cli_pair_delivery.py
-          python3 tests/cli_sandbox.py
-          python3 tests/cli_sandbox_smoke_test.py
-          python3 tests/cli_pair_identity.py
-          python3 tests/aster_cli_linux.py
-          python3 tests/cli_release_workflow.py
-          python3 tests/release_governance.py
+          set -euo pipefail
+          successful_runs="$(gh api "repos/${GH_REPO}/actions/workflows/qualify-aster-cli.yml/runs?head_sha=${RELEASE_SHA}&event=push&status=completed&per_page=100" --jq "[.workflow_runs[] | select(.conclusion == \"success\" and .head_branch != \"${RELEASE_TAG}\")] | length")"
+          if [[ "$successful_runs" -eq 0 ]]; then
+            echo "refusing release: tagged commit $RELEASE_SHA has no successful pre-merge Aster CLI qualification run" >&2
+            exit 1
+          fi
 
   build:
-    needs: preflight
-    if: ${{ inputs.artifact_run_id == '' }}
+    needs: qualified
+    if: ${{ github.ref_type == 'tag' && inputs.artifact_run_id == '' }}
     name: ${{ matrix.platform }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 180
@@ -89,6 +96,11 @@ jobs:
         if: runner.os == 'Windows'
         shell: bash
         run: echo 'CARGO_HOME=D:\c' >> "$GITHUB_ENV"
+      - name: Cache CLI release dependencies
+        uses: Swatinem/rust-cache@e9d7b9f1e587218970671bac74e5511ed9506e6a
+        with:
+          shared-key: aster-cli-release-${{ matrix.platform }}
+          save-if: "true"
       - name: Build locked release
         shell: bash
         run: env -u GROK_VERSION cargo build --locked --release -p aster -p a3s-code-acp
@@ -116,8 +128,8 @@ jobs:
 
   # One Linux archive covers the supported glibc 2.31 baseline and newer loaders.
   build-linux:
-    needs: preflight
-    if: ${{ inputs.artifact_run_id == '' }}
+    needs: qualified
+    if: ${{ github.ref_type == 'tag' && inputs.artifact_run_id == '' }}
     name: linux
     runs-on: ubuntu-latest
     timeout-minutes: 240
@@ -167,6 +179,11 @@ jobs:
           curl -fsSL https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain none
           . "$HOME/.cargo/env"
           rustup show active-toolchain
+      - name: Cache CLI release dependencies
+        uses: Swatinem/rust-cache@e9d7b9f1e587218970671bac74e5511ed9506e6a
+        with:
+          shared-key: aster-cli-release-linux
+          save-if: "true"
       - name: Build locked release
         shell: bash
         run: |
@@ -191,8 +208,8 @@ jobs:
     permissions:
       contents: write
       actions: read
-    needs: [preflight, build, build-linux]
-    if: ${{ !cancelled() && (needs.preflight.result == 'success' || inputs.artifact_run_id != '') && (needs.build.result == 'success' || needs.build.result == 'skipped') && (needs.build-linux.result == 'success' || needs.build-linux.result == 'skipped') }}
+    needs: [preflight, qualified, build, build-linux]
+    if: ${{ !cancelled() && needs.preflight.result == 'success' && (inputs.artifact_run_id != '' || (github.ref_type == 'tag' && needs.qualified.result == 'success' && needs.build.result == 'success' && needs.build-linux.result == 'success')) }}
     runs-on: macos-latest
     timeout-minutes: 20
     steps:
@@ -221,6 +238,16 @@ jobs:
             printf '%s\n' "${files[@]:-}" >&2
             exit 1
           fi
+          if [[ -n "$ARTIFACT_RUN_ID" ]]; then
+            built="$(gh api "repos/${GH_REPO}/actions/runs/${ARTIFACT_RUN_ID}" --jq .head_sha)"
+            successful_runs="$(gh api "repos/${GH_REPO}/actions/workflows/qualify-aster-cli.yml/runs?head_sha=${built}&event=push&status=completed&per_page=100" --jq '[.workflow_runs[] | select(.conclusion == "success")] | length')"
+            if [[ "$successful_runs" -eq 0 ]]; then
+              echo "refusing release: artifact source $built has no successful branch qualification" >&2
+              exit 1
+            fi
+          else
+            built="$BUILD_SHA"
+          fi
           python3 tests/cli_sandbox_smoke.py dist/aster-cli-v0.1.5-macos.tar.gz --output-dir qualification
           python3 tests/cli_sandbox_smoke.py dist/aster-cli-v0.1.5-macos.tar.gz --mode yolo --output-dir qualification/yolo
           macos_sha="$(shasum -a 256 -b dist/aster-cli-v0.1.5-macos.tar.gz | cut -d' ' -f1)"
@@ -229,11 +256,6 @@ jobs:
           # Compact single-line manifest: scripts/install.sh parses this exact shape.
           printf '{"version":"0.1.5","tag":"aster-cli-v0.1.5","assets":{"macos":{"name":"aster-cli-v0.1.5-macos.tar.gz","sha256":"%s"},"linux":{"name":"aster-cli-v0.1.5-linux.tar.gz","sha256":"%s"},"windows":{"name":"aster-cli-v0.1.5-windows.zip","sha256":"%s"}}}\n' \
             "$macos_sha" "$linux_sha" "$windows_sha" > dist/latest.json
-          if [[ -n "$ARTIFACT_RUN_ID" ]]; then
-            built="$(gh api "repos/${GH_REPO}/actions/runs/${ARTIFACT_RUN_ID}" --jq .head_sha)"
-          else
-            built="$BUILD_SHA"
-          fi
           cat > notes.md <<'EOF'
           aster-cli v0.1.5 — Core / ACP 9.1.6
 
@@ -256,6 +278,7 @@ jobs:
           else
             gh release create aster-cli-v0.1.5 \
               --draft --target "$built" \
+              --latest=false \
               --title "aster-cli v0.1.5" \
               --notes-file notes.md \
               "${files[@]}" dist/latest.json

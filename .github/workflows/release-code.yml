@@ -9,100 +9,35 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: a3s-code-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
-  test:
-    name: Core/ACP tests (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 180
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    env:
-      CARGO_INCREMENTAL: "0"
-      CARGO_BUILD_JOBS: "2"
+  qualified:
+    name: Verify pre-merge qualification
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-      - name: Check out pinned workspace sources
-        uses: ./.github/actions/checkout-studio
-        with:
-          token: ${{ secrets.STUDIO_READ_TOKEN }}
-      - name: Install macOS build tools
-        if: runner.os == 'macOS'
-        run: brew install protobuf just
-      - name: Install Linux build tools
-        if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y protobuf-compiler cmake pkg-config libssl-dev bubblewrap
-      - name: Install pinned toolchain
-        shell: bash
-        run: rustup show active-toolchain
-      - name: Shorten Windows Cargo home
-        if: runner.os == 'Windows'
-        shell: bash
-        run: echo 'CARGO_HOME=D:\c' >> "$GITHUB_ENV"
-      - name: Check Core/ACP formatting and dependency boundary
-        shell: bash
+      - name: Require successful branch qualification for the tagged commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_SHA: ${{ github.sha }}
+          RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
         run: |
-          cargo fmt -p a3s-code-core -p a3s-code-acp -- --check
-          python3 tests/workspace_dependencies.py
-      - name: Test Core goal feedback
-        shell: bash
-        run: cargo test --locked -p a3s-code-core --lib agent_api::goal_facade::tests::execution::feedback -- --test-threads=1
-      - name: Test ACP unit and wire contracts
-        shell: bash
-        run: |
-          cargo test --locked -p a3s-code-acp --lib -- --test-threads=1
-          cargo test --locked -p a3s-code-acp --test acp_conformance_stdio -- --test-threads=1
-
-  test-windows:
-    name: Core/ACP portable tests (windows-latest)
-    runs-on: windows-latest
-    timeout-minutes: 180
-    env:
-      CARGO_INCREMENTAL: "0"
-      CARGO_BUILD_JOBS: "2"
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-      - name: Check out pinned workspace sources
-        uses: ./.github/actions/checkout-studio
-        with:
-          token: ${{ secrets.STUDIO_READ_TOKEN }}
-      - name: Install Windows protoc
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          $version = "29.3"
-          $zip = Join-Path $env:RUNNER_TEMP "protoc.zip"
-          $dest = Join-Path $env:RUNNER_TEMP "protoc"
-          Invoke-WebRequest -Uri "https://github.com/protocolbuffers/protobuf/releases/download/v$version/protoc-$version-win64.zip" -OutFile $zip
-          Expand-Archive -Path $zip -DestinationPath $dest
-          Add-Content -Path $env:GITHUB_PATH -Value (Join-Path $dest "bin")
-      - name: Install pinned toolchain
-        shell: bash
-        run: rustup show active-toolchain
-      - name: Shorten Windows Cargo home
-        shell: bash
-        run: echo 'CARGO_HOME=D:\c' >> "$GITHUB_ENV"
-      - name: Check Core/ACP formatting and dependency boundary
-        shell: bash
-        run: |
-          cargo fmt -p a3s-code-core -p a3s-code-acp -- --check
-          python3 tests/workspace_dependencies.py
-      - name: Test Core goal feedback
-        shell: bash
-        run: cargo test --locked -p a3s-code-core --lib agent_api::goal_facade::tests::execution::feedback -- --test-threads=1
-      - name: Test unsupported prompt refusal
-        shell: bash
-        run: cargo test --locked -p a3s-code-acp --lib agent::tests::unsupported_prompt_content_fails_closed_before_a_turn -- --test-threads=1
+          set -euo pipefail
+          successful_runs="$(gh api "repos/${GH_REPO}/actions/workflows/qualify-code.yml/runs?head_sha=${RELEASE_SHA}&event=push&status=completed&per_page=100" --jq "[.workflow_runs[] | select(.conclusion == \"success\" and .head_branch != \"${RELEASE_TAG}\")] | length")"
+          if [[ "$successful_runs" -eq 0 ]]; then
+            echo "refusing release: tagged commit $RELEASE_SHA has no successful pre-merge A3S Code qualification run" >&2
+            exit 1
+          fi
 
   build:
     name: ACP release (${{ matrix.platform }})
-    needs: [test, test-windows]
+    needs: qualified
     runs-on: ${{ matrix.os }}
     timeout-minutes: 180
     strategy:
@@ -147,6 +82,11 @@ jobs:
         if: runner.os == 'Windows'
         shell: bash
         run: echo 'CARGO_HOME=D:\c' >> "$GITHUB_ENV"
+      - name: Cache Core/ACP release dependencies
+        uses: Swatinem/rust-cache@e9d7b9f1e587218970671bac74e5511ed9506e6a
+        with:
+          shared-key: code-release-${{ matrix.platform }}
+          save-if: "true"
       - name: Build locked ACP release
         shell: bash
         run: cargo build --locked --release -p a3s-code-acp --bin a3s-code-acp
@@ -172,7 +112,7 @@ jobs:
 
   publish:
     name: Publish Core/ACP source release
-    needs: [test, test-windows, build]
+    needs: build
     if: github.ref_type == 'tag' && startsWith(github.ref_name, 'a3s-code-v')
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -193,16 +133,31 @@ jobs:
           version="${GITHUB_REF_NAME#a3s-code-v}"
           acp_version="$(python3 -c 'import tomllib; print(tomllib.load(open("crates/code/acp/Cargo.toml", "rb"))["package"]["version"])')"
           core_version="$(python3 -c 'import tomllib; print(tomllib.load(open("crates/code/core/Cargo.toml", "rb"))["package"]["version"])')"
-          test "$version" = "$acp_version"
-          test "$version" = "$core_version"
+          if ! test "$version" = "$acp_version"; then
+            echo "release tag version $version does not match ACP $acp_version" >&2
+            exit 1
+          fi
+          if ! test "$version" = "$core_version"; then
+            echo "release tag version $version does not match Core $core_version" >&2
+            exit 1
+          fi
           notes="crates/code/manual/RELEASE_${version}.md"
-          test -f "$notes"
+          if [[ ! -f "$notes" ]]; then
+            echo "release notes missing: $notes" >&2
+            exit 1
+          fi
           shopt -s nullglob
           files=(dist/*)
           if [[ ${#files[@]} -ne 3 ]]; then
             echo "expected 3 ACP release archives, found ${#files[@]}" >&2
             exit 1
           fi
+          for asset in "a3s-code-acp-v${version}-macos.tar.gz" "a3s-code-acp-v${version}-linux.tar.gz" "a3s-code-acp-v${version}-windows.zip"; do
+            if [[ ! -f "dist/$asset" ]]; then
+              echo "missing ACP release archive: $asset" >&2
+              exit 1
+            fi
+          done
           (cd dist && sha256sum ./* > SHA256SUMS)
           gh release create "${GITHUB_REF_NAME}" \
             --verify-tag \
