@@ -225,6 +225,7 @@ pub(crate) fn evidence_for_goal_step(
     session_id: &str,
     run_id: &str,
     attestation: Option<&VerificationReport>,
+    continuation: Option<&crate::goal_control::ContinuationSource>,
 ) -> Option<(Vec<VerificationReport>, String, bool)> {
     let start = facts.iter().position(|fact| fact.seq == run_sequence)?;
     let mut debt = receipts::fold_cache_evidence(&facts[start..]);
@@ -236,6 +237,7 @@ pub(crate) fn evidence_for_goal_step(
         return None;
     }
     let mut ledger = crate::harness_loop::MutationLedger::default();
+    ledger.bind_goal_continuation(continuation);
     let mut reports = Vec::new();
     let mut capability = None;
     for (tool, result) in &debt.results {

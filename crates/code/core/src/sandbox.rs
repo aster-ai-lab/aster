@@ -19,6 +19,7 @@ use std::sync::Arc;
 use crate::workspace::CommandOutputObserver;
 
 pub mod guest;
+pub(crate) mod host_access;
 pub mod native;
 #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
 pub mod oci;
@@ -184,6 +185,17 @@ impl ShellExecutionTarget {
 /// session via [`crate::SessionOptions::with_sandbox_handle`].
 #[async_trait]
 pub trait BashSandbox: Send + Sync {
+    /// Product defaults may be replaced by the host's explicit YOLO mode.
+    /// Custom SDK sandboxes remain authoritative unless they opt in.
+    fn allows_host_execution_override(&self) -> bool {
+        false
+    }
+
+    /// Whether execution is isolated from the host environment.
+    fn is_isolated(&self) -> bool {
+        true
+    }
+
     /// Report the configured execution target without executing or probing it.
     /// This fact does not establish availability or permission to run a command.
     fn execution_target(&self) -> ShellExecutionTarget {

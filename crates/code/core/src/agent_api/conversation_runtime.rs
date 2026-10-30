@@ -120,10 +120,10 @@ pub(super) async fn stream_with_attachments(
     prompt: &str,
     attachments: &[Attachment],
     history: Option<&[Message]>,
-) -> Result<(mpsc::Receiver<AgentEvent>, JoinHandle<()>)> {
+) -> Result<AgentRunStream> {
     reject_oversized_attachments(attachments)?;
     let lease = ExecutionCoordinator::admit(session, "stream-with-attachments").await?;
-    let actual = observe_owned_stream(launch_owned_conversation(
+    observe_owned_stream(launch_owned_conversation(
         session,
         lease,
         OwnedConversationRequest::Prompt {
@@ -137,8 +137,7 @@ pub(super) async fn stream_with_attachments(
         run_admission::ExecutionMode::Streaming,
         false,
     )?)
-    .await?;
-    Ok((actual.events, actual.worker))
+    .await
 }
 
 fn reject_oversized_attachments(attachments: &[Attachment]) -> Result<()> {

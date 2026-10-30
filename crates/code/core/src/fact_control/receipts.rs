@@ -200,6 +200,8 @@ pub(super) async fn prepare_tools(
         }
     }
     let effective_digest = a3s_effect::tool_args_digest(&request.call.args)?;
+    // Actor approval covers only the original invocation, never rewritten input.
+    request.call.needs_confirmation &= effective_digest == original_digest;
     if argument_error.is_none() && denial.is_none() {
         argument_error = tools
             .executor

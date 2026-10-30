@@ -258,6 +258,9 @@ impl MutationLedger {
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct MutationLedger {
     records: Vec<MutationRecord>,
+    // Derived from the admitted Goal's log version, never from checkpoint input.
+    #[serde(skip)]
+    legacy_accepted_receipts: bool,
     #[serde(default)]
     digest: String,
     /// A complete failed invocation changed these exact after-states. A
@@ -355,6 +358,14 @@ pub(crate) fn workspace_relative_path(workspace: &std::path::Path, path: &str) -
 }
 
 impl MutationLedger {
+    pub(crate) fn bind_goal_continuation(
+        &mut self,
+        source: Option<&crate::goal_control::ContinuationSource>,
+    ) {
+        self.legacy_accepted_receipts =
+            source.is_some_and(|source| source.progress_basis.is_none());
+    }
+
     pub fn is_empty(&self) -> bool {
         self.records.is_empty()
     }
@@ -853,7 +864,8 @@ impl MutationLedger {
         // A stat delta may only be timestamp or sandbox ACL bookkeeping.
         // Identical typed states cannot introduce a new mutation, but must
         // still reconcile an earlier record for this path.
-        if unchanged_file_identity(before, after)
+        if !self.legacy_accepted_receipts
+            && unchanged_file_identity(before, after)
             && !self.records.iter().any(|record| record.path == path)
         {
             return;

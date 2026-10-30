@@ -154,7 +154,7 @@ impl crate::agent::TurnEngine {
         let language_override = crate::prompts::select_turn_reply_language(
             published.as_deref(),
             language_source,
-            self.tool_context.has_open_invocation(),
+            self.tool_context.preserves_parent_reply_language(),
         );
         if let Some(language) = &language_override {
             self.tool_context.set_reply_language(Some(language));

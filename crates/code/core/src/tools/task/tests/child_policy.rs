@@ -176,6 +176,7 @@ async fn child_policy_uses_invoking_run_instead_of_captured_registration() {
         let mut context =
             ToolContext::new(workspace.path().to_path_buf()).with_run_governance(None, None);
         context.run_work_policy = bound.clone();
+        context.set_reply_language(Some("zh-CN"));
         let scoped = executor.scoped_for_invocation(&context);
         let result = scoped
             .execute_step(
@@ -186,6 +187,7 @@ async fn child_policy_uses_invoking_run_instead_of_captured_registration() {
         assert!(result.success, "{}", result.output);
         let systems = client.0.lock().unwrap();
         assert_eq!(systems.len(), 1);
+        assert!(systems[0].contains(&crate::prompts::turn_output_language_override("zh-CN")));
         assert!(!systems[0].contains("STALE-REGISTRATION"));
         assert_eq!(
             systems[0].matches("CURRENT-RUN-POLICY").count(),

@@ -3,13 +3,19 @@
 use super::*;
 
 impl A3sCodeAgent {
-    pub(super) fn prompt_text(prompt: &[acp::ContentBlock]) -> acp::Result<String> {
+    pub(super) fn prompt_content(
+        prompt: &[acp::ContentBlock],
+    ) -> acp::Result<(String, Vec<a3s_code_core::Attachment>)> {
+        use a3s_code_core::llm::MAX_ATTACHMENT_BYTES;
+        use base64::Engine as _;
+
         let unsupported = |kind: &str| {
             acp::Error::invalid_params().data(format!(
-                "unsupported prompt content block `{kind}`; this agent accepts text only and did not send the request to the model"
+                "unsupported prompt content block `{kind}`; this agent accepts text and images and did not send the request to the model"
             ))
         };
         let mut text = Vec::new();
+        let mut attachments = Vec::new();
         for block in prompt {
             match block {
                 acp::ContentBlock::Text(content) => {
@@ -23,14 +29,39 @@ impl A3sCodeAgent {
                     }
                     text.push(content.text.as_str());
                 }
-                acp::ContentBlock::Image(_) => return Err(unsupported("image")),
+                acp::ContentBlock::Image(content) => {
+                    if !matches!(
+                        content.mime_type.as_str(),
+                        "image/png" | "image/jpeg" | "image/gif" | "image/webp"
+                    ) {
+                        return Err(acp::Error::invalid_params()
+                            .data("image MIME type must be PNG, JPEG, GIF or WebP"));
+                    }
+                    if content.data.len() > MAX_ATTACHMENT_BYTES.div_ceil(3) * 4 {
+                        return Err(acp::Error::invalid_params()
+                            .data("image exceeds the 16 MiB attachment limit"));
+                    }
+                    let data = base64::engine::general_purpose::STANDARD
+                        .decode(&content.data)
+                        .map_err(|_| {
+                            acp::Error::invalid_params().data("image data must be valid base64")
+                        })?;
+                    if data.is_empty() || data.len() > MAX_ATTACHMENT_BYTES {
+                        return Err(acp::Error::invalid_params()
+                            .data("image must contain 1 byte to 16 MiB of data"));
+                    }
+                    attachments.push(a3s_code_core::Attachment::new(
+                        data,
+                        content.mime_type.clone(),
+                    ));
+                }
                 acp::ContentBlock::Audio(_) => return Err(unsupported("audio")),
                 acp::ContentBlock::Resource(_) => return Err(unsupported("resource")),
                 acp::ContentBlock::ResourceLink(_) => return Err(unsupported("resource_link")),
                 _ => return Err(unsupported("unknown")),
             }
         }
-        Ok(text.join("\n"))
+        Ok((text.join("\n"), attachments))
     }
 
     pub(super) async fn handle_event(
@@ -196,7 +227,6 @@ impl A3sCodeAgent {
                     session_id,
                     &task_id,
                     &child_session_id,
-                    &status,
                     session.context_window_tokens() as u64,
                     &metadata,
                     started_ms,
@@ -403,6 +433,7 @@ impl A3sCodeAgent {
         session_id: &acp::SessionId,
         session: &AgentSession,
         prompt: &str,
+        attachments: &[a3s_code_core::Attachment],
         generation: u64,
         turn_permit: OwnedMutexGuard<()>,
         observation: Option<&crate::run_observation::Binding>,
@@ -418,7 +449,13 @@ impl A3sCodeAgent {
                 .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?
                 .set_posture(posture, Vec::new())?;
         }
-        let admitted = session.stream_with_run(prompt, None).await;
+        let admitted = if attachments.is_empty() {
+            session.stream_with_run(prompt, None).await
+        } else {
+            session
+                .stream_with_attachments_and_run(prompt, attachments, None)
+                .await
+        };
         drop(sessions);
         // The run owns its frozen policy now. Restore before draining events
         // or releasing the turn permit so the next queued turn sees its mode.

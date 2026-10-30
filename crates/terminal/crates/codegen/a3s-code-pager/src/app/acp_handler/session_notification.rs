@@ -326,6 +326,11 @@ pub(super) fn handle_session_notification_with_origin(
         return false;
     }
     let mut plugins_changed_needs_skills_refetch = false;
+    if !meta.is_replay
+        && let Some(language) = &meta.output_language
+    {
+        agent.session.tracker.output_language = Some(language.clone());
+    }
     let mut status_snapshot_applied = false;
     let mut terminal_outcome: Option<super::super::turn_completion::TerminalApply> = None;
     let mut queue_wake_turn_complete = false;
@@ -1488,6 +1493,13 @@ pub(super) fn handle_child_session_notification(
     is_api_key_auth: bool,
     meta: Option<&serde_json::Value>,
 ) -> bool {
+    let parsed_meta = NotificationMeta::from_json(meta.and_then(|v| v.as_object()));
+    if !parsed_meta.is_replay
+        && let Some(language) = parsed_meta.output_language
+        && let Some(child_view) = agent.child_view_for_live_update_mut(child_sid)
+    {
+        child_view.session.tracker.output_language = Some(language);
+    }
     match update {
         A3sSessionUpdate::AutoCompactStarted { .. }
         | A3sSessionUpdate::AutoCompactCompleted { .. }

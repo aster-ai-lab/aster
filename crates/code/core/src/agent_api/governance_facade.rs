@@ -215,6 +215,11 @@ impl AgentSession {
         })?
     }
 
+    /// Language published for user-visible prose by the latest model call.
+    pub fn reply_language(&self) -> Option<String> {
+        self.tool_context.reply_language()
+    }
+
     /// Runtime agent-style override. Outer `None` means unset; inner value is
     /// the style (or cleared specialty when `Some(None)`).
     pub(crate) fn runtime_agent_style_override(

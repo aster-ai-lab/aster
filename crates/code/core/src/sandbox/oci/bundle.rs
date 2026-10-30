@@ -91,6 +91,7 @@ pub(super) async fn prepare(
     if !copied.status.is_some_and(|status| status.success()) {
         bail!("stage sandbox rootfs: {}", copied.stderr);
     }
+    unpack_rootfs(&directory, cancellation).await?;
     std::fs::set_permissions(&directory, std::fs::Permissions::from_mode(0o700))?;
     let rootfs = directory.join("rootfs");
     if rootfs.canonicalize()? != rootfs || !std::fs::symlink_metadata(&rootfs)?.is_dir() {
@@ -227,6 +228,44 @@ pub(super) async fn prepare(
         isolation: IsolationRequest::DedicatedVm,
         attachments,
     })
+}
+
+pub(super) async fn unpack_rootfs(
+    directory: &Path,
+    cancellation: &CancellationToken,
+) -> Result<()> {
+    let archive = directory.join("rootfs.tar");
+    if !archive.exists() {
+        return Ok(());
+    }
+    if !std::fs::symlink_metadata(&archive)?.is_file()
+        || archive.metadata()?.len() > 256 * 1024 * 1024
+        || directory.join("rootfs").exists()
+    {
+        bail!("invalid packaged sandbox rootfs");
+    }
+    // bsdtar rejects traversal and refuses writes through symlinks; Linux symlinks remain guest data.
+    let mut command = Command::new("/usr/bin/tar");
+    command
+        .args(["--extract", "--no-same-owner", "--file"])
+        .arg(&archive)
+        .arg("--directory")
+        .arg(directory)
+        .env_clear();
+    let output = crate::tools::process::execute_owned_process(
+        &mut command,
+        &[],
+        std::time::Duration::from_secs(30),
+        cancellation,
+    )
+    .await?;
+    if !output.status.is_some_and(|status| status.success())
+        || !std::fs::symlink_metadata(directory.join("rootfs/bin/bash"))?.is_file()
+    {
+        bail!("unpack sandbox rootfs: {}", output.stderr);
+    }
+    std::fs::remove_file(archive)?;
+    Ok(())
 }
 
 #[cfg(test)]

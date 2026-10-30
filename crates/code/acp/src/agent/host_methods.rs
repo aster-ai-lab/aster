@@ -21,11 +21,12 @@ pub(super) enum HostMethod {
     SessionList,
     SessionDelete,
     PermissionPosture,
+    SubagentCancel,
 }
 
 impl HostMethod {
     #[cfg(test)]
-    pub(super) const ALL: [Self; 12] = [
+    pub(super) const ALL: [Self; 13] = [
         Self::GoalImport,
         Self::GoalImportPreview,
         Self::GoalCommand,
@@ -38,6 +39,7 @@ impl HostMethod {
         Self::SessionList,
         Self::SessionDelete,
         Self::PermissionPosture,
+        Self::SubagentCancel,
     ];
 
     /// The wire method, or `None` outside the closed set. Compaction and
@@ -58,6 +60,7 @@ impl HostMethod {
             "a3s/session/list" => Self::SessionList,
             "a3s/session/delete" => Self::SessionDelete,
             "a3s/permission_posture" => Self::PermissionPosture,
+            "a3s/subagent/cancel" => Self::SubagentCancel,
             _ if method.starts_with("a3s/compact_conversation") => Self::CompactConversation,
             _ if method.starts_with("a3s/interject") => Self::Interject,
             _ => return None,
@@ -79,11 +82,71 @@ impl HostMethod {
             Self::SessionList => "a3s/session/list",
             Self::SessionDelete => "a3s/session/delete",
             Self::PermissionPosture => "a3s/permission_posture",
+            Self::SubagentCancel => "a3s/subagent/cancel",
         }
     }
 }
 
+#[derive(serde::Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct SubagentCancelParams {
+    session_id: String,
+    subagent_id: String,
+}
+
+fn require_session_id(value: &str) -> acp::Result<()> {
+    if value.trim().is_empty() || value.len() > 4096 {
+        return Err(acp::Error::invalid_params().data("invalid session identity"));
+    }
+    Ok(())
+}
+
+fn ext_json(value: serde_json::Value) -> acp::Result<acp::ExtResponse> {
+    let raw = serde_json::value::to_raw_value(&value)
+        .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
+    Ok(acp::ExtResponse::new(raw.into()))
+}
+
 impl A3sCodeAgent {
+    async fn handle_subagent_cancel(
+        &self,
+        args: &acp::ExtRequest,
+    ) -> acp::Result<acp::ExtResponse> {
+        use a3s_code_core::subagent_task_tracker::SubagentStatus;
+        let request: SubagentCancelParams = serde_json::from_str(args.params.get())
+            .map_err(|error| acp::Error::invalid_params().data(error.to_string()))?;
+        require_session_id(&request.session_id)?;
+        require_session_id(&request.subagent_id)?;
+        let session = {
+            let sessions = self.sessions.lock().await;
+            let live = sessions
+                .get(&request.session_id)
+                .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?;
+            Arc::clone(&live.session)
+        };
+        let cancelled = session.cancel_subagent_task(&request.subagent_id).await;
+        let outcome = if cancelled {
+            serde_json::json!({"kind":"cancelled"})
+        } else {
+            match session.subagent_task(&request.subagent_id).await {
+                Some(task) => {
+                    let status = match task.status {
+                        SubagentStatus::Completed => "completed",
+                        SubagentStatus::Failed => "failed",
+                        SubagentStatus::Cancelled => "cancelled",
+                        _ => return Err(acp::Error::internal_error()
+                            .data("subagent cancellation handle is unavailable; task may still be running")),
+                    };
+                    serde_json::json!({"kind":"already_finished","status":status})
+                }
+                None => serde_json::json!({"kind":"not_found"}),
+            }
+        };
+        ext_json(serde_json::json!({"result": {
+            "subagentId":request.subagent_id, "cancelled":cancelled, "outcome":outcome
+        }, "error":null}))
+    }
+
     pub(super) async fn answer_host_method(
         &self,
         method: HostMethod,
@@ -103,6 +166,7 @@ impl A3sCodeAgent {
             HostMethod::SessionList => self.handle_session_list(args).await,
             HostMethod::SessionDelete => self.handle_session_delete(args).await,
             HostMethod::PermissionPosture => self.handle_permission_posture(args).await,
+            HostMethod::SubagentCancel => self.handle_subagent_cancel(args).await,
         }
     }
 

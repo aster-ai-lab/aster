@@ -53,6 +53,34 @@ fn unchanged_receipt_does_not_create_mutation_or_failed_effect_debt() {
 }
 
 #[test]
+fn historical_goal_receipt_semantics_do_not_become_a_new_run_or_checkpoint_setting() {
+    let legacy: crate::goal_control::ContinuationSource = serde_json::from_value(serde_json::json!({
+        "policy": {"automatic_enabled":true,"max_slices":8,"max_no_progress_slices":1,"deadline_unix_ms":1000},
+        "observed_unix_ms":100,
+    })).unwrap();
+    let current =
+        crate::goal_control::ContinuationSource::turn_progress(legacy.policy.clone(), 100);
+    let state = file(b"same bytes", 0o644);
+    let result = receipt("legacy", Some(state.clone()), state);
+    let mut ledger = MutationLedger::default();
+    ledger.bind_goal_continuation(Some(&legacy));
+    ledger.observe_tool_receipt("write", &result);
+    assert!(!ledger.is_empty());
+    let checkpoint = serde_json::to_value(&ledger).unwrap();
+    assert!(checkpoint.get("legacy_accepted_receipts").is_none());
+    let restored: MutationLedger = serde_json::from_value(checkpoint).unwrap();
+    assert!(!restored.is_empty());
+    assert!(!restored.legacy_accepted_receipts);
+    for source in [None, Some(&current)] {
+        let mut ledger = MutationLedger::default();
+        ledger.bind_goal_continuation(Some(&legacy));
+        ledger.bind_goal_continuation(source);
+        ledger.observe_tool_receipt("write", &result);
+        assert!(ledger.is_empty());
+    }
+}
+
+#[test]
 fn unchanged_receipt_preserves_prior_mutation_and_its_verification_debt() {
     let before = file(b"before", 0o644);
     let after = file(b"after", 0o644);

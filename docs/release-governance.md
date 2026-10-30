@@ -34,7 +34,7 @@ GitHub Latest 上的 `latest.json` 是旧版 CLI 安装器和更新器的兼容�
 
 ### Aster CLI
 
-1. 用 `release-aster-cli.yml` 构建三个平台归档并生成版本化草稿 Release。
+1. 用 `release-aster-cli.yml` 构建三个平台归档。macOS ARM64 GitHub 托管 runner 不支持嵌套虚拟化，不能承担最终沙箱执行验收。指定已具备该能力的 `qualified_runner`，或在具备该能力的 Mac 上下载同一构建 run 的三个归档到 `dist/`，设置 `GH_REPO`、`BUILD_SHA`、`ARTIFACT_RUN_ID`，从干净的对应提交运行 `bash scripts/publish-aster-cli.sh`。两条入口共用此发布脚本：它先安装并验证同一归档的自动模式 Linux 执行和 YOLO 本机 Darwin 执行，再生成草稿；任一失败均禁止创建或上传 Release。
 2. 检查草稿的提交、归档成员、版本和 SHA-256 后，发布 `aster-cli-vX.Y.Z`。
 3. 运行 `release-aster-cli-channel.yml`，输入相同的 `X.Y.Z`。该流程拒绝草稿或预发布版本，验证清单后更新 `aster-cli-stable` 和 Aster Latest 上的旧客户端兼容清单。
 

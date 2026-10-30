@@ -156,6 +156,7 @@ pub fn is_sendable_wait(activity: &Option<TurnActivity>) -> bool {
 /// Inputs to [`render_turn_status`]: one frame's worth of turn state.
 #[derive(Debug)]
 pub struct TurnStatusArgs<'a> {
+    pub output_language: Option<&'a str>,
     pub state: &'a AgentState,
     pub activity: &'a Option<TurnActivity>,
     pub turn_elapsed: Option<Duration>,
@@ -190,6 +191,7 @@ pub fn render_turn_status(
     args: TurnStatusArgs<'_>,
 ) -> TurnStatusOutput {
     let TurnStatusArgs {
+        output_language,
         state,
         activity,
         turn_elapsed,
@@ -305,8 +307,14 @@ pub fn render_turn_status(
                 | AgentState::CommandCancelling { .. }
         );
 
-    let (activity_style, label, is_tool) =
-        compute_activity(&theme, state, activity, is_bash_turn, goal_verifying);
+    let (activity_style, label, is_tool) = compute_activity(
+        &theme,
+        state,
+        activity,
+        is_bash_turn,
+        goal_verifying,
+        output_language,
+    );
 
     // Early return for idle (shouldn't happen if should_show is respected, but be safe).
     if matches!(state, AgentState::Idle) {
@@ -578,11 +586,18 @@ fn compute_activity(
     activity: &Option<TurnActivity>,
     is_bash_turn: bool,
     goal_verifying: bool,
+    output_language: Option<&str>,
 ) -> (Style, String, bool) {
+    let chinese = matches!(output_language, Some("zh-CN" | "zh-TW" | "zh"));
     match (state, activity) {
         (AgentState::TurnCancelling | AgentState::CommandCancelling { .. }, _) => (
             Style::default().fg(theme.accent_error),
-            "Cancelling…".to_string(),
+            if chinese {
+                "正在停止…"
+            } else {
+                "Cancelling…"
+            }
+            .to_string(),
             false,
         ),
         // Goal-mode completion verification runs in-turn after the model stops streaming
@@ -590,17 +605,32 @@ fn compute_activity(
         // Label the whole window "Verifying…" so the multi-minute panel isn't mislabelled as the model responding (or a hung "Waiting…")
         (AgentState::TurnRunning, _) if goal_verifying => (
             Style::default().fg(theme.text_secondary),
-            "Verifying…".to_string(),
+            if chinese {
+                "正在验证…"
+            } else {
+                "Verifying…"
+            }
+            .to_string(),
             false,
         ),
         (AgentState::TurnRunning, Some(TurnActivity::Thinking)) => (
             Style::default().fg(theme.text_secondary),
-            "Thinking…".to_string(),
+            if chinese {
+                "正在思考…"
+            } else {
+                "Thinking…"
+            }
+            .to_string(),
             false,
         ),
         (AgentState::TurnRunning, Some(TurnActivity::Responding)) => (
             Style::default().fg(theme.text_secondary),
-            "Responding…".to_string(),
+            if chinese {
+                "正在回复…"
+            } else {
+                "Responding…"
+            }
+            .to_string(),
             false,
         ),
         (AgentState::TurnRunning, Some(TurnActivity::ToolRunning { title, description })) => {
@@ -621,7 +651,12 @@ fn compute_activity(
         }
         (AgentState::TurnRunning, Some(TurnActivity::AutoCompacting)) => (
             Style::default().fg(theme.text_secondary),
-            "Compacting…".to_string(),
+            if chinese {
+                "正在整理上下文…"
+            } else {
+                "Compacting…"
+            }
+            .to_string(),
             false,
         ),
         (
@@ -652,20 +687,30 @@ fn compute_activity(
             // An explicit wait reason (model, subagent, task output, tasks, sleep) names what the agent is blocked on, not a generic "Waiting…"
             // See `WaitingReason` and `AgentView::resolve_turn_activity`
             Style::default().fg(theme.text_secondary),
-            reason.label(),
+            reason.label_for_language(output_language),
             false,
         ),
         (AgentState::TurnRunning, None) if is_bash_turn => (
             // Bash turn: not inference, show generic "Running…".
             Style::default().fg(theme.text_secondary),
-            "Running…".to_string(),
+            if chinese {
+                "正在运行…"
+            } else {
+                "Running…"
+            }
+            .to_string(),
             false,
         ),
         (AgentState::TurnRunning, None) => (
             // Fallback: a running inference turn with no resolved activity
             // The view resolves this gap into Waiting(Model/Subagent) before render, so this is a rarely-hit safety net
             Style::default().fg(theme.text_secondary),
-            "Waiting…".to_string(),
+            if chinese {
+                "等待中…"
+            } else {
+                "Waiting…"
+            }
+            .to_string(),
             false,
         ),
         (
@@ -835,10 +880,12 @@ mod tests {
     fn activity_label_reads_verifying_while_goal_verifying_overriding_stale_activity() {
         let theme = Theme::current();
         // Running turn, no streaming activity, the verifying flag set: "Verifying…"
-        let (_, label, _) = compute_activity(&theme, &AgentState::TurnRunning, &None, false, true);
+        let (_, label, _) =
+            compute_activity(&theme, &AgentState::TurnRunning, &None, false, true, None);
         assert_eq!(label, "Verifying…");
         // The same state without the verifying flag falls back to the generic "Waiting…"
-        let (_, label, _) = compute_activity(&theme, &AgentState::TurnRunning, &None, false, false);
+        let (_, label, _) =
+            compute_activity(&theme, &AgentState::TurnRunning, &None, false, false, None);
         assert_eq!(label, "Waiting…");
         // During verification the model is idle but its last streaming activity (Responding/Thinking) can linger
         // The flag overrides it so the panel reads "Verifying…", not "Responding…"
@@ -849,6 +896,7 @@ mod tests {
                 &Some(activity),
                 false,
                 true,
+                None,
             );
             assert_eq!(label, "Verifying…");
         }
@@ -859,6 +907,7 @@ mod tests {
             &Some(TurnActivity::Responding),
             false,
             false,
+            None,
         );
         assert_eq!(label, "Responding…");
     }
@@ -899,6 +948,7 @@ mod tests {
                 &Some(TurnActivity::Waiting(reason.clone())),
                 false,
                 false,
+                None,
             );
             assert_eq!(label, expected, "reason {reason:?}");
             assert!(!is_tool, "waiting is not a tool activity");
@@ -909,7 +959,8 @@ mod tests {
     fn bash_turn_still_renders_running_not_waiting() {
         let theme = Theme::current();
         // A bash (non-inference) turn with no activity keeps its own "Running…" label; the view leaves it as `None` rather than Waiting(Model)
-        let (_, label, _) = compute_activity(&theme, &AgentState::TurnRunning, &None, true, false);
+        let (_, label, _) =
+            compute_activity(&theme, &AgentState::TurnRunning, &None, true, false, None);
         assert_eq!(label, "Running…");
     }
 
@@ -920,7 +971,7 @@ mod tests {
             command: AgentCommand::SwitchModelCompact,
             started_at: Instant::now(),
         };
-        let (_, label, _) = compute_activity(&theme, &state, &None, false, false);
+        let (_, label, _) = compute_activity(&theme, &state, &None, false, false, None);
         assert_eq!(label, "Switching model…");
         assert!(should_show(&state, false, None, Watchers::default(), false));
     }
@@ -984,6 +1035,7 @@ mod tests {
             &mut buf,
             Rect::new(0, 0, 80, 1),
             TurnStatusArgs {
+                output_language: None,
                 state: &AgentState::TurnCancelling,
                 activity: &None,
                 turn_elapsed: Some(Duration::from_secs(3)),
@@ -1096,6 +1148,7 @@ mod tests {
     /// Baseline render args: idle agent on a mouse host with the given watchers.
     fn idle_args<'a>(watchers: Watchers) -> TurnStatusArgs<'a> {
         TurnStatusArgs {
+            output_language: None,
             state: &AgentState::Idle,
             activity: &None,
             turn_elapsed: None,

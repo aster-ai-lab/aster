@@ -61,6 +61,10 @@ pub(super) struct RuntimePermissionChecker {
 }
 
 impl crate::permissions::PermissionChecker for RuntimePermissionChecker {
+    fn allows_unsandboxed_execution(&self) -> bool {
+        crate::permissions::PermissionChecker::allows_unsandboxed_execution(&self.policy)
+    }
+
     fn snapshot_for_run(&self) -> Option<Arc<dyn crate::permissions::PermissionChecker>> {
         Some(Arc::new(Self {
             policy: self.policy.clone(),
@@ -450,8 +454,14 @@ pub(super) fn capture_owned_preparation(
     };
     let permission = session
         .runtime_permission_policy()
-        .or_else(|| session.config.permission_policy.clone())
-        .unwrap_or_default();
+        .or_else(|| session.config.permission_policy.clone());
+    if let Some(policy) = permission.as_ref() {
+        config.permission_checker = Some(Arc::new(RuntimePermissionChecker {
+            policy: policy.clone(),
+            ceiling: config.permission_checker.clone(),
+        }));
+    }
+    let permission = permission.unwrap_or_default();
     let inputs = LoopAssemblyInputs::from_session(session, config);
     let workspace = inputs.workspace.clone();
     Ok(OwnedPreparationCapture {

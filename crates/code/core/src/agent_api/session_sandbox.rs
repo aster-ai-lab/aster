@@ -159,6 +159,10 @@ struct UnavailableDefaultSandbox {
 
 #[async_trait::async_trait]
 impl BashSandbox for UnavailableDefaultSandbox {
+    fn allows_host_execution_override(&self) -> bool {
+        true
+    }
+
     fn validate_execution_available(&self) -> anyhow::Result<()> {
         anyhow::bail!(self.message.clone())
     }

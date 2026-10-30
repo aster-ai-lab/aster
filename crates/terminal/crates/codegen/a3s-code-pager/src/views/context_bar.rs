@@ -159,7 +159,12 @@ pub fn context_bar_line_for_session(
         return None;
     }
     let used = used_tokens?;
-    let total = total_tokens.filter(|&t| t > 0)?;
+    let Some(total) = total_tokens.filter(|&t| t > 0) else {
+        return Some(Line::from(Span::styled(
+            format!("{} / ?", fmt_tokens(used)),
+            Style::default().fg(theme.text_secondary).bg(theme.bg_base),
+        )));
+    };
     let pct = a3s_token_estimation::usage_percentage(used, total);
 
     // Default form drives the line width: `used / total`, right-padded to the minimum hover width so both states render at the same width
@@ -380,9 +385,15 @@ mod tests {
         let theme = Theme::default();
         for hovered in [false, true] {
             assert!(context_bar_line(None, Some(1_000_000), hovered, &theme).is_none());
-            assert!(context_bar_line(Some(1_000), None, hovered, &theme).is_none());
+            assert_eq!(
+                line_text(&context_bar_line(Some(1_000), None, hovered, &theme).unwrap()),
+                "1.0K / ?"
+            );
             // Zero total is treated as missing.
-            assert!(context_bar_line(Some(1_000), Some(0), hovered, &theme).is_none());
+            assert_eq!(
+                line_text(&context_bar_line(Some(1_000), Some(0), hovered, &theme).unwrap()),
+                "1.0K / ?"
+            );
         }
     }
 

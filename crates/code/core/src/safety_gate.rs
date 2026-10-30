@@ -223,6 +223,20 @@ impl<'a> ToolSafetyGate<'a> {
         args: &serde_json::Value,
         tool_requires_confirmation: bool,
     ) -> ToolGateDecision {
+        if self
+            .config
+            .permission_checker
+            .as_ref()
+            .is_some_and(|checker| {
+                checker.allows_unsandboxed_execution()
+                    && checker.check(tool_name, args) == PermissionDecision::Allow
+            })
+        {
+            return ToolGateDecision::Execute {
+                reason: ToolGateApproval::PermissionAllow,
+            };
+        }
+
         let Some(cm) = &self.config.confirmation_manager else {
             return missing_confirmation_manager(tool_name);
         };

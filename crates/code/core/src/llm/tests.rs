@@ -4119,6 +4119,16 @@ mod multimodal_tests {
         assert_eq!(msg.text(), "No images");
     }
 
+    #[test]
+    fn image_only_wire_has_text_without_changing_the_product_transcript() {
+        for text in ["", " \n"] {
+            let message = Message::user_with_attachments(text, &[Attachment::png(vec![1, 2])]);
+            assert_eq!(message.text(), "[Image]");
+            assert_eq!(message.transcript_text.as_deref(), Some(text));
+            assert!(matches!(&message.content[0], ContentBlock::Image { .. }));
+        }
+    }
+
     // --- Message::tool_result_with_images ---
 
     #[test]

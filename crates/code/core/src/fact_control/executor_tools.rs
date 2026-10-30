@@ -366,11 +366,10 @@ impl ToolRunner for ExecutorTools {
                     args = updated;
                 }
             }
-            // Tool-owned escalation: a tool that declares `requires_confirmation`
-            // settles through the confirmation flow even when the permission
-            // checker allows it — the policy view alone cannot waive the
-            // declaration. Sessions without a confirmation authority fail closed.
-            if tools
+            // Preparation binds actor approval to these exact arguments. Only
+            // calls without that approval still need tool-owned confirmation.
+            if !(tools.pre_tool_hook_resolved && call.needs_confirmation)
+                && tools
                 .executor
                 .registry()
                 .requires_confirmation(&call.name, &call.args)

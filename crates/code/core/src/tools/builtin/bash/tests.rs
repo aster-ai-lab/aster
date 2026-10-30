@@ -1525,7 +1525,7 @@ async fn bash_existence_check_metadata_enables_verified_completion() {
 fn bash_tool_name_and_description_are_stable() {
     let tool = BashTool;
     assert_eq!(tool.name(), "bash");
-    assert!(tool.description().contains("shell command"));
+    assert!(tool.description().contains("workspace command"));
     let params = tool.parameters();
     assert_eq!(params["required"], serde_json::json!(["command"]));
     assert!(tool.requires_confirmation(&serde_json::json!({

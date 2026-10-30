@@ -455,6 +455,37 @@ async fn test_stream_cancel_records_interrupted_history_and_auto_saves() {
 }
 
 #[tokio::test]
+async fn image_stream_returns_the_admitted_run_and_retains_image_history() {
+    let root = tempfile::tempdir().unwrap();
+    let agent = Agent::from_config(test_config()).await.unwrap();
+    let session = agent
+        .build_session(
+            root.path().to_string_lossy().into_owned(),
+            Arc::new(StaticStreamingClient::new("image answer")),
+            &SessionOptions::new(),
+        )
+        .unwrap();
+    let mut stream = session
+        .stream_with_attachments_and_run("", &[crate::Attachment::png(vec![1, 2, 3])], None)
+        .await
+        .unwrap();
+    let run = stream.run.expect("run captured at admission");
+    while stream.events.recv().await.is_some() {}
+    stream.worker.await.unwrap();
+    assert_eq!(
+        run.snapshot().await.unwrap().status,
+        crate::run::RunStatus::Completed
+    );
+    assert_eq!(session.runs().await.len(), 1);
+    let history = session.history();
+    assert!(history[0].content.iter().any(|block| matches!(
+        block, crate::ContentBlock::Image { source }
+            if source.data == "AQID" && source.media_type == "image/png"
+    )));
+    assert_eq!(history[1].text(), "image answer");
+}
+
+#[tokio::test]
 async fn test_stream_with_attachments_cancel_records_interrupted_history_and_auto_saves() {
     let store = Arc::new(crate::store::MemorySessionStore::new());
     let agent = Agent::from_config(test_config()).await.unwrap();

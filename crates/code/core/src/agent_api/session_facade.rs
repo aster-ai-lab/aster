@@ -368,6 +368,19 @@ impl AgentSession {
         attachments: &[crate::llm::Attachment],
         history: Option<&[Message]>,
     ) -> Result<(mpsc::Receiver<AgentEvent>, JoinHandle<()>)> {
+        let stream = self
+            .stream_with_attachments_and_run(prompt, attachments, history)
+            .await?;
+        Ok((stream.events, stream.worker))
+    }
+
+    /// Stream image attachments with the exact Run handle captured at admission.
+    pub async fn stream_with_attachments_and_run(
+        &self,
+        prompt: &str,
+        attachments: &[crate::llm::Attachment],
+        history: Option<&[Message]>,
+    ) -> Result<AgentRunStream> {
         conversation_runtime::stream_with_attachments(self, prompt, attachments, history).await
     }
 

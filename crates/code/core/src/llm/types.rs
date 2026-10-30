@@ -418,16 +418,18 @@ impl Message {
 
     /// Create a user message with text and image attachments.
     pub fn user_with_attachments(text: &str, attachments: &[Attachment]) -> Self {
+        let image_only = !attachments.is_empty() && text.trim().is_empty();
         let mut content: Vec<ContentBlock> =
             attachments.iter().map(|a| a.to_content_block()).collect();
+        // Image-capable providers can still reject an empty text part.
         content.push(ContentBlock::Text {
-            text: text.to_string(),
+            text: if image_only { "[Image]" } else { text }.to_string(),
         });
         Self {
             role: "user".to_string(),
             content,
             reasoning_content: None,
-            transcript_text: None,
+            transcript_text: image_only.then(|| text.to_string()),
             transcript_visibility: TranscriptVisibility::Product,
         }
     }
