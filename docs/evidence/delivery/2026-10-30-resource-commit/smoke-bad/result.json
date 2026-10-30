@@ -1,0 +1,6 @@
+{
+  "passed": false,
+  "archive": "aster-cli-v0.1.4-macos.tar.gz",
+  "sha256": "00b4c9e6b68d11060274e328d22e60d3037fc2576d20b8983a740f31be0598b7",
+  "error": "Command '['bash', '/Users/roylin/code/aster/target/delivery-commit-20261030/aster/scripts/install.sh', '--prefix', '/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-release-qualification-oaolrm75/bin']' returned non-zero exit status 1."
+}

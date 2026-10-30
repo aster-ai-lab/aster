@@ -132,6 +132,30 @@ class WorkspaceDependenciesTest(unittest.TestCase):
             subprocess.run([str(executable)], env=env, check=True, capture_output=True)
             for name in ["a3s-code-acp.exe", "a3s-office.exe"]:
                 self.assertEqual((manifest / "resources/agent" / name).read_bytes(), name.encode())
+            resource = manifest / "resources/agent"
+            stamps = {path: path.stat().st_mtime_ns for path in [resource, *resource.iterdir()]}
+            subprocess.run([str(executable)], env=env, check=True, capture_output=True)
+            self.assertEqual({path: path.stat().st_mtime_ns for path in stamps}, stamps)
+            source = output.parents[2] / "a3s-office.exe"
+            source.write_bytes(b"x" * source.stat().st_size)
+            subprocess.run([str(executable)], env=env, check=True, capture_output=True)
+            self.assertEqual((resource / source.name).read_bytes(), source.read_bytes())
+            env["STUDIO_COMPANIONS_STAGED"] = "1"
+            refused = subprocess.run([str(executable)], env=env, capture_output=True, text=True)
+            self.assertNotEqual(refused.returncode, 0)
+            private = output.parents[2] / "studio-resources/agent"
+            private.mkdir(parents=True, exist_ok=True)
+            for name in ["a3s-code-acp.exe", "a3s-office.exe"]:
+                (private / name).write_bytes((output.parents[2] / name).read_bytes())
+            neighbor = resource / "a3s-code-acp.exe"
+            neighbor.write_bytes(b"another target's companion")
+            subprocess.run([str(executable)], env=env, check=True, capture_output=True)
+            self.assertEqual(neighbor.read_bytes(), b"another target's companion")
+            (private / "a3s-office.exe").write_bytes(b"stale private companion")
+            refused = subprocess.run([str(executable)], env=env, capture_output=True, text=True)
+            self.assertNotEqual(refused.returncode, 0)
+            env.pop("STUDIO_COMPANIONS_STAGED")
+            subprocess.run([str(executable)], env=env, check=True, capture_output=True)
             if sys.platform == "darwin":
                 locked = manifest / "resources/agent" / "a3s-code-acp.exe"
                 locked.write_bytes(b"stale")

@@ -20,6 +20,7 @@
 //! holding `latest.json` and the assets for hermetic checks.
 //!
 //! The archive contains the two binaries plus `BUILD_ID` and `SHA256SUMS`.
+//! macOS archives also carry the verified sandbox companions beside the pair.
 //! The two-file form without metadata stays installable; the manifest
 //! digest still bounds it.
 
@@ -37,6 +38,18 @@ const MAX_MANIFEST: u64 = 64 * 1024;
 const PAIR_PREFIX: &str = "aster-cli-pair-v1:";
 const MAX_ARCHIVE: u64 = 512 * 1024 * 1024;
 const READ_CHUNK: usize = 4096;
+// The shared sandbox producer's installed-file contract, in checksum order.
+const SANDBOX_MEMBERS: [&str; 9] = [
+    "sandbox/a3s-oci",
+    "sandbox/a3s-oci-krun-runtime/libkrun.1.17.0.dylib",
+    "sandbox/a3s-oci-krun-runtime/libkrunfw.5.dylib",
+    "sandbox/a3s-oci-krun-shim",
+    "sandbox/a3s-oci-system.ext4",
+    "sandbox/bundle/config.json",
+    "sandbox/bundle/rootfs.tar",
+    "sandbox/manifest.json",
+    "sandbox/system-image.json",
+];
 
 const COLS: usize = 48;
 const ROWS: usize = 11;
@@ -406,7 +419,11 @@ fn archive_is_zip() -> bool {
 
 fn allowed_member(name: &str) -> bool {
     let (aster_name, acp_name) = binary_names();
-    name == aster_name || name == acp_name || name == "BUILD_ID" || name == "SHA256SUMS"
+    name == aster_name
+        || name == acp_name
+        || name == "BUILD_ID"
+        || name == "SHA256SUMS"
+        || (cfg!(target_os = "macos") && SANDBOX_MEMBERS.contains(&name))
 }
 
 fn install_dir() -> Result<PathBuf> {
@@ -499,6 +516,11 @@ fn install_release(channel: &Channel, force_reinstall: bool) -> Result<InstallOu
     if !force_reinstall
         && files_identical(&pair.aster, &dest_aster)
         && files_identical(&pair.acp, &dest_acp)
+        && pair.sandbox.as_ref().is_none_or(|_| {
+            SANDBOX_MEMBERS
+                .iter()
+                .all(|name| files_identical(&unpacked.join(name), &dir.join(name)))
+        })
     {
         return Ok(InstallOutcome::Current {
             identity: pair.identity,
@@ -553,6 +575,7 @@ struct VerifiedPair {
     aster: PathBuf,
     acp: PathBuf,
     identity: Option<String>,
+    sandbox: Option<PathBuf>,
 }
 
 fn verify_pair(unpacked: &Path) -> Result<VerifiedPair> {
@@ -562,6 +585,26 @@ fn verify_pair(unpacked: &Path) -> Result<VerifiedPair> {
     if !aster.is_file() || !acp.is_file() {
         bail!("archive did not contain both aster-cli binaries");
     }
+    let sandbox = unpacked.join("sandbox");
+    let sandbox = if sandbox.exists() {
+        if !cfg!(target_os = "macos") || sandbox.is_symlink() || !sandbox.is_dir() {
+            bail!("invalid sandbox companion directory");
+        }
+        for name in SANDBOX_MEMBERS {
+            let file = unpacked.join(name);
+            if file.is_symlink() || !file.is_file() {
+                bail!("release is missing sandbox companions");
+            }
+        }
+        for name in ["a3s-oci", "a3s-oci-krun-shim"] {
+            make_executable(&sandbox.join(name))?;
+        }
+        Some(sandbox)
+    } else if cfg!(target_os = "macos") {
+        bail!("macOS release is missing sandbox companions");
+    } else {
+        None
+    };
     make_executable(&aster)?;
     make_executable(&acp)?;
     let sums = unpacked.join("SHA256SUMS");
@@ -570,21 +613,30 @@ fn verify_pair(unpacked: &Path) -> Result<VerifiedPair> {
     let id_present = build_id.is_file();
     // The pinned release is the two binaries. Identity checks apply only when
     // the archive carries both metadata files.
-    if !sums_present && !id_present {
+    if !sums_present && !id_present && sandbox.is_none() {
         return Ok(VerifiedPair {
             aster,
             acp,
             identity: None,
+            sandbox: None,
         });
     }
     if !sums_present || !id_present {
         bail!("release is missing paired build identity or checksums");
     }
-    let expected = format!(
+    let mut expected = format!(
         "{}  {aster_name}\n{}  {acp_name}\n",
         sha256_hex(&aster)?,
         sha256_hex(&acp)?
     );
+    if sandbox.is_some() {
+        for name in SANDBOX_MEMBERS {
+            expected.push_str(&format!("{}  {name}\n", sha256_hex(&unpacked.join(name))?));
+        }
+    }
+    if fs::metadata(&sums)?.len() > MAX_MANIFEST || fs::metadata(&build_id)?.len() > 1024 {
+        bail!("paired release metadata is too large");
+    }
     let actual = fs::read(&sums).context("cannot read paired checksums")?;
     if actual != expected.as_bytes() {
         bail!("paired binary checksum mismatch");
@@ -603,6 +655,7 @@ fn verify_pair(unpacked: &Path) -> Result<VerifiedPair> {
         aster,
         acp,
         identity: Some(identity.to_string()),
+        sandbox,
     })
 }
 
@@ -670,6 +723,13 @@ fn files_identical(left: &Path, right: &Path) -> bool {
     if !left_meta.is_file() || !right_meta.is_file() || left_meta.len() != right_meta.len() {
         return false;
     }
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        if left_meta.permissions().mode() & 0o111 != right_meta.permissions().mode() & 0o111 {
+            return false;
+        }
+    }
     let Ok(mut left_file) = File::open(left) else {
         return false;
     };
@@ -706,6 +766,12 @@ fn promote_pair(dir: &Path, dest_aster: &Path, dest_acp: &Path, pair: &VerifiedP
     if dest_aster.is_dir() || dest_acp.is_dir() {
         bail!("binary destination is a directory");
     }
+    let dest_sandbox = pair.sandbox.as_ref().map(|_| dir.join("sandbox"));
+    if let Some(path) = &dest_sandbox
+        && (path.is_symlink() || (path.exists() && !path.is_dir()))
+    {
+        bail!("sandbox destination must be a regular directory");
+    }
     fs::create_dir_all(dir).context("cannot create the install directory")?;
     let lock = dir.join(".aster-install.lock");
     fs::create_dir(&lock).context("another pair installation needs to finish")?;
@@ -727,6 +793,9 @@ fn promote_pair(dir: &Path, dest_aster: &Path, dest_acp: &Path, pair: &VerifiedP
         had_acp: dest_acp.exists(),
         aster_promoted: false,
         acp_promoted: false,
+        dest_sandbox,
+        sandbox_backed_up: false,
+        sandbox_promoted: false,
         committed: false,
     };
     if stage.had_aster {
@@ -743,13 +812,41 @@ fn promote_pair(dir: &Path, dest_aster: &Path, dest_acp: &Path, pair: &VerifiedP
     fs::copy(&pair.acp, &new_acp).context("cannot stage a3s-code-acp")?;
     make_executable(&new_aster)?;
     make_executable(&new_acp)?;
+    let new_sandbox = stage.dir.join("new-sandbox");
+    if let Some(source) = &pair.sandbox {
+        copy_sandbox(source, &new_sandbox)?;
+    }
     replace_file(&new_aster, dest_aster).context("cannot install aster")?;
     stage.aster_promoted = true;
     make_executable(dest_aster)?;
     replace_file(&new_acp, dest_acp).context("cannot install a3s-code-acp")?;
     stage.acp_promoted = true;
     make_executable(dest_acp)?;
+    if let Some(dest) = &stage.dest_sandbox {
+        if dest.exists() {
+            fs::rename(dest, stage.dir.join("old-sandbox"))
+                .context("cannot preserve the current sandbox companions")?;
+            stage.sandbox_backed_up = true;
+        }
+        fs::rename(&new_sandbox, dest).context("cannot install sandbox companions")?;
+        stage.sandbox_promoted = true;
+    }
     stage.committed = true;
+    Ok(())
+}
+
+fn copy_sandbox(source: &Path, destination: &Path) -> Result<()> {
+    for name in SANDBOX_MEMBERS {
+        let relative = Path::new(name)
+            .strip_prefix("sandbox")
+            .context("invalid sandbox member contract")?;
+        let dest = destination.join(relative);
+        fs::create_dir_all(dest.parent().context("sandbox member has no parent")?)?;
+        fs::copy(source.join(relative), dest).context("cannot stage sandbox companions")?;
+    }
+    for name in ["a3s-oci", "a3s-oci-krun-shim"] {
+        make_executable(&destination.join(name))?;
+    }
     Ok(())
 }
 
@@ -762,6 +859,9 @@ struct Stage {
     had_acp: bool,
     aster_promoted: bool,
     acp_promoted: bool,
+    dest_sandbox: Option<PathBuf>,
+    sandbox_backed_up: bool,
+    sandbox_promoted: bool,
     committed: bool,
 }
 
@@ -780,7 +880,8 @@ impl Drop for Stage {
                 &self.dir.join("old-acp"),
                 &self.dest_acp,
             );
-            if !aster_ok || !acp_ok {
+            let sandbox_ok = self.restore_sandbox();
+            if !aster_ok || !acp_ok || !sandbox_ok {
                 eprintln!(
                     "error: pair recovery needs attention; backup retained at {}",
                     self.dir.display()
@@ -790,6 +891,18 @@ impl Drop for Stage {
         }
         let _ = fs::remove_dir_all(&self.dir);
         let _ = fs::remove_dir(&self.lock);
+    }
+}
+
+impl Stage {
+    fn restore_sandbox(&self) -> bool {
+        let Some(dest) = &self.dest_sandbox else {
+            return true;
+        };
+        if self.sandbox_promoted && fs::remove_dir_all(dest).is_err() {
+            return false;
+        }
+        !self.sandbox_backed_up || fs::rename(self.dir.join("old-sandbox"), dest).is_ok()
     }
 }
 
@@ -984,6 +1097,7 @@ fn unpack_tar(archive: &Path, dest: &Path) -> Result<()> {
     let decoder = flate2::read::GzDecoder::new(file);
     let mut tar = tar::Archive::new(decoder);
     let mut seen = std::collections::BTreeSet::new();
+    let mut total = 0_u64;
     for entry in tar.entries().context("release archive is incomplete")? {
         let mut entry = entry.context("release archive is incomplete")?;
         let is_file = entry.header().entry_type().is_file();
@@ -992,23 +1106,25 @@ fn unpack_tar(archive: &Path, dest: &Path) -> Result<()> {
             let path = entry
                 .path()
                 .context("archive member is not a release file")?;
-            let Some(name) = sole_name(&path) else {
-                bail!("archive member is not a release file");
-            };
-            if !allowed_member(name) {
-                bail!("archive member is not a release file");
-            }
-            name.to_string()
+            archive_member(&path).context("archive member is not a release file")?
         };
         if !is_file {
             bail!("archive member is not a release file");
         }
-        if size > MAX_ARCHIVE {
+        total = total
+            .checked_add(size)
+            .context("release archive is too large")?;
+        if total > MAX_ARCHIVE {
             bail!("release archive is too large");
+        }
+        if !seen.insert(name.clone()) {
+            bail!("duplicate archive member");
+        }
+        if let Some(parent) = dest.join(&name).parent() {
+            fs::create_dir_all(parent)?;
         }
         let mut out = File::create(dest.join(&name))?;
         std::io::copy(&mut entry, &mut out).context("release archive is incomplete")?;
-        seen.insert(name);
     }
     require_members(&seen)
 }
@@ -1017,6 +1133,7 @@ fn unpack_zip(archive: &Path, dest: &Path) -> Result<()> {
     let file = File::open(archive)?;
     let mut zip = zip::ZipArchive::new(file).context("release archive is incomplete")?;
     let mut seen = std::collections::BTreeSet::new();
+    let mut total = 0_u64;
     let count = zip.len();
     let mut index = 0_usize;
     while index < count {
@@ -1024,24 +1141,31 @@ fn unpack_zip(archive: &Path, dest: &Path) -> Result<()> {
             .by_index(index)
             .context("release archive is incomplete")?;
         index += 1;
-        if !entry.is_file() {
+        if !entry.is_file()
+            || entry
+                .unix_mode()
+                .is_some_and(|mode| !matches!(mode & 0o170_000, 0 | 0o100_000))
+        {
             bail!("archive member is not a release file");
         }
         let Some(path) = entry.enclosed_name() else {
             bail!("archive member is not a release file");
         };
-        let Some(name) = sole_name(&path) else {
-            bail!("archive member is not a release file");
-        };
-        if !allowed_member(name) {
-            bail!("archive member is not a release file");
-        }
-        if entry.size() > MAX_ARCHIVE {
+        let name = archive_member(&path).context("archive member is not a release file")?;
+        total = total
+            .checked_add(entry.size())
+            .context("release archive is too large")?;
+        if total > MAX_ARCHIVE {
             bail!("release archive is too large");
         }
-        let mut out = File::create(dest.join(name))?;
+        if !seen.insert(name.clone()) {
+            bail!("duplicate archive member");
+        }
+        if let Some(parent) = dest.join(&name).parent() {
+            fs::create_dir_all(parent)?;
+        }
+        let mut out = File::create(dest.join(&name))?;
         std::io::copy(&mut entry, &mut out).context("release archive is incomplete")?;
-        seen.insert(name.to_string());
     }
     require_members(&seen)
 }
@@ -1051,7 +1175,20 @@ fn require_members(seen: &std::collections::BTreeSet<String>) -> Result<()> {
     if !seen.contains(aster_name) || !seen.contains(acp_name) {
         bail!("archive did not contain both aster-cli binaries");
     }
+    if seen.iter().any(|name| name.starts_with("sandbox/"))
+        && SANDBOX_MEMBERS.iter().any(|name| !seen.contains(*name))
+    {
+        bail!("release is missing sandbox companions");
+    }
     Ok(())
+}
+
+fn archive_member(path: &Path) -> Option<String> {
+    if let Some(name) = sole_name(path) {
+        return allowed_member(name).then(|| name.to_owned());
+    }
+    let name = path.to_str()?;
+    allowed_member(name).then(|| name.to_owned())
 }
 
 fn sole_name(path: &Path) -> Option<&str> {

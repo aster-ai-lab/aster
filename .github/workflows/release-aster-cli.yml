@@ -50,7 +50,9 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y protobuf-compiler cmake pkg-config libssl-dev libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev
       - name: Install macOS build tools
         if: runner.os == 'macOS'
-        run: brew install protobuf just
+        run: |
+          brew install protobuf just coreutils e2fsprogs llvm jq xz gnu-tar
+          rustup target add aarch64-unknown-linux-musl
       - name: Install Windows protoc
         if: runner.os == 'Windows'
         shell: pwsh
@@ -64,9 +66,20 @@ jobs:
       - name: Install pinned toolchain
         shell: bash
         run: rustup show active-toolchain
+      - name: Check sandbox delivery contracts
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          python3 tests/cli_pair_delivery.py
+          python3 tests/cli_sandbox.py
+          python3 tests/cli_sandbox_smoke_test.py
+          python3 tests/cli_release_workflow.py
       - name: Build locked release
         shell: bash
         run: env -u GROK_VERSION cargo build --locked --release -p aster -p a3s-code-acp
+      - name: Stage macOS sandbox companions
+        if: runner.os == 'macOS'
+        run: python3 scripts/aster_sandbox.py stage --profile release
       - name: Package aster-cli archive
         shell: bash
         run: |
@@ -152,9 +165,12 @@ jobs:
     name: publish
     needs: [build, build-kylin]
     if: ${{ !cancelled() && (needs.build.result == 'success' || needs.build.result == 'skipped') && (needs.build-kylin.result == 'success' || needs.build-kylin.result == 'skipped') }}
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     timeout-minutes: 20
     steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Install release verification tools
+        run: brew install coreutils
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           pattern: aster-cli-*
@@ -162,7 +178,7 @@ jobs:
           path: dist
           run-id: ${{ inputs.artifact_run_id != '' && inputs.artifact_run_id || github.run_id }}
           github-token: ${{ github.token }}
-      - name: Publish aster-cli v0.1.2
+      - name: Assemble draft aster-cli v0.1.2
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -177,6 +193,7 @@ jobs:
             printf '%s\n' "${files[@]:-}" >&2
             exit 1
           fi
+          python3 tests/cli_sandbox_smoke.py dist/aster-cli-v0.1.2-macos.tar.gz --output-dir qualification
           macos_sha="$(sha256sum -b dist/aster-cli-v0.1.2-macos.tar.gz | cut -d' ' -f1)"
           linux_sha="$(sha256sum -b dist/aster-cli-v0.1.2-linux.tar.gz | cut -d' ' -f1)"
           kylin_sha="$(sha256sum -b dist/aster-cli-v0.1.2-kylin.tar.gz | cut -d' ' -f1)"
@@ -208,11 +225,21 @@ jobs:
           printf 'Built from %s.\n' "$built" >> notes.md
           # GITHUB_TOKEN can create the tag only at the default branch tip.
           if gh release view aster-cli-v0.1.2 >/dev/null 2>&1; then
+            test "$(gh release view aster-cli-v0.1.2 --json isDraft --jq .isDraft)" = true
+            test "$(gh release view aster-cli-v0.1.2 --json targetCommitish --jq .targetCommitish)" = "$built"
             gh release upload aster-cli-v0.1.2 "${files[@]}" dist/latest.json --clobber
           else
             gh release create aster-cli-v0.1.2 \
+              --draft --target "$built" \
               --title "aster-cli v0.1.2" \
               --notes-file notes.md \
               "${files[@]}" dist/latest.json
           fi
           gh release view aster-cli-v0.1.2
+      - name: Retain installed archive qualification
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: aster-cli-macos-qualification
+          path: qualification/
+          if-no-files-found: warn

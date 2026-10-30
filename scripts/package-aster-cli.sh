@@ -43,6 +43,16 @@ esac
 copy_file "${bin_dir}/aster${suffix}" "${stage}/aster${suffix}"
 copy_file "${bin_dir}/a3s-code-acp${suffix}" "${stage}/a3s-code-acp${suffix}"
 chmod 755 "${stage}/aster${suffix}" "${stage}/a3s-code-acp${suffix}"
+release_files=("aster${suffix}" "a3s-code-acp${suffix}")
+if [[ "$platform" == macos ]]; then
+  members="$(python3 "${script_dir}/aster_sandbox.py" members --directory "${bin_dir}/sandbox")"
+  while IFS= read -r name; do
+    release_files+=("$name")
+    mkdir -p "${stage}/$(dirname "$name")"
+    copy_file "${bin_dir}/${name}" "${stage}/${name}"
+  done <<< "$members"
+  python3 "${script_dir}/aster_sandbox.py" verify --directory "${stage}/sandbox"
+fi
 if [[ -n "$max_glibc" ]]; then
   if command -v python3 >/dev/null 2>&1; then
     py=(python3)
@@ -68,10 +78,13 @@ sha256_file() {
   else result="$(shasum -a 256 -b "$1")"; fi
   printf '%s  %s\n' "${result%% *}" "$1"
 }
-(cd "$stage" && sha256_file "aster${suffix}" && sha256_file "a3s-code-acp${suffix}") > "${stage}/SHA256SUMS"
+(
+  cd "$stage"
+  for name in "${release_files[@]}"; do sha256_file "$name"; done
+) > "${stage}/SHA256SUMS"
 case "$platform" in
   macos|linux|kylin)
-    COPYFILE_DISABLE=1 tar -C "$stage" -czf "$out" aster a3s-code-acp BUILD_ID SHA256SUMS
+    COPYFILE_DISABLE=1 tar -C "$stage" -czf "$out" "${release_files[@]}" BUILD_ID SHA256SUMS
     ;;
   windows)
     if command -v python3 >/dev/null 2>&1; then

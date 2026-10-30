@@ -5,6 +5,18 @@ Aster is one Rust workspace for the terminal coding tool, harness, and shared As
 - Build from the repository root with the pinned Rust toolchain.
 - `apps/aster` is the `aster` terminal binary. `crates/code/acp` is its
   `a3s-code-acp` companion. Build and distribute both together.
+- macOS CLI releases include the complete verified sandbox companions.
+  Packaging, installation and self-update must reject missing companions.
+  Before creating or uploading a Release, install the final archive into an
+  isolated prefix and pass `tests/cli_sandbox_smoke.py` using its installed
+  CLI, ACP and sandbox. Reused build artifacts follow the same gate.
+  Preserve missing-file regressions and actual command-execution assertions;
+  startup, model acknowledgements and successful installation are insufficient.
+- Apply the same completeness checks to other release prerequisites: native
+  libraries, OCR models, fonts, Office/ACP companions, capture helpers and
+  renderer entry assets. Required membership comes from the owning source
+  contract, never only from the archive's own file list. Check the final
+  desktop archive before generating or publishing its channel manifest.
 - `crates/code/core` is the embeddable Rust SDK and harness. Do not add
   Node, Python, or Go bindings, SDKs, or package publishing jobs.
 - `apps/studio` is the shared desktop host; `just build-studio` builds it with

@@ -38,7 +38,11 @@ jobs:
       - name: Internal dependency boundary
         run: python3 tests/workspace_dependencies.py
       - name: CLI pair delivery
-        run: python3 tests/cli_pair_delivery.py
+        run: |
+          python3 tests/cli_pair_delivery.py
+          python3 tests/cli_sandbox.py
+          python3 tests/cli_sandbox_smoke_test.py
+          python3 tests/cli_release_workflow.py
       - name: Kylin CLI glibc baseline and channel selection
         run: python3 tests/aster_cli_kylin.py
       - name: Kylin input method launcher
@@ -47,7 +51,9 @@ jobs:
           python3 tests/progress_bench.py
           python3 apps/studio/scripts/kylin-flatpak/test_delivery.py
       - name: Desktop package generation contracts
-        run: python3 -m unittest apps/studio/scripts/tests/studio_delivery_test.py apps/studio/scripts/tests/studio_product_test.py
+        run: |
+          python3 -m unittest apps/studio/scripts/tests/studio_delivery_test.py apps/studio/scripts/tests/studio_product_test.py apps/studio/scripts/tests/test_document_assets.py apps/studio/scripts/tests/sandbox_assets_test.py
+          python3 tests/desktop_channel_manifest.py
       - name: App icon ladder and desktop identity
         run: python3 tests/app_icon_assets.py
       - name: Shared-crate drift ratchet

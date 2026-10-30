@@ -1,0 +1,4 @@
+{"kind": "pre_analysis"}
+{"kind": "tool_call", "command": "printf 'ASTER_RELEASE_SANDBOX_OK\\n'; uname -s; cat release-input.txt"}
+{"kind": "tool_result", "output": "Tool exit code: 0\nASTER_RELEASE_SANDBOX_OK\nLinux\ndf71d899cc84b324d9c0d3c79799dca0\n"}
+{"kind": "memory"}

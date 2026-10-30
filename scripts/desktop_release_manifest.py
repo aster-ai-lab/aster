@@ -12,6 +12,7 @@ import argparse
 import hashlib
 import json
 import sys
+import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -24,7 +25,7 @@ MAX_SIZE = 512 * 1024 * 1024
 
 def parse_version(text):
     parts = text.split(".")
-    if len(parts) != 3:
+    if len(parts) != 3 or any(not part.isascii() or not part.isdigit() for part in parts):
         return None
     try:
         return tuple(int(part) for part in parts)
@@ -57,6 +58,14 @@ def generate(args):
     size = archive.stat().st_size
     if size == 0 or size > MAX_SIZE:
         raise SystemExit(f"archive size out of range: {size}")
+    if args.platform != "darwin-aarch64" or args.asset != f"Aster-darwin-aarch64-v{args.version}.zip":
+        raise SystemExit("desktop asset name must match its supported platform and version")
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "apps/studio/scripts"))
+    from studio_delivery import verify_archive
+    try:
+        verify_archive(archive, args.version, PRODUCT)
+    except (OSError, ValueError, KeyError, zipfile.BadZipFile) as error:
+        raise SystemExit(f"invalid desktop archive: {error}")
     if args.existing:
         current = load(args.existing)
         existing_version = parse_version(str(current.get("version", "")))
@@ -107,6 +116,8 @@ def check(args):
     if not isinstance(platforms, dict) or not platforms:
         raise SystemExit("platforms must be a non-empty object")
     for platform, entry in platforms.items():
+        if platform != "darwin-aarch64":
+            raise SystemExit(f"unsupported desktop platform: {platform}")
         url = entry.get("url", "")
         expected_prefix = f"https://github.com/{REPO}/releases/download/{CHANNEL_TAG}/"
         if not url.startswith(expected_prefix):
