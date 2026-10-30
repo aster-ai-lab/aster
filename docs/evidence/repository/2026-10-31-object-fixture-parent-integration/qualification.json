@@ -1,0 +1,12 @@
+{
+  "jobs": [
+    "fmt",
+    "check",
+    "hermetic",
+    "campaigns"
+  ],
+  "bashSteps": 15,
+  "retainedFilesExact": 79,
+  "canonicalCloudImagesExact": true,
+  "cloudIncomingAncestor": true
+}

@@ -60,6 +60,8 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends protobuf-compiler cmake pkg-config libssl-dev libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev
       - run: rustup toolchain install 1.97.1 --profile minimal && rustup default 1.97.1
       - uses: Swatinem/rust-cache@v2
+      - name: Object fixture startup contract
+        run: python3 tests/backend_object_fixture.py
       - run: cargo check --locked --workspace --all-targets
 
   hermetic:
@@ -146,15 +148,6 @@ jobs:
         options: >-
           --health-cmd "pg_isready -U a3s_test"
           --health-interval 5s --health-timeout 5s --health-retries 10
-      s3:
-        image: bitnami/minio:latest
-        env:
-          MINIO_ROOT_USER: a3s-test
-          MINIO_ROOT_PASSWORD: a3s-test-secret
-        ports: ["9000:9000"]
-        options: >-
-          --health-cmd "mc ready local || exit 1"
-          --health-interval 5s --health-timeout 5s --health-retries 10
     steps:
       - uses: actions/checkout@v4
       - name: Check out pinned desktop sources
@@ -179,12 +172,33 @@ jobs:
           workspaces: |
             apps/api/Cargo.toml
             apps/cloud/Cargo.toml
-      - name: Create the campaign bucket
+      - name: Start the campaign object store and create its bucket
         run: |
-          docker run --rm --network host minio/mc:latest \
-            sh -c "mc alias set gate $A3S_CLOUD_TEST_S3_ENDPOINT a3s-test a3s-test-secret && mc mb gate/$A3S_CLOUD_TEST_S3_BUCKET"
+          docker run -d --name a3s-s3 --network host \
+            -e RUSTFS_ACCESS_KEY="$A3S_CLOUD_TEST_S3_ACCESS_KEY_ID" \
+            -e RUSTFS_SECRET_KEY="$A3S_CLOUD_TEST_S3_SECRET_ACCESS_KEY" \
+            -e RUSTFS_ADDRESS=:9000 -e RUSTFS_CONSOLE_ENABLE=false \
+            rustfs/rustfs:1.0.0@sha256:8cc9801755448b71a786705ce76692c77e14936cccd87cf2fc31842e58f4d1ff /data
+          for attempt in {1..60}; do
+            if curl --fail --silent "$A3S_CLOUD_TEST_S3_ENDPOINT/health" >/dev/null; then
+              break
+            fi
+            if [[ "$attempt" == 60 ]]; then
+              docker logs a3s-s3
+              exit 1
+            fi
+            sleep 1
+          done
+          docker run --rm --network host \
+            -e AWS_ACCESS_KEY_ID="$A3S_CLOUD_TEST_S3_ACCESS_KEY_ID" \
+            -e AWS_SECRET_ACCESS_KEY="$A3S_CLOUD_TEST_S3_SECRET_ACCESS_KEY" \
+            -e AWS_MAX_ATTEMPTS=10 \
+            amazon/aws-cli:2.31.18@sha256:1a491b258590cc66866cd550f592edff80082f44daf1d903820daeca2f4954de --endpoint-url "$A3S_CLOUD_TEST_S3_ENDPOINT" s3 mb "s3://$A3S_CLOUD_TEST_S3_BUCKET"
       - name: Serial Postgres/S3 campaigns (api, node-agent, control-plane)
         run: |
           cargo test --locked --manifest-path apps/cloud/Cargo.toml -p a3s-cloud-control-plane -- --test-threads=1
           cargo test --locked --manifest-path apps/cloud/Cargo.toml -p a3s-cloud-node-agent -- --test-threads=1
           cargo test --locked --manifest-path apps/api/Cargo.toml -p a3s-api -- --test-threads=1
+      - name: Stop the campaign object store
+        if: always()
+        run: docker rm -f a3s-s3
