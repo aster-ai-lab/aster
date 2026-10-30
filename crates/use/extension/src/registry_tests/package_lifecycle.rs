@@ -3,10 +3,10 @@ use super::*;
 #[tokio::test]
 async fn registry_tuf_receipts_require_verified_catalog_evidence() {
     let temp = tempfile::tempdir().unwrap();
-    let source = temp.path().join("cognitive");
+    let source = temp.path().join("package");
     compatible_package(&source).await;
     let candidate = ExtensionLifecyclePackage::prepare_local_for_host_version(
-        "acme/cognitive",
+        "acme/package",
         &source,
         true,
         "0.3.0",
@@ -20,21 +20,16 @@ async fn registry_tuf_receipts_require_verified_catalog_evidence() {
         .await
         .unwrap();
 
-    let catalog = verified_knowledge_catalog(&source, "acme/cognitive", &[], 'c').await;
-    let mut receipt = registry
-        .get("acme/cognitive")
-        .await
-        .unwrap()
-        .unwrap()
-        .receipt;
+    let catalog = verified_knowledge_catalog(&source, "acme/package", &[], 'c').await;
+    let mut receipt = registry.get("acme/package").await.unwrap().unwrap().receipt;
     receipt.trust = ExtensionTrust::RegistryTuf;
     receipt.registry = Some(ResolvedRemotePackage::from_verified_catalog(&catalog).unwrap());
     receipt.verified_catalog = None;
-    write_receipt(&registry.paths().receipt_path("acme/cognitive"), &receipt)
+    write_receipt(&registry.paths().receipt_path("acme/package"), &receipt)
         .await
         .unwrap();
 
-    let error = registry.get("acme/cognitive").await.unwrap_err();
+    let error = registry.get("acme/package").await.unwrap_err();
     assert_eq!(error.code, "use.extension.receipt_invalid");
     assert!(error.message.contains("inconsistent trust provenance"));
 }
@@ -42,7 +37,7 @@ async fn registry_tuf_receipts_require_verified_catalog_evidence() {
 #[tokio::test]
 async fn lifecycle_receipts_require_exact_selected_surface_evidence() {
     let temp = tempfile::tempdir().unwrap();
-    let source = temp.path().join("cognitive");
+    let source = temp.path().join("package");
     compatible_package(&source).await;
     let manifest_path = source.join(MANIFEST_NAME);
     let manifest = fs::read_to_string(&manifest_path).await.unwrap();
@@ -61,7 +56,7 @@ async fn lifecycle_receipts_require_exact_selected_surface_evidence() {
         .collect::<Vec<_>>();
     selected_surfaces.sort();
     let candidate = ExtensionLifecyclePackage::prepare_local_for_host_version(
-        "acme/cognitive",
+        "acme/package",
         &source,
         true,
         "0.3.0",
@@ -74,12 +69,12 @@ async fn lifecycle_receipts_require_exact_selected_surface_evidence() {
         .commit_lifecycle_package_selection(&identity, &candidate, &selected_surfaces)
         .await
         .unwrap();
-    let installed = registry.get("acme/cognitive").await.unwrap().unwrap();
+    let installed = registry.get("acme/package").await.unwrap().unwrap();
     assert_eq!(installed.receipt.schema_version, 4);
     assert_eq!(installed.selected_surfaces().unwrap(), selected_surfaces);
     assert!(!installed.surfaces().contains(&"ui"));
 
-    let receipt_path = registry.paths().receipt_path("acme/cognitive");
+    let receipt_path = registry.paths().receipt_path("acme/package");
     let current: serde_json::Value =
         serde_json::from_slice(&fs::read(&receipt_path).await.unwrap()).unwrap();
     for (case, receipt, expected_code) in [
@@ -127,7 +122,7 @@ async fn lifecycle_receipts_require_exact_selected_surface_evidence() {
         fs::write(&receipt_path, serde_json::to_vec_pretty(&receipt).unwrap())
             .await
             .unwrap();
-        let error = registry.get("acme/cognitive").await.unwrap_err();
+        let error = registry.get("acme/package").await.unwrap_err();
         assert_eq!(error.code, expected_code, "unexpected error for {case}");
     }
 }
@@ -135,10 +130,10 @@ async fn lifecycle_receipts_require_exact_selected_surface_evidence() {
 #[tokio::test]
 async fn lifecycle_snapshot_cannot_steal_the_reviewed_atomic_cutover() {
     let temp = tempfile::tempdir().unwrap();
-    let source = temp.path().join("cognitive");
+    let source = temp.path().join("package");
     compatible_package(&source).await;
     let candidate = ExtensionLifecyclePackage::prepare_local_for_host_version(
-        "acme/cognitive",
+        "acme/package",
         &source,
         true,
         "0.3.0",
@@ -172,7 +167,7 @@ async fn lifecycle_snapshot_cannot_steal_the_reviewed_atomic_cutover() {
     let staged_observation = registry.snapshot().await.unwrap();
     assert_eq!(staged_observation, before);
     assert!(registry
-        .acquire_lifecycle_route_for_host_version("cognitive", "0.3.0")
+        .acquire_lifecycle_route_for_host_version("package", "0.3.0")
         .await
         .unwrap()
         .is_none());
@@ -198,7 +193,7 @@ async fn lifecycle_snapshot_cannot_steal_the_reviewed_atomic_cutover() {
     assert!(published.extension.receipt.enabled);
     assert_eq!(published.extension.receipt.lifecycle_generation, Some(7));
     assert!(registry
-        .acquire_lifecycle_route_for_host_version("cognitive", "0.3.0")
+        .acquire_lifecycle_route_for_host_version("package", "0.3.0")
         .await
         .unwrap()
         .is_some());
@@ -222,10 +217,10 @@ async fn lifecycle_snapshot_cannot_steal_the_reviewed_atomic_cutover() {
 #[tokio::test]
 async fn lifecycle_snapshot_does_not_reconcile_during_state_restore_maintenance() {
     let temp = tempfile::tempdir().unwrap();
-    let source = temp.path().join("cognitive");
+    let source = temp.path().join("package");
     compatible_package(&source).await;
     let candidate = ExtensionLifecyclePackage::prepare_local_for_host_version(
-        "acme/cognitive",
+        "acme/package",
         &source,
         true,
         "0.3.0",
@@ -296,7 +291,7 @@ async fn lifecycle_receipt_persists_the_exact_selected_surface_closure() {
     fs::write(&manifest_path, manifest).await.unwrap();
 
     let candidate = ExtensionLifecyclePackage::prepare_local_for_host_version(
-        "acme/cognitive",
+        "acme/package",
         &source,
         true,
         "0.3.0",
@@ -445,10 +440,10 @@ async fn lifecycle_graph_requires_the_exact_published_retained_dependency() {
 #[tokio::test]
 async fn lifecycle_hide_drains_accepted_calls_before_exact_idempotent_removal() {
     let temp = tempfile::tempdir().unwrap();
-    let source = temp.path().join("cognitive");
+    let source = temp.path().join("package");
     compatible_package(&source).await;
     let candidate = ExtensionLifecyclePackage::prepare_local_for_host_version(
-        "acme/cognitive",
+        "acme/package",
         &source,
         true,
         "0.3.0",
@@ -466,7 +461,7 @@ async fn lifecycle_hide_drains_accepted_calls_before_exact_idempotent_removal() 
         .await
         .unwrap();
     let lease = registry
-        .acquire_lifecycle_route_for_host_version("cognitive", "0.3.0")
+        .acquire_lifecycle_route_for_host_version("package", "0.3.0")
         .await
         .unwrap()
         .unwrap();
@@ -475,7 +470,7 @@ async fn lifecycle_hide_drains_accepted_calls_before_exact_idempotent_removal() 
     assert!(hidden.changed);
     assert!(!hidden.extension.receipt.enabled);
     assert!(registry
-        .acquire_lifecycle_route_for_host_version("cognitive", "0.3.0")
+        .acquire_lifecycle_route_for_host_version("package", "0.3.0")
         .await
         .unwrap()
         .is_none());
@@ -510,7 +505,7 @@ async fn lifecycle_hide_drains_accepted_calls_before_exact_idempotent_removal() 
         .unwrap();
     assert!(removed.changed);
     assert!(!package_root.exists());
-    assert!(registry.get("acme/cognitive").await.unwrap().is_none());
+    assert!(registry.get("acme/package").await.unwrap().is_none());
     assert!(registry.snapshot().await.unwrap().routes.is_empty());
 
     let replay = registry
@@ -708,10 +703,10 @@ fn verified_catalog_flow_inventory_and_dependencies_match_the_admitted_manifest(
 #[tokio::test]
 async fn lifecycle_generation_binding_fails_closed_without_observer_republication() {
     let temp = tempfile::tempdir().unwrap();
-    let source = temp.path().join("cognitive");
+    let source = temp.path().join("package");
     compatible_package(&source).await;
     let candidate = ExtensionLifecyclePackage::prepare_local_for_host_version(
-        "acme/cognitive",
+        "acme/package",
         &source,
         true,
         "0.3.0",
@@ -739,19 +734,19 @@ async fn lifecycle_generation_binding_fails_closed_without_observer_republicatio
     let observed = registry.snapshot().await.unwrap();
     assert_eq!(observed.routes[0].lifecycle_generation, Some(99));
     assert!(registry
-        .acquire_lifecycle_route_for_host_version("cognitive", "0.3.0")
+        .acquire_lifecycle_route_for_host_version("package", "0.3.0")
         .await
         .unwrap()
         .is_none());
 
-    let receipt_path = registry.paths().receipt_path("acme/cognitive");
+    let receipt_path = registry.paths().receipt_path("acme/package");
     let mut receipt: serde_json::Value =
         serde_json::from_slice(&fs::read(&receipt_path).await.unwrap()).unwrap();
     receipt["lifecycleGeneration"] = serde_json::json!(14);
     fs::write(&receipt_path, serde_json::to_vec_pretty(&receipt).unwrap())
         .await
         .unwrap();
-    let error = registry.get("acme/cognitive").await.unwrap_err();
+    let error = registry.get("acme/package").await.unwrap_err();
     assert!(matches!(
         error.code.as_str(),
         "use.extension.lifecycle_receipt_invalid" | "use.extension.ownership_invalid"
@@ -761,10 +756,10 @@ async fn lifecycle_generation_binding_fails_closed_without_observer_republicatio
 #[tokio::test]
 async fn lifecycle_commit_replay_defers_receipt_cutover_to_the_journal() {
     let temp = tempfile::tempdir().unwrap();
-    let source = temp.path().join("cognitive");
+    let source = temp.path().join("package");
     compatible_package(&source).await;
     let candidate = ExtensionLifecyclePackage::prepare_local_for_host_version(
-        "acme/cognitive",
+        "acme/package",
         &source,
         true,
         "0.3.0",
@@ -810,10 +805,10 @@ async fn lifecycle_commit_replay_defers_receipt_cutover_to_the_journal() {
 #[tokio::test]
 async fn lifecycle_upgrade_retains_routes_until_cutover_and_retires_the_exact_prior_generation() {
     let temp = tempfile::tempdir().unwrap();
-    let source = temp.path().join("cognitive");
+    let source = temp.path().join("package");
     compatible_package(&source).await;
     let candidate = ExtensionLifecyclePackage::prepare_local_for_host_version(
-        "acme/cognitive",
+        "acme/package",
         &source,
         true,
         "0.3.0",
@@ -870,7 +865,7 @@ async fn lifecycle_upgrade_retains_routes_until_cutover_and_retires_the_exact_pr
     assert!(staged_binding.receipt.enabled);
     assert_eq!(
         registry
-            .acquire_lifecycle_route_for_host_version("cognitive", "0.3.0")
+            .acquire_lifecycle_route_for_host_version("package", "0.3.0")
             .await
             .unwrap()
             .unwrap()
@@ -908,7 +903,7 @@ async fn lifecycle_upgrade_retains_routes_until_cutover_and_retires_the_exact_pr
     drop(next_lease);
     assert_eq!(
         registry
-            .acquire_lifecycle_route_for_host_version("cognitive", "0.3.0")
+            .acquire_lifecycle_route_for_host_version("package", "0.3.0")
             .await
             .unwrap()
             .unwrap()
@@ -958,10 +953,10 @@ async fn lifecycle_upgrade_retains_routes_until_cutover_and_retires_the_exact_pr
 #[tokio::test]
 async fn lifecycle_upgrade_candidate_can_roll_back_before_capability_cutover() {
     let temp = tempfile::tempdir().unwrap();
-    let source = temp.path().join("cognitive");
+    let source = temp.path().join("package");
     compatible_package(&source).await;
     let candidate = ExtensionLifecyclePackage::prepare_local_for_host_version(
-        "acme/cognitive",
+        "acme/package",
         &source,
         true,
         "0.3.0",
@@ -1001,7 +996,7 @@ async fn lifecycle_upgrade_candidate_can_roll_back_before_capability_cutover() {
     assert!(!registry.lifecycle_package_root(&next).exists());
     assert_eq!(
         registry
-            .get("acme/cognitive")
+            .get("acme/package")
             .await
             .unwrap()
             .unwrap()
@@ -1121,8 +1116,8 @@ async fn lifecycle_graph_rollback_atomically_restores_replacements_and_discards_
 async fn public_lifecycle_candidate_accepts_the_real_v3_host_version() {
     let fixture = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("fixtures/packages/plugin-v3-package/package");
-    let candidate = ExtensionLifecyclePackage::prepare_local("acme/cognitive", &fixture, true)
+    let candidate = ExtensionLifecyclePackage::prepare_local("acme/package", &fixture, true)
         .await
         .unwrap();
-    assert_eq!(candidate.package_id(), "acme/cognitive");
+    assert_eq!(candidate.package_id(), "acme/package");
 }

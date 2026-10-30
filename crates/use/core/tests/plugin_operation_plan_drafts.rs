@@ -29,9 +29,9 @@ fn okf_install_plan() -> PluginOperationPlan {
     after.release.package_id = "acme/knowledge".to_owned();
     after.release.version = "1.0.0".to_owned();
     after.release.package_sha256 =
-        "sha256:e030e6e8c3afa6383536b4973395e12b05257d2b7b10bf042f3bfaf71b420fe2".to_owned();
+        "sha256:c2622e496d6fb116a5ff5703f9f4de0e72fedc2923ee7c2294b9423b72081c3e".to_owned();
     after.release.manifest_sha256 =
-        "sha256:16d065341edebaf45e0d633e46614155a60b853738290bbac8c5b62d9230bce2".to_owned();
+        "sha256:95177d0daca2cda715ce9f7b901dec882edd13dad8215691b98ff2f5b05a0960".to_owned();
     after.release.surfaces = vec![CatalogSurface {
         kind: PackageSurfaceKind::Okf,
         id: "domain-knowledge".to_owned(),
@@ -64,8 +64,8 @@ fn okf_install_plan() -> PluginOperationPlan {
         )
         .unwrap();
     let mut impact = expected.impact;
-    impact.download_bytes = 3_366;
-    impact.installed_bytes_after = 3_366;
+    impact.download_bytes = 3_354;
+    impact.installed_bytes_after = 3_354;
     let draft = PluginOperationPlanDraft::new(
         expected.action,
         "acme/knowledge",
@@ -257,7 +257,7 @@ fn okf_draft_derives_exact_bundle_impact_without_a_runtime_provider() {
             .as_ref()
             .unwrap()
             .content_digest,
-        "sha256:bd85b0b63adb32bdf616384a619286af4c32401542655dd09e00450902ab478d"
+        "sha256:94337d238614cca3cd27fcd29d1eab7360c9b3a4205fbb67eaeffd8dfedea3bc"
     );
     assert!(plan.providers.is_empty());
     plan.validate().unwrap();

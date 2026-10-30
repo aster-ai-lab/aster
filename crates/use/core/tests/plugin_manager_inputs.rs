@@ -7,7 +7,7 @@ use a3s_use_core::{
 #[test]
 fn manager_inputs_accept_the_frozen_tool_shapes() {
     let search: PluginManagerSearchInput = serde_json::from_value(serde_json::json!({
-        "query": "cognitive",
+        "query": "package",
         "kind": "okf",
         "channel": "stable",
         "cursor": "page:2",
@@ -19,7 +19,7 @@ fn manager_inputs_accept_the_frozen_tool_shapes() {
     assert_eq!(search.page_limit(), 20);
 
     let inspect: PluginManagerInspectInput = serde_json::from_value(serde_json::json!({
-        "packageId": "acme/cognitive",
+        "packageId": "acme/package",
         "version": "1.2.3",
         "channel": "stable"
     }))
@@ -36,7 +36,7 @@ fn manager_inputs_accept_the_frozen_tool_shapes() {
     assert_eq!(list.page_limit(), 50);
 
     let scoped: PluginManagerPackageScopeInput = serde_json::from_value(serde_json::json!({
-        "packageId": "acme/cognitive",
+        "packageId": "acme/package",
         "scopeKind": "user",
         "scopeId": "user:current"
     }))
@@ -44,7 +44,7 @@ fn manager_inputs_accept_the_frozen_tool_shapes() {
     scoped.validate().unwrap();
 
     let install: PluginManagerInstallPlanInput = serde_json::from_value(serde_json::json!({
-        "packageId": "acme/cognitive",
+        "packageId": "acme/package",
         "registryName": "packages",
         "versionRequirement": "^1.2",
         "channel": "stable",
@@ -66,7 +66,7 @@ fn manager_inputs_accept_the_frozen_tool_shapes() {
     assert_eq!(canonical[1].kind, PackageSurfaceKind::Tool);
 
     let upgrade: PluginManagerUpgradePlanInput = serde_json::from_value(serde_json::json!({
-        "packageId": "acme/cognitive",
+        "packageId": "acme/package",
         "versionRequirement": ">=1.2, <2",
         "scopeKind": "workspace",
         "scopeId": "workspace:alpha"
@@ -75,7 +75,7 @@ fn manager_inputs_accept_the_frozen_tool_shapes() {
     upgrade.validate().unwrap();
 
     let exact: PluginManagerUpgradePlanInput = serde_json::from_value(serde_json::json!({
-        "packageId": "acme/cognitive",
+        "packageId": "acme/package",
         "versionRequirement": "1.2.3",
         "scopeKind": "workspace",
         "scopeId": "workspace:alpha"
@@ -99,7 +99,7 @@ fn manager_inputs_accept_the_frozen_tool_shapes() {
 fn manager_inputs_reject_ambiguous_or_unbounded_authority() {
     let duplicate_surfaces: PluginManagerInstallPlanInput =
         serde_json::from_value(serde_json::json!({
-            "packageId": "acme/cognitive",
+            "packageId": "acme/package",
             "surfaces": [
                 {"kind": "tool", "id": "run"},
                 {"kind": "tool", "id": "run"}
@@ -115,7 +115,7 @@ fn manager_inputs_reject_ambiguous_or_unbounded_authority() {
 
     let invalid_requirement: PluginManagerUpgradePlanInput =
         serde_json::from_value(serde_json::json!({
-            "packageId": "acme/cognitive",
+            "packageId": "acme/package",
             "versionRequirement": "latest",
             "scopeKind": "user",
             "scopeId": "user:current"
@@ -127,7 +127,7 @@ fn manager_inputs_reject_ambiguous_or_unbounded_authority() {
     );
 
     let empty_surfaces: PluginManagerInstallPlanInput = serde_json::from_value(serde_json::json!({
-        "packageId": "acme/cognitive",
+        "packageId": "acme/package",
         "surfaces": [],
         "scopeKind": "user",
         "scopeId": "user:current"
@@ -140,7 +140,7 @@ fn manager_inputs_reject_ambiguous_or_unbounded_authority() {
 
     assert!(
         serde_json::from_value::<PluginManagerPackageScopeInput>(serde_json::json!({
-            "packageId": "acme/cognitive",
+            "packageId": "acme/package",
             "scopeKind": "user",
             "scopeId": "user:current",
             "path": "/tmp/escape"

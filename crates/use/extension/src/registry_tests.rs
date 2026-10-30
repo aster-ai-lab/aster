@@ -50,11 +50,11 @@ async fn package_with_dependencies(
     let mut manifest = fs::read_to_string(&path).await.unwrap();
     manifest = manifest
         .replace(
-            "extension \"acme/cognitive\"",
+            "extension \"acme/package\"",
             &format!("extension \"{package_id}\""),
         )
         .replace(
-            "route          = \"cognitive\"",
+            "route          = \"package\"",
             &format!("route          = \"{route}\""),
         );
     let dependency_blocks = dependencies

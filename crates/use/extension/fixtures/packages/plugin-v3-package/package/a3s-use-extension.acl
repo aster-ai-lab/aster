@@ -1,12 +1,12 @@
-extension "acme/cognitive" {
+extension "acme/package" {
   schema_version = 3
   version        = "1.0.0"
-  route          = "cognitive"
+  route          = "package"
   requires_use   = ">=0.3.0, <0.4.0"
   actions        = ["read", "execute"]
 
   repository {
-    url      = "https://github.com/acme/cognitive"
+    url      = "https://github.com/acme/package"
     revision = "0123456789abcdef0123456789abcdef01234567"
   }
 
@@ -14,7 +14,7 @@ extension "acme/cognitive" {
     workload    = "task"
     interface   = "cli"
     executable  = "tools/echo"
-    command     = "acme-cognitive-echo"
+    command     = "acme-package-echo"
     json_output = true
     interactive = false
     timeout_ms  = 30000
@@ -33,10 +33,10 @@ extension "acme/cognitive" {
   okf "domain" {
     format_version         = "0.2"
     root                   = "okf/domain"
-    content_digest         = "sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a"
+    content_digest         = "sha256:e31b30c51ea1b2b6dae65b0b7cc50351780e0939f40b1145c436b24608bc0e65"
     concept_count          = 1
     file_count             = 2
-    expanded_bytes         = 427
+    expanded_bytes         = 408
     max_files              = 64
     max_concepts           = 32
     max_expanded_bytes     = 1048576

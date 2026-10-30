@@ -9,10 +9,10 @@ async fn published_package(
     ExtensionLifecycleIdentity,
     PathBuf,
 ) {
-    let source = root.join("cognitive");
+    let source = root.join("package");
     compatible_package(&source).await;
     let candidate = ExtensionLifecyclePackage::prepare_local_for_host_version(
-        "acme/cognitive",
+        "acme/package",
         &source,
         true,
         "0.3.0",
@@ -149,10 +149,10 @@ async fn lifecycle_tampered_retained_receipt_fails_closed() {
 #[tokio::test]
 async fn lifecycle_retained_generation_count_is_bounded() {
     let temporary = tempfile::tempdir().unwrap();
-    let source = temporary.path().join("cognitive");
+    let source = temporary.path().join("package");
     compatible_package(&source).await;
     let candidate = ExtensionLifecyclePackage::prepare_local_for_host_version(
-        "acme/cognitive",
+        "acme/package",
         &source,
         true,
         "0.3.0",

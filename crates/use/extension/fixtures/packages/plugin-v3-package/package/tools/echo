@@ -1,2 +1,2 @@
 #!/bin/sh
-printf '{"message":"cognitive package ready"}\n'
+printf '{"message":"package ready"}\n'

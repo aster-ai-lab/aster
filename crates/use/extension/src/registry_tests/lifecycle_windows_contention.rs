@@ -8,10 +8,10 @@ async fn prepared_package(
     ExtensionLifecyclePackage,
     ExtensionLifecycleIdentity,
 ) {
-    let source = root.join("cognitive");
+    let source = root.join("package");
     compatible_package(&source).await;
     let candidate = ExtensionLifecyclePackage::prepare_local_for_host_version(
-        "acme/cognitive",
+        "acme/package",
         &source,
         true,
         "0.3.0",

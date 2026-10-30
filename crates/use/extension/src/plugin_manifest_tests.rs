@@ -373,10 +373,10 @@ fn schema_v3_okf_rejects_drift_unknown_authority_and_missing_dependencies() {
   okf "domain-knowledge" {
     format_version         = "0.2"
     root                   = "okf/domain-knowledge"
-    content_digest         = "sha256:bd85b0b63adb32bdf616384a619286af4c32401542655dd09e00450902ab478d"
+    content_digest         = "sha256:94337d238614cca3cd27fcd29d1eab7360c9b3a4205fbb67eaeffd8dfedea3bc"
     concept_count          = 4
     file_count             = 7
-    expanded_bytes         = 2053
+    expanded_bytes         = 2051
     max_files              = 256
     max_concepts           = 64
     max_expanded_bytes     = 67108864
@@ -766,10 +766,10 @@ fn an_agent_or_plugin_package_depends_on_many_surfaces_and_pages() {
   okf "domain-knowledge" {
     format_version         = "0.2"
     root                   = "okf/domain-knowledge"
-    content_digest         = "sha256:bd85b0b63adb32bdf616384a619286af4c32401542655dd09e00450902ab478d"
+    content_digest         = "sha256:94337d238614cca3cd27fcd29d1eab7360c9b3a4205fbb67eaeffd8dfedea3bc"
     concept_count          = 4
     file_count             = 7
-    expanded_bytes         = 2053
+    expanded_bytes         = 2051
     max_files              = 256
     max_concepts           = 64
     max_expanded_bytes     = 67108864

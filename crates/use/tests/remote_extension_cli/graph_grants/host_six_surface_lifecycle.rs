@@ -9,9 +9,9 @@ use a3s_use_core::{
     PLUGIN_PERMISSION_SCHEMA, PLUGIN_PLANNING_BUNDLE_SCHEMA,
 };
 
-const PACKAGE_ID: &str = "acme/cognitive";
-const ROUTE: &str = "cognitive";
-const SCOPE_ID: &str = "shared:cognitive";
+const PACKAGE_ID: &str = "acme/package";
+const ROUTE: &str = "package";
+const SCOPE_ID: &str = "shared:package";
 
 /// Exercise one remote package that contributes every schema-v3 surface. The
 /// same Host plan/apply boundary is used for both managed scope kinds, and the
@@ -582,8 +582,8 @@ fn package_six_surface_targets(
     catalog.display_name = format!("Complete Package {version}");
     catalog.description = "A complete six-surface package fixture.".to_owned();
     catalog.publisher = "acme".to_owned();
-    catalog.keywords = vec!["cognitive".to_owned(), "fixture".to_owned()];
-    catalog.categories = vec!["cognitive".to_owned()];
+    catalog.keywords = vec!["fixture".to_owned(), "package".to_owned()];
+    catalog.categories = vec!["package".to_owned()];
     catalog.version = version.to_owned();
     catalog.channel = PluginReleaseChannel::Stable;
     catalog.requires_use = ">=0.3.0, <0.4.0".to_owned();
@@ -640,7 +640,7 @@ fn package_six_surface_targets(
     catalog.package.sha256 = Some(package_sha256.clone());
     catalog.package.manifest_sha256 = Some(manifest_sha256.clone());
     catalog.license = "MIT".to_owned();
-    catalog.repository = "https://github.com/acme/cognitive".to_owned();
+    catalog.repository = "https://github.com/acme/package".to_owned();
     catalog.availability = CatalogAvailability::Available;
 
     let planning = PluginPlanningBundle {
@@ -664,7 +664,7 @@ fn package_six_surface_targets(
                 id: "echo".to_owned(),
                 activation: PlanningSurfaceActivation::Lazy,
                 executable: "tools/echo".to_owned(),
-                command: "acme-cognitive-echo".to_owned(),
+                command: "acme-package-echo".to_owned(),
                 json_output: true,
                 timeout_ms: 30_000,
             },
