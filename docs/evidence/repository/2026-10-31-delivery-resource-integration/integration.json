@@ -1,0 +1,289 @@
+{
+  "incoming": "56f876a1ab0456b2466cae36c9956a2f0eee0d85",
+  "resolutions": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "choice": "current source; incoming delivery behavior already retained with later fixes",
+      "sha256": "90769882a82a730b53132435bb444b23af8b2650dd86bc2629093e5ac98d0d9c"
+    },
+    {
+      "path": ".github/workflows/release-aster-cli.yml",
+      "choice": "current source; incoming delivery behavior already retained with later fixes",
+      "sha256": "e30d4a81ddd0bb668de4630d05328bbe9233a07373235d4964e3c374e181fb8b"
+    },
+    {
+      "path": ".github/workflows/release-aster-desktop.yml",
+      "choice": "current source; incoming delivery behavior already retained with later fixes",
+      "sha256": "0d1ea7d6a4069c2bc38f3e169cb36adb0852689c4a622aa1959b7f5bb207420a"
+    },
+    {
+      "path": "apps/studio",
+      "choice": "current canonical Studio; incoming source is already an ancestor"
+    },
+    {
+      "path": "scripts/desktop_release_manifest.py",
+      "choice": "current source; incoming delivery behavior already retained with later fixes",
+      "sha256": "b8fff24b2023e040625ff3645ac3e392b6b8e74ec74b88fc433b4d44d41fadc7"
+    },
+    {
+      "path": "scripts/package-aster-cli.sh",
+      "choice": "current source; incoming delivery behavior already retained with later fixes",
+      "sha256": "ac02ccda1e274eb62abb4b01af85da93b7e7ef3bef53ad03912b55c22edded09"
+    },
+    {
+      "path": "tests/cli_pair_delivery.py",
+      "choice": "current source; incoming delivery behavior already retained with later fixes",
+      "sha256": "242e62b27ec8a3ddb3cfa0d858d7d2b600a5f0db55992b3d08c4e1d149824a17"
+    },
+    {
+      "path": "tests/cli_release_workflow.py",
+      "choice": "current source; incoming delivery behavior already retained with later fixes",
+      "sha256": "9f713061d6cf4cfd0c934ed0a88c0c09b0175431bbb20a1fe8c21ffb1e1f7111"
+    },
+    {
+      "path": "tests/cli_sandbox_smoke.py",
+      "choice": "current source; incoming delivery behavior already retained with later fixes",
+      "sha256": "537f85c6721e2579852527fd2dad76957976588ca51070f4bd17d5247c8d3dae"
+    },
+    {
+      "path": "tests/cli_sandbox_smoke_test.py",
+      "choice": "current source; incoming delivery behavior already retained with later fixes",
+      "sha256": "a25ee89361739447de0e8ded0febf0417c3ecf3fbf40550aee29d6f618b07c5d"
+    },
+    {
+      "path": "tests/desktop_channel_manifest.py",
+      "choice": "current source; incoming delivery behavior already retained with later fixes",
+      "sha256": "fe2c6d8f3b18444c0a4a2c3ba75238013931d5b4d547ae5f9c4fc7306472eec1"
+    }
+  ],
+  "historicalEvidence": [
+    {
+      "path": "docs/evidence/delivery/2026-10-30-resource-commit/OUTCOME.md",
+      "bytes": 6875,
+      "sha256": "845db399491c48765a66fb0b86f856b33b0258b84dc7782d53d12df80314b20a",
+      "incomingWorkingIndexExact": true
+    },
+    {
+      "path": "docs/evidence/delivery/2026-10-30-resource-commit/archive.log.gz",
+      "bytes": 45,
+      "sha256": "3e8fd796b72f3de2fddf02b0fd82326bee73e07fe3636f55c8eb976d2cee7398",
+      "incomingWorkingIndexExact": true,
+      "decompressedBytes": 25,
+      "summary": []
+    },
+    {
+      "path": "docs/evidence/delivery/2026-10-30-resource-commit/checks.json",
+      "bytes": 922,
+      "sha256": "91d159d72bdfd4c8ff28d5ec37b236f96011435436a5d8500b7b780a20a77b3c",
+      "incomingWorkingIndexExact": true
+    },
+    {
+      "path": "docs/evidence/delivery/2026-10-30-resource-commit/cli-oracle.log.gz",
+      "bytes": 53,
+      "sha256": "47f537392cd2f4633baa4b978cefd6cb24d2a9452e02582edd5ce7944f45a646",
+      "incomingWorkingIndexExact": true,
+      "decompressedBytes": 100,
+      "summary": [
+        "Ran 2 tests in 0.000s",
+        "OK"
+      ]
+    },
+    {
+      "path": "docs/evidence/delivery/2026-10-30-resource-commit/cli-pair.log.gz",
+      "bytes": 56,
+      "sha256": "35ddc90d7397733d5de62c3722570c9afbe0201675922598f2bdbd542f769ea3",
+      "incomingWorkingIndexExact": true,
+      "decompressedBytes": 120,
+      "summary": [
+        "Ran 20 tests in 41.871s",
+        "OK"
+      ]
+    },
+    {
+      "path": "docs/evidence/delivery/2026-10-30-resource-commit/cli-sandbox.log.gz",
+      "bytes": 54,
+      "sha256": "ad0b12d4a1233b512b27c81364a9605154b040475f03758aa21efbde2e906b6c",
+      "incomingWorkingIndexExact": true,
+      "decompressedBytes": 105,
+      "summary": [
+        "Ran 7 tests in 0.129s",
+        "OK"
+      ]
+    },
+    {
+      "path": "docs/evidence/delivery/2026-10-30-resource-commit/cli-workflow.log.gz",
+      "bytes": 55,
+      "sha256": "7e456e0f174628e0beef093fecc543cd6f67f2cefc430e95a1e3edf809a84d00",
+      "incomingWorkingIndexExact": true,
+      "decompressedBytes": 105,
+      "summary": [
+        "Ran 6 tests in 10.104s",
+        "OK"
+      ]
+    },
+    {
+      "path": "docs/evidence/delivery/2026-10-30-resource-commit/desktop-delivery.log.gz",
+      "bytes": 250,
+      "sha256": "35f8161fccadfe8958dec361e418ae4c5183f269b0daca89ca2833c562fd000e",
+      "incomingWorkingIndexExact": true,
+      "decompressedBytes": 804,
+      "summary": [
+        "Ran 24 tests in 2.657s",
+        "OK"
+      ]
+    },
+    {
+      "path": "docs/evidence/delivery/2026-10-30-resource-commit/desktop-manifest.log.gz",
+      "bytes": 54,
+      "sha256": "036211ed191821c0e02b06882e18a7e89a32143c76f46e5a01d572039b6477a2",
+      "incomingWorkingIndexExact": true,
+      "decompressedBytes": 107,
+      "summary": [
+        "Ran 9 tests in 7.075s",
+        "OK"
+      ]
+    },
+    {
+      "path": "docs/evidence/delivery/2026-10-30-resource-commit/desktop-product.log.gz",
+      "bytes": 55,
+      "sha256": "fc5e0f8ab27460a390524a00ba3a3e0dbc07380292d76772ad9406c08cf5f49c",
+      "incomingWorkingIndexExact": true,
+      "decompressedBytes": 111,
+      "summary": [
+        "Ran 12 tests in 2.861s",
+        "OK"
+      ]
+    },
+    {
+      "path": "docs/evidence/delivery/2026-10-30-resource-commit/documents.log.gz",
+      "bytes": 54,
+      "sha256": "3e03ea4346a594078639d367e98eb3613953f90b9a8ca08add52ee06a2f634a0",
+      "incomingWorkingIndexExact": true,
+      "decompressedBytes": 104,
+      "summary": [
+        "Ran 6 tests in 0.115s",
+        "OK"
+      ]
+    },
+    {
+      "path": "docs/evidence/delivery/2026-10-30-resource-commit/format.log.gz",
+      "bytes": 244,
+      "sha256": "2681ff67a46898e5502f4396d7411fa683a285393bd87d5fa1ae565c56cc8253",
+      "incomingWorkingIndexExact": true,
+      "decompressedBytes": 548,
+      "summary": []
+    },
+    {
+      "path": "docs/evidence/delivery/2026-10-30-resource-commit/kylin.log.gz",
+      "bytes": 55,
+      "sha256": "3ee5015a1aaac6ebedee2b3c7465bbe6ab488cb922958726d202610acc23ec6d",
+      "incomingWorkingIndexExact": true,
+      "decompressedBytes": 125,
+      "summary": [
+        "Ran 26 tests in 3.907s",
+        "OK"
+      ]
+    },
+    {
+      "path": "docs/evidence/delivery/2026-10-30-resource-commit/native-updater.log.gz",
+      "bytes": 6390,
+      "sha256": "40f6e58f5a50e2e942cf117a4193c3d6fb8b84190caaab7cee25e25ca31ba6fc",
+      "incomingWorkingIndexExact": true,
+      "decompressedBytes": 52093,
+      "summary": [
+        "test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 1394 filtered out; finished in 2.06s"
+      ]
+    },
+    {
+      "path": "docs/evidence/delivery/2026-10-30-resource-commit/previous-cli-update.log.gz",
+      "bytes": 6444,
+      "sha256": "9cbdc7f07831d3b83129dca7387731250ebea52ba9b64930506f350fa2dee3ea",
+      "incomingWorkingIndexExact": true,
+      "decompressedBytes": 28352,
+      "summary": [
+        "test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 29.79s"
+      ]
+    },
+    {
+      "path": "docs/evidence/delivery/2026-10-30-resource-commit/sandbox-assets.log.gz",
+      "bytes": 54,
+      "sha256": "00c645a59f9df28500a7370ab5be9242e98d5fe7fba264332161d717a84a0846",
+      "incomingWorkingIndexExact": true,
+      "decompressedBytes": 101,
+      "summary": [
+        "Ran 3 tests in 0.030s",
+        "OK"
+      ]
+    },
+    {
+      "path": "docs/evidence/delivery/2026-10-30-resource-commit/smoke-bad/install.log.gz",
+      "bytes": 179,
+      "sha256": "512fdd28a61f8c8d12ed383d0e0cf9d50281763fcc828efcf5a0108e0e92767f",
+      "incomingWorkingIndexExact": true,
+      "decompressedBytes": 220,
+      "summary": []
+    },
+    {
+      "path": "docs/evidence/delivery/2026-10-30-resource-commit/smoke-bad/result.json",
+      "bytes": 404,
+      "sha256": "3dbe3fddbac0903fcefb7d3a989f3fc9761e6b46f90847df2bf112febe2f4668",
+      "incomingWorkingIndexExact": true
+    },
+    {
+      "path": "docs/evidence/delivery/2026-10-30-resource-commit/smoke-good/install.log.gz",
+      "bytes": 190,
+      "sha256": "1a62232415e2e118f97cf3f3b56b2c11696fa423a495e66c45ba48d647b57356",
+      "incomingWorkingIndexExact": true,
+      "decompressedBytes": 505,
+      "summary": []
+    },
+    {
+      "path": "docs/evidence/delivery/2026-10-30-resource-commit/smoke-good/model-events.jsonl",
+      "bytes": 274,
+      "sha256": "15b60433dae7967b1b92264dce3be45332bd22565639c948c30a2bfaee181903",
+      "incomingWorkingIndexExact": true
+    },
+    {
+      "path": "docs/evidence/delivery/2026-10-30-resource-commit/smoke-good/result.json",
+      "bytes": 537,
+      "sha256": "fcecf64cfcbd17795e72b32d1192f1255d1a9ca0fb443dfc97ec088ae6ba0bb0",
+      "incomingWorkingIndexExact": true
+    },
+    {
+      "path": "docs/evidence/delivery/2026-10-30-resource-commit/smoke-good/terminal.log.gz",
+      "bytes": 43,
+      "sha256": "c431b068bf3931d5fbffbee4d8dda75351329a9b6a6cf3db58a122d7593ddde0",
+      "incomingWorkingIndexExact": true,
+      "decompressedBytes": 23,
+      "summary": []
+    },
+    {
+      "path": "docs/evidence/delivery/2026-10-30-resource-commit/studio-checkout.log.gz",
+      "bytes": 51,
+      "sha256": "01d0ad146597a34934b0945f66734294a7aaca7e41906af1b0d9f1eeb753e94a",
+      "incomingWorkingIndexExact": true,
+      "decompressedBytes": 98,
+      "summary": [
+        "Ran 1 test in 0.386s",
+        "OK"
+      ]
+    },
+    {
+      "path": "docs/evidence/delivery/2026-10-30-resource-commit/workspace-preservation.json",
+      "bytes": 369,
+      "sha256": "036aecea1c0403dac406aca3c38933dca4f0a00e33753aa3732533a1931421f3",
+      "incomingWorkingIndexExact": true
+    },
+    {
+      "path": "docs/evidence/delivery/2026-10-30-resource-commit/workspace.log.gz",
+      "bytes": 237,
+      "sha256": "3450bd274f860f2e87689753da5043f2840fab1e2c609e8f0766bd2af6453d5c",
+      "incomingWorkingIndexExact": true,
+      "decompressedBytes": 1803,
+      "summary": [
+        "Ran 6 tests in 18.080s",
+        "OK"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "documents": {
+    "passed": 6,
+    "log": "documents.log.gz"
+  },
+  "desktop-delivery": {
+    "passed": 24,
+    "log": "desktop-delivery.log.gz"
+  },
+  "desktop-product": {
+    "passed": 12,
+    "log": "desktop-product.log.gz"
+  },
+  "sandbox-assets": {
+    "passed": 3,
+    "log": "sandbox-assets.log.gz"
+  },
+  "kylin": {
+    "passed": 26,
+    "log": "kylin.log.gz"
+  },
+  "desktop-manifest": {
+    "passed": 9,
+    "log": "desktop-manifest.log.gz"
+  },
+  "cli-pair": {
+    "passed": 20,
+    "log": "cli-pair.log.gz"
+  },
+  "cli-workflow": {
+    "passed": 6,
+    "log": "cli-workflow.log.gz"
+  },
+  "cli-sandbox": {
+    "passed": 7,
+    "log": "cli-sandbox.log.gz"
+  },
+  "cli-oracle": {
+    "passed": 2,
+    "log": "cli-oracle.log.gz"
+  },
+  "studio-checkout": {
+    "passed": 1,
+    "log": "studio-checkout.log.gz"
+  },
+  "workspace": {
+    "passed": 6,
+    "log": "workspace.log.gz"
+  },
+  "total_passed": 122
+}
