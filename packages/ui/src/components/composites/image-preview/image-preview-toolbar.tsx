@@ -40,7 +40,7 @@ interface ToolbarButtonProps {
 }
 
 const ToolbarButton = ({ children, disabled, label, onClick, pressed }: ToolbarButtonProps) => (
-  <Tooltip content={label} delay={300}>
+  <Tooltip content={label} delay={500}>
     <Button
       aria-label={label}
       aria-pressed={pressed}

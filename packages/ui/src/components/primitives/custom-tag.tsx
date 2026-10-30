@@ -86,7 +86,7 @@ const CustomTag: FC<CustomTagProps> = ({
   )
 
   return tooltip ? (
-    <Tooltip content={tooltip} delay={300}>
+    <Tooltip content={tooltip} delay={500}>
       {tagContent}
     </Tooltip>
   ) : (
