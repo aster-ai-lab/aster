@@ -6,6 +6,7 @@ import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react'
 import * as React from 'react'
 
 import { cn } from '../../lib/utils'
+import { PopupDismissContext, usePopupDismissal, usePopupState } from './popup-dismissal'
 import { usePortalContainer } from './portal-container'
 
 /* ─── Style variants ──────────────────────────────────────────────────────── */
@@ -60,6 +61,7 @@ type ContextMenuOpeningPointerUpGuard = {
 const ContextMenuOpeningPointerUpGuardContext = React.createContext<ContextMenuOpeningPointerUpGuard | null>(null)
 
 function ContextMenu({
+  open,
   onOpenChange,
   modal = false,
   ...props
@@ -106,13 +108,16 @@ function ContextMenu({
     },
     [clearOpeningPointerUp, onOpenChange]
   )
+  const state = usePopupState({ open, onOpenChange: handleOpenChange })
 
   React.useEffect(() => clearOpeningPointerUp, [clearOpeningPointerUp])
 
   return (
-    <ContextMenuOpeningPointerUpGuardContext value={pointerUpGuard}>
-      <ContextMenuPrimitive.Root data-slot="context-menu" modal={modal} onOpenChange={handleOpenChange} {...props} />
-    </ContextMenuOpeningPointerUpGuardContext>
+    <PopupDismissContext value={state}>
+      <ContextMenuOpeningPointerUpGuardContext value={pointerUpGuard}>
+        <ContextMenuPrimitive.Root data-slot="context-menu" modal={modal} {...props} {...state} />
+      </ContextMenuOpeningPointerUpGuardContext>
+    </PopupDismissContext>
   )
 }
 
@@ -218,15 +223,38 @@ type ContextMenuContentProps = React.ComponentProps<typeof ContextMenuPrimitive.
   portalContainer?: React.ComponentProps<typeof ContextMenuPrimitive.Portal>['container']
 }
 
-function ContextMenuContent({ className, onPointerUpCapture, portalContainer, ...props }: ContextMenuContentProps) {
+function ContextMenuContent({
+  className,
+  onPointerUpCapture,
+  portalContainer,
+  ref,
+  onPointerDownCapture,
+  onClickCapture,
+  onCloseAutoFocus,
+  ...props
+}: ContextMenuContentProps) {
   const pointerUpGuard = React.use(ContextMenuOpeningPointerUpGuardContext)
   const defaultPortalContainer = usePortalContainer()
+  const dismissal = usePopupDismissal(ref)
 
   return (
     <ContextMenuPrimitive.Portal container={portalContainer ?? defaultPortalContainer ?? undefined}>
       <ContextMenuPrimitive.Content
         data-slot="context-menu-content"
+        ref={dismissal.ref}
         className={cn(menuContentStyles, className)}
+        onPointerDownCapture={(event) => {
+          dismissal.inside()
+          onPointerDownCapture?.(event)
+        }}
+        onClickCapture={(event) => {
+          dismissal.inside()
+          onClickCapture?.(event)
+        }}
+        onCloseAutoFocus={(event) => {
+          onCloseAutoFocus?.(event)
+          dismissal.onCloseAutoFocus(event)
+        }}
         onPointerUpCapture={(event) => {
           onPointerUpCapture?.(event)
           stopOpeningPointerUp(event, pointerUpGuard)

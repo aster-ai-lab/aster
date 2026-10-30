@@ -113,6 +113,23 @@ it('lets a context menu dismiss and focus the first outside click', async () => 
   expect(screen.getByRole('textbox', { name: 'Outside' })).toHaveFocus()
 })
 
+it.each(['background', 'blur'])('closes a context menu on native %s interaction', async (action) => {
+  const user = userEvent.setup()
+  render(
+    <ContextMenu>
+      <ContextMenuTrigger>Context</ContextMenuTrigger>
+      <ContextMenuContent>
+        <ContextMenuItem>Inside</ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
+  )
+  await user.pointer({ keys: '[MouseRight]', target: screen.getByText('Context') })
+  expect(screen.getByText('Inside')).toBeVisible()
+  if (action === 'background') fireEvent.click(window)
+  else fireEvent.blur(window)
+  await waitFor(() => expect(screen.queryByText('Inside')).not.toBeInTheDocument())
+})
+
 it.each(['background', 'blur'])('closes a hover card on %s interaction', async (action) => {
   render(
     <HoverCard defaultOpen>
