@@ -166,22 +166,6 @@ fn compact_composer(screen: &str) -> String {
         .collect()
 }
 
-pub(super) fn read_message_viewport(screen: &vt100::Screen) -> String {
-    // This isolated-home, full-width fixture uses LayoutConfig's default
-    // block_pad_right=2 and EntryRenderer's 10-column timestamp reservation.
-    // Read actual VT cells so the right gutter cannot split a wrapped marker
-    // with metadata. The exact persisted assistant reply is checked separately.
-    let (_, cols) = screen.size();
-    screen
-        .rows(0, cols.saturating_sub(12))
-        .flat_map(|row| {
-            row.chars()
-                .filter(|ch| !ch.is_whitespace())
-                .collect::<Vec<_>>()
-        })
-        .collect()
-}
-
 fn submit_read_prompt(pty: &mut PtySession, prompt: &str) {
     pty.clear_line();
     pty.type_text(prompt);

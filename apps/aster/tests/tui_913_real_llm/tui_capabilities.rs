@@ -53,7 +53,7 @@ fn wrapped_reply_visibility_keeps_words_and_the_link_destination() {
         b"\x1b[1;3HA source is docs (https://example.com/\x1b[1;111H5:40 PM\x1b[2;3Hdocs).",
     );
     assert!(!reply_is_visible(reply, &parser.screen().contents()));
-    let viewport = tui_read::read_message_viewport(parser.screen());
+    let viewport = read_message_viewport(parser.screen());
     assert!(reply_is_visible(reply, &viewport));
     assert!(!reply_is_visible(
         &reply.replace("source", "reference"),
@@ -62,17 +62,17 @@ fn wrapped_reply_visibility_keeps_words_and_the_link_destination() {
     parser.process(b"\x1b[2;1H\x1b[2K");
     assert!(!reply_is_visible(
         reply,
-        &tui_read::read_message_viewport(parser.screen())
+        &read_message_viewport(parser.screen())
     ));
     parser.process(b"\x1b[2J\x1b[1;3HA source is docs.");
     assert!(!reply_is_visible(
         reply,
-        &tui_read::read_message_viewport(parser.screen())
+        &read_message_viewport(parser.screen())
     ));
     parser.process(b"\x1b[2J\x1b[1;111Hdocs");
     assert!(!reply_is_visible(
         "docs",
-        &tui_read::read_message_viewport(parser.screen())
+        &read_message_viewport(parser.screen())
     ));
 }
 
@@ -154,8 +154,7 @@ fn turn(session: &mut LiveSession, prompt: &str, tool: &str, turns: usize, exit:
             let observed = facts_for_session(&workspace, &home, id);
             assert_eq!(settled_turns(&observed), turns);
             completed_narrative(&observed).is_some_and(|reply| {
-                !screen_is_busy(screen)
-                    && reply_is_visible(reply, &tui_read::read_message_viewport(cells))
+                !screen_is_busy(screen) && reply_is_visible(reply, &read_message_viewport(cells))
             })
         },
     );

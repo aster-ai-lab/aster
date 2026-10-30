@@ -247,6 +247,22 @@ fn screen_has(screen: &str, needle: &str) -> bool {
     screen_words.contains(&needle_words)
 }
 
+fn read_message_viewport(screen: &vt100::Screen) -> String {
+    // This isolated-home, full-width fixture uses LayoutConfig's default
+    // block_pad_right=2 and EntryRenderer's 10-column timestamp reservation.
+    // Read actual VT cells so the right gutter cannot split a wrapped marker
+    // with metadata. The exact persisted assistant reply is checked separately.
+    let (_, cols) = screen.size();
+    screen
+        .rows(0, cols.saturating_sub(12))
+        .flat_map(|row| {
+            row.chars()
+                .filter(|ch| !ch.is_whitespace())
+                .collect::<Vec<_>>()
+        })
+        .collect()
+}
+
 const ERROR_BANNERS: &[&str] = &[
     "Turn failed",
     "Connection failed",
@@ -490,7 +506,7 @@ fn real_llm_tui_turn_shows_assistant_text() {
                 "a prose-only turn called a tool"
             );
             if let Some(reply) = fact_evidence::completed_narrative(&facts) {
-                let visible = tui_read::read_message_viewport(session.pty.parser.screen());
+                let visible = read_message_viewport(session.pty.parser.screen());
                 let compact: String = reply.chars().filter(|ch| !ch.is_whitespace()).collect();
                 if !screen_is_busy(&screen) && visible.contains(&compact) {
                     break reply.to_owned();

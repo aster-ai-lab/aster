@@ -9,8 +9,13 @@ async fn yolo_runs_actual_host_tools_and_git_while_normal_keeps_its_sandbox() {
         std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../../target/yolo-fixtures");
     std::fs::create_dir_all(&target).unwrap();
     let root = tempfile::tempdir_in(target).unwrap();
-    let base = ToolContext::new(root.path().to_path_buf())
-        .with_sandbox(Arc::new(NativeBashSandbox::new(root.path()).unwrap()));
+    let sandbox = crate::agent_api::select_default_local_sandbox(
+        root.path(),
+        crate::sandbox::SandboxNetworkMode::Deny,
+        false,
+        NativeBashSandbox::new(root.path()),
+    );
+    let base = ToolContext::new(root.path().to_path_buf()).with_sandbox(sandbox.clone());
     let yolo = base
         .clone()
         .with_run_governance(Some(Arc::new(policy_for_posture("yolo"))), None);
@@ -37,6 +42,7 @@ async fn yolo_runs_actual_host_tools_and_git_while_normal_keeps_its_sandbox() {
     assert!(output.content.contains("Darwin"));
     let normal = base.with_run_governance(Some(Arc::new(policy_for_posture("default"))), None);
     assert!(normal.sandbox.as_ref().unwrap().is_isolated());
+    assert!(Arc::ptr_eq(normal.sandbox.as_ref().unwrap(), &sandbox));
 }
 
 #[tokio::test]
